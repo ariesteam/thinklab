@@ -1,0 +1,252 @@
+/**
+ * LocalAuthenticationManager.java
+ * ----------------------------------------------------------------------------------
+ * 
+ * Copyright (C) 2008 www.integratedmodelling.org
+ * Created: Jan 17, 2008
+ *
+ * ----------------------------------------------------------------------------------
+ * This file is part of ThinklabAuthenticationPlugin.
+ * 
+ * ThinklabAuthenticationPlugin is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * ThinklabAuthenticationPlugin is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with the software; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ * ----------------------------------------------------------------------------------
+ * 
+ * @copyright 2008 www.integratedmodelling.org
+ * @author    Ferdinando Villa (fvilla@uvm.edu)
+ * @date      Jan 17, 2008
+ * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
+ * @link      http://www.integratedmodelling.org
+ **/
+package org.integratedmodelling.authentication.local;
+
+import java.util.Hashtable;
+import java.util.Properties;
+
+import org.integratedmodelling.authentication.AuthenticationPlugin;
+import org.integratedmodelling.authentication.IThinklabAuthenticationManager;
+import org.integratedmodelling.authentication.exceptions.ThinklabAuthenticationException;
+import org.integratedmodelling.authentication.exceptions.ThinklabDuplicateUserException;
+import org.integratedmodelling.authentication.exceptions.ThinklabInvalidUserException;
+import org.integratedmodelling.sql.QueryResult;
+import org.integratedmodelling.sql.SQLPlugin;
+import org.integratedmodelling.sql.SQLServer;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
+
+/**
+ * Simple database-backed authentication manager. It's entirely unsafe as it does not require
+ * successful authentication in order to set or retrieve properties, and has no notion
+ * of admin accounts, so any API user can manipulate the database. A "safe" subclass should be 
+ * derived to do such things.
+ * 
+ * @author Ferdinando Villa
+ *
+ */
+public class LocalAuthenticationManager implements IThinklabAuthenticationManager {
+
+	private SQLServer database = null;
+	private EncryptionManager encryptionManager = null;
+	
+	static Hashtable<String, Properties> userProperties = 
+		new Hashtable<String, Properties>();
+	
+	// fairly obvious indeed, with the dreaded key-value pairs for properties.
+	static final String dbInit = 
+		"CREATE TABLE tluser (" +
+		"	username	varchar(256) PRIMARY KEY," +
+		"	userpass	varchar(256)" +
+		");" +
+		"CREATE TABLE tlprops (" + 
+		"		username varchar(256)," + 
+		"		propname varchar(256)," + 
+		"		propvalue varchar(1024)" + 
+		");" + 
+		"CREATE INDEX idx_tlprops ON tlprops(username)";
+	
+
+	public boolean authenticateUser(String username, String password,
+			Properties userProperties)  throws ThinklabException {
+		
+		QueryResult qr  = database.query(
+				"SELECT username, userpass FROM tluser WHERE username = '" +
+				username + 
+				"'");
+
+		if (qr.nRows() != 1) {
+			throw new ThinklabInvalidUserException(username);
+		}
+		
+		String ew = encryptionManager.encrypt(password);
+		
+		return ew.equals(qr.get(0,1));
+	}
+
+
+	public Properties getUserProperties(String username)  throws ThinklabException{
+		
+		Properties obj = userProperties.get(username);
+		
+		if (obj == null) {
+			if (!haveUser(username))
+				throw new ThinklabInvalidUserException(username);
+			
+			obj = new Properties();
+			
+			QueryResult qr = 
+				database.query(
+						"SELECT propname, propvalue FROM tlprops WHERE username = '" + 
+						username + 
+						"'");
+			
+			for (int i = 0; i < qr.nRows(); i++)
+				obj.setProperty(qr.get(i,0), qr.get(i,1));
+			
+			userProperties.put(username, obj);
+		}
+		
+		return obj;
+	}
+
+
+	public String getUserProperty(String user, String property,
+			String defaultValue)  throws ThinklabException {
+		
+		return getUserProperties(user).getProperty(property, defaultValue);
+	}
+
+
+	public synchronized void saveUserProperties(String user)  throws ThinklabException {
+		
+		Properties op = getUserProperties(user);
+		
+		/* delete any properties for user */
+		database.execute("DELETE FROM tlprops WHERE username = '" + user + "'");
+		
+		for (Object p : op.keySet()) {
+			database.execute(
+					"INSERT INTO tlprops VALUES ('" +
+					user + 
+					"', '" +
+					p.toString() + 
+					"', '" +
+					op.getProperty(p.toString()) +
+					"')");
+		}
+		
+	}
+
+
+	public void setUserProperty(String user, String property, String value)  throws ThinklabException {
+
+		Properties upr = getUserProperties(user);
+		upr.setProperty(property, value);
+	}
+
+
+	public void initialize() throws ThinklabException {
+		
+		String db = 
+			AuthenticationPlugin.get().getProperties().getProperty(
+					"authentication.local.database", 
+					"hsqlfile://sa@localhost/auth");
+		
+		AuthenticationPlugin.logger().info("autentication database is " + db);
+
+		/*
+		 * An encryption key should REALLY be set into properties.
+		 */
+		String ek = 
+			AuthenticationPlugin.get().getProperties().getProperty(
+					"authentication.local.encryption.key");
+		
+		if (ek == null || ek.trim().equals("")) {
+			throw new ThinklabAuthenticationException(
+					"unsafe encrypion: please provide a valid encryption key in the Authentication plugin properties");
+		}
+		
+		/**
+		 * Create a user database with the specs given in properties, default to
+		 * a HSQL file-based one. Pass the plugin's properties so we can configure
+		 * the db using sql properties.
+		 */
+		database = 
+			SQLPlugin.get().createSQLServer(db, AuthenticationPlugin.get().getProperties());
+
+		encryptionManager = 
+			new EncryptionManager(
+					EncryptionManager.DESEDE_ENCRYPTION_SCHEME,
+					ek);
+
+		/* create db if necessary */
+		if (!database.haveTable("tluser")) {
+			database.submit(dbInit);
+		}
+	}
+
+
+	public synchronized void createUser(String user, String password) throws ThinklabException {
+		
+		if (haveUser(user)) {
+			throw new ThinklabDuplicateUserException(user);
+		}
+		
+		String ew = encryptionManager.encrypt(password);
+		
+		database.execute("INSERT INTO tluser VALUES ('" +
+				user + 
+				"', '" +
+				ew +
+				"')");
+		
+	}
+
+
+	public boolean haveUser(String user)  {
+
+		boolean ret = false;
+		
+		try {
+			ret = 
+				(userProperties.get(user) != null) || 
+				(database.query(
+					"SELECT username FROM tluser WHERE username = '" + 
+					user + 
+					"'").nRows() == 1);
+		} catch (ThinklabException e) {
+		}
+		
+		return ret;
+	}
+
+
+	public synchronized void setUserPassword(String user, String password)
+			throws ThinklabException {
+		
+		if (!haveUser(user)) {
+			throw new ThinklabInvalidUserException(user);
+		}
+		
+		String ew = encryptionManager.encrypt(password);
+		
+		database.execute("UPDATE tluser SET userpass = '" +
+				ew + 
+				"' WHERE username = '" +
+				user +
+				"'");
+		
+	}
+
+}

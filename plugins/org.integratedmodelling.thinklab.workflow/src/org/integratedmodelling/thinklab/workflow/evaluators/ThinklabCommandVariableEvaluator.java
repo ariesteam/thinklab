@@ -1,0 +1,70 @@
+package org.integratedmodelling.thinklab.workflow.evaluators;
+
+import java.util.Collection;
+import java.util.Map;
+
+import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.command.Command;
+import org.integratedmodelling.thinklab.command.CommandDeclaration;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
+import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.workflow.exceptions.ThinklabWorkflowException;
+
+import com.opensymphony.workflow.variables.ExternalVariableEvaluator;
+
+/**
+ * Evaluates a thinklab command, expecting all arguments and any options as named objects in the context. Plain
+ * POD can be converted automatically to IValues so it's fine to pass numbers and strings as simple values.
+ * 
+ * @author Ferdinando
+ *
+ */
+public class ThinklabCommandVariableEvaluator implements
+		ExternalVariableEvaluator {
+
+	private ISession session;
+	private ICommandOutputReceptor outputWriter;
+
+	public ThinklabCommandVariableEvaluator(ISession session,
+			ICommandOutputReceptor outputReceptor) {
+		
+		this.session = session;
+		this.outputWriter = outputReceptor;
+	}
+
+	@Override
+	public Object evaluate(String expression, Map<String, Object> context) {
+
+		IValue ret = null;
+
+		try {		
+			Command command = new Command(expression, context);
+			ret = KnowledgeManager.get().submitCommand(command, outputWriter, session);
+			
+		} catch (ThinklabException e) {
+			throw new ThinklabWorkflowException(e);
+		}
+		
+		return ret;
+	}
+
+	@Override
+	public String getTypeinfo() {
+		return "command";
+	}
+
+	@Override
+	public String[] getRequiredInputVariableNames(String expression) {
+
+		String[] ret = new String[0];
+		CommandDeclaration cdecl = KnowledgeManager.get().getDeclarationForCommand(expression);
+		
+		if (ret != null)
+			ret = cdecl.getAllArgumentNames();			
+		
+		return ret;
+	}
+
+}

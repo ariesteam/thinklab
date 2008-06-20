@@ -1,0 +1,329 @@
+/**
+ * ObservationFactory.java
+ * ----------------------------------------------------------------------------------
+ * 
+ * Copyright (C) 2008 www.integratedmodelling.org
+ * Created: Apr 7, 2008
+ *
+ * ----------------------------------------------------------------------------------
+ * This file is part of ThinklabDataBridgePlugin.
+ * 
+ * ThinklabDataBridgePlugin is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * ThinklabDataBridgePlugin is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with the software; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ * ----------------------------------------------------------------------------------
+ * 
+ * @copyright 2008 www.integratedmodelling.org
+ * @author    Ferdinando Villa (fvilla@uvm.edu)
+ * @date      Apr 7, 2008
+ * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
+ * @link      http://www.integratedmodelling.org
+ **/
+package org.integratedmodelling.databridge;
+
+import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.geospace.observations.RasterGrid;
+import org.integratedmodelling.geospace.values.ShapeValue;
+import org.integratedmodelling.thinklab.constraint.Constraint;
+import org.integratedmodelling.thinklab.constraint.Restriction;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.IConcept;
+import org.integratedmodelling.thinklab.interfaces.IInstance;
+import org.integratedmodelling.thinklab.interfaces.IKBox;
+import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.utils.Polylist;
+
+public class ObservationFactory {
+
+	/**
+	 * Return a constraint to select an observation of the passed observable
+	 * concept. 
+	 * 
+	 * @param what
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static Constraint queryObservation(String what) throws ThinklabException {
+		
+		Constraint c = new Constraint(CoreSciencePlugin.OBSERVATION);
+		c.restrict(new Restriction(CoreSciencePlugin.HAS_OBSERVABLE, new Constraint(what)));
+		return c;
+	}
+	
+	/**
+	 * Return a constraint to select an observation of the passed observable
+	 * concept in a given space. 
+	 * 
+	 * @param what
+	 * @param where a ShapeValue or other value that can be used to refer to space
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static Constraint queryObservation(String what, IValue where) throws ThinklabException {
+
+		Constraint c = new Constraint(CoreSciencePlugin.OBSERVATION);
+		
+		c.restrict(new Restriction(CoreSciencePlugin.HAS_OBSERVABLE, new Constraint(what)));
+
+		return c;
+	}
+	
+	/**
+	 * Return a constraint to select an observation of the passed observable
+	 * concept in a given space and time. 
+	 * 
+	 * @param what
+	 * @param where
+	 * @param when
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static Constraint queryObservation(String what, IValue where, IValue when) throws ThinklabException {
+
+		Constraint c = new Constraint(CoreSciencePlugin.OBSERVATION);
+		
+		c.restrict(new Restriction(CoreSciencePlugin.HAS_OBSERVABLE, new Constraint(what)));
+
+		return c;	
+	}
+	
+	/**
+	 * Return a constraint to select an observation of the passed observable
+	 * concept in a given space. Use the passed kbox's metadata instead of
+	 * constraining the context if the metadata contain any spatial knowledge.
+	 * 
+	 * @param kbox
+	 * @param what
+	 * @param where
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static Constraint queryObservation(IKBox kbox, String what, IValue where) throws ThinklabException {
+
+		Constraint c = new Constraint(CoreSciencePlugin.OBSERVATION);
+		
+		c.restrict(new Restriction(CoreSciencePlugin.HAS_OBSERVABLE, new Constraint(what)));
+
+		return c;
+	}
+	
+	/**
+	 * Return a constraint to select an observation of the passed observable
+	 * concept in a given space and time. Use the passed kbox's metadata instead of
+	 * constraining the context if the metadata contain any spatial and/or 
+	 * temporal knowledge.
+	 * 
+	 * @param kbox
+	 * @param what
+	 * @param where
+	 * @param when
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static Constraint queryObservation(IKBox kbox, String what, IValue where, IValue when) throws ThinklabException {
+	
+		Constraint c = new Constraint(CoreSciencePlugin.OBSERVATION);
+		
+		c.restrict(new Restriction(CoreSciencePlugin.HAS_OBSERVABLE, new Constraint(what)));
+
+		return c;
+	}
+	
+	
+	/**
+	 * Add the given spatial context to this observation and return its list
+	 * representation.
+	 * 
+	 * @param observation
+	 * @param where
+	 * @return
+	 */
+	public static Polylist setSpatialContext(Polylist observation, IValue where) {
+		return observation;
+	}
+	
+	/**
+	 * Add the given spatial context as a raster grid to this observation and return
+	 * its list representation.
+	 * 
+	 * @param observation
+	 * @param where
+	 * @param maxLinearResolution the finest linear resolution we want. The longest
+	 * 	bounding box dimension will have that many subdivisions; the shortest will
+	 *  have as many as necessary to keep the cells as close to square as possible.
+	 *  Maximum total cell number is guaranteed to be <= maxLinearResolution^2.
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static Polylist setSpatialContext(Polylist observation, 
+			ShapeValue where, int maxLinearResolution) throws ThinklabException {
+
+		return observation.appendElement(
+				Polylist.list(
+						CoreSciencePlugin.HAS_EXTENT,
+						RasterGrid.createRasterGrid(where, maxLinearResolution)));
+	}
+
+	/**
+	 * Add a temporal context to reflect the passed value.
+	 * 
+	 * @param observation
+	 * @param when
+	 * @return
+	 */
+	public static Polylist setTemporalContext(Polylist observation, IValue when) {
+		return observation;
+	}
+	
+	/**
+	 * Add a new instance of an observable. If null is passed, see if we can
+	 * define a meaningful observable automatically. 
+	 * 
+	 * @param observation
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist setObservable(Polylist observation, String observableClass) {
+		
+		return observation.appendElement(
+				Polylist.list(
+						CoreSciencePlugin.HAS_OBSERVABLE, 
+						Polylist.list(observableClass)));
+	}
+	
+	/**
+	 * Return an identification of the given observable
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist createIdentification(String idType, String observableClass) {
+		
+		return Polylist.list(idType, 
+				Polylist.list(
+						CoreSciencePlugin.HAS_OBSERVABLE,
+						Polylist.list(observableClass)));
+	}
+	
+	/**
+	 * Return an identification of the given type of the given observable
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist createIdentification(String idType, Polylist observable) {
+
+		return Polylist.list(idType, 
+				Polylist.list(
+						CoreSciencePlugin.HAS_OBSERVABLE,
+						observable));
+
+	}
+
+	/**
+	 * Return an identification of the given observable
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist createIdentification(String observableClass) {
+		
+		return Polylist.list(CoreSciencePlugin.IDENTIFICATION, 
+				Polylist.list(
+						CoreSciencePlugin.HAS_OBSERVABLE,
+						Polylist.list(observableClass)));
+	}
+	
+	/**
+	 * Return an identification of the given observable
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist createIdentification(Polylist observable) {
+		
+		return Polylist.list(CoreSciencePlugin.IDENTIFICATION, 
+				Polylist.list(
+						CoreSciencePlugin.HAS_OBSERVABLE,
+						observable));
+	}
+
+	/**
+	 * 
+	 * @param observation
+	 * @param dependent
+	 * @return
+	 */
+	public static Polylist addDependency(Polylist observation, Polylist dependent) {
+		
+		return observation.appendElement(
+				Polylist.list(CoreSciencePlugin.DEPENDS_ON, dependent));	
+	}
+	
+	/**
+	 * 
+	 * @param observation
+	 * @param dependent
+	 * @return
+	 */
+	public static Polylist addDependency(Polylist observation, IInstance dependent) {
+		
+		return observation.appendElement(
+				Polylist.list(CoreSciencePlugin.DEPENDS_ON, dependent));
+	}
+	
+	/**
+	 * 
+	 * @param observation
+	 * @param dependent
+	 * @return
+	 */
+	public static Polylist addContingency(Polylist observation, Polylist dependent) {
+		
+		return observation.appendElement(
+				Polylist.list(CoreSciencePlugin.HAS_CONTINGENCY, dependent));
+	}
+	
+	/**
+	 * 
+	 * @param observation
+	 * @param dependent
+	 * @return
+	 */
+	public static Polylist addContingency(Polylist observation, IInstance dependent) {
+		
+		return observation.appendElement(
+				Polylist.list(CoreSciencePlugin.HAS_CONTINGENCY, dependent));
+	}
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static Polylist createIdentification() {
+		
+		return Polylist.list(CoreSciencePlugin.IDENTIFICATION);		
+	}
+
+	/**
+	 * Return the concept that this observation is observing.
+	 * @param data
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static IConcept getObservableClass(IInstance data) throws ThinklabException {
+
+		return ((IObservation)(data.getImplementation())).getObservableClass();
+	}
+	
+	
+}
