@@ -43,8 +43,8 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.ILiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IUncertainty;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.value.TextValue;
@@ -60,7 +60,7 @@ import org.integratedmodelling.utils.Pair;
 public class ParsedDataSource extends TextValue implements IDataSource {
 	
 	ArrayList<String> data = new ArrayList<String>();
-	ILiteralValidator validator = null;
+	LiteralValidator validator = null;
 	
 	public ParsedDataSource(String s) throws ThinklabException {
 		super(s);

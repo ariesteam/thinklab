@@ -1,7 +1,10 @@
 <?xml version="1.0" ?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.jpf.demo.toolbox.core" version="0.0.4"
-	class="org.jpf.demo.toolbox.core.CorePlugin">
+<plugin
+   id="org.integratedmodelling.thinklab.core"
+   version="0.8.0"
+   provider-name="integratedmodelling.org"
+   class="org.integratedmodelling.thinklab.Thinklab">
 	<runtime>
 		<library id="core" path="classes/" type="code">
 			<doc caption="API documentation">
@@ -10,10 +13,42 @@
 			<export prefix="*" />
 		</library>
 	</runtime>
-	<extension-point id="Tool">
+	<extension-point id="KBoxHandler">
 		<parameter-def id="class" />
-		<parameter-def id="name" />
+		<parameter-def id="protocol" multiplicity="one-or-more" />
 		<parameter-def id="description" multiplicity="none-or-one" />
-		<parameter-def id="icon" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="KnowledgeLoader">
+		<parameter-def id="class" />
+		<parameter-def id="format" multiplicity="one-or-more" />
+		<parameter-def id="description" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="KnowledgeListener">
+		<parameter-def id="class" />
+		<parameter-def id="description" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="KnowledgeImporter">
+		<parameter-def id="class" />
+		<parameter-def id="format" multiplicity="one-or-more" />
+		<parameter-def id="description" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="Interpreter">
+		<parameter-def id="class" />
+		<parameter-def id="language-type" />
+		<parameter-def id="language-name" />
+		<parameter-def id="description" multiplicity="none-or-one" />
+		<parameter-def id="example" multiplicity="any" />
+	</extension-point>
+	<extension-point id="LiteralValidator">
+		<parameter-def id="class" />
+		<parameter-def id="semantic-type" />
+		<parameter-def id="description" multiplicity="none-or-one" />
+		<parameter-def id="example" multiplicity="any" />
+	</extension-point>
+	<extension-point id="InstanceConstructor">
+		<parameter-def id="class" />
+		<parameter-def id="semantic-type" />
+		<parameter-def id="description" multiplicity="none-or-one" />
+		<parameter-def id="example" multiplicity="any" />
 	</extension-point>
 </plugin>

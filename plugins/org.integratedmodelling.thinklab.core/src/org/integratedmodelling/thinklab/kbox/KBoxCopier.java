@@ -36,11 +36,10 @@ package org.integratedmodelling.thinklab.kbox;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.extensions.KnowledgeImporter;
 import org.integratedmodelling.thinklab.impl.Session;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeImporter;
 import org.integratedmodelling.thinklab.interfaces.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.utils.Polylist;
@@ -60,7 +59,7 @@ import org.integratedmodelling.utils.instancelist.InstanceList;
  * @author Ferdinando
  * 
  */
-public class KBoxCopier implements IKnowledgeImporter {
+public class KBoxCopier implements KnowledgeImporter {
 
 	private IKBox sourceKB;
 	private IKBox targetKB;
@@ -82,7 +81,7 @@ public class KBoxCopier implements IKnowledgeImporter {
 		// TODO Auto-generated method stub
 		return 
 			session == null ? 
-					KnowledgeManager.get().requireGlobalKBox(sourceURL) :
+					KBoxManager.get().requireGlobalKBox(sourceURL) :
 					session.requireKBox(sourceURL);	
 	}
 

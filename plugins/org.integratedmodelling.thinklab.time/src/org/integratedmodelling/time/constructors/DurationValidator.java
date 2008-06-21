@@ -34,8 +34,8 @@ package org.integratedmodelling.time.constructors;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.ILiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.time.values.DurationValue;
@@ -43,7 +43,7 @@ import org.integratedmodelling.time.values.DurationValue;
 /**
  * @author villa
  */
-public class DurationValidator implements ILiteralValidator {
+public class DurationValidator implements LiteralValidator {
 
     public IValue validate(String s, IConcept c, IOntology ontology) throws ThinklabValidationException {
         

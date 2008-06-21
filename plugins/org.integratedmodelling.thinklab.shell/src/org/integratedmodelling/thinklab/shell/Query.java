@@ -45,6 +45,7 @@ import org.integratedmodelling.thinklab.interfaces.IQuery;
 import org.integratedmodelling.thinklab.interfaces.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.Polylist;
 
 /**
@@ -60,7 +61,7 @@ public class Query extends CommandPattern {
 			String toEval = command.getArgumentAsString("query");
 			
 			// twisted logics, but I like it.
-			for (String kbox : km.getInstalledKboxes()) {
+			for (String kbox : KBoxManager.get().getInstalledKboxes()) {
 
 				IKBox theBox = null;
 				

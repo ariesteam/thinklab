@@ -33,11 +33,12 @@
  **/
 package org.integratedmodelling.thinklab.test.core;
 
+import junit.framework.TestCase;
+
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.test.SetupKM;
 
-public class ConstraintTest extends SetupKM {
+public class ConstraintTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();

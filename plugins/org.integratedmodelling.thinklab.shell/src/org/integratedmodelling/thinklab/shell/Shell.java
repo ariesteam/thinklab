@@ -1,5 +1,5 @@
 /**
- * CLInterface.java
+ * Shell.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -39,32 +39,25 @@ import java.io.InputStreamReader;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.impl.Session;
+import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeInterface;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-
+import org.java.plugin.boot.Application;
+import org.java.plugin.boot.ApplicationPlugin;
+import org.java.plugin.util.ExtendedProperties;
 
 /**
+ * A simple command-line driven knowledge manager. Just run and type 'help'.
  * @author Ferdinando Villa
- * @author Ioannis N. Athanasiadis
  */
-public class CLInterface implements IKnowledgeInterface {
-	
+public class Shell extends ApplicationPlugin {
+
 	public ISession session;
 	public ICommandOutputReceptor cout = new ShellCommandOutputReceptor();
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.ima.core.IKnowledgeInterface#RegisterCommand(org.integratedmodelling.ima.core.CommandDeclaration)
-	 */
-	public void registerCommand(CommandDeclaration declaration) throws ThinklabException {
-		// TODO Auto-generated method stub   
-	}
 	
 	public void printStatusMessage() {
 		
@@ -78,10 +71,43 @@ public class CLInterface implements IKnowledgeInterface {
 		System.out.println();
 	}
 	
-	/**
-	 * Collect commands from stdin and pass them to KM to execute.
-	 */
-	public void start() {
+    public static void main(String[] args) {
+        
+                
+        try {
+        	// TODO substitute args with preferences or command-line parameters
+            KnowledgeManager km = 
+            	new KnowledgeManager(new FileKnowledgeRepository(), new CLInterface(args));
+
+            // load it all
+            km.initialize();
+
+            new Help().install(km);
+            new List().install(km);
+            new Load().install(km);
+            new Clear().install(km);
+            new Is().install(km);
+            new Import().install(km);
+            new Eval().install(km);
+            new Hierarchy().install(km);
+            new Query().install(km);
+            new KExport().install(km);
+            new KCopy().install(km);
+            new KImport().install(km);
+            new CMap().install(km);
+            new Find().install(km);
+            
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+    }
+
+	@Override
+	protected Application initApplication(ExtendedProperties arg0, String[] arg1)
+			throws Exception {
+		// TODO initialize thinklab
 		
 		/* greet user */
 		printStatusMessage();
@@ -111,7 +137,7 @@ public class CLInterface implements IKnowledgeInterface {
 					if (cmd == null)
 						continue;
 					
-					IValue result = KnowledgeManager.get().submitCommand(cmd, cout, getCurrentSession());
+					IValue result = KnowledgeManager.get().submitCommand(cmd, cout, session);
                     if (result != null)
                         System.out.println(result.toString());
 				} catch (ThinklabException e) {
@@ -120,53 +146,19 @@ public class CLInterface implements IKnowledgeInterface {
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Constructor takes the command line arguments as parameters
-	 * @param args
-	 */
-	public CLInterface(String[] args) {
 		
+		return null;
 	}
 
-    public void importPreferences() {
-
-    }
-
-    public void savePreferences() {
-    }
-
-	public ISession createNewSession() throws ThinklabException {
-		return new Session();
-	}
-
-	public void notifySessionDeletion(ISession session) {
+	@Override
+	protected void doStart() throws Exception {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public ISession getCurrentSession() throws ThinklabException {
+	@Override
+	protected void doStop() throws Exception {
+		// TODO Auto-generated method stub
 		
-		if (session == null) {
-			try {
-				// create one session. This is sent back to us so it's a bit crooked. May deserve some
-				// more thought, but not a big deal for now.
-				session = KnowledgeManager.get().requestNewSession();
-			} catch (ThinklabNoKMException e1) {
-				e1.printStackTrace();
-			} catch (ThinklabException e1) {
-				e1.printStackTrace();
-			}
-		}
-		return session;
 	}
-    
-	
-	void clearSession(ISession session) {
-		
-		/* just delete it */
-		session = null;
-	}
-      // TODO save system preferences somewhere
 }

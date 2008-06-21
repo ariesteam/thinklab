@@ -47,11 +47,11 @@ import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabConstraintValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.impl.protege.Ontology.ReferenceRecord;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.IInstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.interfaces.IRelationship;
@@ -287,7 +287,7 @@ public class ThinklabOWLManager {
 		// check if this uri passed here before
 		if (!instanceImplementations.containsKey(instance.getURI())) {
 
-			IInstanceImplementationConstructor cm = KnowledgeManager.get().getInstanceConstructor(instance.getDirectType());
+			InstanceImplementationConstructor cm = KnowledgeManager.get().getInstanceConstructor(instance.getDirectType());
 			
 			if (cm != null) {
 				ret = cm.construct(instance);

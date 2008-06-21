@@ -38,15 +38,15 @@ import java.io.File;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class AgentPlugin.
  */
-public class DataBridgePlugin extends Plugin {
+public class DataBridgePlugin extends ThinklabPlugin {
 
 	/** The Constant ID. */
 	static final String ID = "DataBridge";

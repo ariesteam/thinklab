@@ -34,8 +34,8 @@ package org.integratedmodelling.groovy;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.ILiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
@@ -44,7 +44,7 @@ import org.integratedmodelling.thinklab.interfaces.IValue;
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  *
  */
-public class GroovyAlgorithmValidator implements ILiteralValidator {
+public class GroovyAlgorithmValidator implements LiteralValidator {
 
 
     public IValue validate(String s, IConcept c, IOntology ontology) throws ThinklabValidationException {

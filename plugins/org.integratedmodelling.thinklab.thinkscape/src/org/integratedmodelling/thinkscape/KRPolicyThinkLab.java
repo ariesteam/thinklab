@@ -25,12 +25,12 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeInterface;
+import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinkscape.interfaces.ICommandReceptor;
 
-public class KRPolicyThinkLab implements KRPolicy, IKnowledgeInterface,
+public class KRPolicyThinkLab implements KRPolicy, ISessionManager,
 		ICommandReceptor {
 
 	public static final int OWLRDF = 0;

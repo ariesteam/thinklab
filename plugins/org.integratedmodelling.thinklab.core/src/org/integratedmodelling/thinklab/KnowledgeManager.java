@@ -62,20 +62,20 @@ import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundExcept
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 import org.integratedmodelling.thinklab.exception.ThinklabUndefinedKBoxException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
+import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.impl.APIOnlyKnowledgeInterface;
 import org.integratedmodelling.thinklab.interfaces.IAction;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IInstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.IKBoxPlugin;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeInterface;
+import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeLoaderPlugin;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject;
-import org.integratedmodelling.thinklab.interfaces.ILiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.IPlugin;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
@@ -111,12 +111,12 @@ import org.integratedmodelling.utils.Polylist;
  *
  * @author Ferdinando Villa
  * @author Ioannis N. Athanasiadis
- * @see IKnowledgeInterface
+ * @see ISessionManager
  * @see IKnowledgeRepository
  * @see CommandDeclaration
  * @see Command
  */
-public class KnowledgeManager implements IKnowledgeProvider {
+public class KnowledgeManager implements KnowledgeProvider {
 
     /** default core ontology URL. It really is small - just some POD data types and a couple properties. */
 	private static final String DEFAULT_CORE_ONTOLOGY = 
@@ -160,8 +160,12 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	private SemanticType abstractPropertyID;
 	
 	protected IKnowledgeRepository knowledgeRepository;
-	protected IKnowledgeInterface  knowledgeInterface;
-	protected PluginRegistry       pluginRegistry;
+	protected ISessionManager  sessionManager = null;
+
+	/**
+	 * @deprecated use JPF directly
+	 */
+	protected PluginRegistry   pluginRegistry;
 	protected KBoxManager kboxManager;
 	
 	private Logger log = Logger.getLogger(this.getClass());
@@ -201,25 +205,15 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	 */
 	HashMap<String, String> cs2uri;
 
-    /*
-     * a registry of plugins that handle KBox creation.
-     * TODO move to kbox manager
-     */
-    HashMap<String, IKBoxPlugin> kboxPlugins;
-    
-    /*
-     * A registry of installed KBoxes, indexed by their URL.
-     * TODO move to kbox manager
-     */
-    HashMap<String, IKBox> kBoxes;
+
     /*
      * true when thinklab extended types have been initialized.
      */
 	private boolean typesInitialized = false;
 
-	private HashMap<String, IInstanceImplementationConstructor> instanceConstructors;
+	private HashMap<String, InstanceImplementationConstructor> instanceConstructors;
 
-	private HashMap<String, ILiteralValidator> literalValidators;
+	private HashMap<String, LiteralValidator> literalValidators;
 
 	private ArrayList<String> sessionListeners = new ArrayList<String>();
 
@@ -235,30 +229,8 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		return classTree;
 	}
 	
-	/*
-	 * TODO move to kbox manager
-	 */
-	private void installDefaultKboxes() throws ThinklabException {
-		
-		String kboxes = LocalConfiguration.getProperties().getProperty("thinklab.kbox.list");
-		
-		if (kboxes != null && !kboxes.trim().equals("")) {
-			
-			String[] kboxx = kboxes.split(",");
-			
-			for (String kbox : kboxx) {
-				/* just retrieve it, initializing what needs to */
-				IKBox kb = retrieveGlobalKBox(kbox);
-				if (kb == null) {
-					log.info("error: failed to open configured kbox " + kbox);
-				} else {
-					log.info("successfully opened kbox " + kbox);
-				}
-			}
-		}
-	}
-	
-	public KnowledgeManager(IKnowledgeRepository kr, IKnowledgeInterface ki) throws ThinklabException {
+
+	public KnowledgeManager(IKnowledgeRepository kr, ISessionManager ki) throws ThinklabException {
 
         /* set KM */
         KM = this;
@@ -271,16 +243,14 @@ public class KnowledgeManager implements IKnowledgeProvider {
         actions  = new HashMap<String, IAction>();
         uri2cs   = new HashMap<String, String>();
         cs2uri   = new HashMap<String, String>();
-        kboxPlugins = new HashMap<String, IKBoxPlugin>();
-        kBoxes = new HashMap<String, IKBox>();
 
-        instanceConstructors = new HashMap<String, IInstanceImplementationConstructor>();
-        literalValidators = new HashMap<String, ILiteralValidator>();
+        instanceConstructors = new HashMap<String, InstanceImplementationConstructor>();
+        literalValidators = new HashMap<String, LiteralValidator>();
         
         pluginRegistry = new PluginRegistry();
     
         knowledgeRepository = kr;
-		knowledgeInterface  = ki;
+		sessionManager  = ki;
 		
 		pluginClassPath = LocalConfiguration.getDataDirectory("plugins/load/classes");
 		pluginJarPath = LocalConfiguration.getDataDirectory("plugins/load/lib");
@@ -299,8 +269,8 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		return knowledgeRepository;
 	}
 	
-	public IKnowledgeInterface getKnowledgeInterface() {
-		return knowledgeInterface;
+	public ISessionManager getKnowledgeInterface() {
+		return sessionManager;
 	}
 	
 
@@ -578,16 +548,12 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		classTree = new KnowledgeTree();
 		
 		// open any kboxes installed in global properties
-		installDefaultKboxes();
+		kboxManager.initialize();
 		
 		// print the properties to the log.
 		log.info("Properties used: "+ LocalConfiguration.getProperties());
 	}
 
-	public void run() {
-		/* start the interface */
-		knowledgeInterface.start();
-	}
 	
 	public void shutdown() {
 	
@@ -595,9 +561,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		
 		/* flush knowledge repository */
         
-        /* flush preferences */
-        knowledgeInterface.savePreferences();
-		
 	}
     
 	public void printBanner() {
@@ -643,232 +606,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		return KM != null;
 	}
 	
-	/**
-	 * Register a plugin to handle a particular KBox protocol. Called upon initialization by
-	 * KBoxPlugins.
-	 * @param protocol
-	 * @param plugin
-	 */
-	public void registerKBoxProtocol(String protocol, IKBoxPlugin plugin) {
-		kboxPlugins.put(protocol, plugin);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#retrieveGlobalKBox(java.lang.String)
-	 */
-	public IKBox retrieveGlobalKBox(String kboxURI) throws ThinklabException {
-	    
-		/* get the KBox URL */
-		int dot = kboxURI.indexOf("#");
-		if (dot >= 0)
-			kboxURI = kboxURI.substring(0, dot);
-		
-		/* see if we have it already */
-		IKBox ret = null;
-		if (kboxURI.contains(":")) {
-			ret = kBoxes.get(kboxURI);
-		} else {
-			String uri = null;
-			/* see if we're using an unambiguous kbox name */
-			for (String kb : kBoxes.keySet()) {
-				if (MiscUtilities.getNameFromURL(kb).equals(kboxURI)) {
-					if (uri == null) {
-						uri = kb;
-					} else {
-						throw new ThinklabAmbiguousResultException(
-								"identifier " + kboxURI + " specifies more than one kbox");
-					}
-				}
-			}
-			if (uri != null)
-				ret = kBoxes.get(uri);
-		}
-		
-		if (ret == null && kboxURI.contains(":")) {
-			
-			if (MiscUtilities.getFileExtension(kboxURI).equals("owl")) {
-				return retrieveOntologyKBox(kboxURI);
-			} 
-			
-			String protocol;
-			
-			try {
-				protocol = new URI(kboxURI).getScheme();
 
-				if (protocol.equals("kbox")) {
-					
-					ret = retrieveGenericKBox(kboxURI);
-
-				} else {
-
-					IKBoxPlugin plu = kboxPlugins.get(protocol);
-					if (plu == null)
-						return null;
-					ret = plu.createKBoxFromURL(new URI(kboxURI));					
-				}
-
-				kBoxes.put(kboxURI.toString(), ret);
-
-			} catch (Exception e) {
-				throw new ThinklabStorageException(e);
-			}
-		}
-		
-		return ret;
-	}
-
-	/**
-	 * Create an ontology kbox from a .owl file.
-	 * TODO move to KBoxManager
-	 * @param kboxURI
-	 * @return
-	 * @throws ThinklabException 
-	 */
-	private IKBox retrieveOntologyKBox(String kboxURI) throws ThinklabException {
-
-		String kURI = 
-			MiscUtilities.changeProtocol(kboxURI, "owl");
-
-		IKBox ret = kBoxes.get(kURI); 
-		
-		if (ret == null) {
-
-			ret = new OntologyKBox(kboxURI);
-			kBoxes.put(kURI, ret);
-		}
-		
-		return ret;
-	
-	}
-
-	/**
-	 * Retrieve a KBox identified by generic protocol "kbox", which requires the URL to point
-	 * to a metadata (properties) document. This document is looked for first in the filesystem
-	 * by changing "kbox" to "file"; if such a file does not exist, "http" is tried. The document
-	 * must contain at least the "protocol" and "uri" properties. Any other property is considered
-	 * a parameter. All are passed to the kbox initialize() function, after the kbox is initialized
-	 * with the empty constructor.
-	 * 
-	 * TODO move to KBoxManager
-	 * 
-	 * @param kboxURI
-	 * @return
-	 */
-	private IKBox retrieveGenericKBox(String kboxURI) throws ThinklabException {
-	
-		IKBox ret = null;
-		URL sourceURL = null;
-		InputStream input = null;
-		
-		try {
-		
-			/* see if we have a metadata document in the corresponding file: url */
-			sourceURL = new URL("file" + kboxURI.substring(4));
-			
-			try {
-				input = sourceURL.openStream();
-			} catch (IOException e) {
-				input = null;
-			}
-			
-			if (input == null) {
-
-				/* try http: */
-				sourceURL =  new URL("http" + kboxURI.substring(4));
-
-				try {
-					input = sourceURL.openStream();
-				} catch (IOException e) {
-					input = null;
-				}				
-			}
-		
-		} catch (MalformedURLException e) {
-		}
-		
-		if (input == null) {
-			throw new ThinklabUndefinedKBoxException("url " + kboxURI + " does not point to a valid metadata document");
-		}
-
-		
-		/* we have a metadata document; extract protocol, url, and all parameters */
-		Properties properties = new Properties();
-		
-		try {
-			properties.load(input);
-		} catch (IOException e) {
-			throw new ThinklabIOException(e);
-		}
-		
-		String protocol = properties.getProperty(IKBox.KBOX_PROTOCOL_PROPERTY);
-		String dataUri = properties.getProperty(IKBox.KBOX_URI_PROPERTY);
-		String ontologies = properties.getProperty(IKBox.KBOX_ONTOLOGIES_PROPERTY);
-		String wrapperCls = properties.getProperty(IKBox.KBOX_WRAPPER_PROPERTY);
-		
-		log.info("opening kbox " + kboxURI + " with data uri " + dataUri);
-		
-		if (protocol == null || protocol.equals(""))
-			throw new ThinklabUndefinedKBoxException("kbox metadata for " + kboxURI + " don't specify a protocol");
-		
-		/* handle "internal" protocol for OWL kboxes separately */
-		if (protocol.equals("owl")) {
-			return new OntologyKBox(dataUri);
-		}
-		
-		/* load plugin for protocol; create kbox */
-		IKBoxPlugin plu = kboxPlugins.get(protocol);
-		if (plu == null)
-			throw new ThinklabUndefinedKBoxException("kbox protocol " 
-					+ protocol + " referenced in " +
-					kboxURI + " is undefined");
-		
-		/* 
-		 * see if kbox requires ontologies that are not loaded and import them as necessary. 
-		 * FIXME these should probably be considered temporary and loaded in the current session, not
-		 * imported. 
-		 */
-		if (ontologies != null && !ontologies.trim().equals("")) {
-			String[] onts = ontologies.split(",");
-			for (String ourl : onts) {
-				try {
-					this.knowledgeRepository.refreshOntology(new URL(ourl), null);
-				} catch (MalformedURLException e) {
-					throw new ThinklabIOException(e);
-				}
-			}
-		}
-		
-		ret = plu.createKBox(protocol, dataUri, properties);
-		
-		if (ret != null && wrapperCls != null) {
-			
-			try {
-				Class<?> cls = Class.forName(wrapperCls);
-				KBoxWrapper wrapper = (KBoxWrapper) cls.newInstance();
-				if (wrapper != null) {
-					wrapper.initialize(ret);
-					ret = wrapper;
-				}
-			} catch (Exception e) {
-				throw new ThinklabIOException("kbox wrapper error: " + e.getMessage());
-			}
-			
-		}
-		
-		return ret;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#requireGlobalKBox(java.lang.String)
-	 */
-	public IKBox requireGlobalKBox(String kboxURI) throws ThinklabException {
-		
-		IKBox ret = retrieveGlobalKBox(kboxURI);
-		if (ret == null)
-			throw new ThinklabResourceNotFoundException("URI " + kboxURI + " does not identify a valid kbox");
-		return ret;
-	}
-	
 	/**
 	 * Register a command for use in the Knowledge Manager. The modality of invocation and execution of commands depends on the 
 	 * particular IKnowledgeInterface installed. 
@@ -876,7 +614,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	 * @param action the Action executed in response to the command
 	 * @throws ThinklabException
 	 * @see CommandDeclaration
-	 * @see IKnowledgeInterface
+	 * @see ISessionManager
 	 */
 	public void registerCommand(CommandDeclaration command, IAction action) throws ThinklabException {
 	    
@@ -895,13 +633,13 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	}
 
 	
-	public void registerInstanceConstructor(String conceptID, IInstanceImplementationConstructor constructor) {
+	public void registerInstanceConstructor(String conceptID, InstanceImplementationConstructor constructor) {
 		
 		this.instanceConstructors.put(conceptID, constructor);
 		
 	}
 	
-	public void registerLiteralValidator(String conceptID, ILiteralValidator validator) {
+	public void registerLiteralValidator(String conceptID, LiteralValidator validator) {
 		
 		validator.declareType();
 		this.literalValidators.put(conceptID, validator);
@@ -1046,15 +784,15 @@ public class KnowledgeManager implements IKnowledgeProvider {
      * @return a concept manager or null
      * @throws ThinklabException if there is ambiguity
      */
-    public ILiteralValidator getValidator(IConcept type) throws ThinklabException {
+    public LiteralValidator getValidator(IConcept type) throws ThinklabException {
 
         class vmatch implements ConceptVisitor.ConceptMatcher {
 
-            private HashMap<String, ILiteralValidator> coll;
+            private HashMap<String, LiteralValidator> coll;
 
-            public ILiteralValidator ret = null;
+            public LiteralValidator ret = null;
             
-            public vmatch(HashMap<String, ILiteralValidator> c) {
+            public vmatch(HashMap<String, LiteralValidator> c) {
                 coll = c;
             }
             
@@ -1078,18 +816,18 @@ public class KnowledgeManager implements IKnowledgeProvider {
      * @return
      * @throws ThinklabException
      */
-    public IInstanceImplementationConstructor getInstanceConstructor(IConcept type) throws ThinklabException{
+    public InstanceImplementationConstructor getInstanceConstructor(IConcept type) throws ThinklabException{
 
         class vmatch implements ConceptVisitor.ConceptMatcher {
 
-            private HashMap<String, IInstanceImplementationConstructor> coll;
+            private HashMap<String, InstanceImplementationConstructor> coll;
             
-            public vmatch(HashMap<String, IInstanceImplementationConstructor> c) {
+            public vmatch(HashMap<String, InstanceImplementationConstructor> c) {
                 coll = c;
             }
             
             public boolean match(IConcept c) {
-                IInstanceImplementationConstructor cc = coll.get(c.getSemanticType().toString());
+                InstanceImplementationConstructor cc = coll.get(c.getSemanticType().toString());
                 return (cc != null);
             }    
         }
@@ -1110,8 +848,8 @@ public class KnowledgeManager implements IKnowledgeProvider {
          * There IS a problem if the ambiguity comes from a logical union - this should be checked, but
          * not now.
          */
-        IInstanceImplementationConstructor cms = 
-    	  new ConceptVisitor<IInstanceImplementationConstructor>().findMatchingInMapUpwards(instanceConstructors, new vmatch(instanceConstructors), type);
+        InstanceImplementationConstructor cms = 
+    	  new ConceptVisitor<InstanceImplementationConstructor>().findMatchingInMapUpwards(instanceConstructors, new vmatch(instanceConstructors), type);
         
         return cms;
     }
@@ -1378,7 +1116,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	 */
 	public IValue validateLiteral(IConcept c, String literal, IOntology ontology) throws ThinklabValidationException {
 		IValue ret = null;
-		ILiteralValidator cm = null;
+		LiteralValidator cm = null;
 		try {
 			cm = getValidator(c);
 		} catch (ThinklabException e) {
@@ -1398,7 +1136,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	 */
 	public ISession requestNewSession() throws ThinklabException {
 		
-		ISession session = knowledgeInterface.createNewSession();
+		ISession session = sessionManager.createNewSession();
 
 		for (String s : sessionListeners) {
 			
@@ -1427,7 +1165,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 			for (IThinklabSessionListener listener : listeners)
 				listener.sessionDeleted(session);
 		
-		knowledgeInterface.notifySessionDeletion(session);
+		sessionManager.notifySessionDeletion(session);
 	}
 
 	
@@ -1578,12 +1316,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		return pluginRegistry.getPlugins();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#getInstalledKboxes()
-	 */
-	public Collection<String> getInstalledKboxes() {
-		return kBoxes.keySet();
-	}
+
 
 	public IProperty getAdditionalRestrictionProperty() {
 		// TODO Auto-generated method stub

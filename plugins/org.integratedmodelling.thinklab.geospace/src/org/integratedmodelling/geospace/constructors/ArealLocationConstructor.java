@@ -34,12 +34,12 @@ package org.integratedmodelling.geospace.constructors;
 
 import org.integratedmodelling.geospace.observations.ArealLocation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.IInstanceImplementationConstructor;
 
 public class ArealLocationConstructor implements
-		IInstanceImplementationConstructor {
+		InstanceImplementationConstructor {
 
 	public IInstanceImplementation construct(IInstance instance)
 			throws ThinklabException {

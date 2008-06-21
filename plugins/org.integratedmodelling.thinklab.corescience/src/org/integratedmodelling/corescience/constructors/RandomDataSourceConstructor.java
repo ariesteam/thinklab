@@ -34,11 +34,11 @@ package org.integratedmodelling.corescience.constructors;
 
 import org.integratedmodelling.corescience.datasources.random.RandomDataSource;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.IInstanceImplementationConstructor;
 
-public class RandomDataSourceConstructor implements IInstanceImplementationConstructor {
+public class RandomDataSourceConstructor implements InstanceImplementationConstructor {
 
 	public IInstanceImplementation construct(IInstance i)
 			throws ThinklabException {

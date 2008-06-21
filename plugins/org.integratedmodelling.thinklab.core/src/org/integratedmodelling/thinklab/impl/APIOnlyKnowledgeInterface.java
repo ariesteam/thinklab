@@ -40,7 +40,7 @@ import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.interfaces.ICommandListener;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeInterface;
+import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
@@ -52,7 +52,7 @@ import org.integratedmodelling.thinklab.value.AlgorithmValue;
  * @author Ferdinando Villa
  * @author Ioannis N. Athanasiadis
  */
-public class APIOnlyKnowledgeInterface implements IKnowledgeInterface, ICommandListener {
+public class APIOnlyKnowledgeInterface implements ISessionManager, ICommandListener {
 
 	String[] clArguments;
 	ISession session;

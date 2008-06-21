@@ -39,6 +39,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabNotANumberException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 import org.integratedmodelling.thinklab.value.BooleanValue;
 import org.integratedmodelling.thinklab.value.NumberValue;
@@ -432,7 +433,7 @@ public interface IValue {
 	 * @return
 	 * @throws ThinklabException 
 	 */
-	public ILiteralValidator getReturnTypeValidator(String operator) throws ThinklabException;
+	public LiteralValidator getReturnTypeValidator(String operator) throws ThinklabException;
 
 	/**
 	 * 
@@ -441,7 +442,7 @@ public interface IValue {
 	 * @return
 	 * @throws ThinklabException 
 	 */
-	public ILiteralValidator getArgumentValidator(String operator, int argument) throws ThinklabException;
+	public LiteralValidator getArgumentValidator(String operator, int argument) throws ThinklabException;
 
 	/**
 	 * 

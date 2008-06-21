@@ -32,18 +32,33 @@
  **/
 package org.integratedmodelling.thinklab.kbox;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
+import org.integratedmodelling.thinklab.exception.ThinklabAmbiguousResultException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
+import org.integratedmodelling.thinklab.exception.ThinklabUndefinedKBoxException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
+import org.integratedmodelling.thinklab.interfaces.IKBox;
+import org.integratedmodelling.thinklab.interfaces.IKBoxPlugin;
 import org.integratedmodelling.thinklab.interfaces.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.plugin.PluginRegistry;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 
 /**
@@ -57,6 +72,18 @@ import org.integratedmodelling.utils.Polylist;
 public class KBoxManager {
 
 	private static final String METADATA_KBOX_PROPERTY = "kbox.metadata.schema";
+	
+    /*
+     * a registry of plugins that handle KBox creation.
+     * TODO move to kbox manager
+     */
+    HashMap<String, IKBoxPlugin> kboxPlugins;
+    
+    /*
+     * A registry of installed KBoxes, indexed by their URL.
+     * TODO move to kbox manager
+     */
+    HashMap<String, IKBox> kBoxes;
 	
 	/**
 	 * Properties starting with this prefix declare a metadata field in
@@ -89,6 +116,10 @@ public class KBoxManager {
 	 */
 	static public KBoxManager get() throws ThinklabNoKMException {
 		return KnowledgeManager.get().getKBoxManager();
+	}
+	
+	public void initialize() throws ThinklabException {
+		installDefaultKboxes();
 	}
 	
 	/*
@@ -177,6 +208,263 @@ public class KBoxManager {
 		}
 		
 		return ret;
+	}
+	
+	/*
+	 *
+	 */
+	private void installDefaultKboxes() throws ThinklabException {
+		
+		String kboxes = LocalConfiguration.getProperties().getProperty("thinklab.kbox.list");
+		
+		if (kboxes != null && !kboxes.trim().equals("")) {
+			
+			String[] kboxx = kboxes.split(",");
+			
+			for (String kbox : kboxx) {
+				/* just retrieve it, initializing what needs to */
+				IKBox kb = retrieveGlobalKBox(kbox);
+				if (kb == null) {
+					log.info("error: failed to open configured kbox " + kbox);
+				} else {
+					log.info("successfully opened kbox " + kbox);
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * Register a plugin to handle a particular KBox protocol. Called upon initialization by
+	 * KBoxPlugins.
+	 * @param protocol
+	 * @param plugin
+	 */
+	public void registerKBoxProtocol(String protocol, IKBoxPlugin plugin) {
+		kboxPlugins.put(protocol, plugin);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#retrieveGlobalKBox(java.lang.String)
+	 */
+	public IKBox retrieveGlobalKBox(String kboxURI) throws ThinklabException {
+	    
+		/* get the KBox URL */
+		int dot = kboxURI.indexOf("#");
+		if (dot >= 0)
+			kboxURI = kboxURI.substring(0, dot);
+		
+		/* see if we have it already */
+		IKBox ret = null;
+		if (kboxURI.contains(":")) {
+			ret = kBoxes.get(kboxURI);
+		} else {
+			String uri = null;
+			/* see if we're using an unambiguous kbox name */
+			for (String kb : kBoxes.keySet()) {
+				if (MiscUtilities.getNameFromURL(kb).equals(kboxURI)) {
+					if (uri == null) {
+						uri = kb;
+					} else {
+						throw new ThinklabAmbiguousResultException(
+								"identifier " + kboxURI + " specifies more than one kbox");
+					}
+				}
+			}
+			if (uri != null)
+				ret = kBoxes.get(uri);
+		}
+		
+		if (ret == null && kboxURI.contains(":")) {
+			
+			if (MiscUtilities.getFileExtension(kboxURI).equals("owl")) {
+				return retrieveOntologyKBox(kboxURI);
+			} 
+			
+			String protocol;
+			
+			try {
+				protocol = new URI(kboxURI).getScheme();
+
+				if (protocol.equals("kbox")) {
+					
+					ret = retrieveGenericKBox(kboxURI);
+
+				} else {
+
+					IKBoxPlugin plu = kboxPlugins.get(protocol);
+					if (plu == null)
+						return null;
+					ret = plu.createKBoxFromURL(new URI(kboxURI));					
+				}
+
+				kBoxes.put(kboxURI.toString(), ret);
+
+			} catch (Exception e) {
+				throw new ThinklabStorageException(e);
+			}
+		}
+		
+		return ret;
+	}
+
+	/**
+	 * Create an ontology kbox from a .owl file.
+	 * TODO move to KBoxManager
+	 * @param kboxURI
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	private IKBox retrieveOntologyKBox(String kboxURI) throws ThinklabException {
+
+		String kURI = 
+			MiscUtilities.changeProtocol(kboxURI, "owl");
+
+		IKBox ret = kBoxes.get(kURI); 
+		
+		if (ret == null) {
+
+			ret = new OntologyKBox(kboxURI);
+			kBoxes.put(kURI, ret);
+		}
+		
+		return ret;
+	
+	}
+
+	/**
+	 * Retrieve a KBox identified by generic protocol "kbox", which requires the URL to point
+	 * to a metadata (properties) document. This document is looked for first in the filesystem
+	 * by changing "kbox" to "file"; if such a file does not exist, "http" is tried. The document
+	 * must contain at least the "protocol" and "uri" properties. Any other property is considered
+	 * a parameter. All are passed to the kbox initialize() function, after the kbox is initialized
+	 * with the empty constructor.
+	 * 
+	 * TODO move to KBoxManager
+	 * 
+	 * @param kboxURI
+	 * @return
+	 */
+	private IKBox retrieveGenericKBox(String kboxURI) throws ThinklabException {
+	
+		IKBox ret = null;
+		URL sourceURL = null;
+		InputStream input = null;
+		
+		try {
+		
+			/* see if we have a metadata document in the corresponding file: url */
+			sourceURL = new URL("file" + kboxURI.substring(4));
+			
+			try {
+				input = sourceURL.openStream();
+			} catch (IOException e) {
+				input = null;
+			}
+			
+			if (input == null) {
+
+				/* try http: */
+				sourceURL =  new URL("http" + kboxURI.substring(4));
+
+				try {
+					input = sourceURL.openStream();
+				} catch (IOException e) {
+					input = null;
+				}				
+			}
+		
+		} catch (MalformedURLException e) {
+		}
+		
+		if (input == null) {
+			throw new ThinklabUndefinedKBoxException("url " + kboxURI + " does not point to a valid metadata document");
+		}
+
+		
+		/* we have a metadata document; extract protocol, url, and all parameters */
+		Properties properties = new Properties();
+		
+		try {
+			properties.load(input);
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}
+		
+		String protocol = properties.getProperty(IKBox.KBOX_PROTOCOL_PROPERTY);
+		String dataUri = properties.getProperty(IKBox.KBOX_URI_PROPERTY);
+		String ontologies = properties.getProperty(IKBox.KBOX_ONTOLOGIES_PROPERTY);
+		String wrapperCls = properties.getProperty(IKBox.KBOX_WRAPPER_PROPERTY);
+		
+		log.info("opening kbox " + kboxURI + " with data uri " + dataUri);
+		
+		if (protocol == null || protocol.equals(""))
+			throw new ThinklabUndefinedKBoxException("kbox metadata for " + kboxURI + " don't specify a protocol");
+		
+		/* handle "internal" protocol for OWL kboxes separately */
+		if (protocol.equals("owl")) {
+			return new OntologyKBox(dataUri);
+		}
+		
+		/* load plugin for protocol; create kbox */
+		IKBoxPlugin plu = kboxPlugins.get(protocol);
+		if (plu == null)
+			throw new ThinklabUndefinedKBoxException("kbox protocol " 
+					+ protocol + " referenced in " +
+					kboxURI + " is undefined");
+		
+		/* 
+		 * see if kbox requires ontologies that are not loaded and import them as necessary. 
+		 * FIXME these should probably be considered temporary and loaded in the current session, not
+		 * imported. 
+		 */
+		if (ontologies != null && !ontologies.trim().equals("")) {
+			String[] onts = ontologies.split(",");
+			for (String ourl : onts) {
+				try {
+					KnowledgeManager.get().getKnowledgeRepository().refreshOntology(new URL(ourl), null);
+				} catch (MalformedURLException e) {
+					throw new ThinklabIOException(e);
+				}
+			}
+		}
+		
+		ret = plu.createKBox(protocol, dataUri, properties);
+		
+		if (ret != null && wrapperCls != null) {
+			
+			try {
+				Class<?> cls = Class.forName(wrapperCls);
+				KBoxWrapper wrapper = (KBoxWrapper) cls.newInstance();
+				if (wrapper != null) {
+					wrapper.initialize(ret);
+					ret = wrapper;
+				}
+			} catch (Exception e) {
+				throw new ThinklabIOException("kbox wrapper error: " + e.getMessage());
+			}
+			
+		}
+		
+		return ret;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#requireGlobalKBox(java.lang.String)
+	 */
+	public IKBox requireGlobalKBox(String kboxURI) throws ThinklabException {
+		
+		IKBox ret = retrieveGlobalKBox(kboxURI);
+		if (ret == null)
+			throw new ThinklabResourceNotFoundException("URI " + kboxURI + " does not identify a valid kbox");
+		return ret;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#getInstalledKboxes()
+	 */
+	public Collection<String> getInstalledKboxes() {
+		return kBoxes.keySet();
 	}
 	
 }

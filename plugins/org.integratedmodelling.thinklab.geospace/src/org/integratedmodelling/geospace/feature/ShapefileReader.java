@@ -54,8 +54,8 @@ import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.ILiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.value.BooleanValue;
 import org.integratedmodelling.thinklab.value.NumberValue;
@@ -257,7 +257,7 @@ public class ShapefileReader {
 				tValue = avalue.toString();
 			
 			/* if we have a validator, use it */
-			ILiteralValidator validator = KnowledgeManager.get().getValidator(type);
+			LiteralValidator validator = KnowledgeManager.get().getValidator(type);
 			
 			if (validator != null) {
 				ret = validator.validate(tValue, type, null);

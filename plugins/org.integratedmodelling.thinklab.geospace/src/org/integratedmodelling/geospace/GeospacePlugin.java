@@ -63,20 +63,21 @@ import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.IKBoxPlugin;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeLoaderPlugin;
 import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Node;
 
-public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoaderPlugin {
+public class GeospacePlugin extends ThinklabPlugin implements IKBoxPlugin, IKnowledgeLoaderPlugin {
 
 	private static IConcept shapeType;
 	private static IConcept pointType;
@@ -177,6 +178,9 @@ public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoa
 			throw new ThinklabPluginException(e);
 		}
 		
+		/*
+		 * TODO all these plus the kbox must become extension points and get out of here
+		 */
 		km.registerLiteralValidator("geospace:SpatialRecord", 
 				new GeospaceValidator());
 		km.registerLiteralValidator("geospace:ArealLocation", 
@@ -192,7 +196,7 @@ public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoa
 		km.registerInstanceConstructor("geospace:ExternalRasterDataSource",
 				new RasterDatasourceConstructor());
 
-		km.registerKBoxProtocol("shapefile", this);
+		KBoxManager.get().registerKBoxProtocol("shapefile", this);
 		
 		/*
 		 * create preferred CRS if one is specified. Highly adviceable to set one if hybrid data

@@ -47,7 +47,7 @@ import org.integratedmodelling.thinklab.impl.Session;
  * 
  * @author Ferdinando Villa
  * @see Session
- *
+ * @deprecated use extension point
  */
 public interface IKnowledgeLoaderPlugin extends IPlugin {
 	

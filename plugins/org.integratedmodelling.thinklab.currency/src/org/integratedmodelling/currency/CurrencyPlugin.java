@@ -44,12 +44,12 @@ import org.integratedmodelling.sql.hsql.HSQLMemServer;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.value.BooleanValue;
 import org.w3c.dom.Node;
 
-public class CurrencyPlugin extends Plugin  {
+public class CurrencyPlugin extends ThinklabPlugin  {
 
 	CpiConversionFactory convFactory = null;
 	

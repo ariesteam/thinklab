@@ -1,5 +1,5 @@
 /**
- * IKnowledgeImporter.java
+ * ILiteralValidator.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,25 +31,32 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.interfaces;
+package org.integratedmodelling.thinklab.extensions;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.IConcept;
+import org.integratedmodelling.thinklab.interfaces.IOntology;
+import org.integratedmodelling.thinklab.interfaces.IValue;
 
-/**
- * Objects of this kind will import knowledge from a source to a destination. Both are identified
- * by their URL, and the destination is typically a kbox, but this is not mandatory; the implementations
- * should be able to tell whether the destination is appropriate.
- * 
- * @author Ferdinando
- *
- */
-public interface IKnowledgeImporter {
+public interface LiteralValidator {
+
+	/**
+	 * Validate a literal string to a value of the passed concept. The third parameter is the ontology
+	 * that this is ending up into, which is only used if the validation produces an IInstance and
+	 * the resulting IValue is an ObjectReferenceValue. 
+	 * 
+	 * @param literalValue
+	 * @param concept
+	 * @param ontology
+	 * @return
+	 * @throws ThinklabValidationException
+	 */
+	public abstract IValue validate(String literalValue, IConcept concept, IOntology ontology) throws ThinklabValidationException;
 	
-	public abstract Polylist exportKnowledge(String sourceURL, ISession session) throws ThinklabException;
-
-	public abstract void importKnowledge(String targetURL, Polylist knowledge) throws ThinklabException;
+	/**
+	 * This one is called once when the type is installed. It is the place to put operator declarations, or any
+	 * one-time initialization actions that depend on the KM being initialized.
+	 */
+	public abstract void declareType();
 	
-	public abstract void transferKnowledge(String sourceURL, String targetURL, ISession session) throws ThinklabException;
-
 }

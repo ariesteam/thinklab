@@ -52,16 +52,16 @@ import org.integratedmodelling.corescience.interfaces.IWorkflowConstructor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
+import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.IKnowledge;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 
 /**
  * @author Ferdinando Villa
  *
  */
-public class CoreSciencePlugin extends Plugin {
+public class CoreSciencePlugin extends ThinklabPlugin {
 	
 	/* log4j logger used for this class. Can be used by other classes through logger()  */
 	private static  Logger log = Logger.getLogger(CoreSciencePlugin.class);

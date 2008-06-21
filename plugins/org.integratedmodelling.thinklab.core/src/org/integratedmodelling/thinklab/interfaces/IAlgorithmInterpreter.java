@@ -34,6 +34,7 @@
 package org.integratedmodelling.thinklab.interfaces;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
 import org.integratedmodelling.thinklab.interpreter.AlgorithmInterpreterFactory;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 
@@ -47,7 +48,7 @@ import org.integratedmodelling.thinklab.value.AlgorithmValue;
  * interpreter. 
  * @see AlgorithmInterpreterFactory
  * @author Ferdinando Villa
- *
+ * @deprecated use extension points
  */
 public interface IAlgorithmInterpreter {
 	
@@ -57,7 +58,7 @@ public interface IAlgorithmInterpreter {
 		
 	}
 
-	public void initialize(IKnowledgeProvider km);
+	public void initialize(KnowledgeProvider km);
 	
 	public IValue execute(AlgorithmValue code, IContext context) throws ThinklabException;
 

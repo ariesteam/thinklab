@@ -37,9 +37,9 @@ import org.integratedmodelling.geospace.GeospacePlugin;
 import org.integratedmodelling.geospace.values.ShapeValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.ILiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
@@ -52,7 +52,7 @@ import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
  * @author Ferdinando Villa
 
  */
-public class ArealLocationValidator implements ILiteralValidator {
+public class ArealLocationValidator implements LiteralValidator {
 	
 	public IValue validate(String literalValue, IConcept concept, IOntology ontology) 
 		throws ThinklabValidationException {

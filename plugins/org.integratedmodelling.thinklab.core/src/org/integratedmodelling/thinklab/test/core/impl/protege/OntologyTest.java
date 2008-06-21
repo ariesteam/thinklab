@@ -36,17 +36,17 @@ package org.integratedmodelling.thinklab.test.core.impl.protege;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
 import org.integratedmodelling.thinklab.impl.APIOnlyKnowledgeInterface;
 import org.integratedmodelling.thinklab.impl.protege.Concept;
 import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.impl.protege.Ontology;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 
 public class OntologyTest extends AllTestsSetup {
 	FileKnowledgeRepository kr = null;	
-	IKnowledgeProvider km = null;
+	KnowledgeProvider km = null;
 	Ontology onto = null;
 	protected void setUp() throws Exception {
 		super.setUp();

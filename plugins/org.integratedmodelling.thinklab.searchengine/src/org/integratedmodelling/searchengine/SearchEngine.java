@@ -80,6 +80,7 @@ import org.integratedmodelling.thinklab.interfaces.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.value.BooleanValue;
 import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
 import org.integratedmodelling.utils.CopyURL;
@@ -314,7 +315,7 @@ public final class SearchEngine implements IQueriable {
     		for (String kbox : kboxx) {
     			
     			/* just retrieve it, initializing what needs to */
-    			IKBox kb = KnowledgeManager.get().retrieveGlobalKBox(kbox);
+    			IKBox kb = KBoxManager.get().retrieveGlobalKBox(kbox);
     			if (kb == null) {
     				throw new ThinklabIOException("searchengine: " + id + ": failed to open kbox " + kbox);
     			} 

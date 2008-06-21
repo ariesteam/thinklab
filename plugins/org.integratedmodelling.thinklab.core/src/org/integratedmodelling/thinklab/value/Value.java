@@ -41,9 +41,9 @@ import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperation
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.ILiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.interpreter.AlgorithmInterpreterFactory;
@@ -88,7 +88,7 @@ public class Value implements IValue {
 		
 		String[] conceptID;
 		IConcept[] concept;
-		ILiteralValidator[] validator;
+		LiteralValidator[] validator;
 		
 		OpDeclaration(String cRet, String[] cId) {
 
@@ -96,7 +96,7 @@ public class Value implements IValue {
 			
 			conceptID = new String[cl+ 1];
 			concept = new IConcept[cl + 1];
-			validator = new ILiteralValidator[cl + 1];
+			validator = new LiteralValidator[cl + 1];
 			
 			conceptID[0] = cRet;
 			
@@ -123,7 +123,7 @@ public class Value implements IValue {
 			return concept[n+1];
 		}
 		
-		ILiteralValidator getOperandValidator(int n) throws ThinklabException {
+		LiteralValidator getOperandValidator(int n) throws ThinklabException {
 
 			if (concept[n+1] == null)
 				initialize(n+1);
@@ -139,7 +139,7 @@ public class Value implements IValue {
 			return concept[0];
 		}
 		
-		ILiteralValidator getReturnValidator() throws ThinklabException {
+		LiteralValidator getReturnValidator() throws ThinklabException {
 
 			if (concept[0] == null)
 				initialize(0);
@@ -217,11 +217,11 @@ public class Value implements IValue {
 		return getOpDeclaration(operator).getReturnType();
 	}
 	
-	public ILiteralValidator getReturnTypeValidator(String operator) throws ThinklabException {
+	public LiteralValidator getReturnTypeValidator(String operator) throws ThinklabException {
 		return getOpDeclaration(operator).getReturnValidator();
 	}
 
-	public ILiteralValidator getArgumentValidator(String operator, int argument) throws ThinklabException {
+	public LiteralValidator getArgumentValidator(String operator, int argument) throws ThinklabException {
 		return getOpDeclaration(operator).getOperandValidator(argument);	
 	}
 

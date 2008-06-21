@@ -50,10 +50,10 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.ILiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.IUncertainty;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -91,7 +91,7 @@ public class CSVDataSource implements org.integratedmodelling.corescience.interf
 	boolean isExcel = false;
 	ArrayList<org.integratedmodelling.corescience.interfaces.IDataFilter> filters = new ArrayList<org.integratedmodelling.corescience.interfaces.IDataFilter>();
 	ArrayList<String> data = new ArrayList<String>();
-	ILiteralValidator validator = null;
+	LiteralValidator validator = null;
 	int nrows = -1;
 	int ncols = -1;
 		

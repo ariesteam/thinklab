@@ -99,7 +99,7 @@ import org.xml.sax.SAXException;
  * For a plugin to actually do something once it is resident in memory,
  * it must contain a class whose name ends with <code>Plugin</code>.
  * This class, known as the <i>plugin core class</i> must extend
- * {@link Plugin} and define a few required properties, otherwise it is
+ * {@link ThinklabPlugin} and define a few required properties, otherwise it is
  * ignored.
  *
  * @author Ferdinando Villa
@@ -153,7 +153,7 @@ public class PluginJAR
 			plugin.notifyConfigurationNode(n);
 	}
 
-	public void notifyResources(Plugin p) throws ThinklabException {
+	public void notifyResources(ThinklabPlugin p) throws ThinklabException {
 		for (ZipEntry z : resources)
 			p.addResource(z.getName(), z.getTime(), z.getSize());
 	}

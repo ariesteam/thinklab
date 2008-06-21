@@ -34,15 +34,15 @@ package org.integratedmodelling.geospace.constructors;
 
 import org.integratedmodelling.geospace.values.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.ILiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
 /**
  * @author villa
  */
-public class GeospaceValidator implements ILiteralValidator {
+public class GeospaceValidator implements LiteralValidator {
 
 	public IValue validate(String s, IConcept c, IOntology ontology) throws ThinklabValidationException {
 			return new ShapeValue(s, c);

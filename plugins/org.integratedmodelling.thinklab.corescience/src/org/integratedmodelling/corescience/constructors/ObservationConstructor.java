@@ -34,11 +34,11 @@ package org.integratedmodelling.corescience.constructors;
 
 import org.integratedmodelling.corescience.observation.Observation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.IInstanceImplementationConstructor;
 
-public class ObservationConstructor implements IInstanceImplementationConstructor {
+public class ObservationConstructor implements InstanceImplementationConstructor {
 
 	public IInstanceImplementation construct(IInstance i)
 			throws ThinklabException {

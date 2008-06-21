@@ -35,9 +35,9 @@ package org.integratedmodelling.time.constructors;
 import org.integratedmodelling.corescience.CoreSciencePlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.ILiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
@@ -53,7 +53,7 @@ import org.integratedmodelling.time.values.TimeValue;
  * @author Ferdinando Villa
  * @see org.integratedmodelling.time.values.TimeValue;
  */
-public class TimeRecordValidator implements ILiteralValidator {
+public class TimeRecordValidator implements LiteralValidator {
 
 	public IValue validate(String literalValue, IConcept concept, IOntology ontology) 
 		throws ThinklabValidationException {

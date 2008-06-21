@@ -41,11 +41,12 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
+import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.IKBoxPlugin;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
-import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 
 /**
@@ -60,7 +61,7 @@ import org.w3c.dom.Node;
  * @version 0.2
  * @since Feb 5, 2007
  */
-public class PersistencePlugin extends Plugin implements IKBoxPlugin{
+public class PersistencePlugin extends ThinklabPlugin implements IKBoxPlugin{
 	public static String pluginname = "Persistence"; //Just in case we rename it
 	
 	public static IProperty ABSTRACT_PERSISTENCY_PROPERTY;
@@ -78,7 +79,10 @@ public class PersistencePlugin extends Plugin implements IKBoxPlugin{
 
 	@Override
 	public void load(KnowledgeManager km, File baseReadPath, File baseWritePath) throws ThinklabPluginException {
-		km.registerKBoxProtocol("hbm", this);
+		/*
+		 * TODO substitute with extension point declaration
+		 */
+		KBoxManager.get().registerKBoxProtocol("hbm", this);
 	}
 
 	@Override

@@ -30,7 +30,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.interfaces;
+package org.integratedmodelling.thinklab.extensions;
 
 import java.util.Collection;
 
@@ -39,6 +39,14 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.IConcept;
+import org.integratedmodelling.thinklab.interfaces.IInstance;
+import org.integratedmodelling.thinklab.interfaces.IKBox;
+import org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.interfaces.IOntology;
+import org.integratedmodelling.thinklab.interfaces.IProperty;
+import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.interfaces.IValue;
 
 /**
  * Tentative interface for the knowledge read/check operations of the knowledge manager.
@@ -47,7 +55,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
  * @author Ferdinando Villa
  *
  */
-public interface IKnowledgeProvider {
+public interface KnowledgeProvider {
 
 	public abstract IConcept getRootConcept();
 
@@ -72,37 +80,6 @@ public interface IKnowledgeProvider {
 
 	public abstract String getConceptSpaceFromURI(String cs)
 			throws ThinklabResourceNotFoundException;
-
-	/**
-	 * Request the IKBox that should handle the passed URL. The URL fragment is ignored if
-	 * present. The KBox is created if not present. After this, the KBox is cached in the knowledge manager, and should be released
-	 * after use if it's not needed anymore.
-	 * 
-	 * @since 2007-08-15 can be passed the base name of the kbox (last token without extension in
-	 * URL); will generate an exception if more than one kbox matches the name.
-	 * 
-	 * TODO move to KBoxManager
-	 * 
-	 * @param kboxURI
-	 * @throws ThinklabException
-	 * @see IKBox
-	 */
-	public abstract IKBox retrieveGlobalKBox(String kboxURI)
-			throws ThinklabException;
-
-	/**
-	 * Request the IKBox that should handle the passed URL. The URL fragment is ignored if
-	 * present. The KBox is created if not present. After this, the KBox is cached in the knowledge manager, and should be released
-	 * after use if it's not needed anymore.
-	 * 
-	 * TODO move to KBoxManager
-	 * 
-	 * @param kboxURI
-	 * @throws ThinklabException
-	 * @see IKBox
-	 */
-	public abstract IKBox requireGlobalKBox(String kboxURI)
-			throws ThinklabException;
 
 	/**
 	 * Return concept from string representing semantic type. Concept must exist.
@@ -204,9 +181,7 @@ public interface IKnowledgeProvider {
 	 */
 	public abstract IValue validateLiteral(IConcept c, String literal,
 			IOntology ontology) throws ThinklabValidationException;
-
-	public abstract Collection<String> getInstalledKboxes();
-
+	
 	public abstract void blacklistProperty(String semType);
 
 	public abstract void blacklistConcept(String semType);

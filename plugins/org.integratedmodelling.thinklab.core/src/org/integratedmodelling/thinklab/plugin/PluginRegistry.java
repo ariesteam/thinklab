@@ -62,7 +62,7 @@ import org.integratedmodelling.utils.TopologicalSorter;
  * @author Ferdinando Villa
  * @author Ioannis N. Athanasiadis
  * @see IPlugin
- * @see Plugin
+ * @see ThinklabPlugin
  */
 public class PluginRegistry {
 
@@ -233,11 +233,11 @@ public class PluginRegistry {
 
 			log.info("Processing plugin = " + plug.getFile());
 
-			Plugin plugin = null;
+			ThinklabPlugin plugin = null;
 			try {
 				String classname = plug.getMainClassName();
 				Class<?> clazz = getClassLoader().loadClass(classname);
-				plugin = (Plugin)clazz.newInstance();
+				plugin = (ThinklabPlugin)clazz.newInstance();
 			} catch (Exception e) {
 				throw new ThinklabPluginException(e);
 			}
@@ -275,7 +275,7 @@ public class PluginRegistry {
 				plugin.load(KnowledgeManager.get(), cd, sd);
 
 				/* have JAR tell us what else is there */
-				plug.notifyResources((Plugin) plugin);
+				plug.notifyResources((ThinklabPlugin) plugin);
 				
 				/* and notify any mysterious spec in plugin.xml */
 				plug.notifyConfigurationNodes(plugin);

@@ -79,17 +79,17 @@ import org.integratedmodelling.thinklab.interfaces.IPlugin;
  * @author Ferdinando Villa (rewrite for JIMT)
  * @author Ioannis N. Athanasiadis (contributions to ThinkLab version) 
  */
-public abstract class Plugin implements IPlugin
+public abstract class ThinklabPlugin implements IPlugin
 {
 	PluginJAR jar;
 	HashMap<String, URL> resources = new HashMap<String, URL>();
 	static URL uninitializedResource;
 	
-	private static final  Logger log = Logger.getLogger(Plugin.class);
+	private static final  Logger log = Logger.getLogger(ThinklabPlugin.class);
 	
 	Properties properties = new Properties();
 	
-	public Plugin() {
+	public ThinklabPlugin() {
 		if (uninitializedResource == null)
 			try {
 				uninitializedResource = new URL("http://uninitialized/resource");

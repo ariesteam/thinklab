@@ -33,13 +33,13 @@
 package org.integratedmodelling.time.constructors;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.IInstanceImplementationConstructor;
 import org.integratedmodelling.time.observations.TimeRecord;
 
 public class TimeRecordConstructor implements
-		IInstanceImplementationConstructor {
+		InstanceImplementationConstructor {
 
 	public IInstanceImplementation construct(IInstance instance)
 			throws ThinklabException {

@@ -41,7 +41,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
  * @author Ferdinando Villa
  * @author Ioannis N. Athanasiadis
  */
-public interface IKnowledgeInterface {
+public interface ISessionManager {
 
 	/**
 	 * TODO

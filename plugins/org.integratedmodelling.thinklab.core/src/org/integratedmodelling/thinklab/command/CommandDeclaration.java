@@ -48,9 +48,9 @@ import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandExcept
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.ILiteralValidator;
 
 /**
  * Defines the interface for a command. A CommandDeclaration passed to the KnowledgeManager declares a command that
@@ -135,7 +135,7 @@ public class CommandDeclaration {
 		for (Map.Entry<String, String> e :   command.args.entrySet()) {
             
             argDescriptor ad = findArgument(e.getKey());
-            ILiteralValidator validator = null;
+            LiteralValidator validator = null;
             boolean ok = true;
             
             try {
@@ -176,7 +176,7 @@ public class CommandDeclaration {
             if (ad.type == null)
             	continue;
             
-            ILiteralValidator validator = null;
+            LiteralValidator validator = null;
             boolean ok = true;
             
             try {

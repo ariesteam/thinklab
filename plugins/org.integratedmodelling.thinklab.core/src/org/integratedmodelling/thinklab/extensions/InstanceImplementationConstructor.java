@@ -1,5 +1,5 @@
 /**
- * ILiteralValidator.java
+ * IInstanceImplementationConstructor.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,29 +31,13 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.interfaces;
+package org.integratedmodelling.thinklab.extensions;
 
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.IInstance;
+import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
 
-public interface ILiteralValidator {
+public interface InstanceImplementationConstructor {
 
-	/**
-	 * Validate a literal string to a value of the passed concept. The third parameter is the ontology
-	 * that this is ending up into, which is only used if the validation produces an IInstance and
-	 * the resulting IValue is an ObjectReferenceValue. 
-	 * 
-	 * @param literalValue
-	 * @param concept
-	 * @param ontology
-	 * @return
-	 * @throws ThinklabValidationException
-	 */
-	public abstract IValue validate(String literalValue, IConcept concept, IOntology ontology) throws ThinklabValidationException;
-	
-	/**
-	 * This one is called once when the type is installed. It is the place to put operator declarations, or any
-	 * one-time initialization actions that depend on the KM being initialized.
-	 */
-	public abstract void declareType();
-	
+	public abstract IInstanceImplementation construct(IInstance instance) throws ThinklabException;
 }

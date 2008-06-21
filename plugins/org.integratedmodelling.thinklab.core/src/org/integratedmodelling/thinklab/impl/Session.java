@@ -61,6 +61,7 @@ import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.interpreter.AlgorithmInterpreterFactory;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.kbox.VirtualSessionKBox;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -181,7 +182,7 @@ public class Session implements ISession {
 		String format = MiscUtilities.getFileExtension(url.toString());
 
 		// see if we have a kbox protocol for this thing
-		IKBox kbox = KnowledgeManager.get().retrieveGlobalKBox(url.toString());
+		IKBox kbox = KBoxManager.get().retrieveGlobalKBox(url.toString());
 
 		if (kbox != null) {
 			String id = url.getRef();
@@ -386,7 +387,7 @@ public class Session implements ISession {
 		
 		if (ret == null) {
 		
-			IKBox kb = KnowledgeManager.get().requireGlobalKBox(kboxURI);
+			IKBox kb = KBoxManager.get().requireGlobalKBox(kboxURI);
 			String id = null;
 		
 			int dot = kboxURI.indexOf("#");
@@ -436,7 +437,7 @@ public class Session implements ISession {
 
 		IKBox ret = vKboxes.get(string);
 		if (ret == null)
-			ret = KnowledgeManager.get().retrieveGlobalKBox(string);
+			ret = KBoxManager.get().retrieveGlobalKBox(string);
 		return ret;
 	}
 

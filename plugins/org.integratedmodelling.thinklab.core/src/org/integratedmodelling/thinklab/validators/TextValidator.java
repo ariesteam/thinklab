@@ -34,8 +34,8 @@
 package org.integratedmodelling.thinklab.validators;
 
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.ILiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.value.TextValue;
@@ -49,7 +49,7 @@ import org.integratedmodelling.thinklab.value.TextValue;
  
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  */
-public class TextValidator implements ILiteralValidator {
+public class TextValidator implements LiteralValidator {
 
     public IValue validate(String s, IConcept c, IOntology ontology) throws ThinklabValidationException {
 

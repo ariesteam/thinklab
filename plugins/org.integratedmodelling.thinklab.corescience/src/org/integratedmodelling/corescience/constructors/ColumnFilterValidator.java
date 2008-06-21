@@ -35,12 +35,12 @@ package org.integratedmodelling.corescience.constructors;
 import org.integratedmodelling.corescience.datasources.ColumnFilter;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.ILiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
-public class ColumnFilterValidator implements ILiteralValidator {
+public class ColumnFilterValidator implements LiteralValidator {
 
     public IValue validate(String s, IConcept c, IOntology ontology) throws ThinklabValidationException {
  

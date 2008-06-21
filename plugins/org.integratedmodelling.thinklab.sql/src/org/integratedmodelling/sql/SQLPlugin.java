@@ -51,13 +51,14 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
+import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.IKBoxPlugin;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 
-public class SQLPlugin extends Plugin implements IKBoxPlugin {
+public class SQLPlugin extends ThinklabPlugin implements IKBoxPlugin {
 
 	public interface SQLServerConstructor {
 		public abstract SQLServer createServer(URI uri, Properties properties) throws ThinklabStorageException;
@@ -143,10 +144,12 @@ public class SQLPlugin extends Plugin implements IKBoxPlugin {
 		registerServerConstructor("postgres", new PostgresSQLServerConstructor());
 		registerServerConstructor("mysql", new MySQLServerConstructor());
 		
-		/* register plugin to handle our nice kboxes */
-		km.registerKBoxProtocol("pg", this);
-		km.registerKBoxProtocol("hsqldb", this);
-		km.registerKBoxProtocol("mysql", this);
+		/* register plugin to handle our nice kboxes 
+		 * TODO substitute with extension points
+		 * */
+		KBoxManager.get().registerKBoxProtocol("pg", this);
+		KBoxManager.get().registerKBoxProtocol("hsqldb", this);
+		KBoxManager.get().registerKBoxProtocol("mysql", this);
 		
 	}
 

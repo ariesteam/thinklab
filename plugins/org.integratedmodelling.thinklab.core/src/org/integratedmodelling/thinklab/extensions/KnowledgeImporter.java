@@ -1,5 +1,5 @@
 /**
- * Shell.java
+ * IKnowledgeImporter.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,54 +31,26 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.shell;
+package org.integratedmodelling.thinklab.extensions;
 
-import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.utils.Polylist;
 
 /**
- * A simple command-line driven knowledge manager. Just run and type 'help'.
- * @author Ferdinando Villa
+ * Objects of this kind will import knowledge from a source to a destination. Both are identified
+ * by their URL, and the destination is typically a kbox, but this is not mandatory; the implementations
+ * should be able to tell whether the destination is appropriate.
+ * 
+ * @author Ferdinando
+ *
  */
-public class Shell {
-
+public interface KnowledgeImporter {
 	
-    public static void main(String[] args) {
-        
-                
-        try {
-        	// TODO substitute args with preferences or command-line parameters
-            KnowledgeManager km = 
-            	new KnowledgeManager(new FileKnowledgeRepository(), new CLInterface(args));
+	public abstract Polylist exportKnowledge(String sourceURL, ISession session) throws ThinklabException;
 
-            // load it all
-            km.initialize();
+	public abstract void importKnowledge(String targetURL, Polylist knowledge) throws ThinklabException;
+	
+	public abstract void transferKnowledge(String sourceURL, String targetURL, ISession session) throws ThinklabException;
 
-            new Help().install(km);
-            new List().install(km);
-            new Load().install(km);
-            new Clear().install(km);
-            new Is().install(km);
-            new Import().install(km);
-            new Eval().install(km);
-            new Hierarchy().install(km);
-            new Query().install(km);
-            new KExport().install(km);
-            new KCopy().install(km);
-            new KImport().install(km);
-            new CMap().install(km);
-            new Find().install(km);
-            
-            // go
-            km.run();
-
-			/* be nice */
-			km.shutdown();
-			
-        } catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-    }
 }

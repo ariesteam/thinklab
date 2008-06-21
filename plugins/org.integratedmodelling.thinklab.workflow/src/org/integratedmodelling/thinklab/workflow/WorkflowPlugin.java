@@ -39,12 +39,12 @@ import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.workflow.commands.TestWorkflow;
 import org.w3c.dom.Node;
 
-public class WorkflowPlugin extends Plugin  {
+public class WorkflowPlugin extends ThinklabPlugin  {
 
 	/* log4j logger used for this class. Can be used by other classes through logger()  */
 	private static  Logger log = Logger.getLogger(WorkflowPlugin.class);

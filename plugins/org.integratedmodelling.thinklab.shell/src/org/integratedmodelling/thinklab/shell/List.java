@@ -51,6 +51,7 @@ import org.integratedmodelling.thinklab.interfaces.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 
@@ -214,7 +215,7 @@ public class List extends CommandPattern {
 				
 			} else if ("kboxes".equals(subject)) {
 				
-				for (String kb : km.getInstalledKboxes()) {
+				for (String kb : KBoxManager.get().getInstalledKboxes()) {
 					outputWriter.displayOutput( MiscUtilities.getURLBaseName(kb) + ":\t" + kb);
 				}
 				
