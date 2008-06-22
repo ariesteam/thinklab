@@ -45,14 +45,14 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.thinklab.plugin.Plugin;
 import org.w3c.dom.Node;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class AgentPlugin.
  */
-public class AgentPlugin extends ThinklabPlugin {
+public class AgentPlugin extends Plugin {
 
 	/** The Constant ID. */
 	static final String ID = "Agent";

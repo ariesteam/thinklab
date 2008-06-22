@@ -47,10 +47,10 @@ import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeLoaderPlugin;
 import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.thinklab.plugin.Plugin;
 import org.w3c.dom.Node;
 
-public class OPALLoaderPlugin extends ThinklabPlugin implements IKnowledgeLoaderPlugin {
+public class OPALLoaderPlugin extends Plugin implements IKnowledgeLoaderPlugin {
 
 	ArrayList<URL> profiles = new ArrayList<URL>();
 	

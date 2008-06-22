@@ -36,9 +36,9 @@ package org.integratedmodelling.thinklab.interpreter;
 import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter.IContext;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.thinklab.plugin.Plugin;
 
-public abstract class InterpreterPlugin extends ThinklabPlugin {
+public abstract class InterpreterPlugin extends Plugin {
 
 	public abstract IAlgorithmInterpreter getInterpreter();
 

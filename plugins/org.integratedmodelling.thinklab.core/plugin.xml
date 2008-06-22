@@ -56,42 +56,65 @@
 		<library type="code" id="xsd"  path="lib/xsd-2.2.2.jar"/>
 		<library type="code" id="xsdlib"  path="lib/xsdlib-20050614.jar"/>	
 	</runtime>
-	<extension-point id="KBoxHandler">
+	<extension-point id="ontology">
+		<parameter-def id="url" />
+		<parameter-def id="concept-space" />
+		<parameter-def id="description" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="kbox">
+		<parameter-def id="url" />
+		<parameter-def id="concept-space" />
+		<parameter-def id="description" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="kbox-handler">
 		<parameter-def id="class" />
 		<parameter-def id="protocol" multiplicity="one-or-more" />
 		<parameter-def id="description" multiplicity="none-or-one" />
 	</extension-point>
-	<extension-point id="KnowledgeLoader">
+	<extension-point id="knowledge-loader">
 		<parameter-def id="class" />
 		<parameter-def id="format" multiplicity="one-or-more" />
 		<parameter-def id="description" multiplicity="none-or-one" />
 	</extension-point>
-	<extension-point id="KnowledgeListener">
+	<extension-point id="knowledge-listener">
 		<parameter-def id="class" />
 		<parameter-def id="description" multiplicity="none-or-one" />
 	</extension-point>
-	<extension-point id="KnowledgeImporter">
+	<extension-point id="knowledge-importer">
 		<parameter-def id="class" />
 		<parameter-def id="format" multiplicity="one-or-more" />
 		<parameter-def id="description" multiplicity="none-or-one" />
 	</extension-point>
-	<extension-point id="Interpreter">
+	<extension-point id="language-interpreter">
 		<parameter-def id="class" />
 		<parameter-def id="language-type" />
 		<parameter-def id="language-name" />
 		<parameter-def id="description" multiplicity="none-or-one" />
 		<parameter-def id="example" multiplicity="any" />
 	</extension-point>
-	<extension-point id="LiteralValidator">
+	<extension-point id="literal-validator">
 		<parameter-def id="class" />
 		<parameter-def id="semantic-type" />
 		<parameter-def id="description" multiplicity="none-or-one" />
 		<parameter-def id="example" multiplicity="any" />
 	</extension-point>
-	<extension-point id="InstanceConstructor">
+	<extension-point id="instance-constructor">
 		<parameter-def id="class" />
 		<parameter-def id="semantic-type" />
 		<parameter-def id="description" multiplicity="none-or-one" />
+		<parameter-def id="example" multiplicity="any" />
+	</extension-point>
+	<extension-point id="command-handler">
+		<parameter-def id="class" />
+		<parameter-def id="command-name" multiplicity="none-or-one" />
+		<parameter-def id="command-description" multiplicity="none-or-one" />
+		<parameter-def id="return-type" multiplicity="none-or-one" />
+		<parameter-def id="argument-names" multiplicity="none-or-one" />
+		<parameter-def id="argument-types" multiplicity="none-or-one" />
+		<parameter-def id="optional-argument-names" multiplicity="none-or-one" />
+		<parameter-def id="optional-argument-types" multiplicity="none-or-one" />
+		<parameter-def id="option-names" multiplicity="none-or-one" />
+		<parameter-def id="option-types" multiplicity="none-or-one" />	
 		<parameter-def id="example" multiplicity="any" />
 	</extension-point>
 </plugin>

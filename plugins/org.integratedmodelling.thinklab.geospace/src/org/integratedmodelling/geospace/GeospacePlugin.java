@@ -71,13 +71,13 @@ import org.integratedmodelling.thinklab.interfaces.IKBoxPlugin;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeLoaderPlugin;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.thinklab.plugin.Plugin;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Node;
 
-public class GeospacePlugin extends ThinklabPlugin implements IKBoxPlugin, IKnowledgeLoaderPlugin {
+public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoaderPlugin {
 
 	private static IConcept shapeType;
 	private static IConcept pointType;

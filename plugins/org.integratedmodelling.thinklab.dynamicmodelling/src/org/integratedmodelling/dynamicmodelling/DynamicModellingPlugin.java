@@ -53,17 +53,16 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeLoaderPlugin;
 import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.thinklab.plugin.Plugin;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 import org.w3c.dom.Node;
 
-public class DynamicModellingPlugin extends ThinklabPlugin implements IKnowledgeLoaderPlugin {
+public class DynamicModellingPlugin extends Plugin implements IKnowledgeLoaderPlugin {
 
 	static final public String FLOW_TYPE = "measurement:Ranking";
 	static final public String STOCK_TYPE = "measurement:Ranking";

@@ -153,7 +153,7 @@ public class PluginJAR
 			plugin.notifyConfigurationNode(n);
 	}
 
-	public void notifyResources(ThinklabPlugin p) throws ThinklabException {
+	public void notifyResources(Plugin p) throws ThinklabException {
 		for (ZipEntry z : resources)
 			p.addResource(z.getName(), z.getTime(), z.getSize());
 	}

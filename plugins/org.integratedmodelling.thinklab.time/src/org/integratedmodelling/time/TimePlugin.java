@@ -40,7 +40,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.thinklab.plugin.Plugin;
 import org.integratedmodelling.time.constructors.DurationValidator;
 import org.integratedmodelling.time.constructors.PeriodValidator;
 import org.integratedmodelling.time.constructors.TemporalGridConstructor;
@@ -49,7 +49,7 @@ import org.integratedmodelling.time.constructors.TimeRecordValidator;
 import org.integratedmodelling.time.constructors.TimeValidator;
 import org.w3c.dom.Node;
 
-public class TimePlugin extends ThinklabPlugin {
+public class TimePlugin extends Plugin {
 
 	public static final String CONTINUOUS_TIME_OBSERVABLE_INSTANCE = "time:ContinuousTimeObservableInstance";
 	public static final String ABSOLUTE_TIME_OBSERVABLE_INSTANCE = "time:AbsoluteTimeObservableInstance";

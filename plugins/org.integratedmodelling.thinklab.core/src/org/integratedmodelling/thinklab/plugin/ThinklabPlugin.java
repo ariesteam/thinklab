@@ -63,6 +63,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -71,17 +72,22 @@ import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.interfaces.IPlugin;
+import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
+import org.integratedmodelling.utils.MiscUtilities;
+import org.java.plugin.Plugin;
+import org.java.plugin.registry.Extension;
+import org.java.plugin.registry.ExtensionPoint;
+import org.java.plugin.registry.Extension.Parameter;
+
 
 /**
- * The abstract base class that every plugin must implement.
- *	
- * @author Ferdinando Villa (rewrite for JIMT)
- * @author Ioannis N. Athanasiadis (contributions to ThinkLab version) 
+ * A specialized JPF plugin to support extension of the knowledge manager.
+ * 
+ * @author Ferdinando Villa
+ *
  */
-public abstract class ThinklabPlugin implements IPlugin
+public abstract class ThinklabPlugin extends Plugin
 {
-	PluginJAR jar;
 	HashMap<String, URL> resources = new HashMap<String, URL>();
 	static URL uninitializedResource;
 	
@@ -98,33 +104,147 @@ public abstract class ThinklabPlugin implements IPlugin
 			}
 	}
 
-	
-	public void setJar(PluginJAR jar) {
-		this.jar = jar;
-	}
-	
-	/** 
-	 * Retrieve named plugin, for convenience. Normally used inside plugins, to retrieve 
-	 * themselves or their dependents.
-	 * @param ID the plugin name
-	 * @return the plugin, or NULL if not there. 
+	/**
+	 * Demand plugin-specific initialization to this callback; 
+	 * we intercept doStart
 	 */
-	protected static IPlugin getPlugin(String ID) {
-		IPlugin ret = null;
-		try {
-			ret =KnowledgeManager.get().getPluginRegistry().retrievePlugin(ID);
-		} catch (ThinklabNoKMException e) {
-			// should not happen
-		}
-		return ret;
+	abstract protected void load();
+	
+	abstract protected void unload();
+	
+	/**
+	 * Any extensions other than the ones handled by default should be handled here.
+	 */
+	protected void loadExtensions() {
+		
 	}
 	
-	public abstract void load(KnowledgeManager km, File baseReadPath, File baseWritePath) 
-		throws ThinklabPluginException;
 	
-	
-	public abstract void unload(KnowledgeManager km) throws ThinklabPluginException;
+	@Override
+	protected final void doStart() throws Exception {
+		
+		/*
+		 * Check if we have a KM and if not, put out a good explanation of why we should
+		 * read the manual, if there was one.
+		 */
+		
+		loadOntologies();
+		loadLiteralValidators();
+		loadKBoxHandlers();
+		loadKnowledgeImporters();
+		loadKnowledgeImporters();
+		loadLanguageInterpreters();
+		loadCommands();
+		loadInstanceImplementationConstructors();
+		
+		load();
+	}
 
+	private Iterator<Extension> getExtensions(String extensionPoint) {
+		
+		ExtensionPoint toolExtPoint = 
+			getManager().getRegistry().getExtensionPoint(getDescriptor().getId(), extensionPoint);
+
+		return toolExtPoint.getConnectedExtensions().iterator();
+	}
+	
+	private void loadInstanceImplementationConstructors() {
+		
+		for (Iterator<Extension> it = getExtensions("instance-constructor"); it.hasNext();) {
+
+			Extension ext = it.next();
+			String url = ext.getParameter("url").valueAsString();
+			String csp = ext.getParameter("concept-space").valueAsString();
+			
+			// TODO
+		}
+	}
+
+	private void loadOntologies() throws ThinklabException {
+	
+		for (Iterator<Extension> it = getExtensions("ontology"); it.hasNext();) {
+
+			Extension ext = it.next();
+			String url = ext.getParameter("url").valueAsString();
+			String csp = ext.getParameter("concept-space").valueAsString();
+			
+			URL oUrl = MiscUtilities.getURLForResource(url);
+
+			KnowledgeManager.get().getKnowledgeRepository().refreshOntology(oUrl, csp);
+		}
+		
+	}
+
+	private void loadLiteralValidators() {
+		
+		for (Iterator<Extension> it = getExtensions("literal-validator"); it.hasNext();) {
+
+			Extension ext = it.next();
+			String url = ext.getParameter("url").valueAsString();
+			String csp = ext.getParameter("concept-space").valueAsString();
+			
+			// TODO
+		}
+
+	}
+
+	private void loadLanguageInterpreters() {
+		
+		for (Iterator<Extension> it = getExtensions("language-interpreter"); it.hasNext();) {
+
+			Extension ext = it.next();
+			String url = ext.getParameter("url").valueAsString();
+			String csp = ext.getParameter("concept-space").valueAsString();
+			
+			// TODO
+		}
+		
+	}
+
+	private void loadKnowledgeImporters() {
+	
+		for (Iterator<Extension> it = getExtensions("knowledge-importer"); it.hasNext();) {
+
+			Extension ext = it.next();
+			String url = ext.getParameter("url").valueAsString();
+			String csp = ext.getParameter("concept-space").valueAsString();
+			
+			// TODO
+		}
+		
+	}
+
+	private void loadKBoxHandlers() {
+		
+		for (Iterator<Extension> it = getExtensions("kbox-handler"); it.hasNext();) {
+
+			Extension ext = it.next();
+			String url = ext.getParameter("url").valueAsString();
+			String csp = ext.getParameter("concept-space").valueAsString();
+			
+			// TODO
+		}
+		
+	}
+
+	@Override
+	protected final void doStop() throws Exception {
+		
+		unload();
+	}
+	
+	private void loadCommands() {
+
+		for (Iterator<Extension> it = getExtensions("command-handler"); it.hasNext();) {
+
+			Extension ext = it.next();
+			String url = ext.getParameter("url").valueAsString();
+			String csp = ext.getParameter("concept-space").valueAsString();
+			
+			// TODO
+		}
+	}
+	
 	/**
 	 * Use to check if a specific resource has been found in the JAR
 	 * @param name
@@ -142,152 +262,32 @@ public abstract class ThinklabPlugin implements IPlugin
 		return properties;
 	}
 	
-	/**
-	 * Returns the plugin's class name. This might not be the same as
-	 * the class of the actual <code>EditPlugin</code> instance, for
-	 * example if the plugin is not loaded yet.
-	 */
-	public String getClassName()
-	{
-		return getClass().getName();
-	}
-
-	/**
-	 * Returns the JAR file containing this plugin.
-	 */
-	public PluginJAR getPluginJAR()
-	{
-		return jar;
-	} 
-	
-	/**
-	 * by default, plugin properties reside in the user configuration directory.
-	 */
-	public File getPropertiesFilePath()  throws ThinklabException  {
-
-		return 
-			new File(LocalConfiguration.getUserConfigDirectory() + "/" + getId() + ".properties");
-	}
-
-	/* called by PluginJar when resources are found that we don't know what to do with. Merely stores the
-	 * resource name and calls notifier. 
-	 */
-	public void addResource(String name, long time, long size) throws ThinklabException {
-		resources.put(name, uninitializedResource);
-		notifyResource(name, time, size);
-	}
-
-	/**
-	 * Callback called for each resource which is not a class file, a plugin description file, or an OWL ontology
-	 * included in the jar. Applications can decide what to do with the resource.
-	 * @param name name of resource
-	 * @param time time of creation of resource
-	 * @param size size of resource
-	 */
-	public abstract void notifyResource(String name, long time, long size) throws ThinklabException;
-
-	/**
-	 * This callback is called after all plugins have been loaded and their load() has been 
-	 * called in order of dependency. 
-	 *
-	 */
-	public abstract void initialize() throws ThinklabException;
-	
-	/**
-	 * Pass resource name, retrieve InputStream for it. Resource must be among those notified to plugin.
-	 * @param name
-	 * @return
-	 * @throws IOException
-	 */
-	public InputStream retrieveResource(String name) throws ThinklabException {
-
-		if (resources.get(name) == null)
-			throw  new ThinklabPluginException("plugin " + jar.getID() + " does not provide resource " + name);
-		
-		return jar.retrieveResource(name);
-	}
-	
-	public String getId()  {
-		return jar.getID();
-	}
-	
-	public Collection<String> getAuthors() {
-		return jar.getAuthors();
-	}
-	
-	public String getDate() {
-		return jar.getDate();
-	}
-	
-	public String getDescription() {
-		return jar.getDescription();
-	}
-	
-	public void dump() {
-		log.info("Plugin: "   + getId() 
-				+"\tAuthor: " + getAuthors()
-		        +"\tDate: "   + getDate());
-		log.debug("Provides:");
-		for (String s : resources.keySet()) {
-			log.debug("\t" + s);
-		}
-	}
-
-	public String toString(){
-		return "Plugin : " + getId(); 
-	}
-	
-	public long getResourceTime(String name) {
-		return jar.getResourceTime(name);
-	}
 	
 	public URL exportResourceCached(String name) throws ThinklabException {
 		
 		URL ret = resources.get(name);
 		
 		if (ret == null)
-			throw  new ThinklabPluginException("plugin " + jar.getID() + " does not provide resource " + name);
+			throw  new ThinklabPluginException("plugin " + getDescriptor().getId() + " does not provide resource " + name);
 	
 		if (resources.get(name).equals(uninitializedResource))
 			{
-				ret = jar.saveResourceCached(name, KnowledgeManager.get().getPluginRegistry().getCacheDir());
+				//ret = jar.saveResourceCached(name, KnowledgeManager.get().getPluginRegistry().getCacheDir());
 				resources.put(name, ret);
 			}
 		
 		return ret;
 	}
 	
-	public String getJarClasspath() {
-		
-		String ret = ""; int nf = 0;
-		
-		for (File f : jar.getEmbeddedJarFiles()) {
-			if (nf++ > 0) {
-				ret += ";";
-			}
-			ret += f;
-		}
-		
-		return ret;
-	}
-	
-	public void addToClasspath(URL url) throws ThinklabException {
-		PluginRegistry.get().addToClasspath(url);
-	}
-	
-	public File getJarFile() {
-		return jar.getFile();
-	}
-	
 	public File getScratchPath() throws ThinklabException  {
 		
-		return PluginRegistry.get().getScratchDir(this.getId());
+		return PluginRegistry.get().getScratchDir(this.getDescriptor().getId());
 		
 	}
 	
 	public File getLoadPath() throws ThinklabException  {
 		
-		return new File (PluginRegistry.get().getLoadDir() + "/" + getId());
+		return new File (PluginRegistry.get().getLoadDir() + "/" + getDescriptor().getId());
 		
 	}
 }

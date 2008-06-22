@@ -50,6 +50,8 @@ import org.java.plugin.boot.Application;
 import org.java.plugin.boot.ApplicationPlugin;
 import org.java.plugin.util.ExtendedProperties;
 
+import bsh.util.JConsole;
+
 /**
  * A simple command-line driven knowledge manager. Just run and type 'help'.
  * @author Ferdinando Villa
@@ -80,7 +82,7 @@ public class Shell extends ApplicationPlugin implements Application {
 	
 		Thinklab thinklab = (Thinklab) getManager().getPlugin("org.integratedmodelling.thinklab.core");
 
-
+		JConsole jc;
 //        new Help().install(km);
 //        new List().install(km);
 //        new Load().install(km);

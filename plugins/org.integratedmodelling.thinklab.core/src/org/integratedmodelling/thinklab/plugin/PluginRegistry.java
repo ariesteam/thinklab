@@ -233,11 +233,11 @@ public class PluginRegistry {
 
 			log.info("Processing plugin = " + plug.getFile());
 
-			ThinklabPlugin plugin = null;
+			Plugin plugin = null;
 			try {
 				String classname = plug.getMainClassName();
 				Class<?> clazz = getClassLoader().loadClass(classname);
-				plugin = (ThinklabPlugin)clazz.newInstance();
+				plugin = (Plugin)clazz.newInstance();
 			} catch (Exception e) {
 				throw new ThinklabPluginException(e);
 			}
@@ -275,7 +275,7 @@ public class PluginRegistry {
 				plugin.load(KnowledgeManager.get(), cd, sd);
 
 				/* have JAR tell us what else is there */
-				plug.notifyResources((ThinklabPlugin) plugin);
+				plug.notifyResources((Plugin) plugin);
 				
 				/* and notify any mysterious spec in plugin.xml */
 				plug.notifyConfigurationNodes(plugin);

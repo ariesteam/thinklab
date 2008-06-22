@@ -473,7 +473,7 @@ public class KnowledgeManager implements KnowledgeProvider {
 	
 		
 		/* we always have at least the default plugin dir */
-        pluginRegistry.addPluginDirectory(LocalConfiguration.getSystemDirectory("plugins"));
+       // pluginRegistry.addPluginDirectory(LocalConfiguration.getSystemDirectory("plugins"));
 
 		/* link and initialize knowledge repository */
 	    knowledgeRepository.initialize();
@@ -518,7 +518,7 @@ public class KnowledgeManager implements KnowledgeProvider {
         kboxManager = new KBoxManager();
         commandManager = new CommandManager();
         
-		pluginRegistry.initialize(pluginJarPath, pluginClassPath);
+		// pluginRegistry.initialize(pluginJarPath, pluginClassPath);
 		
 		// create class tree
 		classTree = new KnowledgeTree();

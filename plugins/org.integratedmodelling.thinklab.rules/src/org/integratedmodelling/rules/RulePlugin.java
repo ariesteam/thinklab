@@ -43,12 +43,12 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.thinklab.plugin.Plugin;
 import org.w3c.dom.Node;
 
 import edu.stanford.smi.protegex.owl.model.OWLModel;
 
-public class RulePlugin extends ThinklabPlugin {
+public class RulePlugin extends Plugin {
 
 	private OWLModel owlModel;
 	

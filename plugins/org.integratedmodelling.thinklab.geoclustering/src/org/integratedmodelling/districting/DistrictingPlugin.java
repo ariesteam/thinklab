@@ -46,10 +46,10 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IPlugin;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.thinklab.plugin.Plugin;
 import org.w3c.dom.Node;
 
-public class DistrictingPlugin extends ThinklabPlugin implements IPlugin {
+public class DistrictingPlugin extends Plugin implements IPlugin {
 
 	/* log4j logger used for this class. Can be used by other classes through logger() */
 	private static Logger log = Logger.getLogger(DistrictingPlugin.class);
