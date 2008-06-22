@@ -39,11 +39,11 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
+import org.integratedmodelling.thinklab.command.base.ShellCommandOutputReceptor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.shell.ShellCommandOutputReceptor;
 import org.integratedmodelling.thinklab.value.Value;
 import org.integratedmodelling.thinklab.workflow.WorkflowPlugin;
 

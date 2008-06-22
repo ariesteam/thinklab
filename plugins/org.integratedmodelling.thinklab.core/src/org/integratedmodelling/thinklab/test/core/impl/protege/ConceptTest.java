@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.impl.APIOnlyKnowledgeInterface;
 import org.integratedmodelling.thinklab.impl.protege.Concept;
 import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
@@ -57,7 +56,7 @@ public class ConceptTest extends AllTestsSetup {
 	protected void setUp() throws Exception {
 		super.setUp();
 		kr = new FileKnowledgeRepository();
-		KnowledgeManager km = new KnowledgeManager(kr, new APIOnlyKnowledgeInterface());
+		KnowledgeManager km = new KnowledgeManager(kr);
 		km.initialize();
 		
 		ISession ses = km.requestNewSession();

@@ -34,10 +34,7 @@
 package org.integratedmodelling.thinklab;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,28 +49,19 @@ import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.exception.ThinklabAmbiguousResultException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.thinklab.exception.ThinklabMissingResourceException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
-import org.integratedmodelling.thinklab.exception.ThinklabUndefinedKBoxException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
 import org.integratedmodelling.thinklab.extensions.LiteralValidator;
-import org.integratedmodelling.thinklab.impl.APIOnlyKnowledgeInterface;
-import org.integratedmodelling.thinklab.interfaces.IAction;
-import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.IKBoxPlugin;
-import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeLoaderPlugin;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject;
@@ -81,12 +69,12 @@ import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.IPlugin;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.thinklab.kbox.KBoxWrapper;
-import org.integratedmodelling.thinklab.kbox.OntologyKBox;
 import org.integratedmodelling.thinklab.plugin.PluginRegistry;
+import org.integratedmodelling.thinklab.session.SingleSessionManager;
 import org.integratedmodelling.thinklab.validators.NumberValidator;
 import org.integratedmodelling.thinklab.validators.TextValidator;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -220,15 +208,11 @@ public class KnowledgeManager implements KnowledgeProvider {
 	public static KnowledgeTree getClassTree() {
 		return classTree;
 	}
-	
 
 	public KnowledgeManager(IKnowledgeRepository kr, ISessionManager ki) throws ThinklabException {
 
         /* set KM */
         KM = this;
-        
-        /* if any preferences must be loaded, better do it as soon as possible. */
-        ki.importPreferences();
         
         /* create stuff */
 
@@ -253,14 +237,14 @@ public class KnowledgeManager implements KnowledgeProvider {
 	 * @throws ThinklabIOException
 	 */
 	public KnowledgeManager(IKnowledgeRepository knowledgeRepository) throws ThinklabException {
-		this(knowledgeRepository, new APIOnlyKnowledgeInterface());
+		this(knowledgeRepository, new SingleSessionManager());
 	}
 
 	public IKnowledgeRepository getKnowledgeRepository() {
 		return knowledgeRepository;
 	}
 	
-	public ISessionManager getKnowledgeInterface() {
+	public ISessionManager getSessionManager() {
 		return sessionManager;
 	}
 	

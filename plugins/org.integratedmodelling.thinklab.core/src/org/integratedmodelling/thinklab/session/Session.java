@@ -31,7 +31,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.impl;
+package org.integratedmodelling.thinklab.session;
 
 import java.io.File;
 import java.io.FileOutputStream;

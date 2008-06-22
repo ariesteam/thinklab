@@ -38,10 +38,10 @@ import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.KnowledgeImporter;
-import org.integratedmodelling.thinklab.impl.Session;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.session.Session;
 import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.instancelist.InstanceList;
 

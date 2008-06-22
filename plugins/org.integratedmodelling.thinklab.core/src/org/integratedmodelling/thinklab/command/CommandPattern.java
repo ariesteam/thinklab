@@ -43,7 +43,7 @@ import org.integratedmodelling.thinklab.interfaces.IAction;
  * and a response action. The install() method will install them in the Knowledge manager. Useful to keep the code clean, as all
  * classes can be declared as inner classes of a command pattern, and each command/response pair can be neatly incorporated in one
  * class file.
- * @see org.integratedmodelling.thinklab.shell.Help for an example.
+ * @see org.integratedmodelling.thinklab.command.base.Help for an example.
  * @author villa
  */
 public abstract class CommandPattern {

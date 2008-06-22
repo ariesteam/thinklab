@@ -38,7 +38,7 @@ import java.net.URL;
 import java.util.Collection;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.impl.Session;
+import org.integratedmodelling.thinklab.session.Session;
 
 /**
  * A plugin specialized to read knowledge from a given format. Adds one abstract method and must be named

@@ -37,7 +37,6 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
-import org.integratedmodelling.thinklab.impl.APIOnlyKnowledgeInterface;
 import org.integratedmodelling.thinklab.impl.protege.Concept;
 import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.impl.protege.Ontology;
@@ -51,7 +50,7 @@ public class OntologyTest extends AllTestsSetup {
 	protected void setUp() throws Exception {
 		super.setUp();
 		kr = new FileKnowledgeRepository();
-		km = new KnowledgeManager(kr, new APIOnlyKnowledgeInterface());
+		km = new KnowledgeManager(kr);
 		kr.initialize();
 		onto = (Ontology) kr.requireOntology("pizza");		
 	}

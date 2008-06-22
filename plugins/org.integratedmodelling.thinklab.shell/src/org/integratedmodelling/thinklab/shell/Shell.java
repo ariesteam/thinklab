@@ -44,8 +44,6 @@ import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
-import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.java.plugin.boot.Application;
@@ -137,8 +135,7 @@ public class Shell extends ApplicationPlugin implements Application {
 				break;
 			} else if (!("".equals(input))) {
 				try {
-	
-					// Command cmd = new Command(input);
+					
 					Command cmd = CommandParser.parse(input);
 					
 					if (cmd == null)

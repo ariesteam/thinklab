@@ -39,7 +39,6 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.impl.APIOnlyKnowledgeInterface;
 import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
@@ -80,8 +79,7 @@ public class ThinklabPersistenceTools extends Task {
 	public void execute() throws BuildException {
 		KnowledgeManager km;
 		try {
-			km = new KnowledgeManager(new FileKnowledgeRepository(),
-					new APIOnlyKnowledgeInterface());
+			km = new KnowledgeManager(new FileKnowledgeRepository());
 		} catch (ThinklabException e) {
 			throw new BuildException(e);
 		}

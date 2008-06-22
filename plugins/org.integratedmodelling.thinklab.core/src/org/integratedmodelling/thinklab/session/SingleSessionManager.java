@@ -31,95 +31,40 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.shell;
+package org.integratedmodelling.thinklab.session;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandParser;
+import org.integratedmodelling.thinklab.command.base.ShellCommandOutputReceptor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.impl.Session;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
-import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 
 
 /**
  * @author Ferdinando Villa
  * @author Ioannis N. Athanasiadis
  */
-public class CLInterface implements ISessionManager {
+public class SingleSessionManager implements ISessionManager {
 	
 	public ISession session;
 	public ICommandOutputReceptor cout = new ShellCommandOutputReceptor();
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.ima.core.IKnowledgeInterface#RegisterCommand(org.integratedmodelling.ima.core.CommandDeclaration)
-	 */
-	public void registerCommand(CommandDeclaration declaration) throws ThinklabException {
-		// TODO Auto-generated method stub   
-	}
-	
-
-	/**
-	 * Collect commands from stdin and pass them to KM to execute.
-	 */
-	public void start() {
-		
-
-	}
-	
-	/**
-	 * Constructor takes the command line arguments as parameters
-	 * @param args
-	 */
-	public CLInterface(String[] args) {
-		
-	}
-
-    public void importPreferences() {
-
-    }
-
-    public void savePreferences() {
-    }
 
 	public ISession createNewSession() throws ThinklabException {
 		return new Session();
 	}
 
 	public void notifySessionDeletion(ISession session) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 
-	public ISession getCurrentSession() throws ThinklabException {
-		
-		if (session == null) {
-			try {
-				// create one session. This is sent back to us so it's a bit crooked. May deserve some
-				// more thought, but not a big deal for now.
-				session = KnowledgeManager.get().requestNewSession();
-			} catch (ThinklabNoKMException e1) {
-				e1.printStackTrace();
-			} catch (ThinklabException e1) {
-				e1.printStackTrace();
-			}
-		}
+	
+	public void clear() throws ThinklabException {
+		/* just delete it, make it a new one */
+		session = new Session();
+	}
+
+	@Override
+	public ISession getCurrentSession() {
 		return session;
 	}
-    
-	
-	void clearSession(ISession session) {
-		
-		/* just delete it */
-		session = null;
-	}
-      // TODO save system preferences somewhere
 }

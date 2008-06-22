@@ -4397,7 +4397,7 @@ public class ThinkScapeGUI extends JPanel implements GrowlGUI, ICommandOutputRec
 					
 			ISession session = null;
 			try {
-				session = KnowledgeManager.get().getKnowledgeInterface().getCurrentSession();
+				session = KnowledgeManager.get().getSessionManager().getCurrentSession();
 				objs = session.loadObjects(filename);
 			} catch (ThinklabException e) {
 				ThinkScape.logger().error(e.stackTrace());

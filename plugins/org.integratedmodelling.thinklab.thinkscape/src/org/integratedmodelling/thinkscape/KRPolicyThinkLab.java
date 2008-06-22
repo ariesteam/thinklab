@@ -287,7 +287,7 @@ public class KRPolicyThinkLab implements KRPolicy, ISessionManager,
 	public void notifySessionDeletion(ISession session) {
 	}
 
-	public ISession getCurrentSession() throws ThinklabException {
+	public ISession getCurrentSession()  {
 		return session;
 	}
 

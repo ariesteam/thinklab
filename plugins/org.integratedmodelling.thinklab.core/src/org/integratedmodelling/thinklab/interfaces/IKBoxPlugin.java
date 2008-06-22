@@ -38,7 +38,7 @@ import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
-import org.integratedmodelling.thinklab.impl.Session;
+import org.integratedmodelling.thinklab.session.Session;
 
 /**
  * A plugin specialized to handle a KBox protocol. Only difference with a standard Plugin is that
