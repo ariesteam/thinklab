@@ -49,6 +49,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
+import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabAmbiguousResultException;
@@ -167,6 +168,7 @@ public class KnowledgeManager implements KnowledgeProvider {
 	 */
 	protected PluginRegistry   pluginRegistry;
 	protected KBoxManager kboxManager;
+	protected CommandManager commandManager;
 	
 	private Logger log = Logger.getLogger(this.getClass());
 	
@@ -184,16 +186,6 @@ public class KnowledgeManager implements KnowledgeProvider {
 	 * checking instead of the reasoner.
 	 */
 	private static KnowledgeTree classTree = null;
-		
-	/**
-	 * command declarations are kept in a hash, indexed by command ID
-	 */
-	HashMap<String, CommandDeclaration> commands;
-	
-	/**
-	 * each command has an action associated, also kept in a hash indexed by command ID
-	 */
-	HashMap<String, IAction> actions;
 	
 	/*
 	 * map URIs to concept space names 
@@ -239,8 +231,7 @@ public class KnowledgeManager implements KnowledgeProvider {
         ki.importPreferences();
         
         /* create stuff */
-        commands = new HashMap<String, CommandDeclaration>();
-        actions  = new HashMap<String, IAction>();
+
         uri2cs   = new HashMap<String, String>();
         cs2uri   = new HashMap<String, String>();
 
@@ -541,6 +532,7 @@ public class KnowledgeManager implements KnowledgeProvider {
 
         /* create the kbox manager now that we have the type system set up */
         kboxManager = new KBoxManager();
+        commandManager = new CommandManager();
         
 		pluginRegistry.initialize(pluginJarPath, pluginClassPath);
 		
@@ -607,21 +599,6 @@ public class KnowledgeManager implements KnowledgeProvider {
 	}
 	
 
-	/**
-	 * Register a command for use in the Knowledge Manager. The modality of invocation and execution of commands depends on the 
-	 * particular IKnowledgeInterface installed. 
-	 * @param command the CommandDeclaration to register
-	 * @param action the Action executed in response to the command
-	 * @throws ThinklabException
-	 * @see CommandDeclaration
-	 * @see ISessionManager
-	 */
-	public void registerCommand(CommandDeclaration command, IAction action) throws ThinklabException {
-	    
-		// TODO throw exception if command is installed
-		commands.put(command.ID, command);
-		actions.put(command.ID, action);
-	}
 	
 	/**
 	 * Register the class name of a session listener that we want to pass to any new session.
@@ -645,50 +622,7 @@ public class KnowledgeManager implements KnowledgeProvider {
 		this.literalValidators.put(conceptID, validator);
 	}
 	
-	public CommandDeclaration getDeclarationForCommand(String tok) {
-			return commands.get(tok);
-	}
 
-	public CommandDeclaration requireDeclarationForCommand(String tok) throws ThinklabMalformedCommandException {
-		CommandDeclaration cd = commands.get(tok);
-		if (cd == null)
-			throw new ThinklabMalformedCommandException("unknown command " + tok);
-		return cd;
-	}
-
-	
-	/**
-	 * Check if a command with a particular name has been registered.
-	 * @param commandID
-	 * @return
-	 */
-	public boolean hasCommand(String commandID) {
-		return actions.get(commandID) != null;
-	}
-	
-	
-	/**
-	 * Submit and execute the passed command. Command is assumed validated so no checking
-	 * is done. Returns a Value as result value, answered by execute() called on the corresponding
-	 * action. 
-	 * 
-	 * @param cmd the command
-	 * @param outputWriter
-	 * @param session the session t
-	 * @return a literal containing a result value and the associated concept, or null if the command is void.
-	 * @throws ThinklabException if anything happens in command execution
-	 */
-	public IValue submitCommand(Command cmd, ICommandOutputReceptor outputWriter, ISession session) 
-		throws ThinklabException {
-
-		/* happens at times with botched commands (e.g., strange eof from shutting down the VM) */
-		if (cmd == null || cmd.getDeclaration() == null)
-			return null;
-
-		IAction a = actions.get(cmd.getDeclaration().ID);		
-		return a.execute(cmd, outputWriter, session, this);
-		// TODO transfer to knowledge manager logging policy
-	}
     
 	/**
 	 * Return the named plugin, or null if not found.
@@ -902,10 +836,6 @@ public class KnowledgeManager implements KnowledgeProvider {
         return ret;
     }
 
-    
-	public Collection<CommandDeclaration> getCommandDeclarations() {
-		return commands.values();
-	}
 
 	public String registerOntology(String url, String name) throws ThinklabException {
 		
@@ -1388,6 +1318,10 @@ public class KnowledgeManager implements KnowledgeProvider {
 
 	public KBoxManager getKBoxManager() {
 		return kboxManager;
+	}
+
+	public CommandManager getCommandManager() {
+		return commandManager;
 	}
 
 }

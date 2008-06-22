@@ -6,6 +6,7 @@ import java.util.Map;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
+import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
@@ -41,7 +42,7 @@ public class ThinklabCommandVariableEvaluator implements
 
 		try {		
 			Command command = new Command(expression, context);
-			ret = KnowledgeManager.get().submitCommand(command, outputWriter, session);
+			ret = CommandManager.get().submitCommand(command, outputWriter, session);
 			
 		} catch (ThinklabException e) {
 			throw new ThinklabWorkflowException(e);
@@ -59,7 +60,7 @@ public class ThinklabCommandVariableEvaluator implements
 	public String[] getRequiredInputVariableNames(String expression) {
 
 		String[] ret = new String[0];
-		CommandDeclaration cdecl = KnowledgeManager.get().getDeclarationForCommand(expression);
+		CommandDeclaration cdecl = CommandManager.get().getDeclarationForCommand(expression);
 		
 		if (ret != null)
 			ret = cdecl.getAllArgumentNames();			

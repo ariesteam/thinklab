@@ -38,6 +38,7 @@ import java.util.Map;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
+import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
@@ -74,9 +75,9 @@ public class ThinklabCommandFunction implements FunctionProvider {
 		 * if the action has the name of an installed command and we have valid values for its
 		 * arguments, run the command and remember the result.
 		 */
-		if (KnowledgeManager.get().hasCommand(aname)) {
+		if (CommandManager.get().hasCommand(aname)) {
 			
-			CommandDeclaration decl = KnowledgeManager.get().getDeclarationForCommand(aname);
+			CommandDeclaration decl = CommandManager.get().getDeclarationForCommand(aname);
 
 			HashMap<String, IValue> minputs = new HashMap<String, IValue>();
 			HashMap<String, IValue> oinputs = new HashMap<String, IValue>();
@@ -131,7 +132,7 @@ public class ThinklabCommandFunction implements FunctionProvider {
 			
 			try {
 				Command cmd = new Command(decl, minputs, oinputs);
-				ret = KnowledgeManager.get().submitCommand(cmd, outputWriter, session);
+				ret = CommandManager.get().submitCommand(cmd, outputWriter, session);
 			} catch (ThinklabException e) {
 				throw new WorkflowException(e);
 			}

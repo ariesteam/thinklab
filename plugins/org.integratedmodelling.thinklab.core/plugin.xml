@@ -3,15 +3,58 @@
 <plugin
    id="org.integratedmodelling.thinklab.core"
    version="0.8.0"
-   provider-name="integratedmodelling.org"
    class="org.integratedmodelling.thinklab.Thinklab">
 	<runtime>
 		<library id="core" path="classes/" type="code">
-			<doc caption="API documentation">
-				<doc-ref path="api/index.html" caption="javadoc" />
-			</doc>
 			<export prefix="*" />
 		</library>
+		<library type="code" id="agg_classes" path="lib/agg_V1622_classes.jar"/>
+		<library type="code" id="ant" path="lib/ant-1.6.5.jar"/>
+		<library type="code" id="antlr"  path="lib/antlr-2.7.6.jar"/>
+		<library type="code" id="amtlr-runtime"  path="lib/antlr-runtime-3.0.jar"/>
+		<library type="code" id="ant-nodeps"  path="lib/ant-nodeps-1.6.5.jar"/>
+		<library type="code" id="ant-optional"  path="lib/ant-optional-1.5.1.jar"/>
+		<library type="code" id="asm"  path="lib/asm.jar"/>
+		<library type="code" id="asm-attris"  path="lib/asm-attrs.jar"/>
+		<library type="code" id="bsf"  path="lib/bsf.jar"/>
+		<library type="code" id="bsh"  path="lib/bsh-1.2b7.jar"/>
+		<library type="code" id="common"  path="lib/common-2.2.1.jar"/>
+		<library type="code" id="commons-beanutils"  path="lib/commons-beanutils-1.7.0.jar"/>
+		<library type="code" id="commons-codec"  path="lib/commons-codec-1.3.jar"/>
+		<library type="code" id="commons-collections"  path="lib/commons-collections-3.2.jar"/>
+		<library type="code" id="commons-collections-testframework"  path="lib/commons-collections-testframework-3.2.jar"/>
+		<library type="code" id="commons-dbcp"  path="lib/commons-dbcp-1.2.2.jar"/>
+		<library type="code" id="commons-httpclient"  path="lib/commons-httpclient-3.0.1.jar"/>
+		<library type="code" id="commons-jxpath"  path="lib/commons-jxpath-1.2.jar"/>
+		<library type="code" id="commons-lang"  path="lib/commons-lang-2.1.jar"/>
+		<library type="code" id="commons-logging"  path="lib/commons-logging-1.1.1.jar"/>
+		<library type="code" id="commons-pool"  path="lib/commons-pool-1.3.jar"/>
+		<library type="code" id="concurrent"  path="lib/concurrent-1.3.4.jar"/>
+		<library type="code" id="http"  path="lib/http.jar"/>
+		<library type="code" id="icu4j"  path="lib/icu4j_3_4.jar"/>
+		<library type="code" id="iri"  path="lib/iri.jar"/>
+		<library type="code" id="jena"  path="lib/jena.jar"/>
+		<library type="code" id="jgrapht"  path="lib/jgrapht.jar"/>
+		<library type="code" id="jopt-simple"  path="lib/jopt-simple-2.4-beta2.jar"/>
+		<library type="code" id="junit"  path="lib/junit.jar"/>
+		<library type="code" id="kazuki"  path="lib/kazuki.jar"/>
+		<library type="code" id="mvel"  path="lib/mvel-1.3.1-java1.4.jar"/>
+		<library type="code" id="owlsyntax"  path="lib/owlsyntax.jar"/>
+		<library type="code" id="pellet"  path="lib/pellet.jar"/>
+		<library type="code" id="protege"  path="lib/protege.jar"/>
+		<library type="code" id="protege-owl"  path="lib/protege-owl.jar"/>
+		<library type="code" id="rdf-api"  path="lib/rdf-api-2001-01-19.jar"/>
+		<library type="code" id="resolver"  path="lib/resolver.jar"/>
+		<library type="code" id="serializer"  path="lib/serializer.jar"/>
+		<library type="code" id="stax-api"  path="lib/stax-api-1.0.jar"/>
+		<library type="code" id="swrl-jess-bridge"  path="lib/swrl-jess-bridge.jar"/>
+		<library type="code" id="wstx-asl"  path="lib/wstx-asl-3.0.0.jar"/>
+		<library type="code" id="xercesImpl"  path="lib/xercesImpl-2.7.1.jar"/>
+		<library type="code" id="xml-apis"  path="lib/xml-apis-1.0.b2.jar"/>
+		<library type="code" id="xml-apis-xerces"  path="lib/xml-apis-xerces-2.7.1.jar"/>
+		<library type="code" id="xmlParserAPIs"  path="lib/xmlParserAPIs.jar"/>
+		<library type="code" id="xsd"  path="lib/xsd-2.2.2.jar"/>
+		<library type="code" id="xsdlib"  path="lib/xsdlib-20050614.jar"/>	
 	</runtime>
 	<extension-point id="KBoxHandler">
 		<parameter-def id="class" />

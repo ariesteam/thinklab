@@ -38,6 +38,7 @@ import java.util.Map;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
+import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
@@ -73,7 +74,7 @@ public class ThinklabCommandlineVariableEvaluator implements
 
 		try {		
 			Command command = CommandParser.parse(expression);
-			ret = KnowledgeManager.get().submitCommand(command, outputWriter, session);
+			ret = CommandManager.get().submitCommand(command, outputWriter, session);
 		} catch (ThinklabException e) {
 			throw new ThinklabWorkflowException(e);
 		}

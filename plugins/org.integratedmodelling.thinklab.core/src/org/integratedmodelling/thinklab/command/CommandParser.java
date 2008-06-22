@@ -6,6 +6,7 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 
@@ -27,7 +28,7 @@ public class CommandParser {
 		}
 		
 		CommandDeclaration declaration = 
-			KnowledgeManager.get().requireDeclarationForCommand(a[0]);
+			CommandManager.get().requireDeclarationForCommand(a[0]);
 				
 		String[] args = new String[a.length-1];
 		System.arraycopy(a, 1, args, 0, a.length - 1);

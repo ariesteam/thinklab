@@ -108,13 +108,13 @@ public class Command {
     
     public Command(String ID, HashMap<String, String> args) throws ThinklabException {
     	if (ID != null)
-    		declaration = KnowledgeManager.get().requireDeclarationForCommand(ID);   
+    		declaration = CommandManager.get().requireDeclarationForCommand(ID);   
         this.args = args;
         opts = null;
     }
     
     public Command(String ID, HashMap<String, String> args, HashMap<String, String> opts) throws ThinklabException {
-        declaration = KnowledgeManager.get().requireDeclarationForCommand(ID);   
+        declaration = CommandManager.get().requireDeclarationForCommand(ID);   
         this.args = args;
         this.opts = opts;        
     }
@@ -145,7 +145,7 @@ public class Command {
     	args = new HashMap<String, String>();
     	opts = new HashMap<String, String>();
 
-        declaration = KnowledgeManager.get().requireDeclarationForCommand(commandName);  
+        declaration = CommandManager.get().requireDeclarationForCommand(commandName);  
     	
         for (String arg : declaration.getMandatoryArgumentNames()) {
         

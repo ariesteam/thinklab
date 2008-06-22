@@ -33,6 +33,7 @@
  **/
 package org.integratedmodelling.thinklab.command;
 
+import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.IAction;
@@ -51,7 +52,7 @@ public abstract class CommandPattern {
     abstract public IAction createAction();
     
     public void install(KnowledgeManager km) throws ThinklabException {
-        km.registerCommand(createCommand(), createAction());
+        CommandManager.get().registerCommand(createCommand(), createAction());
     }
 
 }

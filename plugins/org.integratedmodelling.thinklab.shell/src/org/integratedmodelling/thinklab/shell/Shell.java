@@ -38,7 +38,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.command.Command;
+import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
@@ -54,10 +56,11 @@ import org.java.plugin.util.ExtendedProperties;
  * A simple command-line driven knowledge manager. Just run and type 'help'.
  * @author Ferdinando Villa
  */
-public class Shell extends ApplicationPlugin {
+public class Shell extends ApplicationPlugin implements Application {
 
+    public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.shell";
+	
 	public ISession session;
-	public ICommandOutputReceptor cout = new ShellCommandOutputReceptor();
 	
 	public void printStatusMessage() {
 		
@@ -70,44 +73,48 @@ public class Shell extends ApplicationPlugin {
 		System.out.println("Enter \'help\' for a list of commands; \'exit\' quits");
 		System.out.println();
 	}
-	
-    public static void main(String[] args) {
-        
-                
-        try {
-        	// TODO substitute args with preferences or command-line parameters
-            KnowledgeManager km = 
-            	new KnowledgeManager(new FileKnowledgeRepository(), new CLInterface(args));
-
-            // load it all
-            km.initialize();
-
-            new Help().install(km);
-            new List().install(km);
-            new Load().install(km);
-            new Clear().install(km);
-            new Is().install(km);
-            new Import().install(km);
-            new Eval().install(km);
-            new Hierarchy().install(km);
-            new Query().install(km);
-            new KExport().install(km);
-            new KCopy().install(km);
-            new KImport().install(km);
-            new CMap().install(km);
-            new Find().install(km);
-            
-        } catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-    }
 
 	@Override
 	protected Application initApplication(ExtendedProperties arg0, String[] arg1)
 			throws Exception {
-		// TODO initialize thinklab
+
+		getManager().activatePlugin("org.integratedmodelling.thinklab.core");
+	
+		Thinklab thinklab = (Thinklab) getManager().getPlugin("org.integratedmodelling.thinklab.core");
+
+
+//        new Help().install(km);
+//        new List().install(km);
+//        new Load().install(km);
+//        new Clear().install(km);
+//        new Is().install(km);
+//        new Import().install(km);
+//        new Eval().install(km);
+//        new Hierarchy().install(km);
+//        new Query().install(km);
+//        new KExport().install(km);
+//        new KCopy().install(km);
+//        new KImport().install(km);
+//        new CMap().install(km);
+//        new Find().install(km);
+        
+		
+		return this;
+	}
+
+	@Override
+	protected void doStart() throws Exception {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	protected void doStop() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startApplication() throws Exception {
 		
 		/* greet user */
 		printStatusMessage();
@@ -137,7 +144,7 @@ public class Shell extends ApplicationPlugin {
 					if (cmd == null)
 						continue;
 					
-					IValue result = KnowledgeManager.get().submitCommand(cmd, cout, session);
+					IValue result = CommandManager.get().submitCommand(cmd, null, session);
                     if (result != null)
                         System.out.println(result.toString());
 				} catch (ThinklabException e) {
@@ -146,19 +153,6 @@ public class Shell extends ApplicationPlugin {
 				}
 			}
 		}
-		
-		return null;
-	}
-
-	@Override
-	protected void doStart() throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void doStop() throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 }

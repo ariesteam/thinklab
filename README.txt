@@ -1,4 +1,4 @@
-To run application from command line, change current directory to the folder
+To run the application from the command line, change the current directory to the folder
 where you unzipped the distribution package and type the following command:
 
 java -jar lib\jpf-boot.jar        [windows]

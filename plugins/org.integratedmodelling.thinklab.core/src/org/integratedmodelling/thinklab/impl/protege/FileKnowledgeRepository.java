@@ -150,7 +150,6 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		
 		File pluginDir = new File(protegeDir + "/plugins/edu.stanford.smi.protegex.owl");
 		
-		
 		if (!pluginDir.exists()) {
 			throw new ThinklabIOException(
 					"FileKnowledgeRepository: Protege support ontologies not found in " + 

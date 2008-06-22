@@ -4,12 +4,9 @@
 	class="org.integratedmodelling.thinklab.shell.Shell">
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
-	</requires>
+	</requires>	
 	<runtime>
 		<library id="core" path="classes/" type="code">
-			<doc caption="API documentation">
-				<doc-ref path="api/index.html" caption="javadoc" />
-			</doc>
 			<export prefix="*" />
 		</library>
 	</runtime>

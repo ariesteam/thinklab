@@ -20,6 +20,7 @@ import org.integratedmodelling.policy.KRPolicy;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
+import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
@@ -242,7 +243,7 @@ public class KRPolicyThinkLab implements KRPolicy, ISessionManager,
 
 		IValue result = null;
 		try {
-			result = KnowledgeManager.get().submitCommand(cmd,
+			result = CommandManager.get().submitCommand(cmd,
 					getICommandOutputReceptor(), session);
 			if (result != null)
 				getICommandOutputReceptor().displayOutput(result.toString());
