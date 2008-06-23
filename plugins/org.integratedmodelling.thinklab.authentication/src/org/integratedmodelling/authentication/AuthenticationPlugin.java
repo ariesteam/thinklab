@@ -41,7 +41,7 @@ import org.integratedmodelling.authentication.commands.Login;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
+import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.plugin.Plugin;
 import org.w3c.dom.Node;
 

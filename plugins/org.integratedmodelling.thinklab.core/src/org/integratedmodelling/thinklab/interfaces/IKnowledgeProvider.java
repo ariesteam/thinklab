@@ -30,7 +30,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.extensions;
+package org.integratedmodelling.thinklab.interfaces;
 
 import java.util.Collection;
 
@@ -39,14 +39,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject;
-import org.integratedmodelling.thinklab.interfaces.IOntology;
-import org.integratedmodelling.thinklab.interfaces.IProperty;
-import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.interfaces.IValue;
 
 /**
  * Tentative interface for the knowledge read/check operations of the knowledge manager.
@@ -55,7 +47,7 @@ import org.integratedmodelling.thinklab.interfaces.IValue;
  * @author Ferdinando Villa
  *
  */
-public interface KnowledgeProvider {
+public interface IKnowledgeProvider {
 
 	public abstract IConcept getRootConcept();
 

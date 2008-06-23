@@ -36,10 +36,10 @@ import groovy.lang.GroovyShell;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 import org.integratedmodelling.thinklab.value.Value;
 
@@ -81,7 +81,7 @@ public class GroovyInterpreter implements IAlgorithmInterpreter {
 		return ret;
 	}
 	
-	public void initialize(KnowledgeProvider km) {
+	public void initialize(IKnowledgeProvider km) {
 		// TODO Auto-generated method stub
 
 	}

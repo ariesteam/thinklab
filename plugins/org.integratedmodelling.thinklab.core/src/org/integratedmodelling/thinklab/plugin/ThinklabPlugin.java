@@ -57,11 +57,11 @@ package org.integratedmodelling.thinklab.plugin;
  */
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
@@ -70,14 +70,12 @@ import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
-import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.CopyURL;
 import org.java.plugin.Plugin;
 import org.java.plugin.registry.Extension;
 import org.java.plugin.registry.ExtensionPoint;
-import org.java.plugin.registry.Extension.Parameter;
 
 
 /**
@@ -89,20 +87,12 @@ import org.java.plugin.registry.Extension.Parameter;
 public abstract class ThinklabPlugin extends Plugin
 {
 	HashMap<String, URL> resources = new HashMap<String, URL>();
-	static URL uninitializedResource;
-	
-	private static final  Logger log = Logger.getLogger(ThinklabPlugin.class);
-	
 	Properties properties = new Properties();
 	
-	public ThinklabPlugin() {
-		if (uninitializedResource == null)
-			try {
-				uninitializedResource = new URL("http://uninitialized/resource");
-			} catch (MalformedURLException e) {
-				// can't happen
-			}
-	}
+	private File dataFolder;
+	private File confFolder;
+	private File plugFolder;
+	
 
 	/**
 	 * Demand plugin-specific initialization to this callback; 
@@ -119,9 +109,15 @@ public abstract class ThinklabPlugin extends Plugin
 		
 	}
 	
+	protected String getPluginBaseName() {
+		String[] sp = getDescriptor().getId().split("\\.");
+		return sp[sp.length - 1];
+	}
 	
 	@Override
 	protected final void doStart() throws Exception {
+		
+		loadConfiguration();
 		
 		/*
 		 * Check if we have a KM and if not, put out a good explanation of why we should
@@ -137,7 +133,52 @@ public abstract class ThinklabPlugin extends Plugin
 		loadCommands();
 		loadInstanceImplementationConstructors();
 		
+		loadExtensions();
+		
 		load();
+	}
+
+	private void loadConfiguration() throws ThinklabIOException {
+	
+       plugFolder = LocalConfiguration.getDataDirectory(getDescriptor().getId());
+       confFolder = new File(plugFolder + File.separator + "config");
+       dataFolder = new File(plugFolder + File.separator + "data");
+	
+       /*
+        * make sure we have all paths
+        */
+       if (
+    		   (!plugFolder.isDirectory() && !plugFolder.mkdirs()) || 
+    		   (!confFolder.isDirectory() && !confFolder.mkdirs()) || 
+    		   (!dataFolder.isDirectory() && !dataFolder.mkdirs()))
+    	   throw new ThinklabIOException("problem writing to plugin directory: " + plugFolder);
+       
+		/*
+		 * check if plugin contains a <pluginid.properties> file
+		 */
+       String configFile = getPluginBaseName() + ".properties";
+       File pfile = new File(confFolder + File.separator + configFile);
+       
+       if (!pfile.exists()) {
+    	   
+    	   /*
+    	    * copy stock properties if existing
+    	    */
+    	   URL sprop = getResourceURL("config/" + configFile);
+    	   if (sprop != null)
+    		   CopyURL.copy(sprop, pfile);
+    	   
+       } 
+       
+       
+       if (pfile.exists()) {
+    	   try {
+			properties.load(new FileInputStream(pfile));
+		} catch (Exception e) {
+			throw new ThinklabIOException(e);
+		}
+       }
+		
 	}
 
 	private Iterator<Extension> getExtensions(String extensionPoint) {
@@ -160,6 +201,38 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 
+	/**
+	 * Retrieve an URL for the named resource: if the resource string represents a URL, return the
+	 * url constructed from it; otherwise, check if the resource string represents an existing
+	 * file path. If so, create a file url from it and return it. Otherwise, construct a URL from
+	 * the plugin path and the resource name and return that.
+	 * 
+	 * @param resource
+	 * @return
+	 * @throws ThinklabIOException 
+	 */
+	protected URL getResourceURL(String resource) throws ThinklabIOException 	{
+
+		URL ret = null;
+		
+		try {
+			
+			File f = new File(resource);
+			
+			if (f.exists()) {
+				ret = f .toURI().toURL();
+			} else if (resource.contains("://")) {
+				ret = new URL(resource);
+			} else {			
+				ret =  getManager().getPluginClassLoader(getDescriptor()).getResource(resource);
+			}
+		} catch (MalformedURLException e) {
+			throw new ThinklabIOException(e);
+		}
+		
+		return ret;
+	}
+	
 	private void loadOntologies() throws ThinklabException {
 	
 		for (Iterator<Extension> it = getExtensions("ontology"); it.hasNext();) {
@@ -167,10 +240,8 @@ public abstract class ThinklabPlugin extends Plugin
 			Extension ext = it.next();
 			String url = ext.getParameter("url").valueAsString();
 			String csp = ext.getParameter("concept-space").valueAsString();
-			
-			URL oUrl = MiscUtilities.getURLForResource(url);
 
-			KnowledgeManager.get().getKnowledgeRepository().refreshOntology(oUrl, csp);
+			KnowledgeManager.get().getKnowledgeRepository().refreshOntology(getResourceURL(url), csp);
 		}
 		
 	}
@@ -270,11 +341,9 @@ public abstract class ThinklabPlugin extends Plugin
 		if (ret == null)
 			throw  new ThinklabPluginException("plugin " + getDescriptor().getId() + " does not provide resource " + name);
 	
-		if (resources.get(name).equals(uninitializedResource))
-			{
-				//ret = jar.saveResourceCached(name, KnowledgeManager.get().getPluginRegistry().getCacheDir());
-				resources.put(name, ret);
-			}
+		// TODO see what the Jar thing 
+		//ret = jar.saveResourceCached(name, KnowledgeManager.get().getPluginRegistry().getCacheDir());
+		resources.put(name, ret);
 		
 		return ret;
 	}

@@ -43,6 +43,11 @@ import org.apache.log4j.Logger;
 
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 
+/**
+ * TODO initialize with application (boot) properties
+ * @author Ferdinando Villa
+ *
+ */
 public class LocalConfiguration {
 
 	static Properties properties = null;

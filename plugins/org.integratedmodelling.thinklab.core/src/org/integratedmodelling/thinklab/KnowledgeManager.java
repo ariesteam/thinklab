@@ -57,7 +57,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
-import org.integratedmodelling.thinklab.extensions.KnowledgeProvider;
 import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
@@ -72,6 +71,7 @@ import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.plugin.PluginRegistry;
 import org.integratedmodelling.thinklab.session.SingleSessionManager;
@@ -105,7 +105,7 @@ import org.integratedmodelling.utils.Polylist;
  * @see CommandDeclaration
  * @see Command
  */
-public class KnowledgeManager implements KnowledgeProvider {
+public class KnowledgeManager implements IKnowledgeProvider {
 
     /** default core ontology URL. It really is small - just some POD data types and a couple properties. */
 	private static final String DEFAULT_CORE_ONTOLOGY = 
