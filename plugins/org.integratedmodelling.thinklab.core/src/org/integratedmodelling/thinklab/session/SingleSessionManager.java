@@ -47,7 +47,6 @@ import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 public class SingleSessionManager implements ISessionManager {
 	
 	public ISession session;
-	public ICommandOutputReceptor cout = new ShellCommandOutputReceptor();
 
 	public ISession createNewSession() throws ThinklabException {
 		return new Session();
