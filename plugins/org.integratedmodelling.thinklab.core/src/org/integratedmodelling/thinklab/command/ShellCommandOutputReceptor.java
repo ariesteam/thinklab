@@ -1,5 +1,5 @@
 /**
- * CommandPattern.java
+ * ShellCommandOutputReceptor.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -33,26 +33,16 @@
  **/
 package org.integratedmodelling.thinklab.command;
 
-import org.integratedmodelling.thinklab.command.CommandManager;
-import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 
-/**
- * A simple helper class to make it quicker to define a new command. It just provides two methods returning a command declaration 
- * and a response action. The install() method will install them in the Knowledge manager. Useful to keep the code clean, as all
- * classes can be declared as inner classes of a command pattern, and each command/response pair can be neatly incorporated in one
- * class file.
- * @see org.integratedmodelling.thinklab.commands.Help for an example.
- * @author villa
- */
-public abstract class CommandPattern {
-    
-    abstract public CommandDeclaration createCommand() throws ThinklabException;
-    abstract public IAction createAction();
-    
-    public void install(KnowledgeManager km) throws ThinklabException {
-        CommandManager.get().registerCommand(createCommand(), createAction());
-    }
+public class ShellCommandOutputReceptor implements ICommandOutputReceptor {
+
+	public void displayOutput(String output) {
+		System.out.println(output);
+	}
+
+	public void appendOutput(String output) {
+		System.out.print(output);
+	}
 
 }
