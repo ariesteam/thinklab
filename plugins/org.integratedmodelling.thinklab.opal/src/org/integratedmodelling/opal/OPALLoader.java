@@ -42,6 +42,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
+import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeLoaderPlugin;
@@ -50,31 +51,7 @@ import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.plugin.Plugin;
 import org.w3c.dom.Node;
 
-public class OPALLoaderPlugin extends Plugin implements IKnowledgeLoaderPlugin {
-
-	ArrayList<URL> profiles = new ArrayList<URL>();
-	
-	@Override
-	public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-			throws ThinklabPluginException {
-		
-		// does not need to do anything for now - Session loader will find the plug-in 
-		// from the name.
-
-	}
-
-	@Override
-	public void unload(KnowledgeManager km) throws ThinklabPluginException {
-	}
-
-	@Override
-	public void notifyResource(String name, long time, long size)
-			throws ThinklabException {
-		
-		if (name.endsWith(".opf")) {
-			profiles.add(this.exportResourceCached(name));
-		}
-	}
+public class OPALLoader implements KnowledgeLoader {
 
 	public Collection<IInstance> loadKnowledge(URL url, ISession session, IKBox kbox) throws ThinklabException {
 		
@@ -82,31 +59,6 @@ public class OPALLoaderPlugin extends Plugin implements IKnowledgeLoaderPlugin {
 		return val.validate(url, session, kbox);
 	}
 
-	@Override
-	public void initialize() throws ThinklabException {
-	
-		/*
-		 * prime the profile factory with any profiles loaded from the jar. This also creates
-		 * the profile factory.
-		 */ 
-		for (URL url : profiles) {
-			OPALProfileFactory.get().readProfile(url);
-		}
-	}
-
-	public boolean handlesFormat(String format) {
-
-		if (format.equals("xml")) {
-			return true;
-		}
-		
-		boolean ret = false;
-		try {
-			ret = (OPALProfileFactory.get().getProfile(format, false) != null);
-		} catch (ThinklabIOException e) {
-		}
-		return ret;
-	}
 
 	public void writeKnowledge(File outfile, String format, IInstance... instances)
 			throws ThinklabException {
@@ -115,9 +67,5 @@ public class OPALLoaderPlugin extends Plugin implements IKnowledgeLoaderPlugin {
 		
 	}
 
-	public void notifyConfigurationNode(Node n) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

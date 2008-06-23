@@ -39,10 +39,8 @@ import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
@@ -51,92 +49,66 @@ import org.integratedmodelling.thinklab.interfaces.IValue;
 
 /**
  * Load ontologies, OPAL files, objects from remote KBoxes into current session
+ * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  */
-public class Load extends CommandPattern {
 
-	class LoadAction implements IAction {
+class Load implements CommandHandler {
 
-		public IValue execute(Command command, ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
-			
-			String toload = command.getArgumentAsString("resource");
-			String kbox = command.getOptionAsString("kbox");
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-			Collection<IInstance> objs = null;
-			ArrayList<String> kids = null;
-			
-			if (toload.contains("#")) {
-				
-				/* kbox or other, load from wherever KM figures out */
-				objs = new ArrayList<IInstance>();
-				
-				IInstance i = km.getInstanceFromURI(toload, session);
-				if (i != null) {
-					objs.add(i);
-				}
-				
-			} else {
-				objs = session.loadObjects(toload);
-			}
-			
-			// TODO move these functionalities to kimport; implement the virtual kbox for 
-			// loaded sources.
-			if (kbox != null && objs.size() > 0) {
-				
-				IKBox kb = session.retrieveKBox(kbox);
-				kids = new ArrayList<String>();
-				
-				HashMap<String, String> references = new HashMap<String, String>();
-				
-				for (IInstance obj : objs) {
-					kids.add(kb.storeObject(obj, session, references));
-				}
-			}
-			
-			outputWriter.displayOutput(
-					(objs == null ? 0 : objs.size()) + 
-					" main objects loaded from " + 
-					toload +
-					(kbox == null ? "" : " [stored to kbox: " + kbox + "]"));
-			
-			if (objs != null) {
-				int cnt = 0;
-				for (IInstance obj : objs) {
+		String toload = command.getArgumentAsString("resource");
+		String kbox = command.getOptionAsString("kbox");
 
-					outputWriter.displayOutput(
-							"\t#" + obj.getLocalName() + 
-							(kids == null ? "" : 
-								("\t-> " + kbox + "#" + kids.get(cnt++))));
-				}
+		Collection<IInstance> objs = null;
+		ArrayList<String> kids = null;
+
+		if (toload.contains("#")) {
+
+			/* kbox or other, load from wherever KM figures out */
+			objs = new ArrayList<IInstance>();
+
+			IInstance i = km.getInstanceFromURI(toload, session);
+			if (i != null) {
+				objs.add(i);
 			}
 
-			return null;
+		} else {
+			objs = session.loadObjects(toload);
 		}
-		
-	}
 
-	public Load( ) {
-		super();
-	}
+		// TODO move these functionalities to kimport; implement the virtual
+		// kbox for
+		// loaded sources.
+		if (kbox != null && objs.size() > 0) {
 
-	@Override
-	public CommandDeclaration createCommand() {
-		CommandDeclaration ret = new CommandDeclaration("load", "load knowledge from external sources into current session");
-		try {
-			ret.addMandatoryArgument("resource", "filename or URL to load", 
-					KnowledgeManager.get().getTextType().getSemanticType());
-			ret.addOption("k", "kbox", "<knowledge box>", "the URL of a knowledge box to load to",
-						  KnowledgeManager.get().getTextType().getSemanticType());
-		} catch (ThinklabException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			IKBox kb = session.retrieveKBox(kbox);
+			kids = new ArrayList<String>();
+
+			HashMap<String, String> references = new HashMap<String, String>();
+
+			for (IInstance obj : objs) {
+				kids.add(kb.storeObject(obj, session, references));
+			}
 		}
-		return ret;
-	}
 
-	@Override
-	public IAction createAction() {
-		return new LoadAction();
+		outputWriter.displayOutput((objs == null ? 0 : objs.size())
+				+ " main objects loaded from " + toload
+				+ (kbox == null ? "" : " [stored to kbox: " + kbox + "]"));
+
+		if (objs != null) {
+			int cnt = 0;
+			for (IInstance obj : objs) {
+
+				outputWriter.displayOutput("\t#"
+						+ obj.getLocalName()
+						+ (kids == null ? "" : ("\t-> " + kbox + "#" + kids
+								.get(cnt++))));
+			}
+		}
+
+		return null;
 	}
 
 }

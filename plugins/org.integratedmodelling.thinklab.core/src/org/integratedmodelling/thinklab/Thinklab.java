@@ -31,9 +31,9 @@ public class Thinklab extends Plugin {
 		
 		if (_km == null) {
 			_km = new KnowledgeManager(new FileKnowledgeRepository());
+			_km.setPluginManager(getManager());
 			_km.initialize();
 		}
-		
 
 	}
 

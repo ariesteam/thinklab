@@ -35,10 +35,8 @@ package org.integratedmodelling.thinklab.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.IQuery;
@@ -51,93 +49,67 @@ import org.integratedmodelling.utils.Polylist;
 /**
  * Performs a query over all the installed kboxes or a specific one.
  */
-public class Query extends CommandPattern {
+public class Query implements CommandHandler {
 
-	class SearchAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		public IValue execute(Command command, ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
-			
-			String kb = command.getOptionAsString("kbox");
-			String toEval = command.getArgumentAsString("query");
-			
-			// twisted logics, but I like it.
-			for (String kbox : KBoxManager.get().getInstalledKboxes()) {
+		String kb = command.getOptionAsString("kbox");
+		String toEval = command.getArgumentAsString("query");
 
-				IKBox theBox = null;
-				
-				if (kb != null) {
-					kbox = kb;
-					theBox = session.retrieveKBox(kb);
-				} else {
-					theBox = session.retrieveKBox(kbox);
-				}
+		// twisted logics, but I like it.
+		for (String kbox : KBoxManager.get().getInstalledKboxes()) {
 
-				IQuery query = theBox.parseQuery(toEval);
-				
-				Polylist schema = Polylist.list(
-						IQueryResult.ID_FIELD_NAME,
-						IQueryResult.CLASS_FIELD_NAME,
-						IQueryResult.LABEL_FIELD_NAME, 
-						IQueryResult.DESCRIPTION_FIELD_NAME);
-				
-				IQueryResult result = theBox.query(query, schema, 0, -1);
+			IKBox theBox = null;
 
-				int nres = result.getResultCount();
-				
-				if (nres > 0) {
-					
-					outputWriter.displayOutput("\tID\tClass\tLabel\tDescription"); 
-
-					for (int i = 0; i < nres; i++) {
-
-						outputWriter.displayOutput(
-								"\t" + 
-								result.getResultField(i, IQueryResult.ID_FIELD_NAME) +
-								"\t" +
-								result.getResultField(i, IQueryResult.CLASS_FIELD_NAME) +
-								"\t" +
-								result.getResultField(i, IQueryResult.LABEL_FIELD_NAME) +
-								"\t" +
-								result.getResultField(i, IQueryResult.DESCRIPTION_FIELD_NAME));
-
-					}				
-				}
-				
-				outputWriter.displayOutput("total: " + nres);
-
-				// just once if we had a kbox specified
-				if (kbox == null)
-					break;
+			if (kb != null) {
+				kbox = kb;
+				theBox = session.retrieveKBox(kb);
+			} else {
+				theBox = session.retrieveKBox(kbox);
 			}
-			
-			
-			return null;
+
+			IQuery query = theBox.parseQuery(toEval);
+
+			Polylist schema = Polylist.list(IQueryResult.ID_FIELD_NAME,
+					IQueryResult.CLASS_FIELD_NAME,
+					IQueryResult.LABEL_FIELD_NAME,
+					IQueryResult.DESCRIPTION_FIELD_NAME);
+
+			IQueryResult result = theBox.query(query, schema, 0, -1);
+
+			int nres = result.getResultCount();
+
+			if (nres > 0) {
+
+				outputWriter.displayOutput("\tID\tClass\tLabel\tDescription");
+
+				for (int i = 0; i < nres; i++) {
+
+					outputWriter.displayOutput("\t"
+							+ result.getResultField(i,
+									IQueryResult.ID_FIELD_NAME)
+							+ "\t"
+							+ result.getResultField(i,
+									IQueryResult.CLASS_FIELD_NAME)
+							+ "\t"
+							+ result.getResultField(i,
+									IQueryResult.LABEL_FIELD_NAME)
+							+ "\t"
+							+ result.getResultField(i,
+									IQueryResult.DESCRIPTION_FIELD_NAME));
+
+				}
+			}
+
+			outputWriter.displayOutput("total: " + nres);
+
+			// just once if we had a kbox specified
+			if (kbox == null)
+				break;
 		}
-		
-	}
 
-	public Query() {
-		super();
-	}
-
-	@Override
-	public CommandDeclaration createCommand() throws ThinklabException {
-		
-		CommandDeclaration ret = new CommandDeclaration("query", "query one or more kboxes using a constraint");
-		ret.addOption("k", "kbox", 
-					  "a specific kbox to search. If not provided, all installed kboxes are searched.", 
-					  "",
-					  KnowledgeManager.Text().getSemanticType());
-		
-		ret.addMandatoryArgument("query", "the query: a constraint or other query that works with the kbox",
-								 KnowledgeManager.Text().getSemanticType());
-
-		return ret;
-	}
-
-	@Override
-	public IAction createAction() {
-		return new SearchAction();
+		return null;
 	}
 
 }

@@ -40,18 +40,14 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationState;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
-public class Olist extends CommandPattern {
-
-	class ContextualizeAction implements IAction {
+public class Olist implements CommandHandler {
 		
 		private void dumpObservation(IObservation o, String prefix, ICommandOutputReceptor out, HashSet<String> ids) throws ThinklabException {
 			
@@ -132,19 +128,3 @@ public class Olist extends CommandPattern {
 		
 	}
 	
-
-	@Override
-	public CommandDeclaration createCommand() throws ThinklabException {
-		CommandDeclaration cd = new CommandDeclaration("olist", "list the structure and state of an observation");
-		cd.addMandatoryArgument("observation", "observation", 
-				KnowledgeManager.Text().getSemanticType());
-		
-		return cd;
-	}
-
-	@Override
-	public IAction createAction() {
-		return new ContextualizeAction();
-	}
-	
-}

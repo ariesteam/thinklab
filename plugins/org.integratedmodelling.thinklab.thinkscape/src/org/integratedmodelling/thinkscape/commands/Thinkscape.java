@@ -35,20 +35,15 @@ package org.integratedmodelling.thinkscape.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinkscape.ThinkScape;
 
 /** the help command for the command-line interface */
-public class Thinkscape extends CommandPattern {
-
-       
-    class ThinkscapeAction implements IAction {
+public class Thinkscape implements CommandHandler {
 
         public IValue execute(Command command, ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
 
@@ -57,18 +52,4 @@ public class Thinkscape extends CommandPattern {
         }
     }
     
-    public Thinkscape( ) {
-    	super();
-	}
-
-	public CommandDeclaration createCommand() throws ThinklabException {
-		
-        CommandDeclaration ret = new CommandDeclaration("thinkscape", "show the thinkscape of the current session");
-        return ret;
-    }
-    
-    public IAction createAction() {
-        return new ThinkscapeAction();
-    }
-    
-}
+ 

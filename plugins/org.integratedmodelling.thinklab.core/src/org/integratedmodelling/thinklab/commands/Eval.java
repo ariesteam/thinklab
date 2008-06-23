@@ -35,10 +35,8 @@ package org.integratedmodelling.thinklab.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -46,52 +44,28 @@ import org.integratedmodelling.thinklab.value.AlgorithmValue;
 
 /**
  * Load ontologies, OPAL files, objects from remote KBoxes into current session
+ * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  */
-public class Eval extends CommandPattern {
+public class Eval implements CommandHandler {
 
-	class EvalAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputDest,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		public IValue execute(Command command, ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
-			
-			String language = command.getOptionAsString("language");
-			
-			// FIXME default to MVEL
-			if (language == null)
-				language = "groovy:GroovyCode";
-			
-			String toEval = command.toString();
+		String language = command.getOptionAsString("language");
 
-			IValue algorithm =
-					km.validateLiteral(km.requireConcept(language), toEval, null);
-			
-			IValue ret = session.execute((AlgorithmValue) algorithm);
-			
-			return ret;
-		}
-		
-	}
+		// FIXME default to MVEL
+		if (language == null)
+			language = "groovy:GroovyCode";
 
-	public Eval() {
-		super();
-	}
+		String toEval = command.toString();
 
-	@Override
-	public CommandDeclaration createCommand() throws ThinklabException {
-		CommandDeclaration ret = new CommandDeclaration("eval", "evaluate an expression");
-		ret.addOption("l", "language", 
-					  "language", 
-					  "groovy:GroovyCode",
-					  KnowledgeManager.Text().getSemanticType());
-		
-		ret.setFreeForm(true);
+		IValue algorithm = km.validateLiteral(km.requireConcept(language),
+				toEval, null);
+
+		IValue ret = session.execute((AlgorithmValue) algorithm);
 
 		return ret;
-	}
-
-	@Override
-	public IAction createAction() {
-		return new EvalAction();
 	}
 
 }

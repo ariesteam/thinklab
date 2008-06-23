@@ -352,7 +352,7 @@ public class RasterCoverage implements ICoverage {
 		return noData == null ? -9999.0 : noData[0];
 	}
 	
-	public String getCoordinateReferenceSystemCode() throws ThinklabValidationException {
+	public String getCoordinateReferenceSystemCode() throws ThinklabException {
 		return GeospacePlugin.getCRSIdentifier(crs, false);
 	}
 

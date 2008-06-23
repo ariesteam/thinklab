@@ -7,12 +7,11 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
 
 public class CommandManager {
 	/**
@@ -24,7 +23,7 @@ public class CommandManager {
 	 * each command has an action associated, also kept in a hash indexed by
 	 * command ID
 	 */
-	HashMap<String, IAction> actions;
+	HashMap<String, CommandHandler> actions;
 
 	/**
 	 * Register a command for use in the Knowledge Manager. The modality of
@@ -39,7 +38,7 @@ public class CommandManager {
 	 * @see CommandDeclaration
 	 * @see ISessionManager
 	 */
-	public void registerCommand(CommandDeclaration command, IAction action)
+	public void registerCommand(CommandDeclaration command, CommandHandler action)
 			throws ThinklabException {
 
 		// TODO throw exception if command is installed
@@ -102,7 +101,7 @@ public class CommandManager {
 		if (cmd == null || cmd.getDeclaration() == null)
 			return null;
 
-		IAction a = actions.get(cmd.getDeclaration().ID);
+		CommandHandler a = actions.get(cmd.getDeclaration().ID);
 		return a.execute(cmd, outputWriter, session, KnowledgeManager.get());
 		// TODO transfer to knowledge manager logging policy
 	}

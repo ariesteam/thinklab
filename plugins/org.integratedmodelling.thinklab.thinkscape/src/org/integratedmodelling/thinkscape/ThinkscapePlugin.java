@@ -32,34 +32,23 @@
  **/
 package org.integratedmodelling.thinkscape;
 
-import java.io.File;
-
 import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.plugin.Plugin;
-import org.integratedmodelling.thinkscape.commands.Thinkscape;
-import org.w3c.dom.Node;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
-public class ThinkscapePlugin extends Plugin  {
+public class ThinkscapePlugin extends ThinklabPlugin  {
 
 	/* log4j logger used for this class. Can be used by other classes through logger()  */
 	private static  Logger log = Logger.getLogger(ThinkscapePlugin.class);
-	static final public String ID = "Thinkscape";
+	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.thinkscape";
 	
 	public ThinkscapePlugin() {
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public void initialize() throws ThinklabException {
-		
-		
-	}
-	
 	public static ThinkscapePlugin get() {
-		return (ThinkscapePlugin) getPlugin(ID);
+		return (ThinkscapePlugin) getPlugin(PLUGIN_ID);
 	}
 
 	public static Logger logger() {
@@ -67,33 +56,16 @@ public class ThinkscapePlugin extends Plugin  {
 	}
 
 	@Override
-	public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-			throws ThinklabPluginException {
+	public void load(KnowledgeManager km) throws ThinklabPluginException {
 
-		try {
-			
-			new Thinkscape().install(km);
-			
-		} catch (ThinklabException e) {
-			throw new ThinklabPluginException(e);
-		}
-		
-
+		// new Thinkscape().install(km);
 	}
 
 	@Override
-	public void notifyResource(String name, long time, long size)
-			throws ThinklabException {
-	}
-
-	@Override
-	public void unload(KnowledgeManager km) throws ThinklabPluginException {
+	public void unload() throws ThinklabPluginException {
 		// TODO Auto-generated method stub
 
 	}
-	public void notifyConfigurationNode(Node n) {
-		// TODO Auto-generated method stub
-		
-	}
 
+	
 }

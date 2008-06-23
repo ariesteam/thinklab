@@ -35,60 +35,30 @@ package org.integratedmodelling.authentication.commands;
 import org.integratedmodelling.authentication.AuthenticationPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
-public class AddUser extends CommandPattern {
+public class AddUser implements CommandHandler {
 
-	class AddUserAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputDest,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		public IValue execute(Command command, ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
-			
-			// TODO this should figure out what the semantic type is for, cross check properly, and
-			// call the appropriate methods. So far it only handles concepts.
-			String username = command.getArgumentAsString("user");
-			String password = command.getArgumentAsString("password");
+		// TODO this should figure out what the semantic type is for, cross
+		// check properly, and
+		// call the appropriate methods. So far it only handles concepts.
+		String username = command.getArgumentAsString("user");
+		String password = command.getArgumentAsString("password");
 
-			AuthenticationPlugin.get().createUser(username, password);	
-			
-				/*
-				 * let the interactive bastard know
-				 */
-				outputDest.displayOutput(
-						"user " + 
-						username + 
-						" added");
-				return null;
-		}
-		
-	}
-	
-	public AddUser( ) {
-		super();
-	}
+		AuthenticationPlugin.get().createUser(username, password);
 
-	@Override
-	public CommandDeclaration createCommand() {
-		CommandDeclaration cd = new CommandDeclaration("adduser", "create user in authentication manager");
-		try {
-			cd.addMandatoryArgument("user", "user id", 
-					KnowledgeManager.get().getTextType().getSemanticType());
-			cd.addMandatoryArgument("password", "password", 
-					KnowledgeManager.get().getTextType().getSemanticType());
-		} catch (ThinklabException e) {
-			e.printStackTrace();
-		}
-		return cd;
-	}
-
-	@Override
-	public IAction createAction() {
-		return new AddUserAction();
+		/*
+		 * let the interactive bastard know
+		 */
+		outputDest.displayOutput("user " + username + " added");
+		return null;
 	}
 
 }

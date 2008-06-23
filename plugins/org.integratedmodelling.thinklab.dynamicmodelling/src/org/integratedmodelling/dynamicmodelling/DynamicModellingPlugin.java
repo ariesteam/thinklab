@@ -55,14 +55,13 @@ import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperation
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeLoaderPlugin;
 import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 import org.w3c.dom.Node;
 
-public class DynamicModellingPlugin extends Plugin implements IKnowledgeLoaderPlugin {
+public class DynamicModellingPlugin extends ThinklabPlugin {
 
 	static final public String FLOW_TYPE = "measurement:Ranking";
 	static final public String STOCK_TYPE = "measurement:Ranking";
@@ -79,7 +78,7 @@ public class DynamicModellingPlugin extends Plugin implements IKnowledgeLoaderPl
 	private HashMap<String, IModelLoaderConstructor> modelLoaders = new HashMap<String, IModelLoaderConstructor>();
 	private ArrayList<String> htmlResources = new ArrayList<String>();
 
-	static final public String ID = "DynamicModelling";
+	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.dynamicmodelling";
 	static final public String DEFAULT_LOADER = "observation";
 	public static final String STOCK_INITVALUE_LITERAL = "dynmod:hasInitialValue";
 	
@@ -88,28 +87,24 @@ public class DynamicModellingPlugin extends Plugin implements IKnowledgeLoaderPl
 		ModelDocumentationGenerator.initialize(this);
 	}
 	
-	public static DynamicModellingPlugin get() {
-		return (DynamicModellingPlugin) getPlugin(ID);
+	public static DynamicModellingPlugin get() throws ThinklabPluginException {
+		return (DynamicModellingPlugin)getPlugin(PLUGIN_ID);
 	}
 
 	public static Logger logger() {
 		return log;
 	}
 	
-	public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-			throws ThinklabPluginException {
+	public void load(KnowledgeManager km) throws ThinklabPluginException {
 		
-		try {
+			// install temporary command to parse a file.
+			// TODO move to plugin.xml
+			//new MDoc().install(km);
 			
-			// install temporary command to parse a file. 
-			new MDoc().install(km);
-			
-		} catch (ThinklabException e) {
-			throw new ThinklabPluginException(e);
-		}
-
+	
 		/*
 		 * register default and other known loaders
+		 * TODO move to extension points
 		 */
 		registerModelLoader(DEFAULT_LOADER, new OWLLoaderConstructor());
 		registerModelLoader("doc", new DocumentationLoaderConstructor());
@@ -159,36 +154,6 @@ public class DynamicModellingPlugin extends Plugin implements IKnowledgeLoaderPl
 
 	}
 
-	public boolean handlesFormat(String format) {
-		return format.equals("simile") || format.equals("sml");
-	}
-
-	public Collection<IInstance> loadKnowledge(URL url, ISession session, IKBox kbox) throws ThinklabException {
-
-		/* look for installed observation loader */
-		IModelLoader l = DynamicModellingPlugin.get().retrieveModelLoader("observation");
-			
-		// default to OWL loader
-		if (l == null) {
-			l = new ModelOWLLoader();
-		}
-		
-		Collection<Polylist> instances = l.loadModel(url.toString());
-		ArrayList<IInstance> ret = new ArrayList<IInstance>();
-		
-		if (instances != null)
-			for (Polylist list : instances) {
-				if (list != null) {
-					IInstance i = session.createObject(list);
-					ret.add(i);
-					if (kbox != null) {
-						kbox.storeObject(i, session);
-					}
-				}
-			}
-
-		return ret;
-	}
 
 	public void copyHTMLResources(File docPath) throws ThinklabException {
 		
@@ -196,33 +161,26 @@ public class DynamicModellingPlugin extends Plugin implements IKnowledgeLoaderPl
 		// omitting the resources/ thing.
 		for (String res : htmlResources) {
 			
-			InputStream inp = this.retrieveResource(res);
-			String fileName = docPath + "/" + res.substring(10);
-			try {
-				MiscUtilities.writeToFile(fileName, inp, true);
-			} catch (IOException e) {
-				throw new ThinklabIOException(e);
-			}
+//			InputStream inp = this.retrieveResource(res);
+//			String fileName = docPath + "/" + res.substring(10);
+//			try {
+//				MiscUtilities.writeToFile(fileName, inp, true);
+//			} catch (IOException e) {
+//				throw new ThinklabIOException(e);
+//			}
 			
 		}
 			
 		
 	}
 
-	/* wouldn't it be nice, translate SIMILE to STELLA and back. */
-	public void writeKnowledge(File outfile, String format, IInstance... instances)
-			throws ThinklabException {
-		throw new ThinklabInappropriateOperationException(
-				"output to proprietary model formats is unsupported. " +
-				"Please serialize models to XML.");
-		
-	}
-
-	public void notifyConfigurationNode(Node n) {
+	@Override
+	protected void unload() throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}
-	
+
+
 	
 
 }

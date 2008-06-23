@@ -35,10 +35,8 @@ package org.integratedmodelling.thinklab.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -46,53 +44,23 @@ import org.integratedmodelling.thinklab.session.SingleSessionManager;
 
 /**
  * admin command to clear knowledge base (totally or selectively)
+ * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
- *
+ * 
  */
-public class Clear extends CommandPattern {
+public class Clear implements CommandHandler {
 
-	class ClearAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputDest,
+			ISession session, KnowledgeManager km) throws ThinklabException {
+		// TODO we want arguments and warnings
 
-		public IValue execute(Command command, ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
-			// TODO we want arguments and warnings
+		if (command.getArgumentAsString("ontology").equals("__all__")) {
+			if (km.getSessionManager() instanceof SingleSessionManager) {
+				((SingleSessionManager) km.getSessionManager()).clear();
+			}
+		} else
+			km.clear(command.getArgumentAsString("ontology"));
 
-			if (command.getArgumentAsString("ontology").equals("__all__")) {
-				if (km.getSessionManager() instanceof SingleSessionManager) {
-					((SingleSessionManager)km.getSessionManager()).clear();
-				}
-			} else
-				km.clear(command.getArgumentAsString("ontology"));
-			
-			return null;
-		}	
+		return null;
 	}
-
-	 
-	
-	public Clear() {
-		super(); 
-	}
-
-	@Override
-	public CommandDeclaration createCommand() {
-		CommandDeclaration cd = new CommandDeclaration("clear", "clear current session or specified ontology from knowledge base");
-		
-		/* we'll have args and options, I promise */
-		try {
-			cd.addOptionalArgument("ontology", "the ontology to clear", 
-					KnowledgeManager.get().getTextType().getSemanticType(), "__all__");
-		} catch (ThinklabException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return cd;
-	}
-
-	@Override
-	public IAction createAction() {
-		// TODO Auto-generated method stub
-		return new ClearAction();
-	}
-
 }

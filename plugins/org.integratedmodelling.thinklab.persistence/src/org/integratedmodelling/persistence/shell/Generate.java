@@ -33,20 +33,17 @@
 package org.integratedmodelling.persistence.shell;
 
 import org.integratedmodelling.persistence.factory.PersistentStorageFactory;
-import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.command.Command;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.value.TextValue;
-
 
 /**
  * A Thinklab shell command to generate Entity Beans and Hibernate mappings
@@ -55,48 +52,33 @@ import org.integratedmodelling.thinklab.value.TextValue;
  * @since Feb 5, 2007
  * @version 0.2
  */
-public class Generate extends CommandPattern {
+public class Generate implements CommandHandler {
 
-	class GenerateAction implements IAction {
-
-		public IValue execute(Command command, ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km)  {
-			SemanticType s1;
-			IConcept concept;
-			if(command.getArgumentAsString("c1")==null)
-				return new TextValue("Cant generate from your arguments. \n USE: \n generate valid:SemanticType");
-			 try {
-				 if (command.getArgumentAsString("c1").contains(":")){
-					s1 = new SemanticType(command.getArgumentAsString("c1"));
-					concept = KnowledgeManager.get().requireConcept(s1);
-					PersistentStorageFactory.createPersistentStorage(concept);
-				 }
-				 else{
-					 IOntology onto = KnowledgeManager.get().getKnowledgeRepository().requireOntology(command.getArgumentAsString("c1"));
-					 PersistentStorageFactory.createPersistentStorage(onto);
-				 }
-			} catch (ThinklabException e) {
-				return new TextValue("Cant generate from your arguments. \n USE: \n generate valid:SemanticType" +e.getStackTrace());
-			}
-			return new TextValue("Generated HJBeans and HBMaps for " + command.getArgumentAsString("c1"));
-		}
-		
-	}
-
-	@Override
-	public CommandDeclaration createCommand() {
-		CommandDeclaration cd = new CommandDeclaration("generate", "generates a persistent storage shell for the given concept");
+	public IValue execute(Command command, ICommandOutputReceptor outputDest,
+			ISession session, KnowledgeManager km) {
+		SemanticType s1;
+		IConcept concept;
+		if (command.getArgumentAsString("c1") == null)
+			return new TextValue(
+					"Cant generate from your arguments. \n USE: \n generate valid:SemanticType");
 		try {
-			cd.addMandatoryArgument("c1", "concept1", 
-					KnowledgeManager.get().getTextType().getSemanticType());
+			if (command.getArgumentAsString("c1").contains(":")) {
+				s1 = new SemanticType(command.getArgumentAsString("c1"));
+				concept = KnowledgeManager.get().requireConcept(s1);
+				PersistentStorageFactory.createPersistentStorage(concept);
+			} else {
+				IOntology onto = KnowledgeManager.get()
+						.getKnowledgeRepository().requireOntology(
+								command.getArgumentAsString("c1"));
+				PersistentStorageFactory.createPersistentStorage(onto);
+			}
 		} catch (ThinklabException e) {
-			e.printStackTrace();
+			return new TextValue(
+					"Cant generate from your arguments. \n USE: \n generate valid:SemanticType"
+							+ e.getStackTrace());
 		}
-		return cd;
-	}
-
-	@Override
-	public IAction createAction() {
-		return new GenerateAction();
+		return new TextValue("Generated HJBeans and HBMaps for "
+				+ command.getArgumentAsString("c1"));
 	}
 
 }

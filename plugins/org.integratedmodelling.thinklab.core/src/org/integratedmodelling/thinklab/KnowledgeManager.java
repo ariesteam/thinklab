@@ -57,11 +57,11 @@ import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
+import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeLoaderPlugin;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
@@ -79,6 +79,7 @@ import org.integratedmodelling.thinklab.validators.NumberValidator;
 import org.integratedmodelling.thinklab.validators.TextValidator;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
+import org.java.plugin.PluginManager;
 
 /**
  * <p>The Knowledge Manager is the main actor in Thinklab. It gives API access to a knowledge repository and to all the
@@ -155,6 +156,9 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	 * @deprecated use JPF directly
 	 */
 	protected PluginRegistry   pluginRegistry;
+	
+	protected PluginManager pluginManager = null;
+	
 	protected KBoxManager kboxManager;
 	protected CommandManager commandManager;
 	
@@ -194,6 +198,8 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	private HashMap<String, InstanceImplementationConstructor> instanceConstructors;
 
 	private HashMap<String, LiteralValidator> literalValidators;
+
+	private HashMap<String, KnowledgeLoader> knowledgeLoaders;
 
 	private ArrayList<String> sessionListeners = new ArrayList<String>();
 
@@ -592,12 +598,9 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	public void registerSessionListenerClass(String sessionListenerClass) {
 		sessionListeners.add(sessionListenerClass);
 	}
-
 	
 	public void registerInstanceConstructor(String conceptID, InstanceImplementationConstructor constructor) {
-		
 		this.instanceConstructors.put(conceptID, constructor);
-		
 	}
 	
 	public void registerLiteralValidator(String conceptID, LiteralValidator validator) {
@@ -606,8 +609,10 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		this.literalValidators.put(conceptID, validator);
 	}
 	
+	public void registerKnowledgeLoader(String format, KnowledgeLoader loader) {
+		knowledgeLoaders.put(format, loader);
+	}
 
-    
 	/**
 	 * Return the named plugin, or null if not found.
 	 * 
@@ -1242,19 +1247,9 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	 * @param format
 	 * @return
 	 */
-	public IKnowledgeLoaderPlugin getLoaderPlugin(String format) {
+	public KnowledgeLoader getKnowledgeLoader(String format) {
 
-		IKnowledgeLoaderPlugin ret = null;
-		
-		for (IPlugin plu : pluginRegistry.getPlugins()) {
-			if (plu instanceof IKnowledgeLoaderPlugin &&
-					((IKnowledgeLoaderPlugin)plu).handlesFormat(format)) {
-				ret = (IKnowledgeLoaderPlugin) plu;
-				break;
-			}
-		}
-		
-		return ret;
+		return knowledgeLoaders.get(format);
 	}
 	
 	/**
@@ -1307,5 +1302,14 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	public CommandManager getCommandManager() {
 		return commandManager;
 	}
+
+	public PluginManager getPluginManager() {
+		return pluginManager;
+	}
+	
+	public void setPluginManager(PluginManager pman) {
+		pluginManager = pman;
+	}
+
 
 }

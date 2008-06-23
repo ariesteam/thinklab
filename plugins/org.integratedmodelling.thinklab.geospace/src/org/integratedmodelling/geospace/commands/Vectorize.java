@@ -37,15 +37,11 @@ import java.net.URL;
 import org.integratedmodelling.geospace.coverage.CoverageFactory;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
-import org.integratedmodelling.geospace.extents.GridExtent;
-import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.geospace.gis.ThinklabVectorizer;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -53,59 +49,32 @@ import org.integratedmodelling.utils.MiscUtilities;
 
 /**
  * Load ontologies, OPAL files, objects from remote KBoxes into current session
+ * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  */
-public class Vectorize extends CommandPattern {
+public class Vectorize implements CommandHandler {
 
-	class RasterizeAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		public IValue execute(Command command, ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
-			
-			String toload = command.getArgumentAsString("resource");
-			// String output = command.getArgumentAsString("output");
-					
-			URL theUrl = MiscUtilities.getURLForResource(toload);
-			
-			RasterCoverage rCoverage = (RasterCoverage) CoverageFactory.requireCoverage(theUrl, null);
-			
-			// todo remove or condition to an option
-			rCoverage.show();
-			
-			VectorCoverage vCoverage = 
-				new ThinklabVectorizer().vectorize(rCoverage, null);
-			
-			// TODO we should obviously endeavor to save it if an output arg is passed.
-			vCoverage.show();
-			
-			return null;
-		}
+		String toload = command.getArgumentAsString("resource");
+		// String output = command.getArgumentAsString("output");
+
+		URL theUrl = MiscUtilities.getURLForResource(toload);
+
+		RasterCoverage rCoverage = (RasterCoverage) CoverageFactory
+				.requireCoverage(theUrl, null);
+
+		// todo remove or condition to an option
+		rCoverage.show();
+
+		VectorCoverage vCoverage = new ThinklabVectorizer().vectorize(
+				rCoverage, null);
+
+		// TODO we should obviously endeavor to save it if an output arg is
+		// passed.
+		vCoverage.show();
+
+		return null;
 	}
-
-	public Vectorize( ) {
-		super();
-	}
-
-	@Override
-	public CommandDeclaration createCommand() {
-		CommandDeclaration ret = new CommandDeclaration("vectorize", "read a raster coverage and create a vector one from it");
-		try {
-			ret.addMandatoryArgument("resource", "a supported GIS vector file to rasterize", 
-					KnowledgeManager.Text().getSemanticType());
-			//ret.addMandatoryArgument("output", "OPAL file to write to", 
-			//		KnowledgeManager.Text().getSemanticType());
-			ret.addOptionalArgument("attribute", "the name of the value attribute in the vector coverage",
-					KnowledgeManager.Text().getSemanticType(), "the_value");
-			
-		} catch (ThinklabException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ret;
-	}
-
-	@Override
-	public IAction createAction() {
-		return new RasterizeAction();
-	}
-
 }

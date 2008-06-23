@@ -37,82 +37,52 @@ import java.util.Properties;
 import org.integratedmodelling.authentication.AuthenticationPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.value.BooleanValue;
 
-public class Login extends CommandPattern {
+public class Login implements CommandHandler {
 
-	class LoginAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputDest,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		public IValue execute(Command command, ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
-			
-			// TODO this should figure out what the semantic type is for, cross check properly, and
-			// call the appropriate methods. So far it only handles concepts.
-			String username = command.getArgumentAsString("user");
-			String password = command.getArgumentAsString("password");
-			
-			Properties p = session.getProperties();
-			
-			boolean ret = AuthenticationPlugin.get().authenticateUser(username, password, p);	
-			
-			if (ret) {
-				
-				/*
-				 * tell session who the user is 
-				 */
-				p.put(AuthenticationPlugin.USERID_PROPERTY, username);
-				
-				/*
-				 * merge session properties with user properties
-				 */
-				p.putAll(AuthenticationPlugin.get().getUserProperties(username));
-				
-				/*
-				 * let the interactive bastard know
-				 */
-				outputDest.displayOutput(
-						"user " + 
-						username + 
-						" logged in");
-			} else {
+		// TODO this should figure out what the semantic type is for, cross
+		// check properly, and
+		// call the appropriate methods. So far it only handles concepts.
+		String username = command.getArgumentAsString("user");
+		String password = command.getArgumentAsString("password");
 
-				outputDest.displayOutput(
-						"login failed");
-				
-			}
-			
-			return new BooleanValue(ret);
+		Properties p = session.getProperties();
+
+		boolean ret = AuthenticationPlugin.get().authenticateUser(username,
+				password, p);
+
+		if (ret) {
+
+			/*
+			 * tell session who the user is
+			 */
+			p.put(AuthenticationPlugin.USERID_PROPERTY, username);
+
+			/*
+			 * merge session properties with user properties
+			 */
+			p.putAll(AuthenticationPlugin.get().getUserProperties(username));
+
+			/*
+			 * let the interactive bastard know
+			 */
+			outputDest.displayOutput("user " + username + " logged in");
+		} else {
+
+			outputDest.displayOutput("login failed");
+
 		}
-		
-	}
-	
-	public Login( ) {
-		super();
-	}
 
-	@Override
-	public CommandDeclaration createCommand() {
-		CommandDeclaration cd = new CommandDeclaration("login", "authenticate user for current session");
-		try {
-			cd.addMandatoryArgument("user", "user id", 
-					KnowledgeManager.get().getTextType().getSemanticType());
-			cd.addMandatoryArgument("password", "password", 
-					KnowledgeManager.get().getTextType().getSemanticType());
-		} catch (ThinklabException e) {
-			e.printStackTrace();
-		}
-		return cd;
-	}
-
-	@Override
-	public IAction createAction() {
-		return new LoginAction();
+		return new BooleanValue(ret);
 	}
 
 }

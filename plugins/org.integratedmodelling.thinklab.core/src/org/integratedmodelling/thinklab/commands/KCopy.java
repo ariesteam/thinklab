@@ -35,59 +35,30 @@ package org.integratedmodelling.thinklab.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.kbox.KBoxCopier;
 
 /**
- * Load ontologies, OPAL files. 
+ * Load ontologies, OPAL files.
+ * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  */
-public class KCopy extends CommandPattern {
+public class KCopy implements CommandHandler {
 
-	class LoadAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		public IValue execute(Command command, ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
-			
-			String from = command.getArgumentAsString("ksource");
-			String to = command.getArgumentAsString("kdestination");
-			
-			KBoxCopier copier = new KBoxCopier();
-			copier.transferKnowledge(from, to, session);
-			
-			return null;
-		}
-		
-	}
+		String from = command.getArgumentAsString("ksource");
+		String to = command.getArgumentAsString("kdestination");
 
-	public KCopy( ) {
-		 super();
-	}
+		KBoxCopier copier = new KBoxCopier();
+		copier.transferKnowledge(from, to, session);
 
-	@Override
-	public CommandDeclaration createCommand() {
-		
-		CommandDeclaration ret = new CommandDeclaration("kcopy", "copy the contents of a kbox into another");
-		try {
-			ret.addMandatoryArgument("ksource", "ID or URL of the source kbox",
-					KnowledgeManager.get().getTextType().getSemanticType());
-			ret.addMandatoryArgument("kdestination", "ID or URL of the destination kbox",
-					KnowledgeManager.get().getTextType().getSemanticType());
-		} catch (ThinklabException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ret;
-	}
-
-	@Override
-	public IAction createAction() {
-		return new LoadAction();
+		return null;
 	}
 
 }

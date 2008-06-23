@@ -33,9 +33,7 @@
  **/
 package org.integratedmodelling.thinklab.session;
 
-import org.integratedmodelling.thinklab.command.ShellCommandOutputReceptor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 

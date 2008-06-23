@@ -93,7 +93,7 @@ public final class CGUtils {
 		
 		File pluginScratchFolder = null;
 		try {
-			pluginScratchFolder = PluginRegistry.get().getScratchDir(PersistencePlugin.pluginname);
+			pluginScratchFolder = PluginRegistry.get().getScratchDir(PersistencePlugin.PLUGIN_ID);
 		} catch (ThinklabPluginException e) {
 			log.debug(e);
 		} catch (ThinklabNoKMException e) {

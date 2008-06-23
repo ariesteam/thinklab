@@ -50,6 +50,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnknownResourceException;
+import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
@@ -194,16 +195,7 @@ public class Session implements ISession {
 		if (format != null) {
 
 			/* find the plugin that handles these */
-			IKnowledgeLoaderPlugin plu = null;
-
-			for (IPlugin p : KnowledgeManager.get().retrievePlugins()) {
-				if (p instanceof IKnowledgeLoaderPlugin) {
-					if (((IKnowledgeLoaderPlugin) p).handlesFormat(format)) {
-						plu = (IKnowledgeLoaderPlugin) p;
-						break;
-					}
-				}
-			}
+			KnowledgeLoader plu = KnowledgeManager.get().getKnowledgeLoader(format);
 
 			if (plu != null) {
 

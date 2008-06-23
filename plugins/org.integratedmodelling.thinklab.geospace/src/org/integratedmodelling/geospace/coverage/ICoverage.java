@@ -39,7 +39,7 @@ public interface ICoverage {
 	
 	public abstract String getSourceUrl();
 
-	public abstract String getCoordinateReferenceSystemCode() throws ThinklabValidationException;
+	public abstract String getCoordinateReferenceSystemCode() throws ThinklabException;
 
 	public abstract CoordinateReferenceSystem getCoordinateReferenceSystem();
 	

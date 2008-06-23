@@ -35,63 +35,36 @@ package org.integratedmodelling.thinklab.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.utils.MiscUtilities;
 
 /**
- * Load ontologies, OPAL files. 
+ * Load ontologies, OPAL files.
+ * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  */
-public class Import extends CommandPattern {
+public class Import implements CommandHandler {
 
-	class LoadAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		public IValue execute(Command command, ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
-			
-			// TODO only handle ontologies for now
-			String toload = command.getArgumentAsString("resource");
-			String name = command.hasOption("name") ? command.getOptionAsString("name") : null;
-			
-			if (name == null)
-				name = MiscUtilities.getNameFromURL(toload);
-			
-			name = km.registerOntology(toload, name);
-			
-			outputWriter.displayOutput("ontology " + name + " loaded");
-			
-			return null;
-		}
-		
-	}
+		// TODO only handle ontologies for now
+		String toload = command.getArgumentAsString("resource");
+		String name = command.hasOption("name") ? command
+				.getOptionAsString("name") : null;
 
-	public Import( ) {
-		 super();
-	}
+		if (name == null)
+			name = MiscUtilities.getNameFromURL(toload);
 
-	@Override
-	public CommandDeclaration createCommand() {
-		CommandDeclaration ret = new CommandDeclaration("import", "import knowledge from external sources");
-		try {
-			ret.addMandatoryArgument("resource", "filename or URL to load",
-					KnowledgeManager.get().getTextType().getSemanticType());
-			ret.addOption("n", "name", "<name>", "a short name for the concept space",
-					  KnowledgeManager.get().getTextType().getSemanticType());
-		} catch (ThinklabException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ret;
-	}
+		name = km.registerOntology(toload, name);
 
-	@Override
-	public IAction createAction() {
-		return new LoadAction();
+		outputWriter.displayOutput("ontology " + name + " loaded");
+
+		return null;
 	}
 
 }

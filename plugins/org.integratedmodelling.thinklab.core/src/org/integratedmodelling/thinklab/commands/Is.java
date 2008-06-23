@@ -36,55 +36,28 @@ package org.integratedmodelling.thinklab.commands;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.value.BooleanValue;
 
-public class Is extends CommandPattern {
+public class Is implements CommandHandler {
 
-	class IsAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputDest,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		public IValue execute(Command command, ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
-			
-			// TODO this should figure out what the semantic type is for, cross check properly, and
-			// call the appropriate methods. So far it only handles concepts.
-			SemanticType s1 = new SemanticType(command.getArgumentAsString("c1"));
-			SemanticType s2 = new SemanticType(command.getArgumentAsString("c2"));
-			
-			boolean res = KnowledgeManager.get().requireConcept(s1).
-				is(KnowledgeManager.get().requireConcept(s2));
-						
-			return new BooleanValue(res);
-		}
-		
-	}
-	
-	public Is( ) {
-		super();
-	}
+		// TODO this should figure out what the semantic type is for, cross
+		// check properly, and
+		// call the appropriate methods. So far it only handles concepts.
+		SemanticType s1 = new SemanticType(command.getArgumentAsString("c1"));
+		SemanticType s2 = new SemanticType(command.getArgumentAsString("c2"));
 
-	@Override
-	public CommandDeclaration createCommand() {
-		CommandDeclaration cd = new CommandDeclaration("is", "check if a concept or instance is subsumed by another");
-		try {
-			cd.addMandatoryArgument("c1", "concept1", 
-					KnowledgeManager.get().getTextType().getSemanticType());
-			cd.addMandatoryArgument("c2", "concept2", 
-					KnowledgeManager.get().getTextType().getSemanticType());
-		} catch (ThinklabException e) {
-			e.printStackTrace();
-		}
-		return cd;
-	}
+		boolean res = KnowledgeManager.get().requireConcept(s1).is(
+				KnowledgeManager.get().requireConcept(s2));
 
-	@Override
-	public IAction createAction() {
-		return new IsAction();
+		return new BooleanValue(res);
 	}
 
 }

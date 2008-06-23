@@ -32,21 +32,12 @@
  **/
 package org.integratedmodelling.corescience.commands;
 
-import org.integratedmodelling.corescience.CoreSciencePlugin;
-import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
-import org.integratedmodelling.corescience.interfaces.IContextualizationWorkflow;
 import org.integratedmodelling.corescience.interfaces.IObservation;
-import org.integratedmodelling.corescience.workflow.DefaultWorkflow;
-import org.integratedmodelling.corescience.workflow.debug.DebugWorkflow;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
-import org.integratedmodelling.thinklab.constraint.Conformance;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IConformance;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
@@ -55,77 +46,60 @@ import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
 /**
- * The link command should take two observations as parameters, ensure their observables are
- * conformant (possibly allowing to use a specified conformance policy, creating a default
- * one if not) and if so, create a link between the two, so that the next contextualization
- * will use the linked observation and mediate as needed.
+ * The link command should take two observations as parameters, ensure their
+ * observables are conformant (possibly allowing to use a specified conformance
+ * policy, creating a default one if not) and if so, create a link between the
+ * two, so that the next contextualization will use the linked observation and
+ * mediate as needed.
  * 
  * @author Ferdinando Villa
- *
+ * 
  */
-public class Link extends CommandPattern {
+public class Link implements CommandHandler {
 
-	class LinkAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputDest,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		public IValue execute(Command command, ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
-			
-			String obs1 = command.getArgumentAsString("c1");
-			String obs2 = command.getArgumentAsString("c1");
-			String cnf = command.getArgumentAsString("conformance");
+		String obs1 = command.getArgumentAsString("c1");
+		String obs2 = command.getArgumentAsString("c1");
+		String cnf = command.getArgumentAsString("conformance");
 
-			IInstance o1 = session.requireObject(obs1);
-			IInstance o2 = session.requireObject(obs2);
+		IInstance o1 = session.requireObject(obs1);
+		IInstance o2 = session.requireObject(obs2);
 
-			if (o1.getImplementation() == null || !(o1.getImplementation() instanceof IObservation))
-				throw new ThinklabValidationException(obs1 + " is not an observation");
+		if (o1.getImplementation() == null
+				|| !(o1.getImplementation() instanceof IObservation))
+			throw new ThinklabValidationException(obs1
+					+ " is not an observation");
 
-			if (o2.getImplementation() == null || !(o2.getImplementation() instanceof IObservation))
-				throw new ThinklabValidationException(obs2 + " is not an observation");
+		if (o2.getImplementation() == null
+				|| !(o2.getImplementation() instanceof IObservation))
+			throw new ThinklabValidationException(obs2
+					+ " is not an observation");
 
-			IKnowledgeSubject observable1 = ((IObservation)o1.getImplementation()).getObservable();
-			IKnowledgeSubject observable2 = ((IObservation)o2.getImplementation()).getObservable();
-			
-			IConformance conformance = null;
-			
-			if (!cnf.equals("_NONE_")) {
-				
-				// TODO get conformance policy from session and attach to observable1
-				
-				
-			} else {
-				
-				// TODO create default conformance policy for observable1
-			}
+		IKnowledgeSubject observable1 = ((IObservation) o1.getImplementation())
+				.getObservable();
+		IKnowledgeSubject observable2 = ((IObservation) o2.getImplementation())
+				.getObservable();
 
-			/* TODO use conformance policy to ensure that observable2 conforms */
-			
-			/* insert equivalence between the observations */
-			session.linkObjects(o1, o2);
-			
-			return null;
+		IConformance conformance = null;
+
+		if (!cnf.equals("_NONE_")) {
+
+			// TODO get conformance policy from session and attach to
+			// observable1
+
+		} else {
+
+			// TODO create default conformance policy for observable1
 		}
-		
-	}
-	
 
-	@Override
-	public CommandDeclaration createCommand()  throws ThinklabException  {
-		CommandDeclaration cd = new CommandDeclaration("link", "link two observations");
-		cd.addMandatoryArgument("c1", "source observation", 
-				KnowledgeManager.Text().getSemanticType());
-		cd.addMandatoryArgument("c2", "destination observation", 
-				KnowledgeManager.Text().getSemanticType());
+		/* TODO use conformance policy to ensure that observable2 conforms */
 
-		/* support the -conformance option to select the conformance definition for the observables */
-		cd.addOption("c", "conformance", "conformance policy", "use debug workflow", 
-				KnowledgeManager.Text().getSemanticType());
-				
-		return cd;
+		/* insert equivalence between the observations */
+		session.linkObjects(o1, o2);
+
+		return null;
 	}
 
-	@Override
-	public IAction createAction() {
-		return new LinkAction();
-	}
-	
 }

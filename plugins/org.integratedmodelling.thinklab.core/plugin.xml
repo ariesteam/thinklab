@@ -106,15 +106,36 @@
 	</extension-point>
 	<extension-point id="command-handler">
 		<parameter-def id="class" />
-		<parameter-def id="command-name" multiplicity="none-or-one" />
-		<parameter-def id="command-description" multiplicity="none-or-one" />
+		<parameter-def id="command-name" />
+		<parameter-def id="command-description" />
 		<parameter-def id="return-type" multiplicity="none-or-one" />
 		<parameter-def id="argument-names" multiplicity="none-or-one" />
 		<parameter-def id="argument-types" multiplicity="none-or-one" />
+		<parameter-def id="argument-descriptions" multiplicity="none-or-one" />
 		<parameter-def id="optional-argument-names" multiplicity="none-or-one" />
 		<parameter-def id="optional-argument-types" multiplicity="none-or-one" />
+		<parameter-def id="optional-argument-descriptions" multiplicity="none-or-one" />
+		<parameter-def id="optional-argument-default-types" multiplicity="none-or-one" />
 		<parameter-def id="option-names" multiplicity="none-or-one" />
+		<parameter-def id="option-long-names" multiplicity="none-or-one" />
 		<parameter-def id="option-types" multiplicity="none-or-one" />	
+		<parameter-def id="option-argument-labels" multiplicity="none-or-one" />	
+		<parameter-def id="option-descriptions" multiplicity="none-or-one" />	
 		<parameter-def id="example" multiplicity="any" />
 	</extension-point>
+	
+	<!-- base commands -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="load">
+		<parameter id="class" value="org.integratedmodelling.thinklab.core.commands.Load"/>
+		<parameter id="command-name" value="load"/>
+		<parameter id="command-description" value="load knowledge from external sources into current session"/>
+		<parameter id="argument-names" value="resource"/>
+		<parameter id="argument-types" value="thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="filename or URL to load"/>
+		<parameter id="option-names" value="k"/>
+		<parameter id="option-long-names" value="kbox"/>
+		<parameter id="option-types" value="thinklab-core:Text"/>
+		<parameter id="option-descriptions" value="knowledge box"/>
+	</extension>
+	
 </plugin>

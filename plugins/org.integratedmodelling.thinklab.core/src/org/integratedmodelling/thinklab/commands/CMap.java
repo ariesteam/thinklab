@@ -33,59 +33,36 @@
  **/
 package org.integratedmodelling.thinklab.commands;
 
-import org.integratedmodelling.thinklab.KnowledgeTree;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.graph.ConceptMap;
-import org.integratedmodelling.thinklab.interfaces.IAction;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
 /** the help command for the command-line interface */
-public class CMap extends CommandPattern {
+public class CMap implements CommandHandler {
 
-    class HelpAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-        public IValue execute(Command command, ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
-            
-        	String c = command.getArgumentAsString("concept");
-        	
-        	IConcept ct = KnowledgeManager.Thing();
-        	
-        	if (c != null && !c.equals("__none")) {
-        		ct = km.requireConcept(c);
-        	}
+		String c = command.getArgumentAsString("concept");
 
-        	ConceptMap cmap = new ConceptMap(ct);
+		IConcept ct = KnowledgeManager.Thing();
 
-        	cmap.dump(outputWriter);
-        	
-        	cmap.show();
-        	
-            return null;
-        }
-    }
-    
-    public CMap( ) {
-    	super();
+		if (c != null && !c.equals("__none")) {
+			ct = km.requireConcept(c);
+		}
+
+		ConceptMap cmap = new ConceptMap(ct);
+
+		cmap.dump(outputWriter);
+
+		cmap.show();
+
+		return null;
 	}
-
-	public CommandDeclaration createCommand() throws ThinklabException {
-        CommandDeclaration ret = new CommandDeclaration("cmap", "show a concept map for a concept or for the whole repository");
-        
-        ret.addOptionalArgument("concept", "concept to build map for", 
-        		KnowledgeManager.Text().getSemanticType(), "__none");
-        
-        return ret;
-    }
-    
-    public IAction createAction() {
-        return new HelpAction();
-    }
-    
 }

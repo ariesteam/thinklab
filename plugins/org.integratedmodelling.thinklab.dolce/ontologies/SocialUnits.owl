@@ -1,0 +1,687 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:sys="http://www.loa-cnr.it/ontologies/Systems.owl#"
+    xmlns:soc="http://www.loa-cnr.it/ontologies/SocialUnits.owl#"
+    xmlns:dol="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:colv="http://www.loa-cnr.it/ontologies/Collectives.owl#"
+    xmlns="http://www.loa-cnr.it/ontologies/SocialUnits.owl#"
+    xmlns:inf="http://www.loa-cnr.it/ontologies/InformationObjects.owl#"
+    xmlns:coll="http://www.loa-cnr.it/ontologies/Collections.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:edns="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xml:base="http://www.loa-cnr.it/ontologies/SocialUnits.owl">
+  <owl:Ontology rdf:about="">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An ontology of collections, collectives, social units, and systems, plugins to DnS. These are placeholders for a more ambitious ontology of basic entities from the social world. OWL engineering by Aldo Gangemi.</rdfs:comment>
+    <owl:imports rdf:resource="http://www.loa-cnr.it/ontologies/InformationObjects.owl"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Imports: Information</rdfs:comment>
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >397
+    </owl:versionInfo>
+  </owl:Ontology>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-as-situation">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#situation"/>
+          <owl:Restriction>
+            <owl:someValuesFrom>
+              <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-as-description"/>
+            </owl:someValuesFrom>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#satisfies"/>
+          </owl:Restriction>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The realization aspect of a system, satisfying the descriptive aspect.If the descriptive part only includes a design, it can be a situation in which that design has been realized (e.g. consisting essentially of a system-as-artifact as a design object).If the descriptive part includes a project, it can be a workflow situation resulting in the production of e.g. a system-as-artifact.If the descriptive part includes a set of instructions, it can be a situation in which e.g. a system-as-artifact interacts with the environment effectively (according to some evaluation criteria).</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#production-workflow-execution">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Restriction>
+            <owl:someValuesFrom>
+              <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-production-workflow"/>
+            </owl:someValuesFrom>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#satisfies"/>
+          </owl:Restriction>
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#situation"/>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A situation satisfying the production workflow of a system.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collections.owl#parametrized-collection">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collections.owl#simple-collection"/>
+          <owl:Restriction>
+            <owl:allValuesFrom>
+              <owl:Restriction>
+                <owl:someValuesFrom>
+                  <owl:Restriction>
+                    <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#value-for"/>
+                    <owl:someValuesFrom>
+                      <owl:Restriction>
+                        <owl:someValuesFrom>
+                          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#role"/>
+                        </owl:someValuesFrom>
+                        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#requisite-for"/>
+                      </owl:Restriction>
+                    </owl:someValuesFrom>
+                  </owl:Restriction>
+                </owl:someValuesFrom>
+                <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#generic-location"/>
+              </owl:Restriction>
+            </owl:allValuesFrom>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#member"/>
+          </owl:Restriction>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A type of simple collections are parametrized collections, whose members must have a quality constrained by some parameter that is a requisite of their covering role(s).For example, a crowd of people has members that have spatial positions in a range that makes them proximal (a condition traditionally used to distinguish so-called aggregates (King 2004)).On the other hand, if positions are reciprocally relevant (as, for instance, in a living chess setting) according to multiple roles defined by some plan or design, the collection becomes organized.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collections.owl#organized-collection">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Organized collections introduce a different unity criterion for collections. They can be conceived as characterized by further roles played by some (or all) members of the collection, and related among them through the social objects (figures, descriptions, collections) that either use or depute or are covered by them.</rdfs:comment>
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#collection"/>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#characterized-by"/>
+            <owl:someValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#role"/>
+          </owl:Restriction>
+          <owl:Restriction>
+            <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+            >2</owl:minCardinality>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#characterized-by"/>
+          </owl:Restriction>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collections.owl#simple-collection">
+    <owl:disjointWith rdf:resource="http://www.loa-cnr.it/ontologies/Collections.owl#organized-collection"/>
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#collection"/>
+          <owl:Restriction>
+            <owl:allValuesFrom>
+              <owl:Class>
+                <owl:complementOf rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#role"/>
+              </owl:Class>
+            </owl:allValuesFrom>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#characterized-by"/>
+          </owl:Restriction>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A simple collection (for instance, a collection of saxophones, or a mass of lymphocytes ) is a collection having only covering roles.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-implementation-workflow">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The description of how to implement a system-as-artifact.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-production-workflow"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#taxonomic-collective">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#biological-collective"/>
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collections.owl#taxonomic-collection"/>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A simple collective covered by roles corresponding to natural science properties ascribed to members.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#functionality-specification-workflow">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-production-workflow"/>
+    </rdfs:subClassOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The description of how to produce a functionality specification.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#working-system-situation">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-as-situation"/>
+          <owl:Restriction>
+            <owl:someValuesFrom>
+              <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-functionality"/>
+            </owl:someValuesFrom>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#satisfies"/>
+          </owl:Restriction>
+          <owl:Restriction>
+            <owl:someValuesFrom>
+              <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#design-object-materialization"/>
+            </owl:someValuesFrom>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#generically-dependent-on"/>
+          </owl:Restriction>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The situation in which a working system interacts with its environment according to its functionality description.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#design-specification-workflow">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The description of how to produce a design specification.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-production-workflow"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/SocialUnits.owl#organization">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/SocialUnits.owl#socially-constructed-person"/>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#hypostasis-of"/>
+            <owl:someValuesFrom>
+              <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#collective"/>
+            </owl:someValuesFrom>
+          </owl:Restriction>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:cardinality>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#hypostasis-of"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A socially-constructed person with a complex articulation of tasks, roles and figures.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-design">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-as-description"/>
+    </rdfs:subClassOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The description of a system from the design viewpoint (how it is structured, but also including possible aesthetic or functional descriptions).</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/SocialUnits.owl#institution">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An organization bearing a legal status and having powers conferred by Law.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.loa-cnr.it/ontologies/SocialUnits.owl#organization"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collections.owl#physical-plurality">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >a.k.a. unitary collection in D18. The physical counterpart (realization) of a collection. A collection (see) is characterized by a conventional or emergent property. Physical pluralities have as *proper parts* only physical objects that are *members* of a same collection.</rdfs:comment>
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#physical-object"/>
+          <owl:Restriction>
+            <owl:allValuesFrom>
+              <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#member-of"/>
+                <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+                >1</owl:cardinality>
+              </owl:Restriction>
+            </owl:allValuesFrom>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#proper-part"/>
+          </owl:Restriction>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#ecological-collective">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#organized-collective"/>
+    </rdfs:subClassOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An organized collective that receives its organization from the characterizing roles of social interation between organisms in a niche.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#biological-collective">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Biological collectives are type-based collectives that are *covered* by roles typical of the biological world.They can be divided into various kinds (genetic, taxonomic, epidemiological, etc.).Biological properties produce either crisp or fuzzy/probabilistic types.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#type-based-collective"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#simple-planned-collective">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#simple-collective"/>
+    </rdfs:subClassOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >We use the presence and structure of a unifying plan in order to characterize kinds of collectives. A preliminary consideration is that plan unification can have two senses.The first one only takes into account the action schemas executed by the members, who do not necessarily interact in a global way. In other words, the roles played by members cover the collective, because they are (dispositionally) played by each member.The second sense is richer, and assumes that the unifying (maximal) plan (d-)uses roles that characterize the collective.The first sense of plan unification is applicable to a subclass of simple collectives that we call here 'simple-planned-collectives'.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collections.owl#taxonomic-collection">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A simple collection covered by roles corresponding to natural science properties ascribed to members.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.loa-cnr.it/ontologies/Collections.owl#simple-collection"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#social-type-collective">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Social type-based collectives are type-based collectives that are *covered* by roles typical of the social world.Social collectives are usually based on action schemas (practices, rather than plans, which are typical of intentional collectives).They can be distinguished into neighborhood, geographic (at various granularities), ethnic, linguistic, commercial, industrial, scientific, political, religious, institutional, administrative, professional, sportive, interest-based, stylistic, devotional, etc.WordNet contains an impressive set of social-type-based-collectives, which are encoded in the lexicon.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#type-based-collective"/>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#covered-by"/>
+        <owl:someValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#social-role"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#unified-by"/>
+        <owl:someValuesFrom>
+          <owl:Class>
+            <owl:unionOf rdf:parseType="Collection">
+              <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#practice"/>
+              <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#social-relationship"/>
+            </owl:unionOf>
+          </owl:Class>
+        </owl:someValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/SocialUnits.owl#natural-person">
+    <owl:disjointWith rdf:resource="http://www.loa-cnr.it/ontologies/SocialUnits.owl#organization"/>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/SocialUnits.owl#socially-constructed-person"/>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:cardinality>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#hypostasis-of"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom>
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#rational-physical-object"/>
+        </owl:someValuesFrom>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#hypostasis-of"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An agentive social object that is the hypostasis of one rational physical object. It can be acted by othe rational physical objects or social persons though (through delegation).</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collections.owl#text-repository">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/InformationObjects.owl#text"/>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#member"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collections.owl#information-collection"/>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >2</owl:minCardinality>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#member"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A collection having only texts as members.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/InformationObjects.owl#text"/>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#member"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-functionality">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The description of a system from the functional viewpoint (how it works).</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-as-description"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#intentional-collective">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom>
+          <owl:Class>
+            <owl:intersectionOf rdf:parseType="Collection">
+              <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#d-uses"/>
+                <owl:someValuesFrom>
+                  <owl:Restriction>
+                    <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#characterizes"/>
+                    <owl:someValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/Collectives.owl#intentional-collective"/>
+                  </owl:Restriction>
+                </owl:someValuesFrom>
+              </owl:Restriction>
+              <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#plan"/>
+            </owl:intersectionOf>
+          </owl:Class>
+        </owl:someValuesFrom>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#unified-by"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#organized-collective"/>
+    </rdfs:subClassOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >We use the presence and structure of a unifying plan in order to characterize kinds of collectives. A preliminary consideration is that plan unification can have two senses.The first one only takes into account the action schemas executed by the members, who do not necessarily interact in a 'global' way. In other words, the roles played by members cover the collective, because they are (dispositionally) played by each member.The second sense is richer, and assumes that the unifying (maximal) plan (d-)uses roles that characterize (are played by some members, and related between them in a typical way) the collective.The first sense of plan unification is applicable to a subclass of simple collectives that we call here 'simple-planned-collectives'.The second sense of plan unification applies to intentional collectives proper.An intentional collective can be said to act intentionally because its members act, and because it is unified by a plan that is conceived by some rational agent. Therefore, there is nothing special in a collective being intentional: it is just a matter of having a plan and agentive members playing its characterizing roles. What is special is the distinction between the diversified ways of acting collectively (see subclasses).</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#type-based-collective">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#simple-collective"/>
+    </rdfs:subClassOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Collectives can be classified according to different property kinds. The first one is the type of members (e.g. physical persons, boys, cows, left-handers, etc.). Types are used in traditional classifications. For example, biological collectives can be distinguished from social collectives, based on the (biological or social) properties ascribed to members.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#workflow">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+        >3</owl:minCardinality>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#d-uses"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#plan"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A plan describing a team's or organization's objectives, tasks, roles, and parameters. Ay least two roles and one task, or one role and two tasks must be defined.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collections.owl#non-physical-collection">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#collection"/>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#member"/>
+            <owl:someValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#non-physical-object"/>
+          </owl:Restriction>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#member"/>
+            <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+            >2</owl:minCardinality>
+          </owl:Restriction>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#member"/>
+            <owl:allValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#non-physical-object"/>
+          </owl:Restriction>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A collection of non-physical objects that is characterized by a conventional or emergent property, e.g. a corpus, a legal body, etc.A non-physical collection only has non-physical endurants as members.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-as-description">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The descriptive, unifying aspect of a system (usually it includes at least a design, or project, plan, etc.).</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#description"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/Systems.owl#system-as-situation"/>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#satisfied-by"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-production-workflow">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Restriction>
+            <owl:someValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/Systems.owl#system-design"/>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#specifically-constantly-dependent-on"/>
+          </owl:Restriction>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#specifically-constantly-dependent-on"/>
+            <owl:someValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/Systems.owl#system-functionality"/>
+          </owl:Restriction>
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#workflow"/>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The description of how a system is produced.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-as-artifact">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#material-artifact"/>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#proper-part"/>
+            <owl:allValuesFrom>
+              <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#physical-object"/>
+                  <owl:Restriction>
+                    <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#member-of"/>
+                    <owl:someValuesFrom>
+                      <owl:Class>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#collection"/>
+                          <owl:Restriction>
+                            <owl:someValuesFrom>
+                              <owl:Class>
+                                <owl:unionOf rdf:parseType="Collection">
+                                  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#plan"/>
+                                  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#project"/>
+                                </owl:unionOf>
+                              </owl:Class>
+                            </owl:someValuesFrom>
+                            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#unified-by"/>
+                          </owl:Restriction>
+                        </owl:intersectionOf>
+                      </owl:Class>
+                    </owl:someValuesFrom>
+                  </owl:Restriction>
+                </owl:intersectionOf>
+              </owl:Class>
+            </owl:allValuesFrom>
+          </owl:Restriction>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#proper-part"/>
+            <owl:someValuesFrom>
+              <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#physical-object"/>
+                  <owl:Restriction>
+                    <owl:someValuesFrom>
+                      <owl:Class>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#collection"/>
+                          <owl:Restriction>
+                            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#unified-by"/>
+                            <owl:someValuesFrom>
+                              <owl:Class>
+                                <owl:unionOf rdf:parseType="Collection">
+                                  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#plan"/>
+                                  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#project"/>
+                                </owl:unionOf>
+                              </owl:Class>
+                            </owl:someValuesFrom>
+                          </owl:Restriction>
+                        </owl:intersectionOf>
+                      </owl:Class>
+                    </owl:someValuesFrom>
+                    <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#member-of"/>
+                  </owl:Restriction>
+                </owl:intersectionOf>
+              </owl:Class>
+            </owl:someValuesFrom>
+          </owl:Restriction>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A material artifact whose proper parts ('components') are physical objects, members of a collection unified by a project or plan.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#organized-collective">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collections.owl#organized-collection"/>
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#collective"/>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An organized collection with only agents as members.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#genetic-collective">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A biological collective covered by genetic roles (whose members are identified by means of the genetic properties ascribed to them).</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.loa-cnr.it/ontologies/Collectives.owl#biological-collective"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/SocialUnits.owl#socially-constructed-person">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#agentive-figure"/>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#acted-by"/>
+            <owl:allValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#rational-agent"/>
+          </owl:Restriction>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A definite social figure that is constructed and acted by other previously existing persons. A person in general is not characterized in this ontology. In a legal extension, it could be reasonable to create a class of legal persons, defined by legal constitutive descriptions, including the legal figures related to both natural (see) and socially-constructed persons.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#design-object-materialization">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A situation in which an object exists that has been produced according to a system design specification.</rdfs:comment>
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Systems.owl#system-as-situation"/>
+          <owl:Restriction>
+            <owl:someValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/Systems.owl#system-design"/>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#satisfies"/>
+          </owl:Restriction>
+          <owl:Restriction>
+            <owl:someValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/Systems.owl#production-workflow-execution"/>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#generically-dependent-on"/>
+          </owl:Restriction>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collectives.owl#simple-collective">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A simple collection with only agents as members.</rdfs:comment>
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collections.owl#simple-collection"/>
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#collective"/>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#unified-by"/>
+            <owl:allValuesFrom>
+              <owl:Class>
+                <owl:complementOf>
+                  <owl:Class>
+                    <owl:intersectionOf rdf:parseType="Collection">
+                      <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#plan"/>
+                      <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#d-uses"/>
+                        <owl:someValuesFrom>
+                          <owl:Restriction>
+                            <owl:someValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/Collectives.owl#intentional-collective"/>
+                            <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#characterizes"/>
+                          </owl:Restriction>
+                        </owl:someValuesFrom>
+                      </owl:Restriction>
+                    </owl:intersectionOf>
+                  </owl:Class>
+                </owl:complementOf>
+              </owl:Class>
+            </owl:allValuesFrom>
+          </owl:Restriction>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/Collections.owl#information-collection">
+    <rdfs:subClassOf rdf:resource="http://www.loa-cnr.it/ontologies/Collections.owl#non-physical-collection"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/InformationObjects.owl#text"/>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#member"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="http://www.loa-cnr.it/ontologies/InformationObjects.owl#text"/>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#member"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A collection of texts.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#member"/>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >2</owl:minCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about="http://www.loa-cnr.it/ontologies/SocialUnits.owl#rules">
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#mediated-relation"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://www.loa-cnr.it/ontologies/SocialUnits.owl#ruled-by"/>
+    </owl:inverseOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A control relation between socially constructed persons and either roles or figures. It requires that the socially constructed person is explicitly enabled to control in a description that d-uses both the socially constructed person and the controlled roles or figures.</rdfs:comment>
+    <rdfs:domain rdf:resource="http://www.loa-cnr.it/ontologies/SocialUnits.owl#socially-constructed-person"/>
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#role"/>
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#figure"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.loa-cnr.it/ontologies/SocialUnits.owl#enforces">
+    <rdfs:range rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#regulation"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#involved-in"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An institution enforces a regulation by playing a role within the part of that regulation that describes its enforcement.</rdfs:comment>
+    <rdfs:domain rdf:resource="http://www.loa-cnr.it/ontologies/SocialUnits.owl#institution"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://www.loa-cnr.it/ontologies/SocialUnits.owl#enforced-by"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.loa-cnr.it/ontologies/SocialUnits.owl#ruled-by">
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#mediated-relation-i"/>
+    <owl:inverseOf rdf:resource="http://www.loa-cnr.it/ontologies/SocialUnits.owl#rules"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#role"/>
+          <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#figure"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.loa-cnr.it/ontologies/SocialUnits.owl#socially-constructed-person"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.loa-cnr.it/ontologies/SocialUnits.owl#enforced-by">
+    <owl:inverseOf rdf:resource="http://www.loa-cnr.it/ontologies/SocialUnits.owl#enforces"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#involves"/>
+    <rdfs:domain rdf:resource="http://www.loa-cnr.it/ontologies/ExtendedDnS.owl#regulation"/>
+    <rdfs:range rdf:resource="http://www.loa-cnr.it/ontologies/SocialUnits.owl#institution"/>
+  </owl:ObjectProperty>
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 2.1 beta, Build 275)  http://protege.stanford.edu -->

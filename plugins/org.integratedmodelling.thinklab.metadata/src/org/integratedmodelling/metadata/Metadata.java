@@ -32,46 +32,24 @@
  **/
 package org.integratedmodelling.metadata;
 
-import java.io.File;
-
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.plugin.Plugin;
-import org.w3c.dom.Node;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
-public class MetadataPlugin extends Plugin {
+public class Metadata extends ThinklabPlugin {
 
-	static final String ID = "Metadata";
-    
-	public static MetadataPlugin get() {
-		return (MetadataPlugin) getPlugin(ID );
-	}
-	
-    public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-            throws ThinklabPluginException {
-    }
+	static final String PLUGIN_ID = "org.integratedmodelling.thinklab.metadata";
 
-    public void unload(KnowledgeManager km) throws ThinklabPluginException {
-        // TODO Auto-generated method stub
-
-    }
-
-	public void initialize() throws ThinklabException {
+	@Override
+	protected void load(KnowledgeManager km) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void notifyResource(String name, long time, long size) throws ThinklabException {
+	protected void unload() throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}
-
-	public void notifyConfigurationNode(Node n) {
-		// TODO Auto-generated method stub
-		
-	}
-
+    	
 }

@@ -40,10 +40,8 @@ import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -51,78 +49,40 @@ import org.integratedmodelling.utils.MiscUtilities;
 
 /**
  * Load ontologies, OPAL files, objects from remote KBoxes into current session
+ * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  */
-public class Rasterize extends CommandPattern {
+public class Rasterize implements CommandHandler {
 
-	class RasterizeAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		public IValue execute(Command command, ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
-			
-			String toload = command.getArgumentAsString("resource");
-			// String output = command.getArgumentAsString("output");
-			int xCells = command.getArgument("xCells").asNumber().asInteger();
-			int yCells = command.getArgument("yCells").asNumber().asInteger();
-						
-			String attrName = command.getOptionAsString("attribute", "the_value");
-					
-			URL theUrl = MiscUtilities.getURLForResource(toload);
-			
-			VectorCoverage vCoverage = new VectorCoverage(theUrl, attrName, false);
-			
-			// todo remove or condition to an option
-			vCoverage.show();
-			
-			GridExtent extent = 
-				new GridExtent(
-						null, 
-						vCoverage.getCoordinateReferenceSystem(), 
-						vCoverage.getLonLowerBound(), 
-						vCoverage.getLatLowerBound(), 
-						vCoverage.getLonUpperBound(), 
-						vCoverage.getLatUpperBound(), 
-						xCells, 
-						yCells);
-			
-			RasterCoverage rCoverage = 
-				ThinklabRasterizer.rasterize(vCoverage, attrName, Float.NaN, extent);
-			
-			// TODO we should obviously endeavor to save it if an output arg is passed.
-			rCoverage.show();
-			
-			return null;
-		}
+		String toload = command.getArgumentAsString("resource");
+		// String output = command.getArgumentAsString("output");
+		int xCells = command.getArgument("xCells").asNumber().asInteger();
+		int yCells = command.getArgument("yCells").asNumber().asInteger();
+
+		String attrName = command.getOptionAsString("attribute", "the_value");
+
+		URL theUrl = MiscUtilities.getURLForResource(toload);
+
+		VectorCoverage vCoverage = new VectorCoverage(theUrl, attrName, false);
+
+		// todo remove or condition to an option
+		vCoverage.show();
+
+		GridExtent extent = new GridExtent(null, vCoverage
+				.getCoordinateReferenceSystem(), vCoverage.getLonLowerBound(),
+				vCoverage.getLatLowerBound(), vCoverage.getLonUpperBound(),
+				vCoverage.getLatUpperBound(), xCells, yCells);
+
+		RasterCoverage rCoverage = ThinklabRasterizer.rasterize(vCoverage,
+				attrName, Float.NaN, extent);
+
+		// TODO we should obviously endeavor to save it if an output arg is
+		// passed.
+		rCoverage.show();
+
+		return null;
 	}
-
-	public Rasterize( ) {
-		super();
-	}
-
-	@Override
-	public CommandDeclaration createCommand() {
-		CommandDeclaration ret = new CommandDeclaration("rasterize", "read a vector coverage and create a raster one from it");
-		try {
-			ret.addMandatoryArgument("resource", "a supported GIS vector file to rasterize", 
-					KnowledgeManager.Text().getSemanticType());
-			//ret.addMandatoryArgument("output", "OPAL file to write to", 
-			//		KnowledgeManager.Text().getSemanticType());
-			ret.addMandatoryArgument("xCells", "number of cells on the x axis",
-						  KnowledgeManager.Integer().getSemanticType());
-			ret.addMandatoryArgument("yCells", "number of cells on the y axis",
-					  KnowledgeManager.Integer().getSemanticType());
-			ret.addOptionalArgument("attribute", "the name of the value attribute in the vector coverage",
-					KnowledgeManager.Text().getSemanticType(), "the_value");
-			
-		} catch (ThinklabException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ret;
-	}
-
-	@Override
-	public IAction createAction() {
-		return new RasterizeAction();
-	}
-
 }

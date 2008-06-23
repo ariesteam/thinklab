@@ -55,18 +55,19 @@ import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledge;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 
 /**
  * @author Ferdinando Villa
  *
  */
-public class CoreSciencePlugin extends Plugin {
+public class CoreSciencePlugin extends ThinklabPlugin {
 	
 	/* log4j logger used for this class. Can be used by other classes through logger()  */
 	private static  Logger log = Logger.getLogger(CoreSciencePlugin.class);
 
-	private final static String ID = "CoreScience";
+	private final static String PLUGIN_ID = "org.integratedmodelling.thinklab.corescience";
 	
 	private HashMap<String, IWorkflowConstructor> modelLoaders = new HashMap<String, IWorkflowConstructor>();
 
@@ -116,33 +117,25 @@ public class CoreSciencePlugin extends Plugin {
 	static final public String GENERIC_OBSERVABLE = "representation:GenericObservable";
 	static final public String GENERIC_QUANTIFIABLE = "representation:GenericQuantifiable";
 
-
-	
 	public static CoreSciencePlugin get() {
-		return (CoreSciencePlugin) getPlugin(ID );
+		return (CoreSciencePlugin) getPlugin(PLUGIN_ID );
 	}
 
 	public static Logger logger() {
 		return log;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.ima.core.plugin.Plugin#initialize()
-	 */
-	@Override
-	public void initialize() throws ThinklabException {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.ima.core.plugin.Plugin#load(org.integratedmodelling.ima.core.KnowledgeManager, java.io.File, java.io.File)
 	 */
 	@Override
-	public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-			throws ThinklabPluginException {
+	public void load(KnowledgeManager km) throws ThinklabPluginException {
 
 		/* initialize unit system; get preferences, default models etc */
 		
-		/* install constructors and validators */
+		/* install constructors and validators 
+		 * TODO move to plugin.xml
+		 */
 		km.registerInstanceConstructor(OBSERVATION, new ObservationConstructor());
 		km.registerInstanceConstructor(RANKING, new RankingConstructor());
 		km.registerInstanceConstructor(CSV_DATASOURCE, new CSVDatasourceConstructor());
@@ -153,32 +146,18 @@ public class CoreSciencePlugin extends Plugin {
 		km.registerLiteralValidator(PARSED_STRING, new ParsedDatasourceValidator());
 		km.registerLiteralValidator(COLUMN_EXTRACTOR, new ColumnFilterValidator());
 		
-		try {
+//			new Contextualize().install(km);
+//			new Link().install(km);
+//			new Olist().install(km);
 			
-			new Contextualize().install(km);
-			new Link().install(km);
-			new Olist().install(km);
-			
-		} catch (ThinklabException e) {
-			throw new ThinklabPluginException(e);
-		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.ima.core.plugin.Plugin#notifyResource(java.lang.String, long, long)
-	 */
-	@Override
-	public void notifyResource(String name, long time, long size)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-
-	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.ima.core.plugin.Plugin#unload(org.integratedmodelling.ima.core.KnowledgeManager)
 	 */
 	@Override
-	public void unload(KnowledgeManager km) throws ThinklabPluginException {
+	public void unload() throws ThinklabPluginException {
 		// TODO Auto-generated method stub
 
 	}

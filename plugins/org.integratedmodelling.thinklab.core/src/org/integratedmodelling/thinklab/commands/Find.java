@@ -35,10 +35,8 @@ package org.integratedmodelling.thinklab.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
@@ -46,52 +44,31 @@ import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
 /**
- * Find command will search for knowledge. For now just finds a concept by (exact) name.
+ * Find command will search for knowledge. For now just finds a concept by
+ * (exact) name.
+ * 
  * @author Ferdinando
- *
+ * 
  */
-public class Find extends CommandPattern {
+public class Find implements CommandHandler {
 
-	class IsAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputDest,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		public IValue execute(Command command, ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
-			
-			// TODO this should figure out what the semantic type is for, cross check properly, and
-			// call the appropriate methods. So far it only handles concepts.
-			String s1 = command.getArgumentAsString("c1");
+		// TODO this should figure out what the semantic type is for, cross
+		// check properly, and
+		// call the appropriate methods. So far it only handles concepts.
+		String s1 = command.getArgumentAsString("c1");
 
-			for (IOntology o : km.getKnowledgeRepository().retrieveAllOntologies()) {
-				
-				IConcept c = o.getConcept(s1);
-				
-				if (c != null) {
-					System.out.println("\t" + c);
-				}
+		for (IOntology o : km.getKnowledgeRepository().retrieveAllOntologies()) {
+
+			IConcept c = o.getConcept(s1);
+
+			if (c != null) {
+				System.out.println("\t" + c);
 			}
-			return null;
 		}
-		
-	}
-	
-	public Find( ) {
-		super();
-	}
-
-	@Override
-	public CommandDeclaration createCommand() {
-		CommandDeclaration cd = new CommandDeclaration("find", "find a concept in the loaded ontologies");
-		try {
-			cd.addMandatoryArgument("c1", "concept name", 
-					KnowledgeManager.get().getTextType().getSemanticType());
-		} catch (ThinklabException e) {
-			e.printStackTrace();
-		}
-		return cd;
-	}
-
-	@Override
-	public IAction createAction() {
-		return new IsAction();
+		return null;
 	}
 
 }

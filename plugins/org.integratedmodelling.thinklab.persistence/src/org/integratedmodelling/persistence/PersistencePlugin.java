@@ -46,6 +46,7 @@ import org.integratedmodelling.thinklab.interfaces.IKBoxPlugin;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 
 /**
@@ -60,54 +61,33 @@ import org.w3c.dom.Node;
  * @version 0.2
  * @since Feb 5, 2007
  */
-public class PersistencePlugin extends Plugin implements IKBoxPlugin{
-	public static String pluginname = "Persistence"; //Just in case we rename it
+public class PersistencePlugin extends ThinklabPlugin {
+	
+	public static String PLUGIN_ID = "org.integratedmodelling.thinklab.persistence"; //Just in case we rename it
 	
 	public static IProperty ABSTRACT_PERSISTENCY_PROPERTY;
 	public static IProperty FACTORY_PERSISTENCY_PROPERTY;
 	public static IProperty LONG_TEXT_PROPERTY;
 	
-	@Override
-	public void initialize() throws ThinklabException {
-		// register new command!
-		new Generate().install(KnowledgeManager.get());
-		ABSTRACT_PERSISTENCY_PROPERTY = KnowledgeManager.KM.requireProperty("persistence:abstract");
-		FACTORY_PERSISTENCY_PROPERTY = KnowledgeManager.KM.requireProperty("persistence:factory");
-		LONG_TEXT_PROPERTY = KnowledgeManager.KM.requireProperty("persistence:text");
-	}
 
 	@Override
-	public void load(KnowledgeManager km, File baseReadPath, File baseWritePath) throws ThinklabPluginException {
+	public void load(KnowledgeManager km) throws ThinklabException {
+
+		// TODO move 
+		// new Generate().install(KnowledgeManager.get());
+		ABSTRACT_PERSISTENCY_PROPERTY = km.requireProperty("persistence:abstract");
+		FACTORY_PERSISTENCY_PROPERTY = km.requireProperty("persistence:factory");
+		LONG_TEXT_PROPERTY = km.requireProperty("persistence:text");
+
 		/*
 		 * TODO substitute with extension point declaration
 		 */
-		KBoxManager.get().registerKBoxProtocol("hbm", this);
+		//KBoxManager.get().registerKBoxProtocol("hbm", this);
 	}
+
 
 	@Override
-	public void notifyResource(String name, long time, long size) throws ThinklabException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void unload(KnowledgeManager km) throws ThinklabPluginException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public IKBox createKBoxFromURL(URI url) throws ThinklabStorageException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IKBox createKBox(String protocol, String dataUri,
-			Properties properties) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void notifyConfigurationNode(Node n) {
+	public void unload() throws ThinklabPluginException {
 		// TODO Auto-generated method stub
 		
 	}

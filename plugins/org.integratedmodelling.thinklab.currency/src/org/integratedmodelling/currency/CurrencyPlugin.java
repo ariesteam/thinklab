@@ -46,10 +46,11 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.value.BooleanValue;
 import org.w3c.dom.Node;
 
-public class CurrencyPlugin extends Plugin  {
+public class CurrencyPlugin extends ThinklabPlugin  {
 
 	CpiConversionFactory convFactory = null;
 	
@@ -61,7 +62,7 @@ public class CurrencyPlugin extends Plugin  {
 	
 	static final public String ID = "Currency";
 
-	
+	// TODO insert in initialization
 	public void initialize() throws ThinklabException {
 
 		String db = getProperties().getProperty("currency.database", 
@@ -96,30 +97,31 @@ public class CurrencyPlugin extends Plugin  {
 		return log;
 	}
 	
-	public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-			throws ThinklabPluginException {
+	public void load(KnowledgeManager km) throws ThinklabPluginException {
 
-		try {
-			new CConvert().install(km);
-		} catch (ThinklabException e) {
-			throw new ThinklabPluginException(e);
-		}
+		// new CConvert().install(km);
 	}
 
-	public void notifyResource(String name, long time, long size)
-			throws ThinklabException {
-
-		if (name.endsWith("cpidata.txt"))
-			cpiDataURL = this.exportResourceCached(name);
-		else if (name.endsWith("exchrates.txt"))
-			exchangeDataURL = this.exportResourceCached(name);
-
-	}
+//	public void notifyResource(String name, long time, long size)
+//			throws ThinklabException {
+//
+//		if (name.endsWith("cpidata.txt"))
+//			cpiDataURL = this.exportResourceCached(name);
+//		else if (name.endsWith("exchrates.txt"))
+//			exchangeDataURL = this.exportResourceCached(name);
+//
+//	}
 
 	public void unload(KnowledgeManager km) throws ThinklabPluginException {
 	}
 
 	public void notifyConfigurationNode(Node n) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void unload() throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}

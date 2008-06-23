@@ -35,10 +35,8 @@ package org.integratedmodelling.thinklab.workflow.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -46,50 +44,26 @@ import org.integratedmodelling.thinklab.workflow.ThinklabDebugWorkflow;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.workflow.WorkflowDirector;
 
-
 /**
  * A command to interactively test a workflow.
  * 
  * @author Ferdinando Villa
- *
+ * 
  */
-public class TestWorkflow extends CommandPattern {
-  
-    class TestWFAction implements IAction {
+public class TestWorkflow implements CommandHandler {
 
-        public IValue execute(Command command, ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
-            
-            String wf = command.getArgumentAsString("workflow");
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-            WorkflowDirector workflow = 
-            	new ThinklabDebugWorkflow(
-            			session.getSessionID(), 
-            			MiscUtilities.getURLForResource(wf).toString(), 
-            			null,
-            			session,
-            			outputWriter);
-            
-            workflow.start(true, true);
-            
-            return null;
-        }
-    }
-    
-    public TestWorkflow( ) {
-    	super();
+		String wf = command.getArgumentAsString("workflow");
+
+		WorkflowDirector workflow = new ThinklabDebugWorkflow(session
+				.getSessionID(),
+				MiscUtilities.getURLForResource(wf).toString(), null, session,
+				outputWriter);
+
+		workflow.start(true, true);
+
+		return null;
 	}
-
-	public CommandDeclaration createCommand() throws ThinklabException {
-        CommandDeclaration ret = new CommandDeclaration("testwf", "test a Thinklab workflow interactively");
-        
-        ret.addMandatoryArgument("workflow", "URL or file location of a workflow to execute", 
-        		KnowledgeManager.Text().getSemanticType());
-        
-        return ret;
-    }
-    
-    public IAction createAction() {
-        return new TestWFAction();
-    }
-    
 }

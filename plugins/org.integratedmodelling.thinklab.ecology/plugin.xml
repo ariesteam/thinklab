@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.ecology" version="0.8.0" class="org.integratedmodelling.ecology.Ecology">
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
+		<import plugin-id="org.integratedmodelling.thinklab.dolce"/>
+	</requires>	
+	<runtime>
+		<library id="core" path="classes/" type="code">
+			<export prefix="*" />
+		</library>
+	</runtime>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="ecology">
+		<parameter id="url" value="ontologies/eco/ecology.owl"/>
+		<parameter id="concept-space" value="ecology" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="habitat">
+		<parameter id="url" value="ontologies/eco/habitat.owl"/>
+		<parameter id="concept-space" value="habitat" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="lulc">
+		<parameter id="url" value="ontologies/lulc/lulc.owl"/>
+		<parameter id="concept-space" value="lulc" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="anderson1">
+		<parameter id="url" value="ontologies/lulc/anderson1.owl"/>
+		<parameter id="concept-space" value="anderson1" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="anderson2">
+		<parameter id="url" value="ontologies/lulc/anderson2.owl"/>
+		<parameter id="concept-space" value="anderson2" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="apa">
+		<parameter id="url" value="ontologies/lulc/apa.owl"/>
+		<parameter id="concept-space" value="apa" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="ncld">
+		<parameter id="url" value="ontologies/lulc/ncld.owl"/>
+		<parameter id="concept-space" value="ncld" />
+	</extension>
+		<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="lulcobservation">
+		<parameter id="url" value="ontologies/lulc/lulcobservation.owl"/>
+		<parameter id="concept-space" value="lulcobservation" />
+	</extension>
+	
+</plugin>

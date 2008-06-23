@@ -32,23 +32,18 @@
  **/
 package org.integratedmodelling.thinklab.workflow;
 
-import java.io.File;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.plugin.Plugin;
-import org.integratedmodelling.thinklab.workflow.commands.TestWorkflow;
-import org.w3c.dom.Node;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
-public class WorkflowPlugin extends Plugin  {
+public class WorkflowPlugin extends ThinklabPlugin  {
 
 	/* log4j logger used for this class. Can be used by other classes through logger()  */
 	private static  Logger log = Logger.getLogger(WorkflowPlugin.class);
-	static final public String ID = "Workflow";
+	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.workflow";
 	private URL osWorkflowConfiguration;
 	/**
 	* TODO use plugin properties to define the initial action id. For now
@@ -68,14 +63,9 @@ public class WorkflowPlugin extends Plugin  {
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public void initialize() throws ThinklabException {
-		
-		
-	}
 	
 	public static WorkflowPlugin get() {
-		return (WorkflowPlugin) getPlugin(ID);
+		return (WorkflowPlugin) getPlugin(PLUGIN_ID);
 	}
 
 	public static Logger logger() {
@@ -83,37 +73,26 @@ public class WorkflowPlugin extends Plugin  {
 	}
 
 	@Override
-	public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-			throws ThinklabPluginException {
+	public void load(KnowledgeManager km) throws ThinklabPluginException {
 
-		try {
-			
-			new TestWorkflow().install(km);
-			
-		} catch (ThinklabException e) {
-			throw new ThinklabPluginException(e);
-		}
+		//new TestWorkflow().install(km);
 		
 
 	}
+
+//	@Override
+//	public void notifyResource(String name, long time, long size)
+//			throws ThinklabException {
+//		
+//		if (name.endsWith("osworkflow.xml"))
+//			osWorkflowConfiguration = this.exportResourceCached(name);
+//
+//	}
 
 	@Override
-	public void notifyResource(String name, long time, long size)
-			throws ThinklabException {
-		
-		if (name.endsWith("osworkflow.xml"))
-			osWorkflowConfiguration = this.exportResourceCached(name);
-
-	}
-
-	@Override
-	public void unload(KnowledgeManager km) throws ThinklabPluginException {
+	public void unload() throws ThinklabPluginException {
 		// TODO Auto-generated method stub
 
-	}
-	public void notifyConfigurationNode(Node n) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public URL getOSWorkflowConfiguration() {

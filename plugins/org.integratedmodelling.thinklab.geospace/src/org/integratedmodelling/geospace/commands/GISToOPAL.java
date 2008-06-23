@@ -34,17 +34,14 @@ package org.integratedmodelling.geospace.commands;
 
 import java.io.File;
 
-import org.integratedmodelling.geospace.GeospacePlugin;
 import org.integratedmodelling.geospace.coverage.InstanceCoverageExporter;
 import org.integratedmodelling.geospace.feature.InstanceShapefileExporter;
 import org.integratedmodelling.opal.utils.OPALListWriter;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -53,94 +50,61 @@ import org.integratedmodelling.utils.XMLDocument;
 
 /**
  * Load ontologies, OPAL files, objects from remote KBoxes into current session
+ * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  */
-public class GISToOPAL extends CommandPattern {
+public class GISToOPAL implements CommandHandler {
 
-	class GIS2OPALAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		public IValue execute(Command command, ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
-			
-			String toload = command.getArgumentAsString("resource");
-			String output = command.getArgumentAsString("output");
-			String format = 
-				command.hasOption("profile") ?
-					command.getOptionAsString("profile") :
-					null;
-				
-			XMLDocument document = OPALListWriter.getNewDocument(format);
-			
-			/* 
-			 * FIXME must use recognition of formats from GeospacePlugin. Also, endsWith is 
-			 * inappropriate for server URLS or anything with GET parameters.
-			 * 
-			 * for now just use a switch over supported formats 
+		String toload = command.getArgumentAsString("resource");
+		String output = command.getArgumentAsString("output");
+		String format = command.hasOption("profile") ? command
+				.getOptionAsString("profile") : null;
+
+		XMLDocument document = OPALListWriter.getNewDocument(format);
+
+		/*
+		 * FIXME must use recognition of formats from GeospacePlugin. Also,
+		 * endsWith is inappropriate for server URLS or anything with GET
+		 * parameters.
+		 * 
+		 * for now just use a switch over supported formats
+		 */
+		if (toload.endsWith(".shp")) {
+
+			InstanceShapefileExporter exporter = new InstanceShapefileExporter(
+					MiscUtilities.getURLForResource(toload), document, format);
+
+			int nObjects = exporter.process();
+
+			document.writeToFile(new File(output));
+
+			outputWriter.displayOutput(nObjects + " objects written to "
+					+ output);
+
+		} else if (toload.endsWith(".tif") || toload.endsWith(".tiff")) {
+
+			/*
+			 * FIXME this one actually handles other raster formats as well
 			 */
-			if (toload.endsWith(".shp")) {
-				
-				InstanceShapefileExporter exporter = 	
-					new InstanceShapefileExporter(
-							MiscUtilities.getURLForResource(toload),
-							document,
-							format);
-				
-				int nObjects = exporter.process();
-				
-				document.writeToFile(new File(output));
 
-				outputWriter.displayOutput(nObjects + " objects written to " + output);
-				
-			} else if (toload.endsWith(".tif") || toload.endsWith(".tiff")) {
-				
-				/*
-				 * FIXME this one actually handles other raster formats as well
-				 */
-				
-				InstanceCoverageExporter exporter = 	
-					new InstanceCoverageExporter(
-							MiscUtilities.getURLForResource(toload),
-							document,
-							format);
-				
-				int nObjects = exporter.process();
-				
-				document.writeToFile(new File(output));
+			InstanceCoverageExporter exporter = new InstanceCoverageExporter(
+					MiscUtilities.getURLForResource(toload), document, format);
 
-				outputWriter.displayOutput(nObjects + " objects written to " + output);
-				
-			} else {
-				throw new ThinklabUnimplementedFeatureException(
-						"file " + toload + " uses an unsupported format");
-			}
-			
-			return null;
+			int nObjects = exporter.process();
+
+			document.writeToFile(new File(output));
+
+			outputWriter.displayOutput(nObjects + " objects written to "
+					+ output);
+
+		} else {
+			throw new ThinklabUnimplementedFeatureException("file " + toload
+					+ " uses an unsupported format");
 		}
-	}
 
-	public GISToOPAL( ) {
-		super();
+		return null;
 	}
-
-	@Override
-	public CommandDeclaration createCommand() {
-		CommandDeclaration ret = new CommandDeclaration("gis2opal", "write knowledge from an annotated GIS layer to OPAL xml");
-		try {
-			ret.addMandatoryArgument("resource", "a supported GIS file to translate", 
-					KnowledgeManager.Text().getSemanticType());
-			ret.addMandatoryArgument("output", "OPAL file to write to", 
-					KnowledgeManager.Text().getSemanticType());
-			ret.addOption("p", "profile", "__NONE__", "the OPAL profile to use in the output",
-						  KnowledgeManager.Text().getSemanticType());
-		} catch (ThinklabException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ret;
-	}
-
-	@Override
-	public IAction createAction() {
-		return new GIS2OPALAction();
-	}
-
 }

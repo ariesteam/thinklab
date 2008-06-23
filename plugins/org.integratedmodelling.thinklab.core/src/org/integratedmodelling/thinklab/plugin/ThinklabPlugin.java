@@ -68,14 +68,22 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.command.CommandDeclaration;
+import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.utils.CopyURL;
 import org.java.plugin.Plugin;
+import org.java.plugin.PluginLifecycleException;
+import org.java.plugin.PluginManager;
 import org.java.plugin.registry.Extension;
 import org.java.plugin.registry.ExtensionPoint;
+import org.java.plugin.registry.Extension.Parameter;
 
 
 /**
@@ -97,15 +105,30 @@ public abstract class ThinklabPlugin extends Plugin
 	/**
 	 * Demand plugin-specific initialization to this callback; 
 	 * we intercept doStart
+	 * @param km TODO
+	 * @throws ThinklabException 
 	 */
-	abstract protected void load();
+	abstract protected void load(KnowledgeManager km) throws ThinklabException;
 	
-	abstract protected void unload();
+	abstract protected void unload() throws ThinklabException;
+	
+	protected static Plugin getPlugin(String id) {
+		
+		Plugin ret = null;
+		try {
+			ret = KnowledgeManager.get().getPluginManager().getPlugin(id);
+		} catch (Exception e) {
+			// TODO shouldn't really happen, but...
+			
+		}
+		return ret;
+	}
 	
 	/**
 	 * Any extensions other than the ones handled by default should be handled here.
+	 * @throws ThinklabException 
 	 */
-	protected void loadExtensions() {
+	protected void loadExtensions() throws ThinklabException {
 		
 	}
 	
@@ -128,14 +151,14 @@ public abstract class ThinklabPlugin extends Plugin
 		loadLiteralValidators();
 		loadKBoxHandlers();
 		loadKnowledgeImporters();
-		loadKnowledgeImporters();
+		loadKnowledgeLoaders();
 		loadLanguageInterpreters();
 		loadCommands();
 		loadInstanceImplementationConstructors();
 		
 		loadExtensions();
 		
-		load();
+		load(null);
 	}
 
 	private void loadConfiguration() throws ThinklabIOException {
@@ -181,7 +204,7 @@ public abstract class ThinklabPlugin extends Plugin
 		
 	}
 
-	private Iterator<Extension> getExtensions(String extensionPoint) {
+	protected Iterator<Extension> getExtensions(String extensionPoint) {
 		
 		ExtensionPoint toolExtPoint = 
 			getManager().getRegistry().getExtensionPoint(getDescriptor().getId(), extensionPoint);
@@ -284,14 +307,60 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 		
 	}
+	
+	private String getParameter(Extension ext, String field) {
+		
+		String ret = null;
+		Parameter p = ext.getParameter(field);
+		if (p != null)
+			ret = p.valueAsString();
+		return ret;
+	}
+	
+	
+	private String getParameter(Extension ext, String field, String defValue) {
+		
+		String ret = null;
+		Parameter p = ext.getParameter(field);
+		if (p != null)
+			ret = p.valueAsString();
+		return ret == null ? defValue : ret;
+	}
+	
+	private Object getHandlerInstance(Extension ext, String field) throws ThinklabPluginException {
+		
+		Object ret = null;
+		
+		ClassLoader classLoader = getManager().getPluginClassLoader(ext.getDeclaringPluginDescriptor());
+		Class<?> cls = null;
+		try {
+			
+			cls = classLoader.loadClass(ext.getParameter(field).valueAsString());
+			ret = cls.newInstance();
+			
+		} catch (Exception e) {
+			throw new ThinklabPluginException(e);
+		}
+		return ret;
+	}
 
+	private void loadKnowledgeLoaders() throws ThinklabException {
+		
+		for (Iterator<Extension> it = getExtensions("knowledge-loader"); it.hasNext();) {
+
+			Extension ext = it.next();
+			String format = ext.getParameter("format").valueAsString();				
+			KnowledgeManager.get().registerKnowledgeLoader(format, (KnowledgeLoader) getHandlerInstance(ext, "class"));
+		}
+		
+	}
 	private void loadKBoxHandlers() {
 		
 		for (Iterator<Extension> it = getExtensions("kbox-handler"); it.hasNext();) {
 
 			Extension ext = it.next();
-			String url = ext.getParameter("url").valueAsString();
-			String csp = ext.getParameter("concept-space").valueAsString();
+			String url = getParameter(ext, "url");
+			String csp = getParameter(ext, "concept-space");
 			
 			// TODO
 		}
@@ -304,15 +373,58 @@ public abstract class ThinklabPlugin extends Plugin
 		unload();
 	}
 	
-	private void loadCommands() {
+	private void loadCommands() throws ThinklabException {
 
 		for (Iterator<Extension> it = getExtensions("command-handler"); it.hasNext();) {
 
 			Extension ext = it.next();
-			String url = ext.getParameter("url").valueAsString();
-			String csp = ext.getParameter("concept-space").valueAsString();
+
+			CommandHandler chandler = (CommandHandler) getHandlerInstance(ext, "class");
 			
-			// TODO
+			String name = getParameter(ext, "command-name");
+			String description = getParameter(ext, "command-description");
+			
+			CommandDeclaration declaration = new CommandDeclaration(name, description);
+			
+			String retType = getParameter(ext, "return-type");
+			
+			if (retType != null)
+				declaration.setReturnType(KnowledgeManager.get().requireConcept(retType));
+			
+			String[] aNames = getParameter(ext, "argument-names","").split(",");
+			String[] aTypes = getParameter(ext, "argument-types","").split(",");
+			String[] aDesc =  getParameter(ext, "argument-descriptions","").split(",");
+
+			for (int i = 0; i < aNames.length; i++) {
+				declaration.addMandatoryArgument(aNames[i], aDesc[i], aTypes[i]);
+			}
+			
+			String[] oaNames = getParameter(ext, "optional-argument-names","").split(",");
+			String[] oaTypes = getParameter(ext, "optional-argument-types","").split(",");
+			String[] oaDesc =  getParameter(ext, "optional-argument-descriptions","").split(",");
+			String[] oaDefs =  getParameter(ext, "optional-argument-default-values","").split(",");
+
+			for (int i = 0; i < oaNames.length; i++) {
+				declaration.addOptionalArgument(oaNames[i], oaDesc[i], oaTypes[i], oaDefs[i]);				
+			}
+
+			String[] oNames = getParameter(ext, "option-names","").split(",");
+			String[] olNames = getParameter(ext, "option-long-names","").split(",");
+			String[] oaLabel = getParameter(ext, "option-argument-labels","").split(",");
+			String[] oTypes = getParameter(ext, "option-types","").split(",");
+			String[] oDesc =  getParameter(ext, "option-descriptions","").split(",");
+
+			for (int i = 0; i < oNames.length; i++) {
+				declaration.addOption(
+						oNames[i],
+						olNames[i], 
+						(oaLabel[i].equals("") ? null : oaLabel[i]), 
+						oDesc[i], 
+						oTypes[i]);
+			}
+
+			CommandManager.get().registerCommand(declaration, chandler);
+			
 		}
 	}
 	

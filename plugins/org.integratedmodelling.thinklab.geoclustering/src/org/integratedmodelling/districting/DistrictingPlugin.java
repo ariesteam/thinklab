@@ -47,9 +47,10 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IPlugin;
 import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 
-public class DistrictingPlugin extends Plugin implements IPlugin {
+public class DistrictingPlugin extends ThinklabPlugin {
 
 	/* log4j logger used for this class. Can be used by other classes through logger() */
 	private static Logger log = Logger.getLogger(DistrictingPlugin.class);
@@ -58,31 +59,28 @@ public class DistrictingPlugin extends Plugin implements IPlugin {
 	private HashMap<String, IDistrictingAlgorithmConstructor> districtingAlgorithms
 	    = new HashMap<String, IDistrictingAlgorithmConstructor>();
 
-	static final public String ID = "Districting";
+	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.geoclustering";
 	static final public String DEFAULT_ALGORITHM = "k-means";
 
-	public static DistrictingPlugin get() {
-	    return (DistrictingPlugin) getPlugin(ID);
+	public static DistrictingPlugin get() throws ThinklabPluginException {
+	    return (DistrictingPlugin) getPlugin(PLUGIN_ID);
 	}
 
 	public static Logger logger() {
 	    return log;
 	}
 	
-	public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-	              throws ThinklabPluginException {
-	    try {
+	public void load(KnowledgeManager km) throws ThinklabPluginException {
+
 		// install command to run a selected districting
 		// algorithm on a spatial dataset
 
-		new District().install(km);
+		//new District().install(km);
 
-	    } catch (ThinklabException e) {
-		throw new ThinklabPluginException(e);
-	    }
 	    
 	    /*
 	     * register default and other known districting algorithms
+	     * TODO these should go as new extensions
 	     */
 	    registerDistrictingAlgorithm("k-means", new KMeansAlgorithmConstructor());
 	    registerDistrictingAlgorithm("isodata", new ISODATAAlgorithmConstructor());
@@ -131,5 +129,11 @@ public class DistrictingPlugin extends Plugin implements IPlugin {
         public String getResourcePath(String resourceID) throws ThinklabException {
             return resources.get(resourceID).getFile();
         }
+
+		@Override
+		protected void unload() throws ThinklabException {
+			// TODO Auto-generated method stub
+			
+		}
 
 }

@@ -64,6 +64,7 @@ public class CommandDeclaration {
 
 	public String ID;
 	public String description;
+	public IConcept returnType = null;
 	
 	private class argDescriptor {
 		String id;
@@ -82,6 +83,14 @@ public class CommandDeclaration {
 
 	public boolean admitsOption(String option) throws ThinklabMalformedCommandException {
 		return findOption(option) != null;
+	}
+	
+	public void setReturnType(IConcept concept) {
+		returnType = concept;
+	}
+	
+	public IConcept getReturnType() {
+		return returnType;
 	}
 	
 	private argDescriptor findOption(String id) throws ThinklabMalformedCommandException {
@@ -223,7 +232,7 @@ public class CommandDeclaration {
      * @throws ThinklabNoKMException 
      * @throws ThinklabResourceNotFoundException 
      */
-	public void addMandatoryArgument(String argName, String argDescription, SemanticType argType) throws ThinklabResourceNotFoundException, ThinklabNoKMException {
+	public void addMandatoryArgument(String argName, String argDescription, String argType) throws ThinklabException {
 
 		argDescriptor a = new argDescriptor();
 		a.id = argName;
@@ -246,7 +255,7 @@ public class CommandDeclaration {
      * @throws ThinklabNoKMException 
      * @throws ThinklabResourceNotFoundException 
      */
-	public void addOptionalArgument(String argName, String argDescription, SemanticType argType, String defaultValue) throws ThinklabResourceNotFoundException, ThinklabNoKMException {
+	public void addOptionalArgument(String argName, String argDescription, String argType, String defaultValue) throws ThinklabException {
 
 		argDescriptor a = new argDescriptor();
 		a.id = argName;
@@ -267,7 +276,7 @@ public class CommandDeclaration {
 	 * @throws ThinklabNoKMException 
 	 * @throws ThinklabResourceNotFoundException 
 	 */
-    public void addOption(String shortName, String optName, String optArgumentLabel, String optDescription, SemanticType optType) throws ThinklabResourceNotFoundException, ThinklabNoKMException {
+    public void addOption(String shortName, String optName, String optArgumentLabel, String optDescription, String optType) throws ThinklabException {
 		argDescriptor a = new argDescriptor();
 		a.id = optName;
 		a.shortName = shortName;

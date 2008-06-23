@@ -43,6 +43,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 
 /**
@@ -58,12 +59,12 @@ import org.w3c.dom.Node;
  * @author Ferdinando Villa
  *
  */
-public class AuthenticationPlugin extends Plugin implements IThinklabAuthenticationManager {
+public class AuthenticationPlugin extends ThinklabPlugin implements IThinklabAuthenticationManager {
 
 	/* log4j logger used for this class. Can be used by other classes through logger()  */
 	private static  Logger log = Logger.getLogger(AuthenticationPlugin.class);
 
-	private final static String ID = "Authentication";
+	private final static String PLUGIN_ID = "org.integratedmodelling.thinklab.authentication";
 
 	/**
 	 * Provided as a convenience for wherever a username property is needed to 
@@ -77,7 +78,7 @@ public class AuthenticationPlugin extends Plugin implements IThinklabAuthenticat
 	
 	
 	public static AuthenticationPlugin get() {
-		return (AuthenticationPlugin) getPlugin(ID );
+		return (AuthenticationPlugin) getPlugin(PLUGIN_ID );
 	}
 
 	public static Logger logger() {
@@ -85,20 +86,10 @@ public class AuthenticationPlugin extends Plugin implements IThinklabAuthenticat
 	}
 	
 	@Override
-	public void load(KnowledgeManager km, File arg1, File arg2) throws ThinklabPluginException {
+	public void load(KnowledgeManager km) throws ThinklabException {
 		
-		/* install login command */
-		try {
-			new Login().install(km);
-			new AddUser().install(km);
-			
-		} catch (ThinklabException e) {
-			throw new ThinklabPluginException(e);
-		}
-	}
-
-	@Override
-	public void initialize() throws ThinklabException {
+//			new Login().install(km);
+//			new AddUser().install(km);
 		
 		/* create the auth manager specified in plugin properties, if any */
 		String authClass = getProperties().getProperty("authentication.manager.class");
@@ -117,19 +108,6 @@ public class AuthenticationPlugin extends Plugin implements IThinklabAuthenticat
 		}
 	}
 
-	@Override
-	public void notifyResource(String name, long time, long size)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void unload(KnowledgeManager km) throws ThinklabPluginException {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	public boolean haveAuthentication() {
 		return authManager != null;
 	}
@@ -223,6 +201,18 @@ public class AuthenticationPlugin extends Plugin implements IThinklabAuthenticat
 	}
 
 	public void notifyConfigurationNode(Node n) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void unload() throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initialize() throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}

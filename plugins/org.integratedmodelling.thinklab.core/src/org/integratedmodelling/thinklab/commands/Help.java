@@ -37,60 +37,42 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
 /** the help command for the command-line interface */
-public class Help extends CommandPattern {
+public class Help implements CommandHandler {
 
-       
-    class HelpAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-        public IValue execute(Command command, ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
-            
-            String topic = command.getArgumentAsString("topic");
+		String topic = command.getArgumentAsString("topic");
 
-            if ("__none".equals(topic)) {
-                /* loop over commands in KM; print a line for each one */
-            	outputWriter.displayOutput("Available commands (\'help <command>\' for more):");
-            	for (CommandDeclaration decl : CommandManager.get().getCommandDeclarations()) {
-            		outputWriter.displayOutput("\t" + decl.ID + "\t" + decl.description);
-            	}
-            } else {
-            	/* should be a command name */
-            	CommandDeclaration cd = CommandManager.get().getDeclarationForCommand(topic);
-                
-                if (cd == null)
-                    throw new ThinklabMalformedCommandException("command " + topic + " undefined");
-                
-                cd.printLongSynopsis(outputWriter);
-            }
-            
-            
-            return null;
-        }
-    }
-    
-    public Help( ) {
-    	super();
+		if ("__none".equals(topic)) {
+			/* loop over commands in KM; print a line for each one */
+			outputWriter
+					.displayOutput("Available commands (\'help <command>\' for more):");
+			for (CommandDeclaration decl : CommandManager.get()
+					.getCommandDeclarations()) {
+				outputWriter.displayOutput("\t" + decl.ID + "\t"
+						+ decl.description);
+			}
+		} else {
+			/* should be a command name */
+			CommandDeclaration cd = CommandManager.get()
+					.getDeclarationForCommand(topic);
+
+			if (cd == null)
+				throw new ThinklabMalformedCommandException("command " + topic
+						+ " undefined");
+
+			cd.printLongSynopsis(outputWriter);
+		}
+
+		return null;
 	}
-
-	public CommandDeclaration createCommand() throws ThinklabException {
-        CommandDeclaration ret = new CommandDeclaration("help", "get help on usage and commands");
-        
-        ret.addOptionalArgument("topic", "topic for in-depth help", 
-        		KnowledgeManager.Text().getSemanticType(), "__none");
-        
-        return ret;
-    }
-    
-    public IAction createAction() {
-        return new HelpAction();
-    }
-    
 }

@@ -32,52 +32,27 @@
  **/
 package org.integratedmodelling.geospace;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Properties;
-
 import org.apache.log4j.Logger;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
-import org.geotools.xml.impl.GetPropertiesExecutor;
-import org.integratedmodelling.geospace.commands.GISToOPAL;
-import org.integratedmodelling.geospace.commands.Rasterize;
-import org.integratedmodelling.geospace.commands.Vectorize;
 import org.integratedmodelling.geospace.constructors.ArealLocationConstructor;
 import org.integratedmodelling.geospace.constructors.ArealLocationValidator;
 import org.integratedmodelling.geospace.constructors.GeospaceValidator;
 import org.integratedmodelling.geospace.constructors.RasterDatasourceConstructor;
 import org.integratedmodelling.geospace.constructors.RasterGridConstructor;
 import org.integratedmodelling.geospace.constructors.SubdividedCoverageModelConstructor;
-import org.integratedmodelling.geospace.coverage.InstanceCoverageLoader;
-import org.integratedmodelling.geospace.feature.InstanceShapefileLoader;
-import org.integratedmodelling.geospace.feature.ShapefileKBox;
-import org.integratedmodelling.geospace.visualization.GeoImageFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
-import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.IKBoxPlugin;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeLoaderPlugin;
-import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.thinklab.plugin.Plugin;
-import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Node;
 
-public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoaderPlugin {
+public class GeospacePlugin extends ThinklabPlugin  {
 
 	private static IConcept shapeType;
 	private static IConcept pointType;
@@ -98,7 +73,7 @@ public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoa
 	/* log4j logger used for this class. Can be used by other classes through logger()  */
 	private static  Logger log = Logger.getLogger(GeospacePlugin.class);
 	private static IConcept rasterSpaceType;
-	static final public String ID = "Geospace";
+	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.geospace";
 	
 	public static final String X_RANGE_OFFSET = "geospace:hasXRangeOffset";
 	public static final String X_RANGE_MAX = "geospace:hasXRangeMax";
@@ -128,12 +103,9 @@ public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoa
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public void initialize() throws ThinklabException {
-	}
 	
 	public static GeospacePlugin get() {
-		return (GeospacePlugin) getPlugin(ID);
+		return (GeospacePlugin) getPlugin(PLUGIN_ID);
 	}
 
 	public static Logger logger() {
@@ -141,8 +113,7 @@ public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoa
 	}
 
 	@Override
-	public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-			throws ThinklabPluginException {
+	public void load(KnowledgeManager km) throws ThinklabPluginException {
 
 		
 		try {
@@ -170,9 +141,9 @@ public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoa
 			hasCentroidPropertyID = "geospace:hasCentroid";
 			
 			/* commands */
-			new GISToOPAL().install(km);
-			new Rasterize().install(km);
-			new Vectorize().install(km);
+//			new GISToOPAL().install(km);
+//			new Rasterize().install(km);
+//			new Vectorize().install(km);
 			
 		} catch (ThinklabException e) {
 			throw new ThinklabPluginException(e);
@@ -196,7 +167,6 @@ public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoa
 		km.registerInstanceConstructor("geospace:ExternalRasterDataSource",
 				new RasterDatasourceConstructor());
 
-		KBoxManager.get().registerKBoxProtocol("shapefile", this);
 		
 		/*
 		 * create preferred CRS if one is specified. Highly adviceable to set one if hybrid data
@@ -211,21 +181,17 @@ public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoa
 		}
 	}
 
-	@Override
-	public void notifyResource(String name, long time, long size)
-			throws ThinklabException {
+	// TODO declare world images in plugin 
+//	@Override
+//	public void notifyResource(String name, long time, long size)
+//			throws ThinklabException {
+//
+//		if (name.contains("visualization/worldimages")) {
+//			GeoImageFactory.get().addWorldImage(this.exportResourceCached(name));
+//		}
+//
+//	}
 
-		if (name.contains("visualization/worldimages")) {
-			GeoImageFactory.get().addWorldImage(this.exportResourceCached(name));
-		}
-
-	}
-
-	@Override
-	public void unload(KnowledgeManager km) throws ThinklabPluginException {
-		// TODO Auto-generated method stub
-
-	}
 
 	public CoordinateReferenceSystem getPreferredCRS() {
 		return preferredCRS;
@@ -237,8 +203,9 @@ public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoa
 	 * 
 	 * @param crs
 	 * @return
+	 * @throws ThinklabPluginException 
 	 */
-	public static String getCRSIdentifier(CoordinateReferenceSystem crs, boolean useDefault) {
+	public static String getCRSIdentifier(CoordinateReferenceSystem crs, boolean useDefault) throws ThinklabPluginException {
 		
 		if (crs != null) {
 			try {
@@ -254,18 +221,6 @@ public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoa
 
 	}
 	
-	public IKBox createKBoxFromURL(URI url) throws ThinklabStorageException {
-		
-		if (url.toString().startsWith("shapefile:")) {
-			try {
-				return new ShapefileKBox(MiscUtilities.getURLForResource(url.toString()), null);
-			} catch (ThinklabException e) {
-				throw new ThinklabStorageException(e);
-			}
-		}
-		
-		return null;
-	}
 
 	public static IConcept Point() {
 		return pointType;
@@ -315,20 +270,6 @@ public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoa
 		return hasCentroidPropertyID;
 	}
 
-	public IKBox createKBox(String protocol, String dataUri, Properties properties) throws ThinklabException {
-
-		IKBox ret = null;
-		
-		if (protocol.equals("shapefile")) {
-			try {
-				ret = new ShapefileKBox(new URL(dataUri), properties);
-			} catch (MalformedURLException e) {
-				throw new ThinklabIOException(e);
-			}
-		}
-		
-		return ret;
-	}
 
 	public boolean handlesFormat(String format) {
 		// TODO add remaining support formats as necessary
@@ -338,37 +279,7 @@ public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoa
 			format.equals("tiff");
 	}
 
-	public Collection<IInstance> loadKnowledge(URL url, ISession session, IKBox kbox)
-			throws ThinklabException {
 
-		Collection<IInstance> ret = null;
-		
-		if (MiscUtilities.getFileExtension(url.toString()).equals("shp")) {
-			
-			ret = new InstanceShapefileLoader(url).loadObservations(session);
-			if (kbox != null) {
-				for (IInstance inst : ret)
-					kbox.storeObject(inst, session);
-			}
-		} else if (MiscUtilities.getFileExtension(url.toString()).equals("tif")) {
-			
-			ret = new InstanceCoverageLoader(url, null).loadObservations(session);
-			if (kbox != null) {
-				for (IInstance inst : ret)
-					kbox.storeObject(inst, session);
-			}
-		} 
-		
-		return ret;
-	}
-
-	public void writeKnowledge(File outfile, String format,
-			IInstance... instances) throws ThinklabException {
-		
-		throw new ThinklabUnimplementedFeatureException(
-				"geospace: writing to " + format + " unsupported");
-		
-	}
 
 	public Hints getGeotoolsHints() {
 		// TODO we need to create appropriate hints at initialization, using the plugin's 
@@ -399,6 +310,13 @@ public class GeospacePlugin extends Plugin implements IKBoxPlugin, IKnowledgeLoa
 
 	public static IInstance absoluteSpatialCoverageInstance() {
 		return spatialCoverageInstance;
+	}
+
+
+	@Override
+	protected void unload() throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -33,53 +33,31 @@
  **/
 package org.integratedmodelling.thinklab.commands;
 
-import org.integratedmodelling.thinklab.KnowledgeTree;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.KnowledgeTree;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
-import org.integratedmodelling.thinklab.command.CommandPattern;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IAction;
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
 /** the help command for the command-line interface */
-public class Hierarchy extends CommandPattern {
+public class Hierarchy implements CommandHandler {
 
-    class HelpAction implements IAction {
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
+			ISession session, KnowledgeManager km) throws ThinklabException {
 
-        public IValue execute(Command command, ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
-            
-        	String c = command.getArgumentAsString("concept");
-        	
-            KnowledgeTree ct = KnowledgeManager.getClassTree();
-        	
-        	if (c != null && !c.equals("__none")) {
-        		ct = new KnowledgeTree(km.requireConcept(c));
-        	}
-        	
-        	ct.dump(outputWriter);
-        	
-            return null;
-        }
-    }
-    
-    public Hierarchy( ) {
-    	super();
+		String c = command.getArgumentAsString("concept");
+
+		KnowledgeTree ct = KnowledgeManager.getClassTree();
+
+		if (c != null && !c.equals("__none")) {
+			ct = new KnowledgeTree(km.requireConcept(c));
+		}
+
+		ct.dump(outputWriter);
+
+		return null;
 	}
-
-	public CommandDeclaration createCommand() throws ThinklabException {
-        CommandDeclaration ret = new CommandDeclaration("hierarchy", "show the class hierarchy for a concept or for the whole repository");
-        
-        ret.addOptionalArgument("concept", "concept to build tree for", 
-        		KnowledgeManager.Text().getSemanticType(), "__none");
-        
-        return ret;
-    }
-    
-    public IAction createAction() {
-        return new HelpAction();
-    }
-    
 }
