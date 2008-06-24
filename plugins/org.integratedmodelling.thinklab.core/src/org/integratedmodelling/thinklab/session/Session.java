@@ -58,7 +58,7 @@ import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.interpreter.AlgorithmInterpreterFactory;
+import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.kbox.VirtualSessionKBox;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
@@ -271,12 +271,12 @@ public class Session implements ISession {
 		
 		/* retrieve an interpreter */
 		LanguageInterpreter interpreter =
-				AlgorithmInterpreterFactory.get().getInterpreter(algorithm, this);
+				InterpreterManager.get().getInterpreter(algorithm, this);
 		
 		/* obtain a context; the session should be bound to it, but that depends on
 		 * the language. */
 		LanguageInterpreter.IContext context = 
-			AlgorithmInterpreterFactory.get().getContext(algorithm, this);
+			InterpreterManager.get().getContext(algorithm, this);
 		
 		return interpreter.execute(algorithm, context);
 	}
@@ -288,12 +288,12 @@ public class Session implements ISession {
 		
 		/* retrieve an interpreter */
 		LanguageInterpreter interpreter =
-				AlgorithmInterpreterFactory.get().getInterpreter(algorithm, this);
+				InterpreterManager.get().getInterpreter(algorithm, this);
 		
 		/* obtain a context; the session should be bound to it, but that depends on
 		 * the language. */
 		LanguageInterpreter.IContext context = 
-			AlgorithmInterpreterFactory.get().getContext(algorithm, this);
+			InterpreterManager.get().getContext(algorithm, this);
 		
 		/* bind arguments */
 		for (String key : arguments.keySet()) {

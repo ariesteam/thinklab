@@ -33,9 +33,20 @@
  **/
 package org.integratedmodelling.thinklab.commandline;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
@@ -47,40 +58,66 @@ import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
+import bsh.util.JConsole;
+
 /**
  * A simple command-line driven interface. Just attach to a session, run and type 'help'.
  * @author Ferdinando Villa
  */
-public class Shell {
+public class GraphicalShell {
+	
+	JConsole console = null;
+	
+	public class JPanels extends JFrame {
+
+		  public JPanels() {
+		    super("Thinklab console");
+		    Container content = getContentPane();
+		    content.setBackground(Color.lightGray);
+		    JPanel controlArea = new JPanel(new GridLayout(2, 1));
+		    content.add(controlArea, BorderLayout.EAST);
+		    console = new JConsole();
+		    // Preferred height is irrelevant, since using WEST region
+		    console.setPreferredSize(new Dimension(600, 400));
+		    console.setBorder(BorderFactory.createLineBorder (Color.blue, 2));
+		    console.setBackground(Color.white);
+		    content.add(console, BorderLayout.WEST);
+		    pack();
+		    setVisible(true);
+		  }
+		}
 	
 	public ISession session;
 	
-	public Shell(ISession session) {
+	public GraphicalShell(ISession session) {
 		this.session = session;
 	}
 	
-	public static void printStatusMessage() {
+	public  void printStatusMessage() {
 		
-		System.out.println("ThinkLab shell 0.1alpha");
-		System.out.println("System path: " + LocalConfiguration.getSystemPath());
-		System.out.println("Data path: " + LocalConfiguration.getDataPath());					
-		System.out.println();
-		System.out.println("Enter \'help\' for a list of commands; \'exit\' quits");
-		System.out.println();
+		console.println("ThinkLab shell 0.1alpha");
+		console.println("System path: " + LocalConfiguration.getSystemPath());
+		console.println("Data path: " + LocalConfiguration.getDataPath());					
+		console.println();
+		
+		console.println("Enter \'help\' for a list of commands; \'exit\' quits");
+		console.println();
 	}
 
 	public void startConsole() throws Exception {
 		
+		JPanels jpanels = new JPanels();
+		
 		/* greet user */
 		printStatusMessage();
 		
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader in = new BufferedReader(new InputStreamReader(console.getInputStream()));
 		String input = "";
 		
 		/* define commands from user input */
 		while(true) {
 			
-			System.out.print("> ");
+			console.print("> ");
 			try {
 				input = in.readLine();
 			} catch (IOException e) {
@@ -88,9 +125,9 @@ public class Shell {
 			}
 			
 			if ("exit".equals(input)) {
-				System.out.println("shell terminated");
+				console.println("shell terminated");
 				break;
-			} else if (!("".equals(input))) {
+			} else if (!("".equals(input.trim()))) {
 				try {
 					
 					Command cmd = CommandParser.parse(input);
@@ -100,10 +137,10 @@ public class Shell {
 					
 					IValue result = CommandManager.get().submitCommand(cmd, null, session);
                     if (result != null)
-                        System.out.println(result.toString());
+                        console.println(result.toString());
 				} catch (ThinklabException e) {
 					e.printStackTrace();
-					System.out.println(" error: " + e.getMessage());
+					console.println(" error: " + e.getMessage());
 				}
 			}
 		}

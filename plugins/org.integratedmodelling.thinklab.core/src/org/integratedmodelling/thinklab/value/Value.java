@@ -46,7 +46,7 @@ import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.interpreter.AlgorithmInterpreterFactory;
+import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 
 /**
  * <p>A generalized container for a value that always has a concept associated. The value may be defined from a literal or a basic
@@ -658,11 +658,11 @@ public class Value implements IValue {
 
 		/* retrieve an interpreter */
 		LanguageInterpreter interpreter =
-				AlgorithmInterpreterFactory.get().getInterpreter(algorithm, session);
+				InterpreterManager.get().getInterpreter(algorithm, session);
 		
 		/* obtain a context */
 		LanguageInterpreter.IContext context = 
-			AlgorithmInterpreterFactory.get().getContext(algorithm, session);
+			InterpreterManager.get().getContext(algorithm, session);
 		
 		/* bind "self" to current value */
 		context.bind(this, "self");

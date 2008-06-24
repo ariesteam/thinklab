@@ -535,15 +535,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		/* flush knowledge repository */
         
 	}
-    
-	public void printBanner() {
-			
-			System.out.println("ThinkLab shell 0.1alpha");
-			System.out.println("System path: " + LocalConfiguration.getSystemPath());
-			System.out.println("Data path: " + LocalConfiguration.getDataPath());
-			
-			System.out.println();
-	}
+
 	
 	/**
 	 * Launch a query in a separate thread for each installed kbox, unless the constraint contains a target kbox

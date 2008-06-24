@@ -34,8 +34,7 @@
 package org.integratedmodelling.thinklab.shell;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.commandline.Shell;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
+import org.integratedmodelling.thinklab.commandline.GraphicalShell;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.java.plugin.boot.Application;
 import org.java.plugin.boot.ApplicationPlugin;
@@ -51,18 +50,6 @@ public class ShellApplication extends ApplicationPlugin implements Application {
 	
 	public ISession session;
 	
-	public void printStatusMessage() {
-		
-		try {
-			KnowledgeManager.get().printBanner();
-		} catch (ThinklabNoKMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("Enter \'help\' for a list of commands; \'exit\' quits");
-		System.out.println();
-	}
-
 	@Override
 	protected Application initApplication(ExtendedProperties arg0, String[] arg1)
 			throws Exception {
@@ -84,7 +71,7 @@ public class ShellApplication extends ApplicationPlugin implements Application {
 	@Override
 	public void startApplication() throws Exception {
 		
-		Shell shell = new Shell(KnowledgeManager.get().requestNewSession());
-		shell.startConsoleShell();
+		GraphicalShell shell = new GraphicalShell(KnowledgeManager.get().requestNewSession());
+		shell.startConsole();
 	}
 }

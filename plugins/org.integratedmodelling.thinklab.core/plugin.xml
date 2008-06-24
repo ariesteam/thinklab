@@ -18,7 +18,9 @@
 		<library type="code" id="asm"  path="lib/asm.jar"/>
 		<library type="code" id="asm-attris"  path="lib/asm-attrs.jar"/>
 		<library type="code" id="bsf"  path="lib/bsf.jar"/>
-		<library type="code" id="bsh"  path="lib/bsh-1.2b7.jar"/>
+		<library type="code" id="bsh"  path="lib/bsh-1.2b7.jar">
+			<export prefix="*" />
+		</library>
 		<library type="code" id="common"  path="lib/common-2.2.1.jar"/>
 		<library type="code" id="commons-beanutils"  path="lib/commons-beanutils-1.7.0.jar"/>
 		<library type="code" id="commons-codec"  path="lib/commons-codec-1.3.jar"/>

@@ -47,9 +47,9 @@ import org.integratedmodelling.thinklab.extensions.LanguageInterpreter.IContext;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 import org.java.plugin.registry.PluginRegistry;
 
-public class AlgorithmInterpreterFactory {
+public class InterpreterManager {
 
-	private static AlgorithmInterpreterFactory AIF = null;
+	private static InterpreterManager AIF = null;
 
 	// binds a language type to an interpreter
 	Hashtable<String, LanguageInterpreter> interpreterFactory = new Hashtable<String, LanguageInterpreter>();
@@ -154,10 +154,10 @@ public class AlgorithmInterpreterFactory {
 		}
 	}
 
-	public static AlgorithmInterpreterFactory get() {
+	public static InterpreterManager get() {
 
 		if (AIF == null) {
-			AIF = new AlgorithmInterpreterFactory();
+			AIF = new InterpreterManager();
 		}
 		return AIF;
 		

@@ -56,7 +56,7 @@ import org.integratedmodelling.thinklab.interfaces.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.IResource;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.interpreter.AlgorithmInterpreterFactory;
+import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
@@ -471,12 +471,12 @@ public class Instance implements IInstance {
 
 		/* retrieve an interpreter */
 		LanguageInterpreter interpreter =
-			AlgorithmInterpreterFactory.get().getInterpreter(algorithm, session);
+			InterpreterManager.get().getInterpreter(algorithm, session);
 
 		/* obtain a context; the session should be bound to it, but that depends on
 		 * the language. */
 		LanguageInterpreter.IContext context = 
-			AlgorithmInterpreterFactory.get().getContext(algorithm, session);
+			InterpreterManager.get().getContext(algorithm, session);
 
 		/* bind self as "self" */
 		context.bind(this, "self");
@@ -488,12 +488,12 @@ public class Instance implements IInstance {
 
 		/* retrieve an interpreter */
 		LanguageInterpreter interpreter =
-			AlgorithmInterpreterFactory.get().getInterpreter(algorithm, session);
+			InterpreterManager.get().getInterpreter(algorithm, session);
 
 		/* obtain a context; the session should be bound to it, but that depends on
 		 * the language. */
 		LanguageInterpreter.IContext context = 
-			AlgorithmInterpreterFactory.get().getContext(algorithm, session);
+			InterpreterManager.get().getContext(algorithm, session);
 
 		/* bind self as "self" */
 		context.bind(this, "self");

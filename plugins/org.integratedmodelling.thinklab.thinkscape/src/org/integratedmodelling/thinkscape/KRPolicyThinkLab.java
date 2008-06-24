@@ -22,6 +22,7 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
+import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
@@ -214,14 +215,10 @@ public class KRPolicyThinkLab implements KRPolicy, ISessionManager,
 
 	public void printStatusMessage() {
 
-		try {
-			KnowledgeManager.get().printBanner();
-		} catch (ThinklabNoKMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out
-				.println("Enter \'help\' for a list of commands; \'exit\' quits");
+		System.out.println("ThinkScape shell 0.1alpha");
+		System.out.println("System path: " + LocalConfiguration.getSystemPath());
+		System.out.println("Data path: " + LocalConfiguration.getDataPath());								System.out.println();
+		System.out.println("Enter \'help\' for a list of commands; \'exit\' quits");
 		System.out.println();
 	}
 
