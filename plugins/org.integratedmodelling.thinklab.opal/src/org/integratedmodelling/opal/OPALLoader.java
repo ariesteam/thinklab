@@ -34,22 +34,13 @@ package org.integratedmodelling.opal;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 
-import org.integratedmodelling.opal.profile.OPALProfileFactory;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeLoaderPlugin;
 import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.plugin.Plugin;
-import org.w3c.dom.Node;
 
 public class OPALLoader implements KnowledgeLoader {
 

@@ -80,6 +80,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
+import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
+import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.utils.CopyURL;
 import org.java.plugin.Plugin;
 import org.java.plugin.PluginLifecycleException;
@@ -309,23 +311,23 @@ public abstract class ThinklabPlugin extends Plugin
 		
 	}
 
-	protected void loadLiteralValidators() {
+	protected void loadLiteralValidators() throws ThinklabException {
 		
 		for (Extension ext : getOwnThinklabExtensions("literal-validator")) {
 
-			String url = ext.getParameter("url").valueAsString();
-			String csp = ext.getParameter("concept-space").valueAsString();
+			LiteralValidator lv = (LiteralValidator) getHandlerInstance(ext, "class");
+			String type = ext.getParameter("semantic-type").valueAsString();
 			
-			// TODO
+			KnowledgeManager.get().registerLiteralValidator(type, lv);
 		}
 
 	}
 
-	protected void loadLanguageInterpreters() {
+	protected void loadLanguageInterpreters() throws ThinklabException {
 		
 		for (Extension ext : getOwnThinklabExtensions("language-interpreter")) {
 
-			String url = ext.getParameter("url").valueAsString();
+			LanguageInterpreter lint =  (LanguageInterpreter) getHandlerInstance(ext, "class");
 			String csp = ext.getParameter("concept-space").valueAsString();
 			
 			// TODO
@@ -387,7 +389,9 @@ public abstract class ThinklabPlugin extends Plugin
 		for (Extension ext : getOwnThinklabExtensions("knowledge-loader")) {
 
 			String format = ext.getParameter("format").valueAsString();				
-			KnowledgeManager.get().registerKnowledgeLoader(format, (KnowledgeLoader) getHandlerInstance(ext, "class"));
+			KnowledgeManager.get().registerKnowledgeLoader(
+					format, 
+					(KnowledgeLoader) getHandlerInstance(ext, "class"));
 		}
 		
 	}
@@ -503,13 +507,11 @@ public abstract class ThinklabPlugin extends Plugin
 	
 	public File getScratchPath() throws ThinklabException  {
 		
-		return PluginRegistry.get().getScratchDir(this.getDescriptor().getId());
-		
+		return dataFolder;
 	}
 	
 	public File getLoadPath() throws ThinklabException  {
 		
-		return new File (PluginRegistry.get().getLoadDir() + "/" + getDescriptor().getId());
-		
+		return plugFolder;	
 	}
 }

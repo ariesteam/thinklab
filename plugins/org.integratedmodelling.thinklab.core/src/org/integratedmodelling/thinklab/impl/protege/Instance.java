@@ -44,7 +44,7 @@ import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter;
+import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IConformance;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
@@ -470,12 +470,12 @@ public class Instance implements IInstance {
 	public IValue execute(AlgorithmValue algorithm, ISession session) throws ThinklabException {
 
 		/* retrieve an interpreter */
-		IAlgorithmInterpreter interpreter =
+		LanguageInterpreter interpreter =
 			AlgorithmInterpreterFactory.get().getInterpreter(algorithm, session);
 
 		/* obtain a context; the session should be bound to it, but that depends on
 		 * the language. */
-		IAlgorithmInterpreter.IContext context = 
+		LanguageInterpreter.IContext context = 
 			AlgorithmInterpreterFactory.get().getContext(algorithm, session);
 
 		/* bind self as "self" */
@@ -487,12 +487,12 @@ public class Instance implements IInstance {
 	public IValue execute(AlgorithmValue algorithm, ISession session, Map<String, IValue> arguments) throws ThinklabException {
 
 		/* retrieve an interpreter */
-		IAlgorithmInterpreter interpreter =
+		LanguageInterpreter interpreter =
 			AlgorithmInterpreterFactory.get().getInterpreter(algorithm, session);
 
 		/* obtain a context; the session should be bound to it, but that depends on
 		 * the language. */
-		IAlgorithmInterpreter.IContext context = 
+		LanguageInterpreter.IContext context = 
 			AlgorithmInterpreterFactory.get().getContext(algorithm, session);
 
 		/* bind self as "self" */

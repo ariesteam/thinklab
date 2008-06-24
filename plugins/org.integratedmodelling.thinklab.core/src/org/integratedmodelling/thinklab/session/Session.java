@@ -47,17 +47,14 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnknownResourceException;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
-import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter;
+import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeLoaderPlugin;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
-import org.integratedmodelling.thinklab.interfaces.IPlugin;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -273,12 +270,12 @@ public class Session implements ISession {
 	public IValue execute(AlgorithmValue algorithm) throws ThinklabException {
 		
 		/* retrieve an interpreter */
-		IAlgorithmInterpreter interpreter =
+		LanguageInterpreter interpreter =
 				AlgorithmInterpreterFactory.get().getInterpreter(algorithm, this);
 		
 		/* obtain a context; the session should be bound to it, but that depends on
 		 * the language. */
-		IAlgorithmInterpreter.IContext context = 
+		LanguageInterpreter.IContext context = 
 			AlgorithmInterpreterFactory.get().getContext(algorithm, this);
 		
 		return interpreter.execute(algorithm, context);
@@ -290,12 +287,12 @@ public class Session implements ISession {
 	public IValue execute(AlgorithmValue algorithm, Map<String, IValue> arguments) throws ThinklabException {
 		
 		/* retrieve an interpreter */
-		IAlgorithmInterpreter interpreter =
+		LanguageInterpreter interpreter =
 				AlgorithmInterpreterFactory.get().getInterpreter(algorithm, this);
 		
 		/* obtain a context; the session should be bound to it, but that depends on
 		 * the language. */
-		IAlgorithmInterpreter.IContext context = 
+		LanguageInterpreter.IContext context = 
 			AlgorithmInterpreterFactory.get().getContext(algorithm, this);
 		
 		/* bind arguments */

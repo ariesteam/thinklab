@@ -32,21 +32,17 @@
  **/
 package org.integratedmodelling.districting;
 
-import java.io.File;
-import java.util.HashMap;
 import java.net.URL;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 import org.integratedmodelling.districting.algorithms.ISODATAAlgorithmConstructor;
 import org.integratedmodelling.districting.algorithms.KMeansAlgorithmConstructor;
-import org.integratedmodelling.districting.commands.District;
 import org.integratedmodelling.districting.interfaces.IDistrictingAlgorithm;
 import org.integratedmodelling.districting.interfaces.IDistrictingAlgorithmConstructor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.interfaces.IPlugin;
-import org.integratedmodelling.thinklab.plugin.Plugin;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 

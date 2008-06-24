@@ -32,24 +32,15 @@
  **/
 package org.integratedmodelling.time;
 
-import java.io.File;
-
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.plugin.Plugin;
-import org.integratedmodelling.time.constructors.DurationValidator;
-import org.integratedmodelling.time.constructors.PeriodValidator;
-import org.integratedmodelling.time.constructors.TemporalGridConstructor;
-import org.integratedmodelling.time.constructors.TimeRecordConstructor;
-import org.integratedmodelling.time.constructors.TimeRecordValidator;
-import org.integratedmodelling.time.constructors.TimeValidator;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 
-public class TimePlugin extends Plugin {
+public class TimePlugin extends ThinklabPlugin {
 
 	public static final String CONTINUOUS_TIME_OBSERVABLE_INSTANCE = "time:ContinuousTimeObservableInstance";
 	public static final String ABSOLUTE_TIME_OBSERVABLE_INSTANCE = "time:AbsoluteTimeObservableInstance";
@@ -71,8 +62,7 @@ public class TimePlugin extends Plugin {
     private static IInstance absoluteTimeInstance; 
     private static IInstance continuousTimeInstance; 
     
-    public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-            throws ThinklabPluginException {
+    public void load(KnowledgeManager km) throws ThinklabPluginException {
 
     	DATETIME_TYPE_ID = 
     		getProperties().getProperty("DateTimeTypeID", "time:DateTimeValue");
@@ -106,31 +96,21 @@ public class TimePlugin extends Plugin {
 		} catch (ThinklabException e) {
 			throw new ThinklabPluginException(e);
 		}
-    	
-        km.registerLiteralValidator(DATETIME_TYPE_ID, new TimeValidator());
-        km.registerLiteralValidator(PERIOD_TYPE_ID, new PeriodValidator());
-        km.registerLiteralValidator(DURATION_TYPE_ID, new DurationValidator());
-        km.registerLiteralValidator(TIMERECORD_TYPE_ID, new TimeRecordValidator());
 
-        km.registerInstanceConstructor(TIMERECORD_TYPE_ID, new TimeRecordConstructor());
-        km.registerInstanceConstructor(TEMPORALGRID_TYPE_ID, new TemporalGridConstructor());
+		// TODO move to extensions
+//        km.registerLiteralValidator(DATETIME_TYPE_ID, new TimeValidator());
+//        km.registerLiteralValidator(PERIOD_TYPE_ID, new PeriodValidator());
+//        km.registerLiteralValidator(DURATION_TYPE_ID, new DurationValidator());
+//        km.registerLiteralValidator(TIMERECORD_TYPE_ID, new TimeRecordValidator());
+//
+//        km.registerInstanceConstructor(TIMERECORD_TYPE_ID, new TimeRecordConstructor());
+//        km.registerInstanceConstructor(TEMPORALGRID_TYPE_ID, new TemporalGridConstructor());
     }
 
-    public void unload(KnowledgeManager km) throws ThinklabPluginException {
+    public void unload() throws ThinklabPluginException {
         // TODO Auto-generated method stub
 
     }
-
-	public void initialize() throws ThinklabException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void notifyResource(String name, long time, long size) throws ThinklabException {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public static IConcept TimeRecord() {
 		return timeRecordConcept;

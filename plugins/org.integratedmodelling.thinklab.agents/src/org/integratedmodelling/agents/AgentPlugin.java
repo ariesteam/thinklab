@@ -45,17 +45,17 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class AgentPlugin.
  */
-public class AgentPlugin extends Plugin {
+public class AgentPlugin extends ThinklabPlugin {
 
 	/** The Constant ID. */
-	static final String ID = "Agent";
+	static final String PLUGIN_ID = "org.integratedmodelling.thinklab.agent";
     
 	/** The container. */
 	AgentContainer theContainer = null;
@@ -98,7 +98,7 @@ public class AgentPlugin extends Plugin {
 	 * @return the agent plugin
 	 */
 	public static AgentPlugin get() {
-		return (AgentPlugin) getPlugin(ID );
+		return (AgentPlugin) getPlugin(PLUGIN_ID);
 	}
 	
 	
@@ -146,14 +146,14 @@ public class AgentPlugin extends Plugin {
     /* (non-Javadoc)
      * @see org.integratedmodelling.thinklab.plugin.Plugin#load(org.integratedmodelling.thinklab.KnowledgeManager, java.io.File, java.io.File)
      */
-    public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
+    public void load(KnowledgeManager km)
             throws ThinklabPluginException {
     }
 
     /* (non-Javadoc)
      * @see org.integratedmodelling.thinklab.plugin.Plugin#unload(org.integratedmodelling.thinklab.KnowledgeManager)
      */
-    public void unload(KnowledgeManager km) throws ThinklabPluginException {
+    public void unload() throws ThinklabPluginException {
         // TODO Auto-generated method stub
 
     }
@@ -164,26 +164,5 @@ public class AgentPlugin extends Plugin {
 		return theContainer;
     }
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.plugin.Plugin#initialize()
-	 */
-	public void initialize() throws ThinklabException {
-	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.plugin.Plugin#notifyResource(java.lang.String, long, long)
-	 */
-	@Override
-	public void notifyResource(String name, long time, long size) throws ThinklabException {
-		// TODO Auto-generated method stub
-	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IPlugin#notifyConfigurationNode(org.w3c.dom.Node)
-	 */
-	public void notifyConfigurationNode(Node n) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

@@ -38,13 +38,12 @@ import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContextState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter;
+import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.IUncertainty;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter.IContext;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 import org.integratedmodelling.utils.Pair;
 
@@ -59,8 +58,8 @@ public class ExpressionDatasource implements IDataSource, IInstanceImplementatio
 
 	String expressionSource = null;
 	AlgorithmValue expression = null;
-	IAlgorithmInterpreter interpreter = null;
-	IContext expContext = null;
+	LanguageInterpreter interpreter = null;
+	LanguageInterpreter.IContext expContext = null;
 	
 	static final String HAS_ALGORITHM = "source:hasAlgorithm";
 	

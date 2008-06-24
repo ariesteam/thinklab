@@ -52,7 +52,6 @@ import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
-import org.integratedmodelling.thinklab.exception.ThinklabMissingResourceException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -62,18 +61,16 @@ import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
+import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
-import org.integratedmodelling.thinklab.interfaces.IPlugin;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.thinklab.plugin.PluginRegistry;
 import org.integratedmodelling.thinklab.session.SingleSessionManager;
 import org.integratedmodelling.thinklab.validators.NumberValidator;
 import org.integratedmodelling.thinklab.validators.TextValidator;
@@ -152,10 +149,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	protected IKnowledgeRepository knowledgeRepository;
 	protected ISessionManager  sessionManager = null;
 
-	/**
-	 * @deprecated use JPF directly
-	 */
-	protected PluginRegistry   pluginRegistry;
 	
 	protected PluginManager pluginManager = null;
 	
@@ -227,9 +220,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 
         instanceConstructors = new HashMap<String, InstanceImplementationConstructor>();
         literalValidators = new HashMap<String, LiteralValidator>();
-        
-        pluginRegistry = new PluginRegistry();
-    
+
         knowledgeRepository = kr;
 		sessionManager  = ki;
 		
@@ -612,16 +603,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	public void registerKnowledgeLoader(String format, KnowledgeLoader loader) {
 		knowledgeLoaders.put(format, loader);
 	}
-
-	/**
-	 * Return the named plugin, or null if not found.
-	 * 
-	 * @param name
-	 * @return
-	 */
-	public IPlugin retrievePlugin(String name) {
-		return pluginRegistry.retrievePlugin(name);
-	}
 	
     /* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#requireConcept(java.lang.String)
@@ -968,30 +949,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	        return ret;
 	}
 
-//	/** 
-//	 * <p>We can only express base literal types in OWL, and even if we can extend RDF/S or framework such as Jena
-//	 * to express other types, it's not easy to do so in a consistent and general way. For this reason, the IMA
-//	 * has a notion of "reified literal": basically, complex types that need to be expressed as literals and have
-//	 * a complex Java translation (such as polygons, time objects, etc.) can be made subclasses of the configured
-//	 * ReifiedLiteral class. This gives them a text property (e.g. literal-value, also configured in the KM) that
-//	 * can be linked to their text representation. Each time an instance of these is encountered, it is passed to
-//	 * this function, which translates it into a Value and assigns the parent concept to it.</p>
-//	 * @return the Value that results from the validation. Can't be null: either a good value is returned or a validation
-//	 * 		   exception is thrown.
-//	 * @throws ThinklabValidationException if anything is wrong with the instance
-//	 */
-//    @Deprecated
-//	public Value translateReifiedLiteral(IInstance inst) throws ThinklabValidationException {
-//		Value ret = null;
-//		try {
-//			IValue v = inst.getProperty(ReifiedLiteralPropertyID);
-//			ret = validateLiteral(inst.getParent(), v.toString());
-//		} catch (ThinklabException e) {
-//			// translate any exception to validation
-//			throw new ThinklabValidationException(e);
-//		}
-//		return ret;
-//	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#getLeastGeneralCommonConcept(org.integratedmodelling.thinklab.SemanticType, org.integratedmodelling.thinklab.SemanticType)
@@ -1060,17 +1017,17 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		for (String s : sessionListeners) {
 			
 			IThinklabSessionListener listener = null;
-			
-			try {
-				Class<?> lcl = Class.forName(s, true, PluginRegistry.get().getClassLoader());
-				listener = (IThinklabSessionListener) lcl.newInstance();
-			} catch (ClassNotFoundException e) {
-				throw new ThinklabMissingResourceException("cannot create requested session listener " + s + ": class not found");
-			} catch (Exception e) {
-				throw new ThinklabMissingResourceException("cannot create requested session listener " + s + ": error during creation");
-			}
-			listener.sessionCreated(session);
-			session.addListener(listener);
+// TODO will need to be declared in plugin.xml, we can't use a plugin's classloader from here.			
+//			try {
+//				Class<?> lcl = Class.forName(s, true, PluginRegistry.get().getClassLoader());
+//				listener = (IThinklabSessionListener) lcl.newInstance();
+//			} catch (ClassNotFoundException e) {
+//				throw new ThinklabMissingResourceException("cannot create requested session listener " + s + ": class not found");
+//			} catch (Exception e) {
+//				throw new ThinklabMissingResourceException("cannot create requested session listener " + s + ": error during creation");
+//			}
+//			listener.sessionCreated(session);
+//			session.addListener(listener);
 		}
 		
 		return session;
@@ -1087,15 +1044,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		sessionManager.notifySessionDeletion(session);
 	}
 
-	
-    /**
-     * Get the plugin registry.
-     * @return
-     */
-	public PluginRegistry getPluginRegistry() {
-		return pluginRegistry;
-	}
-	
 	/**
 	 * Provided to simplify access to core types when we are sure that we have a knowledge
 	 * manager.
@@ -1230,11 +1178,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	public static IConcept ThingType() {
 		return KM.knowledgeRepository.getRootConceptType();
 	}
-
-	public Collection<IPlugin> retrievePlugins() {
-		return pluginRegistry.getPlugins();
-	}
-
 
 
 	public IProperty getAdditionalRestrictionProperty() {

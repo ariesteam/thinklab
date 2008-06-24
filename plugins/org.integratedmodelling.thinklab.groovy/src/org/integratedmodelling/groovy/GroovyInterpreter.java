@@ -36,17 +36,19 @@ import groovy.lang.GroovyShell;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter;
+import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
+import org.integratedmodelling.thinklab.extensions.LanguageInterpreter.IContext;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
+import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 import org.integratedmodelling.thinklab.value.Value;
 
-public class GroovyInterpreter implements IAlgorithmInterpreter {
+public class GroovyInterpreter implements LanguageInterpreter {
 
 	
-	public IValue execute(AlgorithmValue codeval, IContext context) throws ThinklabException {
+	public IValue execute(AlgorithmValue codeval, LanguageInterpreter.IContext context) throws ThinklabException {
 		
 		IValue ret = null;
 		
@@ -84,6 +86,13 @@ public class GroovyInterpreter implements IAlgorithmInterpreter {
 	public void initialize(IKnowledgeProvider km) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public IContext getNewContext(ISession session) {
+		GroovyContext ctx = new GroovyContext();
+		ctx.getBinding().setVariable("session", session);
+		return ctx;
 	}
 
 }

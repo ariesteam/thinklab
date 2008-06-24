@@ -124,4 +124,9 @@
 		<parameter-def id="option-descriptions" multiplicity="none-or-one" />	
 		<parameter-def id="example" multiplicity="any" />
 	</extension-point>
+	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" id="text-validator">
+		<parameter id="class" value="org.integratedmodelling.thinklab.validators.TextValidator"/>
+		<parameter id="semantic-type" value="thinklab-core:Text"/>
+	</extension>
 </plugin>

@@ -123,7 +123,7 @@ public class Command {
      * Create a command from pre-parsed declaration and arguments.
      * @param args
      * @param opts
-     * @param ID
+     * @param PLUGIN_ID
      * @throws ThinklabException
      */
     public Command(CommandDeclaration declaration, HashMap<String, IValue> args, HashMap<String, IValue> opts) throws ThinklabException {

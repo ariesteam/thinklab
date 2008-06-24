@@ -43,18 +43,18 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
-import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 
 import edu.stanford.smi.protegex.owl.model.OWLModel;
 
-public class RulePlugin extends Plugin {
+public class RulePlugin extends ThinklabPlugin {
 
 	private OWLModel owlModel;
 	
 	/* log4j logger used for this class. Can be used by other classes through logger()  */
 	private static  Logger log = Logger.getLogger(RulePlugin.class);
-	static final public String ID = "Rule";
+	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.rules";
 
 	// property to select the type of engine to be created. Should be jess or drools. 
 	// defaults: no rule engine
@@ -67,7 +67,7 @@ public class RulePlugin extends Plugin {
 	private boolean usingDrools = false;
 	
 	public static RulePlugin get() {
-		return (RulePlugin) getPlugin(ID);
+		return (RulePlugin) getPlugin(PLUGIN_ID);
 	}
 
 	public static Logger logger() {
@@ -91,15 +91,9 @@ public class RulePlugin extends Plugin {
 	public IThinklabRuleEngine createRuleEngine() throws ThinklabRuleEngineException {
 		return new JessRuleEngine(owlModel);
 	}
-	
-	@Override
-	public void initialize() throws ThinklabException {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
-	public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
+	public void load(KnowledgeManager km)
 			throws ThinklabPluginException {
 	
 		String engine = getProperties().getProperty(CREATE_JESS_ENGINE_PROPERTY, "").trim();
@@ -134,30 +128,18 @@ public class RulePlugin extends Plugin {
 		
 	}
 
-	@Override
-	public void notifyResource(String name, long time, long size)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void unload(KnowledgeManager km) throws ThinklabPluginException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void notifyConfigurationNode(Node n) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public boolean isUsingJess() {
 		return usingJess;
 	}
 	
 	public boolean isUsingDrools() {
 		return usingDrools;
+	}
+
+	@Override
+	protected void unload() throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 	
 

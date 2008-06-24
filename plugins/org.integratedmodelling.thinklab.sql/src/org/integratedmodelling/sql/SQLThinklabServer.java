@@ -60,7 +60,6 @@ import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.interfaces.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.plugin.PluginRegistry;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 import org.integratedmodelling.thinklab.value.BooleanValue;
 import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
@@ -1735,16 +1734,9 @@ public abstract class SQLThinklabServer {
 
 	private void loadSchema(String schemaID) throws ThinklabException {
 		
-		SQLPlugin sqlPlugin = null;
-		try {
-			sqlPlugin = (SQLPlugin)PluginRegistry.get().retrievePlugin("SQL");
-		} catch (ThinklabNoKMException e1) {
-			throw new ThinklabStorageException(e1);
-		}
-		
 		File schema = null;
 		
-		for (File sch : sqlPlugin.schemata) {
+		for (File sch : SQLPlugin.get().schemata) {
 			if (sch.toString().endsWith(schemaID + ".sqx")) { 
 				schema = sch;
 				break;

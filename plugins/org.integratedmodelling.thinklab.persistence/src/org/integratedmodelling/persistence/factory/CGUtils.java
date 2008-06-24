@@ -43,6 +43,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.integratedmodelling.persistence.PersistencePlugin;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
@@ -50,7 +51,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundExcept
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IKnowledge;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
-import org.integratedmodelling.thinklab.plugin.PluginRegistry;
+
 
 /**
  * A code generator helper utility.
@@ -83,9 +84,10 @@ public final class CGUtils {
 	 * Returns the scratch folder where generated files are to be saved. 
 	 * The scratch folder should be defined through the "{@code persistence.jarpath}" attribute of the local configuration.
 	 * @return the scratch folder 
+	 * @throws ThinklabException 
 	 * @see org.integratedmodelling.thinklab.configuration.LocalConfiguration
 	 */
-	public static File getPluginScratchFolder(){
+	public static File getPluginScratchFolder() throws ThinklabException{
 		if(scratchFolder!=null)
 			return scratchFolder;
 		else{
@@ -93,7 +95,7 @@ public final class CGUtils {
 		
 		File pluginScratchFolder = null;
 		try {
-			pluginScratchFolder = PluginRegistry.get().getScratchDir(PersistencePlugin.PLUGIN_ID);
+			pluginScratchFolder = PersistencePlugin.get().getScratchPath();
 		} catch (ThinklabPluginException e) {
 			log.debug(e);
 		} catch (ThinklabNoKMException e) {
@@ -127,8 +129,9 @@ public final class CGUtils {
 	 * Creates a new File in the scratch folder.
 	 * @param relativePath the relative path of the file (i.e. org/integratedmodelling/ks/thinklab/thinklab_core) 
 	 * @return file the file created
+	 * @throws ThinklabException 
 	 */
-	public static File createFileInPluginScratchFolder(String relativePath) {	 
+	public static File createFileInPluginScratchFolder(String relativePath) throws ThinklabException {	 
 		File f = new File(getPluginScratchFolder(),relativePath);
 		f.getParentFile().mkdirs();
 			try {
@@ -144,8 +147,9 @@ public final class CGUtils {
 	 * Example: from {@code thinklab-core:Text} a file is generated in {@code src/org/integratedmodelling/ks/thinklab/thinklab_core/Text.java}.
 	 * @param res the IConcept  
 	 * @return File created
+	 * @throws ThinklabException 
 	 */
-	public static File getJavaClassFile(IConcept res){
+	public static File getJavaClassFile(IConcept res) throws ThinklabException{
 		return createFileInPluginScratchFolder("src/"+getJavaNameWithPath(res).replaceAll("\\.", "//")+".java");
 	}
 	
@@ -154,8 +158,9 @@ public final class CGUtils {
 	 * Example: from {@code thinklab-core:Text} a file is generated in {@code src/org/integratedmodelling/ks/thinklab/thinklab_core/IText.java}.
 	 * @param res the IConcept  
 	 * @return a File
+	 * @throws ThinklabException 
 	 */
-	public static File getJavaInterfaceFile(IConcept res){
+	public static File getJavaInterfaceFile(IConcept res) throws ThinklabException{
 		return createFileInPluginScratchFolder("src/"+getJavaInterfaceNameWithPath(res).replaceAll("\\.", "//")+".java");
 	}
 	
@@ -164,8 +169,9 @@ public final class CGUtils {
 	 * Example: from {@code thinklab-core:Text} a file is generated in {@code src/org/integratedmodelling/ks/thinklab/thinklab_core/TextControllerBean.java}.
 	 * @param res the IConcept  
 	 * @return a File
+	 * @throws ThinklabException 
 	 */
-	public static File getHJBManagerFile(IConcept res) {
+	public static File getHJBManagerFile(IConcept res) throws ThinklabException {
 		return createFileInPluginScratchFolder("src/"+getJavaNameWithPath(res).replaceAll("\\.", "//")+"ControllerBean.java");
 	}
 	
@@ -174,8 +180,9 @@ public final class CGUtils {
 	 * Example: from {@code thinklab-core:Text} a file is generated in {@code src/org/integratedmodelling/ks/thinklab/thinklab_core/TextControllerRemote.java}.
 	 * @param res the IConcept  
 	 * @return a File
+	 * @throws ThinklabException 
 	 */
-	public static File getHJBManagerRemoteFile(IConcept res) {
+	public static File getHJBManagerRemoteFile(IConcept res) throws ThinklabException {
 		return createFileInPluginScratchFolder("src/"+getJavaNameWithPath(res).replaceAll("\\.", "//")+"ControllerRemote.java");
 	}
 	
@@ -184,8 +191,9 @@ public final class CGUtils {
 	 * Example: from {@code thinklab-core:Text} a file is generated in {@code src/org/integratedmodelling/ks/thinklab/thinklab_core/TextControllerLocal.java}.
 	 * @param res the IConcept  
 	 * @return a File
+	 * @throws ThinklabException 
 	 */
-	public static File getHJBManagerLocalFile(IConcept res) {
+	public static File getHJBManagerLocalFile(IConcept res) throws ThinklabException {
 		return createFileInPluginScratchFolder("src/"+getJavaNameWithPath(res).replaceAll("\\.", "//")+"ControllerLocal.java");
 	}
 	
@@ -194,8 +202,9 @@ public final class CGUtils {
 	 * Example: from {@code thinklab-core:Text} a file is generated in {@code src/org/integratedmodelling/ks/thinklab/thinklab_core/Text.hbm.xml}.
 	 * @param res the IConcept  
 	 * @return a File
+	 * @throws ThinklabException 
 	 */
-	public static File getHibernateFile(IConcept res) {
+	public static File getHibernateFile(IConcept res) throws ThinklabException {
 		return createFileInPluginScratchFolder("src/"+getJavaNameWithPath(res).replaceAll("\\.", "//")+".hbm.xml");
 	}
 	

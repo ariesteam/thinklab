@@ -41,8 +41,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperation
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
 import org.integratedmodelling.thinklab.extensions.LiteralValidator;
-import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -657,11 +657,11 @@ public class Value implements IValue {
 			throws ThinklabException {
 
 		/* retrieve an interpreter */
-		IAlgorithmInterpreter interpreter =
+		LanguageInterpreter interpreter =
 				AlgorithmInterpreterFactory.get().getInterpreter(algorithm, session);
 		
 		/* obtain a context */
-		IAlgorithmInterpreter.IContext context = 
+		LanguageInterpreter.IContext context = 
 			AlgorithmInterpreterFactory.get().getContext(algorithm, session);
 		
 		/* bind "self" to current value */

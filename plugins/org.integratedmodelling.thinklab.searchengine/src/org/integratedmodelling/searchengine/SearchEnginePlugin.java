@@ -32,18 +32,15 @@
  **/
 package org.integratedmodelling.searchengine;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.plugin.Plugin;
-import org.w3c.dom.Node;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
-public class SearchEnginePlugin extends Plugin {
+public class SearchEnginePlugin extends ThinklabPlugin {
 
 	static final String ID = "SearchEngine";
 	
@@ -105,29 +102,10 @@ public class SearchEnginePlugin extends Plugin {
 		return log;
 	}
 	
-    public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-            throws ThinklabPluginException {
-    }
-
-    public void unload(KnowledgeManager km) throws ThinklabPluginException {
-        // TODO Auto-generated method stub
-
-    }
 
 	public void initialize() throws ThinklabException {
 		
-		// create all search engines defined in the plugin properties. Others may
-		// be created, typically as kbox wrappers. In that case, the kbox properties
-		// define the engine's parameters.
-		String engines = this.getProperties().getProperty("searchengine.new");
-		
-		if (engines != null) {
-			String[] eng = engines.split(",");
-			
-			for (String e : eng) {
-				createSearchEngine(e, getProperties());
-			}
-		}
+
 	}
 	
 	/**
@@ -144,18 +122,31 @@ public class SearchEnginePlugin extends Plugin {
 		engines.add(engine);
 		return engine;
 	}
-	
-	
+
+
 	@Override
-	public void notifyResource(String name, long time, long size) throws ThinklabException {
-		// TODO Auto-generated method stub
+	protected void load(KnowledgeManager km) throws ThinklabException {
+
+		// create all search engines defined in the plugin properties. Others may
+		// be created, typically as kbox wrappers. In that case, the kbox properties
+		// define the engine's parameters.
+		String engines = this.getProperties().getProperty("searchengine.new");
 		
+		if (engines != null) {
+			String[] eng = engines.split(",");
+			
+			for (String e : eng) {
+				createSearchEngine(e, getProperties());
+			}
+		}
 	}
 
 
-	public void notifyConfigurationNode(Node n) {
-		// TODO Auto-generated method stub
+	@Override
+	protected void unload() throws ThinklabException {
+		// TODO drop all search engines, close them
 		
 	}
+	
 
 }

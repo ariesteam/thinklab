@@ -37,7 +37,6 @@ import java.util.HashMap;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.plugin.PluginRegistry;
 import org.integratedmodelling.utils.NameGenerator;
 
 /* 
@@ -69,22 +68,23 @@ public abstract class ThinklabBehavior {
 	}
 	
 	static public ThinklabBehavior createBehavior(String bClass, ISession session) throws ThinklabException {
+
+// TODO move to extensions
+//		Class<?> cl = null;
+//		try {
+//			cl = Class.forName(bClass, true, PluginRegistry.get().getClassLoader());
+//		} catch (ClassNotFoundException e) {
+//			throw new ThinklabInternalErrorException("behavior class " + bClass + " unknown");			
+//		}
 		
-		Class<?> cl = null;
-		try {
-			cl = Class.forName(bClass, true, PluginRegistry.get().getClassLoader());
-		} catch (ClassNotFoundException e) {
-			throw new ThinklabInternalErrorException("behavior class " + bClass + " unknown");			
-		}
-		
-		ThinklabBehavior beh;
-		try {
-			beh = (ThinklabBehavior) cl.newInstance();
-		} catch (Exception e) {
-			throw new ThinklabInternalErrorException(e);			
-		}
-		
-		beh.register(session);
+		ThinklabBehavior beh = null;
+//		try {
+//			beh = (ThinklabBehavior) cl.newInstance();
+//		} catch (Exception e) {
+//			throw new ThinklabInternalErrorException(e);			
+//		}
+//		
+//		beh.register(session);
 		
 		return beh;
 	}

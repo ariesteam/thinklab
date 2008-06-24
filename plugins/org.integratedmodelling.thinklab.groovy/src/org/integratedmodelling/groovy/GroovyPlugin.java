@@ -32,70 +32,26 @@
  **/
 package org.integratedmodelling.groovy;
 
-import java.io.File;
-
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter;
-import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter.IContext;
-import org.integratedmodelling.thinklab.interpreter.AlgorithmInterpreterFactory;
-import org.integratedmodelling.thinklab.interpreter.InterpreterPlugin;
-import org.w3c.dom.Node;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
-public class GroovyPlugin extends InterpreterPlugin {
-
-	public GroovyPlugin() {
-		// TODO Auto-generated constructor stub
-	}
+public class GroovyPlugin extends ThinklabPlugin {
 
 	@Override
-	public void initialize() throws ThinklabException {
-
-	}
-
-	@Override
-	public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-			throws ThinklabPluginException {
-		
-		km.registerLiteralValidator("groovy:GroovyCode", new GroovyAlgorithmValidator());
+	public void load(KnowledgeManager km)	throws ThinklabPluginException {
+	
+		// TODO use extensions
+//		km.registerLiteralValidator("groovy:GroovyCode", new GroovyAlgorithmValidator());
 		
 		/* bind interpreter to literals of groovy:GroovyCode */
-		AlgorithmInterpreterFactory.get().registerInterpreter("groovy:GroovyCode", "Groovy");
+//		AlgorithmInterpreterFactory.get().registerInterpreter("groovy:GroovyCode", "Groovy");
 
 	}
 
 	@Override
-	public void notifyResource(String name, long time, long size)
-			throws ThinklabException {
-		
-		if (name.endsWith(".gv")) {
-			/* initialization code we want to run */
-		}
-
-	}
-
-	@Override
-	public void unload(KnowledgeManager km) throws ThinklabPluginException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public IAlgorithmInterpreter getInterpreter() {
-		return new GroovyInterpreter();
-	}
-
-	@Override
-	public IContext getNewContext(ISession session) {
-		GroovyContext ctx = new GroovyContext();
-		ctx.getBinding().setVariable("session", session);
-		return ctx;
-	}
-
-	public void notifyConfigurationNode(Node n) {
+	protected void unload() throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}

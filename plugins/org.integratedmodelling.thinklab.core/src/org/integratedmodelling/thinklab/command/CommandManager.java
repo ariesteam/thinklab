@@ -55,7 +55,6 @@ public class CommandManager {
 		return commands.values();
 	}
 
-
 	public CommandDeclaration requireDeclarationForCommand(String tok)
 			throws ThinklabMalformedCommandException {
 		CommandDeclaration cd = commands.get(tok);

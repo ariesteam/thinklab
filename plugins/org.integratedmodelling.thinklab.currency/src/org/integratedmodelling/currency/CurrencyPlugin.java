@@ -36,18 +36,13 @@ import java.io.File;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
-import org.integratedmodelling.currency.commands.CConvert;
 import org.integratedmodelling.currency.cpi.CpiConversionFactory;
 import org.integratedmodelling.sql.SQLPlugin;
 import org.integratedmodelling.sql.SQLServer;
-import org.integratedmodelling.sql.hsql.HSQLMemServer;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.plugin.Plugin;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.integratedmodelling.thinklab.value.BooleanValue;
 import org.w3c.dom.Node;
 
 public class CurrencyPlugin extends ThinklabPlugin  {

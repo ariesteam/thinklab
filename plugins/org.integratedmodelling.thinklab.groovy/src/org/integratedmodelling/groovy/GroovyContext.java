@@ -36,9 +36,9 @@ import groovy.lang.Binding;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.interfaces.IAlgorithmInterpreter.IContext;
+import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
 
-public class GroovyContext implements IContext {
+public class GroovyContext implements LanguageInterpreter.IContext {
 
 	Binding binding = null;
 	

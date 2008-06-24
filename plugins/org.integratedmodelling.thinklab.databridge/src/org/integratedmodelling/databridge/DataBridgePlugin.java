@@ -39,17 +39,17 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class AgentPlugin.
  */
-public class DataBridgePlugin extends Plugin {
+public class DataBridgePlugin extends ThinklabPlugin {
 
 	/** The Constant ID. */
-	static final String ID = "DataBridge";
+	static final String ID = "org.integratedmodelling.thinklab.databridge";
    
 	
 	/**
@@ -62,40 +62,15 @@ public class DataBridgePlugin extends Plugin {
 	}
 	
 
-    /* (non-Javadoc)
-     * @see org.integratedmodelling.thinklab.plugin.Plugin#load(org.integratedmodelling.thinklab.KnowledgeManager, java.io.File, java.io.File)
-     */
-    public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-            throws ThinklabPluginException {
-    }
-
-    /* (non-Javadoc)
-     * @see org.integratedmodelling.thinklab.plugin.Plugin#unload(org.integratedmodelling.thinklab.KnowledgeManager)
-     */
-    public void unload(KnowledgeManager km) throws ThinklabPluginException {
-        // TODO Auto-generated method stub
-
-    }
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.plugin.Plugin#initialize()
-	 */
-	public void initialize() throws ThinklabException {
-
-	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.plugin.Plugin#notifyResource(java.lang.String, long, long)
-	 */
 	@Override
-	public void notifyResource(String name, long time, long size) throws ThinklabException {
+	protected void load(KnowledgeManager km) throws ThinklabException {
 		// TODO Auto-generated method stub
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IPlugin#notifyConfigurationNode(org.w3c.dom.Node)
-	 */
-	public void notifyConfigurationNode(Node n) {
+
+	@Override
+	protected void unload() throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}

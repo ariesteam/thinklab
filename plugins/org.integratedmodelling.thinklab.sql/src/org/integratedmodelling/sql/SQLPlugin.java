@@ -35,7 +35,6 @@ package org.integratedmodelling.sql;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -51,14 +50,10 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
-import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.IKBoxPlugin;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.thinklab.plugin.Plugin;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.w3c.dom.Node;
 
-public class SQLPlugin extends Plugin implements IKBoxPlugin {
+public class SQLPlugin extends ThinklabPlugin {
 
 	public interface SQLServerConstructor {
 		public abstract SQLServer createServer(URI uri, Properties properties) throws ThinklabStorageException;
@@ -96,19 +91,12 @@ public class SQLPlugin extends Plugin implements IKBoxPlugin {
 
 	/* log4j logger used for this class. Can be used by other classes through logger()  */
 	private static  Logger log = Logger.getLogger(SQLPlugin.class);
-	static final public String ID = "SQL";
+	
+	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.sql";
 
-	public SQLPlugin() {
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public void initialize() throws ThinklabException {
-		
-	}
 
 	public static SQLPlugin get() {
-		return (SQLPlugin) getPlugin(ID);
+		return (SQLPlugin) getPlugin(PLUGIN_ID);
 	}
 
 	public static Logger logger() {
@@ -136,8 +124,7 @@ public class SQLPlugin extends Plugin implements IKBoxPlugin {
 
 	
 	@Override
-	public void load(KnowledgeManager km, File baseReadPath, File baseWritePath)
-			throws ThinklabPluginException {
+	public void load(KnowledgeManager km) throws ThinklabPluginException {
 
 		/* register server types to be returned by createSQLServer() */
 		registerServerConstructor("hsql", new HSQLServerConstructor());
@@ -147,40 +134,37 @@ public class SQLPlugin extends Plugin implements IKBoxPlugin {
 		/* register plugin to handle our nice kboxes 
 		 * TODO substitute with extension points
 		 * */
-		KBoxManager.get().registerKBoxProtocol("pg", this);
-		KBoxManager.get().registerKBoxProtocol("hsqldb", this);
-		KBoxManager.get().registerKBoxProtocol("mysql", this);
+//		KBoxManager.get().registerKBoxProtocol("pg", this);
+//		KBoxManager.get().registerKBoxProtocol("hsqldb", this);
+//		KBoxManager.get().registerKBoxProtocol("mysql", this);
 		
 	}
 
+	// TODO move to extension points
 	public void registerServerConstructor(String string, SQLServerConstructor serverConstructor) {
 		serverConstructors .put(string, serverConstructor);	
 	}
 
-	@Override
-	public void notifyResource(String name, long time, long size)
-			throws ThinklabException {
-		
-		if (name.endsWith(".sqx")) {
-			URL uu = this.exportResourceCached(name);
-			
-			if (name.contains("coresql.sqx")) {
-				coreSchema = new File(uu.getFile());
-			} else {
-				schemata.add(new File(uu.getFile()));
-			}
-		}
-	}
+// TODO new extension points
+//	public void notifyResource(String name, long time, long size)
+//			throws ThinklabException {
+//		
+//		if (name.endsWith(".sqx")) {
+//			URL uu = this.exportResourceCached(name);
+//			
+//			if (name.contains("coresql.sqx")) {
+//				coreSchema = new File(uu.getFile());
+//			} else {
+//				schemata.add(new File(uu.getFile()));
+//			}
+//		}
+//	}
 
 	@Override
-	public void unload(KnowledgeManager km) throws ThinklabPluginException {
+	public void unload() throws ThinklabPluginException {
 		// TODO Auto-generated method stub
 	}
 
-	public IKBox createKBoxFromURL(URI url) throws ThinklabStorageException {
-		throw new ThinklabStorageException("sql kboxes must be created with the kbox protocol");
-	}
-	
 	public SQLServer createSQLServer(String uri, Properties properties) throws ThinklabStorageException {
 
 		SQLServer ret = null;
@@ -203,14 +187,6 @@ public class SQLPlugin extends Plugin implements IKBoxPlugin {
 					uri);
 
 		return ret;
-	}
-
-	public IKBox createKBox(String protocol, String dataUri, Properties properties) throws ThinklabException {
-		
-		if (protocol.equals("pg") || protocol.equals("hsqldb") || protocol.equals("mysql"))
-			return new SQLKBox(protocol, dataUri, properties);
-
-		return null;
 	}
 
 	public void notifyConfigurationNode(Node n) {

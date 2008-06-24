@@ -52,14 +52,14 @@ import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundExcept
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 import org.integratedmodelling.thinklab.exception.ThinklabUndefinedKBoxException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.KBoxHandler;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.IKBoxPlugin;
 import org.integratedmodelling.thinklab.interfaces.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.plugin.PluginRegistry;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
+import org.java.plugin.registry.PluginRegistry;
 
 /**
  * A singleton that manages KBoxes. One of these is created by and accessed through
@@ -77,7 +77,7 @@ public class KBoxManager {
      * a registry of plugins that handle KBox creation.
      * TODO move to kbox manager
      */
-    HashMap<String, IKBoxPlugin> kboxPlugins;
+    HashMap<String, KBoxHandler> kboxPlugins;
     
     /*
      * A registry of installed KBoxes, indexed by their URL.
@@ -240,7 +240,7 @@ public class KBoxManager {
 	 * @param protocol
 	 * @param plugin
 	 */
-	public void registerKBoxProtocol(String protocol, IKBoxPlugin plugin) {
+	public void registerKBoxProtocol(String protocol, KBoxHandler plugin) {
 		kboxPlugins.put(protocol, plugin);
 	}
 	
@@ -292,7 +292,7 @@ public class KBoxManager {
 
 				} else {
 
-					IKBoxPlugin plu = kboxPlugins.get(protocol);
+					KBoxHandler plu = kboxPlugins.get(protocol);
 					if (plu == null)
 						return null;
 					ret = plu.createKBoxFromURL(new URI(kboxURI));					
@@ -407,7 +407,7 @@ public class KBoxManager {
 		}
 		
 		/* load plugin for protocol; create kbox */
-		IKBoxPlugin plu = kboxPlugins.get(protocol);
+		KBoxHandler plu = kboxPlugins.get(protocol);
 		if (plu == null)
 			throw new ThinklabUndefinedKBoxException("kbox protocol " 
 					+ protocol + " referenced in " +

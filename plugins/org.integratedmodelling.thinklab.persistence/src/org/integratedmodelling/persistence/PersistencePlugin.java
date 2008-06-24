@@ -32,22 +32,11 @@
  **/
 package org.integratedmodelling.persistence;
 
-import java.io.File;
-import java.net.URI;
-import java.util.Properties;
-
-import org.integratedmodelling.persistence.shell.Generate;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
-import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.IKBoxPlugin;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.thinklab.plugin.Plugin;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.w3c.dom.Node;
 
 /**
  * The Persistence Storage Plugin provides with the facilities for generating and accessing KBoxes
@@ -69,7 +58,10 @@ public class PersistencePlugin extends ThinklabPlugin {
 	public static IProperty FACTORY_PERSISTENCY_PROPERTY;
 	public static IProperty LONG_TEXT_PROPERTY;
 	
-
+	public static PersistencePlugin get() {
+		return (PersistencePlugin) getPlugin(PLUGIN_ID);
+	}
+	
 	@Override
 	public void load(KnowledgeManager km) throws ThinklabException {
 
