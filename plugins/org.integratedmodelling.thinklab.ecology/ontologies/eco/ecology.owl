@@ -1,0 +1,305 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://www.integratedmodelling.org/ks/ecology/eco/ecology.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:p1="http://www.owl-ontologies.com/assert.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:dol="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://www.integratedmodelling.org/ks/ecology/eco/ecology.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl"/>
+  </owl:Ontology>
+  <owl:Class rdf:ID="Roots">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="PlantPart"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="AbioticEntity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="EcologicalEntity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="IntraSpecificInteraction">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="EcologicalInteraction"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="AggregateBioticAbioticEntity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#EcologicalEntity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Plant">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Organism"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Organism">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="BioticItem"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Leaves">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="AboveGroundPlantPart"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="MatingSignaling">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="InformationInteraction"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Seeds">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#AboveGroundPlantPart"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="TerritorialMarking">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#InformationInteraction"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#EcologicalEntity">
+    <rdfs:subClassOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#physical-endurant"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Any ecological entity defined and observed by a scientist.  All entities might be partOf some aggregate entity.  Any entity might be embedded within an environment, which itself is an entity.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="Competition">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="CommunityMatrixInteraction"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="NonMaterialEnergyFlow">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="PhysicalInteraction"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="PartOfOrganism">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#BioticItem"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="DirectedInteraction">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A binary interaction that is directed (the origin and destination of the interaction play different roles in the interaction</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#EcologicalInteraction"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#PhysicalInteraction">
+    <rdfs:subClassOf rdf:resource="#DirectedInteraction"/>
+  </owl:Class>
+  <owl:Class rdf:about="#InformationInteraction">
+    <rdfs:subClassOf rdf:resource="#DirectedInteraction"/>
+  </owl:Class>
+  <owl:Class rdf:ID="MaterialStock">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="EnvironmentalStock"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#CommunityMatrixInteraction">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="InterspecificInteraction"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="BioticEntity">
+    <rdfs:subClassOf rdf:resource="#EcologicalEntity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Ecosystem">
+    <rdfs:subClassOf rdf:resource="#AggregateBioticAbioticEntity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="LifeStageGroup">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="TaxonomicGroup"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="MaterialFlow">
+    <rdfs:subClassOf rdf:resource="#PhysicalInteraction"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SetOfPartsOfOrganisms">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="BioticAggregate"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Pollination">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Mutualism"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="EcologicalProcess">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A process leads to some change over time in the entity or entities of interest</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#process"/>
+  </owl:Class>
+  <owl:Class rdf:ID="MaterialEnergyFlow">
+    <rdfs:subClassOf rdf:resource="#MaterialFlow"/>
+  </owl:Class>
+  <owl:Class rdf:ID="FunctionalGroup">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="SetOfOrganisms"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#TaxonomicGroup">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#SetOfOrganisms"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#BioticItem">
+    <rdfs:subClassOf rdf:resource="#BioticEntity"/>
+  </owl:Class>
+  <owl:Class rdf:about="#PlantPart">
+    <rdfs:subClassOf rdf:resource="#PartOfOrganism"/>
+  </owl:Class>
+  <owl:Class rdf:about="#AboveGroundPlantPart">
+    <rdfs:subClassOf rdf:resource="#PlantPart"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Animal">
+    <rdfs:subClassOf rdf:resource="#Organism"/>
+  </owl:Class>
+  <owl:Class rdf:about="#SetOfOrganisms">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#BioticAggregate"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#EnvironmentalStock">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Something in the environment that has fluxes into or out of the system of interest</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#AbioticEntity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Stems">
+    <rdfs:subClassOf rdf:resource="#AboveGroundPlantPart"/>
+  </owl:Class>
+  <owl:Class rdf:about="#BioticAggregate">
+    <rdfs:subClassOf rdf:resource="#BioticEntity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="EnergyStock">
+    <rdfs:subClassOf rdf:resource="#EnvironmentalStock"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Biome">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Broad biotic grouping characteristic of a set of environmental features including climatic type</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#AggregateBioticAbioticEntity"/>
+  </owl:Class>
+  <owl:Class rdf:about="#InterspecificInteraction">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#EcologicalInteraction"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="AnimalPart">
+    <rdfs:subClassOf rdf:resource="#PartOfOrganism"/>
+  </owl:Class>
+  <owl:Class rdf:about="#Mutualism">
+    <rdfs:subClassOf rdf:resource="#DirectedInteraction"/>
+  </owl:Class>
+  <owl:Class rdf:ID="UndirectedInteraction">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#EcologicalInteraction"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#EcologicalInteraction">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An interaction between two or more ecological entities.  An interaction is a process that is known to occur between two entities.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#EcologicalProcess"/>
+  </owl:Class>
+  <owl:Class rdf:ID="NutrientFlow">
+    <rdfs:subClassOf rdf:resource="#MaterialFlow"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Community">
+    <rdfs:subClassOf rdf:resource="#SetOfOrganisms"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="dependsOnEntity">
+    <rdfs:domain rdf:resource="#EcologicalEntity"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="sustainsEntity"/>
+    </owl:inverseOf>
+    <rdfs:range rdf:resource="#EcologicalEntity"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#generic-dependent"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#immediate-relation"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#sustainsEntity">
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#generically-dependent-on"/>
+    <owl:inverseOf rdf:resource="#dependsOnEntity"/>
+    <rdfs:domain rdf:resource="#EcologicalEntity"/>
+    <rdfs:range rdf:resource="#EcologicalEntity"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="isEnvironmentOf">
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="hasEnvironment"/>
+    </owl:inverseOf>
+    <rdfs:domain rdf:resource="#EcologicalEntity"/>
+    <rdfs:range rdf:resource="#EcologicalEntity"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Denotes the fact that the entity belongs to another higher-level entity that provides its living environment.</rdfs:comment>
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#part"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="processSustainsEntity">
+    <rdfs:range rdf:resource="#EcologicalEntity"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdf:Description rdf:about="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#particular"/>
+          <owl:Class rdf:about="#EcologicalProcess"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#generically-dependent-on"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="nextLifeStage">
+    <rdfs:range rdf:resource="#LifeStageGroup"/>
+    <rdfs:domain rdf:resource="#LifeStageGroup"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#hasEnvironment">
+    <owl:inverseOf rdf:resource="#isEnvironmentOf"/>
+    <rdfs:domain rdf:resource="#EcologicalEntity"/>
+    <rdfs:range rdf:resource="#EcologicalEntity"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#part-of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#immediate-relation-i"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="dependsOnProcess">
+    <rdfs:domain rdf:resource="#EcologicalEntity"/>
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdf:Description rdf:about="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#particular"/>
+          <owl:Class rdf:about="#EcologicalProcess"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#generic-dependent"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="isParticipantInProcess">
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#participant"/>
+    <rdfs:domain rdf:resource="#EcologicalEntity"/>
+    <rdfs:range rdf:resource="#EcologicalProcess"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="inverse_of_generic-dependent_1">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdf:Description rdf:about="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#particular"/>
+          <owl:Class rdf:about="#EcologicalProcess"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="#EcologicalEntity"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#generically-dependent-on"/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:ID="hasGBIFTaxonomicID">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The taxonomic identifier that selects the unambiguous taxonomic group in the GBIF catalog</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#TaxonomicGroup"/>
+          <owl:Class rdf:about="#Organism"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 3.3.1, Build 430)  http://protege.stanford.edu -->

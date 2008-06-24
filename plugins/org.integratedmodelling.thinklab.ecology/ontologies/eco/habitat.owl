@@ -1,0 +1,352 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:dol="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:ecology="http://www.integratedmodelling.org/ks/ecology/eco/ecology.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#"
+  xml:base="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/ecology/eco/ecology.owl"/>
+  </owl:Ontology>
+  <owl:Class rdf:ID="PartialWaterCoverage">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="WaterCoveragePattern"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="InvasiveSpecies">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="CommunityQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Stream">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="RunningWater"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Herbaceous">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="VegetationType"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="HypersalineWater">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="WaterSalinity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="PlantHarvestingLand">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="NaturalProducingLand"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="UsageType">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="HabitatQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Habitat">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/ecology/eco/ecology.owl#AggregateBioticAbioticEntity"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#has-quality"/>
+        <owl:allValuesFrom>
+          <owl:Class rdf:about="#HabitatQuality"/>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="FreshWater">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#WaterSalinity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#NaturalProducingLand">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="ManagedLandForProduction"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#VegetationType">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="HabitatRelativeComposition">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="HabitatMatrixQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="WaterType">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="SaltWater">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#WaterSalinity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="TimeDependentWaterCoverage">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#WaterCoveragePattern"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="SocioEconomicQuality">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="AnimalByproducts">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="AnimalHarvestingLand"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="EcosystemQuality">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="UrbanRuralGradient">
+    <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
+  </owl:Class>
+  <owl:Class rdf:ID="IndustrialActivityLand">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="ArtifactProductingLand"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="TreeLand">
+    <rdfs:subClassOf rdf:resource="#VegetationType"/>
+  </owl:Class>
+  <owl:Class rdf:ID="MineralHarvestingLand">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#ManagedLandForProduction"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="FireRegime">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="EventRelatedQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#HabitatMatrixQuality">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#inherent-in"/>
+        <owl:allValuesFrom>
+          <owl:Class rdf:ID="HabitatMatrix"/>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="ManagedLandNotForProduction">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="ManagedLand"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="SoilQuality">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="PollutionQuality">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="PrimaryProductivity">
+    <rdfs:subClassOf rdf:resource="#EcosystemQuality"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SubstrateQuality">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="BrackishWater">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#WaterSalinity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="HabitativeLand">
+    <rdfs:subClassOf rdf:resource="#ManagedLandNotForProduction"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Slope">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#HabitatMatrix">
+    <rdfs:subClassOf rdf:resource="#Habitat"/>
+  </owl:Class>
+  <owl:Class rdf:about="#ManagedLandForProduction">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#ManagedLand"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="River">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#RunningWater"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#ArtifactProductingLand">
+    <rdfs:subClassOf rdf:resource="#ManagedLandForProduction"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Accessibility">
+    <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SizeOfOwnershipUnit">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="OwnershipQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#WaterSalinity">
+    <rdfs:subClassOf rdf:resource="#WaterType"/>
+  </owl:Class>
+  <owl:Class rdf:ID="MarqueeStatus">
+    <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
+  </owl:Class>
+  <owl:Class rdf:ID="TidalWaterCoverage">
+    <rdfs:subClassOf rdf:resource="#TimeDependentWaterCoverage"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Wetland">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="StillWater"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="AutoctonousSpecies">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#CommunityQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="SemiDiurnalTidalCoverage">
+    <rdfs:subClassOf rdf:resource="#TidalWaterCoverage"/>
+  </owl:Class>
+  <owl:Class rdf:ID="AnimalProducts">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#AnimalHarvestingLand"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="CropHarvestingLand">
+    <rdfs:subClassOf rdf:resource="#PlantHarvestingLand"/>
+  </owl:Class>
+  <owl:Class rdf:ID="EndemicSpecies">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#CommunityQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="RemoteServiceProvision">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="CommercialActivityLand"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="HumanPopulation">
+    <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Factory">
+    <rdfs:subClassOf rdf:resource="#IndustrialActivityLand"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ManagementStructure">
+    <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SolidWasteManagement">
+    <rdfs:subClassOf rdf:resource="#IndustrialActivityLand"/>
+  </owl:Class>
+  <owl:Class rdf:about="#WaterCoveragePattern">
+    <rdfs:subClassOf rdf:resource="#WaterType"/>
+  </owl:Class>
+  <owl:Class rdf:ID="StorageLand">
+    <rdfs:subClassOf rdf:resource="#ManagedLandNotForProduction"/>
+  </owl:Class>
+  <owl:Class rdf:ID="TimberHarvestingLand">
+    <rdfs:subClassOf rdf:resource="#PlantHarvestingLand"/>
+  </owl:Class>
+  <owl:Class rdf:ID="DiurnalTidalCoverage">
+    <rdfs:subClassOf rdf:resource="#TidalWaterCoverage"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SeasonalFlooding">
+    <rdfs:subClassOf rdf:resource="#TimeDependentWaterCoverage"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ClimateQuality">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#ManagedLand">
+    <rdfs:subClassOf rdf:resource="#UsageType"/>
+  </owl:Class>
+  <owl:Class rdf:ID="HabitatFragmentation">
+    <rdfs:subClassOf rdf:resource="#HabitatMatrixQuality"/>
+  </owl:Class>
+  <owl:Class rdf:ID="PastureLand">
+    <rdfs:subClassOf rdf:resource="#PlantHarvestingLand"/>
+  </owl:Class>
+  <owl:Class rdf:ID="DirectServiceProvision">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#CommercialActivityLand"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="CompleteWaterCoverage">
+    <rdfs:subClassOf rdf:resource="#WaterCoveragePattern"/>
+  </owl:Class>
+  <owl:Class rdf:about="#CommercialActivityLand">
+    <rdfs:subClassOf rdf:resource="#ArtifactProductingLand"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ShrubLand">
+    <rdfs:subClassOf rdf:resource="#VegetationType"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Construction">
+    <rdfs:subClassOf rdf:resource="#IndustrialActivityLand"/>
+  </owl:Class>
+  <owl:Class rdf:about="#EventRelatedQuality">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#CommunityQuality">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="MixedTidalCoverage">
+    <rdfs:subClassOf rdf:resource="#TidalWaterCoverage"/>
+  </owl:Class>
+  <owl:Class rdf:about="#RunningWater">
+    <rdfs:subClassOf rdf:resource="#CompleteWaterCoverage"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SpeciesDiversity">
+    <rdfs:subClassOf rdf:resource="#CommunityQuality"/>
+  </owl:Class>
+  <owl:Class rdf:ID="HabitatConnectivity">
+    <rdfs:subClassOf rdf:resource="#HabitatMatrixQuality"/>
+  </owl:Class>
+  <owl:Class rdf:about="#StillWater">
+    <rdfs:subClassOf rdf:resource="#CompleteWaterCoverage"/>
+  </owl:Class>
+  <owl:Class rdf:ID="NotVegetated">
+    <rdfs:subClassOf rdf:resource="#VegetationType"/>
+  </owl:Class>
+  <owl:Class rdf:ID="NoWaterCoverage">
+    <rdfs:subClassOf rdf:resource="#WaterCoveragePattern"/>
+  </owl:Class>
+  <owl:Class rdf:about="#AnimalHarvestingLand">
+    <rdfs:subClassOf rdf:resource="#NaturalProducingLand"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Natural">
+    <rdfs:subClassOf rdf:resource="#UsageType"/>
+  </owl:Class>
+  <owl:Class rdf:about="#HabitatQuality">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The subclasses of HabitatQuality detail the OBSERVABLES in an observation of habitat. Subclasses should be defined for each restricted concrete case - e.g., RequiredWaterCoverageForFrogHabitat... which will later be detailed with constraints so that the observer agent will be able to discover them in data. Because these detail the observables and not the observation, each class should just hint to numeric constraints in the comments, and we will teach the intelligent agents to recognize them using formal constraints and rules.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#physical-quality"/>
+  </owl:Class>
+  <owl:Class rdf:about="#OwnershipQuality">
+    <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="containsHabitat">
+    <rdfs:domain rdf:resource="#HabitatMatrix"/>
+  </owl:ObjectProperty>
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 3.3.1, Build 430)  http://protege.stanford.edu -->

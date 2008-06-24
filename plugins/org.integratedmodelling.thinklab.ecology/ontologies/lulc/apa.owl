@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rdf:RDF
+    xmlns="http://www.integratedmodelling.org/ks/ecology/lulc/apa.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#"
+    xmlns:landuse="http://www.integratedmodelling.org/ks/landuse/landuse.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:lulc="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://www.integratedmodelling.org/ks/ecology/lulc/apa.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl"/>
+  </owl:Ontology>
+  <owl:Class rdf:ID="Factory">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Industrial_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Social_cultural_religious">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Mass_assembly_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Spacecraft">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Travel_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Mass_assembly_activity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="AmericanPlanningAssociationTypology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Galleries_and_museums">
+    <rdfs:subClassOf rdf:resource="#Mass_assembly_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Historical_or_cultural_celebrations">
+    <rdfs:subClassOf rdf:resource="#Mass_assembly_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Office">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Commercial_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Interment">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Social_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="School_or_library">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Social_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Institutional_living">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Residential_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Commercial_activity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#AmericanPlanningAssociationTypology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Active_leisure_sports">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Leisure_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Drilling_and_dredging">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Natural_resource_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Parking_and_storage">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Vehicular_movement"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Household">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Residential_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Farming_tilling_harvesting">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Natural_resource_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Passenger_assembly">
+    <rdfs:subClassOf rdf:resource="#Mass_assembly_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Movies_concerts_entertainment">
+    <rdfs:subClassOf rdf:resource="#Mass_assembly_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Emergency_response">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Social_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Utilities">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Social_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Residential_activity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#AmericanPlanningAssociationTypology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Pasturing_and_grazing">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Natural_resource_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Military">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Social_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Passive_leisure_activity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Leisure_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Natural_resource_activity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#AmericanPlanningAssociationTypology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Ordnance_storage">
+    <rdfs:subClassOf rdf:resource="#Military"/>
+  </owl:Class>
+  <owl:Class rdf:ID="No_human_activity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#AmericanPlanningAssociationTypology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Construction">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Industrial_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Mooring_or_docking">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Marine_and_water_based"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Airport">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Travel_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Restaurant">
+    <rdfs:subClassOf rdf:resource="#Commercial_activity"/>
+  </owl:Class>
+  <owl:Class rdf:about="#Leisure_activity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#AmericanPlanningAssociationTypology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Marine_and_water_based">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Travel_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Travel_activity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#AmericanPlanningAssociationTypology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Trains_and_rail">
+    <rdfs:subClassOf rdf:resource="#Travel_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Flying_or_air-related_sports">
+    <rdfs:subClassOf rdf:resource="#Leisure_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Shopping">
+    <rdfs:subClassOf rdf:resource="#Commercial_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Transient_living">
+    <rdfs:subClassOf rdf:resource="#Residential_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Spectator_sports">
+    <rdfs:subClassOf rdf:resource="#Mass_assembly_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Pedestrian_movement">
+    <rdfs:subClassOf rdf:resource="#Travel_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Solid_waste_management">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Industrial_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#AmericanPlanningAssociationTypology">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >American Planning Association</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandUseTypology"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Livestock">
+    <rdfs:subClassOf rdf:resource="#Natural_resource_activity"/>
+  </owl:Class>
+  <owl:Class rdf:about="#Vehicular_movement">
+    <rdfs:subClassOf rdf:resource="#Travel_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Water_sports">
+    <rdfs:subClassOf rdf:resource="#Leisure_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Maintenance_and_storage">
+    <rdfs:subClassOf rdf:resource="#Trains_and_rail"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Health_care">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Social_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Quarrying_or_stone-cutting">
+    <rdfs:subClassOf rdf:resource="#Natural_resource_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Training">
+    <rdfs:subClassOf rdf:resource="#Mass_assembly_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Mass_storage">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Social_activity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Drive_through">
+    <rdfs:subClassOf rdf:resource="#Vehicular_movement"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Fairs_and_exhibitions">
+    <rdfs:subClassOf rdf:resource="#Mass_assembly_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Logging">
+    <rdfs:subClassOf rdf:resource="#Natural_resource_activity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Mining">
+    <rdfs:subClassOf rdf:resource="#Natural_resource_activity"/>
+  </owl:Class>
+  <owl:Class rdf:about="#Social_activity">
+    <rdfs:subClassOf rdf:resource="#AmericanPlanningAssociationTypology"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Range_and_test_activities">
+    <rdfs:subClassOf rdf:resource="#Military"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Port_and_ship-building">
+    <rdfs:subClassOf rdf:resource="#Marine_and_water_based"/>
+  </owl:Class>
+  <owl:Class rdf:about="#Industrial_activity">
+    <rdfs:subClassOf rdf:resource="#AmericanPlanningAssociationTypology"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="classes">
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Cover">
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="has-use-status">
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="has-substrate">
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="has-vegetation">
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Use">
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:ID="min_coverage">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >min coverage</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="Anderson_2_code">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="area">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="Anderson_1_code">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="slope">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="max_coverage">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >max coverage</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="water-cover">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="min-proportion-water">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="have-water">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="belongs-to-classification">
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="Anderson-II-code">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="annual-precipitation">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="has-properties">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="Anderson-I-code">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="max-proportion-water">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="has-water-coverage">
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="name">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+</rdf:RDF>

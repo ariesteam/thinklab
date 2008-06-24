@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rdf:RDF
+    xmlns:observation="http://www.integratedmodelling.org/ks/science/observation.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#"
+    xmlns:landuse="http://www.integratedmodelling.org/ks/landuse/landuse.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://www.integratedmodelling.org/ks/ecology/lulc/landclassification.owl#"
+    xmlns:lulc="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://www.integratedmodelling.org/ks/ecology/lulc/landclassification.owl">
+  <owl:Ontology rdf:about="">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bridges the observation ontology to land use classification systems and provides ground for mediation between land uses of different classes.</rdfs:comment>
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl"/>
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl"/>
+  </owl:Ontology>
+  <owl:Class rdf:ID="LandUseClassification">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom>
+          <owl:Class rdf:ID="LandUseClassSystem"/>
+        </owl:allValuesFrom>
+        <owl:onProperty rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#abstract-location"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#Classification"/>
+  </owl:Class>
+  <owl:Class rdf:about="#LandUseClassSystem">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >LandUseClassSystem</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#AbstractObservationSpace"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandTypology"/>
+        <owl:onProperty rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#hasObservationClass"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created by Ferdinando Villa on Fri Aug 03 14:30:41 EDT 2007</owl:versionInfo>
+  </owl:Class>
+</rdf:RDF>

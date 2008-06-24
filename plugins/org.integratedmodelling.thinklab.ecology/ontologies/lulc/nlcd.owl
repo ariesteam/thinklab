@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#"
+    xmlns:landuse="http://www.integratedmodelling.org/ks/landuse/landuse.owl#"
+    xmlns="http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:lulc="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl"/>
+  </owl:Ontology>
+  <owl:Class rdf:ID="SmallGrains">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="NLCD_Herbaceous_planted"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="UrbanRecreational">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NLCD_Herbaceous_planted"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="OpenWater">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="NLCD_Water"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Mixed">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="NLCD_Forested_upland"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="RowCrops">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NLCD_Herbaceous_planted"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="NLCD_Developed">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="NLCD1992Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Evergreen">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NLCD_Forested_upland"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Deciduous">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NLCD_Forested_upland"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#NLCD_Water">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NLCD1992Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Pasture_hay">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NLCD_Herbaceous_planted"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="NLCD_Non-natural_woody">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NLCD1992Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="QuarriesStripMines">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="NLCD_Barren"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Shrubland">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="NLCD_Shrubland"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#NLCD_Shrubland">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NLCD1992Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="NLCD_Wetlands">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NLCD1992Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="EmergentHerbaceousWetlands">
+    <rdfs:subClassOf rdf:resource="#NLCD_Wetlands"/>
+  </owl:Class>
+  <owl:Class rdf:about="#NLCD_Herbaceous_planted">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NLCD1992Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Grasses">
+    <rdfs:subClassOf rdf:resource="#NLCD_Herbaceous_planted"/>
+  </owl:Class>
+  <owl:Class rdf:ID="OrchardsVineyards">
+    <rdfs:subClassOf rdf:resource="#NLCD_Non-natural_woody"/>
+  </owl:Class>
+  <owl:Class rdf:ID="LowIntensityResidential">
+    <rdfs:subClassOf rdf:resource="#NLCD_Developed"/>
+  </owl:Class>
+  <owl:Class rdf:ID="CommercialIndustrialTransportation">
+    <rdfs:subClassOf rdf:resource="#NLCD_Developed"/>
+  </owl:Class>
+  <owl:Class rdf:ID="NLCD_Herbaceous_upland">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NLCD1992Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#NLCD_Forested_upland">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NLCD1992Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#NLCD_Barren">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NLCD1992Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="PerenniaIceOrSnow">
+    <rdfs:subClassOf rdf:resource="#NLCD_Water"/>
+  </owl:Class>
+  <owl:Class rdf:ID="WoodyWetlands">
+    <rdfs:subClassOf rdf:resource="#NLCD_Wetlands"/>
+  </owl:Class>
+  <owl:Class rdf:ID="GrasslandsHerbaceous">
+    <rdfs:subClassOf rdf:resource="#NLCD_Herbaceous_upland"/>
+  </owl:Class>
+  <owl:Class rdf:ID="BareRockSandClay">
+    <rdfs:subClassOf rdf:resource="#NLCD_Barren"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Fallow">
+    <rdfs:subClassOf rdf:resource="#NLCD_Herbaceous_planted"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Transitional">
+    <rdfs:subClassOf rdf:resource="#NLCD_Barren"/>
+  </owl:Class>
+  <owl:Class rdf:about="#NLCD1992Typology">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >NLCD 1992 class</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandUseTypology"/>
+  </owl:Class>
+  <owl:Class rdf:ID="HighIintensityResidential">
+    <rdfs:subClassOf rdf:resource="#NLCD_Developed"/>
+  </owl:Class>
+</rdf:RDF>

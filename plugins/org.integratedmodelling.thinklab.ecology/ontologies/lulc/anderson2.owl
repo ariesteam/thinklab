@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#"
+    xmlns:landuse="http://www.integratedmodelling.org/ks/landuse/landuse.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://www.integratedmodelling.org/ks/ecology/lulc/anderson2.owl#"
+    xmlns:lulc="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://www.integratedmodelling.org/ks/ecology/lulc/anderson2.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports>
+      <owl:Ontology rdf:about="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl"/>
+    </owl:imports>
+  </owl:Ontology>
+  <owl:Ontology rdf:about="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl">
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl"/>
+  </owl:Ontology>
+  <owl:Class rdf:ID="Glaciers">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Mixed_urban">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Perennial_snowfield">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Transportation_communication_utilities">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Beaches">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Industrial_and_commercial_complex">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandTypology">
+    <owl:equivalentClass>
+      <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Habitat">
+        <owl:equivalentClass rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandTypology"/>
+      </rdf:Description>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:ID="Anderson2Classification">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandClassificationSystem"/>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#containsTypology"/>
+        </owl:onProperty>
+        <owl:allValuesFrom>
+          <owl:Class rdf:about="#Anderson2Typology"/>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Deciduous_forest">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Residertial">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Bare_exposed_rock">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Orchards_vineyards">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandUseTypology">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandTypology"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Forested_wetland">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Strip_mines_and_quarries">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Nonforested_wetland">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="ShrubAndBrushTundra">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Commercial_and_services">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Bays_and_estuaries">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Industrial">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Mixed_forest">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Transitional_areas">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Wet_tundra">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Cropland_and_pasture">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="NonBeachSandyArea">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Reservoirs">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Other_agricultural_land">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Lakes">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Herbaceous_tundra">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Bare_ground">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Mixed_tundra">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Confined_feeding_operation">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Other_urban">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Anderson2Typology"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandCoverTypology">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandTypology"/>
+  </owl:Class>
+  <owl:Class rdf:about="#Anderson2Typology">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandUseTypology"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anderson 2 class</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="Streams_and_canals">
+    <rdfs:subClassOf rdf:resource="#Anderson2Typology"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Evergreen_forest">
+    <rdfs:subClassOf rdf:resource="#Anderson2Typology"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Mixed_rangeland">
+    <rdfs:subClassOf rdf:resource="#Anderson2Typology"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SaltFlats">
+    <rdfs:subClassOf rdf:resource="#Anderson2Typology"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Herbaceous_rangeland">
+    <rdfs:subClassOf rdf:resource="#Anderson2Typology"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ShrubAndBrushRangeland">
+    <rdfs:subClassOf rdf:resource="#Anderson2Typology"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#containsTypology">
+    <rdfs:domain rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandClassificationSystem"/>
+    <rdfs:range rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandTypology"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:ID="Anderson_2_code">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+</rdf:RDF>
