@@ -1,5 +1,5 @@
 /**
- * Help.java
+ * Shell.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,48 +31,83 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.commands;
+package org.integratedmodelling.thinklab.commandline;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
+import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
-import org.integratedmodelling.thinklab.extensions.CommandHandler;
-import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
+import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
-/** the help command for the command-line interface */
-public class Help implements CommandHandler {
-
-	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
-			ISession session, KnowledgeManager km) throws ThinklabException {
-
-		String topic = command.getArgumentAsString("topic");
-
-		if ("__none".equals(topic)) {
-			/* loop over commands in KM; print a line for each one */
-			outputWriter
-					.displayOutput("Available commands (\'help <command>\' for more):");
-			for (CommandDeclaration decl : CommandManager.get()
-					.getCommandDeclarations()) {
-				outputWriter.displayOutput("\t" + decl.ID + "\t"
-						+ decl.description);
-			}
-		} else {
-			/* should be a command name */
-			CommandDeclaration cd = CommandManager.get()
-					.getDeclarationForCommand(topic);
-
-			if (cd == null)
-				throw new ThinklabMalformedCommandException("command " + topic
-						+ " undefined");
-
-			cd.printLongSynopsis(outputWriter);
+/**
+ * A simple command-line driven interface. Just attach to a session, run and type 'help'.
+ * @author Ferdinando Villa
+ */
+public class Shell {
+	
+	public ISession session;
+	
+	public Shell(ISession session) {
+		this.session = session;
+	}
+	
+	public static void printStatusMessage() {
+		
+		try {
+			KnowledgeManager.get().printBanner();
+		} catch (ThinklabNoKMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		System.out.println("Enter \'help\' for a list of commands; \'exit\' quits");
+		System.out.println();
+	}
 
-		return null;
+	public void startConsoleShell() throws Exception {
+		
+		/* greet user */
+		printStatusMessage();
+		
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		String input = "";
+		
+		/* define commands from user input */
+		while(true) {
+			
+			System.out.print("> ");
+			try {
+				input = in.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			if ("exit".equals(input)) {
+				System.out.println("shell terminated");
+				break;
+			} else if (!("".equals(input))) {
+				try {
+					
+					Command cmd = CommandParser.parse(input);
+					
+					if (cmd == null)
+						continue;
+					
+					IValue result = CommandManager.get().submitCommand(cmd, null, session);
+                    if (result != null)
+                        System.out.println(result.toString());
+				} catch (ThinklabException e) {
+					e.printStackTrace();
+					System.out.println(" error: " + e.getMessage());
+				}
+			}
+		}
+		
 	}
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.corescience/classes" path="plugins/org.integratedmodelling.thinklab.corescience/src"/>
+	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.commandline/classes" path="plugins/org.integratedmodelling.thinklab.commandline/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.dolce/classes" path="plugins/org.integratedmodelling.thinklab.dolce/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.shell/classes" path="plugins/org.integratedmodelling.thinklab.shell/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.geospace/classes" path="plugins/org.integratedmodelling.thinklab.geospace/src"/>
@@ -31,7 +32,7 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/jung-1.7.6.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/ostermillerutils_1_06_00.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="lib/jpf.jar"/>
+	<classpathentry kind="lib" path="lib/jpf.jar" sourcepath="/JPF 1.5"/>
 	<classpathentry kind="lib" path="lib/jpf-boot.jar"/>
 	<classpathentry kind="lib" path="lib/jpf-tools.jar"/>
 	<classpathentry kind="lib" path="lib/jxp.jar"/>

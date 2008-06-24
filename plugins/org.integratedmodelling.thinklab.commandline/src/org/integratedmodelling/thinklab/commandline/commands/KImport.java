@@ -1,5 +1,5 @@
 /**
- * Hierarchy.java
+ * KImport.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,33 +31,41 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.commands;
+package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.KnowledgeTree;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.utils.MiscUtilities;
 
-/** the help command for the command-line interface */
-public class Hierarchy implements CommandHandler {
+/**
+ * Load ontologies, OPAL files.
+ * 
+ * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
+ */
+
+public class KImport implements CommandHandler {
 
 	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
 			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		String c = command.getArgumentAsString("concept");
+		// TODO only handle ontologies for now
+		String toload = command.getArgumentAsString("resource");
+		String name = command.hasOption("name") ? command
+				.getOptionAsString("name") : null;
 
-		KnowledgeTree ct = KnowledgeManager.getClassTree();
+		if (name == null)
+			name = MiscUtilities.getNameFromURL(toload);
 
-		if (c != null && !c.equals("__none")) {
-			ct = new KnowledgeTree(km.requireConcept(c));
-		}
+		name = km.registerOntology(toload, name);
 
-		ct.dump(outputWriter);
+		outputWriter.displayOutput("ontology " + name + " loaded");
 
 		return null;
 	}
+
 }

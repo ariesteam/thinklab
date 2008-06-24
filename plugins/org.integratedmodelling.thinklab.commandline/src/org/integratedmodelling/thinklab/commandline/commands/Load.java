@@ -1,5 +1,5 @@
 /**
- * Import.java
+ * Load.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,38 +31,82 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.commands;
+package org.integratedmodelling.thinklab.commandline.commands;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
+import org.integratedmodelling.thinklab.interfaces.IInstance;
+import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.utils.MiscUtilities;
 
 /**
- * Load ontologies, OPAL files.
+ * Load ontologies, OPAL files, objects from remote KBoxes into current session
  * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  */
-public class Import implements CommandHandler {
 
+public class Load implements CommandHandler {
+	
 	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
 			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		// TODO only handle ontologies for now
 		String toload = command.getArgumentAsString("resource");
-		String name = command.hasOption("name") ? command
-				.getOptionAsString("name") : null;
+		String kbox = command.getOptionAsString("kbox");
 
-		if (name == null)
-			name = MiscUtilities.getNameFromURL(toload);
+		Collection<IInstance> objs = null;
+		ArrayList<String> kids = null;
 
-		name = km.registerOntology(toload, name);
+		if (toload.contains("#")) {
 
-		outputWriter.displayOutput("ontology " + name + " loaded");
+			/* kbox or other, load from wherever KM figures out */
+			objs = new ArrayList<IInstance>();
+
+			IInstance i = km.getInstanceFromURI(toload, session);
+			if (i != null) {
+				objs.add(i);
+			}
+
+		} else {
+			objs = session.loadObjects(toload);
+		}
+
+		// TODO move these functionalities to kimport; implement the virtual
+		// kbox for
+		// loaded sources.
+		if (kbox != null && objs.size() > 0) {
+
+			IKBox kb = session.retrieveKBox(kbox);
+			kids = new ArrayList<String>();
+
+			HashMap<String, String> references = new HashMap<String, String>();
+
+			for (IInstance obj : objs) {
+				kids.add(kb.storeObject(obj, session, references));
+			}
+		}
+
+		outputWriter.displayOutput((objs == null ? 0 : objs.size())
+				+ " main objects loaded from " + toload
+				+ (kbox == null ? "" : " [stored to kbox: " + kbox + "]"));
+
+		if (objs != null) {
+			int cnt = 0;
+			for (IInstance obj : objs) {
+
+				outputWriter.displayOutput("\t#"
+						+ obj.getLocalName()
+						+ (kids == null ? "" : ("\t-> " + kbox + "#" + kids
+								.get(cnt++))));
+			}
+		}
 
 		return null;
 	}

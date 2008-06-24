@@ -62,12 +62,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
@@ -101,7 +104,14 @@ public abstract class ThinklabPlugin extends Plugin
 	private File confFolder;
 	private File plugFolder;
 	
-
+	/*
+	 * intercepts the beginning of doStart()
+	 * only used in main Thinklab plugin so far, not sure it should be exposed
+	 */
+	protected void preStart() throws ThinklabException {
+		
+	}
+	
 	/**
 	 * Demand plugin-specific initialization to this callback; 
 	 * we intercept doStart
@@ -140,8 +150,10 @@ public abstract class ThinklabPlugin extends Plugin
 	@Override
 	protected final void doStart() throws Exception {
 		
+		preStart();
+
 		loadConfiguration();
-		
+				
 		/*
 		 * Check if we have a KM and if not, put out a good explanation of why we should
 		 * read the manual, if there was one.
@@ -158,10 +170,10 @@ public abstract class ThinklabPlugin extends Plugin
 		
 		loadExtensions();
 		
-		load(null);
+		load(KnowledgeManager.get());
 	}
 
-	private void loadConfiguration() throws ThinklabIOException {
+	protected void loadConfiguration() throws ThinklabIOException {
 	
        plugFolder = LocalConfiguration.getDataDirectory(getDescriptor().getId());
        confFolder = new File(plugFolder + File.separator + "config");
@@ -187,7 +199,7 @@ public abstract class ThinklabPlugin extends Plugin
     	   /*
     	    * copy stock properties if existing
     	    */
-    	   URL sprop = getResourceURL("config/" + configFile);
+    	   URL sprop = getResourceURL(configFile);
     	   if (sprop != null)
     		   CopyURL.copy(sprop, pfile);
     	   
@@ -204,19 +216,47 @@ public abstract class ThinklabPlugin extends Plugin
 		
 	}
 
-	protected Iterator<Extension> getExtensions(String extensionPoint) {
+	/**
+	 * Return all the extensions in this plugin that extend the given Thinklab extension 
+	 * point (declared in the core plugin).
+	 * 
+	 * @param extensionPoint
+	 * @return
+	 */
+	protected Collection<Extension> getOwnThinklabExtensions(String extensionPoint) {
+		
+		return getOwnExtensions(Thinklab.PLUGIN_ID, extensionPoint);
+	}
+
+	/**
+	 * Return all the extension in this plugin that extend an extension point declared
+	 * in the passed plugin with the passed name.
+	 * 
+	 * @param extendedPlugin
+	 * @param extensionPoint
+	 * @return
+	 */
+	protected Collection<Extension> getOwnExtensions(String extendedPlugin, String extensionPoint) {
+		
+		ArrayList<Extension> ret = new ArrayList<Extension>();
 		
 		ExtensionPoint toolExtPoint = 
-			getManager().getRegistry().getExtensionPoint(getDescriptor().getId(), extensionPoint);
+			getManager().getRegistry().getExtensionPoint(extendedPlugin, extensionPoint);
 
-		return toolExtPoint.getConnectedExtensions().iterator();
-	}
-	
-	private void loadInstanceImplementationConstructors() {
-		
-		for (Iterator<Extension> it = getExtensions("instance-constructor"); it.hasNext();) {
-
+		for (Iterator<Extension> it =  toolExtPoint.getConnectedExtensions().iterator(); it.hasNext(); ) {
 			Extension ext = it.next();
+			if (ext.getDeclaringPluginDescriptor().getId().equals(getDescriptor().getId())) {
+				ret.add(ext);
+			}
+		}
+		
+		return ret;
+	}
+
+	protected void loadInstanceImplementationConstructors() {
+		
+		for (Extension ext : getOwnThinklabExtensions("instance-constructor")) {
+
 			String url = ext.getParameter("url").valueAsString();
 			String csp = ext.getParameter("concept-space").valueAsString();
 			
@@ -247,7 +287,8 @@ public abstract class ThinklabPlugin extends Plugin
 			} else if (resource.contains("://")) {
 				ret = new URL(resource);
 			} else {			
-				ret =  getManager().getPluginClassLoader(getDescriptor()).getResource(resource);
+				ret = getManager().getPluginClassLoader(getDescriptor()).
+					getResource(resource);
 			}
 		} catch (MalformedURLException e) {
 			throw new ThinklabIOException(e);
@@ -256,11 +297,10 @@ public abstract class ThinklabPlugin extends Plugin
 		return ret;
 	}
 	
-	private void loadOntologies() throws ThinklabException {
+	protected void loadOntologies() throws ThinklabException {
 	
-		for (Iterator<Extension> it = getExtensions("ontology"); it.hasNext();) {
+		for (Extension ext : getOwnThinklabExtensions("ontology")) {
 
-			Extension ext = it.next();
 			String url = ext.getParameter("url").valueAsString();
 			String csp = ext.getParameter("concept-space").valueAsString();
 
@@ -269,11 +309,10 @@ public abstract class ThinklabPlugin extends Plugin
 		
 	}
 
-	private void loadLiteralValidators() {
+	protected void loadLiteralValidators() {
 		
-		for (Iterator<Extension> it = getExtensions("literal-validator"); it.hasNext();) {
+		for (Extension ext : getOwnThinklabExtensions("literal-validator")) {
 
-			Extension ext = it.next();
 			String url = ext.getParameter("url").valueAsString();
 			String csp = ext.getParameter("concept-space").valueAsString();
 			
@@ -282,11 +321,10 @@ public abstract class ThinklabPlugin extends Plugin
 
 	}
 
-	private void loadLanguageInterpreters() {
+	protected void loadLanguageInterpreters() {
 		
-		for (Iterator<Extension> it = getExtensions("language-interpreter"); it.hasNext();) {
+		for (Extension ext : getOwnThinklabExtensions("language-interpreter")) {
 
-			Extension ext = it.next();
 			String url = ext.getParameter("url").valueAsString();
 			String csp = ext.getParameter("concept-space").valueAsString();
 			
@@ -295,11 +333,10 @@ public abstract class ThinklabPlugin extends Plugin
 		
 	}
 
-	private void loadKnowledgeImporters() {
+	protected void loadKnowledgeImporters() {
 	
-		for (Iterator<Extension> it = getExtensions("knowledge-importer"); it.hasNext();) {
+		for (Extension ext : getOwnThinklabExtensions("knowledge-importer")) {
 
-			Extension ext = it.next();
 			String url = ext.getParameter("url").valueAsString();
 			String csp = ext.getParameter("concept-space").valueAsString();
 			
@@ -308,7 +345,7 @@ public abstract class ThinklabPlugin extends Plugin
 		
 	}
 	
-	private String getParameter(Extension ext, String field) {
+	protected String getParameter(Extension ext, String field) {
 		
 		String ret = null;
 		Parameter p = ext.getParameter(field);
@@ -318,7 +355,7 @@ public abstract class ThinklabPlugin extends Plugin
 	}
 	
 	
-	private String getParameter(Extension ext, String field, String defValue) {
+	protected String getParameter(Extension ext, String field, String defValue) {
 		
 		String ret = null;
 		Parameter p = ext.getParameter(field);
@@ -327,14 +364,15 @@ public abstract class ThinklabPlugin extends Plugin
 		return ret == null ? defValue : ret;
 	}
 	
-	private Object getHandlerInstance(Extension ext, String field) throws ThinklabPluginException {
+	protected Object getHandlerInstance(Extension ext, String field) throws ThinklabPluginException {
 		
 		Object ret = null;
 		
-		ClassLoader classLoader = getManager().getPluginClassLoader(ext.getDeclaringPluginDescriptor());
+		ClassLoader classLoader = getManager().getPluginClassLoader(getDescriptor());
 		Class<?> cls = null;
 		try {
-			
+			System.out.println("classloader in t plugin: "+ classLoader);
+
 			cls = classLoader.loadClass(ext.getParameter(field).valueAsString());
 			ret = cls.newInstance();
 			
@@ -344,21 +382,20 @@ public abstract class ThinklabPlugin extends Plugin
 		return ret;
 	}
 
-	private void loadKnowledgeLoaders() throws ThinklabException {
+	protected void loadKnowledgeLoaders() throws ThinklabException {
 		
-		for (Iterator<Extension> it = getExtensions("knowledge-loader"); it.hasNext();) {
+		for (Extension ext : getOwnThinklabExtensions("knowledge-loader")) {
 
-			Extension ext = it.next();
 			String format = ext.getParameter("format").valueAsString();				
 			KnowledgeManager.get().registerKnowledgeLoader(format, (KnowledgeLoader) getHandlerInstance(ext, "class"));
 		}
 		
 	}
-	private void loadKBoxHandlers() {
+	
+	protected void loadKBoxHandlers() {
 		
-		for (Iterator<Extension> it = getExtensions("kbox-handler"); it.hasNext();) {
+		for (Extension ext : getOwnThinklabExtensions("kbox-handler")) {
 
-			Extension ext = it.next();
 			String url = getParameter(ext, "url");
 			String csp = getParameter(ext, "concept-space");
 			
@@ -373,13 +410,14 @@ public abstract class ThinklabPlugin extends Plugin
 		unload();
 	}
 	
-	private void loadCommands() throws ThinklabException {
+	protected void loadCommands() throws ThinklabException {
 
-		for (Iterator<Extension> it = getExtensions("command-handler"); it.hasNext();) {
-
-			Extension ext = it.next();
+		for (Extension ext : getOwnThinklabExtensions("command-handler")) {
 
 			CommandHandler chandler = (CommandHandler) getHandlerInstance(ext, "class");
+
+			if (chandler == null)
+				continue;
 			
 			String name = getParameter(ext, "command-name");
 			String description = getParameter(ext, "command-description");
@@ -396,7 +434,8 @@ public abstract class ThinklabPlugin extends Plugin
 			String[] aDesc =  getParameter(ext, "argument-descriptions","").split(",");
 
 			for (int i = 0; i < aNames.length; i++) {
-				declaration.addMandatoryArgument(aNames[i], aDesc[i], aTypes[i]);
+				if (!aNames[i].isEmpty())
+					declaration.addMandatoryArgument(aNames[i], aDesc[i], aTypes[i]);
 			}
 			
 			String[] oaNames = getParameter(ext, "optional-argument-names","").split(",");
@@ -405,7 +444,8 @@ public abstract class ThinklabPlugin extends Plugin
 			String[] oaDefs =  getParameter(ext, "optional-argument-default-values","").split(",");
 
 			for (int i = 0; i < oaNames.length; i++) {
-				declaration.addOptionalArgument(oaNames[i], oaDesc[i], oaTypes[i], oaDefs[i]);				
+				if (!oaNames[i].isEmpty())
+					declaration.addOptionalArgument(oaNames[i], oaDesc[i], oaTypes[i], oaDefs[i]);				
 			}
 
 			String[] oNames = getParameter(ext, "option-names","").split(",");
@@ -415,14 +455,15 @@ public abstract class ThinklabPlugin extends Plugin
 			String[] oDesc =  getParameter(ext, "option-descriptions","").split(",");
 
 			for (int i = 0; i < oNames.length; i++) {
-				declaration.addOption(
-						oNames[i],
-						olNames[i], 
-						(oaLabel[i].equals("") ? null : oaLabel[i]), 
-						oDesc[i], 
-						oTypes[i]);
+				if (!oNames[i].isEmpty())
+						declaration.addOption(
+								oNames[i],
+								olNames[i], 
+								(oaLabel[i].equals("") ? null : oaLabel[i]), 
+								oDesc[i], 
+								oTypes[i]);
 			}
-
+			
 			CommandManager.get().registerCommand(declaration, chandler);
 			
 		}

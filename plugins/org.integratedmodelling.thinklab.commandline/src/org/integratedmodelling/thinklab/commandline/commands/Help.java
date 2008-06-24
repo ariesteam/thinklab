@@ -1,5 +1,5 @@
 /**
- * KCopy.java
+ * Help.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,34 +31,48 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.commands;
+package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
+import org.integratedmodelling.thinklab.command.CommandDeclaration;
+import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.kbox.KBoxCopier;
 
-/**
- * Load ontologies, OPAL files.
- * 
- * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
- */
-public class KCopy implements CommandHandler {
+/** the help command for the command-line interface */
+public class Help implements CommandHandler {
 
 	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
 			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		String from = command.getArgumentAsString("ksource");
-		String to = command.getArgumentAsString("kdestination");
+		String topic = command.getArgumentAsString("topic");
 
-		KBoxCopier copier = new KBoxCopier();
-		copier.transferKnowledge(from, to, session);
+		if ("__none".equals(topic)) {
+			/* loop over commands in KM; print a line for each one */
+			outputWriter
+					.displayOutput("Available commands (\'help <command>\' for more):");
+			for (CommandDeclaration decl : CommandManager.get()
+					.getCommandDeclarations()) {
+				outputWriter.displayOutput("\t" + decl.ID + "\t"
+						+ decl.description);
+			}
+		} else {
+			/* should be a command name */
+			CommandDeclaration cd = CommandManager.get()
+					.getDeclarationForCommand(topic);
+
+			if (cd == null)
+				throw new ThinklabMalformedCommandException("command " + topic
+						+ " undefined");
+
+			cd.printLongSynopsis(outputWriter);
+		}
 
 		return null;
 	}
-
 }

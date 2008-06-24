@@ -1,5 +1,5 @@
 /**
- * Clear.java
+ * Hierarchy.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,35 +31,37 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.commands;
+package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.graph.ConceptMap;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
+import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.session.SingleSessionManager;
 
-/**
- * admin command to clear knowledge base (totally or selectively)
- * 
- * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
- * 
- */
-public class Clear implements CommandHandler {
+/** the help command for the command-line interface */
+public class CMap implements CommandHandler {
 
-	public IValue execute(Command command, ICommandOutputReceptor outputDest,
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
 			ISession session, KnowledgeManager km) throws ThinklabException {
-		// TODO we want arguments and warnings
 
-		if (command.getArgumentAsString("ontology").equals("__all__")) {
-			if (km.getSessionManager() instanceof SingleSessionManager) {
-				((SingleSessionManager) km.getSessionManager()).clear();
-			}
-		} else
-			km.clear(command.getArgumentAsString("ontology"));
+		String c = command.getArgumentAsString("concept");
+
+		IConcept ct = KnowledgeManager.Thing();
+
+		if (c != null && !c.equals("__none")) {
+			ct = km.requireConcept(c);
+		}
+
+		ConceptMap cmap = new ConceptMap(ct);
+
+		cmap.dump(outputWriter);
+
+		cmap.show();
 
 		return null;
 	}

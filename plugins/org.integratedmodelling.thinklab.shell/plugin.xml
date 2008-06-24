@@ -1,13 +1,14 @@
 <?xml version="1.0" ?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
 <plugin id="org.integratedmodelling.thinklab.shell" version="0.8.0"
-	class="org.integratedmodelling.thinklab.shell.Shell">
+	class="org.integratedmodelling.thinklab.shell.ShellApplication">
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.commandline"/>
 	</requires>	
 	<runtime>
 		<library id="core" path="classes/" type="code">
 			<export prefix="*" />
 		</library>
-	</runtime>
+	</runtime>	
 </plugin>

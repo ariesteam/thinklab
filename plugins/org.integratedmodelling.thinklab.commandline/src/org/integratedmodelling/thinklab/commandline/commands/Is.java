@@ -1,5 +1,5 @@
 /**
- * KImport.java
+ * Is.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,41 +31,33 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.commands;
+package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.thinklab.value.BooleanValue;
 
-/**
- * Load ontologies, OPAL files.
- * 
- * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
- */
+public class Is implements CommandHandler {
 
-class KImport implements CommandHandler {
-
-	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
+	public IValue execute(Command command, ICommandOutputReceptor outputDest,
 			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		// TODO only handle ontologies for now
-		String toload = command.getArgumentAsString("resource");
-		String name = command.hasOption("name") ? command
-				.getOptionAsString("name") : null;
+		// TODO this should figure out what the semantic type is for, cross
+		// check properly, and
+		// call the appropriate methods. So far it only handles concepts.
+		SemanticType s1 = new SemanticType(command.getArgumentAsString("c1"));
+		SemanticType s2 = new SemanticType(command.getArgumentAsString("c2"));
 
-		if (name == null)
-			name = MiscUtilities.getNameFromURL(toload);
+		boolean res = KnowledgeManager.get().requireConcept(s1).is(
+				KnowledgeManager.get().requireConcept(s2));
 
-		name = km.registerOntology(toload, name);
-
-		outputWriter.displayOutput("ontology " + name + " loaded");
-
-		return null;
+		return new BooleanValue(res);
 	}
 
 }

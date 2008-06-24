@@ -8,13 +8,14 @@
 		<library id="core" path="classes/" type="code">
 			<export prefix="*" />
 		</library>
+		<library type="resources" path="ontologies/" id="ontologies" />
 	</runtime>
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="metadata">
-		<parameter id="url" value="ontologies/metadata.owl"/>
+		<parameter id="url" value="metadata.owl"/>
 		<parameter id="concept-space" value="metadata" />
 	</extension>
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="bibtex">
-		<parameter id="url" value="ontologies/bibtex.owl"/>
+		<parameter id="url" value="bibtex.owl"/>
 		<parameter id="concept-space" value="bibtex" />
 	</extension>
 	

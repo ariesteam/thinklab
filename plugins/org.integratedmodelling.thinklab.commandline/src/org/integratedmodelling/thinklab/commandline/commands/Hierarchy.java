@@ -1,5 +1,5 @@
 /**
- * Eval.java
+ * Hierarchy.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,41 +31,33 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.commands;
+package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.KnowledgeTree;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.value.AlgorithmValue;
 
-/**
- * Load ontologies, OPAL files, objects from remote KBoxes into current session
- * 
- * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
- */
-public class Eval implements CommandHandler {
+/** the help command for the command-line interface */
+public class Hierarchy implements CommandHandler {
 
-	public IValue execute(Command command, ICommandOutputReceptor outputDest,
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
 			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		String language = command.getOptionAsString("language");
+		String c = command.getArgumentAsString("concept");
 
-		// FIXME default to MVEL
-		if (language == null)
-			language = "groovy:GroovyCode";
+		KnowledgeTree ct = KnowledgeManager.getClassTree();
 
-		String toEval = command.toString();
+		if (c != null && !c.equals("__none")) {
+			ct = new KnowledgeTree(km.requireConcept(c));
+		}
 
-		IValue algorithm = km.validateLiteral(km.requireConcept(language),
-				toEval, null);
+		ct.dump(outputWriter);
 
-		IValue ret = session.execute((AlgorithmValue) algorithm);
-
-		return ret;
+		return null;
 	}
-
 }

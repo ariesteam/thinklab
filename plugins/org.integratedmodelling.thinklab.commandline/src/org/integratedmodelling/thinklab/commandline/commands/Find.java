@@ -1,5 +1,5 @@
 /**
- * Load.java
+ * Is.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,83 +31,43 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.commands;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IKBox;
+import org.integratedmodelling.thinklab.interfaces.IConcept;
+import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
 /**
- * Load ontologies, OPAL files, objects from remote KBoxes into current session
+ * Find command will search for knowledge. For now just finds a concept by
+ * (exact) name.
  * 
- * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
+ * @author Ferdinando
+ * 
  */
+public class Find implements CommandHandler {
 
-class Load implements CommandHandler {
-
-	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
+	public IValue execute(Command command, ICommandOutputReceptor outputDest,
 			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		String toload = command.getArgumentAsString("resource");
-		String kbox = command.getOptionAsString("kbox");
+		// TODO this should figure out what the semantic type is for, cross
+		// check properly, and
+		// call the appropriate methods. So far it only handles concepts.
+		String s1 = command.getArgumentAsString("c1");
 
-		Collection<IInstance> objs = null;
-		ArrayList<String> kids = null;
+		for (IOntology o : km.getKnowledgeRepository().retrieveAllOntologies()) {
 
-		if (toload.contains("#")) {
+			IConcept c = o.getConcept(s1);
 
-			/* kbox or other, load from wherever KM figures out */
-			objs = new ArrayList<IInstance>();
-
-			IInstance i = km.getInstanceFromURI(toload, session);
-			if (i != null) {
-				objs.add(i);
-			}
-
-		} else {
-			objs = session.loadObjects(toload);
-		}
-
-		// TODO move these functionalities to kimport; implement the virtual
-		// kbox for
-		// loaded sources.
-		if (kbox != null && objs.size() > 0) {
-
-			IKBox kb = session.retrieveKBox(kbox);
-			kids = new ArrayList<String>();
-
-			HashMap<String, String> references = new HashMap<String, String>();
-
-			for (IInstance obj : objs) {
-				kids.add(kb.storeObject(obj, session, references));
+			if (c != null) {
+				System.out.println("\t" + c);
 			}
 		}
-
-		outputWriter.displayOutput((objs == null ? 0 : objs.size())
-				+ " main objects loaded from " + toload
-				+ (kbox == null ? "" : " [stored to kbox: " + kbox + "]"));
-
-		if (objs != null) {
-			int cnt = 0;
-			for (IInstance obj : objs) {
-
-				outputWriter.displayOutput("\t#"
-						+ obj.getLocalName()
-						+ (kids == null ? "" : ("\t-> " + kbox + "#" + kids
-								.get(cnt++))));
-			}
-		}
-
 		return null;
 	}
 

@@ -2,7 +2,6 @@ package org.integratedmodelling.opal;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.integratedmodelling.opal.profile.OPALProfileFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -12,15 +11,16 @@ import org.java.plugin.registry.Extension;
 
 public class OPAL extends ThinklabPlugin {
 
+	public final static String PLUGIN_ID = "org.integratedmodelling.thinklab.opal";
+	
 	ArrayList<URL> profiles = new ArrayList<URL>();
 	
 	@Override
 	protected void loadExtensions() throws ThinklabException {
-		// TODO Auto-generated method stub
+
 		super.loadExtensions();
 		
-		for (Iterator<Extension> exts = this.getExtensions("opal-profile"); exts.hasNext(); ) {
-			Extension ext = exts.next();
+		for (Extension ext : this.getOwnExtensions(PLUGIN_ID, "opal-profile")) {
 			addProfile(this.exportResourceCached(ext.getParameter("url").valueAsString()));
 		}
 	}

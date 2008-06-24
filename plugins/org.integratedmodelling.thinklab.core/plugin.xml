@@ -8,6 +8,7 @@
 		<library id="core" path="classes/" type="code">
 			<export prefix="*" />
 		</library>
+		<library type="resources" path="config/" id="config" />
 		<library type="code" id="agg_classes" path="lib/agg_V1622_classes.jar"/>
 		<library type="code" id="ant" path="lib/ant-1.6.5.jar"/>
 		<library type="code" id="antlr"  path="lib/antlr-2.7.6.jar"/>
@@ -123,19 +124,4 @@
 		<parameter-def id="option-descriptions" multiplicity="none-or-one" />	
 		<parameter-def id="example" multiplicity="any" />
 	</extension-point>
-	
-	<!-- base commands -->
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="load">
-		<parameter id="class" value="org.integratedmodelling.thinklab.core.commands.Load"/>
-		<parameter id="command-name" value="load"/>
-		<parameter id="command-description" value="load knowledge from external sources into current session"/>
-		<parameter id="argument-names" value="resource"/>
-		<parameter id="argument-types" value="thinklab-core:Text"/>
-		<parameter id="argument-descriptions" value="filename or URL to load"/>
-		<parameter id="option-names" value="k"/>
-		<parameter id="option-long-names" value="kbox"/>
-		<parameter id="option-types" value="thinklab-core:Text"/>
-		<parameter id="option-descriptions" value="knowledge box"/>
-	</extension>
-	
 </plugin>

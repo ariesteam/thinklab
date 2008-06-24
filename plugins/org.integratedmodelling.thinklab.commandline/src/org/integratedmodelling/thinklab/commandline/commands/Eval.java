@@ -1,5 +1,5 @@
 /**
- * Is.java
+ * Eval.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,33 +31,41 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.commands;
+package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.value.BooleanValue;
+import org.integratedmodelling.thinklab.value.AlgorithmValue;
 
-public class Is implements CommandHandler {
+/**
+ * Load ontologies, OPAL files, objects from remote KBoxes into current session
+ * 
+ * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
+ */
+public class Eval implements CommandHandler {
 
 	public IValue execute(Command command, ICommandOutputReceptor outputDest,
 			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		// TODO this should figure out what the semantic type is for, cross
-		// check properly, and
-		// call the appropriate methods. So far it only handles concepts.
-		SemanticType s1 = new SemanticType(command.getArgumentAsString("c1"));
-		SemanticType s2 = new SemanticType(command.getArgumentAsString("c2"));
+		String language = command.getOptionAsString("language");
 
-		boolean res = KnowledgeManager.get().requireConcept(s1).is(
-				KnowledgeManager.get().requireConcept(s2));
+		// FIXME default to MVEL
+		if (language == null)
+			language = "groovy:GroovyCode";
 
-		return new BooleanValue(res);
+		String toEval = command.toString();
+
+		IValue algorithm = km.validateLiteral(km.requireConcept(language),
+				toEval, null);
+
+		IValue ret = session.execute((AlgorithmValue) algorithm);
+
+		return ret;
 	}
 
 }

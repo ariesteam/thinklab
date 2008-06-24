@@ -17,13 +17,13 @@ public class CommandManager {
 	/**
 	 * command declarations are kept in a hash, indexed by command ID
 	 */
-	HashMap<String, CommandDeclaration> commands;
+	HashMap<String, CommandDeclaration> commands = new HashMap<String, CommandDeclaration>();
 
 	/**
 	 * each command has an action associated, also kept in a hash indexed by
 	 * command ID
 	 */
-	HashMap<String, CommandHandler> actions;
+	HashMap<String, CommandHandler> actions = new HashMap<String, CommandHandler>();
 
 	/**
 	 * Register a command for use in the Knowledge Manager. The modality of

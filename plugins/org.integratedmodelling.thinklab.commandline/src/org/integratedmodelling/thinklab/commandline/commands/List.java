@@ -31,7 +31,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.commands;
+package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
@@ -53,7 +53,7 @@ import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 
-class List implements CommandHandler {
+public class List implements CommandHandler {
 
 	enum listmode {
 		DESCRIPTIVE, LIST

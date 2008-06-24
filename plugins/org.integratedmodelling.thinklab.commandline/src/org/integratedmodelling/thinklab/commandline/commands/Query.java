@@ -1,5 +1,5 @@
 /**
- * Is.java
+ * Query.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,43 +31,84 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.commands;
+package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.IOntology;
+import org.integratedmodelling.thinklab.interfaces.IKBox;
+import org.integratedmodelling.thinklab.interfaces.IQuery;
+import org.integratedmodelling.thinklab.interfaces.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
+import org.integratedmodelling.utils.Polylist;
 
 /**
- * Find command will search for knowledge. For now just finds a concept by
- * (exact) name.
- * 
- * @author Ferdinando
- * 
+ * Performs a query over all the installed kboxes or a specific one.
  */
-public class Find implements CommandHandler {
+public class Query implements CommandHandler {
 
-	public IValue execute(Command command, ICommandOutputReceptor outputDest,
+	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
 			ISession session, KnowledgeManager km) throws ThinklabException {
 
-		// TODO this should figure out what the semantic type is for, cross
-		// check properly, and
-		// call the appropriate methods. So far it only handles concepts.
-		String s1 = command.getArgumentAsString("c1");
+		String kb = command.getOptionAsString("kbox");
+		String toEval = command.getArgumentAsString("query");
 
-		for (IOntology o : km.getKnowledgeRepository().retrieveAllOntologies()) {
+		// twisted logics, but I like it.
+		for (String kbox : KBoxManager.get().getInstalledKboxes()) {
 
-			IConcept c = o.getConcept(s1);
+			IKBox theBox = null;
 
-			if (c != null) {
-				System.out.println("\t" + c);
+			if (kb != null) {
+				kbox = kb;
+				theBox = session.retrieveKBox(kb);
+			} else {
+				theBox = session.retrieveKBox(kbox);
 			}
+
+			IQuery query = theBox.parseQuery(toEval);
+
+			Polylist schema = Polylist.list(IQueryResult.ID_FIELD_NAME,
+					IQueryResult.CLASS_FIELD_NAME,
+					IQueryResult.LABEL_FIELD_NAME,
+					IQueryResult.DESCRIPTION_FIELD_NAME);
+
+			IQueryResult result = theBox.query(query, schema, 0, -1);
+
+			int nres = result.getResultCount();
+
+			if (nres > 0) {
+
+				outputWriter.displayOutput("\tID\tClass\tLabel\tDescription");
+
+				for (int i = 0; i < nres; i++) {
+
+					outputWriter.displayOutput("\t"
+							+ result.getResultField(i,
+									IQueryResult.ID_FIELD_NAME)
+							+ "\t"
+							+ result.getResultField(i,
+									IQueryResult.CLASS_FIELD_NAME)
+							+ "\t"
+							+ result.getResultField(i,
+									IQueryResult.LABEL_FIELD_NAME)
+							+ "\t"
+							+ result.getResultField(i,
+									IQueryResult.DESCRIPTION_FIELD_NAME));
+
+				}
+			}
+
+			outputWriter.displayOutput("total: " + nres);
+
+			// just once if we had a kbox specified
+			if (kbox == null)
+				break;
 		}
+
 		return null;
 	}
 

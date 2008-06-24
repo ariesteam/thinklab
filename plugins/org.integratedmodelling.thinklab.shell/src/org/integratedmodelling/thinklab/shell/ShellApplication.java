@@ -33,30 +33,19 @@
  **/
 package org.integratedmodelling.thinklab.shell;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandManager;
-import org.integratedmodelling.thinklab.command.CommandParser;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.commandline.Shell;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.java.plugin.boot.Application;
 import org.java.plugin.boot.ApplicationPlugin;
 import org.java.plugin.util.ExtendedProperties;
-
-import bsh.util.JConsole;
 
 /**
  * A simple command-line driven knowledge manager. Just run and type 'help'.
  * @author Ferdinando Villa
  */
-public class Shell extends ApplicationPlugin implements Application {
+public class ShellApplication extends ApplicationPlugin implements Application {
 
     public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.shell";
 	
@@ -79,79 +68,23 @@ public class Shell extends ApplicationPlugin implements Application {
 			throws Exception {
 
 		getManager().activatePlugin("org.integratedmodelling.thinklab.core");
+		getManager().activatePlugin("org.integratedmodelling.thinklab.commandline");
 	
-		Thinklab thinklab = (Thinklab) getManager().getPlugin("org.integratedmodelling.thinklab.core");
-
-		JConsole jc;
-//        new Help().install(km);
-//        new List().install(km);
-//        new Load().install(km);
-//        new Clear().install(km);
-//        new Is().install(km);
-//        new Import().install(km);
-//        new Eval().install(km);
-//        new Hierarchy().install(km);
-//        new Query().install(km);
-//        new KExport().install(km);
-//        new KCopy().install(km);
-//        new KImport().install(km);
-//        new CMap().install(km);
-//        new Find().install(km);
-        
-		
 		return this;
 	}
 
 	@Override
 	protected void doStart() throws Exception {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	protected void doStop() throws Exception {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void startApplication() throws Exception {
 		
-		/* greet user */
-		printStatusMessage();
-		
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		String input = "";
-		
-		/* define commands from user input */
-		while(true) {
-			
-			System.out.print("> ");
-			try {
-				input = in.readLine();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			if ("exit".equals(input)) {
-				System.out.println("shell terminated");
-				break;
-			} else if (!("".equals(input))) {
-				try {
-					
-					Command cmd = CommandParser.parse(input);
-					
-					if (cmd == null)
-						continue;
-					
-					IValue result = CommandManager.get().submitCommand(cmd, null, session);
-                    if (result != null)
-                        System.out.println(result.toString());
-				} catch (ThinklabException e) {
-					e.printStackTrace();
-					System.out.println(" error: " + e.getMessage());
-				}
-			}
-		}
-		
+		Shell shell = new Shell(KnowledgeManager.get().requestNewSession());
+		shell.startConsoleShell();
 	}
 }
