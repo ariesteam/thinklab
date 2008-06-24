@@ -118,7 +118,7 @@
 		<parameter-def id="optional-argument-names" multiplicity="none-or-one" />
 		<parameter-def id="optional-argument-types" multiplicity="none-or-one" />
 		<parameter-def id="optional-argument-descriptions" multiplicity="none-or-one" />
-		<parameter-def id="optional-argument-default-types" multiplicity="none-or-one" />
+		<parameter-def id="optional-argument-default-values" multiplicity="none-or-one" />
 		<parameter-def id="option-names" multiplicity="none-or-one" />
 		<parameter-def id="option-long-names" multiplicity="none-or-one" />
 		<parameter-def id="option-types" multiplicity="none-or-one" />	

@@ -9,7 +9,8 @@
 			<export prefix="*"/>
 		</library>
 	</runtime>
-	<!-- base commands -->
+
+	<!-- base commands (experimental and free-format ones not included) -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="load">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Load"/>
 		<parameter id="command-name" value="load"/>
@@ -22,4 +23,140 @@
 		<parameter id="option-types" value="thinklab-core:Text"/>
 		<parameter id="option-descriptions" value="knowledge box"/>
 	</extension>
+
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="clear">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Clear"/>
+		<parameter id="command-name" value="clear"/>
+		<parameter id="command-description" value="clear current session or specified ontology from knowledge base"/>
+		<parameter id="optional-argument-names" value="ontology"/>
+		<parameter id="optional-argument-types" value="thinklab-core:Text"/>
+		<parameter id="optional-argument-descriptions" value="the ontology to clear"/>
+		<parameter id="optional-argument-default-values" value="__all__"/>
+	</extension>
+	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="cmap">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.CMap"/>
+		<parameter id="command-name" value="cmap"/>
+		<parameter id="command-description" value="show a concept map for a concept or for the whole repository"/>
+		<parameter id="optional-argument-names" value="concept"/>
+		<parameter id="optional-argument-types" value="thinklab-core:Text"/>
+		<parameter id="optional-argument-descriptions" value="concept to build map for"/>
+		<parameter id="optional-argument-default-values" value="__none"/>
+	</extension>
+	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="find">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Find"/>
+		<parameter id="command-name" value="find"/>
+		<parameter id="command-description" value="find a concept in the loaded ontologies"/>
+		<parameter id="argument-names" value="c1"/>
+		<parameter id="argument-types" value="thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="concept name"/>
+	</extension>
+	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="help">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Help"/>
+		<parameter id="command-name" value="help"/>
+		<parameter id="command-description" value="get help on usage and commands"/>
+		<parameter id="optional-argument-names" value="topic"/>
+		<parameter id="optional-argument-types" value="thinklab-core:Text"/>
+		<parameter id="optional-argument-descriptions" value="topic for in-depth help"/>
+		<parameter id="optional-argument-default-values" value="__none"/>
+	</extension>
+	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="list">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.List"/>
+		<parameter id="command-name" value="list"/>
+		<parameter id="command-description" value="list resources and their contents"/>
+		<parameter id="optional-argument-names" value="subject"/>
+		<parameter id="optional-argument-types" value="thinklab-core:Text"/>
+		<parameter id="optional-argument-descriptions" value="what to list"/>
+		<parameter id="optional-argument-default-values" value="__NONE__"/>
+		<parameter id="option-names" value="l"/>
+		<parameter id="option-long-names" value="lf"/>
+		<parameter id="option-types" value="thinklab-core:Text"/>
+		<parameter id="option-descriptions" value="list format"/>
+	</extension>
+	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="hierarchy">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Hierarchy"/>
+		<parameter id="command-name" value="hierarchy"/>
+		<parameter id="command-description" value="show the class hierarchy for a concept or for the whole repository"/>
+		<parameter id="optional-argument-names" value="concept"/>
+		<parameter id="optional-argument-types" value="thinklab-core:Text"/>
+		<parameter id="optional-argument-descriptions" value="root concept"/>
+		<parameter id="optional-argument-default-values" value="__none"/>
+	</extension>
+	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="import">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Import"/>
+		<parameter id="command-name" value="import"/>
+		<parameter id="command-description" value="import external ontologies into permanent repository"/>
+		<parameter id="argument-names" value="resource"/>
+		<parameter id="argument-types" value="thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="filename or URL to load"/>
+		<parameter id="option-names" value="n"/>
+		<parameter id="option-long-names" value="name"/>
+		<parameter id="option-types" value="thinklab-core:Text"/>
+		<parameter id="option-descriptions" value="short concept space name"/>
+	</extension>
+	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="kcopy">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.KCopy"/>
+		<parameter id="command-name" value="kcopy"/>
+		<parameter id="command-description" value="copy the contents of a kbox into another"/>
+		<parameter id="argument-names" value="ksource,kdestination"/>
+		<parameter id="argument-types" value="thinklab-core:Text,thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="ID or URL of the source kbox,ID or URL of the destination kbox"/>
+	</extension>
+	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="kexport">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.KExport"/>
+		<parameter id="command-name" value="kexport"/>
+		<parameter id="command-description" value="export knowledge from a kbox or the current session into an external file"/>
+		<parameter id="argument-names" value="resource,output"/>
+		<parameter id="argument-types" value="thinklab-core:Text,thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="ID or URL of the source kbox,filename to write to"/>
+		<parameter id="option-names" value="f"/>
+		<parameter id="option-long-names" value="format"/>
+		<parameter id="option-types" value="thinklab-core:Text"/>
+		<parameter id="option-descriptions" value="a supported output format (file extension is used if not specified"/>
+	</extension>
+	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="kimport">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.KImport"/>
+		<parameter id="command-name" value="kimport"/>
+		<parameter id="command-description" value="import knowledge into a kbox from external sources"/>
+		<parameter id="argument-names" value="resource,kbox"/>
+		<parameter id="argument-types" value="thinklab-core:Text,thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="filename or URL to load from,ID or URL of the destination kbox"/>
+	</extension>
+	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="pload">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.PLoad"/>
+		<parameter id="command-name" value="pload"/>
+		<parameter id="command-description" value="load an installed plugin"/>
+		<parameter id="argument-names" value="plugin"/>
+		<parameter id="argument-types" value="thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="the plugin to load"/>
+	</extension>
+
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="punload">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.PUnload"/>
+		<parameter id="command-name" value="punload"/>
+		<parameter id="command-description" value="unload an installed plugin"/>
+		<parameter id="argument-names" value="plugin"/>
+		<parameter id="argument-types" value="thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="the plugin to unload"/>
+	</extension>
+
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="preload">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.PReload"/>
+		<parameter id="command-name" value="preload"/>
+		<parameter id="command-description" value="reload an installed and loaded plugin"/>
+		<parameter id="argument-names" value="plugin"/>
+		<parameter id="argument-types" value="thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="the plugin to reload"/>
+	</extension>
+	
+	
 </plugin>

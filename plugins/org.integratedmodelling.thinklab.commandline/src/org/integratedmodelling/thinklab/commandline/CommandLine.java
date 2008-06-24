@@ -8,6 +8,10 @@ public class CommandLine extends ThinklabPlugin {
 
     public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.commandline";
 	
+    public static CommandLine get() {
+    	return (CommandLine) getPlugin(PLUGIN_ID);
+    }
+    
 	@Override
 	protected void load(KnowledgeManager km) throws ThinklabException {
 		

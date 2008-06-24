@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -101,6 +102,8 @@ public abstract class ThinklabPlugin extends Plugin
 {
 	HashMap<String, URL> resources = new HashMap<String, URL>();
 	Properties properties = new Properties();
+	
+	private ArrayList<String> ontologies = new ArrayList<String>();
 	
 	private File dataFolder;
 	private File confFolder;
@@ -307,6 +310,8 @@ public abstract class ThinklabPlugin extends Plugin
 			String csp = ext.getParameter("concept-space").valueAsString();
 
 			KnowledgeManager.get().getKnowledgeRepository().refreshOntology(getResourceURL(url), csp);
+			
+			ontologies.add(csp);
 		}
 		
 	}
@@ -411,9 +416,61 @@ public abstract class ThinklabPlugin extends Plugin
 	@Override
 	protected final void doStop() throws Exception {
 		
+		unloadInstanceImplementationConstructors();
+		unloadCommands();
+		unloadLanguageInterpreters();
+		unloadKnowledgeLoaders();
+		unloadKnowledgeImporters();
+		unloadKBoxHandlers();
+		unloadLiteralValidators();
+		unloadOntologies();
+		
+		loadExtensions();
 		unload();
 	}
 	
+	private void unloadInstanceImplementationConstructors() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void unloadCommands() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void unloadLanguageInterpreters() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void unloadKnowledgeLoaders() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void unloadKnowledgeImporters() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void unloadKBoxHandlers() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void unloadLiteralValidators() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void unloadOntologies() {
+
+		for (String cspace : ontologies)
+			KnowledgeManager.get().getKnowledgeRepository().releaseOntology(cspace);
+		ontologies.clear();
+	}
+
 	protected void loadCommands() throws ThinklabException {
 
 		for (Extension ext : getOwnThinklabExtensions("command-handler")) {

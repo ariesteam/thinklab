@@ -36,6 +36,7 @@ package org.integratedmodelling.thinklab.commandline.commands;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.command.Command;
+import org.integratedmodelling.thinklab.commandline.CommandLine;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnknownResourceException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
@@ -52,6 +53,7 @@ import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
+import org.java.plugin.registry.PluginDescriptor;
 
 public class List implements CommandHandler {
 
@@ -219,6 +221,22 @@ public class List implements CommandHandler {
 					.retrieveAllOntologies()) {
 				outputWriter.displayOutput(o.getConceptSpace() + ":\t"
 						+ o.getURI());
+			}
+
+		} 
+		if ("plugins".equals(subject)) {
+
+			for (PluginDescriptor pd :
+					CommandLine.get().getManager().getRegistry().getPluginDescriptors()) {
+
+				outputWriter.displayOutput(
+						pd.getId() + 
+						" (" +
+						pd.getVersion() + 
+						")\t" +
+						(CommandLine.get().getManager().isPluginActivated(pd) ?
+								"activated" :
+								"inactive"));
 			}
 
 		} else if ("kboxes".equals(subject)) {

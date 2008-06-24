@@ -41,9 +41,11 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
+import org.integratedmodelling.thinklab.command.ShellCommandOutputReceptor;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
+import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
@@ -70,6 +72,8 @@ public class Shell {
 	}
 
 	public void startConsole() throws Exception {
+		
+		ICommandOutputReceptor cout = new ShellCommandOutputReceptor();
 		
 		/* greet user */
 		printStatusMessage();
@@ -98,7 +102,7 @@ public class Shell {
 					if (cmd == null)
 						continue;
 					
-					IValue result = CommandManager.get().submitCommand(cmd, null, session);
+					IValue result = CommandManager.get().submitCommand(cmd, cout, session);
                     if (result != null)
                         System.out.println(result.toString());
 				} catch (ThinklabException e) {

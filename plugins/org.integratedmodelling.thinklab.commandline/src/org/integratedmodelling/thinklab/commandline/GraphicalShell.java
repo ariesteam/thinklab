@@ -37,6 +37,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,9 +53,11 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
+import org.integratedmodelling.thinklab.command.ShellCommandOutputReceptor;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
+import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
@@ -68,6 +71,20 @@ public class GraphicalShell {
 	
 	JConsole console = null;
 	
+	class ConsoleCommandOutputReceptor implements ICommandOutputReceptor {
+
+		@Override
+		public void appendOutput(String string) {
+			console.print(string);
+		}
+
+		@Override
+		public void displayOutput(String output) {
+			console.println(output);
+		}
+		
+	}
+	
 	public class JPanels extends JFrame {
 
 		  public JPanels() {
@@ -77,6 +94,7 @@ public class GraphicalShell {
 		    JPanel controlArea = new JPanel(new GridLayout(2, 1));
 		    content.add(controlArea, BorderLayout.EAST);
 		    console = new JConsole();
+		    console.setFont(new Font("SansSerif", Font.PLAIN, 12));
 		    // Preferred height is irrelevant, since using WEST region
 		    console.setPreferredSize(new Dimension(600, 400));
 		    console.setBorder(BorderFactory.createLineBorder (Color.blue, 2));
@@ -106,6 +124,8 @@ public class GraphicalShell {
 
 	public void startConsole() throws Exception {
 		
+		ICommandOutputReceptor cout = new ConsoleCommandOutputReceptor();
+		
 		JPanels jpanels = new JPanels();
 		
 		/* greet user */
@@ -127,7 +147,7 @@ public class GraphicalShell {
 			if ("exit".equals(input)) {
 				console.println("shell terminated");
 				break;
-			} else if (!("".equals(input.trim()))) {
+			} else if (!("".equals(input.trim())) && /* WTF? */!input.equals(";")) {
 				try {
 					
 					Command cmd = CommandParser.parse(input);
@@ -135,7 +155,7 @@ public class GraphicalShell {
 					if (cmd == null)
 						continue;
 					
-					IValue result = CommandManager.get().submitCommand(cmd, null, session);
+					IValue result = CommandManager.get().submitCommand(cmd, cout, session);
                     if (result != null)
                         console.println(result.toString());
 				} catch (ThinklabException e) {
