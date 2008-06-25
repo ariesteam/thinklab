@@ -454,14 +454,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
             
 			// just leave types null, and complain when we have to.
 		}
-
-		/* register core concept managers, so we can declare classes as being Text or
-		 * Number and their literals are handled properly.
-		 *  
-		 * TODO add a ConstraintManager (to be written) 
-		 */
-		registerLiteralValidator(textTypeID.toString(), new TextValidator());
-		registerLiteralValidator(numberTypeID.toString(), new NumberValidator());
 		
 		typesInitialized = true;
 	}
@@ -515,9 +507,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
         kboxManager = new KBoxManager();
         commandManager = new CommandManager();
         
-		// pluginRegistry.initialize(pluginJarPath, pluginClassPath);
-		
-		// create class tree
+        // create class tree
 		classTree = new KnowledgeTree();
 		
 		// open any kboxes installed in global properties

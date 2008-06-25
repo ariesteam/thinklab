@@ -5,17 +5,19 @@
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
 	</requires>	
 	<runtime>
-		<library id="core" path="classes/" type="code">
+		<library id="opal" path="classes/" type="code">
 			<export prefix="*" />
 		</library>
 	</runtime>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="knowledge-loader" id="opal-loader">
-		<parameter id="class" value=""/>
-		<parameter id="format" value="xml" />
-	</extension>
+
 	<!-- OPAL extensions can add profiles to implement specific XML syntaxes -->
 	<extension-point id="opal-profile" >
 	   <parameter-def id="url" />
 	   <parameter-def id="description" multiplicity="none-or-one" />
-	</extension-point> 
+	</extension-point>  
+
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="knowledge-loader" id="opal-loader">
+		<parameter id="class" value=""/>
+		<parameter id="format" value="xml" />
+	</extension>
 </plugin>

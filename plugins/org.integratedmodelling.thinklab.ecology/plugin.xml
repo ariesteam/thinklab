@@ -10,8 +10,8 @@
 		<library id="core" path="classes/" type="code">
 			<export prefix="*" />
 		</library>
-		<library type="resources" path="ontologies/eco" id="eco-ontologies" />
-		<library type="resources" path="ontologies/lulc" id="lulc-ontologies" />
+		<library type="resources" path="ontologies/eco/" id="eco-ontologies" />
+		<library type="resources" path="ontologies/lulc/" id="lulc-ontologies" />
 	</runtime>
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="ecology">
 		<parameter id="url" value="ecology.owl"/>
@@ -37,13 +37,10 @@
 		<parameter id="url" value="apa.owl"/>
 		<parameter id="concept-space" value="apa" />
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="ncld">
-		<parameter id="url" value="ncld.owl"/>
-		<parameter id="concept-space" value="ncld" />
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="nlcd">
+		<parameter id="url" value="nlcd.owl"/>
+		<parameter id="concept-space" value="nlcd" />
 	</extension>
-		<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="lulcobservation">
-		<parameter id="url" value="lulcobservation.owl"/>
-		<parameter id="concept-space" value="lulcobservation" />
-	</extension>
+
 	
 </plugin>
