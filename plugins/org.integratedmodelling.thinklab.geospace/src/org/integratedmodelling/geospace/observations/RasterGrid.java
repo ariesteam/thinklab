@@ -38,7 +38,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IConceptualModel;
 import org.integratedmodelling.corescience.observation.Observation;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.cmodel.RegularRasterModel;
 import org.integratedmodelling.geospace.cmodel.SubdividedCoverageConceptualModel;
 import org.integratedmodelling.geospace.values.ShapeValue;
@@ -72,7 +72,7 @@ public class RasterGrid extends Observation {
 		 */
 		i.addObjectRelationship(
 					CoreScience.HAS_OBSERVABLE, 
-					GeospacePlugin.absoluteRasterGridInstance());
+					Geospace.absoluteRasterGridInstance());
 		
 		String crsId = null;
 				
@@ -82,23 +82,23 @@ public class RasterGrid extends Observation {
 			/* for speed */
 			if (r.isLiteral()) {
 				
-				if (r.getProperty().equals(GeospacePlugin.X_RANGE_OFFSET)) {
+				if (r.getProperty().equals(Geospace.X_RANGE_OFFSET)) {
 					xRO = r.getValue().asNumber().asInteger();
-				} else if (r.getProperty().equals(GeospacePlugin.X_RANGE_MAX)) {
+				} else if (r.getProperty().equals(Geospace.X_RANGE_MAX)) {
 					xRM = r.getValue().asNumber().asInteger();
-				} else if (r.getProperty().equals(GeospacePlugin.Y_RANGE_OFFSET)) {
+				} else if (r.getProperty().equals(Geospace.Y_RANGE_OFFSET)) {
 					yRO = r.getValue().asNumber().asInteger();
-				} else if (r.getProperty().equals(GeospacePlugin.Y_RANGE_MAX)) {
+				} else if (r.getProperty().equals(Geospace.Y_RANGE_MAX)) {
 					yRM = r.getValue().asNumber().asInteger();
-				} else if (r.getProperty().equals(GeospacePlugin.LAT_LOWER_BOUND)) {
+				} else if (r.getProperty().equals(Geospace.LAT_LOWER_BOUND)) {
 					latLB = r.getValue().asNumber().asDouble();
-				} else if (r.getProperty().equals(GeospacePlugin.LON_LOWER_BOUND)) {
+				} else if (r.getProperty().equals(Geospace.LON_LOWER_BOUND)) {
 					lonLB = r.getValue().asNumber().asDouble();
-				} else if (r.getProperty().equals(GeospacePlugin.LAT_UPPER_BOUND)) {
+				} else if (r.getProperty().equals(Geospace.LAT_UPPER_BOUND)) {
 					latUB = r.getValue().asNumber().asDouble();
-				} else if (r.getProperty().equals(GeospacePlugin.LON_UPPER_BOUND)) {
+				} else if (r.getProperty().equals(Geospace.LON_UPPER_BOUND)) {
 					lonUB = r.getValue().asNumber().asDouble();
-				} else if (r.getProperty().equals(GeospacePlugin.CRS_CODE)) {
+				} else if (r.getProperty().equals(Geospace.CRS_CODE)) {
 					crsId = r.getValue().toString();
 				} 			
 			}
@@ -187,7 +187,7 @@ public class RasterGrid extends Observation {
 		sym.put("xRangeMax", xy.getFirst());
 		sym.put("yRangeOffset", 0);
 		sym.put("yRangeMax", xy.getSecond());
-		sym.put("crsCode", GeospacePlugin.getCRSIdentifier(shape.getCRS(), true));
+		sym.put("crsCode", Geospace.getCRSIdentifier(shape.getCRS(), true));
 		sym.put("latLowerBound", env.getMinY());
 		sym.put("lonLowerBound", env.getMinX());
 		sym.put("latUpperBound", env.getMaxY());

@@ -41,7 +41,7 @@ import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContextState;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.cmodel.FeatureCoverageModel;
 import org.integratedmodelling.geospace.cmodel.RegularRasterModel;
 import org.integratedmodelling.geospace.cmodel.SubdividedCoverageConceptualModel;
@@ -88,7 +88,7 @@ public class VectorCoverageDataSource extends CoverageDataSource {
 		
 		dataCM = cm;
 		
-		IExtent extent = overallContext.getExtent(GeospacePlugin.SubdividedSpaceObservable());
+		IExtent extent = overallContext.getExtent(Geospace.SubdividedSpaceObservable());
 		IConceptualModel cmodel = extent.getConceptualModel();
 		
 		System.out.println(extent);
@@ -156,15 +156,15 @@ public class VectorCoverageDataSource extends CoverageDataSource {
 			
 			if (r.isLiteral()) {
 				
-				if (r.getProperty().equals(GeospacePlugin.COVERAGE_SOURCE_URL)) {
+				if (r.getProperty().equals(Geospace.COVERAGE_SOURCE_URL)) {
 					sourceURL = r.getValue().toString();
-				} else if (r.getProperty().equals(GeospacePlugin.HAS_SOURCE_LINK_ATTRIBUTE)) {
+				} else if (r.getProperty().equals(Geospace.HAS_SOURCE_LINK_ATTRIBUTE)) {
 					sourceAttr = r.getValue().toString();
-				} else if (r.getProperty().equals(GeospacePlugin.HAS_TARGET_LINK_ATTRIBUTE)) {
+				} else if (r.getProperty().equals(Geospace.HAS_TARGET_LINK_ATTRIBUTE)) {
 					targetAttr = r.getValue().toString();
-				} else if (r.getProperty().equals(GeospacePlugin.HAS_VALUE_ATTRIBUTE)) {
+				} else if (r.getProperty().equals(Geospace.HAS_VALUE_ATTRIBUTE)) {
 					valueAttr = r.getValue().toString();
-				} else if (r.getProperty().equals(GeospacePlugin.HAS_ATTRIBUTE_URL)) {
+				} else if (r.getProperty().equals(Geospace.HAS_ATTRIBUTE_URL)) {
 					dataURL = r.getValue().toString();
 				}
 			}

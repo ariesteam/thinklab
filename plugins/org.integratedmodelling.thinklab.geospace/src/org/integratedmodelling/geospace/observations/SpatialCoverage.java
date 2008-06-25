@@ -35,7 +35,7 @@ package org.integratedmodelling.geospace.observations;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IConceptualModel;
 import org.integratedmodelling.corescience.observation.Observation;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.cmodel.FeatureCoverageModel;
 import org.integratedmodelling.geospace.cmodel.RegularRasterModel;
 import org.integratedmodelling.geospace.cmodel.SubdividedCoverageConceptualModel;
@@ -64,7 +64,7 @@ public class SpatialCoverage extends Observation {
 		 */
 		i.addObjectRelationship(
 					CoreScience.HAS_OBSERVABLE, 
-					GeospacePlugin.absoluteSpatialCoverageInstance());
+					Geospace.absoluteSpatialCoverageInstance());
 		
 		String crsId = null;
 				
@@ -74,15 +74,15 @@ public class SpatialCoverage extends Observation {
 			/* for speed */
 			if (r.isLiteral()) {
 				
-				if (r.getProperty().equals(GeospacePlugin.LAT_LOWER_BOUND)) {
+				if (r.getProperty().equals(Geospace.LAT_LOWER_BOUND)) {
 					latLB = r.getValue().asNumber().asDouble();
-				} else if (r.getProperty().equals(GeospacePlugin.LON_LOWER_BOUND)) {
+				} else if (r.getProperty().equals(Geospace.LON_LOWER_BOUND)) {
 					lonLB = r.getValue().asNumber().asDouble();
-				} else if (r.getProperty().equals(GeospacePlugin.LAT_UPPER_BOUND)) {
+				} else if (r.getProperty().equals(Geospace.LAT_UPPER_BOUND)) {
 					latUB = r.getValue().asNumber().asDouble();
-				} else if (r.getProperty().equals(GeospacePlugin.LON_UPPER_BOUND)) {
+				} else if (r.getProperty().equals(Geospace.LON_UPPER_BOUND)) {
 					lonUB = r.getValue().asNumber().asDouble();
-				} else if (r.getProperty().equals(GeospacePlugin.CRS_CODE)) {
+				} else if (r.getProperty().equals(Geospace.CRS_CODE)) {
 					crsId = r.getValue().toString();
 				} 			
 			}

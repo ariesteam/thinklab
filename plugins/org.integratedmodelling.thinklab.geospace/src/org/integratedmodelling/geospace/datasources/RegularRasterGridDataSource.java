@@ -41,7 +41,7 @@ import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContextState;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.CoverageFactory;
 import org.integratedmodelling.geospace.coverage.ICoverage;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
@@ -76,7 +76,7 @@ public class RegularRasterGridDataSource extends CoverageDataSource {
 		
 		dataCM = cm;
 		
-		IExtent extent = overallContext.getExtent(GeospacePlugin.SubdividedSpaceObservable());
+		IExtent extent = overallContext.getExtent(Geospace.SubdividedSpaceObservable());
 
 		if (extent instanceof GridExtent)
 			gridExtent = (GridExtent) extent;
@@ -116,7 +116,7 @@ public class RegularRasterGridDataSource extends CoverageDataSource {
 			
 			if (r.isLiteral()) {
 				
-				if (r.getProperty().equals(GeospacePlugin.COVERAGE_SOURCE_URL)) {
+				if (r.getProperty().equals(Geospace.COVERAGE_SOURCE_URL)) {
 					
 					/*
 					 * this can also point to a vector source, as long as the value attribute is
@@ -124,7 +124,7 @@ public class RegularRasterGridDataSource extends CoverageDataSource {
 					 */
 					sourceURL = r.getValue().toString();
 					
-				} else if (r.getProperty().equals(GeospacePlugin.HAS_VALUE_ATTRIBUTE)) {
+				} else if (r.getProperty().equals(Geospace.HAS_VALUE_ATTRIBUTE)) {
 					valueAttr = r.getValue().toString();
 				}
 			}

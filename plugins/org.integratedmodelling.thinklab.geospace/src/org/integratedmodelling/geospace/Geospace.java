@@ -52,7 +52,7 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Node;
 
-public class GeospacePlugin extends ThinklabPlugin  {
+public class Geospace extends ThinklabPlugin  {
 
 	private static IConcept shapeType;
 	private static IConcept pointType;
@@ -71,7 +71,7 @@ public class GeospacePlugin extends ThinklabPlugin  {
 	private static String hasCentroidPropertyID;
 
 	/* log4j logger used for this class. Can be used by other classes through logger()  */
-	private static  Logger log = Logger.getLogger(GeospacePlugin.class);
+	private static  Logger log = Logger.getLogger(Geospace.class);
 	private static IConcept rasterSpaceType;
 	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.geospace";
 	
@@ -99,13 +99,13 @@ public class GeospacePlugin extends ThinklabPlugin  {
 	 */
 	CoordinateReferenceSystem preferredCRS = null;
 	
-	public GeospacePlugin() {
+	public Geospace() {
 		// TODO Auto-generated constructor stub
 	}
 
 	
-	public static GeospacePlugin get() {
-		return (GeospacePlugin) getPlugin(PLUGIN_ID);
+	public static Geospace get() {
+		return (Geospace) getPlugin(PLUGIN_ID);
 	}
 
 	public static Logger logger() {

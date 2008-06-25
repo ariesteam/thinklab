@@ -47,7 +47,7 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.values.ShapeValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
@@ -319,7 +319,7 @@ public class ShapefileReader {
 				ret = 
 					tValue == null ?
 						new ShapeValue((Geometry)avalue):
-						KnowledgeManager.get().validateLiteral(GeospacePlugin.Shape(), tValue, null);
+						KnowledgeManager.get().validateLiteral(Geospace.Shape(), tValue, null);
 			}
 		}
 		
@@ -335,7 +335,7 @@ public class ShapefileReader {
 		/* this usually causes trouble, so check */
 		String rval = ret.toString();
 		if (rval == null || rval.trim().equals("")) {
-			GeospacePlugin.logger().
+			Geospace.logger().
 				warn("shapefile: attribute " + name + " has empty string value for " + avalue);
 		}
 		

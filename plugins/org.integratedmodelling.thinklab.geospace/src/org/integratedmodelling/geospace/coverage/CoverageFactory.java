@@ -21,7 +21,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gce.geotiff.GeoTiffReader;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.feature.AttributeTable;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -109,7 +109,7 @@ public class CoverageFactory {
 		 * hints object in the plugin, assuming the stupid hints interface stays this way.
 		 */
 		GridCoverageFactory factory = 
-			FactoryFinder.getGridCoverageFactory(GeospacePlugin.get().getGeotoolsHints());
+			FactoryFinder.getGridCoverageFactory(Geospace.get().getGeotoolsHints());
 		GridCoverage2D coverage = null;
 		
 		

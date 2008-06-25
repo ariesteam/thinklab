@@ -19,7 +19,7 @@ import org.geotools.coverage.processing.DefaultProcessor;
 import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.geometry.DirectPosition2D;
 import org.integratedmodelling.corescience.interfaces.IConceptualModel;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.gis.ThinklabVectorizer;
@@ -353,7 +353,7 @@ public class RasterCoverage implements ICoverage {
 	}
 	
 	public String getCoordinateReferenceSystemCode() throws ThinklabException {
-		return GeospacePlugin.getCRSIdentifier(crs, false);
+		return Geospace.getCRSIdentifier(crs, false);
 	}
 
 	public String getSourceUrl() {

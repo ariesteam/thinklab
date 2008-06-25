@@ -33,7 +33,7 @@
 package org.integratedmodelling.geospace.constructors;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.values.ShapeValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -64,11 +64,11 @@ public class ArealLocationValidator implements LiteralValidator {
 			/* create instance of Time observation ready for validation */
 			IInstance tobs = 
 				ontology.createInstance(ontology.getUniqueObjectName("aloc"), 
-						GeospacePlugin.ArealLocation());
+						Geospace.ArealLocation());
 			
 			/* complete definition with observable. */
 			tobs.addObjectRelationship(CoreScience.HAS_OBSERVABLE, 
-					GeospacePlugin.absoluteArealLocationInstance());
+					Geospace.absoluteArealLocationInstance());
 			
 			/* make datasource out of time stamp and add to instance */
 			ShapeValue shape = new ShapeValue(literalValue);

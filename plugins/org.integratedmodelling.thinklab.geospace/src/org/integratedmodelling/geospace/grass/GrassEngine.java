@@ -34,7 +34,7 @@ package org.integratedmodelling.geospace.grass;
 
 import java.io.File;
 
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.cmodel.RegularRasterModel;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
@@ -94,7 +94,7 @@ public class GrassEngine {
 	 */
 	public GrassEngine() throws ThinklabException {
 
-		this.workDirectory  = new File(GeospacePlugin.get().getScratchPath() + "/grassdb");
+		this.workDirectory  = new File(Geospace.get().getScratchPath() + "/grassdb");
 		this.isConcurrent = isConcurrent;
 	}
 	

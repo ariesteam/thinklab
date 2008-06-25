@@ -39,7 +39,7 @@ import org.integratedmodelling.corescience.interfaces.IExtentMediator;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IValueAggregator;
 import org.integratedmodelling.corescience.interfaces.IValueMediator;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
@@ -111,13 +111,13 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 			/* for speed */
 			if (r.isLiteral()) {
 				
-				if (r.getProperty().equals(GeospacePlugin.X_RANGE_OFFSET)) {
+				if (r.getProperty().equals(Geospace.X_RANGE_OFFSET)) {
 					xRangeOffset = r.getValue().asNumber().asInteger();
-				} else if (r.getProperty().equals(GeospacePlugin.X_RANGE_MAX)) {
+				} else if (r.getProperty().equals(Geospace.X_RANGE_MAX)) {
 					xRangeMax = r.getValue().asNumber().asInteger();
-				} else if (r.getProperty().equals(GeospacePlugin.Y_RANGE_OFFSET)) {
+				} else if (r.getProperty().equals(Geospace.Y_RANGE_OFFSET)) {
 					yRangeOffset = r.getValue().asNumber().asInteger();
-				} else if (r.getProperty().equals(GeospacePlugin.Y_RANGE_MAX)) {
+				} else if (r.getProperty().equals(Geospace.Y_RANGE_MAX)) {
 					yRangeMax = r.getValue().asNumber().asInteger();
 				}
 			}

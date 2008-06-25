@@ -35,7 +35,7 @@ package org.integratedmodelling.geospace.cmodel;
 import org.geotools.referencing.CRS;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContextState;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
@@ -58,7 +58,7 @@ public abstract class SubdividedCoverageConceptualModel extends SpatialConceptua
 	private String name;
 
 	public IConcept getStateType() {
-		return GeospacePlugin.Polygon();
+		return Geospace.Polygon();
 	}
 
 	public IValue partition(IValue originalValue, Rational ratio) {
@@ -105,15 +105,15 @@ public abstract class SubdividedCoverageConceptualModel extends SpatialConceptua
 			/* for speed */
 			if (r.isLiteral()) {
 				
-				if (r.getProperty().equals(GeospacePlugin.LAT_LOWER_BOUND)) {
+				if (r.getProperty().equals(Geospace.LAT_LOWER_BOUND)) {
 					latLowerBound = r.getValue().asNumber().asDouble();
-				} else if (r.getProperty().equals(GeospacePlugin.LON_LOWER_BOUND)) {
+				} else if (r.getProperty().equals(Geospace.LON_LOWER_BOUND)) {
 					lonLowerBound = r.getValue().asNumber().asDouble();
-				} else if (r.getProperty().equals(GeospacePlugin.LAT_UPPER_BOUND)) {
+				} else if (r.getProperty().equals(Geospace.LAT_UPPER_BOUND)) {
 					latUpperBound = r.getValue().asNumber().asDouble();
-				} else if (r.getProperty().equals(GeospacePlugin.LON_UPPER_BOUND)) {
+				} else if (r.getProperty().equals(Geospace.LON_UPPER_BOUND)) {
 					lonUpperBound = r.getValue().asNumber().asDouble();
-				} else if (r.getProperty().equals(GeospacePlugin.CRS_CODE)) {
+				} else if (r.getProperty().equals(Geospace.CRS_CODE)) {
 					crsID = r.getValue().toString();
 				}		
 			}

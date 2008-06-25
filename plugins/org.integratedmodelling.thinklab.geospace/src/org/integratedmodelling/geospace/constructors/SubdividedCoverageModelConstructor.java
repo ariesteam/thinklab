@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.geospace.constructors;
 
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.cmodel.FeatureCoverageModel;
 import org.integratedmodelling.geospace.cmodel.RegularRasterModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -48,7 +48,7 @@ public class SubdividedCoverageModelConstructor implements
 		
 		IInstanceImplementation ret = null;
 		
-		if (instance.is(GeospacePlugin.RASTER_CONCEPTUAL_MODEL))
+		if (instance.is(Geospace.RASTER_CONCEPTUAL_MODEL))
 			ret = new RegularRasterModel();
 		else
 			ret = new FeatureCoverageModel();

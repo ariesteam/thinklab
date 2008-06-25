@@ -38,7 +38,7 @@ import org.integratedmodelling.corescience.interfaces.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContextState;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
@@ -243,17 +243,17 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource {
 
 		// FIXME USE CLASS TREE EVERYWHERE
 		if (shape instanceof Point)
-			ok = concept.is(GeospacePlugin.Point());
+			ok = concept.is(Geospace.Point());
 		else if (shape instanceof LineString)
-			ok = concept.is(GeospacePlugin.LineString());
+			ok = concept.is(Geospace.LineString());
 		else if (shape instanceof Polygon)
-			ok = concept.is(GeospacePlugin.Polygon());
+			ok = concept.is(Geospace.Polygon());
 		else if (shape instanceof MultiPoint)
-			ok = concept.is(GeospacePlugin.MultiPoint());
+			ok = concept.is(Geospace.MultiPoint());
 		else if (shape instanceof MultiLineString)
-			ok = concept.is(GeospacePlugin.MultiLineString());
+			ok = concept.is(Geospace.MultiLineString());
 		else if (shape instanceof MultiPolygon)
-			ok = concept.is(GeospacePlugin.MultiPolygon());
+			ok = concept.is(Geospace.MultiPolygon());
 		
 		if (!ok)
 			throw new ThinklabValidationException(
@@ -272,17 +272,17 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource {
 		if (c == null) {
 			
 			if (shape instanceof Point)
-				c = GeospacePlugin.Point();
+				c = Geospace.Point();
 			else if (shape instanceof LineString)
-				c = GeospacePlugin.LineString();
+				c = Geospace.LineString();
 			else if (shape instanceof Polygon)
-				c = GeospacePlugin.Polygon();
+				c = Geospace.Polygon();
 			else if (shape instanceof MultiPoint)
-				c = GeospacePlugin.MultiPoint();
+				c = Geospace.MultiPoint();
 			else if (shape instanceof MultiLineString)
-				c = GeospacePlugin.MultiLineString();
+				c = Geospace.MultiLineString();
 			else if (shape instanceof MultiPolygon)
-				c = GeospacePlugin.MultiPolygon();
+				c = Geospace.MultiPolygon();
 		}
 		
 		if (c == null)

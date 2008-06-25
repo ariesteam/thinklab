@@ -40,7 +40,7 @@ import org.integratedmodelling.corescience.interfaces.IObservationState;
 import org.integratedmodelling.districting.DistrictingPlugin;
 import org.integratedmodelling.districting.interfaces.IDistrictingAlgorithm;
 import org.integratedmodelling.districting.utils.DistrictingResults;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -78,7 +78,7 @@ public class District implements CommandHandler {
 		// get the spatial extent and check it's a CellExtent, which it should
 		// be
 		IObservationContext ctx = obs.getCurrentObservationContext();
-		GridExtent extent = (GridExtent) ctx.getExtent(GeospacePlugin
+		GridExtent extent = (GridExtent) ctx.getExtent(Geospace
 				.RasterGridObservable());
 
 		// produce a RasterCoverage from data and extent and show it

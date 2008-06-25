@@ -5,7 +5,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.exceptions.ThinklabConceptualModelValidationException;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IExtentConceptualModel;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
@@ -33,11 +33,11 @@ public abstract class SpatialConceptualModel implements IExtentConceptualModel, 
 	 */
 	public static CoordinateReferenceSystem chooseCRS(CoordinateReferenceSystem crs1, CoordinateReferenceSystem crs2) {
 
-		CoordinateReferenceSystem ret = GeospacePlugin.get().getPreferredCRS();
+		CoordinateReferenceSystem ret = Geospace.get().getPreferredCRS();
 		
 		if (ret == null) {
 			ret = crs1;
-			GeospacePlugin.get().setPreferredCRS(ret);
+			Geospace.get().setPreferredCRS(ret);
 		}
 		
 		return ret;

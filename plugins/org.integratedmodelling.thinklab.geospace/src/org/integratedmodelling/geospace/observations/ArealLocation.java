@@ -34,7 +34,7 @@ package org.integratedmodelling.geospace.observations;
 
 import org.integratedmodelling.corescience.interfaces.IConceptualModel;
 import org.integratedmodelling.corescience.observation.Observation;
-import org.integratedmodelling.geospace.GeospacePlugin;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.cmodel.ArealLocationConceptualModel;
 import org.integratedmodelling.geospace.values.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -64,15 +64,15 @@ public class ArealLocation extends Observation {
 		try {
 			Geometry shape = ((ShapeValue)getDataSource()).getGeometry();
 
-			if (i.getRelationships(GeospacePlugin.hasBoundingBox()).size() == 0) {
+			if (i.getRelationships(Geospace.hasBoundingBox()).size() == 0) {
 			
 				Geometry bbox = shape.getEnvelope();
-				i.addLiteralRelationship(GeospacePlugin.hasBoundingBox(),
+				i.addLiteralRelationship(Geospace.hasBoundingBox(),
 						new ShapeValue(bbox));
 			}
 			
-			if (i.getRelationships(GeospacePlugin.hasCentroid()).size() == 0) {
-				i.addLiteralRelationship(GeospacePlugin.hasCentroid(),
+			if (i.getRelationships(Geospace.hasCentroid()).size() == 0) {
+				i.addLiteralRelationship(Geospace.hasCentroid(),
 						new ShapeValue(shape.getCentroid()));	
 			}
 

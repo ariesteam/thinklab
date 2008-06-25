@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.corescience" version="0.8.0" class="org.integratedmodelling.corescience.CoreScience">
+<plugin id="org.integratedmodelling.thinklab.geospace" version="0.8.0" class="org.integratedmodelling.geospace.Geospace">
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
 		<import plugin-id="org.integratedmodelling.thinklab.opal"/>
