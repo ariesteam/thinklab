@@ -1,5 +1,5 @@
 /**
- * OPALValidationException.java
+ * OPALLoaderPlugin.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,32 +30,33 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.opal;
+package org.integratedmodelling.thinklab.opal;
+
+import java.io.File;
+import java.net.URL;
+import java.util.Collection;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
+import org.integratedmodelling.thinklab.interfaces.IInstance;
+import org.integratedmodelling.thinklab.interfaces.IKBox;
+import org.integratedmodelling.thinklab.interfaces.ISession;
 
-public class OPALValidationException extends ThinklabException {
+public class OPALLoader implements KnowledgeLoader {
 
-	private static final long serialVersionUID = -4766246660023855630L;
-
-	public OPALValidationException() {
-		super();
-		// TODO Auto-generated constructor stub
+	public Collection<IInstance> loadKnowledge(URL url, ISession session, IKBox kbox) throws ThinklabException {
+		
+		OPALValidator val = new OPALValidator();
+		return val.validate(url, session, kbox);
 	}
 
-	public OPALValidationException(String arg0, Throwable arg1) {
-		super(arg0, arg1);
-		// TODO Auto-generated constructor stub
+
+	public void writeKnowledge(File outfile, String format, IInstance... instances)
+			throws ThinklabException {
+		
+		OPALWriter.writeInstances(outfile, format, instances);
+		
 	}
 
-	public OPALValidationException(String arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
-
-	public OPALValidationException(Throwable arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
 
 }

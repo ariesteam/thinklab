@@ -1,5 +1,5 @@
 /**
- * OPALListWriter.java
+ * OPALWriter.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,100 +30,72 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.opal.utils;
+package org.integratedmodelling.thinklab.opal;
 
+import java.io.File;
 import java.util.HashSet;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.integratedmodelling.opal.profile.OPALProfile;
-import org.integratedmodelling.opal.profile.OPALProfileFactory;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.thinklab.interfaces.IInstance;
+import org.integratedmodelling.thinklab.interfaces.IRelationship;
+import org.integratedmodelling.thinklab.opal.profile.OPALProfile;
+import org.integratedmodelling.thinklab.opal.profile.OPALProfileFactory;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.XMLDocument;
-import org.integratedmodelling.utils.instancelist.InstanceList;
-import org.integratedmodelling.utils.instancelist.RelationshipList;
 import org.w3c.dom.Node;
 
 /**
- * Convert instance lists to OPAL, with no need to create an instance.
- * 
- * @author Ferdinando Villa
+ * @author villa
  *
- */ 
-public class OPALListWriter {
+ */
+public class OPALWriter {
 	
-	/**
-	 * Convenience method to get a new document, if you want to do it all here.
-	 * @return a new XML document with a "kbox" parent node.
-	 * @throws ThinklabException
-	 */
-	public static XMLDocument getNewDocument(String profile) throws ThinklabException {
-
-		XMLDocument doc = null;
-		OPALProfile prof = OPALProfileFactory.get().getProfile(profile, true);
-
-		try {
-			doc = new XMLDocument(prof.getDefaultRootNodeID());
-		} catch (ParserConfigurationException e) {
-			throw new ThinklabIOException(e);
-		}
+	
+	private static void writeInstance(IInstance i, XMLDocument document, OPALProfile profile, HashSet<String> refs) throws ThinklabException {
 		
-		if (!prof.isDefault()) {
-			/* add processing instruction to set profile  */
-			doc.addProcessingInstruction("OPAL", "profile=" + prof.getName());
-		}
+		if (refs == null)
+			refs = new HashSet<String>();
 		
-		return doc;
+		writeInstanceInternal(i, document, document.root(), profile, refs);
+		
 	}
+	
+	
+	private static Node writeInstanceInternal(IInstance instance, XMLDocument document, Node parent,
+			OPALProfile profile, HashSet<String> refs) throws ThinklabException {
 
-	/**
-	 * Append the given list directly to the root node of an XML document.
-	 * @param list A list representing an instance
-	 * @param document an XML document
-	 * @param profile the name of an existing OPAL profile, or null for the default profile
-	 * @throws ThinklabException
-	 */
-	public static void appendOPAL(Polylist list, XMLDocument document, String profile) throws ThinklabException {
-		
-		OPALProfile prof = OPALProfileFactory.get().getProfile(profile, true);
-		appendOPALInternal(new InstanceList(list), document, document.root(), prof, new HashSet<String>());
-	}
-
-	/**
-	 * Append the given list to a given node in an XML document.
-	 * @param list A list representing an instance
-	 * @param document an XML document
-	 * @param parentNode the node to append to. Must be in the passed document. 
-	 * @param profile the name of an existing OPAL profile, or null for the default profile
-	 * @throws ThinklabException
-	 */
-	public static void appendOPAL(Polylist list, XMLDocument document, Node parentNode, String profile) throws ThinklabException {
-		
-		OPALProfile prof = OPALProfileFactory.get().getProfile(profile, true);
-		appendOPALInternal(new InstanceList(list), document, parentNode, prof, new HashSet<String>());
-	}
-
-	private static void appendOPALInternal(InstanceList instance, XMLDocument document, Node parentNode, OPALProfile profile,  HashSet<String> refs) throws ThinklabException {
 		
 		/* 
 		 * if this has been written before, just write out a ref for it. Make sure
 		 * we have all prefixes right.
 		 */
-		if (refs.contains(instance.getLocalName())) {
-			 document.appendTextNode(
+		if (refs.contains(instance.getLocalName())) { 
+			
+			/* we just do nothing if it's being appended to the root node and we 
+			 * already have it. 
+			 */
+			if (parent.getNodeName().equals(profile.getDefaultRootNodeID())) {
+				return null;
+			}
+			
+			/*
+			 * write the ref if the parent is a relationship
+			 */
+			return document.appendTextNode(
 					profile.getDefaultReferenceTag(),
 					instance.getLocalName(), 
-					parentNode);
-			 return;
+					parent);
 		}
 		
 		/* have profile determine node name, ID etc. appropriately */
 		Node ret = 
 			document.createNode(
 					profile.getOPALConceptID(instance.getDirectType().getSemanticType(),document),
-					parentNode);
+					parent);
 		
 		document.addAttribute(
 				ret, 
@@ -143,14 +115,8 @@ public class OPALListWriter {
 		if (label != null && !label.equals(""))
 			document.appendTextNode(profile.getDefaultDescriptionTag(), label, ret);
 		
-		/* see if the list specifies the instance using a literal */
-		Object o = instance.getLiteralContent();
-		if (o != null) {
-			ret.setTextContent(o.toString());
-		}
-		
 		/* scan properties */
-		for (RelationshipList r : instance.getRelationships()) {
+		for (IRelationship r : instance.getRelationships()) {
 
 			/* 
 			 * see the relationship id, and ignore the whole thing if it's one of those 
@@ -162,6 +128,12 @@ public class OPALListWriter {
 				continue;
 
 			/*
+			 * honor anything that has been blacklisted in the knowledge manager
+			 */
+			if (KnowledgeManager.get().isPropertyBlacklisted(r.getProperty().toString()))
+				continue;
+			
+			/*
 			 * object relationship: write rel node unless implicit, and recurse
 			 */
 			if (r.isObject()) {
@@ -169,14 +141,14 @@ public class OPALListWriter {
 				/* see if we can default the relationship */
 				if (profile.getDefaultRelationship(
 						instance.getDirectType(),
-						r.getValue().asInstanceList().getDirectType())
+						r.getValue().asObjectReference().getObject().getDirectType())
 						== null) {
 				
 					/* nope, write it up as is */
 					Node reln = document.createNode(cid, ret);
 				
-					appendOPALInternal(
-						r.getValue().asInstanceList(),
+					writeInstanceInternal(
+						r.getValue().asObjectReference().getObject(),
 						document,
 						reln,
 						profile,
@@ -188,8 +160,8 @@ public class OPALListWriter {
 					 * default relationship, just write the instance directly
 					 * within the main instance.
 					 */
-					appendOPALInternal(
-							r.getValue().asInstanceList(),
+					writeInstanceInternal(
+							r.getValue().asObjectReference().getObject(),
 							document,
 							ret,
 							profile,
@@ -201,16 +173,82 @@ public class OPALListWriter {
 				
 				document.appendTextNode(
 						cid,
-						r.getValue().asString(), 
+						r.getValue().getConcept().toString(), 
 						ret);
 				
 			} else {
 
 				document.appendTextNode(
 						cid,
-						r.getValue().asString(), 
+						r.getValue().toString(), 
 						ret);
 			}
-		}		
+		}
+		
+		return ret;
+		
 	}
+
+	/**
+	 * Serialize the passed instances to the given file using the default profile or
+	 * any profile that corresponds to the outfile extension if it is not .xml.
+	 * 
+	 * @param outfile
+	 * @param instances
+	 * @throws ThinklabException
+	 */
+	public static void writeInstances(File outfile, IInstance ... instances) throws ThinklabException {
+		
+		String profile = null;
+		if (!outfile.toString().endsWith(".xml")) {
+			profile = MiscUtilities.getFileExtension(outfile.toString());
+		}
+		writeInstances(outfile, profile, instances);
+	}
+	
+	/**
+	 * Serialize the passed instances to the given outfile using the specified
+	 * OPAL profile. If null is passed for the profile name, use the default
+	 * profile. 
+	 * 
+	 * @param outfile
+	 * @param profile
+	 * @param instances
+	 * @throws ThinklabException
+	 */
+	public static void writeInstances(File outfile, String profile, IInstance ... instances) throws ThinklabException {
+		
+		/* 
+		 * fetch profile
+		 */
+		OPALProfile prof = OPALProfileFactory.get().getProfile(profile, true);
+		
+		/* 
+		 * create xml document; if file name ends with .xml, add profile processing
+		 * instruction unless profile is null.
+		 */
+		XMLDocument doc = null;
+		try {
+			doc = new XMLDocument(prof.getDefaultRootNodeID());
+		} catch (ParserConfigurationException e) {
+			throw new ThinklabIOException(e);
+		}
+		
+		HashSet<String> refs = new HashSet<String>();
+		
+		/* write down the instances */
+		for (IInstance inst : instances) {
+			writeInstance(inst, doc, prof, refs);
+		}
+
+		if (!prof.isDefault()) {
+			/* add processing instruction to set profile - do it anyway even if
+			 * we have given a different extension. */
+			doc.addProcessingInstruction("OPAL", "profile=" + prof.getName());
+		}
+		
+		/* serialize document to file */
+		doc.writeToFile(outfile);
+	}
+	
 }

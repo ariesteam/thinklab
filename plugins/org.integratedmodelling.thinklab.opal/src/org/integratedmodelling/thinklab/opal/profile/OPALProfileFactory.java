@@ -30,7 +30,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.opal.profile;
+package org.integratedmodelling.thinklab.opal.profile;
 
 import java.io.File;
 import java.net.MalformedURLException;

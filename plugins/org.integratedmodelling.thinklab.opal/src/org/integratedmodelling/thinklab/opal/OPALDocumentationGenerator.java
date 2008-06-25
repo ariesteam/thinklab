@@ -30,7 +30,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.opal;
+package org.integratedmodelling.thinklab.opal;
 
 import java.io.PrintWriter;
 

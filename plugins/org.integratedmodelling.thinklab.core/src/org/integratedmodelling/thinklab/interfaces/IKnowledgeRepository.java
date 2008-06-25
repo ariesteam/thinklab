@@ -67,11 +67,13 @@ public interface IKnowledgeRepository {
 	 * may be null; if so, assign a name from URL base name. 
 	 * @param url the ontology URL, either local or web based.
 	 * @param name the name by which we want the ontology to be known, or null if we don't care.
+	 * @param saveToRepository pass true if you want the ontology to be automatically loaded at the next
+	 *        instantiation of the repository.
 	 * @return the ontology short name. If null has been passed for the name parameter, it's calculated from the URL
 	 * basename. Otherwise it's the same passed. Names may not be duplicated - if generated, a unique one is forced.
 	 * @exception ThinklabException if anything goes wrong
 	 */
-	public abstract String importOntology(URL url, String name) throws ThinklabException;
+	public abstract String importOntology(URL url, String name, boolean saveToReposioty) throws ThinklabException;
 	
 	/**
 	 * Supposed to check if the ontology we're trying to import is already in the repository, and
@@ -81,10 +83,12 @@ public interface IKnowledgeRepository {
 	 * 
 	 * @param url the ontology URL, either local or web based.
 	 * @param name the name by which we want the ontology to be known, or null if we don't care.
+	 * @param saveToRepository pass true if you want the ontology to be automatically loaded at the next
+	 *        instantiation of the repository.
 	 * @return the ID of the ontology if it has been loaded or refreshed, null otherwise
 	 * @throws ThinklabException if anything goes wrong
 	 */
-	public abstract String refreshOntology(URL url, String name) throws ThinklabException;
+	public abstract String refreshOntology(URL url, String name, boolean saveToRepository) throws ThinklabException;
 
 
     /**

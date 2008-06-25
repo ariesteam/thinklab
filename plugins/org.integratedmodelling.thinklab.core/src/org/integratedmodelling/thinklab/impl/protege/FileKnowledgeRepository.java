@@ -205,7 +205,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 				// This is the filename without the .owl ending. It will be used
 				// as the short namespace!
 				nspace = f.getName().substring(0, f.getName().length() - 4);
-				importOntology(url, nspace);
+				importOntology(url, nspace, false);
 				
 			} catch (Exception ex) {
 				log.warn("Cant load ontology for the file: " + f.getName()
@@ -227,7 +227,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	 *      java.lang.String)
 	 */
 	
-	public String importOntology(URL url, String nspace) throws ThinklabException {
+	public String importOntology(URL url, String nspace, boolean saveToRepository) throws ThinklabException {
 		//TODO: check if the url ends with # and eliminate it
 		log.debug("Importing ontology " + nspace + " from :" + url);
 		URI ontoURI;
@@ -263,26 +263,29 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		else{
 
 			File tf = new File(url.getFile());
-
 			File pluginDir = LocalConfiguration.getDataDirectory("plugins");
 
 			boolean isSystem = 
 				tf.getParent().equals(repositoryDirectory.getPath()) ||
 				tf.getPath().startsWith(pluginDir.getPath());
+			
+			if (saveToRepository) {
+		
+				File f = new File(repositoryDirectory + "/" + tf.getName());
 
-			File f = new File(repositoryDirectory + "/" + tf.getName());
+				if (!isSystem && f.exists() && tf.lastModified() > f.lastModified()) {
+					moveFileToBackup(f);		
+				}
 
-			if (!isSystem && f.exists() && tf.lastModified() > f.lastModified()) {
-				moveFileToBackup(f);		
+				/* copy to local repository unless already there */
+				if (!isSystem)
+					CopyURL.copy(url, f);
 			}
-
-			/* copy to local repository unless plugin or already there */
-			if (!isSystem)
-				CopyURL.copy(url, f);
-
+			
 			Ontology onto = new Ontology(this, url, nspace, !isSystem);
 
-			onto.setLastModificationDate(tf.lastModified());
+			if (saveToRepository)
+				onto.setLastModificationDate(tf.lastModified());
 
 			String cspace = onto.getConceptSpace();
 //			loadedOntologies.put(cspace, onto);
@@ -341,8 +344,8 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		return nameSpaceManager.getDefaultNamespace();
 	}
 	
-	public String refreshOntology(URL url, String name) throws ThinklabException {
-		return importOntology(url, name);
+	public String refreshOntology(URL url, String name, boolean saveToRepository) throws ThinklabException {
+		return importOntology(url, name, saveToRepository);
 	}
 	
 	public String toString() {

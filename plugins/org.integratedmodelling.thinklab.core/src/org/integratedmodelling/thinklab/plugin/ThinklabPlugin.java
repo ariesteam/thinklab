@@ -309,7 +309,7 @@ public abstract class ThinklabPlugin extends Plugin
 			String url = ext.getParameter("url").valueAsString();
 			String csp = ext.getParameter("concept-space").valueAsString();
 
-			KnowledgeManager.get().getKnowledgeRepository().refreshOntology(getResourceURL(url), csp);
+			KnowledgeManager.get().getKnowledgeRepository().refreshOntology(getResourceURL(url), csp, false);
 			
 			ontologies.add(csp);
 		}
@@ -378,7 +378,6 @@ public abstract class ThinklabPlugin extends Plugin
 		ClassLoader classLoader = getManager().getPluginClassLoader(getDescriptor());
 		Class<?> cls = null;
 		try {
-			System.out.println("classloader in t plugin: "+ classLoader);
 
 			cls = classLoader.loadClass(ext.getParameter(field).valueAsString());
 			ret = cls.newInstance();

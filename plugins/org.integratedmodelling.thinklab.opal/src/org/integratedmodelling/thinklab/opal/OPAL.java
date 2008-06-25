@@ -1,11 +1,11 @@
-package org.integratedmodelling.opal;
+package org.integratedmodelling.thinklab.opal;
 
 import java.net.URL;
 import java.util.ArrayList;
 
-import org.integratedmodelling.opal.profile.OPALProfileFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.opal.profile.OPALProfileFactory;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.java.plugin.registry.Extension;
 

@@ -30,7 +30,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.opal;
+package org.integratedmodelling.thinklab.opal;
 
 import java.io.IOException;
 import java.net.URL;
@@ -40,8 +40,6 @@ import java.util.HashMap;
 import java.util.Stack;
 
 import org.apache.log4j.Logger;
-import org.integratedmodelling.opal.profile.OPALProfile;
-import org.integratedmodelling.opal.profile.OPALProfileFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
@@ -49,6 +47,8 @@ import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.opal.profile.OPALProfile;
+import org.integratedmodelling.thinklab.opal.profile.OPALProfileFactory;
 import org.integratedmodelling.utils.KeyValueMap;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;

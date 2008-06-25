@@ -77,13 +77,13 @@ public class KBoxManager {
      * a registry of plugins that handle KBox creation.
      * TODO move to kbox manager
      */
-    HashMap<String, KBoxHandler> kboxPlugins;
+    HashMap<String, KBoxHandler> kboxPlugins = new HashMap<String, KBoxHandler>();
     
     /*
      * A registry of installed KBoxes, indexed by their URL.
      * TODO move to kbox manager
      */
-    HashMap<String, IKBox> kBoxes;
+    HashMap<String, IKBox> kBoxes = new HashMap<String, IKBox>();
 	
 	/**
 	 * Properties starting with this prefix declare a metadata field in
@@ -422,7 +422,7 @@ public class KBoxManager {
 			String[] onts = ontologies.split(",");
 			for (String ourl : onts) {
 				try {
-					KnowledgeManager.get().getKnowledgeRepository().refreshOntology(new URL(ourl), null);
+					KnowledgeManager.get().getKnowledgeRepository().refreshOntology(new URL(ourl), null, false);
 				} catch (MalformedURLException e) {
 					throw new ThinklabIOException(e);
 				}

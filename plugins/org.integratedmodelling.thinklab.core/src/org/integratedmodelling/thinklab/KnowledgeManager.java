@@ -175,12 +175,12 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	/*
 	 * map URIs to concept space names 
 	 */
-	HashMap<String, String> uri2cs;
+	HashMap<String, String> uri2cs = new HashMap<String, String>();
 	
 	/*
 	 * map concept space names to URIs 
 	 */
-	HashMap<String, String> cs2uri;
+	HashMap<String, String> cs2uri = new HashMap<String, String>();
 
 
     /*
@@ -188,17 +188,17 @@ public class KnowledgeManager implements IKnowledgeProvider {
      */
 	private boolean typesInitialized = false;
 
-	private HashMap<String, InstanceImplementationConstructor> instanceConstructors;
+	private HashMap<String, InstanceImplementationConstructor> instanceConstructors =
+		new HashMap<String, InstanceImplementationConstructor>();
 
-	private HashMap<String, LiteralValidator> literalValidators;
+	private HashMap<String, LiteralValidator> literalValidators =
+		new HashMap<String, LiteralValidator>();
 
-	private HashMap<String, KnowledgeLoader> knowledgeLoaders;
+	private HashMap<String, KnowledgeLoader> knowledgeLoaders =
+		new HashMap<String, KnowledgeLoader>();
 
-	private ArrayList<String> sessionListeners = new ArrayList<String>();
-
-	private File pluginClassPath;
-
-	private File pluginJarPath;
+	private ArrayList<String> sessionListeners = 
+		new ArrayList<String>();
 
 	private HashSet<String> propertyBlacklist = new HashSet<String>();
 	private HashSet<String> conceptBlacklist = new HashSet<String>();
@@ -214,18 +214,8 @@ public class KnowledgeManager implements IKnowledgeProvider {
         KM = this;
         
         /* create stuff */
-
-        uri2cs   = new HashMap<String, String>();
-        cs2uri   = new HashMap<String, String>();
-
-        instanceConstructors = new HashMap<String, InstanceImplementationConstructor>();
-        literalValidators = new HashMap<String, LiteralValidator>();
-
         knowledgeRepository = kr;
 		sessionManager  = ki;
-		
-		pluginClassPath = LocalConfiguration.getDataDirectory("plugins/load/classes");
-		pluginJarPath = LocalConfiguration.getDataDirectory("plugins/load/lib");
 	}
 	
 	/**
@@ -476,7 +466,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
         // FV have to put it back, as initializeThinklabTypes() needs the base types to work
         try {
             /* load the thinklab core ontology URL from preferences */
-            knowledgeRepository.refreshOntology(new URL(cont), MiscUtilities.getNameFromURL(cont));
+            knowledgeRepository.refreshOntology(new URL(cont), MiscUtilities.getNameFromURL(cont), true);
         } catch (MalformedURLException e1) {
         	throw new ThinklabIOException(e1);
         }
@@ -808,7 +798,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 				throw new ThinklabIOException(url);
 			}
 		}
-		return knowledgeRepository.importOntology(u, name);
+		return knowledgeRepository.importOntology(u, name, true);
 	}
 
 	public void clear() {
@@ -1177,21 +1167,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		return knowledgeLoaders.get(format);
 	}
 	
-	/**
-	 * Use before initialize() to redefine the locations where class and 
-	 * jar files in plugins are unpacked by the plugin manager. Thinklab has
-	 * its own classloader that is extended to look into these locations, but 
-	 * if the VM the application runs under needs to link plugin classes, this
-	 * will need to be redefined appropriately before initialize() is called.
-	 * 
-	 * @param classPath
-	 * @param jarClassPath
-	 */
-	public void setPluginClasspaths(File classPath, File jarClassPath) {
-		pluginClassPath = classPath;
-		pluginJarPath = jarClassPath;
-	}
-		
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#blacklistProperty(java.lang.String)
 	 */

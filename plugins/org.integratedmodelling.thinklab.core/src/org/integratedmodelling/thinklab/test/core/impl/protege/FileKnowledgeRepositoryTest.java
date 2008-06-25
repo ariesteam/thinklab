@@ -77,7 +77,7 @@ public class FileKnowledgeRepositoryTest extends AllTestsSetup {
 	 */
 	public void testImportOntology() throws MalformedURLException, ThinklabException {
 		String ns = null;
-		ns = kr.importOntology(pizzafile.toURL(),"pz");
+		ns = kr.importOntology(pizzafile.toURL(),"pz", true);
 		assertEquals("pz",ns);
 		assertEquals(true,(new File(repositoryOntDir,pizzaFilename).delete()));
 	}
@@ -87,7 +87,7 @@ public class FileKnowledgeRepositoryTest extends AllTestsSetup {
 	 */
 	public void testExportOntologyByNameURIString() throws MalformedURLException, ThinklabException {
 		String ns;
-		ns = kr.importOntology(pizzafile.toURL(),"pz");
+		ns = kr.importOntology(pizzafile.toURL(),"pz", true);
 		kr.exportOntologyByName(altpizza.toURI(),ns);
 		assertEquals(true,altpizza.delete());
 		assertEquals(true,(new File(repositoryOntDir,pizzaFilename).delete()));
@@ -137,7 +137,7 @@ public class FileKnowledgeRepositoryTest extends AllTestsSetup {
 	 */
 	public void testRetrieveAllOntologies() throws MalformedURLException, ThinklabException {
 		kr.initialize();
-		String cs =  kr.importOntology(pizzafile.toURL(),workflowConceptSpace);
+		String cs =  kr.importOntology(pizzafile.toURL(),workflowConceptSpace, true);
 		assertEquals(true,!cs.equals(workflowConceptSpace));
 		IOntology onto = kr.requireOntology(cs);
 		assertEquals(true, kr.retrieveAllOntologies().contains(onto));
@@ -149,7 +149,7 @@ public class FileKnowledgeRepositoryTest extends AllTestsSetup {
 	 * Test method for 'org.integratedmodelling.ima.core.impl.protege.FileKnowledgeRepository.refreshOntology(URL, String)'
 	 */
 	public void testRefreshOntology() throws MalformedURLException, ThinklabException {
-		String cs = kr.refreshOntology(pizzafile.toURL(),"pz");
+		String cs = kr.refreshOntology(pizzafile.toURL(),"pz", true);
 		assertEquals("pz",cs);
 		assertEquals(true,(new File(repositoryOntDir,pizzaFilename).delete()));
 	}

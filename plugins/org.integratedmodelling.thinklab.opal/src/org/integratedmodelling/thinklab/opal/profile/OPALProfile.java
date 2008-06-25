@@ -30,18 +30,18 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.opal.profile;
+package org.integratedmodelling.thinklab.opal.profile;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.integratedmodelling.opal.OPALValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
+import org.integratedmodelling.thinklab.opal.OPALValidationException;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.XMLDocument;
 
