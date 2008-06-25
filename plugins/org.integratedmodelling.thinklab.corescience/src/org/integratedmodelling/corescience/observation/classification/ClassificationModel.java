@@ -34,7 +34,7 @@ package org.integratedmodelling.corescience.observation.classification;
 
 import java.util.HashMap;
 
-import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
@@ -142,32 +142,32 @@ public class ClassificationModel implements IConceptualModel, IInstanceImplement
 				
 				String s = r.getValue().toString();
 				
-				if (r.getProperty().is(CoreSciencePlugin.HAS_SOURCE_VALUE_TYPE)) {
+				if (r.getProperty().is(CoreScience.HAS_SOURCE_VALUE_TYPE)) {
 					
-				} else if (r.getProperty().is(CoreSciencePlugin.HAS_CONCEPTUAL_SPACE)) {
+				} else if (r.getProperty().is(CoreScience.HAS_CONCEPTUAL_SPACE)) {
 					
 				}
 
 				
 			} else if (r.isObject()) {
 				
-				if (r.getProperty().is(CoreSciencePlugin.CLASS_MAPPING)) {
+				if (r.getProperty().is(CoreScience.CLASS_MAPPING)) {
 					
 					IInstance cm = r.getValue().asObjectReference().getObject();
 					IKnowledgeSubject kn = null;
 					
-					String lit = cm.get(CoreSciencePlugin.HAS_SOURCE_VALUE).toString();
+					String lit = cm.get(CoreScience.HAS_SOURCE_VALUE).toString();
 					
 					
 					
 					/* these two are mutually exclusive */
-					for (IRelationship rl : cm.getRelationships(CoreSciencePlugin.HAS_TARGET_CONCEPT)) {
+					for (IRelationship rl : cm.getRelationships(CoreScience.HAS_TARGET_CONCEPT)) {
 						String c = rl.getValue().toString();
 						kn = KnowledgeManager.get().requireConcept(c);
 					}
 						
 					if (kn == null)
-						for (IRelationship rl : cm.getRelationships(CoreSciencePlugin.HAS_TARGET_INSTANCE)) {
+						for (IRelationship rl : cm.getRelationships(CoreScience.HAS_TARGET_INSTANCE)) {
 							IInstance inst = rl.getValue().asObjectReference().getObject();
 						}
 										

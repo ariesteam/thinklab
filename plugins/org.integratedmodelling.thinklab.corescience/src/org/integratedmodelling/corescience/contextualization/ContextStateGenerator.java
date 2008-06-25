@@ -36,7 +36,7 @@ import java.util.Iterator;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IContextStateGenerator;
 import org.integratedmodelling.corescience.interfaces.IObservationContextState;
 import org.integratedmodelling.corescience.utils.Ticker;
@@ -67,7 +67,7 @@ public class ContextStateGenerator implements IContextStateGenerator {
 				} catch (ThinklabException e) {
 					// should not happen, if it does, too bad, we can't have exceptions 
 					// thrown here.
-					CoreSciencePlugin.logger().
+					CoreScience.logger().
 						fatal("internal: addDimension threw exception in ContextStateIterator constructor: " +
 								e.getMessage());
 				}
@@ -97,7 +97,7 @@ public class ContextStateGenerator implements IContextStateGenerator {
 					} catch (ThinklabException e) {
 						// should not happen, if it does, too bad, we can't have exceptions 
 						// thrown here.
-						CoreSciencePlugin.logger().
+						CoreScience.logger().
 							fatal("internal: exception in ContextStateIterator.next(): " +
 									e.getMessage());
 					}
@@ -113,7 +113,7 @@ public class ContextStateGenerator implements IContextStateGenerator {
 
 			// just don't use it for now. It may become relevant when 
 			// agent models are used, but who knows.
-			CoreSciencePlugin.logger().
+			CoreScience.logger().
 				fatal("internal: ContextStateIterator.remove() called");
 
 		}

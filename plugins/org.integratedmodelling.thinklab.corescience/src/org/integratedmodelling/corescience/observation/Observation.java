@@ -35,7 +35,7 @@ package org.integratedmodelling.corescience.observation;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.contextualization.ObservationContext;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextValidationException;
 import org.integratedmodelling.corescience.interfaces.IConceptualModel;
@@ -188,29 +188,29 @@ public class Observation implements IObservation, IInstanceImplementation {
 			
 			/* again, for speed */
 			if (!r.isClassification()) {
-				if (observable == null && r.getProperty().is(CoreSciencePlugin.HAS_OBSERVABLE)) {
+				if (observable == null && r.getProperty().is(CoreScience.HAS_OBSERVABLE)) {
 
 					observable = 
 						r.getValue().isObjectReference() ? 
 							r.getValue().asObjectReference().getObject() : 
 							r.getValue().getConcept();					
 							
-				} else if (dataSourceHolder == null && r.getProperty().is(CoreSciencePlugin.HAS_DATASOURCE)) {
+				} else if (dataSourceHolder == null && r.getProperty().is(CoreScience.HAS_DATASOURCE)) {
 					dataSourceHolder = r.getValue();
 				} /*
 				   * for now, state is merely a product of contextualization
 				   else if (observationStateHolder == null && r.getProperty().is(CoreSciencePlugin.HAS_OBSERVATION_STATE)) {
 					observationStateHolder = r.getValue();
 				} */
-				else if (conceptualModelHolder == null && r.getProperty().is(CoreSciencePlugin.HAS_CONCEPTUAL_MODEL)) {
+				else if (conceptualModelHolder == null && r.getProperty().is(CoreScience.HAS_CONCEPTUAL_MODEL)) {
 					conceptualModelHolder = r.getValue();
-				} else if (r.getProperty().is(CoreSciencePlugin.DEPENDS_ON)) {
+				} else if (r.getProperty().is(CoreScience.DEPENDS_ON)) {
 					
 					dep.add(
 							(IObservation)
 							r.getValue().asObjectReference().getObject().getImplementation());
 					
-					if (r.getProperty().is(CoreSciencePlugin.HAS_EXTENT)) {
+					if (r.getProperty().is(CoreScience.HAS_EXTENT)) {
 						ext.add(
 								(IObservation)
 								r.getValue().asObjectReference().getObject().getImplementation());						
@@ -220,7 +220,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 								r.getValue().asObjectReference().getObject().getImplementation());						
 					}
 					
-				} else if (r.getProperty().is(CoreSciencePlugin.HAS_CONTINGENCY)) {
+				} else if (r.getProperty().is(CoreScience.HAS_CONTINGENCY)) {
 					
 					con.add(
 							(IObservation)
@@ -527,7 +527,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 		 */
 		return 
 			obs.getDataSource() == null && 
-			!obs.getObservationInstance().is(CoreSciencePlugin.IDENTIFICATION);
+			!obs.getObservationInstance().is(CoreScience.IDENTIFICATION);
 	}
 	
 	/**

@@ -272,7 +272,7 @@ public class CommandDeclaration {
 	 *        used in synopsis
 	 * @param optDescription a longer-winded description of the option
 	 * @param string 
-	 * @param optType pass a null if the option does not have arguments
+	 * @param optType pass a null or "owl:Nothing" if the option does not have arguments
 	 * @throws ThinklabNoKMException 
 	 * @throws ThinklabResourceNotFoundException 
 	 */
@@ -281,7 +281,10 @@ public class CommandDeclaration {
 		a.id = optName;
 		a.shortName = shortName;
 		a.description = optDescription;
-		a.type = optType == null ? null : KnowledgeManager.get().requireConcept(optType);
+		a.type = 
+			(optType == null || optType.equals("owl:Nothing")) ? 
+					null : 
+					KnowledgeManager.get().requireConcept(optType);
 		a.defaultValue = optArgumentLabel;
 		options.add(a);   
     }

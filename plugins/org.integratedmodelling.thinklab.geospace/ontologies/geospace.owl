@@ -1,0 +1,794 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+    <!ENTITY owl11 "http://www.w3.org/2006/12/owl11#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY owl11xml "http://www.w3.org/2006/12/owl11-xml#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY geospace "http://www.integratedmodelling.org/ks/geospace/geospace.owl#" >
+    <!ENTITY observation "http://www.integratedmodelling.org/ks/science/observation.owl#" >
+    <!ENTITY thinklab-core "http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#" >
+]>
+
+
+<rdf:RDF xmlns="http://www.integratedmodelling.org/ks/geospace/geospace.owl#"
+     xml:base="http://www.integratedmodelling.org/ks/geospace/geospace.owl"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:observation="http://www.integratedmodelling.org/ks/science/observation.owl#"
+     xmlns:owl11="http://www.w3.org/2006/12/owl11#"
+     xmlns:geospace="http://www.integratedmodelling.org/ks/geospace/geospace.owl#"
+     xmlns:owl11xml="http://www.w3.org/2006/12/owl11-xml#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:thinklab-core="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#">
+    <owl:Ontology rdf:about="">
+        <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl"/>
+        <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:AnnotationProperty rdf:about="&thinklab-core;AbstractClass"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasBoundary -->
+
+    <owl:ObjectProperty rdf:about="#hasBoundary">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="#Polygon"/>
+        <rdfs:domain rdf:resource="#RasterSpatialCoverage"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasBoundingBox -->
+
+    <owl:ObjectProperty rdf:about="#hasBoundingBox">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:label rdf:datatype="&xsd;string">hasBoundingBox</rdfs:label>
+        <rdfs:domain rdf:resource="#ArealLocation"/>
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >Created by Ferdinando Villa on Tue Aug 07 11:25:41 EDT 2007</owl:versionInfo>
+        <rdfs:range rdf:resource="#SimpleShape"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasCentroid -->
+
+    <owl:ObjectProperty rdf:about="#hasCentroid">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:label rdf:datatype="&xsd;string">hasCentroid</rdfs:label>
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >Created by Ferdinando Villa on Tue Aug 07 11:26:38 EDT 2007</owl:versionInfo>
+        <rdfs:domain rdf:resource="#ArealLocation"/>
+        <rdfs:range rdf:resource="#Point"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#overlaps -->
+
+    <owl:ObjectProperty rdf:about="#overlaps"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#dependsOn -->
+
+    <owl:ObjectProperty rdf:about="&observation;dependsOn">
+        <rdfs:range rdf:resource="&observation;Observation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasConceptualModel -->
+
+    <owl:ObjectProperty rdf:about="&observation;hasConceptualModel">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&observation;ObservationSpace"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasDataSource -->
+
+    <owl:ObjectProperty rdf:about="&observation;hasDataSource">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&observation;DataSource"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasObservable -->
+
+    <owl:ObjectProperty rdf:about="&observation;hasObservable">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasObservationContext -->
+
+    <owl:ObjectProperty rdf:about="&observation;hasObservationContext">
+        <rdfs:range rdf:resource="&observation;Observation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#isContingentTo -->
+
+    <owl:ObjectProperty rdf:about="&observation;isContingentTo">
+        <rdfs:range rdf:resource="&observation;Observation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasAttributeUrl -->
+
+    <owl:DatatypeProperty rdf:about="#hasAttributeUrl">
+        <rdfs:range rdf:resource="&xsd;string"/>
+        <rdfs:domain rdf:resource="#ExternalVectorCoverageDataSource"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasCoordinateReferenceSystem -->
+
+    <owl:DatatypeProperty rdf:about="#hasCoordinateReferenceSystem">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+        <rdfs:domain rdf:resource="#RasterGrid"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasLatLowerBound -->
+
+    <owl:DatatypeProperty rdf:about="#hasLatLowerBound">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;double"/>
+        <rdfs:domain rdf:resource="#RasterGrid"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasLatUpperBound -->
+
+    <owl:DatatypeProperty rdf:about="#hasLatUpperBound">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;double"/>
+        <rdfs:domain rdf:resource="#RasterGrid"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasLonLowerBound -->
+
+    <owl:DatatypeProperty rdf:about="#hasLonLowerBound">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#RasterGrid"/>
+        <rdfs:range rdf:resource="&xsd;double"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasLonUpperBound -->
+
+    <owl:DatatypeProperty rdf:about="#hasLonUpperBound">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;double"/>
+        <rdfs:domain rdf:resource="#RasterGrid"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasSourceLinkAttribute -->
+
+    <owl:DatatypeProperty rdf:about="#hasSourceLinkAttribute">
+        <rdfs:domain rdf:resource="#ExternalVectorCoverageDataSource"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasSourceURL -->
+
+    <owl:DatatypeProperty rdf:about="#hasSourceURL">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="#ExternalVectorCoverageDataSource"/>
+                    <rdf:Description rdf:about="#ExternalRasterDataSource"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasTargetLinkAttribute -->
+
+    <owl:DatatypeProperty rdf:about="#hasTargetLinkAttribute">
+        <rdfs:domain rdf:resource="#ExternalVectorCoverageDataSource"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasValueAttribute -->
+
+    <owl:DatatypeProperty rdf:about="#hasValueAttribute">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="#ExternalVectorCoverageDataSource"/>
+                    <rdf:Description rdf:about="#ExternalRasterDataSource"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasXRangeMax -->
+
+    <owl:DatatypeProperty rdf:about="#hasXRangeMax">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#RasterGrid"/>
+        <rdfs:range rdf:resource="&xsd;int"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasXRangeOffset -->
+
+    <owl:DatatypeProperty rdf:about="#hasXRangeOffset">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="#RasterGrid"/>
+        <rdfs:range rdf:resource="&xsd;int"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasYRangeMax -->
+
+    <owl:DatatypeProperty rdf:about="#hasYRangeMax">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;int"/>
+        <rdfs:domain rdf:resource="#RasterGrid"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasYRangeOffset -->
+
+    <owl:DatatypeProperty rdf:about="#hasYRangeOffset">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;int"/>
+        <rdfs:domain rdf:resource="#RasterGrid"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#ArealCoverage -->
+
+    <owl:Class rdf:about="#ArealCoverage">
+        <rdfs:subClassOf rdf:resource="#SpatialCoverageObservation"/>
+        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#ArealFeatureSet -->
+
+    <owl:Class rdf:about="#ArealFeatureSet">
+        <rdfs:subClassOf rdf:resource="#ArealCoverage"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#ArealLocation -->
+
+    <owl:Class rdf:about="#ArealLocation">
+        <rdfs:subClassOf rdf:resource="#ArealCoverage"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#CompositeShape -->
+
+    <owl:Class rdf:about="#CompositeShape">
+        <rdfs:subClassOf rdf:resource="#SpatialRecord"/>
+        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#ContinuousIrregularSpatialGrid -->
+
+    <owl:Class rdf:about="#ContinuousIrregularSpatialGrid">
+        <rdfs:label rdf:datatype="&xsd;string"
+            >ContinuousIrregularSpatialGrid</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#IrregularlyDividedSpace"/>
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >Created by Ferdinando Villa on Tue Aug 07 10:17:34 EDT 2007</owl:versionInfo>
+        <rdfs:comment xml:lang="en"
+            >Space subdivided in irregular portions where matter can distribute and a notion of continuity between portions exists.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#ContinuousRegularSpatialGrid -->
+
+    <owl:Class rdf:about="#ContinuousRegularSpatialGrid">
+        <rdfs:label rdf:datatype="&xsd;string"
+            >ContinuousRegularSpatialGrid</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#RegularlyDividedSpace"/>
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >Created by Ferdinando Villa on Tue Aug 07 10:15:25 EDT 2007</owl:versionInfo>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#CoverageDataSource -->
+
+    <owl:Class rdf:about="#CoverageDataSource">
+        <rdfs:subClassOf rdf:resource="&observation;DataSource"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#DiscontinuousIrregularSpatialGrid -->
+
+    <owl:Class rdf:about="#DiscontinuousIrregularSpatialGrid">
+        <rdfs:label rdf:datatype="&xsd;string"
+            >DiscontinuousIrregularSpatialGrid</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#IrregularlyDividedSpace"/>
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >Created by Ferdinando Villa on Tue Aug 07 10:17:45 EDT 2007</owl:versionInfo>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#DiscontinuousRegularLocationGrid -->
+
+    <owl:Class rdf:about="#DiscontinuousRegularLocationGrid">
+        <rdfs:label rdf:datatype="&xsd;string"
+            >DiscontinuousRegularLocationGrid</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#RegularlyDividedSpace"/>
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >Created by Ferdinando Villa on Tue Aug 07 10:15:40 EDT 2007</owl:versionInfo>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#ExternalRasterDataSource -->
+
+    <owl:Class rdf:about="#ExternalRasterDataSource">
+        <rdfs:subClassOf rdf:resource="#RegulaRasterGridDataSource"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >Gets data from an online source. Because it is capable of reprojection, subsetting or resolution negotiation when the data are loaded, these parameters can be properties.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#ExternalVectorCoverageDataSource -->
+
+    <owl:Class rdf:about="#ExternalVectorCoverageDataSource">
+        <rdfs:subClassOf rdf:resource="#VectorCoverageDataSource"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#InlineRasterDataSource -->
+
+    <owl:Class rdf:about="#InlineRasterDataSource">
+        <rdfs:subClassOf rdf:resource="#RegulaRasterGridDataSource"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >Data are specified inline.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#IrregularlyDividedSpace -->
+
+    <owl:Class rdf:about="#IrregularlyDividedSpace">
+        <rdfs:label rdf:datatype="&xsd;string"
+            >IrregularlyDividedSpace</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#SubdividedSpace"/>
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >Created by Ferdinando Villa on Tue Aug 07 10:14:53 EDT 2007</owl:versionInfo>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#LineString -->
+
+    <owl:Class rdf:about="#LineString">
+        <rdfs:subClassOf rdf:resource="#SimpleShape"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#LinearCoverage -->
+
+    <owl:Class rdf:about="#LinearCoverage">
+        <rdfs:subClassOf rdf:resource="#SpatialCoverageObservation"/>
+        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#LinearFeatureSet -->
+
+    <owl:Class rdf:about="#LinearFeatureSet">
+        <rdfs:subClassOf rdf:resource="#LinearCoverage"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#LinearLocation -->
+
+    <owl:Class rdf:about="#LinearLocation">
+        <rdfs:subClassOf rdf:resource="#LinearCoverage"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#MultiLineString -->
+
+    <owl:Class rdf:about="#MultiLineString">
+        <rdfs:subClassOf rdf:resource="#CompositeShape"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#MultiPoint -->
+
+    <owl:Class rdf:about="#MultiPoint">
+        <rdfs:subClassOf rdf:resource="#CompositeShape"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#MultiPolygon -->
+
+    <owl:Class rdf:about="#MultiPolygon">
+        <rdfs:subClassOf rdf:resource="#CompositeShape"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#Point -->
+
+    <owl:Class rdf:about="#Point">
+        <rdfs:subClassOf rdf:resource="#SimpleShape"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#Polygon -->
+
+    <owl:Class rdf:about="#Polygon">
+        <rdfs:subClassOf rdf:resource="#SimpleShape"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#PolygonSpatialCoverage -->
+
+    <owl:Class rdf:about="#PolygonSpatialCoverage">
+        <rdfs:subClassOf rdf:resource="&observation;IrregularDiscreteObservationSpace"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#RasterFileDataSource -->
+
+    <owl:Class rdf:about="#RasterFileDataSource">
+        <rdfs:subClassOf rdf:resource="#ExternalRasterDataSource"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >Gets the data from a file using a URL.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#RasterGrid -->
+
+    <owl:Class rdf:about="#RasterGrid">
+        <rdfs:subClassOf rdf:resource="#ArealFeatureSet"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#RasterSpatialCoverage -->
+
+    <owl:Class rdf:about="#RasterSpatialCoverage">
+        <rdfs:subClassOf rdf:resource="&observation;RegularGridObservationSpace"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >A raster coverage observation space. Incomplete.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#RegulaRasterGridDataSource -->
+
+    <owl:Class rdf:about="#RegulaRasterGridDataSource">
+        <rdfs:subClassOf rdf:resource="#CoverageDataSource"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >A generic regular raster data source.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#RegularlyDividedSpace -->
+
+    <owl:Class rdf:about="#RegularlyDividedSpace">
+        <rdfs:label rdf:datatype="&xsd;string"
+            >RegularlyDividedSpace</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#SubdividedSpace"/>
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >Created by Ferdinando Villa on Tue Aug 07 10:14:44 EDT 2007</owl:versionInfo>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#SimpleShape -->
+
+    <owl:Class rdf:about="#SimpleShape">
+        <rdfs:subClassOf rdf:resource="#SpatialRecord"/>
+        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpaceObservable -->
+
+    <owl:Class rdf:about="#SpaceObservable">
+        <rdfs:label rdf:datatype="&xsd;string">SpaceConcept</rdfs:label>
+        <rdfs:comment xml:lang="en"
+            >Groups different concepts of space that we can use as observable for the extents observations. This ontology also contains one instance for each of them.</rdfs:comment>
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >Created by Ferdinando Villa on Tue Aug 07 10:03:38 EDT 2007</owl:versionInfo>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialCoverageObservation -->
+
+    <owl:Class rdf:about="#SpatialCoverageObservation">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&observation;hasObservable"/>
+                <owl:allValuesFrom rdf:resource="#SpatialRecord"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
+                <owl:someValuesFrom rdf:resource="#SpatialRecord"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf rdf:resource="&observation;ExtentObservation"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >The observation of a coverage in geographical space. It is an indirect observation as it describes space by dividing it into contiguous boundaries.  Such observations merely describe space, not any feature or property. They are used to contextualize other observations in geospace. Subclasses of this one can be initalized through literals such as  WKT shapes for brevity.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord -->
+
+    <owl:Class rdf:about="#SpatialRecord">
+        <rdfs:subClassOf rdf:resource="&observation;DataSource"/>
+        <rdfs:comment xml:lang="en"
+            >A recording of space. Admits WKT literals and can be used as a datasource.</rdfs:comment>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >A Geographical Space  is defined through boundaries or points in space and implements the OpenGIS representational model.</rdfs:comment>
+        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#SubdividedSpace -->
+
+    <owl:Class rdf:about="#SubdividedSpace">
+        <rdfs:subClassOf rdf:resource="#SpaceObservable"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#UndividedSpace -->
+
+    <owl:Class rdf:about="#UndividedSpace">
+        <rdfs:label rdf:datatype="&xsd;string">UndividedSpace</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#SpaceObservable"/>
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >Created by Ferdinando Villa on Tue Aug 07 10:14:33 EDT 2007</owl:versionInfo>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#UniformArealSpace -->
+
+    <owl:Class rdf:about="#UniformArealSpace">
+        <rdfs:label rdf:datatype="&xsd;string"
+            >UniformArealLocation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#UndividedSpace"/>
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >Created by Ferdinando Villa on Tue Aug 07 10:14:03 EDT 2007</owl:versionInfo>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#UniformLinearSpace -->
+
+    <owl:Class rdf:about="#UniformLinearSpace">
+        <rdfs:label rdf:datatype="&xsd;string"
+            >UniformLinearLocation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#UndividedSpace"/>
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >Created by Ferdinando Villa on Tue Aug 07 10:14:12 EDT 2007</owl:versionInfo>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#UniformNonDimensionalSpace -->
+
+    <owl:Class rdf:about="#UniformNonDimensionalSpace">
+        <rdfs:label rdf:datatype="&xsd;string"
+            >UniformNonDimensionalSpace</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#UndividedSpace"/>
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >Created by Ferdinando Villa on Tue Aug 07 10:16:17 EDT 2007</owl:versionInfo>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#VectorCoverageDataSource -->
+
+    <owl:Class rdf:about="#VectorCoverageDataSource">
+        <rdfs:subClassOf rdf:resource="#CoverageDataSource"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#VectorFileDataSource -->
+
+    <owl:Class rdf:about="#VectorFileDataSource">
+        <rdfs:subClassOf rdf:resource="#ExternalVectorCoverageDataSource"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#WCSDataSource -->
+
+    <owl:Class rdf:about="#WCSDataSource">
+        <rdfs:subClassOf rdf:resource="#ExternalRasterDataSource"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >Gets data through a WCS server.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#WFSDataSource -->
+
+    <owl:Class rdf:about="#WFSDataSource">
+        <rdfs:subClassOf rdf:resource="#ExternalVectorCoverageDataSource"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#DataSource -->
+
+    <owl:Class rdf:about="&observation;DataSource"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ExtentObservation -->
+
+    <owl:Class rdf:about="&observation;ExtentObservation"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#IrregularDiscreteObservationSpace -->
+
+    <owl:Class rdf:about="&observation;IrregularDiscreteObservationSpace"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Observation -->
+
+    <owl:Class rdf:about="&observation;Observation"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ObservationSpace -->
+
+    <owl:Class rdf:about="&observation;ObservationSpace"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#RegularGridObservationSpace -->
+
+    <owl:Class rdf:about="&observation;RegularGridObservationSpace"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#ArealLocationInstance -->
+
+    <UniformArealSpace rdf:about="#ArealLocationInstance"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#RegularGridInstance -->
+
+    <ContinuousRegularSpatialGrid rdf:about="#RegularGridInstance"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialCoverageInstance -->
+
+    <SubdividedSpace rdf:about="#SpatialCoverageInstance"/>
+</rdf:RDF>

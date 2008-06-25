@@ -105,7 +105,6 @@
 		<parameter-def id="class" />
 		<parameter-def id="semantic-type" />
 		<parameter-def id="description" multiplicity="none-or-one" />
-		<parameter-def id="example" multiplicity="any" />
 	</extension-point>
 	<extension-point id="command-handler">
 		<parameter-def id="class" />

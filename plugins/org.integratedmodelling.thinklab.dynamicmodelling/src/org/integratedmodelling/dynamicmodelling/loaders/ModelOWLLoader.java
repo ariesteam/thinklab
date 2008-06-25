@@ -40,7 +40,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.dynamicmodelling.DynamicModellingPlugin;
 import org.integratedmodelling.dynamicmodelling.annotation.ModelAnnotation;
 import org.integratedmodelling.dynamicmodelling.interfaces.IModelLoader;
@@ -137,11 +137,11 @@ public class ModelOWLLoader implements IModelLoader {
 		HashSet<String> mdesc = new HashSet<String>();
 		
 		/* create main Identification */
-		KList mdl = new KList(CoreSciencePlugin.IDENTIFICATION, model.getName() + "Model");
+		KList mdl = new KList(CoreScience.IDENTIFICATION, model.getName() + "Model");
 
 		/* observable */
-		mdl.addObjectProperty(CoreSciencePlugin.HAS_OBSERVABLE,
-				annotation.getObservableForModel(model, CoreSciencePlugin.GENERIC_OBSERVABLE));
+		mdl.addObjectProperty(CoreScience.HAS_OBSERVABLE,
+				annotation.getObservableForModel(model, CoreScience.GENERIC_OBSERVABLE));
 
 		if (model.getDescription() != null && !model.getDescription().trim().equals("")) {
 			mdl.addDescription(model.getDescription());
@@ -168,7 +168,7 @@ public class ModelOWLLoader implements IModelLoader {
 	            	/* TODO this check should be unnecessary, but who knows, at my old age. */
 	            	if (!mdesc.contains(id)) {
 		            	KList l = translateStock((Stock)v, annotation, mdesc);
-	            		mdl.addObjectProperty(CoreSciencePlugin.HAS_CONTINGENCY, l.list());
+	            		mdl.addObjectProperty(CoreScience.HAS_CONTINGENCY, l.list());
 	            		mdesc.add(id);
 	            	}
 	            } else if (v instanceof Variable) {
@@ -177,7 +177,7 @@ public class ModelOWLLoader implements IModelLoader {
 	            	
 	            	if (!mdesc.contains(id)) {
 		            	KList l = translateVariable((Variable)v, annotation, mdesc);		            	
-	            		mdl.addObjectProperty(CoreSciencePlugin.HAS_CONTINGENCY, l.list());
+	            		mdl.addObjectProperty(CoreScience.HAS_CONTINGENCY, l.list());
 	            		mdesc.add(id);
 	            	}
 	            }
@@ -195,8 +195,8 @@ public class ModelOWLLoader implements IModelLoader {
 				variable.getName() + "Observation");
 		
 		/* observable */
-		l.addObjectProperty(CoreSciencePlugin.HAS_OBSERVABLE,
-				annotation.getObservableForVariable(variable, CoreSciencePlugin.GENERIC_QUANTIFIABLE));
+		l.addObjectProperty(CoreScience.HAS_OBSERVABLE,
+				annotation.getObservableForVariable(variable, CoreScience.GENERIC_QUANTIFIABLE));
 
 		
 		/* annotations */
@@ -213,8 +213,8 @@ public class ModelOWLLoader implements IModelLoader {
 		KList dl = new KList(DynamicModellingPlugin.VARIABLE_DATASOURCE);
 		/* TODO we should have turned this one into the language we want to support, and
 		 * make it available as an algorithm object */
-		l.addLiteralProperty(CoreSciencePlugin.DATASOURCE_FUNCTION_LITERAL, variable.getValue());
-		l.addObjectProperty(CoreSciencePlugin.HAS_DATASOURCE, dl.list());
+		l.addLiteralProperty(CoreScience.DATASOURCE_FUNCTION_LITERAL, variable.getValue());
+		l.addObjectProperty(CoreScience.HAS_DATASOURCE, dl.list());
 		
 		
 		/* only add stuff we depend on */			
@@ -225,10 +225,10 @@ public class ModelOWLLoader implements IModelLoader {
 
 				Variable variable2 = (Variable)src;
 				if (mdesc.contains(variable2.getName()))					
-					l.addReference(CoreSciencePlugin.DEPENDS_ON, variable.getName() + "Observation");
+					l.addReference(CoreScience.DEPENDS_ON, variable.getName() + "Observation");
 				else {
 					KList vl = translateVariable(variable2, annotation, mdesc);
-					l.addObjectProperty(CoreSciencePlugin.DEPENDS_ON, vl.list());
+					l.addObjectProperty(CoreScience.DEPENDS_ON, vl.list());
 					mdesc.add(variable.getName());
 				}
 			} else if (src instanceof Stock) {
@@ -246,7 +246,7 @@ public class ModelOWLLoader implements IModelLoader {
 				 * l.addReference(CoreSciencePlugin.DEPENDS_ON, ((Stock)src).getName() + "StockObservation");				
 				 */
 			} else if (src instanceof Flow) {
-				l.addReference(CoreSciencePlugin.DEPENDS_ON, ((Flow)src).getName() + "FlowObservation");				
+				l.addReference(CoreScience.DEPENDS_ON, ((Flow)src).getName() + "FlowObservation");				
 			}
 		}	
 		
@@ -261,8 +261,8 @@ public class ModelOWLLoader implements IModelLoader {
 				flow.getName() + "FlowObservation");
 		
 		/* observable */
-		l.addObjectProperty(CoreSciencePlugin.HAS_OBSERVABLE,
-				annotation.getObservableForFlow(flow, CoreSciencePlugin.GENERIC_QUANTIFIABLE));
+		l.addObjectProperty(CoreScience.HAS_OBSERVABLE,
+				annotation.getObservableForFlow(flow, CoreScience.GENERIC_QUANTIFIABLE));
 
 		/* annotations */
 		if (flow.getComment() != null && !flow.getComment().trim().equals("")) {
@@ -279,8 +279,8 @@ public class ModelOWLLoader implements IModelLoader {
 		KList dl = new KList(DynamicModellingPlugin.FLOW_DATASOURCE);
 		/* TODO we should have turned this one into the language we want to support, and
 		 * make it available as an algorithm object */
-		l.addLiteralProperty(CoreSciencePlugin.DATASOURCE_FUNCTION_LITERAL, flow.getRate());
-		l.addObjectProperty(CoreSciencePlugin.HAS_DATASOURCE, dl.list());
+		l.addLiteralProperty(CoreScience.DATASOURCE_FUNCTION_LITERAL, flow.getRate());
+		l.addObjectProperty(CoreScience.HAS_DATASOURCE, dl.list());
 
 		
 		/* only add stuff we depend on */			
@@ -291,14 +291,14 @@ public class ModelOWLLoader implements IModelLoader {
 
 				Variable variable = (Variable)src;
 				if (mdesc.contains(variable.getName()))					
-					l.addReference(CoreSciencePlugin.DEPENDS_ON, variable.getName() + "Observation");
+					l.addReference(CoreScience.DEPENDS_ON, variable.getName() + "Observation");
 				else {
 					KList vl = translateVariable(variable, annotation, mdesc);
-					l.addObjectProperty(CoreSciencePlugin.DEPENDS_ON, vl.list());
+					l.addObjectProperty(CoreScience.DEPENDS_ON, vl.list());
 					mdesc.add(variable.getName());
 				}
 			} else if (src instanceof Stock) {
-				l.addReference(CoreSciencePlugin.DEPENDS_ON, ((Stock)src).getName() + "StockObservation");				
+				l.addReference(CoreScience.DEPENDS_ON, ((Stock)src).getName() + "StockObservation");				
 			}
 		}	
 		
@@ -327,15 +327,15 @@ public class ModelOWLLoader implements IModelLoader {
 			l.addElement(ccl);
 		
 		/* observable */
-		l.addObjectProperty(CoreSciencePlugin.HAS_OBSERVABLE,
-				annotation.getObservableForStock(stock, CoreSciencePlugin.GENERIC_QUANTIFIABLE));
+		l.addObjectProperty(CoreScience.HAS_OBSERVABLE,
+				annotation.getObservableForStock(stock, CoreScience.GENERIC_QUANTIFIABLE));
 
 		/*
 		 * add stock datasource with proper initialization value
 		 */
 		KList dl = new KList(DynamicModellingPlugin.STOCK_DATASOURCE);
 		l.addLiteralProperty(DynamicModellingPlugin.STOCK_INITVALUE_LITERAL, stock.getState());
-		l.addObjectProperty(CoreSciencePlugin.HAS_DATASOURCE, dl.list());
+		l.addObjectProperty(CoreScience.HAS_DATASOURCE, dl.list());
 		
 		/*
 		 * add dependencies from inflows and outflows

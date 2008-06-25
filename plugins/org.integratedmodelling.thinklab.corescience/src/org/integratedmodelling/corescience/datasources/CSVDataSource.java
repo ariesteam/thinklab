@@ -38,7 +38,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabInconsistentDataSourceException;
 import org.integratedmodelling.corescience.interfaces.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.IDataFilter;
@@ -98,15 +98,15 @@ public class CSVDataSource implements org.integratedmodelling.corescience.interf
 	public void initialize(IInstance i) throws ThinklabException {
 		
 		// FIXME use class tree
-		isExcel = i.is(KnowledgeManager.get().requireConcept(CoreSciencePlugin.EXCEL_CSV_DATASOURCE));
+		isExcel = i.is(KnowledgeManager.get().requireConcept(CoreScience.EXCEL_CSV_DATASOURCE));
 		
 		/* retrieve URI from instance */
-		url = i.get(CoreSciencePlugin.HAS_SOURCE_URI).toString();
+		url = i.get(CoreScience.HAS_SOURCE_URI).toString();
 		
 		System.out.println("URL: " + url);
 		
 		/* see if there is a filter associated. We only understand literal column ids. */
-		Collection<IRelationship> frels = i.getRelationships(CoreSciencePlugin.HAS_FILTER);
+		Collection<IRelationship> frels = i.getRelationships(CoreScience.HAS_FILTER);
 		
 		for (IRelationship r : frels) {
 

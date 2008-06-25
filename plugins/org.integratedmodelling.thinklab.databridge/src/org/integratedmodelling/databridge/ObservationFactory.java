@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.databridge;
 
-import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.geospace.observations.RasterGrid;
 import org.integratedmodelling.geospace.values.ShapeValue;
@@ -57,8 +57,8 @@ public class ObservationFactory {
 	 */
 	public static Constraint queryObservation(String what) throws ThinklabException {
 		
-		Constraint c = new Constraint(CoreSciencePlugin.OBSERVATION);
-		c.restrict(new Restriction(CoreSciencePlugin.HAS_OBSERVABLE, new Constraint(what)));
+		Constraint c = new Constraint(CoreScience.OBSERVATION);
+		c.restrict(new Restriction(CoreScience.HAS_OBSERVABLE, new Constraint(what)));
 		return c;
 	}
 	
@@ -73,9 +73,9 @@ public class ObservationFactory {
 	 */
 	public static Constraint queryObservation(String what, IValue where) throws ThinklabException {
 
-		Constraint c = new Constraint(CoreSciencePlugin.OBSERVATION);
+		Constraint c = new Constraint(CoreScience.OBSERVATION);
 		
-		c.restrict(new Restriction(CoreSciencePlugin.HAS_OBSERVABLE, new Constraint(what)));
+		c.restrict(new Restriction(CoreScience.HAS_OBSERVABLE, new Constraint(what)));
 
 		return c;
 	}
@@ -92,9 +92,9 @@ public class ObservationFactory {
 	 */
 	public static Constraint queryObservation(String what, IValue where, IValue when) throws ThinklabException {
 
-		Constraint c = new Constraint(CoreSciencePlugin.OBSERVATION);
+		Constraint c = new Constraint(CoreScience.OBSERVATION);
 		
-		c.restrict(new Restriction(CoreSciencePlugin.HAS_OBSERVABLE, new Constraint(what)));
+		c.restrict(new Restriction(CoreScience.HAS_OBSERVABLE, new Constraint(what)));
 
 		return c;	
 	}
@@ -112,9 +112,9 @@ public class ObservationFactory {
 	 */
 	public static Constraint queryObservation(IKBox kbox, String what, IValue where) throws ThinklabException {
 
-		Constraint c = new Constraint(CoreSciencePlugin.OBSERVATION);
+		Constraint c = new Constraint(CoreScience.OBSERVATION);
 		
-		c.restrict(new Restriction(CoreSciencePlugin.HAS_OBSERVABLE, new Constraint(what)));
+		c.restrict(new Restriction(CoreScience.HAS_OBSERVABLE, new Constraint(what)));
 
 		return c;
 	}
@@ -134,9 +134,9 @@ public class ObservationFactory {
 	 */
 	public static Constraint queryObservation(IKBox kbox, String what, IValue where, IValue when) throws ThinklabException {
 	
-		Constraint c = new Constraint(CoreSciencePlugin.OBSERVATION);
+		Constraint c = new Constraint(CoreScience.OBSERVATION);
 		
-		c.restrict(new Restriction(CoreSciencePlugin.HAS_OBSERVABLE, new Constraint(what)));
+		c.restrict(new Restriction(CoreScience.HAS_OBSERVABLE, new Constraint(what)));
 
 		return c;
 	}
@@ -172,7 +172,7 @@ public class ObservationFactory {
 
 		return observation.appendElement(
 				Polylist.list(
-						CoreSciencePlugin.HAS_EXTENT,
+						CoreScience.HAS_EXTENT,
 						RasterGrid.createRasterGrid(where, maxLinearResolution)));
 	}
 
@@ -199,7 +199,7 @@ public class ObservationFactory {
 		
 		return observation.appendElement(
 				Polylist.list(
-						CoreSciencePlugin.HAS_OBSERVABLE, 
+						CoreScience.HAS_OBSERVABLE, 
 						Polylist.list(observableClass)));
 	}
 	
@@ -212,7 +212,7 @@ public class ObservationFactory {
 		
 		return Polylist.list(idType, 
 				Polylist.list(
-						CoreSciencePlugin.HAS_OBSERVABLE,
+						CoreScience.HAS_OBSERVABLE,
 						Polylist.list(observableClass)));
 	}
 	
@@ -225,7 +225,7 @@ public class ObservationFactory {
 
 		return Polylist.list(idType, 
 				Polylist.list(
-						CoreSciencePlugin.HAS_OBSERVABLE,
+						CoreScience.HAS_OBSERVABLE,
 						observable));
 
 	}
@@ -237,9 +237,9 @@ public class ObservationFactory {
 	 */
 	public static Polylist createIdentification(String observableClass) {
 		
-		return Polylist.list(CoreSciencePlugin.IDENTIFICATION, 
+		return Polylist.list(CoreScience.IDENTIFICATION, 
 				Polylist.list(
-						CoreSciencePlugin.HAS_OBSERVABLE,
+						CoreScience.HAS_OBSERVABLE,
 						Polylist.list(observableClass)));
 	}
 	
@@ -250,9 +250,9 @@ public class ObservationFactory {
 	 */
 	public static Polylist createIdentification(Polylist observable) {
 		
-		return Polylist.list(CoreSciencePlugin.IDENTIFICATION, 
+		return Polylist.list(CoreScience.IDENTIFICATION, 
 				Polylist.list(
-						CoreSciencePlugin.HAS_OBSERVABLE,
+						CoreScience.HAS_OBSERVABLE,
 						observable));
 	}
 
@@ -265,7 +265,7 @@ public class ObservationFactory {
 	public static Polylist addDependency(Polylist observation, Polylist dependent) {
 		
 		return observation.appendElement(
-				Polylist.list(CoreSciencePlugin.DEPENDS_ON, dependent));	
+				Polylist.list(CoreScience.DEPENDS_ON, dependent));	
 	}
 	
 	/**
@@ -277,7 +277,7 @@ public class ObservationFactory {
 	public static Polylist addDependency(Polylist observation, IInstance dependent) {
 		
 		return observation.appendElement(
-				Polylist.list(CoreSciencePlugin.DEPENDS_ON, dependent));
+				Polylist.list(CoreScience.DEPENDS_ON, dependent));
 	}
 	
 	/**
@@ -289,7 +289,7 @@ public class ObservationFactory {
 	public static Polylist addContingency(Polylist observation, Polylist dependent) {
 		
 		return observation.appendElement(
-				Polylist.list(CoreSciencePlugin.HAS_CONTINGENCY, dependent));
+				Polylist.list(CoreScience.HAS_CONTINGENCY, dependent));
 	}
 	
 	/**
@@ -301,7 +301,7 @@ public class ObservationFactory {
 	public static Polylist addContingency(Polylist observation, IInstance dependent) {
 		
 		return observation.appendElement(
-				Polylist.list(CoreSciencePlugin.HAS_CONTINGENCY, dependent));
+				Polylist.list(CoreScience.HAS_CONTINGENCY, dependent));
 	}
 	
 	
@@ -311,7 +311,7 @@ public class ObservationFactory {
 	 */
 	public static Polylist createIdentification() {
 		
-		return Polylist.list(CoreSciencePlugin.IDENTIFICATION);		
+		return Polylist.list(CoreScience.IDENTIFICATION);		
 	}
 
 	/**

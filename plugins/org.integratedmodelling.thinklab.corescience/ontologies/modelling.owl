@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rdf:RDF
+    xmlns:observation="http://www.integratedmodelling.org/ks/science/observation.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#"
+    xmlns:thinklab="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://www.integratedmodelling.org/ks/science/modelling.owl#"
+    xmlns:source="http://www.integratedmodelling.org/ks/science/source.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://www.integratedmodelling.org/ks/science/modelling.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/science/source.owl"/>
+    <owl:imports>
+      <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/science/observation.owl">
+        <owl:imports>
+          <owl:Ontology rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl"/>
+        </owl:imports>
+      </rdf:Description>
+    </owl:imports>
+  </owl:Ontology>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Algorithm">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Utility class to derive other Algorithm classes for. These correspond to Algorithm literals that are bound to specific interpreters and represent executable code; the specific class selects the interpreter, which must be provided by a plug-in. It is not necessary to derive such classes from Algorithm now; it is provided for cleanliness and for possible future implementations.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LongFloatingPoint">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Real"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#NumericInterval">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Interval"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ShortInteger">
+    <owl:versionInfo>Created by UVM Affiliate on Tue Nov 28 16:06:05 EST 2006</owl:versionInfo>
+    <rdfs:label>ShortInteger</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Integer"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Boolean">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#StorageType"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Interval">
+    <thinklab:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Abstract class subsuming different interval types (usually corresponding to literals)</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Text">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#StorageType"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Constraint">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Class Constraint is used to enable the definition of ThinkLab Constraint literals in ontologies. Constraints can be used as additional restrictions on a class or as queries on a knowledge base. Note that in order to extend the definition of a class with a constraint, the AdditionalRestrictions annotation should be used. The Constraint literal is provided to store Constraints in a knowledge model as first-class objects whenever it becomes necessary.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Integer">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Number"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Real">
+    <owl:versionInfo>Created by UVM Affiliate on Tue Nov 28 16:05:41 EST 2006</owl:versionInfo>
+    <rdfs:label>Real</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Number"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="ActualObservation">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="LinkageConcept"/>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#IndirectObservation"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+        >1</owl:minCardinality>
+        <owl:onProperty>
+          <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/science/observation.owl#hasDataSource">
+            <rdfs:range rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#DataSource"/>
+          </rdf:Description>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:disjointWith>
+      <owl:Class rdf:ID="FormalObservation"/>
+    </owl:disjointWith>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Used to classify an observation according to whether it has a datasource or not. Actual observations have a datasource, so they can produce a state.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="DynamicObservation">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A dynamic observation is one whose datasource is computed.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#hasDataSource"/>
+        <owl:allValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/science/source.owl#ComputedDataSource"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#IndirectObservation"/>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="ModellingConcept"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#LinkageConcept">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Classes used to define the role of observations in an observation structure. Not expected to be used in other ways than for classification.</rdfs:comment>
+    <thinklab:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab:AbstractClass>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Number">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#StorageType"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#FormalObservation">
+    <rdfs:subClassOf rdf:resource="#LinkageConcept"/>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#IndirectObservation"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+        >0</owl:maxCardinality>
+        <owl:onProperty rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#hasDataSource"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:disjointWith rdf:resource="#ActualObservation"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Used to classify an observation according to whether it has a datasource or not. Formal observationsdo not  have a datasource, so they can not produce a state. In order for an observation structure to be contextualized (solved with respect to a given context), all formal observations must be made equivalent to conformant actual observations.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LongInteger">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Integer"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#StorageType">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Base storage type classes for use to create the basic ThinkLab literal types. Can be made equivalent to other storage types provided by more sophisticated representation ontologies.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#FloatingPoint">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Real"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ExtendedLiteralProperty">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Superproperty for any property that links to an instance of a complex type whose value is expressed as a literal and will be parsed and converted to a Java object in Thinklab. The literal value of the object will be looked for in the LiteralValue annotation of the linked OWL individual.</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ClassificationProperty">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Superproperty for any property that links to an instance of a  type that represent its own class. Its value will be converted to the class itself in the ThinkLab API.</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:AnnotationProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#AdditionalRestrictions">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Accommodates an additional set of restrictions that cannot be expressed in OWL, in the form of a Constraint list literal. Given that these are integral to the definition of a class, I think it is better to put them in an associated annotation than in an actual literal of class Constraint linked to it, which would "contaminate" the knowledge model. If present, the constraint will be checked against any concept or instance when the is() method is called on them with the constrained class as a parameter.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralValue">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralClass">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Identifies an instance that is used to represent the value of a class that is not supposed to be used through instances. The value does not matter, but "true" is suggested. While it is not necessary to add the annotation to a "class instance" created in Protege' or other editor, its use prevents duplications and optimizes the working of the system when relationships are created through the API.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#AbstractClass">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Identifies a class that cannot have an instance implementation in ThinkLab. It does not mandate anything at the OWL level, but ThinkLab will refuse to create an IInstance for it even if one exists in OWL. The simple presence of this annotation in a class is enough to indicate abstract status, unless its value is "false". The absence of the property means that the class is not abstract.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/science/source.owl#ColumnExtractor">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Text"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/science/source.owl#ParsedString">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Text"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/science/observation.owl#hasConceptualModel">
+    <rdfs:range rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#ObservationSpace"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/science/observation.owl#hasObservationContext">
+    <rdfs:range rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#Observation"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/science/observation.owl#hasObservationClass">
+    <rdfs:subPropertyOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ClassificationProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/science/source.owl#hasFilter">
+    <rdfs:range rdf:resource="http://www.integratedmodelling.org/ks/science/source.owl#DatasourceFilter"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/science/observation.owl#isContingentTo">
+    <rdfs:range rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#Observation"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/science/observation.owl#dependsOn">
+    <rdfs:range rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#Observation"/>
+  </rdf:Description>
+</rdf:RDF>

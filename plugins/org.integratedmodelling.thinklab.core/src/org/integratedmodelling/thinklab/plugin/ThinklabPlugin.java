@@ -80,6 +80,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
 import org.integratedmodelling.thinklab.extensions.LiteralValidator;
@@ -258,14 +259,15 @@ public abstract class ThinklabPlugin extends Plugin
 		return ret;
 	}
 
-	protected void loadInstanceImplementationConstructors() {
+	protected void loadInstanceImplementationConstructors() throws ThinklabPluginException {
 		
 		for (Extension ext : getOwnThinklabExtensions("instance-constructor")) {
-
-			String url = ext.getParameter("url").valueAsString();
-			String csp = ext.getParameter("concept-space").valueAsString();
 			
-			// TODO
+			InstanceImplementationConstructor lv = 
+				(InstanceImplementationConstructor) getHandlerInstance(ext, "class");
+			String type = ext.getParameter("semantic-type").valueAsString();
+			
+			KnowledgeManager.get().registerInstanceConstructor(type, lv);
 		}
 	}
 

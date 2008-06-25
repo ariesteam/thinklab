@@ -1,0 +1,211 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.corescience" version="0.8.0" class="org.integratedmodelling.corescience.CoreScience">
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.opal"/>
+		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
+	</requires>
+	<runtime>
+		<library id="core" path="classes/" type="code">
+			<export prefix="*"/>
+		</library>
+		<library type="resources" path="ontologies/" id="ontologies" />
+		<library type="resources" path="config/" id="config" />
+		<library type="code" id="batik-awt-util" path="lib/batik-awt-util-1.6.jar"/>
+		<library type="code" id="batik-bridge" path="lib/batik-bridge-1.6.jar"/>
+		<library type="code" id="batik-css" path="lib/batik-css-1.6.jar"/>
+		<library type="code" id="batik-dom" path="lib/batik-dom-1.6.jar"/>
+		<library type="code" id="batik-ext" path="lib/batik-ext-1.6.jar"/>
+		<library type="code" id="batik-gvt" path="lib/batik-gvt-1.6.jar"/>
+		<library type="code" id="batik-parser" path="lib/batik-parser-1.6.jar"/>
+		<library type="code" id="batik-script" path="lib/batik-script-1.6.jar"/>
+		<library type="code" id="batik-svg-dom" path="lib/batik-svg-dom-1.6.jar"/>
+		<library type="code" id="batik-svggen" path="lib/batik-svggen-1.6.jar"/>
+		<library type="code" id="batik-transcoder" path="lib/batik-transcoder-1.6.jar"/>
+		<library type="code" id="batik-util" path="lib/batik-util-1.6.jar"/>
+		<library type="code" id="batik-xml" path="lib/batik-xml-1.6.jar"/>
+		<library type="code" id="bufr" path="lib/bufr-1.1.00.jar"/>
+		<library type="code" id="ecore" path="lib/ecore-2.2.2.jar"/>
+		<library type="code" id="geoapi" path="lib/geoapi-nogenerics-2.1.0.jar"/>
+		<library type="code" id="gnu-regexp" path="lib/gnu-regexp-1.1.4.jar"/>
+		<library type="code" id="grib" path="lib/grib-5.1.03.jar"/>
+		<library type="code" id="gt2-api" path="lib/gt2-api-2.4.4.jar"/>
+		<library type="code" id="gt2-arcgrid" path="lib/gt2-arcgrid-2.4.4.jar"/>
+		<library type="code" id="gt2-arcsde" path="lib/gt2-arcsde-2.4.4.jar"/>
+		<library type="code" id="gt2-brewer" path="lib/gt2-brewer-2.4.4.jar"/>
+		<library type="code" id="gt2-coverage" path="lib/gt2-coverage-2.4.4.jar"/>
+		<library type="code" id="gt2-coverageio" path="lib/gt2-coverageio-2.4.4.jar"/>
+		<library type="code" id="gt2-coverageio-netcdf" path="lib/gt2-coverageio-netcdf-2.4.4.jar"/>
+		<library type="code" id="gt2-cql" path="lib/gt2-cql-2.4.4.jar"/>
+		<library type="code" id="gt2-data" path="lib/gt2-data-2.4.4.jar"/>
+		<library type="code" id="gt2-db2" path="lib/gt2-db2-2.4.4.jar"/>
+		<library type="code" id="gt2-directory" path="lib/gt2-directory-2.4.4.jar"/>
+		<library type="code" id="gt2-epsg-access" path="lib/gt2-epsg-access-2.4.4.jar"/>
+		<library type="code" id="gt2-epsg-extension" path="lib/gt2-epsg-extension-2.4.4.jar"/>
+		<library type="code" id="gt2-epsg-hsql" path="lib/gt2-epsg-hsql-2.4.4.jar"/>
+		<library type="code" id="gt2-epsg-wkt" path="lib/gt2-epsg-wkt-2.4.4.jar"/>
+		<library type="code" id="gt2-geotiff" path="lib/gt2-geotiff-2.4.4.jar"/>
+		<library type="code" id="gt2-gml" path="lib/gt2-gml-2.4.4.jar"/>
+		<library type="code" id="gt2-graph" path="lib/gt2-graph-2.4.4.jar"/>
+		<library type="code" id="gt2-gtopo30" path="lib/gt2-gtopo30-2.4.4.jar"/>
+		<library type="code" id="gt2-image" path="lib/gt2-image-2.4.4.jar"/>
+		<library type="code" id="gt2-imagemosaic" path="lib/gt2-imagemosaic-2.4.4.jar"/>
+		<library type="code" id="gt2-imagepyramid" path="lib/gt2-imagepyramid-2.4.4.jar"/>
+		<library type="code" id="gt2-jdbc" path="lib/gt2-jdbc-2.4.4.jar"/>
+		<library type="code" id="gt2-main" path="lib/gt2-main-2.4.4.jar"/>
+		<library type="code" id="gt2-mappane" path="lib/gt2-mappane-2.4.4.jar"/>
+		<library type="code" id="gt2-metadata" path="lib/gt2-metadata-2.4.4.jar"/>
+		<library type="code" id="gt2-mysql" path="lib/gt2-mysql-2.4.4.jar"/>
+		<library type="code" id="gt2-openoffice" path="lib/gt2-openoffice-2.4.4.jar"/>
+		<library type="code" id="gt2-oracle-spatial" path="lib/gt2-oracle-spatial-2.4.4.jar"/>
+		<library type="code" id="gt2-postgis" path="lib/gt2-postgis-2.4.4.jar"/>
+		<library type="code" id="gt2-postgis-versioned" path="lib/gt2-postgis-versioned-2.4.4.jar"/>
+		<library type="code" id="gt2-referencing" path="lib/gt2-referencing-2.4.4.jar"/>
+		<library type="code" id="gt2-referencing3D" path="lib/gt2-referencing3D-2.4.4.jar"/>
+		<library type="code" id="gt2-render" path="lib/gt2-render-2.4.4.jar"/>
+		<library type="code" id="gt2-sample-data" path="lib/gt2-sample-data-2.4.4.jar"/>
+		<library type="code" id="gt2-shapefile" path="lib/gt2-shapefile-2.4.4.jar"/>
+		<library type="code" id="gt2-shapefile-renderer" path="lib/gt2-shapefile-renderer-2.4.4.jar"/>
+		<library type="code" id="gt2-svgsupport" path="lib/gt2-svgsupport-2.4.4.jar"/>
+		<library type="code" id="gt2-validation" path="lib/gt2-validation-2.4.4.jar"/>
+		<library type="code" id="gt2-vpf" path="lib/gt2-vpf-2.4.4.jar"/>
+		<library type="code" id="gt2-wfs" path="lib/gt2-wfs-2.4.4.jar"/>
+		<library type="code" id="gt2-widgets-swing" path="lib/gt2-widgets-swing-2.4.4.jar"/>
+		<library type="code" id="gt2-wms" path="lib/gt2-wms-2.4.4.jar"/>
+		<library type="code" id="gt2-xml" path="lib/gt2-xml-2.4.4.jar"/>
+		<library type="code" id="gt2-xml-filter" path="lib/gt2-xml-filter-2.4.4.jar"/>
+		<library type="code" id="gt2-xml-gml2" path="lib/gt2-xml-gml2-2.4.4.jar"/>
+		<library type="code" id="gt2-xml-gml3" path="lib/gt2-xml-gml3-2.4.4.jar"/>
+		<library type="code" id="gt2-xml-xsd" path="lib/gt2-xml-xsd-2.4.4.jar"/>
+		<library type="code" id="hsqldb" path="lib/hsqldb-1.8.0.7.jar"/>
+		<library type="code" id="imageio-ext-arcgrid" path="lib/imageio-ext-arcgrid-1.0-SNAPSHOT.jar"/>
+		<library type="code" id="imageio-ext-customstreams" path="lib/imageio-ext-customstreams-1.0-SNAPSHOT.jar"/>
+		<library type="code" id="jaxb-api" path="lib/jaxb-api-1.3.jar"/>
+		<library type="code" id="jaxb-impl" path="lib/jaxb-impl-1.3.jar"/>
+		<library type="code" id="jaxb-libs" path="lib/jaxb-libs-1.3.jar"/>
+		<library type="code" id="jdom" path="lib/jdom-1.0.jar"/>
+		<library type="code" id="jlfgr" path="lib/jlfgr-1.0.jar"/>
+		<library type="code" id="jsqlparser" path="lib/jsqlparser-0.3.14.jar"/>
+		<library type="code" id="jsr108" path="lib/jsr108-0.01.jar"/>
+		<library type="code" id="jts" path="lib/jts-1.9.jar"/>
+		<library type="code" id="mysql-connector" path="lib/mysql-connector-java-5.1.5.jar"/>
+		<library type="code" id="netcdf" path="lib/netcdf-2.2.20.jar"/>
+		<library type="code" id="picocontainer" path="lib/picocontainer-1.2.jar"/>
+		<library type="code" id="postgis-driver" path="lib/postgis-driver-1.0.jar"/>
+		<library type="code" id="relaxngDatatype" path="lib/relaxngDatatype-X.jar"/>
+		<library type="code" id="slf4j-api" path="lib/slf4j-api-1.4.0.jar"/>
+		<library type="code" id="slf4j-jdk" path="lib/slf4j-jdk14-1.4.0.jar"/>
+		<library type="code" id="vecmath" path="lib/vecmath-1.3.1.jar"/>
+	</runtime>
+
+	<!-- declare new extension point for world images -->
+	
+	<!-- declare useful world images -->
+
+	<!-- ontologies -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="geospace">
+		<parameter id="url" value="geospace.owl"/>
+		<parameter id="concept-space" value="geospace" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="geonames">
+		<parameter id="url" value="geonames.owl"/>
+		<parameter id="concept-space" value="geonames" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="geophysics">
+		<parameter id="url" value="geophysics.owl"/>
+		<parameter id="concept-space" value="geophysics" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="geofeatures">
+		<parameter id="url" value="geofeatures.owl"/>
+		<parameter id="concept-space" value="geofeatures" />
+	</extension>
+
+	<!-- instance constructors -->
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
+		id="areal-location-constructor">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ObservationConstructor"/>
+		<parameter id="semantic-type" value="observation:Observation"/>
+	</extension>
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
+		id="polygon-spatial-coverage-constructor">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.RankingConstructor"/>
+		<parameter id="semantic-type" value="measurement:Ranking"/>
+	</extension>
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
+		id="raster-spatial-coverage-constructor">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.CSVDatasourceConstructor"/>
+		<parameter id="semantic-type" value="source:CSVDataSource"/>
+	</extension>
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
+		id="raster-grid-constructor">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.RandomDataSourceConstructor"/>
+		<parameter id="semantic-type" value="source:Randomizer"/>
+	</extension>
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
+		id="external-raster-datasource-constructor">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ClassificationModelConstructor"/>
+		<parameter id="semantic-type" value="observation:ClassificationSpace"/>
+	</extension>
+
+	<!-- literal validators -->
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
+		id="spatial-record-validator">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ParsedDatasourceValidator"/>
+		<parameter id="semantic-type" value="source:ParsedString"/>
+	</extension>
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
+		id="areal-location-validator">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ColumnFilterValidator"/>
+		<parameter id="semantic-type" value="source:ColumnExtractor"/>
+	</extension>
+
+	<!-- kbox handler for coverages -->
+	
+	
+	<!-- commands -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="GISToOpal">
+		<parameter id="class" value="org.integratedmodelling.corescience.commands.Contextualize"/>
+		<parameter id="command-name" value="contextualize"/>
+		<parameter id="command-description" value="contextualize an observation"/>
+		<parameter id="argument-names" value="c1"/>
+		<parameter id="argument-types" value="thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="ID of the observation instance to contextualize"/>
+		<parameter id="option-names" value="d"/>
+		<parameter id="option-long-names" value="debug"/>
+		<parameter id="option-types" value="owl:Nothing"/>
+		<parameter id="option-descriptions" value="debug workflow"/>
+	</extension>
+
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="rasterize">
+		<parameter id="class" value="org.integratedmodelling.corescience.commands.Link"/>
+		<parameter id="command-name" value="link"/>
+		<parameter id="command-description" value="link two observations so that the state of the source is mediated from the destination"/>
+		<parameter id="argument-names" value="c1,c2"/>
+		<parameter id="argument-types" value="thinklab-core:Text,thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="source observation,destination observation"/>
+		<parameter id="option-names" value="c"/>
+		<parameter id="option-long-names" value="conformance"/>
+		<parameter id="option-types" value="thinklab-core:Text"/>
+		<parameter id="option-descriptions" value="use specified conformance policy for mediation"/>
+	</extension>
+
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="vectorize">
+		<parameter id="class" value="org.integratedmodelling.corescience.commands.Olist"/>
+		<parameter id="command-name" value="olist"/>
+		<parameter id="command-description" value="list the structure and state of an observation"/>
+		<parameter id="argument-names" value="observation"/>
+		<parameter id="argument-types" value="thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="ID of the observation instance to inspect"/>
+	</extension>
+
+
+	
+</plugin>

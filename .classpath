@@ -129,12 +129,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-cql-2.4.4.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-data-2.4.4.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-db2-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-demo-data-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-demo-example-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-demo-introduction-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-demo-libraryJTS-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-demo-mappane-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-demo-property-2.4.4.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-directory-2.4.4.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-epsg-access-2.4.4.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-epsg-extension-2.4.4.jar"/>
@@ -184,9 +178,7 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/jlfgr-1.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/jsqlparser-0.3.14.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/jsr108-0.01.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/jts-1.8.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/jts-1.9.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/log4j-1.2.12.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/mysql-connector-java-5.1.5.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/netcdf-2.2.20.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/picocontainer-1.2.jar"/>

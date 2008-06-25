@@ -48,7 +48,7 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 	
 	/**
 	 * Set to a true value to enable indexing of individuals contained in
-	 * ontologies. Kboxe indexing is not affected by this property.
+	 * ontologies. Kbox indexing is not affected by this property.
 	 */
 	public static final String SEARCHENGINE_INDEX_INDIVIDUALS_PROPERTY = 
 		"searchengine.%.index.individuals";
@@ -104,8 +104,6 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 	
 
 	public void initialize() throws ThinklabException {
-		
-
 	}
 	
 	/**
@@ -141,12 +139,10 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 		}
 	}
 
-
 	@Override
 	protected void unload() throws ThinklabException {
-		// TODO drop all search engines, close them
-		
-	}
-	
+		// drop all search engines, close them		
+		engines.clear();
+	}	
 
 }

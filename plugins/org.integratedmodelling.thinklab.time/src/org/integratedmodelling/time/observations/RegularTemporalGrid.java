@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.time.observations;
 
-import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IConceptualModel;
 import org.integratedmodelling.corescience.observation.Observation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -57,7 +57,7 @@ public class RegularTemporalGrid extends Observation {
 	public void initialize(IInstance i) throws ThinklabException {
 
 		/* complete definition with observable. */
-		i.addObjectRelationship(CoreSciencePlugin.HAS_OBSERVABLE, TimePlugin.continuousTimeInstance());
+		i.addObjectRelationship(CoreScience.HAS_OBSERVABLE, TimePlugin.continuousTimeInstance());
 
 		/* recover values for three properties defining the grid */
 		start = (TimeValue) i.get(TimePlugin.STARTS_AT_PROPERTY_ID);

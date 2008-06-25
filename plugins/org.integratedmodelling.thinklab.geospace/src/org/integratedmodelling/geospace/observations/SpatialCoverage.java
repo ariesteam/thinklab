@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.geospace.observations;
 
-import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IConceptualModel;
 import org.integratedmodelling.corescience.observation.Observation;
 import org.integratedmodelling.geospace.GeospacePlugin;
@@ -63,7 +63,7 @@ public class SpatialCoverage extends Observation {
 		 * link the obvious observable - do it now, so that super.initialize() finds it.
 		 */
 		i.addObjectRelationship(
-					CoreSciencePlugin.HAS_OBSERVABLE, 
+					CoreScience.HAS_OBSERVABLE, 
 					GeospacePlugin.absoluteSpatialCoverageInstance());
 		
 		String crsId = null;

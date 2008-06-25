@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.geospace.constructors;
 
-import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.geospace.GeospacePlugin;
 import org.integratedmodelling.geospace.values.ShapeValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -67,12 +67,12 @@ public class ArealLocationValidator implements LiteralValidator {
 						GeospacePlugin.ArealLocation());
 			
 			/* complete definition with observable. */
-			tobs.addObjectRelationship(CoreSciencePlugin.HAS_OBSERVABLE, 
+			tobs.addObjectRelationship(CoreScience.HAS_OBSERVABLE, 
 					GeospacePlugin.absoluteArealLocationInstance());
 			
 			/* make datasource out of time stamp and add to instance */
 			ShapeValue shape = new ShapeValue(literalValue);
-			tobs.addLiteralRelationship(CoreSciencePlugin.HAS_DATASOURCE, shape);
+			tobs.addLiteralRelationship(CoreScience.HAS_DATASOURCE, shape);
 			
 			/* create return value */
 			ret = new ObjectReferenceValue(tobs);

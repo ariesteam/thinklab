@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.time.constructors;
 
-import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.LiteralValidator;
@@ -67,11 +67,11 @@ public class TimeRecordValidator implements LiteralValidator {
 				ontology.createInstance(ontology.getUniqueObjectName("trec"), TimePlugin.TimeRecord());
 			
 			/* complete definition with observable. */
-			tobs.addObjectRelationship(CoreSciencePlugin.HAS_OBSERVABLE, TimePlugin.absoluteTimeInstance());
+			tobs.addObjectRelationship(CoreScience.HAS_OBSERVABLE, TimePlugin.absoluteTimeInstance());
 			
 			/* make datasource out of time stamp and add to instance */
 			TimeValue time = new TimeValue(literalValue);
-			tobs.addLiteralRelationship(CoreSciencePlugin.HAS_DATASOURCE, time);
+			tobs.addLiteralRelationship(CoreScience.HAS_DATASOURCE, time);
 			
 			/* create return value */
 			ret = new ObjectReferenceValue(tobs);

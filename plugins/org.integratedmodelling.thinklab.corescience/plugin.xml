@@ -1,0 +1,140 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.corescience" version="0.8.0" class="org.integratedmodelling.corescience.CoreScience">
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+	</requires>
+	<runtime>
+		<library id="core" path="classes/" type="code">
+			<export prefix="*"/>
+		</library>
+		<library type="resources" path="ontologies/" id="ontologies" />
+		<library type="resources" path="config/" id="config" />
+		
+		<library type="code" id="colt" path="lib/colt.jar"/>
+		<library type="code" id="ext" path="lib/ext-1.1.1.jar"/>
+		<library type="code" id="flanagan" path="lib/flanagan.jar"/>
+		<library type="code" id="javolution" path="lib/javolution.jar"/>
+		<library type="code" id="jep" path="lib/jep-2.4.1.jar"/>
+		<library type="code" id="jscience" path="lib/jscience.jar">
+			<export prefix="*"/>
+		</library>
+		<library type="code" id="jung" path="lib/jung-1.7.6.jar"/>
+		<library type="code" id="ostermillerutils" path="lib/ostermillerutils_1_06_00.jar"/>
+		
+	</runtime>
+
+	<!-- ontologies -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="observation">
+		<parameter id="url" value="observation.owl"/>
+		<parameter id="concept-space" value="observation" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="measurement">
+		<parameter id="url" value="measurement.owl"/>
+		<parameter id="concept-space" value="measurement" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="representation">
+		<parameter id="url" value="representation.owl"/>
+		<parameter id="concept-space" value="representation" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="source">
+		<parameter id="url" value="source.owl"/>
+		<parameter id="concept-space" value="source" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="modelling">
+		<parameter id="url" value="modelling.owl"/>
+		<parameter id="concept-space" value="modelling" />
+	</extension>
+
+	<!-- instance constructors -->
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
+		id="observation-constructor">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ObservationConstructor"/>
+		<parameter id="semantic-type" value="observation:Observation"/>
+	</extension>
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
+		id="ranking-constructor">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.RankingConstructor"/>
+		<parameter id="semantic-type" value="measurement:Ranking"/>
+	</extension>
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
+		id="csv-datasource-constructor">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.CSVDatasourceConstructor"/>
+		<parameter id="semantic-type" value="source:CSVDataSource"/>
+	</extension>
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
+		id="random-datasource-constructor">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.RandomDataSourceConstructor"/>
+		<parameter id="semantic-type" value="source:Randomizer"/>
+	</extension>
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
+		id="classification-model-constructor">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ClassificationModelConstructor"/>
+		<parameter id="semantic-type" value="observation:ClassificationSpace"/>
+	</extension>
+
+	<!-- literal validators -->
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
+		id="unit-validator">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.UnitValidator"/>
+		<parameter id="semantic-type" value="measurement:Unit"/>
+	</extension>
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
+		id="parsed-datasource-validator">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ParsedDatasourceValidator"/>
+		<parameter id="semantic-type" value="source:ParsedString"/>
+	</extension>
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
+		id="column-extractor-validator">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ColumnFilterValidator"/>
+		<parameter id="semantic-type" value="source:ColumnExtractor"/>
+	</extension>
+
+
+	<!-- commands -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="contextualize">
+		<parameter id="class" value="org.integratedmodelling.corescience.commands.Contextualize"/>
+		<parameter id="command-name" value="contextualize"/>
+		<parameter id="command-description" value="contextualize an observation"/>
+		<parameter id="argument-names" value="c1"/>
+		<parameter id="argument-types" value="thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="ID of the observation instance to contextualize"/>
+		<parameter id="option-names" value="d"/>
+		<parameter id="option-long-names" value="debug"/>
+		<parameter id="option-types" value="owl:Nothing"/>
+		<parameter id="option-descriptions" value="debug workflow"/>
+	</extension>
+
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="link">
+		<parameter id="class" value="org.integratedmodelling.corescience.commands.Link"/>
+		<parameter id="command-name" value="link"/>
+		<parameter id="command-description" value="link two observations so that the state of the source is mediated from the destination"/>
+		<parameter id="argument-names" value="c1,c2"/>
+		<parameter id="argument-types" value="thinklab-core:Text,thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="source observation,destination observation"/>
+		<parameter id="option-names" value="c"/>
+		<parameter id="option-long-names" value="conformance"/>
+		<parameter id="option-types" value="thinklab-core:Text"/>
+		<parameter id="option-descriptions" value="use specified conformance policy for mediation"/>
+	</extension>
+
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="olist">
+		<parameter id="class" value="org.integratedmodelling.corescience.commands.Olist"/>
+		<parameter id="command-name" value="olist"/>
+		<parameter id="command-description" value="list the structure and state of an observation"/>
+		<parameter id="argument-names" value="observation"/>
+		<parameter id="argument-types" value="thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="ID of the observation instance to inspect"/>
+	</extension>
+
+
+	
+</plugin>

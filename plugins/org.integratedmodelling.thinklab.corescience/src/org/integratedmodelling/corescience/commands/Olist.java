@@ -34,7 +34,7 @@ package org.integratedmodelling.corescience.commands;
 
 import java.util.HashSet;
 
-import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationState;
@@ -115,7 +115,7 @@ public class Olist implements CommandHandler {
 			String obs = command.getArgumentAsString("observation");
 			IInstance o = session.requireObject(obs);
 
-			if (!o.is(CoreSciencePlugin.OBSERVATION)) {
+			if (!o.is(CoreScience.OBSERVATION)) {
 				throw new ThinklabContextualizationException(obs + " is not an observation: cannot contextualize");
 			}
 			

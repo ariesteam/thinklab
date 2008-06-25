@@ -64,7 +64,8 @@ import org.integratedmodelling.thinklab.interfaces.IValue;
 import bsh.util.JConsole;
 
 /**
- * A simple command-line driven interface. Just attach to a session, run and type 'help'.
+ * A simple command-line driven interface, using the graphical BeanShell console.
+ * 
  * @author Ferdinando Villa
  */
 public class GraphicalShell {
@@ -85,9 +86,11 @@ public class GraphicalShell {
 		
 	}
 	
-	public class JPanels extends JFrame {
+	public class ConsolePanel extends JFrame {
 
-		  public JPanels() {
+		private static final long serialVersionUID = -1303258585100820402L;
+
+		public ConsolePanel() {
 		    super("Thinklab console");
 		    Container content = getContentPane();
 		    content.setBackground(Color.lightGray);
@@ -126,7 +129,7 @@ public class GraphicalShell {
 		
 		ICommandOutputReceptor cout = new ConsoleCommandOutputReceptor();
 		
-		JPanels jpanels = new JPanels();
+		ConsolePanel jpanels = new ConsolePanel();
 		
 		/* greet user */
 		printStatusMessage();

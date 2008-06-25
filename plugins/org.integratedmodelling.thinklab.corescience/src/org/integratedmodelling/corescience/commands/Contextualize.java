@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.corescience.commands;
 
-import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.IContextualizationWorkflow;
 import org.integratedmodelling.corescience.interfaces.IObservation;
@@ -64,7 +64,7 @@ public class Contextualize implements CommandHandler {
 			 * select workflow type and create it to pass to contextualize.
 			 * Should use plugins, or just reflection?
 			 */
-			workflow = CoreSciencePlugin.get().retrieveWorkflow(wft);
+			workflow = CoreScience.get().retrieveWorkflow(wft);
 
 			if (workflow == null) {
 				throw new ThinklabPluginException("requested workflow type "
@@ -79,7 +79,7 @@ public class Contextualize implements CommandHandler {
 
 		IInstance o = session.requireObject(obs);
 
-		if (!o.is(CoreSciencePlugin.OBSERVATION)) {
+		if (!o.is(CoreScience.OBSERVATION)) {
 			throw new ThinklabContextualizationException(obs
 					+ " is not an observation: cannot contextualize");
 		}

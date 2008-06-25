@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rdf:RDF
+    xmlns:observation="http://www.integratedmodelling.org/ks/science/observation.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:thinklab-core="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://www.integratedmodelling.org/ks/science/source.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://www.integratedmodelling.org/ks/science/source.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl"/>
+  </owl:Ontology>
+  <owl:Class rdf:ID="ExcelCSVDataSource">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >We need a specific class for this one, as Excel CSV need special handling, so the API can figure out the difference.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="CSVDataSource"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="ColumnExtractor">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A filter that extracts a column name from a table. Usually specified through a literal representing a numeric index or column label. We make it a subclass of Text to inherit the simple text validator in ThinkLab.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="SimpleFilter"/>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Text"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ComputedDataSource">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#DataSource"/>
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A DataSource whose content is not directly linked but is the result of computation. Subclasses of ComputedDataSource need to express all the information required to calculate the content.
+
+This is an abstract class which serves as the principal hook point to define model components within the Observation logical structure. In this case, an Observation observes the system structurally, and the process of observation, contextualized to the specified contexts, resolves the system by calculating it. No details of how systems can be calculated are given here.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="SQLQuery">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="DatabaseQuery"/>
+    </rdfs:subClassOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >DatabaseQuery expressed in SQL. The source URI identifies the database.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="Randomizer">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+        >1</owl:maxCardinality>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="isInteger"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="minValue"/>
+        </owl:onProperty>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+        >1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="maxValue"/>
+        </owl:onProperty>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+        >1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="StatisticalVariate"/>
+    </rdfs:subClassOf>
+    <rdfs:comment xml:lang="en">A simple random numbers generator that can be scaled and reclassified.</rdfs:comment>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Randomizer</rdfs:label>
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created by Ferdinando Villa on Mon Jul 02 12:10:14 EDT 2007</owl:versionInfo>
+  </owl:Class>
+  <owl:Class rdf:ID="StructuredDataSource">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#DataSource"/>
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A data source in which pre-existing structuring in some format is defined in order to sort, organize, or otherwise identify the information. Its definition may contain filtering rule that specifies how to select some of the information contained in it.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="FilterSequence">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="DatasourceFilter"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="FunctionVariate">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+        >1</owl:maxCardinality>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="hasFunctionLiteral"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A data source whose value is calculated by executing an algorithm and returning the value The function may take parameters, thus  generate dependencies that must be satisfied and reflect cause-effect relationships between data sources. These are detailed in a different ontology (modelling).</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#ComputedDataSource"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Counter">
+    <rdfs:subClassOf rdf:resource="#FunctionVariate"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A simple counter datasource for enumeraton of sequences. Accepts a start value, an increment, and an optional counter type. If no values are provided, counting starts at 0 and proceeds in integer increments of 1.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="#CSVDataSource">
+    <rdfs:subClassOf rdf:resource="#StructuredDataSource"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Comma Separated ASCII file.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="#DatasourceFilter">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An object that is used to filter or transform the contents of a structured DataSource. Used as literal or objects as appropriate.</rdfs:comment>
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+  </owl:Class>
+  <owl:Class rdf:ID="ParsedString">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="ParsedDataSource"/>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Text"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Parsed text representing values. Multiple values can be separated by commas. Literals are admitted through the inheritance from Text.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="#StatisticalVariate">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A calculated data source whose value is generated by sampling from a parametric distribution. Subclasses define the distribution and its parameters. Dependencies are possible. The statistics ontology expands this abstract class.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#ComputedDataSource"/>
+  </owl:Class>
+  <owl:Class rdf:about="#DatabaseQuery">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A DatabaseQuery is a structured data source that retrieves information from a database.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#StructuredDataSource"/>
+  </owl:Class>
+  <owl:Class rdf:about="#SimpleFilter">
+    <rdfs:subClassOf rdf:resource="#DatasourceFilter"/>
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+  </owl:Class>
+  <owl:Class rdf:about="#ParsedDataSource">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An unstructured data source whose content implies a parsing process that ingests ASCII or Unicode textual information and figures out its structure. Usually only feasible with single tokenized information or series thereof. Subclasses of this must admit literals, which should specify a numeric quantity with semantic types and units according to any unambigous syntax identified by the class.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#DataSource"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="hasFilter">
+    <rdfs:domain rdf:resource="#StructuredDataSource"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A filter to apply to the datasource to extract the values of interest.</rdfs:comment>
+    <rdfs:range rdf:resource="#DatasourceFilter"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="#maxValue">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created by Ferdinando Villa on Mon Jul 02 12:12:40 EDT 2007</owl:versionInfo>
+    <rdfs:domain rdf:resource="#Randomizer"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >maxValue</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#minValue">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >minValue</rdfs:label>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Randomizer"/>
+          <owl:Class rdf:about="#Counter"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created by Ferdinando Villa on Mon Jul 02 12:11:32 EDT 2007</owl:versionInfo>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#isInteger">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >stepSize</rdfs:label>
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created by Ferdinando Villa on Mon Jul 02 12:12:53 EDT 2007</owl:versionInfo>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Randomizer"/>
+          <owl:Class rdf:about="#Counter"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#hasFunctionLiteral">
+    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 13 11:58:49 EDT 2007</owl:versionInfo>
+    <rdfs:label>hasFunctionLiteral</rdfs:label>
+    <rdfs:domain rdf:resource="#FunctionVariate"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment xml:lang="en">Most function datasources can have a string with a textual specification of the functional dependencies.</rdfs:comment>
+  </owl:DatatypeProperty>
+  <owl:FunctionalProperty rdf:ID="hasSourceURI">
+    <rdfs:domain rdf:resource="#StructuredDataSource"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A URI that identifies the source of the data.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasSQLStatement">
+    <rdfs:domain rdf:resource="#SQLQuery"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+</rdf:RDF>

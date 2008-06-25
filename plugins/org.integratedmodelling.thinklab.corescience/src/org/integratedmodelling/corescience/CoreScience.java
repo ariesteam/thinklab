@@ -61,10 +61,10 @@ import org.w3c.dom.Node;
  * @author Ferdinando Villa
  *
  */
-public class CoreSciencePlugin extends ThinklabPlugin {
+public class CoreScience extends ThinklabPlugin {
 	
 	/* log4j logger used for this class. Can be used by other classes through logger()  */
-	private static  Logger log = Logger.getLogger(CoreSciencePlugin.class);
+	private static  Logger log = Logger.getLogger(CoreScience.class);
 
 	private final static String PLUGIN_ID = "org.integratedmodelling.thinklab.corescience";
 	
@@ -116,8 +116,8 @@ public class CoreSciencePlugin extends ThinklabPlugin {
 	static final public String GENERIC_OBSERVABLE = "representation:GenericObservable";
 	static final public String GENERIC_QUANTIFIABLE = "representation:GenericQuantifiable";
 
-	public static CoreSciencePlugin get() {
-		return (CoreSciencePlugin) getPlugin(PLUGIN_ID );
+	public static CoreScience get() {
+		return (CoreScience) getPlugin(PLUGIN_ID );
 	}
 
 	public static Logger logger() {
@@ -129,26 +129,6 @@ public class CoreSciencePlugin extends ThinklabPlugin {
 	 */
 	@Override
 	public void load(KnowledgeManager km) throws ThinklabPluginException {
-
-		/* initialize unit system; get preferences, default models etc */
-		
-		/* install constructors and validators 
-		 * TODO move to plugin.xml
-		 */
-		km.registerInstanceConstructor(OBSERVATION, new ObservationConstructor());
-		km.registerInstanceConstructor(RANKING, new RankingConstructor());
-		km.registerInstanceConstructor(CSV_DATASOURCE, new CSVDatasourceConstructor());
-		km.registerInstanceConstructor(RANDOM_DATASOURCE, new RandomDataSourceConstructor());
-		km.registerInstanceConstructor(CLASSIFICATION_MODEL, new ClassificationModelConstructor());
-
-		km.registerLiteralValidator(UNIT, new UnitValidator());
-		km.registerLiteralValidator(PARSED_STRING, new ParsedDatasourceValidator());
-		km.registerLiteralValidator(COLUMN_EXTRACTOR, new ColumnFilterValidator());
-		
-//			new Contextualize().install(km);
-//			new Link().install(km);
-//			new Olist().install(km);
-			
 	}
 
 
@@ -157,11 +137,11 @@ public class CoreSciencePlugin extends ThinklabPlugin {
 	 */
 	@Override
 	public void unload() throws ThinklabPluginException {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
+	 * TODO move to extension points
+	 * 
 	 * Construct a new model loader for passed type and return it. If no such loader type is registered, return
 	 * null without complaining.
 	 *  
@@ -177,7 +157,6 @@ public class CoreSciencePlugin extends ThinklabPlugin {
 			ret = mc.createWorkflow();
 		return ret;
 	}
-
 	
 	/**
 	 * Register a constructor for a new model loader.
@@ -188,11 +167,5 @@ public class CoreSciencePlugin extends ThinklabPlugin {
 	public void registerWorkflow(String id, IWorkflowConstructor constructor) {
 		modelLoaders.put(id, constructor);
 	}
-
-	public void notifyConfigurationNode(Node n) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 
 }

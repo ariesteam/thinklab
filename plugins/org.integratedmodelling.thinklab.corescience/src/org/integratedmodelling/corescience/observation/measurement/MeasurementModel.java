@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.corescience.observation.measurement;
 
-import org.integratedmodelling.corescience.CoreSciencePlugin;
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabInconsistentConceptualModelException;
 import org.integratedmodelling.corescience.interfaces.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.IObservation;
@@ -256,7 +256,7 @@ public class MeasurementModel extends UnitValue implements IConceptualModel {
 		 * validate observable. This should be redundant if OWL validation is
 		 * working, but no big deal to add it.
 		 */
-		if (!observable.is(CoreSciencePlugin.PHYSICAL_PROPERTY)) {
+		if (!observable.is(CoreScience.PHYSICAL_PROPERTY)) {
 			throw new ThinklabValidationException("measurements can only be of physical properties: " + observable);
 		}
 		
@@ -265,7 +265,7 @@ public class MeasurementModel extends UnitValue implements IConceptualModel {
 		 * and communicate to the conceptual model. 
 		 */
 		physicalNature = 
-			observable.is(CoreSciencePlugin.EXTENSIVE_PHYSICAL_PROPERTY) ?
+			observable.is(CoreScience.EXTENSIVE_PHYSICAL_PROPERTY) ?
 			PhysicalNature.EXTENSIVE :	
 			PhysicalNature.INTENSIVE;
 		
