@@ -50,6 +50,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
@@ -116,7 +117,7 @@ public class GraphicalShell {
 	
 	public  void printStatusMessage() {
 		
-		console.println("ThinkLab shell 0.1alpha");
+		console.println("ThinkLab shell v" + CommandLine.get().getDescriptor().getVersion());
 		console.println("System path: " + LocalConfiguration.getSystemPath());
 		console.println("Data path: " + LocalConfiguration.getDataPath());					
 		console.println();

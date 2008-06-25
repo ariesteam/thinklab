@@ -223,8 +223,7 @@ public class List implements CommandHandler {
 						+ o.getURI());
 			}
 
-		} 
-		if ("plugins".equals(subject)) {
+		} else if ("plugins".equals(subject)) {
 
 			for (PluginDescriptor pd :
 					CommandLine.get().getManager().getRegistry().getPluginDescriptors()) {
