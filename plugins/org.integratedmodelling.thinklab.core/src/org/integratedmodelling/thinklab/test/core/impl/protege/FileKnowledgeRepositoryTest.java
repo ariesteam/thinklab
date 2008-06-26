@@ -54,7 +54,7 @@ public class FileKnowledgeRepositoryTest extends AllTestsSetup {
 	protected void setUp() throws Exception {
 		super.setUp();
 				
-		kr = new FileKnowledgeRepository();
+		kr = new FileKnowledgeRepository(null);
 	}
 
 	/*

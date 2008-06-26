@@ -1,5 +1,6 @@
 package org.integratedmodelling.thinklab;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -38,7 +39,8 @@ public class Thinklab extends ThinklabPlugin {
 		 */
 		
 		if (_km == null) {
-			_km = new KnowledgeManager(new FileKnowledgeRepository());
+			_km = new KnowledgeManager(
+					new FileKnowledgeRepository(getLoadDirectory() + File.separator + "lib"));
 			_km.setPluginManager(getManager());
 			_km.initialize();
 		}

@@ -50,6 +50,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabAmbiguousResultException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -131,7 +132,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	 * 
 	 * @throws ThinklabIOException
 	 */
-	public FileKnowledgeRepository() throws ThinklabIOException {
+	public FileKnowledgeRepository(String protegePath) throws ThinklabIOException {
 
 		/**
 		 * Redirect plugin folder to system/protege directory, resorting to user dir of program if that
@@ -139,10 +140,11 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		 * TODO installer will need to put the protege stuff in the proper places.
 		 */
 		File protegeDir = 
-				new File(
+				new File(protegePath == null ?
 						LocalConfiguration.getProperties().getProperty(
 							"thinklab.protege.path",
-							LocalConfiguration.getSystemDirectory("protege").toString()));
+							LocalConfiguration.getSystemDirectory("protege").toString()) : 
+						protegePath);
 		
 		if (!protegeDir.exists()) {
 			protegeDir = new File(System.getProperty("user.dir"), "lib");

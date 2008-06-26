@@ -49,7 +49,7 @@ public class OntologyTest extends AllTestsSetup {
 	Ontology onto = null;
 	protected void setUp() throws Exception {
 		super.setUp();
-		kr = new FileKnowledgeRepository();
+		kr = new FileKnowledgeRepository(null);
 		km = new KnowledgeManager(kr);
 		kr.initialize();
 		onto = (Ontology) kr.requireOntology("pizza");		

@@ -35,6 +35,7 @@ package org.integratedmodelling.thinklab.configuration;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
@@ -88,6 +89,21 @@ public class LocalConfiguration {
     	return os;
     }
     
+    static void setProperties(Properties p) {
+    	properties = p;
+    }
+    
+    static void loadProperties(URL pfile) throws ThinklabIOException {
+    	if (properties == null) {
+    		properties = new Properties();
+    	}
+    	
+    	try {
+			properties.load(pfile.openStream());
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}
+    }
     
 	/**
 	 * Get the global system preferences. These can be overridden using files.

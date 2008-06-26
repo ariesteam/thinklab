@@ -2,23 +2,13 @@ package org.integratedmodelling.geospace.gis;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.integratedmodelling.geospace.coverage.RasterCoverage;
-import org.integratedmodelling.geospace.coverage.VectorCoverage;
-import org.integratedmodelling.geospace.extents.GridExtent;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
 
 public class Rasterizer {
 	

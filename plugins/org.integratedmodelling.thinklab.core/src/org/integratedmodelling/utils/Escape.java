@@ -34,6 +34,7 @@
 package org.integratedmodelling.utils;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
@@ -163,7 +164,7 @@ public final class Escape {
    public static String forURL(String aURLFragment){
      String result = null;
      try {
-       result = URLEncoder.encode(aURLFragment, "UTF-8");
+    	 result = URLEncoder.encode(aURLFragment, "UTF-8");
      }
      catch (UnsupportedEncodingException ex){
        throw new RuntimeException("UTF-8 not supported", ex);
@@ -171,7 +172,31 @@ public final class Escape {
      return result;
    }
 
-  /**
+   /**
+    * Synonym for <tt>URLEncoder.encode(String, "UTF-8")</tt>.
+    *
+    * <P>Used to ensure that HTTP query strings are in proper form, by escaping
+    * special characters such as spaces.
+    *
+    * <P>It is important to note that if a query string appears in an <tt>HREF</tt>
+    * attribute, then there are two issues - ensuring the query string is valid HTTP
+    * (it is URL-encoded), and ensuring it is valid HTML (ensuring the 
+    * ampersand is escaped).
+    */
+    public static String fromURL(String aURLFragment){
+      String result = null;
+      try {
+     	 result = URLDecoder.decode(aURLFragment, "UTF-8");
+      }
+      catch (UnsupportedEncodingException ex){
+        throw new RuntimeException("UTF-8 not supported", ex);
+      }
+      return result;
+    }
+
+
+   
+   /**
   * Escape characters for text appearing as XML data, between tags.
   * 
   * <P>The following characters are replaced with corresponding character entities : 

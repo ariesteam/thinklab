@@ -2157,6 +2157,16 @@ loop:		for(;;)
 		
 	}
 
+	public static File getPath(String lf) {
+		// TODO Auto-generated method stub
+		int n = lf.lastIndexOf(File.separator);
+		String s = lf;
+		if (n > -1) {
+			s = lf.substring(0, n);
+		}
+		return new File(s);
+	}
+
 //	//{{{ getPathStart()
 //	private static int getPathStart(String path)
 //	{

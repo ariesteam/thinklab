@@ -85,6 +85,8 @@ import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
 import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.utils.CopyURL;
+import org.integratedmodelling.utils.Escape;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.Plugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.PluginManager;
@@ -109,6 +111,7 @@ public abstract class ThinklabPlugin extends Plugin
 	private File dataFolder;
 	private File confFolder;
 	private File plugFolder;
+	private File loadFolder;
 	
 	/*
 	 * intercepts the beginning of doStart()
@@ -156,9 +159,9 @@ public abstract class ThinklabPlugin extends Plugin
 	@Override
 	protected final void doStart() throws Exception {
 		
-		preStart();
-
 		loadConfiguration();
+
+		preStart();
 				
 		/*
 		 * Check if we have a KM and if not, put out a good explanation of why we should
@@ -179,8 +182,15 @@ public abstract class ThinklabPlugin extends Plugin
 		load(KnowledgeManager.get());
 	}
 
+	public File getLoadDirectory() {
+		return loadFolder;
+	}
+	
 	protected void loadConfiguration() throws ThinklabIOException {
 	
+	   String lf = new File(getDescriptor().getLocation().getFile()).getAbsolutePath();
+	   loadFolder = new File(Escape.fromURL(MiscUtilities.getPath(lf).toString()));
+	   
        plugFolder = LocalConfiguration.getDataDirectory(getDescriptor().getId());
        confFolder = new File(plugFolder + File.separator + "config");
        dataFolder = new File(plugFolder + File.separator + "data");

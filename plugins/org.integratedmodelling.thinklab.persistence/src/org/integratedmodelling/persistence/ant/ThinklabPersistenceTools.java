@@ -79,7 +79,7 @@ public class ThinklabPersistenceTools extends Task {
 	public void execute() throws BuildException {
 		KnowledgeManager km;
 		try {
-			km = new KnowledgeManager(new FileKnowledgeRepository());
+			km = new KnowledgeManager(new FileKnowledgeRepository(null));
 		} catch (ThinklabException e) {
 			throw new BuildException(e);
 		}
