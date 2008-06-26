@@ -1,17 +1,18 @@
 <?xml version="1.0" ?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.opal" version="0.8.0" class="org.integratedmodelling.opal.OPAL">
+<plugin id="org.integratedmodelling.thinklab.dynamicmodelling" version="0.8.0" class="org.integratedmodelling.dynamicmodelling.DynamicModellingPlugin">
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
 	</requires>	
 	<runtime>
 		<library id="core" path="classes/" type="code">
 			<export prefix="*" />
 		</library>
 	</runtime>
+	
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="knowledge-loader" id="model-loader">
 		<parameter id="class" value="org.integratedmodelling.dynamicmodelling.ModelKnowledgeLoader"/>
-		<parameter id="format" value="sml" />
-		<parameter id="format" value="simile" />
+		<parameter id="format" value="sml,simile" />
 	</extension>
 </plugin>

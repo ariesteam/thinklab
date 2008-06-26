@@ -49,13 +49,10 @@ public class Hierarchy implements CommandHandler {
 			ISession session, KnowledgeManager km) throws ThinklabException {
 
 		String c = command.getArgumentAsString("concept");
-
-		KnowledgeTree ct = KnowledgeManager.getClassTree();
-
-		if (c != null && !c.equals("__none")) {
-			ct = new KnowledgeTree(km.requireConcept(c));
-		}
-
+		if (c.equals("__none"))
+			c = "owl:Thing";
+			
+		KnowledgeTree ct = new KnowledgeTree(km.requireConcept(c));
 		ct.dump(outputWriter);
 
 		return null;

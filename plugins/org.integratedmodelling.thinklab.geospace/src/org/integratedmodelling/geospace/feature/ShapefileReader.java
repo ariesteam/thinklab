@@ -335,7 +335,7 @@ public class ShapefileReader {
 		/* this usually causes trouble, so check */
 		String rval = ret.toString();
 		if (rval == null || rval.trim().equals("")) {
-			Geospace.logger().
+			Geospace.get().logger().
 				warn("shapefile: attribute " + name + " has empty string value for " + avalue);
 		}
 		

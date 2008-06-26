@@ -3,6 +3,7 @@ package org.integratedmodelling.thinklab.workflow;
 import java.net.URL;
 import java.util.Properties;
 
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.workflow.evaluators.IValueVariableEvaluator;
@@ -25,6 +26,7 @@ public class ThinklabDebugWorkflow extends DebugWorkflow {
 		this.outputReceptor = outputReceptor;
 		
 	}
+	
 	@Override
 	public void registerVariableEvaluators() throws WorkflowException {
 		
@@ -32,13 +34,19 @@ public class ThinklabDebugWorkflow extends DebugWorkflow {
 		registerVariableEvaluator(new KBoxVariableEvaluator(session, outputReceptor));
 		registerVariableEvaluator(new ThinklabCommandVariableEvaluator(session, outputReceptor));
 		registerVariableEvaluator(new ThinklabCommandlineVariableEvaluator(session, outputReceptor));
-
 	}
-
 
 	@Override
 	protected URL getOSWorkflowConfiguration() {
-		return WorkflowPlugin.get().getOSWorkflowConfiguration();
+		
+		URL ret = null;
+		try {
+			ret = WorkflowPlugin.get().getOSWorkflowConfiguration();
+		} catch (ThinklabIOException e) {
+			// FIXME shouldn't ignore it, but it's messy
+			e.printStackTrace();
+		}
+		return ret;
 	}
 	
 }

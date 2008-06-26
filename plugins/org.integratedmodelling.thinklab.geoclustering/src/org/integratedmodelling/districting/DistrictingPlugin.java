@@ -32,10 +32,8 @@
  **/
 package org.integratedmodelling.districting;
 
-import java.net.URL;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
 import org.integratedmodelling.districting.algorithms.ISODATAAlgorithmConstructor;
 import org.integratedmodelling.districting.algorithms.KMeansAlgorithmConstructor;
 import org.integratedmodelling.districting.interfaces.IDistrictingAlgorithm;
@@ -44,16 +42,11 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.w3c.dom.Node;
 
 public class DistrictingPlugin extends ThinklabPlugin {
 
-	/* log4j logger used for this class. Can be used by other classes through logger() */
-	private static Logger log = Logger.getLogger(DistrictingPlugin.class);
-
-        private HashMap<String, URL> resources = new HashMap<String, URL>();
-	private HashMap<String, IDistrictingAlgorithmConstructor> districtingAlgorithms
-	    = new HashMap<String, IDistrictingAlgorithmConstructor>();
+	private HashMap<String, IDistrictingAlgorithmConstructor> districtingAlgorithms = 
+		new HashMap<String, IDistrictingAlgorithmConstructor>();
 
 	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.geoclustering";
 	static final public String DEFAULT_ALGORITHM = "k-means";
@@ -61,18 +54,8 @@ public class DistrictingPlugin extends ThinklabPlugin {
 	public static DistrictingPlugin get() throws ThinklabPluginException {
 	    return (DistrictingPlugin) getPlugin(PLUGIN_ID);
 	}
-
-	public static Logger logger() {
-	    return log;
-	}
 	
 	public void load(KnowledgeManager km) throws ThinklabPluginException {
-
-		// install command to run a selected districting
-		// algorithm on a spatial dataset
-
-		//new District().install(km);
-
 	    
 	    /*
 	     * register default and other known districting algorithms
@@ -82,7 +65,7 @@ public class DistrictingPlugin extends ThinklabPlugin {
 	    registerDistrictingAlgorithm("isodata", new ISODATAAlgorithmConstructor());
 	}
 
-        public void registerDistrictingAlgorithm(String id, IDistrictingAlgorithmConstructor constructor) {
+    public void registerDistrictingAlgorithm(String id, IDistrictingAlgorithmConstructor constructor) {
 	    districtingAlgorithms.put(id, constructor);
 	}
 
@@ -95,41 +78,9 @@ public class DistrictingPlugin extends ThinklabPlugin {
 	    return da;
 	}
 	
-	public void unload(KnowledgeManager km) throws ThinklabPluginException {
+	@Override
+	protected void unload() throws ThinklabException {
+		// TODO Auto-generated method stub		
 	}
-
-	public void notifyConfigurationNode(Node n) {
-	}
-
-	public void notifyResource(String name, long time, long size)
-	              throws ThinklabException {
-
-//		
-//	    if (name.endsWith(".clj")) {
-//		log.info("Districting: found Clojure file: " + name);
-//	    } else if (name.endsWith(".lisp")) {
-//		log.info("Districting: found Common Lisp file: " + name);
-//	    } else if (name.endsWith(".abcl")) {
-//		log.info("Districting: found ABCL file (JAR): " + name);
-//	    }
-//
-//	    resources.put(name, exportResourceCached(name));
-	}
-
-	public void initialize() throws ThinklabException {
-	    // Create the Common Lisp interpreter instance
-	    // log.info("Districting: Creating an ABCL Interpreter...");
-	    // interpreter = Interpreter.createInstance();
-	}
-
-        public String getResourcePath(String resourceID) throws ThinklabException {
-            return resources.get(resourceID).getFile();
-        }
-
-		@Override
-		protected void unload() throws ThinklabException {
-			// TODO Auto-generated method stub
-			
-		}
 
 }

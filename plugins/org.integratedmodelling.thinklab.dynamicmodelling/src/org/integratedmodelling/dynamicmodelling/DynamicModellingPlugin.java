@@ -33,33 +33,18 @@
 package org.integratedmodelling.dynamicmodelling;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
-import org.integratedmodelling.dynamicmodelling.commands.MDoc;
 import org.integratedmodelling.dynamicmodelling.interfaces.IModelLoader;
 import org.integratedmodelling.dynamicmodelling.interfaces.IModelLoaderConstructor;
 import org.integratedmodelling.dynamicmodelling.loaders.DocumentationLoaderConstructor;
 import org.integratedmodelling.dynamicmodelling.loaders.ModelDocumentationGenerator;
-import org.integratedmodelling.dynamicmodelling.loaders.ModelOWLLoader;
 import org.integratedmodelling.dynamicmodelling.loaders.OWLLoaderConstructor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Polylist;
-import org.w3c.dom.Node;
 
 public class DynamicModellingPlugin extends ThinklabPlugin {
 
@@ -71,9 +56,6 @@ public class DynamicModellingPlugin extends ThinklabPlugin {
 	static final public String VARIABLE_DATASOURCE = "dynmod:ComputedVariable";
 	static final public String HAS_INFLOW = "dynmod:hasInflow";
 	static final public String HAS_OUTFLOW = "dynmod:hasOutflow";
-	
-	/* log4j logger used for this class. Can be used by other classes through logger()  */
-	private static  Logger log = Logger.getLogger(DynamicModellingPlugin.class);
 	
 	private HashMap<String, IModelLoaderConstructor> modelLoaders = new HashMap<String, IModelLoaderConstructor>();
 	private ArrayList<String> htmlResources = new ArrayList<String>();
@@ -90,18 +72,9 @@ public class DynamicModellingPlugin extends ThinklabPlugin {
 	public static DynamicModellingPlugin get() throws ThinklabPluginException {
 		return (DynamicModellingPlugin)getPlugin(PLUGIN_ID);
 	}
-
-	public static Logger logger() {
-		return log;
-	}
 	
 	public void load(KnowledgeManager km) throws ThinklabPluginException {
 		
-			// install temporary command to parse a file.
-			// TODO move to plugin.xml
-			//new MDoc().install(km);
-			
-	
 		/*
 		 * register default and other known loaders
 		 * TODO move to extension points
@@ -139,21 +112,9 @@ public class DynamicModellingPlugin extends ThinklabPlugin {
 		modelLoaders.put(id, constructor);
 	}
 	
-	
-	public void notifyResource(String name, long time, long size)
-			throws ThinklabException {
-
-		if (name.startsWith("resources/")) {
-			htmlResources.add(name);
-		}
-
-	}
-
 	public void unload(KnowledgeManager km) throws ThinklabPluginException {
 		// TODO Auto-generated method stub
-
 	}
-
 
 	public void copyHTMLResources(File docPath) throws ThinklabException {
 		

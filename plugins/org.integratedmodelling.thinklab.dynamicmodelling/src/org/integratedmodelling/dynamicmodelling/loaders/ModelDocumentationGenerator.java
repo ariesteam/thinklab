@@ -247,7 +247,7 @@ public class ModelDocumentationGenerator extends ModelOWLLoader implements IDocu
 		
 		URL modelURL = MiscUtilities.getURLForResource(msource);
 		
-		DynamicModellingPlugin.logger().info(
+		DynamicModellingPlugin.get().logger().info(
 				"Creating documentation for " +
 				msource + 
 				" into " +
@@ -286,7 +286,7 @@ public class ModelDocumentationGenerator extends ModelOWLLoader implements IDocu
 		/* read models in */
 		documentModel(model, annotation);
 		
-		DynamicModellingPlugin.logger().info(
+		DynamicModellingPlugin.get().logger().info(
 				"Finished creating documentation for " +
 				msource);
 		

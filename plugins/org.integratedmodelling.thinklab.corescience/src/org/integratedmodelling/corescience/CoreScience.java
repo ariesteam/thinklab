@@ -32,39 +32,19 @@
  **/
 package org.integratedmodelling.corescience;
 
-import java.io.File;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
-import org.integratedmodelling.corescience.commands.Contextualize;
-import org.integratedmodelling.corescience.commands.Link;
-import org.integratedmodelling.corescience.commands.Olist;
-import org.integratedmodelling.corescience.constructors.CSVDatasourceConstructor;
-import org.integratedmodelling.corescience.constructors.ClassificationModelConstructor;
-import org.integratedmodelling.corescience.constructors.ColumnFilterValidator;
-import org.integratedmodelling.corescience.constructors.ObservationConstructor;
-import org.integratedmodelling.corescience.constructors.ParsedDatasourceValidator;
-import org.integratedmodelling.corescience.constructors.RandomDataSourceConstructor;
-import org.integratedmodelling.corescience.constructors.RankingConstructor;
-import org.integratedmodelling.corescience.constructors.UnitValidator;
 import org.integratedmodelling.corescience.interfaces.IContextualizationWorkflow;
 import org.integratedmodelling.corescience.interfaces.IWorkflowConstructor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.interfaces.IKnowledge;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.w3c.dom.Node;
 
 /**
  * @author Ferdinando Villa
  *
  */
 public class CoreScience extends ThinklabPlugin {
-	
-	/* log4j logger used for this class. Can be used by other classes through logger()  */
-	private static  Logger log = Logger.getLogger(CoreScience.class);
 
 	private final static String PLUGIN_ID = "org.integratedmodelling.thinklab.corescience";
 	
@@ -118,10 +98,6 @@ public class CoreScience extends ThinklabPlugin {
 
 	public static CoreScience get() {
 		return (CoreScience) getPlugin(PLUGIN_ID );
-	}
-
-	public static Logger logger() {
-		return log;
 	}
 
 	/* (non-Javadoc)

@@ -108,11 +108,6 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	
 	private OWLOntology rootontology = null;
 	
-	 
-	
-	/* log4j logger used for this class */
-	private static  Logger log = Logger.getLogger(FileKnowledgeRepository.class);
-	
 	protected Hashtable<URL, String> loadedFiles = new Hashtable<URL, String>();
 	protected Hashtable<String, String> loadedNamespaces = new Hashtable<String, String>(); //Namespace-ConceptSpace
 	protected Hashtable<String, Ontology> loadedOntologies = new Hashtable<String, Ontology>();
@@ -158,9 +153,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 					protegeDir +
 					"; please copy the plugins/ folder and its contents in it from the Thinklab/lib directory");
 		}
-		
-		log.info("Protege support files read from " + pluginDir);
-		
+				
 		System.setProperty("protege.dir", protegeDir.toString());
 		// ProtegeOWL.PLUGIN_FOLDER = "";
 		ProtegeOWLParser.inUI = false;
@@ -178,10 +171,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		rootClass = new Concept(owlModel.getOWLThingClass());
 		
 		ReasonerManager reasonerManager = ReasonerManager.getInstance(); 
-		reasoner = reasonerManager.getReasoner(this.owlModel);
-				
-		log.info("Knowledge repository created: " + rootontology.getURI());
-		
+		reasoner = reasonerManager.getReasoner(this.owlModel);		
 		
 	}
 	
@@ -210,15 +200,15 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 				importOntology(url, nspace, false);
 				
 			} catch (Exception ex) {
-				log.warn("Cant load ontology for the file: " + f.getName()
+				Thinklab.get().logger().warn("Cant load ontology for the file: " + f.getName()
 						+ " " + ex.getMessage());
 			}
 		}
 		if (LocalConfiguration.hasResource("thinklab.reasoner.url")) {
 			connectReasoner(LocalConfiguration.getResource("thinklab.reasoner.url"));
-			log.info(reasonerConnected()? "Connected to reasoner: "+ reasoner.getIdentity().getName() : "Reasoner not connected.");
+			Thinklab.get().logger().info(reasonerConnected()? "Connected to reasoner: "+ reasoner.getIdentity().getName() : "Reasoner not connected.");
 		} else {
-			log.info("Reasoner support not configured");
+			Thinklab.get().logger().info("Reasoner support not configured");
 		}
 	}
 	
@@ -231,7 +221,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	
 	public String importOntology(URL url, String nspace, boolean saveToRepository) throws ThinklabException {
 		//TODO: check if the url ends with # and eliminate it
-		log.debug("Importing ontology " + nspace + " from :" + url);
+		Thinklab.get().logger().debug("Importing ontology " + nspace + " from :" + url);
 		URI ontoURI;
 		try {
 			InputStream io = url.openStream();
@@ -253,7 +243,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		}
 
 		if (flag ){
-			log.debug("Ontology exists    : "+ url + " is alrady loaded.");
+			Thinklab.get().logger().debug("Ontology exists    : "+ url + " is alrady loaded.");
 			if(r instanceof ThinklabLocalRepository)
 				return loadedNamespaces.get(((ThinklabLocalRepository) r).getNamespace());
 			else
@@ -265,11 +255,9 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		else{
 
 			File tf = new File(url.getFile());
-			File pluginDir = LocalConfiguration.getDataDirectory("plugins");
 
 			boolean isSystem = 
-				tf.getParent().equals(repositoryDirectory.getPath()) ||
-				tf.getPath().startsWith(pluginDir.getPath());
+				tf.getParent().equals(repositoryDirectory.getPath());
 			
 			if (saveToRepository) {
 		
@@ -293,7 +281,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 //			loadedOntologies.put(cspace, onto);
 //			loadedFiles.put(url, cspace);
 
-			log.info("Loaded   ontology: " + url);
+			Thinklab.get().logger().info("Loaded   ontology: " + url);
 
 			return cspace;
 		}
@@ -305,7 +293,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		try {
 			outfile.createNewFile();
 		} catch (IOException e) {
-			log.warn("Cant create file. " + e.getStackTrace());
+			Thinklab.get().logger().warn("Cant create file. " + e.getStackTrace());
 		}
 		if (outfile.canWrite()) {
 			OutputStream os;
@@ -313,10 +301,10 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 				os = new FileOutputStream(outfile);
 				onto.write(os);
 			} catch (FileNotFoundException e) {
-				log.warn("Cant create file. " + e.getStackTrace());
+				Thinklab.get().logger().warn("Cant create file. " + e.getStackTrace());
 			}
 		} else
-			log.warn("File " + fileuri + " does not exist.");
+			Thinklab.get().logger().warn("File " + fileuri + " does not exist.");
 	}
 	
 	public IOntology retrieveOntology(String ontName) {
@@ -479,14 +467,14 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	public void printDetails() {
 		String s = "\n";
 		s += ("Knowledge Repository " + getURI()) + "\n";
-		Iterator c = nameSpaceManager.getPrefixes().iterator();
+		Iterator<?> c = nameSpaceManager.getPrefixes().iterator();
 		while (c.hasNext()) {
 			String ns = c.next().toString();
 			s += ("Namespace : " + ns + ": " + nameSpaceManager
 					.getNamespaceForPrefix(ns))
 					+ "\n";
 		}
-		log.info(s);
+		Thinklab.get().logger().info(s);
 	}
 	
 	private void moveFileToBackup(File f) throws ThinklabIOException {
@@ -558,7 +546,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 			ReasonerPreferences.getInstance().setReasonerURL(address.toString());
 			
 		} catch (Exception e) {
-			log.warn("Reasoner address can't be located.");
+			Thinklab.get().logger().warn("Reasoner address can't be located.");
 		}
 	}
 	public boolean reasonerConnected(){

@@ -67,7 +67,7 @@ public class ContextStateGenerator implements IContextStateGenerator {
 				} catch (ThinklabException e) {
 					// should not happen, if it does, too bad, we can't have exceptions 
 					// thrown here.
-					CoreScience.logger().
+					CoreScience.get().logger().
 						fatal("internal: addDimension threw exception in ContextStateIterator constructor: " +
 								e.getMessage());
 				}
@@ -97,7 +97,7 @@ public class ContextStateGenerator implements IContextStateGenerator {
 					} catch (ThinklabException e) {
 						// should not happen, if it does, too bad, we can't have exceptions 
 						// thrown here.
-						CoreScience.logger().
+						CoreScience.get().logger().
 							fatal("internal: exception in ContextStateIterator.next(): " +
 									e.getMessage());
 					}
@@ -113,7 +113,7 @@ public class ContextStateGenerator implements IContextStateGenerator {
 
 			// just don't use it for now. It may become relevant when 
 			// agent models are used, but who knows.
-			CoreScience.logger().
+			CoreScience.get().logger().
 				fatal("internal: ContextStateIterator.remove() called");
 
 		}

@@ -2,16 +2,12 @@ package org.integratedmodelling.thinklab;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Iterator;
 
+import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.java.plugin.Plugin;
-import org.java.plugin.registry.Extension;
-import org.java.plugin.registry.ExtensionPoint;
-import org.java.plugin.registry.Extension.Parameter;
 
 /**
  * Activating this plugin means loading the knowledge manager, effectively initializing the
@@ -25,13 +21,29 @@ public class Thinklab extends ThinklabPlugin {
 	public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.core";
 	
 	public static Thinklab get() {
-		return (Thinklab)getPlugin(PLUGIN_ID);
+		return _this;
 	}
 	
 	KnowledgeManager _km = null;
+
+	// only for this plugin, very ugly, but we need to access logging etc. before doStart() has
+	// finished and the plugin has been published.
+	static Thinklab _this = null;
+	
+	public Thinklab() {
+		_this = this;
+	}
 	
 	@Override
 	protected void preStart() throws ThinklabException {
+		
+		/*
+		 * initialize global config from plugin properties before setConfiguration() is called
+		 */
+		URL config = getResourceURL("core.properties");
+		
+		if (config != null)
+			LocalConfiguration.loadProperties(config);
 		
 		/*
 		 * TODO we need to establish what knowledge repository and session manager to

@@ -163,7 +163,7 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 					"authentication.local.database", 
 					"hsqlfile://sa@localhost/auth");
 		
-		AuthenticationPlugin.logger().info("autentication database is " + db);
+		AuthenticationPlugin.get().logger().info("autentication database is " + db);
 
 		/*
 		 * An encryption key should REALLY be set into properties.

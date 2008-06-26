@@ -21,7 +21,7 @@ public class OPAL extends ThinklabPlugin {
 		super.loadExtensions();
 		
 		for (Extension ext : this.getOwnExtensions(PLUGIN_ID, "opal-profile")) {
-			addProfile(this.exportResourceCached(ext.getParameter("url").valueAsString()));
+			addProfile(this.getResourceURL(ext.getParameter("url").valueAsString()));
 		}
 	}
 

@@ -58,18 +58,15 @@ package org.integratedmodelling.thinklab.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
@@ -81,15 +78,17 @@ import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
+import org.integratedmodelling.thinklab.extensions.KBoxHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
 import org.integratedmodelling.thinklab.extensions.LiteralValidator;
+import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.Plugin;
 import org.java.plugin.PluginLifecycleException;
-import org.java.plugin.PluginManager;
 import org.java.plugin.registry.Extension;
 import org.java.plugin.registry.ExtensionPoint;
 import org.java.plugin.registry.Extension.Parameter;
@@ -113,12 +112,32 @@ public abstract class ThinklabPlugin extends Plugin
 	private File plugFolder;
 	private File loadFolder;
 	
+	/**
+	 * ALWAYS call this one to ensure that all the necessary plugins are loaded, even if
+	 * dependencies are properly declared.
+	 * 
+	 * @param pluginId
+	 * @throws ThinklabPluginException
+	 */
+	protected void requirePlugin(String pluginId) throws ThinklabPluginException {
+
+		try {
+			getManager().activatePlugin(pluginId);
+		} catch (PluginLifecycleException e) {
+			throw new ThinklabPluginException(e);
+		}
+	}
+	
 	/*
 	 * intercepts the beginning of doStart()
 	 * only used in main Thinklab plugin so far, not sure it should be exposed
 	 */
 	protected void preStart() throws ThinklabException {
 		
+	}
+	
+	public Log logger() {
+		return log;
 	}
 	
 	/**
@@ -158,11 +177,12 @@ public abstract class ThinklabPlugin extends Plugin
 	
 	@Override
 	protected final void doStart() throws Exception {
-		
+
 		loadConfiguration();
 
 		preStart();
-				
+		
+
 		/*
 		 * Check if we have a KM and if not, put out a good explanation of why we should
 		 * read the manual, if there was one.
@@ -176,6 +196,7 @@ public abstract class ThinklabPlugin extends Plugin
 		loadLanguageInterpreters();
 		loadCommands();
 		loadInstanceImplementationConstructors();
+		loadSessionListeners();
 		
 		loadExtensions();
 		
@@ -187,13 +208,13 @@ public abstract class ThinklabPlugin extends Plugin
 	}
 	
 	protected void loadConfiguration() throws ThinklabIOException {
-	
-	   String lf = new File(getDescriptor().getLocation().getFile()).getAbsolutePath();
-	   loadFolder = new File(Escape.fromURL(MiscUtilities.getPath(lf).toString()));
-	   
-       plugFolder = LocalConfiguration.getDataDirectory(getDescriptor().getId());
-       confFolder = new File(plugFolder + File.separator + "config");
-       dataFolder = new File(plugFolder + File.separator + "data");
+
+		String lf = new File(getDescriptor().getLocation().getFile()).getAbsolutePath();
+		loadFolder = new File(Escape.fromURL(MiscUtilities.getPath(lf).toString()));
+
+        plugFolder = LocalConfiguration.getDataDirectory(getDescriptor().getId());
+        confFolder = new File(plugFolder + File.separator + "config");
+        dataFolder = new File(plugFolder + File.separator + "data");
 	
        /*
         * make sure we have all paths
@@ -340,14 +361,25 @@ public abstract class ThinklabPlugin extends Plugin
 
 	}
 
+	protected void loadSessionListeners() throws ThinklabException {
+		
+		for (Extension ext : getOwnThinklabExtensions("session-listener")) {
+
+			Class<?> lv = getHandlerClass(ext, "class");
+			KnowledgeManager.get().registerSessionListenerClass(lv);
+		}
+
+	}
+
+	
 	protected void loadLanguageInterpreters() throws ThinklabException {
 		
 		for (Extension ext : getOwnThinklabExtensions("language-interpreter")) {
 
 			LanguageInterpreter lint =  (LanguageInterpreter) getHandlerInstance(ext, "class");
-			String csp = ext.getParameter("concept-space").valueAsString();
+			String csp = ext.getParameter("language-type").valueAsString();
 			
-			// TODO
+			InterpreterManager.get().registerInterpreter(csp, lint);
 		}
 		
 	}
@@ -400,27 +432,48 @@ public abstract class ThinklabPlugin extends Plugin
 		return ret;
 	}
 
+	protected Class<?> getHandlerClass(Extension ext, String field) throws ThinklabPluginException {
+		
+		ClassLoader classLoader = getManager().getPluginClassLoader(getDescriptor());
+		Class<?> cls = null;
+		try {
+
+			cls = classLoader.loadClass(ext.getParameter(field).valueAsString());
+			
+		} catch (Exception e) {
+			throw new ThinklabPluginException(e);
+		}
+		return cls;
+	}
+
+	
 	protected void loadKnowledgeLoaders() throws ThinklabException {
 		
 		for (Extension ext : getOwnThinklabExtensions("knowledge-loader")) {
 
-			String format = ext.getParameter("format").valueAsString();				
-			KnowledgeManager.get().registerKnowledgeLoader(
-					format, 
+			String[] format = getParameter(ext, "format").split(",");	
+			
+			for (String f : format) {
+				KnowledgeManager.get().registerKnowledgeLoader(
+					f, 
 					(KnowledgeLoader) getHandlerInstance(ext, "class"));
+			}
 		}
 		
 	}
 	
-	protected void loadKBoxHandlers() {
+	protected void loadKBoxHandlers() throws ThinklabNoKMException, ThinklabPluginException {
 		
 		for (Extension ext : getOwnThinklabExtensions("kbox-handler")) {
 
-			String url = getParameter(ext, "url");
-			String csp = getParameter(ext, "concept-space");
+			String[] format = getParameter(ext, "protocol").split(",");	
 			
-			// TODO
-		}
+			for (String f : format) {
+				KBoxManager.get().registerKBoxProtocol(
+					f, 
+					(KBoxHandler) getHandlerInstance(ext, "class"));
+			}
+		}	
 		
 	}
 
@@ -434,6 +487,7 @@ public abstract class ThinklabPlugin extends Plugin
 		unloadKnowledgeImporters();
 		unloadKBoxHandlers();
 		unloadLiteralValidators();
+		unloadSessionListeners();
 		unloadOntologies();
 		
 		loadExtensions();
@@ -471,6 +525,11 @@ public abstract class ThinklabPlugin extends Plugin
 	}
 
 	private void unloadLiteralValidators() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void unloadSessionListeners() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -556,21 +615,6 @@ public abstract class ThinklabPlugin extends Plugin
 	 */
 	public Properties getProperties() {
 		return properties;
-	}
-	
-	
-	public URL exportResourceCached(String name) throws ThinklabException {
-		
-		URL ret = resources.get(name);
-		
-		if (ret == null)
-			throw  new ThinklabPluginException("plugin " + getDescriptor().getId() + " does not provide resource " + name);
-	
-		// TODO see what the Jar thing 
-		//ret = jar.saveResourceCached(name, KnowledgeManager.get().getPluginRegistry().getCacheDir());
-		resources.put(name, ret);
-		
-		return ret;
 	}
 	
 	public File getScratchPath() throws ThinklabException  {

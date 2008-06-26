@@ -34,37 +34,64 @@
 package org.integratedmodelling.thinklab.configuration;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
-
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 
 /**
- * TODO initialize with application (boot) properties
+ * 
  * @author Ferdinando Villa
  *
  */
 public class LocalConfiguration {
 
-	static Properties properties = null;
+	static Properties properties = new Properties();
 	
-    static File systemPrefix = null;
-    static File writableSpace = null;
-    static File configSpace = null;
-    static File userConfigPath = new File(System.getProperty("user.home") + "/.thinklab");
+    static File userConfigPath = 
+    	new File(
+    			System.getProperty("user.home") + 
+    			File.separator + 
+    			".thinklab");
     
-    static Logger log =  Logger.getLogger("org.integratedmodelling.utils.LocalConfiguration");
+    static File systemPath = 
+    	new File(
+    			System.getProperty("user.home") + 
+    			File.separator + 
+    			".thinklab" + 
+    			File.separator + 
+    			"system");
+
+    static File dataPath = 
+    	new File(
+    			System.getProperty("user.home") + 
+    			File.separator + 
+    			".thinklab" + 
+    			File.separator + 
+    			"data");
+    
     static public File getSystemPath() {
-    	return new File(getProperties().getProperty("thinklab.system.prefix"));
+    	return systemPath;
     }
 
     static public File getDataPath() {
-    	return new File(getProperties().getProperty("thinklab.data.prefix"));
+    	return dataPath;
+    }
+    
+    private static void setup() {
+    	
+		if (!userConfigPath.exists())
+			userConfigPath.mkdir();
+    	
+    	if (properties.containsKey("thinklab.system.prefix"))
+    		systemPath = new File(getProperties().getProperty("thinklab.system.prefix"));
+    	if (properties.containsKey("thinklab.data.prefix"))
+    		dataPath = new File(getProperties().getProperty("thinklab.data.prefix"));    	
+    	
+    	systemPath.mkdirs();
+    	dataPath.mkdirs();
     }
     
     static OS os = null;
@@ -89,67 +116,70 @@ public class LocalConfiguration {
     	return os;
     }
     
-    static void setProperties(Properties p) {
-    	properties = p;
+    public static void setProperties(Properties p) {
+    	
+    	properties.putAll(p);
+    	setup();
     }
     
-    static void loadProperties(URL pfile) throws ThinklabIOException {
-    	if (properties == null) {
-    		properties = new Properties();
-    	}
-    	
+    public static void loadProperties(URL pfile) throws ThinklabIOException {
+
     	try {
 			properties.load(pfile.openStream());
 		} catch (IOException e) {
 			throw new ThinklabIOException(e);
 		}
+		setup();
     }
     
 	/**
 	 * Get the global system preferences. These can be overridden using files.
 	 * @return the global system preferences.
+	 * 
+	 * FV properties must now be loaded explicitly - done in the core plugin
 	 */
 	static public Properties getProperties() {
 
-        if (properties == null) {
-
-            properties = new Properties();
-			
-			/* look for properties file in typical places and load it if existing. */
-			File sysconf = new File("/usr/share/thinklab");
-            File wprefix = new File(System.getProperty("user.dir") + "/thinklab/data");
-
-            switch (getOS()) {
-            case MACOS: 
-                // TODO where the heck should this be on a Mac?
-                sysconf = new File("/usr/share/thinklab");
-            	break;
-            case WIN: 
-                sysconf = new File("C:\\Program Files\\ThinkLab");
-            	break;
-            case UNIX:
-                sysconf = new File("/usr/share/thinklab");
-            	break;
-            }
-            
-            File sysconfig = new File(getUserConfigDirectory() + "/thinklab.properties");
-            
-            if (!sysconfig.exists()) 
-                sysconfig = new File(sysconf + "/config/thinklab.properties");
-
-            if (sysconfig.exists())
-                try {
-                	log.info("ThinkLab configuration loaded from : " + sysconfig);
-                    properties.load(new FileInputStream(sysconfig));
-                } catch (Exception e) {
-                    // just do nothing
-                } 
-                
-            if (properties.getProperty("thinklab.system.prefix") == null)
-                properties.setProperty("thinklab.system.prefix", sysconf.toString());
-            if (properties.getProperty("thinklab.data.prefix") == null)
-                properties.setProperty("thinklab.data.prefix", wprefix.toString());
-		}
+//		
+//        if (properties == null) {
+//
+//            properties = new Properties();
+//			
+//			/* look for properties file in typical places and load it if existing. */
+//			File sysconf = new File("/usr/share/thinklab");
+//            File wprefix = new File(System.getProperty("user.dir") + "/thinklab/data");
+//
+//            switch (getOS()) {
+//            case MACOS: 
+//                // TODO where the heck should this be on a Mac?
+//                sysconf = new File("/usr/share/thinklab");
+//            	break;
+//            case WIN: 
+//                sysconf = new File("C:\\Program Files\\ThinkLab");
+//            	break;
+//            case UNIX:
+//                sysconf = new File("/usr/share/thinklab");
+//            	break;
+//            }
+//            
+//            File sysconfig = new File(getUserConfigDirectory() + "/thinklab.properties");
+//            
+//            if (!sysconfig.exists()) 
+//                sysconfig = new File(sysconf + "/config/thinklab.properties");
+//
+//            if (sysconfig.exists())
+//                try {
+//                	log.info("ThinkLab configuration loaded from : " + sysconfig);
+//                    properties.load(new FileInputStream(sysconfig));
+//                } catch (Exception e) {
+//                    // just do nothing
+//                } 
+//                
+//            if (properties.getProperty("thinklab.system.prefix") == null)
+//                properties.setProperty("thinklab.system.prefix", sysconf.toString());
+//            if (properties.getProperty("thinklab.data.prefix") == null)
+//                properties.setProperty("thinklab.data.prefix", wprefix.toString());
+//		}
         return properties;
 	}
 	
@@ -163,7 +193,7 @@ public class LocalConfiguration {
 	 */
 	static public File getSystemDirectory(String ID) {		
 		
-        return new File(getProperties().get("thinklab.system.prefix") + "/" + ID);
+        return new File(systemPath + File.separator + ID);
     }        
 	
 	/**
@@ -175,7 +205,7 @@ public class LocalConfiguration {
 	 */
 	static public File getDataDirectory(String ID) throws ThinklabIOException {
 
-        File ret = new File(getProperties().getProperty("thinklab.data.prefix") + "/" + ID);
+        File ret = new File(dataPath + File.separator + ID);
         
 		/* create if absent */
 		if (!ret.exists() || !ret.isDirectory())
@@ -191,7 +221,6 @@ public class LocalConfiguration {
 	}
 	
 	public static File getUserConfigDirectory()  {
-		
 		
 		if (!userConfigPath.exists())
 			userConfigPath.mkdir();

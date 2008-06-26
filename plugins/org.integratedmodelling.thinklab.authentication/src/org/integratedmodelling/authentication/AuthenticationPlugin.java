@@ -34,7 +34,6 @@ package org.integratedmodelling.authentication;
 
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
@@ -56,9 +55,6 @@ import org.w3c.dom.Node;
  */
 public class AuthenticationPlugin extends ThinklabPlugin implements IThinklabAuthenticationManager {
 
-	/* log4j logger used for this class. Can be used by other classes through logger()  */
-	private static  Logger log = Logger.getLogger(AuthenticationPlugin.class);
-
 	private final static String PLUGIN_ID = "org.integratedmodelling.thinklab.authentication";
 
 	/**
@@ -76,10 +72,6 @@ public class AuthenticationPlugin extends ThinklabPlugin implements IThinklabAut
 		return (AuthenticationPlugin) getPlugin(PLUGIN_ID );
 	}
 
-	public static Logger logger() {
-		return log;
-	}
-	
 	@Override
 	public void load(KnowledgeManager km) throws ThinklabException {
 		

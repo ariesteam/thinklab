@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.thinkscape" version="0.8.0" class="org.integratedmodelling.thinkscape.ThinkscapePlugin">
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+	</requires>
+	<runtime>
+		<library id="core" path="classes/" type="code">
+			<export prefix="*"/>
+		</library>				
+		<library type="code" id="prefuse"  path="lib/prefuse.jar"/>
+		<library type="code" id="growl"  path="lib/growl.jar"/>
+	</runtime>
+
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="thinkscape">
+		<parameter id="class" value="org.integratedmodelling.thinkscape.commands.Thinkscape"/>
+		<parameter id="command-name" value="thinkscape"/>
+		<parameter id="command-description" value="create a thinkscape monitor"/>
+	</extension>
+
+</plugin>

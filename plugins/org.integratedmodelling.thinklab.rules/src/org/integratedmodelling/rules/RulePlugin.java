@@ -32,9 +32,6 @@
  **/
 package org.integratedmodelling.rules;
 
-import java.io.File;
-
-import org.apache.log4j.Logger;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.integratedmodelling.rules.exceptions.ThinklabRuleEngineException;
@@ -44,7 +41,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.w3c.dom.Node;
 
 import edu.stanford.smi.protegex.owl.model.OWLModel;
 
@@ -52,8 +48,6 @@ public class RulePlugin extends ThinklabPlugin {
 
 	private OWLModel owlModel;
 	
-	/* log4j logger used for this class. Can be used by other classes through logger()  */
-	private static  Logger log = Logger.getLogger(RulePlugin.class);
 	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.rules";
 
 	// property to select the type of engine to be created. Should be jess or drools. 
@@ -70,10 +64,6 @@ public class RulePlugin extends ThinklabPlugin {
 		return (RulePlugin) getPlugin(PLUGIN_ID);
 	}
 
-	public static Logger logger() {
-		return log;
-	}
-	
 	/*
 	 * the Drools rule base (thread safe).
 	 */
@@ -123,9 +113,7 @@ public class RulePlugin extends ThinklabPlugin {
 		} else {
 			throw new ThinklabPluginException("rule: unknown rule engine configured: " + engine);
 		}
-		
-		km.registerSessionListenerClass("org.integratedmodelling.rules.session.RuleSessionListener");		
-		
+				
 	}
 
 	public boolean isUsingJess() {

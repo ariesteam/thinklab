@@ -38,7 +38,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.w3c.dom.Node;
 
 public class TimePlugin extends ThinklabPlugin {
 
@@ -82,8 +81,6 @@ public class TimePlugin extends ThinklabPlugin {
     	STEP_SIZE_PROPERTY_ID = 
     		getProperties().getProperty("StepSizePropertyID", "time:inStepsOf");
     	
-    	
-    	
     	try {
     		
 			timeRecordConcept = km.requireConcept(TIMERECORD_TYPE_ID);
@@ -96,15 +93,6 @@ public class TimePlugin extends ThinklabPlugin {
 		} catch (ThinklabException e) {
 			throw new ThinklabPluginException(e);
 		}
-
-		// TODO move to extensions
-//        km.registerLiteralValidator(DATETIME_TYPE_ID, new TimeValidator());
-//        km.registerLiteralValidator(PERIOD_TYPE_ID, new PeriodValidator());
-//        km.registerLiteralValidator(DURATION_TYPE_ID, new DurationValidator());
-//        km.registerLiteralValidator(TIMERECORD_TYPE_ID, new TimeRecordValidator());
-//
-//        km.registerInstanceConstructor(TIMERECORD_TYPE_ID, new TimeRecordConstructor());
-//        km.registerInstanceConstructor(TEMPORALGRID_TYPE_ID, new TemporalGridConstructor());
     }
 
     public void unload() throws ThinklabPluginException {
@@ -130,11 +118,6 @@ public class TimePlugin extends ThinklabPlugin {
 
 	public static IInstance absoluteTimeInstance() {
 		return absoluteTimeInstance;
-	}
-
-	public void notifyConfigurationNode(Node n) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

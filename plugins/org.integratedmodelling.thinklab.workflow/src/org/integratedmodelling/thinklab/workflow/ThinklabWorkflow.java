@@ -3,6 +3,7 @@ package org.integratedmodelling.thinklab.workflow;
 import java.net.URL;
 import java.util.Properties;
 
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.workflow.evaluators.IValueVariableEvaluator;
@@ -39,7 +40,14 @@ public class ThinklabWorkflow extends WorkflowDirector {
 	
 	@Override
 	protected URL getOSWorkflowConfiguration() {
-		return WorkflowPlugin.get().getOSWorkflowConfiguration();
+		
+		URL ret = null;
+		try {
+			ret = WorkflowPlugin.get().getOSWorkflowConfiguration();
+		} catch (ThinklabIOException e) {
+			// FIXME shouldn't ignore it, but it's messy
+		}
+		return ret;
 	}
 
 	@Override

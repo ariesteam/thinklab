@@ -35,14 +35,13 @@ package org.integratedmodelling.searchengine;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 public class SearchEnginePlugin extends ThinklabPlugin {
 
-	static final String ID = "SearchEngine";
+	static final String ID = "org.integratedmodelling.thinklab.searchengine";
 	
 	ArrayList<SearchEngine> engines = new ArrayList<SearchEngine>();
 	
@@ -91,19 +90,8 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 	public static final String SEARCHENGINE_INDEX_ONTOLOGIES_PROPERTY = 
 		"searchengine.%.index.ontologies";
 	
-	private static  Logger log = Logger.getLogger(SearchEnginePlugin.class);
-	
 	public static SearchEnginePlugin get() {
 		return (SearchEnginePlugin) getPlugin(ID );
-	}
-	
-
-	public static Logger logger() {
-		return log;
-	}
-	
-
-	public void initialize() throws ThinklabException {
 	}
 	
 	/**

@@ -516,8 +516,6 @@ public class ThinklabOWLManager {
 
 	
 	public void interpretPropertyList (Polylist l, Ontology ont, IInstance inst, Collection<ReferenceRecord> reftable) throws ThinklabException {
-
-		KnowledgeTree ctr = KnowledgeManager.getClassTree();
 		
 		/*
 		 * List must contain exactly two elements
@@ -669,17 +667,17 @@ public class ThinklabOWLManager {
 					/* stop at the first concept in range that validates the object. */
 					for (IConcept c : range) {
 						
-						String cst = c.getSemanticType().toString();
+						//String cst = c.getSemanticType().toString();
 						
 						if (
-								(ctr.is(cst, KnowledgeManager.TextType()) && o2 instanceof String) ||
-								(ctr.is(cst, KnowledgeManager.DoubleType()) && 
+								(c.is(KnowledgeManager.TextType()) && o2 instanceof String) ||
+								(c.is(KnowledgeManager.DoubleType()) && 
 										(o2 instanceof Double || o2 instanceof Float)) ||
-								(ctr.is(cst, KnowledgeManager.FloatType()) && 
+								(c.is(KnowledgeManager.FloatType()) && 
 										(o2 instanceof Float || o2 instanceof Double)) ||
-								(ctr.is(cst, KnowledgeManager.IntegerType()) && o2 instanceof Integer) ||
-								(ctr.is(cst, KnowledgeManager.LongType()) && o2 instanceof Long) ||
-								(ctr.is(cst, KnowledgeManager.BooleanType()) && o2 instanceof Boolean) 
+								(c.is(KnowledgeManager.IntegerType()) && o2 instanceof Integer) ||
+								(c.is(KnowledgeManager.LongType()) && o2 instanceof Long) ||
+								(c.is(KnowledgeManager.BooleanType()) && o2 instanceof Boolean) 
 							) 
 						{
 							toAdd = o2;
@@ -697,19 +695,19 @@ public class ThinklabOWLManager {
 						
 						for (IConcept c : range) {
 
-							String cst = c.getSemanticType().toString();
+							//String cst = c.getSemanticType().toString();
 
 							/*
 							 * FIXME there's a lot more XSD types to support. Would be good to
 							 * use functions in protege' for this, or anywhere else, rather than
 							 * trying them all out. 
 							 */
-							if (ctr.is(cst, KnowledgeManager.TextType())) {
+							if (c.is(KnowledgeManager.TextType())) {
 							
 								/* this should catch URIs etc for now */
 								toAdd = so2;
 								
-							} else 	if (ctr.is(cst, KnowledgeManager.DoubleType())) {
+							} else 	if (c.is(KnowledgeManager.DoubleType())) {
 
 								// FIXME actually it's FIXIT, protege wants a float or it will crash
 								Float d = null;
@@ -720,7 +718,7 @@ public class ThinklabOWLManager {
 								if (d != null)
 									toAdd = d;
 								
-							} else 	if (ctr.is(cst, KnowledgeManager.IntegerType())) {
+							} else 	if (c.is(KnowledgeManager.IntegerType())) {
 
 								Integer d = null;
 								try {
@@ -730,7 +728,7 @@ public class ThinklabOWLManager {
 								if (d != null)
 									toAdd = d;
 								
-							} else 	if (ctr.is(cst, KnowledgeManager.FloatType())) {
+							} else 	if (c.is(KnowledgeManager.FloatType())) {
 
 								Float d = null;
 								try {
@@ -740,7 +738,7 @@ public class ThinklabOWLManager {
 								if (d != null)
 									toAdd = d;
 								
-							} else 	if (ctr.is(cst, KnowledgeManager.LongType())) {
+							} else 	if (c.is(KnowledgeManager.LongType())) {
 
 								Long d = null;
 								try {
@@ -750,7 +748,7 @@ public class ThinklabOWLManager {
 								if (d != null)
 									toAdd = d;
 								
-							} else 	if (ctr.is(cst, KnowledgeManager.BooleanType())) {
+							} else 	if (c.is(KnowledgeManager.BooleanType())) {
 
 								Boolean d = null;
 								try {
@@ -786,18 +784,17 @@ public class ThinklabOWLManager {
 					} else if (ivalue.isBoolean()) {
 						toAdd = new Boolean(((BooleanValue)ivalue).value);
 					} else if (ivalue.isNumber()) {
-
-						String cst = ivalue.getConcept().getSemanticType().toString();
-
 						
-						if (ctr.is(cst, KnowledgeManager.DoubleType())) {
+						IConcept c = ivalue.getConcept();
+						
+						if (c.is(KnowledgeManager.DoubleType())) {
 							// FIXME actually FIXIT, protege wants a Float here, a Double will crash it
 							toAdd = new Float(((NumberValue)ivalue).asFloat());
-						} else if (ctr.is(cst, KnowledgeManager.FloatType())) {
+						} else if (c.is(KnowledgeManager.FloatType())) {
 							toAdd = new Float(((NumberValue)ivalue).asFloat());
-						} else if (ctr.is(cst, KnowledgeManager.LongType())) {
+						} else if (c.is(KnowledgeManager.LongType())) {
 							toAdd = new Long(((NumberValue)ivalue).asLong());
-						} else if (ctr.is(cst, KnowledgeManager.IntegerType())) {
+						} else if (c.is(KnowledgeManager.IntegerType())) {
 							toAdd = new Integer(((NumberValue)ivalue).asInteger());
 						}	
 					} else {

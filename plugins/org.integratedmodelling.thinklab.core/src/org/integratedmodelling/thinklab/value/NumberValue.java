@@ -123,17 +123,14 @@ public class NumberValue extends ParsedLiteralValue {
      * @throws ThinklabException 
      */
     public Object getPODValue()  {
-
-    	KnowledgeTree ctr = KnowledgeManager.getClassTree();
-    	String cts = concept.getSemanticType().toString();
     	
-    	if (ctr.is(cts, KnowledgeManager.IntegerType()))
+    	if (concept.is(KnowledgeManager.IntegerType()))
     		return asInteger();
-    	else if (ctr.is(cts, KnowledgeManager.LongType())) 
+    	else if (concept.is(KnowledgeManager.LongType())) 
     		return asLong();
-    	else if (ctr.is(cts, KnowledgeManager.FloatType()))
+    	else if (concept.is(KnowledgeManager.FloatType()))
     		return asFloat();
-    	else if (ctr.is(cts, KnowledgeManager.DoubleType())) 
+    	else if (concept.is(KnowledgeManager.DoubleType())) 
     		return asDouble();
     	return null;
     }

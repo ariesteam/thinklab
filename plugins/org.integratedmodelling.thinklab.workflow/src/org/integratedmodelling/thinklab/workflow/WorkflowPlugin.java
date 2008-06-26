@@ -34,17 +34,15 @@ package org.integratedmodelling.thinklab.workflow;
 
 import java.net.URL;
 
-import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 public class WorkflowPlugin extends ThinklabPlugin  {
 
-	/* log4j logger used for this class. Can be used by other classes through logger()  */
-	private static  Logger log = Logger.getLogger(WorkflowPlugin.class);
 	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.workflow";
-	private URL osWorkflowConfiguration;
+	
 	/**
 	* TODO use plugin properties to define the initial action id. For now
 	* keep it simple - initial actions have an id of 0.
@@ -58,36 +56,14 @@ public class WorkflowPlugin extends ThinklabPlugin  {
 	public static final String ARG_COMMAND_OUTPUT_WRITER = "command.output.writer";
 	public static final String ARG_THINKLAB_SESSION = "thinklab.session";
 	
-	
-	public WorkflowPlugin() {
-		// TODO Auto-generated constructor stub
-	}
-
-	
+		
 	public static WorkflowPlugin get() {
 		return (WorkflowPlugin) getPlugin(PLUGIN_ID);
 	}
 
-	public static Logger logger() {
-		return log;
-	}
-
 	@Override
 	public void load(KnowledgeManager km) throws ThinklabPluginException {
-
-		//new TestWorkflow().install(km);
-		
-
 	}
-
-//	@Override
-//	public void notifyResource(String name, long time, long size)
-//			throws ThinklabException {
-//		
-//		if (name.endsWith("osworkflow.xml"))
-//			osWorkflowConfiguration = this.exportResourceCached(name);
-//
-//	}
 
 	@Override
 	public void unload() throws ThinklabPluginException {
@@ -95,8 +71,8 @@ public class WorkflowPlugin extends ThinklabPlugin  {
 
 	}
 
-	public URL getOSWorkflowConfiguration() {
-		return osWorkflowConfiguration;
+	public URL getOSWorkflowConfiguration() throws ThinklabIOException {
+		return getResourceURL("osworkflow.xml");
 	}
 
 }

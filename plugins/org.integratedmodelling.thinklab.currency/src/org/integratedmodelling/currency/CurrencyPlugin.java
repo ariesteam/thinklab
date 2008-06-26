@@ -35,50 +35,20 @@ package org.integratedmodelling.currency;
 import java.io.File;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
 import org.integratedmodelling.currency.cpi.CpiConversionFactory;
 import org.integratedmodelling.sql.SQLPlugin;
 import org.integratedmodelling.sql.SQLServer;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.w3c.dom.Node;
 
 public class CurrencyPlugin extends ThinklabPlugin  {
 
 	CpiConversionFactory convFactory = null;
-	
 	URL cpiDataURL = null;
 	URL exchangeDataURL = null;
-
-	/* log4j logger used for this class. Can be used by other classes through logger()  */
-	private static  Logger log = Logger.getLogger(CurrencyPlugin.class);
 	
-	static final public String ID = "Currency";
-
-	// TODO insert in initialization
-	public void initialize() throws ThinklabException {
-
-		String db = getProperties().getProperty("currency.database", 
-												"hsqlmem://sa@localhost/currency");
-												
-		logger().info("currency database is " + db);
-		
-		/**
-		 * Create a database to hold the currency data using the given
-		 * database from property, defaulting to HSQLDB in-memory. Any db-relevant properties
-		 * can be put in Currency.properties.
-		 */
-		SQLServer sqls = SQLPlugin.get().createSQLServer(db, CurrencyPlugin.get().getProperties());
-				
-		convFactory = new CpiConversionFactory();
-		convFactory.initialize(
-				sqls,
-				new File(exchangeDataURL.getFile()), 
-				new File(cpiDataURL.getFile()));
-		
-	}
+	static final public String ID = "org.integratedmodelling.thinklab.currency";
 	
 	public CpiConversionFactory getConverter() {
 		return convFactory;
@@ -88,31 +58,31 @@ public class CurrencyPlugin extends ThinklabPlugin  {
 		return (CurrencyPlugin) getPlugin(ID);
 	}
 
-	public static Logger logger() {
-		return log;
-	}
-	
-	public void load(KnowledgeManager km) throws ThinklabPluginException {
-
-		// new CConvert().install(km);
-	}
-
-//	public void notifyResource(String name, long time, long size)
-//			throws ThinklabException {
-//
-//		if (name.endsWith("cpidata.txt"))
-//			cpiDataURL = this.exportResourceCached(name);
-//		else if (name.endsWith("exchrates.txt"))
-//			exchangeDataURL = this.exportResourceCached(name);
-//
-//	}
-
-	public void unload(KnowledgeManager km) throws ThinklabPluginException {
-	}
-
-	public void notifyConfigurationNode(Node n) {
-		// TODO Auto-generated method stub
+	public void load(KnowledgeManager km) throws ThinklabException {
 		
+		requirePlugin("org.integratedmodelling.thinklab.sql");
+		requirePlugin("org.integratedmodelling.thinklab.corescience");
+		requirePlugin("org.integratedmodelling.thinklab.time");
+		
+		cpiDataURL = this.getResourceURL("cpidata.txt");
+		exchangeDataURL = this.getResourceURL("exchrates.txt");
+
+		String db = getProperties().getProperty("currency.database", "hsqlmem://sa@localhost/currency");
+		
+		logger().info("currency database is " + db);
+
+		/**
+		 * Create a database to hold the currency data using the given
+		 * database from property, defaulting to HSQLDB in-memory. Any db-relevant properties
+		 * can be put in currency.properties.
+		 */
+		SQLServer sqls = SQLPlugin.get().createSQLServer(db, getProperties());
+
+		convFactory = new CpiConversionFactory();
+		convFactory.initialize(
+				sqls,
+				new File(exchangeDataURL.getFile()), 
+				new File(cpiDataURL.getFile()));
 	}
 
 	@Override

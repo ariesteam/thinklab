@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.rules" version="0.8.0" class="org.integratedmodelling.rules.RulePlugin">
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+	</requires>
+	<runtime>
+		<library id="core" path="classes/" type="code">
+			<export prefix="*"/>
+		</library>				
+		<library type="code" id="jdt-core"  path="lib/core-3.2.3.v_686_R32x.jar"/>
+		<library type="code" id="drools-analytics"  path="lib/drools-analytics-4.0.7.jar"/>
+		<library type="code" id="drools-ant"  path="lib/drools-ant-4.0.7.jar"/>
+		<library type="code" id="drools-compiler"  path="lib/drools-compiler-4.0.7.jar"/>
+		<library type="code" id="drools-core"  path="lib/drools-core-4.0.7.jar"/>
+		<library type="code" id="drools-jsr94"  path="lib/drools-jsr94-4.0.7.jar"/>
+		<library type="code" id="janino"  path="lib/janino-2.5.10.jar"/>
+		<library type="code" id="jsr94"  path="lib/jsr94-1.1.jar"/>
+		<library type="code" id="jxl"  path="lib/jxl-2.4.2.jar"/>
+		<library type="code" id="mvel"  path="lib/mvel-1.3.1-java1.4.jar"/>
+		<library type="code" id="xpp3"  path="lib/xpp3_min-1.1.3.4.O.jar"/>
+		<library type="code" id="xstream"  path="lib/xstream-1.2.2.jar"/>
+	</runtime>
+
+	<!-- session listener to enable rule interception -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="session-listener" id="drools-session-listener">
+		<parameter id="class" value="org.integratedmodelling.rules.session.RuleSessionListener"/>
+	</extension>
+
+</plugin>

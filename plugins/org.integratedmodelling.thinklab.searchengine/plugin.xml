@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.searchengine" version="0.8.0" class="org.integratedmodelling.searchengine.SearchEnginePlugin">
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+	</requires>	
+	<runtime>
+		<library id="core" path="classes/" type="code">
+			<export prefix="*" />
+		</library>
+		<library id="config" type="resources" path="config/"/>
+		<library type="code" id="jericho" path="lib/jericho-html-2.5.jar"/>
+		<library type="code" id="lucene" path="lib/lucene-core-2.2.0.jar"/>
+		<library type="code" id="pdfbox" path="lib/PDFBox-0.7.3.jar"/>
+	</runtime>
+</plugin>

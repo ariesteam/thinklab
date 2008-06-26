@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<sqldef>
+  <!-- CAUTION: the schema in this file is hardwired to the
+  implementation. It should NOT be changed unless changes are made to
+  the code. Only the additional schemata should be modified by the
+  user to support new types and operators. Additional schemata can
+  add fields to the classes (it's normally only useful to add to
+  object, as fields can later be retrieved in the result of a query)
+  and define the operators and plug-ins to use to handle types that
+  aren't supported in the standard - e.g. spatial shapes, times, 
+  semantic types etc. 
+  -->
+  <schema>
+    <table name="object" template="no">
+      <field name="object_id" type="text" index="yes" system="yes"/>
+      <field name="concept_id" type="integer" index="yes" system="yes"/>
+      <field name="total_rel" type="integer" index="no" system="yes"/>
+      <field name="is_instance" type="boolean" index="no" system="yes"/>
+      <!-- the following ones aren't necessary for the system, and can be
+         eliminated or added to. The fields that are here are available to 
+         retrieve with the schema passed to query(). -->
+      <field name="semantic_type" type="text" index="no" system="no">
+		self.getSemanticType();
+      </field>
+      <field name="short_description" type="text" index="no" system="no">
+		self.getDescription();
+      </field>
+      <field name="label" type="text" index="no" system="no">
+		self.getLabel();
+      </field>
+    </table>
+    <table name="concept" template="no">
+      <field name="concept_type" type="text" index="no" system="yes"/>
+      <field name="concept_id" type="text" index="yes" system="yes"/>
+      <field name="concept_def" type="text" index="no" system="yes"/>
+    </table>
+    <table name="relationship" template="no">
+      <field name="relationship_type" type="text" index="no" system="yes"/>
+      <field name="relationship_id" type="integer" index="yes" system="yes"/>
+    </table>
+    <table name="object_relationships" template="no">
+      <field name="relationship_id" type="integer" index="no" system="yes"/>
+      <field name="source_id" type="text" index="yes" system="yes"/>
+      <field name="target_id" type="text" index="no"
+	system="yes"/>
+    </table>
+    <table name="object_classifications" template="no">
+      <field name="relationship_id" type="integer" index="no" system="yes"/>
+      <field name="source_id" type="text" index="yes" system="yes"/>
+      <field name="class_id" type="integer" index="no"
+	system="yes"/>
+    </table>
+    <table name="literal" template="yes">
+      <field name="object_id" type="text" index="yes" system="yes"/>
+      <field name="relationship_id" type="integer" index="yes" system="yes"/>
+      <field name="total_rels" type="integer" index="no" system="yes"/>
+      <field name="concept_id" type="integer" index="yes" system="yes"/>
+      <field name="type_id" type="text" index="no" system="yes"/>
+    </table>
+    <table name="ids">
+      <field name="object_id" type="integer" index="no" system="yes" primary-key="yes"/>
+      <field name="concept_id" type="integer" index="no" system="yes"/>
+      <field name="property_id" type="integer" index="no" system="yes"/>
+    </table>
+    <table name="rel_catalog">
+      <field name="object_id" type="text" index="yes" system="yes"/>
+      <field name="relationship_id" type="integer" index="yes" system="yes"/>
+      <field name="n_lits" type="integer" index="no" system="yes"/>
+      <field name="n_conc" type="integer" index="no" system="yes"/>
+      <field name="n_clas" type="integer" index="no" system="yes"/>
+    </table>
+  </schema>
+  <type-translation>
+    <type name="default">
+      <sql-literal-format use-plugin="no">'$$'</sql-literal-format>
+      <sql-type>text</sql-type>
+      <sql-operator imt-name="lt" sql-translation="&lt;" 
+	operator-type="infix">
+	<argument type="thinklab-core:Text" template="'$$'"/>
+      </sql-operator>
+      <sql-operator imt-name="gt" sql-translation="&gt;" 
+	operator-type="infix">
+	<argument type="thinklab-core:Text" template="'$$'"/>
+      </sql-operator>
+      <sql-operator imt-name="le" sql-translation="&lt;=" 
+	operator-type="infix">
+	<argument type="thinklab-core:Text" template="'$$'"/>
+      </sql-operator>
+      <sql-operator imt-name="ge" sql-translation="&gt;=" 
+	operator-type="infix">
+	  <argument type="thinklab-core:Text" template="'$$'"/>
+	</sql-operator>
+      <sql-operator imt-name="eq" sql-translation="="  operator-type="infix">
+	<argument type="thinklab-core:Text" template="'$$'"/>
+      </sql-operator>
+      <sql-operator imt-name="ne" sql-translation="&lt;&gt;" 
+	operator-type="infix">
+	<argument type="thinklab-core:Text" template="'$$'"/>
+      </sql-operator>
+    </type>
+    <!-- this one is for concept literals - only = and <> are supported -->
+    <type name="owl:Thing">
+      <sql-literal-format use-plugin="no">'$$'</sql-literal-format>
+      <sql-type>text</sql-type>
+      <sql-operator imt-name="eq" sql-translation="="  operator-type="infix">
+	<argument type="thinklab-core:Text" template="'$$'"/>
+      </sql-operator>
+      <sql-operator imt-name="ne" sql-translation="&lt;&gt;" 
+	operator-type="infix">
+	<argument type="thinklab-core:Text" template="'$$'"/>
+      </sql-operator>
+    </type>
+    <type name="thinklab-core:Integer">
+      <sql-literal-format use-plugin="no">$$</sql-literal-format>
+      <sql-type>integer</sql-type>
+      <sql-operator imt-name="lt" sql-translation="&lt;" 
+	operator-type="infix">
+	<argument type="thinklab-core:Number"/>
+      </sql-operator>
+      <sql-operator imt-name="gt" sql-translation="&gt;" 
+	operator-type="infix">
+	<argument type="thinklab-core:Number"/>
+      </sql-operator>
+      <sql-operator imt-name="le" sql-translation="&lt;=" 
+	operator-type="infix">
+	<argument type="thinklab-core:Number"/>
+      </sql-operator>
+      <sql-operator imt-name="ge" sql-translation="&gt;=" 
+	operator-type="infix">
+	  <argument type="thinklab-core:Number"/>
+	</sql-operator>
+      <sql-operator imt-name="eq" sql-translation="=" operator-type="infix">
+	<argument type="thinklab-core:Number"/>
+      </sql-operator>
+      <sql-operator imt-name="ne" sql-translation="&lt;&gt;" 
+	operator-type="infix">
+	<argument type="thinklab-core:Number"/>
+      </sql-operator>
+    </type>
+    <type name="thinklab-core:Real" based-on="thinklab-core:Integer">
+      <sql-type>float</sql-type>
+    </type>
+    <type name="thinklab-core:Text" based-on="default">
+      <sql-operator imt-name="like" sql-translation="like" 
+	operator-type="infix">
+	<argument type="thinklab-core:Text" template="'$$'"/>
+      </sql-operator>
+      <sql-operator imt-name="ilike" sql-translation="ilike" 
+	operator-type="infix">
+	<argument type="thinklab-core:Text" template="'$$'"/>
+      </sql-operator>
+    </type>
+    <type name="time:DateTime" based-on="default">
+      <sql-type>timestamp</sql-type>
+      <sql-operator imt-name="lt" sql-translation="&lt;" 
+	operator-type="infix">
+	<argument type="time:DateTime"/>
+      </sql-operator>
+      <sql-operator imt-name="gt" sql-translation="&gt;" 
+	operator-type="infix">
+	<argument type="time:DateTime"/>
+      </sql-operator>
+      <sql-operator imt-name="le" sql-translation="&lt;=" 
+	operator-type="infix">
+	<argument type="time:DateTime"/>
+      </sql-operator>
+      <sql-operator imt-name="ge" sql-translation="&gt;=" 
+	operator-type="infix">
+	  <argument type="time:DateTime"/>
+	</sql-operator>
+      <sql-operator imt-name="eq" sql-translation="=" operator-type="infix">
+	<argument type="time:DateTime"/>
+      </sql-operator>
+      <sql-operator imt-name="ne" sql-translation="&lt;&gt;" 
+	operator-type="infix">
+	<argument type="time:DateTime"/>
+      </sql-operator>
+    </type>
+    <type name="time:Period" based-on="default">
+      <sql-type>integer</sql-type>
+    </type>
+  </type-translation>
+</sqldef>

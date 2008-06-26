@@ -10,8 +10,11 @@
 		<library id="core" path="classes/" type="code">
 			<export prefix="*"/>
 		</library>
+		
 		<library type="resources" path="ontologies/" id="ontologies" />
 		<library type="resources" path="config/" id="config" />
+		<library type="resources" path="worldimages/" id="worldimages" />
+		
 		<library type="code" id="batik-awt-util" path="lib/batik-awt-util-1.6.jar"/>
 		<library type="code" id="batik-bridge" path="lib/batik-bridge-1.6.jar"/>
 		<library type="code" id="batik-css" path="lib/batik-css-1.6.jar"/>
@@ -99,9 +102,6 @@
 		<library type="code" id="vecmath" path="lib/vecmath-1.3.1.jar"/>
 	</runtime>
 
-	<!-- declare new extension point for world images -->
-	
-	<!-- declare useful world images -->
 
 	<!-- ontologies -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="geospace">
@@ -125,50 +125,59 @@
 	<extension 
 		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
 		id="areal-location-constructor">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ObservationConstructor"/>
-		<parameter id="semantic-type" value="observation:Observation"/>
+		<parameter id="class" value="org.integratedmodelling.geospace.constructors.ArealLocationConstructor"/>
+		<parameter id="semantic-type" value="geospace:ArealLocation"/>
 	</extension>
 	<extension 
 		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
 		id="polygon-spatial-coverage-constructor">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.RankingConstructor"/>
-		<parameter id="semantic-type" value="measurement:Ranking"/>
+		<parameter id="class" value="org.integratedmodelling.geospace.constructors.SubdividedCoverageModelConstructor"/>
+		<parameter id="semantic-type" value="geospace:PolygonSpatialCoverage"/>
 	</extension>
 	<extension 
 		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
 		id="raster-spatial-coverage-constructor">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.CSVDatasourceConstructor"/>
-		<parameter id="semantic-type" value="source:CSVDataSource"/>
+		<parameter id="class" value="org.integratedmodelling.geospace.constructors.SubdividedCoverageModelConstructor"/>
+		<parameter id="semantic-type" value="geospace:RasterSpatialCoverage"/>
 	</extension>
 	<extension 
 		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
 		id="raster-grid-constructor">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.RandomDataSourceConstructor"/>
-		<parameter id="semantic-type" value="source:Randomizer"/>
+		<parameter id="class" value="org.integratedmodelling.geospace.constructors.RasterGridConstructor"/>
+		<parameter id="semantic-type" value="geospace:RasterGrid"/>
 	</extension>
 	<extension 
 		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
 		id="external-raster-datasource-constructor">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ClassificationModelConstructor"/>
-		<parameter id="semantic-type" value="observation:ClassificationSpace"/>
+		<parameter id="class" value="org.integratedmodelling.geospace.constructors.RasterDatasourceConstructor"/>
+		<parameter id="semantic-type" value="geospace:ExternalRasterDataSource"/>
 	</extension>
 
 	<!-- literal validators -->
 	<extension 
 		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
 		id="spatial-record-validator">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ParsedDatasourceValidator"/>
-		<parameter id="semantic-type" value="source:ParsedString"/>
+		<parameter id="class" value="org.integratedmodelling.geospace.constructors.GeospaceValidator"/>
+		<parameter id="semantic-type" value="geospace:SpatialRecord"/>
 	</extension>
 	<extension 
 		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
 		id="areal-location-validator">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ColumnFilterValidator"/>
-		<parameter id="semantic-type" value="source:ColumnExtractor"/>
+		<parameter id="class" value="org.integratedmodelling.geospace.constructors.ArealLocationValidator"/>
+		<parameter id="semantic-type" value="geospace:ArealLocation"/>
 	</extension>
 
 	<!-- kbox handler for coverages -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="kbox-handler" id="shapefile-kbox-handler">
+		<parameter id="class" value="org.integratedmodelling.geospace.GeospaceKboxHandler"/>
+		<parameter id="protocol" value="shapefile" />
+	</extension>
 	
+	<!-- knowledge loader for coverages -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="knowledge-loader" id="coverage-knowledge-loader">
+		<parameter id="class" value="org.integratedmodelling.geospace.GeospaceKnowledgeLoader"/>
+		<parameter id="format" value="shp,tif,tiff" />
+	</extension>
 	
 	<!-- commands -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="GISToOpal">

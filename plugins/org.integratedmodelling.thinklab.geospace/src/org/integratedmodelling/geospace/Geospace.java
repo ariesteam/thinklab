@@ -36,12 +36,6 @@ import org.apache.log4j.Logger;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
-import org.integratedmodelling.geospace.constructors.ArealLocationConstructor;
-import org.integratedmodelling.geospace.constructors.ArealLocationValidator;
-import org.integratedmodelling.geospace.constructors.GeospaceValidator;
-import org.integratedmodelling.geospace.constructors.RasterDatasourceConstructor;
-import org.integratedmodelling.geospace.constructors.RasterGridConstructor;
-import org.integratedmodelling.geospace.constructors.SubdividedCoverageModelConstructor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
@@ -70,8 +64,6 @@ public class Geospace extends ThinklabPlugin  {
 	private static String hasBoundingBoxPropertyID;
 	private static String hasCentroidPropertyID;
 
-	/* log4j logger used for this class. Can be used by other classes through logger()  */
-	private static  Logger log = Logger.getLogger(Geospace.class);
 	private static IConcept rasterSpaceType;
 	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.geospace";
 	
@@ -99,22 +91,12 @@ public class Geospace extends ThinklabPlugin  {
 	 */
 	CoordinateReferenceSystem preferredCRS = null;
 	
-	public Geospace() {
-		// TODO Auto-generated constructor stub
-	}
-
-	
 	public static Geospace get() {
 		return (Geospace) getPlugin(PLUGIN_ID);
 	}
-
-	public static Logger logger() {
-		return log;
-	}
-
+	
 	@Override
 	public void load(KnowledgeManager km) throws ThinklabPluginException {
-
 		
 		try {
 			
@@ -139,34 +121,11 @@ public class Geospace extends ThinklabPlugin  {
 			
 			hasBoundingBoxPropertyID = "geospace:hasBoundingBox";
 			hasCentroidPropertyID = "geospace:hasCentroid";
-			
-			/* commands */
-//			new GISToOPAL().install(km);
-//			new Rasterize().install(km);
-//			new Vectorize().install(km);
-			
+						
 		} catch (ThinklabException e) {
 			throw new ThinklabPluginException(e);
 		}
 		
-		/*
-		 * TODO all these plus the kbox must become extension points and get out of here
-		 */
-		km.registerLiteralValidator("geospace:SpatialRecord", 
-				new GeospaceValidator());
-		km.registerLiteralValidator("geospace:ArealLocation", 
-				new ArealLocationValidator());
-		km.registerInstanceConstructor("geospace:ArealLocation", 
-				new ArealLocationConstructor());
-		km.registerInstanceConstructor("geospace:PolygonSpatialCoverage",
-				new SubdividedCoverageModelConstructor());
-		km.registerInstanceConstructor("geospace:RasterSpatialCoverage",
-				new SubdividedCoverageModelConstructor());
-		km.registerInstanceConstructor("geospace:RasterGrid",
-				new RasterGridConstructor());
-		km.registerInstanceConstructor("geospace:ExternalRasterDataSource",
-				new RasterDatasourceConstructor());
-
 		
 		/*
 		 * create preferred CRS if one is specified. Highly adviceable to set one if hybrid data
@@ -180,18 +139,6 @@ public class Geospace extends ThinklabPlugin  {
 			}
 		}
 	}
-
-	// TODO declare world images in plugin 
-//	@Override
-//	public void notifyResource(String name, long time, long size)
-//			throws ThinklabException {
-//
-//		if (name.contains("visualization/worldimages")) {
-//			GeoImageFactory.get().addWorldImage(this.exportResourceCached(name));
-//		}
-//
-//	}
-
 
 	public CoordinateReferenceSystem getPreferredCRS() {
 		return preferredCRS;

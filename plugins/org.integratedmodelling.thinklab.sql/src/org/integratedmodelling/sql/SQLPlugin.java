@@ -35,130 +35,64 @@ package org.integratedmodelling.sql;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
-import org.integratedmodelling.sql.hsql.HSQLFileServer;
-import org.integratedmodelling.sql.hsql.HSQLMemServer;
-import org.integratedmodelling.sql.hsql.HSQLServer;
-import org.integratedmodelling.sql.mysql.MySQLServer;
-import org.integratedmodelling.sql.postgres.PostgreSQLServer;
+import org.integratedmodelling.sql.hsql.HSQLServerConstructor;
+import org.integratedmodelling.sql.mysql.MySQLServerConstructor;
+import org.integratedmodelling.sql.postgres.PostgresSQLServerConstructor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.w3c.dom.Node;
 
+/**
+ * TODO: create extension point for server constructors so that plugins can add servers
+ * 
+ * @author Ferdinando
+ *
+ */
 public class SQLPlugin extends ThinklabPlugin {
 
-	public interface SQLServerConstructor {
-		public abstract SQLServer createServer(URI uri, Properties properties) throws ThinklabStorageException;
-	}
-
-	private class HSQLServerConstructor implements SQLServerConstructor {
-		public SQLServer createServer(URI uri, Properties properties) throws ThinklabStorageException {
-			if (uri.toString().startsWith("hsqlmem:"))
-				return new HSQLMemServer(uri, properties);
-			else if (uri.toString().startsWith("hsqlfile:"))
-				return new HSQLFileServer(uri, properties);
-			else
-				return new HSQLServer(uri, properties);
-		}
-	}
-
-	private class MySQLServerConstructor implements SQLServerConstructor {
-		public SQLServer createServer(URI uri, Properties properties) throws ThinklabStorageException {
-			return new MySQLServer(uri, properties);
-		}
-	}
-
-	private class PostgresSQLServerConstructor implements SQLServerConstructor {
-		public SQLServer createServer(URI uri, Properties properties) throws ThinklabStorageException {
-			return new PostgreSQLServer(uri, properties);	
-		}
-	}
-	
-
-		
 	public File coreSchema = null;
 	public ArrayList<File> schemata = new ArrayList<File>();
 	private HashMap<String, SQLServerConstructor> serverConstructors =
 		new HashMap<String, SQLServerConstructor>();
 
-	/* log4j logger used for this class. Can be used by other classes through logger()  */
-	private static  Logger log = Logger.getLogger(SQLPlugin.class);
-	
 	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.sql";
-
 
 	public static SQLPlugin get() {
 		return (SQLPlugin) getPlugin(PLUGIN_ID);
 	}
 
-	public static Logger logger() {
-		return log;
-	}
-	
 	public File getSchema(String schemaID) throws ThinklabException {
 		
-		
-		File schema = null;
-		
-		for (File sch : schemata) {
-			if (sch.toString().endsWith(schemaID + ".sqx")) { 
-				schema = sch;
-				break;
-			}
-		}
+		URL r = getResourceURL(schemaID + ".sqx");
 
-		if (schema == null) {
+		if (r == null) {
 			throw new ThinklabIOException("schema " + schemaID + " referenced in kbox is not installed");
-		}
+		}	
 		
-		return schema;
+		return new File(r.getFile());
 	}
 
 	
 	@Override
 	public void load(KnowledgeManager km) throws ThinklabPluginException {
-
+		
 		/* register server types to be returned by createSQLServer() */
 		registerServerConstructor("hsql", new HSQLServerConstructor());
 		registerServerConstructor("postgres", new PostgresSQLServerConstructor());
-		registerServerConstructor("mysql", new MySQLServerConstructor());
-		
-		/* register plugin to handle our nice kboxes 
-		 * TODO substitute with extension points
-		 * */
-//		KBoxManager.get().registerKBoxProtocol("pg", this);
-//		KBoxManager.get().registerKBoxProtocol("hsqldb", this);
-//		KBoxManager.get().registerKBoxProtocol("mysql", this);
-		
+		registerServerConstructor("mysql", new MySQLServerConstructor());				
 	}
 
-	// TODO move to extension points
 	public void registerServerConstructor(String string, SQLServerConstructor serverConstructor) {
-		serverConstructors .put(string, serverConstructor);	
+		serverConstructors.put(string, serverConstructor);	
 	}
-
-// TODO new extension points
-//	public void notifyResource(String name, long time, long size)
-//			throws ThinklabException {
-//		
-//		if (name.endsWith(".sqx")) {
-//			URL uu = this.exportResourceCached(name);
-//			
-//			if (name.contains("coresql.sqx")) {
-//				coreSchema = new File(uu.getFile());
-//			} else {
-//				schemata.add(new File(uu.getFile()));
-//			}
-//		}
-//	}
 
 	@Override
 	public void unload() throws ThinklabPluginException {
@@ -187,11 +121,6 @@ public class SQLPlugin extends ThinklabPlugin {
 					uri);
 
 		return ret;
-	}
-
-	public void notifyConfigurationNode(Node n) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

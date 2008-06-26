@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.databridge" version="0.8.0" class="org.integratedmodelling.databridge.DataBridgePlugin">
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
+		<import plugin-id="org.integratedmodelling.thinklab.geospace"/>
+		<import plugin-id="org.integratedmodelling.thinklab.time"/>
+		<import plugin-id="org.integratedmodelling.thinklab.dynamicmodelling"/>
+	</requires>	
+	<runtime>
+		<library id="opal" path="classes/" type="code">
+			<export prefix="*" />
+		</library>
+	</runtime>
+
+</plugin>

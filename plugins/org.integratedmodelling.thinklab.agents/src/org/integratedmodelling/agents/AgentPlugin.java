@@ -60,7 +60,6 @@ public class AgentPlugin extends ThinklabPlugin {
 	/** The container. */
 	AgentContainer theContainer = null;
 	
-
 	/**
 	 * The Class MySecurityManager.
 	 */
@@ -90,7 +89,6 @@ public class AgentPlugin extends ThinklabPlugin {
 		public void checkPermission(Permission perm, Object context) {
 		}
 	} 
-	
 	
 	/**
 	 * Gets the plugin.

@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<sqldef>
+	<type-translation>
+		<type name="geospace:SpatialRecord">
+
+			<!-- we want to extract the SRID as a variable for substitution -->
+			<variable id="srid">new Integer(self.getSRID(4326)).toString()</variable>
+
+			<sql-literal-format use-plugin="no">
+				GeometryFromText('$$', $srid)
+			</sql-literal-format>
+			
+			<sql-operator imt-name="bb-overlaps" operator-type="infix"
+				sql-translation="&amp;&amp;">
+				<argument type="ima:text"
+					template="GeometryFromText('$$',$srid)" />
+			</sql-operator>
+
+			<sql-operator imt-name="overlaps" operator-type="function"
+				sql-translation="overlaps">
+				<argument type="ima:text"
+					template="GeometryFromText('$$',$srid)" />
+			</sql-operator>
+
+			<sql-operator imt-name="contains" operator-type="function"
+				sql-translation="contains">
+				<argument type="ima:text"
+					template="GeometryFromText('$$',$srid)" />
+			</sql-operator>
+
+			<sql-operator imt-name="empty" operator-type="function"
+				sql-translation="isEmpty" />
+
+			<sql-operator imt-name="equals" operator-type="function"
+				sql-translation="equals">
+				<argument type="ima:text"
+					template="GeometryFromText('$$',$srid)" />
+			</sql-operator>
+
+			<sql-operator imt-name="disjoint" operator-type="function"
+				sql-translation="disjoint">
+				<argument type="ima:text"
+					template="GeometryFromText('$$',$srid)" />
+			</sql-operator>
+
+			<sql-operator imt-name="intersects" operator-type="function"
+				sql-translation="intersects">
+				<argument type="ima:text"
+					template="GeometryFromText('$$',$srid)" />
+			</sql-operator>
+
+			<sql-operator imt-name="touches" operator-type="function"
+				sql-translation="touches">
+				<argument type="ima:text"
+					template="GeometryFromText('$$',$srid)" />
+			</sql-operator>
+
+			<sql-operator imt-name="crosses" operator-type="function"
+				sql-translation="crosses">
+				<argument type="ima:text"
+					template="GeometryFromText('$$',$srid)" />
+			</sql-operator>
+
+			<sql-operator imt-name="within" operator-type="function"
+				sql-translation="within">
+				<argument type="ima:text"
+					template="GeometryFromText('$$',$srid)" />
+			</sql-operator>
+
+		</type>
+
+		<type name="geospace:Point" based-on="geospace:SpatialRecord">
+			<sql-type create-method="statement">
+				SELECT AddGeometryColumn(current_schema()::text, '$tablename', '$fieldname', 4326, 'POINT', 2); 
+				CREATE INDEX i_$tablename ON $tablename USING GIST ($fieldname gist_geometry_ops);
+			</sql-type>
+		</type>
+
+		<type name="geospace:LineString" based-on="geospace:SpatialRecord">
+			<sql-type create-method="statement">
+				SELECT AddGeometryColumn(current_schema()::text, '$tablename', '$fieldname', 4326, 'LINE', 2); 
+				CREATE INDEX i_$tablename ON $tablename USING GIST ($fieldname	gist_geometry_ops);
+			</sql-type>
+		</type>
+
+		<type name="geospace:MultiPoint" based-on="geospace:SpatialRecord">
+			<sql-type create-method="statement">
+				SELECT AddGeometryColumn(current_schema()::text, '$tablename','$fieldname', 4326, 'MULTIPOINT', 2); 
+				CREATE INDEX i_$tablename ON $tablename USING GIST ($fieldname
+				gist_geometry_ops);
+			</sql-type>
+		</type>
+
+		<type name="geospace:MultiLineString" based-on="geospace:SpatialRecord">
+			<sql-type create-method="statement">
+				SELECT AddGeometryColumn(current_schema()::text, '$tablename', '$fieldname', 4326, 'MULTILINE', 2); 
+				CREATE INDEX i_$tablename ON $tablename USING GIST ($fieldname gist_geometry_ops);
+			</sql-type>
+		</type>
+
+		<type name="geospace:Polygon" based-on="geospace:SpatialRecord">
+			<sql-type create-method="statement">
+				SELECT AddGeometryColumn(current_schema()::text, '$tablename', '$fieldname', 4326, 'POLYGON', 2); 
+				CREATE INDEX i_$tablename ON $tablename USING GIST ($fieldname gist_geometry_ops);
+			</sql-type>
+		</type>
+
+		<type name="geospace:MultiPolygon" based-on="geospace:SpatialRecord">
+			<sql-type create-method="statement">
+				SELECT AddGeometryColumn(current_schema()::text, '$tablename', '$fieldname', 4326, 'MULTIPOLYGON', 2); 
+				CREATE INDEX i_$tablename ON $tablename USING GIST ($fieldname gist_geometry_ops);
+			</sql-type>
+		</type>
+
+	</type-translation>
+</sqldef>

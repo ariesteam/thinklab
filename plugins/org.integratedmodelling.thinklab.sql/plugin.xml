@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.sql" version="0.8.0" class="org.integratedmodelling.sql.SQLPlugin">
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+	</requires>	
+	<runtime>
+		<library id="opal" path="classes/" type="code">
+			<export prefix="*" />
+		</library>
+		
+		<library type="resources" path="config/" id="config" />
+		
+		<library type="code" id="hsqldb" path="lib/hsqldb.jar">
+			<export prefix="*"/>
+		</library>
+		<library type="code" id="postgresql" path="lib/postgresql-8.2dev-503.jdbc3.jar">
+			<export prefix="*"/>
+		</library>
+	</runtime>
+
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="kbox-handler" id="sql-kbox-handler">
+		<parameter id="class" value="org.integratedmodelling.sql.SQLKBoxHandler"/>
+		<parameter id="protocol" value="pg,mysql,hsql" />
+	</extension>
+
+</plugin>

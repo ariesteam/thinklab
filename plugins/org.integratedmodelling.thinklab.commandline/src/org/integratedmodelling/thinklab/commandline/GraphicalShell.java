@@ -44,20 +44,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 
-import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
-import org.integratedmodelling.thinklab.command.ShellCommandOutputReceptor;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;

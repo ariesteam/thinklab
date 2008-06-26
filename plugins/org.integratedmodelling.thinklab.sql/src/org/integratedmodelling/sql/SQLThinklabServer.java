@@ -1749,8 +1749,7 @@ public abstract class SQLThinklabServer {
 		
 		this.readSchema(schema);
 		
-		SQLPlugin.logger().info("sql: reading schema " + schema);
-		
+		SQLPlugin.get().logger().info("sql: reading schema " + schema);
 	}
 	
 	protected void readSchema(File f) throws ThinklabStorageException {

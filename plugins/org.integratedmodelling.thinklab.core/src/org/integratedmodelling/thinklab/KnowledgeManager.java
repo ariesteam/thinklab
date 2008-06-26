@@ -36,14 +36,12 @@ package org.integratedmodelling.thinklab;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
@@ -52,6 +50,7 @@ import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
+import org.integratedmodelling.thinklab.exception.ThinklabMissingResourceException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -72,8 +71,6 @@ import org.integratedmodelling.thinklab.interfaces.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.session.SingleSessionManager;
-import org.integratedmodelling.thinklab.validators.NumberValidator;
-import org.integratedmodelling.thinklab.validators.TextValidator;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 import org.java.plugin.PluginManager;
@@ -149,28 +146,17 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	protected IKnowledgeRepository knowledgeRepository;
 	protected ISessionManager  sessionManager = null;
 
-	
 	protected PluginManager pluginManager = null;
 	
 	protected KBoxManager kboxManager;
 	protected CommandManager commandManager;
 	
-	private Logger log = Logger.getLogger(this.getClass());
-	
-	//
 	public static final String EXCLUDE_ONTOLOGY_PROPERTY = "thinklab.ontology.exclude";
 	
 	// this one in any config file will add properties to the blacklist.
 	public static final String IGNORE_PROPERTY_PROPERTY = "thinklab.property.ignore";
 
 	public static final String IGNORE_CONCEPT_PROPERTY = "thinklab.concept.ignore";
-	
-	/**
-	 * After initialization, we create a class tree for the repository, so that
-	 * we can give an option to the API of using it for simple transitive subsumption 
-	 * checking instead of the reasoner.
-	 */
-	private static KnowledgeTree classTree = null;
 	
 	/*
 	 * map URIs to concept space names 
@@ -197,16 +183,12 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	private HashMap<String, KnowledgeLoader> knowledgeLoaders =
 		new HashMap<String, KnowledgeLoader>();
 
-	private ArrayList<String> sessionListeners = 
-		new ArrayList<String>();
+	private HashMap<String, Class<?>> sessionListeners = 
+		new HashMap<String, Class<?>>();
 
 	private HashSet<String> propertyBlacklist = new HashSet<String>();
 	private HashSet<String> conceptBlacklist = new HashSet<String>();
 
-
-	public static KnowledgeTree getClassTree() {
-		return classTree;
-	}
 
 	public KnowledgeManager(IKnowledgeRepository kr, ISessionManager ki) throws ThinklabException {
 
@@ -235,7 +217,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		return sessionManager;
 	}
 	
-
     /* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#getRootConcept()
 	 */
@@ -423,7 +404,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 			throw new ThinklabValidationException("configuration error: " + e1.getMessage());
 		}
 
-
 	    /* retrieve actual concepts from semantic types. We operate in admin mode only if 
 	     * any of these is not present, passing mode to interface. */
 	    try {
@@ -450,9 +430,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	
 	public void initialize() throws ThinklabException {
 	
-		
-		/* we always have at least the default plugin dir */
-       // pluginRegistry.addPluginDirectory(LocalConfiguration.getSystemDirectory("plugins"));
 
 		/* link and initialize knowledge repository */
 	    knowledgeRepository.initialize();
@@ -496,15 +473,12 @@ public class KnowledgeManager implements IKnowledgeProvider {
         /* create the kbox manager now that we have the type system set up */
         kboxManager = new KBoxManager();
         commandManager = new CommandManager();
-        
-        // create class tree
-		classTree = new KnowledgeTree();
-		
+        		
 		// open any kboxes installed in global properties
 		kboxManager.initialize();
 		
-		// print the properties to the log.
-		log.info("Properties used: "+ LocalConfiguration.getProperties());
+		Thinklab.get().logger().info("knowledge manager initialized successfully");
+		
 	}
 
 	
@@ -551,29 +525,43 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		return KM != null;
 	}
 	
-
-	
 	/**
-	 * Register the class name of a session listener that we want to pass to any new session.
-
+	 * Register the class of a session listener that we want to pass to any new session. We store
+	 * classes directly because plugins use private classloaders. 
+	 * 
 	 * @param sessionListenerClass
 	 */
-	public void registerSessionListenerClass(String sessionListenerClass) {
-		sessionListeners.add(sessionListenerClass);
+	public void registerSessionListenerClass(Class<?> sessionListenerClass) {
+		sessionListeners.put(sessionListenerClass.getCanonicalName(), sessionListenerClass);
 	}
-	
+
+	public void unregisterSessionListenerClass(String className) {
+		sessionListeners.remove(className);
+	}
+
 	public void registerInstanceConstructor(String conceptID, InstanceImplementationConstructor constructor) {
 		this.instanceConstructors.put(conceptID, constructor);
 	}
+
+	public void unregisterInstanceConstructor(String conceptID) {
+		this.instanceConstructors.remove(conceptID);
+	}
 	
 	public void registerLiteralValidator(String conceptID, LiteralValidator validator) {
-		
 		validator.declareType();
 		this.literalValidators.put(conceptID, validator);
+	}
+
+	public void unregisterLiteralValidator(String conceptID) {
+		this.literalValidators.remove(conceptID);
 	}
 	
 	public void registerKnowledgeLoader(String format, KnowledgeLoader loader) {
 		knowledgeLoaders.put(format, loader);
+	}
+
+	public void unregisterKnowledgeLoader(String format) {
+		knowledgeLoaders.remove(format);
 	}
 	
     /* (non-Javadoc)
@@ -986,20 +974,17 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		
 		ISession session = sessionManager.createNewSession();
 
-		for (String s : sessionListeners) {
+		for (Class<?> lcl : sessionListeners.values()) {
 			
 			IThinklabSessionListener listener = null;
-// TODO will need to be declared in plugin.xml, we can't use a plugin's classloader from here.			
-//			try {
-//				Class<?> lcl = Class.forName(s, true, PluginRegistry.get().getClassLoader());
-//				listener = (IThinklabSessionListener) lcl.newInstance();
-//			} catch (ClassNotFoundException e) {
-//				throw new ThinklabMissingResourceException("cannot create requested session listener " + s + ": class not found");
-//			} catch (Exception e) {
-//				throw new ThinklabMissingResourceException("cannot create requested session listener " + s + ": error during creation");
-//			}
-//			listener.sessionCreated(session);
-//			session.addListener(listener);
+			
+			try {
+				listener = (IThinklabSessionListener) lcl.newInstance();
+			} catch (Exception e) {
+				throw new ThinklabMissingResourceException("cannot create requested session listener: " + lcl + ": error during creation");
+			}
+			listener.sessionCreated(session);
+			session.addListener(listener);
 		}
 		
 		return session;

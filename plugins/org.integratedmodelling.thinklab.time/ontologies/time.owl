@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rdf:RDF
+    xmlns:observation="http://www.integratedmodelling.org/ks/science/observation.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.integratedmodelling.org/ks/time/time.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:thinklab-core="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:tzont="http://www.isi.edu/~pan/damltime/timezone-ont.owl#"
+    xmlns:source="http://www.integratedmodelling.org/ks/science/source.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://www.integratedmodelling.org/ks/time/time.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An entry sub-ontology of time (OWL-Time). Imported from http://www.isi.edu/~pan/damltime/time-entry.owl   and modified. Namespace changed for uniformity.</rdfs:comment>
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/science/source.owl"/>
+  </owl:Ontology>
+  <owl:Class rdf:ID="IntervalThing">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:ID="Interval"/>
+          <owl:Class rdf:ID="IntervalEvent"/>
+        </owl:unionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="TemporalThing"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="TemporalUnit">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:oneOf rdf:parseType="Collection">
+          <TemporalUnit rdf:ID="unitSecond"/>
+          <TemporalUnit rdf:ID="unitMinute"/>
+          <TemporalUnit rdf:ID="unitHour"/>
+          <TemporalUnit rdf:ID="unitDay"/>
+          <TemporalUnit rdf:ID="unitWeek"/>
+          <TemporalUnit rdf:ID="unitMonth"/>
+          <TemporalUnit rdf:ID="unitYear"/>
+        </owl:oneOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:ID="IrregularEventSequence">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="TemporalEventSequence"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="RegularEventSequence">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#TemporalEventSequence"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Interval">
+    <rdfs:subClassOf rdf:resource="#IntervalThing"/>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="TemporalEntity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#TemporalThing">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:ID="InstantThing"/>
+          <owl:Class rdf:about="#IntervalThing"/>
+        </owl:unionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:ID="TemporalSpanRecord">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="TemporalObservation"/>
+    </rdfs:subClassOf>
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An observation whose conceptual model is a time span, modelled on an Interval.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="#InstantThing">
+    <rdfs:subClassOf rdf:resource="#TemporalThing"/>
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:ID="Instant"/>
+          <owl:Class rdf:ID="InstantEvent"/>
+        </owl:unionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:ID="TemporalLocationRecord">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#TemporalObservation"/>
+    </rdfs:subClassOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An observation of an instant in time, with no duration attached. Its conceptual model is a time instant as defined in this ontology. Admits a ISO time	 literal as its definition.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="DurationDescription">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="weeks"/>
+        </owl:onProperty>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="minutes"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="hours"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="seconds"/>
+        </owl:onProperty>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="years"/>
+        </owl:onProperty>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="days"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="months"/>
+        </owl:onProperty>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="PeriodValue">
+    <rdfs:label>PeriodValue</rdfs:label>
+    <owl:versionInfo>Created by Ferdinando Villa on Thu May 31 14:43:26 EDT 2007</owl:versionInfo>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/source.owl#ParsedString"/>
+  </owl:Class>
+  <owl:Class rdf:ID="DurationValue">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/source.owl#ParsedString"/>
+    <owl:versionInfo>Created by Ferdinando Villa on Fri Jun 01 16:34:00 EDT 2007</owl:versionInfo>
+    <rdfs:label>DurationValue</rdfs:label>
+    <rdfs:comment xml:lang="en">A duration, expressed as a literal with quantity and temporal unit.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="#Instant">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#TemporalEntity"/>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="#InstantThing"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ProperIntervalThing">
+    <owl:disjointWith rdf:resource="#InstantThing"/>
+    <rdfs:subClassOf rdf:resource="#IntervalThing"/>
+  </owl:Class>
+  <owl:Class rdf:ID="RegularTemporalGrid">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="TemporalGrid"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="AbsoluteTime">
+    <rdfs:comment xml:lang="en">The class of the observable in an observation of an absolute location in time: essentially, time itself, seen as an infinite manifold where absolute point location holds meaning. This ontology contains one instance of AbsoluteTime (AbsoluteTimeObservableInstance) which is used for all automatically generated absolute time observations.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="TemporalObservable"/>
+    </rdfs:subClassOf>
+    <owl:versionInfo>Created by Ferdinando Villa on Wed May 30 13:55:50 EDT 2007</owl:versionInfo>
+    <rdfs:label>AbsoluteTime</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#TemporalObservation">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#ExtentObservation"/>
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A quantification of time. Abstract.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="IrregularTemporalGrid">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#TemporalGrid"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="CalendarClockInterval">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="ProperInterval"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#TemporalEntity">
+    <rdfs:subClassOf rdf:resource="#TemporalThing"/>
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Instant"/>
+          <owl:Class rdf:about="#Interval"/>
+        </owl:unionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:ID="RegularlySubdividedTime">
+    <rdfs:comment xml:lang="en">A notion of time that is seen as subdivided in regular, contiguous portions</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="ContinuousTime"/>
+    </rdfs:subClassOf>
+    <owl:versionInfo>Created by Ferdinando Villa on Tue Jun 12 15:28:04 EDT 2007</owl:versionInfo>
+    <rdfs:label>ContiguousRegularlySubdividedTime</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#IntervalEvent">
+    <rdfs:subClassOf rdf:resource="#IntervalThing"/>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Event"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="DateTimeValue">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/source.owl#ParsedString"/>
+    <owl:versionInfo>Created by Ferdinando Villa on Thu May 31 14:32:36 EDT 2007</owl:versionInfo>
+    <rdfs:label>DateTimeValue</rdfs:label>
+    <rdfs:comment xml:lang="en">Class for datetime literals.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="CalendarClockDescription">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="year"/>
+        </owl:onProperty>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="timeZone"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="unitType"/>
+        </owl:onProperty>
+        <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:cardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="dayOfWeekField"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="month"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="hour"/>
+        </owl:onProperty>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="week"/>
+        </owl:onProperty>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="dayOfYearField"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="day"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="second"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:ID="minute"/>
+        </owl:onProperty>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#TemporalObservable">
+    <owl:versionInfo>Created by Ferdinando Villa on Wed May 30 13:55:26 EDT 2007</owl:versionInfo>
+    <rdfs:label>TemporalObservable</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#InstantEvent">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Event"/>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="#InstantThing"/>
+  </owl:Class>
+  <owl:Class rdf:ID="InstantThingPair">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="secondInstantThing"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:maxCardinality>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="firstInstantThing"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Event">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#InstantEvent"/>
+          <owl:Class rdf:about="#IntervalEvent"/>
+        </owl:unionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:subClassOf rdf:resource="#TemporalThing"/>
+  </owl:Class>
+  <owl:Class rdf:about="#ProperInterval">
+    <owl:disjointWith rdf:resource="#Instant"/>
+    <rdfs:subClassOf rdf:resource="#Interval"/>
+    <rdfs:subClassOf rdf:resource="#ProperIntervalThing"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.isi.edu/~pan/damltime/timezone-ont.owl#TimeZone"/>
+  <owl:Class rdf:about="#TemporalGrid">
+    <rdfs:subClassOf rdf:resource="#TemporalSpanRecord"/>
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An observation of time that sees it as a sequence of contiguous intervals, with the end of one coincident with the beginning of the next.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="#ContinuousTime">
+    <rdfs:comment xml:lang="en">The class of the observable in an observation of an extent time: essentially, time itself, seen as an manifold which is conceptualized by subsetting it into a meaningful portion. This ontology contains one instance of ContinuousTime (ContinuousTimeObservableInstance) which is used for all automatically generated time extent observations.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#TemporalObservable"/>
+    <owl:versionInfo>Created by Ferdinando Villa on Wed May 30 13:56:07 EDT 2007</owl:versionInfo>
+    <rdfs:label>ContinuousTime</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#TemporalEventSequence">
+    <rdfs:subClassOf rdf:resource="#TemporalSpanRecord"/>
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An observation of time that sees it as a sequence of instantaneous events. Time is not defined between events.</rdfs:comment>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="intStartedBy">
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="intStarts"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="nonoverlap">
+    <rdfs:domain rdf:resource="#ProperIntervalThing"/>
+    <rdfs:range rdf:resource="#ProperIntervalThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="instantPairDurationDescriptionOf">
+    <rdfs:domain rdf:resource="#InstantThingPair"/>
+    <rdfs:range rdf:resource="#DurationDescription"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="intFinishedBy">
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="intFinishes"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#timeZone">
+    <rdfs:range rdf:resource="http://www.isi.edu/~pan/damltime/timezone-ont.owl#TimeZone"/>
+    <rdfs:domain rdf:resource="#CalendarClockDescription"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="ends">
+    <rdfs:domain rdf:resource="#TemporalThing"/>
+    <rdfs:range rdf:resource="#InstantThing"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="after">
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="before"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="begins">
+    <rdfs:range rdf:resource="#InstantThing"/>
+    <rdfs:domain rdf:resource="#TemporalThing"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#before">
+    <owl:inverseOf rdf:resource="#after"/>
+    <rdfs:range rdf:resource="#TemporalThing"/>
+    <rdfs:domain rdf:resource="#TemporalThing"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#firstInstantThing">
+    <rdfs:range rdf:resource="#InstantThing"/>
+    <rdfs:domain rdf:resource="#InstantThingPair"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="inside">
+    <rdfs:range rdf:resource="#InstantThing"/>
+    <rdfs:domain rdf:resource="#IntervalThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="intOverlappedBy">
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="intOverlaps"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="endsAt">
+    <owl:versionInfo>Created by Ferdinando Villa on Fri Jun 01 16:32:18 EDT 2007</owl:versionInfo>
+    <rdfs:label>endsOn</rdfs:label>
+    <rdfs:domain rdf:resource="#RegularTemporalGrid"/>
+    <rdfs:range rdf:resource="#DateTimeValue"/>
+    <rdfs:comment xml:lang="en">Links to the end of the grid extent</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="inCalendarClock">
+    <rdfs:range rdf:resource="#CalendarClockDescription"/>
+    <rdfs:domain rdf:resource="#InstantThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="intContains">
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="intDuring"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="calendarClockDescriptionOf">
+    <rdfs:domain rdf:resource="#CalendarClockInterval"/>
+    <rdfs:range rdf:resource="#CalendarClockDescription"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="intAfter">
+    <rdfs:subPropertyOf rdf:resource="#nonoverlap"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="intBefore"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="intEquals">
+    <rdfs:domain rdf:resource="#ProperIntervalThing"/>
+    <rdfs:range rdf:resource="#ProperIntervalThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#intFinishes">
+    <rdfs:domain rdf:resource="#ProperIntervalThing"/>
+    <owl:inverseOf rdf:resource="#intFinishedBy"/>
+    <rdfs:range rdf:resource="#ProperIntervalThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#intOverlaps">
+    <rdfs:range rdf:resource="#ProperIntervalThing"/>
+    <rdfs:domain rdf:resource="#ProperIntervalThing"/>
+    <owl:inverseOf rdf:resource="#intOverlappedBy"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#intBefore">
+    <rdfs:domain rdf:resource="#ProperIntervalThing"/>
+    <rdfs:range rdf:resource="#ProperIntervalThing"/>
+    <owl:inverseOf rdf:resource="#intAfter"/>
+    <rdfs:subPropertyOf rdf:resource="#before"/>
+    <rdfs:subPropertyOf rdf:resource="#nonoverlap"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#unitType">
+    <rdfs:domain rdf:resource="#CalendarClockDescription"/>
+    <rdfs:range rdf:resource="#TemporalUnit"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#secondInstantThing">
+    <rdfs:range rdf:resource="#InstantThing"/>
+    <rdfs:domain rdf:resource="#InstantThingPair"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#intDuring">
+    <owl:inverseOf rdf:resource="#intContains"/>
+    <rdfs:range rdf:resource="#ProperIntervalThing"/>
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:ID="startsOrDuring"/>
+    </rdfs:subPropertyOf>
+    <rdfs:domain rdf:resource="#ProperIntervalThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="durationDescriptionOf">
+    <rdfs:range rdf:resource="#DurationDescription"/>
+    <rdfs:domain rdf:resource="#TemporalThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#startsOrDuring">
+    <rdfs:domain rdf:resource="#ProperIntervalThing"/>
+    <rdfs:range rdf:resource="#ProperIntervalThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="intMetBy">
+    <rdfs:subPropertyOf rdf:resource="#nonoverlap"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="intMeets"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#intMeets">
+    <rdfs:domain rdf:resource="#ProperIntervalThing"/>
+    <rdfs:subPropertyOf rdf:resource="#nonoverlap"/>
+    <owl:inverseOf rdf:resource="#intMetBy"/>
+    <rdfs:range rdf:resource="#ProperIntervalThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#intStarts">
+    <rdfs:domain rdf:resource="#ProperIntervalThing"/>
+    <rdfs:range rdf:resource="#ProperIntervalThing"/>
+    <rdfs:subPropertyOf rdf:resource="#startsOrDuring"/>
+    <owl:inverseOf rdf:resource="#intStartedBy"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="#dayOfYearField">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"/>
+    <rdfs:domain rdf:resource="#CalendarClockDescription"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#minute">
+    <rdfs:domain rdf:resource="#CalendarClockDescription"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="calendarClockDescriptionDataType">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+    <rdfs:domain rdf:resource="#CalendarClockInterval"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#weeks">
+    <rdfs:domain rdf:resource="#DurationDescription"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#week">
+    <rdfs:domain rdf:resource="#CalendarClockDescription"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#years">
+    <rdfs:domain rdf:resource="#DurationDescription"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="durationDescriptionDataType">
+    <rdfs:domain rdf:resource="#TemporalThing"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#duration"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#days">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <rdfs:domain rdf:resource="#DurationDescription"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="inCalendarClockDataType">
+    <rdfs:domain rdf:resource="#InstantThing"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#month">
+    <rdfs:domain rdf:resource="#CalendarClockDescription"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#gMonth"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#minutes">
+    <rdfs:domain rdf:resource="#DurationDescription"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#months">
+    <rdfs:domain rdf:resource="#DurationDescription"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#hour">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"/>
+    <rdfs:domain rdf:resource="#CalendarClockDescription"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#year">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#gYear"/>
+    <rdfs:domain rdf:resource="#CalendarClockDescription"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#day">
+    <rdfs:domain rdf:resource="#CalendarClockDescription"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#gDay"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="instantPairDurationDescriptionDataType">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#duration"/>
+    <rdfs:domain rdf:resource="#InstantThingPair"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#hours">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <rdfs:domain rdf:resource="#DurationDescription"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#dayOfWeekField">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"/>
+    <rdfs:domain rdf:resource="#CalendarClockDescription"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#seconds">
+    <rdfs:domain rdf:resource="#DurationDescription"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#second">
+    <rdfs:domain rdf:resource="#CalendarClockDescription"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+  </owl:DatatypeProperty>
+  <owl:FunctionalProperty rdf:ID="inStepsOf">
+    <rdfs:range rdf:resource="#DurationValue"/>
+    <rdfs:domain rdf:resource="#RegularTemporalGrid"/>
+    <rdfs:label>inStepsOf</rdfs:label>
+    <owl:versionInfo>Created by Ferdinando Villa on Fri Jun 01 16:35:15 EDT 2007</owl:versionInfo>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="startsAt">
+    <rdfs:comment xml:lang="en">Links to the start of the grid extent</rdfs:comment>
+    <rdfs:range rdf:resource="#DateTimeValue"/>
+    <rdfs:domain rdf:resource="#RegularTemporalGrid"/>
+    <rdfs:label>startsOn</rdfs:label>
+    <owl:versionInfo>Created by Ferdinando Villa on Fri Jun 01 16:31:09 EDT 2007</owl:versionInfo>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <AbsoluteTime rdf:ID="AbsoluteTimeObservableInstance"/>
+  <ContinuousTime rdf:ID="ContinuousTimeObservableInstance"/>
+</rdf:RDF>

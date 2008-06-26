@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.currency" version="0.8.0" class="org.integratedmodelling.currency.CurrencyPlugin">
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.sql"/>
+		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
+		<import plugin-id="org.integratedmodelling.thinklab.time"/>
+	</requires>
+	<runtime>
+		<library id="core" path="classes/" type="code">
+			<export prefix="*"/>
+		</library>
+		<!-- make currency data available -->
+		<library type="resources" path="data/" id="data" />
+	</runtime>
+
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="cconvert">
+		<parameter id="class" value="org.integratedmodelling.currency.commands.CConvert"/>
+		<parameter id="command-name" value="cconvert"/>
+		<parameter id="command-description" value="convert currencies and adjust for inflation"/>
+		<parameter id="argument-names" value="amount,currency1,date1,currency2,date2"/>
+		<parameter id="argument-types" value="thinklab-core:LongFloatingPoint,thinklab-core:Text,time:DateTimeValue,thinklab-core:Text,time:DateTimeValue"/>
+		<parameter id="argument-descriptions" value="amount to convert,source currency,date of source value,destination currency,date of destination value"/>
+	</extension>
+
+</plugin>
