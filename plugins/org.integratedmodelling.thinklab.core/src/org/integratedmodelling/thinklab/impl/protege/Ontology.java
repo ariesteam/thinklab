@@ -51,6 +51,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabAmbiguousResultException;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -122,8 +123,6 @@ public class Ontology implements IOntology {
 
 	protected OWLOntology ontology;
 
-	private Logger log = Logger.getLogger(Ontology.class);
-
 	private long lastModified;
 	
 	private boolean acceptDuplicateIDs = false;
@@ -139,7 +138,7 @@ public class Ontology implements IOntology {
 
 	public Ontology(FileKnowledgeRepository kRepository, URL fileURL, String conceptSpace,
 			boolean editable) throws ThinklabException {
-		log.debug("  Load ontology from "+fileURL);
+		Thinklab.get().logger().debug("  Load ontology from "+fileURL);
 
 		this.kr = kRepository;
 		this.owlModel = kr.owlModel;
@@ -153,16 +152,16 @@ public class Ontology implements IOntology {
 		kr.loadedNamespaces.put(repository.getNamespace(),conceptSpace);
 //		add import statement
 		owlModel.getDefaultOWLOntology().addImports(repository.getName());
-		log.debug("Files: "+ kr.loadedFiles.entrySet());
-		log.debug("Namespaces"+ kr.loadedNamespaces.entrySet());
-		log.debug("loadedOntologies: "+ kr.loadedOntologies.entrySet());
-		log.debug("loadedTripleStores : " + owlModel.getTripleStoreModel().getTripleStores());
+		Thinklab.get().logger().debug("Files: "+ kr.loadedFiles.entrySet());
+		Thinklab.get().logger().debug("Namespaces"+ kr.loadedNamespaces.entrySet());
+		Thinklab.get().logger().debug("loadedOntologies: "+ kr.loadedOntologies.entrySet());
+		Thinklab.get().logger().debug("loadedTripleStores : " + owlModel.getTripleStoreModel().getTripleStores());
 	}
 	
 	
 	private String read(URL url, String conceptSpace, boolean editable)
 			throws ThinklabException {
-		log.debug("  Reading ontology from "+url);
+		Thinklab.get().logger().debug("  Reading ontology from "+url);
 		this.repository = new ThinklabLocalRepository(url, editable);
 
 		// Assign the repository
@@ -250,7 +249,7 @@ public class Ontology implements IOntology {
 
 	
 	public Ontology(FileKnowledgeRepository kr, String cName, URL url) throws ThinklabIOException {
-		log.debug("  Loading ontology from "+url);
+		Thinklab.get().logger().debug("  Loading ontology from "+url);
 		this.kr = kr;
 		this.owlModel = kr.owlModel;
 		try {
@@ -278,7 +277,8 @@ public class Ontology implements IOntology {
 
 
 	private Ontology(FileKnowledgeRepository kRepository, JenaTripleStore tripleStore, URL fileURL) throws ThinklabIOException {
-		log.debug("  Diverting to ontology "+fileURL);
+
+		Thinklab.get().logger().debug("  Diverting to ontology "+fileURL);
 
 		this.kr = kRepository;
 		this.owlModel = kr.owlModel;
@@ -294,7 +294,7 @@ public class Ontology implements IOntology {
 		String cs = owlModel.getNamespaceManager().getPrefix(repository.getNamespace());
 		this.conceptSpace = assignConceptSpace(cs, repository.getNamespace());
 		
-		log.info("Imported ontology: " + repository.toString() );
+		Thinklab.get().logger().info("Imported ontology: " + repository.toString() );
 		
 		updateKR();
 		
@@ -733,12 +733,12 @@ public class Ontology implements IOntology {
 
 	public void read(URL url) {
 		try {
-			log.debug("  Loading ontology from "+url);
+			Thinklab.get().logger().debug("  Loading ontology from "+url);
 			if (conceptSpace == null) 
 				conceptSpace = MiscUtilities.getNameFromURL(url.toString());
 			read(url, conceptSpace, repository.isWritable());
 		} catch (ThinklabException e) {
-			log.fatal(e);
+			Thinklab.get().logger().fatal(e);
 		}
 	}
 
@@ -769,7 +769,7 @@ public class Ontology implements IOntology {
         try {
 			JenaOWLModel.saveModel(os, model, FileUtils.langXMLAbbrev, repository.getNamespace());
 		} catch (IOException e) {
-			log.warn("Saving of ontology " + repository.getName() + " has failed.");
+			Thinklab.get().logger().warn("Saving of ontology " + repository.getName() + " has failed.");
 		}
 	}
 
