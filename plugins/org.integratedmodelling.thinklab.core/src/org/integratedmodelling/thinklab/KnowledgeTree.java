@@ -162,7 +162,6 @@ public class KnowledgeTree {
 		return is(cc1, cc2);
 	}
 
-	
 	private void dumpNode(ClassNode node, String prefix, ICommandOutputReceptor outputWriter) {
 		
 		outputWriter.displayOutput(prefix + node.ID);

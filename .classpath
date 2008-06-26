@@ -34,7 +34,7 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/ostermillerutils_1_06_00.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/jpf.jar" sourcepath="/JPF 1.5"/>
-	<classpathentry kind="lib" path="lib/jpf-boot.jar"/>
+	<classpathentry kind="lib" path="lib/jpf-boot.jar" sourcepath="/JPF 1.5/source-boot"/>
 	<classpathentry kind="lib" path="lib/jpf-tools.jar"/>
 	<classpathentry kind="lib" path="lib/jxp.jar"/>
 	<classpathentry kind="lib" path="lib/log4j.jar"/>

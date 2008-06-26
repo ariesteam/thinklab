@@ -189,7 +189,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	private HashSet<String> propertyBlacklist = new HashSet<String>();
 	private HashSet<String> conceptBlacklist = new HashSet<String>();
 
-
 	public KnowledgeManager(IKnowledgeRepository kr, ISessionManager ki) throws ThinklabException {
 
         /* set KM */

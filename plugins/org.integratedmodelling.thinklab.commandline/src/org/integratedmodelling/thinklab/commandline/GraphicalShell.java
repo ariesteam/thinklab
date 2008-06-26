@@ -67,6 +67,10 @@ public class GraphicalShell {
 	
 	JConsole console = null;
 	
+	Font inputFont = new Font("SansSerif", Font.BOLD, 12);
+	Font outputFont = new Font("SansSerif", Font.PLAIN, 12);
+
+	
 	class ConsoleCommandOutputReceptor implements ICommandOutputReceptor {
 
 		@Override
@@ -92,7 +96,7 @@ public class GraphicalShell {
 		    JPanel controlArea = new JPanel(new GridLayout(2, 1));
 		    content.add(controlArea, BorderLayout.EAST);
 		    console = new JConsole();
-		    console.setFont(new Font("SansSerif", Font.PLAIN, 12));
+		    console.setFont(outputFont);
 		    // Preferred height is irrelevant, since using WEST region
 		    console.setPreferredSize(new Dimension(600, 400));
 		    console.setBorder(BorderFactory.createLineBorder (Color.blue, 2));
@@ -136,11 +140,13 @@ public class GraphicalShell {
 		while(true) {
 			
 			console.print("> ");
+			console.setStyle(inputFont);
 			try {
 				input = in.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			console.setStyle(outputFont);
 			
 			if ("exit".equals(input)) {
 				console.println("shell terminated");
