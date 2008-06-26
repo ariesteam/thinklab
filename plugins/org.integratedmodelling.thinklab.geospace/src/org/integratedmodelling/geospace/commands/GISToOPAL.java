@@ -36,6 +36,7 @@ import java.io.File;
 
 import org.integratedmodelling.geospace.coverage.InstanceCoverageExporter;
 import org.integratedmodelling.geospace.feature.InstanceShapefileExporter;
+import org.integratedmodelling.opal.utils.OPALListWriter;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -44,7 +45,6 @@ import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.opal.utils.OPALListWriter;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.XMLDocument;
 

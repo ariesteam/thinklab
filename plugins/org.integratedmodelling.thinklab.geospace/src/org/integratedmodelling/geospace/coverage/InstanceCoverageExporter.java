@@ -2,8 +2,8 @@ package org.integratedmodelling.geospace.coverage;
 
 import java.net.URL;
 
+import org.integratedmodelling.opal.utils.OPALListWriter;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.opal.utils.OPALListWriter;
 import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.XMLDocument;
 
