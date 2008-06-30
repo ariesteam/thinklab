@@ -1195,5 +1195,13 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		pluginManager = pman;
 	}
 
+	/**
+	 * Set a new session manager to redefine the types of sessions you want created.
+	 * @param sessionManager
+	 */
+	public void setSessionManager(ISessionManager sessionManager) {
+		this.sessionManager = sessionManager;
+	}
+
 
 }

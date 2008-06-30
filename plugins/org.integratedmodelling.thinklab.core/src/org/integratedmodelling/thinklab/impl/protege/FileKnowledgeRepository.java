@@ -49,7 +49,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabAmbiguousResultException;

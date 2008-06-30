@@ -41,9 +41,9 @@
 		<parameter id="url" value="source.owl"/>
 		<parameter id="concept-space" value="source" />
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="modelling">
+    <extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="modelling">
 		<parameter id="url" value="modelling.owl"/>
-		<parameter id="concept-space" value="modelling" />
+		<parameter id="concept-space" value="modelling" /> 
 	</extension>
 
 	<!-- instance constructors -->
