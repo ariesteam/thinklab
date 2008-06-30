@@ -176,7 +176,7 @@ public class MiscUtilities
 		if (sl > 0)
 			ret = ret.substring(0, sl);
 		sl = ret.lastIndexOf("/");
-		if (sl > 0)
+		if (sl >= 0)
 			ret = ret.substring(sl+1);
 		
 		return ret;
