@@ -74,18 +74,24 @@
 		<library type="code" id="xsdlib"  path="lib/xsdlib-20050614.jar"/>	
 	</runtime>
 
+	<!-- declare an ontology -->
 	<extension-point id="ontology">
 		<parameter-def id="url" />
 		<parameter-def id="concept-space" />
 		<parameter-def id="description" multiplicity="none-or-one" />
 	</extension-point>
 
+	<!-- declare a kbox, optionally loading initial content if it's empty -->
 	<extension-point id="kbox">
+		<parameter-def id="protocol" />
 		<parameter-def id="url" />
-		<parameter-def id="concept-space" />
+		<parameter-def id="id" />
+		<parameter-def id="initial-content" multiplicity="none-or-one" />
+		<parameter-def id="metadata-schema" multiplicity="none-or-one" />
 		<parameter-def id="description" multiplicity="none-or-one" />
 	</extension-point>
 
+	<!-- declare a kbox handler -->
 	<extension-point id="kbox-handler">
 		<parameter-def id="class" />
 		<parameter-def id="protocol"  />

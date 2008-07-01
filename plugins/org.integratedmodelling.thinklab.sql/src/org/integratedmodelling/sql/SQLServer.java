@@ -107,7 +107,8 @@ public abstract class SQLServer {
 	
 	private boolean readOnly = false;
 	private boolean autoCommit = true;
-	private boolean usePooling = true;
+	// FIXME should be true, but it never worked so far
+	private boolean usePooling = false;
 	
 	public static SQLServer newInstance(String uri, Properties properties) throws ThinklabException {
 		return SQLPlugin.get().createSQLServer(uri, properties);
@@ -216,7 +217,7 @@ public abstract class SQLServer {
     public void initialize() throws ThinklabStorageException {
 
     	try {
-            Class.forName(getDriverClass());
+            Class.forName(getDriverClass(), true, SQLPlugin.get().getClassLoader());
         } catch (ClassNotFoundException e) {
         	throw new ThinklabStorageException(e);
         }
@@ -237,7 +238,7 @@ public abstract class SQLServer {
     public void initialize(URI uri) throws ThinklabStorageException {
 
     	try {
-            Class.forName(getDriverClass());
+            Class.forName(getDriverClass(), true, SQLPlugin.get().getClassLoader());
         } catch (ClassNotFoundException e) {
         	throw new ThinklabStorageException(e);
         }
@@ -259,7 +260,7 @@ public abstract class SQLServer {
 	public void initialize(URI uri, Properties properties) throws ThinklabStorageException {
 		
         try {
-            Class.forName(getDriverClass());
+            Class.forName(getDriverClass(), true, SQLPlugin.get().getClassLoader());
         } catch (ClassNotFoundException e) {
         	throw new ThinklabStorageException(e);
         }
@@ -269,11 +270,11 @@ public abstract class SQLServer {
     	/* set generic properties from passed properties, defaulting to the overall properties 
     	 * set for the SQL plugin, and to sensible defaults if even those are not there. */
     	usePooling = Boolean.parseBoolean(properties.getProperty("sql.use.pooling", 
-    			SQLPlugin.get().getProperties().getProperty("sql.use.pooling", "true")));
+    			SQLPlugin.get().getProperties().getProperty("sql.use.pooling", "false")));
     	
     	
     	if (Boolean.parseBoolean(properties.getProperty("sql.log.queries", 
-    			SQLPlugin.get().getProperties().getProperty("sql.log.queries", "false")))) {
+    			SQLPlugin.get().getProperties().getProperty("sql.log.queries", "true")))) {
  
     		setLogger();
     		logger.info("sql: initializing database " + uri);

@@ -59,7 +59,7 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 public class SQLPlugin extends ThinklabPlugin {
 
 	public File coreSchema = null;
-	public ArrayList<File> schemata = new ArrayList<File>();
+	public ArrayList<URL> schemata = new ArrayList<URL>();
 	private HashMap<String, SQLServerConstructor> serverConstructors =
 		new HashMap<String, SQLServerConstructor>();
 
@@ -69,7 +69,7 @@ public class SQLPlugin extends ThinklabPlugin {
 		return (SQLPlugin) getPlugin(PLUGIN_ID);
 	}
 
-	public File getSchema(String schemaID) throws ThinklabException {
+	public URL getSchema(String schemaID) throws ThinklabException {
 		
 		URL r = getResourceURL(schemaID + ".sqx");
 
@@ -77,13 +77,13 @@ public class SQLPlugin extends ThinklabPlugin {
 			throw new ThinklabIOException("schema " + schemaID + " referenced in kbox is not installed");
 		}	
 		
-		return new File(r.getFile());
+		return r;
 	}
 
 	
 	@Override
 	public void load(KnowledgeManager km) throws ThinklabPluginException {
-		
+				
 		/* register server types to be returned by createSQLServer() */
 		registerServerConstructor("hsql", new HSQLServerConstructor());
 		registerServerConstructor("postgres", new PostgresSQLServerConstructor());

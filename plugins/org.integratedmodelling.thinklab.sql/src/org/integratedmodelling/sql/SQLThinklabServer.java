@@ -33,6 +33,7 @@
 package org.integratedmodelling.sql;
 
 import java.io.File;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,6 +66,7 @@ import org.integratedmodelling.thinklab.value.BooleanValue;
 import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.LogicalConnector;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
@@ -1734,9 +1736,9 @@ public abstract class SQLThinklabServer {
 
 	private void loadSchema(String schemaID) throws ThinklabException {
 		
-		File schema = null;
+		URL schema = null;
 		
-		for (File sch : SQLPlugin.get().schemata) {
+		for (URL sch : SQLPlugin.get().schemata) {
 			if (sch.toString().endsWith(schemaID + ".sqx")) { 
 				schema = sch;
 				break;
@@ -1752,12 +1754,12 @@ public abstract class SQLThinklabServer {
 		SQLPlugin.get().logger().info("sql: reading schema " + schema);
 	}
 	
-	protected void readSchema(File f) throws ThinklabStorageException {
+	protected void readSchema(URL f) throws ThinklabStorageException {
 
 		XMLDocument doc = null;
 
 		try {
-			doc = new XMLDocument(f.toURI().toURL());
+			doc = new XMLDocument(f);
 		} catch (Exception e) {
 			throw new ThinklabStorageException(e);
 		}
@@ -1808,7 +1810,7 @@ public abstract class SQLThinklabServer {
 
 						if (pi == null)
 							throw new ThinklabStorageException("sql: schema "
-									+ f.getName() + ": cannot define "
+									+ MiscUtilities.getNameFromURL(f.toString()) + ": cannot define "
 									+ tt.semanticType
 									+ " based on undefined type " + bo);
 

@@ -16,7 +16,7 @@ public class OPAL extends ThinklabPlugin {
 	ArrayList<URL> profiles = new ArrayList<URL>();
 	
 	@Override
-	protected void loadExtensions() throws ThinklabException {
+	protected void loadExtensions() throws Exception {
 
 		super.loadExtensions();
 		

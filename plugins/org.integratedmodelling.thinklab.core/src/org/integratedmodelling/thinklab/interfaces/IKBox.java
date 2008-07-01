@@ -103,7 +103,11 @@ public abstract interface IKBox extends IQueriable {
 	 * there is no duplication of names.
 	 */
 	public final String KBOX_LOCALNAMES_PROPERTY = "kbox.localnames";
+
+	public final String KBOX_METADATA_TYPES_PROPERTY = "kbox.metadata.types";
 	
+	public final String KBOX_METADATA_SCHEMA_PROPERTY = "kbox.metadata.schema";
+
 	/**
 	 * Return the list definition of an object in the kbox. If the second parameter is not null, 
 	 * it will contain a map between string IDs of objects and their full URL; these objects, when present,

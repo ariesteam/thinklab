@@ -41,8 +41,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabAmbiguousResultException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -92,8 +92,6 @@ public class KBoxManager {
 	 * declare and set into each object's metadata fields. 
 	 */
 	public final String KBOX_METADATA_PREFIX = "kbox.metadata.type";
-	
-	Logger log = Logger.getLogger(PluginRegistry.class);
 
 	HashMap<String, IConcept> metadataTypes = new HashMap<String, IConcept>();
 	
@@ -225,9 +223,9 @@ public class KBoxManager {
 				/* just retrieve it, initializing what needs to */
 				IKBox kb = retrieveGlobalKBox(kbox);
 				if (kb == null) {
-					log.info("error: failed to open configured kbox " + kbox);
+					Thinklab.get().logger().info("error: failed to open configured kbox " + kbox);
 				} else {
-					log.info("successfully opened kbox " + kbox);
+					Thinklab.get().logger().info("successfully opened kbox " + kbox);
 				}
 			}
 		}
@@ -286,7 +284,8 @@ public class KBoxManager {
 			try {
 				protocol = new URI(kboxURI).getScheme();
 
-				if (protocol.equals("kbox")) {
+				if (protocol.equals("kbox") || protocol.equals("file") || 
+					protocol.equals("http") || protocol.equals("https")) {
 					
 					ret = retrieveGenericKBox(kboxURI);
 
@@ -396,7 +395,7 @@ public class KBoxManager {
 		String ontologies = properties.getProperty(IKBox.KBOX_ONTOLOGIES_PROPERTY);
 		String wrapperCls = properties.getProperty(IKBox.KBOX_WRAPPER_PROPERTY);
 		
-		log.info("opening kbox " + kboxURI + " with data uri " + dataUri);
+		Thinklab.get().logger().info("opening kbox " + kboxURI + " with data uri " + dataUri);
 		
 		if (protocol == null || protocol.equals(""))
 			throw new ThinklabUndefinedKBoxException("kbox metadata for " + kboxURI + " don't specify a protocol");
