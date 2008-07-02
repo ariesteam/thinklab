@@ -58,9 +58,7 @@ package org.integratedmodelling.thinklab.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -367,6 +365,55 @@ public abstract class ThinklabPlugin extends Plugin
 		for (Iterator<Extension> it =  toolExtPoint.getConnectedExtensions().iterator(); it.hasNext(); ) {
 			Extension ext = it.next();
 			if (ext.getDeclaringPluginDescriptor().getId().equals(getDescriptor().getId())) {
+				ret.add(ext);
+			}
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Return all the extension in any plugins that extend an extension point declared
+	 * in the passed plugin with the passed name.
+	 * 
+	 * @param extendedPlugin
+	 * @param extensionPoint
+	 * @return
+	 */
+	protected Collection<Extension> getAllExtensions(String extendedPlugin, String extensionPoint) {
+		
+		ArrayList<Extension> ret = new ArrayList<Extension>();
+		
+		ExtensionPoint toolExtPoint = 
+			getManager().getRegistry().getExtensionPoint(extendedPlugin, extensionPoint);
+
+		for (Iterator<Extension> it =  toolExtPoint.getConnectedExtensions().iterator(); it.hasNext(); ) {
+			Extension ext = it.next();
+				ret.add(ext);
+		}
+		
+		return ret;
+	}
+
+	/**
+	 * Return all the extension in a specified plugin that extend an extension point declared
+	 * in the passed plugin with the passed name.
+	 * 
+	 * @param pluginId the plugin that contains the extensions
+	 * @param extendedPlugin the plugin that contains the extension point
+	 * @param extensionPoint the extension point id
+	 * @return
+	 */
+	protected Collection<Extension> getPluginExtensions(String pluginId, String extendedPlugin, String extensionPoint) {
+		
+		ArrayList<Extension> ret = new ArrayList<Extension>();
+		
+		ExtensionPoint toolExtPoint = 
+			getManager().getRegistry().getExtensionPoint(extendedPlugin, extensionPoint);
+
+		for (Iterator<Extension> it =  toolExtPoint.getConnectedExtensions().iterator(); it.hasNext(); ) {
+			Extension ext = it.next();
+			if (ext.getDeclaringPluginDescriptor().getId().equals(pluginId)) {
 				ret.add(ext);
 			}
 		}

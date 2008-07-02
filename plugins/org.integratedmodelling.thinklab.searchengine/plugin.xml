@@ -13,4 +13,27 @@
 		<library type="code" id="lucene" path="lib/lucene-core-2.2.0.jar"/>
 		<library type="code" id="pdfbox" path="lib/PDFBox-0.7.3.jar"/>
 	</runtime>
+	
+	<extension-point  id="search-engine">
+		<!-- id of the search engine -->
+		<parameter-def id="id" />
+		<!-- one or more kboxes separated by commas -->
+		<parameter-def id="kbox" multiplicity="none-or-one" />
+		<!-- one or more ontologies separated by commas -->
+		<parameter-def id="ontology" multiplicity="none-or-one" />
+		<!-- if true, index those objects that have no annotations; default is false -->
+		<parameter-def id="index-uncommented" multiplicity="none-or-one" /> 
+		<!-- only index objects of this type or subtypes; default is everything -->
+		<parameter-def id="select-classes" multiplicity="none-or-one" />
+		<!-- customization of the way each individual property value is indexed --> 
+		<parameter-def id="index" type="null" multiplicity="any" >
+			<!-- the property linking to what must be indexed -->
+			<parameter-def id="property" />
+			<!-- can be "text" or "link" for now -->
+			<parameter-def id="type" />
+			<!-- floating point, put 1.0 for "normal" -->
+			<parameter-def id="weight" />
+		</parameter-def>
+	</extension-point>
+	
 </plugin>

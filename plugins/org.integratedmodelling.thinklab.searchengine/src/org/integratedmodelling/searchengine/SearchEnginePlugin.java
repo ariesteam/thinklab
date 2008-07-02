@@ -33,15 +33,18 @@
 package org.integratedmodelling.searchengine;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.java.plugin.registry.Extension;
 
 public class SearchEnginePlugin extends ThinklabPlugin {
 
-	static final String ID = "org.integratedmodelling.thinklab.searchengine";
+	static final String PLUGIN_ID = "org.integratedmodelling.thinklab.searchengine";
 	
 	ArrayList<SearchEngine> engines = new ArrayList<SearchEngine>();
 	
@@ -91,7 +94,7 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 		"searchengine.%.index.ontologies";
 	
 	public static SearchEnginePlugin get() {
-		return (SearchEnginePlugin) getPlugin(ID );
+		return (SearchEnginePlugin) getPlugin(PLUGIN_ID );
 	}
 	
 	/**
@@ -109,28 +112,105 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 		return engine;
 	}
 
+	/**
+	 * Get your engine here, passing the necessary configuration properties. 
+	 * 
+	 * @param id
+	 * @param properties
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public SearchEngine createSearchEngine(Extension ext, Properties properties) throws ThinklabException {
+		
+		String id = getParameter(ext, "id");
+
+		log.info("creating search engine " + id);
+
+		String kboxes = getParameter(ext, "kbox");
+		String ontolo = getParameter(ext, "ontology");
+		String select = getParameter(ext, "select-classes");
+		String uncomm = getParameter(ext, "index-uncommented", ontolo == null ? "false" : "true");
+		String indivi = getParameter(ext, "index-individuals", ontolo == null ? "true" : "false");
+
+		Properties p = new Properties();
+		p.putAll(properties);
+		
+		p.setProperty(SEARCHENGINE_INDEX_UNCOMMENTED_PROPERTY, uncomm);
+		p.setProperty(SEARCHENGINE_INDEX_INDIVIDUALS_PROPERTY, indivi);
+		
+		if (kboxes != null) {
+			p.setProperty(SEARCHENGINE_KBOX_LIST_PROPERTY, kboxes);
+		}
+		if (ontolo != null) {
+			p.setProperty(SEARCHENGINE_INDEX_ONTOLOGIES_PROPERTY, ontolo);
+		}
+		if (select != null) {
+			p.setProperty(SEARCHENGINE_INDEX_TYPES_PROPERTY, select);
+		}
+		
+		SearchEngine engine = new SearchEngine(id, p);
+		
+		for (Extension.Parameter aext : ext.getParameters("index")) {
+						
+			String itype = aext.getSubParameter("type").valueAsString();
+			double weigh = aext.getSubParameter("weight").valueAsNumber().doubleValue();
+			IProperty property = 
+				KnowledgeManager.get().requireProperty(
+						aext.getSubParameter("property").valueAsString());
+
+			engine.addIndexField(property, itype, weigh);
+			
+		}
+		
+		log.info("search engine " + id + " created");
+		
+		engines.add(engine);
+		return engine;
+	}
+	
+	/**
+	 * Load the search engines specified in the passed plugin and set them in the
+	 * engine repository. Must be called explicitly by plugins declaring search engines;
+	 * otherwise it usually ends up being called too early, like when the kbox we want to
+	 * index hasn't been created yet.
+	 * 
+	 * @param pluginId
+	 * @throws ThinklabException
+	 */
+	public List<SearchEngine> loadSearchEngines(String pluginId) throws ThinklabException {
+
+		ArrayList<SearchEngine> ret = new ArrayList<SearchEngine>();
+		
+		/*
+		 * find all search engines declared by plugins. At this point we should have
+		 * all kboxes and ontologies.
+		 */
+		for (Extension ext : getPluginExtensions(pluginId, PLUGIN_ID, "search-engine")) {
+			ret.add(createSearchEngine(ext, getProperties()));
+		}
+		
+		return ret;
+	}
+	
 
 	@Override
 	protected void load(KnowledgeManager km) throws ThinklabException {
-
-		// create all search engines defined in the plugin properties. Others may
-		// be created, typically as kbox wrappers. In that case, the kbox properties
-		// define the engine's parameters.
-		String engines = this.getProperties().getProperty("searchengine.new");
-		
-		if (engines != null) {
-			String[] eng = engines.split(",");
-			
-			for (String e : eng) {
-				createSearchEngine(e, getProperties());
-			}
-		}
 	}
 
 	@Override
 	protected void unload() throws ThinklabException {
 		// drop all search engines, close them		
 		engines.clear();
+	}
+
+	public SearchEngine getSearchEngine(String string) {
+		
+		for (SearchEngine s : engines) {
+			if (s.getID().equals(string))
+				return s;
+		}
+		
+		return null;
 	}	
 
 }

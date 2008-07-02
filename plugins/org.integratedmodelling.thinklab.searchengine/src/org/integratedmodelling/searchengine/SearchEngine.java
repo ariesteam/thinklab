@@ -47,7 +47,6 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -73,6 +72,7 @@ import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
+import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.interfaces.IQueriable;
 import org.integratedmodelling.thinklab.interfaces.IQuery;
 import org.integratedmodelling.thinklab.interfaces.IQueryResult;
@@ -95,8 +95,6 @@ import org.integratedmodelling.utils.Polylist;
 */
 public final class SearchEngine implements IQueriable {
 
-	private static  Logger log = Logger.getLogger(SearchEngine.class);
-	
 	/* cache directories */
 	File docCacheDir = null;
 	File ontCacheDir = null;
@@ -106,6 +104,18 @@ public final class SearchEngine implements IQueriable {
 	
 	String indexedOntologies = null;
 
+	private class IndexField {
+		// link or text
+		public String indexType;
+		public IProperty property;
+		public double weight = 1.0;
+	}
+	
+	/*
+	 * the array of fields to index may be empty, meaning that we want to index
+	 * all frickin' fields.
+	 */
+	ArrayList<IndexField> indexedFields = new ArrayList<IndexField>();
 	
     /* main Lucene analyzer */
     Analyzer analyzer;
@@ -191,13 +201,7 @@ public final class SearchEngine implements IQueriable {
 		}
 	}
 	
-	/*
-	 * just translate a property string template by replacing the % with the engine ID
-	 */
-	private String tprop(String ptemplate) {
-		return ptemplate.replace("%", id);
-	}
-	
+
     SearchEngine(String id, Properties properties) throws ThinklabException {
 
     	this.properties = properties;
@@ -206,27 +210,27 @@ public final class SearchEngine implements IQueriable {
     	this.indexIndividuals = 
     		BooleanValue.parseBoolean(
     				properties.getProperty(
-    						tprop(SearchEnginePlugin.SEARCHENGINE_INDEX_INDIVIDUALS_PROPERTY),
+    						SearchEnginePlugin.SEARCHENGINE_INDEX_INDIVIDUALS_PROPERTY,
     						"false"));
     	this.indexPath   = 
     		properties.getProperty(
-    				tprop(SearchEnginePlugin.SEARCHENGINE_INDEX_PATH_PROPERTY),
+    				SearchEnginePlugin.SEARCHENGINE_INDEX_PATH_PROPERTY,
     				SearchEnginePlugin.get().getScratchPath() + "/" + id + "/index");
     	
     	this.indexUncommented = 
     		BooleanValue.parseBoolean(
     				properties.getProperty(
-    						tprop(SearchEnginePlugin.SEARCHENGINE_INDEX_UNCOMMENTED_PROPERTY),
+    						SearchEnginePlugin.SEARCHENGINE_INDEX_UNCOMMENTED_PROPERTY,
     						"false"));
 
     	this.indexedOntologies   = 
     		properties.getProperty(
-    				tprop(SearchEnginePlugin.SEARCHENGINE_INDEX_ONTOLOGIES_PROPERTY),
+    				SearchEnginePlugin.SEARCHENGINE_INDEX_ONTOLOGIES_PROPERTY,
     				"");
     	
     	String itypes = 
     		properties.getProperty(
-    				tprop(SearchEnginePlugin.SEARCHENGINE_INDEX_TYPES_PROPERTY),
+    				SearchEnginePlugin.SEARCHENGINE_INDEX_TYPES_PROPERTY,
     				"");
     	
     	if (!itypes.equals("")) {
@@ -250,7 +254,7 @@ public final class SearchEngine implements IQueriable {
     	// create stated analyzer, defaulting to standard (English).
     	String analyzerClass =
     		properties.getProperty(
-    				tprop(SearchEnginePlugin.SEARCHENGINE_ANALYZER_CLASS_PROPERTY),
+    				SearchEnginePlugin.SEARCHENGINE_ANALYZER_CLASS_PROPERTY,
     				"org.apache.lucene.analysis.standard.StandardAnalyzer");
     	
 		try {
@@ -307,7 +311,7 @@ public final class SearchEngine implements IQueriable {
 
     		String kBoxList   = 
     			properties.getProperty(
-    					tprop(SearchEnginePlugin.SEARCHENGINE_KBOX_LIST_PROPERTY),
+    					SearchEnginePlugin.SEARCHENGINE_KBOX_LIST_PROPERTY,
     					"");
 
     		String[] kboxx = kBoxList.split(",");
@@ -344,7 +348,7 @@ public final class SearchEngine implements IQueriable {
        	/* index all configured ontologies */
     	for (IOntology o : getOntologies()) {
     		
-    			log.info("search engine: " + id + ": indexing " + o);     			
+    			SearchEnginePlugin.get().logger().info("search engine: " + id + ": indexing " + o);     			
     			indexModel(o);
     	}
     	
@@ -408,7 +412,7 @@ public final class SearchEngine implements IQueriable {
     	
     	/* see if indexed recently */
     	if (ontEntry.entryDate >= o.getLastModificationDate()) {
-			log.info("searchengine: index of " + o + " is up to date: skipping");
+    		SearchEnginePlugin.get().logger().info("searchengine: index of " + o + " is up to date: skipping");
     		return;
 		}
     	
@@ -417,7 +421,7 @@ public final class SearchEngine implements IQueriable {
     	/* iterate over all concepts */
     	for (IConcept c : o.getConcepts()) {
     		// submit concept for indexing
-			log.info("searchengine: indexing concept " + c);
+    		SearchEnginePlugin.get().logger().info("searchengine: indexing concept " + c);
     		submitConcept(c);
     	}
 
@@ -425,7 +429,7 @@ public final class SearchEngine implements IQueriable {
     	if (indexIndividuals) {
     		for (IInstance i : o.getInstances()) {
     			// submit concept for indexing
-    			log.info("searchengine: indexing individual " + i);
+    			SearchEnginePlugin.get().logger().info("searchengine: indexing individual " + i);
     			submitIndividual(i);
     		}
     	}
@@ -733,6 +737,17 @@ public final class SearchEngine implements IQueriable {
 
 	public IQuery parseQuery(String toEval) throws ThinklabException {
 		return new QueryString(toEval);
+	}
+
+	public void addIndexField(IProperty property, String itype, double weigh) {
+		
+		IndexField inf = new IndexField();
+		
+		inf.indexType = itype;
+		inf.weight = weigh;
+		inf.property = property;
+		
+		indexedFields.add(inf);
 	}
 
 }

@@ -57,7 +57,7 @@ public interface IQueriable {
 	 * The simplest query operation just returns all results that match the query, with no
 	 * result schema and no query boundaries.
 	 */
-	abstract IQueryResult query(IQuery q) throws ThinklabException;
+	public abstract IQueryResult query(IQuery q) throws ThinklabException;
 	
 	/**
 	 * Submit the query and return results. Do not use any specific schema for the results;
@@ -69,7 +69,7 @@ public interface IQueriable {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	abstract IQueryResult query(IQuery q, int offset, int maxResults) throws ThinklabException;
+	public abstract IQueryResult query(IQuery q, int offset, int maxResults) throws ThinklabException;
 
 	/**
 	 * Submit the query with a specified schema and return results.
@@ -81,6 +81,6 @@ public interface IQueriable {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	abstract IQueryResult query(IQuery q, Polylist resultSchema, int offset, int maxResults) throws ThinklabException;
+	public abstract IQueryResult query(IQuery q, Polylist resultSchema, int offset, int maxResults) throws ThinklabException;
 
 }
