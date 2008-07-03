@@ -168,7 +168,10 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 		for (Extension.Parameter aext : ext.getParameters("index")) {
 						
 			String itype = aext.getSubParameter("type").valueAsString();
-			double weigh = aext.getSubParameter("weight").valueAsNumber().doubleValue();
+			
+			double weigh = Double.parseDouble(
+					aext.getSubParameter("weight").valueAsString());
+			
 			IProperty property = 
 				KnowledgeManager.get().requireProperty(
 						aext.getSubParameter("property").valueAsString());

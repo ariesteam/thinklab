@@ -249,9 +249,9 @@ public final class SearchEngine implements IQueriable {
     	ontCacheDir = new File(scratchDir + "/cache/" + id + "/ontology");
     	kboxCacheDir = new File(scratchDir + "/cache/" + id + "/kbox");
     	
-    	docCacheDir.mkdir();
-    	ontCacheDir.mkdir();
-    	kboxCacheDir.mkdir();
+    	docCacheDir.mkdirs();
+    	ontCacheDir.mkdirs();
+    	kboxCacheDir.mkdirs();
     	
     	/* create all caches and initialize them from their dir contents */
     	
@@ -385,9 +385,14 @@ public final class SearchEngine implements IQueriable {
     
     private Collection<IOntology> getOntologies() {
     	
+    	ArrayList<IOntology> ret = new ArrayList<IOntology>();
+
+    	/*
+    	 * TODO
+    	 */
     	IKnowledgeRepository rep = KnowledgeManager.get().getKnowledgeRepository();
     	
-    	return null;
+    	return ret;
 	}
 
 	private void indexKBox(IKBox kb) throws ThinklabException {
@@ -477,12 +482,12 @@ public final class SearchEngine implements IQueriable {
 		}
 		
 		if (outfile.toString().endsWith(".pdf")) {
-			try {
-				SearchEnginePlugin.get().logger().warn("converting PDF document from " + uri);
-				ret = new LucenePDFDocument().convertDocument(outfile);
-			} catch (IOException e) {
-				throw new ThinklabIOException(e);
-			}
+//			try {
+//				SearchEnginePlugin.get().logger().warn("converting PDF document from " + uri);
+//				ret = new LucenePDFDocument().convertDocument(outfile);
+//			} catch (IOException e) {
+//				throw new ThinklabIOException(e);
+//			}
 		} else if (outfile.toString().endsWith(".html") || outfile.toString().endsWith(".htm")) {
 			/* TODO */
 		}
@@ -615,7 +620,7 @@ public final class SearchEngine implements IQueriable {
 					d.setBoost((float)f.weight);
 					d.add(field);
 					
-				} else if (f.indexType.equals("follow")) {
+				} else if (f.indexType.equals("download")) {
 
 					/*
 					 * download linked text and if OK, index contents and link it to main

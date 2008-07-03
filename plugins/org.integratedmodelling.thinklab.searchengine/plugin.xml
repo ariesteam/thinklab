@@ -29,7 +29,7 @@
 		<parameter-def id="index" type="null" multiplicity="any" >
 			<!-- the property linking to what must be indexed -->
 			<parameter-def id="property" />
-			<!-- can be "text" or "link" for now -->
+			<!-- can be "text", "download" or "link" for now -->
 			<parameter-def id="type" />
 			<!-- floating point, put 1.0 for "normal" -->
 			<parameter-def id="weight" />
