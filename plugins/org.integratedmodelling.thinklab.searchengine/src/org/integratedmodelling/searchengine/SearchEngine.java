@@ -40,11 +40,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -86,6 +88,7 @@ import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
+import org.pdfbox.searchengine.lucene.LucenePDFDocument;
 
 /**
  * A search index for thinklab. The plugin maintains a list of these. Should only be created
@@ -436,7 +439,7 @@ public final class SearchEngine implements IQueriable {
     }
 
     
-    Document submitExternalResource(String uri) {
+    Document submitExternalResource(String uri) throws ThinklabException {
 
     	Document ret = null;
 
@@ -445,15 +448,29 @@ public final class SearchEngine implements IQueriable {
 		String fname = MiscUtilities.getFileName(uri);
 		File outfile = new File(docCacheDir + "/" + fname);
 		
-		try {
-			if (uri.startsWith("http:"))
-				CopyURL.copy(new URL(uri), outfile);
-			else 
-				/**/;
-		} catch (Exception e) {
-			return null;
+		if (uri.contains("://")) {
+			try {
+				CopyURL.copy(new URL(uri), outfile);				
+			} catch (MalformedURLException e) {
+				throw new ThinklabValidationException("cannot access external resource using malformed URI " + uri);
+			}
+		} else { 
+			outfile = new File(uri);
+			if (!outfile.exists()) {
+				throw new ThinklabIOException("cannot access external resource using locator " + uri);
+			}
 		}
-    	
+		
+		if (outfile.toString().endsWith(".pdf")) {
+			try {
+				ret = new LucenePDFDocument().convertDocument(outfile);
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+		} else if (outfile.toString().endsWith(".html") || outfile.toString().endsWith(".htm")) {
+			/* TODO */
+		}
+			
     	return ret;
     }
     
@@ -466,6 +483,13 @@ public final class SearchEngine implements IQueriable {
      * @param weigth
      */
     void mergeDocuments(Document source, Document destination, float weight) {
+    
+    	// should be ok?
+    	for (Object f : source.getFields()) {
+    		Field field = (Field)f;
+    		field.setBoost(field.getBoost()*weight);
+    		destination.add(field);
+    	}
     	
     }
     
@@ -480,7 +504,7 @@ public final class SearchEngine implements IQueriable {
 		if (indexUncommented && (l == null || l.equals(""))) {
 			l = object.getLocalName();
 		}
-
+		
 		/*
 		 * create one Lucene document for each class with at least one
 		 * annotation property
@@ -559,59 +583,61 @@ public final class SearchEngine implements IQueriable {
     	/* index label and comment */
 		Document d = indexMetadata(i);
 		
-		for (IRelationship r : i.getRelationships()) {
-		
-			/* for each property, see if we want to index it and how */
+		/*
+		 * put in the rest as specified
+		 */
+		for (IndexField f : indexedFields) {
 			
-			String propb = 
-				"searchengine." + id + ".index." + r.getProperty().toString().replace(":", "_");
-			
-			String pIndex = properties.getProperty(propb);
-			
-			if (pIndex == null)
-				continue;
-			
-			/* pIndex could be text, link, url */
-			float weight = Float.parseFloat(properties.getProperty(propb + ".weight", "1.0"));
-			
-			/* could be literal, object, classification, but we just use what the user has told us. */
-			if (pIndex.equals("text")) {
-				
-				/* make field */
-				String value = r.getValue().toString();
-				d.add(new Field(r.getProperty().toString(), value, Field.Store.YES, Field.Index.TOKENIZED));
-				
-			} else if (pIndex.equals("follow")) {
+			for (IRelationship r : i.getRelationships(f.property.toString())) {
 
-				/*
-				 * download linked text and if OK, index contents and link it to main
-				 * document.
-				 */
-				String uri = r.getValue().toString();
-				
-				if (uri == null || uri.trim().equals(""))
-					continue;
-				
-				Document td = submitExternalResource(uri);
-				
-				if (td != null) {
-					mergeDocuments(td, d, weight);
-				}
-				
-			} else if (pIndex.equals("link") && r.isObject()) {
-
-				/* create document for linked object and link it to main document, multiplying the
-				 * intrinsic weight of the fields by the weigth factor. */
-				IInstance inst = r.getValue().asObjectReference().getObject();
-				
-				if (inst != null) {
-					Document ld = submitIndividual(inst);
+				/* could be literal, object, classification, but we just use what the user has told us. */
+				if (f.indexType.equals("text")) {
 					
-					if (ld != null) {
-						mergeDocuments(ld, d, weight);
+					/* make field */
+					String value = r.getValue().toString();
+					Field field = new Field(r.getProperty().toString(), value, Field.Store.YES, Field.Index.TOKENIZED);
+					d.setBoost((float)f.weight);
+					d.add(field);
+					
+				} else if (f.indexType.equals("follow")) {
+
+					/*
+					 * download linked text and if OK, index contents and link it to main
+					 * document.
+					 */
+					String uri = r.getValue().toString();
+					
+					if (uri == null || uri.trim().equals(""))
+						continue;
+					
+					Document td = submitExternalResource(uri);
+					
+					if (td != null) {
+						mergeDocuments(td, d, (float)f.weight);
+					}
+					
+				} else if (f.indexType.equals("link") && r.isObject()) {
+
+					/* create document for linked object and link it to main document, multiplying the
+					 * intrinsic weight of the fields by the weigth factor. */
+					IInstance inst = r.getValue().asObjectReference().getObject();
+					
+					if (inst != null) {
+						Document ld = submitIndividual(inst);
+						
+						if (ld != null) {
+							mergeDocuments(ld, d, (float)f.weight);
+						}
 					}
 				}
+
+				
 			}
+		}
+		
+		for (IRelationship r : i.getRelationships()) {
+		
+	
 		}
 		
 		return d;

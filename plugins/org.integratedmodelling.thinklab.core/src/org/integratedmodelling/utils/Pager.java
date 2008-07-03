@@ -190,7 +190,7 @@ public class Pager {
 	}
 	
 	/**
-	 * The page that shows the current item. Starts at 1.
+	 * The page that shows the current item. Starts at base.
 	 * @return
 	 */
 	public int getCurrentPage(int base) {
@@ -236,9 +236,12 @@ public class Pager {
 	}
 	
 	public int getLastItemIndexInCurrentPage(int base) {
-		return 
+		
+		int lastIfPresent = 
 			getFirstItemIndexInCurrentPage(base) + 
-			getNItemsOnPage(getCurrentPage(base), base) - 1;	
+			getNItemsOnPage(getCurrentPage(base), base) - 1;
+	
+		return ((totalItems - 1) > lastIfPresent) ? lastIfPresent : (totalItems - 1);
 	}
 	
 	/**
