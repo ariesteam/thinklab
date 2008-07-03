@@ -443,7 +443,7 @@ public abstract class ThinklabPlugin extends Plugin
 	 * @return
 	 * @throws ThinklabIOException 
 	 */
-	protected URL getResourceURL(String resource) throws ThinklabIOException 	{
+	public URL getResourceURL(String resource) throws ThinklabIOException 	{
 
 		URL ret = null;
 		

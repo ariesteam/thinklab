@@ -82,6 +82,7 @@ import org.integratedmodelling.thinklab.interfaces.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.session.Session;
 import org.integratedmodelling.thinklab.value.BooleanValue;
 import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
@@ -168,6 +169,7 @@ public final class SearchEngine implements IQueriable {
 	}
 	
 	private Cache cache = null;
+	private ThinklabPlugin declaringPlugin;
 	
 	private void readCache() throws ThinklabIOException {
 		
@@ -447,22 +449,36 @@ public final class SearchEngine implements IQueriable {
 		
 		String fname = MiscUtilities.getFileName(uri);
 		File outfile = new File(docCacheDir + "/" + fname);
+
+		if (declaringPlugin != null) {
+			
+			URL resource = declaringPlugin.getResourceURL(uri);
+			if (resource != null)
+				CopyURL.copy(resource, outfile);
+			
+		} else {
+			if (uri.contains("://")) {
+				try {
+					CopyURL.copy(new URL(uri), outfile);				
+				} catch (MalformedURLException e) {
+					throw new ThinklabValidationException("cannot access external resource using malformed URI " + uri);
+				}
+			} else { 
+				outfile = new File(uri);
+				if (!outfile.exists()) {
+					throw new ThinklabIOException("cannot access external resource using locator " + uri);
+				}
+			}
+		}
 		
-		if (uri.contains("://")) {
-			try {
-				CopyURL.copy(new URL(uri), outfile);				
-			} catch (MalformedURLException e) {
-				throw new ThinklabValidationException("cannot access external resource using malformed URI " + uri);
-			}
-		} else { 
-			outfile = new File(uri);
-			if (!outfile.exists()) {
-				throw new ThinklabIOException("cannot access external resource using locator " + uri);
-			}
+		if (outfile == null || !outfile.exists()) {
+			SearchEnginePlugin.get().logger().warn("resource " + uri + " could not be found for indexing");
+			return null;
 		}
 		
 		if (outfile.toString().endsWith(".pdf")) {
 			try {
+				SearchEnginePlugin.get().logger().warn("converting PDF document from " + uri);
 				ret = new LucenePDFDocument().convertDocument(outfile);
 			} catch (IOException e) {
 				throw new ThinklabIOException(e);
@@ -774,6 +790,10 @@ public final class SearchEngine implements IQueriable {
 		inf.property = property;
 		
 		indexedFields.add(inf);
+	}
+
+	public void setResourceFinder(ThinklabPlugin resourceFinder) {
+		this.declaringPlugin = resourceFinder;
 	}
 
 }

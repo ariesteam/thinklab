@@ -64,6 +64,7 @@ import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 import org.integratedmodelling.thinklab.value.BooleanValue;
 import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.value.Value;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.LogicalConnector;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -73,6 +74,7 @@ import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.Quantifier;
 import org.integratedmodelling.utils.Triple;
 import org.integratedmodelling.utils.XMLDocument;
+import org.mvel.MVEL;
 import org.w3c.dom.Node;
 
 
@@ -279,15 +281,26 @@ public abstract class SQLThinklabServer {
 			 */
 			for (Pair<String, String> exp : variables) {
 				
-				/* obtain an algorithm from the string stored in XML */
-				AlgorithmValue aa = 
-					(AlgorithmValue) KnowledgeManager.get()
-						.validateLiteral(
+				IValue vv = null;
+				
+				if (scriptLanguage.equals("MVEL")) {
+				
+					HashMap<String, IValue> context = new HashMap<String, IValue>();
+					context.put("self", val);
+					vv = Value.getValueForObject(MVEL.eval(exp.getSecond(), context));
+
+				} else {
+				
+					/* obtain an algorithm from the string stored in XML */
+					AlgorithmValue aa = 
+						(AlgorithmValue) KnowledgeManager.get()
+							.validateLiteral(
 								KnowledgeManager.get().requireConcept(
 										scriptLanguage),
 										exp.getSecond(), session.asOntology());
 			
-				IValue vv = val.execute(aa, session);
+					vv = val.execute(aa, session);
+				}
 				
 				ret = ret.replace(
 						"$" + exp.getFirst(), 
@@ -1249,22 +1262,32 @@ public abstract class SQLThinklabServer {
 
 			if (tab.system.get(i) == 0) {
 
-				try {
-					/* obtain an algorithm from the string stored in XML */
-					AlgorithmValue aa = (AlgorithmValue) KnowledgeManager.get()
+				if (scriptLanguage.equals("MVEL")) {
+				
+					HashMap<String, IInstance> context = new HashMap<String, IInstance>();
+					context.put("self", c);
+					IValue v = Value.getValueForObject(MVEL.eval(tab.fieldValues.get(i), context));
+					sql += ", " + translateLiteral(v, v.getConcept(), session);
+
+				} else {
+				
+					try {
+						/* obtain an algorithm from the string stored in XML */
+						AlgorithmValue aa = (AlgorithmValue) KnowledgeManager.get()
 							.validateLiteral(
 									KnowledgeManager.get().requireConcept(
 											scriptLanguage),
 									tab.fieldValues.get(i), session.asOntology());
 
-					/*
-					 * calculate field in context of instance, add proper
-					 * representation
-					 */
-					IValue v = c.execute(aa, session);
-					sql += ", " + translateLiteral(v, v.getConcept(), session);
-				} catch (ThinklabException e) {
-					throw new ThinklabStorageException(e);
+						/*
+						 * calculate field in context of instance, add proper
+						 * representation
+						 */
+						IValue v = c.execute(aa, session);
+						sql += ", " + translateLiteral(v, v.getConcept(), session);
+					} catch (ThinklabException e) {
+						throw new ThinklabStorageException(e);
+					}
 				}
 			}
 		}
@@ -1940,7 +1963,7 @@ public abstract class SQLThinklabServer {
 		 */
 		scriptLanguage = properties.getProperty("sql.script.language",
 				SQLPlugin.get().getProperties().getProperty(
-						"sql.script.language", "groovy:GroovyCode"));
+						"sql.script.language", "MVEL"));
 		
 		/*
 		 * define how we want to use the mock-reasoner

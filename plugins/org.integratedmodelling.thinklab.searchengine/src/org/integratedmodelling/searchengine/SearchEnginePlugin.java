@@ -38,8 +38,10 @@ import java.util.Properties;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
 
 public class SearchEnginePlugin extends ThinklabPlugin {
@@ -123,7 +125,18 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 	public SearchEngine createSearchEngine(Extension ext, Properties properties) throws ThinklabException {
 		
 		String id = getParameter(ext, "id");
-
+		
+		/*
+		 * find the declaring plugin so we can find data and files in its classpath
+		 */
+		ThinklabPlugin resourceFinder = null;
+		try {
+			resourceFinder =
+				(ThinklabPlugin)getManager().getPlugin(ext.getDeclaringPluginDescriptor().getId());
+		} catch (PluginLifecycleException e) {
+			throw new ThinklabValidationException("can't determine the plugin that created the engine "+ id);
+		}
+		
 		log.info("creating search engine " + id);
 
 		String kboxes = getParameter(ext, "kbox");
@@ -149,6 +162,8 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 		}
 		
 		SearchEngine engine = new SearchEngine(id, p);
+		
+		engine.setResourceFinder(resourceFinder);
 		
 		for (Extension.Parameter aext : ext.getParameters("index")) {
 						

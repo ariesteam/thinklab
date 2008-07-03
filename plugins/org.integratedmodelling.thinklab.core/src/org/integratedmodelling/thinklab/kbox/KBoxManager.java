@@ -284,8 +284,9 @@ public class KBoxManager {
 			try {
 				protocol = new URI(kboxURI).getScheme();
 
-				if (protocol.equals("kbox") || protocol.equals("file") || 
-					protocol.equals("http") || protocol.equals("https")) {
+				if (protocol.equals("kbox") || 
+						((protocol.equals("file") || protocol.equals("http") || protocol.equals("https")) &&
+								kboxURI.endsWith(".kbox"))) {
 					
 					ret = retrieveGenericKBox(kboxURI);
 
