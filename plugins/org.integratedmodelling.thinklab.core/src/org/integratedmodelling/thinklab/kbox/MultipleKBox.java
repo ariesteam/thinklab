@@ -136,4 +136,10 @@ public class MultipleKBox implements IKBox {
 		return null;
 	}
 
+	@Override
+	public String getUri() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

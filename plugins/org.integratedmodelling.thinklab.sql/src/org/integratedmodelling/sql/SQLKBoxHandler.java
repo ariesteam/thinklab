@@ -11,10 +11,10 @@ import org.integratedmodelling.thinklab.interfaces.IKBox;
 public class SQLKBoxHandler implements KBoxHandler {
 
 
-	public IKBox createKBox(String protocol, String dataUri, Properties properties) throws ThinklabException {
+	public IKBox createKBox(String originalURI, String protocol, String dataUri, Properties properties) throws ThinklabException {
 		
 		if (protocol.equals("pg") || protocol.equals("hsqldb") || protocol.equals("mysql"))
-			return new SQLKBox(protocol, dataUri, properties);
+			return new SQLKBox(originalURI, protocol, dataUri, properties);
 
 		return null;
 	}

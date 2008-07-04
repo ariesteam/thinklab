@@ -33,14 +33,19 @@
 package org.integratedmodelling.searchengine;
 
 import java.util.HashMap;
+import java.util.ArrayList;
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IQueriable;
 import org.integratedmodelling.thinklab.interfaces.IQuery;
 import org.integratedmodelling.thinklab.interfaces.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
 import org.integratedmodelling.utils.Polylist;
 
 
@@ -50,49 +55,67 @@ import org.integratedmodelling.utils.Polylist;
  */
 public class ResultContainer implements IQueryResult {
 
+	ArrayList<Document> results = new ArrayList<Document>();
+	ArrayList<Float> scores = new ArrayList<Float>();
+	
+	private SearchEngine searchEngine;
+	private IQuery queryString;
+	private int totalResultCount;
+	private int offset;
+	private int maxResults;
+	private Polylist schema;
+	
+	public ResultContainer(SearchEngine s, IQuery q, Polylist schema, int offset, int max) {
+		this.searchEngine = s;
+		this.queryString = q;
+		this.offset = offset;
+		this.maxResults = max;
+		this.schema = schema;
+	}
+	
+	private IInstance getObjectFromDocument(Document doc, ISession session) throws ThinklabException {
+		
+		String id = doc.get("id");
+		return session.importObject(id);
+	}
+	
 	public IQueriable getQueriable() {
-		// TODO Auto-generated method stub
-		return null;
+		return searchEngine;
 	}
 
 	public IQuery getQuery() {
-		// TODO Auto-generated method stub
-		return null;
+		return queryString;
 	}
 
 	public Object getResultField(int n, String schemaField) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Field f = results.get(n).getField(schemaField);
+		return f.stringValue();
 	}
 
 	public Object getResultField(int n, int schemaIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		return results.get(n).get(schema.array()[schemaIndex].toString());
 	}
 
 	public int getResultCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return scores.size();
 	}
 
 	public int getResultOffset() {
 		// TODO Auto-generated method stub
-		return 0;
+		return offset;
 	}
 
 	public Polylist getResultSchema() {
-		// TODO Auto-generated method stub
-		return null;
+		return schema;
 	}
 
 	public float getResultScore(int n) {
-		// TODO Auto-generated method stub
-		return 0;
+		return scores.get(n);
 	}
 
 	public int getTotalResultCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return totalResultCount;
 	}
 
 	public void moveTo(int currentItem, int itemsPerPage)
@@ -103,29 +126,32 @@ public class ResultContainer implements IQueryResult {
 
 	public void parseResultSchema(Polylist list) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public Polylist getResultAsList(int n, HashMap<String, String> references) {
-		// TODO Auto-generated method stub
+
+//		try {
+//			return getObjectFromDocument(results.get(n)).toList(null, references);
+//		} catch (ThinklabException e) {
+//			throw new ThinklabRuntimeException(e);
+//		}
 		return null;
 	}
 
 
 	public void setResultCount(int length) {
-		// TODO Auto-generated method stub
-		
+		totalResultCount = length;
 	}
 
-	public void add(String id, float score) {
-		// TODO Auto-generated method stub
-		
+	void addDocument(Document doc, float score) {
+		results.add(doc);
+		scores.add((float) Math.round(score * 100.0));
 	}
-
+	
 	@Override
 	public IValue getResult(int n, ISession session) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return new ObjectReferenceValue(getObjectFromDocument(results.get(n), session));
 	}
 
 	@Override

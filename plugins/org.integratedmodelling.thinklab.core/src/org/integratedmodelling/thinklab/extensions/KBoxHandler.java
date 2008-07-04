@@ -30,6 +30,6 @@ public interface KBoxHandler {
 	 * @return
 	 * @throws ThinklabException 
 	 */
-	public abstract IKBox createKBox(String protocol, String dataUri, Properties properties) throws ThinklabException;
+	public abstract IKBox createKBox(String originalURI, String protocol, String dataUri, Properties properties) throws ThinklabException;
 
 }

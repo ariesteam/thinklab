@@ -233,5 +233,12 @@ public abstract interface IKBox extends IQueriable {
 	 * @throws ThinklabException 
 	 */
 	public Polylist getMetadataSchema() throws ThinklabException;
-	
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract String getUri();
+
+
 }

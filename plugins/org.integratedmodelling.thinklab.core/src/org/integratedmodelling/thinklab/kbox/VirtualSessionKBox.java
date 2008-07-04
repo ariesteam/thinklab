@@ -191,4 +191,10 @@ public class VirtualSessionKBox implements IKBox {
 		return KBoxManager.get().getDefaultSchema();
 	}
 
+	@Override
+	public String getUri() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

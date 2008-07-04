@@ -64,11 +64,13 @@ import org.integratedmodelling.utils.Polylist;
 public class SQLKBox extends SQLThinklabServer implements IKBox {
 	
 	Hashtable<String, Integer> totalsCache = new Hashtable<String, Integer>();
-
-	public SQLKBox(String protocol, String serverURL, Properties properties)
+	String uri = null;
+	
+	public SQLKBox(String uri, String protocol, String serverURL, Properties properties)
 			throws ThinklabException {
 		super(protocol, SQLPlugin.get().createSQLServer(serverURL, properties),
 				properties);
+		this.uri = uri;
 	}
 
 	public IQuery parseQuery(String toEval) throws ThinklabException {
@@ -276,6 +278,11 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 
 	public Polylist getMetadataSchema()  throws ThinklabException  {
 		return KBoxManager.get().parseSchema(getProperties());
+	}
+
+	@Override
+	public String getUri() {
+		return uri;
 	}
 
 }

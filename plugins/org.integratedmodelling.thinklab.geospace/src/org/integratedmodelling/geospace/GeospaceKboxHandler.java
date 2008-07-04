@@ -16,13 +16,13 @@ import org.integratedmodelling.utils.MiscUtilities;
 public class GeospaceKboxHandler implements KBoxHandler {
 
 	@Override
-	public IKBox createKBox(String protocol, String dataUri, Properties properties) throws ThinklabException {
+	public IKBox createKBox(String uri, String protocol, String dataUri, Properties properties) throws ThinklabException {
 
 		IKBox ret = null;
 		
 		if (protocol.equals("shapefile")) {
 			try {
-				ret = new ShapefileKBox(new URL(dataUri), properties);
+				ret = new ShapefileKBox(uri, new URL(dataUri), properties);
 			} catch (MalformedURLException e) {
 				throw new ThinklabIOException(e);
 			}
@@ -36,7 +36,7 @@ public class GeospaceKboxHandler implements KBoxHandler {
 		
 		if (url.toString().startsWith("shapefile:")) {
 			try {
-				return new ShapefileKBox(MiscUtilities.getURLForResource(url.toString()), null);
+				return new ShapefileKBox(url.toString(), MiscUtilities.getURLForResource(url.toString()), null);
 			} catch (ThinklabException e) {
 				throw new ThinklabStorageException(e);
 			}

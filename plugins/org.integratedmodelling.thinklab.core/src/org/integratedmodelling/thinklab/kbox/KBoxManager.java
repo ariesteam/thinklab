@@ -429,7 +429,7 @@ public class KBoxManager {
 			}
 		}
 		
-		ret = plu.createKBox(protocol, dataUri, properties);
+		ret = plu.createKBox(kboxURI, protocol, dataUri, properties);
 		
 		if (ret != null && wrapperCls != null) {
 			

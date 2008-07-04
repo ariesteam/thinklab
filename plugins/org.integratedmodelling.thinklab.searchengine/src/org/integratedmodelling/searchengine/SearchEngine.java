@@ -411,7 +411,7 @@ public final class SearchEngine implements IQueriable {
 			if (val instanceof ObjectReferenceValue) {
 				ii = ((ObjectReferenceValue)val).getObject();
 				try {
-					index.addDocument(submitIndividual(ii));
+					index.addDocument(submitIndividual(kb, ii));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					throw new ThinklabIOException(e);
@@ -448,7 +448,7 @@ public final class SearchEngine implements IQueriable {
     		for (IInstance i : o.getInstances()) {
     			// submit concept for indexing
     			SearchEnginePlugin.get().logger().info("searchengine: indexing individual " + i);
-    			submitIndividual(i);
+    			submitIndividual(null, i);
     		}
     	}
     }
@@ -522,7 +522,7 @@ public final class SearchEngine implements IQueriable {
     	
     }
     
-    private Document indexMetadata(IKnowledgeSubject object) {
+    private Document indexMetadata(IKnowledgeSubject object, IKBox kbox) {
     	
     	Document d = null;
     	
@@ -534,6 +534,11 @@ public final class SearchEngine implements IQueriable {
 			l = object.getLocalName();
 		}
 		
+		String id = object.getSemanticType().toString();
+		if (kbox != null) {
+			id = kbox.getUri() + "#" + object.getLocalName();
+		}
+		
 		/*
 		 * create one Lucene document for each class with at least one
 		 * annotation property
@@ -542,7 +547,7 @@ public final class SearchEngine implements IQueriable {
 
 			d = new Document();
 
-			d.add(new Field("id", object.getSemanticType().toString(),
+			d.add(new Field("id", id,
 					Field.Store.YES, Field.Index.NO));
 
 			if (c != null)
@@ -578,7 +583,7 @@ public final class SearchEngine implements IQueriable {
 	 */
 	public Document submitConcept(IConcept cl) throws ThinklabIOException {
 
-		Document d = indexMetadata(cl);
+		Document d = indexMetadata(cl, null);
 		
 		if (d != null) {
 		
@@ -596,7 +601,7 @@ public final class SearchEngine implements IQueriable {
 	/**
 	 * @param i
 	 */
-	public Document submitIndividual(IInstance i) throws ThinklabException {
+	public Document submitIndividual(IKBox kbox, IInstance i) throws ThinklabException {
 
     	/* first check if we want to index this object at all - based on the class */
 		if (!checkObjectClass(i.getDirectType())) {
@@ -610,7 +615,7 @@ public final class SearchEngine implements IQueriable {
     	 * a sub-object */
     	
     	/* index label and comment */
-		Document d = indexMetadata(i);
+		Document d = indexMetadata(i, kbox);
 		
 		/*
 		 * put in the rest as specified
@@ -652,7 +657,7 @@ public final class SearchEngine implements IQueriable {
 					IInstance inst = r.getValue().asObjectReference().getObject();
 					
 					if (inst != null) {
-						Document ld = submitIndividual(inst);
+						Document ld = submitIndividual(kbox, inst);
 						
 						if (ld != null) {
 							mergeDocuments(ld, d, (float)f.weight);
@@ -744,13 +749,21 @@ public final class SearchEngine implements IQueriable {
 	public IQueryResult query(IQuery q, Polylist resultSchema, int offset, int maxResults) 
 		throws ThinklabException {
 
-		ResultContainer ret = new ResultContainer();
+		ResultContainer ret = new ResultContainer(this, q, resultSchema, offset, maxResults);
 		
 		if ( !(q instanceof QueryString)) 
 			throw new ThinklabValidationException("search engine: only textual query strings are admitted");
 		
 		// TODO parameterize from properties
-		String[] searchFields = {"label", "comment"};
+		String[] searchFields = new String [indexedFields == null ? /*2 */0: indexedFields.size() /*+ 2*/];
+		
+		searchFields[0] = "label";
+		searchFields[1] = "comment";
+		
+		if (indexedFields != null)
+			for (int i = 0; i < indexedFields.size(); i++)
+				searchFields[i/*+2*/] = indexedFields.get(i).property.toString();
+		
     	IndexSearcher isearch = null;
     	
     	MultiFieldQueryParser parser = new MultiFieldQueryParser(searchFields, analyzer);
@@ -762,9 +775,8 @@ public final class SearchEngine implements IQueriable {
 
     	try {
     		
-			Query qr = parseQuery(q.toString(), parser);
-			Hits hits = isearch.search(qr);
-			
+			Query qr = parseQuery(q.asText(), parser);
+			Hits hits = isearch.search(qr);			
 			ret.setResultCount(hits.length());;
 			
 			if (maxResults == -1)
@@ -773,9 +785,8 @@ public final class SearchEngine implements IQueriable {
 			for (int i = offset; (i < offset + maxResults) && (i < hits.length()); i++) {
 				
                 Document doc = hits.doc(i);
-                String id = doc.get("id");
                 float score = hits.score(i)/hits.score(0);
-                ret.add(id, score);
+                ret.addDocument(doc, score);
 	        }
 			
 		} catch (Exception e) {

@@ -99,5 +99,10 @@ public class SearchEngineKBoxWrapper extends KBoxWrapper {
 		return kbox.getMetadataSchema();
 	}
 
+	@Override
+	public String getUri() {
+		return kbox.getUri();
+	}
+
 	
 }

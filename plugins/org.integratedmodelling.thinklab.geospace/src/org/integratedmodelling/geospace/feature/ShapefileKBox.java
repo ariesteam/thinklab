@@ -59,12 +59,15 @@ import org.integratedmodelling.utils.Polylist;
  */
 public class ShapefileKBox extends InstanceShapefileHandler implements IKBox {
 
+	String uri = null;
+	
 	public IQuery parseQuery(String toEval) throws ThinklabException {
 		return null;
 	}
 	
-	public ShapefileKBox(URL url, Properties properties) throws ThinklabException {
+	public ShapefileKBox(String uri, URL url, Properties properties) throws ThinklabException {
 		super(url, properties);
+		this.uri = uri;
 	}
 
 	public IInstance getObjectFromID(String id, ISession session)
@@ -154,6 +157,11 @@ public class ShapefileKBox extends InstanceShapefileHandler implements IKBox {
 
 	public Polylist getMetadataSchema() throws ThinklabException {
 		return KBoxManager.get().parseSchema(getProperties());
+	}
+
+	@Override
+	public String getUri() {
+		return uri;
 	}
 
 

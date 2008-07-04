@@ -34,6 +34,7 @@
 package org.integratedmodelling.thinklab.constraint;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabConstraintValidationException;
@@ -214,6 +215,12 @@ public class Constraint implements IQuery {
 	 */
 	public Constraint restrict(Restriction ... restrictions) {
 		return restrict(LogicalConnector.INTERSECTION, restrictions);
+	}
+	
+	public Constraint restrict(Collection<Restriction> restrictions) {
+		return restrict(
+				restrictions.toArray(
+						new Restriction[restrictions.size()]));
 	}
 	
 	/**

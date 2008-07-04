@@ -132,5 +132,11 @@ public class PersistentKBox implements IKBox {
 		return KBoxManager.get().parseSchema(null);
 	}
 
+	@Override
+	public String getUri() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
