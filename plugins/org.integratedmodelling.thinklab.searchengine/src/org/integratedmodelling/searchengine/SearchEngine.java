@@ -52,6 +52,7 @@ import java.util.Properties;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexModifier;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
@@ -61,6 +62,7 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.LockObtainFailedException;
 import org.integratedmodelling.searchengine.exceptions.ThinklabInvalidIndexException;
 import org.integratedmodelling.searchengine.exceptions.ThinklabInvalidQueryException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -173,7 +175,7 @@ public final class SearchEngine implements IQueriable {
 	
 	private void readCache() throws ThinklabIOException {
 		
-		File inp = new File("ontCacheDir" + "/cache.obj");
+		File inp = new File(ontCacheDir + "/cache.obj");
 		
 		if (inp.exists()) {
 			try {
@@ -191,18 +193,19 @@ public final class SearchEngine implements IQueriable {
 	private void writeCache() throws ThinklabIOException {
 		
 		if (cache.size() > 0) {
-			File inp = new File("ontCacheDir" + "/cache.obj");
-			try {
-				
-				FileOutputStream ostream = new FileOutputStream(inp);
-				ObjectOutputStream p = new ObjectOutputStream(ostream);
-				p.writeObject(cache);
-				p.flush();
-				ostream.close();
-				
-			} catch (Exception e) {
-				throw new ThinklabIOException("searchengine: " + id + ": can't write object cache");
-			}
+			File inp = new File(ontCacheDir + "/cache.obj");
+//			try {
+//	
+// FIXME not serializable as is	
+//				FileOutputStream ostream = new FileOutputStream(inp);
+//				ObjectOutputStream p = new ObjectOutputStream(ostream);
+//				p.writeObject(cache);
+//				p.flush();
+//				ostream.close();
+//				
+//			} catch (Exception e) {
+//				throw new ThinklabIOException("searchengine: " + id + ": can't write object cache");
+//			}
 		}
 	}
 	
@@ -407,7 +410,12 @@ public final class SearchEngine implements IQueriable {
 			
 			if (val instanceof ObjectReferenceValue) {
 				ii = ((ObjectReferenceValue)val).getObject();
-				submitIndividual(ii);
+				try {
+					index.addDocument(submitIndividual(ii));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					throw new ThinklabIOException(e);
+				}
 			}
 
 			// TODO may want to delete the object, although for very linked kboxes that could

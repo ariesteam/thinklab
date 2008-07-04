@@ -274,7 +274,7 @@ public abstract class SQLServer {
     	
     	
     	if (Boolean.parseBoolean(properties.getProperty("sql.log.queries", 
-    			SQLPlugin.get().getProperties().getProperty("sql.log.queries", "false")))) {
+    			SQLPlugin.get().getProperties().getProperty("sql.log.queries", "true")))) {
  
     		setLogger();
     		logger.info("sql: initializing database " + uri);
