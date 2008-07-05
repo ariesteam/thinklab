@@ -43,6 +43,7 @@ import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
+import org.java.plugin.registry.Extension.Parameter;
 
 public class SearchEnginePlugin extends ThinklabPlugin {
 
@@ -169,8 +170,10 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 						
 			String itype = aext.getSubParameter("type").valueAsString();
 			
-			double weigh = Double.parseDouble(
-					aext.getSubParameter("weight").valueAsString());
+			Parameter iweight = aext.getSubParameter("weight");
+			double weigh = 1.0;
+			if (iweight != null)
+				weigh = Double.parseDouble(iweight.valueAsString());
 			
 			IProperty property = 
 				KnowledgeManager.get().requireProperty(

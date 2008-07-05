@@ -76,7 +76,13 @@ public class ResultContainer implements IQueryResult {
 	private IInstance getObjectFromDocument(Document doc, ISession session) throws ThinklabException {
 		
 		String id = doc.get("id");
-		return session.importObject(id);
+		IInstance ret = null;
+		try {
+			ret = session.importObject(id);
+		} catch (ThinklabException e) {
+			// FIXME a temp fix - just return null, but this shouldn't happen
+		}
+		return ret;
 	}
 	
 	public IQueriable getQueriable() {
@@ -90,11 +96,11 @@ public class ResultContainer implements IQueryResult {
 	public Object getResultField(int n, String schemaField) {
 		
 		Field f = results.get(n).getField(schemaField);
-		return f.stringValue();
+		return f == null ? null : f.stringValue();
 	}
 
 	public Object getResultField(int n, int schemaIndex) {
-		return results.get(n).get(schema.array()[schemaIndex].toString());
+		return getResultField(n, schema.array()[schemaIndex].toString());
 	}
 
 	public int getResultCount() {

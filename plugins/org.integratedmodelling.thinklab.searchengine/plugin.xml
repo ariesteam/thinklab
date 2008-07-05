@@ -29,10 +29,11 @@
 		<parameter-def id="index" type="null" multiplicity="any" >
 			<!-- the property linking to what must be indexed -->
 			<parameter-def id="property" />
-			<!-- can be "text", "download" or "link" for now -->
+			<!-- can be "text", "download", "link", or "store" for now -->
 			<parameter-def id="type" />
-			<!-- floating point, put 1.0 for "normal" -->
-			<parameter-def id="weight" />
+			<!-- floating point weight, 1.0 is default for "normal"; ignored 
+				and unnecessary if the type is "store" -->
+			<parameter-def id="weight" multiplicity="none-or-one"/>
 		</parameter-def>
 	</extension-point>
 	

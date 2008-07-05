@@ -390,7 +390,7 @@ public class Session implements ISession {
 			/*
 			 * use the same ref table every time, so we never have to duplicate stuff.
 			 */
-			ret = kb.getObjectFromID(id, this, refs);
+			ret = kb.getObjectFromID(id, this, new HashMap<String, String>());
 
 			for (IThinklabSessionListener listener : listeners) {
 				listener.objectCreated(ret);

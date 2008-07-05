@@ -625,7 +625,14 @@ public final class SearchEngine implements IQueriable {
 			for (IRelationship r : i.getRelationships(f.property.toString())) {
 
 				/* could be literal, object, classification, but we just use what the user has told us. */
-				if (f.indexType.equals("text")) {
+				if (f.indexType.equals("store")) {
+					
+					/* make field, do not index */
+					String value = r.getValue().toString();
+					Field field = new Field(r.getProperty().toString(), value, Field.Store.YES, Field.Index.NO);
+					d.add(field);
+					
+				} else if (f.indexType.equals("text")) {
 					
 					/* make field */
 					String value = r.getValue().toString();
@@ -633,7 +640,7 @@ public final class SearchEngine implements IQueriable {
 					d.setBoost((float)f.weight);
 					d.add(field);
 					
-				} else if (f.indexType.equals("download")) {
+				} if (f.indexType.equals("download")) {
 
 					/*
 					 * download linked text and if OK, index contents and link it to main
@@ -703,43 +710,6 @@ public final class SearchEngine implements IQueriable {
     protected static synchronized Query parseQuery(String query, QueryParser parser) throws ParseException {
     	return parser.parse(query);
     }
-    
-//    public int search(String query, int offset, int nResults, ResultContainer results) throws ThinklabException {
-//
-//    	String[] searchFields = {"label", "comment"};
-//    	IndexSearcher isearch = null;
-//    	int ret = 0;
-//    	
-//    	MultiFieldQueryParser parser = new MultiFieldQueryParser(searchFields, analyzer);
-//    	try {
-//			isearch = new IndexSearcher(indexPath);
-//		} catch (IOException e1) {
-//			throw new ThinklabInvalidIndexException(e1);
-//		}
-//
-//    	try {
-//			Query q = parseQuery(query, parser);
-//			Hits hits = isearch.search(q);
-//			
-//			ret = hits.length();
-//			
-//			results.setTotalResultCount(ret);
-//			
-//			for (int i = offset; (i < offset + nResults) && (i < hits.length()); i++) {
-//				
-//                Document doc = hits.doc(i);
-//                String id = doc.get("id");
-//                float score = hits.score(i)/hits.score(0);
-//                
-//                results.add(id, score);
-//	        }
-//			
-//		} catch (Exception e) {
-//			throw new ThinklabInvalidQueryException(e);
-//		}
-//		
-//		return ret;
-//    }
 
 	public IQueryResult query(IQuery q, int offset, int maxResults)
 			throws ThinklabException {
