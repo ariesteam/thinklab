@@ -58,6 +58,7 @@ public class SQLQueryResult implements IQueryResult {
 	Polylist schema = null;
 	Hashtable<String, Integer> schemaIdx = new Hashtable<String, Integer>();
 	private QueryResult qresult;
+	IValue[] instances = null;
 	
 	// create from results of successful query
 	public SQLQueryResult(QueryResult qres, Polylist schema, int totalres, int offset,
@@ -67,7 +68,7 @@ public class SQLQueryResult implements IQueryResult {
 		this.query = query;
 		nResults = totalres;
 		this.qresult = qres;
-		
+		instances = new IValue[this.qresult.nRows()];
 		parseResultSchema(schema);
 	}
 
@@ -130,8 +131,10 @@ public class SQLQueryResult implements IQueryResult {
 	}
 
 	public IValue getResult(int n, ISession session) throws ThinklabException {
-		return 
-			new ObjectReferenceValue(kbox.getObjectFromID(qresult.get(n, 0), session));
+		if (instances[n] == null)
+			instances[n] = new ObjectReferenceValue(
+					kbox.getObjectFromID(qresult.get(n, 0), session));
+		return instances[n];
 	}
 
 	public HashMap<String, IValue> getResultMetadata(int n) throws ThinklabException  {
