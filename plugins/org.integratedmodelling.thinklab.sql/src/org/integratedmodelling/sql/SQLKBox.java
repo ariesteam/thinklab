@@ -88,9 +88,6 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 			throws ThinklabException {
 
 		Polylist list = this.retrieveObjectAsList(id);
-
-		System.out.println("list is: " + Polylist.prettyPrint(list));
-
 		return session.createObject(list);
 	}
 

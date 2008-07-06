@@ -38,6 +38,7 @@ import java.util.Hashtable;
 
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IQueriable;
 import org.integratedmodelling.thinklab.interfaces.IQuery;
@@ -85,7 +86,26 @@ public class SQLQueryResult implements IQueryResult {
 	}
 
 	public Object getResultField(int n, String schemaField) {
-		return qresult.get(n, schemaIdx.get(schemaField)+1);
+		
+		Object o = 
+			schemaIdx.get(schemaField) == null ? 
+				null :
+				qresult.get(n, schemaIdx.get(schemaField)+1);
+			
+		if (o == null && instances[n] != null) {
+			/*
+			 * if we have the object, try getting its property
+			 */
+			IInstance i;
+			try {
+				i = instances[n].asObjectReference().getObject();
+				o = i.get(schemaField);
+			} catch (ThinklabException e) {
+				// ignore, it just means it's not there
+			}
+		}
+			
+		return o;
 	}
 
 	public Object getResultField(int n, int schemaIndex) {
