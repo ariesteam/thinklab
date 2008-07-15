@@ -159,11 +159,8 @@ public class List implements CommandHandler {
 
 		outputWriter.displayOutput("Listing contents of kBox " + kbname);
 
-		Polylist schema = Polylist.list(IQueryResult.ID_FIELD_NAME,
-				IQueryResult.CLASS_FIELD_NAME, IQueryResult.LABEL_FIELD_NAME,
-				IQueryResult.DESCRIPTION_FIELD_NAME);
 
-		IQueryResult result = kbox.query(null, schema, 0, -1);
+		IQueryResult result = kbox.query(null, 0, -1);
 
 		outputWriter.displayOutput("\tID\tClass\tLabel\tDescription");
 

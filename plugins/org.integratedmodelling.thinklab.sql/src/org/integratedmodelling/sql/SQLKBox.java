@@ -209,7 +209,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		 */
 		QueryResult res = server.query(query);
 
-		return new SQLQueryResult(res, resultSchema, total, offset, maxResults,
+		return new SQLQueryResult(res, total, offset, maxResults,
 				(Constraint) q, this);
 	}
 
@@ -260,8 +260,6 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		}
 
 		return ret;
-
-	
 	}
 
 	public IQueryResult query(IQuery q) throws ThinklabException {

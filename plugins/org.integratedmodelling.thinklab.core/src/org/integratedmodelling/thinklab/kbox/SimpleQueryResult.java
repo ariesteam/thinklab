@@ -81,30 +81,14 @@ public class SimpleQueryResult implements IQueryResult {
 		return null;
 	}
 
-	public Object getResultField(int n, String schemaField) {
-
-		Object ret = null;
+	public IValue getResultField(int n, String schemaField) throws ThinklabException {
+		
 		IInstance obj = getObject(n);
-		
-		if (schemaField.equals(IQueryResult.ID_FIELD_NAME)) {
-			ret = obj.getLocalName();
-		} else if (schemaField.equals(IQueryResult.CLASS_FIELD_NAME)) {
-			ret = obj.getDirectType();
-		} else if (schemaField.equals(IQueryResult.LABEL_FIELD_NAME)) {
-			ret = obj.getLabel();
-		} else if (schemaField.equals(IQueryResult.DESCRIPTION_FIELD_NAME)) {
-			ret = obj.getDescription();
-		}
-		
-		return ret;
+		return obj.get(schemaField);
 	}
 
 	private IInstance getObject(int n) {
 		return results.get(n);
-	}
-
-	public Object getResultField(int n, int schemaIndex) {
-		return null;
 	}
 
 	public Polylist getResultAsList(int n, HashMap<String, String> references) throws ThinklabException {
@@ -140,9 +124,5 @@ public class SimpleQueryResult implements IQueryResult {
 		return new ObjectReferenceValue(results.get(n));
 	}
 
-	public HashMap<String, IValue> getResultMetadata(int n) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

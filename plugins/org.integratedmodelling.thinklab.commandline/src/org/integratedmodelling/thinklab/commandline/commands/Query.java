@@ -71,12 +71,7 @@ public class Query implements CommandHandler {
 
 			IQuery query = theBox.parseQuery(toEval);
 
-			Polylist schema = Polylist.list(IQueryResult.ID_FIELD_NAME,
-					IQueryResult.CLASS_FIELD_NAME,
-					IQueryResult.LABEL_FIELD_NAME,
-					IQueryResult.DESCRIPTION_FIELD_NAME);
-
-			IQueryResult result = theBox.query(query, schema, 0, -1);
+			IQueryResult result = theBox.query(query, 0, -1);
 
 			int nres = result.getResultCount();
 

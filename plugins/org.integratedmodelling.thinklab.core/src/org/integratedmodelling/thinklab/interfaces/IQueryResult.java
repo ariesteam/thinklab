@@ -52,15 +52,10 @@ import org.integratedmodelling.utils.Polylist;
  */
 public interface IQueryResult {
 
-	/*
-	 * Some "accepted" field names for schema that implementations should
-	 * respond to regardless of how results are stored and processed. These
-	 * are in the default schema returned by the KBox manager.
-	 */
-	final public String ID_FIELD_NAME = "id";
-	final public String LABEL_FIELD_NAME = "label";
-	final public String DESCRIPTION_FIELD_NAME = "description";
-	final public String CLASS_FIELD_NAME = "type";
+	String ID_FIELD_NAME = null;
+	String CLASS_FIELD_NAME = null;
+	String LABEL_FIELD_NAME = null;
+	String DESCRIPTION_FIELD_NAME = null;
 
 	/**
 	 * Return the queriable object that was queried to produce us.
@@ -73,12 +68,6 @@ public interface IQueryResult {
 	 * @return
 	 */
 	public abstract IQuery getQuery();
-
-	/**
-	 * Return the actual result metadata schema used.
-	 * @return
-	 */
-	public Polylist getResultSchema();
 
 	/**
 	 * 
@@ -122,32 +111,15 @@ public interface IQueryResult {
 	public IValue getResult(int n, ISession session) throws ThinklabException;
 
 	/**
-	 * Get a hash of result metadata associated with the n-th object. This may
-	 * be null, according to what kind of metadata the queriable supports.
-	 * 
-	 * @param n
-	 * @return
-	 * @throws ThinklabException 
-	 */
-	public HashMap<String, IValue> getResultMetadata(int n) throws ThinklabException;
-	
-	/**
 	 * 
 	 * @param n
 	 * @param schemaField
 	 * @return
-	 * @deprecated use getResultMetadata
+	 * TODO this should return a IValue, not an Object
+	 * @throws ThinklabException 
 	 */
-	public Object getResultField(int n, String schemaField);
+	public IValue getResultField(int n, String schemaField) throws ThinklabException;
 
-	/**
-	 * 
-	 * @param n
-	 * @param schemaIndex
-	 * @return
-	 * @deprecated should not be used, but let's see.
-	 */
-	public Object getResultField(int n, int schemaIndex);
 
 	/**
 	 * Ignore the schema and just return the n-th "object" as a list

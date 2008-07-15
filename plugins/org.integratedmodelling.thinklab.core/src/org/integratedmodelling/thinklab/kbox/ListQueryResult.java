@@ -67,18 +67,7 @@ public class ListQueryResult implements IQueryResult {
 		return lists.size();
 	}
 
-	public Object getResultField(int n, String schemaField) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Object getResultField(int n, int schemaIndex) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public HashMap<String, IValue> getResultMetadata(int n)
-			throws ThinklabException {
+	public IValue getResultField(int n, String schemaField) {
 		// TODO Auto-generated method stub
 		return null;
 	}

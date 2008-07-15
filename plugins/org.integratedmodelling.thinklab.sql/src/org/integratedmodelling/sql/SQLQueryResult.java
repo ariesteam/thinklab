@@ -32,22 +32,19 @@
  **/
 package org.integratedmodelling.sql;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IQueriable;
 import org.integratedmodelling.thinklab.interfaces.IQuery;
 import org.integratedmodelling.thinklab.interfaces.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
 import org.integratedmodelling.utils.Polylist;
+
 
 public class SQLQueryResult implements IQueryResult {
 
@@ -56,13 +53,11 @@ public class SQLQueryResult implements IQueryResult {
 	int nResults = 0;
 	int offset = -1;
 	int max = -1;
-	Polylist schema = null;
-	Hashtable<String, Integer> schemaIdx = new Hashtable<String, Integer>();
 	private QueryResult qresult;
 	IValue[] instances = null;
 	
 	// create from results of successful query
-	public SQLQueryResult(QueryResult qres, Polylist schema, int totalres, int offset,
+	public SQLQueryResult(QueryResult qres, int totalres, int offset,
 			int max, Constraint query, SQLKBox kbox) {
 		
 		this.kbox = kbox;
@@ -70,7 +65,6 @@ public class SQLQueryResult implements IQueryResult {
 		nResults = totalres;
 		this.qresult = qres;
 		instances = new IValue[this.qresult.nRows()];
-		parseResultSchema(schema);
 	}
 
 	// null result
@@ -85,31 +79,24 @@ public class SQLQueryResult implements IQueryResult {
 		return query;
 	}
 
-	public Object getResultField(int n, String schemaField) {
+	public IValue getResultField(int n, String schemaField) throws ThinklabException {
 		
-		Object o = 
-			schemaIdx.get(schemaField) == null ? 
-				null :
-				qresult.get(n, schemaIdx.get(schemaField)+1);
-			
-		if (o == null && instances[n] != null) {
+		IValue ret = null;
+		
+		if (instances[n] != null) {
 			/*
 			 * if we have the object, try getting its property
 			 */
 			IInstance i;
 			try {
 				i = instances[n].asObjectReference().getObject();
-				o = i.get(schemaField);
+				ret = i.get(schemaField);
 			} catch (ThinklabException e) {
 				// ignore, it just means it's not there
 			}
 		}
 			
-		return o;
-	}
-
-	public Object getResultField(int n, int schemaIndex) {
-		return qresult.get(n, schemaIndex);
+		return ret;
 	}
 
 	public Polylist getResultAsList(int n, HashMap<String, String> references) throws ThinklabException {
@@ -122,10 +109,6 @@ public class SQLQueryResult implements IQueryResult {
 
 	public int getResultOffset() {
 		return offset;
-	}
-
-	public Polylist getResultSchema() {
-		return schema;
 	}
 
 	public float getResultScore(int n) {
@@ -142,34 +125,10 @@ public class SQLQueryResult implements IQueryResult {
 
 	}
 
-	public void parseResultSchema(Polylist list) {
-
-		int i = 0;
-		for (Object o : list.array()) {
-			schemaIdx.put(o.toString(), new Integer(i++));
-		}
-	}
-
 	public IValue getResult(int n, ISession session) throws ThinklabException {
 		if (instances[n] == null)
 			instances[n] = new ObjectReferenceValue(
 					kbox.getObjectFromID(qresult.get(n, 0), session));
 		return instances[n];
 	}
-
-	public HashMap<String, IValue> getResultMetadata(int n) throws ThinklabException  {
-
-		// TODO 
-		Object[] sch = schema.array();
-		ArrayList<Object> vals = new ArrayList<Object>();
-		
-		for (Object s : sch) {
-			vals.add(getResultField(n, s.toString()));
-		}
-		
-		return
-			KBoxManager.get().
-				createResult(schema, Polylist.PolylistFromArray(vals.toArray()));
-	}
-
 }

@@ -719,7 +719,7 @@ public final class SearchEngine implements IQueriable {
 	public IQueryResult query(IQuery q, Polylist resultSchema, int offset, int maxResults) 
 		throws ThinklabException {
 
-		ResultContainer ret = new ResultContainer(this, q, resultSchema, offset, maxResults);
+		ResultContainer ret = new ResultContainer(this, q, offset, maxResults);
 		
 		if ( !(q instanceof QueryString)) 
 			throw new ThinklabValidationException("search engine: only textual query strings are admitted");
