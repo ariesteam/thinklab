@@ -239,6 +239,13 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource {
 		
 		boolean ok = false;
 		
+		/* if that's all we ask for, let it have it */
+		if (concept.equals(KnowledgeManager.Thing()) ||
+			concept.equals(Geospace.Shape())) {
+			setConceptWithoutValidation(Geospace.Shape());
+			return;
+		}
+		
 		// check that passed shape is consistent with passed concept
 
 		// FIXME USE CLASS TREE EVERYWHERE

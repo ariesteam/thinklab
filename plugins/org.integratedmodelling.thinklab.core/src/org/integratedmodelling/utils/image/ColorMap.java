@@ -73,6 +73,28 @@ public class ColorMap {
 		createColorModel(  bits,   colors);
 	}
 	
+	/**
+	 * Make N grey levels 
+	 * @param levels
+	 * @return
+	 */
+	public static ColorMap greyscale(int levels) {
+
+		/*
+		 * grey colormap, to be changed later
+		 */
+		Color[] greys = new Color[levels];
+		
+		int incr = 256/levels;		
+		for (int i = 0; i < levels; i++) {			
+			int level = i * incr;
+			greys[i] = new Color(level, level, level);
+		}
+		
+		return new ColorMap(8, greys);
+		
+	}
+	
 	public void createColorModel(int bits, Color[] colors) {
 		int size = colors.length;
 		 byte[] r= new byte[size];

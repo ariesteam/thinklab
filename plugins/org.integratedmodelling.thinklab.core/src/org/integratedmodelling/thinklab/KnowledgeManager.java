@@ -103,8 +103,7 @@ import org.java.plugin.PluginManager;
 public class KnowledgeManager implements IKnowledgeProvider {
 
     /** default core ontology URL. It really is small - just some POD data types and a couple properties. */
-	private static final String DEFAULT_CORE_ONTOLOGY = 
-        "http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl";
+	private static final String DEFAULT_CORE_ONTOLOGY = "thinklab-core.owl";
 
     /** 
 	 * <p>The Knowledge Manager is a singleton. This is created by the initializer and an exception 
@@ -439,13 +438,15 @@ public class KnowledgeManager implements IKnowledgeProvider {
         			"thinklab.ontology.core", 
         			DEFAULT_CORE_ONTOLOGY);
  
-        // FV have to put it back, as initializeThinklabTypes() needs the base types to work
-        try {
-            /* load the thinklab core ontology URL from preferences */
-            knowledgeRepository.refreshOntology(new URL(cont), MiscUtilities.getNameFromURL(cont), true);
-        } catch (MalformedURLException e1) {
-        	throw new ThinklabIOException(e1);
-        }
+//        try {
+
+        	URL tco = Thinklab.get().getResourceURL(cont);
+        	
+        	/* load the thinklab core ontology URL from preferences */
+            knowledgeRepository.refreshOntology(tco, MiscUtilities.getNameFromURL(cont), true);
+//        } catch (MalformedURLException e1) {
+//        	throw new ThinklabIOException(e1);
+//        }
         
         /* initialize types before we register plugins */
         initializeThinklabTypes();
