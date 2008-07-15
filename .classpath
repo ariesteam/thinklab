@@ -34,7 +34,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/ostermillerutils_1_06_00.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/jpf.jar" sourcepath="/JPF 1.5"/>
-	<classpathentry kind="lib" path="lib/jpf-boot.jar" sourcepath="/JPF 1.5/source-boot"/>
 	<classpathentry kind="lib" path="lib/jpf-tools.jar"/>
 	<classpathentry kind="lib" path="lib/jxp.jar"/>
 	<classpathentry kind="lib" path="lib/log4j.jar"/>
@@ -224,5 +223,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.workflow/lib/osworkflow-2.8.0-im.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.workflow/lib/propertyset-1.4.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.workflow/lib/quartz-1.6.0.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="lib" path="lib/im-boot.jar"/>
+	<classpathentry kind="output" path="null"/>
 </classpath>
