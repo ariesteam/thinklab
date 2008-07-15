@@ -102,6 +102,16 @@ public class DistrictingResults {
 		return centroids;
 	}
 
+	public double[] getCentroids(int districtIndex) {
+		
+		double[] ret = new double[centroids.length];
+		
+		for (int i = 0; i < centroids.length; i++)
+			ret[i] = getCentroids()[i].get(districtIndex);
+		
+		return ret;
+	}
+	
 	public ArrayList<Double>[] getStdevs() {
 		return stdevs;
 	}
