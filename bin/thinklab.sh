@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/bash
 
 case "`uname`" in
   Darwin*) if [ -z "$JAVA_HOME" ] ; then
