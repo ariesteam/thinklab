@@ -131,7 +131,7 @@ test  - runs some tests
 		<zip destfile="${build.home}/${app.name}-bin-${app.version}.zip"
 		     duplicate="fail"
 		     update="false">
-			<fileset dir="${build.home}" includes="**/*" />
+			<fileset dir="${build.home}" includes="bin,**/*" />
 		</zip>
 		<zip destfile="${build.home}/${app.name}-src-${app.version}.zip"
 		     duplicate="fail"
