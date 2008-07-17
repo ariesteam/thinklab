@@ -2,7 +2,7 @@
 <project name="Thinklab build file" default="help" basedir=".">
 	<property name="app.name" value="thinklab" />
 	<property name="app.version" value="0.8.0" />
-
+    <property environment="env"/>
 	<property name="build.home" value="${basedir}/build" />
 
 	<path id="classpath">
@@ -111,6 +111,15 @@ test  - runs some tests
 		         destdir="${build.home}/docs" />
 	</target>
 
+	<target name="install"
+		depends="build"
+		description="Install thinklab in THINKLAB_HOME (must be defined)">
+		<mkdir dir="${env.THINKLAB_HOME}/thinklab"/>
+		<copy todir="${env.THINKLAB_HOME}/thinklab">
+			<fileset dir="${build.home}" includes="bin,**/*" />
+		</copy>
+	</target>
+	
 	<target name="dist"
 	        depends="clean,build,docs"
 	        description="Prepares distribution packages">
