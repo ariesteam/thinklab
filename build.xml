@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Thinklab build file" default="help" basedir=".">
 	<property name="app.name" value="thinklab" />
-	<property name="app.version" value="0.7.0" />
+	<property name="app.version" value="0.8.0" />
 
 	<property name="build.home" value="${basedir}/build" />
 
@@ -43,6 +43,28 @@ test  - runs some tests
 	<target name="-build-plugins">
 		<mkdir dir="${build.home}/plugins" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.core" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.opal" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.sql" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.agents" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.authentication" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.commandline" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.shell" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.corescience" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.geospace" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.time" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.databridge" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.currency" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.dolce" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.dynamicmodelling" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.ecology" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.geoclustering" target="${target}" />
+		<!-- <ant dir="plugins/org.integratedmodelling.thinklab.groovy" target="${target}" /> -->
+		<ant dir="plugins/org.integratedmodelling.thinklab.metadata" target="${target}" />
+		<!-- <ant dir="plugins/org.integratedmodelling.thinklab.persistence" target="${target}" /> -->
+		<ant dir="plugins/org.integratedmodelling.thinklab.rules" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.searchengine" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.thinkscape" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.workflow" target="${target}" />
 	</target>
 
 	<target name="build" depends="-init" description="Builds entire project">
@@ -55,14 +77,14 @@ test  - runs some tests
 		<copy todir="${build.home}">
 			<fileset dir="." includes="*.*" excludes=".*,todo*" />
 		</copy>
-		<!--jpf-version basedir="${build.home}/plugins"
+		<jpf-version basedir="${build.home}/plugins"
 		             includes="*/plugin.xml,*/plugin-fragment.xml"
 		             versionsfile="${basedir}/plugins/versions.properties"
-		             timestampversion="true" /-->
+		             timestampversion="true" />
 	</target>
 
 	<target name="run" depends="build" description="Runs application">
-		<java jar="${build.home}/lib/jpf-boot.jar"
+		<java jar="${build.home}/lib/im-boot.jar"
 		      dir="${build.home}"
 		      fork="true" />
 	</target>
@@ -92,7 +114,12 @@ test  - runs some tests
 	<target name="dist"
 	        depends="clean,build,docs"
 	        description="Prepares distribution packages">
-		<jpf-zip basedir="${build.home}/plugins"
+		<!-- comment out the next two tasks, which would create zip archives for each
+		     plugin and delete the original unpacked distribution. If that is done,
+		     the core plugin needs a much more sophisticated strategy to read 
+		     the protege support files. Can be put back in when we phase out
+		     protege and switch to OWLAPI. -->
+		<!-- <jpf-zip basedir="${build.home}/plugins"
 		         includes="*/plugin.xml,*/plugin-fragment.xml"
 		         destdir="${build.home}/plugins" />
 		<delete includeemptydirs="true">
@@ -100,7 +127,7 @@ test  - runs some tests
 				<include name="**/*" />
 				<exclude name="*.zip" />
 			</fileset>
-		</delete>
+		</delete> -->
 		<zip destfile="${build.home}/${app.name}-bin-${app.version}.zip"
 		     duplicate="fail"
 		     update="false">

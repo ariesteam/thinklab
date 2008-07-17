@@ -4,6 +4,7 @@
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
 		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
+		<import plugin-id="org.integratedmodelling.thinklab.geospace"/>
 	</requires>
 	<runtime>
 		<library id="core" path="classes/" type="code">

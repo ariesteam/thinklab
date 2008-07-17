@@ -19,8 +19,12 @@
 		<library type="code" id="jscience" path="lib/jscience.jar">
 			<export prefix="*"/>
 		</library>
-		<library type="code" id="jung" path="lib/jung-1.7.6.jar"/>
-		<library type="code" id="ostermillerutils" path="lib/ostermillerutils_1_06_00.jar"/>
+		<library type="code" id="jung" path="lib/jung-1.7.6.jar">
+			<export prefix="*"/>
+		</library>
+		<library type="code" id="ostermillerutils" path="lib/ostermillerutils_1_06_00.jar">
+			<export prefix="*"/>
+		</library>
 		
 	</runtime>
 

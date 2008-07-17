@@ -31,7 +31,7 @@ Use top-level project build file to build application.
 		<echo>Building plug-in ${plugin.id} to folder ${plugin.home}</echo>
 		<mkdir dir="${plugin.home}/classes" />
 		<javac destdir="${plugin.home}/classes"
-		       srcdir="${basedir}/source"
+		       srcdir="${basedir}/src"
 		       classpathref="plugin.classpath"
 		       excludes=""
 		       target="1.5"
@@ -39,13 +39,13 @@ Use top-level project build file to build application.
 		       optimize="false">
 		</javac>
 		<copy todir="${plugin.home}/classes">
-			<fileset dir="${basedir}/source"
+			<fileset dir="${basedir}/src"
 			         includes="**/*"
 			         excludes="**/.*,**/*.java" />
 		</copy>
 		<copy todir="${plugin.home}" includeemptydirs="false">
 			<fileset dir="${basedir}"
-			         excludes="classes/,nbproject/,.*,*build*,source/" />
+			         excludes="classes/,nbproject/,.*,*build*,src/" />
 		</copy>
 	</target>
 
@@ -53,8 +53,8 @@ Use top-level project build file to build application.
 		<echo>Generating javadoc for plug-in ${plugin.id} to folder ${plugin.home}/docs/api</echo>
 		<javadoc destdir="${plugin.home}/docs/api"
 		         classpathref="plugin.classpath"
-		         sourcepath="${basedir}/source"
-		         packagenames="${plugin.id}.*">
+		         sourcepath="${basedir}/src"
+				packagenames="org.integratedmodelling.*">
 		</javadoc>
 	</target>
 </project>

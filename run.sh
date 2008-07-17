@@ -1,1 +1,1 @@
-./java -jar lib/jpf-boot.jar
+java -jar lib/im-boot.jar

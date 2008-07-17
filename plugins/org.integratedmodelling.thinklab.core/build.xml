@@ -33,7 +33,7 @@ Use top-level project build file to build application.
 		<javac destdir="${plugin.home}/classes"
 		       srcdir="${basedir}/src"
 		       classpathref="plugin.classpath"
-		       excludes=""
+		       excludes="**/owlapi/*"
 		       target="1.5"
 		       debug="true"
 		       optimize="false">
@@ -54,7 +54,7 @@ Use top-level project build file to build application.
 		<javadoc destdir="${plugin.home}/docs/api"
 		         classpathref="plugin.classpath"
 		         sourcepath="${basedir}/src"
-		         packagenames="${plugin.id}.*">
+		         packagenames="org.integratedmodelling.*">
 		</javadoc>
 	</target>
 </project>

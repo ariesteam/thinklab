@@ -37,7 +37,9 @@
 		<library type="code" id="gt2-arcgrid" path="lib/gt2-arcgrid-2.4.4.jar"/>
 		<library type="code" id="gt2-arcsde" path="lib/gt2-arcsde-2.4.4.jar"/>
 		<library type="code" id="gt2-brewer" path="lib/gt2-brewer-2.4.4.jar"/>
-		<library type="code" id="gt2-coverage" path="lib/gt2-coverage-2.4.4.jar"/>
+		<library type="code" id="gt2-coverage" path="lib/gt2-coverage-2.4.4.jar">
+			<export prefix="*"/>
+		</library>
 		<library type="code" id="gt2-coverageio" path="lib/gt2-coverageio-2.4.4.jar"/>
 		<library type="code" id="gt2-coverageio-netcdf" path="lib/gt2-coverageio-netcdf-2.4.4.jar"/>
 		<library type="code" id="gt2-cql" path="lib/gt2-cql-2.4.4.jar"/>
@@ -91,7 +93,9 @@
 		<library type="code" id="jlfgr" path="lib/jlfgr-1.0.jar"/>
 		<library type="code" id="jsqlparser" path="lib/jsqlparser-0.3.14.jar"/>
 		<library type="code" id="jsr108" path="lib/jsr108-0.01.jar"/>
-		<library type="code" id="jts" path="lib/jts-1.9.jar"/>
+		<library type="code" id="jts" path="lib/jts-1.9.jar">
+			<export prefix="*"/>
+		</library>
 		<library type="code" id="mysql-connector" path="lib/mysql-connector-java-5.1.5.jar"/>
 		<library type="code" id="netcdf" path="lib/netcdf-2.2.20.jar"/>
 		<library type="code" id="picocontainer" path="lib/picocontainer-1.2.jar"/>

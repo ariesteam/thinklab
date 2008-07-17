@@ -81,7 +81,7 @@ import org.semanticweb.owl.model.OWLOntology;
  * @author Ioannis N. Athanasiadis, Dalle Molle Institute for Artificial Intelligence, USI/SUPSI
  * @author Ferdinando Villa
  * 
- * @since 13 ï¿½ï¿½½ 2006
+ * @since 13 sth 2006
  */
 public class Ontology implements IOntology {
 	

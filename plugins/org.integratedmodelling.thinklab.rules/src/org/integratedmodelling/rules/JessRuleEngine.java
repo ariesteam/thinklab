@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.rules;
 
-import jess.Rete;
+//import jess.Rete;
 
 import org.integratedmodelling.rules.exceptions.ThinklabRuleEngineException;
 import org.integratedmodelling.rules.interfaces.IThinklabRuleEngine;
@@ -40,9 +40,9 @@ import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 
-import edu.stanford.smi.protegex.owl.model.OWLModel;
-import edu.stanford.smi.protegex.owl.swrl.bridge.exceptions.SWRLRuleEngineBridgeException;
-import edu.stanford.smi.protegex.owl.swrl.bridge.jess.SWRLJessBridge;
+//import edu.stanford.smi.protegex.owl.model.OWLModel;
+//import edu.stanford.smi.protegex.owl.swrl.bridge.exceptions.SWRLRuleEngineBridgeException;
+//import edu.stanford.smi.protegex.owl.swrl.bridge.jess.SWRLJessBridge;
 
 /**
  * A rule engine, with its own SWRL bridge, connected to the main owl model. Oh how do I hope that
@@ -51,32 +51,32 @@ import edu.stanford.smi.protegex.owl.swrl.bridge.jess.SWRLJessBridge;
  * knowledge we create to the user session, we should be able to avoid conflicts.
  * 
  * @author Ferdinando Villa
- *
+ * @since 7/16/08 turned off - I don't think we'll ever care about Jess. 
  */
 public class JessRuleEngine implements IThinklabRuleEngine {
 	
-	SWRLJessBridge bridge = null;
+	//SWRLJessBridge bridge = null;
 	
-	JessRuleEngine(OWLModel owlModel) throws ThinklabRuleEngineException {
-		
-		/* the actual rule engine */
-		Rete rete = new Rete();
-
-		try {
-			this.bridge = new SWRLJessBridge(owlModel, rete);
-		} catch (SWRLRuleEngineBridgeException e) {
-			throw new ThinklabRuleEngineException(e);
-		} 	
-		
-	}
+//	JessRuleEngine(OWLModel owlModel) throws ThinklabRuleEngineException {
+//		
+//		/* the actual rule engine */
+//		Rete rete = new Rete();
+//
+//		try {
+//			this.bridge = new SWRLJessBridge(owlModel, rete);
+//		} catch (SWRLRuleEngineBridgeException e) {
+//			throw new ThinklabRuleEngineException(e);
+//		} 	
+//		
+//	}
 
 	public void reset() throws ThinklabRuleEngineException {
-		
-		try {
-			bridge.resetBridge();
-		} catch (SWRLRuleEngineBridgeException e) {
-			throw new ThinklabRuleEngineException(e);
-		}
+//		
+//		try {
+//			bridge.resetBridge();
+//		} catch (SWRLRuleEngineBridgeException e) {
+//			throw new ThinklabRuleEngineException(e);
+//		}
 	}
 
 	public void run(IKBox kbox, ISession session) {

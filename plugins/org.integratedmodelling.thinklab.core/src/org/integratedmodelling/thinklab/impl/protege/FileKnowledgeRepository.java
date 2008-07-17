@@ -135,10 +135,10 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		 */
 		File protegeDir = 
 				new File(protegePath == null ?
-						LocalConfiguration.getProperties().getProperty(
-							"thinklab.protege.path",
-							LocalConfiguration.getSystemDirectory("protege").toString()) : 
+						LocalConfiguration.getProperties().getProperty("thinklab.protege.path",
+						Thinklab.get().getLoadDirectory() + "/lib") : 
 						protegePath);
+		
 		
 		if (!protegeDir.exists()) {
 			protegeDir = new File(System.getProperty("user.dir"), "lib");
@@ -149,12 +149,14 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		if (!pluginDir.exists()) {
 			throw new ThinklabIOException(
 					"FileKnowledgeRepository: Protege support ontologies not found in " + 
-					protegeDir +
+					pluginDir +
 					"; please copy the plugins/ folder and its contents in it from the Thinklab/lib directory");
 		}
+		
+		Thinklab.get().logger().info("protege system libraries read from " + pluginDir);
 				
 		System.setProperty("protege.dir", protegeDir.toString());
-		// ProtegeOWL.PLUGIN_FOLDER = "";
+
 		ProtegeOWLParser.inUI = false;
 				
 		repositoryDirectory = LocalConfiguration.getDataDirectory("ontology/repository");

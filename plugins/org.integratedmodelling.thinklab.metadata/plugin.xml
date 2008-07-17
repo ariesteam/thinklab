@@ -3,6 +3,9 @@
 <plugin id="org.integratedmodelling.thinklab.metadata" version="0.8.0" class="org.integratedmodelling.metadata.Metadata">
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
+		<import plugin-id="org.integratedmodelling.thinklab.geospace"/>
+		<import plugin-id="org.integratedmodelling.thinklab.time"/>
 	</requires>	
 	<runtime>
 		<library id="core" path="classes/" type="code">
