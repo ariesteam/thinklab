@@ -114,8 +114,7 @@ test  - runs some tests
 	<target name="install"
 		depends="build"
 		description="Install thinklab in THINKLAB_HOME (must be defined)">
-		<mkdir dir="${env.THINKLAB_HOME}/thinklab"/>
-		<copy todir="${env.THINKLAB_HOME}/thinklab">
+		<copy todir="${env.THINKLAB_HOME}">
 			<fileset dir="${build.home}" includes="bin,**/*" />
 		</copy>
 	</target>
