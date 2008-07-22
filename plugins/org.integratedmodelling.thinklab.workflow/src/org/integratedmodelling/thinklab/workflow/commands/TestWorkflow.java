@@ -41,7 +41,7 @@ import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.workflow.ThinklabDebugWorkflow;
-import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.thinklab.workflow.WorkflowPlugin;
 import org.integratedmodelling.workflow.WorkflowDirector;
 
 /**
@@ -59,7 +59,7 @@ public class TestWorkflow implements CommandHandler {
 
 		WorkflowDirector workflow = new ThinklabDebugWorkflow(session
 				.getSessionID(),
-				MiscUtilities.getURLForResource(wf).toString(), null, session,
+				WorkflowPlugin.get().getResourceURL(wf).toString(), null, session,
 				outputWriter);
 
 		workflow.start(true, true);

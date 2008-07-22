@@ -10,7 +10,9 @@
 		</library>
 		<library id="oscore" path="lib/oscore-2.2.5.jar" type="code"/>
 		<library id="osuser" path="lib/osuser-1.0-dev-2Feb05.jar" type="code"/>
-		<library id="osworkflow" path="lib/osworkflow-2.8.0-im.jar" type="code"/>
+		<library id="osworkflow" path="lib/osworkflow-2.8.0-im.jar" type="code">
+			<export prefix="*" />
+		</library>
 		<library id="propertyset" path="lib/propertyset-1.4.jar" type="code"/>
 		<library id="quartz" path="lib/quartz-1.6.0.jar" type="code"/>
 	</runtime>
