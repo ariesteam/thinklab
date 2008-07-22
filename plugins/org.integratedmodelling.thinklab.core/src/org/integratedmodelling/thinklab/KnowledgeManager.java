@@ -52,6 +52,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.thinklab.exception.ThinklabMissingResourceException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
+import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
@@ -188,7 +189,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	private HashSet<String> propertyBlacklist = new HashSet<String>();
 	private HashSet<String> conceptBlacklist = new HashSet<String>();
 
-	public KnowledgeManager(IKnowledgeRepository kr, ISessionManager ki) throws ThinklabException {
+	public KnowledgeManager(IKnowledgeRepository kr, ISessionManager ki) {
 
         /* set KM */
         KM = this;
@@ -207,6 +208,48 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		this(knowledgeRepository, new SingleSessionManager());
 	}
 
+	/**
+	 * This should become the default constructor: the class of knowledge repository and session
+	 * manager is stated in the properties, defaulting to the ones we trust.
+	 * 
+	 * @param fileKnowledgeRepository
+	 * @throws ThinklabIOException
+	 */
+	public KnowledgeManager() throws ThinklabException {
+		
+		KM = this;
+		
+		String smClass = 
+			Thinklab.get().getProperties().getProperty(
+				"thinklab.sessionmanager.class",
+				"org.integratedmodelling.thinklab.session.SingleSessionManager");
+
+		String krClass = 
+			Thinklab.get().getProperties().getProperty(
+				"thinklab.repository.class",
+				"org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository");
+		
+		IKnowledgeRepository kr = null;
+		ISessionManager sm = null;
+		
+		Class<?> cls = null;
+		try {
+
+			cls = Thinklab.get().getClassLoader().loadClass(smClass);
+			sm = (ISessionManager) cls.newInstance();
+
+			cls = Thinklab.get().getClassLoader().loadClass(krClass);
+			kr =  (IKnowledgeRepository) cls.newInstance();
+
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		}
+		
+		knowledgeRepository = kr;
+		sessionManager = sm;
+	}
+
+	
 	public IKnowledgeRepository getKnowledgeRepository() {
 		return knowledgeRepository;
 	}

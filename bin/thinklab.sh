@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/sh
 
 case "`uname`" in
   Darwin*) if [ -z "$JAVA_HOME" ] ; then
@@ -8,9 +8,12 @@ case "`uname`" in
 esac
 
 PRG="$0"
-THINKLAB_HOME=`dirname "$PRG"`/..
-# make it fully qualified
-THINKLAB_HOME=`cd "$THINKCAP_HOME" && pwd`
+
+if [ -z "$THINKLAB_HOME" ] ; then
+	THINKLAB_HOME=`dirname "$PRG"`/..
+	# make it fully qualified
+	THINKLAB_HOME=`cd "$THINKCAP_HOME" && pwd`
+fi
 
 if [ ! -f "$THINKLAB_HOME/lib/im-boot.jar" ] ; then
   echo "Error: Could not find $THINKLAB_HOME/lib/im-boot.jar"  

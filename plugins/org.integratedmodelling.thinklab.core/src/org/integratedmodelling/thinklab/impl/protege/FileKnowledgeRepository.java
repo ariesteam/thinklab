@@ -120,6 +120,10 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 
 	protected ProtegeOWLReasoner reasoner;
     
+	public FileKnowledgeRepository() throws ThinklabIOException {
+		this(null);
+	}
+	
 	/**
 	 * This is the default constructor that loads ontologies from the repository
 	 * directory and initializes the OWL model.

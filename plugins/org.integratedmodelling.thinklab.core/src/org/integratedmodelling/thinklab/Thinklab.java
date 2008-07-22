@@ -44,15 +44,13 @@ public class Thinklab extends ThinklabPlugin {
 		
 		if (config != null)
 			LocalConfiguration.loadProperties(config);
-		
+
 		/*
-		 * TODO we need to establish what knowledge repository and session manager to
-		 * use. This must work in a general fashion.
+		 * KM is created with the knowledge rep and session manager configured in the properties,
+		 * defaulting to protege (for now) and single session.
 		 */
-		
 		if (_km == null) {
-			_km = new KnowledgeManager(
-					new FileKnowledgeRepository(getLoadDirectory() + File.separator + "lib"));
+			_km = new KnowledgeManager();
 			_km.setPluginManager(getManager());
 			_km.initialize();
 		}
