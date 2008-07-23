@@ -58,6 +58,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.owlapi.ThinklabOWLManager;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKnowledge;
@@ -448,10 +449,35 @@ public class Ontology implements IOntology {
 		else return null;
 	}
 
-	public IInstance createInstanceInternal(Polylist lvalue,
-			Collection<ReferenceRecord> reftable) {
-		// TODO Auto-generated method stub
-		return null;
+	public IInstance createInstanceInternal(Polylist list,
+			Collection<ReferenceRecord> reftable) throws ThinklabException {
+		
+		IInstance ret = null;
+		
+		for (Object o : list.array()) {
+			
+			/**
+			 * We may simply add an instance as the only list element, meaning we just want to 
+			 * use it without creating anything.
+			 */
+			if (o instanceof IInstance) {
+				return (IInstance)o;
+			}
+			
+			if (ret == null) {
+
+				Pair<IConcept, String> cc = ThinklabOWLManager.getConceptFromListObject(o);
+				ret = createInstance(
+						cc.getSecond() == null ? getUniqueObjectName(getConceptSpace()) : cc.getSecond(),  
+						cc.getFirst());		
+				
+			} else if (o instanceof Polylist) {
+				ThinklabOWLManager.get().interpretPropertyList((Polylist)o, this, ret, reftable);
+			}
+			
+		}
+		
+		return ret;
 	}
 
 }

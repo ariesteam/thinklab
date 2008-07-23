@@ -38,6 +38,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeTree;
@@ -65,11 +67,18 @@ import org.integratedmodelling.utils.LogicalConnector;
 import org.integratedmodelling.utils.MalformedListException;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
+import org.semanticweb.owl.model.OWLAnnotation;
+import org.semanticweb.owl.model.OWLConstant;
 import org.semanticweb.owl.model.OWLDataProperty;
+import org.semanticweb.owl.model.OWLDataPropertyExpression;
 import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLIndividual;
 import org.semanticweb.owl.model.OWLObjectProperty;
+import org.semanticweb.owl.model.OWLObjectPropertyExpression;
+import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLProperty;
+
+import uk.ac.manchester.cs.owl.ImplUtils;
 
 
 /**
@@ -158,7 +167,7 @@ public class ThinklabOWLManager {
 	 * @param p
 	 * @return
 	 */
-	Collection<IValue> translateRelationship(OWLEntity cl, OWLEntity p)
+	Collection<IValue> translateRelationship(OWLOntology ontology, OWLIndividual cl, OWLProperty p)
             throws ThinklabException {
 
         ArrayList<IValue> ret = new ArrayList<IValue>();
@@ -171,6 +180,105 @@ public class ThinklabOWLManager {
         	return ret;
         }
         
+        /*
+         * loop through data properties
+         */
+        Map<OWLDataPropertyExpression, Set<OWLConstant>> dprops = cl.getDataPropertyValues(ontology);
+
+        for (OWLDataPropertyExpression dprop : dprops.keySet()) {
+        	
+//          // cross fingers
+//          IValue val = Value.getValueForObject(o);
+//          /* add to return values */
+//          ret.add(val);
+        }
+
+        /*
+         * loop through data properties
+         */
+        Map<OWLObjectPropertyExpression, Set<OWLIndividual>> oprops = cl.getObjectPropertyValues(ontology);
+
+        for (OWLObjectPropertyExpression oprop : oprops.keySet()) {
+        	
+        	for (OWLIndividual ind : oprops.get(oprop)) {
+        		
+        	}
+        	
+//          /* it's an object property. Get the object */
+//          if (!(o instanceof OWLIndividual))
+//              throw new ThinklabException(
+//                      "object property "
+//                              + new Property(p.asOWLDataProperty()) + 
+//                              " in " + 
+//                              cl.asOWLClass().getLocalName() 
+//                              + " does not link to an individual. OWL full is not supported.");
+//
+//
+//          /* if we have cached this, just return it */
+//          IValue val = reifiedLiterals.get(ind.getURI().toString());
+//
+//          if (val != null)
+//              ret.add(val);
+//          else {
+//
+//              /* get annotation for class literal, if any */
+//          	if (new Property(p).isClassification()) {
+//          		
+//          		Instance cin = new Instance(ind);
+//          		
+//                  /*
+//                   * classAnnotation must be the semantic type or URL of a
+//                   * concept known to the KM
+//                   */
+//                  val = new Value(cin.getDirectType());
+//
+//                  /* retain ID in value */
+//                  val.setID(ind.getURI().toString());
+//
+//                  /* cache value */
+//                  reifiedLiterals.put(val.getID(), val);
+//
+//                  /* remember instance created for this type */
+//                  classLiterals.put(val.getConcept().toString(), cin);
+//                  
+//                  /* add to return collection */
+//                  ret.add(val);
+//
+//              } else {
+//
+//                  String literAnnotation = 
+//                  	getAnnotationAsString(ind, extendedLiteralAnnotationProperty, null);
+//                  
+//                  if (literAnnotation != null) {
+//
+//                      /*
+//                       * figure out how to construct literal using the
+//                       * concept manager closest to the object's class
+//                       */
+//                      IConcept cc = new Instance(ind).getDirectType();
+//
+//                      val = KnowledgeManager.get().validateLiteral(cc, literAnnotation, null);
+//
+//                      /* retain ID */
+//                      val.setID(ind.getURI().toString());
+//
+//                      /* cache value */
+//                      reifiedLiterals.put(val.getID(), val);
+//
+//                      /* return */
+//                      ret.add(val);
+//                  } else {
+//                  	
+//                  	/* it's just a stupid object property */
+//                  	val = new ObjectReferenceValue(new Instance(ind));
+//                  	ret.add(val);
+//                  	
+//                  }
+//              }
+//          }
+
+        }
+
 //        for (Iterator<?> it = cl.getPropertyValues(p).iterator(); it.hasNext();) {
 //        	
 //            Object o = it.next();
@@ -190,79 +298,6 @@ public class ThinklabOWLManager {
 //
 //            } else {
 //            	
-//                /* it's an object property. Get the object */
-//                if (!(o instanceof OWLIndividual))
-//                    throw new ThinklabException(
-//                            "object property "
-//                                    + new Property(p.asOWLDataProperty()) + 
-//                                    " in " + 
-//                                    cl.asOWLClass().getLocalName() 
-//                                    + " does not link to an individual. OWL full is not supported.");
-//
-//                OWLIndividual ind = (OWLIndividual) o;
-//
-//                /* if we have cached this, just return it */
-//                IValue val = reifiedLiterals.get(ind.getURI().toString());
-//
-//                if (val != null)
-//                    ret.add(val);
-//                else {
-//
-//                    /* get annotation for class literal, if any */
-//                	if (new Property(p).isClassification()) {
-//                		
-//                		Instance cin = new Instance(ind);
-//                		
-//                        /*
-//                         * classAnnotation must be the semantic type or URL of a
-//                         * concept known to the KM
-//                         */
-//                        val = new Value(cin.getDirectType());
-//
-//                        /* retain ID in value */
-//                        val.setID(ind.getURI().toString());
-//
-//                        /* cache value */
-//                        reifiedLiterals.put(val.getID(), val);
-//
-//                        /* remember instance created for this type */
-//                        classLiterals.put(val.getConcept().toString(), cin);
-//                        
-//                        /* add to return collection */
-//                        ret.add(val);
-//
-//                    } else {
-//
-//                        String literAnnotation = 
-//                        	getAnnotationAsString(ind, extendedLiteralAnnotationProperty, null);
-//                        
-//                        if (literAnnotation != null) {
-//
-//                            /*
-//                             * figure out how to construct literal using the
-//                             * concept manager closest to the object's class
-//                             */
-//                            IConcept cc = new Instance(ind).getDirectType();
-//
-//                            val = KnowledgeManager.get().validateLiteral(cc, literAnnotation, null);
-//
-//                            /* retain ID */
-//                            val.setID(ind.getURI().toString());
-//
-//                            /* cache value */
-//                            reifiedLiterals.put(val.getID(), val);
-//
-//                            /* return */
-//                            ret.add(val);
-//                        } else {
-//                        	
-//                        	/* it's just a stupid object property */
-//                        	val = new ObjectReferenceValue(new Instance(ind));
-//                        	ret.add(val);
-//                        	
-//                        }
-//                    }
-//                }
 //            }
 //        }
 //        
@@ -321,58 +356,16 @@ public class ThinklabOWLManager {
 	 * @param languageCode
 	 * @return
 	 */
-	public static String getComment(OWLEntity resource, String languageCode) {
-
-// TODO
+	public static String getComment(OWLOntology ont, OWLEntity resource, String languageCode) {
 		
-//		if (resource == null || resource.getComments() == null)
-//			return EMPTY_STRING;
-		
-//		Iterator<?> values = resource.getComments().iterator();
-//		ArrayList<String> rvals = new ArrayList<String>(); // the values to return
-//		while (values.hasNext()) {
-//			Object v = values.next();
-//			if (v instanceof String)
-//				rvals.add((String) v);
-//			else { 
-//				if(v instanceof RDFSLiteral){
-//					RDFSLiteral l = (RDFSLiteral) v;
-//				    if (languageCode == null && (l.getLanguage() == null || l.getLanguage().equals("en")) 
-//				    		|| l.getLanguage().equals(languageCode))
-//				    	rvals.add(l.getString());
-//				} else
-//					log.warn("Unknown comment value for " +resource.getURI());
-//				}
-//		}
-//		return rvals.isEmpty()? EMPTY_STRING : 
-//			(rvals.size() == 1 ? rvals.get(0) : rvals.toString());
-		return EMPTY_STRING;
+		String ret = Snippets.getComment(ont, resource, languageCode);
+		return ret == null ? EMPTY_STRING : ret;
 	}
 
-	public static String getLabel(OWLEntity resource, String languageCode) {
-
-//		if (resource == null || resource.getLabels() == null)
-			return EMPTY_STRING;
+	public static String getLabel(OWLOntology ont, OWLEntity resource, String languageCode) {
 		
-//		Iterator<?> values = resource.getLabels().iterator();
-//		ArrayList<String> rvals = new ArrayList<String>(); // the values to return
-//		while (values.hasNext()) {
-//			Object v = values.next();
-//			if (v instanceof String)
-//				rvals.add((String) v);
-//			else { 
-//				if(v instanceof RDFSLiteral){
-//					RDFSLiteral l = (RDFSLiteral) v;
-//				    if (languageCode == null && (l.getLanguage() == null || l.getLanguage().equals("en")) 
-//				    		|| l.getLanguage().equals(languageCode))
-//				    	rvals.add(l.getString());
-//				} else
-//					log.warn("Unknown comment value for " +resource.getURI());
-//				}
-//		}
-//		return rvals.isEmpty()? EMPTY_STRING :
-//			(rvals.size() == 1 ? rvals.get(0) : rvals.toString());
-//
+		String ret = Snippets.getLabel(ont, resource, languageCode);
+		return ret == null ? EMPTY_STRING : ret;
 	}
 
 	/**
@@ -388,10 +381,18 @@ public class ThinklabOWLManager {
 	{
 		String ret = defvalue;
 		if (annotation != null) {
-// TODO
-//			RDFSLiteral  s = resource.getPropertyValueLiteral(annotation);
-//			if (s != null)
-//				ret = s.getString();
+			
+			Set<OWLAnnotation> r = 
+				ImplUtils.getAnnotations(
+						resource,
+						annotation.getURI(),
+						FileKnowledgeRepository.KR.manager.getOntologies());
+			
+			/*
+			 * just take the first annotation with the given value.
+			 */
+			if (r.size() > 0)
+				ret = r.iterator().next().getAnnotationValueAsConstant().getLiteral();
 		}
 		return ret;
 	}
@@ -413,10 +414,19 @@ public class ThinklabOWLManager {
 		boolean ret = b;
 		
 		if (annotation != null) {
-// TODO
-//			RDFSLiteral  s = resource.getPropertyValueLiteral(annotation);
-//			if (s != null)
-//				ret = BooleanValue.parseBoolean(s.getString());
+			Set<OWLAnnotation> r = 
+				ImplUtils.getAnnotations(
+						resource,
+						annotation.getURI(),
+						FileKnowledgeRepository.KR.manager.getOntologies());
+			
+			/*
+			 * just take the first annotation with the given value.
+			 */
+			if (r.size() > 0)
+				ret = 
+					BooleanValue.parseBoolean(
+							r.iterator().next().getAnnotationValueAsConstant().getLiteral());
 		}
 		return ret;
 	}
@@ -672,8 +682,6 @@ public class ThinklabOWLManager {
 					/* stop at the first concept in range that validates the object. */
 					for (IConcept c : range) {
 						
-						//String cst = c.getSemanticType().toString();
-						
 						if (
 								(c.is(KnowledgeManager.TextType()) && o2 instanceof String) ||
 								(c.is(KnowledgeManager.DoubleType()) && 
@@ -699,8 +707,6 @@ public class ThinklabOWLManager {
 						String so2 = o2.toString();
 						
 						for (IConcept c : range) {
-
-							//String cst = c.getSemanticType().toString();
 
 							/*
 							 * FIXME there's a lot more XSD types to support. Would be good to

@@ -72,6 +72,10 @@ public abstract class Knowledge implements IKnowledge, IResource {
 		ontoURI = Registry.get().getOntoURI(entity.getURI());
 	}
 
+	public OWLOntology getOntology() {
+		return FileKnowledgeRepository.KR.manager.getOntology(ontoURI);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
