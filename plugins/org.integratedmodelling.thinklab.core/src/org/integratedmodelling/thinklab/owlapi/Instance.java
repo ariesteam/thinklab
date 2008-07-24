@@ -124,8 +124,9 @@ public class Instance extends Knowledge implements IInstance {
 	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#getDirectType()
 	 */
 	public IConcept getDirectType() {
-		// TODO Auto-generated method stub
-		return null;
+		// cross fingers
+		return new Concept(
+			this.entity.asOWLIndividual().getTypes(this.getOntology()).iterator().next().asOWLClass());
 	}
 
 	/* (non-Javadoc)

@@ -60,8 +60,12 @@
 		<library type="code" id="owlapi"  path="lib/owlapi-bin.jar"/>
 		<library type="code" id="owlsyntax"  path="lib/owlsyntax.jar"/>
 		<library type="code" id="pellet"  path="lib/pellet.jar"/>
-		<library type="code" id="protege"  path="lib/protege.jar"/>
-		<library type="code" id="protege-owl"  path="lib/protege-owl.jar"/>
+		<library type="code" id="protege"  path="lib/protege.jar">
+				<export prefix="*" />
+		</library>
+		<library type="code" id="protege-owl"  path="lib/protege-owl.jar">
+				<export prefix="*" />
+		</library>
 		<library type="code" id="rdf-api"  path="lib/rdf-api-2001-01-19.jar"/>
 		<library type="code" id="resolver"  path="lib/resolver.jar"/>
 		<library type="code" id="serializer"  path="lib/serializer.jar"/>

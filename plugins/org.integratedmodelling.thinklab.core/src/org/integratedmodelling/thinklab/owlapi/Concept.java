@@ -39,6 +39,7 @@ import org.semanticweb.owl.model.OWLClass;
 import org.semanticweb.owl.model.OWLDataProperty;
 import org.semanticweb.owl.model.OWLDescription;
 import org.semanticweb.owl.model.OWLException;
+import org.semanticweb.owl.model.OWLIndividual;
 import org.semanticweb.owl.model.OWLObjectProperty;
 import org.semanticweb.owl.model.OWLOntology;
 
@@ -85,6 +86,9 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public Collection<IInstance> getAllInstances() {
 
+		
+		// TODO easy
+		
 		return null;
 	}
 
@@ -253,8 +257,15 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getInstances()
 	 */
 	public Collection<IInstance> getInstances() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Set<IInstance> ret = new HashSet<IInstance>();
+		
+		Set<OWLOntology> ontologies = FileKnowledgeRepository.KR.manager.getOntologies();
+		for (OWLIndividual ind : this.entity.asOWLClass().getIndividuals(ontologies)) {
+			ret.add(new Instance(ind));
+		}
+		
+		return ret;
 	}
 
 	/*
@@ -398,9 +409,6 @@ public class Concept extends Knowledge implements IConcept {
 	protected boolean is(Concept c) {
 		Collection<IConcept> collection = getAllParents();
 		collection.add(this);
-		if (collection.contains(c))
-			return true;
-		else
-			return false;
+		return collection.contains(c);
 	}
 }

@@ -1,11 +1,9 @@
 package org.integratedmodelling.thinklab;
 
-import java.io.File;
 import java.net.URL;
 
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
