@@ -169,7 +169,7 @@ public class Ontology implements IOntology {
 	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#getProperty(java.lang.String)
 	 */
 	public IProperty getProperty(String ID) {
-		return properties.get(cs+":"+ID);
+		return properties.get(new SemanticType(cs, ID));
 	}
 
 	/* (non-Javadoc)
@@ -183,7 +183,7 @@ public class Ontology implements IOntology {
 	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#getInstance(java.lang.String)
 	 */
 	public IInstance getInstance(String ID) {
-		return instances.get(cs+":"+ID);
+		return instances.get(new SemanticType(cs, ID));
 	}
 
 	/* (non-Javadoc)

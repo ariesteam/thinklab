@@ -18,6 +18,7 @@
  */
 package org.integratedmodelling.thinklab.owlapi;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +33,10 @@ import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.interfaces.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.utils.LogicalConnector;
+import org.integratedmodelling.utils.Quantifier;
 import org.semanticweb.owl.inference.OWLReasonerAdapter;
+import org.semanticweb.owl.inference.OWLReasonerException;
 import org.semanticweb.owl.model.OWLAnnotation;
 import org.semanticweb.owl.model.OWLAnnotationAxiom;
 import org.semanticweb.owl.model.OWLClass;
@@ -42,6 +46,7 @@ import org.semanticweb.owl.model.OWLException;
 import org.semanticweb.owl.model.OWLIndividual;
 import org.semanticweb.owl.model.OWLObjectProperty;
 import org.semanticweb.owl.model.OWLOntology;
+import org.semanticweb.owl.model.OWLRestriction;
 
 /**
  * @author Ioannis N. Athanasiadis
@@ -86,10 +91,11 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public Collection<IInstance> getAllInstances() {
 
+		ArrayList<IInstance> ret = new ArrayList<IInstance>();
 		
 		// TODO easy
 		
-		return null;
+		return ret;
 	}
 
 	/*
@@ -131,9 +137,9 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getAllParents()
 	 */
 	public Collection<IConcept> getAllParents() {
-		if (FileKnowledgeRepository.KR.reasonerConnected()) {
+		if (FileKnowledgeRepository.KR.classReasoner != null) {
 			try {
-				Set<Set<OWLClass>> parents = FileKnowledgeRepository.KR.reasoner
+				Set<Set<OWLClass>> parents = FileKnowledgeRepository.KR.classReasoner
 						.getAncestorClasses((OWLClass) entity);
 				Set<IConcept> concepts = new HashSet<IConcept>();
 				Set<OWLClass> subClses = OWLReasonerAdapter
@@ -219,8 +225,9 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getProperties()
 	 */
 	public Collection<IProperty> getProperties() {
+		
 		Collection<IProperty> props = getDirectProperties();
-		for(IProperty prop:props)
+		for(IProperty prop: props)
 			props.addAll(prop.getChildren());
 		return props;
 	}
@@ -231,9 +238,10 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getDirectProperties()
 	 */
 	public Collection<IProperty> getDirectProperties() {
+		
 		// where are we searching? In all ontologies...
-		Set<OWLOntology> ontologies = FileKnowledgeRepository.KR.manager
-				.getOntologies();
+		Set<OWLOntology> ontologies = FileKnowledgeRepository.KR.manager.getOntologies();
+		
 		Set<IProperty> properties = new HashSet<IProperty>();
 		for (OWLOntology ontology : ontologies) {
 			for (OWLObjectProperty op : ontology
@@ -259,6 +267,19 @@ public class Concept extends Knowledge implements IConcept {
 	public Collection<IInstance> getInstances() {
 		
 		Set<IInstance> ret = new HashSet<IInstance>();
+		
+		try {
+			if (FileKnowledgeRepository.get().instanceReasoner != null) {
+				for (OWLIndividual ind : 
+						FileKnowledgeRepository.get().instanceReasoner.
+							getIndividuals(this.entity.asOWLClass(), true)) {
+					ret.add(new Instance(ind));
+				}
+			}
+		} catch (OWLReasonerException e) {
+			// just proceed with the dumb method
+		}
+ 		
 		
 		Set<OWLOntology> ontologies = FileKnowledgeRepository.KR.manager.getOntologies();
 		for (OWLIndividual ind : this.entity.asOWLClass().getIndividuals(ontologies)) {
@@ -328,8 +349,8 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getPropertyRange(org.integratedmodelling.thinklab.interfaces.IProperty)
 	 */
 	public Collection<IConcept> getPropertyRange(IProperty property) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<IConcept> ret = new ArrayList<IConcept>();
+		return ret;
 	}
 
 	/*
@@ -338,8 +359,66 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getRestrictions()
 	 */
 	public Constraint getRestrictions() throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+
+		/*
+		 * This accumulates all restrictions from parents as well.
+		 */		
+//		Collection<OWLRestriction> rs = 
+//			((DefaultOWLNamedClass)concept).getRestrictions(true);
+
+		
+		Constraint ret = new Constraint(this);
+		
+//		if (rs != null)
+//			for (OWLRestriction r : rs) {
+//
+//				IProperty p = new Property(r.getOnProperty());
+//				Quantifier q = null;
+//				
+//				if (r instanceof OWLAllValuesFrom) {
+//
+//					q = new Quantifier("all");
+//					IConcept c = new Concept((OWLClass) ((OWLAllValuesFrom)r).getAllValuesFrom());
+//					ret.restrict(new Restriction(q, p, new Constraint(c)));
+//
+//				} else if (r instanceof OWLSomeValuesFrom) {
+//
+//					q = new Quantifier("any");
+//					IConcept c = new Concept((OWLClass) ((OWLSomeValuesFrom)r).getSomeValuesFrom());
+//					ret.restrict(new Restriction(q, p, new Constraint(c)));
+//
+//				} else if (r instanceof OWLCardinality) {
+//
+//					int card = ((OWLCardinality)r).getCardinality();
+//					q = new Quantifier(Integer.toString(card));
+//					ret.restrict(new Restriction(q, p));
+//
+//				} else if (r instanceof OWLMinCardinality) {
+//
+//					int card = ((OWLMinCardinality)r).getCardinality();				
+//					q = new Quantifier(card+":");
+//					ret.restrict(new Restriction(q, p));
+//
+//				} else if (r instanceof OWLMaxCardinality) {
+//
+//					int card = ((OWLMaxCardinality)r).getCardinality();
+//					q = new Quantifier(":" + card);
+//					ret.restrict(new Restriction(q, p));
+//
+//				} else if (r instanceof OWLHasValue) {
+//
+//					ret.restrict(
+//							new Restriction(
+//									new Quantifier("all"),
+//									p, 
+//									"=", 
+//									((OWLHasValue)r).getHasValue().toString()));
+//				}
+//			}
+		
+		return ret;
+
+		
 	}
 
 	/*
@@ -370,8 +449,8 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public Collection<IRelationship> getRelationships()
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<IRelationship> ret = new ArrayList<IRelationship>();
+		return ret;
 	}
 
 	/*
@@ -381,8 +460,8 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public Collection<IRelationship> getRelationships(String property)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<IRelationship> ret = new ArrayList<IRelationship>();
+		return ret;
 	}
 
 	/*
@@ -392,8 +471,8 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public Collection<IRelationship> getRelationshipsTransitive(String property)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<IRelationship> ret = new ArrayList<IRelationship>();
+		return ret;
 	}
 
 	/*
@@ -402,11 +481,131 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getDefinition()
 	 */
 	public Constraint getDefinition() throws ThinklabException {
-		// TODO Auto-generated method stub
+		
+		ArrayList<OWLRestriction> rs = new ArrayList<OWLRestriction>();
+		
+		Constraint ret = getDefinitionInternal(this, rs);
+		
+//		if (rs != null)
+//			for (OWLRestriction r : rs) {
+//
+//				IProperty p = new Property(r.getOnProperty());
+//				Quantifier q = null;
+//
+//				if (r instanceof OWLAllValuesFrom) {
+//
+//					q = new Quantifier("all");
+//					IConcept c = new Concept((OWLClass) ((OWLAllValuesFrom)r).getAllValuesFrom());
+//					ret.restrict(new Restriction(q, p, new Constraint(c)));
+//
+//				} else if (r instanceof OWLSomeValuesFrom) {
+//
+//					q = new Quantifier("any");
+//					IConcept c = new Concept((OWLClass) ((OWLSomeValuesFrom)r).getSomeValuesFrom());
+//					ret.restrict(new Restriction(q, p, new Constraint(c)));
+//
+//				} else if (r instanceof OWLCardinality) {
+//
+//					int card = ((OWLCardinality)r).getCardinality();
+//					q = new Quantifier(Integer.toString(card));
+//					ret.restrict(new Restriction(q, p));
+//
+//				} else if (r instanceof OWLMinCardinality) {
+//
+//					int card = ((OWLMinCardinality)r).getCardinality();				
+//					q = new Quantifier(card+":");
+//					ret.restrict(new Restriction(q, p));
+//
+//				} else if (r instanceof OWLMaxCardinality) {
+//
+//					int card = ((OWLMaxCardinality)r).getCardinality();
+//					q = new Quantifier(":" + card);
+//					ret.restrict(new Restriction(q, p));
+//
+//				} else if (r instanceof OWLHasValue) {
+//
+//					ret.restrict(
+//							new Restriction(
+//									new Quantifier("all"),
+//									p, 
+//									"=", 
+//									((OWLHasValue)r).getHasValue().toString()));
+//				}
+//			}
+		
+		// merge in any further constraints from Thinklab-specific annotations
+		Constraint tlc = 
+			ThinklabOWLManager.get().getAdditionalConstraints(this);
+		
+		if (tlc != null) {
+			ret.merge(tlc, LogicalConnector.INTERSECTION);
+		}
+		
+		return ret;
+
+	}
+	
+	/* 
+	 * accumulate suitable restrictions recursively until no more restrictions on
+	 * inherited properties are found; return constraint initialized with stop concept, or null if we must
+	 * continue.
+	 * 
+	 * If there are multiple parents, this will stop at the first that matches the
+	 * stop condition. Which is probably not the right thing to do.
+	 */ 
+	private static Constraint getDefinitionInternal(IConcept c, Collection<OWLRestriction> restrictions) 
+		throws ThinklabException {
+		
+//		// DefaultRDFSNamedClass gets here too.
+//		if (!(((Concept)c).concept instanceof DefaultOWLNamedClass)) {
+//			return new Constraint(c);
+//		}
+		
+//		Collection<OWLRestriction> rs = 
+//			((DefaultOWLNamedClass)(((Concept)c).concept)).getRestrictions(false);
+				
+		boolean found = false;
+//		if (rs != null) {
+//			for (OWLRestriction r : rs) {
+//
+//				IProperty p = new Property(r.getOnProperty());
+//				
+//				if (p.getDomain().equals(c))
+//					continue;
+//				
+//				restrictions.add(r);
+//				found = true;
+//			}
+//		}
+		
+		if (!found)
+			return new Constraint(c);
+		
+		for (IConcept cc : c.getParents()) {
+			Constraint ret = getDefinitionInternal(cc, restrictions);
+			if (ret != null)
+				return ret;	
+		}
+		
 		return null;
 	}
 
+
+
 	protected boolean is(Concept c) {
+		
+		if (c.equals(this))
+			return true;
+		
+		try {
+			if (FileKnowledgeRepository.get().classReasoner != null) {
+				return FileKnowledgeRepository.get().classReasoner.
+					isSubClassOf(this.entity.asOWLClass(), c.entity.asOWLClass());
+			}
+		} catch (OWLReasonerException e) {
+			// just proceed with the dumb method
+		}
+ 		
 		Collection<IConcept> collection = getAllParents();
 		collection.add(this);
 		return collection.contains(c);

@@ -71,11 +71,6 @@ public class FileKnowledgeRepositoryTest {
 			}
 
 		}
-		// The URL is not needed any more
-		km.getKnowledgeRepository().connectReasoner(null);
-		km.getKnowledgeRepository().classifyTaxonomy();
-		km.getKnowledgeRepository().classifyTaxonomy();
-		km.getKnowledgeRepository().classifyTaxonomy();
 
 		
 		{

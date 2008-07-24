@@ -25,14 +25,17 @@ import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IKnowledge;
@@ -40,6 +43,9 @@ import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.utils.FileTypeFilter;
 import org.semanticweb.owl.apibinding.OWLManager;
+import org.semanticweb.owl.inference.OWLClassReasoner;
+import org.semanticweb.owl.inference.OWLIndividualReasoner;
+import org.semanticweb.owl.inference.OWLPropertyReasoner;
 import org.semanticweb.owl.inference.OWLReasoner;
 import org.semanticweb.owl.model.OWLDataFactory;
 import org.semanticweb.owl.model.OWLException;
@@ -48,7 +54,10 @@ import org.semanticweb.owl.model.OWLOntologyCreationException;
 import org.semanticweb.owl.model.OWLOntologyManager;
 import org.semanticweb.owl.util.DLExpressivityChecker;
 import org.semanticweb.owl.util.SimpleURIMapper;
+import org.semanticweb.owl.util.ToldClassHierarchyReasoner;
 import org.semanticweb.owl.vocab.Namespaces;
+
+import uk.ac.manchester.cs.owl.inference.dig11.DIGReasoner;
 
 /**
  * @author Ioannis N. Athanasiadis
@@ -64,11 +73,19 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	private File tempDirectory;
 	protected HashMap<String, IOntology> ontologies = new HashMap<String, IOntology>();
 	protected Registry registry;
-	protected OWLReasoner reasoner;
+	
+	protected OWLClassReasoner classReasoner;
+	protected OWLIndividualReasoner instanceReasoner;
+	protected OWLPropertyReasoner propertyReasoner;
+	
 	private IConcept rootConcept;
 	protected static OWLDataFactory df;
 	protected static FileKnowledgeRepository KR =null;
 
+	public static FileKnowledgeRepository get() {
+		return KR;
+	}
+	
 	/**
 	 * Default constructor. To be followed by initialize().
 	 * 
@@ -102,7 +119,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		for (File f : repositoryDirectory.listFiles(owlfilter)) {
 			String nspace = null;
 			try {
-				URL url = f.toURL();
+				URL url = f.toURI().toURL();
 				// This is the filename without the .owl ending. It will be used
 				// as the short namespace!
 				nspace = f.getName().substring(0, f.getName().length() - 4);
@@ -112,15 +129,10 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 				// + " " + ex.getMessage());
 			}
 		}
-		if (LocalConfiguration.hasResource("thinklab.reasoner.url")) {
-			// connectReasoner(LocalConfiguration.getResource("thinklab.reasoner.url"));
-			// log.info(reasonerConnected()? "Connected to reasoner: "+
-			// reasoner.getIdentity().getName() : "Reasoner not connected.");
-		} else {
-			// log.info("Reasoner support not configured");
-		}
-		
-//		rootConcept
+		/*
+		 * either connect to a configured DIG reasoner, or use a simple transitive one.
+		 */
+		connectReasoner();
 	}
 
 	/*
@@ -139,6 +151,14 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 			ontologies.put(name, onto);
 			registry.updateRegistry(manager, ontology);
 			onto.initialize(name);
+			
+			/*
+			 * at the very least it's a class reasoner
+			 */
+			if (classReasoner != null) {
+				classReasoner.loadOntologies(Collections.singleton(onto.ont));
+			}
+			
 			return name;
 		} catch (Exception e) {
 			throw new ThinklabException(e);
@@ -150,8 +170,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	 * 
 	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository#createTemporaryOntology(java.lang.String)
 	 */
-	public IOntology createTemporaryOntology(String name)
-			throws ThinklabException {
+	public IOntology createTemporaryOntology(String name) throws ThinklabException {
 		if (!registry.containsConceptSpace(name)) {
 			File f = new File(tempDirectory, name + ".owl");
 			URI physicalURI = f.toURI();
@@ -168,8 +187,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 				onto.initialize(name);
 				return onto;
 			} catch (OWLOntologyCreationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ThinklabInternalErrorException(e);
 			}
 
 		}
@@ -313,60 +331,62 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository#reasonerConnected()
-	 */
-	public boolean reasonerConnected() {
-		return (reasoner!=null);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository#classifyTaxonomy()
-	 */
-	public void classifyTaxonomy() {
-		try {
-			reasoner.classify();
-		} catch (OWLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-	
-        
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository#connectReasoner(java.net.URL)
 	 */
-	public void connectReasoner(URL reasonerURL) {
-		// This is the real question on which ontologies are we reasoning?
-		// Probably the reasoning methods should be transferred to the Session
-		// and have session-based reasoning, which will be internal of the session...
-		Set<OWLOntology> importsClosure = manager.getOntologies();     
+	public void connectReasoner() throws ThinklabException {
 
-//		String reasonerClassName = "org.mindswap.pellet.owlapi.Reasoner";
-//        Class reasonerClass;
-//		try {
-//			reasonerClass = Class.forName(reasonerClassName);
-//			Constructor<OWLReasoner> con = reasonerClass.getConstructor(OWLOntologyManager.class);
-//	        this.reasoner =  con.newInstance(manager);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		
-		//this.reasoner = new Reasoner(this.manager);
+		URL reasonerURL = null;
 
-//		reasoner.setAutoClassify(true);
-//		try {
-			//reasoner.loadOntologies(importsClosure);
-//		} catch (OWLException e) {
-//			e.printStackTrace();
-//		}
-		
-		 DLExpressivityChecker checker = new DLExpressivityChecker(importsClosure);
-         System.out.println("Expressivity: " + checker.getDescriptionLogicName());
+		if (LocalConfiguration.hasResource("thinklab.reasoner.url")) {
+			reasonerURL = LocalConfiguration
+					.getResource("thinklab.reasoner.url");
+		}
+
+		try {
+			if (reasonerURL != null) {
+
+				OWLReasoner reasoner = new DIGReasoner(manager);
+				((DIGReasoner) reasoner).getReasoner().setReasonerURL(
+						reasonerURL);
+				
+				String capabilities = "";
+				
+				if (reasoner instanceof OWLClassReasoner) {
+					classReasoner = reasoner;
+					capabilities += "class ";
+				}
+				if (reasoner instanceof OWLIndividualReasoner) {
+					instanceReasoner = reasoner;
+					capabilities += "individual ";
+				}
+				if (reasoner instanceof OWLPropertyReasoner) {
+					propertyReasoner = reasoner;
+					capabilities += "property ";
+				}
+				
+				Thinklab.get().logger().info(
+						"created DIG reasoner at " + reasonerURL + 
+						": capabilities are " + capabilities);
+
+			} else {
+				Thinklab.get().logger().info("creating default transitive reasoner");
+				classReasoner = new ToldClassHierarchyReasoner(manager);
+			}
+
+			// This is the real question on which ontologies are we reasoning?
+			// Probably the reasoning methods should be transferred to the
+			// Session
+			// and have session-based reasoning, which will be internal of the
+			// session...
+			Set<OWLOntology> importsClosure = manager.getOntologies();
+			classReasoner.loadOntologies(importsClosure);
+			DLExpressivityChecker checker = new DLExpressivityChecker(importsClosure);
+			Thinklab.get().logger().info("Expressivity: " + checker.getDescriptionLogicName());
+
+		} catch (OWLException e) {
+			throw new ThinklabIOException(e);
+		}
+
 	}
 	
 	protected IKnowledge resolveURI(URI uri) {

@@ -167,19 +167,5 @@ public interface IKnowledgeRepository {
      * @return
      */
 	public abstract IOntology createTemporaryOntology(String string) throws ThinklabException;
-	
-	
-	/**
-	 * Connects the repository to an external DL reasoner.
-	 * @param reasoner the URL of the reasoner
-	 */
-	public void connectReasoner(URL reasoner);
 
-	/**
-	 * Checks if the reasoner is connected.
-	 * @return
-	 */
-	public boolean reasonerConnected();
-
-	public abstract void classifyTaxonomy();
 }

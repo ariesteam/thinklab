@@ -67,7 +67,7 @@ import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Polylist;
 
 /**
- * The basic IMA session, implemented on top of an Ontology.
+ * The basic Thinklab session, implemented on top of an Ontology.
  * <p><b>NOTE:</b> you're not supposed to create a Session. Ask the Knowledge manager for one instead.</p>
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  * @see KnowledgeManager#requestNewSession()

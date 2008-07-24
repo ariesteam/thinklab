@@ -227,7 +227,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		String krClass = 
 			Thinklab.get().getProperties().getProperty(
 				"thinklab.repository.class",
-				"org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository");
+				"org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository");
 		
 		IKnowledgeRepository kr = null;
 		ISessionManager sm = null;
@@ -480,16 +480,9 @@ public class KnowledgeManager implements IKnowledgeProvider {
         	LocalConfiguration.getProperties().getProperty(
         			"thinklab.ontology.core", 
         			DEFAULT_CORE_ONTOLOGY);
- 
-//        try {
 
-        	URL tco = Thinklab.get().getResourceURL(cont);
-        	
-        	/* load the thinklab core ontology URL from preferences */
+        	URL tco = Thinklab.get().getResourceURL(cont);  	
             knowledgeRepository.refreshOntology(tco, MiscUtilities.getNameFromURL(cont), true);
-//        } catch (MalformedURLException e1) {
-//        	throw new ThinklabIOException(e1);
-//        }
         
         /* initialize types before we register plugins */
         initializeThinklabTypes();

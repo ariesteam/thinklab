@@ -358,13 +358,13 @@ public class ThinklabOWLManager {
 	 */
 	public static String getComment(OWLOntology ont, OWLEntity resource, String languageCode) {
 		
-		String ret = Snippets.getComment(ont, resource, languageCode);
+		String ret = OWLAPI.getComment(ont, resource, languageCode);
 		return ret == null ? EMPTY_STRING : ret;
 	}
 
 	public static String getLabel(OWLOntology ont, OWLEntity resource, String languageCode) {
 		
-		String ret = Snippets.getLabel(ont, resource, languageCode);
+		String ret = OWLAPI.getLabel(ont, resource, languageCode);
 		return ret == null ? EMPTY_STRING : ret;
 	}
 

@@ -19,6 +19,7 @@
 package org.integratedmodelling.thinklab.owlapi;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.integratedmodelling.thinklab.SemanticType;
@@ -64,24 +65,24 @@ public class Property extends Knowledge implements IProperty {
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getAllChildren()
 	 */
 	public Collection<IProperty> getAllChildren() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<IProperty> ret = new HashSet<IProperty>();
+		return ret;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getAllParents()
 	 */
-	public Collection<org.integratedmodelling.thinklab.interfaces.IProperty> getAllParents() {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<IProperty> getAllParents() {
+		Set<IProperty> ret = new HashSet<IProperty>();
+		return ret;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getChildren()
 	 */
-	public Collection<org.integratedmodelling.thinklab.interfaces.IProperty> getChildren() {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<IProperty> getChildren() {
+		Set<IProperty> ret = new HashSet<IProperty>();
+		return ret;
 	}
 
 	/* (non-Javadoc)
@@ -95,7 +96,7 @@ public class Property extends Knowledge implements IProperty {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getInverseProperty()
 	 */
-	public org.integratedmodelling.thinklab.interfaces.IProperty getInverseProperty() {
+	public IProperty getInverseProperty() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -103,7 +104,7 @@ public class Property extends Knowledge implements IProperty {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getParent()
 	 */
-	public org.integratedmodelling.thinklab.interfaces.IProperty getParent()
+	public IProperty getParent()
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
@@ -112,17 +113,17 @@ public class Property extends Knowledge implements IProperty {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getParents()
 	 */
-	public Collection<org.integratedmodelling.thinklab.interfaces.IProperty> getParents() {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<IProperty> getParents() {
+		Set<IProperty> ret = new HashSet<IProperty>();
+		return ret;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getRange()
 	 */
 	public Collection<IConcept> getRange() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<IConcept> ret = new HashSet<IConcept>();
+		return ret;
 	}
 
 	/* (non-Javadoc)
