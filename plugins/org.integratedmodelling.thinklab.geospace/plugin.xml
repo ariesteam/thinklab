@@ -46,10 +46,7 @@
 		<library type="code" id="gt2-data" path="lib/gt2-data-2.4.4.jar"/>
 		<library type="code" id="gt2-db2" path="lib/gt2-db2-2.4.4.jar"/>
 		<library type="code" id="gt2-directory" path="lib/gt2-directory-2.4.4.jar"/>
-		<library type="code" id="gt2-epsg-access" path="lib/gt2-epsg-access-2.4.4.jar"/>
-		<library type="code" id="gt2-epsg-extension" path="lib/gt2-epsg-extension-2.4.4.jar"/>
 		<library type="code" id="gt2-epsg-hsql" path="lib/gt2-epsg-hsql-2.4.4.jar"/>
-		<library type="code" id="gt2-epsg-wkt" path="lib/gt2-epsg-wkt-2.4.4.jar"/>
 		<library type="code" id="gt2-geotiff" path="lib/gt2-geotiff-2.4.4.jar"/>
 		<library type="code" id="gt2-gml" path="lib/gt2-gml-2.4.4.jar"/>
 		<library type="code" id="gt2-graph" path="lib/gt2-graph-2.4.4.jar"/>
