@@ -234,7 +234,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		String krClass = 
 			Thinklab.get().getProperties().getProperty(
 				"thinklab.repository.class",
-				"org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository");
+				"org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository");
 		
 		IKnowledgeRepository kr = null;
 		ISessionManager sm = null;
