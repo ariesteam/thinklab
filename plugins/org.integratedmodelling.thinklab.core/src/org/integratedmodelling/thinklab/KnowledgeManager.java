@@ -39,6 +39,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -75,6 +76,7 @@ import org.integratedmodelling.thinklab.session.SingleSessionManager;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 import org.java.plugin.PluginManager;
+import org.semanticweb.owl.vocab.XSDVocabulary;
 
 /**
  * <p>The Knowledge Manager is the main actor in Thinklab. It gives API access to a knowledge repository and to all the
@@ -188,6 +190,11 @@ public class KnowledgeManager implements IKnowledgeProvider {
 
 	private HashSet<String> propertyBlacklist = new HashSet<String>();
 	private HashSet<String> conceptBlacklist = new HashSet<String>();
+
+	/*
+	 * maps XSD URIs to thinklab types for translation of literals.
+	 */
+	private Hashtable<String, String> xsdMappings = new Hashtable<String, String>();
 
 	public KnowledgeManager(IKnowledgeRepository kr, ISessionManager ki) {
 
@@ -399,6 +406,18 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	public String getConceptSpaceFromURI(String cs) throws ThinklabResourceNotFoundException {
 		return uri2cs.get(cs);
 	}
+	
+	
+	/**
+	 * If a mapping between the URI of an XSD type and a thinklab semantic type has been
+	 * defined, return the correspondent type; otherwise return null.
+	 * 
+	 * @param XSDUri
+	 * @return
+	 */
+	public String getXSDMapping(String XSDUri) {
+		return xsdMappings.get(XSDUri);
+	}
 
 	private void initializeThinklabTypes() throws ThinklabValidationException {
 
@@ -441,6 +460,22 @@ public class KnowledgeManager implements IKnowledgeProvider {
 				new SemanticType(p.getProperty("type.property.abstract",
         			 			 "thinklab-core:AbstractClass"));
 
+			/*
+			 * define XSD mappings for simple types.
+			 * 
+			 * TODO we should also have additional IValue types with validation for negative and 
+			 * positive numbers, URL, ID etc, just like in XSD.
+			 */
+			xsdMappings.put(XSDVocabulary.STRING.toString(),  textTypeID.toString());
+			xsdMappings.put(XSDVocabulary.FLOAT.toString(),   floatTypeID.toString());
+			xsdMappings.put(XSDVocabulary.DOUBLE.toString(),  doubleTypeID.toString());
+			xsdMappings.put(XSDVocabulary.LONG.toString(),    longTypeID.toString());
+			xsdMappings.put(XSDVocabulary.INT.toString(),     integerTypeID.toString());
+			xsdMappings.put(XSDVocabulary.INTEGER.toString(), integerTypeID.toString());
+			xsdMappings.put(XSDVocabulary.SHORT.toString(),   integerTypeID.toString());
+			xsdMappings.put(XSDVocabulary.STRING.toString(),  textTypeID.toString());
+			xsdMappings.put(XSDVocabulary.BOOLEAN.toString(), booleanTypeID.toString());
+			
 		} catch (ThinklabMalformedSemanticTypeException e1) {
 			throw new ThinklabValidationException("configuration error: " + e1.getMessage());
 		}
@@ -462,8 +497,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
             abstractProperty = requireProperty(abstractPropertyID);
             
 		} catch (ThinklabResourceNotFoundException e) {
-            
-			// just leave types null, and complain when we have to.
+			throw new ThinklabValidationException("core type specifications are incomplete: " + e.getMessage());
 		}
 		
 		typesInitialized = true;
@@ -1238,6 +1272,10 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	 */
 	public void setSessionManager(ISessionManager sessionManager) {
 		this.sessionManager = sessionManager;
+	}
+
+	public void registerXSDTypeMapping(String xsd, String type) {
+		xsdMappings.put(xsd, type);	
 	}
 
 

@@ -222,6 +222,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.workflow/lib/quartz-1.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/im-boot.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/commons-lang-2.2.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/owlapi-bin.jar" sourcepath="/thinklab-owlapi/owlapi-src.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/owlapi-bin.jar" sourcepath="owlapi-src.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

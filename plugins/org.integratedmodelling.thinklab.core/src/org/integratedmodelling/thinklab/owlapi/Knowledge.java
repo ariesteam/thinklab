@@ -27,6 +27,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnknownResourceException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IKnowledge;
@@ -40,6 +41,7 @@ import org.semanticweb.owl.model.OWLDataFactory;
 import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLOntologyChangeException;
+import org.semanticweb.owl.model.OWLProperty;
 import org.semanticweb.owl.vocab.Namespaces;
 import org.semanticweb.owl.vocab.OWLRDFVocabulary;
 
@@ -61,8 +63,6 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	protected OWLEntity entity;
 	protected URI ontoURI;
 	OWLType type;
-
-	// protected Ontology ontology;
 
 	private static String DEF_LANG = "en";
 
@@ -116,6 +116,24 @@ public abstract class Knowledge implements IKnowledge, IResource {
 		addDescription(desc, DEF_LANG);
 	}
 
+	public void addAnnotation(OWLProperty prop, String annotation) {
+		
+		OWLOntology ontology = getOntology();
+		OWLDataFactory df = FileKnowledgeRepository.df;
+		OWLConstant cns = df.getOWLTypedConstant(annotation);
+		OWLAnnotation<?> anno = df.getOWLConstantAnnotation(prop.getURI(), cns);
+		OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, anno);
+		// Add the axiom to the ontology
+		try {
+			FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
+					ontology, ax));
+		} catch (OWLOntologyChangeException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+
+	}
+
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -135,11 +153,12 @@ public abstract class Knowledge implements IKnowledge, IResource {
 			FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
 					ontology, ax));
 		} catch (OWLOntologyChangeException e) {
-			e.printStackTrace();
+			throw new ThinklabRuntimeException(e);
 		}
 
 	}
 
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -170,7 +189,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 			FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
 					ontology, ax));
 		} catch (OWLOntologyChangeException e) {
-			e.printStackTrace();
+			throw new ThinklabRuntimeException(e);
 		}
 
 	}

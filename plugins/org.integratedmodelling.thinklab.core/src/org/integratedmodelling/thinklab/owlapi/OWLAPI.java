@@ -7,15 +7,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.interfaces.IConcept;
+import org.semanticweb.owl.model.AddAxiom;
 import org.semanticweb.owl.model.OWLAnnotation;
+import org.semanticweb.owl.model.OWLAxiom;
 import org.semanticweb.owl.model.OWLClass;
 import org.semanticweb.owl.model.OWLConstant;
 import org.semanticweb.owl.model.OWLDataAllRestriction;
 import org.semanticweb.owl.model.OWLDataExactCardinalityRestriction;
+import org.semanticweb.owl.model.OWLDataFactory;
 import org.semanticweb.owl.model.OWLDataMaxCardinalityRestriction;
 import org.semanticweb.owl.model.OWLDataMinCardinalityRestriction;
 import org.semanticweb.owl.model.OWLDataProperty;
 import org.semanticweb.owl.model.OWLDataSomeRestriction;
+import org.semanticweb.owl.model.OWLDataType;
 import org.semanticweb.owl.model.OWLDataValueRestriction;
 import org.semanticweb.owl.model.OWLDescription;
 import org.semanticweb.owl.model.OWLEntity;
@@ -29,10 +36,13 @@ import org.semanticweb.owl.model.OWLObjectProperty;
 import org.semanticweb.owl.model.OWLObjectPropertyExpression;
 import org.semanticweb.owl.model.OWLObjectSomeRestriction;
 import org.semanticweb.owl.model.OWLOntology;
+import org.semanticweb.owl.model.OWLOntologyChangeException;
+import org.semanticweb.owl.model.OWLProperty;
 import org.semanticweb.owl.model.OWLRestriction;
 import org.semanticweb.owl.model.OWLSubClassAxiom;
 import org.semanticweb.owl.util.OWLDescriptionVisitorAdapter;
 import org.semanticweb.owl.vocab.OWLRDFVocabulary;
+import org.semanticweb.owl.vocab.XSDVocabulary;
 
 /**
  * Collection of helper methods to use OWLAPI more conveniently.
@@ -41,6 +51,7 @@ import org.semanticweb.owl.vocab.OWLRDFVocabulary;
  *
  */
 public class OWLAPI {
+	
 
 	/**
      * Collect all available info about restrictions and the properties they restrict.
@@ -174,20 +185,20 @@ public class OWLAPI {
          return restrictionVisitor.restrictions;
     }
     
-	public static String getLabel(OWLOntology ont, OWLEntity cls, String language) {
-		return getAnnotation(ont, cls, language, OWLRDFVocabulary.RDFS_LABEL.getURI());
+	public static String getLabel(Knowledge cls, String language) {
+		return getAnnotation(cls, language, OWLRDFVocabulary.RDFS_LABEL.getURI());
 	}
 
-	public static String getComment(OWLOntology ont, OWLEntity cls, String language) {
-		return getAnnotation(ont, cls, language, OWLRDFVocabulary.RDFS_COMMENT.getURI());
+	public static String getComment(Knowledge cls, String language) {
+		return getAnnotation(cls, language, OWLRDFVocabulary.RDFS_COMMENT.getURI());
 	}
 	
-	public static String getAnnotation(OWLOntology ont, OWLEntity cls, String language, URI annotationURI) {
+	public static String getAnnotation(Knowledge k, String language, URI annotationURI) {
 		
 		String ret = null;
 		
 		// Get the annotations on the class that have a URI corresponding to rdfs:label
-		for (OWLAnnotation annotation : cls.getAnnotations(ont, annotationURI)) {
+		for (OWLAnnotation annotation : k.entity.getAnnotations(k.getOntology(), annotationURI)) {
 			if (annotation.isAnnotationByConstant()) {
 				OWLConstant val = annotation.getAnnotationValueAsConstant();
 				if (!val.isTyped()) {
@@ -201,10 +212,6 @@ public class OWLAPI {
 			}
 		}
 		return ret;
-	}
-	
-	public static void addAnnotation(OWLOntology ont, OWLIndividual instance, URI annotationURI, String content) {
-		
 	}
 	
 	/*
@@ -252,5 +259,5 @@ public class OWLAPI {
 		}
 		return classProps;
 	}
-
+	
 }

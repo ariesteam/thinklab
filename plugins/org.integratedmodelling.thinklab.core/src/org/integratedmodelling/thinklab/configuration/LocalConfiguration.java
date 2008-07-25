@@ -270,6 +270,11 @@ public class LocalConfiguration {
 		}
 		return url != null;
 	}
+
+	public static boolean strictValidation() {
+		String validation = getProperties().getProperty("thinklab.validation", "strict");
+		return validation.equals("strict");
+	}
 	
 	
 }

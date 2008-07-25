@@ -487,6 +487,15 @@ public abstract class ThinklabPlugin extends Plugin
 			LiteralValidator lv = (LiteralValidator) getHandlerInstance(ext, "class");
 			String type = ext.getParameter("semantic-type").valueAsString();
 			
+			/*
+			 * TODO handle xsd types 
+			 */
+			String xsd = getParameter(ext, "xsd-uri");
+			
+			if (xsd != null) {
+				KnowledgeManager.get().registerXSDTypeMapping(xsd, type);
+			}
+			
 			KnowledgeManager.get().registerLiteralValidator(type, lv);
 		}
 

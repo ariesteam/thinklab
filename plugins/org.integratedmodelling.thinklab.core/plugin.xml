@@ -140,9 +140,15 @@
 		<parameter-def id="example" multiplicity="any" />
 	</extension-point>
 
+	<!-- 
+		Literal validators can also be associated with XSD types. If that is present, the semantic
+		type and validator will be used to create the associated IValue when a dataproperty is 
+		found that links to that XSD type.
+	-->
 	<extension-point id="literal-validator">
 		<parameter-def id="class" />
 		<parameter-def id="semantic-type" />
+		<parameter-def id="xsd-uri" multiplicity="none-or-one" />
 		<parameter-def id="description" multiplicity="none-or-one" />
 		<parameter-def id="example" multiplicity="any" />
 	</extension-point>

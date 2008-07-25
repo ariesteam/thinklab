@@ -79,17 +79,6 @@ public interface IOntology  extends IResource {
 	public abstract Collection<IInstance> getInstances() throws ThinklabException;
 	
 	/**
-	 * Create a new concept to be defined. The concept is already in the ontology as soon as it's created.
-	 * @category Modifying methods
-	 * @param ID the ID of the concept
-	 * @param parent the parent concept. Defaults to owl:Thing if null.
-	 * @return the new Concept.
-	 * TODO check if we need a validation mechanism like the one for Instances
-	 * @throws ThinklabException 
-	 */
-	public abstract IConcept createConcept(String ID, IConcept parent) throws ThinklabException;
-	
-	/**
 	 * Create an instance of the given concept. The instance is "loose", not linked to the ontology unless
 	 * it is passed to validateInstance after being created.
 	 * @category Modifying methods
@@ -99,7 +88,7 @@ public interface IOntology  extends IResource {
 	 * @throws ThinklabMalformedSemanticTypeException 
 	 * @throws ThinklabIOException 
 	 */
-	public abstract IInstance createInstance(String ID, IConcept c) throws ThinklabMalformedSemanticTypeException, ThinklabDuplicateNameException, ThinklabIOException;
+	public abstract IInstance createInstance(String ID, IConcept c) throws ThinklabException;
 	
     /**
      * Create a copy of passed instance, which may come from a different ontology.
@@ -130,49 +119,6 @@ public interface IOntology  extends IResource {
     public abstract IInstance createInstance(Polylist list) throws ThinklabException;
 
     
-	/**
-	 * Create a new property to be defined. The property is already in the ontology as soon 
-	 * as it's created.
-	 * @category Modifying methods
-	 * @param ID the ID of the property
-	 * @param range the superclass of the values to link to. If that corresponds to one
-	 * 	of the base types, a standard DataProperty is created. Otherwise a new ObjectProperty
-	 * 	is created and its superclass set appropriately
-	 * @param parent the parent property. Must be a literal property. null can be passed.
-	 * @return the new Property.
-	 * TODO check if we need a validation mechanism like the one for Instances
-	 * TODO hard to do this one properly unless we know the range - literals could be
-	 * extended or not.
-	 */
-	public abstract IProperty createLiteralProperty(String ID, IConcept range, IProperty parent) 
-	throws ThinklabException;
-	
-	/**
-	 * Create a new property to be defined. The property is already in the ontology as soon 
-	 * as it's created.
-	 * @category Modifying methods
-	 * @param ID the ID of the property
-	 * @param range the superclass of what to link to
-	 * @param parent the parent property. null can be passed.
-	 * @return the new Property.
-	 * TODO check if we need a validation mechanism like the one for Instances
-	 * @throws ThinklabException 
-	 */
-	public abstract IProperty createObjectProperty(String ID, IConcept range, IProperty parent) throws ThinklabException;
-	
-	/**
-	 * Create a new property to be defined. The property is already in the ontology as soon 
-	 * as it's created.
-	 * @category Modifying methods
-	 * @param ID the ID of the property
-	 * @param range the superclass of what to link to
-	 * @param parent the parent property. Must be a classification property. If null is
-	 * passed, it becomes a direct subproperty of tc:classificationProperty.
-	 * @return the new Property.
-	 * TODO check if we need a validation mechanism like the one for Instances
-	 */
-	public abstract IProperty createClassificationProperty(String ID, IConcept range, IProperty parent) 
-	throws ThinklabException;
 
 	/**
 	 * Return a concept, or null if not found.
@@ -196,11 +142,11 @@ public interface IOntology  extends IResource {
 	public abstract IProperty getProperty(String ID);
 
 	/**
-	 * 
+	 * Remove the instance identified by the passed id
 	 * @param uri
 	 * @throws ThinklabException 
 	 */
-	public void removeInstance(String uri) throws ThinklabException;
+	public void removeInstance(String id) throws ThinklabException;
 
 	/**
 	 * 

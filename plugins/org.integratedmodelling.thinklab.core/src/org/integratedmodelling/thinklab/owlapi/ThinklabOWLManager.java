@@ -44,6 +44,7 @@ import java.util.Map.Entry;
 import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
+import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabConstraintValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -140,14 +141,14 @@ public class ThinklabOWLManager {
 		return owlManager;
 	}
 	
-	static public int getNRelationships(OWLEntity cl, OWLEntity p) {
-		
-        if (!(p instanceof OWLObjectProperty || p instanceof OWLDataProperty)) {
-        	return 0;
-        }
-
-        return /* TODO cl.getPropertyValueCount(p) */0;
-	}
+//	static public int getNRelationships(OWLEntity cl, OWLEntity p) {
+//		
+//        if (!(p instanceof OWLObjectProperty || p instanceof OWLDataProperty)) {
+//        	return 0;
+//        }
+//
+//        return /* TODO cl.getPropertyValueCount(p) */0;
+//	}
 	
 
 	/**
@@ -200,15 +201,32 @@ public class ThinklabOWLManager {
 
 						OWLDataType dtype = cn.asOWLTypedConstant()
 								.getDataType();
+	
+						String tltype = KnowledgeManager.get().getXSDMapping(dtype.getURI().toString());
 						
-						// TODO
+						if (tltype != null) {
+							val = 
+								KnowledgeManager.get().validateLiteral(
+										KnowledgeManager.get().requireConcept(tltype),
+										cn.getLiteral(), 
+										null);
+						}
+					} 
+					
+					/* if we didn't succeed above, just give it a string and hope for the best unless
+					 * we want strict validation (which is the default) */
+					if (val == null) {
 						
-						
-					} else {
-						// // cross fingers
-						// IValue val = Value.getValueForObject(o);
-						// /* add to return values */
-						// ret.add(val);
+						if (LocalConfiguration.strictValidation()) {
+							throw new ThinklabValidationException("cannot find translation for data type " + cn);
+						} else {
+							
+							val = 
+								KnowledgeManager.get().validateLiteral(
+										KnowledgeManager.Text(),
+										cn.getLiteral(), 
+										null);
+						}
 					}
 
 					if (val != null)
@@ -346,27 +364,6 @@ public class ThinklabOWLManager {
 		addImpl(instance.getURI(), impl);
 	}
 	
-	/**
-	 * A universal method for returning comments from RDF resources.
-	 * Note that there can be more than one comments attached to a resource.
-	 * Also we assume that the default language will be english. If a no languageCode 
-	 * is given, then all comments with English ("en") and "null" languageCodes are returned.
-	 *   
-	 * @param resource
-	 * @param languageCode
-	 * @return
-	 */
-	public static String getComment(OWLOntology ont, OWLEntity resource, String languageCode) {
-		
-		String ret = OWLAPI.getComment(ont, resource, languageCode);
-		return ret == null ? EMPTY_STRING : ret;
-	}
-
-	public static String getLabel(OWLOntology ont, OWLEntity resource, String languageCode) {
-		
-		String ret = OWLAPI.getLabel(ont, resource, languageCode);
-		return ret == null ? EMPTY_STRING : ret;
-	}
 
 	/**
 	 * Return value of passed annotation property or default if not found.
@@ -473,9 +470,7 @@ public class ThinklabOWLManager {
 				KnowledgeManager.get().getKnowledgeRepository().requireOntology(concept.getConceptSpace());
 			
 			ret = ont.createInstance(null, concept);
-	
-// TODO
-//			((Instance)ret).entity.asOWLIndividual().addPropertyValue(classLiteralAnnotationProperty, concept.toString());
+			((Instance)ret).addAnnotation(classLiteralAnnotationProperty, concept.toString());
 			
 			/* remember instance created for this type */
 			classLiterals.put(concept.toString(), ret);
@@ -504,9 +499,7 @@ public class ThinklabOWLManager {
 			IInstance rr = (Instance)ont.createInstance(id, literal.getConcept());
 			
 			ret = (Instance)rr;
-			
-			/* TODO set literal value */
-//			ret.entity.asOWLIndividual().addPropertyValue(extendedLiteralAnnotationProperty, literal.toString());
+			ret.addAnnotation(extendedLiteralAnnotationProperty, literal.toString());
 
 			reifiedLiterals.put(rr.getURI(), literal);
 			
@@ -589,7 +582,6 @@ public class ThinklabOWLManager {
 			if (lvalue.length() < 1)
 				throw new ThinklabValidationException("list defining property value for " + property + " has no elements");
 			
-
 			if (lvalue.length() == 1 && lvalue.first().toString().startsWith("#")) {
 				/* reference - just add to table and return */
 				reftable.add(

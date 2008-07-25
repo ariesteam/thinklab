@@ -20,7 +20,9 @@ package org.integratedmodelling.thinklab.owlapi;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -39,6 +41,7 @@ import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 import org.integratedmodelling.utils.Polylist;
 import org.semanticweb.owl.model.OWLIndividual;
+import org.semanticweb.owl.model.OWLOntology;
 
 /**
  * @author Ioannis N. Athanasiadis
@@ -133,8 +136,16 @@ public class Instance extends Knowledge implements IInstance {
 	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#getEquivalentInstances()
 	 */
 	public Collection<IInstance> getEquivalentInstances() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Set<IInstance> ret = new HashSet<IInstance>();
+		
+		for (OWLOntology o : FileKnowledgeRepository.get().manager.getOntologies()) {
+			for (OWLIndividual ind : this.entity.asOWLIndividual().getSameIndividuals(o)) {
+				ret.add(new Instance(ind));
+			}
+		}
+		
+		return ret;
 	}
 
 	/* (non-Javadoc)
