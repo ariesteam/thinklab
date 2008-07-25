@@ -1,2 +1,2 @@
-START javaw -jar lib\jpf-boot.jar
+START javaw -jar lib\im-boot.jar
 REM pause
