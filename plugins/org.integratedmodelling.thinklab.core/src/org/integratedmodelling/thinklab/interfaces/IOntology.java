@@ -34,6 +34,7 @@
 package org.integratedmodelling.thinklab.interfaces;
 
 import java.io.OutputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 
@@ -149,12 +150,6 @@ public interface IOntology  extends IResource {
 	public void removeInstance(String id) throws ThinklabException;
 
 	/**
-	 * 
-	 * @param os
-	 */
-	public void write(OutputStream os);
-	
-	/**
 	 * The ID of the ontology concept space (its the XML namespace).
 	 * @return the concept space ID. Can't fail.
 	 */
@@ -169,7 +164,6 @@ public interface IOntology  extends IResource {
 	 * @param url
 	 */
 	public void read(URL url);
-
 
 	/**
 	 * 
@@ -191,4 +185,11 @@ public interface IOntology  extends IResource {
 	public abstract void allowDuplicateInstanceIDs();
 	
 	public abstract long getLastModificationDate();
+
+	/**
+	 * Write the ontology to the passed physical URI.
+	 * @param uri
+	 * @throws ThinklabException 
+	 */
+	public void write(URI uri) throws ThinklabException;
 }

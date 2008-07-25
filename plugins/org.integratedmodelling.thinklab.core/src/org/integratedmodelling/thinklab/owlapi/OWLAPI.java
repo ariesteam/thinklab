@@ -21,6 +21,7 @@ import org.semanticweb.owl.model.OWLDataFactory;
 import org.semanticweb.owl.model.OWLDataMaxCardinalityRestriction;
 import org.semanticweb.owl.model.OWLDataMinCardinalityRestriction;
 import org.semanticweb.owl.model.OWLDataProperty;
+import org.semanticweb.owl.model.OWLDataPropertyAssertionAxiom;
 import org.semanticweb.owl.model.OWLDataSomeRestriction;
 import org.semanticweb.owl.model.OWLDataType;
 import org.semanticweb.owl.model.OWLDataValueRestriction;
@@ -33,6 +34,7 @@ import org.semanticweb.owl.model.OWLObjectExactCardinalityRestriction;
 import org.semanticweb.owl.model.OWLObjectMaxCardinalityRestriction;
 import org.semanticweb.owl.model.OWLObjectMinCardinalityRestriction;
 import org.semanticweb.owl.model.OWLObjectProperty;
+import org.semanticweb.owl.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owl.model.OWLObjectPropertyExpression;
 import org.semanticweb.owl.model.OWLObjectSomeRestriction;
 import org.semanticweb.owl.model.OWLOntology;
@@ -260,4 +262,57 @@ public class OWLAPI {
 		return classProps;
 	}
 	
+	public static void setOWLObjectPropertyValue(OWLOntology ont, OWLIndividual ind, OWLProperty prop, OWLIndividual value) {
+  
+		OWLObjectPropertyAssertionAxiom assertion = 
+			FileKnowledgeRepository.df.getOWLObjectPropertyAssertionAxiom(
+					ind, 
+					prop.asOWLObjectProperty(), 
+					value);
+		
+        AddAxiom addAxiomChange = new AddAxiom(ont, assertion);
+        try {
+			FileKnowledgeRepository.get().manager.applyChange(addAxiomChange);
+		} catch (OWLOntologyChangeException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+
+	}
+
+	public static void setOWLDataPropertyValue(OWLOntology ont, OWLIndividual ind, OWLProperty prop, OWLConstant value) {
+		
+		OWLDataPropertyAssertionAxiom assertion = 
+			FileKnowledgeRepository.df.getOWLDataPropertyAssertionAxiom(
+					ind, prop.asOWLDataProperty(), value);
+
+		AddAxiom addAxiomChange = new AddAxiom(ont, assertion);
+        try {
+			FileKnowledgeRepository.get().manager.applyChange(addAxiomChange);
+		} catch (OWLOntologyChangeException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+		
+	}
+
+	public static OWLConstant getOWLConstant(Object obj) {
+		
+		OWLConstant ret = null;
+		
+		if (obj instanceof Boolean)
+			ret = FileKnowledgeRepository.df.getOWLTypedConstant((Boolean)obj);
+		else if (obj instanceof Double)
+			ret = FileKnowledgeRepository.df.getOWLTypedConstant((Double)obj);
+		else if (obj instanceof Float)
+			ret = FileKnowledgeRepository.df.getOWLTypedConstant((Float)obj);
+		else if (obj instanceof Integer)
+			ret = FileKnowledgeRepository.df.getOWLTypedConstant((Integer)obj);
+		else if (obj instanceof String)
+			ret = FileKnowledgeRepository.df.getOWLTypedConstant((String)obj);
+		else 
+			ret = FileKnowledgeRepository.df.getOWLUntypedConstant(obj.toString());
+
+		return ret;
+	}
+
+
 }

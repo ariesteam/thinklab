@@ -85,6 +85,7 @@ import org.semanticweb.owl.model.OWLOntologyChangeException;
 import org.semanticweb.owl.model.OWLOntologyStorageException;
 import org.semanticweb.owl.model.UnknownOWLOntologyException;
 import org.semanticweb.owl.util.OWLEntityRemover;
+import org.semanticweb.owl.util.OWLOntologyMerger;
 
 
 
@@ -133,6 +134,7 @@ public class Ontology implements IOntology {
 	}
 	
 	public Ontology(OWLOntology onto, FileKnowledgeRepository kr){
+		
 		this.ont = onto;
 		this.kr = kr;
 		this.concepts = new HashMap<SemanticType, IConcept>();
@@ -141,6 +143,7 @@ public class Ontology implements IOntology {
 	}
 	
 	protected void initialize(String cs){
+		
 		this.cs = cs;
 		
 		Set<OWLClass> allCl  = ont.getReferencedClasses();
@@ -409,10 +412,10 @@ public class Ontology implements IOntology {
 	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#read(java.net.URL)
 	 */
 	public void read(URL url) {
-		// TODO Auto-generated method stub
+
+		// TODO
 		
 	}
-
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#removeInstance(java.lang.String)
@@ -437,17 +440,7 @@ public class Ontology implements IOntology {
 
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#write(java.io.OutputStream)
-	 */
-	public void write(OutputStream os) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	public void write(URI physicalURI) throws ThinklabIOException{
+	public void write(URI physicalURI) throws ThinklabException{
 
 		try {
 			FileKnowledgeRepository.get().manager.

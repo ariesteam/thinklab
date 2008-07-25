@@ -36,6 +36,7 @@ package org.integratedmodelling.thinklab.owlapi;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
@@ -165,16 +166,15 @@ public class ThinklabOWLManager {
 	 * them back to the OWL model when saved.
 	 * 
 	 * @param cl
-	 * @param p
+	 * @param property
 	 * @return
 	 */
 	Collection<IValue> translateRelationship(OWLOntology ontology,
-			OWLIndividual cl, OWLProperty p) throws ThinklabException {
+			OWLIndividual cl, OWLEntity property) throws ThinklabException {
 
 		ArrayList<IValue> ret = new ArrayList<IValue>();
 
-		if (!(p instanceof OWLObjectProperty)
-				|| !(p instanceof OWLDataProperty)) {
+		if (!property.isOWLObjectProperty() || !property.isOWLDataProperty()) {
 			// just return anything else with no error
 			return ret;
 		}
@@ -182,7 +182,7 @@ public class ThinklabOWLManager {
 		/*
 		 * loop through data properties
 		 */
-		if (p.isOWLDataProperty()) {
+		if (property.isOWLDataProperty()) {
 			Map<OWLDataPropertyExpression, Set<OWLConstant>> dprops = cl
 					.getDataPropertyValues(ontology);
 			for (Entry<OWLDataPropertyExpression, Set<OWLConstant>> dpropp : dprops
@@ -190,7 +190,7 @@ public class ThinklabOWLManager {
 
 				OWLDataPropertyExpression dprop = dpropp.getKey();
 
-				if (!dprop.equals(p))
+				if (!dprop.equals(property))
 					continue;
 
 				for (OWLConstant cn : dpropp.getValue()) {
@@ -246,7 +246,7 @@ public class ThinklabOWLManager {
 
 				OWLObjectPropertyExpression oprop = opropp.getKey();
 
-				if (!oprop.equals(p))
+				if (!oprop.equals(property))
 					continue;
 
 				for (OWLIndividual ind : opropp.getValue()) {
@@ -259,7 +259,7 @@ public class ThinklabOWLManager {
 					else {
 
 						/* get annotation for class literal, if any */
-						if (new Property((OWLObjectProperty) p)
+						if (new Property((OWLObjectProperty) property)
 								.isClassification()) {
 
 							Instance cin = new Instance(ind);
@@ -952,17 +952,22 @@ public class ThinklabOWLManager {
 	 * We are passed an IValue but we need to set an OWL dataproperty from it. Return the 
 	 * POD object that matches the type, or throw an exception if no POD type does.
 	 */
-	public Object translateIValueToDatatype(IValue value) throws ThinklabValidationException {
+	public OWLConstant translateIValueToDatatype(IValue value) throws ThinklabValidationException {
 
+		Object ret = null;
+		
 		if (value.isText()) {
-			return ((TextValue)value).value;
+			ret = ((TextValue)value).value;
 		} else if (value.isNumber()) {
-			return ((NumberValue)value).getPODValue();
+			ret = ((NumberValue)value).getPODValue();
 		} else if (value.isBoolean()) {
-			return ((BooleanValue)value).truthValue();
+			ret = ((BooleanValue)value).truthValue();
 		}
 		
-		throw new ThinklabValidationException("internal: non-POD value being assigned to data property");
+		if (ret == null)
+			throw new ThinklabValidationException("internal: non-POD value being assigned to data property");
+		
+		return OWLAPI.getOWLConstant(ret);
 		
 	}
 
@@ -979,5 +984,71 @@ public class ThinklabOWLManager {
 	public boolean isReifiedLiteral(String uri) {
 		return reifiedLiterals.containsKey(uri);
 	}
+
+	public Collection<IProperty> getValuedProperties(OWLOntology ontology,
+			OWLIndividual ind) {
+
+		Set<IProperty> ret = new HashSet<IProperty>();
+
+		/*
+		 * loop through data properties
+		 */
+		Map<OWLDataPropertyExpression, Set<OWLConstant>> dprops = ind.getDataPropertyValues(ontology);
+		for (OWLDataPropertyExpression dprop : dprops.keySet()) {
+				ret.add(new Property(dprop));
+		}
+
+		Map<OWLObjectPropertyExpression, Set<OWLIndividual>> oprops = ind.getObjectPropertyValues(ontology);
+		for (OWLObjectPropertyExpression oprop : oprops.keySet()) {
+				ret.add(new Property(oprop));
+		}
+		
+		return ret;
+	}
 	
+	public int getNOfRelationships(OWLOntology ontology, OWLIndividual ind) {
+
+		int ret = 0;
+
+		/*
+		 * loop through data properties
+		 */
+		Map<OWLDataPropertyExpression, Set<OWLConstant>> dprops = ind.getDataPropertyValues(ontology);
+		for (Set<OWLConstant> dpropp : dprops.values()) {
+				ret += dpropp.size();
+		}
+
+		Map<OWLObjectPropertyExpression, Set<OWLIndividual>> oprops = ind.getObjectPropertyValues(ontology);
+		for (Set<OWLIndividual> opropp : oprops.values()) {
+			ret += opropp.size();
+		}
+		
+		return ret;
+	}
+
+	public int getNOfRelationships(OWLOntology ontology, OWLIndividual ind, OWLEntity prop) {
+
+		int ret = 0;
+
+		/*
+		 * loop through data properties
+		 */
+		if (prop.isOWLDataProperty()) {
+			Map<OWLDataPropertyExpression, Set<OWLConstant>> dprops = ind.getDataPropertyValues(ontology);
+			for (Set<OWLConstant> dpropp : dprops.values()) {
+				if (dpropp.equals(prop))
+					ret += dpropp.size();
+			}
+		}
+
+		if (prop.isOWLDataProperty()) {
+			Map<OWLObjectPropertyExpression, Set<OWLIndividual>> oprops = ind.getObjectPropertyValues(ontology);
+			for (Set<OWLIndividual> opropp : oprops.values()) {
+				if (opropp.equals(prop))
+					ret += opropp.size();
+			}
+		}		
+		return ret;
+	}
+
 }

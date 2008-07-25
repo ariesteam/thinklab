@@ -18,37 +18,39 @@
  */
 package org.integratedmodelling.thinklab.owlapi;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.integratedmodelling.thinklab.SemanticType;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IConformance;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.IKnowledge;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.interfaces.IRelationship;
-import org.integratedmodelling.thinklab.interfaces.IResource;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
+import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 import org.semanticweb.owl.model.OWLIndividual;
 import org.semanticweb.owl.model.OWLOntology;
 
 /**
  * @author Ioannis N. Athanasiadis
- *
+ * @author Ferdinando Villa
  */
 public class Instance extends Knowledge implements IInstance {
-
 
 	/**
 	 * @param i
@@ -59,24 +61,19 @@ public class Instance extends Knowledge implements IInstance {
 		super(i,OWLType.INDIVIDUAL);
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#addClassificationRelationship(java.lang.String, org.integratedmodelling.thinklab.interfaces.IConcept)
-	 */
-	public void addClassificationRelationship(String p, IConcept cls)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-
-	}
-
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#addClassificationRelationship(org.integratedmodelling.thinklab.interfaces.IProperty, org.integratedmodelling.thinklab.interfaces.IConcept)
 	 */
 	public void addClassificationRelationship(IProperty p, IConcept cls)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
 
+		if (!p.isClassification()) {
+			throw new ThinklabValidationException("property " + p.toString()
+					+ " does not admit class value " + cls.toString());
+		}
+
+		Instance toadd = ThinklabOWLManager.get().getClassLiteralInstance(cls);		
+		addObjectRelationship(p,toadd);
 	}
 
 	/* (non-Javadoc)
@@ -84,16 +81,40 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public void addLiteralRelationship(IProperty p, Object literal)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
 
-	}
+		if (literal instanceof IValue) {
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#addLiteralRelationship(java.lang.String, java.lang.Object)
-	 */
-	public void addLiteralRelationship(String p, Object literal)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
+			Instance toadd = 
+				ThinklabOWLManager.get().getExtendedLiteralInstance(
+						null, 
+						(IValue)literal,
+						KnowledgeManager.get().getKnowledgeRepository().requireOntology(getConceptSpace()));
+
+			if (((Property)p).entity.isOWLDataProperty()) {
+				OWLAPI.setOWLDataPropertyValue(
+						getOntology(),
+						entity.asOWLIndividual(),
+						((Property)p).entity.asOWLDataProperty(), 
+						ThinklabOWLManager.get().translateIValueToDatatype((IValue)literal));
+				
+			} else {
+				
+				OWLAPI.setOWLObjectPropertyValue(
+						getOntology(),
+						entity.asOWLIndividual(),
+						((Property)p).entity.asOWLObjectProperty(), 
+						toadd.entity.asOWLIndividual());
+			}
+			
+		} else {
+			
+			OWLAPI.setOWLDataPropertyValue(
+					getOntology(),
+					entity.asOWLIndividual(),
+					((Property)p).entity.asOWLDataProperty(), 
+					OWLAPI.getOWLConstant(literal));
+		}		
+
 
 	}
 
@@ -102,25 +123,34 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public void addObjectRelationship(IProperty p, IInstance object)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
 
+		OWLAPI.setOWLObjectPropertyValue(
+				getOntology(),
+				entity.asOWLIndividual(),
+				((Property)p).entity.asOWLObjectProperty(), 
+				((Instance)object).entity.asOWLIndividual());
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#addObjectRelationship(java.lang.String, org.integratedmodelling.thinklab.interfaces.IInstance)
-	 */
-	public void addObjectRelationship(String p, IInstance instance)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
+	public void addClassificationRelationship(String p, IConcept cls) throws ThinklabException {
+		addClassificationRelationship(KnowledgeManager.get().requireProperty(p), cls);
+	}
 
+	public void addLiteralRelationship(String p, Object literal) throws ThinklabException {
+		addLiteralRelationship(KnowledgeManager.get().requireProperty(p), literal);		
+	}
+
+	public void addObjectRelationship(String p, IInstance instance) throws ThinklabException {
+		addObjectRelationship(KnowledgeManager.get().requireProperty(p), instance);		
 	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#clone(org.integratedmodelling.thinklab.interfaces.IOntology)
 	 */
-	public IInstance clone(IOntology session) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+	public IInstance clone(IOntology ontology) throws ThinklabException {
+		
+		Polylist list = this.toList(getLocalName());
+		return ontology.createInstance(list);
 	}
 
 	/* (non-Javadoc)
@@ -152,8 +182,7 @@ public class Instance extends Knowledge implements IInstance {
 	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#getImplementation()
 	 */
 	public IInstanceImplementation getImplementation() throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		return ThinklabOWLManager.get().getInstanceImplementation(this);
 	}
 
 	/* (non-Javadoc)
@@ -161,8 +190,8 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public boolean isConformant(IInstance otherInstance,
 			IConformance conformance) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return false;
+		conformance.setTo(this);
+		return conformance.getConstraint().match(otherInstance);
 	}
 
 	/* (non-Javadoc)
@@ -170,15 +199,7 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public boolean isValidated() {
 		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#toList(java.lang.String)
-	 */
-	public Polylist toList(String oref) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		return true;
 	}
 
 	/* (non-Javadoc)
@@ -186,31 +207,67 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public Polylist toList(String oref, HashMap<String, String> refTable)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		return convertToList(refTable, oref);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#validate()
 	 */
 	public void validate() throws ThinklabException {
-		// TODO Auto-generated method stub
+		
+		ArrayList< Pair<IInstance, IInstanceImplementation>> implementations = 
+			new ArrayList<Pair<IInstance,IInstanceImplementation>>();
 
+		validateInternal(implementations, null);
+
+		/* 
+		 * validate all implementations in order of collection. This way it goes depth-first - check... 
+		 */
+		for (Pair<IInstance,IInstanceImplementation> impl : implementations) {
+			impl.getSecond().validate(impl.getFirst());
+		}
 	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#validate(boolean)
+	
+	/*
+	 * This one creates all implementation and collects them
 	 */
-	public void validate(boolean validateOWL) throws ThinklabException {
-		// TODO Auto-generated method stub
+	protected void validateInternal(
+			ArrayList<Pair<IInstance, IInstanceImplementation>> implementations,
+			HashSet<String> refs) 
+		throws ThinklabException {
 
+		if (refs == null)
+			refs = new HashSet<String>();
+		
+		for (IRelationship p : getRelationships()) {
+			
+			if (p.isObject()) {
+				
+				Instance inst = (Instance)p.getValue().asObjectReference().getObject();
+				if (!refs.contains(inst.getURI())) {
+					refs.add(inst.getURI());
+					inst.validateInternal(implementations, refs);
+				}
+			}
+		}
+
+		IInstanceImplementation impl = getImplementation();
+		if (impl != null) {
+			implementations.add(new Pair(this, impl));
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject#get(java.lang.String)
 	 */
 	public IValue get(String property) throws ThinklabException {
-		// TODO Auto-generated method stub
+		
+		Collection<IRelationship> cr = getRelationshipsTransitive(property);
+
+		if (cr.size() == 1)
+			return cr.iterator().next().getValue();
+
+		/* TODO return a ListValue if more than one result */
 		return null;
 	}
 
@@ -219,8 +276,15 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public int getNumberOfRelationships(String property)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return 0;
+
+		IProperty p = KnowledgeManager.get().requireProperty(property);
+
+		return
+			ThinklabOWLManager.get().getNOfRelationships(
+					getOntology(),
+					entity.asOWLIndividual(),
+					((Property)p).entity);
+		
 	}
 
 	/* (non-Javadoc)
@@ -228,8 +292,22 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public Collection<IRelationship> getRelationships()
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		Set<IRelationship> ret = new HashSet<IRelationship>();
+
+		for (IProperty p : ThinklabOWLManager.get().getValuedProperties(getOntology(), entity.asOWLIndividual())) {
+			Collection<IValue> rrel = 
+				ThinklabOWLManager.get().translateRelationship(
+						getOntology(),
+						entity.asOWLIndividual(), 
+						((Property)p).entity);
+
+			for (IValue v : rrel) {
+				ret.add(new Relationship(p,v));
+			}
+			
+		}
+		
+		return ret;
 	}
 
 	/* (non-Javadoc)
@@ -237,8 +315,21 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public Collection<IRelationship> getRelationships(String property)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		Set<IRelationship> ret = new HashSet<IRelationship>();
+
+		IProperty p = KnowledgeManager.get().requireProperty(property);
+
+		Collection<IValue> rrel = 
+			ThinklabOWLManager.get().translateRelationship(
+					getOntology(),
+					entity.asOWLIndividual(), 
+					((Property)p).entity);
+
+		for (IValue v : rrel) {
+			ret.add(new Relationship(p,v));
+		}
+
+		return ret;
 	}
 
 	/* (non-Javadoc)
@@ -246,16 +337,32 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public Collection<IRelationship> getRelationshipsTransitive(String property)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		Set<IRelationship> ret = new HashSet<IRelationship>();
+		IProperty p = KnowledgeManager.get().requireProperty(property);
+
+		Collection<IProperty> pp = p.getAllChildren();
+		pp.add(p);
+
+		for (IProperty prop : pp) {
+			Collection<IValue> rrel = 
+				ThinklabOWLManager.get().translateRelationship(
+						getOntology(),
+						entity.asOWLIndividual(), 
+						((Property)prop).entity);
+
+			for (IValue v : rrel) {
+				ret.add(new Relationship(prop,v));
+			}
+		}
+		return ret;	
+
 	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject#getType()
 	 */
 	public IConcept getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return getDirectType();
 	}
 
 	/* (non-Javadoc)
@@ -263,8 +370,21 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public IValue execute(AlgorithmValue algorithm, ISession session)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		/* retrieve an interpreter */
+		LanguageInterpreter interpreter =
+			InterpreterManager.get().getInterpreter(algorithm, session);
+
+		/* obtain a context; the session should be bound to it, but that depends on
+		 * the language. */
+		LanguageInterpreter.IContext context = 
+			InterpreterManager.get().getContext(algorithm, session);
+
+		/* bind self as "self" */
+		context.bind(this, "self");
+
+		return interpreter.execute(algorithm, context);
+
 	}
 
 	/* (non-Javadoc)
@@ -272,8 +392,25 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public IValue execute(AlgorithmValue algorithm, ISession session,
 			Map<String, IValue> arguments) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		/* retrieve an interpreter */
+		LanguageInterpreter interpreter =
+			InterpreterManager.get().getInterpreter(algorithm, session);
+
+		/* obtain a context; the session should be bound to it, but that depends on
+		 * the language. */
+		LanguageInterpreter.IContext context = 
+			InterpreterManager.get().getContext(algorithm, session);
+
+		/* bind self as "self" */
+		context.bind(this, "self");
+
+		/* bind arguments */
+		for (String key : arguments.keySet()) {
+			context.bind(arguments.get(key), key);
+		}
+
+		return interpreter.execute(algorithm, context);
 	}
 	
 	protected boolean is(IConcept c){
@@ -291,6 +428,49 @@ public class Instance extends Knowledge implements IInstance {
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	private Polylist convertToList(HashMap<String, String> references, String name) throws ThinklabException {
+
+		String iname = name == null ? getLocalName() : name;
+		
+		if (references.containsKey(iname)) {
+			return Polylist.list("#" + iname);
+		}
+		references.put(iname, getURI());
+		
+		ArrayList<Object> alist = new ArrayList<Object>();
+		alist.add(getDirectType().toString() + "#" + iname);
+
+		String comment = getDescription();
+		String label = getLabel();
+
+		if (comment != null && !comment.equals(""))
+			alist.add(Polylist.list("rdfs:comment", comment));
+
+		if (label != null && !label.equals(""))
+			alist.add(Polylist.list("rdfs:label", label));
+
+		for (IRelationship r : getRelationships()) {
+			if (!KnowledgeManager.get().isPropertyBlacklisted(r.getProperty().toString()))
+				alist.add(((Relationship)r).asList(references));
+		}		
+		
+		return Polylist.PolylistFromArray(alist.toArray());
+
+	}
+
+	public Polylist toList(String name) throws ThinklabException {
+		return toListInternal(name, null);
+	}
+
+	public Polylist toListInternal(String name, HashMap<String, String> refs) throws ThinklabException {
+
+		if (refs == null)
+			refs = new HashMap<String, String>();
+
+		return convertToList(refs, name);
 	}
 
 }

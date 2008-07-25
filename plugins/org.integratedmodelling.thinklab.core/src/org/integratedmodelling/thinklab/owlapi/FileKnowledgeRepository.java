@@ -44,6 +44,7 @@ import org.integratedmodelling.thinklab.interfaces.IOntology;
 import org.integratedmodelling.utils.FileTypeFilter;
 import org.semanticweb.owl.apibinding.OWLManager;
 import org.semanticweb.owl.inference.OWLClassReasoner;
+import org.semanticweb.owl.inference.OWLConsistencyChecker;
 import org.semanticweb.owl.inference.OWLIndividualReasoner;
 import org.semanticweb.owl.inference.OWLPropertyReasoner;
 import org.semanticweb.owl.inference.OWLReasoner;
@@ -77,6 +78,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	protected OWLClassReasoner classReasoner;
 	protected OWLIndividualReasoner instanceReasoner;
 	protected OWLPropertyReasoner propertyReasoner;
+	protected OWLConsistencyChecker consistencyReasoner;
 	
 	private IConcept rootConcept;
 	protected static OWLDataFactory df;
@@ -363,13 +365,17 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 					propertyReasoner = reasoner;
 					capabilities += "property ";
 				}
+				if (reasoner instanceof OWLConsistencyChecker) {
+					consistencyReasoner = reasoner;
+					capabilities += "consistency ";
+				}
 				
 				Thinklab.get().logger().info(
 						"created DIG reasoner at " + reasonerURL + 
-						": capabilities are " + capabilities);
+						": capabilities = {" + capabilities + "}");
 
 			} else {
-				Thinklab.get().logger().info("creating default transitive reasoner");
+				Thinklab.get().logger().info("creating default transitive reasoner: capabilities = {class}");
 				classReasoner = new ToldClassHierarchyReasoner(manager);
 			}
 

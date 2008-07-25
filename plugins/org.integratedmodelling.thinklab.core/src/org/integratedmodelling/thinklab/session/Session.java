@@ -133,9 +133,7 @@ public class Session implements ISession {
 		/* serialize to OWL and import the temporary doc into the knowledge base */
 		try {
 			File f = File.createTempFile("jimt", ".owl");
-			FileOutputStream os = new FileOutputStream(f);
-			ontology.write(os);
-			os.close();
+			ontology.write(f.toURI());
 			KnowledgeManager.get().getKnowledgeRepository().importOntology(f.toURL(), name, false);
 		} catch (IOException e) {
 			throw new ThinklabIOException("can't create temporary ontology in filesystem");
@@ -319,9 +317,7 @@ public class Session implements ISession {
         /* serialize to OWL and import the temporary doc into the knowledge base */
         try {
             File f = new File(file);
-            FileOutputStream os = new FileOutputStream(f);
-            ontology.write(os);
-            os.close();
+            ontology.write(f.toURI());
         } catch (Exception e) {
             throw new ThinklabIOException("can't create ontology in " + file + ": " + e.getMessage());
         }        

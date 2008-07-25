@@ -231,29 +231,6 @@ public interface IInstance extends IKnowledgeSubject, ICommandListener {
 	public abstract void validate() throws ThinklabException;
 
 	/**
-	 * <p>
-	 * Validate instance according to the IMA validation criteria, which are not
-	 * OWL's and use constraints and other things on literals. Optionally
-	 * validate the resulting OWL instance using the installed OWL reasoner.
-	 * </p>
-	 * 
-	 * <p>
-	 * Validating an instance is necessary to make it part of its container. An
-	 * instance will not be retrievable or usable before it's validated.
-	 * </p>
-	 * 
-	 * @param validateOWL
-	 *            pass true if you want to invoke the OWL reasoner to validate
-	 *            the instance after IMA validation is successful. This is
-	 *            optional and its behavior and execution time will depend on
-	 *            the reasoner installed.
-	 * 
-	 * @throws ThinklabValidationException
-	 *             if things are invalid.
-	 */
-	public abstract void validate(boolean validateOWL) throws ThinklabException;
-
-	/**
 	 * Check if instance has been validated successfully. Should never return
 	 * true unless both the underlying ontology framework and the IMA consider
 	 * the instance valid. Note that a return value of false means that it has

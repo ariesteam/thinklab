@@ -61,11 +61,10 @@ import org.semanticweb.owl.model.OWLObjectValueRestriction;
 import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLRestriction;
 
-import edu.stanford.smi.protegex.owl.model.OWLMaxCardinality;
-import edu.stanford.smi.protegex.owl.model.OWLMinCardinality;
 
 /**
  * @author Ioannis N. Athanasiadis
+ * @author Ferdinando Villa
  * 
  */
 public class Concept extends Knowledge implements IConcept {

@@ -34,6 +34,8 @@
 package org.integratedmodelling.thinklab.impl.protege;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -846,6 +848,18 @@ public class Ontology implements IOntology {
 
 	public long getLastModificationDate() {
 		return lastModified;
+	}
+
+	@Override
+	public void write(URI uri) throws ThinklabException {
+		
+		try {
+			FileOutputStream out = new FileOutputStream(new File(uri));
+			write(out);
+		} catch (FileNotFoundException e) {
+			throw new ThinklabIOException(e);
+		}
+		
 	}
 
 
