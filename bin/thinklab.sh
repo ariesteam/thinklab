@@ -12,7 +12,7 @@ PRG="$0"
 if [ -z "$THINKLAB_HOME" ] ; then
 	THINKLAB_HOME=`dirname "$PRG"`/..
 	# make it fully qualified
-	THINKLAB_HOME=`cd "$THINKCAP_HOME" && pwd`
+	THINKLAB_HOME=`cd "$THINKLAB_HOME" && pwd`
 fi
 
 if [ ! -f "$THINKLAB_HOME/lib/im-boot.jar" ] ; then
@@ -47,6 +47,17 @@ if [ -z "$THINKLAB_INST" ] ; then
 fi
 
 THINKLAB_CMD="$JAVACMD $THINKLAB_OPTS -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_HOME/lib/endorsed -jar $THINKLAB_HOME/lib/im-boot.jar org.java.plugin.boot.Boot"
+
+#echo JAVA_HOME $JAVA_HOME
+#echo JAVACMD $JAVACMD
+#echo THINKLAB_HOME $THINKLAB_HOME
+#echo THINKCAP_HOME $THINKCAP_HOME
+#echo THINKLAB_INST $THINKLAB_INST
+#echo THINKLAB_OPTS $THINKLAB_OPTS
+#echo THINKLAB_LIBRARY_PATH $THINKLAB_LIBRARY_PATH
+#echo THINKLAB_CMD $THINKLAB_CMD
+#echo PWD $PWD
+
 if [ "$1" = "start" ] ; then
   cd $THINKLAB_INST
   mkdir -p $THINKLAB_INST/var/log
