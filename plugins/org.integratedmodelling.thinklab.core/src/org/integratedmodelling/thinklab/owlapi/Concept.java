@@ -39,14 +39,30 @@ import org.semanticweb.owl.inference.OWLReasonerAdapter;
 import org.semanticweb.owl.inference.OWLReasonerException;
 import org.semanticweb.owl.model.OWLAnnotation;
 import org.semanticweb.owl.model.OWLAnnotationAxiom;
+import org.semanticweb.owl.model.OWLCardinalityRestriction;
 import org.semanticweb.owl.model.OWLClass;
+import org.semanticweb.owl.model.OWLDataAllRestriction;
+import org.semanticweb.owl.model.OWLDataExactCardinalityRestriction;
+import org.semanticweb.owl.model.OWLDataMaxCardinalityRestriction;
+import org.semanticweb.owl.model.OWLDataMinCardinalityRestriction;
 import org.semanticweb.owl.model.OWLDataProperty;
+import org.semanticweb.owl.model.OWLDataSomeRestriction;
+import org.semanticweb.owl.model.OWLDataValueRestriction;
 import org.semanticweb.owl.model.OWLDescription;
 import org.semanticweb.owl.model.OWLException;
 import org.semanticweb.owl.model.OWLIndividual;
+import org.semanticweb.owl.model.OWLObjectAllRestriction;
+import org.semanticweb.owl.model.OWLObjectExactCardinalityRestriction;
+import org.semanticweb.owl.model.OWLObjectMaxCardinalityRestriction;
+import org.semanticweb.owl.model.OWLObjectMinCardinalityRestriction;
 import org.semanticweb.owl.model.OWLObjectProperty;
+import org.semanticweb.owl.model.OWLObjectSomeRestriction;
+import org.semanticweb.owl.model.OWLObjectValueRestriction;
 import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLRestriction;
+
+import edu.stanford.smi.protegex.owl.model.OWLMaxCardinality;
+import edu.stanford.smi.protegex.owl.model.OWLMinCardinality;
 
 /**
  * @author Ioannis N. Athanasiadis
@@ -69,7 +85,7 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public boolean isAbstract() {
 		try{
-		return (getAnnotationProperties().contains(KnowledgeManager.get().getAbstractProperty()));
+			return (getAnnotationProperties().contains(KnowledgeManager.get().getAbstractProperty()));
 		}catch (Exception e) {
 			return false;
 		}
@@ -87,13 +103,33 @@ public class Concept extends Knowledge implements IConcept {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * FIXME for now the only time this returns anything different from getInstances()
+	 *  is when a reasoner is connected - check what we want with these two, and
+	 *  possibly remove one method.
+	 *  
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getAllInstances()
 	 */
 	public Collection<IInstance> getAllInstances() {
 
-		ArrayList<IInstance> ret = new ArrayList<IInstance>();
+		Set<IInstance> ret = new HashSet<IInstance>();
 		
-		// TODO easy
+		try {
+			if (FileKnowledgeRepository.get().instanceReasoner != null) {
+				for (OWLIndividual ind : 
+						FileKnowledgeRepository.get().instanceReasoner.
+							getIndividuals(this.entity.asOWLClass(), false)) {
+					ret.add(new Instance(ind));
+				}
+			}
+		} catch (OWLReasonerException e) {
+			// just proceed with the dumb method
+		}
+ 		
+		
+		Set<OWLOntology> ontologies = FileKnowledgeRepository.KR.manager.getOntologies();
+		for (OWLIndividual ind : this.entity.asOWLClass().getIndividuals(ontologies)) {
+			ret.add(new Instance(ind));
+		}
 		
 		return ret;
 	}
@@ -319,8 +355,23 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getMaxCardinality(org.integratedmodelling.thinklab.interfaces.IProperty)
 	 */
 	public int getMaxCardinality(IProperty property) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		int ret = 1;
+		
+		for (OWLRestriction r : OWLAPI.getRestrictions(this, true)) {
+			
+			if (r instanceof OWLDataMaxCardinalityRestriction &&
+				r.getProperty().equals(((Property)property).entity)) {
+			
+				ret = ((OWLDataMaxCardinalityRestriction)r).getCardinality();
+			} else 	if (r instanceof OWLObjectMaxCardinalityRestriction &&
+				r.getProperty().equals(((Property)property).entity)) {
+			
+				ret = ((OWLObjectMaxCardinalityRestriction)r).getCardinality();
+			}
+		}
+		return ret;
+		
 	}
 
 	/*
@@ -329,8 +380,23 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getMinCardinality(org.integratedmodelling.thinklab.interfaces.IProperty)
 	 */
 	public int getMinCardinality(IProperty property) {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		int ret = 0;
+		
+		for (OWLRestriction r : OWLAPI.getRestrictions(this, true)) {
+			
+			if (r instanceof OWLDataMinCardinalityRestriction &&
+				r.getProperty().equals(((Property)property).entity)) {
+			
+				ret = ((OWLDataMinCardinalityRestriction)r).getCardinality();
+			} else 	if (r instanceof OWLObjectMinCardinalityRestriction &&
+				r.getProperty().equals(((Property)property).entity)) {
+			
+				ret = ((OWLObjectMinCardinalityRestriction)r).getCardinality();
+			}
+		}
+		return ret;
+		
 	}
 
 	/*
@@ -339,8 +405,7 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getNumberOfProperties(java.lang.String)
 	 */
 	public int getNumberOfProperties(String property) {
-		// TODO Auto-generated method stub
-		return 0;
+		return getProperties().size();
 	}
 
 	/*
@@ -363,49 +428,52 @@ public class Concept extends Knowledge implements IConcept {
 		/*
 		 * This accumulates all restrictions from parents as well.
 		 */		
-//		Collection<OWLRestriction> rs = 
-//			((DefaultOWLNamedClass)concept).getRestrictions(true);
+		Collection<OWLRestriction> rs = OWLAPI.getRestrictions(this,true);
 
-		
 		Constraint ret = new Constraint(this);
 		
-//		if (rs != null)
-//			for (OWLRestriction r : rs) {
-//
-//				IProperty p = new Property(r.getOnProperty());
-//				Quantifier q = null;
-//				
-//				if (r instanceof OWLAllValuesFrom) {
-//
-//					q = new Quantifier("all");
+			for (OWLRestriction r : rs) {
+
+				IProperty p = new Property(r.getProperty());
+				Quantifier q = null;
+				
+				if (r instanceof OWLDataAllRestriction ||
+					r instanceof OWLObjectAllRestriction) {
+
+					q = new Quantifier("all");
 //					IConcept c = new Concept((OWLClass) ((OWLAllValuesFrom)r).getAllValuesFrom());
 //					ret.restrict(new Restriction(q, p, new Constraint(c)));
 //
-//				} else if (r instanceof OWLSomeValuesFrom) {
-//
-//					q = new Quantifier("any");
+				} else if (r instanceof OWLDataSomeRestriction || 
+						   r instanceof OWLObjectSomeRestriction) {
+
+					q = new Quantifier("any");
 //					IConcept c = new Concept((OWLClass) ((OWLSomeValuesFrom)r).getSomeValuesFrom());
 //					ret.restrict(new Restriction(q, p, new Constraint(c)));
 //
-//				} else if (r instanceof OWLCardinality) {
+				} else if (r instanceof OWLDataExactCardinalityRestriction ||
+						   r instanceof OWLObjectExactCardinalityRestriction) {
 //
 //					int card = ((OWLCardinality)r).getCardinality();
 //					q = new Quantifier(Integer.toString(card));
 //					ret.restrict(new Restriction(q, p));
 //
-//				} else if (r instanceof OWLMinCardinality) {
+				} else if (r instanceof OWLDataMinCardinalityRestriction ||
+						   r instanceof OWLObjectMinCardinalityRestriction) {
 //
 //					int card = ((OWLMinCardinality)r).getCardinality();				
 //					q = new Quantifier(card+":");
 //					ret.restrict(new Restriction(q, p));
 //
-//				} else if (r instanceof OWLMaxCardinality) {
+				} else if (r instanceof OWLDataMaxCardinalityRestriction ||
+						   r instanceof OWLObjectMinCardinalityRestriction) {
 //
 //					int card = ((OWLMaxCardinality)r).getCardinality();
 //					q = new Quantifier(":" + card);
 //					ret.restrict(new Restriction(q, p));
 //
-//				} else if (r instanceof OWLHasValue) {
+				} else if (r instanceof OWLDataValueRestriction ||
+						   r instanceof OWLObjectValueRestriction) {
 //
 //					ret.restrict(
 //							new Restriction(
@@ -413,8 +481,12 @@ public class Concept extends Knowledge implements IConcept {
 //									p, 
 //									"=", 
 //									((OWLHasValue)r).getHasValue().toString()));
-//				}
-//			}
+				}
+				/*
+				 * TODO there are more restrictions in OWL > 1.0; must check which ones
+				 * go into a constraint
+				 */
+			}
 		
 		return ret;
 
@@ -438,8 +510,7 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public int getNumberOfRelationships(String property)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return 0;
+		return getRelationships().size();
 	}
 
 	/*

@@ -1,8 +1,11 @@
 package org.integratedmodelling.thinklab.owlapi;
 
 import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
 
 import org.semanticweb.owl.model.OWLAnnotation;
 import org.semanticweb.owl.model.OWLClass;
@@ -19,7 +22,6 @@ import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLException;
 import org.semanticweb.owl.model.OWLIndividual;
 import org.semanticweb.owl.model.OWLObjectAllRestriction;
-import org.semanticweb.owl.model.OWLObjectComplementOf;
 import org.semanticweb.owl.model.OWLObjectExactCardinalityRestriction;
 import org.semanticweb.owl.model.OWLObjectMaxCardinalityRestriction;
 import org.semanticweb.owl.model.OWLObjectMinCardinalityRestriction;
@@ -27,6 +29,7 @@ import org.semanticweb.owl.model.OWLObjectProperty;
 import org.semanticweb.owl.model.OWLObjectPropertyExpression;
 import org.semanticweb.owl.model.OWLObjectSomeRestriction;
 import org.semanticweb.owl.model.OWLOntology;
+import org.semanticweb.owl.model.OWLRestriction;
 import org.semanticweb.owl.model.OWLSubClassAxiom;
 import org.semanticweb.owl.util.OWLDescriptionVisitorAdapter;
 import org.semanticweb.owl.vocab.OWLRDFVocabulary;
@@ -40,7 +43,7 @@ import org.semanticweb.owl.vocab.OWLRDFVocabulary;
 public class OWLAPI {
 
 	/**
-     * Collect all available info about restrictions.
+     * Collect all available info about restrictions and the properties they restrict.
      */
     private static class RestrictionVisitor extends OWLDescriptionVisitorAdapter {
 
@@ -48,10 +51,12 @@ public class OWLAPI {
         private Set<OWLClass> processedClasses;
         private Set<OWLObjectPropertyExpression> restrictedProperties;
         private Set<OWLOntology> onts;
-
+        protected Set<OWLRestriction> restrictions;
+        
         public RestrictionVisitor(Set<OWLOntology> onts) {
             restrictedProperties = new HashSet<OWLObjectPropertyExpression>();
             processedClasses = new HashSet<OWLClass>();
+            restrictions = new HashSet<OWLRestriction>();
             this.onts = onts;
         }
 
@@ -79,82 +84,96 @@ public class OWLAPI {
         public void reset() {
             processedClasses.clear();
             restrictedProperties.clear();
+            restrictions.clear();
         }
 
         @Override
 		public void visit(OWLDataAllRestriction desc) {
-			// TODO Auto-generated method stub
 			super.visit(desc);
+			restrictions.add(desc);
 		}
 
 		@Override
 		public void visit(OWLDataExactCardinalityRestriction desc) {
-			// TODO Auto-generated method stub
 			super.visit(desc);
+			restrictions.add(desc);
 		}
 
 		@Override
 		public void visit(OWLDataMaxCardinalityRestriction desc) {
-			// TODO Auto-generated method stub
 			super.visit(desc);
+			restrictions.add(desc);
 		}
 
 		@Override
 		public void visit(OWLDataMinCardinalityRestriction desc) {
-			// TODO Auto-generated method stub
 			super.visit(desc);
+			restrictions.add(desc);
 		}
 
 		@Override
 		public void visit(OWLDataSomeRestriction desc) {
-			// TODO Auto-generated method stub
 			super.visit(desc);
+			restrictions.add(desc);
 		}
 
 		@Override
 		public void visit(OWLDataValueRestriction desc) {
-			// TODO Auto-generated method stub
 			super.visit(desc);
+			restrictions.add(desc);
 		}
 		
 		@Override
 		public void visit(OWLObjectAllRestriction desc) {
-			// TODO Auto-generated method stub
 			super.visit(desc);
-		}
-
-		@Override
-		public void visit(OWLObjectComplementOf desc) {
-			// TODO Auto-generated method stub
-			super.visit(desc);
+			restrictions.add(desc);
 		}
 
 		@Override
 		public void visit(OWLObjectExactCardinalityRestriction desc) {
-			// TODO Auto-generated method stub
 			super.visit(desc);
+			restrictions.add(desc);
 		}
 
 		@Override
 		public void visit(OWLObjectMaxCardinalityRestriction desc) {
-			// TODO Auto-generated method stub
 			super.visit(desc);
+			restrictions.add(desc);
 		}
 
 		@Override
 		public void visit(OWLObjectMinCardinalityRestriction desc) {
-			// TODO Auto-generated method stub
 			super.visit(desc);
+			restrictions.add(desc);
 		}
 
 		public void visit(OWLObjectSomeRestriction desc) {
-			
-            // This method gets called when a description (OWLDescription) is an
-            // existential (someValuesFrom) restriction and it asks us to visit it
+			/*
+			 * remember the property that was restricted 
+			 */
             restrictedProperties.add(desc.getProperty());
+			restrictions.add(desc);
         }
     }
 	
+    public static Collection<OWLRestriction> getRestrictions(Concept clazz, boolean checkModel) {
+    	
+    	Set<OWLOntology> target = 
+    		checkModel ? 
+    				FileKnowledgeRepository.get().manager.getOntologies() :
+    				Collections.singleton(clazz.getOntology());
+    	
+    	 RestrictionVisitor restrictionVisitor = new RestrictionVisitor(target);
+
+         for(OWLSubClassAxiom ax : clazz.getOntology().getSubClassAxiomsForLHS(clazz.entity.asOWLClass())) {
+ 
+        	 OWLDescription superCls = ax.getSuperClass();
+             superCls.accept(restrictionVisitor);
+         }
+         
+         return restrictionVisitor.restrictions;
+    }
+    
 	public static String getLabel(OWLOntology ont, OWLEntity cls, String language) {
 		return getAnnotation(ont, cls, language, OWLRDFVocabulary.RDFS_LABEL.getURI());
 	}

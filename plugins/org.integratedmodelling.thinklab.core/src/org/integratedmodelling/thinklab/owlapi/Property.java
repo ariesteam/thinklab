@@ -39,6 +39,7 @@ import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLObjectProperty;
 import org.semanticweb.owl.model.OWLOntologyChangeException;
 import org.semanticweb.owl.model.OWLProperty;
+import org.semanticweb.owl.model.OWLPropertyExpression;
 import org.semanticweb.owl.vocab.OWLRDFVocabulary;
 
 /**
@@ -59,7 +60,11 @@ public class Property extends Knowledge implements IProperty {
 		super(p,OWLType.DATAPROPERTY);
 	}
 
-	
+	Property(OWLPropertyExpression p) {
+		super(
+			( p instanceof OWLObjectProperty ? (OWLObjectProperty)p : (OWLDataProperty)p),
+			( p instanceof OWLObjectProperty ? OWLType.OBJECTPROPERTY : OWLType.DATAPROPERTY));
+	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getAllChildren()
