@@ -150,6 +150,7 @@ public class GraphicalShell {
 			
 			if ("exit".equals(input)) {
 				console.println("shell terminated");
+				System.exit(0);
 				break;
 			} else if (!("".equals(input.trim())) && /* WTF? */!input.equals(";")) {
 				try {
