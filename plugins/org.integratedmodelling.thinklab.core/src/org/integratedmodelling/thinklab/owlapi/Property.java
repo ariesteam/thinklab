@@ -121,10 +121,16 @@ public class Property extends Knowledge implements IProperty {
 	public Collection<IConcept> getDomain() {
 
 		Set<IConcept> ret = new HashSet<IConcept>();
-		
-		for (OWLDescription c : entity.asOWLDataProperty().getDomains(
-				FileKnowledgeRepository.get().manager.getOntologies())) {
-			ret.add(new Concept(c.asOWLClass()));
+		if (entity.isOWLDataProperty()) {
+			for (OWLDescription c : entity.asOWLDataProperty().getDomains(
+					FileKnowledgeRepository.get().manager.getOntologies())) {
+				ret.add(new Concept(c.asOWLClass()));
+			}
+		} else if (entity.isOWLObjectProperty()) {
+			for (OWLDescription c : entity.asOWLObjectProperty().getDomains(
+					FileKnowledgeRepository.get().manager.getOntologies())) {
+				ret.add(new Concept(c.asOWLClass()));
+			}
 		}
 		return ret;
 	}
