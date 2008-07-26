@@ -414,20 +414,14 @@ public class Instance extends Knowledge implements IInstance {
 	}
 	
 	protected boolean is(IConcept c){
-		return false;
+		return getDirectType().is(c);
 	}
 	
-	protected boolean is(IInstance i){
-		return false;
-	}
-
-
-
 	@Override
-	public void setImplementation(IInstanceImplementation second)
+	public void setImplementation(IInstanceImplementation impl)
 			throws ThinklabException {
 		// TODO Auto-generated method stub
-		
+		ThinklabOWLManager.get().setInstanceImplementation(this, impl);	
 	}
 
 

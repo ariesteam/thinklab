@@ -91,7 +91,7 @@ public class Relationship implements IRelationship {
         String ret = property.getSemanticType().toString();
         ret += 
         	" [" +
-        	(property.getDomain() == null ? "(null)" : property.getDomain().getSemanticType().toString()) + 
+        	property.getDomain()+ 
         	" -> {";
         if (isLiteral()) {
         	ret += literal.getConcept().getSemanticType().toString();

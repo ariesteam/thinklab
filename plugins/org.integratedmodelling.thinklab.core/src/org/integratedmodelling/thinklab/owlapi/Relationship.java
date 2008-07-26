@@ -34,6 +34,7 @@
 package org.integratedmodelling.thinklab.owlapi;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -88,10 +89,13 @@ public class Relationship implements IRelationship {
      * @see org.integratedmodelling.ima.core.IRelationship#toString()
      */
     public String toString() {
+    	
+    	Collection<IConcept> domain = property.getDomain();
+    	
         String ret = property.getSemanticType().toString();
         ret += 
         	" [" +
-        	(property.getDomain() == null ? "(null)" : property.getDomain().getSemanticType().toString()) + 
+        	domain + 
         	" -> {";
         if (isLiteral()) {
         	ret += literal.getConcept().getSemanticType().toString();

@@ -35,8 +35,10 @@ package org.integratedmodelling.thinklab.impl.protege;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
@@ -196,17 +198,21 @@ public class Property extends Object implements IProperty {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.ima.core.IProperty#getDomain()
 	 */
-	public IConcept getDomain() {
+	public Collection<IConcept> getDomain() {
+		
+		Set<IConcept> ret = new HashSet<IConcept>();
+		
 		RDFResource res = property.getDomain(false);
 		if (res instanceof OWLNamedClass){
-			return new Concept((OWLNamedClass)res);
+			ret.add(new Concept((OWLNamedClass)res));
 		} else if (res instanceof RDFSClass){
 			// this is a hack: the KM is bypassed for the anonymous classes! 
 			// Not sure if it is working!
 			// FV should be ok - we don't need the KM 
-			return new Concept((RDFSClass)res);
+			ret.add(new Concept((RDFSClass)res));
 		}  //there shouldn't be other option
-		return null;
+		
+		return ret;
 	}
 	
 	/* (non-Javadoc)

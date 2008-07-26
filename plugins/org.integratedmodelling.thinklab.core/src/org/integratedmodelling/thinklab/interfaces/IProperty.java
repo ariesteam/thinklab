@@ -101,7 +101,7 @@ public interface IProperty extends IKnowledge {
      * multi-domain properties are good design.
      * @return
      */
-    public abstract IConcept getDomain();
+    public abstract Collection<IConcept> getDomain();
     
     
     /**
