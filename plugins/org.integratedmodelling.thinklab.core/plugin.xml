@@ -18,6 +18,7 @@
 		<library type="code" id="ant-optional"  path="lib/ant-optional-1.5.1.jar"/>
 		<library type="code" id="asm"  path="lib/asm.jar"/>
 		<library type="code" id="asm-attris"  path="lib/asm-attrs.jar"/>
+		<library type="code" id="aterm"  path="lib/aterm-java-1.6.jar"/>
 		<library type="code" id="bsf"  path="lib/bsf.jar"/>
 		<library type="code" id="bsh"  path="lib/bsh-1.2b7.jar">
 			<export prefix="*" />
@@ -57,6 +58,27 @@
 		<library type="code" id="mvel"  path="lib/mvel-1.3.1-java1.4.jar">
 				<export prefix="*" />
 		</library>
+
+		<!-- <library type="code" id="owlapi-api"  path="lib/owlapi-api.jar"/>
+		<library type="code" id="owlapi-apibinding"  path="lib/owlapi-apibinding.jar"/>
+		<library type="code" id="owlapi-change"  path="lib/owlapi-change.jar"/>
+		<library type="code" id="owlapi-debugging"  path="lib/owlapi-debugging.jar"/>
+		<library type="code" id="owlapi-dig1_1"  path="lib/owlapi-dig1_1.jar"/>
+		<library type="code" id="owlapi-functionalparser"  path="lib/owlapi-functionalparser.jar"/>
+		<library type="code" id="owlapi-functionalrenderer"  path="lib/owlapi-functionalrenderer.jar"/>
+		<library type="code" id="owlapi-impl"  path="lib/owlapi-impl.jar"/>
+		<library type="code" id="owlapi-krssparser"  path="lib/owlapi-krssparser.jar"/>
+		<library type="code" id="owlapi-mansyntaxparser"  path="lib/owlapi-mansyntaxparser.jar"/>
+		<library type="code" id="owlapi-mansyntaxrenderer"  path="lib/owlapi-mansyntaxrenderer.jar"/>
+		<library type="code" id="owlapi-metrics"  path="lib/owlapi-metrics.jar"/>
+		<library type="code" id="owlapi-oboparser"  path="lib/owlapi-oboparser.jar"/>
+		<library type="code" id="owlapi-owlxmlparser"  path="lib/owlapi-owlxmlparser.jar"/>
+		<library type="code" id="owlapi-owlxmlrenderer"  path="lib/owlapi-owlxmlrenderer.jar"/>
+		<library type="code" id="owlapi-rdfapi"  path="lib/owlapi-rdfapi.jar"/>
+		<library type="code" id="owlapi-rdfxmlparser"  path="lib/owlapi-rdfxmlparser.jar"/>
+		<library type="code" id="owlapi-rdfxmlrenderer"  path="lib/owlapi-rdfxmlrenderer.jar"/>
+		<library type="code" id="owlapi-util"  path="lib/owlapi-util.jar"/> -->
+
 		<library type="code" id="owlapi"  path="lib/owlapi-bin.jar"/>
 		<library type="code" id="owlsyntax"  path="lib/owlsyntax.jar"/>
 		<library type="code" id="pellet"  path="lib/pellet.jar"/>
@@ -67,6 +89,7 @@
 				<export prefix="*" />
 		</library>
 		<library type="code" id="rdf-api"  path="lib/rdf-api-2001-01-19.jar"/>
+		<library type="code" id="relaxngDatatype"  path="lib/relaxngDatatype.jar"/>
 		<library type="code" id="resolver"  path="lib/resolver.jar"/>
 		<library type="code" id="serializer"  path="lib/serializer.jar"/>
 		<library type="code" id="stax-api"  path="lib/stax-api-1.0.jar"/>

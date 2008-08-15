@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
@@ -338,21 +339,43 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	public void connectReasoner() throws ThinklabException {
 
 		URL reasonerURL = null;
-
+		String reasonerClass = null /*"org.mindswap.pellet.owlapi.Reasoner"*/;
+		
 		if (LocalConfiguration.hasResource("thinklab.reasoner.url")) {
 			reasonerURL = LocalConfiguration
 					.getResource("thinklab.reasoner.url");
+		} else if (LocalConfiguration.hasResource("thinklab.reasoner.class")) {
+			reasonerClass = LocalConfiguration
+					.getProperties().getProperty("thinklab.reasoner.class");
 		}
 
 		try {
+			
+			OWLReasoner reasoner = null;
+			
 			if (reasonerURL != null) {
 
-				OWLReasoner reasoner = new DIGReasoner(manager);
+				 reasoner = new DIGReasoner(manager);
 				((DIGReasoner) reasoner).getReasoner().setReasonerURL(
 						reasonerURL);
+			} else if (reasonerClass != null) {
 				
+				try {
+					Class<?> rClass = Class.forName(reasonerClass);
+					Constructor<OWLReasoner> con = (Constructor<OWLReasoner>) rClass.getConstructor(OWLOntologyManager.class);
+					reasoner = con.newInstance(manager);
+				} catch (Exception e) {
+					Thinklab.get().logger().error(
+							"cannot instantiate reasoner from class " + reasonerClass + 
+							"; defaulting to no reasoner",
+							e);
+				}
+				
+			}
+			if (reasoner != null) {
+
 				String capabilities = "";
-				
+			
 				if (reasoner instanceof OWLClassReasoner) {
 					classReasoner = reasoner;
 					capabilities += "class ";
@@ -371,23 +394,23 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 				}
 				
 				Thinklab.get().logger().info(
-						"created DIG reasoner at " + reasonerURL + 
+						"created reasoner: " + 
+						(reasonerURL == null ? "default" : "DIG@"+reasonerURL) + 
 						": capabilities = {" + capabilities + "}");
 
-			} else {
-				Thinklab.get().logger().info("creating default transitive reasoner: capabilities = {class}");
-				classReasoner = new ToldClassHierarchyReasoner(manager);
-			}
+				// This is the real question on which ontologies are we reasoning?
+				// Probably the reasoning methods should be transferred to the
+				// Session
+				// and have session-based reasoning, which will be internal of the
+				// session...
+				Set<OWLOntology> importsClosure = manager.getOntologies();
+				classReasoner.loadOntologies(importsClosure);
+				DLExpressivityChecker checker = new DLExpressivityChecker(importsClosure);
+				Thinklab.get().logger().info("Expressivity: " + checker.getDescriptionLogicName());
 
-			// This is the real question on which ontologies are we reasoning?
-			// Probably the reasoning methods should be transferred to the
-			// Session
-			// and have session-based reasoning, which will be internal of the
-			// session...
-			Set<OWLOntology> importsClosure = manager.getOntologies();
-			classReasoner.loadOntologies(importsClosure);
-			DLExpressivityChecker checker = new DLExpressivityChecker(importsClosure);
-			Thinklab.get().logger().info("Expressivity: " + checker.getDescriptionLogicName());
+			} else {
+				Thinklab.get().logger().info("not using a reasoner");
+			}
 
 		} catch (OWLException e) {
 			throw new ThinklabIOException(e);

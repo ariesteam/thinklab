@@ -119,7 +119,7 @@ public class List implements CommandHandler {
 		outputWriter.displayOutput(c.getDescription());
 
 		outputWriter.displayOutput("  Properties:");
-		for (IProperty r : c.getProperties()) {
+		for (IProperty r : c.getAllProperties()) {
 			outputWriter.displayOutput("    " + r);
 		}
 

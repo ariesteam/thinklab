@@ -199,9 +199,7 @@ public class ThinklabOWLManager {
 
 					if (cn.isTyped()) {
 
-						OWLDataType dtype = cn.asOWLTypedConstant()
-								.getDataType();
-	
+						OWLDataType dtype = cn.asOWLTypedConstant().getDataType();
 						String tltype = KnowledgeManager.get().getXSDMapping(dtype.getURI().toString());
 						
 						if (tltype != null) {

@@ -109,6 +109,15 @@
 		<parameter id="argument-descriptions" value="ID or URL of the source kbox,ID or URL of the destination kbox"/>
 	</extension>
 	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="is">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Is"/>
+		<parameter id="command-name" value="is"/>
+		<parameter id="command-description" value="use the reasoner to determine if a concept is subsumed by another"/>
+		<parameter id="argument-names" value="c1,c2"/>
+		<parameter id="argument-types" value="thinklab-core:Text,thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="semantic type of child concept,semantic type of parent concept"/>
+	</extension>
+	
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="kexport">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.KExport"/>
 		<parameter id="command-name" value="kexport"/>

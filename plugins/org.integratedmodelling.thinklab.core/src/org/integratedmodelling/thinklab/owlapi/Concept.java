@@ -153,16 +153,22 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getParents()
 	 */
 	public Collection<IConcept> getParents() {
+		
 		Set<IConcept> concepts = new HashSet<IConcept>();
-		// Need to add owl:Thing
-		concepts.add(FileKnowledgeRepository.KR.getRootConceptType());
 		Set<OWLDescription> set = ((OWLClass) this.entity)
 				.getSuperClasses(FileKnowledgeRepository.KR.manager
 						.getOntologies());
+		
 		for (OWLDescription s : set) {
 			if (!(s.isAnonymous() || s.isOWLNothing()))
 				concepts.add(new Concept(s.asOWLClass()));
 		}
+		
+		// OWLAPI doesn't do this - only add owl:Thing if this is its direct subclass, i.e. has no 
+		// parents in OWLAPI.
+		if (concepts.isEmpty() && !FileKnowledgeRepository.KR.getRootConceptType().equals(this))
+			concepts.add(FileKnowledgeRepository.KR.getRootConceptType());
+		
 		return concepts;
 	}
 
@@ -172,24 +178,43 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getAllParents()
 	 */
 	public Collection<IConcept> getAllParents() {
+
+		Set<IConcept> concepts = new HashSet<IConcept>();
+		
 		if (FileKnowledgeRepository.KR.classReasoner != null) {
+			
 			try {
 				Set<Set<OWLClass>> parents = FileKnowledgeRepository.KR.classReasoner
 						.getAncestorClasses((OWLClass) entity);
-				Set<IConcept> concepts = new HashSet<IConcept>();
 				Set<OWLClass> subClses = OWLReasonerAdapter
 						.flattenSetOfSets(parents);
 				for (OWLClass cls : subClses) {
 					concepts.add(new Concept(cls));
 				}
+				
 				return concepts;
+				
 			} catch (OWLException e) {
-				e.printStackTrace();
-				return getAllParents();
+				// just continue to dumb method
 			}
 
-		} else
-			return getParents();
+		} else {
+			
+			for (IConcept c : getParents()) {
+				
+				concepts.add(c);
+				for (IConcept p : c.getParents()) {
+					concepts.addAll(p.getAllParents());
+				}
+ 				
+			}
+		}
+
+		// OWLAPI doesn't do this
+		concepts.add(FileKnowledgeRepository.KR.getRootConceptType());
+
+		return concepts;
+
 	}
 
 	/*
@@ -262,8 +287,12 @@ public class Concept extends Knowledge implements IConcept {
 	public Collection<IProperty> getProperties() {
 		
 		Collection<IProperty> props = getDirectProperties();
-		for(IProperty prop: props)
-			props.addAll(prop.getChildren());
+		ArrayList<Collection<IProperty>> psets = new ArrayList<Collection<IProperty>>();
+		for(IProperty prop: props) 
+			psets.add(prop.getChildren());
+		for (Collection<IProperty> pp : psets) 
+			props.addAll(pp);
+		
 		return props;
 	}
 
@@ -498,7 +527,8 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject#get(java.lang.String)
 	 */
 	public IValue get(String property) throws ThinklabException {
-		// TODO Auto-generated method stub
+		// TODO this must catch valueOf restrictions on the property on
+		// this concept or the ancestors.
 		return null;
 	}
 

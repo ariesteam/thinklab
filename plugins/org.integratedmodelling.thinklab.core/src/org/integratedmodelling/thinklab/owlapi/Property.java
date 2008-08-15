@@ -24,21 +24,29 @@ import java.util.Set;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
+import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IKnowledge;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.interfaces.IResource;
+import org.semanticweb.owl.inference.OWLReasonerAdapter;
 import org.semanticweb.owl.model.AddAxiom;
 import org.semanticweb.owl.model.OWLAnnotation;
 import org.semanticweb.owl.model.OWLAxiom;
+import org.semanticweb.owl.model.OWLClass;
 import org.semanticweb.owl.model.OWLConstant;
 import org.semanticweb.owl.model.OWLDataFactory;
 import org.semanticweb.owl.model.OWLDataProperty;
 import org.semanticweb.owl.model.OWLDataPropertyExpression;
+import org.semanticweb.owl.model.OWLDataRange;
+import org.semanticweb.owl.model.OWLDataType;
 import org.semanticweb.owl.model.OWLDescription;
 import org.semanticweb.owl.model.OWLEntity;
+import org.semanticweb.owl.model.OWLException;
 import org.semanticweb.owl.model.OWLObjectProperty;
 import org.semanticweb.owl.model.OWLObjectPropertyExpression;
 import org.semanticweb.owl.model.OWLOntology;
@@ -75,7 +83,17 @@ public class Property extends Knowledge implements IProperty {
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getAllChildren()
 	 */
 	public Collection<IProperty> getAllChildren() {
+		
 		Set<IProperty> ret = new HashSet<IProperty>();
+
+		for (IProperty c : getChildren()) {
+			
+			ret.add(c);
+			for (IProperty p : c.getChildren()) {
+				ret.addAll(p.getAllChildren());
+			}
+		}
+		
 		return ret;
 	}
 
@@ -83,7 +101,47 @@ public class Property extends Knowledge implements IProperty {
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getAllParents()
 	 */
 	public Collection<IProperty> getAllParents() {
+		
 		Set<IProperty> ret = new HashSet<IProperty>();
+		
+		if (FileKnowledgeRepository.KR.propertyReasoner != null) {
+			
+			try {
+				if (entity.isOWLObjectProperty()) {
+					Set<Set<OWLObjectProperty>> parents = FileKnowledgeRepository.KR.propertyReasoner
+						.getAncestorProperties(entity.asOWLObjectProperty());
+					Set<OWLObjectProperty> subClses = OWLReasonerAdapter
+						.flattenSetOfSets(parents);
+					for (OWLObjectProperty cls : subClses) {
+						ret.add(new Property(cls));
+					}
+				} else if (entity.isOWLDataProperty()) {
+					Set<Set<OWLDataProperty>> parents = FileKnowledgeRepository.KR.propertyReasoner
+						.getAncestorProperties(entity.asOWLDataProperty());
+					Set<OWLDataProperty> subClses = OWLReasonerAdapter
+						.flattenSetOfSets(parents);
+					for (OWLDataProperty cls : subClses) {
+						ret.add(new Property(cls));
+					}
+				}
+				return ret;
+				
+			} catch (OWLException e) {
+				// just continue to dumb method
+			}
+
+		} else {
+			
+			for (IProperty c : getParents()) {
+				
+				ret.add(c);
+				for (IProperty p : c.getParents()) {
+					ret.addAll(p.getAllParents());
+				}
+ 				
+			}
+		}
+		
 		return ret;
 	}
 
@@ -139,8 +197,25 @@ public class Property extends Knowledge implements IProperty {
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getInverseProperty()
 	 */
 	public IProperty getInverseProperty() {
-		// TODO Auto-generated method stub
-		return null;
+
+		Property ret = null;
+		
+		if (entity.isOWLObjectProperty()) {
+			
+			Set<OWLObjectPropertyExpression> dio = 
+				entity.asOWLObjectProperty().getInverses(getOntology());
+			
+			if (dio.size() > 1) 
+				Thinklab.get().logger().error(
+						"taking the inverse of property " + 
+						this + 
+						", which has multiple inverses");
+			
+			if (dio.size() > 0) {
+				ret = new Property(dio.iterator().next());
+			}
+		}
+		return ret;
 	}
 
 	/* (non-Javadoc)
@@ -148,8 +223,13 @@ public class Property extends Knowledge implements IProperty {
 	 */
 	public IProperty getParent()
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+
+		Collection<IProperty> pars = getParents();
+	
+		if (pars.size() > 1)
+			Thinklab.get().logger().error("asking for single parent of multiple-inherited property " + this);
+
+		return pars.size() == 0 ? null : pars.iterator().next();
 	}
 
 	/* (non-Javadoc)
@@ -160,6 +240,10 @@ public class Property extends Knowledge implements IProperty {
 		Set<IProperty> ret = new HashSet<IProperty>();
 		Set<OWLOntology> onts = 
 			FileKnowledgeRepository.get().manager.getOntologies();
+
+		/*
+		 * TODO use reasoner as appropriate
+		 */
 		
 		if (entity.isOWLDataProperty()) {
 			for (OWLOntology o : onts)  {
@@ -184,11 +268,33 @@ public class Property extends Knowledge implements IProperty {
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getRange()
 	 */
 	public Collection<IConcept> getRange() {
+		
 		Set<IConcept> ret = new HashSet<IConcept>();
-		
-		// TODO
-		
+		if (entity.isOWLDataProperty()) {
+			
+			for (OWLDataRange c : entity.asOWLDataProperty().getRanges(
+					FileKnowledgeRepository.get().manager.getOntologies())) {
+
+				if (c.isDataType()) {
+					OWLDataType dtype = (OWLDataType) c;
+					String tltype = KnowledgeManager.get().getXSDMapping(dtype.getURI().toString());
+					if (tltype != null) {
+						try {
+							ret.add(KnowledgeManager.get().requireConcept(tltype));
+						} catch (Exception e) {
+							// just don't add it
+						}
+					}
+				}
+			}
+		} else if (entity.isOWLObjectProperty()) {
+			for (OWLDescription c : entity.asOWLObjectProperty().getRanges(
+					FileKnowledgeRepository.get().manager.getOntologies())) {
+				ret.add(new Concept(c.asOWLClass()));
+			}
+		}
 		return ret;
+		
 	}
 
 	/* (non-Javadoc)
@@ -222,8 +328,10 @@ public class Property extends Knowledge implements IProperty {
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#isFunctional()
 	 */
 	public boolean isFunctional() {
-		// TODO Auto-generated method stub
-		return false;
+
+		return entity.isOWLDataProperty() ?
+				entity.asOWLDataProperty().isFunctional(getOntology()) :
+				entity.asOWLObjectProperty().isFunctional(getOntology());
 	}
 
 	/* (non-Javadoc)
@@ -246,6 +354,10 @@ public class Property extends Knowledge implements IProperty {
 	}
 	
 	public boolean is(IProperty p){
-		return getParents().contains(p);
+		
+		/*
+		 * TODO use reasoner as appropriate
+		 */
+		return getAllParents().contains(p);
 	}
 }

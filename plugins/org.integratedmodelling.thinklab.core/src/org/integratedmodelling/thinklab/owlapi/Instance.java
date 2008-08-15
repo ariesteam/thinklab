@@ -420,7 +420,6 @@ public class Instance extends Knowledge implements IInstance {
 	@Override
 	public void setImplementation(IInstanceImplementation impl)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
 		ThinklabOWLManager.get().setInstanceImplementation(this, impl);	
 	}
 
