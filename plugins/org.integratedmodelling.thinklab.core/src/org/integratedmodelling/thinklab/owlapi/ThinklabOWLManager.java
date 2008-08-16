@@ -70,15 +70,22 @@ import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 import org.semanticweb.owl.model.OWLAnnotation;
 import org.semanticweb.owl.model.OWLConstant;
+import org.semanticweb.owl.model.OWLDataAllRestriction;
 import org.semanticweb.owl.model.OWLDataProperty;
 import org.semanticweb.owl.model.OWLDataPropertyExpression;
+import org.semanticweb.owl.model.OWLDataRange;
+import org.semanticweb.owl.model.OWLDataSomeRestriction;
 import org.semanticweb.owl.model.OWLDataType;
+import org.semanticweb.owl.model.OWLDescription;
 import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLIndividual;
+import org.semanticweb.owl.model.OWLObjectAllRestriction;
 import org.semanticweb.owl.model.OWLObjectProperty;
 import org.semanticweb.owl.model.OWLObjectPropertyExpression;
+import org.semanticweb.owl.model.OWLObjectSomeRestriction;
 import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLProperty;
+import org.semanticweb.owl.model.OWLRestriction;
 
 import uk.ac.manchester.cs.owl.ImplUtils;
 
@@ -174,7 +181,7 @@ public class ThinklabOWLManager {
 
 		ArrayList<IValue> ret = new ArrayList<IValue>();
 
-		if (!property.isOWLObjectProperty() || !property.isOWLDataProperty()) {
+		if (!property.isOWLObjectProperty() && !property.isOWLDataProperty()) {
 			// just return anything else with no error
 			return ret;
 		}
@@ -810,7 +817,7 @@ public class ThinklabOWLManager {
 				 */
 				if (toAdd == null) {
 					if (canTestRange)
-						throw new ThinklabValidationException("plain data property can't use value " + o2);
+						throw new ThinklabValidationException("plain data property " + property + " can't use value " + o2);
 					else
 						toAdd = o2;
 				}
@@ -1047,6 +1054,60 @@ public class ThinklabOWLManager {
 			}
 		}		
 		return ret;
+	}
+
+	public IConcept getRestrictionFiller(OWLRestriction r) {
+
+		IConcept ret = null;
+		
+		if (r instanceof OWLDataAllRestriction) {
+			
+			OWLDataRange range =
+				((OWLDataAllRestriction)r).getFiller();
+			if (range.isDataType()) {
+				OWLDataType dtype = (OWLDataType) range;
+				String tltype = KnowledgeManager.get().getXSDMapping(dtype.getURI().toString());
+				if (tltype != null) {
+					try {
+						ret = KnowledgeManager.get().requireConcept(tltype);
+					} catch (Exception e) {
+						// nothing
+					}
+				}
+			}
+				
+		} else if (r instanceof OWLDataSomeRestriction) {
+			
+			OWLDataRange range =
+				((OWLDataSomeRestriction)r).getFiller();
+			if (range.isDataType()) {
+				OWLDataType dtype = (OWLDataType) range;
+				String tltype = KnowledgeManager.get().getXSDMapping(dtype.getURI().toString());
+				if (tltype != null) {
+					try {
+						ret = KnowledgeManager.get().requireConcept(tltype);
+					} catch (Exception e) {
+						// nothing
+					}
+				}
+			}
+				
+		} else if (r instanceof OWLObjectAllRestriction) {
+			
+			OWLDescription range = 
+				((OWLObjectAllRestriction)r).getFiller();
+			
+			ret = new Concept(range.asOWLClass());
+		} else if (r instanceof OWLObjectSomeRestriction) {
+			
+			OWLDescription range = 
+				((OWLObjectSomeRestriction)r).getFiller();
+			
+			ret = new Concept(range.asOWLClass());
+		}
+		
+		return ret;
+		
 	}
 
 }

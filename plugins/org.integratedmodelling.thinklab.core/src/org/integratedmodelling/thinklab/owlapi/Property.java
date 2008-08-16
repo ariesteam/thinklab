@@ -23,37 +23,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.IKnowledge;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
-import org.integratedmodelling.thinklab.interfaces.IResource;
 import org.semanticweb.owl.inference.OWLReasonerAdapter;
-import org.semanticweb.owl.model.AddAxiom;
-import org.semanticweb.owl.model.OWLAnnotation;
-import org.semanticweb.owl.model.OWLAxiom;
-import org.semanticweb.owl.model.OWLClass;
-import org.semanticweb.owl.model.OWLConstant;
-import org.semanticweb.owl.model.OWLDataFactory;
 import org.semanticweb.owl.model.OWLDataProperty;
 import org.semanticweb.owl.model.OWLDataPropertyExpression;
 import org.semanticweb.owl.model.OWLDataRange;
 import org.semanticweb.owl.model.OWLDataType;
 import org.semanticweb.owl.model.OWLDescription;
-import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLException;
 import org.semanticweb.owl.model.OWLObjectProperty;
 import org.semanticweb.owl.model.OWLObjectPropertyExpression;
 import org.semanticweb.owl.model.OWLOntology;
-import org.semanticweb.owl.model.OWLOntologyChangeException;
-import org.semanticweb.owl.model.OWLProperty;
 import org.semanticweb.owl.model.OWLPropertyExpression;
-import org.semanticweb.owl.vocab.OWLRDFVocabulary;
 
 /**
  * @author Ioannis N. Athanasiadis
@@ -301,7 +285,6 @@ public class Property extends Knowledge implements IProperty {
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#isAbstract()
 	 */
 	public boolean isAbstract() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -309,7 +292,7 @@ public class Property extends Knowledge implements IProperty {
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#isAnnotation()
 	 */
 	public boolean isAnnotation() {
-		// TODO Auto-generated method stub
+		// TODO don't know how to do this, or if it even makes sense in OWLAPI
 		return false;
 	}
 
