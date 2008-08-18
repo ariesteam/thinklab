@@ -128,6 +128,10 @@
 		<parameter id="option-long-names" value="conformance"/>
 		<parameter id="option-types" value="thinklab-core:Text"/>
 		<parameter id="option-descriptions" value="use specified conformance policy for mediation"/>
+		<parameter id="optional-argument-names" value="w"/>
+		<parameter id="optional-argument-types" value="thinklab-core:Text"/>
+		<parameter id="optional-argument-descriptions" value="type of workflow to generate"/>
+		<parameter id="optional-argument-default-values" value="_NONE_"/>
 	</extension>
 
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="olist">

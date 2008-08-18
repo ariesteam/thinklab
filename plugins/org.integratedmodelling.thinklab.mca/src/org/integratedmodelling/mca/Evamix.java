@@ -1,5 +1,8 @@
 package org.integratedmodelling.mca;
 
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+
 public class Evamix {
 	
 	/**
@@ -11,6 +14,9 @@ public class Evamix {
 	public class Results {
 		
 	}
+
+	private int num_criteria;
+	private int num_alternatives;
 	
 //	#===============================================================================
 //		# Delphos - a decision-making tool for community-based marine conservation.
@@ -37,7 +43,7 @@ public class Evamix {
 //		from copy import deepcopy
 //
 //
-	 Results run(double[][] input, double[] criteria_weights, int[] criteria_types, boolean[] criteria_cost_benefit) {
+	 Results run(double[][] input, double[] criteria_weights, int[] criteria_types, boolean[] criteria_cost_benefit) throws ThinklabException {
 
 	
 //		    def do_analysis(self, in_matrix, crit_weights, crit_types, crit_bc):
@@ -64,7 +70,10 @@ public class Evamix {
 //		            raise DelphosError, "No criteria cost/benefits given"
 //		        if type(crit_bc) is not type([]):
 //		            raise DelphosError, "No criteria cost/benefits given"        
-//
+
+		 	if (input.length < 1)
+		 		return null;
+		 	
 //		        if len(in_matrix) < 1:
 //		            raise DelphosError, "in_matrix contains no data"
 //
@@ -81,13 +90,23 @@ public class Evamix {
 //		            
 //		            print "cost benefits:"
 //		            print crit_bc
-//		        
+
+		 	this.num_criteria = input[0].length;
+		 	this.num_alternatives = input.length;
+		 	int num_crit_weights = criteria_weights.length;
+		 	
+		 	if (num_crit_weights != num_crit_weights)
+		 		throw new ThinklabValidationException(
+		 				"evamix: number of criteria in input does not match number of criterion weights");
+		 	
 //		        self.num_criteria = len(in_matrix[0])
 //		        self.num_alternatives = len(in_matrix)
 //		        num_crit_weights = len(crit_weights)
 //		        if self.num_criteria is not num_crit_weights:
 //		            raise DelphosError, "Number of criteria in in_matrix ("+str(self.num_criteria)+") does not match number of criteria weights given ("+str(num_crit_weights)+")"
 //		  
+		 	
+		 	
 //		        #Get lists describing which columns (criteria) in in_matrix are quantitative and which are qualitative
 //		        (quant_cols, qual_cols) = self.gen_crit_type_lists(crit_types)
 //		        self.num_qual_criteria = len(qual_cols)

@@ -58,7 +58,7 @@ public class Contextualize implements CommandHandler {
 
 		IContextualizationWorkflow workflow = null;
 
-		if (!wft.equals("_NONE_")) {
+		if (wft != null && !wft.equals("_NONE_")) {
 
 			/*
 			 * select workflow type and create it to pass to contextualize.

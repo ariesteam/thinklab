@@ -341,6 +341,6 @@ public class Property extends Knowledge implements IProperty {
 		/*
 		 * TODO use reasoner as appropriate
 		 */
-		return getAllParents().contains(p);
+		return p.equals(this) || getAllParents().contains(p);
 	}
 }
