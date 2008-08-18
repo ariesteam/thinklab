@@ -205,9 +205,7 @@ public class Concept extends Knowledge implements IConcept {
 			for (IConcept c : getParents()) {
 				
 				concepts.add(c);
-				for (IConcept p : c.getParents()) {
-					concepts.addAll(p.getAllParents());
-				}
+				concepts.addAll(c.getAllParents());
  				
 			}
 		}

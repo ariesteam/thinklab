@@ -117,12 +117,8 @@ public class Property extends Knowledge implements IProperty {
 		} else {
 			
 			for (IProperty c : getParents()) {
-				
 				ret.add(c);
-				for (IProperty p : c.getParents()) {
-					ret.addAll(p.getAllParents());
-				}
- 				
+				ret.addAll(c.getAllParents());
 			}
 		}
 		
@@ -336,7 +332,7 @@ public class Property extends Knowledge implements IProperty {
 		return entity.isOWLObjectProperty();
 	}
 	
-	public boolean is(IProperty p){
+	public boolean is(Property p){
 		
 		/*
 		 * TODO use reasoner as appropriate
