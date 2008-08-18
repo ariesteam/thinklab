@@ -73,12 +73,7 @@ public class ResultContainer implements IQueryResult {
 		
 		String id = doc.get("id");
 		IInstance ret = null;
-		try {
-			ret = session.importObject(id);
-		} catch (ThinklabException e) {
-			// FIXME a temp fix - just return null, but this shouldn't happen
-		}
-		return ret;
+		return session.importObject(id);
 	}
 	
 	public IQueriable getQueriable() {

@@ -24,6 +24,7 @@ import java.util.HashMap;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLOntologyManager;
@@ -114,6 +115,7 @@ public class Registry {
 	}
 	
 	protected String getConceptSpace(URI uri){
-		return uri2cs.get(uri);
+		
+		return uri2cs.get(MiscUtilities.removeFragment(uri));
 	}
 }

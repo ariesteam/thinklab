@@ -324,7 +324,7 @@ public class Ontology implements IOntology {
 		ArrayList<ReferenceRecord> reftable = new ArrayList<ReferenceRecord>();	
 		IInstance ret  = createInstanceInternal(ID, list, reftable);
 		resolveReferences(reftable);
-		
+
 		return ret;
 	}
 
@@ -337,7 +337,7 @@ public class Ontology implements IOntology {
 		ArrayList<ReferenceRecord> reftable = new ArrayList<ReferenceRecord>();	
 		IInstance ret  = createInstanceInternal(list, reftable);
 		resolveReferences(reftable);
-		
+
 		return ret;
 
 	}

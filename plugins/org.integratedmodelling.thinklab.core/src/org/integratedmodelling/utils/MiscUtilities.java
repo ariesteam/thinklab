@@ -69,6 +69,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
@@ -84,6 +86,7 @@ import java.util.Vector;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 
 //}}}
 
@@ -2165,6 +2168,21 @@ loop:		for(;;)
 			s = lf.substring(0, n);
 		}
 		return new File(s);
+	}
+
+	public static URI removeFragment(URI uri) {
+		
+		URI ret = uri;
+		if (ret.toString().contains("#")) {
+			String ut = ret.toString().substring(0, ret.toString().indexOf("#"));
+			try {
+				ret = new URI(ut);
+			} catch (URISyntaxException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+		
+		return ret;
 	}
 
 //	//{{{ getPathStart()
