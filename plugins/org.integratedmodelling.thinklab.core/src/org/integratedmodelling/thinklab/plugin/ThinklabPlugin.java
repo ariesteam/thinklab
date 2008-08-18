@@ -555,6 +555,24 @@ public abstract class ThinklabPlugin extends Plugin
 		return ret == null ? defValue : ret;
 	}
 	
+	public Object createInstance(String clazz) throws ThinklabPluginException {
+		
+		Object ret = null;
+		
+		ClassLoader classLoader = getManager().getPluginClassLoader(getDescriptor());
+		Class<?> cls = null;
+		try {
+
+			cls = classLoader.loadClass(clazz);
+			ret = cls.newInstance();
+			
+		} catch (Exception e) {
+			throw new ThinklabPluginException(e);
+		}
+		return ret;
+	}
+
+	
 	protected Object getHandlerInstance(Extension ext, String field) throws ThinklabPluginException {
 		
 		Object ret = null;

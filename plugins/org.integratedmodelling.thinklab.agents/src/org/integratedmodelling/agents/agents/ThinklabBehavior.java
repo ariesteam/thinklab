@@ -67,17 +67,16 @@ public abstract class ThinklabBehavior {
 		return (ThinklabBehavior) session.retrieveUserData(id);
 	}
 	
-	static public ThinklabBehavior createBehavior(String bClass, ISession session) throws ThinklabException {
-
-// TODO move to extensions
+//	static public ThinklabBehavior createBehavior(String bClass, ISession session) throws ThinklabException {
+//		
 //		Class<?> cl = null;
 //		try {
-//			cl = Class.forName(bClass, true, PluginRegistry.get().getClassLoader());
+//			cl = Class.forName(bClass);
 //		} catch (ClassNotFoundException e) {
 //			throw new ThinklabInternalErrorException("behavior class " + bClass + " unknown");			
 //		}
-		
-		ThinklabBehavior beh = null;
+//		
+//		ThinklabBehavior beh = null;
 //		try {
 //			beh = (ThinklabBehavior) cl.newInstance();
 //		} catch (Exception e) {
@@ -85,11 +84,11 @@ public abstract class ThinklabBehavior {
 //		}
 //		
 //		beh.register(session);
-		
-		return beh;
-	}
+//		
+//		return beh;
+//	}
 	
-	protected void register(ISession session) throws ThinklabException {
+	public void register(ISession session) throws ThinklabException {
 	
 		this.session = session;
 		
