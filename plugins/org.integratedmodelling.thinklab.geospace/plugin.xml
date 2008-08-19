@@ -30,10 +30,14 @@
 		<library type="code" id="batik-xml" path="lib/batik-xml-1.6.jar"/>
 		<library type="code" id="bufr" path="lib/bufr-1.1.00.jar"/>
 		<library type="code" id="ecore" path="lib/ecore-2.2.2.jar"/>
-		<library type="code" id="geoapi" path="lib/geoapi-nogenerics-2.1.0.jar"/>
+		<library type="code" id="geoapi" path="lib/geoapi-nogenerics-2.1.0.jar">
+			<export prefix="*"/>
+		</library>
 		<library type="code" id="gnu-regexp" path="lib/gnu-regexp-1.1.4.jar"/>
 		<library type="code" id="grib" path="lib/grib-5.1.03.jar"/>
-		<library type="code" id="gt2-api" path="lib/gt2-api-2.4.4.jar"/>
+		<library type="code" id="gt2-api" path="lib/gt2-api-2.4.4.jar">
+			<export prefix="*"/>
+		</library>
 		<library type="code" id="gt2-arcgrid" path="lib/gt2-arcgrid-2.4.4.jar"/>
 		<library type="code" id="gt2-arcsde" path="lib/gt2-arcsde-2.4.4.jar"/>
 		<library type="code" id="gt2-brewer" path="lib/gt2-brewer-2.4.4.jar"/>
@@ -63,8 +67,12 @@
 		<library type="code" id="gt2-oracle-spatial" path="lib/gt2-oracle-spatial-2.4.4.jar"/>
 		<library type="code" id="gt2-postgis" path="lib/gt2-postgis-2.4.4.jar"/>
 		<library type="code" id="gt2-postgis-versioned" path="lib/gt2-postgis-versioned-2.4.4.jar"/>
-		<library type="code" id="gt2-referencing" path="lib/gt2-referencing-2.4.4.jar"/>
-		<library type="code" id="gt2-referencing3D" path="lib/gt2-referencing3D-2.4.4.jar"/>
+		<library type="code" id="gt2-referencing" path="lib/gt2-referencing-2.4.4.jar">
+			<export prefix="*"/>
+		</library>
+		<library type="code" id="gt2-referencing3D" path="lib/gt2-referencing3D-2.4.4.jar">
+			<export prefix="*"/>
+		</library>
 		<library type="code" id="gt2-render" path="lib/gt2-render-2.4.4.jar"/>
 		<library type="code" id="gt2-sample-data" path="lib/gt2-sample-data-2.4.4.jar"/>
 		<library type="code" id="gt2-shapefile" path="lib/gt2-shapefile-2.4.4.jar"/>
