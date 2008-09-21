@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -42,6 +43,8 @@ import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IKnowledge;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
+import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.FileTypeFilter;
 import org.semanticweb.owl.apibinding.OWLManager;
 import org.semanticweb.owl.inference.OWLClassReasoner;
@@ -54,6 +57,7 @@ import org.semanticweb.owl.model.OWLException;
 import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLOntologyCreationException;
 import org.semanticweb.owl.model.OWLOntologyManager;
+import org.semanticweb.owl.util.AutoURIMapper;
 import org.semanticweb.owl.util.DLExpressivityChecker;
 import org.semanticweb.owl.util.SimpleURIMapper;
 import org.semanticweb.owl.util.ToldClassHierarchyReasoner;
@@ -85,6 +89,39 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	protected static OWLDataFactory df;
 	protected static FileKnowledgeRepository KR =null;
 
+	class UriPublisher implements IPluginLifecycleListener {
+
+		@Override
+		public void onPluginLoaded(ThinklabPlugin plugin) {
+		}
+
+		@Override
+		public void onPluginUnloaded(ThinklabPlugin plugin) {
+		}
+
+		@Override
+		public void prePluginLoaded(ThinklabPlugin thinklabPlugin) {
+
+			/* add an autourimapper for the ontologies directory if any exists */
+			File ontologiesFolder = 
+				new File(thinklabPlugin.getLoadDirectory() +  "/ontologies");
+				
+			if (ontologiesFolder.exists()) {
+				
+				Thinklab.get().logger().info(
+						"publishing " + ontologiesFolder + 
+						" location into ontology manager");
+				AutoURIMapper mapper = new AutoURIMapper(ontologiesFolder, true);
+				manager.addURIMapper(mapper);
+			}
+		}
+
+		@Override
+		public void prePluginUnloaded(ThinklabPlugin thinklabPlugin) {
+		}
+		
+	}
+	
 	public static FileKnowledgeRepository get() {
 		return KR;
 	}
@@ -107,6 +144,12 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 			registry.registerURI("owl", URI.create("http://www.w3.org/2002/07/owl"));
 			df = manager.getOWLDataFactory();
 			rootConcept = getRootConceptType();
+			
+			/*
+			 * register a plugin listener that will publish the physical location of
+			 * ontologies in plugins, so we don't need to be online to use thinklab.
+			 */
+			KnowledgeManager.registerPluginListener(new UriPublisher());
 		}
 
 	}
@@ -147,8 +190,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	public String importOntology(URL url, String name, boolean saveToRepository) throws ThinklabException {
 		try {
 			URI physicalURI = url.toURI();
-			OWLOntology ontology = manager
-					.loadOntologyFromPhysicalURI(physicalURI);
+			OWLOntology ontology = manager.loadOntology(physicalURI);
 			name = registry.registerURI(name, ontology.getURI());
 			Ontology onto = new Ontology(ontology, this);
 			ontologies.put(name, onto);

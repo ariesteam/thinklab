@@ -187,9 +187,13 @@ public abstract class ThinklabPlugin extends Plugin
 	
 	@Override
 	protected final void doStart() throws Exception {
-
+		
 		loadConfiguration();
 
+		for (IPluginLifecycleListener lis : KnowledgeManager.getPluginListeners()) {
+			lis.prePluginLoaded(this);
+		}
+		
 		preStart();
 		
 
@@ -212,6 +216,10 @@ public abstract class ThinklabPlugin extends Plugin
 		loadExtensions();
 		
 		load(KnowledgeManager.get());
+		
+		for (IPluginLifecycleListener lis : KnowledgeManager.get().getPluginListeners()) {
+			lis.onPluginLoaded(this);
+		}
 	}
 
 	private void loadKboxes() throws ThinklabException {
@@ -286,13 +294,18 @@ public abstract class ThinklabPlugin extends Plugin
 	}
 
 	public File getLoadDirectory() {
+		
+		if (loadFolder == null) {
+			String lf = new File(getDescriptor().getLocation().getFile()).getAbsolutePath();
+			loadFolder = new File(Escape.fromURL(MiscUtilities.getPath(lf).toString()));
+		}
+
 		return loadFolder;
 	}
 	
 	protected void loadConfiguration() throws ThinklabIOException {
-
-		String lf = new File(getDescriptor().getLocation().getFile()).getAbsolutePath();
-		loadFolder = new File(Escape.fromURL(MiscUtilities.getPath(lf).toString()));
+		
+		loadFolder = getLoadDirectory();
 
         plugFolder = LocalConfiguration.getDataDirectory(getDescriptor().getId());
         confFolder = new File(plugFolder + File.separator + "config");
@@ -638,6 +651,10 @@ public abstract class ThinklabPlugin extends Plugin
 	@Override
 	protected final void doStop() throws Exception {
 		
+		for (IPluginLifecycleListener lis : KnowledgeManager.get().getPluginListeners()) {
+			lis.prePluginUnloaded(this);
+		}
+		
 		unloadExtensions();
 		
 		unloadKboxes();
@@ -653,6 +670,10 @@ public abstract class ThinklabPlugin extends Plugin
 		
 		loadExtensions();
 		unload();
+		
+		for (IPluginLifecycleListener lis : KnowledgeManager.get().getPluginListeners()) {
+			lis.onPluginUnloaded(this);
+		}
 	}
 	
 	private void unloadKboxes() {

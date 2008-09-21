@@ -36,6 +36,7 @@ package org.integratedmodelling.thinklab;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,6 +73,7 @@ import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
+import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
 import org.integratedmodelling.thinklab.session.SingleSessionManager;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
@@ -169,7 +171,12 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	 * map concept space names to URIs 
 	 */
 	HashMap<String, String> cs2uri = new HashMap<String, String>();
-
+	
+	/*
+	 * listeners for plugin load/unload can be added through registerPluginListener
+	 */
+	static ArrayList<IPluginLifecycleListener> pluginListeners =
+		new ArrayList<IPluginLifecycleListener>();
 
     /*
      * true when thinklab extended types have been initialized.
@@ -1277,6 +1284,13 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	public void registerXSDTypeMapping(String xsd, String type) {
 		xsdMappings.put(xsd, type);	
 	}
+	
+	public static void registerPluginListener(IPluginLifecycleListener listener) {
+		pluginListeners.add(listener);
+	}
 
+	public static Collection<IPluginLifecycleListener> getPluginListeners() {
+		return pluginListeners;
+	}
 
 }
