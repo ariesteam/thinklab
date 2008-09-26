@@ -36,11 +36,11 @@ public class PairwiseComparator {
 	void rankPair(int critA, int critB, double ranking) {
 		
 		if (rankings == null)
-			throw new ThinklabRuntimeException("PairwiseComparison: no rankings defined, please use static methods.");
-
+			throw new ThinklabRuntimeException("PairwiseComparison: no rankings defined, please use static methods.");			
+		
 		if (critA != critB) {
 			rankings[critA][critB] = ranking;
-			rankings[critB][critA] = -ranking;
+			rankings[critB][critA] = 1.0/ranking;
 		}
 	}
 

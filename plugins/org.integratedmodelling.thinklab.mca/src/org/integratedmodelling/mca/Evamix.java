@@ -373,20 +373,15 @@ public class Evamix {
 					// calculate sum(N1, N2, ...) where Nx= weight*(stdA-stdB)
 					// for each pair of alternatives A and B for each
 					// alternatives
-					ArrayList<Double> Ni_vals = new ArrayList<Double>();
-
+					double sum = 0.0;
 					for (int k : quant_cols) {
 
 						double crit_weight = crit_weights[k];
 						double std_val_A = in_matrix[i][k];
 						double std_val_B = in_matrix[j][k];
-						double ni = crit_weight * (std_val_A - std_val_B);
-						Ni_vals.add(ni);
+						sum += crit_weight * (std_val_A - std_val_B);
 					}
 
-					double sum = 0.0;
-					for (double d : Ni_vals)
-						sum += d;
 					mat[i][j] = sum;
 
 				}
@@ -446,7 +441,7 @@ public class Evamix {
 		// check for no qualitative criteria
 		// TODO: shouldn't even get here if there not qual criteria (so
 		// shouldn't pass result)
-		if (result.num_qual_criteria > 0) {
+		if (result.num_quant_criteria > 0) {
 
 			for (int i = 0; i < dim; i++) {
 				for (int j = 0; j < dim; j++) {
@@ -573,8 +568,8 @@ public class Evamix {
 	}
 
 	/*
-	 * Return a 2D list which is in_matrix with just the quant values
-	 * modified"""
+	 * Return in_matrix with just the quantitative values
+	 * normalized
 	 */
 	private static double[][] standardizeQuantitativeValues(double[][] input,
 			Collection<Integer> quant_cols) {

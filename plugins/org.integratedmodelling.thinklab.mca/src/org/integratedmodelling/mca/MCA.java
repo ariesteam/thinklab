@@ -77,6 +77,9 @@ public class MCA {
 		if (frozen)
 			throw new ThinklabRuntimeException("MCA: cannot add criteria when data input has begun");
 
+		if (!isBenefit && !type.equals(RATIO)) 
+			throw new ThinklabRuntimeException("MCA: cost criteria can only be quantitative");
+		
 		Criterion c = new Criterion();
 		c.name = criterionName;
 		c.type = type;
@@ -196,26 +199,26 @@ public class MCA {
 		mca.declareAlternative("Costanza");
 		mca.declareAlternative("Boumans");
 		
-		mca.declareCriterion("Fama", RATIO, true);
-		mca.declareCriterion("Cattiveria", ORDINAL, false);
+		mca.declareCriterion("Fama", ORDINAL, true);
+		mca.declareCriterion("Cattiveria", RATIO, false);
 		mca.declareCriterion("Simpatia", RATIO, true);
 		
-		mca.setCriterionValue("Villa", "Fama", 3);
-		mca.setCriterionValue("Villa", "Cattiveria", 1);
-		mca.setCriterionValue("Villa", "Simpatia", 5);
+		mca.setCriterionValue("Villa", "Fama", 10);
+		mca.setCriterionValue("Villa", "Cattiveria", 0);
+		mca.setCriterionValue("Villa", "Simpatia", 7);
 
 		mca.setCriterionValue("Costanza", "Fama", 8);
 		mca.setCriterionValue("Costanza", "Cattiveria", 10);
-		mca.setCriterionValue("Costanza", "Simpatia", 1);
+		mca.setCriterionValue("Costanza", "Simpatia", 0);
 
 		mca.setCriterionValue("Boumans", "Fama", 1);
 		mca.setCriterionValue("Boumans", "Cattiveria", 2);
 		mca.setCriterionValue("Boumans", "Simpatia", 7);
 
 		// nice guy scenario
-		mca.setCriterionWeight("Fama", 2);
+		mca.setCriterionWeight("Fama", 0);
 		mca.setCriterionWeight("Cattiveria", 10);
-		mca.setCriterionWeight("Simpatia", 10);
+		mca.setCriterionWeight("Simpatia", 8);
 	
 		System.out.println("*** Nice guy scenario ***\n");
 		try {
@@ -226,8 +229,8 @@ public class MCA {
 		
 		// famous guy scenario
 		mca.setCriterionWeight("Fama", 10);
-		mca.setCriterionWeight("Cattiveria", 5);
-		mca.setCriterionWeight("Simpatia", 2);
+		mca.setCriterionWeight("Cattiveria", 1);
+		mca.setCriterionWeight("Simpatia", 4);
 	
 		System.out.println("\n*** Famous guy scenario ***\n");
 		try {
