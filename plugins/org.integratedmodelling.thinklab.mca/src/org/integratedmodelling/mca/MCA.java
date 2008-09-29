@@ -49,7 +49,7 @@ public class MCA {
 	
 	ArrayList<Criterion> criteria = new ArrayList<Criterion>();
 	ArrayList<Alternative> alternatives = new ArrayList<Alternative>();
-	PairwiseComparator pairwise = null;
+	AHP pairwise = null;
 
 	// we collect weights here, unless the pairwise comparator is used.
 	double weights[] = null;
@@ -125,7 +125,7 @@ public class MCA {
 		}
 	
 		if (pairwise == null) {
-			pairwise = new PairwiseComparator(criteria.size());
+			pairwise = new AHP(criteria.size());
 		}
 		
 		pairwise.rankPair(getCritIndex(criterion1), getCritIndex(criterion2), comparativeWeight);
@@ -200,25 +200,26 @@ public class MCA {
 		mca.declareAlternative("Boumans");
 		
 		mca.declareCriterion("Fama", ORDINAL, true);
-		mca.declareCriterion("Cattiveria", RATIO, false);
+		mca.declareCriterion("Cattiveria", RATIO, true);
 		mca.declareCriterion("Simpatia", RATIO, true);
 		
-		mca.setCriterionValue("Villa", "Fama", 10);
-		mca.setCriterionValue("Villa", "Cattiveria", 0);
-		mca.setCriterionValue("Villa", "Simpatia", 7);
+		mca.setCriterionValue("Villa", "Fama", 0.6);
+		mca.setCriterionValue("Villa", "Cattiveria", 0.1);
+		mca.setCriterionValue("Villa", "Simpatia", 0.7);
 
-		mca.setCriterionValue("Costanza", "Fama", 8);
-		mca.setCriterionValue("Costanza", "Cattiveria", 10);
-		mca.setCriterionValue("Costanza", "Simpatia", 0);
+		mca.setCriterionValue("Costanza", "Fama", 0.9);
+		mca.setCriterionValue("Costanza", "Cattiveria", 0.9);
+		mca.setCriterionValue("Costanza", "Simpatia", 0.1);
 
-		mca.setCriterionValue("Boumans", "Fama", 1);
-		mca.setCriterionValue("Boumans", "Cattiveria", 2);
-		mca.setCriterionValue("Boumans", "Simpatia", 7);
+		mca.setCriterionValue("Boumans", "Fama", 0.1);
+		mca.setCriterionValue("Boumans", "Cattiveria", 0.2);
+		mca.setCriterionValue("Boumans", "Simpatia", 0.7);
 
-		// nice guy scenario
-		mca.setCriterionWeight("Fama", 0);
-		mca.setCriterionWeight("Cattiveria", 10);
-		mca.setCriterionWeight("Simpatia", 8);
+		// nice guy scenario; expert choice gives .374, .363, .263 final rankings for
+		// villa boumans costanza
+		mca.setCriterionWeight("Fama", 0.067);
+		mca.setCriterionWeight("Cattiveria", 0.344);
+		mca.setCriterionWeight("Simpatia", 0.589);
 	
 		System.out.println("*** Nice guy scenario ***\n");
 		try {
@@ -228,9 +229,9 @@ public class MCA {
 		}
 		
 		// famous guy scenario
-		mca.setCriterionWeight("Fama", 10);
-		mca.setCriterionWeight("Cattiveria", 1);
-		mca.setCriterionWeight("Simpatia", 4);
+		mca.setCriterionWeight("Fama", 0.89);
+		mca.setCriterionWeight("Cattiveria", 0.1);
+		mca.setCriterionWeight("Simpatia", 0.01);
 	
 		System.out.println("\n*** Famous guy scenario ***\n");
 		try {

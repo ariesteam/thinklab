@@ -4,6 +4,9 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 
+import cern.colt.matrix.impl.DenseDoubleMatrix2D;
+import cern.colt.matrix.linalg.EigenvalueDecomposition;
+
 /**
  * Helper class to define and obtain absolute quantitative criteria weights from a matrix of
  * pairwise comparison values.
@@ -13,16 +16,20 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
  * to facilitate creating the matrix by calling rankPair on each couple. The other half of the
  * matrix is filled in automatically, and the matrix is initialized to neutral (all 1s).
  * 
+ * TODO calculate and handle inconsistency (requires boring table from Saaty 1980)
+ * TODO implement other weight extraction methods (eigenvalue method is problematic at times)
+ * 
  * @author Ferdinando Villa
  *
  */
-public class PairwiseComparator {
+public class AHP {
 
 	double[][] rankings = null;
+	int size = 0;
 	
-	
-	public PairwiseComparator(int nCriteria) {
+	public AHP(int nCriteria) {
 
+		size = nCriteria;
 		rankings = new double[nCriteria][nCriteria];
 
 		/* initialize to neutral */
@@ -66,38 +73,77 @@ public class PairwiseComparator {
 		return ret;
 	}
 	
+	public double[][] getPairwiseMatrix() {
+		return rankings;
+	}
+	
 	public static double[] getRankings(double[][] ranks) throws ThinklabException {
 
 		double[] ret = new double[ranks.length];
-		
-		/*
-		 * check for antisymmetric matrix
-		 */
-		for (int i = 0; i < ranks.length; i++) {
-			
-			if (ranks[i][i] != 1.0)
-				throw new ThinklabValidationException("PairwiseComparator: input matrix is not antisymmetric");
-			
-			for (int j = 0; j < i; j++) {
-				if ((ranks[i][j] + ranks[j][i]) != 0.0) {
-					throw new ThinklabValidationException("PairwiseComparator: input matrix is not antisymmetric");
-				}
-			}
-		}
-		
+				
 		/*
 		 * compute eigenvalues and eigenvectors
 		 */
+		EigenvalueDecomposition eig = 
+			new EigenvalueDecomposition(new DenseDoubleMatrix2D(ranks));
 		
 		/*
-		 * find dominant eigenvector
+		 * find eigenvector corresponding to dominant real eigenvalue
 		 */
+		int m = 0;
+		double[] vv = eig.getRealEigenvalues().toArray();
+
+		for (int i = 1; i < vv.length; i++) {
+			if (vv[i] > vv[m])
+				m = i;
+		}
+		
+		for (int i = 0; i < ranks.length; i++) {
+			ret[i] = eig.getV().getQuick(m, i);
+		}
 		
 		/* 
-		 * normalize dominant eigenvector into final ranking
+		 * normalize dominant eigenvector to sum up to 1.0
 		 */
+		double min = Evamix.min(ret);
+		double max = Evamix.max(ret);		
+		double sum = 0.0;
+		
+		for (int i = 0; i < ranks.length; i++) {
+			ret[i] = (ret[i] - max + min);
+			sum += ret[i];
+		}
+		for (int i = 0; i < ranks.length; i++) {
+			ret[i] /= sum;
+		}
 		
 		return ret;
+	}
+	
+	public int size() {
+		return size;
+	}
+	
+	public static void main(String[] args) {
+		
+		AHP ahp = new AHP(3);
+		
+		// expert choice gives .067, .344, .589 for 0,1,2
+		ahp.rankPair(0, 1, 9);
+		ahp.rankPair(0, 2, 5);
+		ahp.rankPair(1, 2, 3);
+		
+		double[] r = ahp.getRankings();
+		double[][] m = ahp.getPairwiseMatrix();
+		
+		for (int i = 0; i < ahp.size(); i++) {
+			
+			for (int j = 0; j < ahp.size(); j++) {				
+				System.out.print(m[i][j] + " ");
+			}
+			System.out.println("\t" + r[i]);	
+		}
+		
 	}
 	
 }

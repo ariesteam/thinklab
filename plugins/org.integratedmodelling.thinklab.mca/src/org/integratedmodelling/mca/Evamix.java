@@ -548,8 +548,9 @@ public class Evamix {
 
 		for (int i = 0; i < quant_h; i++) {
 			for (int j = 0; j < quant_h; j++)
-				final_matrix[i][j] = quant_matrix[i][j] * sum_quant_weights
-						+ qual_matrix[i][j] * sum_qual_weights;
+				final_matrix[i][j] = 
+					(quant_matrix[i][j] * sum_quant_weights) +
+					(qual_matrix[i][j] * sum_qual_weights);
 		}
 
 		return final_matrix;
@@ -564,6 +565,19 @@ public class Evamix {
 				final_scores[i] += final_matrix[i][j];
 		}
 
+		// standardize to sum to 1.0
+		double min = min(final_scores);
+		double max = max(final_scores);
+
+		double sum = 0.0;
+		for (int i = 0; i < final_scores.length; i++) {
+			final_scores[i] = (final_scores[i] - max + min);
+			sum += final_scores[i];
+		}
+		for (int i = 0; i < final_scores.length; i++) {
+			final_scores[i] /= sum;
+		}
+		
 		return final_scores;
 	}
 
@@ -592,7 +606,7 @@ public class Evamix {
 		return new_matrix;
 	}
 
-	private static double min(double[] input) {
+	static double min(double[] input) {
 		double ret = input[0];
 		for (int i = 1; i < input.length; i++)
 			if (input[i] < ret)
@@ -600,7 +614,7 @@ public class Evamix {
 		return ret;
 	}
 
-	private static double max(double[] input) {
+	static double max(double[] input) {
 		double ret = input[0];
 		for (int i = 1; i < input.length; i++)
 			if (input[i] > ret)
