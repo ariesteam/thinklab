@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.application" version="0.8.0" class="org.integratedmodelling.application.ApplicationPlugin">
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+	</requires>	
+	<runtime>
+		<library id="core" path="classes/" type="code">
+			<export prefix="*" />
+		</library>
+	</runtime>
+	
+	<extension-point  id="application">
+		<!-- id of the application, so we can say "run <app>" -->
+		<parameter-def id="id" />
+		<!-- one or more packages where we can lookup the step classes from IDs in the specs -->
+		<parameter-def id="step-package" multiplicity="any" />
+		<!-- A list specifying the workflow for the application -->
+		<parameter-def id="workflow" />
+		<!-- the class of the model stack to create -->
+		<parameter-def id="model-class" multiplicity="none-or-one" />
+	</extension-point>
+	
+</plugin>

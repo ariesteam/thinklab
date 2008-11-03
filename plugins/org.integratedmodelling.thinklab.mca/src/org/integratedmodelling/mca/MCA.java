@@ -200,8 +200,8 @@ public class MCA {
 		mca.declareAlternative("Boumans");
 		
 		mca.declareCriterion("Fama", ORDINAL, true);
-		mca.declareCriterion("Cattiveria", RATIO, true);
-		mca.declareCriterion("Simpatia", RATIO, true);
+		mca.declareCriterion("Cattiveria", ORDINAL, true);
+		mca.declareCriterion("Simpatia", ORDINAL, true);
 		
 		mca.setCriterionValue("Villa", "Fama", 0.6);
 		mca.setCriterionValue("Villa", "Cattiveria", 0.1);
@@ -229,8 +229,8 @@ public class MCA {
 		}
 		
 		// famous guy scenario
-		mca.setCriterionWeight("Fama", 0.89);
-		mca.setCriterionWeight("Cattiveria", 0.1);
+		mca.setCriterionWeight("Fama", 0.98);
+		mca.setCriterionWeight("Cattiveria", 0.01);
 		mca.setCriterionWeight("Simpatia", 0.01);
 	
 		System.out.println("\n*** Famous guy scenario ***\n");

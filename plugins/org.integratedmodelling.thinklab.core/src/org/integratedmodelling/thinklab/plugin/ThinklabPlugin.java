@@ -558,7 +558,21 @@ public abstract class ThinklabPlugin extends Plugin
 		return ret;
 	}
 	
-	
+
+	protected String[] getParameters(Extension ext, String field) {
+		
+		String[] ret = null;
+		Collection<Parameter> p = ext.getParameters(field);
+		if (p != null) {
+			
+			int i = 0;
+			ret = new String[p.size()];
+			for (Parameter pp : p)
+				ret[i++] = pp.valueAsString();
+		}
+		return ret;
+	}
+
 	protected String getParameter(Extension ext, String field, String defValue) {
 		
 		String ret = null;

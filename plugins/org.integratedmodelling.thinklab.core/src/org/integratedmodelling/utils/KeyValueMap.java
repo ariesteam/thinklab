@@ -35,6 +35,8 @@ package org.integratedmodelling.utils;
 
 import java.util.HashMap;
 
+import org.integratedmodelling.thinklab.value.BooleanValue;
+
 /**
  * A simple class that parses a key-value string and initializes a map to its values.
  * TODO uses stupid "split" method and won't work with embedded spaces in values. Should be
@@ -45,23 +47,32 @@ import java.util.HashMap;
  */
 public class KeyValueMap extends HashMap<String, String> {
 
-	private void initialize(String s) {
+	private static final long serialVersionUID = 1123680512640721726L;
 
+	private void initialize(String s) {
 		
 		String[] pairs = s.trim().split(" ");
 		for (String p : pairs) {
-			String[] kv = p.split("=");
-			if (kv.length == 2) {
-				String v = kv[1];
-				if (v.startsWith("\"") || v.startsWith("'")) {
-					v = v.substring(1);
-				}
-				if (v.endsWith("\"") || v.endsWith("'")) {
-					v = v.substring(0, v.length()-1);
-				}
-				put(kv[0], v);
-			}
+			addPair(p);
 		}
+	}
+	
+	public void addPair(String p) {
+
+		String[] kv = p.split("=");
+		if (kv.length == 2) {
+			String v = kv[1];
+			if (v.startsWith("\"") || v.startsWith("'")) {
+				v = v.substring(1);
+			}
+			if (v.endsWith("\"") || v.endsWith("'")) {
+				v = v.substring(0, v.length()-1);
+			}
+			put(kv[0], v);
+		}
+	}
+	
+	public KeyValueMap() {
 		
 	}
 	
@@ -78,6 +89,22 @@ public class KeyValueMap extends HashMap<String, String> {
 			System.out.println(entry + " = " + kv.get(entry));
 			
 		}
+	}
+	
+	public int getInt(String key) {
+		return Integer.parseInt(get(key));
+	}
+
+	public float getFloat(String key) {
+		return Float.parseFloat(get(key));
+	}
+	
+	public double getDouble(String key) {
+		return Double.parseDouble(get(key));
+	}
+	
+	public boolean getBoolean(String key) {
+		return BooleanValue.parseBoolean(get(key));
 	}
 	
 }

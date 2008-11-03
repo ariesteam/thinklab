@@ -4,47 +4,41 @@ import java.util.ArrayList;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.utils.CamelCase;
+import org.integratedmodelling.utils.KeyValueMap;
 import org.integratedmodelling.utils.Polylist;
 
 public class Application {
 
-	private ApplicationModel state = null;
-	private ApplicationModel parentState = null;
+	private String id = null;
+	private String applicationModelClass = null;
 	private Polylist workflow = null;
+	private String[] stepPackages = null;
 	
-	/**
-	 * When the empty constructor is used, the application model stack will be created at
-	 * initialization.
-	 */
-	public Application() {
+	Application(String id,
+				Polylist workflow,
+				String applicationModelClass, 
+				String[] stepPackages) {
 		
-	}
-	
-	/**
-	 * Use this one when we want to chain applications, passing an existing state. If we
-	 * pass a "parent" state, the whole state after running this application will be
-	 * pushed on the stack of the parent.
-	 * 
-	 * @param state
-	 */
-	public Application(ApplicationModel state) {
-		parentState = state;
-	}
-	
-	/**
-	 * Parse the workflow from a list, create the model stack unless we have one already,
-	 * and 
-	 * @param workflow
-	 * @param applicationModelClass
-	 * @param stepPackage
-	 */
-	public void initialize(Polylist workflow,
-						   String applicationModelClass, 
-						   String stepPackage) throws ThinklabException {
-		
+		this.id = id;
 		this.workflow = workflow;
-		
+		this.applicationModelClass = applicationModelClass;
+		this.stepPackages = stepPackages;
+	}
+	
+	
+	public String getId() {
+		return id;
+	}
+
+	public ApplicationModel run() throws ThinklabException {
+		return run(null);
+	}
+	
+	public ApplicationModel run(ApplicationModel parentState) throws ThinklabException {
+
 		Class<?> cl = null; 
+		ApplicationModel state = null;
 		
 		try {
 			cl = Class.forName(applicationModelClass);
@@ -56,29 +50,36 @@ public class Application {
 		/*
 		 * create state from class
 		 */
-
-	}
-	
-	
-	public void run() throws ThinklabException {
+		try {
+			state = (ApplicationModel) cl.newInstance();
+		} catch (Exception e) {
+			throw new ThinklabValidationException(
+					"error creating model instance of " + cl + " class");
+		}
 		
 		/*
 		 * interpret workflow list: select next ApplicationStep, run it, push the results
 		 * on the model stack.
 		 */
-		state.push (runStep(workflow));
+		state.push (runStep(state, workflow));
 		
 		/*
 		 * finalize
 		 */
 		if (parentState != null)
 			parentState.push(state);
+		
+		return state;
 	}
 	
 	
-	public Object runStep(Polylist list) {
+	public Object runStep(ApplicationModel state, Polylist list) throws ThinklabException {
 		
 		ArrayList<Object> o = list.toArrayList();
+		
+		ArrayList<Object> args = new ArrayList<Object>();
+		KeyValueMap opts = new KeyValueMap();
+		Object ret = null;
 		
 		String stepname = o.get(0).toString();
 		
@@ -87,18 +88,59 @@ public class Application {
 		for (int i = 1; i < o.size(); i++) {
 			
 			if (o.get(i) instanceof Polylist) {
-				state.push(runStep((Polylist)o.get(i)));
+				args.add(runStep(state, (Polylist)o.get(i)));
 			}
 		}
 		
 		/* eval step */
 		
-		ApplicationStep step = null;
-		Object ret = null;
+		ApplicationStep step = decodeStepName(stepname);
 		
+		if (step != null) {
+			ret = step.run(state, opts, args.toArray(new Object[args.size()]));
+		}
 		
+		state.push(ret);
 		
 		return ret;
+	}
+	
+	protected ApplicationStep decodeStepName(String stepName) throws ThinklabValidationException {
+
+		ArrayList<String> candidates = new ArrayList<String>();
+		ApplicationStep ret = null;
 		
+		if (stepName.contains(".")) {
+			candidates.add(stepName);
+		} else {
+			
+			String sName = CamelCase.toLowerCamelCase(stepName, '-');	
+			for (String s : stepPackages) {
+				candidates.add(s + "." + sName);
+			}
+		}
+		
+		for (String clz : candidates) {
+			
+			Class<?> cl = null;
+			
+			try {
+				cl = Class.forName(clz);
+			} catch (ClassNotFoundException e) {
+			}
+			
+			if (cl != null) {
+				try {
+					ret = (ApplicationStep) cl.newInstance();
+				} catch (Exception e) {
+				}
+			}
+			
+			if (ret != null)
+				return ret;
+		}
+
+		throw new ThinklabValidationException(
+				"application: cannot resolve step " + stepName + " to a step class");
 	}
 }
