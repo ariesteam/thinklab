@@ -45,7 +45,7 @@ import org.java.plugin.registry.Extension;
 
 public class ApplicationPlugin extends ThinklabPlugin {
 
-	static final String PLUGIN_ID = "org.integratedmodelling.thinklab.searchengine";
+	static final String PLUGIN_ID = "org.integratedmodelling.thinklab.application";
 
 	ArrayList<Application> applications = new ArrayList<Application>();
 	

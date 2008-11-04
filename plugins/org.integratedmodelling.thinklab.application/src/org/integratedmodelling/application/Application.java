@@ -143,4 +143,13 @@ public class Application {
 		throw new ThinklabValidationException(
 				"application: cannot resolve step " + stepName + " to a step class");
 	}
+
+
+	public Object run_debug() throws ThinklabException {
+
+		/*
+		 * TODO add debug features
+		 */
+		return run();
+	}
 }
