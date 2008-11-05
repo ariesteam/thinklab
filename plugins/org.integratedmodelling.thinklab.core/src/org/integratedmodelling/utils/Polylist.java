@@ -36,7 +36,9 @@
 
 package org.integratedmodelling.utils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -47,6 +49,10 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.integratedmodelling.thinklab.command.Command;
+import org.integratedmodelling.thinklab.command.CommandManager;
+import org.integratedmodelling.thinklab.command.CommandParser;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
 /**   
@@ -77,6 +83,7 @@ public class Polylist {
 	public interface TokenTransformer {
 		public abstract Object transformString(String string);
 		public abstract Object transformDouble(String string);
+		public abstract Object transformQuote();
 	}
 	
 	/**
@@ -710,6 +717,11 @@ public class Polylist {
 			public Object transformString(String string) {
 				return string;
 			}
+
+			@Override
+			public Object transformQuote() {
+				return "`";
+			}
 			
 		}
 
@@ -758,6 +770,11 @@ public class Polylist {
 					ret = string;
 				}
 				return ret;
+			}
+			
+			@Override
+			public Object transformQuote() {
+				return ":";
 			}
 
 		}
@@ -821,6 +838,8 @@ public class Polylist {
 				tok = functor.transformDouble(new Double(scanner.nval).toString());
 			else if (token == StreamTokenizer.TT_WORD)
 				tok = functor.transformString(scanner.sval);
+			else if (token == '`')
+				tok = functor.transformQuote();
 			else if (token == StreamTokenizer.TT_EOF
 					|| token == StreamTokenizer.TT_EOL) {
 				throw new MalformedListException();
@@ -960,21 +979,60 @@ public class Polylist {
 
 		System.out.println("Type in S expressions for analysis");
 
-		Tokenizer in = new Tokenizer(System.in);
+//		Tokenizer in = new Tokenizer(System.in);
+//
+//		Object ob;
+//		while ((ob = in.nextSexp()) != Tokenizer.eof) {
+//			System.out.println(analysis(ob));
+//		}
+//
+//		System.out.println("Type in R expressions for analysis");
+//
+//		in = new Tokenizer(System.in);
+//
+//		while ((ob = in.nextRexp()) != Tokenizer.eof) {
+//			System.out.println(analysis(ob));
+//		}
+//		System.out.println("Test completed");
+		
+		/* define commands from user input */
+		while(true) {
+			
+			System.out.print("> ");
 
-		Object ob;
-		while ((ob = in.nextSexp()) != Tokenizer.eof) {
-			System.out.println(analysis(ob));
+		     //  open up standard input 
+		      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		      String input = null;
+
+		      //  read the username from the command-line; need to use try/catch with the 
+		      //  readLine() method 
+		      try { 
+		         input = br.readLine(); 
+		      } catch (IOException ioe) { 
+		         System.out.println("IO error"); 
+		         System.exit(1); 
+		      }		
+		      
+			if ("exit".equals(input)) {
+				System.out.println("shell terminated");
+				System.exit(0);
+				break;
+			} else if (!input.trim().equals("")) {
+
+					Polylist l = null;
+					try {
+						l = Polylist.parse(input.trim());
+					} catch (MalformedListException e) {
+						System.out.println("Invalid list input!");
+					}
+					
+					if (l != null)
+						System.out.println("\n" + prettyPrint(l));
+				
+			}
 		}
-
-		System.out.println("Type in R expressions for analysis");
-
-		in = new Tokenizer(System.in);
-
-		while ((ob = in.nextRexp()) != Tokenizer.eof) {
-			System.out.println(analysis(ob));
-		}
-		System.out.println("Test completed");
+		
 	}
 
 	/**
