@@ -7,6 +7,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.utils.KeyValueMap;
 import org.integratedmodelling.utils.Polylist;
 
@@ -141,7 +142,7 @@ public class Interpreter extends DefaultMutableTreeNode {
 			 * global defines, and applications */
 			IValue literal = lookupLiteral(functor);
 			
-			if (IValue != null) {
+			if (literal != null) {
 				
 				
 			} else {
@@ -164,6 +165,16 @@ public class Interpreter extends DefaultMutableTreeNode {
 		}
 		
 		return ret;
+	}
+
+	private Polylist lookupFunction(String functor) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private IValue lookupLiteral(String functor) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 
