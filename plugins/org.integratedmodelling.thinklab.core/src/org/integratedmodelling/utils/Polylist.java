@@ -720,7 +720,7 @@ public class Polylist {
 
 			@Override
 			public Object transformQuote() {
-				return "`";
+				return "'";
 			}
 			
 		}
@@ -774,7 +774,7 @@ public class Polylist {
 			
 			@Override
 			public Object transformQuote() {
-				return ":";
+				return "'";
 			}
 
 		}
@@ -804,6 +804,8 @@ public class Polylist {
 		scanner.wordChars('_', '_');
 		scanner.wordChars('#', '#');
 		scanner.wordChars('$', '$');
+		
+		scanner.ordinaryChar('\'');
 
 		int token = 0;
 		try {
@@ -838,7 +840,7 @@ public class Polylist {
 				tok = functor.transformDouble(new Double(scanner.nval).toString());
 			else if (token == StreamTokenizer.TT_WORD)
 				tok = functor.transformString(scanner.sval);
-			else if (token == '`')
+			else if (token == '\'')
 				tok = functor.transformQuote();
 			else if (token == StreamTokenizer.TT_EOF
 					|| token == StreamTokenizer.TT_EOL) {
