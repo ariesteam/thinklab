@@ -1,11 +1,6 @@
 package org.integratedmodelling.afl;
 
-import java.util.ArrayList;
-
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.utils.CamelCase;
-import org.integratedmodelling.utils.KeyValueMap;
 import org.integratedmodelling.utils.Polylist;
 
 public class Application {
@@ -15,7 +10,7 @@ public class Application {
 	private Polylist workflow = null;
 	private String[] stepPackages = null;
 	
-	Application(String id,
+	public Application(String id,
 				Polylist workflow,
 				String applicationModelClass, 
 				String[] stepPackages) {

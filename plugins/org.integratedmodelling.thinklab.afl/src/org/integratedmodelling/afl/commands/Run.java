@@ -45,7 +45,6 @@ import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * Run an application configured in plugin.xml, or even pass a list to run inline
@@ -72,14 +71,12 @@ public class Run implements CommandHandler {
 		
 		Interpreter interp = app.getInterpreter();
 		
-		Polylist ret = null;
+		IValue ret = null;
 		if (command.hasOption("debug"))
 			ret = interp.run_debug();
 		else
 			ret = interp.run();
 		
-		outputDest.displayOutput("  -> " + ret);
-		
-		return null;
+		return ret;
 	}
 }

@@ -35,6 +35,7 @@ package org.integratedmodelling.afl;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import org.integratedmodelling.afl.Application;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
