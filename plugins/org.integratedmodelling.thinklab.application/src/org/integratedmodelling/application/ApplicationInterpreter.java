@@ -34,14 +34,13 @@ public class ApplicationInterpreter {
 	
 	protected ApplicationFunctor decodeStepName(String stepName) throws ThinklabValidationException {
 
-		ArrayList<String> candidates = new ArrayList<String>();
 		ApplicationFunctor ret = null;
 		
 		String fClass = functorClass.get(stepName);
-
+		Class<?> cl = null;
 			
 			try {
-				cl = Class.forName(clz);
+				cl = Class.forName(fClass);
 			} catch (ClassNotFoundException e) {
 			}
 			
@@ -60,7 +59,7 @@ public class ApplicationInterpreter {
 	}
 
 
-	public Object run_debug() throws ThinklabException {
+	public Polylist run_debug() throws ThinklabException {
 
 		/*
 		 * TODO add debug features

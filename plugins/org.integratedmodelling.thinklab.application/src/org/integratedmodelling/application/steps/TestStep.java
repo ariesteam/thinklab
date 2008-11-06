@@ -9,7 +9,7 @@ import org.integratedmodelling.utils.Polylist;
 public class TestStep implements ApplicationFunctor {
 
 	static {
-		ApplicationInterpreter.register("dio", "org.integratedmodelling.application.steps.TestStep");
+		ApplicationInterpreter.registerFunctor("test", "org.integratedmodelling.application.steps.TestStep");
 	}
 	
 	@Override

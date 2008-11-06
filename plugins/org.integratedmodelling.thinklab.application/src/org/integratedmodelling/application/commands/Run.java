@@ -34,6 +34,7 @@
 package org.integratedmodelling.application.commands;
 
 import org.integratedmodelling.application.Application;
+import org.integratedmodelling.application.ApplicationInterpreter;
 import org.integratedmodelling.application.ApplicationPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
@@ -44,6 +45,7 @@ import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.utils.Polylist;
 
 /**
  * Run an application configured in plugin.xml, or even pass a list to run inline
@@ -68,11 +70,13 @@ public class Run implements CommandHandler {
 			throw new ThinklabResourceNotFoundException("application " + appn + " is not defined");
 		}
 		
-		Object ret = null;
+		ApplicationInterpreter interp = app.getInterpreter();
+		
+		Polylist ret = null;
 		if (command.hasOption("debug"))
-			ret = app.run_debug();
+			ret = interp.run_debug();
 		else
-			ret = app.run();
+			ret = interp.run();
 		
 		outputDest.displayOutput("  -> " + ret);
 		
