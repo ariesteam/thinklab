@@ -8,7 +8,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.integratedmodelling.afl.exceptions.ThinklabAFLException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.value.ListValue;
+import org.integratedmodelling.thinklab.value.TextValue;
 import org.integratedmodelling.utils.KeyValueMap;
 import org.integratedmodelling.utils.Polylist;
 
@@ -29,18 +32,19 @@ public class Interpreter extends DefaultMutableTreeNode {
 	
 	private Polylist funct;
 	private StepListener model;
+	private ISession session = null;
 	
-	public void initialize(StepListener model, Polylist funct) {
+	public void initialize(StepListener model, Polylist funct, ISession session) {
 		this.model = model;
 		this.funct = funct;
+		this.session = null;
 	}
 	
 	public static void registerFunctor(String id, String functorClass) {
-		
+		Interpreter.functorClass.put(id, functorClass);
 	}
 	
 	public IValue run() throws ThinklabException {
-
 		return eval(model, funct);
 	}
 	
@@ -83,7 +87,7 @@ public class Interpreter extends DefaultMutableTreeNode {
 		
 		ArrayList<Object> o = list.toArrayList();
 		
-		ArrayList<Object> args = new ArrayList<Object>();
+		ArrayList<IValue> args = new ArrayList<IValue>();
 		KeyValueMap opts = new KeyValueMap();
 		IValue ret = null;
 		
@@ -97,25 +101,20 @@ public class Interpreter extends DefaultMutableTreeNode {
 	
 			
 			if (o.get(i) instanceof Polylist) {
-				if (quoted) {
 				
-					args.add(o.get(i));
+				if (quoted) {
+					args.add(new ListValue((Polylist)(o.get(i))));
 					quoted = false;	
-					
-				} else {
+				} else  {
 					args.add(eval(state, (Polylist)o.get(i)));
 				}
 			} else if (o.get(i).equals("'")) {
-				
 				quoted = true;
-				
 			} else {
 				
 				if (quoted) {
-		
-					args.add(o.get(i));
+					args.add(new TextValue(o.get(i).toString()));
 					quoted = false;
-					
 				} else {
 					
 				}
@@ -127,6 +126,18 @@ public class Interpreter extends DefaultMutableTreeNode {
 			 /*
 			  * define new local function
 			  */
+			
+		} else if (functor.equals("literal")) {
+			
+			/*
+			 * create literal value
+			 */
+			
+		} else if (functor.equals("let")) {
+			
+			/* 
+			 * bind value
+			 */
 			
 		} else if (functor.equals("cond")) {
 			
@@ -158,6 +169,7 @@ public class Interpreter extends DefaultMutableTreeNode {
 	private IValue resolveSymbol(String functor) throws ThinklabException {
 		
 		IValue ret = null;
+
 		
 		/*
 		 * resolve functor: lookup order should be built-ins, primitives, local defines, 
@@ -184,6 +196,20 @@ public class Interpreter extends DefaultMutableTreeNode {
 				
 			} else {
 				
+				/*
+				 * lookup Java functor
+				 */
+				String f = functorClass.get(functor); 
+				
+				if (f != null) {
+					
+				} else {
+					
+					/*
+					 * lookup command as last alternative
+					 */
+					
+				}
 				
 			}
 			
@@ -197,6 +223,10 @@ public class Interpreter extends DefaultMutableTreeNode {
 		Polylist ret = null;
 		Interpreter intp = this;
 
+		/*
+		 * TODO if the function is in a parent interpreter, we must exec it
+		 * there. 
+		 */
 		while (ret == null && intp != null) {
 			ret = intp.functions.get(functor);
 			intp = (Interpreter) intp.getParent();
@@ -208,12 +238,30 @@ public class Interpreter extends DefaultMutableTreeNode {
 	private IValue lookupLiteral(String functor) {
 
 		IValue ret = null;
+		
+		
 		Interpreter intp = this;
 
 		while (ret == null && intp != null) {
 			ret = intp.literals.get(functor);
 			intp = (Interpreter) intp.getParent();
 		}
+
+		/*
+		 * check if it's an object in current session - of course if we have
+		 * a session
+		 */
+		if (ret == null && functor.startsWith("#") && this.session  != null) {
+			/* TODO */
+		}
+		
+		/*
+		 * check if it is a concept or a known global instance
+		 */
+		if (ret == null && functor.contains(":")) {
+			/* TODO */
+		}
+
 		
 		return ret;
 	}

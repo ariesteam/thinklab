@@ -3,8 +3,8 @@ package org.integratedmodelling.afl.steps;
 import org.integratedmodelling.afl.Functor;
 import org.integratedmodelling.afl.Interpreter;
 import org.integratedmodelling.afl.StepListener;
+import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.utils.KeyValueMap;
-import org.integratedmodelling.utils.Polylist;
 
 public class TestStep implements Functor {
 
@@ -13,8 +13,7 @@ public class TestStep implements Functor {
 	}
 	
 	@Override
-	public Polylist run(StepListener model, KeyValueMap options,
-			Object... arguments) {
+	public IValue run(StepListener model, KeyValueMap options, IValue... arguments) {
 		// TODO Auto-generated method stub
 		return null;
 	}
