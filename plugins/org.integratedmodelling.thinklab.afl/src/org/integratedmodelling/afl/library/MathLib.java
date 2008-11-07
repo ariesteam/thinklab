@@ -17,8 +17,8 @@ public class MathLib implements AFLLibrary {
 	class Sum implements Functor {
 
 		@Override
-		public IValue eval(ISession session, Collection<StepListener>  model,
-				IValue ... arguments) throws ThinklabAFLException {
+		public IValue eval(Interpreter interpreter, ISession session,
+				Collection<StepListener>  model, IValue ... arguments) throws ThinklabAFLException {
 			
 			double sum = 0.0;
 			
@@ -39,8 +39,8 @@ public class MathLib implements AFLLibrary {
 	class Multiplication implements Functor {
 
 		@Override
-		public IValue eval(ISession session, Collection<StepListener>  model,
-				IValue... arguments) throws ThinklabAFLException {
+		public IValue eval(Interpreter interpreter, ISession session,
+				Collection<StepListener>  model, IValue... arguments) throws ThinklabAFLException {
 			
 			double sum = 1.0;
 			
@@ -60,8 +60,8 @@ public class MathLib implements AFLLibrary {
 	class Subtraction implements Functor {
 
 		@Override
-		public IValue eval(ISession session, Collection<StepListener> model,
-				IValue... arguments) throws ThinklabAFLException {
+		public IValue eval(Interpreter interpreter, ISession session,
+				Collection<StepListener> model, IValue... arguments) throws ThinklabAFLException {
 			
 			double val = 0.0;
 			
@@ -78,8 +78,8 @@ public class MathLib implements AFLLibrary {
 	class Division implements Functor {
 
 		@Override
-		public IValue eval(ISession session, Collection<StepListener> model,
-				IValue... arguments) throws ThinklabAFLException {
+		public IValue eval(Interpreter interpreter, ISession session,
+				Collection<StepListener> model, IValue... arguments) throws ThinklabAFLException {
 			
 			double val = 0.0;
 			
@@ -96,8 +96,8 @@ public class MathLib implements AFLLibrary {
 	class Rest implements Functor {
 
 		@Override
-		public IValue eval(ISession session, Collection<StepListener> model,
-				IValue... arguments) throws ThinklabAFLException {
+		public IValue eval(Interpreter interpreter, ISession session,
+				Collection<StepListener> model, IValue... arguments) throws ThinklabAFLException {
 			
 			double val = 0.0;
 			

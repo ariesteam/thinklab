@@ -212,7 +212,7 @@ public class Interpreter extends DefaultMutableTreeNode {
 		if (primitive != null) {
 
 			found = true;
-			ret = primitive.eval(session, listeners, args.toArray(new IValue[args.size()]));
+			ret = primitive.eval(this, session, listeners, args.toArray(new IValue[args.size()]));
 
 		} else {
 

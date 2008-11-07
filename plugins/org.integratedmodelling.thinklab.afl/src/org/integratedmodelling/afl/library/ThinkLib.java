@@ -27,8 +27,8 @@ public class ThinkLib implements AFLLibrary {
 	class Expand implements Functor {
 
 		@Override
-		public IValue eval(ISession session,
-				Collection<StepListener> listeners, IValue... args)
+		public IValue eval(Interpreter interpreter,
+				ISession session, Collection<StepListener> listeners, IValue... args)
 				throws ThinklabAFLException {
 			
 			if (args == null || args.length != 1 || !(args[0] instanceof ObjectReferenceValue))
@@ -55,8 +55,8 @@ public class ThinkLib implements AFLLibrary {
 	class Load implements Functor {
 
 		@Override
-		public IValue eval(ISession session,
-				Collection<StepListener> listeners, IValue... args)
+		public IValue eval(Interpreter interpreter,
+				ISession session, Collection<StepListener> listeners, IValue... args)
 				throws ThinklabAFLException {
 
 			IValue ret = null;

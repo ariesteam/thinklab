@@ -17,8 +17,8 @@ public class StringLib implements AFLLibrary {
 	class Length implements Functor {
 
 		@Override
-		public IValue eval(ISession session,
-				Collection<StepListener> listeners, IValue... args)
+		public IValue eval(Interpreter interpreter,
+				ISession session, Collection<StepListener> listeners, IValue... args)
 				throws ThinklabAFLException {
 
 			int len = 0;

@@ -8,6 +8,6 @@ import org.integratedmodelling.thinklab.interfaces.IValue;
 
 public interface Functor {
 
-	public abstract IValue eval(ISession session, Collection<StepListener> listeners, IValue ... args) throws ThinklabAFLException;
+	public abstract IValue eval(Interpreter interpreter, ISession session, Collection<StepListener> listeners, IValue ... args) throws ThinklabAFLException;
 	
 }
