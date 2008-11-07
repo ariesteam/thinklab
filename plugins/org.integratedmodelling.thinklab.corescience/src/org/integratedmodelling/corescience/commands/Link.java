@@ -38,6 +38,7 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.interfaces.ICommandInputProvider;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IConformance;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
@@ -57,8 +58,8 @@ import org.integratedmodelling.thinklab.interfaces.IValue;
  */
 public class Link implements CommandHandler {
 
-	public IValue execute(Command command, ICommandOutputReceptor outputDest,
-			ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ICommandInputProvider inputSource,
+			ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
 
 		String obs1 = command.getArgumentAsString("c1");
 		String obs2 = command.getArgumentAsString("c1");

@@ -52,6 +52,8 @@ import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.interfaces.ICommandInputProvider;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -70,6 +72,24 @@ public class GraphicalShell {
 	Font inputFont = new Font("SansSerif", Font.BOLD, 12);
 	Font outputFont = new Font("SansSerif", Font.PLAIN, 12);
 
+	class ConsoleCommandInputProvider implements ICommandInputProvider {
+
+		BufferedReader in = null;
+		
+		public ConsoleCommandInputProvider() {
+			in = new BufferedReader(new InputStreamReader(console.getInputStream()));
+		}
+		
+		@Override
+		public String readLine() throws ThinklabIOException {
+			try {
+				return in.readLine();
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+		
+	}
 	
 	class ConsoleCommandOutputReceptor implements ICommandOutputReceptor {
 
@@ -125,15 +145,16 @@ public class GraphicalShell {
 	}
 
 	public void startConsole() throws Exception {
-		
-		ICommandOutputReceptor cout = new ConsoleCommandOutputReceptor();
-		
+				
 		ConsolePanel jpanels = new ConsolePanel();
+
+		ICommandOutputReceptor cout = new ConsoleCommandOutputReceptor();
+		ICommandInputProvider cinp = new ConsoleCommandInputProvider();
 		
 		/* greet user */
 		printStatusMessage();
 		
-		BufferedReader in = new BufferedReader(new InputStreamReader(console.getInputStream()));
+	
 		String input = "";
 		
 		/* define commands from user input */
@@ -141,11 +162,9 @@ public class GraphicalShell {
 			
 			console.print("> ");
 			console.setStyle(inputFont);
-			try {
-				input = in.readLine();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			
+			input = cinp.readLine();
+
 			console.setStyle(outputFont);
 			
 			if ("exit".equals(input)) {
@@ -160,7 +179,7 @@ public class GraphicalShell {
 					if (cmd == null)
 						continue;
 					
-					IValue result = CommandManager.get().submitCommand(cmd, cout, session);
+					IValue result = CommandManager.get().submitCommand(cmd, cinp, cout, session);
                     if (result != null)
                         console.println(result.toString());
 				} catch (ThinklabException e) {

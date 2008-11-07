@@ -887,7 +887,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#retrieveInstance(java.lang.String)
 	 */
-	public IKnowledgeSubject retrieveInstance(String resultID) throws ThinklabMalformedSemanticTypeException {
+	public IInstance retrieveInstance(String resultID) throws ThinklabMalformedSemanticTypeException {
 		return retrieveInstance(new SemanticType(resultID));
 	}
 

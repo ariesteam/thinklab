@@ -1,10 +1,13 @@
 package org.integratedmodelling.afl;
 
+import java.util.Collection;
+
+import org.integratedmodelling.afl.exceptions.ThinklabAFLException;
+import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.utils.KeyValueMap;
 
 public interface Functor {
 
-	public abstract IValue run(StepListener model, KeyValueMap options, IValue ... arguments);
+	public abstract IValue eval(ISession session, Collection<StepListener> listeners, IValue ... args) throws ThinklabAFLException;
 	
 }

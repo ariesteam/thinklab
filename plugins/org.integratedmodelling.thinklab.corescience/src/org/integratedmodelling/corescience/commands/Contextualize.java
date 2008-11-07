@@ -43,6 +43,7 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.interfaces.ICommandInputProvider;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.ISession;
@@ -50,8 +51,8 @@ import org.integratedmodelling.thinklab.interfaces.IValue;
 
 public class Contextualize implements CommandHandler {
 
-	public IValue execute(Command command, ICommandOutputReceptor outputDest,
-			ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ICommandInputProvider inputSource,
+			ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
 
 		String obs = command.getArgumentAsString("c1");
 		String wft = command.getArgumentAsString("w");

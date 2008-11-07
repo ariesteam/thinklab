@@ -108,7 +108,7 @@ public class Command {
     
     public Command(String ID, HashMap<String, String> args) throws ThinklabException {
     	if (ID != null)
-    		declaration = CommandManager.get().requireDeclarationForCommand(ID);   
+    		declaration = CommandManager.get().requireDeclarationForCommand(ID);
         this.args = args;
         opts = null;
     }
@@ -225,6 +225,16 @@ public class Command {
     
     public String getArgumentAsString(String argName) {
         return args == null ? null : args.get(argName);
+    }
+    
+    /**
+     * NOTE: this will return true for optional arguments that were not supplied on the 
+     * command line but have a default value declared for them.
+     * @param argName
+     * @return
+     */
+    public boolean hasArgument(String argName) {
+    	return args != null && args.get(argName) != null && !args.get(argName).equals("");
     }
     
     public boolean hasOption(String optName) {

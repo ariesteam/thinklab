@@ -41,7 +41,7 @@ import org.integratedmodelling.utils.Polylist;
 
 public class ListValue extends ParsedLiteralValue {
 
-    Polylist value;
+    protected Polylist value;
     
     public ListValue() throws ThinklabNoKMException {
         super();
@@ -51,7 +51,7 @@ public class ListValue extends ParsedLiteralValue {
         super(c);
     }
 
-    public ListValue(String s) throws ThinklabValidationException, ThinklabNoKMException {
+    public ListValue(String s) throws ThinklabValidationException {
         try {
             value = Polylist.parse(s);
         } catch (MalformedListException e) {
@@ -59,7 +59,7 @@ public class ListValue extends ParsedLiteralValue {
         }
     }
     
-    public ListValue(Polylist s) throws ThinklabNoKMException {
+    public ListValue(Polylist s) {
         value = s;
     }
     
@@ -78,6 +78,10 @@ public class ListValue extends ParsedLiteralValue {
     
     public boolean isList() {
         return true;
+    }
+    
+    public String toString() {
+    	return value == null ? "nil" : (value + " [" + getConcept() + "]");
     }
 
 }

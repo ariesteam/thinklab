@@ -42,6 +42,7 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.interfaces.ICommandInputProvider;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -55,8 +56,8 @@ import org.integratedmodelling.utils.XMLDocument;
  */
 public class GISToOPAL implements CommandHandler {
 
-	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
-			ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ICommandInputProvider inputSource,
+			ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
 
 		String toload = command.getArgumentAsString("resource");
 		String output = command.getArgumentAsString("output");

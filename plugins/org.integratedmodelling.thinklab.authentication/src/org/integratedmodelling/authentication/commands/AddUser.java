@@ -37,14 +37,15 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.interfaces.ICommandInputProvider;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 
 public class AddUser implements CommandHandler {
 
-	public IValue execute(Command command, ICommandOutputReceptor outputDest,
-			ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ICommandInputProvider inputSource,
+			ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
 
 		// TODO this should figure out what the semantic type is for, cross
 		// check properly, and

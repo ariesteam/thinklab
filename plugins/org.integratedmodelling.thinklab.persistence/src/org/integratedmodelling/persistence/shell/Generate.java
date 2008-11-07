@@ -38,6 +38,7 @@ import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.interfaces.ICommandInputProvider;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
@@ -54,8 +55,8 @@ import org.integratedmodelling.thinklab.value.TextValue;
  */
 public class Generate implements CommandHandler {
 
-	public IValue execute(Command command, ICommandOutputReceptor outputDest,
-			ISession session, KnowledgeManager km) {
+	public IValue execute(Command command, ICommandInputProvider inputSource,
+			ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) {
 		SemanticType s1;
 		IConcept concept;
 		if (command.getArgumentAsString("c1") == null)

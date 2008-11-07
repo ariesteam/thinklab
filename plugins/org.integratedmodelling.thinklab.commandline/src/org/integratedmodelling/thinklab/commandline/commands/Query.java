@@ -37,6 +37,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.interfaces.ICommandInputProvider;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.IQuery;
@@ -51,8 +52,8 @@ import org.integratedmodelling.utils.Polylist;
  */
 public class Query implements CommandHandler {
 
-	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
-			ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ICommandInputProvider inputSource,
+			ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
 
 		String kb = command.getOptionAsString("kbox");
 		String toEval = command.getArgumentAsString("query");

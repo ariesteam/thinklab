@@ -43,6 +43,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
+import org.integratedmodelling.thinklab.interfaces.ICommandInputProvider;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
@@ -59,8 +60,8 @@ import org.integratedmodelling.utils.MiscUtilities;
  */
 public class KExport implements CommandHandler {
 
-	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
-			ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ICommandInputProvider inputSource,
+			ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
 
 		String toload = command.getArgumentAsString("resource");
 		String output = command.getArgumentAsString("output");

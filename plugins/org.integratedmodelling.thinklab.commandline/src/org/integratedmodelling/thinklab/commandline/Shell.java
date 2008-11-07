@@ -102,7 +102,7 @@ public class Shell {
 					if (cmd == null)
 						continue;
 					
-					IValue result = CommandManager.get().submitCommand(cmd, cout, session);
+					IValue result = CommandManager.get().submitCommand(cmd, null, cout, session);
                     if (result != null)
                         System.out.println(result.toString());
 				} catch (ThinklabException e) {

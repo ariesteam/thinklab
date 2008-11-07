@@ -36,6 +36,10 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.integratedmodelling.afl.Application;
+import org.integratedmodelling.afl.library.ListLib;
+import org.integratedmodelling.afl.library.MathLib;
+import org.integratedmodelling.afl.library.StringLib;
+import org.integratedmodelling.afl.library.ThinkLib;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -48,6 +52,8 @@ public class AFLPlugin extends ThinklabPlugin {
 
 	static final String PLUGIN_ID = "org.integratedmodelling.thinklab.afl";
 
+	Interpreter rootInterpreter = null;
+	
 	ArrayList<Application> applications = new ArrayList<Application>();
 	
 	@Override
@@ -106,13 +112,36 @@ public class AFLPlugin extends ThinklabPlugin {
 		return ret;
 	}
 
+	/**
+	 * The root AFL interpreter. Any user code should execute in a child of this one.
+	 * @return
+	 */
+	public Interpreter getRootInterpreter() {
+		return rootInterpreter;
+	}
+	
 	@Override
 	protected void load(KnowledgeManager km) throws ThinklabException {
+		
+		/*
+		 * create the root interpreter
+		 */
+		rootInterpreter = new Interpreter();
+		
+		/*
+		 * preload all static content, initialize heap.
+		 */
+		new MathLib().installLibrary(rootInterpreter);
+		new StringLib().installLibrary(rootInterpreter);
+		new ListLib().installLibrary(rootInterpreter);
+		new ThinkLib().installLibrary(rootInterpreter);
+		
 	}
 
 	@Override
 	protected void unload() throws ThinklabException {
-		// drop all search engines, close them		
+		
+		rootInterpreter.cleanup();
 	}
 
 }

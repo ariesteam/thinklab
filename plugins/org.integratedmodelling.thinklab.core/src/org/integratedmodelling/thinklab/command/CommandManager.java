@@ -8,6 +8,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.interfaces.ICommandInputProvider;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.ISessionManager;
@@ -81,6 +82,7 @@ public class CommandManager {
 	 * 
 	 * @param cmd
 	 *            the command
+	 * @param inputReader TODO
 	 * @param outputWriter
 	 * @param session
 	 *            the session t
@@ -90,7 +92,7 @@ public class CommandManager {
 	 *             if anything happens in command execution
 	 */
 	public IValue submitCommand(Command cmd,
-			ICommandOutputReceptor outputWriter, ISession session)
+			ICommandInputProvider inputReader, ICommandOutputReceptor outputWriter, ISession session)
 			throws ThinklabException {
 
 		/*
@@ -101,7 +103,7 @@ public class CommandManager {
 			return null;
 
 		CommandHandler a = actions.get(cmd.getDeclaration().ID);
-		return a.execute(cmd, outputWriter, session, KnowledgeManager.get());
+		return a.execute(cmd, inputReader, outputWriter, session, KnowledgeManager.get());
 		// TODO transfer to knowledge manager logging policy
 	}
 

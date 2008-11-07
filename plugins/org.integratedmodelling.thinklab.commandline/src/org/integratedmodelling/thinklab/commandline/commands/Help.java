@@ -40,6 +40,7 @@ import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.interfaces.ICommandInputProvider;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -47,8 +48,8 @@ import org.integratedmodelling.thinklab.interfaces.IValue;
 /** the help command for the command-line interface */
 public class Help implements CommandHandler {
 
-	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
-			ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ICommandInputProvider inputSource,
+			ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
 
 		String topic = command.getArgumentAsString("topic");
 

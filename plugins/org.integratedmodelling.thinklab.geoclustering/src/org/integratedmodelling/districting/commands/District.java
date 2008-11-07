@@ -49,6 +49,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.interfaces.ICommandInputProvider;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
@@ -153,8 +154,8 @@ public class District implements CommandHandler {
 		return ret;
 	}
 
-	public IValue execute(Command command, ICommandOutputReceptor outputDest,
-			ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ICommandInputProvider inputSource,
+			ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
 
 		int k = command.getArgument("k").asNumber().asInteger();
 		String oid = command.getArgumentAsString("dataset");

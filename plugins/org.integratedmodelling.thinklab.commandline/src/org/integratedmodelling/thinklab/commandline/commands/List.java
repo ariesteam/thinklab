@@ -40,6 +40,7 @@ import org.integratedmodelling.thinklab.commandline.CommandLine;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnknownResourceException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.interfaces.ICommandInputProvider;
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
@@ -186,8 +187,8 @@ public class List implements CommandHandler {
 		outputWriter.displayOutput("total: " + result.getResultCount());
 	}
 
-	public IValue execute(Command command, ICommandOutputReceptor outputWriter,
-			ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ICommandInputProvider inputSource,
+			ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
 
 		String subject = command.getArgumentAsString("subject");
 

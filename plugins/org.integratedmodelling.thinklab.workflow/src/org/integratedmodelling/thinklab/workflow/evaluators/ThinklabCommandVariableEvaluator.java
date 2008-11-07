@@ -42,7 +42,7 @@ public class ThinklabCommandVariableEvaluator implements
 
 		try {		
 			Command command = new Command(expression, context);
-			ret = CommandManager.get().submitCommand(command, outputWriter, session);
+			ret = CommandManager.get().submitCommand(command, null, outputWriter, session);
 			
 		} catch (ThinklabException e) {
 			throw new ThinklabWorkflowException(e);

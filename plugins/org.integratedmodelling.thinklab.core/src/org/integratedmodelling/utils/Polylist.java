@@ -804,7 +804,7 @@ public class Polylist {
 		scanner.wordChars('_', '_');
 		scanner.wordChars('#', '#');
 		scanner.wordChars('$', '$');
-		
+		scanner.wordChars('*', '*');		
 		scanner.ordinaryChar('\'');
 
 		int token = 0;
@@ -857,9 +857,9 @@ public class Polylist {
 				ret = ret.append(list(parseStringWithFunctor(scanner, functor)));
 			else if (token == ')')
 				break;
-			else
-				ret = ret.append(list(functor.transformString(tok.toString())));
-
+			else {
+				ret = ret.append(list(functor.transformString(tok == null ? ("" + (char)token) : tok.toString())));
+			}
 		}
 
 		return ret;
