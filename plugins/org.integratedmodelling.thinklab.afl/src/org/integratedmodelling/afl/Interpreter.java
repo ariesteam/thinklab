@@ -11,7 +11,6 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.ISession;
@@ -182,14 +181,6 @@ public class Interpreter extends DefaultMutableTreeNode {
 			ret = new FunctionValue(body.getList(), parm.getList());
 			
 		} else if (functor.equals("if")) {
-
-		} else if (functor.equals("car")) {
-			
-		} else if (functor.equals("cdr")) {
-
-		} else if (functor.equals("cons")) {
-
-		} else if (functor.equals("append")) {
 
 		} else if (functor.equals("loop")) {
 
