@@ -41,6 +41,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.swing.BorderFactory;
@@ -87,6 +88,11 @@ public class GraphicalShell {
 			} catch (IOException e) {
 				throw new ThinklabIOException(e);
 			}
+		}
+
+		@Override
+		public InputStream getInputStream() {
+			return console.getInputStream();
 		}
 		
 	}

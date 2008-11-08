@@ -84,38 +84,59 @@ public class Run implements CommandHandler {
 			while(true) {
 				
 				outputDest.appendOutput("AFL> ");
-				
-				// read a list from the CL. For now limited to single-line expressions; we
-				// must provide a multiline reader/editor if this gets used significantly.
-				// Facilities to read lists from inputstreams should be made available in Polylist.
-				String input = inputSource.readLine(); 
-			      
-				if ("exit".equals(input)) {
-					outputDest.displayOutput("AFL interpreter terminated");
-					break;
-				} else if (!input.trim().equals("")) {
-
-						Polylist l = null;
-						try {
-							l = Polylist.parse(input.trim());
-						} catch (MalformedListException e) {
-							ret = null;
-							outputDest.displayOutput("ERROR: " + e.getMessage());
-						}
-						
-						if (l != null) {
-							
-							try {
-								ret = intp.eval(l);
-							} catch (ThinklabAFLException e) {
-								ret = null;
-								outputDest.displayOutput("ERROR: " + e.getMessage());
-							}
-							
-							outputDest.displayOutput("  --> " + (ret == null ? "nil" : ret));
-						}
+				Polylist l = null;
 					
+				try {
+					l = Polylist.read(inputSource.getInputStream());
+				} catch (Exception e) {
+					outputDest.displayOutput("ERROR: " + e.getMessage());					
 				}
+
+				// (exit) to exit
+				if (l == null || (l.length() == 1 && l.first().toString().equals("exit")))
+					break;
+
+				try {
+					ret = intp.eval(l);
+				} catch (ThinklabAFLException e) {
+					ret = null;
+					outputDest.displayOutput("ERROR: " + e.getMessage());
+				}
+				
+				outputDest.displayOutput("  --> " + (ret == null ? "nil" : ret));
+
+//				
+//				// read a list from the CL. For now limited to single-line expressions; we
+//				// must provide a multiline reader/editor if this gets used significantly.
+//				// Facilities to read lists from inputstreams should be made available in Polylist.
+//				String input = inputSource.readLine(); 
+//			      
+//				if ("exit".equals(input)) {
+//					outputDest.displayOutput("AFL interpreter terminated");
+//					break;
+//				} else if (!input.trim().equals("")) {
+//
+//						Polylist l = null;
+//						try {
+//							l = Polylist.parse(input.trim());
+//						} catch (MalformedListException e) {
+//							ret = null;
+//							outputDest.displayOutput("ERROR: " + e.getMessage());
+//						}
+//						
+//						if (l != null) {
+//							
+//							try {
+//								ret = intp.eval(l);
+//							} catch (ThinklabAFLException e) {
+//								ret = null;
+//								outputDest.displayOutput("ERROR: " + e.getMessage());
+//							}
+//							
+//							outputDest.displayOutput("  --> " + (ret == null ? "nil" : ret));
+//						}
+//					
+//				}
 			}
 			
 		} else {

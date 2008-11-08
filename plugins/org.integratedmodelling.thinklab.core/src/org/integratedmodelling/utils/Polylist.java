@@ -38,6 +38,7 @@ package org.integratedmodelling.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
@@ -699,6 +700,48 @@ public class Polylist {
 			return false;
 	}
 
+	
+	/**
+	 * Read the next list from the passed inputstream, stop when list is complete.
+	 * 
+	 * @param input
+	 * @return a new list, or null if the stream finishes without a list. 
+	 * @throws MalformedListException 
+	 * @throws IOException 
+	 */
+	public static Polylist read(InputStream input) throws MalformedListException, IOException {
+		
+		String s = "";
+		
+		int c = input.read();
+		int pcount = 0;
+		boolean inString = false;
+		
+		while (c != -1) {
+		
+			s = s + (char)c;
+			
+			if (c == '"') {
+				inString = !inString;
+			} else if (!inString) {
+				if (c == '(')
+					pcount ++;
+				else if (c == ')') {
+					pcount --;
+					if (pcount == 0)
+						break;
+				}
+			}
+			c = input.read();
+		}
+		
+		if (s.trim().startsWith("("))
+			return Polylist.parse(s);
+		
+		return null;
+	}
+	
+	
 	/**
 	 * Create a list from a string. Quoted strings are handled properly. Numbers are
 	 * stored in the list as doubles; all other objects are stored as strings.
@@ -712,7 +755,7 @@ public class Polylist {
 
 			public Object transformDouble(String string) {
 				return string;
-			}
+		}
 
 			public Object transformString(String string) {
 				return string;
@@ -1001,38 +1044,52 @@ public class Polylist {
 		while(true) {
 			
 			System.out.print("> ");
-
-		     //  open up standard input 
-		      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-		      String input = null;
-
-		      //  read the username from the command-line; need to use try/catch with the 
-		      //  readLine() method 
-		      try { 
-		         input = br.readLine(); 
-		      } catch (IOException ioe) { 
-		         System.out.println("IO error"); 
-		         System.exit(1); 
-		      }		
-		      
-			if ("exit".equals(input)) {
-				System.out.println("shell terminated");
-				System.exit(0);
-				break;
-			} else if (!input.trim().equals("")) {
-
-					Polylist l = null;
-					try {
-						l = Polylist.parse(input.trim());
-					} catch (MalformedListException e) {
-						System.out.println("Invalid list input!");
-					}
-					
-					if (l != null)
-						System.out.println("\n" + prettyPrint(l));
-				
+			Polylist l = null;
+			
+			try {
+				l = Polylist.read(System.in);
+			} catch (MalformedListException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+
+			if (l != null)
+				System.out.println(Polylist.prettyPrint(l));
+			
+//		     //  open up standard input 
+//		      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//
+//		      String input = null;
+//
+//		      //  read the username from the command-line; need to use try/catch with the 
+//		      //  readLine() method 
+//		      try { 
+//		         input = br.readLine(); 
+//		      } catch (IOException ioe) { 
+//		         System.out.println("IO error"); 
+//		         System.exit(1); 
+//		      }		
+//		      
+//			if ("exit".equals(input)) {
+//				System.out.println("shell terminated");
+//				System.exit(0);
+//				break;
+//			} else if (!input.trim().equals("")) {
+//
+//					Polylist l = null;
+//					try {
+//						l = Polylist.parse(input.trim());
+//					} catch (MalformedListException e) {
+//						System.out.println("Invalid list input!");
+//					}
+//					
+//					if (l != null)
+//						System.out.println("\n" + prettyPrint(l));
+//				
+//			}
 		}
 		
 	}
