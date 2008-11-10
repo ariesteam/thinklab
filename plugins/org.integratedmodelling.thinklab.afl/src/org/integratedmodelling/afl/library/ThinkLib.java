@@ -7,8 +7,10 @@ import org.integratedmodelling.afl.Functor;
 import org.integratedmodelling.afl.Interpreter;
 import org.integratedmodelling.afl.StepListener;
 import org.integratedmodelling.afl.exceptions.ThinklabAFLException;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -29,7 +31,7 @@ public class ThinkLib implements AFLLibrary {
 		@Override
 		public IValue eval(Interpreter interpreter,
 				ISession session, Collection<StepListener> listeners, IValue... args)
-				throws ThinklabAFLException {
+				throws ThinklabException {
 			
 			if (args == null || args.length != 1 || !(args[0] instanceof ObjectReferenceValue))
 				throw new ThinklabAFLException("expand: wrong arguments");
@@ -42,6 +44,35 @@ public class ThinkLib implements AFLLibrary {
 			}
 			
 			return new ListValue(l);
+			
+		}
+	}
+	
+
+	class Literal implements Functor {
+
+		@Override
+		public IValue eval(Interpreter interpreter,
+				ISession session, Collection<StepListener> listeners, IValue... args)
+				throws ThinklabException {
+			
+			IValue ret = null;
+			
+			if (args == null || args.length != 2)
+				throw new ThinklabAFLException("args: wrong arguments");
+			
+			try {
+
+				IConcept c = args[0].getConcept();
+				String s = args[1].toString();
+				
+				ret = KnowledgeManager.get().validateLiteral(c, s, null);
+				
+			} catch (ThinklabException e) {
+				throw new ThinklabAFLException(e);
+			}
+			
+			return ret;
 			
 		}
 		
@@ -57,7 +88,7 @@ public class ThinkLib implements AFLLibrary {
 		@Override
 		public IValue eval(Interpreter interpreter,
 				ISession session, Collection<StepListener> listeners, IValue... args)
-				throws ThinklabAFLException {
+				throws ThinklabException {
 
 			IValue ret = null;
 			
@@ -92,6 +123,7 @@ public class ThinkLib implements AFLLibrary {
 
 		intp.registerFunctor("expand", new Expand());
 		intp.registerFunctor("load", new Load());
+		intp.registerFunctor("literal", new Literal());
 	}
 
 }

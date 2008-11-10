@@ -13,6 +13,7 @@ import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 import org.integratedmodelling.thinkscape.interfaces.ICommandReceptor;
 import javax.swing.JButton;
 import java.awt.Font;
+import java.io.OutputStream;
 
 public class ShellPanel extends JPanel implements ICommandOutputReceptor {
 
@@ -138,6 +139,12 @@ public class ShellPanel extends JPanel implements ICommandOutputReceptor {
 
 	public void appendOutput(String result) {
 		getSessionTextArea().append(result);
+	}
+
+	@Override
+	public OutputStream getOutputStream() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	 
 

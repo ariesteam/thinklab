@@ -47,6 +47,7 @@ import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
+import org.integratedmodelling.utils.Polylist;
 
 /**
  * <p>A generalized container for a value that always has a concept associated. The value may be defined from a literal or a basic
@@ -381,9 +382,12 @@ public class Value implements IValue {
      * @throws ThinklabValidationException
      * @throws ThinklabNoKMException
      */
-    public static Value getValueForObject(Object value) throws ThinklabException {
+    public static IValue getValueForObject(Object value) throws ThinklabException {
 
         Value ret = null;
+        
+        if (value instanceof IValue)
+        	return (IValue) value;
         
         if (value instanceof Integer) {
             ret = new NumberValue((Integer)value);
@@ -397,6 +401,8 @@ public class Value implements IValue {
             ret = new TextValue((String)value);
         } else if (value instanceof Boolean) {
             ret = new BooleanValue((Boolean)value);
+        }  else if (value instanceof Polylist) {
+            ret = new ListValue((Polylist)value);
         } else 
 
         	/*

@@ -17,12 +17,17 @@ import org.integratedmodelling.utils.Polylist;
 
 public class ListLib implements AFLLibrary {
 
+	/**
+	 * make list out of arguments
+	 * @author Ferdinando
+	 *
+	 */
 	public class List implements Functor {
 
 		@Override
 		public IValue eval(Interpreter interpreter,
 				ISession session, Collection<StepListener> listeners, IValue... args)
-				throws ThinklabAFLException {
+				throws ThinklabException {
 
 			Polylist pl = Polylist.PolylistFromArray(args);
 			return new ListValue(pl);
@@ -30,12 +35,19 @@ public class ListLib implements AFLLibrary {
 		
 	}
 	
+	/**
+	 * map function over arg list.
+	 * FIXME: only works with functions, not primitives.
+	 * 
+	 * @author Ferdinando
+	 *
+	 */
 	public class Map implements Functor {
 
 		@Override
 		public IValue eval(Interpreter interpreter,
 				ISession session, Collection<StepListener> listeners, IValue... args)
-				throws ThinklabAFLException {
+				throws ThinklabException {
 			
 			/*
 			 * TODO all error checking
@@ -67,8 +79,8 @@ public class ListLib implements AFLLibrary {
 		@Override
 		public IValue eval(Interpreter interpreter,
 				ISession session, Collection<StepListener> listeners, IValue... args)
-				throws ThinklabAFLException {
-			return (IValue)(((ListValue)args[0]).getList().first());
+				throws ThinklabException {
+			return Interpreter.promote((((ListValue)args[0]).getList().first()));
 		}
 	}
 
@@ -77,7 +89,7 @@ public class ListLib implements AFLLibrary {
 		@Override
 		public IValue eval(Interpreter interpreter,
 				ISession session, Collection<StepListener> listeners, IValue... args)
-				throws ThinklabAFLException {
+				throws ThinklabException {
 			
 			return new ListValue(((ListValue)args[0]).getList().rest());
 		}
@@ -88,8 +100,12 @@ public class ListLib implements AFLLibrary {
 
 		intp.registerFunctor("list", new List());
 		intp.registerFunctor("map", new Map());
+		
+		// car and cdr are available through both historic and modern names. See if that's OK.
 		intp.registerFunctor("car", new Car());
 		intp.registerFunctor("cdr", new Cdr());
+		intp.registerFunctor("first", new Car());
+		intp.registerFunctor("rest", new Cdr());
 
 	}
 

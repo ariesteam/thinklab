@@ -1,5 +1,8 @@
-package org.integratedmodelling.afl;
+package org.integratedmodelling.afl.application;
 
+import org.integratedmodelling.afl.AFLPlugin;
+import org.integratedmodelling.afl.Interpreter;
+import org.integratedmodelling.afl.StepListener;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.Polylist;
 
@@ -35,7 +38,7 @@ public class Application {
 	 */
 	public Interpreter getInterpreter() throws ThinklabValidationException {
 		
-		Interpreter ret = new Interpreter();
+		Interpreter ret = new Interpreter(AFLPlugin.get().getRootInterpreter());
 		
 		Class<?> cl = null; 
 		StepListener state = null;

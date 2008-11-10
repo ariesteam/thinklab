@@ -33,6 +33,8 @@
  **/
 package org.integratedmodelling.thinklab.command;
 
+import java.io.OutputStream;
+
 import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
 
 public class ShellCommandOutputReceptor implements ICommandOutputReceptor {
@@ -43,6 +45,11 @@ public class ShellCommandOutputReceptor implements ICommandOutputReceptor {
 
 	public void appendOutput(String output) {
 		System.out.print(output);
+	}
+
+	@Override
+	public OutputStream getOutputStream() {
+		return System.out;
 	}
 
 }

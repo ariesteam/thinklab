@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -4447,6 +4448,12 @@ public class ThinkScapeGUI extends JPanel implements GrowlGUI, ICommandOutputRec
 	public void appendOutput(String string) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public OutputStream getOutputStream() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

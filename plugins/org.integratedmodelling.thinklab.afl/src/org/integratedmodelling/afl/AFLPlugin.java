@@ -35,7 +35,7 @@ package org.integratedmodelling.afl;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.integratedmodelling.afl.Application;
+import org.integratedmodelling.afl.application.Application;
 import org.integratedmodelling.afl.library.ListLib;
 import org.integratedmodelling.afl.library.MathLib;
 import org.integratedmodelling.afl.library.StringLib;

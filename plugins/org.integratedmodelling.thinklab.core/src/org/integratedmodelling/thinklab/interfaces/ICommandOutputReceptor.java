@@ -33,6 +33,8 @@
  **/
 package org.integratedmodelling.thinklab.interfaces;
 
+import java.io.OutputStream;
+
 /**
  * Simplest possible way to print and log portably from commands.
  * 
@@ -50,5 +52,10 @@ public interface ICommandOutputReceptor {
 	 * print output without line break
 	 */
 	public void appendOutput(String string);
+
+	/*
+	 * get the output stream
+	 */
+	public OutputStream getOutputStream();
 	 
 }
