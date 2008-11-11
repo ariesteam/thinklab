@@ -16,8 +16,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-
 import clojure.lang.LineNumberingPushbackReader;
 import clojure.lang.LispReader;
 import clojure.lang.RT;
@@ -111,7 +109,6 @@ public class REPL {
 		} finally {
 			Var.popThreadBindings();
 		}
-		System.exit(0);
 	}
 
 	public void setInput(InputStream inputStream) {
