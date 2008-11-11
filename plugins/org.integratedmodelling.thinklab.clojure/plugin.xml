@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.clojure" version="0.8.0" class="org.integratedmodelling.clojure.ClojurePlugin">
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+	</requires>	
+	<runtime>
+		<library id="clo" path="lib/clojure.jar" type="code">
+			<export prefix="*" />
+		</library>
+		<library id="core" path="classes/" type="code">
+			<export prefix="*" />
+		</library>
+		<library id="startup-code" path="clj/" type="resources" />
+	</runtime>
+	
+	<!-- interpreter -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="clojure">
+		<parameter id="class" value="org.integratedmodelling.clojure.commands.Clojure"/>
+		<parameter id="command-name" value="clojure"/>
+		<parameter id="command-description" value="run the Clojure interpreter interactively or on an external program"/>
+		<parameter id="optional-argument-names" value="resource"/>
+		<parameter id="optional-argument-types" value="thinklab-core:Text"/>
+		<parameter id="optional-argument-descriptions" value="URL or local file with code to execute"/>
+	</extension>
+	
+</plugin>

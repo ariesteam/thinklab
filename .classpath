@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.corescience/classes" path="plugins/org.integratedmodelling.thinklab.corescience/src"/>
+	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.clojure/classes" path="plugins/org.integratedmodelling.thinklab.clojure/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.afl/classes" path="plugins/org.integratedmodelling.thinklab.afl/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.mca/classes" path="plugins/org.integratedmodelling.thinklab.mca/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.ecology/classes" path="plugins/org.integratedmodelling.thinklab.ecology/src"/>
@@ -244,5 +245,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/owlapi-rdfxmlparser.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/owlapi-rdfxmlrenderer.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/owlapi-util.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.clojure/lib/clojure.jar" sourcepath="/clojure"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

@@ -57,5 +57,6 @@ public interface ICommandOutputReceptor {
 	 * get the output stream
 	 */
 	public OutputStream getOutputStream();
+
 	 
 }
