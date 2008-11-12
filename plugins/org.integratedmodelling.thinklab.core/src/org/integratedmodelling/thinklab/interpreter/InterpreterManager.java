@@ -37,15 +37,13 @@ import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.integratedmodelling.thinklab.ConceptVisitor;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnknownLanguageException;
 import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
+import org.integratedmodelling.thinklab.extensions.LanguageInterpreter.IContext;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
-import org.integratedmodelling.thinklab.extensions.LanguageInterpreter.IContext;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
-import org.java.plugin.registry.PluginRegistry;
 
 public class InterpreterManager {
 
@@ -199,6 +197,4 @@ public class InterpreterManager {
 			
 		return ret;
 	}
-
-
 }

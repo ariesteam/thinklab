@@ -463,4 +463,10 @@ public interface IValue {
 	 */
 	public abstract IValue execute(AlgorithmValue aa, ISession session) throws ThinklabException;
 
+	/**
+	 * Return the literal we're wrapping stripped of its semantics, with the most appropriate type.
+	 * @return
+	 */
+	public abstract Object demote();
+	
 }

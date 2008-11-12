@@ -675,6 +675,11 @@ public class Value implements IValue {
 		
 		return interpreter.execute(algorithm, context);
 	}
+
+	@Override
+	public Object demote() {
+		return concept;
+	}
    
     
 }

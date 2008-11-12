@@ -150,4 +150,9 @@ public class BooleanValue extends ParsedLiteralValue {
 		return value;
 	}
 
+	@Override
+	public Object demote() {
+		return new Boolean(value);
+	}
+
 }

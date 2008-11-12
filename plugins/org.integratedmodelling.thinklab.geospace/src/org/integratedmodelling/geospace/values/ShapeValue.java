@@ -355,5 +355,9 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource {
 		return crs;
 	}
 	
-	
+	@Override
+	public Object demote() {
+		return shape;
+	}
+
 }

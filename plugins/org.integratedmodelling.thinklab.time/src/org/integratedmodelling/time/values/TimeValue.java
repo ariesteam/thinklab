@@ -280,6 +280,11 @@ public class TimeValue extends ParsedLiteralValue {
 		return value.getYear();
 	}
 	
+	@Override
+	public Object demote() {
+		return value;
+	}
+
 // I don't know why it doesn't get called.
 //	public boolean equals(Object other) {
 //		

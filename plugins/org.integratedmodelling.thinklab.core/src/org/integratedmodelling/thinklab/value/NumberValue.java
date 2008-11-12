@@ -262,4 +262,9 @@ public class NumberValue extends ParsedLiteralValue {
 		value = d;
 	}
 
+	@Override
+	public Object demote() {
+		return value;
+	}
+
 }

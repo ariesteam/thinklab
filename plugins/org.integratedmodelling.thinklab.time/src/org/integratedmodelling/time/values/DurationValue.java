@@ -148,4 +148,9 @@ public class DurationValue extends ParsedLiteralValue {
 		return value;
 	}
     
+	@Override
+	public Object demote() {
+		return value;
+	}
+
 }

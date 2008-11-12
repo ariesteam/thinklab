@@ -1,30 +1,63 @@
 ;; ------------------------------------------------------------------------------------------
-;; Clojure extension for Thinklab access
-;; Very basic for now
+;; Basic Thinklab bindings for Clojure
+;; 
 ;; @author Ferdinando Villa
 ;; @date 11/11/2008
 ;; ------------------------------------------------------------------------------------------
-(ns tl)
+(ns tl
+   (:import 
+   		(org.integratedmodelling.clojure ClojureBridge)
+   		(org.integratedmodelling.thinklab.kbox KBoxManager)
+    	(org.integratedmodelling.thinklab Thinklab KnowledgeManager)))
 
+(defn plist 
+	"Internal: translates a polylist into a sequence"
+	[polylist]
+	(. ClojureBridge (p2list polylist)))
+
+(defn listp 
+	"Internal: translates a sequence into a polylist"
+	[sequence]
+	(. ClojureBridge (list2p sequence)))
+	
 (defn require-plugin
-	"Ensures that the specified plugin is loaded"
+	"Ensures that the specified thinklab plugin is loaded"
 	[pname]
 	(.. 
-		(. org.integratedmodelling.thinklab.Thinklab (get)) 
+		(. Thinklab (get)) 
 			(getManager) 
 			(activatePlugin pname)))
 
 (defn c
-	"Returns the concept named by the passed semantic type."
+	"Returns the concept named by the passed semantic type string."
 	[stype]
-	(.. org.integratedmodelling.thinklab.KnowledgeManager (get) (requireConcept stype)))
+	(.. KnowledgeManager (get) (requireConcept stype)))
 	  
 (defn lit
    "Returns the literal IValue for the passed concept and string value."
    [concept textval]
-   (.. org.integratedmodelling.thinklab.KnowledgeManager 
+   (.. KnowledgeManager 
    			(get) 
    			(validateLiteral concept textval nil)))
+		
+(defn get-property-values
+	"Return a list of the values of a relationship (or a map of all relationships to their values
+	 if the property is not specified) of an object. The values returned are stripped of semantics."
+	([object]
+		(. ClojureBridge (getRelationships object true)))
+	([object property]
+		(get (. ClojureBridge (getRelationships object true)) property)))
+		
+(defn get-property-value 
+	"Return the value of the given property, or nil if not present. It is assumed that the
+	property has one value in the object; any further values are ignored."
+	[object property]
+	(first (get-property-values object property)))
+
+(defn get-implementation
+	"Return the Java object that has been created as the implementation of the passed instance."
+	[object]
+	(. object (getImplementation)))
 
 (defn load-objects
 	"Load instances from a source into a session and return them as a sequence"
@@ -44,6 +77,17 @@
 (defn kbox 
 	"Returns a named kbox"
 	[kname]
-	(.. org.integratedmodelling.thinklab.kbox.KBoxManager
+	(.. KBoxManager
 		(get)
 			(retrieveGlobalKBox kname)))
+			
+(defn query
+	"Query the passed kbox with a constraint list, return a list of result objects"
+	[kbox constraint]
+;; TODO
+	())
+	
+(defn serialize-object
+	"Serialize the passed instance to a list"
+	[inst]
+	(plist (. inst (toList nil))))

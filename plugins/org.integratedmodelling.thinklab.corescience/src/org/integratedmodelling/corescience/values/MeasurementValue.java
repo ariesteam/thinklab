@@ -225,5 +225,9 @@ public class MeasurementValue extends ParsedLiteralValue implements IObservation
 		return null;
 	}
 
+	@Override
+	public Object demote() {
+		return value;
+	}
 
 }

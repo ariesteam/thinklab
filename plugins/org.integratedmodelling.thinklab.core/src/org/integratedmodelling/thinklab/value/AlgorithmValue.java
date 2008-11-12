@@ -102,4 +102,9 @@ public class AlgorithmValue extends Value {
         return value;
     }
 
+	@Override
+	public Object demote() {
+		return value;
+	}
+
 }

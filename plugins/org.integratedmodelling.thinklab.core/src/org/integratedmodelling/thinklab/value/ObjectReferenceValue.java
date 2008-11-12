@@ -81,4 +81,10 @@ public class ObjectReferenceValue extends Value {
     public IInstance getObject() {
     	return val;
     }
+    
+	@Override
+	public Object demote() {
+		return val;
+	}
+
 }

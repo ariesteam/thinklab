@@ -37,6 +37,7 @@ public class REPL {
 
 		final Symbol USER = Symbol.create("user");
 		final Symbol CLOJURE = Symbol.create("clojure.core");
+		final Symbol TL = Symbol.create("tl");
 		
 		final Var in_ns = RT.var("clojure.core", "in-ns");
 		final Var refer = RT.var("clojure.core", "refer");
@@ -68,7 +69,8 @@ public class REPL {
 			// create and move into the user namespace
 			in_ns.invoke(USER);
 			refer.invoke(CLOJURE);
-
+			refer.invoke(TL);
+			
 			// load any supplied files
 			for (String file : RT.processCommandLine(args))
 				Compiler.loadFile(file);

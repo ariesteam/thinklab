@@ -155,6 +155,11 @@
 		<parameter-def id="description" multiplicity="none-or-one" />
 	</extension-point>
 
+	<extension-point id="language-binding">
+		<parameter-def id="language" />
+		<parameter-def id="resource" multiplicity="one-or-more"/>
+	</extension-point>
+
 	<extension-point id="language-interpreter">
 		<parameter-def id="class" />
 		<parameter-def id="language-type" />

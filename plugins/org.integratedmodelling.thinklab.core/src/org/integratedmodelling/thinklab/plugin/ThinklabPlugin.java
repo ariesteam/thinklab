@@ -212,6 +212,7 @@ public abstract class ThinklabPlugin extends Plugin
 		loadInstanceImplementationConstructors();
 		loadSessionListeners();
 		loadKboxes();
+		loadLanguageBindings();
 		
 		loadExtensions();
 		
@@ -222,6 +223,19 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 
+	private void loadLanguageBindings() throws ThinklabException {
+		
+		for (Extension ext : getOwnThinklabExtensions("language-binding")) {
+
+			String language = getParameter(ext, "language");
+			String[] resource = getParameters(ext, "resource");
+			
+// TODO			InterpreterManager.get().getInterpreter(algorithm, session)
+			
+		}
+	}
+
+	
 	private void loadKboxes() throws ThinklabException {
 
 		for (Extension ext : getOwnThinklabExtensions("kbox")) {

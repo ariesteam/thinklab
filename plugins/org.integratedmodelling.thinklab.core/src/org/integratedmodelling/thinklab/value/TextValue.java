@@ -133,5 +133,9 @@ public class TextValue extends Value {
 		return this.value.compareTo(onum.value);
 	}
 
-    
+	@Override
+	public Object demote() {
+		return value;
+	}
+
 }

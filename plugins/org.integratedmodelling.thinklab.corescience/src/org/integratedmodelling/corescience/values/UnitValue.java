@@ -138,5 +138,11 @@ public class UnitValue extends Value implements IUnitValue {
     public Unit<?> getUnit() {
     	return unit;
     }
+    
+	@Override
+	public Object demote() {
+		return unit;
+	}
+
 
 }

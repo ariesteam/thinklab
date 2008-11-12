@@ -151,4 +151,9 @@ public class PeriodValue extends ParsedLiteralValue {
     	return interval.getEndMillis();
     }
 
+	@Override
+	public Object demote() {
+		return interval;
+	}
+
 }

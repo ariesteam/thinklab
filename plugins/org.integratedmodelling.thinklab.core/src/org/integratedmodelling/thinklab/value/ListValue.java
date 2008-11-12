@@ -83,5 +83,11 @@ public class ListValue extends ParsedLiteralValue {
     public String toString() {
     	return value == null ? "nil" : (value + " [" + getConcept() + "]");
     }
+    
+	@Override
+	public Object demote() {
+		return value;
+	}
+
 
 }
