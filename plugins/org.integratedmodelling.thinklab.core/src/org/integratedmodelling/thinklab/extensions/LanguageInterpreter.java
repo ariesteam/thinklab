@@ -6,6 +6,9 @@ import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 
+/**
+ * @deprecated
+ */
 public interface LanguageInterpreter {
 	
 	public interface IContext {
