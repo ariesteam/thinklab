@@ -27,11 +27,23 @@
    			(validateLiteral concept textval nil)))
 
 (defn load-objects
-	"Load instances from a source into a session and return them as an array"
+	"Load instances from a source into a session and return them as a sequence"
 	[resource session]
-	(to-array (. session (loadObjects resource))))
+	(concat (. session (loadObjects resource))))
 	
 (defn is 
 	"Returns true if a concept or an instance is subsumed by another concept"
 	[knowledge conc]
 	(. knowledge (is conc))) 
+	
+(defn get-type 
+	"Returns the type of the passed object"
+	[object]
+	(. object (getDirectType)))
+	
+(defn kbox 
+	"Returns a named kbox"
+	[kname]
+	(.. org.integratedmodelling.thinklab.kbox.KBoxManager
+		(get)
+			(retrieveGlobalKBox kname)))
