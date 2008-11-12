@@ -1,9 +1,37 @@
+;; ------------------------------------------------------------------------------------------
 ;; Clojure extension for Thinklab access
+;; Very basic for now
+;; @author Ferdinando Villa
+;; @date 11/11/2008
+;; ------------------------------------------------------------------------------------------
+(ns tl)
 
-(ns clojure.thinklab)
+(defn require-plugin
+	"Ensures that the specified plugin is loaded"
+	[pname]
+	(.. 
+		(. org.integratedmodelling.thinklab.Thinklab (get)) 
+			(getManager) 
+			(activatePlugin pname)))
 
-(defn ciao
-  "Returns a set that is the union of the two sets."
-  []
-   "ciao")
+(defn c
+	"Returns the concept named by the passed semantic type."
+	[stype]
+	(.. org.integratedmodelling.thinklab.KnowledgeManager (get) (requireConcept stype)))
+	  
+(defn lit
+   "Returns the literal IValue for the passed concept and string value."
+   [concept textval]
+   (.. org.integratedmodelling.thinklab.KnowledgeManager 
+   			(get) 
+   			(validateLiteral concept textval nil)))
 
+(defn load-objects
+	"Load instances from a source into a session and return them as an array"
+	[resource session]
+	(to-array (. session (loadObjects resource))))
+	
+(defn is 
+	"Returns true if a concept or an instance is subsumed by another concept"
+	[knowledge conc]
+	(. knowledge (is conc))) 

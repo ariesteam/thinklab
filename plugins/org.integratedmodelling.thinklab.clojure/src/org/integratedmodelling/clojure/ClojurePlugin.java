@@ -19,8 +19,9 @@ public class ClojurePlugin extends ThinklabPlugin {
 	@Override
 	protected void load(KnowledgeManager km) throws ThinklabException {
 		try {			
-			logger().info("initializing Clojure system");
+			logger().info("initializing Clojure runtime");
 			RT.loadResourceScript("thinklab.clj");			
+			logger().info("Clojure initialized successfully");
 		} catch (Exception e) {
 			throw new ThinklabPluginException(e);
 		}

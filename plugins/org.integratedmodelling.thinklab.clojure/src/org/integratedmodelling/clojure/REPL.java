@@ -16,6 +16,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+
+import org.integratedmodelling.thinklab.interfaces.ISession;
+
 import clojure.lang.LineNumberingPushbackReader;
 import clojure.lang.LispReader;
 import clojure.lang.RT;
@@ -28,7 +31,8 @@ public class REPL {
 	
 	private InputStream input = System.in;
 	private OutputStream output = System.out;
-
+	private ISession session = null;
+	
 	public void run(String[] args) throws Exception {
 
 		final Symbol USER = Symbol.create("user");
@@ -47,7 +51,7 @@ public class REPL {
 		final Var star2 = RT.var("clojure.core", "*2");
 		final Var star3 = RT.var("clojure.core", "*3");
 		final Var stare = RT.var("clojure.core", "*e");
-
+		final Var sess  = RT.var("tl", "*session*");
 		// RT.init();
 
 		try {
@@ -59,7 +63,7 @@ public class REPL {
 					warn_on_reflection.get(), print_meta, print_meta.get(),
 					print_length, print_length.get(), print_level, print_level
 							.get(), compile_path, "classes", star1, null,
-					star2, null, star3, null, stare, null));
+					star2, null, star3, null, stare, null, sess, this.session));
 
 			// create and move into the user namespace
 			in_ns.invoke(USER);
@@ -77,10 +81,10 @@ public class REPL {
 			Object EOF = new Object();
 
 			// start the loop
-			w.write("Clojure\n");
+			w.write("*** Thinklab Clojure interpreter; enter expressions, 'exit' exits ***\n");
 			for (;;) {
 				try {
-					w.write(/* Compiler.currentNS().name + */ "=> ");
+					w.write(Compiler.currentNS().name + "=> ");
 					w.flush();
 					Object r = LispReader.read(rdr, false, EOF, false);
 					if (r == EOF) {
@@ -119,4 +123,7 @@ public class REPL {
 		this.output = outputStream;
 	}
 
+	public void setSession(ISession session) {
+		this.session = session;
+	}
 }

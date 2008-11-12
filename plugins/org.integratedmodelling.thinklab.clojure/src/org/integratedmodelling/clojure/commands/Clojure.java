@@ -56,15 +56,6 @@ public class Clojure implements CommandHandler {
 			ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
 
 		IValue ret = null;
-
-//		Interpreter intp = 
-//			new Interpreter(AFLPlugin.get().getRootInterpreter());
-//		
-//		intp.setSession(session);
-//		intp.setOutput(outputDest.getOutputStream());
-//		intp.setInput(inputSource.getInputStream());
-
-
 		String[] args = null;
 		
 		if (!command.hasArgument("resource")) {
@@ -89,6 +80,8 @@ public class Clojure implements CommandHandler {
 			
 			repl.setInput(inputSource.getInputStream());
 			repl.setOutput(outputDest.getOutputStream());
+			repl.setSession(session);
+			
 			repl.run(args);
 			
 		} catch (Exception e) {
