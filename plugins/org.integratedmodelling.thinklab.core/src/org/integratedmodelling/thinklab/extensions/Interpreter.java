@@ -48,6 +48,15 @@ public interface Interpreter {
 	public abstract IValue eval(Object code, Object ... args) throws ThinklabException;
 	public abstract IValue eval(Object code, HashMap<String,Object> args) throws ThinklabException;
 	public abstract IValue eval(URL source) throws ThinklabException;
+	
+	/**
+	 * This one is different from eval because the bindings must remain in effect 
+	 * globally, so if the language doesn't have shared memory or similar mechanisms,
+	 * it must store the bindings and load them at every new interpreter created.
+	 * 
+	 * @param source
+	 * @throws ThinklabException
+	 */
 	public abstract void loadBindings(URL source) throws ThinklabException;
 
 }
