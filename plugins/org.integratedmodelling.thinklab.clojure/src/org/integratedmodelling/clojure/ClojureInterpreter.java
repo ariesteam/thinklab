@@ -11,7 +11,6 @@ import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.utils.Escape;
-import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.Compiler;

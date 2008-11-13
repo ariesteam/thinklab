@@ -14,20 +14,19 @@
 (defn get-session
 	"Retrieve the current session. Throw an exception if no session was passed to the interpreter
 	 in the current thread, and true is passed as an argument."
-	([] (eval '*session*))
+	([] (if (nil? (resolve '*session*)) nil (eval '*session*)))
 	([complain]
 	(do 
-		(def sess (eval '*session*))
-		(if (and (nil? sess) complain) 
+		(if (and (nil? (resolve '*session*)) complain) 
 			(throw (new ThinklabValidationException "no session is defined")))
-		sess)))
+		(if (nil? (resolve '*session*)) nil (eval '*session*)))))
 
-(defn plist 
+(defn- plist 
 	"Internal: translates a polylist into a sequence"
 	[polylist]
 	(. ClojureBridge (p2list polylist)))
 
-(defn listp 
+(defn- listp 
 	"Internal: translates a sequence into a polylist"
 	[sequence]
 	(. ClojureBridge (list2p sequence)))

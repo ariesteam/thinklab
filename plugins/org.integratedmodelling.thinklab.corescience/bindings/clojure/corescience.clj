@@ -31,12 +31,12 @@
 (defn get-dependencies
 	"Retrieve and return all the observations that the passed one depends upon."
 	[observation]
-	nil)
+	(get-property-values observation "observation:dependsOn"))
 	
 (defn get-contingencies
 	"Retrieve and return all the observations that the passed one is contingent to."
 	[observation]
-	nil)
+	(get-property-values observation "observation:contingentTo"))
 	
 (defn get-extents
 	"Retrieve and return all the extents that the passed observation depends on."
