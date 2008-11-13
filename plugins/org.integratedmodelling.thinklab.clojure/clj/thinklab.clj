@@ -8,7 +8,19 @@
    (:import 
    		(org.integratedmodelling.clojure ClojureBridge)
    		(org.integratedmodelling.thinklab.kbox KBoxManager)
+   		(org.integratedmodelling.thinklab.exception ThinklabValidationException)
     	(org.integratedmodelling.thinklab Thinklab KnowledgeManager)))
+
+(defn get-session
+	"Retrieve the current session. Throw an exception if no session was passed to the interpreter
+	 in the current thread, and true is passed as an argument."
+	([] (eval '*session*))
+	([complain]
+	(do 
+		(def sess (eval '*session*))
+		(if (and (nil? sess) complain) 
+			(throw (new ThinklabValidationException "no session is defined")))
+		sess)))
 
 (defn plist 
 	"Internal: translates a polylist into a sequence"
@@ -61,8 +73,10 @@
 
 (defn load-objects
 	"Load instances from a source into a session and return them as a sequence"
-	[resource session]
-	(concat (. session (loadObjects resource))))
+	([resource]
+	 (concat (. (get-session true) (loadObjects resource))))
+	([resource session]
+	(concat (. session (loadObjects resource)))))
 	
 (defn is 
 	"Returns true if a concept or an instance is subsumed by another concept"
