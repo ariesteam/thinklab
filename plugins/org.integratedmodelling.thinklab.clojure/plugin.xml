@@ -2,7 +2,7 @@
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
 <plugin id="org.integratedmodelling.thinklab.clojure" version="0.8.0" class="org.integratedmodelling.clojure.ClojurePlugin">
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="true"/>
 	</requires>	
 	<runtime>
 		<library id="clo" path="lib/clojure.jar" type="code">
@@ -24,4 +24,9 @@
 		<parameter id="optional-argument-descriptions" value="URL or local file with code to execute"/>
 	</extension>
 	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-interpreter" id="clojure-interpreter">
+		<parameter id="class" value="org.integratedmodelling.clojure.ClojureInterpreter"/>
+		<parameter id="language" value="clojure"/>
+	</extension>
+
 </plugin>

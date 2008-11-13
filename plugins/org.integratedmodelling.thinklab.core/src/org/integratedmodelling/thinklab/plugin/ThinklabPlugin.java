@@ -79,6 +79,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
+import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.extensions.KBoxHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
@@ -230,7 +231,13 @@ public abstract class ThinklabPlugin extends Plugin
 			String language = getParameter(ext, "language");
 			String[] resource = getParameters(ext, "resource");
 			
-// TODO			InterpreterManager.get().getInterpreter(algorithm, session)
+			Interpreter intp = InterpreterManager.get().newInterpreter(language);
+			
+			for (String r : resource) {
+				
+				logger().info("loading " + language + " binding file: " + r);
+				intp.loadBindings(getResourceURL(r));
+			}
 			
 		}
 	}
@@ -543,10 +550,12 @@ public abstract class ThinklabPlugin extends Plugin
 		
 		for (Extension ext : getOwnThinklabExtensions("language-interpreter")) {
 
-			LanguageInterpreter lint =  (LanguageInterpreter) getHandlerInstance(ext, "class");
-			String csp = ext.getParameter("language-type").valueAsString();
+			String icl =  ext.getParameter("class").valueAsString();
+			String csp = ext.getParameter("language").valueAsString();
 			
-			InterpreterManager.get().registerInterpreter(csp, lint);
+			InterpreterManager.get().registerInterpreter(csp, icl);
+			
+			logger().info("language interpreter registered for " + csp);
 		}
 		
 	}

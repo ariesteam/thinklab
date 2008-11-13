@@ -3,6 +3,7 @@
 <plugin id="org.integratedmodelling.thinklab.corescience" version="0.8.0" class="org.integratedmodelling.corescience.CoreScience">
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.clojure"/>
 	</requires>
 	<runtime>
 		<library id="core" path="classes/" type="code">
@@ -10,6 +11,7 @@
 		</library>
 		<library type="resources" path="ontologies/" id="ontologies" />
 		<library type="resources" path="config/" id="config" />
+		<library type="resources" path="bindings/clojure/" id="clojure-bindings" />
 		
 		<library type="code" id="colt" path="lib/colt.jar"/>
 		<library type="code" id="ext" path="lib/ext-1.1.1.jar"/>
@@ -143,6 +145,11 @@
 		<parameter id="argument-descriptions" value="ID of the observation instance to inspect"/>
 	</extension>
 
-
+	<!-- bindings -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding" id="clj">
+		<parameter id="language" value="clojure"/>
+		<parameter id="resource" value="corescience.clj"/>
+	</extension>
+	
 	
 </plugin>

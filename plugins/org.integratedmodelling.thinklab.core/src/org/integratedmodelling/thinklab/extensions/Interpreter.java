@@ -44,9 +44,38 @@ public interface Interpreter {
 	 */
 	public abstract void setError(OutputStream input);
 	
+	/**
+	 * 
+	 * @param code
+	 * @return
+	 * @throws ThinklabException
+	 */
 	public abstract IValue eval(Object code) throws ThinklabException;
+	
+	/**
+	 * 
+	 * @param code
+	 * @param args
+	 * @return
+	 * @throws ThinklabException
+	 */
 	public abstract IValue eval(Object code, Object ... args) throws ThinklabException;
+	
+	/**
+	 * 
+	 * @param code
+	 * @param args
+	 * @return
+	 * @throws ThinklabException
+	 */
 	public abstract IValue eval(Object code, HashMap<String,Object> args) throws ThinklabException;
+
+	/**
+	 * 
+	 * @param source
+	 * @return
+	 * @throws ThinklabException
+	 */
 	public abstract IValue eval(URL source) throws ThinklabException;
 	
 	/**

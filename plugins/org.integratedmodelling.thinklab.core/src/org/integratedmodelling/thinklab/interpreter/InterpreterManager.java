@@ -37,7 +37,10 @@ import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.integratedmodelling.thinklab.ConceptVisitor;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnknownLanguageException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
 import org.integratedmodelling.thinklab.extensions.LanguageInterpreter.IContext;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
@@ -52,6 +55,7 @@ public class InterpreterManager {
 	// binds a language type to an interpreter
 	Hashtable<String, LanguageInterpreter> interpreterFactory = new Hashtable<String, LanguageInterpreter>();
 
+	Hashtable<String, String> interpreterClass = new Hashtable<String, String>();
 	
 	// binds a session ID to an interpreter
 	Hashtable<String, LanguageInterpreter> interpreters = new Hashtable<String, LanguageInterpreter>();
@@ -96,6 +100,37 @@ public class InterpreterManager {
 		}
 		
 		return plu;
+	}
+	
+	public Interpreter newInterpreter(String language) throws ThinklabException {
+		
+		String iclass = interpreterClass.get(language);
+		
+		if (iclass == null)
+			throw new ThinklabValidationException(
+					"no interpreter registered for language " + language);
+		
+		Class<?> clazz = null;
+		
+		try {
+			clazz = Class.forName(iclass);
+		} catch (ClassNotFoundException e) {
+			throw new ThinklabValidationException(e);
+		}
+		
+		Interpreter ret = null;
+		
+		try {
+			ret = (Interpreter) clazz.newInstance();
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		}
+		
+		return ret;
+	}
+	
+	public void registerInterpreter(String language, String interpreterClass) {
+		this.interpreterClass.put(language, interpreterClass);			
 	}
 	
 	/**

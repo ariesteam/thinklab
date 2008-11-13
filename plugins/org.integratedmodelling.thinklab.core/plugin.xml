@@ -162,8 +162,7 @@
 
 	<extension-point id="language-interpreter">
 		<parameter-def id="class" />
-		<parameter-def id="language-type" />
-		<parameter-def id="language-name" />
+		<parameter-def id="language" />
 		<parameter-def id="description" multiplicity="none-or-one" />
 		<parameter-def id="example" multiplicity="any" />
 	</extension-point>
