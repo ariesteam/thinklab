@@ -23,18 +23,20 @@
 
 (defn harmonized-union 
 	"Create a master observation that is dependent on all those in the passed list, and 
-	 contextualize it so that its context reflects the union of all contexts. Return a 
+	 contextualize it so that its context reflects the intersection of all contexts. Return a 
 	 list containing the new observation and a list of the contextualized observations."
 	[o-list]
 	nil)
 	
 (defn get-dependencies
-	"Retrieve and return all the observations that the passed one depends upon."
+	"Retrieve and return all the observations that the passed one depends upon (there can be no
+     observation unless the dependencies are also observed)."
 	[observation]
 	(get-property-values observation "observation:dependsOn"))
 	
 (defn get-contingencies
-	"Retrieve and return all the observations that the passed one is contingent to."
+	"Retrieve and return all the observations that the passed one is contingent to (the act of
+     observing the passed one causes the observation of the contingent ones)."
 	[observation]
 	(get-property-values observation "observation:contingentTo"))
 	
@@ -42,44 +44,52 @@
 	"Retrieve and return all the extents that the passed observation depends on."
 	[observation]
 	nil)
+
+(defn get-extent
+	"Retrieve and return the extents that observes the given concept (e.g. space)."
+	[observation concept]
+	nil)
 	
 (defn extensive?
-	""
+	"True if the passed observation is a measurement and its observable is an extensive physical property.
+     (such as mass)."
 	[observation]
 	false)
 	
 (defn intensive?
-	"" 
+	"True if the passed observation is a measurement and its observable is an extensive physical property
+     (such as temperature)."	
 	[observation]
 	false)
 	
 (defn measurement?
-	""
+	"True if the passed observation is a measurement."
 	[observation]
 	false)
 	
 (defn classification?
-	""
+	"True if the passed observation is a classification."
 	[observation]
 	false)
 	
 (defn identification?
-	""
+	"True if the passed observation is an identification."
 	[observation]
 	false)
 	
 (defn extent?
-	""
+	"True if the passed observation is an extent (can determine multiple states for observations that
+     have it in its context)."
 	[observation]
 	false)
 	
 (defn count?
-	""
+	"True if the passed observation is a count defined over some concrete domain."
 	[observation]
 	false)
 
 (defn quantification?
-	""
+	"True if the passed observation is a quantification (can have numeric states)."
 	[observation]
 	false)
 	
