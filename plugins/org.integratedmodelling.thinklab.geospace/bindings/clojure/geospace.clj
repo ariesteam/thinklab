@@ -5,7 +5,9 @@
 ;; @date Nov 15, 2008
 ;; -----------------------------------------------------------------------------------------
 
-(in-ns 'tl)
+(in-ns 'tl
+	(:import 
+		(org.integratedmodelling.geospace RasterGrid ArealLocation)))
 
 (defn get-boundary
 	"Returns a space areal observation with the boundary of the given observation, or the convex hull
@@ -14,9 +16,10 @@
 	 nil)
 	 
 (defn grid
-	"Returns a new grid observation with the given attributes"
-	[]
-	nil)
+	"Returns a new grid observation from a shape and a maximum linear resolution. The grid will
+	 be set to contain the shape, and the widest dimension will have the given number of cells."
+	[where max-linear-resolution]
+	(. RasterGrid (createRasterGrid where max-linear-resolution)))
 	
 (defn areal-location
 		"Returns a new areal space observation with the given shape"

@@ -45,6 +45,11 @@
 	[observation]
 	nil)
 
+(defn get-observable-class
+     ""
+     [observation]
+     (.. observation (getImplementation) (getObservableClass)))
+
 (defn get-extent
 	"Retrieve and return the extents that observes the given concept (e.g. space)."
 	[observation concept]
