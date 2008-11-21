@@ -8,6 +8,8 @@
 
 (in-ns 'clojure.core)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;; proxy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (import
  '(clojure.asm ClassWriter ClassVisitor Opcodes Type) 
  '(java.lang.reflect Modifier Constructor)

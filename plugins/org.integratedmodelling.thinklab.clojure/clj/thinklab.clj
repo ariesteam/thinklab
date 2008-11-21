@@ -104,3 +104,18 @@
 	"Serialize the passed instance to a list"
 	[inst]
 	(plist (. inst (toList nil))))
+	
+(defn dictionary
+	"Extract a dictionary of symbols from the given concept, returning all the class names that are
+	 subsumed by it."
+	 [concept]
+;; TODO
+	 ())
+	 
+(defn hierarchy
+	 "Extract the subsumption hierarchy from the passed concept as a zip tree. All
+	  concepts that are children of more than one other concept appear as many times as
+	  necessary to avoid loops."
+	  [concept]
+;; TODO
+	 ())

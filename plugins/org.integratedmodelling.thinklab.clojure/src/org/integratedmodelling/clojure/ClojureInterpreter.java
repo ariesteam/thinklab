@@ -14,6 +14,8 @@ import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.Compiler;
+import clojure.lang.RT;
+import clojure.lang.Var;
 
 public class ClojureInterpreter implements Interpreter {
 
@@ -56,8 +58,15 @@ public class ClojureInterpreter implements Interpreter {
 	}
 
 	@Override
-	public void loadBindings(URL source) throws ThinklabException {
+	public void loadBindings(URL source, ClassLoader cloader) throws ThinklabException {
         try {
+        	
+        	/**
+        	 * TODO 
+        	 * needs to use context classloader - and if that doesn't work,
+        	 * find out what plugin the stuff comes from and set the classloader appropriately
+        	 * before calling loadFile.
+        	 */ 	
 			Compiler.loadFile(Escape.fromURL(source.getFile().toString()));
 		} catch (Exception e) {
 			throw new ThinklabValidationException(e);
