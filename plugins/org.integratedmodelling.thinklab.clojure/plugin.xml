@@ -3,6 +3,10 @@
 <plugin id="org.integratedmodelling.thinklab.clojure" version="0.8.0" class="org.integratedmodelling.clojure.ClojurePlugin">
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="true"/>
+		<import plugin-id="org.integratedmodelling.thinklab.corescience" reverse-lookup="true"/>
+		<import plugin-id="org.integratedmodelling.thinklab.geospace" reverse-lookup="true"/>
+		<import plugin-id="org.integratedmodelling.thinklab.time" reverse-lookup="true"/>
+		<import plugin-id="org.integratedmodelling.thinklab.metadata" reverse-lookup="true"/>
 	</requires>	
 	<runtime>
 		<library id="clo" path="lib/clojure.jar" type="code">
@@ -14,10 +18,10 @@
 		<library id="startup-code" path="clj/" type="resources" />
 	</runtime>
 	
-	<!-- interpreter -->
+	<!-- REPL interpreter -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="clojure">
 		<parameter id="class" value="org.integratedmodelling.clojure.commands.Clojure"/>
-		<parameter id="command-name" value="clojure"/>
+		<parameter id="command-name" value="clj"/>
 		<parameter id="command-description" value="run the Clojure interpreter interactively or on an external program"/>
 		<parameter id="optional-argument-names" value="resource"/>
 		<parameter id="optional-argument-types" value="thinklab-core:Text"/>

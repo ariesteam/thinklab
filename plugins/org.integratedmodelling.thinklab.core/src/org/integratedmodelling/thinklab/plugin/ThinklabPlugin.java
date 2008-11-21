@@ -213,7 +213,11 @@ public abstract class ThinklabPlugin extends Plugin
 		loadInstanceImplementationConstructors();
 		loadSessionListeners();
 		loadKboxes();
-		loadLanguageBindings();
+		
+		// Needs to be called explicitly by plugins that depend on the bindings, after loading
+		// the one with bindings using reverse-lookup = true. Otherwise classes within the 
+		// plugin won't be visible to the bindings.
+		//loadLanguageBindings();
 		
 		loadExtensions();
 		
@@ -224,7 +228,14 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 
-	private void loadLanguageBindings() throws ThinklabException {
+	/**
+	 * Load bindings for all languages. Because this must be called by hand (see reason in
+	 * loadLanguageBindings(String), typically you want to use the language-specific version,
+	 * but here goes.
+	 * 
+	 * @throws ThinklabException
+	 */
+	public void loadLanguageBindings() throws ThinklabException {
 		
 		for (Extension ext : getOwnThinklabExtensions("language-binding")) {
 
@@ -236,11 +247,42 @@ public abstract class ThinklabPlugin extends Plugin
 			for (String r : resource) {
 				
 				logger().info("loading " + language + " binding file: " + r);
-				intp.loadBindings(getResourceURL(r));
+				intp.loadBindings(getResourceURL(r), getClassLoader());
 			}
 			
 		}
 	}
+	
+	/**
+	 * Load declared bindings for given language. Must be called by hand and must make sure
+	 * that if the bindings refer to plugin classes, the plugin that calls the interpreter has 
+	 * declared its dependencies with reverse-lookup=true, otherwise the bindings won't see the 
+	 * Java classes in their own plugin. 
+	 * 
+	 * @param language
+	 * @throws ThinklabException
+	 */
+	public void loadLanguageBindings(String language) throws ThinklabException {
+		
+		for (Extension ext : getOwnThinklabExtensions("language-binding")) {
+
+			String lang = getParameter(ext, "language");
+			String[] resource = getParameters(ext, "resource");
+			
+			if (!language.equals(lang))
+				continue;
+			
+			Interpreter intp = InterpreterManager.get().newInterpreter(language);
+			
+			for (String r : resource) {
+				
+				logger().info("loading " + language + " binding file: " + r);
+				intp.loadBindings(getResourceURL(r), getClassLoader());
+			}
+			
+		}
+	}
+
 
 	
 	private void loadKboxes() throws ThinklabException {

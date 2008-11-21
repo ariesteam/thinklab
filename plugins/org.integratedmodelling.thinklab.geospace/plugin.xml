@@ -14,6 +14,7 @@
 		<library type="resources" path="ontologies/" id="ontologies" />
 		<library type="resources" path="config/" id="config" />
 		<library type="resources" path="worldimages/" id="worldimages" />
+		<library type="resources" path="bindings/" id="bindings" />
 		
 		<library type="code" id="batik-awt-util" path="lib/batik-awt-util-1.6.jar"/>
 		<library type="code" id="batik-bridge" path="lib/batik-bridge-1.6.jar"/>
@@ -224,6 +225,10 @@
 		<parameter id="argument-descriptions" value="ID of the observation instance to inspect"/>
 	</extension>
 
-
+	<!-- bindings -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding" id="clj">
+		<parameter id="language" value="clojure"/>
+		<parameter id="resource" value="clojure/geospace.clj"/>
+	</extension>
 	
 </plugin>

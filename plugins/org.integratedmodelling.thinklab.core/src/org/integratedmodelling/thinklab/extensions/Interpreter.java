@@ -86,6 +86,6 @@ public interface Interpreter {
 	 * @param source
 	 * @throws ThinklabException
 	 */
-	public abstract void loadBindings(URL source) throws ThinklabException;
+	public abstract void loadBindings(URL source, ClassLoader cloader) throws ThinklabException;
 
 }

@@ -11,6 +11,17 @@
    		(org.integratedmodelling.thinklab.exception ThinklabValidationException)
     	(org.integratedmodelling.thinklab Thinklab KnowledgeManager)))
 
+(defn load-bindings
+	"Load the Clojure bindings for the passed plugin (can use a partial name if not
+	 ambiguous). If the bindings need to see the classes of the plugin they're part
+	 of, the latter must have been loaded with reverse-lookup=true."
+	 ( [plugin-name]
+	 (. (. Thinklab (resolvePlugin (str plugin-name) true)) (loadLanguageBindings "clojure")))
+	 ( [pname & args] 
+	 	(do
+	 		(load-bindings pname)
+	 		(apply load-bindings args))))
+
 (defn get-session
 	"Retrieve the current session. Throw an exception if no session was passed to the interpreter
 	 in the current thread, and true is passed as an argument."
@@ -32,17 +43,23 @@
 	(. ClojureBridge (list2p sequence)))
 	
 (defn require-plugin
-	"Ensures that the specified thinklab plugin is loaded"
+	"Ensures that the specified thinklab plugin is loaded, and load its bindings if any."
 	[pname]
-	(.. 
-		(. Thinklab (get)) 
-			(getManager) 
-			(activatePlugin pname)))
+	(do (.. 
+			(. Thinklab (get)) 
+			  (getManager) 
+			  (activatePlugin pname)))
+		(load-bindings pname))
 
-(defn c
+(defn conc
 	"Returns the concept named by the passed semantic type string."
 	[stype]
-	(.. KnowledgeManager (get) (requireConcept stype)))
+	(.. KnowledgeManager (get) (requireConcept (str stype))))
+	
+(defn prop
+	"Returns the concept named by the passed semantic type string."
+	[stype]
+	(.. KnowledgeManager (get) (requireProperty (str stype))))
 	  
 (defn lit
    "Returns the literal IValue for the passed concept and string value."
@@ -119,3 +136,9 @@
 	  [concept]
 ;; TODO
 	 ())
+	 
+(defn get-concept-definition
+	"Return the list that defines all the passed concepts' restrictions. Usable as a
+	 constraint in a query."
+	 [concept]
+	 (. (conc concept) (getDefinition)))

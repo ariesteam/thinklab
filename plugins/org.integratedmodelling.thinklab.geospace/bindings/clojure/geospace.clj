@@ -5,9 +5,9 @@
 ;; @date Nov 15, 2008
 ;; -----------------------------------------------------------------------------------------
 
-(in-ns 'tl
-	(:import 
-		(org.integratedmodelling.geospace RasterGrid ArealLocation)))
+(ns tl
+	(:import
+		(org.integratedmodelling.geospace.observations RasterGrid)))
 
 (defn get-boundary
 	"Returns a space areal observation with the boundary of the given observation, or the convex hull

@@ -4,8 +4,11 @@ import java.net.URL;
 
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.java.plugin.PluginLifecycleException;
+import org.java.plugin.registry.PluginDescriptor;
 
 /**
  * Activating this plugin means loading the knowledge manager, effectively initializing the
@@ -74,5 +77,55 @@ public class Thinklab extends ThinklabPlugin {
 		}
 	}
 	
+	/**
+	 * Return a fully qualified plugin name given a partial or full name. If complain is true, throw an exception
+	 * if not found or ambiguous, otherwise return null.
+	 * @param name
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static String resolvePluginName(String name, boolean complain) throws ThinklabException {
+		
+		String ret = null;
+		
+		// look for exact match first
+		for (PluginDescriptor pd : get().getManager().getRegistry().getPluginDescriptors()) {
+			if (pd.getId().equals(name)) {
+				ret = pd.getId();
+			}
+		}
+		
+		if (ret == null)
+			for (PluginDescriptor pd : get().getManager().getRegistry().getPluginDescriptors()) {
+				if (pd.getId().endsWith(name)) {
+					if (ret != null) {
+						ret = null;
+						break;
+					}
+					ret = pd.getId();
+				}
+			}
+		
+		if (ret == null && complain)
+			throw new ThinklabPluginException("plugin name " + name + " unresolved or ambiguous");
+		
+		return ret;
+	}
+	
+	public static ThinklabPlugin resolvePlugin(String name, boolean complain) throws ThinklabException {
+	
+		ThinklabPlugin ret = null;
+		
+		String pid = resolvePluginName(name, complain);
+
+		if (pid != null)
+			try {
+				ret = (ThinklabPlugin)get().getManager().getPlugin(pid);
+			} catch (PluginLifecycleException e) {
+				throw new ThinklabPluginException(e);
+			}
+			
+		return ret;
+	}
 
 }

@@ -1,0 +1,5 @@
+Thinklab is a modular toolkit to develop knowledge-driven applications. With its web interface project, 
+[thinkcap], it provides a complete enviroment to develop and deploy full intelligent applications. It
+is written mostly in Java, but it can be programmed in any language that targets the JVM. A growing 
+part of Thinklab is written in Clojure, a Lisp dialect that runs on the JVM.
+
