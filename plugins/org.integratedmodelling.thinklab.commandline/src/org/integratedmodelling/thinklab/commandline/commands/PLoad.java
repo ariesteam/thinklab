@@ -1,6 +1,7 @@
 package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.commandline.CommandLine;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -26,8 +27,7 @@ public class PLoad implements CommandHandler {
 
 		String plugin = command.getArgumentAsString("plugin");
 		
-		if (!plugin.contains("."))
-			plugin = "org.integratedmodelling.thinklab." + plugin;
+		plugin = Thinklab.resolvePluginName(plugin, true);
 		
 		try {
 			CommandLine.get().getManager().activatePlugin(plugin);
