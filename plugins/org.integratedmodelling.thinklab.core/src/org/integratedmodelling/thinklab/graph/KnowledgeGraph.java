@@ -289,47 +289,6 @@ public abstract class KnowledgeGraph extends
 	 * @throws ThinklabException
 	 */
 	public void show() throws ThinklabException {
-
-//		class VNameProvider implements VertexNameProvider<IKnowledgeSubject> {
-//			private boolean id;
-//
-//			public VNameProvider(boolean id) {
-//				this.id = id;
-//			}
-//
-//			public String getVertexName(IKnowledgeSubject arg) {
-//				return id ? arg.toString().replace(':', '_') : arg.toString();
-//
-//			}
-//		}
-//
-//		class ENameProvider implements EdgeNameProvider<PropertyEdge> {
-//
-//			public String getEdgeName(PropertyEdge arg) {
-//				return arg.property == null ? "" : arg.property.toString();
-//			}
-//
-//		}
-//
-//		DOTExporter<IKnowledgeSubject, PropertyEdge> exporter = new DOTExporter<IKnowledgeSubject, PropertyEdge>(
-//				new VNameProvider(true), new VNameProvider(false),
-//				new ENameProvider());
-//		try {
-//
-//			File f = File.createTempFile("gdk", "dot");
-//			File o = File.createTempFile("gdi", "gif");
-//			FileWriter writer = new FileWriter(f);
-//			GraphViz gv = new GraphViz();
-//			exporter.export(writer, this);
-//			writer.close();
-//			gv.writeGraphToFile(gv.createImage(f), o);
-//
-//			DisplayImage display = new DisplayImage(o.toURI().toURL());
-//			display.setVisible(true);
-//
-//		} catch (IOException e) {
-//			throw new ThinklabIOException(e);
-//		}
 		
 		class NPP implements GraphViz.NodePropertiesProvider {
 

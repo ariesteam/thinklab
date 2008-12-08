@@ -5,7 +5,7 @@
 ;; @date Nov 13, 2008
 ;; -----------------------------------------------------------------------------------------
 
-(in-ns 'tl)
+(ns tl)
 
 (defn contextualize
 	"Create the states in an observation tree. Ideally this should return new observations, but

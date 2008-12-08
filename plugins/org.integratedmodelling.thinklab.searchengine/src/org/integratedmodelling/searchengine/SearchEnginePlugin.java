@@ -56,45 +56,45 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 	 * ontologies. Kbox indexing is not affected by this property.
 	 */
 	public static final String SEARCHENGINE_INDEX_INDIVIDUALS_PROPERTY = 
-		"searchengine.%.index.individuals";
+		"searchengine.index.individuals";
 	
 	/**
 	 * Set to the path where you want the Lucene index to be created. Default
 	 * is scratch path + /index.
 	 */
 	public static final String SEARCHENGINE_INDEX_PATH_PROPERTY = 
-		"searchengine.%.index.path";
+		"searchengine.index.path";
 	
 	/**
 	 * If set to a true value, concepts without comments or labels are indexed using
 	 * their id. Otherwise they're ignored. Default is false.
 	 */
 	public static final String SEARCHENGINE_INDEX_UNCOMMENTED_PROPERTY = 
-		"searchengine.%.index.uncommented";
+		"searchengine.index.uncommented";
 	
 	/**
 	 * Class to use for the analyzer; if not supplied, the standard
 	 * Lucene analyzer (English) is used.
 	 */
 	public static final String SEARCHENGINE_ANALYZER_CLASS_PROPERTY = 
-		"searchengine.%.analyzer.class";
+		"searchengine.analyzer.class";
 	
 	
 	public static final String SEARCHENGINE_INDEX_TYPES_PROPERTY =
-		"searchengine.%.index.types";
+		"searchengine.index.types";
 	
 	/**
 	 * Comma-separated list of kbox URLs that should be indexed
 	 */
 	public static final String SEARCHENGINE_KBOX_LIST_PROPERTY = 
-		"searchengine.%.kbox";
+		"searchengine.kbox";
 	
 	/**
 	 * Ontologies listed here will be included unless "all" is one of the ontologies, then
 	 * all will be included unless listed here with a ! in front of them.
 	 */
 	public static final String SEARCHENGINE_INDEX_ONTOLOGIES_PROPERTY = 
-		"searchengine.%.index.ontologies";
+		"searchengine.index.ontologies";
 	
 	public static SearchEnginePlugin get() {
 		return (SearchEnginePlugin) getPlugin(PLUGIN_ID );
@@ -175,9 +175,7 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 			if (iweight != null)
 				weigh = Double.parseDouble(iweight.valueAsString());
 			
-			IProperty property = 
-				KnowledgeManager.get().requireProperty(
-						aext.getSubParameter("property").valueAsString());
+			String property = aext.getSubParameter("property").valueAsString();
 
 			engine.addIndexField(property, itype, weigh);
 			

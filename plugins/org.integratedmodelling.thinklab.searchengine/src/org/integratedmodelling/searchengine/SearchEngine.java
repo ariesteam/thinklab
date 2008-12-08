@@ -113,7 +113,7 @@ public final class SearchEngine implements IQueriable {
 	private class IndexField {
 		// link or text
 		public String indexType;
-		public IProperty property;
+		public String property;
 		public double weight = 1.0;
 	}
 	
@@ -133,6 +133,7 @@ public final class SearchEngine implements IQueriable {
     private String indexPath = null;
 
 	private ArrayList<IKBox> kBoxes;
+	private ArrayList<IOntology> ontologies;
 	private String[] iTypes = null;
 	private String id;
 	
@@ -322,6 +323,9 @@ public final class SearchEngine implements IQueriable {
     					SearchEnginePlugin.SEARCHENGINE_KBOX_LIST_PROPERTY,
     					"");
 
+    		if (kBoxList == null || kBoxList.trim().equals(""))
+    			return this.kBoxes;
+    		
     		String[] kboxx = kBoxList.split(",");
 
     		for (String kbox : kboxx) {
@@ -386,16 +390,29 @@ public final class SearchEngine implements IQueriable {
     	return isSynchronized;
     }
     
-    private Collection<IOntology> getOntologies() {
+    private Collection<IOntology> getOntologies() throws ThinklabException {
     	
-    	ArrayList<IOntology> ret = new ArrayList<IOntology>();
+    	if (this.ontologies == null) {
 
-    	/*
-    	 * TODO
-    	 */
-    	IKnowledgeRepository rep = KnowledgeManager.get().getKnowledgeRepository();
+        	IKnowledgeRepository rep = KnowledgeManager.get().getKnowledgeRepository();
+    		this.ontologies = new ArrayList<IOntology>();
+
+    		String olist   = 
+    			properties.getProperty(
+    					SearchEnginePlugin.SEARCHENGINE_INDEX_ONTOLOGIES_PROPERTY,
+    					"");
+
+    		if (olist == null || olist.trim().equals(""))
+    			return this.ontologies;
+    		
+    		String[] oolist = olist.split(",");
+
+    		for (String ont : oolist) {
+    			this.ontologies.add(rep.requireOntology(ont));
+    		}
+    	}
     	
-    	return ret;
+    	return this.ontologies;
 	}
 
 	private void indexKBox(IKBox kb) throws ThinklabException {
@@ -428,8 +445,8 @@ public final class SearchEngine implements IQueriable {
 
     	CacheEntry ontEntry = cache.getEntry(o.getConceptSpace());
     	
-    	/* see if indexed recently */
-    	if (ontEntry.entryDate >= o.getLastModificationDate()) {
+    	/* TODO: see if indexed recently */
+    	if (false && ontEntry.entryDate >= o.getLastModificationDate()) {
     		SearchEnginePlugin.get().logger().info("searchengine: index of " + o + " is up to date: skipping");
     		return;
 		}
@@ -551,18 +568,18 @@ public final class SearchEngine implements IQueriable {
 					Field.Store.YES, Field.Index.NO));
 
 			if (c != null)
-				d.add(new Field("comment", c, Field.Store.YES,
+				d.add(new Field("rdfs:comment", c, Field.Store.YES,
 						Field.Index.TOKENIZED));
 			if (l != null)
-				d.add(new Field("label", l, Field.Store.YES,
+				d.add(new Field("rdfs:label", l, Field.Store.YES,
 						Field.Index.TOKENIZED));
 
 			/*
 			 * add concept space so we can delete all concepts quickly. Needs to
 			 * be indexed or deleteDocuments won't work.
 			 */
-			d.add(new Field("ks", object.getConceptSpace(), Field.Store.YES,
-					Field.Index.UN_TOKENIZED));
+			//d.add(new Field("ks", object.getConceptSpace(), Field.Store.YES,
+			//		Field.Index.UN_TOKENIZED));
 
 			/*
 			 * TODO add ontology version, date, property descriptions, other
@@ -608,7 +625,7 @@ public final class SearchEngine implements IQueriable {
 			return null;
 		}
     	
-		/* check cache to see if document needs to be rebuilt */
+		/* TODO check cache to see if document needs to be rebuilt */
 		CacheEntry cacheEntry = cache.getEntry(i.toString());
 		
     	/* check if object has been indexed already; if so only proceed if we're indexing as
@@ -621,8 +638,14 @@ public final class SearchEngine implements IQueriable {
 		 * put in the rest as specified
 		 */
 		for (IndexField f : indexedFields) {
+						
+			/*
+			 * basic RDF metadata are indexed already
+			 */
+			if (f.property.equals("rdfs:comment") || f.property.equals("rdfs:label"))
+				continue;
 			
-			for (IRelationship r : i.getRelationships(f.property.toString())) {
+			for (IRelationship r : i.getRelationships(f.property)) {
 
 				/* could be literal, object, classification, but we just use what the user has told us. */
 				if (f.indexType.equals("store")) {
@@ -725,14 +748,11 @@ public final class SearchEngine implements IQueriable {
 			throw new ThinklabValidationException("search engine: only textual query strings are admitted");
 		
 		// TODO parameterize from properties
-		String[] searchFields = new String [indexedFields == null ? /*2 */0: indexedFields.size() /*+ 2*/];
-		
-		searchFields[0] = "label";
-		searchFields[1] = "comment";
+		String[] searchFields = new String [indexedFields == null ? 0: indexedFields.size()];
 		
 		if (indexedFields != null)
 			for (int i = 0; i < indexedFields.size(); i++)
-				searchFields[i/*+2*/] = indexedFields.get(i).property.toString();
+				searchFields[i] = indexedFields.get(i).property.toString();
 		
     	IndexSearcher isearch = null;
     	
@@ -775,7 +795,7 @@ public final class SearchEngine implements IQueriable {
 		return new QueryString(toEval);
 	}
 
-	public void addIndexField(IProperty property, String itype, double weigh) {
+	public void addIndexField(String property, String itype, double weigh) {
 		
 		IndexField inf = new IndexField();
 		

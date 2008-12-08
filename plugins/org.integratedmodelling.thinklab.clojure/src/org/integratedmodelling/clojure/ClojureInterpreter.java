@@ -14,8 +14,6 @@ import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.Compiler;
-import clojure.lang.RT;
-import clojure.lang.Var;
 
 public class ClojureInterpreter implements Interpreter {
 
