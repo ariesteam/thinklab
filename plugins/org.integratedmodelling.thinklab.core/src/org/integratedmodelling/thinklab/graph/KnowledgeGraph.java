@@ -64,6 +64,8 @@ import org.jgrapht.graph.DefaultDirectedGraph;
  */
 public abstract class KnowledgeGraph extends
 		DefaultDirectedGraph<Object, Object> {
+	
+	IKnowledgeSubject root = null;
 
 	private static final long serialVersionUID = 9151878779989532686L;
 
@@ -110,6 +112,20 @@ public abstract class KnowledgeGraph extends
 		super(PropertyEdge.class);
 	}
 
+	/**
+	 * The graph may or may not have a root. It's up to the implementation to
+	 * define it. It's obviously a good thing to have if the graph is a tree.
+	 * 
+	 * @param root
+	 */
+	public void setRoot(IKnowledgeSubject root) {
+		this.root = root;
+	}
+	
+	public IKnowledgeSubject getRoot() {
+		return this.root;
+	}
+	
 	protected void buildGraph(IKnowledgeSubject root) throws ThinklabException {
 		buildGraph(root, null);
 	}
@@ -267,6 +283,7 @@ public abstract class KnowledgeGraph extends
 				}
 			}
 		}
+		
 	}
 
 	public void forceTreeGeometry(boolean what) {

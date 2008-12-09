@@ -11,6 +11,7 @@ public class InheritanceGraph extends KnowledgeGraph {
 	private static final long serialVersionUID = -9056024014801829963L;
 	
 	public InheritanceGraph(IConcept root) throws ThinklabException {
+		setRoot(root);
 		buildGraph(root);
 	}
 
