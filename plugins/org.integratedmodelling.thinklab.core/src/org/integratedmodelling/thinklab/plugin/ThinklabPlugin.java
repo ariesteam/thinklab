@@ -400,10 +400,10 @@ public abstract class ThinklabPlugin extends Plugin
     	   
        } 
        
-       
        if (pfile.exists()) {
     	   try {
 			properties.load(new FileInputStream(pfile));
+			logger().info("plugin properties loaded from " + pfile);
 		} catch (Exception e) {
 			throw new ThinklabIOException(e);
 		}
