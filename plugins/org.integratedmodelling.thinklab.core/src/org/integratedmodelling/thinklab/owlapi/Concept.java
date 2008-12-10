@@ -246,7 +246,7 @@ public class Concept extends Knowledge implements IConcept {
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getAllProperties()
 	 */
 	public Collection<IProperty> getAllProperties() {
-		Set<IProperty> props = new HashSet<IProperty>() ;
+		Set<IProperty> props = (Set<IProperty>) getProperties();
 		for(IConcept c: getAllParents()){
 			props.addAll(c.getProperties());
 		}
