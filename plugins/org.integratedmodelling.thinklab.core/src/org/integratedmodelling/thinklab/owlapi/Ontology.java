@@ -148,21 +148,26 @@ public class Ontology implements IOntology {
 		
 		Set<OWLClass> allCl  = ont.getReferencedClasses();
 		for(OWLClass cl:allCl){
-			concepts.put(kr.registry.getSemanticType(cl), new Concept(cl));
+			
+			if (cl.getURI().toString().startsWith(ont.getURI().toString()))
+				concepts.put(kr.registry.getSemanticType(cl), new Concept(cl));
 		}
 		Set<OWLDataProperty> allPr = ont.getReferencedDataProperties();
 		for(OWLDataProperty p:allPr){
-			properties.put(kr.registry.getSemanticType(p), new Property(p));
+			if (p.getURI().toString().startsWith(ont.getURI().toString()))
+				properties.put(kr.registry.getSemanticType(p), new Property(p));
 		}
 		
 		Set<OWLObjectProperty> objPr = ont.getReferencedObjectProperties();
 		for(OWLObjectProperty p:objPr){
-			properties.put(kr.registry.getSemanticType(p), new Property(p));
+			if (p.getURI().toString().startsWith(ont.getURI().toString()))
+				properties.put(kr.registry.getSemanticType(p), new Property(p));
 		}
 		
 		Set<OWLIndividual> allIn = ont.getReferencedIndividuals();
 		for(OWLIndividual i:allIn){
-			instances.put(kr.registry.getSemanticType(i), new Instance(i));
+			if (i.getURI().toString().startsWith(ont.getURI().toString()))
+				instances.put(kr.registry.getSemanticType(i), new Instance(i));
 		}
 	}
 
