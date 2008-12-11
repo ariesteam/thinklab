@@ -444,19 +444,37 @@ public class Concept extends Knowledge implements IConcept {
 	public Collection<IConcept> getPropertyRange(IProperty property) {
 		
 		ArrayList<IConcept> ret = new ArrayList<IConcept>();
-	
-		for (OWLRestriction r : OWLAPI.getRestrictions(this, true)) {
+		IConcept conc = this;
+		
+		while (conc != null && !conc.toString().equals("owl:Thing")) {
 			
-			if (r instanceof OWLObjectAllRestriction &&
-				r.getProperty().equals(((Property)property).entity)) {
+			for (OWLRestriction r : OWLAPI.getRestrictions((Concept)conc, true)) {
 			
-				ret.add(new Concept(((OWLObjectAllRestriction)r).getFiller().asOWLClass()));
-			} else if (r instanceof OWLObjectSomeRestriction &&
-				r.getProperty().equals(((Property)property).entity)) {
+				if (r instanceof OWLObjectAllRestriction &&
+						r.getProperty().equals(((Property)property).entity)) {
 			
-				ret.add(new Concept(((OWLObjectSomeRestriction)r).getFiller().asOWLClass()));
+					ret.add(new Concept(((OWLObjectAllRestriction)r).getFiller().asOWLClass()));
+				} else if (r instanceof OWLObjectSomeRestriction &&
+						r.getProperty().equals(((Property)property).entity)) {
+			
+					ret.add(new Concept(((OWLObjectSomeRestriction)r).getFiller().asOWLClass()));
+				}
+			}
+			
+			if (ret.size() > 0)
+				break;
+
+			try {
+				conc = conc.getParent();
+			} catch (ThinklabException e) {
+				// FIXME this should follow all parents  recursively, not loop and ignore the other parents.
+				conc = null;
 			}
 		}
+		
+		if (ret.size() == 0)
+			for (IConcept cc : property.getRange())
+				ret.add(cc);
 		
 		return ret;
 	}

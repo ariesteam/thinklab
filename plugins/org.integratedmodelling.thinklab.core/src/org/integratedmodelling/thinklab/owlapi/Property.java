@@ -270,7 +270,8 @@ public class Property extends Knowledge implements IProperty {
 		} else if (entity.isOWLObjectProperty()) {
 			for (OWLDescription c : entity.asOWLObjectProperty().getRanges(
 					FileKnowledgeRepository.get().manager.getOntologies())) {
-				ret.add(new Concept(c.asOWLClass()));
+				if (!c.isAnonymous())
+					ret.add(new Concept(c.asOWLClass()));
 			}
 		}
 		return ret;
