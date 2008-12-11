@@ -35,10 +35,8 @@ package org.integratedmodelling.searchengine;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -76,7 +73,6 @@ import org.integratedmodelling.thinklab.interfaces.IKBox;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject;
 import org.integratedmodelling.thinklab.interfaces.IOntology;
-import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.interfaces.IQueriable;
 import org.integratedmodelling.thinklab.interfaces.IQuery;
 import org.integratedmodelling.thinklab.interfaces.IQueryResult;
@@ -91,7 +87,6 @@ import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
-import org.pdfbox.searchengine.lucene.LucenePDFDocument;
 
 /**
  * A search index for thinklab. The plugin maintains a list of these. Should only be created
@@ -340,6 +335,37 @@ public final class SearchEngine implements IQueriable {
     	}
     	
     	return this.kBoxes;
+    }
+    
+    /**
+     * Destroy the search engine persistent data, but not its configuration. Calling
+     * clear() and initialize() should build a fresh index from the configured
+     * sources.
+     * @throws ThinklabIOException 
+     */
+    public void clear() throws ThinklabIOException {
+    	
+    	try {
+    		
+			index.close();
+    	
+			File ipath = new File(indexPath);
+    	 
+    		if (IndexReader.isLocked(indexPath)) {
+    				IndexReader.unlock(FSDirectory.getDirectory(indexPath, false));
+    		}
+
+    		if (ipath.exists()) {
+    			MiscUtilities.deleteDirectory(ipath);
+    		}
+    		
+    		/* reopen */
+			index = new IndexModifier(indexPath, analyzer, true);
+			
+		} catch (Exception e) {
+    		throw new ThinklabIOException(e);
+		}
+
     }
     
     /**

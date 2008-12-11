@@ -491,22 +491,14 @@ public class Ontology implements IOntology {
 		
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IResource#equals(java.lang.String)
-	 */
-	public boolean equals(String s) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IResource#equals(org.integratedmodelling.thinklab.interfaces.IResource)
 	 */
 	public boolean equals(IResource r) {
-		// TODO Auto-generated method stub
-		return false;
+		return 
+			(r != null) &&
+			(r instanceof Ontology) &&
+			(r.getURI().equals(getURI()));
 	}
 
 
@@ -587,5 +579,30 @@ public class Ontology implements IOntology {
 		
 		return ret;
 	}
+
+	@Override
+	public boolean isAnonymous() {
+		return ont.getURI().toString().startsWith(FileKnowledgeRepository.DEFAULT_TEMP_URI);
+	}
+
+	@Override
+	public boolean equals(String s) {
+		return getURI().toString().equals(s);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return 
+			(obj != null) &&
+			(obj instanceof Ontology) &&
+			(((Ontology)obj).getURI().equals(getURI()));
+	}
+
+	@Override
+	public int hashCode() {
+		return getURI().hashCode();
+	}
+	
+	
 
 }

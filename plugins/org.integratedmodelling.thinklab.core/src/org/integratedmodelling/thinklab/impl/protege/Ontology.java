@@ -862,5 +862,11 @@ public class Ontology implements IOntology {
 		
 	}
 
+	@Override
+	public boolean isAnonymous() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 }

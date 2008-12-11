@@ -192,4 +192,13 @@ public interface IOntology  extends IResource {
 	 * @throws ThinklabException 
 	 */
 	public void write(URI uri) throws ThinklabException;
+
+
+	/**
+	 * Ontologies should be able to return whether they've been
+	 * created as temporary, anonymous ones.
+	 * 
+	 * @return
+	 */
+	public boolean isAnonymous();
 }

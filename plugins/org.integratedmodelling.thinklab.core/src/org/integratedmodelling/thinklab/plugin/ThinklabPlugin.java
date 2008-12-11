@@ -58,11 +58,13 @@ package org.integratedmodelling.thinklab.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
@@ -109,6 +111,7 @@ public abstract class ThinklabPlugin extends Plugin
 {
 	HashMap<String, URL> resources = new HashMap<String, URL>();
 	Properties properties = new Properties();
+	File propertySource = null;
 	
 	private ArrayList<String> ontologies = new ArrayList<String>();
 	
@@ -402,6 +405,7 @@ public abstract class ThinklabPlugin extends Plugin
        
        if (pfile.exists()) {
     	   try {
+    		propertySource = pfile;
 			properties.load(new FileInputStream(pfile));
 			logger().info("plugin properties loaded from " + pfile);
 		} catch (Exception e) {
@@ -411,6 +415,20 @@ public abstract class ThinklabPlugin extends Plugin
 		
 	}
 
+	protected void writeConfiguration() throws ThinklabIOException {
+	
+		if (propertySource != null) {
+			FileOutputStream fout;
+			try {
+				fout = new FileOutputStream(propertySource);
+				properties.store(fout, "written by thinklab " + new Date());
+				fout.close();
+			} catch (Exception e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+	}
+	
 	/**
 	 * Return all the extensions in this plugin that extend the given Thinklab extension 
 	 * point (declared in the core plugin).
