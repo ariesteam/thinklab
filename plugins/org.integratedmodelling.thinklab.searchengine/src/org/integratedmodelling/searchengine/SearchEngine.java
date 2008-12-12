@@ -836,4 +836,17 @@ public final class SearchEngine implements IQueriable {
 		this.declaringPlugin = resourceFinder;
 	}
 
+	/**
+	 * Redefine the ontologies we want to index. Should be followed (or preceded)
+	 * by clear() and followed by initialize().
+	 * 
+	 * @param ontprop
+	 */
+	public void setOntologies(String ontprop) {
+
+		properties.setProperty(
+				SearchEnginePlugin.SEARCHENGINE_INDEX_ONTOLOGIES_PROPERTY,
+				ontprop);
+	}
+
 }

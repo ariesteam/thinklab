@@ -386,17 +386,20 @@ public class Concept extends Knowledge implements IConcept {
 
 		int ret = 1;
 		
-		for (OWLRestriction r : OWLAPI.getRestrictions(this, true)) {
+		if (!((Property)property).isFunctional())
+
+			for (OWLRestriction r : OWLAPI.getRestrictions(this, true)) {
 			
-			if (r instanceof OWLDataMaxCardinalityRestriction &&
-				r.getProperty().equals(((Property)property).entity)) {
+				if (r instanceof OWLDataMaxCardinalityRestriction &&
+					r.getProperty().equals(((Property)property).entity)) {
 			
-				ret = ((OWLDataMaxCardinalityRestriction)r).getCardinality();
-			} else 	if (r instanceof OWLObjectMaxCardinalityRestriction &&
-				r.getProperty().equals(((Property)property).entity)) {
+					ret = ((OWLDataMaxCardinalityRestriction)r).getCardinality();
+				
+				} else 	if (r instanceof OWLObjectMaxCardinalityRestriction &&
+					r.getProperty().equals(((Property)property).entity)) {
 			
-				ret = ((OWLObjectMaxCardinalityRestriction)r).getCardinality();
-			}
+					ret = ((OWLObjectMaxCardinalityRestriction)r).getCardinality();
+				}
 		}
 		return ret;
 		
@@ -409,19 +412,19 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public int getMinCardinality(IProperty property) {
 		
-		int ret = 0;
-		
-		for (OWLRestriction r : OWLAPI.getRestrictions(this, true)) {
+		int ret = ((Property)property).isFunctional() ? 1 : 0;
+		if (ret != 1)
+			for (OWLRestriction r : OWLAPI.getRestrictions(this, true)) {
 			
-			if (r instanceof OWLDataMinCardinalityRestriction &&
-				r.getProperty().equals(((Property)property).entity)) {
+				if (r instanceof OWLDataMinCardinalityRestriction &&
+					r.getProperty().equals(((Property)property).entity)) {
 			
-				ret = ((OWLDataMinCardinalityRestriction)r).getCardinality();
-			} else 	if (r instanceof OWLObjectMinCardinalityRestriction &&
-				r.getProperty().equals(((Property)property).entity)) {
+					ret = ((OWLDataMinCardinalityRestriction)r).getCardinality();
+				} else 	if (r instanceof OWLObjectMinCardinalityRestriction &&
+					r.getProperty().equals(((Property)property).entity)) {
 			
-				ret = ((OWLObjectMinCardinalityRestriction)r).getCardinality();
-			}
+					ret = ((OWLObjectMinCardinalityRestriction)r).getCardinality();
+				}
 		}
 		return ret;
 		
@@ -452,12 +455,15 @@ public class Concept extends Knowledge implements IConcept {
 			
 				if (r instanceof OWLObjectAllRestriction &&
 						r.getProperty().equals(((Property)property).entity)) {
-			
-					ret.add(new Concept(((OWLObjectAllRestriction)r).getFiller().asOWLClass()));
+					
+					if (!((OWLObjectAllRestriction)r).getFiller().isAnonymous())
+						ret.add(new Concept(((OWLObjectAllRestriction)r).getFiller().asOWLClass()));
+	
 				} else if (r instanceof OWLObjectSomeRestriction &&
 						r.getProperty().equals(((Property)property).entity)) {
-			
-					ret.add(new Concept(((OWLObjectSomeRestriction)r).getFiller().asOWLClass()));
+					
+					if (!((OWLObjectSomeRestriction)r).getFiller().isAnonymous())
+						ret.add(new Concept(((OWLObjectSomeRestriction)r).getFiller().asOWLClass()));
 				}
 			}
 			
