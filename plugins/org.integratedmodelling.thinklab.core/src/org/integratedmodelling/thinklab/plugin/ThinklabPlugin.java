@@ -415,7 +415,7 @@ public abstract class ThinklabPlugin extends Plugin
 		
 	}
 
-	protected void writeConfiguration() throws ThinklabIOException {
+	public void writeConfiguration() throws ThinklabIOException {
 	
 		if (propertySource != null) {
 			FileOutputStream fout;
