@@ -37,6 +37,7 @@ public interface RemoteComponent
 {
     public boolean enableRemote();
     public boolean disableRemote();
+    public boolean isRemoteEnabled();
     public void    pushRemote(Object remoteData);
     public Object  pullRemote();
 }

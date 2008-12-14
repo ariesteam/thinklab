@@ -7,7 +7,9 @@ import org.integratedmodelling.clojure.rfib.RemoteComponent;
 
 public class RemoteFrame extends JFrame implements RemoteComponent
 {
-    public RemoteFrame(String title)
+	private static final long serialVersionUID = -6822667285484310191L;
+
+	public RemoteFrame(String title)
     {
 	super(title);
     }
@@ -31,4 +33,10 @@ public class RemoteFrame extends JFrame implements RemoteComponent
     {
 	return this.getTitle();
     }
+
+	@Override
+	public boolean isRemoteEnabled() {
+
+		return true;
+	}
 }

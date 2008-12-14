@@ -8,7 +8,8 @@ import org.integratedmodelling.clojure.rfib.RemoteComponent;
 
 public class RemoteTextField extends JTextField implements RemoteComponent
 {
-    private boolean readyForPull = false;
+	private static final long serialVersionUID = -5456570140798226898L;
+	private boolean readyForPull = false;
 
     public void enablePull()
     {
@@ -46,4 +47,9 @@ public class RemoteTextField extends JTextField implements RemoteComponent
 	    return this.pullRemote();
 	}
     }
+
+	@Override
+	public boolean isRemoteEnabled() {
+		return true;
+	}
 }
