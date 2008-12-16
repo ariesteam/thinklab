@@ -57,9 +57,10 @@ public class ObservationFactory {
 	 */
 	public static Constraint queryObservation(String what) throws ThinklabException {
 		
-		Constraint c = new Constraint(CoreScience.OBSERVATION);
-		c.restrict(new Restriction(CoreScience.HAS_OBSERVABLE, new Constraint(what)));
-		return c;
+		return 
+			new Constraint(CoreScience.OBSERVATION)
+				.restrict(new Restriction(
+						CoreScience.HAS_OBSERVABLE, new Constraint(what)));
 	}
 	
 	/**
