@@ -111,13 +111,13 @@ public interface IResource {
 	public abstract void addLabel(String desc, String language);
 
 	
-	/**
-	 * Check if resource's URI equals the passed string.
-	 * @param s the URI.
-	 * @return
-	 */
-	public boolean equals(String s);
-	
-	
-	public boolean equals (IResource r);
+//	/**
+//	 * Check if resource's URI equals the passed string.
+//	 * @param s the URI.
+//	 * @return
+//	 */
+//	public boolean equals(String s);
+//	
+//	
+//	public boolean equals (IResource r);
 }

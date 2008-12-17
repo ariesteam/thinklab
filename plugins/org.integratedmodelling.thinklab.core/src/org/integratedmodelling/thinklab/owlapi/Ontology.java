@@ -585,10 +585,10 @@ public class Ontology implements IOntology {
 		return ont.getURI().toString().startsWith(FileKnowledgeRepository.DEFAULT_TEMP_URI);
 	}
 
-	@Override
-	public boolean equals(String s) {
-		return getURI().toString().equals(s);
-	}
+//	@Override
+//	public boolean equals(String s) {
+//		return getURI().toString().equals(s);
+//	}
 
 	@Override
 	public boolean equals(Object obj) {

@@ -337,55 +337,55 @@ public abstract class Knowledge implements IKnowledge, IResource {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledge#equals(org.integratedmodelling.thinklab.SemanticType)
-	 */
-	public boolean equals(SemanticType st) {
-		try {
-			return equals(Registry.get().getURI(st));
-		} catch (ThinklabMalformedSemanticTypeException e) {
-			return false;
-		}
-	}
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledge#equals(org.integratedmodelling.thinklab.SemanticType)
+//	 */
+//	public boolean equals(SemanticType st) {
+//		try {
+//			return equals(Registry.get().getURI(st));
+//		} catch (ThinklabMalformedSemanticTypeException e) {
+//			return false;
+//		}
+//	}
+//
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see org.integratedmodelling.thinklab.interfaces.IResource#equals(java.lang.String)
+//	 */
+//	public boolean equals(String semanticType) {
+//		try {
+//			return equals(new SemanticType(semanticType));
+//		} catch (ThinklabMalformedSemanticTypeException e) {
+//			return false;
+//		}
+//	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.integratedmodelling.thinklab.interfaces.IResource#equals(java.lang.String)
-	 */
-	public boolean equals(String semanticType) {
-		try {
-			return equals(new SemanticType(semanticType));
-		} catch (ThinklabMalformedSemanticTypeException e) {
-			return false;
-		}
-	}
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see org.integratedmodelling.thinklab.interfaces.IResource#equals(org.integratedmodelling.thinklab.interfaces.IResource)
+//	 */
+//	public boolean equals(IResource r) {
+//		return equals(URI.create(r.getURI()));
+//	}
+//
+//	public boolean equals(IKnowledge ik) {
+//		return equals(URI.create(ik.getURI()));
+//	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.integratedmodelling.thinklab.interfaces.IResource#equals(org.integratedmodelling.thinklab.interfaces.IResource)
-	 */
-	public boolean equals(IResource r) {
-		return equals(URI.create(r.getURI()));
-	}
-
-	public boolean equals(IKnowledge ik) {
-		return equals(URI.create(ik.getURI()));
-	}
-
-	/**
-	 * Equals returns true only is the two resources are identical i.e have the
-	 * same URI To be used in Collections
-	 * 
-	 * @param uri
-	 * @return
-	 */
-	public boolean equals(URI uri) {
-		return this.entity.getURI().equals(uri);
-	}
+//	/**
+//	 * Equals returns true only is the two resources are identical i.e have the
+//	 * same URI To be used in Collections
+//	 * 
+//	 * @param uri
+//	 * @return
+//	 */
+//	public boolean equals(URI uri) {
+//		return this.entity.getURI().equals(uri);
+//	}
 
 	/**
 	 * The is method investigates the subsumption hierarchy. If a reasoner is
@@ -406,11 +406,12 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode(){
-			return 0;
-		   }
+			return getURI().hashCode();
+	}
+	
 	public boolean equals(Object s){
 	    	if (s instanceof Knowledge) {
-				return equals((Knowledge) s);
+				return ((Knowledge)s).getURI().equals(getURI());
 			} else return false;
 	    }
 }

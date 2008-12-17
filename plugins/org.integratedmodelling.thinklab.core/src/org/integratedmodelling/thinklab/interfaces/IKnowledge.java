@@ -71,11 +71,11 @@ public interface IKnowledge extends IResource {
      */
     public abstract boolean is(String semanticType);
     
-    /**
-    * IKnowledge can also be matched by semantic type.	
-    * @param s
-    * @return
-    */
-    public abstract boolean equals(SemanticType s);
-    
+//    /**
+//    * IKnowledge can also be matched by semantic type.	
+//    * @param s
+//    * @return
+//    */
+//    public abstract boolean equals(SemanticType s);
+//    
 }
