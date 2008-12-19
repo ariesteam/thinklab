@@ -46,7 +46,6 @@ import org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject;
 import org.integratedmodelling.thinklab.interfaces.IQuery;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.utils.LogicalConnector;
-import org.integratedmodelling.utils.MalformedListException;
 import org.integratedmodelling.utils.Polylist;
 
 /**
@@ -402,7 +401,6 @@ public class Constraint implements IQuery {
 		return concept;
 	}
 
-	
 	/**
 	 * Return true if the concept to be matched is not the universal Thing()-y.
 	 * @return

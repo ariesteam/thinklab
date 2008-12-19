@@ -34,6 +34,8 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.feature.AttributeTable;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -59,7 +61,9 @@ public class FeatureRasterizer {
 
 	public class FeatureRasterizerException extends Exception {
 		   
-	    /**
+		private static final long serialVersionUID = 3481936169966009615L;
+
+		/**
 	     * Constructor with message argument.
 	     *
 	     * @param message Reason for the exception being thrown
@@ -261,7 +265,7 @@ public class FeatureRasterizer {
      * @param  attributeName                  Name of attribute from feature collection to provide as the cell value.
      * @exception  FeatureRasterizerException  An error when rasterizing the data
      */
-    public void rasterize(FeatureCollection fc, java.awt.geom.Rectangle2D.Double bounds, String attributeName)
+    public void rasterize(FeatureCollection<SimpleFeatureType, SimpleFeature> fc, java.awt.geom.Rectangle2D.Double bounds, String attributeName)
     	throws FeatureRasterizerException {
 
         this.attributeName = attributeName;
@@ -307,8 +311,8 @@ public class FeatureRasterizer {
 
         //System.out.println("1 --- WIDTH: " + ncols + "   HEIGHT: " + nrows);
 
-        FeatureIterator fci = fc.features();
-        Feature feature;
+        FeatureIterator<SimpleFeature> fci = fc.features();
+        SimpleFeature feature;
 
         while (fci.hasNext()) {
         	
@@ -324,7 +328,7 @@ public class FeatureRasterizer {
      * 
      * @param  feature     The feature to rasterize and add to current WritableRaster
      */   
-    public void addFeature(Feature feature) {
+    public void addFeature(SimpleFeature feature) {
 
     	//System.out.println("rasterizer - processing feature: "+ attributeName + " -- " + feature);
     	
@@ -356,7 +360,7 @@ public class FeatureRasterizer {
         graphics.setColor(new Color(rgbVal, true));
 
         // Extract polygon and rasterize!
-        Geometry geometry = feature.getDefaultGeometry();
+        Geometry geometry = (Geometry) feature.getDefaultGeometry();
         if (geometry.intersects(extentGeometry)) {
 
             if (geometry.getClass().equals(MultiPolygon.class)) {

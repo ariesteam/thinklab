@@ -7,6 +7,8 @@ import org.integratedmodelling.geospace.exceptions.ThinklabVectorizationExceptio
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.gis.Vectorizer.VectorizationException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 /**
  * A Thinklab-aware vectorizer that produces a Thinklab coverage and optionally, an observation
@@ -22,7 +24,7 @@ public class ThinklabVectorizer  {
 	public VectorCoverage vectorize(RasterCoverage rCoverage, GridExtent extent)
 			throws ThinklabException {
 
-		FeatureCollection ret = null;
+		FeatureCollection<SimpleFeatureType, SimpleFeature> ret = null;
 		
 		if (extent != null)
 			this.coverage = (RasterCoverage) rCoverage.requireMatch(extent, false);

@@ -11,13 +11,14 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
 
-import org.geotools.coverage.FactoryFinder;
+import org.geotools.coverage.CoverageFactoryFinder;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
+import org.geotools.factory.FactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gce.geotiff.GeoTiffReader;
@@ -27,6 +28,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 
 /**
@@ -63,8 +66,8 @@ public class CoverageFactory {
 	 * tables read from URLs (e.g. CSV) or from shapefiles. Our own featurecollection
 	 * may or may not come from here.
 	 */
-	private static Hashtable<String, FeatureCollection> featureCollections = 
-		new Hashtable<String, FeatureCollection>();
+	private static Hashtable<String, FeatureCollection<SimpleFeatureType, SimpleFeature>> featureCollections = 
+		new Hashtable<String, FeatureCollection<SimpleFeatureType, SimpleFeature>>();
 
 	private static Hashtable<String, AttributeTable> dataCollections = 
 		new Hashtable<String, AttributeTable>();
@@ -109,7 +112,7 @@ public class CoverageFactory {
 		 * hints object in the plugin, assuming the stupid hints interface stays this way.
 		 */
 		GridCoverageFactory factory = 
-			FactoryFinder.getGridCoverageFactory(Geospace.get().getGeotoolsHints());
+			CoverageFactoryFinder.getGridCoverageFactory(Geospace.get().getGeotoolsHints());
 		GridCoverage2D coverage = null;
 		
 		
@@ -121,8 +124,7 @@ public class CoverageFactory {
 				
 				GeoTiffReader reader = 
 					new GeoTiffReader(url, 
-							new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE,
-									  Hints.REPLACE_NON_GEOPHYSICS_VIEW, Boolean.TRUE));
+							new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
 
 				coverage = (GridCoverage2D)reader.read(null);
 				
@@ -194,7 +196,7 @@ public class CoverageFactory {
 				coverage = 
 					new VectorCoverage(
 							fc, 
-							fc.getSchema().getDefaultGeometry().getCoordinateSystem(), 
+							fc.getSchema().getCoordinateReferenceSystem(), 
 							atable,
 							srcAttr,
 							lnkAttr, 
@@ -208,7 +210,7 @@ public class CoverageFactory {
 
 			coverage = new VectorCoverage(
 					fc, 
-					fc.getSchema().getDefaultGeometry().getCoordinateSystem(), 
+					fc.getSchema().getCoordinateReferenceSystem(), 
 					valAttr, 
 					false);
 		}

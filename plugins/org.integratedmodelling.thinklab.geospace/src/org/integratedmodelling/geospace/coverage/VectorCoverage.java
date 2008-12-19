@@ -43,7 +43,6 @@ import javax.swing.JFrame;
 
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.shapefile.shp.ShapefileWriter;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.gce.geotiff.GeoTiffWriter;
@@ -69,6 +68,9 @@ import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureEx
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -76,9 +78,9 @@ import com.vividsolutions.jts.geom.Envelope;
 
 public class VectorCoverage implements ICoverage {
 
-	private FeatureCollection features = null;
+	private FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
 	CoordinateReferenceSystem crs = null;
-	private Envelope boundingBox = null;
+	private BoundingBox boundingBox = null;
 	private String layerName = null;
 	private String valueField = null;
 	private String sourceUrl = null;
@@ -103,7 +105,7 @@ public class VectorCoverage implements ICoverage {
 			boundingBox = sds.getFeatureSource(sds.getTypeNames()[0]).getBounds();
 			
 			// cross fingers
-			crs = features.getSchema().getDefaultGeometry().getCoordinateSystem();
+			crs = features.getSchema().getCoordinateReferenceSystem();
 			
 			if (validate)
 				validateFeatures();
@@ -122,7 +124,7 @@ public class VectorCoverage implements ICoverage {
 	}
 
 	public VectorCoverage(
-			FeatureCollection features,
+			FeatureCollection<SimpleFeatureType, SimpleFeature> features,
 			CoordinateReferenceSystem crs, 
 			String valueField, 
 			boolean validate) {
@@ -155,7 +157,7 @@ public class VectorCoverage implements ICoverage {
 	 * @throws ThinklabException 
 	 */
 	public VectorCoverage(
-			FeatureCollection features,
+			FeatureCollection<SimpleFeatureType, SimpleFeature> features,
 			CoordinateReferenceSystem crs, 
 			AttributeTable attributes,
 			String linkField,
@@ -177,16 +179,16 @@ public class VectorCoverage implements ICoverage {
 	private void computeEnvelope() {
 		
 		// determine common envelope for all features.
-		for (FeatureIterator f = features.features(); f.hasNext() ; ) {
+		for (FeatureIterator<SimpleFeature> f = features.features(); f.hasNext() ; ) {
 			
-			Feature ff = f.next();
+			SimpleFeature ff = f.next();
 			
-			ReferencedEnvelope env = ff.getBounds();
+			BoundingBox env = ff.getBounds();
 			
 			if (boundingBox == null) {
 				boundingBox = env;
 			} else {
-				boundingBox.expandToInclude(env);
+				boundingBox.include(env);
 			}
 		}
 			
@@ -203,7 +205,7 @@ public class VectorCoverage implements ICoverage {
 		}
 	}
 
-	public Envelope getBoundingBox() {
+	public BoundingBox getBoundingBox() {
 		return boundingBox;
 	}
 	
@@ -321,7 +323,7 @@ public class VectorCoverage implements ICoverage {
 		return crs;
 	}
 
-	public FeatureCollection getFeatures() {
+	public FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures() {
 		return features;
 	}
 

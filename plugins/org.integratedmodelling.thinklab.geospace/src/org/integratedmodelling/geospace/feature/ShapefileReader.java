@@ -38,6 +38,8 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import org.geotools.data.FeatureSource;
@@ -64,6 +66,9 @@ import org.integratedmodelling.thinklab.value.Value;
 import org.integratedmodelling.utils.LookupTable;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.mvel.MVEL;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -127,11 +132,12 @@ public class ShapefileReader {
 			/*
 			 * read in transformations for all attributes
  			 */
-			FeatureType schema = dataStore.getSchema();
+			SimpleFeatureType schema = dataStore.getSchema();
+			List<AttributeDescriptor> attrs = schema.getAttributeDescriptors();
 			
 			for (int i = 0; i < schema.getAttributeCount(); i++) {
 				
-				AttributeType atype = schema.getAttributeType(i);
+				AttributeDescriptor atype = attrs.get(i);
 				
 				// lookup attribute transformations
 				String lut = 
@@ -227,7 +233,7 @@ public class ShapefileReader {
 		
 	}
 	
-	public IValue attributeToValue(AttributeType atype, Object avalue) throws ThinklabException {
+	public IValue attributeToValue(AttributeDescriptor atype, Object avalue) throws ThinklabException {
 		
 		IValue ret = null;
 		String name = atype.getLocalName();
@@ -344,11 +350,13 @@ public class ShapefileReader {
 	}
 
 
-	protected void processFeature(Feature f) throws ThinklabException {
+	protected void processFeature(SimpleFeature simpleFeature) throws ThinklabException {
 		
 		
-		FeatureType ftype = f.getFeatureType();
+		SimpleFeatureType ftype = simpleFeature.getFeatureType();
+		
 		int acount = ftype.getAttributeCount();
+		List<AttributeDescriptor> attrs = ftype.getAttributeDescriptors();
 		
 		String[] attNames  = new String[acount-1];
 		IValue[] attValues = new IValue[acount-1];
@@ -358,13 +366,13 @@ public class ShapefileReader {
 		
 		for (int i = 0; i < acount; i++) {
 			
-			AttributeType atype = ftype.getAttributeType(i);
+			AttributeDescriptor atype = attrs.get(i);
 			
 			/* 
 			 * apply transformations, translations, etc. and return the processed attribute as
 			 * an IValue 
 			 */
-			IValue value = attributeToValue(atype, f.getAttribute(i));
+			IValue value = attributeToValue(atype, simpleFeature.getAttribute(i));
 			
 			/* put values away properly */
 			if (atype.getLocalName().equals("the_geom")) {
@@ -377,7 +385,7 @@ public class ShapefileReader {
 		}
 
 		/* call processing function */
-		notifyFeature(f.getID(), (ShapeValue)shape, attNames, attValues);
+		notifyFeature(simpleFeature.getID(), (ShapeValue)shape, attNames, attValues);
 	}
 	
 	/**
@@ -386,10 +394,10 @@ public class ShapefileReader {
 	public void process() throws ThinklabException {
 
 		try {
-			FeatureCollection fcoll = source.getFeatures();
+			FeatureCollection<SimpleFeatureType, SimpleFeature> fcoll = source.getFeatures();
 			
-			for (Object f : fcoll) {
-				processFeature((Feature)f);
+			for (Iterator<SimpleFeature> it = fcoll.iterator(); it.hasNext(); ) {
+				processFeature(it.next());
 			}
 			
 		} catch (IOException e) {

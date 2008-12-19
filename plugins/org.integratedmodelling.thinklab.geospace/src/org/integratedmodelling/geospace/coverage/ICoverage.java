@@ -10,6 +10,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -53,7 +54,7 @@ public interface ICoverage {
 
 	public abstract String getLayerName();
 	
-	public Envelope getBoundingBox();
+	public BoundingBox getBoundingBox();
 	
 	/**
 	 * Return a coverage that matches the passed raster extent, warping if necessary. Return self if

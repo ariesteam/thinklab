@@ -31,64 +31,61 @@
 		<library type="code" id="batik-xml" path="lib/batik-xml-1.6.jar"/>
 		<library type="code" id="bufr" path="lib/bufr-1.1.00.jar"/>
 		<library type="code" id="ecore" path="lib/ecore-2.2.2.jar"/>
-		<library type="code" id="geoapi" path="lib/geoapi-nogenerics-2.1.0.jar">
+		<library type="code" id="geoapi" path="lib/geoapi-2.2-M1.jar">
 			<export prefix="*"/>
 		</library>
 		<library type="code" id="gnu-regexp" path="lib/gnu-regexp-1.1.4.jar"/>
 		<library type="code" id="grib" path="lib/grib-5.1.03.jar"/>
-		<library type="code" id="gt2-api" path="lib/gt2-api-2.4.4.jar">
+		<library type="code" id="gt-api" path="lib/gt-api-2.5.2.jar">
 			<export prefix="*"/>
 		</library>
-		<library type="code" id="gt2-arcgrid" path="lib/gt2-arcgrid-2.4.4.jar"/>
-		<library type="code" id="gt2-arcsde" path="lib/gt2-arcsde-2.4.4.jar"/>
-		<library type="code" id="gt2-brewer" path="lib/gt2-brewer-2.4.4.jar"/>
-		<library type="code" id="gt2-coverage" path="lib/gt2-coverage-2.4.4.jar">
+		<library type="code" id="gt2-arcgrid" path="lib/gt-arcgrid-2.5.2.jar"/>
+		<library type="code" id="gt2-arcsde" path="lib/gt-arcsde-2.5.2.jar"/>
+		<library type="code" id="gt2-brewer" path="lib/gt-brewer-2.5.2.jar"/>
+		<library type="code" id="gt2-coverage" path="lib/gt-coverage-2.5.2.jar">
 			<export prefix="*"/>
 		</library>
-		<library type="code" id="gt2-coverageio" path="lib/gt2-coverageio-2.4.4.jar"/>
-		<library type="code" id="gt2-coverageio-netcdf" path="lib/gt2-coverageio-netcdf-2.4.4.jar"/>
-		<library type="code" id="gt2-cql" path="lib/gt2-cql-2.4.4.jar"/>
-		<library type="code" id="gt2-data" path="lib/gt2-data-2.4.4.jar"/>
-		<library type="code" id="gt2-db2" path="lib/gt2-db2-2.4.4.jar"/>
-		<library type="code" id="gt2-directory" path="lib/gt2-directory-2.4.4.jar"/>
-		<library type="code" id="gt2-epsg-hsql" path="lib/gt2-epsg-hsql-2.4.4.jar"/>
-		<library type="code" id="gt2-geotiff" path="lib/gt2-geotiff-2.4.4.jar"/>
-		<library type="code" id="gt2-gml" path="lib/gt2-gml-2.4.4.jar"/>
-		<library type="code" id="gt2-graph" path="lib/gt2-graph-2.4.4.jar"/>
-		<library type="code" id="gt2-gtopo30" path="lib/gt2-gtopo30-2.4.4.jar"/>
-		<library type="code" id="gt2-image" path="lib/gt2-image-2.4.4.jar"/>
-		<library type="code" id="gt2-imagemosaic" path="lib/gt2-imagemosaic-2.4.4.jar"/>
-		<library type="code" id="gt2-imagepyramid" path="lib/gt2-imagepyramid-2.4.4.jar"/>
-		<library type="code" id="gt2-jdbc" path="lib/gt2-jdbc-2.4.4.jar"/>
-		<library type="code" id="gt2-main" path="lib/gt2-main-2.4.4.jar"/>
-		<library type="code" id="gt2-mappane" path="lib/gt2-mappane-2.4.4.jar"/>
-		<library type="code" id="gt2-metadata" path="lib/gt2-metadata-2.4.4.jar"/>
-		<library type="code" id="gt2-mysql" path="lib/gt2-mysql-2.4.4.jar"/>
-		<library type="code" id="gt2-openoffice" path="lib/gt2-openoffice-2.4.4.jar"/>
-		<library type="code" id="gt2-oracle-spatial" path="lib/gt2-oracle-spatial-2.4.4.jar"/>
-		<library type="code" id="gt2-postgis" path="lib/gt2-postgis-2.4.4.jar"/>
-		<library type="code" id="gt2-postgis-versioned" path="lib/gt2-postgis-versioned-2.4.4.jar"/>
-		<library type="code" id="gt2-referencing" path="lib/gt2-referencing-2.4.4.jar">
+		<library type="code" id="gt2-cql" path="lib/gt-cql-2.5.2.jar"/>
+		<library type="code" id="gt2-data" path="lib/gt-data-2.5.2.jar"/>
+		<library type="code" id="gt2-db2" path="lib/gt-db2-2.5.2.jar"/>
+		<library type="code" id="gt2-epsg-hsql" path="lib/gt-epsg-hsql-2.5.2.jar"/>
+		<library type="code" id="gt2-geotiff" path="lib/gt-geotiff-2.5.2.jar"/>
+		<library type="code" id="gt2-graph" path="lib/gt-graph-2.5.2.jar"/>
+		<library type="code" id="gt2-gtopo30" path="lib/gt-gtopo30-2.5.2.jar"/>
+		<library type="code" id="gt2-image" path="lib/gt-image-2.5.2.jar"/>
+		<library type="code" id="gt2-imagemosaic" path="lib/gt-imagemosaic-2.5.2.jar"/>
+		<library type="code" id="gt2-imagemosaic-JDBC" path="lib/gt-imagemosaic-jdbc-2.5.2.jar"/>
+		<library type="code" id="gt2-imagepyramid" path="lib/gt-imagepyramid-2.5.2.jar"/>
+		<library type="code" id="gt2-jdbc" path="lib/gt-jdbc-2.5.2.jar"/>
+		<library type="code" id="gt2-main" path="lib/gt-main-2.5.2.jar"/>
+		<library type="code" id="gt2-mappane" path="lib/gt-mappane-2.5-SNAPSHOT.jar"/>
+		<library type="code" id="gt2-metadata" path="lib/gt-metadata-2.5.2.jar"/>
+		<library type="code" id="gt2-openoffice" path="lib/gt-openoffice-2.5.2.jar"/>
+		<library type="code" id="gt2-postgis" path="lib/gt-postgis-2.5.2.jar"/>
+		<library type="code" id="gt2-referencing" path="lib/gt-referencing-2.5.2.jar">
 			<export prefix="*"/>
 		</library>
-		<library type="code" id="gt2-referencing3D" path="lib/gt2-referencing3D-2.4.4.jar">
+		<library type="code" id="gt2-referencing3D" path="lib/gt-referencing3D-2.5.2.jar">
 			<export prefix="*"/>
 		</library>
-		<library type="code" id="gt2-render" path="lib/gt2-render-2.4.4.jar"/>
-		<library type="code" id="gt2-sample-data" path="lib/gt2-sample-data-2.4.4.jar"/>
-		<library type="code" id="gt2-shapefile" path="lib/gt2-shapefile-2.4.4.jar"/>
-		<library type="code" id="gt2-shapefile-renderer" path="lib/gt2-shapefile-renderer-2.4.4.jar"/>
-		<library type="code" id="gt2-svgsupport" path="lib/gt2-svgsupport-2.4.4.jar"/>
-		<library type="code" id="gt2-validation" path="lib/gt2-validation-2.4.4.jar"/>
-		<library type="code" id="gt2-vpf" path="lib/gt2-vpf-2.4.4.jar"/>
-		<library type="code" id="gt2-wfs" path="lib/gt2-wfs-2.4.4.jar"/>
-		<library type="code" id="gt2-widgets-swing" path="lib/gt2-widgets-swing-2.4.4.jar"/>
-		<library type="code" id="gt2-wms" path="lib/gt2-wms-2.4.4.jar"/>
-		<library type="code" id="gt2-xml" path="lib/gt2-xml-2.4.4.jar"/>
-		<library type="code" id="gt2-xml-filter" path="lib/gt2-xml-filter-2.4.4.jar"/>
-		<library type="code" id="gt2-xml-gml2" path="lib/gt2-xml-gml2-2.4.4.jar"/>
-		<library type="code" id="gt2-xml-gml3" path="lib/gt2-xml-gml3-2.4.4.jar"/>
-		<library type="code" id="gt2-xml-xsd" path="lib/gt2-xml-xsd-2.4.4.jar"/>
+		<library type="code" id="gt2-render" path="lib/gt-render-2.5.2.jar"/>
+		<library type="code" id="gt2-shapefile" path="lib/gt-shapefile-2.5.2.jar"/>
+		<library type="code" id="gt2-shapefile-renderer" path="lib/gt-shapefile-renderer-2.5.2.jar"/>
+		<library type="code" id="gt2-svgsupport" path="lib/gt-svgsupport-2.5.2.jar"/>
+		<library type="code" id="gt2-validation" path="lib/gt-validation-2.5.2.jar"/>
+		<library type="code" id="gt2-wfs" path="lib/gt-wfs-2.5.2.jar"/>
+		<library type="code" id="gt2-widgets-swing" path="lib/gt-widgets-swing-2.5.2.jar"/>
+		<library type="code" id="gt2-wms" path="lib/gt-wms-2.5.2.jar"/>
+		<library type="code" id="gt2-xml" path="lib/gt-xml-2.5.2.jar"/>
+		<library type="code" id="gt2-xsd-core" path="lib/gt-xsd-core-2.5.2.jar"/>
+		<library type="code" id="gt2-xsd-filter" path="lib/gt-xsd-filter-2.5.2.jar"/>
+		<library type="code" id="gt2-xsd-gml2" path="lib/gt-xsd-gml2-2.5.2.jar"/>
+		<library type="code" id="gt2-xsd-gml3" path="lib/gt-xsd-gml3-2.5.2.jar"/>
+		<library type="code" id="gt2-xsd-kml" path="lib/gt-xsd-kml-2.5.2.jar"/>
+		<library type="code" id="gt2-xsd-ows" path="lib/gt-xsd-ows-2.5.2.jar"/>
+		<library type="code" id="gt2-xsd-sld" path="lib/gt-xsd-sld-2.5.2.jar"/>
+		<library type="code" id="gt2-xsd-wfs" path="lib/gt-xsd-wfs-2.5.2.jar"/>
+		<library type="code" id="gt2-xsd-wps" path="lib/gt-xsd-wps-2.5.2.jar"/>
 		<library type="code" id="hsqldb" path="lib/hsqldb-1.8.0.7.jar"/>
 		<library type="code" id="imageio-ext-arcgrid" path="lib/imageio-ext-arcgrid-1.0-SNAPSHOT.jar"/>
 		<library type="code" id="imageio-ext-customstreams" path="lib/imageio-ext-customstreams-1.0-SNAPSHOT.jar"/>

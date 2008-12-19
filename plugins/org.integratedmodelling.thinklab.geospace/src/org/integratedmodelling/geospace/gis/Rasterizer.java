@@ -2,10 +2,12 @@ package org.integratedmodelling.geospace.gis;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -204,21 +206,21 @@ public class Rasterizer {
 //		return false;
 //	}
 
-	private Envelope computeEnvelope(FeatureCollection features) {
+	private BoundingBox computeEnvelope(FeatureCollection<SimpleFeatureType, SimpleFeature> features) {
 		
-		Envelope ret = null;
+		BoundingBox ret = null;
 		
 		// determine common envelope for all features.
-		for (FeatureIterator f = features.features(); f.hasNext() ; ) {
+		for (FeatureIterator<SimpleFeature> f = features.features(); f.hasNext() ; ) {
 			
-			Feature ff = f.next();
+			SimpleFeature ff = f.next();
 			
-			ReferencedEnvelope env = ff.getBounds();
+			BoundingBox env = ff.getBounds();
 			
 			if (ret == null) {
 				ret = env;
 			} else {
-				ret.expandToInclude(env);
+				ret.include(env);
 			}
 		}
 		
@@ -241,11 +243,11 @@ public class Rasterizer {
 	 * 
 	 */
 	public GridCoverage2D rasterize(
-			FeatureCollection features, 
+			FeatureCollection<SimpleFeatureType, SimpleFeature> features, 
 			String valueId, 
 			float noDataValue, 
 			int xCells, int yCells,
-			Envelope envelope) {
+			BoundingBox envelope) {
 		
 		float[][] data = new float[xCells][yCells];
 		
@@ -258,14 +260,14 @@ public class Rasterizer {
 			envelope = computeEnvelope(features);
 		}
 		
-		float xSize = (float) (envelope.getWidth()/xCells);
-		float ySize = (float) (envelope.getHeight()/yCells);
+//		float xSize = (float) (envelope.getWidth()/xCells);
+//		float ySize = (float) (envelope.getHeight()/yCells);
+//		
+//		
+//		CoordinateReferenceSystem crs = 
+//			features.getSchema().getCoordinateReferenceSystem();
 		
-		
-		CoordinateReferenceSystem crs = 
-			features.getSchema().getDefaultGeometry().getCoordinateSystem();
-		
-		return new GridCoverageFactory().create("", data, new ReferencedEnvelope(envelope, crs));
+		return new GridCoverageFactory().create("", data, new ReferencedEnvelope(envelope));
 	
 	}
 

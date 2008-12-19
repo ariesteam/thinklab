@@ -114,58 +114,8 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/batik-xml-1.6.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/bufr-1.1.00.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/ecore-2.2.2.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/geoapi-nogenerics-2.1.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gnu-regexp-1.1.4.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/grib-5.1.03.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-api-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-arcgrid-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-arcsde-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-brewer-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-coverage-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-coverageio-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-coverageio-netcdf-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-cql-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-data-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-db2-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-directory-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-epsg-access-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-epsg-extension-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-epsg-hsql-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-epsg-postgresql-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-epsg-wkt-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-geotiff-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-gml-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-graph-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-gtopo30-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-image-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-imagemosaic-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-imagepyramid-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-jdbc-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-main-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-mappane-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-metadata-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-mysql-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-openoffice-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-oracle-spatial-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-postgis-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-postgis-versioned-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-referencing-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-referencing3D-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-render-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-sample-data-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-shapefile-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-shapefile-renderer-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-svgsupport-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-validation-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-vpf-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-wfs-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-widgets-swing-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-wms-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-xml-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-xml-filter-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-xml-gml2-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-xml-gml3-2.4.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt2-xml-xsd-2.4.4.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/hsqldb-1.8.0.7.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/imageio-ext-arcgrid-1.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/imageio-ext-customstreams-1.0-SNAPSHOT.jar"/>
@@ -246,5 +196,56 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/owlapi-rdfxmlrenderer.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/owlapi-util.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.clojure/lib/clojure.jar" sourcepath="/clojure"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/geoapi-2.2-M1.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-api-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-arcgrid-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-arcsde-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-brewer-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-coverage-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-cql-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-data-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-db2-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-epsg-access-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-epsg-extension-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-epsg-hsql-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-epsg-postgresql-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-epsg-wkt-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-geotiff-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-graph-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-gtopo30-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-image-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-imagemosaic-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-imagemosaic-jdbc-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-imagepyramid-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-jdbc-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-legacy-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-libraryJTS-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-main-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-metadata-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-openoffice-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-postgis-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-property-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-referencing-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-referencing3D-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-render-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-sample-data-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-shapefile-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-shapefile-renderer-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-svgsupport-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-validation-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-wfs-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-widgets-swing-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-wms-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-xml-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-xsd-core-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-xsd-filter-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-xsd-gml2-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-xsd-gml3-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-xsd-kml-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-xsd-ows-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-xsd-sld-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-xsd-wfs-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-xsd-wps-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-mappane-2.5-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

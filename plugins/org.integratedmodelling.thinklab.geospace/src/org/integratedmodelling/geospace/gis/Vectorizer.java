@@ -1,23 +1,25 @@
 package org.integratedmodelling.geospace.gis;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Vector;
 
 import org.geotools.data.memory.MemoryFeatureCollection;
-import org.geotools.feature.AttributeType;
 import org.geotools.feature.AttributeTypeFactory;
-import org.geotools.feature.Feature;
+import org.geotools.feature.DefaultFeatureType;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypeBuilder;
 import org.geotools.feature.GeometryAttributeType;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.geometry.BoundingBox;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateList;
-import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
@@ -41,7 +43,7 @@ public class Vectorizer {
 
 	private int datarows = 0;
 	private int datacols = 0;
-	Envelope extent = null;
+	BoundingBox extent = null;
 	
 	ArrayList<Double> dataClasses;
 
@@ -50,7 +52,7 @@ public class Vectorizer {
 
 	private double novalue = 0.0;
 	private String valueAttributeID = "the_value";
-	private FeatureType ftContour;
+	private SimpleFeatureType ftContour;
 
 	public class VectorizationException extends Exception {
 
@@ -95,7 +97,7 @@ public class Vectorizer {
 	  public boolean hasBeenUsed = false;
 
 	  
-	  private double[] rowColToNodeboundCoordinates(Envelope extent, int xCells, int yCells, int row, int col) {
+	  private double[] rowColToNodeboundCoordinates(BoundingBox extent, int xCells, int yCells, int row, int col) {
 
 			double anorth = extent.getMaxY();
 			double awest = extent.getMinX();
@@ -129,7 +131,7 @@ public class Vectorizer {
 	   * @param row
 	   * @param col
 	   */
-	  public void setCoordinateFromTl(int row, int col, Envelope extent, int xc, int yc)
+	  public void setCoordinateFromTl(int row, int col, BoundingBox extent, int xc, int yc)
 	  {
 	    double[] nsew = rowColToNodeboundCoordinates(extent, xc, yc, row, col);
 	    coord = new Coordinate(nsew[3], nsew[0]);
@@ -142,7 +144,7 @@ public class Vectorizer {
 	   * @param row
 	   * @param col
 	   */
-	  public void setCoordinateFromTr(int row, int col, Envelope extent, int xc, int yc)
+	  public void setCoordinateFromTr(int row, int col, BoundingBox extent, int xc, int yc)
 	  {
 	    double[] nsew = rowColToNodeboundCoordinates(extent, xc, yc, row, col);
 	    coord = new Coordinate(nsew[2], nsew[0]);
@@ -154,7 +156,7 @@ public class Vectorizer {
 	   * @param row
 	   * @param col
 	   */
-	  public void setCoordinateFromBl(int row, int col, Envelope extent, int xc, int yc)
+	  public void setCoordinateFromBl(int row, int col, BoundingBox extent, int xc, int yc)
 	  {
 	    double[] nsew = rowColToNodeboundCoordinates(extent, xc, yc, row, col);
 	    coord = new Coordinate(nsew[3], nsew[1]);
@@ -166,7 +168,7 @@ public class Vectorizer {
 	   * @param row
 	   * @param col
 	   */
-	  public void setCoordinateFromBr(int row, int col, Envelope extent, int xc, int yc)
+	  public void setCoordinateFromBr(int row, int col, BoundingBox extent, int xc, int yc)
 	  {
 	    double[] nsew = rowColToNodeboundCoordinates(extent, xc, yc, row, col);
 	    coord = new Coordinate(nsew[2], nsew[1]);
@@ -183,7 +185,7 @@ public class Vectorizer {
 	 * @param extent
 	 * @param noDataValue
 	 */
-	public Vectorizer(double[][] data, Envelope extent, double noDataValue) {
+	public Vectorizer(double[][] data, BoundingBox extent, double noDataValue) {
 		
 		this.novalue = noDataValue;
 		this.extent = extent;
@@ -211,7 +213,7 @@ public class Vectorizer {
 	 * @return
 	 * @throws VectorizationException
 	 */
-	public FeatureCollection extractFeatures() throws VectorizationException {
+	public FeatureCollection<SimpleFeatureType, SimpleFeature> extractFeatures() throws VectorizationException {
 
 		MemoryFeatureCollection ret = null;
 
@@ -224,7 +226,7 @@ public class Vectorizer {
 			
 			System.out.println("Extracting " + d);
 			
-			Feature f = extract_areas(extent, datacols, datarows, d);
+			SimpleFeature f = extract_areas(extent, datacols, datarows, d);
 
 			if (f != null) {				
 				
@@ -272,7 +274,7 @@ public class Vectorizer {
 	 * @param d the value of the features we're looking for
 	 * @throws VectorizationException 
 	 */
-	protected Feature extract_areas(Envelope extent, int xc, int yc, double d) throws VectorizationException {
+	protected SimpleFeature extract_areas(BoundingBox extent, int xc, int yc, double d) throws VectorizationException {
 		
 		double tl, tr, bl, br;
 		
@@ -364,19 +366,19 @@ public class Vectorizer {
 			geometryAttribute = (GeometryAttributeType) AttributeTypeFactory
 					.newAttributeType("the_geom", MultiLineString.class);
 		}
-		AttributeType areaAttribute = (AttributeType) AttributeTypeFactory
+		AttributeDescriptor areaAttribute =  AttributeTypeFactory
 				.newAttributeType("area", Float.class);
-		AttributeType boundAttribute = (AttributeType) AttributeTypeFactory
+		AttributeDescriptor boundAttribute = AttributeTypeFactory
 				.newAttributeType("perimeter", Float.class);
 		
 		/*
 		 * add the value
 		 */
-		AttributeType valueAttribute = (AttributeType) AttributeTypeFactory
+		AttributeDescriptor valueAttribute = AttributeTypeFactory
 			.newAttributeType(valueAttributeID , Float.class);
 
 		try {
-			this.ftContour = FeatureTypeBuilder.newFeatureType(new AttributeType[] {
+			this.ftContour = FeatureTypeBuilder.newFeatureType(new AttributeDescriptor[] {
 					geometryAttribute, areaAttribute, boundAttribute, valueAttribute },
 					"default");
 		} catch (Exception e) {
@@ -404,12 +406,18 @@ public class Vectorizer {
 			ls = gf.createMultiLineString(pg);
 		}
 
-		Object[] featureAttribs = { ls, ls.getArea(), ls.getLength(), new Float(d) };
-
 		// create the feature
-		Feature feature = null;
+		SimpleFeature feature = null;
 		try {
-			feature = ftContour.create(featureAttribs);
+
+			SimpleFeatureBuilder fBuilder = new SimpleFeatureBuilder(ftContour);
+			
+			fBuilder.add(ls);
+			fBuilder.add(ls.getArea());
+			fBuilder.add(ls.getLength());
+			fBuilder.add(new Float(d));			
+			feature = fBuilder.buildFeature("");
+			
 	    } catch (Exception e) {
 	    	throw new VectorizationException(e);
 	    }
@@ -428,7 +436,7 @@ public class Vectorizer {
 	 * @return
 	 */
 	private void update_list(double tl, double tr, double bl, double br, int i,
-			int row, int col, Envelope extent, int xc, int yc) {
+			int row, int col, BoundingBox extent, int xc, int yc) {
 		
 		Coords c1 = null;
 		Coords c2 = null;
@@ -1069,7 +1077,7 @@ public class Vectorizer {
 		};
 		
 		
-		Envelope cext = new Envelope(0.0, 31.0, 0.0, 25.0);
+		BoundingBox cext = new ReferencedEnvelope(0.0, 31.0, 0.0, 25.0, null);
 
 		Vectorizer vect = new Vectorizer(data, cext, 1.0);
 		

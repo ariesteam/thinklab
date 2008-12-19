@@ -441,6 +441,9 @@ public class Restriction  {
 			/* 
 			 * operator: must be an initial string with no strange stuff in it, and an optional
 			 * number of parameters, to be stored as they come.
+			 * 
+			 * TODO operators should be instances of thinklab-core:Operator, or string IDs names of such
+			 * instances. This messes with the concept recognition above.
 			 */
 			if ( !(def[nn] instanceof String)) 
 				throw new ThinklabConstraintValidationException("invalid restriction operator at " + def[nn]);

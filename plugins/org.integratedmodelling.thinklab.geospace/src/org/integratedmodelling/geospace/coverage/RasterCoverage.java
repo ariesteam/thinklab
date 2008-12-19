@@ -18,6 +18,7 @@ import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.processing.DefaultProcessor;
 import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.geometry.DirectPosition2D;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.interfaces.IConceptualModel;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
@@ -31,6 +32,7 @@ import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
+import org.opengis.geometry.BoundingBox;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -40,7 +42,7 @@ public class RasterCoverage implements ICoverage {
 
 	GridCoverage2D coverage = null;
 	private CoordinateReferenceSystem crs = null;
-	private Envelope boundingBox = null;
+	private BoundingBox boundingBox = null;
 	private RenderedImage image = null;
 	private GridGeometry2D gridGeometry = null;
 //	private RasterActivationLayer activationLayer = null;
@@ -122,11 +124,11 @@ public class RasterCoverage implements ICoverage {
 		xCellSize = coverage.getEnvelope2D().getWidth()/(double)getXCells();
 		yCellSize = coverage.getEnvelope2D().getHeight()/(double)getYCells();
 		
-		boundingBox = new Envelope(
+		boundingBox = new ReferencedEnvelope(
 				coverage.getEnvelope2D().getMinX(),
 				coverage.getEnvelope2D().getMaxX(),
 				coverage.getEnvelope2D().getMinY(),
-				coverage.getEnvelope2D().getMaxY());
+				coverage.getEnvelope2D().getMaxY(), crs);
 	}
 	
 	/**
@@ -187,11 +189,11 @@ public class RasterCoverage implements ICoverage {
 		xCellSize = coverage.getEnvelope2D().getWidth()/(double)getXCells();
 		yCellSize = coverage.getEnvelope2D().getHeight()/(double)getYCells();
 		
-		boundingBox = new Envelope(
+		boundingBox = new ReferencedEnvelope(
 				coverage.getEnvelope2D().getMinX(),
 				coverage.getEnvelope2D().getMaxX(),
 				coverage.getEnvelope2D().getMinY(),
-				coverage.getEnvelope2D().getMaxY());
+				coverage.getEnvelope2D().getMaxY(), crs);
 		
 	}
 	
@@ -211,15 +213,15 @@ public class RasterCoverage implements ICoverage {
 		xCellSize = coverage.getEnvelope2D().getWidth()/(double)getXCells();
 		yCellSize = coverage.getEnvelope2D().getHeight()/(double)getYCells();
 		
-		boundingBox = new Envelope(
+		boundingBox = new ReferencedEnvelope(
 				coverage.getEnvelope2D().getMinX(),
 				coverage.getEnvelope2D().getMaxX(),
 				coverage.getEnvelope2D().getMinY(),
-				coverage.getEnvelope2D().getMaxY());
+				coverage.getEnvelope2D().getMaxY(), crs);
 		
 	}
 
-	public Envelope getBoundingBox() {
+	public BoundingBox getBoundingBox() {
 		return boundingBox;
 	}
 	

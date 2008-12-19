@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -71,6 +73,9 @@ import org.integratedmodelling.utils.LookupTable;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 import org.mvel.MVEL;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.identity.Identifier;
@@ -109,7 +114,7 @@ public abstract class FeatureImporter implements ISpatialDataImporter {
 	Hashtable<String, Serializable> expressions = new Hashtable<String, Serializable>();
 	Hashtable<String, IConcept> concepts = new Hashtable<String, IConcept>();
 	
-	private FeatureSource source;
+	private FeatureSource<SimpleFeatureType, SimpleFeature> source;
 	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.geospace.feature.ISpatialDataImporter#initialize(java.net.URL, java.util.Properties)
@@ -131,7 +136,7 @@ public abstract class FeatureImporter implements ISpatialDataImporter {
 	
 	protected abstract DataStore getDataStore();
 	
-	protected FeatureSource getFeatureSource() {
+	protected FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource() {
 		return source;
 	}
 	
@@ -148,11 +153,12 @@ public abstract class FeatureImporter implements ISpatialDataImporter {
 			/*
 			 * read in transformations for all attributes
  			 */
-			FeatureType schema = dataStore.getSchema(name);
+			SimpleFeatureType schema = dataStore.getSchema(name);
+			List<AttributeDescriptor> attrs = schema.getAttributeDescriptors();
 			
 			for (int i = 0; i < schema.getAttributeCount(); i++) {
 				
-				AttributeType atype = schema.getAttributeType(i);
+				AttributeDescriptor atype = attrs.get(i);
 				
 				// lookup attribute transformations
 				String lut = 
@@ -239,11 +245,11 @@ public abstract class FeatureImporter implements ISpatialDataImporter {
 		ArrayList<Polylist> lists = new ArrayList<Polylist>();
 		
 		try {
-			FeatureCollection fcoll = source.getFeatures();
+			FeatureCollection<SimpleFeatureType, SimpleFeature> fcoll = source.getFeatures();
 			
-			for (Object of : fcoll) {
+			for (Iterator<SimpleFeature> it = fcoll.iterator(); it.hasNext();) {
 
-				Feature f = (Feature)of;
+				SimpleFeature f = it.next();
 
 				ArrayList<String> al = new ArrayList<String>();
 				
@@ -288,7 +294,7 @@ public abstract class FeatureImporter implements ISpatialDataImporter {
 			String featureID, ShapeValue shape, 
 			String[] attributeNames, IValue[] attributeValues) throws ThinklabException;
 	
-	public IValue attributeToValue(AttributeType atype, Object avalue) throws ThinklabException {
+	public IValue attributeToValue(AttributeDescriptor atype, Object avalue) throws ThinklabException {
 		
 		IValue ret = null;
 		String name = atype.getLocalName();
@@ -389,10 +395,10 @@ public abstract class FeatureImporter implements ISpatialDataImporter {
 	}
 
 
-	protected void processFeature(Feature f) throws ThinklabException {
+	protected void processFeature(SimpleFeature simpleFeature) throws ThinklabException {
 		
 		
-		FeatureType ftype = f.getFeatureType();
+		SimpleFeatureType ftype = simpleFeature.getFeatureType();
 		int acount = ftype.getAttributeCount();
 		
 		String[] attNames  = new String[acount-1];
@@ -400,16 +406,17 @@ public abstract class FeatureImporter implements ISpatialDataImporter {
 
 		IValue shape = null;
 		int n = 0;
+		List<AttributeDescriptor> attrs = ftype.getAttributeDescriptors();
 		
 		for (int i = 0; i < acount; i++) {
 			
-			AttributeType atype = ftype.getAttributeType(i);
+			AttributeDescriptor atype = attrs.get(i);
 			
 			/* 
 			 * apply transformations, translations, etc. and return the processed attribute as
 			 * an IValue 
 			 */
-			IValue value = attributeToValue(atype, f.getAttribute(i));
+			IValue value = attributeToValue(atype, simpleFeature.getAttribute(i));
 			
 			/* put values away properly */
 			if (atype.getLocalName().equals("the_geom")) {
@@ -422,7 +429,7 @@ public abstract class FeatureImporter implements ISpatialDataImporter {
 		}
 
 		/* call processing function */
-		notifyFeature(f.getID(), (ShapeValue)shape, attNames, attValues);
+		notifyFeature(simpleFeature.getID(), (ShapeValue)shape, attNames, attValues);
 	}
 	
 	/* (non-Javadoc)
@@ -433,10 +440,10 @@ public abstract class FeatureImporter implements ISpatialDataImporter {
 		int n = 0;
 		
 		try {
-			FeatureCollection fcoll = source.getFeatures();
+			FeatureCollection<SimpleFeatureType, SimpleFeature> fcoll = source.getFeatures();
 			
-			for (Object f : fcoll) {
-				processFeature((Feature)f);
+			for (Iterator<SimpleFeature> it = fcoll.iterator(); it.hasNext(); ) {
+				processFeature(it.next());
 				n++;
 			}
 			
@@ -456,14 +463,14 @@ public abstract class FeatureImporter implements ISpatialDataImporter {
 	public void process(String id)	throws ThinklabException {
 
 		/* get feature from shapefile */
-		Feature f = null;
+		SimpleFeature f = null;
 		FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 		FeatureId fid = ff.featureId(id);
 		Set<Identifier> iids = new HashSet<Identifier>();
 		iids.add(fid);
 		
 		try {
-			FeatureCollection fcoll = source.getFeatures(ff.id(iids));
+			FeatureCollection<SimpleFeatureType, SimpleFeature> fcoll = source.getFeatures(ff.id(iids));
 			if (fcoll.size() != 1) {
 				throw new ThinklabIOException("shapefile kbox: " +
 						shapeURL + 
@@ -471,7 +478,7 @@ public abstract class FeatureImporter implements ISpatialDataImporter {
 						id + 
 						" absent or duplicated in shapefile");	
 			}
-			f = (Feature)fcoll.iterator().next();
+			f = fcoll.iterator().next();
 		} catch (IOException e) {
 			throw new ThinklabIOException(e);
 		}
