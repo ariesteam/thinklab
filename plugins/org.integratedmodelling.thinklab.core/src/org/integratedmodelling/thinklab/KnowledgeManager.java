@@ -63,6 +63,7 @@ import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
+import org.integratedmodelling.thinklab.interfaces.IKnowledge;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject;
@@ -125,6 +126,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	private IConcept floatType;	
 	private IConcept textType;
     private IConcept numberType;
+    private IConcept operatorType;
     private IConcept booleanType;
     private IConcept longType;
     private IConcept doubleType;
@@ -141,6 +143,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
     private SemanticType booleanTypeID;
     private SemanticType doubleTypeID;
     private SemanticType longTypeID;
+    private SemanticType operatorTypeID;
     private SemanticType rootTypeID;
     private SemanticType classificationPropertyID;
     private SemanticType reifiedLiteralPropertyID;
@@ -376,6 +379,16 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	public void setNumberType(IConcept numberType) {
 		this.numberType = numberType;
 	}
+	
+	public IConcept getOperatorType() throws ThinklabValidationException {
+		if (!typesInitialized)
+			initializeThinklabTypes();
+		return operatorType;
+	}
+
+	public void setOperatorType(IConcept type) {
+		this.operatorType = type;
+	}
 
 	public IProperty getReifiedLiteralProperty() throws ThinklabValidationException {
 		if (!typesInitialized)
@@ -448,6 +461,8 @@ public class KnowledgeManager implements IKnowledgeProvider {
 				new SemanticType(p.getProperty("type.class.boolean", "thinklab-core:Boolean"));
 			textTypeID = 
 				new SemanticType(p.getProperty("type.class.text",       "thinklab-core:Text"));
+			operatorTypeID = 
+				new SemanticType(p.getProperty("type.class.operator",   "thinklab-core:Operation"));
 			rootTypeID = 
 				new SemanticType(p.getProperty("type.class.thing",       "owl:Thing"));
 
@@ -487,8 +502,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 			throw new ThinklabValidationException("configuration error: " + e1.getMessage());
 		}
 
-	    /* retrieve actual concepts from semantic types. We operate in admin mode only if 
-	     * any of these is not present, passing mode to interface. */
+	    /* retrieve actual concepts from semantic types */
 	    try {
 			integerType  = requireConcept(integerTypeID);
 			floatType    = requireConcept(floatTypeID);	
@@ -497,6 +511,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
             doubleType   = requireConcept(doubleTypeID);
             numberType   = requireConcept(numberTypeID);
             booleanType  = requireConcept(booleanTypeID);
+            operatorType  = requireConcept(operatorTypeID);
             
             classificationProperty = requireProperty(classificationPropertyID);
             reifiedLiteralProperty = requireProperty(reifiedLiteralPropertyID);
@@ -1291,6 +1306,10 @@ public class KnowledgeManager implements IKnowledgeProvider {
 
 	public static Collection<IPluginLifecycleListener> getPluginListeners() {
 		return pluginListeners;
+	}
+
+	public static IConcept OperatorType() {
+		return KM.operatorType;
 	}
 
 }

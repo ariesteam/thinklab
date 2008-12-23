@@ -46,7 +46,9 @@ import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.IConcept;
+import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.interfaces.IOperator;
 import org.integratedmodelling.thinklab.interfaces.IProperty;
 import org.integratedmodelling.thinklab.interfaces.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -61,16 +63,15 @@ import org.integratedmodelling.utils.Quantifier;
  * programmatically. Restrictions can be:
  * 
  * <ul>
- * <li>connectors for other restrictions</li>
- * <li>connectors for other restrictions</li>
- * <li>connectors for other restrictions</li>
- * <li>connectors for other restrictions</li>
+ * <li>connectors (and,or only) for other restrictions</li>
+ * <li>object or class property restrictions (both taking a constraint as argument)</li>
+ * <li>literal property restrictions (taking an operator and its arguments if any)</li>
  *</ul>  
  * 
- * Restrictions serialize to lists.
+ * All restriction can be introduced with a quantifier. Restrictions serialize to lists.
  * 
- * Restrictions are entirely defined when constructed, and have many constructors. There are no setting
- * or modifying methods. Static methods OR, AND and NOT, not constructors, are used to build connectors.
+ * Restrictions are immutable - there are no setting
+ * or modifying methods, only constructors. Static methods OR, AND and NOT, not constructors, are used to build connectors.
  * 
  * Example of use (makes no sense ontology-wise):
  * 
@@ -81,8 +82,8 @@ import org.integratedmodelling.utils.Quantifier;
  *              // new literal restriction: property, operator and argument(s). The argument can be
  *              // an IValue or is turned into one using the operator declaration.				
  *				Restriction.OR(
- *					new Restriction("geospace:hasCentroid", "within", "POLYGON(10 20, 40 50)"),
- *					new Restriction("geospace:hasCentroid", "within", "POLYGON(1 2, 4 5)")),
+ *					new Restriction("geospace:hasCentroid", "geospace:within", "POLYGON(10 20, 40 50)"),
+ *					new Restriction("geospace:hasCentroid", "geospace:within", "POLYGON(1 2, 4 5)")),
  * 
  *              // new object restriction, passing a new constraint.
  *				new Restriction("observation:dependsOn", 
@@ -98,7 +99,7 @@ public class Restriction  {
 	IProperty  property = null;
 	Constraint constraint = null;
 	Object[] opArgs = null;
-	String operator = null;
+	IOperator operator = null;
 	IConcept classification = null;
 	LogicalConnector connector = LogicalConnector.INTERSECTION;
 	ArrayList<Restriction> siblings = new ArrayList<Restriction>();	
@@ -202,10 +203,11 @@ public class Restriction  {
 	 * @param property
 	 * @param operator
 	 * @param value
+	 * @throws ThinklabException 
 	 */		
-	public Restriction(IProperty property, String operator, Object ... values) {
+	public Restriction(IProperty property, String operator, Object ... values) throws ThinklabException {
 		this.property = property;
-		this.operator = operator;
+		this.operator = retrieveOperator(operator);
 		this.opArgs = values;
 	}
 
@@ -240,7 +242,7 @@ public class Restriction  {
 	 */		
 	public Restriction(String property, String operator, Object ... values) throws ThinklabException {
 		this.property = KnowledgeManager.get().requireProperty(property);
-		this.operator = operator;
+		this.operator = retrieveOperator(operator);
 		this.opArgs = values;
 	}
 
@@ -270,13 +272,35 @@ public class Restriction  {
 	 * @param property
 	 * @param operator
 	 * @param value
+	 * @throws ThinklabException 
 	 */		
-	public Restriction(Quantifier quantifier, IProperty property, String operator, Object ... values) {
+	public Restriction(Quantifier quantifier, IProperty property, String operator, Object ... values) throws ThinklabException {
 		this.quantifier = quantifier;
 		this.property = property;
-		this.operator = operator;
+		this.operator = retrieveOperator(operator);
 		this.opArgs = values;
 	}
+
+	private static IOperator retrieveOperator(String op) throws ThinklabException {
+		
+		IOperator ret = null;
+		if (!SemanticType.validate(op))
+			op = "thinklab-core:" + op;
+		
+		IInstance o = KnowledgeManager.get().retrieveInstance(op);
+		
+		if (o != null && o.is(KnowledgeManager.OperatorType())) {
+			ret = (IOperator) o.getImplementation();
+		}
+		
+		if (ret == null) {
+			throw new ThinklabConstraintValidationException("operator " + op + " has not been declared");
+		}
+		
+		return ret;
+		
+	}
+	
 
 	/**
 	 * Create an object restriction passing another constraint.
@@ -312,7 +336,7 @@ public class Restriction  {
 	public Restriction(Quantifier quantifier, String property, String operator, Object ... values) throws ThinklabException {
 		this.quantifier = quantifier;
 		this.property = KnowledgeManager.get().requireProperty(property);
-		this.operator = operator;
+		this.operator = retrieveOperator(operator);
 		this.opArgs = values;
 	}
 
@@ -358,125 +382,235 @@ public class Restriction  {
 	public static Restriction parseList(Polylist content) throws ThinklabException {
 
 		Restriction ret = new Restriction();
-		
-		/* inspect first elements: can be a lone connector */
-		if (content.first() instanceof String && 
-			LogicalConnector.isLogicalConnector(content.first().toString())) {
 
-			try {
-				ret.connector = LogicalConnector.parseLogicalConnector(content.first().toString());
-			} catch (MalformedLogicalConnectorException e) {
-				/* won't happen */
-			}
-			
-			if (!ret.connector.equals(LogicalConnector.INTERSECTION) &&
-				!ret.connector.equals(LogicalConnector.UNION))
-				throw new ThinklabConstraintValidationException(
-						content + 
-						"restrictions can only be connected in AND and OR; please use quantifiers for remaining cases");
-				
-			/* all others must be restrictions */
-			Object[] def = content.array();
-			for (int i = 1; i < def.length; i++) {
-				
-				if (! (def[i] instanceof Polylist)) {
-					throw new ThinklabConstraintValidationException(
-							"restriction: " +
-							def[i] + 
-							": all elements in  " + 
-							ret.connector + " " +
-							"list must be restrictions");
-				}
-				ret.siblings.add(parseList((Polylist)def[i]));
-			}
-			return ret;
-		}
-		
-		/* otherwise we must have a quantifier, a property, or both. Count the elements to 
-		 * use for the scope */
-		Object[] def = content.array();
+		if (content.first() instanceof LogicalConnector || 
+				(content.first() instanceof String && 
+						LogicalConnector.isLogicalConnector(content.first().toString()))) {
 
-		int nn;
-		
-		for (nn = 0; nn < def.length && !(def[nn] instanceof Polylist) && nn < 2; nn++) {
-			
-			if (def[nn] instanceof IProperty) {	
-				ret.property = (IProperty)def[nn];	
-			} else if (def[nn] instanceof Quantifier)  {
-				ret.quantifier = (Quantifier)def[nn];
-			} else if (Quantifier.isQuantifier(def[nn].toString())) {
 				try {
-					ret.quantifier = Quantifier.parseQuantifier(def[nn].toString());
-				} catch (MalformedQuantifierException e) {
+					ret.connector = LogicalConnector.parseLogicalConnector(content.first().toString());
+				} catch (MalformedLogicalConnectorException e) {
+					/* won't happen */
 				}
-			} else if (SemanticType.validate(def[nn].toString())) {
-				if (ret.property == null)
-					ret.property = KnowledgeManager.get().requireProperty(def[nn].toString());
-				else 	
-					ret.classification = KnowledgeManager.get().requireConcept(def[nn].toString());
-			} else if (def[nn] instanceof String){
-				/* can only be an operator as second argument */
-				ret.operator = (String)def[nn];
-			} else {
-				throw new ThinklabConstraintValidationException(
-						"restriction: can't recognize element " + 
-						def[nn] +
-						" in " +
-						content);
-			}
-		}
-		
-		/* the rest can be an operator specification for literals, a concept for classifications, or
-		 * a constraint list for object properties */
-		int remaining = def.length - nn;
-		
-		if (remaining == 1 && def[nn] instanceof Polylist) {
-			/* object restriction */
-			ret.constraint = new Constraint((Polylist)def[nn]);
-		} else if (remaining == 1 && ret.classification == null && SemanticType.validate(def[nn].toString())) {
-			/* class restriction */
-			ret.classification = KnowledgeManager.get().requireConcept(def[nn].toString());
-		} else if (remaining >= 1) {
-			
-			/* 
-			 * operator: must be an initial string with no strange stuff in it, and an optional
-			 * number of parameters, to be stored as they come.
-			 * 
-			 * TODO operators should be instances of thinklab-core:Operator, or string IDs names of such
-			 * instances. This messes with the concept recognition above.
-			 */
-			if ( !(def[nn] instanceof String)) 
-				throw new ThinklabConstraintValidationException("invalid restriction operator at " + def[nn]);
-			
-			if (ret.operator == null) {
-				ret.operator = def[nn].toString();
-				remaining --;
-				nn++;
-			}
-			
-			if (remaining > 0) {
 				
-				ret.opArgs = new Object[remaining];
-
-				int i = 0;
-				for (; nn < def.length; nn++) {
-					ret.opArgs[i++] = def[nn];
+				if (!ret.connector.equals(LogicalConnector.INTERSECTION) &&
+						!ret.connector.equals(LogicalConnector.UNION))
+						throw new ThinklabConstraintValidationException(
+								content + 
+								"restrictions can only be connected in AND and OR; please use quantifiers for remaining cases");
+						
+					/* all others must be restrictions */
+					Object[] def = content.array();
+					for (int i = 1; i < def.length; i++) {
+						
+						if (! (def[i] instanceof Polylist)) {
+							throw new ThinklabConstraintValidationException(
+									"restriction: " +
+									def[i] + 
+									": all elements in  " + 
+									ret.connector + " " +
+									"list must be restrictions");
+						}
+						ret.siblings.add(parseList((Polylist)def[i]));
+					}
+		} else {
+			
+			Object[] objs = content.array();
+			
+			int start = 0;
+			
+			if (objs[0] instanceof Quantifier || Quantifier.isQuantifier(objs[0].toString())) {
+				
+				try {
+					ret.quantifier = 
+						objs[0] instanceof Quantifier ? 
+							(Quantifier)objs[0] :
+							Quantifier.parseQuantifier(objs[0].toString());
+				} catch (MalformedQuantifierException e) {
+					// won't happen
 				}
+				
+				start = 1;
 			}
 			
-		} else {
-			throw new ThinklabConstraintValidationException(
-					"invalid restriction specification in " +
-					content);
+			ret.property = 
+				objs[start] instanceof IProperty ? 
+					(IProperty)objs[start] :
+					KnowledgeManager.get().requireProperty(objs[start].toString());
+					
+			if (objs.length > (start + 1)) {
+				
+				start ++;
+				Object rest = objs[start];
+
+				if (rest instanceof Polylist) {
+					ret.constraint = new Constraint((Polylist)rest);
+				} else {
+					
+					/*
+					 * should be an operator, possibly with arguments
+					 */
+					if (rest instanceof IInstance) {
+						ret.operator = (IOperator)((IInstance)rest).getImplementation();
+					} else if (rest instanceof String) {
+						ret.operator = retrieveOperator((String)rest);
+					}
+					
+					for (int arg = 0, i = start+1; i < objs.length ; i++) {
+						
+						if (ret.opArgs == null)
+							ret.opArgs = new Object[objs.length - start];
+						ret.opArgs[arg++] = objs[i];
+					}
+				}
+				
+			}	
 		}
-		
-		if (ret.property == null)
-			throw new ThinklabConstraintValidationException(
-					"invalid restriction specification: missing property in " +
-					content);
 		
 		return ret;
 	}
+	
+//	public static Restriction parseListOld(Polylist content) throws ThinklabException {
+//
+//		Restriction ret = new Restriction();
+//		
+//		/* inspect first elements: can be a lone connector */
+//		if (content.first() instanceof String && 
+//			LogicalConnector.isLogicalConnector(content.first().toString())) {
+//
+//			try {
+//				ret.connector = LogicalConnector.parseLogicalConnector(content.first().toString());
+//			} catch (MalformedLogicalConnectorException e) {
+//				/* won't happen */
+//			}
+//			
+//			if (!ret.connector.equals(LogicalConnector.INTERSECTION) &&
+//				!ret.connector.equals(LogicalConnector.UNION))
+//				throw new ThinklabConstraintValidationException(
+//						content + 
+//						"restrictions can only be connected in AND and OR; please use quantifiers for remaining cases");
+//				
+//			/* all others must be restrictions */
+//			Object[] def = content.array();
+//			for (int i = 1; i < def.length; i++) {
+//				
+//				if (! (def[i] instanceof Polylist)) {
+//					throw new ThinklabConstraintValidationException(
+//							"restriction: " +
+//							def[i] + 
+//							": all elements in  " + 
+//							ret.connector + " " +
+//							"list must be restrictions");
+//				}
+//				ret.siblings.add(parseList((Polylist)def[i]));
+//			}
+//			return ret;
+//		}
+//		
+//		/* otherwise we must have a quantifier, a property, or both. Count the elements to 
+//		 * use for the scope */
+//		Object[] def = content.array();
+//
+//		int nn;
+//		
+//		for (nn = 0; nn < def.length && !(def[nn] instanceof Polylist) && nn < 2; nn++) {
+//			
+//			if (def[nn] instanceof IProperty) {	
+//				ret.property = (IProperty)def[nn];	
+//			} else if (def[nn] instanceof Quantifier)  {
+//				ret.quantifier = (Quantifier)def[nn];
+//			} else if (Quantifier.isQuantifier(def[nn].toString())) {
+//				try {
+//					ret.quantifier = Quantifier.parseQuantifier(def[nn].toString());
+//				} catch (MalformedQuantifierException e) {
+//				}
+//			} else if (SemanticType.validate(def[nn].toString())) {
+//				if (ret.property == null)
+//					ret.property = KnowledgeManager.get().requireProperty(def[nn].toString());
+//				else 	
+//					ret.classification = KnowledgeManager.get().requireConcept(def[nn].toString());
+//			} else if (def[nn] instanceof String){
+//				/* can only be an operator as second argument */
+//				ret.operator = (String)def[nn];
+//			} else {
+//				throw new ThinklabConstraintValidationException(
+//						"restriction: can't recognize element " + 
+//						def[nn] +
+//						" in " +
+//						content);
+//			}
+//		}
+//		
+//		/* the rest can be an operator specification for literals, a concept for classifications, or
+//		 * a constraint list for object properties */
+//		int remaining = def.length - nn;
+//		
+//		if (remaining == 1 && def[nn] instanceof Polylist) {
+//			/* object or class restriction */
+//			ret.constraint = new Constraint((Polylist)def[nn]);
+//		} else /* if (remaining == 1 && ret.classification == null && SemanticType.validate(def[nn].toString())) {
+//			// class restriction 
+//			ret.classification = KnowledgeManager.get().requireConcept(def[nn].toString());
+//		} else */if (remaining >= 1) {
+//			
+//			/* 
+//			 * operator: must be an initial string with no strange stuff in it, and an optional
+//			 * number of parameters, to be stored as they come.
+//			 */
+//			IOperator op = null;
+//			
+//			if (def[nn] instanceof IInstance && ((IInstance)def[nn]).is(KnowledgeManager.OperatorType())) {
+//				
+//				op = (IOperator) ((IInstance)def[nn]).getImplementation();
+//				
+//			} else if (def[nn] instanceof String) {
+//			
+//				/* 
+//				 * must be the semantic type of an Operator instance. If we don't have a namespace,
+//				 * we try thinklab-core before giving up.
+//				 */
+//				String ss = (String) def[nn];
+//				if (!SemanticType.validate(ss))
+//					ss = "thinklab-core:" + ss;
+//				IInstance oo = KnowledgeManager.get().retrieveInstance(ss);
+//				
+//				if (oo != null && oo.is(KnowledgeManager.OperatorType())) {
+//					op = (IOperator) oo.getImplementation();
+//				}
+//			}
+//			
+//			if (op == null)
+//				throw new ThinklabConstraintValidationException("invalid restriction operator at " + def[nn]);
+//			
+//			if (ret.operator == null) {
+//				ret.operator = op;
+//				remaining --;
+//				nn++;
+//			}
+//			
+//			if (remaining > 0) {
+//				
+//				ret.opArgs = new Object[remaining];
+//
+//				int i = 0;
+//				for (; nn < def.length; nn++) {
+//					ret.opArgs[i++] = def[nn];
+//				}
+//			}
+//			
+//		} else {
+//			throw new ThinklabConstraintValidationException(
+//					"invalid restriction specification in " +
+//					content);
+//		}
+//		
+//		if (ret.property == null)
+//			throw new ThinklabConstraintValidationException(
+//					"invalid restriction specification: missing property in " +
+//					content);
+//		
+//		return ret;
+//	}
 
 	public Polylist asList() {
 
@@ -591,19 +725,14 @@ public class Restriction  {
         return ret;
 	}
 
-	private boolean matchOperator(String operator, IValue value, Object[] opArgs) throws ThinklabValueConversionException, ThinklabInappropriateOperationException {
+	private boolean matchOperator(IOperator operator, IValue value, Object[] opArgs) throws ThinklabException {
 
 		/* FIXME TLC-31: Implement type declarations for arguments to op() in IValue
 				 http://ecoinformatics.uvm.edu:8080/jira/browse/TLC-31
 			Once this is done, we should validate anything that's not an IValue to the
 			appropriate parameter type, and pass ALL parameters to op()
-		 */
-		
-		IValue arg = null;
-		if (opArgs != null && opArgs.length >= 1 && opArgs[0] instanceof IValue)
-			arg = (IValue)opArgs[0];
-		
-		return value.op(operator, arg).asBoolean().value;
+		 */	
+		return operator.eval(opArgs).asBoolean().value;
 		
 	}
 
@@ -634,7 +763,7 @@ public class Restriction  {
 		return constraint;
 	}
 
-	public String getOperator() {
+	public IOperator getOperator() {
 		return operator;
 	}
 

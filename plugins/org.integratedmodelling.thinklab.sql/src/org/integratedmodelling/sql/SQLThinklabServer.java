@@ -291,15 +291,13 @@ public abstract class SQLThinklabServer {
 
 				} else {
 				
-					/* obtain an algorithm from the string stored in XML */
-					AlgorithmValue aa = 
-						(AlgorithmValue) KnowledgeManager.get()
-							.validateLiteral(
-								KnowledgeManager.get().requireConcept(
-										scriptLanguage),
-										exp.getSecond(), session.asOntology());
-			
-					vv = val.execute(aa, session);
+					/**
+					 * TODO modernize handling of other languages
+					 */
+					throw new ThinklabUnimplementedFeatureException(
+							"sql: can't evaluate expression in " + 
+							scriptLanguage);
+							
 				}
 				
 				ret = ret.replace(
@@ -1007,7 +1005,7 @@ public abstract class SQLThinklabServer {
 	     TypeTranslator tt = getTypeTranslator(rcls);
 	     
 	     /* translate the operator and the arguments */
-	     OpTranslator op = tt.getOperator(restriction.getOperator());
+	     OpTranslator op = tt.getOperator(restriction.getOperator().getOperatorId());
 	     
 	     if (op == null) {
 	    	 throw new ThinklabStorageException("sql: operator " +

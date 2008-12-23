@@ -248,16 +248,6 @@ public class NumberValue extends ParsedLiteralValue {
         return Double.toString(value);
     }
 
-	@Override
-	public int compareTo(IValue other) throws ThinklabInappropriateOperationException, ThinklabValueConversionException {
-
-		if (other != null && !(other instanceof NumberValue) )
-			throw new ThinklabValueConversionException("number value operator applied to non-number " + other.getConcept());
-		
-		NumberValue onum = (NumberValue)other;
-		return Double.compare(this.value, onum.value);
-	}
-
 	public void assign(double d) {
 		value = d;
 	}

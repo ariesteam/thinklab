@@ -72,8 +72,17 @@ import org.integratedmodelling.utils.Polylist;
  *    
  *    <p>Constraints can optionally contain an ID tag, an extended documentation string, 
  *    and a target kbox URI.</p> 
- 
+
 	  <pre>
+
+		constraint := (type restriction*)
+
+		restriction :=
+
+             ({"and"|"or"} restriction+) |
+             ([quantifier] {object-property|class-property} constraint) |
+             ([quantifier] literal-property operator arg+)
+     
      </pre>
  *
  * @author Ferdinando Villa

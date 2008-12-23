@@ -123,17 +123,7 @@ public class TextValue extends Value {
         return value;
     }
 
-	@Override
-	public int compareTo(IValue other) throws ThinklabInappropriateOperationException, ThinklabValueConversionException {
-
-		if (other != null && !(other instanceof TextValue) )
-			throw new ThinklabValueConversionException("number value operator applied to non-number " + other.getConcept());
-		
-		TextValue onum = (TextValue)other;
-		return this.value.compareTo(onum.value);
-	}
-
-	@Override
+    @Override
 	public Object demote() {
 		return value;
 	}
