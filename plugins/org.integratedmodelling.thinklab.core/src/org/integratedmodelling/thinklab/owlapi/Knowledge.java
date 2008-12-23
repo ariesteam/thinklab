@@ -395,8 +395,8 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	 * @return
 	 */
 	public boolean is(URI uri) {
+		
 		IKnowledge k = FileKnowledgeRepository.KR.resolveURI(uri);
-
 		return is(k);
 	}
 
@@ -410,8 +410,14 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	}
 	
 	public boolean equals(Object s){
+		
 	    	if (s instanceof Knowledge) {
 				return ((Knowledge)s).getURI().equals(getURI());
-			} else return false;
+			} else if (s instanceof String || s instanceof SemanticType) {
+				return 
+					this.toString().equals(s.toString()) ||
+					this.getURI().toString().equals(s.toString());
+			}
+	    	return false;
 	    }
 }
