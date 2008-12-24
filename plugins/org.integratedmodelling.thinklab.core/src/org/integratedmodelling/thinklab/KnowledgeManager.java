@@ -74,6 +74,7 @@ import org.integratedmodelling.thinklab.interfaces.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.interfaces.IValue;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
+import org.integratedmodelling.thinklab.operators.Operator;
 import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
 import org.integratedmodelling.thinklab.session.SingleSessionManager;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -521,6 +522,11 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		} catch (ThinklabResourceNotFoundException e) {
 			throw new ThinklabValidationException("core type specifications are incomplete: " + e.getMessage());
 		}
+		
+		/*
+		 * install operator instance constructors for core operations
+		 */
+		Operator.installBasicOperators();
 		
 		typesInitialized = true;
 	}
