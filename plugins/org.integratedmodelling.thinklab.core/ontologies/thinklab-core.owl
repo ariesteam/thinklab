@@ -116,6 +116,15 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#numOfParameters -->
+
+    <owl:DatatypeProperty rdf:about="#numOfParameters">
+        <rdfs:domain rdf:resource="#Operation"/>
+        <rdfs:range rdf:resource="&xsd;int"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -375,6 +384,123 @@
     <!-- http://www.w3.org/2002/07/owl#Thing -->
 
     <owl:Class rdf:about="&owl;Thing"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#between -->
+
+    <WithinInterval rdf:about="#between">
+        <numOfParameters rdf:datatype="&xsd;int">3</numOfParameters>
+    </WithinInterval>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#contains -->
+
+    <Containment rdf:about="#contains">
+        <numOfParameters rdf:datatype="&xsd;int">2</numOfParameters>
+    </Containment>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#div -->
+
+    <Division rdf:about="#div">
+        <numOfParameters rdf:datatype="&xsd;int">2</numOfParameters>
+    </Division>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#eq -->
+
+    <Equality rdf:about="#eq">
+        <numOfParameters rdf:datatype="&xsd;int">2</numOfParameters>
+    </Equality>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ge -->
+
+    <GreaterOrEqual rdf:about="#ge">
+        <numOfParameters rdf:datatype="&xsd;int">2</numOfParameters>
+    </GreaterOrEqual>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#gt -->
+
+    <rdf:Description rdf:about="#gt">
+        <numOfParameters rdf:datatype="&xsd;int">2</numOfParameters>
+    </rdf:Description>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ilike -->
+
+    <CaseInsensitiveLike rdf:about="#ilike">
+        <numOfParameters rdf:datatype="&xsd;int">2</numOfParameters>
+    </CaseInsensitiveLike>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#le -->
+
+    <LessOrEqual rdf:about="#le">
+        <numOfParameters rdf:datatype="&xsd;int">2</numOfParameters>
+    </LessOrEqual>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#lt -->
+
+    <LessThan rdf:about="#lt">
+        <numOfParameters rdf:datatype="&xsd;int">2</numOfParameters>
+    </LessThan>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#mul -->
+
+    <Multiplication rdf:about="#mul"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ne -->
+
+    <Inequality rdf:about="#ne">
+        <numOfParameters rdf:datatype="&xsd;int">2</numOfParameters>
+    </Inequality>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#rem -->
+
+    <Remainder rdf:about="#rem">
+        <numOfParameters rdf:datatype="&xsd;int">2</numOfParameters>
+    </Remainder>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#sub -->
+
+    <Subtraction rdf:about="#sub"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#sum -->
+
+    <Summation rdf:about="#sum"/>
     
 
 
