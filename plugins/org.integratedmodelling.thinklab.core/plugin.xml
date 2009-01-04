@@ -156,7 +156,8 @@
 	</extension-point>
 
 	<extension-point id="language-binding">
-		<parameter-def id="language" />
+		<parameter-def id="language" multiplicity="one" />
+		<parameter-def id="task-package" multiplicity="any" />
 		<parameter-def id="resource" multiplicity="one-or-more"/>
 	</extension-point>
 

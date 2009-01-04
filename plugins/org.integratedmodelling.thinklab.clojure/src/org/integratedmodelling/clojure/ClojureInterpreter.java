@@ -1,19 +1,35 @@
 package org.integratedmodelling.clojure;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabScriptException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.value.Value;
+import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.Escape;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.Compiler;
+import clojure.lang.LineNumberingPushbackReader;
+import clojure.lang.LispReader;
+import clojure.lang.RT;
 
 public class ClojureInterpreter implements Interpreter {
 
@@ -24,8 +40,35 @@ public class ClojureInterpreter implements Interpreter {
 	
 	@Override
 	public IValue eval(Object code) throws ThinklabException {
+
+		InputStream inp = null;
+		try {
+			inp = new ByteArrayInputStream(code.toString().getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new ThinklabInternalErrorException(e);
+		}
+		
+		LineNumberingPushbackReader rdr = new LineNumberingPushbackReader(
+				new InputStreamReader(inp, RT.UTF8));
+		
+		Object EOF = new Object();
+		Object r;
+		Object ret = null;
+		
+		try {
+			r = LispReader.read(rdr, false, EOF, false);
+			ret = Compiler.eval(r);
+		} catch (Exception e) {
+			throw new ThinklabScriptException(e);
+		}
+		
+		/*
+		 * FIXME remove
+		 */
+		System.out.println("EXECUTED: " + code);
+		
 		// TODO Auto-generated method stub
-		return null;
+		return ret == null ? null : Value.getValueForObject(ret);
 	}
 
 	@Override
@@ -91,4 +134,83 @@ public class ClojureInterpreter implements Interpreter {
 		this.session = session;
 	}
 
+	@Override
+	public void defineTask(Class<?> taskClass) throws ThinklabException {
+		
+		/*
+		 * Create Clojure binding for passed task.
+		 */
+		if (taskClass.isInterface() || Modifier.isAbstract(taskClass.getModifiers()))
+			return;
+		
+		String fname = CamelCase.toLowerCase(MiscUtilities.getFileExtension(taskClass.getName()), '-');
+		
+		String clj = "(defn " + fname;
+		
+		ArrayList<String> set = new ArrayList<String>();
+		String get = null;
+		
+		for (Method method : taskClass.getMethods()) {
+			
+			if (!method.getDeclaringClass().equals(taskClass))
+				continue;
+			
+			if (method.getName().startsWith("set")) {
+				set.add(method.getName().substring(3));
+			} else if (method.getName().startsWith("get")) {
+				get = method.getName().substring(3);
+			}
+		}
+		
+		/*
+		 * add description: nothing for now, may want to scan annotations later
+		 */
+		clj += "\n\t\"\"";
+		
+		/*
+		 * add parameters
+		 */
+		clj += "\n\t[";
+		for (int i = 0; i < set.size(); i++) {
+			clj += 
+				(i > 0 ? " " : "") + 
+				Character.toLowerCase(set.get(i).charAt(0)) + 
+				set.get(i).substring(1);
+		}
+		clj += "]";
+		
+		/*
+		 * main code: construct initialized instance
+		 */
+		clj += "\n\t(. (doto (new " + taskClass.getCanonicalName() + ")";
+		
+		/*
+		 * pass parameters
+		 */
+		for (int i = 0; i < set.size(); i++) {
+			clj += 
+				"\n\t\t(.set" +
+				set.get(i) + 
+				" " +
+				Character.toLowerCase(set.get(i).charAt(0)) + 
+				set.get(i).substring(1) +
+				")";
+		}
+		
+		/* 
+		 * invoke run() and close doto
+		 */
+		clj += "\n\t\t(.run (tl/get-session)))";
+		
+		/*
+		 * invoke result getter on constructed object and close
+		 */
+		clj += "\n\tget" + get + "))";
+		
+		/*
+		 * eval the finished method
+		 */
+		eval(clj);
+	}
+	
 }

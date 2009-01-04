@@ -88,6 +88,7 @@ import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
 import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IInstance;
 import org.integratedmodelling.thinklab.interfaces.IKBox;
+import org.integratedmodelling.thinklab.interfaces.ITask;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.session.Session;
@@ -270,6 +271,7 @@ public abstract class ThinklabPlugin extends Plugin
 		for (Extension ext : getOwnThinklabExtensions("language-binding")) {
 
 			String lang = getParameter(ext, "language");
+			String[] tpacks = getParameters(ext, "task-package");
 			String[] resource = getParameters(ext, "resource");
 			
 			if (!language.equals(lang))
@@ -283,10 +285,22 @@ public abstract class ThinklabPlugin extends Plugin
 				intp.loadBindings(getResourceURL(r), getClassLoader());
 			}
 			
+			/*
+			 * automatically declare tasks included in package if supplied
+			 */
+			for (String pk : tpacks)
+				declareTasks(pk, intp);
+			
 		}
 	}
 
-
+	private void declareTasks(String taskPackage, Interpreter intp) throws ThinklabException {
+		
+		for (Class<?> cls : MiscUtilities.findSubclasses(ITask.class, taskPackage, getClassLoader())) {
+			intp.defineTask(cls);
+		}
+		
+	}
 	
 	private void loadKboxes() throws ThinklabException {
 
