@@ -72,6 +72,9 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.application.Application;
+import org.integratedmodelling.thinklab.application.ApplicationDescriptor;
+import org.integratedmodelling.thinklab.application.ApplicationManager;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
@@ -217,6 +220,7 @@ public abstract class ThinklabPlugin extends Plugin
 		loadInstanceImplementationConstructors();
 		loadSessionListeners();
 		loadKboxes();
+		loadApplications();
 		
 		// Needs to be called explicitly by plugins that depend on the bindings, after loading
 		// the one with bindings using reverse-lookup = true. Otherwise classes within the 
@@ -245,9 +249,17 @@ public abstract class ThinklabPlugin extends Plugin
 
 			String language = getParameter(ext, "language");
 			String[] resource = getParameters(ext, "resource");
+			String[] tpacks = getParameters(ext, "task-package");
 			
 			Interpreter intp = InterpreterManager.get().newInterpreter(language);
-			
+
+			/*
+			 * automatically declare tasks included in package if supplied. These can't possibly
+			 * use the language bindings, so do it first.
+			 */
+			for (String pk : tpacks)
+				declareTasks(pk, intp);
+
 			for (String r : resource) {
 				
 				logger().info("loading " + language + " binding file: " + r);
@@ -279,17 +291,19 @@ public abstract class ThinklabPlugin extends Plugin
 			
 			Interpreter intp = InterpreterManager.get().newInterpreter(language);
 			
+			/*
+			 * automatically declare tasks included in package if supplied. These can't possibly
+			 * use the language bindings, so do it first.
+			 */
+			for (String pk : tpacks)
+				declareTasks(pk, intp);
+			
 			for (String r : resource) {
 				
 				logger().info("loading " + language + " binding file: " + r);
 				intp.loadBindings(getResourceURL(r), getClassLoader());
 			}
-			
-			/*
-			 * automatically declare tasks included in package if supplied
-			 */
-			for (String pk : tpacks)
-				declareTasks(pk, intp);
+
 			
 		}
 	}
@@ -618,6 +632,17 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 
 	}
+	
+	private void loadApplications() {
+
+		/*
+		 * publish all applications from loaded plugins.
+		 */
+		for (Extension ext : getOwnThinklabExtensions("application")) {
+			ApplicationManager.get().registerApplication(new ApplicationDescriptor(this, ext));
+		}
+	}
+	
 
 	
 	protected void loadLanguageInterpreters() throws ThinklabException {

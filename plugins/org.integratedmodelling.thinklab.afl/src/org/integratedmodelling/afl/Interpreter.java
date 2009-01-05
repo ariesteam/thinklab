@@ -1,12 +1,8 @@
 package org.integratedmodelling.afl;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,7 +26,6 @@ import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
 import org.integratedmodelling.thinklab.value.TextValue;
 import org.integratedmodelling.thinklab.value.Value;
 import org.integratedmodelling.utils.KeyValueMap;
-import org.integratedmodelling.utils.MalformedListException;
 import org.integratedmodelling.utils.Polylist;
 
 /**

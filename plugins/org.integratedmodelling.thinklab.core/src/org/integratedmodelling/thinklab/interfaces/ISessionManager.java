@@ -33,7 +33,6 @@
  **/
 package org.integratedmodelling.thinklab.interfaces;
 
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 
 

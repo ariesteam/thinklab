@@ -1,11 +1,11 @@
 package org.integratedmodelling.clojure;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -16,7 +16,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabScriptException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.interfaces.ISession;
 import org.integratedmodelling.thinklab.interfaces.IValue;
@@ -30,6 +29,7 @@ import clojure.lang.Compiler;
 import clojure.lang.LineNumberingPushbackReader;
 import clojure.lang.LispReader;
 import clojure.lang.RT;
+import clojure.lang.Var;
 
 public class ClojureInterpreter implements Interpreter {
 
@@ -43,8 +43,14 @@ public class ClojureInterpreter implements Interpreter {
 
 		InputStream inp = null;
 		try {
-			inp = new ByteArrayInputStream(code.toString().getBytes("UTF-8"));
-		} catch (UnsupportedEncodingException e) {
+			if (code instanceof URL) {
+				inp = ((URL)code).openStream();
+			} else if (code instanceof File) {
+				inp = new FileInputStream((File)code);
+			} else {
+				inp = new ByteArrayInputStream(code.toString().getBytes("UTF-8"));
+			}
+		} catch (Exception e) {
 			throw new ThinklabInternalErrorException(e);
 		}
 		
@@ -54,8 +60,10 @@ public class ClojureInterpreter implements Interpreter {
 		Object EOF = new Object();
 		Object r;
 		Object ret = null;
+		final Var sess  = RT.var("tl", "*session*");
 		
-		try {
+		try {			
+			Var.pushThreadBindings(RT.map(sess, this.session));			
 			r = LispReader.read(rdr, false, EOF, false);
 			ret = Compiler.eval(r);
 		} catch (Exception e) {
