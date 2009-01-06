@@ -169,6 +169,7 @@
 	</extension-point>
 
 	<extension-point id="application">
+		<parameter-def id="id" />
 		<parameter-def id="main-task-class" />
 		<parameter-def id="session-class" multiplicity="none-or-one" />
 		<parameter-def id="declaration" multiplicity="none-or-one">
