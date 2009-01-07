@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.persistence.kbox;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
@@ -227,6 +229,18 @@ public class PSession implements ISession {
 
 	public Object retrieveUserData(String id) {
 		return objects.get(id);
+	}
+
+	@Override
+	public InputStream getDefaultInputStream() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public OutputStream getDefaultOutputStream() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

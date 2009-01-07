@@ -36,6 +36,8 @@ package org.integratedmodelling.thinklab.session;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -464,5 +466,16 @@ public class Session implements ISession {
 		return objects.get(id);
 	}
 
+	@Override
+	public InputStream getDefaultInputStream() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public OutputStream getDefaultOutputStream() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

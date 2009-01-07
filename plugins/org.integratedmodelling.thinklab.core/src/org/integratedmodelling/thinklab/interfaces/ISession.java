@@ -33,6 +33,8 @@
  **/
 package org.integratedmodelling.thinklab.interfaces;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
@@ -356,5 +358,21 @@ public interface ISession {
 	 * @return
 	 */
 	public abstract Collection<String> getLocalKBoxes();
+
+	/**
+	 * Sessions may have an input and an output stream associated in case they can interact
+	 * with the user through them.
+	 * 
+	 * @return
+	 */
+	public abstract InputStream getDefaultInputStream();
+	
+	/**
+	 * Sessions may have an input and an output stream associated in case they can interact
+	 * with the user through them.
+	 * 
+	 * @return
+	 */
+	public abstract OutputStream getDefaultOutputStream();
 
 }

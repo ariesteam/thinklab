@@ -41,6 +41,11 @@ public class RunScript implements ITask {
 		 */
 		Interpreter intp = InterpreterManager.get().newInterpreter(language);
 		
+		intp.setSession(session);
+		intp.setInput(session.getDefaultInputStream());
+		intp.setOutput(session.getDefaultOutputStream());
+		
+		
 		/*
 		 * run whatever
 		 */
