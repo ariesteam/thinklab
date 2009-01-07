@@ -1,10 +1,10 @@
 package org.integratedmodelling.thinklab.graph;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject;
-import org.integratedmodelling.thinklab.interfaces.IProperty;
-import org.integratedmodelling.thinklab.interfaces.IRelationship;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 
 public class InheritanceGraph extends KnowledgeGraph {
 

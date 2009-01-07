@@ -33,7 +33,7 @@
 package org.integratedmodelling.groovy;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 
 /**

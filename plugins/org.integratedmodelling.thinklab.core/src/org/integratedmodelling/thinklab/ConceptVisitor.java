@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.integratedmodelling.thinklab.interfaces.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 /** 
  * A helper class providing patterns to retrieve concepts that match conditions or have

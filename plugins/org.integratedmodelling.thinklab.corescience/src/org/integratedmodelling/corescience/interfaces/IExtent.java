@@ -33,7 +33,7 @@
 package org.integratedmodelling.corescience.interfaces;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
  * An Extent record is produced by a Conceptual Model to describe the extent of the observation

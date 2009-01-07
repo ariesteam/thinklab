@@ -32,8 +32,8 @@
  **/
 package org.integratedmodelling.corescience.interfaces;
 
-import org.integratedmodelling.thinklab.interfaces.IUncertainty;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
  * The context state for an observation is what gives it access to the value of all its 

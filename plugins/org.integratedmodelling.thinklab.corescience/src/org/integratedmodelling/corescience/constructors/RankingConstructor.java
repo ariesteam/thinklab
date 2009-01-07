@@ -35,8 +35,8 @@ package org.integratedmodelling.corescience.constructors;
 import org.integratedmodelling.corescience.observation.ranking.Ranking;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 
 public class RankingConstructor implements InstanceImplementationConstructor {
 

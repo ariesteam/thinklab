@@ -39,8 +39,8 @@ import org.integratedmodelling.corescience.interfaces.IValueMediator;
 import org.integratedmodelling.currency.CurrencyPlugin;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.IUncertainty;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.time.values.TimeValue;
 import org.integratedmodelling.utils.Pair;
 

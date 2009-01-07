@@ -17,8 +17,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException
 import org.integratedmodelling.thinklab.exception.ThinklabScriptException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
-import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.value.Value;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.Escape;
@@ -37,6 +37,16 @@ public class ClojureInterpreter implements Interpreter {
 	OutputStream output = System.out;
 	OutputStream error = System.err;
 	private ISession session;
+	
+	static private boolean _initialized = false;
+	
+	static synchronized void checkInitialized() {
+		
+		if (!_initialized) {
+			
+			_initialized = true;
+		}
+	}
 	
 	@Override
 	public IValue eval(Object code) throws ThinklabException {

@@ -33,7 +33,7 @@
 package org.integratedmodelling.searchengine;
 
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.IQuery;
+import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 
 /**
  * A textual query that is initialized from a string. We may want to preprocess it and

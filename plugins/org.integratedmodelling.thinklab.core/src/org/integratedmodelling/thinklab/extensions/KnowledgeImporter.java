@@ -34,7 +34,7 @@
 package org.integratedmodelling.thinklab.extensions;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.utils.Polylist;
 
 /**

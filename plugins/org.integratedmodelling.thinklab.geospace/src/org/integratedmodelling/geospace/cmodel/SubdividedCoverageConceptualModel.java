@@ -38,10 +38,10 @@ import org.integratedmodelling.corescience.interfaces.IObservationContextState;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IRelationship;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.jscience.mathematics.number.Rational;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 

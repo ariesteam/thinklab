@@ -36,8 +36,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.interfaces.IConformance;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.utils.Pair;
 
 /**

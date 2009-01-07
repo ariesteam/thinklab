@@ -5,7 +5,7 @@ import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
-import org.integratedmodelling.thinklab.interfaces.IKBox;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
 public interface KBoxHandler {
 

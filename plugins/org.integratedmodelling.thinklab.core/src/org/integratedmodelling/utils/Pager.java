@@ -34,7 +34,7 @@
 package org.integratedmodelling.utils;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IQueryResult;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 
 
 /** 

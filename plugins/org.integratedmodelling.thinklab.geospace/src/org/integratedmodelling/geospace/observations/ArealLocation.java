@@ -39,7 +39,7 @@ import org.integratedmodelling.geospace.cmodel.ArealLocationConceptualModel;
 import org.integratedmodelling.geospace.values.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 import com.vividsolutions.jts.geom.Geometry;
 

@@ -34,8 +34,8 @@
 package org.integratedmodelling.thinklab.extensions;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 
 public interface InstanceImplementationConstructor {
 

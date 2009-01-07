@@ -1,5 +1,5 @@
 /**
- * IQueriable.java
+ * Clear.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,56 +31,31 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.interfaces;
+package org.integratedmodelling.thinklab.commandline.commands;
 
+import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.application.Application;
+import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.utils.Polylist;
-
+import org.integratedmodelling.thinklab.extensions.CommandHandler;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
- * The interface implemented by any object that can be queried, such as a kbox, a textual
- * search engine, etc.
- * @author Ferdinando Villa
+ * run an application
+ *  
+ * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
+ * 
  */
-public interface IQueriable {
-	
-	/**
-	 * Return an IQuery that this kbox will like by parsing the given string. Most
-	 * queriables have a preferred query type so it should be easy.
-	 * 
-	 * @param toEval
-	 * @return
-	 */
-	public abstract IQuery parseQuery(String toEval) throws ThinklabException;
-	
-	/**
-	 * The simplest query operation just returns all results that match the query, with no
-	 * result schema and no query boundaries.
-	 */
-	public abstract IQueryResult query(IQuery q) throws ThinklabException;
-	
-	/**
-	 * Submit the query and return results. Do not use any specific schema for the results;
-	 * leave it to the implementation to decide the schema to be used.
-	 * 
-	 * @param q
-	 * @param offset
-	 * @param maxResults
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public abstract IQueryResult query(IQuery q, int offset, int maxResults) throws ThinklabException;
+public class Run implements CommandHandler {
 
-	/**
-	 * Submit the query with a specified schema and return results.
-	 * 
-	 * @param q
-	 * @param resultSchema
-	 * @param offset
-	 * @param maxResults
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public abstract IQueryResult query(IQuery q, Polylist resultSchema, int offset, int maxResults) throws ThinklabException;
+	public IValue execute(Command command, ICommandInputProvider inputSource,
+			ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
+		// TODO we want arguments and warnings
 
+		String app = command.getArgumentAsString("application");
+		return Application.run(app);
+	}
 }

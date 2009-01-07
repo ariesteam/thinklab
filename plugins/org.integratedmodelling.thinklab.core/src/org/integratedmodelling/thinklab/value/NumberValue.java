@@ -40,8 +40,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperation
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
  * <p>A specialized Value that holds numbers and has all math operations with automatic unit conversion.</p>

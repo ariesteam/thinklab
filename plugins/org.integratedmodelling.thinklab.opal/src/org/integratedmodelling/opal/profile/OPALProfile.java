@@ -40,8 +40,8 @@ import org.integratedmodelling.opal.OPALValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.IProperty;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.XMLDocument;
 

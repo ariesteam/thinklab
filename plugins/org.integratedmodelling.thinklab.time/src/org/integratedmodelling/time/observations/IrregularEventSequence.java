@@ -33,7 +33,7 @@
 package org.integratedmodelling.time.observations;
 
 import org.integratedmodelling.corescience.observation.Observation;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.multidimensional.MultidimensionalArray;
 
 public class IrregularEventSequence extends Observation {

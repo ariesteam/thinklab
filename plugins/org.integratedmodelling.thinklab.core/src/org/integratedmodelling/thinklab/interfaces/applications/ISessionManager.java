@@ -1,5 +1,5 @@
 /**
- * IConceptualizable.java
+ * IKnowledgeInterface.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,16 +31,32 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.interfaces;
+package org.integratedmodelling.thinklab.interfaces.applications;
+
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+
 
 /**
- * Objects implementing this one are not concepts but are capable of being converted into an instance in a given concept
- * space. This means they need to know their type in terms of an existing ontology.
- * 
- * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
- *
+ * @author Ferdinando Villa
+ * @author Ioannis N. Athanasiadis
  */
-public interface IConceptualizable {
-	
-	IInstance conceptualize(String conceptSpace);
+public interface ISessionManager {
+
+	/**
+	 * Create and return a new Session that suits the runtime context. Many interfaces will have enough with
+	 * the standard Session, others may need more sophistication and/or metadata. A Session is a good place to
+	 * hold user info, preferences, parameters, and should be coupled to any other session abstraction that
+	 * the particular runtime environment provides.
+	 * @return a new Session, or fail with an exception. null should never be returned.
+	 */
+	public abstract ISession createNewSession() throws ThinklabException;
+
+	/**
+	 * A callback that is invoked just before a session is deleted. Use as you please.
+	 * @param session the session that is going to be deleted.
+	 */
+	public abstract void notifySessionDeletion(ISession session);
+
+	public abstract ISession getCurrentSession();
+
 }

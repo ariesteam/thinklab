@@ -36,12 +36,12 @@ package org.integratedmodelling.thinklab.kbox;
 import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.IKBoxCapabilities;
-import org.integratedmodelling.thinklab.interfaces.IQuery;
-import org.integratedmodelling.thinklab.interfaces.IQueryResult;
-import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.query.IQuery;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBoxCapabilities;
 import org.integratedmodelling.utils.Polylist;
 
 /**

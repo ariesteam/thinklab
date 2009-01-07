@@ -35,7 +35,7 @@ package org.integratedmodelling.corescience.values;
 
 import javax.measure.unit.Unit;
 
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
  * A literal unit. Uses the JScience unit.

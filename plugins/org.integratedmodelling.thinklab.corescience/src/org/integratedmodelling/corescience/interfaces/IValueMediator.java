@@ -34,8 +34,8 @@ package org.integratedmodelling.corescience.interfaces;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabInexactConversionException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IUncertainty;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Triple;
 

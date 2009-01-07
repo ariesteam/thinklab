@@ -36,8 +36,8 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.IProperty;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 
 /**
  * A utility that traverses the KM ontologies and identifies all Concepts that are related 

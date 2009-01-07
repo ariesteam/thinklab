@@ -1,6 +1,10 @@
 package org.integratedmodelling.thinklab.application;
 
 
+import java.net.URL;
+
+import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.utils.JPFUtils;
 import org.java.plugin.Plugin;
 import org.java.plugin.registry.Extension;
@@ -12,10 +16,10 @@ public class ApplicationDescriptor {
 	String description;
 	String taskClass;
 	String code;
-	String script;
+	URL script;
 	String language;
 
-	public ApplicationDescriptor(Plugin plugin, Extension ext) {
+	public ApplicationDescriptor(Plugin plugin, Extension ext) throws ThinklabIOException {
 
 		this.registeringPlugin = plugin;	
 	
@@ -27,7 +31,10 @@ public class ApplicationDescriptor {
 		
 		if (aext != null) {
 			this.code = JPFUtils.getParameter(aext, "code");
-			this.script = JPFUtils.getParameter(aext, "script");
+			String s = JPFUtils.getParameter(aext, "script");
+			if (s != null)
+				this.script = Thinklab.get().getResourceURL(s);
+			
 			this.language = JPFUtils.getParameter(aext, "language");
 			
 		}

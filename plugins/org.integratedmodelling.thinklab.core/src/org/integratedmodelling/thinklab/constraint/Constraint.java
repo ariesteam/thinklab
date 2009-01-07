@@ -41,10 +41,10 @@ import org.integratedmodelling.thinklab.exception.ThinklabConstraintValidationEx
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIncompatibleConstraintException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject;
-import org.integratedmodelling.thinklab.interfaces.IQuery;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.utils.LogicalConnector;
 import org.integratedmodelling.utils.Polylist;
 

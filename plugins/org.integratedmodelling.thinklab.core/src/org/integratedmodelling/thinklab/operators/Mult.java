@@ -1,7 +1,7 @@
 package org.integratedmodelling.thinklab.operators;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.value.NumberValue;
 
 public class Mult extends Operator {

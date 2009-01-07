@@ -37,8 +37,8 @@ import org.integratedmodelling.geospace.cmodel.FeatureCoverageModel;
 import org.integratedmodelling.geospace.cmodel.RegularRasterModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 
 public class SubdividedCoverageModelConstructor implements
 		InstanceImplementationConstructor {

@@ -33,8 +33,8 @@
 package org.integratedmodelling.corescience.interfaces;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabMediationException;
-import org.integratedmodelling.thinklab.interfaces.IUncertainty;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Pair;
 import org.jscience.mathematics.number.Rational;
 

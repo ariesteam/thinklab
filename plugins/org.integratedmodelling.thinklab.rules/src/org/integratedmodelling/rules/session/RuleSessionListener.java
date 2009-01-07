@@ -2,9 +2,9 @@ package org.integratedmodelling.rules.session;
 
 import org.integratedmodelling.rules.RulePlugin;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.interfaces.IThinklabSessionListener;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.IThinklabSessionListener;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 public class RuleSessionListener implements IThinklabSessionListener {
 

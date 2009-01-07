@@ -33,7 +33,7 @@
 package org.integratedmodelling.corescience.interfaces;
 
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 public interface IValueTransformationFilter extends IDataFilter {
 

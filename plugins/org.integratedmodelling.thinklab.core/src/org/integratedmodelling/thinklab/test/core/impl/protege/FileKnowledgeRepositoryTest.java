@@ -40,7 +40,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.impl.protege.Ontology;
-import org.integratedmodelling.thinklab.interfaces.IOntology;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 
 public class FileKnowledgeRepositoryTest extends AllTestsSetup {
 

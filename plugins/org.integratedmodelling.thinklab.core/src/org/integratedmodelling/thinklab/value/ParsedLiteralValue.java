@@ -35,7 +35,7 @@ package org.integratedmodelling.thinklab.value;
 
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 public abstract class ParsedLiteralValue extends Value {
 

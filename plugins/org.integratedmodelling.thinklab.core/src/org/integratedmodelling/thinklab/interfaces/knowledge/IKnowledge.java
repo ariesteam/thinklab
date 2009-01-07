@@ -1,5 +1,5 @@
 /**
- * IInstanceImplementation.java
+ * IKnowledge.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,33 +31,51 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.interfaces;
+package org.integratedmodelling.thinklab.interfaces.knowledge;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.SemanticType;
 
 /**
- * The implementation of an instance, generated and initialized by a ConceptManager after a knowledge
- * model has been read.
+ * IKnowledge defines the methods that are common to both IConcepts and
+ * IInstances. As IConcept can be both concrete and abstract, and IInstances are always
+ * concrete, IKnowledge has all the methods that pertain to IRelationships of this
+ * with other IKnowledge objects. 
  * 
- * @author UVM Affiliate
+ * @author Ferdinando Villa
  *
  */
-public interface IInstanceImplementation {
+public interface IKnowledge extends IResource {
+
+	/**
+	 * The semantic type of the resource. IKnowledge objects always have a semantic type.
+	 * @return a semantic type. Can't fail.
+	 */
+	public SemanticType getSemanticType();
+
 	
 	/**
-	 * Called just after creation, passing the OWL counterpart. 
-	 * @param i
-	 * @throws ThinklabException
+	 * All IKnowledge objects have a local name 
+	 * @return
 	 */
-	public abstract void initialize(IInstance i) throws ThinklabException;
+	public String getLocalName();
 	
-	/**
-	 * Called when the OWL counterpart is validated. Supposed to throw
-	 * an explanatory exception if validation is unsuccessful.
-	 * @param i
-	 * @throws ThinklabValidationException
-	 * @throws ThinklabException 
-	 */
-	public abstract void validate(IInstance i) throws ThinklabException;
+	
+    /**
+     * True if this is subsumed by the passed resource.
+     */
+    public abstract boolean is(IKnowledge concept);
+
+    /*
+     * Use a string to identify the resource passed. Return false even if string
+     * does not represent a resource.
+     */
+    public abstract boolean is(String semanticType);
+    
+//    /**
+//    * IKnowledge can also be matched by semantic type.	
+//    * @param s
+//    * @return
+//    */
+//    public abstract boolean equals(SemanticType s);
+//    
 }

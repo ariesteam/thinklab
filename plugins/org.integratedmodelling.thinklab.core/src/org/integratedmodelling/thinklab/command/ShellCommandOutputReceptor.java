@@ -35,7 +35,7 @@ package org.integratedmodelling.thinklab.command;
 
 import java.io.OutputStream;
 
-import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 
 public class ShellCommandOutputReceptor implements ICommandOutputReceptor {
 

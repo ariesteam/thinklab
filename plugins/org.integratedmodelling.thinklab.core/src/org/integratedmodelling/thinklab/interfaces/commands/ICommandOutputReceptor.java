@@ -1,5 +1,5 @@
 /**
- * IQuery.java
+ * ICommandOutputReceptor.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,42 +31,32 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.interfaces;
+package org.integratedmodelling.thinklab.interfaces.commands;
 
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import java.io.OutputStream;
 
 /**
- * A query class whose purpose is to generalize the querying
- * of "objects" and the retrieval of their results. Apart from existing (so it could be passed to
- * IQueriable) it mandates the ability to serialize a query to/from a string and to check for
- * "empty" (general) queries.
- * 
- * @author Ferdinando Villa
+ * Simplest possible way to print and log portably from commands.
+ * @deprecated use outputstream in user model
+ * @author Ferdinando
  *
  */
-public interface IQuery {
+public interface ICommandOutputReceptor {
+	
+	/*
+	 * print the output as a line
+	 */
+	public void displayOutput(String output);
 
-	/**
-	 * Queries should be definable by creating one with the empty constructor and 
-	 * passing some sort of textual specification to parse().
-	 * @param query
-	 * @throws ThinklabValidationException
+	/*
+	 * print output without line break
 	 */
-	abstract void parse(String query) throws ThinklabValidationException;
-	
-	/**
-	 * Queries should always be capable of returning a textual specification that can later
-	 * be parsed back into a query of the same type.
-	 * 
-	 * @return
+	public void appendOutput(String string);
+
+	/*
+	 * get the output stream
 	 */
-	abstract String asText();
-	
-	/**
-	 * Return true if the query is empty, meaning that it will select everything that's queriable. 
-	 * 
-	 * @return
-	 */
-	abstract boolean isEmpty();
-	
+	public OutputStream getOutputStream();
+
+	 
 }

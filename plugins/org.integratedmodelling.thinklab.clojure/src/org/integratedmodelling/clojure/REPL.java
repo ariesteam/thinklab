@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 
 import clojure.lang.LineNumberingPushbackReader;
 import clojure.lang.LispReader;

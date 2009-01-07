@@ -1,6 +1,6 @@
 package org.integratedmodelling.thinklab.graph;
 
-import org.integratedmodelling.thinklab.interfaces.IProperty;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.jgrapht.graph.DefaultEdge;
 
 public class PropertyEdge extends DefaultEdge {

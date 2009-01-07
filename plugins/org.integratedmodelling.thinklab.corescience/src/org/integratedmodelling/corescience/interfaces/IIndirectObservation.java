@@ -33,8 +33,8 @@
 package org.integratedmodelling.corescience.interfaces;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
-import org.integratedmodelling.thinklab.interfaces.IUncertainty;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 public interface IIndirectObservation extends IObservation {
 

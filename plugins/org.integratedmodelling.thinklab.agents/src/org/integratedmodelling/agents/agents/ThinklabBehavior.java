@@ -36,7 +36,7 @@ import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.utils.NameGenerator;
 
 /* 

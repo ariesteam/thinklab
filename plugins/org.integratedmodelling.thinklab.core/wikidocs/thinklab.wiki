@@ -5,6 +5,12 @@ part of Thinklab is written in Clojure, a Lisp dialect that runs on the JVM.
 
 h1. Loading knowledge
 
+h1. Sessions and users
+
+The ISession interface specifies the "brain" of a specific instance of an application. 
+A session is essentially an augmented ontology. Sessions may contain a User Model, which 
+defines how the user should interact with the session.
+
 h2. Getting things done in Thinklab
 
 h1. API usage
@@ -14,6 +20,7 @@ h1. API usage
 1.2.1 Commands
 
 1.3 Applications
+
 
 
 

@@ -32,8 +32,6 @@
  **/
 package org.integratedmodelling.persistence.kbox;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,13 +43,14 @@ import org.hibernate.Session;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.IOntology;
-import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.interfaces.IThinklabSessionListener;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.IThinklabSessionListener;
+import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 import org.integratedmodelling.utils.Polylist;
 
@@ -232,16 +231,9 @@ public class PSession implements ISession {
 	}
 
 	@Override
-	public InputStream getDefaultInputStream() {
+	public IUserModel getUserModel() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public OutputStream getDefaultOutputStream() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	
 }

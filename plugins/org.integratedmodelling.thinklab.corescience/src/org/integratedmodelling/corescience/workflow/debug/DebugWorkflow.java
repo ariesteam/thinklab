@@ -43,8 +43,8 @@ import org.integratedmodelling.corescience.interfaces.IObservationState;
 import org.integratedmodelling.corescience.workflow.AsynchronousContextualizationWorkflow;
 import org.integratedmodelling.corescience.workflow.AsynchronousContextualizationWorkflow.ActivationRecord;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
  * Debug workflow: simply record what should be done, and output the sequence of

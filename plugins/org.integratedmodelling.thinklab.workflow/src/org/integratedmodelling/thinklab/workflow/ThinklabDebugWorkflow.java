@@ -4,8 +4,8 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
-import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.workflow.evaluators.IValueVariableEvaluator;
 import org.integratedmodelling.thinklab.workflow.evaluators.KBoxVariableEvaluator;
 import org.integratedmodelling.thinklab.workflow.evaluators.ThinklabCommandVariableEvaluator;

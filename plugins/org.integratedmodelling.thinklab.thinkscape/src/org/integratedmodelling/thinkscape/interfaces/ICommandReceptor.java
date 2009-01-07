@@ -1,7 +1,7 @@
 package org.integratedmodelling.thinkscape.interfaces;
 
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 public interface ICommandReceptor {
 	

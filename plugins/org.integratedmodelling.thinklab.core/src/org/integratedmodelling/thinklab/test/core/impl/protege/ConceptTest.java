@@ -40,8 +40,8 @@ import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.impl.protege.Concept;
 import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 public class ConceptTest extends AllTestsSetup {
 

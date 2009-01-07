@@ -33,7 +33,7 @@
  **/
 package org.integratedmodelling.utils;
 
-import org.integratedmodelling.thinklab.interfaces.IProperty;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 
 /**
  * Holds a polylist and facilitates creation of objects in list representation. Nothing fancy but

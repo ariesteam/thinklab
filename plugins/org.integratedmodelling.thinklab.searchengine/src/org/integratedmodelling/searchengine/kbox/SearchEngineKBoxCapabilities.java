@@ -33,9 +33,9 @@
 package org.integratedmodelling.searchengine.kbox;
 
 import org.integratedmodelling.searchengine.QueryString;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
-import org.integratedmodelling.thinklab.interfaces.IKBoxCapabilities;
-import org.integratedmodelling.thinklab.interfaces.IQuery;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.query.IQuery;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBoxCapabilities;
 import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.Quantifier;
 

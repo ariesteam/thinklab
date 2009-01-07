@@ -36,7 +36,7 @@ import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IExtentConceptualModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.time.cmodel.TemporalGridConceptualModel;
 import org.integratedmodelling.time.values.PeriodValue;
 import org.joda.time.DateTime;

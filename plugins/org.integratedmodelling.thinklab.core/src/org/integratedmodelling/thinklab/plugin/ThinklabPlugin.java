@@ -58,7 +58,6 @@ package org.integratedmodelling.thinklab.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -72,7 +71,6 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.application.Application;
 import org.integratedmodelling.thinklab.application.ApplicationDescriptor;
 import org.integratedmodelling.thinklab.application.ApplicationManager;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
@@ -87,11 +85,10 @@ import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstru
 import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.extensions.KBoxHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
-import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
 import org.integratedmodelling.thinklab.extensions.LiteralValidator;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.ITask;
+import org.integratedmodelling.thinklab.interfaces.applications.ITask;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.session.Session;
@@ -149,6 +146,14 @@ public abstract class ThinklabPlugin extends Plugin
 	
 	public ClassLoader getClassLoader() {
 		return getManager().getPluginClassLoader(getDescriptor());
+	}
+	
+	public static ClassLoader getClassLoaderFor(Object o) {
+		return ((ThinklabPlugin)(Thinklab.get().getManager().getPluginFor(o))).getClassLoader();
+	}
+	
+	public static ThinklabPlugin getPluginFor(Object o) {
+		return (ThinklabPlugin)(Thinklab.get().getManager().getPluginFor(o));
 	}
 	
 	public Log logger() {
@@ -633,7 +638,7 @@ public abstract class ThinklabPlugin extends Plugin
 
 	}
 	
-	private void loadApplications() {
+	private void loadApplications() throws ThinklabIOException {
 
 		/*
 		 * publish all applications from loaded plugins.

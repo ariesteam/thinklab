@@ -7,9 +7,9 @@ import org.integratedmodelling.ograph.OGraph;
 import org.integratedmodelling.ograph.ONode;
 import org.integratedmodelling.policy.ApplicationFrame;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
-import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.interfaces.IThinklabSessionListener;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.IThinklabSessionListener;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinkscape.ThinkScapeGUI;
 import org.integratedmodelling.thinkscape.graph.GraphFactory;
 

@@ -1,5 +1,5 @@
 /**
- * ICommandOutputReceptor.java
+ * IQuery.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,32 +31,42 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.interfaces;
+package org.integratedmodelling.thinklab.interfaces.query;
 
-import java.io.OutputStream;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 
 /**
- * Simplest possible way to print and log portably from commands.
+ * A query class whose purpose is to generalize the querying
+ * of "objects" and the retrieval of their results. Apart from existing (so it could be passed to
+ * IQueriable) it mandates the ability to serialize a query to/from a string and to check for
+ * "empty" (general) queries.
  * 
- * @author Ferdinando
+ * @author Ferdinando Villa
  *
  */
-public interface ICommandOutputReceptor {
+public interface IQuery {
+
+	/**
+	 * Queries should be definable by creating one with the empty constructor and 
+	 * passing some sort of textual specification to parse().
+	 * @param query
+	 * @throws ThinklabValidationException
+	 */
+	abstract void parse(String query) throws ThinklabValidationException;
 	
-	/*
-	 * print the output as a line
+	/**
+	 * Queries should always be capable of returning a textual specification that can later
+	 * be parsed back into a query of the same type.
+	 * 
+	 * @return
 	 */
-	public void displayOutput(String output);
-
-	/*
-	 * print output without line break
+	abstract String asText();
+	
+	/**
+	 * Return true if the query is empty, meaning that it will select everything that's queriable. 
+	 * 
+	 * @return
 	 */
-	public void appendOutput(String string);
-
-	/*
-	 * get the output stream
-	 */
-	public OutputStream getOutputStream();
-
-	 
+	abstract boolean isEmpty();
+	
 }

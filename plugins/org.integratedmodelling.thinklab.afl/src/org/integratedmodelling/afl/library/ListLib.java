@@ -10,8 +10,8 @@ import org.integratedmodelling.afl.Interpreter;
 import org.integratedmodelling.afl.StepListener;
 import org.integratedmodelling.afl.exceptions.ThinklabAFLException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.value.ListValue;
 import org.integratedmodelling.utils.Polylist;
 

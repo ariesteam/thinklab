@@ -34,8 +34,8 @@ package org.integratedmodelling.rules.interfaces;
 
 import org.integratedmodelling.rules.exceptions.ThinklabRuleEngineException;
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
 public interface IThinklabRuleEngine {
 

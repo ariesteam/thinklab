@@ -9,7 +9,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.integratedmodelling.policy.ApplicationFrame;
-import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinkscape.interfaces.ICommandReceptor;
 import javax.swing.JButton;
 import java.awt.Font;

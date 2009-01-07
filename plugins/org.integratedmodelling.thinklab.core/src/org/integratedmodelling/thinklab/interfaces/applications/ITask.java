@@ -1,4 +1,4 @@
-package org.integratedmodelling.thinklab.interfaces;
+package org.integratedmodelling.thinklab.interfaces.applications;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 

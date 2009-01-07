@@ -1,5 +1,5 @@
 /**
- * IKnowledge.java
+ * IQueriable.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,51 +31,56 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.interfaces;
+package org.integratedmodelling.thinklab.interfaces.query;
 
-import org.integratedmodelling.thinklab.SemanticType;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.utils.Polylist;
+
 
 /**
- * IKnowledge defines the methods that are common to both IConcepts and
- * IInstances. As IConcept can be both concrete and abstract, and IInstances are always
- * concrete, IKnowledge has all the methods that pertain to IRelationships of this
- * with other IKnowledge objects. 
- * 
+ * The interface implemented by any object that can be queried, such as a kbox, a textual
+ * search engine, etc.
  * @author Ferdinando Villa
- *
  */
-public interface IKnowledge extends IResource {
-
-	/**
-	 * The semantic type of the resource. IKnowledge objects always have a semantic type.
-	 * @return a semantic type. Can't fail.
-	 */
-	public SemanticType getSemanticType();
-
+public interface IQueriable {
 	
 	/**
-	 * All IKnowledge objects have a local name 
+	 * Return an IQuery that this kbox will like by parsing the given string. Most
+	 * queriables have a preferred query type so it should be easy.
+	 * 
+	 * @param toEval
 	 * @return
 	 */
-	public String getLocalName();
+	public abstract IQuery parseQuery(String toEval) throws ThinklabException;
 	
+	/**
+	 * The simplest query operation just returns all results that match the query, with no
+	 * result schema and no query boundaries.
+	 */
+	public abstract IQueryResult query(IQuery q) throws ThinklabException;
 	
-    /**
-     * True if this is subsumed by the passed resource.
-     */
-    public abstract boolean is(IKnowledge concept);
+	/**
+	 * Submit the query and return results. Do not use any specific schema for the results;
+	 * leave it to the implementation to decide the schema to be used.
+	 * 
+	 * @param q
+	 * @param offset
+	 * @param maxResults
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public abstract IQueryResult query(IQuery q, int offset, int maxResults) throws ThinklabException;
 
-    /*
-     * Use a string to identify the resource passed. Return false even if string
-     * does not represent a resource.
-     */
-    public abstract boolean is(String semanticType);
-    
-//    /**
-//    * IKnowledge can also be matched by semantic type.	
-//    * @param s
-//    * @return
-//    */
-//    public abstract boolean equals(SemanticType s);
-//    
+	/**
+	 * Submit the query with a specified schema and return results.
+	 * 
+	 * @param q
+	 * @param resultSchema
+	 * @param offset
+	 * @param maxResults
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public abstract IQueryResult query(IQuery q, Polylist resultSchema, int offset, int maxResults) throws ThinklabException;
+
 }

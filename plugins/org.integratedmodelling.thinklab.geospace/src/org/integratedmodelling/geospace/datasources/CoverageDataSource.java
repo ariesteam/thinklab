@@ -35,7 +35,7 @@ package org.integratedmodelling.geospace.datasources;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.extents.GridExtent;
-import org.integratedmodelling.thinklab.interfaces.IInstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 
 public abstract class CoverageDataSource  implements IDataSource, IInstanceImplementation {
 

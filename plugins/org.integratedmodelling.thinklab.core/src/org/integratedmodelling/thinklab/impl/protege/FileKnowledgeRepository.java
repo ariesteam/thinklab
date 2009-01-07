@@ -55,9 +55,9 @@ import org.integratedmodelling.thinklab.exception.ThinklabAmbiguousResultExcepti
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
-import org.integratedmodelling.thinklab.interfaces.IOntology;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.FileTypeFilter;
 import org.integratedmodelling.utils.NameGenerator;

@@ -33,7 +33,7 @@
 package org.integratedmodelling.corescience.values;
 
 import org.integratedmodelling.corescience.interfaces.IObservation;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
  * An extended IValue designed to hold an IObservation literal. Only simple numbers with units are

@@ -37,8 +37,8 @@ package org.integratedmodelling.rules;
 import org.integratedmodelling.rules.exceptions.ThinklabRuleEngineException;
 import org.integratedmodelling.rules.interfaces.IThinklabRuleEngine;
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.interfaces.IKBox;
-import org.integratedmodelling.thinklab.interfaces.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
 //import edu.stanford.smi.protegex.owl.model.OWLModel;
 //import edu.stanford.smi.protegex.owl.swrl.bridge.exceptions.SWRLRuleEngineBridgeException;

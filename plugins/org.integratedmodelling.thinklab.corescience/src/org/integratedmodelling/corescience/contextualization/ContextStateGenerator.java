@@ -35,7 +35,7 @@ package org.integratedmodelling.corescience.contextualization;
 import java.util.Iterator;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IContextStateGenerator;
 import org.integratedmodelling.corescience.interfaces.IObservationContextState;

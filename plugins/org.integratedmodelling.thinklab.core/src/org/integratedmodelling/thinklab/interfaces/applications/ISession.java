@@ -31,7 +31,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.interfaces;
+package org.integratedmodelling.thinklab.interfaces.applications;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -44,6 +44,11 @@ import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.value.AlgorithmValue;
 import org.integratedmodelling.utils.Polylist;
 
@@ -358,21 +363,13 @@ public interface ISession {
 	 * @return
 	 */
 	public abstract Collection<String> getLocalKBoxes();
-
-	/**
-	 * Sessions may have an input and an output stream associated in case they can interact
-	 * with the user through them.
-	 * 
-	 * @return
-	 */
-	public abstract InputStream getDefaultInputStream();
 	
 	/**
-	 * Sessions may have an input and an output stream associated in case they can interact
-	 * with the user through them.
+	 * Return the user model for the session. If the session is not interactive, the user model
+	 * may be null.
 	 * 
 	 * @return
 	 */
-	public abstract OutputStream getDefaultOutputStream();
+	public abstract IUserModel getUserModel();
 
 }

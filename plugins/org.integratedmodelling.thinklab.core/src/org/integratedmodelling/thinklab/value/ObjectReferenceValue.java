@@ -36,7 +36,7 @@ package org.integratedmodelling.thinklab.value;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 public class ObjectReferenceValue extends Value {
 

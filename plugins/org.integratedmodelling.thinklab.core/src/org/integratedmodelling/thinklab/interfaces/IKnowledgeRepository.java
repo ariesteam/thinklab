@@ -41,6 +41,8 @@ import java.util.Collection;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 
 /**
  * <p>A knowledge repository (KR) is a place to store knowledge, discretized into ontologies. The Knowledge Manager handles the 

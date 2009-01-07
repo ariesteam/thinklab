@@ -1,6 +1,7 @@
-package org.integratedmodelling.thinklab.interfaces;
+package org.integratedmodelling.thinklab.interfaces.literals;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 
 /**
  * An IOperator is a specialized instance implementation capable of returning a value given a set

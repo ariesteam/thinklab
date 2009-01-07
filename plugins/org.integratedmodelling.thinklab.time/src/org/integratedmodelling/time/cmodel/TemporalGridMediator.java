@@ -36,8 +36,8 @@ import org.integratedmodelling.corescience.exceptions.ThinklabMediationException
 import org.integratedmodelling.corescience.interfaces.ExtentCoverage;
 import org.integratedmodelling.corescience.interfaces.IExtentMediator;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.IUncertainty;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.time.extents.RegularTimeGridExtent;
 import org.integratedmodelling.time.values.PeriodValue;
 import org.integratedmodelling.utils.Pair;

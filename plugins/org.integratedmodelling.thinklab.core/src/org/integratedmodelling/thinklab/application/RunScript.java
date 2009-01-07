@@ -4,9 +4,10 @@ import java.net.URL;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
-import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.interfaces.ITask;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.ITask;
+import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 
 /**
@@ -21,7 +22,7 @@ public class RunScript implements ITask {
 	private String language = null;
 	private IValue result = null;
 	
-	public void setCodeUrl(Object code) {
+	public void setCode(Object code) {
 		if (code instanceof URL)
 			this.codeUrl = (URL) code;
 		else 
@@ -36,15 +37,19 @@ public class RunScript implements ITask {
 	@Override
 	public void run(ISession session) throws ThinklabException {
 
+		IUserModel userModel = session.getUserModel();
+		
 		/*
 		 * retrieve interpreter for language
 		 */
 		Interpreter intp = InterpreterManager.get().newInterpreter(language);
 		
 		intp.setSession(session);
-		intp.setInput(session.getDefaultInputStream());
-		intp.setOutput(session.getDefaultOutputStream());
 		
+		if (userModel != null) {
+			intp.setInput(userModel.getDefaultInputStream());
+			intp.setOutput(userModel.getDefaultOutputStream());
+		}
 		
 		/*
 		 * run whatever

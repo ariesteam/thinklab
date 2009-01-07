@@ -6,8 +6,8 @@ import java.net.URL;
 import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.ISession;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
  * The interface that an interpreter needs to implement in order to interface with 

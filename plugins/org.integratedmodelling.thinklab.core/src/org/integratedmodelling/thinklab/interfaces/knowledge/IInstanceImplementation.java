@@ -1,5 +1,5 @@
 /**
- * IKnowledgeInterface.java
+ * IInstanceImplementation.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -31,32 +31,33 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.interfaces;
+package org.integratedmodelling.thinklab.interfaces.knowledge;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 
 /**
- * @author Ferdinando Villa
- * @author Ioannis N. Athanasiadis
+ * The implementation of an instance, generated and initialized by a ConceptManager after a knowledge
+ * model has been read.
+ * 
+ * @author UVM Affiliate
+ *
  */
-public interface ISessionManager {
-
+public interface IInstanceImplementation {
+	
 	/**
-	 * Create and return a new Session that suits the runtime context. Many interfaces will have enough with
-	 * the standard Session, others may need more sophistication and/or metadata. A Session is a good place to
-	 * hold user info, preferences, parameters, and should be coupled to any other session abstraction that
-	 * the particular runtime environment provides.
-	 * @return a new Session, or fail with an exception. null should never be returned.
+	 * Called just after creation, passing the OWL counterpart. 
+	 * @param i
+	 * @throws ThinklabException
 	 */
-	public abstract ISession createNewSession() throws ThinklabException;
-
+	public abstract void initialize(IInstance i) throws ThinklabException;
+	
 	/**
-	 * A callback that is invoked just before a session is deleted. Use as you please.
-	 * @param session the session that is going to be deleted.
+	 * Called when the OWL counterpart is validated. Supposed to throw
+	 * an explanatory exception if validation is unsuccessful.
+	 * @param i
+	 * @throws ThinklabValidationException
+	 * @throws ThinklabException 
 	 */
-	public abstract void notifySessionDeletion(ISession session);
-
-	public abstract ISession getCurrentSession();
-
+	public abstract void validate(IInstance i) throws ThinklabException;
 }

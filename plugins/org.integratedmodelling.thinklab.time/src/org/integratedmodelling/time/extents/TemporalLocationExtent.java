@@ -34,7 +34,7 @@ package org.integratedmodelling.time.extents;
 
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IExtentConceptualModel;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.time.cmodel.InstantConceptualModel;
 import org.integratedmodelling.time.values.TimeValue;
 

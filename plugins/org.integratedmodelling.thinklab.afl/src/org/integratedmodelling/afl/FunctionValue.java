@@ -3,7 +3,7 @@ package org.integratedmodelling.afl;
 import org.integratedmodelling.afl.exceptions.ThinklabAFLException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.IValue;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.value.ListValue;
 import org.integratedmodelling.utils.Polylist;
 

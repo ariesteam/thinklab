@@ -33,7 +33,7 @@
 package org.integratedmodelling.corescience.aggregation;
 
 import org.integratedmodelling.corescience.interfaces.IDataSource;
-import org.integratedmodelling.thinklab.interfaces.IConformance;
+import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 
 /**
  * An object that can be fed instances and will produce as many aggregated
