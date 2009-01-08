@@ -66,7 +66,20 @@ public class Application {
 		 * Create session as specified
 		 */
 		if (session == null) {
-			
+
+			try {
+				session = 
+					(ISession) Class.forName(
+								appdesc.sessionClass, 
+								true, 
+								Thinklab.getClassLoaderFor(appdesc)).newInstance();
+			} catch (Exception e) {
+				throw new ThinklabResourceNotFoundException(
+					"application: " + 
+					appdesc.id + 
+					": error creating session of class " + 
+					appdesc.sessionClass);
+			}
 		}
 		
 		/*

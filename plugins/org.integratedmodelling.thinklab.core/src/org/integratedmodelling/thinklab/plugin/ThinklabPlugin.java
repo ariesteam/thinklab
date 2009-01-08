@@ -65,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -120,6 +121,7 @@ public abstract class ThinklabPlugin extends Plugin
 	private File confFolder;
 	private File plugFolder;
 	private File loadFolder;
+	private HashSet<String> _bindingsLoaded = new HashSet<String>();
 	
 	/**
 	 * ALWAYS call this one to ensure that all the necessary plugins are loaded, even if
@@ -248,29 +250,13 @@ public abstract class ThinklabPlugin extends Plugin
 	 * 
 	 * @throws ThinklabException
 	 */
-	public void loadLanguageBindings() throws ThinklabException {
+	public synchronized void loadLanguageBindings() throws ThinklabException {
 		
+
 		for (Extension ext : getOwnThinklabExtensions("language-binding")) {
 
 			String language = getParameter(ext, "language");
-			String[] resource = getParameters(ext, "resource");
-			String[] tpacks = getParameters(ext, "task-package");
-			
-			Interpreter intp = InterpreterManager.get().newInterpreter(language);
-
-			/*
-			 * automatically declare tasks included in package if supplied. These can't possibly
-			 * use the language bindings, so do it first.
-			 */
-			for (String pk : tpacks)
-				declareTasks(pk, intp);
-
-			for (String r : resource) {
-				
-				logger().info("loading " + language + " binding file: " + r);
-				intp.loadBindings(getResourceURL(r), getClassLoader());
-			}
-			
+			loadLanguageBindings(language);
 		}
 	}
 	
@@ -284,6 +270,13 @@ public abstract class ThinklabPlugin extends Plugin
 	 * @throws ThinklabException
 	 */
 	public void loadLanguageBindings(String language) throws ThinklabException {
+		
+		// may happen more than once if bound to external language, so synchronize
+		if (this._bindingsLoaded.contains(language) ) {
+			return;
+		}
+		
+		_bindingsLoaded.add(language);
 		
 		for (Extension ext : getOwnThinklabExtensions("language-binding")) {
 
@@ -308,8 +301,6 @@ public abstract class ThinklabPlugin extends Plugin
 				logger().info("loading " + language + " binding file: " + r);
 				intp.loadBindings(getResourceURL(r), getClassLoader());
 			}
-
-			
 		}
 	}
 

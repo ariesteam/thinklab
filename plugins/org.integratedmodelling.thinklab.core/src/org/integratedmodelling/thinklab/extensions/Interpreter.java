@@ -45,6 +45,11 @@ public interface Interpreter {
 	public abstract void setError(OutputStream input);
 	
 	/**
+	 * Generic eval code, supposed to deal with the passed object according to what it is.
+	 * It should be prepared to eval URLs and Files by executing the program contained in
+	 * them, and anything that's likely to be a string containing code as a parseable 
+	 * program. Specific implementations can add support for other classes (e.g. compiled
+	 * ASM etc).
 	 * 
 	 * @param code
 	 * @return
@@ -53,15 +58,7 @@ public interface Interpreter {
 	public abstract IValue eval(Object code) throws ThinklabException;
 	
 	/**
-	 * 
-	 * @param code
-	 * @param args
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public abstract IValue eval(Object code, Object ... args) throws ThinklabException;
-	
-	/**
+	 * Like eval but with some externally supplied context, passed as a map of varname,object pairs.
 	 * 
 	 * @param code
 	 * @param args
@@ -70,14 +67,6 @@ public interface Interpreter {
 	 */
 	public abstract IValue eval(Object code, HashMap<String,Object> args) throws ThinklabException;
 
-	/**
-	 * 
-	 * @param source
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public abstract IValue eval(URL source) throws ThinklabException;
-	
 	/**
 	 * This one is different from eval because the bindings must remain in effect 
 	 * globally, so if the language doesn't have shared memory or similar mechanisms,

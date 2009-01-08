@@ -90,28 +90,8 @@ public class ClojureInterpreter implements Interpreter {
 	}
 
 	@Override
-	public IValue eval(Object code, Object... args) throws ThinklabException {
-		
-		if (code instanceof String) {
-			
-		} else if (code instanceof Polylist) {
-			
-		} else {
-			
-		}
-		
-		return null;
-	}
-
-	@Override
 	public IValue eval(Object code, HashMap<String, Object> args)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IValue eval(URL source) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

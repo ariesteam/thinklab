@@ -167,5 +167,13 @@
 		<parameter id="argument-descriptions" value="the plugin to reload"/>
 	</extension>
 	
+		<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="run">
+		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Run"/>
+		<parameter id="command-name" value="run"/>
+		<parameter id="command-description" value="run an installed application and return its final result"/>
+		<parameter id="argument-names" value="application"/>
+		<parameter id="argument-types" value="thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="the id of the application to run"/>
+	</extension>
 	
 </plugin>
