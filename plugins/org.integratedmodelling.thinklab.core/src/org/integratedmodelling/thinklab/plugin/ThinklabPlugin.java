@@ -288,10 +288,6 @@ public abstract class ThinklabPlugin extends Plugin
 				continue;
 			
 			Interpreter intp = InterpreterManager.get().newInterpreter(language);
-
-			for (String cp : getParameters(ext, "classpath")) {
-				intp.addToClasspath(this.getResourceURL(cp));
-			}
 			
 			/*
 			 * automatically declare tasks included in package if supplied. These can't possibly

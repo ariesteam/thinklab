@@ -27,6 +27,7 @@ import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 
 import clojure.lang.Compiler;
+import clojure.lang.DynamicClassLoader;
 import clojure.lang.LineNumberingPushbackReader;
 import clojure.lang.LispReader;
 import clojure.lang.Namespace;
@@ -54,12 +55,6 @@ public class ClojureInterpreter implements Interpreter {
 	
 	private synchronized Symbol newGlobalSymbol(String ns) {
 		return Symbol.intern(ns);
-	}
-
-	@Override
-	public void addToClasspath(URL url) throws ThinklabException {
-		String addc = "(add-classpath \"" + url + "\")";
-		eval(addc);
 	}
 	
 	public IValue evalInNamespace(Object code, String namespace) throws ThinklabException {
@@ -94,8 +89,15 @@ public class ClojureInterpreter implements Interpreter {
 		
 		try {
 
-			Var.pushThreadBindings(RT.map(ns, CUSTOM_NS, star1, null,
-					star2, null, star3, null, stare, null, sess, this.session));
+			Var.pushThreadBindings(
+				RT.map(
+					//RT.USE_CONTEXT_CLASSLOADER, RT.T, 
+					ns, CUSTOM_NS, 
+					star1, null,
+					star2, null, 
+					star3, null, 
+					stare, null, 
+					sess, this.session));
 			
 			refer.invoke(CLOJURE);
 			refer.invoke(TL);
@@ -149,13 +151,18 @@ public class ClojureInterpreter implements Interpreter {
 	public void loadBindings(URL source, ClassLoader cloader) throws ThinklabException {
         try {
         	
-        	/**
-        	 * TODO 
-        	 * needs to use context classloader - and if that doesn't work,
-        	 * find out what plugin the stuff comes from and set the classloader appropriately
-        	 * before calling loadFile.
-        	 */ 	
+        	DynamicClassLoader cl = null;
+        	if (cloader != null) {
+        		cl = RT.ROOT_CLASSLOADER;
+        		RT.ROOT_CLASSLOADER = new DynamicClassLoader(cloader);
+        	}
+        		
 			Compiler.loadFile(Escape.fromURL(source.getFile().toString()));
+			
+			if (cloader != null) {
+				RT.ROOT_CLASSLOADER = cl;
+			}
+			
 		} catch (Exception e) {
 			throw new ThinklabValidationException(e);
 		}
