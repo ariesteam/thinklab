@@ -275,7 +275,7 @@ public abstract class ThinklabPlugin extends Plugin
 		if (this._bindingsLoaded.contains(language) ) {
 			return;
 		}
-		
+
 		_bindingsLoaded.add(language);
 		
 		for (Extension ext : getOwnThinklabExtensions("language-binding")) {
@@ -288,6 +288,10 @@ public abstract class ThinklabPlugin extends Plugin
 				continue;
 			
 			Interpreter intp = InterpreterManager.get().newInterpreter(language);
+
+			for (String cp : getParameters(ext, "classpath")) {
+				intp.addToClasspath(this.getResourceURL(cp));
+			}
 			
 			/*
 			 * automatically declare tasks included in package if supplied. These can't possibly

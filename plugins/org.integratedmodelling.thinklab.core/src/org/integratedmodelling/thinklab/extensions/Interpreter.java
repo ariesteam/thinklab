@@ -86,4 +86,13 @@ public interface Interpreter {
 	 */
 	public abstract void defineTask(Class<?> taskClass) throws ThinklabException;
 
+	/**
+	 * Bindings specifications may want to extend the classpath for the language, if it's
+	 * used. Languages that don't use a classpath should just provide an empty stub. 
+	 * 
+	 * @param url
+	 * @throws ThinklabException 
+	 */
+	void addToClasspath(URL url) throws ThinklabException;
+
 }

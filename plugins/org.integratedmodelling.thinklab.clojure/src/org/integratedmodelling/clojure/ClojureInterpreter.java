@@ -26,9 +26,7 @@ import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 
-import clojure.lang.AFn;
 import clojure.lang.Compiler;
-import clojure.lang.IFn;
 import clojure.lang.LineNumberingPushbackReader;
 import clojure.lang.LispReader;
 import clojure.lang.Namespace;
@@ -56,6 +54,12 @@ public class ClojureInterpreter implements Interpreter {
 	
 	private synchronized Symbol newGlobalSymbol(String ns) {
 		return Symbol.intern(ns);
+	}
+
+	@Override
+	public void addToClasspath(URL url) throws ThinklabException {
+		String addc = "(add-classpath \"" + url + "\")";
+		eval(addc);
 	}
 	
 	public IValue evalInNamespace(Object code, String namespace) throws ThinklabException {
