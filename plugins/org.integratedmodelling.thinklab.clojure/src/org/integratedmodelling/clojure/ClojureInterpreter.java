@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -18,6 +20,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabScriptException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.annotations.TaskNamespace;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.value.Value;
 import org.integratedmodelling.utils.CamelCase;
@@ -29,6 +32,7 @@ import clojure.lang.Compiler;
 import clojure.lang.LineNumberingPushbackReader;
 import clojure.lang.LispReader;
 import clojure.lang.RT;
+import clojure.lang.Symbol;
 import clojure.lang.Var;
 
 public class ClojureInterpreter implements Interpreter {
@@ -47,9 +51,8 @@ public class ClojureInterpreter implements Interpreter {
 			_initialized = true;
 		}
 	}
-	
-	@Override
-	public IValue eval(Object code) throws ThinklabException {
+
+	public IValue evalInNamespace(Object code, String namespace) throws ThinklabException {
 
 		InputStream inp = null;
 		try {
@@ -64,21 +67,84 @@ public class ClojureInterpreter implements Interpreter {
 			throw new ThinklabInternalErrorException(e);
 		}
 		
-		LineNumberingPushbackReader rdr = new LineNumberingPushbackReader(
-				new InputStreamReader(inp, RT.UTF8));
+		//// TODO check namespace is OK - session's ID or user if session is null
+		final Symbol USER = Symbol.create(namespace);
+		final Symbol CLOJURE = Symbol.create("clojure.core");
+		final Symbol TL = Symbol.create("tl");
 		
-		Object EOF = new Object();
-		Object r;
-		Object ret = null;
+		final Var in_ns = RT.var("clojure.core", "in-ns");
+		final Var refer = RT.var("clojure.core", "refer");
+		final Var ns = RT.var("clojure.core", "*ns*");
+		final Var compile_path = RT.var("clojure.core", "*compile-path*");
+		final Var warn_on_reflection = RT.var("clojure.core",
+				"*warn-on-reflection*");
+		final Var print_meta = RT.var("clojure.core", "*print-meta*");
+		final Var print_length = RT.var("clojure.core", "*print-length*");
+		final Var print_level = RT.var("clojure.core", "*print-level*");
+		final Var star1 = RT.var("clojure.core", "*1");
+		final Var star2 = RT.var("clojure.core", "*2");
+		final Var star3 = RT.var("clojure.core", "*3");
+		final Var stare = RT.var("clojure.core", "*e");
 		final Var sess  = RT.var("tl", "*session*");
+
+		Object ret = null;
 		
-		try {			
-			Var.pushThreadBindings(RT.map(sess, this.session));			
-			r = LispReader.read(rdr, false, EOF, false);
-			ret = Compiler.eval(r);
+		try {
+			
+			Var.pushThreadBindings(RT.map(ns, ns.get(), warn_on_reflection,
+					warn_on_reflection.get(), print_meta, print_meta.get(),
+					print_length, print_length.get(), print_level, print_level
+							.get(), compile_path, "classes", star1, null,
+					star2, null, star3, null, stare, null, sess, this.session));
+
+			// create and move into the session namespace
+			in_ns.invoke(USER);
+			refer.invoke(CLOJURE);
+			refer.invoke(TL);
+			
+			LineNumberingPushbackReader rdr = new LineNumberingPushbackReader(
+					new InputStreamReader(inp, RT.UTF8));
+			
+			Object EOF = new Object();
+
+			for (;;) {
+				
+				try {
+					Object r = LispReader.read(rdr, false, EOF, false);
+					if (r == EOF) {
+						break;
+					}
+					ret = Compiler.eval(r);
+					star3.set(star2.get());
+					star2.set(star1.get());
+					star1.set(ret);
+					
+				} catch (Exception e) {
+					stare.set(e);
+					throw e;
+				}
+			}
 		} catch (Exception e) {
 			throw new ThinklabScriptException(e);
+		} finally {
+			Var.popThreadBindings();
 		}
+		
+//		LineNumberingPushbackReader rdr = new LineNumberingPushbackReader(
+//				new InputStreamReader(inp, RT.UTF8));
+//		
+//		Object EOF = new Object();
+//		Object r;
+//		Object ret = null;
+//		final Var sess  = RT.var("tl", "*session*");
+//		
+//		try {			
+//			Var.pushThreadBindings(RT.map(sess, this.session));			
+//			r = LispReader.read(rdr, false, EOF, false);
+//			ret = Compiler.eval(r);
+//		} catch (Exception e) {
+//			throw new ThinklabScriptException(e);
+//		}
 		
 		/*
 		 * FIXME remove
@@ -135,11 +201,26 @@ public class ClojureInterpreter implements Interpreter {
 	@Override
 	public void defineTask(Class<?> taskClass) throws ThinklabException {
 		
+		
+		/*
+		 * FIXME this should be the ID of the declaring plugin by default
+		 */
+		String ns = "plugin";
+		
 		/*
 		 * Create Clojure binding for passed task.
 		 */
 		if (taskClass.isInterface() || Modifier.isAbstract(taskClass.getModifiers()))
 			return;
+		
+		/*
+		 * lookup namespace if any
+		 */
+		for (Annotation annotation : taskClass.getAnnotations()) {
+			if (annotation instanceof TaskNamespace) {
+				ns = ((TaskNamespace)annotation).ns();
+			}
+		}
 		
 		String fname = CamelCase.toLowerCase(MiscUtilities.getFileExtension(taskClass.getName()), '-');
 		
@@ -206,9 +287,14 @@ public class ClojureInterpreter implements Interpreter {
 		clj += "\n\tget" + get + "))";
 		
 		/*
-		 * eval the finished method
+		 * eval the finished method in given namespace
 		 */
-		eval(clj);
+		evalInNamespace(clj, ns);
+	}
+
+	@Override
+	public IValue eval(Object code) throws ThinklabException {
+		return evalInNamespace(code, session == null ? "user" : session.getSessionID());
 	}
 	
 }
