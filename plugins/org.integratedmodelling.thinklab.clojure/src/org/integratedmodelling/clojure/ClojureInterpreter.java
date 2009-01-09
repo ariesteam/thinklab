@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -26,11 +25,13 @@ import org.integratedmodelling.thinklab.value.Value;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Polylist;
 
+import clojure.lang.AFn;
 import clojure.lang.Compiler;
+import clojure.lang.IFn;
 import clojure.lang.LineNumberingPushbackReader;
 import clojure.lang.LispReader;
+import clojure.lang.Namespace;
 import clojure.lang.RT;
 import clojure.lang.Symbol;
 import clojure.lang.Var;
@@ -52,8 +53,13 @@ public class ClojureInterpreter implements Interpreter {
 		}
 	}
 
+	
+	private synchronized Symbol newGlobalSymbol(String ns) {
+		return Symbol.intern(ns);
+	}
+	
 	public IValue evalInNamespace(Object code, String namespace) throws ThinklabException {
-
+		
 		InputStream inp = null;
 		try {
 			if (code instanceof URL) {
@@ -67,38 +73,26 @@ public class ClojureInterpreter implements Interpreter {
 			throw new ThinklabInternalErrorException(e);
 		}
 		
-		//// TODO check namespace is OK - session's ID or user if session is null
-		final Symbol USER = Symbol.create(namespace);
-		final Symbol CLOJURE = Symbol.create("clojure.core");
-		final Symbol TL = Symbol.create("tl");
-		
-		final Var in_ns = RT.var("clojure.core", "in-ns");
+		final Symbol TL = Symbol.intern("tl");
+		final Symbol CLOJURE = Symbol.intern("clojure.core");
+
 		final Var refer = RT.var("clojure.core", "refer");
 		final Var ns = RT.var("clojure.core", "*ns*");
-		final Var compile_path = RT.var("clojure.core", "*compile-path*");
-		final Var warn_on_reflection = RT.var("clojure.core",
-				"*warn-on-reflection*");
-		final Var print_meta = RT.var("clojure.core", "*print-meta*");
-		final Var print_length = RT.var("clojure.core", "*print-length*");
-		final Var print_level = RT.var("clojure.core", "*print-level*");
 		final Var star1 = RT.var("clojure.core", "*1");
 		final Var star2 = RT.var("clojure.core", "*2");
 		final Var star3 = RT.var("clojure.core", "*3");
 		final Var stare = RT.var("clojure.core", "*e");
 		final Var sess  = RT.var("tl", "*session*");
 
+		final Namespace CUSTOM_NS = Namespace.findOrCreate(newGlobalSymbol(namespace));		
+
 		Object ret = null;
 		
 		try {
-			
-			Var.pushThreadBindings(RT.map(ns, ns.get(), warn_on_reflection,
-					warn_on_reflection.get(), print_meta, print_meta.get(),
-					print_length, print_length.get(), print_level, print_level
-							.get(), compile_path, "classes", star1, null,
-					star2, null, star3, null, stare, null, sess, this.session));
 
-			// create and move into the session namespace
-			in_ns.invoke(USER);
+			Var.pushThreadBindings(RT.map(ns, CUSTOM_NS, star1, null,
+					star2, null, star3, null, stare, null, sess, this.session));
+			
 			refer.invoke(CLOJURE);
 			refer.invoke(TL);
 			
@@ -130,26 +124,11 @@ public class ClojureInterpreter implements Interpreter {
 			Var.popThreadBindings();
 		}
 		
-//		LineNumberingPushbackReader rdr = new LineNumberingPushbackReader(
-//				new InputStreamReader(inp, RT.UTF8));
-//		
-//		Object EOF = new Object();
-//		Object r;
-//		Object ret = null;
-//		final Var sess  = RT.var("tl", "*session*");
-//		
-//		try {			
-//			Var.pushThreadBindings(RT.map(sess, this.session));			
-//			r = LispReader.read(rdr, false, EOF, false);
-//			ret = Compiler.eval(r);
-//		} catch (Exception e) {
-//			throw new ThinklabScriptException(e);
-//		}
-		
+
 		/*
 		 * FIXME remove
 		 */
-		System.out.println("EXECUTED: " + code);
+		System.out.println("EXECUTED: [" + namespace + "] " + code);
 		
 		// TODO Auto-generated method stub
 		return ret == null ? null : Value.getValueForObject(ret);
@@ -294,6 +273,10 @@ public class ClojureInterpreter implements Interpreter {
 
 	@Override
 	public IValue eval(Object code) throws ThinklabException {
+		/*
+		 * TODO the default namespace should be the plugin from which the code is
+		 * coming.
+		 */
 		return evalInNamespace(code, session == null ? "user" : session.getSessionID());
 	}
 	

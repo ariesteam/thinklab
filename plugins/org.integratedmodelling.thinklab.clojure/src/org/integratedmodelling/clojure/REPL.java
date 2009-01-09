@@ -86,7 +86,7 @@ public class REPL {
 			w.write("*** Thinklab Clojure interpreter; enter expressions, 'exit' exits ***\n");
 			for (;;) {
 				try {
-					w.write(Compiler.currentNS().name + "=> ");
+					w.write("=> ");
 					w.flush();
 					Object r = LispReader.read(rdr, false, EOF, false);
 					if (r == EOF) {
