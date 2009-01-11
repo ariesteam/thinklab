@@ -82,6 +82,8 @@ public class Application {
 			}
 		}
 		
+		((RunScript)task).setSourcePlugin(appdesc.registeringPlugin);
+		
 		/*
 		 * Run task and return 
 		 */

@@ -36,6 +36,7 @@ package org.integratedmodelling.clojure.commands;
 import org.integratedmodelling.clojure.ClojurePlugin;
 import org.integratedmodelling.clojure.REPL;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
@@ -57,6 +58,14 @@ public class Clojure implements CommandHandler {
 
 		IValue ret = null;
 		String[] args = null;
+		ClassLoader cloader = null;
+
+		if (command.hasOption("context")) {
+
+			String contextplugin = command.getOptionAsString("context");
+			cloader = Thinklab.resolvePlugin(contextplugin, true).getClassLoader();
+		}
+
 		
 		if (!command.hasArgument("resource")) {
 			
@@ -81,6 +90,7 @@ public class Clojure implements CommandHandler {
 			repl.setInput(inputSource.getInputStream());
 			repl.setOutput(outputDest.getOutputStream());
 			repl.setSession(session);
+			repl.setClassloader(cloader);
 			
 			repl.run(args);
 			

@@ -38,8 +38,12 @@ import java.util.Collection;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
+import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Polylist;
 
@@ -149,6 +153,52 @@ public class InstanceList {
 				return array[i];
 		return null;
 
+	}
+
+	/**
+	 * Return the target of the given represented relationship assuming it's a concept or specifies one.
+	 * 
+	 * @param relationship
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public IConcept getTargetConcept(String relationship) throws ThinklabException {
+
+		IConcept ret = null;
+		
+		for (int i = 1; i < array.length; i++) {
+			if (array[i] instanceof Polylist) {
+				String s = ((Polylist)array[i]).first().toString();
+				
+				if (s.equals(relationship)) {
+					
+					Object o = ((Polylist)array[i]).second();
+					
+					if (o instanceof IValue) {
+						ret = ((IValue)o).getConcept();
+					} else if (o instanceof Polylist) {
+						/* instance specification */
+						ret = resolveToConcept(((Polylist)o).first());
+					} else {
+						ret = resolveToConcept(o);
+					}
+				}
+			}
+		}
+		return ret;
+	}
+
+	private IConcept resolveToConcept(Object o) throws ThinklabException {
+
+		IConcept ret = null;
+
+		if (o instanceof IConcept) {
+			ret = (IConcept)o;
+		} else {
+			ret = KnowledgeManager.get().requireConcept(o.toString());
+		}
+		
+		return ret;
 	}
 
 }

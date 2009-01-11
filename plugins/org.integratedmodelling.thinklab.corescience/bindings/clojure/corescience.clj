@@ -5,7 +5,7 @@
 ;; @date Nov 13, 2008
 ;; -----------------------------------------------------------------------------------------
 
-(ns tl)
+(ns corescience)
 
 (defn contextualize
 	"Create the states in an observation tree. Ideally this should return new observations, but
@@ -32,13 +32,13 @@
 	"Retrieve and return all the observations that the passed one depends upon (there can be no
      observation unless the dependencies are also observed)."
 	[observation]
-	(get-property-values observation "observation:dependsOn"))
+	(tl/get-property-values observation "observation:dependsOn"))
 	
 (defn get-contingencies
 	"Retrieve and return all the observations that the passed one is contingent to (the act of
      observing the passed one causes the observation of the contingent ones)."
 	[observation]
-	(get-property-values observation "observation:contingentTo"))
+	(tl/get-property-values observation "observation:contingentTo"))
 	
 (defn get-extents
 	"Retrieve and return all the extents that the passed observation depends on."

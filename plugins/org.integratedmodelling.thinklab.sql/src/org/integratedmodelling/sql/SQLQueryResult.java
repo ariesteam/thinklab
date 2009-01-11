@@ -131,4 +131,16 @@ public class SQLQueryResult implements IQueryResult {
 					kbox.getObjectFromID(qresult.get(n, 0), session));
 		return instances[n];
 	}
+
+	@Override
+	public IValue getBestResult(ISession session) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float setResultScore(int n, float score) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

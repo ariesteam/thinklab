@@ -3,10 +3,6 @@
 <plugin id="org.integratedmodelling.thinklab.clojure" version="0.8.0" class="org.integratedmodelling.clojure.ClojurePlugin">
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="true"/>
-		<import plugin-id="org.integratedmodelling.thinklab.corescience" reverse-lookup="true"/>
-		<import plugin-id="org.integratedmodelling.thinklab.geospace" reverse-lookup="true"/>
-		<import plugin-id="org.integratedmodelling.thinklab.time" reverse-lookup="true"/>
-		<import plugin-id="org.integratedmodelling.thinklab.metadata" reverse-lookup="true"/>
 	</requires>	
 	<runtime>
 		<library id="clo" path="lib/clojure.jar" type="code">
@@ -26,6 +22,11 @@
 		<parameter id="optional-argument-names" value="resource"/>
 		<parameter id="optional-argument-types" value="thinklab-core:Text"/>
 		<parameter id="optional-argument-descriptions" value="URL or local file with code to execute"/>
+		<parameter id="option-names" value="c" />
+		<parameter id="option-long-names" value="context" />
+		<parameter id="option-types" value="thinklab-core:Text" />	
+		<parameter id="option-argument-labels" value="plugin" />	
+		<parameter id="option-descriptions" value="plugin to use as context for class loading" />	
 	</extension>
 	
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-interpreter" id="clojure-interpreter">

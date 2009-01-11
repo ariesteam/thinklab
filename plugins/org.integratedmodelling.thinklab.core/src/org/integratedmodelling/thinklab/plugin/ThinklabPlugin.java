@@ -307,7 +307,7 @@ public abstract class ThinklabPlugin extends Plugin
 	private void declareTasks(String taskPackage, Interpreter intp) throws ThinklabException {
 		
 		for (Class<?> cls : MiscUtilities.findSubclasses(ITask.class, taskPackage, getClassLoader())) {
-			intp.defineTask(cls);
+			intp.defineTask(cls, getClassLoader());
 		}
 		
 	}

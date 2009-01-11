@@ -19,6 +19,7 @@ import java.io.OutputStreamWriter;
 
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 
+import clojure.lang.DynamicClassLoader;
 import clojure.lang.LineNumberingPushbackReader;
 import clojure.lang.LispReader;
 import clojure.lang.RT;
@@ -32,12 +33,14 @@ public class REPL {
 	private InputStream input = System.in;
 	private OutputStream output = System.out;
 	private ISession session = null;
+	private ClassLoader classloader;
 	
 	public void run(String[] args) throws Exception {
 
 		final Symbol USER = Symbol.create("user");
 		final Symbol CLOJURE = Symbol.create("clojure.core");
 		final Symbol TL = Symbol.create("tl");
+		final Symbol EXIT = Symbol.create("exit");
 		
 		final Var in_ns = RT.var("clojure.core", "in-ns");
 		final Var refer = RT.var("clojure.core", "refer");
@@ -52,8 +55,15 @@ public class REPL {
 		final Var star2 = RT.var("clojure.core", "*2");
 		final Var star3 = RT.var("clojure.core", "*3");
 		final Var stare = RT.var("clojure.core", "*e");
+		final Var exit = RT.var("clojure.core", "exit");
 		final Var sess  = RT.var("tl", "*session*");
 		// RT.init();
+		
+	   	DynamicClassLoader cl = null;
+    	if (this.classloader != null) {
+    		cl = RT.ROOT_CLASSLOADER;
+    		RT.ROOT_CLASSLOADER = new DynamicClassLoader(this.classloader);
+    	}
 
 		try {
 			// *ns* must be thread-bound for in-ns to work
@@ -64,7 +74,7 @@ public class REPL {
 					warn_on_reflection.get(), print_meta, print_meta.get(),
 					print_length, print_length.get(), print_level, print_level
 							.get(), compile_path, "classes", star1, null,
-					star2, null, star3, null, stare, null, sess, this.session));
+					star2, null, star3, null, stare, null, sess, this.session, exit, EXIT));
 
 			// create and move into the user namespace
 			in_ns.invoke(USER);
@@ -94,7 +104,12 @@ public class REPL {
 						w.flush();
 						break;
 					}
+					
 					Object ret = Compiler.eval(r);
+					
+					if (r.equals(EXIT))
+						break;
+					
 					RT.print(ret, w);
 					w.write('\n');
 					// w.flush();
@@ -115,6 +130,11 @@ public class REPL {
 		} finally {
 			Var.popThreadBindings();
 		}
+		
+    	if (this.classloader != null) {
+			RT.ROOT_CLASSLOADER = cl;
+		}
+
 	}
 
 	public void setInput(InputStream inputStream) {
@@ -127,5 +147,9 @@ public class REPL {
 
 	public void setSession(ISession session) {
 		this.session = session;
+	}
+	
+	public void setClassloader(ClassLoader cloader) {
+		this.classloader = cloader;
 	}
 }

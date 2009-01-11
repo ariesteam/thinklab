@@ -21,6 +21,7 @@ import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.annotations.TaskNamespace;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.value.Value;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.Escape;
@@ -41,17 +42,6 @@ public class ClojureInterpreter implements Interpreter {
 	OutputStream output = System.out;
 	OutputStream error = System.err;
 	private ISession session;
-	
-	static private boolean _initialized = false;
-	
-	static synchronized void checkInitialized() {
-		
-		if (!_initialized) {
-			
-			_initialized = true;
-		}
-	}
-
 	
 	private synchronized Symbol newGlobalSymbol(String ns) {
 		return Symbol.intern(ns);
@@ -141,7 +131,7 @@ public class ClojureInterpreter implements Interpreter {
 	}
 
 	@Override
-	public IValue eval(Object code, HashMap<String, Object> args)
+	public IValue eval(Object code, ThinklabPlugin sourcePlugin, HashMap<String, Object> args)
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
@@ -189,8 +179,7 @@ public class ClojureInterpreter implements Interpreter {
 	}
 
 	@Override
-	public void defineTask(Class<?> taskClass) throws ThinklabException {
-		
+	public void defineTask(Class<?> taskClass, ClassLoader cloader) throws ThinklabException {
 		
 		/*
 		 * FIXME this should be the ID of the declaring plugin by default
@@ -279,11 +268,22 @@ public class ClojureInterpreter implements Interpreter {
 		/*
 		 * eval the finished method in given namespace
 		 */
+    	
+    	DynamicClassLoader cl = null;
+    	if (cloader != null) {
+    		cl = RT.ROOT_CLASSLOADER;
+    		RT.ROOT_CLASSLOADER = new DynamicClassLoader(cloader);
+    	}
+    	
 		evalInNamespace(clj, ns);
+		
+		if (cloader != null) {
+			RT.ROOT_CLASSLOADER = cl;
+		}
 	}
 
 	@Override
-	public IValue eval(Object code) throws ThinklabException {
+	public IValue eval(Object code, ThinklabPlugin sourcePlugin) throws ThinklabException {
 		/*
 		 * TODO the default namespace should be the plugin from which the code is
 		 * coming.

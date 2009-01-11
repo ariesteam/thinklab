@@ -100,6 +100,29 @@ public interface IQueryResult {
 	public float getResultScore(int n);
 
 	/**
+	 * In some cases, scores may be assigned after the query has finished; this is
+	 * convenient for some applications that need to postprocess results before 
+	 * assigning it. If we expect this to be called, we should also implement 
+	 * getBestResult() which will pick the result with the highest score.
+	 * 
+	 * @param n
+	 * @param score
+	 * @return
+	 */
+	public float setResultScore(int n, float score);
+	
+	/**
+	 * Return the result with the highest score. If scores are meaningless, this should
+	 * still pick the best result, as scores can be attributed after the fact using 
+	 * setResultScore().
+	 * 
+	 * @param session
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public IValue getBestResult(ISession session) throws ThinklabException;
+	
+	/**
 	 * Ultimately the results of any search is an IInstance. Still, we can
 	 * return any IValue. Many implementations will want to defer the creation
 	 * of the instance to the moment it is asked for. We need to pass a session

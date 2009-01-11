@@ -96,4 +96,16 @@ public class ListQueryResult implements IQueryResult {
 
 	}
 
+	@Override
+	public IValue getBestResult(ISession session) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float setResultScore(int n, float score) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

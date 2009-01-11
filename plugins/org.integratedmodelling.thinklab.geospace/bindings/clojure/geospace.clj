@@ -5,7 +5,7 @@
 ;; @date Nov 15, 2008
 ;; -----------------------------------------------------------------------------------------
 
-(ns tl
+(ns geospace
 	(:import
 		(org.integratedmodelling.geospace.observations RasterGrid)))
 
@@ -15,7 +15,7 @@
 	 []
 	 nil)
 	 
-(defn grid
+(defn make-grid
 	"Returns a new grid observation from a shape and a maximum linear resolution. The grid will
 	 be set to contain the shape, and the widest dimension will have the given number of cells."
 	[where max-linear-resolution]

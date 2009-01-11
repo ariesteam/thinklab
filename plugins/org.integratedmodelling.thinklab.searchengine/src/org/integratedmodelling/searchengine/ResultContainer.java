@@ -72,7 +72,6 @@ public class ResultContainer implements IQueryResult {
 	private IInstance getObjectFromDocument(Document doc, ISession session) throws ThinklabException {
 		
 		String id = doc.get("id");
-		IInstance ret = null;
 		return session.importObject(id);
 	}
 	
@@ -141,6 +140,18 @@ public class ResultContainer implements IQueryResult {
 	public IValue getResult(int n, ISession session) throws ThinklabException {
 		
 		return new ObjectReferenceValue(getObjectFromDocument(results.get(n), session));
+	}
+
+	@Override
+	public IValue getBestResult(ISession session) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float setResultScore(int n, float score) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	

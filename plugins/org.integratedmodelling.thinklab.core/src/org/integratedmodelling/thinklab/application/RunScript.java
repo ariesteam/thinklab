@@ -9,6 +9,8 @@ import org.integratedmodelling.thinklab.interfaces.applications.ITask;
 import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.java.plugin.Plugin;
 
 /**
  * A task that runs a script, specified either as a 
@@ -21,6 +23,7 @@ public class RunScript implements ITask {
 	private URL codeUrl = null;
 	private String language = null;
 	private IValue result = null;
+	private Plugin sourcePlugin;
 	
 	public void setCode(Object code) {
 		if (code instanceof URL)
@@ -55,15 +58,19 @@ public class RunScript implements ITask {
 		 * run whatever
 		 */
 		if (codeUrl != null) {
-			result = intp.eval(codeUrl);
+			result = intp.eval(codeUrl, (ThinklabPlugin) sourcePlugin);
 		} else if (code != null) {
-			result = intp.eval(code);
+			result = intp.eval(code, (ThinklabPlugin) sourcePlugin);
 		}
 
 	}
 
 	public IValue getResult() {
 		return result;
+	}
+
+	public void setSourcePlugin(Plugin registeringPlugin) {
+		this.sourcePlugin = registeringPlugin;
 	}
 	
 }

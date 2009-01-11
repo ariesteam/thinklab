@@ -8,6 +8,7 @@ import java.util.HashMap;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 /**
  * The interface that an interpreter needs to implement in order to interface with 
@@ -51,21 +52,28 @@ public interface Interpreter {
 	 * program. Specific implementations can add support for other classes (e.g. compiled
 	 * ASM etc).
 	 * 
-	 * @param code
+	 * @param code Anything that represents code to eval. Should be something that can be 
+	 * associated to an InputStream. 
+	 * @param sourcePlugin the plugin that is the source of the code. Pass null if none. Used to
+	 * set appropriate classloaders and find any external resources if necessary.
+	 * 
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public abstract IValue eval(Object code) throws ThinklabException;
+	public abstract IValue eval(Object code, ThinklabPlugin sourcePlugin) throws ThinklabException;
 	
 	/**
 	 * Like eval but with some externally supplied context, passed as a map of varname,object pairs.
 	 * 
-	 * @param code
+	 * @param code Anything that represents code to eval. Should be something that can be 
+	 * associated to an InputStream. 
+	 * @param sourcePlugin the plugin that is the source of the code. Pass null if none. Used to
+	 * set appropriate classloaders and find any external resources if necessary.
 	 * @param args
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public abstract IValue eval(Object code, HashMap<String,Object> args) throws ThinklabException;
+	public abstract IValue eval(Object code, ThinklabPlugin sourcePlugin, HashMap<String,Object> args) throws ThinklabException;
 
 	/**
 	 * This one is different from eval because the bindings must remain in effect 
@@ -84,7 +92,7 @@ public interface Interpreter {
 	 * @param taskClass
 	 * @throws ThinklabException 
 	 */
-	public abstract void defineTask(Class<?> taskClass) throws ThinklabException;
+	public abstract void defineTask(Class<?> taskClass, ClassLoader cloader) throws ThinklabException;
 	
 
 }

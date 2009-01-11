@@ -124,5 +124,17 @@ public class SimpleQueryResult implements IQueryResult {
 		return new ObjectReferenceValue(results.get(n));
 	}
 
+	@Override
+	public IValue getBestResult(ISession session) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float setResultScore(int n, float score) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 
 }
