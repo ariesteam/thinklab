@@ -79,6 +79,7 @@ import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
@@ -97,6 +98,7 @@ import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.Plugin;
+import org.java.plugin.PluginClassLoader;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
 import org.java.plugin.registry.ExtensionPoint;
@@ -211,12 +213,6 @@ public abstract class ThinklabPlugin extends Plugin
 		
 		preStart();
 		
-
-		/*
-		 * Check if we have a KM and if not, put out a good explanation of why we should
-		 * read the manual, if there was one.
-		 */
-		
 		loadOntologies();
 		loadLiteralValidators();
 		loadKBoxHandlers();
@@ -228,15 +224,12 @@ public abstract class ThinklabPlugin extends Plugin
 		loadSessionListeners();
 		loadKboxes();
 		loadApplications();
-		
-		// Needs to be called explicitly by plugins that depend on the bindings, after loading
-		// the one with bindings using reverse-lookup = true. Otherwise classes within the 
-		// plugin won't be visible to the bindings.
-		//loadLanguageBindings();
-		
-		loadExtensions();
+
+		loadLanguageBindings();
 		
 		load(KnowledgeManager.get());
+
+		loadExtensions();
 		
 		for (IPluginLifecycleListener lis : KnowledgeManager.get().getPluginListeners()) {
 			lis.onPluginLoaded(this);
@@ -252,7 +245,6 @@ public abstract class ThinklabPlugin extends Plugin
 	 */
 	public synchronized void loadLanguageBindings() throws ThinklabException {
 		
-
 		for (Extension ext : getOwnThinklabExtensions("language-binding")) {
 
 			String language = getParameter(ext, "language");
@@ -288,6 +280,17 @@ public abstract class ThinklabPlugin extends Plugin
 				continue;
 			
 			Interpreter intp = InterpreterManager.get().newInterpreter(language);
+			
+			/*
+			 * publish all of our stuff.
+			 */
+//			 intp.addClasspath(((PluginClassLoader)getClassLoader()).getURLs());
+//			try {
+//				// load bindings directory
+//				intp.addClasspath(new URL[]{ new File(getLoadDirectory() + "/bindings/" + language + "/").toURI().toURL() });
+//			} catch (MalformedURLException e) {
+//				throw new ThinklabInternalErrorException(e);
+//			}
 			
 			/*
 			 * automatically declare tasks included in package if supplied. These can't possibly

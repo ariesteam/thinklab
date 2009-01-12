@@ -88,7 +88,7 @@ public class VectorCoverageDataSource extends CoverageDataSource {
 		
 		dataCM = cm;
 		
-		IExtent extent = overallContext.getExtent(Geospace.SubdividedSpaceObservable());
+		IExtent extent = overallContext.getExtent(Geospace.get().SubdividedSpaceObservable());
 		IConceptualModel cmodel = extent.getConceptualModel();
 		
 		System.out.println(extent);

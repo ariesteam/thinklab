@@ -241,26 +241,24 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource {
 		
 		/* if that's all we ask for, let it have it */
 		if (concept.equals(KnowledgeManager.Thing()) ||
-			concept.equals(Geospace.Shape())) {
-			setConceptWithoutValidation(Geospace.Shape());
+			concept.equals(Geospace.get().Shape())) {
+			setConceptWithoutValidation(Geospace.get().Shape());
 			return;
 		}
 		
 		// check that passed shape is consistent with passed concept
-
-		// FIXME USE CLASS TREE EVERYWHERE
 		if (shape instanceof Point)
-			ok = concept.is(Geospace.Point());
+			ok = concept.is(Geospace.get().Point());
 		else if (shape instanceof LineString)
-			ok = concept.is(Geospace.LineString());
+			ok = concept.is(Geospace.get().LineString());
 		else if (shape instanceof Polygon)
-			ok = concept.is(Geospace.Polygon());
+			ok = concept.is(Geospace.get().Polygon());
 		else if (shape instanceof MultiPoint)
-			ok = concept.is(Geospace.MultiPoint());
+			ok = concept.is(Geospace.get().MultiPoint());
 		else if (shape instanceof MultiLineString)
-			ok = concept.is(Geospace.MultiLineString());
+			ok = concept.is(Geospace.get().MultiLineString());
 		else if (shape instanceof MultiPolygon)
-			ok = concept.is(Geospace.MultiPolygon());
+			ok = concept.is(Geospace.get().MultiPolygon());
 		
 		if (!ok)
 			throw new ThinklabValidationException(
@@ -279,17 +277,17 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource {
 		if (c == null) {
 			
 			if (shape instanceof Point)
-				c = Geospace.Point();
+				c = Geospace.get().Point();
 			else if (shape instanceof LineString)
-				c = Geospace.LineString();
+				c = Geospace.get().LineString();
 			else if (shape instanceof Polygon)
-				c = Geospace.Polygon();
+				c = Geospace.get().Polygon();
 			else if (shape instanceof MultiPoint)
-				c = Geospace.MultiPoint();
+				c = Geospace.get().MultiPoint();
 			else if (shape instanceof MultiLineString)
-				c = Geospace.MultiLineString();
+				c = Geospace.get().MultiLineString();
 			else if (shape instanceof MultiPolygon)
-				c = Geospace.MultiPolygon();
+				c = Geospace.get().MultiPolygon();
 		}
 		
 		if (c == null)

@@ -93,6 +93,14 @@ public interface Interpreter {
 	 * @throws ThinklabException 
 	 */
 	public abstract void defineTask(Class<?> taskClass, ClassLoader cloader) throws ThinklabException;
+
+	/**
+	 * Plugins will add their classpath to this before they load their bindings.
+	 * 
+	 * @param urls
+	 * @throws ThinklabException
+	 */
+	void addClasspath(URL[] urls) throws ThinklabException;
 	
 
 }

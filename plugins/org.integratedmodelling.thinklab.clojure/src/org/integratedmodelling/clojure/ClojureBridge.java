@@ -11,6 +11,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Polylist;
 
+import clojure.lang.DynamicClassLoader;
 import clojure.lang.IPersistentMap;
 import clojure.lang.ISeq;
 import clojure.lang.RT;
@@ -101,6 +102,10 @@ public class ClojureBridge {
 		}
 		
 		return RT.map(o);
+	}
+	
+	public static void chainClassloader(ClassLoader cl) {
+		RT.ROOT_CLASSLOADER = new MultiClassLoader(RT.ROOT_CLASSLOADER, cl);
 	}
 	
 }

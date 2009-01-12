@@ -64,7 +64,7 @@ public class SpatialCoverage extends Observation {
 		 */
 		i.addObjectRelationship(
 					CoreScience.HAS_OBSERVABLE, 
-					Geospace.absoluteSpatialCoverageInstance());
+					Geospace.get().absoluteSpatialCoverageInstance());
 		
 		String crsId = null;
 				

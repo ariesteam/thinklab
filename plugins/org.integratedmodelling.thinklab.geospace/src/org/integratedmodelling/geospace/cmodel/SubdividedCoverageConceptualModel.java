@@ -58,7 +58,7 @@ public abstract class SubdividedCoverageConceptualModel extends SpatialConceptua
 	private String name;
 
 	public IConcept getStateType() {
-		return Geospace.Polygon();
+		return Geospace.get().Polygon();
 	}
 
 	public IValue partition(IValue originalValue, Rational ratio) {

@@ -32,14 +32,11 @@
  **/
 package org.integratedmodelling.geospace;
 
-import org.apache.log4j.Logger;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
-import org.integratedmodelling.clojure.ClojureInterpreter;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -50,19 +47,19 @@ import org.w3c.dom.Node;
 
 public class Geospace extends ThinklabPlugin  {
 
-	private static IConcept shapeType;
-	private static IConcept pointType;
-	private static IConcept lineStringType;
-	private static IConcept polygonType;
-	private static IConcept multiPointType;
-	private static IConcept multiLineStringType;
-	private static IConcept multiPolygonType;
-	private static IInstance areaLocationInstance;
-	private static IInstance rasterGridInstance;
-	private static IInstance spatialCoverageInstance;
-	private static IConcept arealLocationType;
-	private static IConcept rasterGridObservable;
-	private static IConcept subdividedSpaceObservable;
+	private IConcept shapeType;
+	private IConcept pointType;
+	private IConcept lineStringType;
+	private IConcept polygonType;
+	private IConcept multiPointType;
+	private IConcept multiLineStringType;
+	private IConcept multiPolygonType;
+	private IInstance areaLocationInstance;
+	private IInstance rasterGridInstance;
+	private IInstance spatialCoverageInstance;
+	private IConcept arealLocationType;
+	private IConcept rasterGridObservable;
+	private IConcept subdividedSpaceObservable;
 	private static String hasBoundingBoxPropertyID;
 	private static String hasCentroidPropertyID;
 
@@ -123,6 +120,8 @@ public class Geospace extends ThinklabPlugin  {
 			
 			hasBoundingBoxPropertyID = "geospace:hasBoundingBox";
 			hasCentroidPropertyID = "geospace:hasCentroid";
+			
+			System.out.println("COCK: thing is " + polygonType);
 						
 		} catch (ThinklabException e) {
 			throw new ThinklabPluginException(e);
@@ -171,43 +170,43 @@ public class Geospace extends ThinklabPlugin  {
 	}
 	
 
-	public static IConcept Point() {
+	public IConcept Point() {
 		return pointType;
 	}
 
-	public static IConcept LineString() {
+	public IConcept LineString() {
 		return lineStringType;
 	}
 
-	public static IConcept Polygon() {
+	public IConcept Polygon() {
 		return polygonType;
 	}
 
-	public static IConcept MultiPoint() {
+	public IConcept MultiPoint() {
 		return multiPointType;
 	}
 
-	public static IConcept MultiLineString() {
+	public IConcept MultiLineString() {
 		return multiLineStringType;
 	}
 
-	public static IConcept MultiPolygon() {
+	public IConcept MultiPolygon() {
 		return multiPolygonType;
 	}
 	
-	public static IConcept Shape() {
+	public IConcept Shape() {
 		return shapeType;
 	}
 
-	public static IInstance absoluteArealLocationInstance() {
+	public IInstance absoluteArealLocationInstance() {
 		return areaLocationInstance;
 	}
 	
-	public static IInstance absoluteRasterGridInstance() {
+	public IInstance absoluteRasterGridInstance() {
 		return rasterGridInstance;
 	}
 
-	public static IConcept ArealLocation() {
+	public IConcept ArealLocation() {
 		return arealLocationType;
 	}
 
@@ -245,11 +244,11 @@ public class Geospace extends ThinklabPlugin  {
 		return rasterSpaceType;
 	}
 
-	public static IConcept RasterGridObservable() {
+	public IConcept RasterGridObservable() {
 		return rasterGridObservable;
 	}
 
-	public static IConcept SubdividedSpaceObservable() {
+	public IConcept SubdividedSpaceObservable() {
 		return subdividedSpaceObservable;
 	}
 
@@ -257,7 +256,7 @@ public class Geospace extends ThinklabPlugin  {
 		preferredCRS = crs;
 	}
 
-	public static IInstance absoluteSpatialCoverageInstance() {
+	public IInstance absoluteSpatialCoverageInstance() {
 		return spatialCoverageInstance;
 	}
 

@@ -79,8 +79,8 @@ public class District implements CommandHandler {
 		// get the spatial extent and check it's a CellExtent, which it should
 		// be
 		IObservationContext ctx = obs.getCurrentObservationContext();
-		GridExtent extent = (GridExtent) ctx.getExtent(Geospace
-				.RasterGridObservable());
+		GridExtent extent = (GridExtent) ctx.getExtent(Geospace.get().
+				RasterGridObservable());
 
 		// produce a RasterCoverage from data and extent and show it
 		RasterCoverage coverage = new RasterCoverage("districting results",

@@ -64,11 +64,11 @@ public class ArealLocationValidator implements LiteralValidator {
 			/* create instance of Time observation ready for validation */
 			IInstance tobs = 
 				ontology.createInstance(ontology.getUniqueObjectName("aloc"), 
-						Geospace.ArealLocation());
+						Geospace.get().ArealLocation());
 			
 			/* complete definition with observable. */
 			tobs.addObjectRelationship(CoreScience.HAS_OBSERVABLE, 
-					Geospace.absoluteArealLocationInstance());
+					Geospace.get().absoluteArealLocationInstance());
 			
 			/* make datasource out of time stamp and add to instance */
 			ShapeValue shape = new ShapeValue(literalValue);

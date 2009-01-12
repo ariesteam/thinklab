@@ -3,6 +3,7 @@
 <plugin id="org.integratedmodelling.thinklab.corescience" version="0.8.0" class="org.integratedmodelling.corescience.CoreScience">
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.clojure"/>
 	</requires>
 	<runtime>
 		<library id="core" path="classes/" type="code">

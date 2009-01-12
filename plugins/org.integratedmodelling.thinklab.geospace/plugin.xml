@@ -5,6 +5,7 @@
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
 		<import plugin-id="org.integratedmodelling.thinklab.opal"/>
 		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
+		<import plugin-id="org.integratedmodelling.thinklab.clojure"/>
 	</requires>
 	<runtime>
 		<library id="core" path="classes/" type="code">

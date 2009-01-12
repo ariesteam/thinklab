@@ -325,7 +325,7 @@ public class ShapefileReader {
 				ret = 
 					tValue == null ?
 						new ShapeValue((Geometry)avalue):
-						KnowledgeManager.get().validateLiteral(Geospace.Shape(), tValue, null);
+						KnowledgeManager.get().validateLiteral(Geospace.get().Shape(), tValue, null);
 			}
 		}
 		

@@ -138,6 +138,22 @@ public class ClojureInterpreter implements Interpreter {
 		return null;
 	}
 
+	private synchronized void addRTClasspath(URL[] urls) throws ThinklabInternalErrorException {
+		for (URL url : urls) {
+			try {
+				//System.out.println("ADDING URL: " + url);
+				RT.addURL(url);
+			} catch (Exception e) {
+				throw new ThinklabInternalErrorException(e);
+			}
+		}
+	}
+	
+	@Override
+	public void addClasspath(URL[] urls) throws ThinklabException {
+		addRTClasspath(urls);
+	}
+	
 	@Override
 	public void loadBindings(URL source, ClassLoader cloader) throws ThinklabException {
         try {

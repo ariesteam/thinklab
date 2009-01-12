@@ -72,7 +72,7 @@ public class RasterGrid extends Observation {
 		 */
 		i.addObjectRelationship(
 					CoreScience.HAS_OBSERVABLE, 
-					Geospace.absoluteRasterGridInstance());
+					Geospace.get().absoluteRasterGridInstance());
 		
 		String crsId = null;
 				
