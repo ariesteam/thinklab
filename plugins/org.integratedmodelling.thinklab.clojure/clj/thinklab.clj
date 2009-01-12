@@ -74,7 +74,7 @@
 	([object]
 		(. ClojureBridge (getRelationships object true)))
 	([object property]
-		(get (. ClojureBridge (getRelationships object true)) property)))
+		(. ClojureBridge (getPropertyValues object property))))
 		
 (defn get-property-value 
 	"Return the value of the given property, or nil if not present. It is assumed that the
@@ -90,9 +90,9 @@
 (defn load-objects
 	"Load instances from a source into a session and return them as a sequence"
 	([resource]
-	 (concat (. (get-session true) (loadObjects resource))))
+	 (concat (. (get-session true) (loadObjects (str resource)))))
 	([resource session]
-	(concat (. session (loadObjects resource)))))
+	(concat (. session (loadObjects (str resource))))))
 	
 (defn is 
 	"Returns true if a concept or an instance is subsumed by another concept"

@@ -12,7 +12,9 @@
 	 that is quite expensive, so for now it will just return the same observation with the
 	 added states."
 	 [observation]
-	 nil)
+	 (do 
+         (.. observation (getImplementation) (contextualize)) 
+         observation))
 
 (defn harmonized-intersection 
 	"Create a master observation that is contingent to all those in the passed list, and 
@@ -49,6 +51,12 @@
      ""
      [observation]
      (.. observation (getImplementation) (getObservableClass)))
+
+(defn get-state
+     ""
+     [observation]
+     (.. observation (getImplementation) (getObservationState) (getDataAsDouble)))
+
 
 (defn get-extent
 	"Retrieve and return the extents that observes the given concept (e.g. space)."
@@ -148,3 +156,21 @@
 	"True if the observation is contingent to an observation of the passed concept."
 	[observation concept]
 	false)
+
+;; ================================================================================================
+;; utils
+;; ================================================================================================
+
+(defn map-dependent-states 
+    "Given a contextualized observation, return a map associating the states of all dependencies 
+     to the concept they observe"
+    [observation]
+    (loop [observations (get-dependencies observation)
+           state-map {}]
+          (if (empty? observations)
+              state-map
+              (let [obs (first observations)]
+                 (recur (rest observations) 
+                          (assoc state-map
+                             (get-observable-class obs)
+                             (get-state obs)))))))

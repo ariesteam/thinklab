@@ -104,6 +104,7 @@ public class ListQueryResult implements IQueryResult {
 		float maxScore = -1.0f;
 		
 		for (int i = 0; i < getTotalResultCount(); i++)
+			
 			if (getResultScore(i) > maxScore) {
 				max = i;
 				maxScore = getResultScore(i);

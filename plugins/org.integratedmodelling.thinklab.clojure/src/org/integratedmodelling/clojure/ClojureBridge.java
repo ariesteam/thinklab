@@ -1,5 +1,6 @@
 package org.integratedmodelling.clojure;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
@@ -104,8 +105,16 @@ public class ClojureBridge {
 		return RT.map(o);
 	}
 	
-	public static void chainClassloader(ClassLoader cl) {
-		RT.ROOT_CLASSLOADER = new MultiClassLoader(RT.ROOT_CLASSLOADER, cl);
-	}
 	
+	public static Collection<Object> getPropertyValues(IInstance instance, String property) throws ThinklabException {
+		
+		ArrayList<Object> ret = new ArrayList<Object>();
+		
+		for (IRelationship r : instance.getRelationships(property)) {
+			ret.add(demote(r.getValue()));
+		}
+		
+		return ret;
+		
+	}
 }

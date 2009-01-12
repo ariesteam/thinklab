@@ -120,8 +120,6 @@ public class Geospace extends ThinklabPlugin  {
 			
 			hasBoundingBoxPropertyID = "geospace:hasBoundingBox";
 			hasCentroidPropertyID = "geospace:hasCentroid";
-			
-			System.out.println("COCK: thing is " + polygonType);
 						
 		} catch (ThinklabException e) {
 			throw new ThinklabPluginException(e);
