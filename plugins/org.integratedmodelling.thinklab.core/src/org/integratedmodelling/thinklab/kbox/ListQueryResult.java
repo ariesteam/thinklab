@@ -25,6 +25,7 @@ public class ListQueryResult implements IQueryResult {
 	ArrayList<Polylist> lists = new ArrayList<Polylist>();
 	IQuery query = null;
 	IQueriable queriable = null;
+	float[] scores = null;
 	
 	public ListQueryResult(IQuery query, IQueriable queriable, Collection<Polylist> lists) {
 		
@@ -83,7 +84,7 @@ public class ListQueryResult implements IQueryResult {
 	}
 
 	public float getResultScore(int n) {
-		return 1.0f;
+		return scores == null ? 1.0f : scores[n];
 	}
 
 	public int getTotalResultCount() {
@@ -98,14 +99,34 @@ public class ListQueryResult implements IQueryResult {
 
 	@Override
 	public IValue getBestResult(ISession session) throws ThinklabException {
-		// TODO Auto-generated method stub
+		
+		int max = -1;
+		float maxScore = -1.0f;
+		
+		for (int i = 0; i < getTotalResultCount(); i++)
+			if (getResultScore(i) > maxScore) {
+				max = i;
+				maxScore = getResultScore(i);
+			}
+		
+		if (max >= 0)
+			return getResult(max, session);
+		
 		return null;
 	}
 
 	@Override
 	public float setResultScore(int n, float score) {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		float prev = getResultScore(n);
+		
+		if (scores == null) {
+			scores = new float[getTotalResultCount()];
+		}
+		
+		scores[n] = score;
+		
+		return prev;
 	}
 
 }

@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -226,6 +227,13 @@ public class ClojureInterpreter implements Interpreter {
 		clj += "\n\t\"\"";
 		
 		/*
+		 * FIXME
+		 * sort the get() methods for predictability of the parameter order. Eventually
+		 * we may want to use a map for an argument, instead of N args.
+		 */
+		Collections.sort(set);
+		
+		/*
 		 * add parameters
 		 */
 		clj += "\n\t[";
@@ -284,11 +292,19 @@ public class ClojureInterpreter implements Interpreter {
 
 	@Override
 	public IValue eval(Object code, ThinklabPlugin sourcePlugin) throws ThinklabException {
+		
 		/*
 		 * TODO the default namespace should be the plugin from which the code is
 		 * coming.
 		 */
-		return evalInNamespace(code, session == null ? "user" : session.getSessionID());
+    	DynamicClassLoader cl = RT.ROOT_CLASSLOADER;
+    	RT.ROOT_CLASSLOADER = new DynamicClassLoader(sourcePlugin.getClassLoader());
+   
+    	IValue ret = evalInNamespace(code, session == null ? "user" : session.getSessionID());
+		
+    	RT.ROOT_CLASSLOADER = cl;
+    	
+    	return ret;
 	}
 	
 }

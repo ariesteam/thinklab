@@ -55,6 +55,7 @@ public class SQLQueryResult implements IQueryResult {
 	int max = -1;
 	private QueryResult qresult;
 	IValue[] instances = null;
+	float[] scores = null;
 	
 	// create from results of successful query
 	public SQLQueryResult(QueryResult qres, int totalres, int offset,
@@ -112,7 +113,7 @@ public class SQLQueryResult implements IQueryResult {
 	}
 
 	public float getResultScore(int n) {
-		return (float) 1.0;
+		return scores == null ? 1.0f : scores[n];
 	}
 
 	public int getTotalResultCount() {
@@ -134,13 +135,34 @@ public class SQLQueryResult implements IQueryResult {
 
 	@Override
 	public IValue getBestResult(ISession session) throws ThinklabException {
-		// TODO Auto-generated method stub
+		
+		int max = -1;
+		float maxScore = -1.0f;
+		
+		for (int i = 0; i < getTotalResultCount(); i++)
+			if (getResultScore(i) > maxScore) {
+				max = i;
+				maxScore = getResultScore(i);
+			}
+		
+		if (max >= 0)
+			return getResult(max, session);
+		
 		return null;
 	}
 
 	@Override
 	public float setResultScore(int n, float score) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		float prev = getResultScore(n);
+		
+		if (scores == null) {
+			scores = new float[getTotalResultCount()];
+		}
+		
+		scores[n] = score;
+		
+		return prev;
+		
 	}
 }
