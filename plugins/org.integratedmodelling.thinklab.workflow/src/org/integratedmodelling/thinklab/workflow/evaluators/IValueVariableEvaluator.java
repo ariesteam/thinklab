@@ -21,8 +21,7 @@ import com.opensymphony.workflow.variables.ExternalVariableEvaluator;
  */
 public class IValueVariableEvaluator implements ExternalVariableEvaluator {
 
-	public IValueVariableEvaluator(ISession session,
-			ICommandOutputReceptor outputReceptor) {
+	public IValueVariableEvaluator(ISession session) {
 		// TODO Auto-generated constructor stub
 	}
 

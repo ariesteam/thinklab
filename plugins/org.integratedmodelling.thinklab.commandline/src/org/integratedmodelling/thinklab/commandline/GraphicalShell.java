@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -56,9 +57,9 @@ import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
+import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.session.Session;
 
 import bsh.util.JConsole;
 
@@ -74,45 +75,28 @@ public class GraphicalShell {
 	Font inputFont = new Font("SansSerif", Font.BOLD, 12);
 	Font outputFont = new Font("SansSerif", Font.PLAIN, 12);
 
-	class ConsoleCommandInputProvider implements ICommandInputProvider {
-
-		BufferedReader in = null;
-		
-		public ConsoleCommandInputProvider() {
-			in = new BufferedReader(new InputStreamReader(console.getInputStream()));
-		}
-		
-		@Override
-		public String readLine() throws ThinklabIOException {
-			try {
-				return in.readLine();
-			} catch (IOException e) {
-				throw new ThinklabIOException(e);
-			}
-		}
+	public class ConsoleUserModel implements IUserModel {
 
 		@Override
 		public InputStream getInputStream() {
 			return console.getInputStream();
 		}
-		
+
+		@Override
+		public PrintStream getOutputStream() {
+			return console.getOut();
+		}
 	}
 	
-	class ConsoleCommandOutputReceptor implements ICommandOutputReceptor {
+	public class ConsoleSession extends Session {
 
-		@Override
-		public void appendOutput(String string) {
-			console.print(string);
+		public ConsoleSession() throws ThinklabException {
+			super();
 		}
 
 		@Override
-		public void displayOutput(String output) {
-			console.println(output);
-		}
-
-		@Override
-		public OutputStream getOutputStream() {
-			return console.getOut();
+		protected IUserModel createUserModel() {
+			return new ConsoleUserModel();
 		}
 		
 	}
@@ -141,8 +125,8 @@ public class GraphicalShell {
 	
 	public ISession session;
 	
-	public GraphicalShell(ISession session) {
-		this.session = session;
+	public GraphicalShell() throws ThinklabException {
+		this.session = new ConsoleSession();
 	}
 	
 	public  void printStatusMessage() {
@@ -159,14 +143,10 @@ public class GraphicalShell {
 	public void startConsole() throws Exception {
 				
 		ConsolePanel jpanels = new ConsolePanel();
-
-		ICommandOutputReceptor cout = new ConsoleCommandOutputReceptor();
-		ICommandInputProvider cinp = new ConsoleCommandInputProvider();
 		
 		/* greet user */
 		printStatusMessage();
 		
-	
 		String input = "";
 		
 		/* define commands from user input */
@@ -175,7 +155,7 @@ public class GraphicalShell {
 			console.print("> ");
 			console.setStyle(inputFont);
 			
-			input = cinp.readLine();
+			input = session.readLine();
 
 			console.setStyle(outputFont);
 			
@@ -191,7 +171,7 @@ public class GraphicalShell {
 					if (cmd == null)
 						continue;
 					
-					IValue result = CommandManager.get().submitCommand(cmd, cinp, cout, session);
+					IValue result = CommandManager.get().submitCommand(cmd, session);
                     if (result != null)
                         console.println(result.toString());
 				} catch (ThinklabException e) {

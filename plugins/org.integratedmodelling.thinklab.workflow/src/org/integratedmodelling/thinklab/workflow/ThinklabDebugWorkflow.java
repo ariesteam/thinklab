@@ -17,23 +17,21 @@ import com.opensymphony.workflow.WorkflowException;
 public class ThinklabDebugWorkflow extends DebugWorkflow {
 
 	private ISession session;
-	private ICommandOutputReceptor outputReceptor;
 
-	public ThinklabDebugWorkflow(String userID, String wfSource, Properties properties, ISession session, ICommandOutputReceptor outputReceptor) {
+	public ThinklabDebugWorkflow(String userID, String wfSource, Properties properties, ISession session) {
 		
 		super(userID, wfSource, properties);
 		this.session = session;
-		this.outputReceptor = outputReceptor;
 		
 	}
 	
 	@Override
 	public void registerVariableEvaluators() throws WorkflowException {
 		
-		registerVariableEvaluator(new IValueVariableEvaluator(session, outputReceptor));
-		registerVariableEvaluator(new KBoxVariableEvaluator(session, outputReceptor));
-		registerVariableEvaluator(new ThinklabCommandVariableEvaluator(session, outputReceptor));
-		registerVariableEvaluator(new ThinklabCommandlineVariableEvaluator(session, outputReceptor));
+		registerVariableEvaluator(new IValueVariableEvaluator(session));
+		registerVariableEvaluator(new KBoxVariableEvaluator(session));
+		registerVariableEvaluator(new ThinklabCommandVariableEvaluator(session));
+		registerVariableEvaluator(new ThinklabCommandlineVariableEvaluator(session));
 	}
 
 	@Override

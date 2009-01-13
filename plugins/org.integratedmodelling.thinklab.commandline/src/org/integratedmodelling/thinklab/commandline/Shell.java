@@ -37,16 +37,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
-import org.integratedmodelling.thinklab.command.ShellCommandOutputReceptor;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
@@ -72,8 +68,6 @@ public class Shell {
 	}
 
 	public void startConsole() throws Exception {
-		
-		ICommandOutputReceptor cout = new ShellCommandOutputReceptor();
 		
 		/* greet user */
 		printStatusMessage();
@@ -102,7 +96,7 @@ public class Shell {
 					if (cmd == null)
 						continue;
 					
-					IValue result = CommandManager.get().submitCommand(cmd, null, cout, session);
+					IValue result = CommandManager.get().submitCommand(cmd, session);
                     if (result != null)
                         System.out.println(result.toString());
 				} catch (ThinklabException e) {

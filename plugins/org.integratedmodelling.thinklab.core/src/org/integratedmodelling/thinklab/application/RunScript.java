@@ -39,8 +39,6 @@ public class RunScript implements ITask {
 	
 	@Override
 	public void run(ISession session) throws ThinklabException {
-
-		IUserModel userModel = session.getUserModel();
 		
 		/*
 		 * retrieve interpreter for language
@@ -48,11 +46,8 @@ public class RunScript implements ITask {
 		Interpreter intp = InterpreterManager.get().newInterpreter(language);
 		
 		intp.setSession(session);
-		
-		if (userModel != null) {
-			intp.setInput(userModel.getDefaultInputStream());
-			intp.setOutput(userModel.getDefaultOutputStream());
-		}
+		intp.setInput(session.getInputStream());
+		intp.setOutput(session.getOutputStream());
 		
 		/*
 		 * run whatever

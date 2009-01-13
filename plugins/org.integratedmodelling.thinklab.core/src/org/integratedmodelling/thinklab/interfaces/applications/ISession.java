@@ -34,7 +34,7 @@
 package org.integratedmodelling.thinklab.interfaces.applications;
 
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
@@ -43,6 +43,7 @@ import java.util.Properties;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -371,5 +372,42 @@ public interface ISession {
 	 * @return
 	 */
 	public abstract IUserModel getUserModel();
+
+	/**
+	 * If the user model is given and has defined an output, show the passed string in the
+	 * output, on a line by itself. Otherwise ignore it.
+	 * 
+	 * @param string
+	 */
+	public abstract void displayOutput(String string);
+	
+
+	/**
+	 * If the user model is given and has defined an output, show the passed string in the
+	 * output, appending to previous output with no newline. Otherwise ignore it.
+	 * 
+	 * @param string
+	 */
+	public abstract void appendOutput(String string);
+	
+	/**
+	 * Read a line from the input if we have an input connected to the user model; otherwise
+	 * return null.
+	 * @return
+	 * @throws ThinklabIOException
+	 */
+	public abstract String readLine() throws ThinklabIOException;
+	
+	/**
+	 * Get the input stream if the user model has it, or return null.
+	 * 
+	 * @return
+	 */
+	public abstract InputStream getInputStream(); 
+	
+	/*
+	 * get the output stream if the user model defines one, otherwise return null.
+	 */
+	public PrintStream getOutputStream();
 
 }

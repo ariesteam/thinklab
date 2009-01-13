@@ -33,6 +33,7 @@
  **/
 package org.integratedmodelling.thinklab;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -162,16 +163,16 @@ public class KnowledgeTree {
 		return is(cc1, cc2);
 	}
 
-	private void dumpNode(ClassNode node, String prefix, ICommandOutputReceptor outputWriter) {
+	private void dumpNode(ClassNode node, String prefix, PrintStream outputWriter) {
 		
-		outputWriter.displayOutput(prefix + node.ID);
+		outputWriter.print(prefix + node.ID);
 		
 		for (int i = 0; i < node.getChildCount(); i++)
 			dumpNode((ClassNode)node.getChildAt(i), prefix + "  ", outputWriter);
 		
 	}
 	
-	public void dump(ICommandOutputReceptor outputWriter) {
+	public void dump(PrintStream outputWriter) {
 		dumpNode(root, "", outputWriter);
 	}
 	

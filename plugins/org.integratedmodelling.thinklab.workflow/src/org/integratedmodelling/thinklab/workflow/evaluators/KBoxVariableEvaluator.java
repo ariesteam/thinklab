@@ -22,11 +22,9 @@ public class KBoxVariableEvaluator implements ExternalVariableEvaluator {
 	private ISession session;
 	//private ICommandOutputReceptor outputWriter;
 
-	public KBoxVariableEvaluator(ISession session,
-			ICommandOutputReceptor outputReceptor) {
+	public KBoxVariableEvaluator(ISession session) {
 		
 		this.session = session;
-		//this.outputWriter = outputReceptor;
 	}
 
 	@Override

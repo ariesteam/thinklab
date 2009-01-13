@@ -5,7 +5,6 @@ import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.workflow.evaluators.IValueVariableEvaluator;
 import org.integratedmodelling.thinklab.workflow.evaluators.KBoxVariableEvaluator;
 import org.integratedmodelling.thinklab.workflow.evaluators.ThinklabCommandVariableEvaluator;
@@ -19,23 +18,21 @@ import com.opensymphony.workflow.WorkflowException;
 public class ThinklabWorkflow extends WorkflowDirector {
 
 	private ISession session;
-	private ICommandOutputReceptor outputReceptor;
 
-	public ThinklabWorkflow(String userID, String wfSource, Properties properties, ISession session, ICommandOutputReceptor outputReceptor) {
+	public ThinklabWorkflow(String userID, String wfSource, Properties properties, ISession session) {
 		
 		super(userID, wfSource, properties);
 		this.session = session;
-		this.outputReceptor = outputReceptor;
 		
 	}
 
 	@Override
 	public void registerVariableEvaluators() throws WorkflowException {
 		
-		registerVariableEvaluator(new IValueVariableEvaluator(session, outputReceptor));
-		registerVariableEvaluator(new KBoxVariableEvaluator(session, outputReceptor));
-		registerVariableEvaluator(new ThinklabCommandVariableEvaluator(session, outputReceptor));
-		registerVariableEvaluator(new ThinklabCommandlineVariableEvaluator(session, outputReceptor));
+		registerVariableEvaluator(new IValueVariableEvaluator(session));
+		registerVariableEvaluator(new KBoxVariableEvaluator(session));
+		registerVariableEvaluator(new ThinklabCommandVariableEvaluator(session));
+		registerVariableEvaluator(new ThinklabCommandlineVariableEvaluator(session));
 	}
 	
 	@Override

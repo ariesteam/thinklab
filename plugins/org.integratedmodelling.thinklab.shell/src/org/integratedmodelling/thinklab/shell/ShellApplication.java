@@ -71,7 +71,7 @@ public class ShellApplication extends ApplicationPlugin implements Application {
 	@Override
 	public void startApplication() throws Exception {
 		
-		GraphicalShell shell = new GraphicalShell(KnowledgeManager.get().requestNewSession());
+		GraphicalShell shell = new GraphicalShell();
 		shell.startConsole();
 	}
 }

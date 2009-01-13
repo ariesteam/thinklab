@@ -39,28 +39,26 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.graph.ConceptMap;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /** the help command for the command-line interface */
 public class CMap implements CommandHandler {
 
-	public IValue execute(Command command, ICommandInputProvider inputSource,
-			ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		String c = command.getArgumentAsString("concept");
 
 		IConcept ct = KnowledgeManager.Thing();
 
 		if (c != null && !c.equals("__none")) {
-			ct = km.requireConcept(c);
+			ct = KnowledgeManager.get().requireConcept(c);
 		}
 
 		ConceptMap cmap = new ConceptMap(ct);
 
-		cmap.dump(outputWriter);
+		if (session.getOutputStream() != null)
+			cmap.dump(session.getOutputStream());
 
 		cmap.show();
 

@@ -44,8 +44,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureEx
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
@@ -60,8 +58,7 @@ import org.integratedmodelling.utils.MiscUtilities;
  */
 public class KExport implements CommandHandler {
 
-	public IValue execute(Command command, ICommandInputProvider inputSource,
-			ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		String toload = command.getArgumentAsString("resource");
 		String output = command.getArgumentAsString("output");
@@ -77,7 +74,7 @@ public class KExport implements CommandHandler {
 		/*
 		 * Locate the plugin that will load the format.
 		 */
-		KnowledgeLoader writer = km.getKnowledgeLoader(format);
+		KnowledgeLoader writer = KnowledgeManager.get().getKnowledgeLoader(format);
 
 		if (writer == null) {
 			throw new ThinklabUnimplementedFeatureException("format " + format
@@ -125,7 +122,7 @@ public class KExport implements CommandHandler {
 					.toArray(new IInstance[objs.size()]));
 		}
 
-		outputWriter.displayOutput(objs.size() + "  objects written to "
+		session.displayOutput(objs.size() + "  objects written to "
 				+ output);
 
 		return null;

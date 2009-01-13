@@ -58,13 +58,9 @@ public class ThinklabCommandlineVariableEvaluator implements
 		ExternalVariableEvaluator {
 
 	private ISession session;
-	private ICommandOutputReceptor outputWriter;
 
-	public ThinklabCommandlineVariableEvaluator(ISession session,
-			ICommandOutputReceptor outputReceptor) {
-		
+	public ThinklabCommandlineVariableEvaluator(ISession session) {	
 		this.session = session;
-		this.outputWriter = outputReceptor;
 	}
 
 	@Override
@@ -74,7 +70,7 @@ public class ThinklabCommandlineVariableEvaluator implements
 
 		try {		
 			Command command = CommandParser.parse(expression);
-			ret = CommandManager.get().submitCommand(command, null, outputWriter, session);
+			ret = CommandManager.get().submitCommand(command, session);
 		} catch (ThinklabException e) {
 			throw new ThinklabWorkflowException(e);
 		}

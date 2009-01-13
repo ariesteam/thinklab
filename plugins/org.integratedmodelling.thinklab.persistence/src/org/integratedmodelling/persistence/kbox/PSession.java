@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.persistence.kbox;
 
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,6 +44,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.IThinklabSessionListener;
@@ -232,6 +235,36 @@ public class PSession implements ISession {
 
 	@Override
 	public IUserModel getUserModel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void appendOutput(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void displayOutput(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public InputStream getInputStream() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PrintStream getOutputStream() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String readLine() throws ThinklabIOException {
 		// TODO Auto-generated method stub
 		return null;
 	}

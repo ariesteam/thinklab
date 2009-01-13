@@ -38,19 +38,17 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationState;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 public class Olist implements CommandHandler {
 		
-		private void dumpObservation(IObservation o, String prefix, ICommandOutputReceptor out, HashSet<String> ids) throws ThinklabException {
+		private void dumpObservation(IObservation o, String prefix, ISession out, HashSet<String> ids) throws ThinklabException {
 			
 			if (ids == null)
 				ids = new HashSet<String>();
@@ -111,7 +109,7 @@ public class Olist implements CommandHandler {
 		}
 		
 
-		public IValue execute(Command command, ICommandInputProvider inputSource, ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
+		public IValue execute(Command command, ISession session) throws ThinklabException {
 			
 			String obs = command.getArgumentAsString("observation");
 			IInstance o = session.requireObject(obs);
@@ -122,7 +120,7 @@ public class Olist implements CommandHandler {
 			
 			IObservation observation = (IObservation)o.getImplementation();
 
-			dumpObservation(observation, "", outputDest, null);
+			dumpObservation(observation, "", session, null);
 			
 			return null;
 		}

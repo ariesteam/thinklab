@@ -43,15 +43,12 @@ import org.integratedmodelling.districting.utils.DistrictingResults;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.extents.GridExtent;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -154,8 +151,7 @@ public class District implements CommandHandler {
 		return ret;
 	}
 
-	public IValue execute(Command command, ICommandInputProvider inputSource,
-			ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		int k = command.getArgument("k").asNumber().asInteger();
 		String oid = command.getArgumentAsString("dataset");

@@ -41,15 +41,12 @@ import org.integratedmodelling.afl.AFLPlugin;
 import org.integratedmodelling.afl.Interpreter;
 import org.integratedmodelling.afl.application.Application;
 import org.integratedmodelling.afl.exceptions.ThinklabAFLException;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.MalformedListException;
 import org.integratedmodelling.utils.Polylist;
@@ -62,14 +59,13 @@ import org.integratedmodelling.utils.Polylist;
  */
 public class Run implements CommandHandler {
 
-	public IValue execute(Command command, ICommandInputProvider inputSource,
-			ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		IValue ret = null;
 		
 		if (!command.hasArgument("application")) {
 			
-			if (inputSource == null) {
+			if (session.getInputStream() == null) {
 				/* not interactive: just ignore command */
 				AFLPlugin.get().logger().warn("AFL REPL interpreter invoked by a non-interactive application");
 				return null;
@@ -79,19 +75,19 @@ public class Run implements CommandHandler {
 				new Interpreter(AFLPlugin.get().getRootInterpreter());
 			
 			intp.setSession(session);
-			intp.setOutput(outputDest.getOutputStream());
-			intp.setInput(inputSource.getInputStream());
+			intp.setOutput(session.getOutputStream());
+			intp.setInput(session.getInputStream());
 			
 			/* enter interactive REPL interpreter */
 			while(true) {
 				
-				outputDest.appendOutput("AFL> ");
+				session.appendOutput("AFL> ");
 				Polylist l = null;
 					
 				try {
-					l = Polylist.read(inputSource.getInputStream());
+					l = Polylist.read(session.getInputStream());
 				} catch (Exception e) {
-					outputDest.displayOutput("ERROR: " + e.getMessage());					
+					session.displayOutput("ERROR: " + e.getMessage());					
 				}
 
 				// (exit) to exit
@@ -102,10 +98,10 @@ public class Run implements CommandHandler {
 					ret = intp.eval(l);
 				} catch (ThinklabAFLException e) {
 					ret = null;
-					outputDest.displayOutput("ERROR: " + e.getMessage());
+					session.displayOutput("ERROR: " + e.getMessage());
 				}
 				
-				outputDest.displayOutput("  --> " + (ret == null ? "nil" : ret));
+				session.displayOutput("  --> " + (ret == null ? "nil" : ret));
 			}
 			
 		} else {

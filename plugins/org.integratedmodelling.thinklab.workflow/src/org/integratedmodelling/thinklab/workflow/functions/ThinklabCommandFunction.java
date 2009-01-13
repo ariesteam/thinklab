@@ -132,7 +132,7 @@ public class ThinklabCommandFunction implements FunctionProvider {
 			
 			try {
 				Command cmd = new Command(decl, minputs, oinputs);
-				ret = CommandManager.get().submitCommand(cmd, null, outputWriter, session);
+				ret = CommandManager.get().submitCommand(cmd, session);
 			} catch (ThinklabException e) {
 				throw new WorkflowException(e);
 			}

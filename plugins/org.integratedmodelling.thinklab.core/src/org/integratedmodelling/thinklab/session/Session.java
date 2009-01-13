@@ -33,10 +33,12 @@
  **/
 package org.integratedmodelling.thinklab.session;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -92,12 +94,17 @@ public class Session implements ISession {
 	Properties properties = new Properties();
 	
 	ArrayList<IThinklabSessionListener> listeners = new ArrayList<IThinklabSessionListener>();
+
+	private IUserModel userModel;
 	
 	public Session() throws ThinklabException {
+		
 		/* create the new Ontology with a temp name */
 		ontology = KnowledgeManager.get().getKnowledgeRepository().createTemporaryOntology(NameGenerator.newName("JS"));
 		/* we want to be able to reload stuff fresh and give it different names if so */
 		ontology.allowDuplicateInstanceIDs();
+		
+		userModel = createUserModel();
 	}
 
 	public void finalize() {
@@ -469,7 +476,52 @@ public class Session implements ISession {
 	@Override
 	public IUserModel getUserModel() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.userModel;
+	}
+
+	@Override
+	public void appendOutput(String string) {
+		
+		if (userModel != null && userModel.getOutputStream() != null) {
+			userModel.getOutputStream().print(string);
+		}
+		
+	}
+
+	@Override
+	public void displayOutput(String string) {
+
+		if (userModel != null && userModel.getOutputStream() != null) {
+			userModel.getOutputStream().println(string);
+		}
+	}
+
+	@Override
+	public InputStream getInputStream() {
+		return userModel == null ? null : userModel.getInputStream();
+	}
+
+	@Override
+	public PrintStream getOutputStream() {
+		return userModel == null ? null : userModel.getOutputStream();
+	}
+
+	@Override
+	public String readLine() throws ThinklabIOException {
+		String ret = null;
+		if (userModel != null && userModel.getOutputStream() != null) {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(userModel.getInputStream()));
+			try {
+				ret = reader.readLine();
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+		return ret;
+	}
+	
+	protected IUserModel createUserModel() {
+		return new TTYUserModel();
 	}
 
 }

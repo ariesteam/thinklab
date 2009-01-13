@@ -42,8 +42,6 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
@@ -56,8 +54,7 @@ import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
 public class Load implements CommandHandler {
 	
-	public IValue execute(Command command, ICommandInputProvider inputSource,
-			ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		String toload = command.getArgumentAsString("resource");
 		String kbox = command.getOptionAsString("kbox");
@@ -70,7 +67,7 @@ public class Load implements CommandHandler {
 			/* kbox or other, load from wherever KM figures out */
 			objs = new ArrayList<IInstance>();
 
-			IInstance i = km.getInstanceFromURI(toload, session);
+			IInstance i = KnowledgeManager.get().getInstanceFromURI(toload, session);
 			if (i != null) {
 				objs.add(i);
 			}
@@ -94,7 +91,7 @@ public class Load implements CommandHandler {
 			}
 		}
 
-		outputWriter.displayOutput((objs == null ? 0 : objs.size())
+		session.displayOutput((objs == null ? 0 : objs.size())
 				+ " main objects loaded from " + toload
 				+ (kbox == null ? "" : " [stored to kbox: " + kbox + "]"));
 
@@ -102,7 +99,7 @@ public class Load implements CommandHandler {
 			int cnt = 0;
 			for (IInstance obj : objs) {
 
-				outputWriter.displayOutput("\t#"
+				session.displayOutput("\t#"
 						+ obj.getLocalName()
 						+ (kids == null ? "" : ("\t-> " + kbox + "#" + kids
 								.get(cnt++))));

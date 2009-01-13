@@ -38,8 +38,6 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.session.SingleSessionManager;
 
@@ -51,16 +49,15 @@ import org.integratedmodelling.thinklab.session.SingleSessionManager;
  */
 public class Clear implements CommandHandler {
 
-	public IValue execute(Command command, ICommandInputProvider inputSource,
-			ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 		// TODO we want arguments and warnings
 
 		if (command.getArgumentAsString("ontology").equals("__all__")) {
-			if (km.getSessionManager() instanceof SingleSessionManager) {
-				((SingleSessionManager) km.getSessionManager()).clear();
+			if (KnowledgeManager.get().getSessionManager() instanceof SingleSessionManager) {
+				((SingleSessionManager) KnowledgeManager.get().getSessionManager()).clear();
 			}
 		} else
-			km.clear(command.getArgumentAsString("ontology"));
+			KnowledgeManager.get().clear(command.getArgumentAsString("ontology"));
 
 		return null;
 	}

@@ -241,7 +241,7 @@ public class KRPolicyThinkLab implements KRPolicy, ISessionManager,
 		IValue result = null;
 		try {
 			result = CommandManager.get().submitCommand(cmd,
-					null, getICommandOutputReceptor(), session);
+					session);
 			if (result != null)
 				getICommandOutputReceptor().displayOutput(result.toString());
 		} catch (ThinklabNoKMException e) {

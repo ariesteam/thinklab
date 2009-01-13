@@ -38,8 +38,6 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -53,15 +51,14 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
  */
 public class Find implements CommandHandler {
 
-	public IValue execute(Command command, ICommandInputProvider inputSource,
-			ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		// TODO this should figure out what the semantic type is for, cross
 		// check properly, and
 		// call the appropriate methods. So far it only handles concepts.
 		String s1 = command.getArgumentAsString("c1");
 
-		for (IOntology o : km.getKnowledgeRepository().retrieveAllOntologies()) {
+		for (IOntology o : KnowledgeManager.get().getKnowledgeRepository().retrieveAllOntologies()) {
 
 			IConcept c = o.getConcept(s1);
 

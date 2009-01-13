@@ -39,22 +39,21 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /** the help command for the command-line interface */
 public class Hierarchy implements CommandHandler {
 
-	public IValue execute(Command command, ICommandInputProvider inputSource,
-			ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		String c = command.getArgumentAsString("concept");
 		if (c.equals("__none"))
 			c = "owl:Thing";
 			
-		KnowledgeTree ct = new KnowledgeTree(km.requireConcept(c));
-		ct.dump(outputWriter);
+		KnowledgeTree ct = new KnowledgeTree(KnowledgeManager.get().requireConcept(c));
+		
+		if (session.getOutputStream() != null)
+			ct.dump(session.getOutputStream());
 
 		return null;
 	}

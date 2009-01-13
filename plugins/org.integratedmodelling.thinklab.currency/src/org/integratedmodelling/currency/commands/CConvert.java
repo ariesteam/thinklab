@@ -33,13 +33,10 @@
 package org.integratedmodelling.currency.commands;
 
 import org.integratedmodelling.currency.CurrencyPlugin;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.value.NumberValue;
 import org.integratedmodelling.thinklab.value.TextValue;
@@ -57,8 +54,7 @@ import org.integratedmodelling.time.values.TimeValue;
  */
 public class CConvert implements CommandHandler {
 
-	public IValue execute(Command command, ICommandInputProvider inputSource,
-			ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		NumberValue amnt = (NumberValue) command.getArgument("amount");
 		TextValue cur1 = (TextValue) command.getArgument("currency1");

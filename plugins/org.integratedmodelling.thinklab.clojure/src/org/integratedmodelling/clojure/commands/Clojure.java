@@ -35,14 +35,11 @@ package org.integratedmodelling.clojure.commands;
 
 import org.integratedmodelling.clojure.ClojurePlugin;
 import org.integratedmodelling.clojure.REPL;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
@@ -53,8 +50,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
  */
 public class Clojure implements CommandHandler {
 
-	public IValue execute(Command command, ICommandInputProvider inputSource,
-			ICommandOutputReceptor outputDest, ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		IValue ret = null;
 		String[] args = null;
@@ -69,7 +65,7 @@ public class Clojure implements CommandHandler {
 		
 		if (!command.hasArgument("resource")) {
 			
-			if (inputSource == null) {
+			if (session.getInputStream() == null) {
 				/* not interactive: just ignore command */
 				ClojurePlugin.get().logger().warn("Clojure interpreter invoked by a non-interactive application");
 				return null;
@@ -87,8 +83,8 @@ public class Clojure implements CommandHandler {
 			
 			REPL repl = new REPL();
 			
-			repl.setInput(inputSource.getInputStream());
-			repl.setOutput(outputDest.getOutputStream());
+			repl.setInput(session.getInputStream());
+			repl.setOutput(session.getOutputStream());
 			repl.setSession(session);
 			repl.setClassloader(cloader);
 			

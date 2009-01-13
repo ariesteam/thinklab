@@ -33,13 +33,10 @@
  **/
 package org.integratedmodelling.thinklab.commandline.commands;
 
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
@@ -52,8 +49,7 @@ import org.integratedmodelling.utils.Polylist;
  */
 public class Query implements CommandHandler {
 
-	public IValue execute(Command command, ICommandInputProvider inputSource,
-			ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		String kb = command.getOptionAsString("kbox");
 		String toEval = command.getArgumentAsString("query");
@@ -78,11 +74,11 @@ public class Query implements CommandHandler {
 
 			if (nres > 0) {
 
-				outputWriter.displayOutput("\tID\tClass\tLabel\tDescription");
+				session.displayOutput("\tID\tClass\tLabel\tDescription");
 
 				for (int i = 0; i < nres; i++) {
 
-					outputWriter.displayOutput("\t"
+					session.displayOutput("\t"
 							+ result.getResultField(i,
 									IQueryResult.ID_FIELD_NAME)
 							+ "\t"
@@ -98,7 +94,7 @@ public class Query implements CommandHandler {
 				}
 			}
 
-			outputWriter.displayOutput("total: " + nres);
+			session.displayOutput("total: " + nres);
 
 			// just once if we had a kbox specified
 			if (kbox == null)

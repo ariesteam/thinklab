@@ -1,7 +1,7 @@
 package org.integratedmodelling.thinklab.interfaces.applications;
 
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.PrintStream;
 
 /**
  * Implements the model of the user during a Thinklab session. Only one user model should exist per
@@ -21,7 +21,7 @@ public interface IUserModel {
 	 * 
 	 * @return
 	 */
-	public abstract InputStream getDefaultInputStream();
+	public abstract InputStream getInputStream();
 	
 	/**
 	 * Sessions may have an input and an output stream associated in case they can interact
@@ -29,5 +29,5 @@ public interface IUserModel {
 	 * 
 	 * @return
 	 */
-	public abstract OutputStream getDefaultOutputStream();
+	public abstract PrintStream getOutputStream();
 }

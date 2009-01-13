@@ -37,14 +37,11 @@ import java.io.File;
 import org.integratedmodelling.geospace.coverage.InstanceCoverageExporter;
 import org.integratedmodelling.geospace.feature.InstanceShapefileExporter;
 import org.integratedmodelling.opal.utils.OPALListWriter;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.XMLDocument;
@@ -56,8 +53,7 @@ import org.integratedmodelling.utils.XMLDocument;
  */
 public class GISToOPAL implements CommandHandler {
 
-	public IValue execute(Command command, ICommandInputProvider inputSource,
-			ICommandOutputReceptor outputWriter, ISession session, KnowledgeManager km) throws ThinklabException {
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		String toload = command.getArgumentAsString("resource");
 		String output = command.getArgumentAsString("output");
@@ -82,7 +78,7 @@ public class GISToOPAL implements CommandHandler {
 
 			document.writeToFile(new File(output));
 
-			outputWriter.displayOutput(nObjects + " objects written to "
+			session.displayOutput(nObjects + " objects written to "
 					+ output);
 
 		} else if (toload.endsWith(".tif") || toload.endsWith(".tiff")) {
@@ -98,7 +94,7 @@ public class GISToOPAL implements CommandHandler {
 
 			document.writeToFile(new File(output));
 
-			outputWriter.displayOutput(nObjects + " objects written to "
+			session.displayOutput(nObjects + " objects written to "
 					+ output);
 
 		} else {

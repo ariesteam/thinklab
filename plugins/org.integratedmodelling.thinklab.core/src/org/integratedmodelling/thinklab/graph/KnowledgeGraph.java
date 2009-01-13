@@ -33,11 +33,15 @@
 package org.integratedmodelling.thinklab.graph;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -328,33 +332,41 @@ public abstract class KnowledgeGraph extends
 		gv.show();
 	}
 
-	public void dump(ICommandOutputReceptor o) {
+	public void dump(OutputStream o) {
 
-		for (Object c : this.vertexSet()) {
+		BufferedWriter w = new BufferedWriter(new OutputStreamWriter(o));
 
-			o.appendOutput(c.toString());
+		try {
+			for (Object c : this.vertexSet()) {
 
-			int edgecount = 0;
-			for (Object p : this.outgoingEdgesOf(c)) {
+				w.write(c.toString());
 
-				
-				if (edgecount++ == 0)
-					o.appendOutput(": --- " + ((PropertyEdge)p).property + " --> (");
+				int edgecount = 0;
+				for (Object p : this.outgoingEdgesOf(c)) {
+
+					if (edgecount++ == 0)
+						w.write(": --- " + ((PropertyEdge) p).property
+								+ " --> (");
+					else
+						w.write(", ");
+
+					w.write(this.getEdgeTarget(p).toString());
+
+				}
+				if (edgecount > 0)
+					w.write(")\n");
 				else
-					o.appendOutput(", ");
-
-				o.appendOutput(this.getEdgeTarget(p).toString());
-
+					w.write("\n");
 			}
-			if (edgecount > 0)
-				o.appendOutput(")\n");
-			else
-				o.appendOutput("\n");
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
 	public void dump() {
-		dump(new ShellCommandOutputReceptor());
+		dump(System.out);
 	}
 
 	/**

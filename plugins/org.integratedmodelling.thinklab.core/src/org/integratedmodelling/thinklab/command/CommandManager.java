@@ -10,8 +10,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.ISessionManager;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandInputProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 public class CommandManager {
@@ -82,8 +80,6 @@ public class CommandManager {
 	 * 
 	 * @param cmd
 	 *            the command
-	 * @param inputReader TODO
-	 * @param outputWriter
 	 * @param session
 	 *            the session t
 	 * @return a literal containing a result value and the associated concept,
@@ -91,8 +87,7 @@ public class CommandManager {
 	 * @throws ThinklabException
 	 *             if anything happens in command execution
 	 */
-	public IValue submitCommand(Command cmd,
-			ICommandInputProvider inputReader, ICommandOutputReceptor outputWriter, ISession session)
+	public IValue submitCommand(Command cmd, ISession session)
 			throws ThinklabException {
 
 		/*
@@ -103,8 +98,8 @@ public class CommandManager {
 			return null;
 
 		CommandHandler a = actions.get(cmd.getDeclaration().ID);
-		return a.execute(cmd, inputReader, outputWriter, session, KnowledgeManager.get());
-		// TODO transfer to knowledge manager logging policy
+		return a.execute(cmd, session);
+
 	}
 
 	/**
