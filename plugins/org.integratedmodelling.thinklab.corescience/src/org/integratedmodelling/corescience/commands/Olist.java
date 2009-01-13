@@ -40,13 +40,12 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationState;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
-public class Olist implements CommandHandler {
+public class Olist implements ICommandHandler {
 		
 		private void dumpObservation(IObservation o, String prefix, ISession out, HashSet<String> ids) throws ThinklabException {
 			

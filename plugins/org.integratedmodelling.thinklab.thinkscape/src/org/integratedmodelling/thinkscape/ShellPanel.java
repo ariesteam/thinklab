@@ -1,21 +1,19 @@
 package org.integratedmodelling.thinkscape;
 
+import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.integratedmodelling.policy.ApplicationFrame;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinkscape.interfaces.ICommandReceptor;
-import javax.swing.JButton;
-import java.awt.Font;
-import java.io.OutputStream;
 
-public class ShellPanel extends JPanel implements ICommandOutputReceptor {
+public class ShellPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField commandTextField = null;
@@ -23,6 +21,7 @@ public class ShellPanel extends JPanel implements ICommandOutputReceptor {
 	private JLabel jLabel1 = null;
 	private JTextArea sessionTextArea = null;
 	private JButton doButton = null;
+	
 	/**
 	 * This is the default constructor
 	 */
@@ -123,15 +122,15 @@ public class ShellPanel extends JPanel implements ICommandOutputReceptor {
 	}
 	
 	private void submitCommand(){
-		submitCommand(getCommandTextField().getText());
-		 
+		submitCommand(getCommandTextField().getText());		 
 	}
-	
+
 	public void submitCommand(String cmd){
 		getICommandReceptor().submitCommand(cmd);
 		getSessionTextArea().append("\n >"+ cmd);
 		getCommandTextField().setText("");
 	}
+	
 	public void displayOutput(String result) {
 		getSessionTextArea().append("\n >>"+result);
 
@@ -141,11 +140,5 @@ public class ShellPanel extends JPanel implements ICommandOutputReceptor {
 		getSessionTextArea().append(result);
 	}
 
-	@Override
-	public OutputStream getOutputStream() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	 
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"

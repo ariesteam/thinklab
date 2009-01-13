@@ -82,13 +82,13 @@ import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.extensions.KBoxHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
@@ -867,7 +867,7 @@ public abstract class ThinklabPlugin extends Plugin
 
 		for (Extension ext : getOwnThinklabExtensions("command-handler")) {
 
-			CommandHandler chandler = (CommandHandler) getHandlerInstance(ext, "class");
+			ICommandHandler chandler = (ICommandHandler) getHandlerInstance(ext, "class");
 
 			if (chandler == null)
 				continue;

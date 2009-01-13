@@ -5,7 +5,6 @@ import java.util.Map;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.workflow.exceptions.ThinklabWorkflowException;

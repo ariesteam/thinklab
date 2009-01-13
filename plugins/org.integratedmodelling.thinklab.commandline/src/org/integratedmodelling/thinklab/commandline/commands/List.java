@@ -39,9 +39,8 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.commandline.CommandLine;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnknownResourceException;
-import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
@@ -55,7 +54,7 @@ import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 import org.java.plugin.registry.PluginDescriptor;
 
-public class List implements CommandHandler {
+public class List implements ICommandHandler {
 
 	enum listmode {
 		DESCRIPTIVE, LIST

@@ -74,7 +74,6 @@ import org.integratedmodelling.policy.KRPolicyWrite;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinkscape.interfaces.IPopupMenuContainer;
 
@@ -95,7 +94,7 @@ import prefuse.visual.VisualItem;
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class ThinkScapeGUI extends JPanel implements GrowlGUI, ICommandOutputReceptor {
+public class ThinkScapeGUI extends JPanel implements GrowlGUI {
 	// status values for int owlDLCompliance(arg1, arg2),
 	// suffix 11 means both arg1, arg2 !=null, suffix 10 means ard2==null
 	
@@ -4342,11 +4341,6 @@ public class ThinkScapeGUI extends JPanel implements GrowlGUI, ICommandOutputRec
 		
 	}
 
-	public void displayOutput(String result) {
-		// TODO Auto-generated method stub
-
-	}
-	
 	public OGraph getGraph() {
 		return graph;
 	}
@@ -4444,18 +4438,6 @@ public class ThinkScapeGUI extends JPanel implements GrowlGUI, ICommandOutputRec
 	public void setBrowseMenuContainer(IPopupMenuContainer browseMenuContainer) {
 		this.browseMenuContainer = browseMenuContainer;
 	}
-
-	public void appendOutput(String string) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public OutputStream getOutputStream() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 } // @jve:visual-info decl-index=0 visual-constraint="7,10"
 // @jve:visual-info decl-index=0 visual-constraint="7,10"

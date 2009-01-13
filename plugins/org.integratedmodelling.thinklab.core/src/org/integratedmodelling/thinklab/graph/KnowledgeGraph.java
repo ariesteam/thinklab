@@ -41,16 +41,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.command.ShellCommandOutputReceptor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabUserErrorException;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;

@@ -1,7 +1,6 @@
 package org.integratedmodelling.thinklab.graph;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;

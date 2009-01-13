@@ -39,10 +39,8 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
-import org.integratedmodelling.thinklab.command.ShellCommandOutputReceptor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.value.Value;
 import org.integratedmodelling.thinklab.workflow.WorkflowPlugin;
@@ -59,15 +57,9 @@ public class ThinklabCommandFunction implements FunctionProvider {
 		
 		String aname = args.get(WorkflowPlugin.ARG_COMMAND_NAME).toString();
 		IValue ret = null;
-		ICommandOutputReceptor outputWriter = 
-			(ICommandOutputReceptor) ps.getObject(WorkflowPlugin.ARG_COMMAND_OUTPUT_WRITER);
 		ISession session = 
 			(ISession) ps.getObject(WorkflowPlugin.ARG_THINKLAB_SESSION);
-		
-		if (outputWriter == null) {
-			outputWriter = new ShellCommandOutputReceptor();
-		}
-		
+			
 		/* 
 		 * FIXME: this should supplement the doAction() when called through WorkflowDirector, and
 		 * be properly positioned at the end of the pre-functions.

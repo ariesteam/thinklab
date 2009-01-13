@@ -38,12 +38,12 @@ import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
-import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /** the help command for the command-line interface */
-public class Help implements CommandHandler {
+public class Help implements ICommandHandler {
 
 	public IValue execute(Command command, ISession session) throws ThinklabException {
 

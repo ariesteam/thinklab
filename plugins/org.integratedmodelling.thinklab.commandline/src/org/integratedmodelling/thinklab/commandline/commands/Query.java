@@ -35,8 +35,8 @@ package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
@@ -47,7 +47,7 @@ import org.integratedmodelling.utils.Polylist;
 /**
  * Performs a query over all the installed kboxes or a specific one.
  */
-public class Query implements CommandHandler {
+public class Query implements ICommandHandler {
 
 	public IValue execute(Command command, ISession session) throws ThinklabException {
 

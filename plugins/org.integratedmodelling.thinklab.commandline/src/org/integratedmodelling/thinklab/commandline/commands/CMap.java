@@ -36,14 +36,14 @@ package org.integratedmodelling.thinklab.commandline.commands;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.graph.ConceptMap;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /** the help command for the command-line interface */
-public class CMap implements CommandHandler {
+public class CMap implements ICommandHandler {
 
 	public IValue execute(Command command, ISession session) throws ThinklabException {
 

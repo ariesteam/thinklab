@@ -47,8 +47,8 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -60,7 +60,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
  * @author Gary Johnson
  * 
  */
-public class District implements CommandHandler {
+public class District implements ICommandHandler {
 
 	/*
 	 * TODO Just a stub for now - produce an observation structure that

@@ -48,7 +48,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.LiteralValidator;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 /**
@@ -371,19 +370,7 @@ public class CommandDeclaration {
     public void printLongSynopsis(PrintStream writer) {
     	writer.append(getLongSynopsis() + "\n");
     }
-    
-    public void printDescription(ICommandOutputReceptor writer) {
-    	writer.displayOutput(description + "\n");
-    }
-    
-    public void printShortSynopsis(ICommandOutputReceptor writer) {
-        writer.displayOutput(getShortSynopsis());
-    }
-    
-    public void printLongSynopsis(ICommandOutputReceptor writer) {
-        writer.displayOutput(getLongSynopsis());
-    }
-    
+        
     public String usage() {
     	return getLongSynopsis();
     }

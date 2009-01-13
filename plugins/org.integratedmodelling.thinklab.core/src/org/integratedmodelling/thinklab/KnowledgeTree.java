@@ -41,7 +41,6 @@ import java.util.HashSet;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandOutputReceptor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 
@@ -54,6 +53,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
  * @author Ferdinando Villa
  * @since 26.11.2007 refactoring into more general KnowledgeTree that will
  * 		  follow given relationships in both Instances and Concepts
+ * @deprecated Use knowledge graph or reasoning
  */
 public class KnowledgeTree {
 

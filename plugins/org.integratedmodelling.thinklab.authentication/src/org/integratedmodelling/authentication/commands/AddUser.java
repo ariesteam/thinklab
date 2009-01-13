@@ -35,11 +35,11 @@ package org.integratedmodelling.authentication.commands;
 import org.integratedmodelling.authentication.AuthenticationPlugin;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
-public class AddUser implements CommandHandler {
+public class AddUser implements ICommandHandler {
 
 	public IValue execute(Command command, ISession session) throws ThinklabException {
 

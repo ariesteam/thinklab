@@ -46,7 +46,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
- * A simple command-line driven interface. Just attach to a session, run and type 'help'.
+ * A simple command-line driven interface. Just attach to a session, startConsole() and type 'help'.
  * @author Ferdinando Villa
  */
 public class Shell {
@@ -72,13 +72,13 @@ public class Shell {
 		/* greet user */
 		printStatusMessage();
 		
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader in = new BufferedReader(new InputStreamReader(session.getInputStream()));
 		String input = "";
 		
 		/* define commands from user input */
 		while(true) {
 			
-			System.out.print("> ");
+			session.getOutputStream().print("> ");
 			try {
 				input = in.readLine();
 			} catch (IOException e) {
@@ -86,7 +86,7 @@ public class Shell {
 			}
 			
 			if ("exit".equals(input)) {
-				System.out.println("shell terminated");
+				session.getOutputStream().println("shell terminated");
 				break;
 			} else if (!("".equals(input))) {
 				try {
@@ -98,10 +98,10 @@ public class Shell {
 					
 					IValue result = CommandManager.get().submitCommand(cmd, session);
                     if (result != null)
-                        System.out.println(result.toString());
+                    	session.getOutputStream().println(result.toString());
 				} catch (ThinklabException e) {
 					e.printStackTrace();
-					System.out.println(" error: " + e.getMessage());
+					session.getOutputStream().println(" error: " + e.getMessage());
 				}
 			}
 		}

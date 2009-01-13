@@ -7,9 +7,9 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.ISessionManager;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 public class CommandManager {
@@ -22,7 +22,7 @@ public class CommandManager {
 	 * each command has an action associated, also kept in a hash indexed by
 	 * command ID
 	 */
-	HashMap<String, CommandHandler> actions = new HashMap<String, CommandHandler>();
+	HashMap<String, ICommandHandler> actions = new HashMap<String, ICommandHandler>();
 
 	/**
 	 * Register a command for use in the Knowledge Manager. The modality of
@@ -37,7 +37,7 @@ public class CommandManager {
 	 * @see CommandDeclaration
 	 * @see ISessionManager
 	 */
-	public void registerCommand(CommandDeclaration command, CommandHandler action)
+	public void registerCommand(CommandDeclaration command, ICommandHandler action)
 			throws ThinklabException {
 
 		// TODO throw exception if command is installed
@@ -97,7 +97,7 @@ public class CommandManager {
 		if (cmd == null || cmd.getDeclaration() == null)
 			return null;
 
-		CommandHandler a = actions.get(cmd.getDeclaration().ID);
+		ICommandHandler a = actions.get(cmd.getDeclaration().ID);
 		return a.execute(cmd, session);
 
 	}

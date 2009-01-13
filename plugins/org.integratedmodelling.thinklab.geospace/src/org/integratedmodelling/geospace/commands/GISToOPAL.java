@@ -40,8 +40,8 @@ import org.integratedmodelling.opal.utils.OPALListWriter;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
-import org.integratedmodelling.thinklab.extensions.CommandHandler;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.XMLDocument;
@@ -51,7 +51,7 @@ import org.integratedmodelling.utils.XMLDocument;
  * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  */
-public class GISToOPAL implements CommandHandler {
+public class GISToOPAL implements ICommandHandler {
 
 	public IValue execute(Command command, ISession session) throws ThinklabException {
 
