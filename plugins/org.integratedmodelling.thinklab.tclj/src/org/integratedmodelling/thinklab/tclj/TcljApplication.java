@@ -26,15 +26,23 @@
  * 
  * @copyright 2008 www.integratedmodelling.org
  * @author    Ferdinando Villa (fvilla@uvm.edu)
- * @author    Ioannis N. Athanasiadis (ioannis@athanasiadis.info)
  * @date      Jan 17, 2008
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.shell;
+package org.integratedmodelling.thinklab.tclj;
 
-import org.integratedmodelling.thinklab.commandline.GraphicalShell;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
+
+import org.integratedmodelling.clojure.REPL;
+import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.session.Session;
+import org.integratedmodelling.utils.Escape;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.boot.Application;
 import org.java.plugin.boot.ApplicationPlugin;
 import org.java.plugin.util.ExtendedProperties;
@@ -43,19 +51,44 @@ import org.java.plugin.util.ExtendedProperties;
  * A simple command-line driven knowledge manager. Just run and type 'help'.
  * @author Ferdinando Villa
  */
-public class ShellApplication extends ApplicationPlugin implements Application {
+public class TcljApplication extends ApplicationPlugin implements Application {
 
-    public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.shell";
+    public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.tclj";
 	
-	public ISession session;
+	ISession session;
+	String[] args = null;
+	Properties properties = new Properties();
 	
 	@Override
 	protected Application initApplication(ExtendedProperties arg0, String[] arg1)
 			throws Exception {
 
 		getManager().activatePlugin("org.integratedmodelling.thinklab.core");
-		getManager().activatePlugin("org.integratedmodelling.thinklab.commandline");
-	
+		getManager().activatePlugin("org.integratedmodelling.thinklab.clojure");
+		
+		/*
+		 * load additional plugins from configuration
+		 */
+		File props = 
+			new File(LocalConfiguration.getDataDirectory(PLUGIN_ID) + "/config/tclj.properties");
+		
+		if (props.exists()) {
+			
+			this.properties.load(new FileInputStream(props));
+			
+			String addplug = properties.getProperty("tclj.plugins");
+			
+			if (addplug != null) {
+				String[] plugs = addplug.split(",");
+				
+				for (String plug : plugs) {
+					getManager().activatePlugin(Thinklab.resolvePluginName(plug, true));
+				}
+			}
+		}
+		
+		this.args = arg1;
+		
 		return this;
 	}
 
@@ -70,7 +103,13 @@ public class ShellApplication extends ApplicationPlugin implements Application {
 	@Override
 	public void startApplication() throws Exception {
 		
-		GraphicalShell shell = new GraphicalShell();
-		shell.startConsole();
+		REPL repl = new REPL();
+		
+		Session session = new Session();
+		repl.setSession(session);
+		repl.setInput(session.getInputStream());
+		repl.setOutput(session.getOutputStream());
+	
+		repl.run(args);
 	}
 }
