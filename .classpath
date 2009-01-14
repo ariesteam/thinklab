@@ -15,7 +15,6 @@
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.databridge/classes" path="plugins/org.integratedmodelling.thinklab.databridge/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.groovy/classes" path="plugins/org.integratedmodelling.thinklab.groovy/src"/>
 	<classpathentry excluding="org/integratedmodelling/thinklab/impl/owlapi/" kind="src" output="plugins/org.integratedmodelling.thinklab.core/classes" path="plugins/org.integratedmodelling.thinklab.core/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.geoclustering/classes" path="plugins/org.integratedmodelling.thinklab.geoclustering/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.currency/classes" path="plugins/org.integratedmodelling.thinklab.currency/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.sql/classes" path="plugins/org.integratedmodelling.thinklab.sql/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.agents/classes" path="plugins/org.integratedmodelling.thinklab.agents/src"/>
