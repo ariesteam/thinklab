@@ -30,10 +30,10 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.districting.interfaces;
+package org.integratedmodelling.geospace.districting.interfaces;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.districting.utils.DistrictingResults;
+import org.integratedmodelling.geospace.districting.utils.DistrictingResults;
 
 /**
  * Interface for a districting algorithm to implement.  The only

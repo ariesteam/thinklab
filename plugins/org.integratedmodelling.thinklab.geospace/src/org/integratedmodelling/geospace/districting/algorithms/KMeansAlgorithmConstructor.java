@@ -30,11 +30,11 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.districting.algorithms;
+package org.integratedmodelling.geospace.districting.algorithms;
 
-import org.integratedmodelling.districting.algorithms.KMeansAlgorithm;
-import org.integratedmodelling.districting.interfaces.IDistrictingAlgorithm;
-import org.integratedmodelling.districting.interfaces.IDistrictingAlgorithmConstructor;
+import org.integratedmodelling.geospace.districting.algorithms.KMeansAlgorithm;
+import org.integratedmodelling.geospace.districting.interfaces.IDistrictingAlgorithm;
+import org.integratedmodelling.geospace.districting.interfaces.IDistrictingAlgorithmConstructor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 
 public class KMeansAlgorithmConstructor implements IDistrictingAlgorithmConstructor {

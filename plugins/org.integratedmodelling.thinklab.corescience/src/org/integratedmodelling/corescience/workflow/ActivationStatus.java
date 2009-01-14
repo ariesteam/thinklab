@@ -32,6 +32,7 @@
  **/
 package org.integratedmodelling.corescience.workflow;
 
+
 public enum ActivationStatus {
 	/**
 	 * record is fully active, context is relevant and data should be extracted

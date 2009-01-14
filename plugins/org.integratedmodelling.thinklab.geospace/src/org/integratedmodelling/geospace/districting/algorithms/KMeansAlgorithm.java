@@ -1,5 +1,5 @@
 /**
- * ISODATAAlgorithm.java
+ * KMeansAlgorithm.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,30 +30,25 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.districting.algorithms;
+package org.integratedmodelling.geospace.districting.algorithms;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.districting.interfaces.IDistrictingAlgorithm;
-import org.integratedmodelling.districting.utils.DistrictingResults;
+import org.integratedmodelling.geospace.districting.interfaces.IDistrictingAlgorithm;
+import org.integratedmodelling.geospace.districting.utils.DistrictingResults;
+
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.lang.Math;
 
-public class ISODATAAlgorithm implements IDistrictingAlgorithm
+public class KMeansAlgorithm implements IDistrictingAlgorithm
 {
-    public DistrictingResults createDistricts(double[][] dataset, int initialK, double stoppingThreshold,
-					      double varianceRatio, double membershipRatio,
-					      double separationRatio) throws ThinklabException
+    public DistrictingResults createDistricts(double[][] dataset, int initialK) throws ThinklabException
     {
 	int l = dataset.length;
 	int n = dataset[0].length;
 	int k = initialK;
-
-	double[] datasetVariance = computeDatasetVariance(l, n, dataset);
-	double[] maxClusterVariance = computeMaxClusterVariance(l, varianceRatio, datasetVariance);
-	int minClusterMembership = ((Double)(n * membershipRatio)).intValue();
-	double minCentroidSeparation = l * separationRatio;
+	double stoppingThreshold = 0.2;
 
 	DistrictingResults results = new DistrictingResults();
 
@@ -63,136 +58,21 @@ public class ISODATAAlgorithm implements IDistrictingAlgorithm
 	ArrayList<Double>[] prevCentroids = null;
 	ArrayList<Double>[] variances = null;
 	int iterations = 0;
-	
-	// Rethinking things here...
-	// Steps are:
-	// 1) Stabilize
-	// 2) TestMinMembership
-	//    if fail, go to 1
-	// 3) TestMinCentroidSeparation
-	//    if fail, go to 1
-	// 4) TestMaxClusterVariance
-	//    if fail, go to 1
-	// 5) return stable, valid districting results
 
-	boolean allTestsPassed = false;
-	while (! allTestsPassed) {
+	System.out.println("Beginning stabilization...");
 
-	    System.out.println("Beginning stabilization...");
-
-	    while (centroidsAreMoving(l, k, centroids, prevCentroids, stoppingThreshold)) {
-		prevCentroids = centroids;
-		typeset = collectPointsByCluster(l, n, k, centroids, dataset);
-		pointsPerCluster = countPointsPerCluster(n, k, typeset);
-		centroids = recomputeCentroids(l, n, k, typeset, pointsPerCluster, dataset);
-		pointsPerCluster = removeEmptyClusters(pointsPerCluster);
-		k = centroids[0].size();
-		iterations++;
-	    }
-	    variances = computeVariancesByCluster(l, n, k, centroids, typeset, pointsPerCluster, dataset);
-
-	    System.out.println("Completed after " + iterations + " total iterations.");
-
-	    // printResults(l, k, centroids, variances, pointsPerCluster);
-
-	    System.out.println("Beginning validation...");
-
-	    // Kill centroid if cluster membership < minClusterMembership
-	    // System.out.println("\nKilling the small ones...");
-
-	    allTestsPassed = true;
-	    for (int i=0; i<k; i++) {
-		// System.out.println("Checking cluster " + i);
-		// System.out.println("Members: " + pointsPerCluster.get(i) + "  MinReq: " + minClusterMembership);
-		if (pointsPerCluster.get(i) < minClusterMembership) {
-		    allTestsPassed = false;
-		    System.out.println("Too small! Killing cluster " + i);
-		    pointsPerCluster.remove(i);
-		    for (int j=0; j<l; j++) {
-			centroids[j].remove(i);
-			variances[j].remove(i);
-		    }
-		    i--;
-		    k--;
-		}
-	    }
-	    // printResults(l, k, centroids, variances, pointsPerCluster);
-
-	    if (allTestsPassed) {
-		System.out.println("Passed Test 1!");
-
-		// Merge centroids if distance between them < minCentroidSeparation
-		// System.out.println("\nMinCentroidSeparation:" + minCentroidSeparation);
-		double distance;
-		for (int a=1; a<k; a++) {
-		    for (int b=0; b<a; b++) {
-			distance = 0.0;
-			for (int c=0; c<l; c++) {
-			    distance += Math.pow(centroids[c].get(a) - centroids[c].get(b), 2) / datasetVariance[c];
-			}
-			// System.out.println("Distance(" + a + "," + b + ") = " + distance);
-			if (distance < minCentroidSeparation) {
-			    allTestsPassed = false;
-			    System.out.println("Merging clusters " + a + " and " + b);
-			    for (int c=0; c<l; c++) {
-				centroids[c].set(a, (centroids[c].get(a) + centroids[c].get(b))/2);
-				centroids[c].remove(b);
-				variances[c].set(a, null);
-				variances[c].remove(b);
-			    }
-			    pointsPerCluster.set(a, null);
-			    pointsPerCluster.remove(b);
-			    a--;
-			    b=-1;
-			    k--;
-			}
-		    }
-		}
-		// printResults(l, k, centroids, variances, pointsPerCluster);
-	    }
-
-	    if (allTestsPassed) {
-		System.out.println("Passed Test 2!");
-
-		// Split cluster if within cluster variance > maxClusterVariance
-		// AND cluster membership >= 2 * minClusterMembership
-		double[] perturbAmount = new double[l];
-		// System.out.println("\nPerturbAmount:");
-		for (int i=0; i<l; i++) {
-		    perturbAmount[i] = 0.55 * Math.sqrt(separationRatio * datasetVariance[i]);
-		    // System.out.print(perturbAmount[i] + " ");
-		}
-		// System.out.println("\n");
-
-		// System.out.println("Max Cluster Variance:");
-		// for (int i=0; i<l; i++) {
-		//     System.out.print(maxClusterVariance[i] + " ");
-		// }
-		// System.out.println("\n");
-
-		for (int a=0; a<l; a++) {
-		    for (int b=0; b<k; b++) {
-			if (variances[a].get(b) > maxClusterVariance[a]
-			    && pointsPerCluster.get(b) >= 2 * minClusterMembership) {
-			    allTestsPassed = false;
-			    System.out.println("Splitting cluster: " + b);
-			    for (int c=0; c<l; c++) {
-				centroids[c].add(centroids[c].get(b) + perturbAmount[c]);
-				centroids[c].set(b, centroids[c].get(b) - perturbAmount[c]);
-				variances[c].add(0.0);
-				variances[c].set(b, 0.0);
-				pointsPerCluster.add(0);
-				pointsPerCluster.set(b, 0);
-			    }
-			    k++;
-			}
-		    }
-		}
-		// printResults(l, k, centroids, variances, pointsPerCluster);
-	    }
-
+	while (centroidsAreMoving(l, k, centroids, prevCentroids, stoppingThreshold)) {
+	    prevCentroids = centroids;
+	    typeset = collectPointsByCluster(l, n, k, centroids, dataset);
+	    pointsPerCluster = countPointsPerCluster(n, k, typeset);
+	    centroids = recomputeCentroids(l, n, k, typeset, pointsPerCluster, dataset);
+	    pointsPerCluster = removeEmptyClusters(pointsPerCluster);
+	    k = centroids[0].size();
+	    iterations++;
 	}
-	System.out.println("Passed Test 3!\nDistricting Results have been validated.");
+	variances = computeVariancesByCluster(l, n, k, centroids, typeset, pointsPerCluster, dataset);
+
+	System.out.println("Completed after " + iterations + " total iterations.");
 
 	results.setTypeset(typeset);
 	results.setPointsPerCluster(pointsPerCluster);
@@ -201,14 +81,16 @@ public class ISODATAAlgorithm implements IDistrictingAlgorithm
 	results.setIterations(iterations);
 	results.setInitialK(initialK);
 	results.setFinalK(k);
-	results.setDatasetVariance(datasetVariance);
+	results.setDatasetVariance(computeDatasetVariance(l, n, dataset));
 	return results;
     }
 
-    public DistrictingResults createDistricts(double[][] dataset, int initialK) throws ThinklabException
+    public DistrictingResults createDistricts(double[][] dataset, int initialK, double stoppingThreshold,
+					      double varianceRatio, double membershipRatio,
+					      double separationRatio) throws ThinklabException
     {
-	// Pick some reasonable default parameters and run the full createDistricts command.
-	return createDistricts(dataset, initialK, 0.2, 1.0, 0.0, 1.0);
+	// Just call the simpler createDistricts and ignore the extra parameters.
+	return createDistricts(dataset, initialK);
     }
 
     private double[] computeDatasetVariance(int l, int n, double[][] dataset)
@@ -226,15 +108,6 @@ public class ISODATAAlgorithm implements IDistrictingAlgorithm
 	    datasetVariance[i] /= n;
 	}
 	return datasetVariance;
-    }
-
-    private double[] computeMaxClusterVariance(int l, double varRatio, double[] datasetVariance)
-    {
-	double[] maxClusterVariance = new double[l];
-	for (int i=0; i<l; i++) {
-	    maxClusterVariance[i] = datasetVariance[i] * varRatio;
-	}
-	return maxClusterVariance;
     }
 
     private ArrayList<Double>[] selectInitialCentroids(int l, int n, int k, double[][] dataset)
@@ -269,7 +142,7 @@ public class ISODATAAlgorithm implements IDistrictingAlgorithm
     private boolean centroidsAreMoving(int l, int k, ArrayList<Double>[] centroids,
 				       ArrayList<Double>[] prevCentroids, double stoppingThreshold)
     {
-    	if (prevCentroids == null || centroids[0].size() != prevCentroids[0].size()) {
+    	if (centroids == null || prevCentroids == null || centroids[0].size() != prevCentroids[0].size()) {
 	    return true;
 	}
     	for (int i=0; i<k; i++) {
@@ -399,32 +272,6 @@ public class ISODATAAlgorithm implements IDistrictingAlgorithm
 	    }
 	}
 	return stdevs;
-    }
-
-
-    public void printResults(int l, int k, ArrayList<Double>[] centroids, 
-			     ArrayList<Double>[] variances, ArrayList<Integer> pointsPerCluster)
-    {
-	System.out.println("Centroids:");
-	printArrayListArray(l, k, centroids);
-	System.out.println("Variances:");
-	printArrayListArray(l, k, variances);
-	System.out.println("Points Per Cluster:");
-	for (int i=0; i<k; i++) {
-	    System.out.print(pointsPerCluster.get(i) + " ");
-	}
-	System.out.println("\n");
-    }
-
-    public void printArrayListArray(int l, int k, ArrayList<Double>[] myArray)
-    {
-	for (int i=0; i<l; i++) {
-	    for (int j=0; j<k; j++) {
-		System.out.print(" " + myArray[i].get(j));
-	    }
-	    System.out.println("");
-	}
-	System.out.println("");
     }
 
 }

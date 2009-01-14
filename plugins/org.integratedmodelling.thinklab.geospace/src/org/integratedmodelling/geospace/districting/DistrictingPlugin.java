@@ -30,14 +30,14 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.districting;
+package org.integratedmodelling.geospace.districting;
 
 import java.util.HashMap;
 
-import org.integratedmodelling.districting.algorithms.ISODATAAlgorithmConstructor;
-import org.integratedmodelling.districting.algorithms.KMeansAlgorithmConstructor;
-import org.integratedmodelling.districting.interfaces.IDistrictingAlgorithm;
-import org.integratedmodelling.districting.interfaces.IDistrictingAlgorithmConstructor;
+import org.integratedmodelling.geospace.districting.algorithms.ISODATAAlgorithmConstructor;
+import org.integratedmodelling.geospace.districting.algorithms.KMeansAlgorithmConstructor;
+import org.integratedmodelling.geospace.districting.interfaces.IDistrictingAlgorithm;
+import org.integratedmodelling.geospace.districting.interfaces.IDistrictingAlgorithmConstructor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;

@@ -30,18 +30,18 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.districting.commands;
+package org.integratedmodelling.geospace.commands;
 
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservationState;
-import org.integratedmodelling.districting.DistrictingPlugin;
-import org.integratedmodelling.districting.interfaces.IDistrictingAlgorithm;
-import org.integratedmodelling.districting.utils.DistrictingResults;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
+import org.integratedmodelling.geospace.districting.DistrictingPlugin;
+import org.integratedmodelling.geospace.districting.interfaces.IDistrictingAlgorithm;
+import org.integratedmodelling.geospace.districting.utils.DistrictingResults;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

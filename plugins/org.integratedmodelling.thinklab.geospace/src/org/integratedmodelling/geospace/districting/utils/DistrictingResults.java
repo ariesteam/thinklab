@@ -30,11 +30,11 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.districting.utils;
+package org.integratedmodelling.geospace.districting.utils;
 
 import java.util.ArrayList;
 
-import org.integratedmodelling.districting.exceptions.ThinklabDistrictingException;
+import org.integratedmodelling.geospace.exceptions.ThinklabDistrictingException;
 
 public class DistrictingResults {
 

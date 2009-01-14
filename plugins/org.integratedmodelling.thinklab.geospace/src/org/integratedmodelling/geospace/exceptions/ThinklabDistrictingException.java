@@ -1,4 +1,4 @@
-package org.integratedmodelling.districting.exceptions;
+package org.integratedmodelling.geospace.exceptions;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 
