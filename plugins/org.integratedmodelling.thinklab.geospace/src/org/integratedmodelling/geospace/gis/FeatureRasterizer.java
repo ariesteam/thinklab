@@ -28,15 +28,16 @@ import javax.media.jai.RasterFactory;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.integratedmodelling.geospace.Geospace;
+import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.feature.AttributeTable;
+import org.integratedmodelling.geospace.values.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -88,7 +89,7 @@ public class FeatureRasterizer {
     // Declare these as global
     private int[] coordGridX = new int[3500];
     private int[] coordGridY = new int[3500];
-    private float value;
+    private float value = 0.0f;
 
     private boolean emptyGrid = false;
 
@@ -236,7 +237,7 @@ public class FeatureRasterizer {
      * @param  attributeName                  Name of attribute from feature collection to provide as the cell value.
      * @exception  FeatureRasterizerException  An error when rasterizing the data
      */
-    public void rasterize(FeatureCollection fc, String attributeName)
+    public void rasterize(FeatureCollection<SimpleFeatureType, SimpleFeature> fc, String attributeName)
     throws FeatureRasterizerException {
 
         // calculate variable resolution bounds that fit around feature collection
@@ -322,6 +323,39 @@ public class FeatureRasterizer {
         close();
     }
 
+    public void addShape(ShapeValue shape) {
+    	
+        int rgbVal = floatBitsToInt(value);
+
+        graphics.setColor(new Color(rgbVal, true));
+
+        Geometry geometry = (Geometry) shape.getGeometry();
+        if (geometry.intersects(extentGeometry)) {
+
+            if (geometry.getClass().equals(MultiPolygon.class)) {
+                MultiPolygon mp = (MultiPolygon)geometry;
+                for (int n=0; n<mp.getNumGeometries(); n++) {
+                    drawGeometry(mp.getGeometryN(n));
+                }
+            }
+            else if (geometry.getClass().equals(MultiLineString.class)) {
+                MultiLineString mp = (MultiLineString)geometry;
+                for (int n=0; n<mp.getNumGeometries(); n++) {
+                    drawGeometry(mp.getGeometryN(n));
+                }
+            }
+            else if (geometry.getClass().equals(MultiPoint.class)) {
+                MultiPoint mp = (MultiPoint)geometry;
+                for (int n=0; n<mp.getNumGeometries(); n++) {
+                    drawGeometry(mp.getGeometryN(n));
+                }
+            }
+            else {
+                drawGeometry(geometry);
+            }
+        }
+    }
+    
     /**
      * Implementation the StreamingProcess interface.  Rasterize a single feature and 
      * update current WriteableRaster using the current settings.
@@ -350,7 +384,8 @@ public class FeatureRasterizer {
         	}
         } catch (Exception e) {	        
             e.printStackTrace();	        
-            System.err.println("THE FEATURE COULD NOT BE RASTERIZED BASED ON THE '"+attributeName+
+            Geospace.get().logger().error(
+            		"THE FEATURE COULD NOT BE RASTERIZED BASED ON THE '"+attributeName+
                     "' ATTRIBUTE VALUE OF '"+feature.getAttribute(attributeName).toString()+"'");	        
             return;	        
         }
@@ -514,8 +549,7 @@ public class FeatureRasterizer {
      */
     public void clearRaster() {
 
-//      System.out.println("CLEARING RASTER");      
-        minAttValue = 999999999;
+    	minAttValue = 999999999;
         maxAttValue = -999999999;
 
         // initialize raster to NoData value
@@ -601,7 +635,18 @@ public class FeatureRasterizer {
     public String toString() {
         return "FEATURE RASTERIZER: WIDTH="+width+" , HEIGHT="+height+" , NODATA="+noDataValue;
     }
-
+    
+    /**
+     * Extract an activation layer from the raster, turning on any pixel that is not nodata.
+     * 
+     * To be called AFTER rasterizing!
+     *
+     * @return
+     */
+    public RasterActivationLayer getActivationLayer() {
+    	return null;
+    }
+    
 }
 
 

@@ -40,7 +40,6 @@ import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IValueAggregator;
 import org.integratedmodelling.corescience.interfaces.IValueMediator;
 import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

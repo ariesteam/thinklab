@@ -8,8 +8,8 @@ import org.integratedmodelling.utils.multidimensional.MultidimensionalCursor;
 
 /**
  * A support class that is coupled with a raster layer and tells us whether the
- * pixel at x,y belongs to the raster shape. Used by the raster conceptual model and
- * by the raster path to determine the order of iteration. 
+ * pixel at x,y belongs to the raster shape. Basically a mask, used by the raster 
+ * conceptual model and by the raster path to determine the order of iteration. 
  * @author Ferdinando Villa
  *
  */
@@ -23,22 +23,19 @@ public class RasterActivationLayer extends BitSet {
 	Object gaps = null;
 	
 	public void intersect(RasterActivationLayer other) throws ThinklabValidationException {
-		
+		this.and(other);
+		active = this.cardinality();
 	}
 
+	public void or(RasterActivationLayer other) throws ThinklabValidationException {
+		this.or(other);
+		active = this.cardinality();
+	}
+	
 	public Pair<Integer, Integer> getCell(int index) {
 		
-		int x = 0;
-		int y = 0;
-		
-		if (gaps == null) {	
-			
-			y = index / cursor.getDimensionSize(0);
-			x = index - (y * cursor.getDimensionSize(0));
-			
-		} else {
-			// TODO follow the gaps descriptor for n steps
-		}
+		int x = index / cursor.getDimensionSize(0);
+		int y = index - (x * cursor.getDimensionSize(0));
 		
 		return new Pair<Integer, Integer>(x, y);
 	}
@@ -88,4 +85,34 @@ public class RasterActivationLayer extends BitSet {
 		return active;
 	}
 	
+	public int nextActiveOffset(int fromOffset) {
+		return nextSetBit(fromOffset);
+	}
+	
+	public Pair<Integer, Integer> nextActiveCell(int fromX, int fromY) {
+		
+		int ofs = nextSetBit(cursor.getElementOffset(fromX,fromY));
+		
+		if (ofs == -1) 
+			return null;
+		
+		int x = ofs / cursor.getDimensionSize(0);
+		int y = ofs - (x * cursor.getDimensionSize(0));
+		
+		return new Pair<Integer, Integer>(x, y);
+	}
+
+	public Pair<Integer, Integer> nextActiveCell(int fromOffset) {
+		
+		int ofs = nextSetBit(fromOffset);
+		
+		if (ofs == -1) 
+			return null;
+		
+		int x = ofs / cursor.getDimensionSize(0);
+		int y = ofs - (x * cursor.getDimensionSize(0));
+		
+		return new Pair<Integer, Integer>(x, y);
+	}
+
 }

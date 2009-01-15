@@ -3,17 +3,13 @@ package org.integratedmodelling.geospace.coverage;
 import java.io.File;
 
 import org.integratedmodelling.corescience.interfaces.IConceptualModel;
-import org.integratedmodelling.geospace.cmodel.SubdividedCoverageConceptualModel;
 import org.integratedmodelling.geospace.extents.ArealExtent;
-import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 public interface ICoverage {
 

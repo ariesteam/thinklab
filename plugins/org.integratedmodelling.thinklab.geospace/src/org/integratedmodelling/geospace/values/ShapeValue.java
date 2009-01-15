@@ -130,7 +130,6 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource {
 		return gFactory.createPolygon(gFactory.createLinearRing(pts), null);
     }
 
-    
 	@Override
     public void parseLiteral(String s) throws ThinklabValidationException {
 		

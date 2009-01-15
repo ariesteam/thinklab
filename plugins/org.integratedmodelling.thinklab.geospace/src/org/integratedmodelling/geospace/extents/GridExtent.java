@@ -32,19 +32,16 @@
  **/
 package org.integratedmodelling.geospace.extents;
 
-import org.geotools.coverage.grid.GeneralGridRange;
+import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.integratedmodelling.geospace.cmodel.FeatureCoverageModel;
-import org.integratedmodelling.geospace.cmodel.RegularRasterModel;
 import org.integratedmodelling.geospace.cmodel.SubdividedCoverageConceptualModel;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.values.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Pair;
-import org.opengis.coverage.grid.GridRange;
+import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -142,6 +139,11 @@ public class GridExtent extends ArealExtent {
 		 */
 		Pair<Integer, Integer> xy = activationLayer.getCell(granule);
 		
+		/*
+		 * TODO reimplement to use nextCell on activation layer. Must enforce sequential access
+		 * to use effectively. 
+		 */
+		
 		double x1 = xOrigin + (cellLength * xy.getFirst());
 		double y1 = yOrigin + (cellHeight * xy.getSecond());
 		double x2 = x1 + cellLength;
@@ -189,9 +191,9 @@ public class GridExtent extends ArealExtent {
 		return yDivs;
 	}
 
-	public GridRange getGridRange() {
+	public GridEnvelope getGridRange() {
 		
-		return new GeneralGridRange( new int[] {0,0}, new int[] {xDivs, yDivs});
+		return new GeneralGridEnvelope( new int[] {0,0}, new int[] {xDivs, yDivs}, false);
 	}
 
 	public RasterActivationLayer getActivationLayer() throws ThinklabValidationException {
@@ -211,6 +213,22 @@ public class GridExtent extends ArealExtent {
 		}
 		
 		return activationLayer;
+	}
+	
+	/**
+	 * Use the passed shape as a mask. 
+	 * 
+	 * @param shape
+	 */
+	public void mask(ShapeValue shape) {
+		
+		/*
+		 * TODO rasterize shape on 1-bit layer with extent, res
+		 */
+		
+		/*
+		 * TODO build bitset[s] from rasterized layer
+		 */
 	}
 
 	public double getNSResolution() {
