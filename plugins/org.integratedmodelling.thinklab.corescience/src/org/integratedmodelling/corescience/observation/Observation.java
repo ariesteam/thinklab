@@ -362,8 +362,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 		 */
 		workflow.addObservation(this);
 
-		/* if I am an extent, set context from it. Use instanceof, uglier but SO much faster than
-		 * the reasoner. */
+		/* if I am an extent, set context from it. */
 		if (conceptualModel instanceof IExtentConceptualModel) {
 			ret.mergeExtent(this, getContextDimension(this), LogicalConnector.INTERSECTION, true);
 		}

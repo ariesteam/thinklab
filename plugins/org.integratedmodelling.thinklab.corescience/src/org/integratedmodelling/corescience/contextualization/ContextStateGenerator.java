@@ -34,12 +34,12 @@ package org.integratedmodelling.corescience.contextualization;
 
 import java.util.Iterator;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IContextStateGenerator;
 import org.integratedmodelling.corescience.interfaces.IObservationContextState;
 import org.integratedmodelling.corescience.utils.Ticker;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 public class ContextStateGenerator implements IContextStateGenerator {
 	
@@ -67,9 +67,7 @@ public class ContextStateGenerator implements IContextStateGenerator {
 				} catch (ThinklabException e) {
 					// should not happen, if it does, too bad, we can't have exceptions 
 					// thrown here.
-					CoreScience.get().logger().
-						fatal("internal: addDimension threw exception in ContextStateIterator constructor: " +
-								e.getMessage());
+					throw new ThinklabRuntimeException(e);
 				}
 			}
 		}
@@ -95,11 +93,7 @@ public class ContextStateGenerator implements IContextStateGenerator {
 					try {
 						state.set(c.toString(), context.getExtent(c).getState(ticker.current(i++)));
 					} catch (ThinklabException e) {
-						// should not happen, if it does, too bad, we can't have exceptions 
-						// thrown here.
-						CoreScience.get().logger().
-							fatal("internal: exception in ContextStateIterator.next(): " +
-									e.getMessage());
+						throw new ThinklabRuntimeException(e);
 					}
 				}
 			}
@@ -113,8 +107,7 @@ public class ContextStateGenerator implements IContextStateGenerator {
 
 			// just don't use it for now. It may become relevant when 
 			// agent models are used, but who knows.
-			CoreScience.get().logger().
-				fatal("internal: ContextStateIterator.remove() called");
+			throw new ThinklabRuntimeException("internal: ContextStateIterator.remove() called");
 
 		}
 		
