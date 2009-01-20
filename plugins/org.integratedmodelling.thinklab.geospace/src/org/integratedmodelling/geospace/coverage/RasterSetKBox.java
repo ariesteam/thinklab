@@ -36,8 +36,6 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;

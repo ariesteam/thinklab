@@ -36,8 +36,6 @@ import org.opengis.geometry.BoundingBox;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.Envelope;
-
 public class RasterCoverage implements ICoverage {
 
 	GridCoverage2D coverage = null;
@@ -279,9 +277,6 @@ public class RasterCoverage implements ICoverage {
 	 */
 	public DirectPosition2D getPosition(int x, int y) {
 		
-		
-		// System.out.println("asking for " + x + "," + y + " within " + coverage.getEnvelope2D());
-	
 		double xx =
 			boundingBox.getMinX() + 
 			(xCellSize * x) +
@@ -290,12 +285,6 @@ public class RasterCoverage implements ICoverage {
 			boundingBox.getMinY() + 
 			(yCellSize * y) +
 			(yCellSize/2.0);
-		
-		if (!boundingBox.contains(xx, yy)) {
-			System.out.println("FACXKL");
-		}
-		
-		// System.out.println("got " + xx + "," + yy);
 	
 		return new DirectPosition2D(xx, yy);
 	}
@@ -304,7 +293,6 @@ public class RasterCoverage implements ICoverage {
 		
 		/* determine which active x,y we should retrieve for this order */
 		Pair<Integer, Integer> xy = ((GridExtent)extent).getActivationLayer().getCell(subdivisionOrder);
-		
 		Object data = coverage.evaluate(getPosition(xy.getFirst(),xy.getSecond()));
 		IValue ret = null;
 		

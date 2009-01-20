@@ -34,8 +34,8 @@ public class RasterActivationLayer extends BitSet {
 	
 	public Pair<Integer, Integer> getCell(int index) {
 		
-		int x = index / cursor.getDimensionSize(0);
-		int y = index - (x * cursor.getDimensionSize(0));
+		int x = index / cursor.getDimensionSize(1);
+		int y = index - (x * cursor.getDimensionSize(1));
 		
 		return new Pair<Integer, Integer>(x, y);
 	}
