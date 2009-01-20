@@ -86,6 +86,8 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	protected OWLConsistencyChecker consistencyReasoner;
 	
 	private IConcept rootConcept;
+	private IConcept noConcept;
+	
 	protected static OWLDataFactory df;
 	protected static FileKnowledgeRepository KR =null;
 
@@ -470,6 +472,15 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public IConcept getNothingType() {
+		
+		if (noConcept == null) {
+			noConcept = new Concept(manager.getOWLDataFactory().getOWLClass(URI.create(Namespaces.OWL + "Nothing")));
+		}
+		return noConcept;
 	}
 
 	

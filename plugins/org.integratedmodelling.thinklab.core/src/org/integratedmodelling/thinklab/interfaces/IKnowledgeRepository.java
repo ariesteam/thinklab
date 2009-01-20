@@ -170,4 +170,6 @@ public interface IKnowledgeRepository {
      */
 	public abstract IOntology createTemporaryOntology(String string) throws ThinklabException;
 
+	public abstract IConcept getNothingType();
+
 }

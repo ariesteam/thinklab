@@ -42,9 +42,11 @@ import org.integratedmodelling.corescience.interfaces.IValueMediator;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -251,6 +253,11 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 		
 		
 		return nwext;
+	}
+
+	@Override
+	public IConcept getUncertaintyType() {
+		return KnowledgeManager.Nothing();
 	}
 
 }

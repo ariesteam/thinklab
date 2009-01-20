@@ -194,4 +194,9 @@ public class ClassificationModel implements IConceptualModel, IInstanceImplement
 		 */
 	}
 
+	@Override
+	public IConcept getUncertaintyType() {
+		return KnowledgeManager.Nothing();
+	}
+
 }

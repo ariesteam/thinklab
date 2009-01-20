@@ -43,6 +43,7 @@ import org.integratedmodelling.corescience.interfaces.IObservationContextState;
 import org.integratedmodelling.corescience.interfaces.IValueAggregator;
 import org.integratedmodelling.corescience.interfaces.IValueMediator;
 import org.integratedmodelling.corescience.observation.ConceptualModel;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -141,6 +142,11 @@ public class DurationConceptualModel extends ConceptualModel implements IExtentC
 		double dv = (double)b;
 		// TODO more validation
 		return new NumberValue(dv);
+	}
+
+	@Override
+	public IConcept getUncertaintyType() {
+		return KnowledgeManager.Nothing();
 	}
 
 	

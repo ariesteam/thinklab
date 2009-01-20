@@ -344,4 +344,10 @@ public class MeasurementModel extends UnitValue implements IConceptualModel {
 		return new NumberValue(dv);
 	}
 
+	@Override
+	public IConcept getUncertaintyType() {
+		// FIXME this should change obviously.
+		return KnowledgeManager.Nothing();
+	}
+
 }

@@ -42,6 +42,7 @@ import org.integratedmodelling.corescience.interfaces.IObservationContextState;
 import org.integratedmodelling.corescience.interfaces.IValueAggregator;
 import org.integratedmodelling.corescience.interfaces.IValueMediator;
 import org.integratedmodelling.corescience.observation.ConceptualModel;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -180,6 +181,11 @@ public class TemporalGridConceptualModel extends ConceptualModel implements IExt
 
 	public IValue validateData(double b) throws ThinklabValidationException {
 		throw new ThinklabValidationException("cannot create a valid temporal grid state from a number");
+	}
+
+	@Override
+	public IConcept getUncertaintyType() {
+		return KnowledgeManager.Nothing();
 	}
 
 

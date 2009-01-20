@@ -572,5 +572,11 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	public OWLModel getOWLModel() {
 		return owlModel;
 	}
+
+	@Override
+	public IConcept getNothingType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

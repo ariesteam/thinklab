@@ -129,4 +129,9 @@ public class MonetaryValueConceptualModel extends ConceptualModel {
 		// TODO more validation
 		return new NumberValue(dv);
 	}
+
+	@Override
+	public IConcept getUncertaintyType() {
+		return KnowledgeManager.Nothing();
+	}
 }

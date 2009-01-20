@@ -292,5 +292,11 @@ public class RankingModel extends ConceptualModel {
 		return new NumberValue(dv);
 	}
 
+	@Override
+	public IConcept getUncertaintyType() {
+		// TODO Auto-generated method stub
+		return KnowledgeManager.Nothing();
+	}
+
 
 }

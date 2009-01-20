@@ -196,5 +196,10 @@ public class InstantConceptualModel extends ConceptualModel implements IExtentCo
 		return new NumberValue(dv);
 	}
 
+	@Override
+	public IConcept getUncertaintyType() {
+		return KnowledgeManager.Nothing();
+	}
+
 	
 }

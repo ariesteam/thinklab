@@ -44,6 +44,7 @@ import org.integratedmodelling.corescience.interfaces.IValueMediator;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.ShapeExtent;
 import org.integratedmodelling.geospace.values.ShapeValue;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -176,6 +177,11 @@ public class ArealLocationConceptualModel extends SpatialConceptualModel {
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public IConcept getUncertaintyType() {
+		return KnowledgeManager.Nothing();
 	}
 
 }

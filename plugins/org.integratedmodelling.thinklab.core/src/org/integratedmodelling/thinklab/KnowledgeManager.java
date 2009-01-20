@@ -1315,4 +1315,9 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		return KM.operatorType;
 	}
 
+	public static IConcept Nothing() {
+		// TODO Auto-generated method stub
+		return KM.knowledgeRepository.getNothingType();
+	}
+
 }

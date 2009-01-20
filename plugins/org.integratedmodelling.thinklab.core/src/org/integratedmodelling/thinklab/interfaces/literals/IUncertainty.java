@@ -36,7 +36,7 @@ package org.integratedmodelling.thinklab.interfaces.literals;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.Pair;
 
-public interface IUncertainty {
+public interface IUncertainty extends IValue {
 	/**
 	 * 
 	 * @param v

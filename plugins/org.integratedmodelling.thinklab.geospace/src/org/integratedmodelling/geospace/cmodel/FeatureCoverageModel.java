@@ -41,8 +41,10 @@ import org.integratedmodelling.corescience.interfaces.IValueMediator;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.extents.ShapeExtent;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -144,6 +146,11 @@ public class FeatureCoverageModel extends SubdividedCoverageConceptualModel {
 		
 		// TODO Auto-generated method stub
 		return ret;
+	}
+
+	@Override
+	public IConcept getUncertaintyType() {
+		return KnowledgeManager.Nothing();
 	}
 
 

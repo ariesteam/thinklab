@@ -78,6 +78,14 @@ public interface IConceptualModel extends INamedObject {
 	 * @model
 	 */
 	public abstract IConcept getStateType();
+	
+	/**
+	 * Return the type that uncertainty is characterized with. If no uncertainty model is
+	 * used, return KnowledgeManager.Nothing().
+	 * 
+	 * @return
+	 */
+	public abstract IConcept getUncertaintyType();
 
 	/**
 	 * Return an aggregator suitable for the given contexts and the types we represent, or null
