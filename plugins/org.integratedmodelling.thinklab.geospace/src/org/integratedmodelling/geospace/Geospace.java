@@ -60,6 +60,7 @@ public class Geospace extends ThinklabPlugin  {
 	private IConcept arealLocationType;
 	private IConcept rasterGridObservable;
 	private IConcept subdividedSpaceObservable;
+	private IConcept spaceObservable;
 	private static String hasBoundingBoxPropertyID;
 	private static String hasCentroidPropertyID;
 
@@ -115,6 +116,7 @@ public class Geospace extends ThinklabPlugin  {
 			rasterSpaceType = km.requireConcept(RASTER_CONCEPTUAL_MODEL);
 			rasterGridObservable = km.requireConcept(RASTER_GRID_OBSERVABLE);
 			subdividedSpaceObservable = km.requireConcept("geospace:SubdividedSpace");
+			spaceObservable = km.requireConcept("geospace:SubdividedSpace");
 			
 			shapeType = km.requireConcept("geospace:SpatialRecord");
 			
@@ -249,6 +251,11 @@ public class Geospace extends ThinklabPlugin  {
 	public IConcept SubdividedSpaceObservable() {
 		return subdividedSpaceObservable;
 	}
+	
+	public IConcept SpaceObservable() {
+		return spaceObservable;
+	}
+
 
 	public void setPreferredCRS(CoordinateReferenceSystem crs) {
 		preferredCRS = crs;

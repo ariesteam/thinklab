@@ -10,6 +10,9 @@ import org.integratedmodelling.utils.multidimensional.MultidimensionalCursor;
  * A support class that is coupled with a raster layer and tells us whether the
  * pixel at x,y belongs to the raster shape. Basically a mask, used by the raster 
  * conceptual model and by the raster path to determine the order of iteration. 
+ * 
+ * Uses X,Y indexing - not row, column.
+ * 
  * @author Ferdinando Villa
  *
  */
@@ -34,8 +37,8 @@ public class RasterActivationLayer extends BitSet {
 	
 	public Pair<Integer, Integer> getCell(int index) {
 		
-		int x = index / cursor.getDimensionSize(1);
-		int y = index - (x * cursor.getDimensionSize(1));
+		int y = index / cursor.getDimensionSize(0); // row
+		int x = index - (y * cursor.getDimensionSize(0)); //column
 		
 		return new Pair<Integer, Integer>(x, y);
 	}
@@ -96,8 +99,8 @@ public class RasterActivationLayer extends BitSet {
 		if (ofs == -1) 
 			return null;
 		
-		int x = ofs / cursor.getDimensionSize(0);
-		int y = ofs - (x * cursor.getDimensionSize(0));
+		int y = ofs / cursor.getDimensionSize(0);
+		int x = ofs - (y * cursor.getDimensionSize(0));
 		
 		return new Pair<Integer, Integer>(x, y);
 	}
@@ -109,8 +112,8 @@ public class RasterActivationLayer extends BitSet {
 		if (ofs == -1) 
 			return null;
 		
-		int x = ofs / cursor.getDimensionSize(0);
-		int y = ofs - (x * cursor.getDimensionSize(0));
+		int y = ofs / cursor.getDimensionSize(0);
+		int x = ofs - (y * cursor.getDimensionSize(0));
 		
 		return new Pair<Integer, Integer>(x, y);
 	}

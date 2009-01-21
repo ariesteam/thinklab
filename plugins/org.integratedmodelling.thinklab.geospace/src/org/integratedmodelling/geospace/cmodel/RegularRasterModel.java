@@ -260,4 +260,12 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 		return KnowledgeManager.Nothing();
 	}
 
+	public int getColumns() {
+		return xRangeMax - xRangeOffset;
+	}
+
+	public int getRows() {
+		return yRangeMax - yRangeOffset;
+	}
+
 }

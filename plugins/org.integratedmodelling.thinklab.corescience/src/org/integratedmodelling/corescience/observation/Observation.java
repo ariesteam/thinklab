@@ -281,6 +281,26 @@ public class Observation implements IObservation, IInstanceImplementation {
 		return nonExtentDependencies;
 	}
 
+	/**
+	 * Get the extent observation that observes the passed observable
+	 * 
+	 * @param extentObservable
+	 * @return
+	 */
+	public IObservation getExtent(IConcept extentObservable) {
+		
+		IObservation ret = null;
+		for (IObservation ext : getExtentDependencies()) {
+		
+			if (ext.getObservableClass().is(extentObservable)) {
+				ret = ext;
+				break;
+			}
+		}
+		
+		return ret;
+	}
+	
 	
 	/**
 	 * Utility function to retrieve the observation context from a validated

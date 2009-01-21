@@ -43,9 +43,10 @@
 	(tl/get-property-values observation "observation:contingentTo"))
 	
 (defn get-extents
-	"Retrieve and return all the extents that the passed observation depends on."
+	"Retrieve and return all the extents IObservations that the passed observation depends on. Note:
+     this returns instance implementations (IObservation), not instances."	
 	[observation]
-	nil)
+	(.. observation (getImplementation) (getExtentDependencies)))
 
 (defn get-observable-class
      ""
@@ -57,12 +58,22 @@
      [observation]
      (.. observation (getImplementation) (getObservationState) (getDataAsDouble)))
 
-
 (defn get-extent
-	"Retrieve and return the extents that observes the given concept (e.g. space)."
+	"Retrieve and return the extent that observes the given concept (e.g. space) or nil. Note:
+     this returns Java implementations of instances (IObservation), not IInstances."
 	[observation concept]
-	nil)
-	
+	(.. observation (getImplementation) (getExtent concept)))
+
+(defn get-conceptual-model
+   "Retrieve the conceptual model of the passed observation"
+   [observation]
+	(.. observation (getImplementation) (getConceptualModel)))
+
+(defn get-data-source
+   "Retrieve the data source of the passed observation, or nil"
+   [observation]
+	(.. observation (getImplementation) (getDataSource)))
+
 (defn extensive?
 	"True if the passed observation is a measurement and its observable is an extensive physical property.
      (such as mass)."
@@ -78,12 +89,16 @@
 (defn measurement?
 	"True if the passed observation is a measurement."
 	[observation]
-	false)
+	(instance? 
+        org.integratedmodelling.corescience.observation.measurement.MeasurementModel 
+        (get-conceptual-model observation)))	
 	
 (defn classification?
 	"True if the passed observation is a classification."
 	[observation]
-	false)
+	(instance? 
+        org.integratedmodelling.corescience.observation.classification.ClassificationModel 
+        (get-conceptual-model observation)))	
 	
 (defn identification?
 	"True if the passed observation is an identification."

@@ -44,6 +44,7 @@ import org.integratedmodelling.geospace.cmodel.SubdividedCoverageConceptualModel
 import org.integratedmodelling.geospace.values.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.utils.MalformedListException;
@@ -120,6 +121,25 @@ public class RasterGrid extends Observation {
 	}
 	
 	
+	public int getRows() {
+		
+		try {
+			return ((RegularRasterModel)getConceptualModel()).getRows();
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+	}
+
+	
+	public int getColumns() {
+		
+		try {
+			return ((RegularRasterModel)getConceptualModel()).getColumns();
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+	}
+
 	/**
 	 * Determine the width and height (in cells) of the bounding box for the passed
 	 * shape when we want the max linear resolution to be the passed one and the
