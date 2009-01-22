@@ -103,6 +103,17 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasObservableModel -->
+
+    <owl:ObjectProperty rdf:about="#hasObservableModel">
+        <rdfs:comment
+            >Specifies the type of conceptual model that this observable requires. Should be restricted appropriately in any subclass. For example, the model for an AndersonLandUse should be restricted to be an instance of a classification space that lists all the classes allowed for it.</rdfs:comment>
+        <rdfs:domain rdf:resource="#ModeledObservable"/>
+        <rdfs:range rdf:resource="#ObservationSpace"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasObservationClass -->
 
     <owl:ObjectProperty rdf:about="#hasObservationClass">
@@ -253,7 +264,7 @@
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="#hasConceptualModel"/>
-                <owl:allValuesFrom rdf:resource="#AbstractObservationSpace"/>
+                <owl:allValuesFrom rdf:resource="#DiscreteRankingSpace"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:comment rdf:datatype="&xsd;string"
@@ -349,6 +360,26 @@ Each instance in a concrete observation space is a &quot;grain&quot; and its cha
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#DiscreteRanking -->
+
+    <owl:Class rdf:about="#DiscreteRanking">
+        <rdfs:subClassOf rdf:resource="#Classification"/>
+        <rdfs:comment
+            >A discrete ranking has values that come from an instance of a DiscreteRankingSpace. A typical case is &quot;high, medium, low&quot; - where the ranking can be each of a set of categories, but the categories represent a well-known partitioning of a continuous domain and have a precise ordinal relationship to each other.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#DiscreteRankingSpace -->
+
+    <owl:Class rdf:about="#DiscreteRankingSpace">
+        <rdfs:subClassOf rdf:resource="#ClassificationSpace"/>
+        <rdfs:comment
+            >A ranking made up of a number of different classes, each with a specified relationship to a continuous range. Because of this, the classes can be sorted based on their ordinal relationship to each other.</rdfs:comment>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ExtentObservation -->
 
     <owl:Class rdf:about="#ExtentObservation">
@@ -390,6 +421,16 @@ An Identification can also identify merelogical relationships of an observable t
         <rdfs:subClassOf rdf:resource="#ConcreteObservationSpace"/>
         <rdfs:comment rdf:datatype="&xsd;string"></rdfs:comment>
         <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ModeledObservable -->
+
+    <owl:Class rdf:about="#ModeledObservable">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+        <rdfs:comment
+            >An observable that specifies a particular observation space. bservables in observations can be of any types, but if they are instances of ModeledObservable, the conceptual model class of the observation will be validated against the restricted CM in the specific subclass of ModeledObservable.</rdfs:comment>
     </owl:Class>
     
 

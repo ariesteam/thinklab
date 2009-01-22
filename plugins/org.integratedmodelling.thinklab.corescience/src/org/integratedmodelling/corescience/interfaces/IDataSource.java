@@ -153,8 +153,6 @@ public interface IDataSource {
 			boolean useExtentIndex) throws ThinklabValidationException;
 		
 
-	
-	
 	/**
 	 * Datasources may have an initial value before anything is computed or extracted. This value, if
 	 * not null, is used to initialize state storage before contextualization. If the initial value

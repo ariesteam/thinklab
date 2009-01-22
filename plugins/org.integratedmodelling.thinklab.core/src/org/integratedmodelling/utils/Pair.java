@@ -105,4 +105,18 @@ public class Pair<T1,T2> implements Serializable
 	{
 		return "{" + getFirst() + "," + getSecond() + "}";
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+
+		return ((Pair<?,?>)obj).first.equals(first) && ((Pair<?,?>)obj).second.equals(second);
+	}
+	
+	@Override
+	public int hashCode() {
+		return first.hashCode() + second.hashCode();
+	}
+
+	
+	
 }

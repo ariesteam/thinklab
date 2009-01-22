@@ -46,12 +46,44 @@ import org.jscience.mathematics.number.Rational;
  * the CM linked to the observation knows what the data mean and if/how they can
  * be converted when links are made between observations that represent the differently.
  * 
+ * TODO implement all the mediation stuff into interfaces; use instanceof to check capabilities at
+ * runtime.
+ * 
  * @author Ferdinando Villa
  * @model
  */
 public interface IConceptualModel extends INamedObject {
 	
+	/*
+	 * Capabilities interface: used to compile contextualization strategies
+	 * into efficient code
+	 */
 	
+//	/**
+//	 * If true, validation functions will be called
+//	 */
+//	public abstract boolean isValidating();
+//	
+//	/**
+//	 * If true, mediators will be used.
+//	 * @return
+//	 */
+//	public abstract boolean isMediating();
+//	
+//	/**
+//	 * If true, aggregation and partitioning will be compiled in to solve scaling differences.
+//	 * If false and scale differences exist, an exception will be thrown at conceptualization.
+//	 * @return
+//	 */
+//	public abstract boolean isAggregating();
+//	
+//	/**
+//	 * Check if a state using the passed conceptual model can be converted into this one.
+//	 * @param otherConceptualModel
+//	 * @return
+//	 */
+//	public abstract boolean canTransformFrom(IConcept otherConceptualModel);
+//	
 	/**
 	 * Return an appropriate mediator to convert a state in a given
 	 * overall context. The context adaptor should be initialized and stored to
@@ -191,5 +223,19 @@ public interface IConceptualModel extends INamedObject {
 	 */
 	public abstract IValue validateData(double b) throws ThinklabValidationException;
 
-
+//	/**
+//	 * If canTransformFrom() has returned true for the semantic type of the passed conceptual
+//	 * model, this one may be called to convert the state of another observation into a datasource
+//	 * that fits us.
+//	 *  
+//	 * @param otherConceptualModel
+//	 * @param state
+//	 * @return
+//	 * @throws ThinklabValidationException if errors occur; no type checking should be done, because
+//	 * this method is only called if canTransformFrom has returned true.
+//	 */
+//	public IDataSource transformState(IConceptualModel otherConceptualModel, IObservationState state) 
+//		throws ThinklabValidationException;
+	
+	
 }

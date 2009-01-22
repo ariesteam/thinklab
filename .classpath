@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.corescience/classes" path="plugins/org.integratedmodelling.thinklab.corescience/src"/>
+	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.riskwiz/classes" path="plugins/org.integratedmodelling.thinklab.riskwiz/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.scheduler/classes" path="plugins/org.integratedmodelling.thinklab.scheduler/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.tclj/classes" path="plugins/org.integratedmodelling.thinklab.tclj/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.clojure/classes" path="plugins/org.integratedmodelling.thinklab.clojure/src"/>
@@ -248,5 +249,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-xsd-wfs-2.5.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-xsd-wps-2.5.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-mappane-2.5-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/riskwiz.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

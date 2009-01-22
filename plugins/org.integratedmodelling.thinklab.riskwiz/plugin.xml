@@ -1,11 +1,30 @@
 <?xml version="1.0" ?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.riskwiz" version="0.8.0" >
+<plugin id="org.integratedmodelling.thinklab.riskwiz" version="0.8.0" class="org.integratedmodelling.thinklab.riskwiz.RiskWizPlugin">
+
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.clojure"/>
+	</requires>
+
 	<runtime>
-		<library id="opal" path="classes/" type="code">
+		<library id="classes" path="classes/" type="code">
 			<export prefix="*" />
 		</library>
-		<library id="iiop" path="lib/riskwiz.jar" type="code"/>
-	</runtime>
 
+		<library id="riskwiz" path="lib/riskwiz.jar" type="code">
+			<export prefix="*" />
+		</library>
+
+		<library type="resources" path="config/" id="config" />
+		<library type="resources" path="bindings/" id="bindings" />
+		
+	</runtime>
+	
+	<!-- bindings -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding" id="clj">
+		<parameter id="language" value="clojure"/>
+		<parameter id="resource" value="clojure/riskwiz.clj"/>
+	</extension>
+	
 </plugin>
