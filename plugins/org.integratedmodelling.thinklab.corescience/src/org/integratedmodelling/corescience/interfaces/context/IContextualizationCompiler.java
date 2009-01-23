@@ -33,7 +33,6 @@
 package org.integratedmodelling.corescience.interfaces.context;
 
 import org.integratedmodelling.corescience.observation.IObservation;
-import org.integratedmodelling.corescience.observation.Observation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 
 /**
@@ -41,6 +40,17 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
  */
 public interface IContextualizationCompiler {
 
+	/**
+	 * Should analyze the CMs along the passed observation structure and determine if
+	 * it can be compiled successfully. Making it relatively fast will pay - will be
+	 * called once per observation structure but all the available compilers will get
+	 * called.
+	 * 
+	 * @param observation
+	 * @return
+	 */
+	public boolean canCompile(IObservation observation);
+	
 	/**
 	 * Notify an observation that will need to be part of the workflow.
 	 * @param observation

@@ -78,5 +78,11 @@ public class WorkflowCompiler implements IContextualizationCompiler {
 		return Contx.class;
 	}
 
+	@Override
+	public boolean canCompile(IObservation observation) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 }
