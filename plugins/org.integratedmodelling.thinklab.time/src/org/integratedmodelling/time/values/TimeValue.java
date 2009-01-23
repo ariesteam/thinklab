@@ -32,9 +32,9 @@
  **/
 package org.integratedmodelling.time.values;
 
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IObservationContextState;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;

@@ -34,9 +34,9 @@ package org.integratedmodelling.corescience.workflow;
 
 import java.util.ArrayList;
 
-import org.integratedmodelling.corescience.interfaces.IObservation;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IObservationState;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.observation.IObservation;
+import org.integratedmodelling.corescience.observation.IObservationState;
 import org.integratedmodelling.corescience.observation.Observation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;

@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.corescience.observation;
 
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 
 /**
  * Derive from this one to avoid having to implement the silly ID methods.

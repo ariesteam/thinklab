@@ -35,7 +35,7 @@ package org.integratedmodelling.databridge.kbox;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.integratedmodelling.corescience.interfaces.IObservationContextState;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;

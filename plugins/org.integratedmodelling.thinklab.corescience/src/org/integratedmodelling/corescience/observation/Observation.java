@@ -38,13 +38,10 @@ import java.util.Collection;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.contextualization.ObservationContext;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextValidationException;
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.IContextualizationWorkflow;
-import org.integratedmodelling.corescience.interfaces.IDataSource;
-import org.integratedmodelling.corescience.interfaces.IExtentConceptualModel;
-import org.integratedmodelling.corescience.interfaces.IObservation;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IObservationState;
+import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.workflow.DefaultWorkflow;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -341,7 +338,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 		for (IObservation oo : getDependencies()) {
 
 			/* merge extents appropriately */
-			if (((Observation)oo).conceptualModel instanceof IExtentConceptualModel)
+			if (((Observation)oo).conceptualModel instanceof ExtentConceptualModel)
 				ret.mergeExtent(oo, getContextDimension(oo), LogicalConnector.INTERSECTION, true);
 			else {
 				/* FIXME should notify dependency, too?  */
@@ -383,7 +380,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 		workflow.addObservation(this);
 
 		/* if I am an extent, set context from it. */
-		if (conceptualModel instanceof IExtentConceptualModel) {
+		if (conceptualModel instanceof ExtentConceptualModel) {
 			ret.mergeExtent(this, getContextDimension(this), LogicalConnector.INTERSECTION, true);
 		}
 

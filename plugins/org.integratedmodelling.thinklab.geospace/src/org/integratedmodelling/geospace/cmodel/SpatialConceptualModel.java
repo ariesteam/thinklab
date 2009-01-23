@@ -3,8 +3,9 @@ package org.integratedmodelling.geospace.cmodel;
 import org.geotools.geometry.Envelope2D;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.exceptions.ThinklabConceptualModelValidationException;
-import org.integratedmodelling.corescience.interfaces.IExtent;
-import org.integratedmodelling.corescience.interfaces.IExtentConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -15,7 +16,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-public abstract class SpatialConceptualModel implements IExtentConceptualModel, IInstanceImplementation  {
+public abstract class SpatialConceptualModel implements IConceptualModel, ExtentConceptualModel, IInstanceImplementation  {
 
 	private CoordinateReferenceSystem crs;
 

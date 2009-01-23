@@ -30,9 +30,10 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.corescience.interfaces;
+package org.integratedmodelling.corescience.interfaces.cmodel;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabInexactConversionException;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;

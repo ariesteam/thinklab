@@ -1,5 +1,5 @@
 /**
- * IValueAggregator.java
+ * IExtent.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,36 +30,49 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.corescience.interfaces;
+package org.integratedmodelling.corescience.interfaces.cmodel;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.utils.Pair;
 
 /**
- * Conceptual models create these to enable aggregation of fine-grained dependencies into values to
- * use when computing coarser-grained dependents.
+ * An Extent record is produced by a Conceptual Model to describe the extent of the observation
+ * it's linked to. Conceptual models can produce IContextAdaptors to mediate between two
+ * compatible extents, and are capable of merging extents to produce unions or intersections
+ * of extents.
  * 
  * @author Ferdinando Villa
  *
  */
-public interface IValueAggregator {
+public interface IExtent {
 
 	/**
-	 * 
-	 * @param value
-	 * @param uncertainty
-	 * @param contextState
-	 * @throws ThinklabException
-	 */
-	public abstract void addValue(IValue value, IUncertainty uncertainty, IObservationContextState contextState)
-		throws ThinklabException;
-	
-	/**
+	 * Return the total number of granules in this extent.
 	 * 
 	 * @return
-	 * @throws ThinklabException
 	 */
-	public abstract Pair<IValue, IUncertainty> aggregateAndReset() throws ThinklabException;
+	int getTotalGranularity();
+	
+	/**
+	 * Return the value of the granule indicated.
+	 * 
+	 * @param granule
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	IValue getState(int granule) throws ThinklabException;
+	
+	/**
+	 * Return the value that is the union of all granules, aggregated in the way that makes
+	 * sense for the particular conceptual domain.
+	 * @return
+	 */
+	IValue getFullExtentValue();
+
+	/**
+	 * An extent must be capable of returning the conceptual model that generated it.
+	 * @return
+	 */
+	ExtentConceptualModel getConceptualModel();
+
 }

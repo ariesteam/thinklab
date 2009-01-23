@@ -35,10 +35,10 @@ package org.integratedmodelling.corescience.datasources;
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabInconsistentDataSourceException;
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.IDataSource;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IObservationContextState;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.observation.IDataSource;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;

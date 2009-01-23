@@ -57,7 +57,7 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.renderer.shape.ShapefileRenderer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;

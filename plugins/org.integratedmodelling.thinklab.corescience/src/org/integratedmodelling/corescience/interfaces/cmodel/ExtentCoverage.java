@@ -30,7 +30,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.corescience.interfaces;
+package org.integratedmodelling.corescience.interfaces.cmodel;
 
 /**
  * Returned by IExtentMediator.checkCoverage() to describe how the extent is being covered

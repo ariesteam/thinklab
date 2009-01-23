@@ -33,9 +33,9 @@
 package org.integratedmodelling.currency.observations;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabInexactConversionException;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IObservationContextState;
-import org.integratedmodelling.corescience.interfaces.IValueMediator;
+import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.currency.CurrencyPlugin;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;

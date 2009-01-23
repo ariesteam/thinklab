@@ -32,10 +32,10 @@
  **/
 package org.integratedmodelling.corescience.datasources.counters;
 
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.IDataSource;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IObservationContextState;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.observation.IDataSource;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;

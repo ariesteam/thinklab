@@ -33,8 +33,8 @@
 package org.integratedmodelling.geospace.extents;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.integratedmodelling.corescience.interfaces.IExtent;
-import org.integratedmodelling.corescience.interfaces.IExtentConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.geospace.cmodel.SpatialConceptualModel;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -56,7 +56,7 @@ public abstract class ArealExtent implements IExtent {
 		return crs;
 	}
 	
-	public IExtentConceptualModel getConceptualModel() {
+	public ExtentConceptualModel getConceptualModel() {
 		return cm;
 	}
 

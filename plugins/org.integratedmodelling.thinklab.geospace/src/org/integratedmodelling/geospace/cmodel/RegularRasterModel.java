@@ -33,12 +33,12 @@
 
 package org.integratedmodelling.geospace.cmodel;
 
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.IExtent;
-import org.integratedmodelling.corescience.interfaces.IExtentMediator;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IValueAggregator;
-import org.integratedmodelling.corescience.interfaces.IValueMediator;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
+import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
+import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;

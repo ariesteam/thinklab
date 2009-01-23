@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.time.observations;
 
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.observation.Observation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.time.cmodel.InstantConceptualModel;

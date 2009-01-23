@@ -32,8 +32,8 @@
  **/
 package org.integratedmodelling.time.extents;
 
-import org.integratedmodelling.corescience.interfaces.IExtent;
-import org.integratedmodelling.corescience.interfaces.IExtentConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.time.cmodel.InstantConceptualModel;
 import org.integratedmodelling.time.values.TimeValue;
@@ -65,7 +65,7 @@ public class TemporalLocationExtent implements IExtent {
 		return 1;
 	}
 
-	public IExtentConceptualModel getConceptualModel() {
+	public ExtentConceptualModel getConceptualModel() {
 		return cModel;
 	}
 

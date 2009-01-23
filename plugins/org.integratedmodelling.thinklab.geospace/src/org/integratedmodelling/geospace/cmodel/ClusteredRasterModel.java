@@ -16,13 +16,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  */
 public class ClusteredRasterModel extends RegularRasterModel {
 
-//	public ClusteredRasterModel(int rangeOffset, int rangeMax,
-//			int rangeOffset2, int rangeMax2, double latLowerBound,
-//			double latUpperBound, double lonLowerBound, double lonUpperBound,
-//			CoordinateReferenceSystem crs) {
-//		// TODO Auto-generated constructor stub
-//	}
-
 	/**
 	 * Build the cluster model from the passed coverage; classify the coverage on the
 	 * spot.

@@ -32,8 +32,8 @@
  **/
 package org.integratedmodelling.time.extents;
 
-import org.integratedmodelling.corescience.interfaces.IExtent;
-import org.integratedmodelling.corescience.interfaces.IExtentConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -153,7 +153,7 @@ public class RegularTimeGridExtent implements IExtent {
 		
 	}
 
-	public IExtentConceptualModel getConceptualModel() {
+	public ExtentConceptualModel getConceptualModel() {
 		return cModel;
 	}
 

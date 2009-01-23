@@ -30,7 +30,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.corescience.interfaces;
+package org.integratedmodelling.corescience.interfaces.cmodel;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -38,12 +38,13 @@ import org.integratedmodelling.utils.LogicalConnector;
 
 /**
  * Conceptual models of observations that define observation extents should be capable of
- * creating, merging and mediating extents.
+ * creating, merging and mediating extents. This is a different operation than standard 
+ * mediation. In order to represent extents, conceptual models must implement ExtentConceptualModel.
  * 
  * @author Ferdinando Villa
  *
  */
-public interface IExtentConceptualModel extends IConceptualModel {
+public interface ExtentConceptualModel  {
 
 	/**
 	 * Produce the extent that describes the observation we're linked to.

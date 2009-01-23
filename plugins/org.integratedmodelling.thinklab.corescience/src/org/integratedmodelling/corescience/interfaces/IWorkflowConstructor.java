@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.corescience.interfaces;
 
+import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
+
 public interface IWorkflowConstructor {
 
 	public abstract IContextualizationWorkflow createWorkflow();

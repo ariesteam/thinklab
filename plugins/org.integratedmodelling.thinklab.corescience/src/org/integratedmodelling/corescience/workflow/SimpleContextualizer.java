@@ -1,6 +1,6 @@
 package org.integratedmodelling.corescience.workflow;
 
-import org.integratedmodelling.corescience.interfaces.IContextualizer;
+import org.integratedmodelling.corescience.interfaces.context.IContextualizer;
 
 /*
  * Testing - not used at all for now.

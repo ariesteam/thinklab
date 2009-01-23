@@ -43,7 +43,7 @@ import org.integratedmodelling.thinklab.value.TextValue;
  * @author UVM Affiliate
  *
  */
-public class ColumnFilter extends TextValue implements org.integratedmodelling.corescience.interfaces.IDataFilter {
+public class ColumnFilter extends TextValue implements org.integratedmodelling.corescience.observation.IDataFilter {
 
 	String columns[] = null;
 	

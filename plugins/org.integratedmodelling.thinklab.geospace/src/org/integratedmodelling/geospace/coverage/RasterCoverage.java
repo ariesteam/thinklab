@@ -19,7 +19,8 @@ import org.geotools.coverage.processing.DefaultProcessor;
 import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
@@ -29,6 +30,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.value.NumberValue;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
@@ -43,7 +45,6 @@ public class RasterCoverage implements ICoverage {
 	private BoundingBox boundingBox = null;
 	private RenderedImage image = null;
 	private GridGeometry2D gridGeometry = null;
-//	private RasterActivationLayer activationLayer = null;
 	private GridSampleDimension dimension = null;
 	private double[] noData = null;
 	private String sourceURL;
@@ -298,13 +299,29 @@ public class RasterCoverage implements ICoverage {
 		
         final int dataType = image.getSampleModel().getDataType();
         
-        switch (dataType) {
-            case DataBuffer.TYPE_BYTE:   ret = conceptualModel.validateData(((byte[])data)[0]); break;
-            case DataBuffer.TYPE_SHORT:  ret = conceptualModel.validateData(((int[])data)[0]); break;
-            case DataBuffer.TYPE_USHORT: ret = conceptualModel.validateData(((int[])data)[0]); break;
-            case DataBuffer.TYPE_INT:    ret = conceptualModel.validateData(((int[])data)[0]); break;
-            case DataBuffer.TYPE_FLOAT:  ret = conceptualModel.validateData(((float[])data)[0]); break;
-            case DataBuffer.TYPE_DOUBLE: ret = conceptualModel.validateData(((double[])data)[0]); break;
+        if (conceptualModel instanceof ValidatingConceptualModel) {
+        	
+        	ValidatingConceptualModel vcm = (ValidatingConceptualModel)conceptualModel;
+        
+        	switch (dataType) {
+            	case DataBuffer.TYPE_BYTE:   ret = vcm.validateData(((byte[])data)[0]); break;
+            	case DataBuffer.TYPE_SHORT:  ret = vcm.validateData(((int[])data)[0]); break;
+            	case DataBuffer.TYPE_USHORT: ret = vcm.validateData(((int[])data)[0]); break;
+            	case DataBuffer.TYPE_INT:    ret = vcm.validateData(((int[])data)[0]); break;
+            	case DataBuffer.TYPE_FLOAT:  ret = vcm.validateData(((float[])data)[0]); break;
+            	case DataBuffer.TYPE_DOUBLE: ret = vcm.validateData(((double[])data)[0]); break;
+        	}
+        	
+        } else {
+        	
+        	switch (dataType) {
+        		case DataBuffer.TYPE_BYTE:   ret = new NumberValue(((byte[])data)[0]); break;
+        		case DataBuffer.TYPE_SHORT:  ret = new NumberValue(((int[])data)[0]); break;
+        		case DataBuffer.TYPE_USHORT: ret = new NumberValue(((int[])data)[0]); break;
+        		case DataBuffer.TYPE_INT:    ret = new NumberValue(((int[])data)[0]); break;
+        		case DataBuffer.TYPE_FLOAT:  ret = new NumberValue(((float[])data)[0]); break;
+        		case DataBuffer.TYPE_DOUBLE: ret = new NumberValue(((double[])data)[0]); break;
+        	}	
         }
 		
 		/* turn it into what the CM wants */

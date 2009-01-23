@@ -1,5 +1,5 @@
 /**
- * IExtent.java
+ * IObservationContextState.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,49 +30,36 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.corescience.interfaces;
+package org.integratedmodelling.corescience.interfaces.context;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
- * An Extent record is produced by a Conceptual Model to describe the extent of the observation
- * it's linked to. Conceptual models can produce IContextAdaptors to mediate between two
- * compatible extents, and are capable of merging extents to produce unions or intersections
- * of extents.
+ * The context state for an observation is what gives it access to the value of all its 
+ * dependencies in the specific context state that the observation is in at the time of
+ * use. It can return both an index (for those workflows where the extents are regular
+ * and can reconstruct their values faster from the index) and a value, and take either
+ * a dimension index or a IConcept to identify the dimension.
  * 
  * @author Ferdinando Villa
+ * TODO document
  *
  */
-public interface IExtent {
-
-	/**
-	 * Return the total number of granules in this extent.
-	 * 
-	 * @return
-	 */
-	int getTotalGranularity();
+public interface IObservationContextState  {
 	
-	/**
-	 * Return the value of the granule indicated.
-	 * 
-	 * @param granule
-	 * @return
-	 * @throws ThinklabException 
-	 */
-	IValue getState(int granule) throws ThinklabException;
+	public int getIndex(int dimensionIndex);
 	
-	/**
-	 * Return the value that is the union of all granules, aggregated in the way that makes
-	 * sense for the particular conceptual domain.
-	 * @return
-	 */
-	IValue getFullExtentValue();
+	public int getIndex(String dimensionID);
+	
+	public long getLinearIndex();
 
-	/**
-	 * An extent must be capable of returning the conceptual model that generated it.
-	 * @return
-	 */
-	IExtentConceptualModel getConceptualModel();
+	public int[] getIndexes();
 
+	public IValue getValue(int dimensionIndex);
+
+	public IValue getValue(String dimensionID);
+
+	public IUncertainty getUncertainty(String dimensionID);
+	
 }

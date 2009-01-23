@@ -1,5 +1,5 @@
 /**
- * IValueTransformationFilter.java
+ * IValueAggregator.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,12 +30,37 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.corescience.interfaces;
+package org.integratedmodelling.corescience.interfaces.cmodel;
 
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.utils.Pair;
 
-public interface IValueTransformationFilter extends IDataFilter {
+/**
+ * Conceptual models create these to enable aggregation of fine-grained dependencies into values to
+ * use when computing coarser-grained dependents.
+ * 
+ * @author Ferdinando Villa
+ *
+ */
+public interface IValueAggregator {
 
-	public abstract IValue transform(IValue value) throws ThinklabValueConversionException;
+	/**
+	 * 
+	 * @param value
+	 * @param uncertainty
+	 * @param contextState
+	 * @throws ThinklabException
+	 */
+	public abstract void addValue(IValue value, IUncertainty uncertainty, IObservationContextState contextState)
+		throws ThinklabException;
+	
+	/**
+	 * 
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public abstract Pair<IValue, IUncertainty> aggregateAndReset() throws ThinklabException;
 }

@@ -1,11 +1,11 @@
 package org.integratedmodelling.corescience.workflow;
 
-import org.integratedmodelling.corescience.interfaces.IContextualizationCompiler;
-import org.integratedmodelling.corescience.interfaces.IContextualizationWorkflow;
-import org.integratedmodelling.corescience.interfaces.IContextualizer;
-import org.integratedmodelling.corescience.interfaces.IObservation;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IObservationState;
+import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
+import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
+import org.integratedmodelling.corescience.interfaces.context.IContextualizer;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.observation.IObservation;
+import org.integratedmodelling.corescience.observation.IObservationState;
 import org.integratedmodelling.corescience.observation.Observation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;

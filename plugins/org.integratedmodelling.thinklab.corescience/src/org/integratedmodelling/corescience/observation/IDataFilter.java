@@ -1,5 +1,5 @@
 /**
- * IObservationContextState.java
+ * IDataFilter.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,36 +30,13 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.corescience.interfaces;
-
-import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+package org.integratedmodelling.corescience.observation;
 
 /**
- * The context state for an observation is what gives it access to the value of all its 
- * dependencies in the specific context state that the observation is in at the time of
- * use. It can return both an index (for those workflows where the extents are regular
- * and can reconstruct their values faster from the index) and a value, and take either
- * a dimension index or a IConcept to identify the dimension.
- * 
+ * Represents a filter applied to a DataSource.
  * @author Ferdinando Villa
- * TODO document
  *
  */
-public interface IObservationContextState  {
-	
-	public int getIndex(int dimensionIndex);
-	
-	public int getIndex(String dimensionID);
-	
-	public long getLinearIndex();
+public interface IDataFilter {
 
-	public int[] getIndexes();
-
-	public IValue getValue(int dimensionIndex);
-
-	public IValue getValue(String dimensionID);
-
-	public IUncertainty getUncertainty(String dimensionID);
-	
 }

@@ -33,7 +33,7 @@
 package org.integratedmodelling.databridge;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.observation.IObservation;
 import org.integratedmodelling.geospace.observations.RasterGrid;
 import org.integratedmodelling.geospace.values.ShapeValue;
 import org.integratedmodelling.thinklab.constraint.Constraint;

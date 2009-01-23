@@ -1,5 +1,5 @@
 /**
- * IIndirectObservation.java
+ * IContextStateGenerator.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,33 +30,9 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.corescience.interfaces;
+package org.integratedmodelling.corescience.interfaces.context;
 
-import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
-import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
-public interface IIndirectObservation extends IObservation {
+public interface IContextStateGenerator extends Iterable<IObservationContextState> {
 
-	/**
-	 * Returns the state of the observation in the passed context state. In order to do so,
-	 * values must be extracted from the datasource and possibly transformed. The values of
-	 * observations we depend on are assumed calculated by the contextualization workflow; yet,
-	 * they may require translation to fit the passed context.
-	 * 
-	 * @param context
-	 * @return
-	 * @throws ThinklabContextualizationException if the context is inappropriate, e.g. if the sequence
-	 * hasn't been followed in a sequential context.
-	 */
-	public IValue getState(IObservationContext context) throws ThinklabContextualizationException;
-	
-	/**
-	 * Get the uncertainty associated with the value at the passed context.
-	 * 
-	 * @param context
-	 * @return
-	 */
-	public abstract IUncertainty getUncertainty(IObservationContext context);
 }
- 

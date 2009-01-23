@@ -34,8 +34,8 @@ package org.integratedmodelling.corescience;
 
 import java.util.HashMap;
 
-import org.integratedmodelling.corescience.interfaces.IContextualizationWorkflow;
 import org.integratedmodelling.corescience.interfaces.IWorkflowConstructor;
+import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;

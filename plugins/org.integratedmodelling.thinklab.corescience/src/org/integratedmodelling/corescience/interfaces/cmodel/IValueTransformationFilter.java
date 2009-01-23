@@ -1,5 +1,5 @@
 /**
- * IDataFilter.java
+ * IValueTransformationFilter.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,13 +30,13 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.corescience.interfaces;
+package org.integratedmodelling.corescience.interfaces.cmodel;
 
-/**
- * Represents a filter applied to a DataSource.
- * @author Ferdinando Villa
- *
- */
-public interface IDataFilter {
+import org.integratedmodelling.corescience.observation.IDataFilter;
+import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
+public interface IValueTransformationFilter extends IDataFilter {
+
+	public abstract IValue transform(IValue value) throws ThinklabValueConversionException;
 }

@@ -34,7 +34,7 @@ package org.integratedmodelling.corescience.values;
 
 import javax.measure.Measure;
 
-import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.observation.IObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;

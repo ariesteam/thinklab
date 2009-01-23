@@ -34,12 +34,12 @@ package org.integratedmodelling.corescience.observation.measurement;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabInconsistentConceptualModelException;
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.IObservation;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IObservationContextState;
-import org.integratedmodelling.corescience.interfaces.IValueAggregator;
-import org.integratedmodelling.corescience.interfaces.IValueMediator;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
+import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.observation.IObservation;
 import org.integratedmodelling.corescience.values.UnitValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

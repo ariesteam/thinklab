@@ -2,7 +2,7 @@ package org.integratedmodelling.geospace.coverage;
 
 import java.io.File;
 
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;

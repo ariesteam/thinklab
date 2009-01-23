@@ -38,19 +38,22 @@ import java.util.HashMap;
 
 import org.integratedmodelling.corescience.contextualization.ObservationContext;
 import org.integratedmodelling.corescience.contextualization.ObservationContextState;
-import org.integratedmodelling.corescience.interfaces.ExtentCoverage;
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.IContextualizationWorkflow;
-import org.integratedmodelling.corescience.interfaces.IDataSource;
-import org.integratedmodelling.corescience.interfaces.IExtent;
-import org.integratedmodelling.corescience.interfaces.IExtentConceptualModel;
-import org.integratedmodelling.corescience.interfaces.IExtentMediator;
-import org.integratedmodelling.corescience.interfaces.IObservation;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IObservationContextState;
-import org.integratedmodelling.corescience.interfaces.IObservationState;
-import org.integratedmodelling.corescience.interfaces.IValueAggregator;
-import org.integratedmodelling.corescience.interfaces.IValueMediator;
+import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.ExtentCoverage;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
+import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
+import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
+import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.ScalingConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
+import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.observation.IDataSource;
+import org.integratedmodelling.corescience.observation.IObservation;
+import org.integratedmodelling.corescience.observation.IObservationState;
 import org.integratedmodelling.corescience.observation.Observation;
 import org.integratedmodelling.thinklab.exception.ThinklabCircularDependencyException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -178,7 +181,8 @@ public abstract class AsynchronousContextualizationWorkflow implements IContextu
 					}						
 
 				/* create mediators in linkedMediator */
-				linkedMediator = conceptualModel.getMediator(linkedDependency.conceptualModel, ctx);
+				if (conceptualModel instanceof MediatingConceptualModel)
+					linkedMediator = ((MediatingConceptualModel)conceptualModel).getMediator(linkedDependency.conceptualModel, ctx);
 					
 			} else {	
 				
@@ -279,7 +283,7 @@ public abstract class AsynchronousContextualizationWorkflow implements IContextu
 			// class.
 			IKnowledgeSubject observable = observation.getObservable();
 			
-			if (conceptualModel != null && conceptualModel instanceof IExtentConceptualModel) {
+			if (conceptualModel != null && conceptualModel instanceof ExtentConceptualModel) {
 				id = ctx.getDimension(observable.getType()).getLocalName();
 			} else {
 				id = observable.getLocalName();
@@ -320,7 +324,7 @@ public abstract class AsynchronousContextualizationWorkflow implements IContextu
 			 * logic). Maybe conditioned to a global option.
 			 */
 			if (ownContext == null && conceptualModel != null && 
-					!(conceptualModel instanceof IExtentConceptualModel)) {
+					!(conceptualModel instanceof ExtentConceptualModel)) {
 				multiplicity = ctx.getMultiplicity();
 			} else if (ownContext != null) {
 				multiplicity = ownContext.getMultiplicity();
@@ -468,7 +472,11 @@ public abstract class AsynchronousContextualizationWorkflow implements IContextu
 					/* finally, extract and have CM validate appropriately */
 					if (dataSource.getValueType() == IDataSource.ValueType.IVALUE) {
 						mret = dataSource.getValue(contextState, stateType, useGranuleIdx);
-						value = lastState = conceptualModel.validateValue(mret.getFirst(), contextState);
+						if (conceptualModel instanceof ValidatingConceptualModel)
+							value = lastState = ((ValidatingConceptualModel)conceptualModel).validateValue(mret.getFirst(), contextState);
+						else
+							value = lastState = mret.getFirst();
+						
 						uncertainty = mret.getSecond();
 					} else {
 						Pair<String, IUncertainty> lret = 
@@ -496,8 +504,10 @@ public abstract class AsynchronousContextualizationWorkflow implements IContextu
 							/* create the necessary aggregators */
 							int i = 0;
 							for (ActivationRecord ar : dependencies) {
-								dependenciesAccumulator[i++] = 
-									ar.conceptualModel.getAggregator(ownContext, overallContext);
+								
+								if (ar.conceptualModel instanceof ScalingConceptualModel)
+									dependenciesAccumulator[i++] = 
+										((ScalingConceptualModel)(ar.conceptualModel)).getAggregator(ownContext, overallContext);
 							}
 						}
 					
@@ -541,7 +551,7 @@ public abstract class AsynchronousContextualizationWorkflow implements IContextu
 								uncertainty = eret.getSecond();
 							}
 						}
-						value = conceptualModel.partition(lastState, ratio);
+						value = ((ScalingConceptualModel)conceptualModel).partition(lastState, ratio);
 					}
 
 				}

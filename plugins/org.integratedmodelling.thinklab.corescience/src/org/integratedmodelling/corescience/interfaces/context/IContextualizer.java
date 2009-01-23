@@ -1,4 +1,4 @@
-package org.integratedmodelling.corescience.interfaces;
+package org.integratedmodelling.corescience.interfaces.context;
 
 /**
  * Testing new approach to contextualization. Used only for development at the 

@@ -36,10 +36,10 @@ import java.util.Date;
 
 import org.integratedmodelling.corescience.contextualization.ObservationContext;
 import org.integratedmodelling.corescience.contextualization.ObservationContextState;
-import org.integratedmodelling.corescience.interfaces.IObservation;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IObservationContextState;
-import org.integratedmodelling.corescience.interfaces.IObservationState;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.observation.IObservation;
+import org.integratedmodelling.corescience.observation.IObservationState;
 import org.integratedmodelling.corescience.workflow.AsynchronousContextualizationWorkflow;
 import org.integratedmodelling.corescience.workflow.AsynchronousContextualizationWorkflow.ActivationRecord;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

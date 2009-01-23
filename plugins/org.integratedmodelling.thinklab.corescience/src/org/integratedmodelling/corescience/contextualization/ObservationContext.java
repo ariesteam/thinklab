@@ -37,13 +37,13 @@ import java.util.Collection;
 import java.util.Hashtable;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabContextValidationException;
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.IContextStateGenerator;
-import org.integratedmodelling.corescience.interfaces.IContextualizationWorkflow;
-import org.integratedmodelling.corescience.interfaces.IExtent;
-import org.integratedmodelling.corescience.interfaces.IExtentConceptualModel;
-import org.integratedmodelling.corescience.interfaces.IObservation;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
+import org.integratedmodelling.corescience.interfaces.context.IContextStateGenerator;
+import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.observation.IObservation;
 import org.integratedmodelling.corescience.workflow.AsynchronousContextualizationWorkflow;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabCircularDependencyException;
@@ -108,13 +108,13 @@ public class ObservationContext implements IObservationContext {
 		// retrieve conceptual model of obs and ensure it is an extent model
 		IConceptualModel cmv = observation.getConceptualModel();
 		
-		if (!(cmv instanceof IExtentConceptualModel))
+		if (!(cmv instanceof ExtentConceptualModel))
 			throw new ThinklabContextValidationException("extent relationship on " +
 					observation + 
 					" does not link to an extent observation: " +
 					dimension);
 
-		IExtentConceptualModel cm = (IExtentConceptualModel)cmv;
+		ExtentConceptualModel cm = (ExtentConceptualModel)cmv;
 		
 		// see if we already have an extent for this dimension
 		IExtent extent = extents.get(dimension.toString());

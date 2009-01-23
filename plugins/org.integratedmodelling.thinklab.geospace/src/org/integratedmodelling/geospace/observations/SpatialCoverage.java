@@ -33,7 +33,7 @@
 package org.integratedmodelling.geospace.observations;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.interfaces.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.observation.Observation;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.cmodel.FeatureCoverageModel;

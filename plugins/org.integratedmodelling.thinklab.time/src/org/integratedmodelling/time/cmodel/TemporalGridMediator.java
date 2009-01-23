@@ -33,8 +33,8 @@
 package org.integratedmodelling.time.cmodel;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabMediationException;
-import org.integratedmodelling.corescience.interfaces.ExtentCoverage;
-import org.integratedmodelling.corescience.interfaces.IExtentMediator;
+import org.integratedmodelling.corescience.interfaces.cmodel.ExtentCoverage;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;

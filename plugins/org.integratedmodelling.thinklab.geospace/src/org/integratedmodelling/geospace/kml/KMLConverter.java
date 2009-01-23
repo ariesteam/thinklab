@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.geospace.kml;
 
-import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.observation.IObservation;
 import org.integratedmodelling.utils.XMLDocument;
 
 public class KMLConverter {
