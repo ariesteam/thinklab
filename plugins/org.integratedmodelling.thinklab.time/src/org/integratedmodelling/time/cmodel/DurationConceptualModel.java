@@ -85,63 +85,11 @@ public class DurationConceptualModel extends ConceptualModel implements ExtentCo
 		return null;
 	}
 
-	public IValueAggregator getAggregator(IObservationContext ownContext, IObservationContext overallContext) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IValue partition(IValue originalValue, Rational ratio) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public IValue validateLiteral(String value,
 			IObservationContextState contextState)
 			throws ThinklabValidationException {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public IValue validateValue(IValue value,
-			IObservationContextState contextState)
-			throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IValue validateData(byte b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
-	public IValue validateData(int b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
-	public IValue validateData(long b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
-	public IValue validateData(float b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
-	public IValue validateData(double b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
 	}
 
 	@Override

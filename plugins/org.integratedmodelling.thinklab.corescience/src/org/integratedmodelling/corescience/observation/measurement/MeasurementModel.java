@@ -37,6 +37,9 @@ import org.integratedmodelling.corescience.exceptions.ThinklabInconsistentConcep
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
+import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.ScalingConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.corescience.observation.IObservation;
@@ -61,7 +64,8 @@ import org.jscience.mathematics.number.Rational;
  * @author UVM Affiliate
  *
  */
-public class MeasurementModel extends UnitValue implements IConceptualModel {
+public class MeasurementModel extends UnitValue implements
+	IConceptualModel, ScalingConceptualModel, MediatingConceptualModel, ValidatingConceptualModel {
 	
 	String id = null;
 	

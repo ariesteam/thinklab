@@ -36,9 +36,7 @@ import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.corescience.observation.IObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -50,35 +48,18 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementa
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.jscience.mathematics.number.Rational;
 
-public class ClassificationModel implements IConceptualModel, IInstanceImplementation {
+public class ClassificationModel implements IConceptualModel, ValidatingConceptualModel, IInstanceImplementation {
 
 	String name;
 	
 	HashMap<Object, IKnowledgeSubject> mapping = new HashMap<Object, IKnowledgeSubject>();
 	
-	public IValueAggregator getAggregator(IObservationContext ownContext,
-			IObservationContext overallContext) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IValueMediator getMediator(IConceptualModel conceptualModel,
-			IObservationContext ctx) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public IConcept getStateType() {
 		// the most general concept that subsumes our state
 		return null;
 	}
 
-	public IValue partition(IValue originalValue, Rational ratio) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public void validate(IObservation observation)
 			throws ThinklabValidationException {

@@ -33,12 +33,8 @@
 package org.integratedmodelling.time.cmodel;
 
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.corescience.observation.ConceptualModel;
 import org.integratedmodelling.corescience.observation.IObservation;
@@ -53,7 +49,6 @@ import org.integratedmodelling.time.values.DurationValue;
 import org.integratedmodelling.time.values.TimeValue;
 import org.integratedmodelling.utils.LogicalConnector;
 import org.joda.time.DateTime;
-import org.jscience.mathematics.number.Rational;
 
 /**
  * 
@@ -116,11 +111,6 @@ public class TemporalGridConceptualModel extends ConceptualModel implements Exte
 	
 	}
 
-	public IValueMediator getMediator(IConceptualModel conceptualModel, IObservationContext ctx) {
-		// TODO do we need mediators? (take time from another model...)
-		return null;
-	}
-
 	public IExtentMediator getExtentMediator(IExtent extent) throws ThinklabException {
 		
 		// TODO check that extent is proper type or catch/translate cast exception 
@@ -135,57 +125,17 @@ public class TemporalGridConceptualModel extends ConceptualModel implements Exte
 		return new TemporalGridMediator(this, ori, oth);
 	}
 
-	public IValueAggregator getAggregator(IObservationContext ownContext, IObservationContext overallContext) {
-		// extents should never aggregate along extents
-		return null;
-	}
-
-	public IValue partition(IValue originalValue, Rational ratio) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public IValue validateLiteral(String value,
-			IObservationContextState contextState)
-			throws ThinklabValidationException {
-		// we just turn everything to null. We're not supposed to have a datasource.
-		return null;
-	}
-
-	public IValue validateValue(IValue value,
-			IObservationContextState contextState)
-			throws ThinklabValidationException {
-		// we just turn everything to null. We're not supposed to have a datasource.
-		return null;
-	}
-
-	public void setObjectName(String name) {
-		// TODO Auto-generated method stub
-		
-	}
-	public IValue validateData(byte b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid temporal grid state from a number");
-	}
-
-	public IValue validateData(int b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid temporal grid state from a number");
-	}
-
-	public IValue validateData(long b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid temporal grid state from a number");
-	}
-
-	public IValue validateData(float b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid temporal grid state from a number");
-	}
-
-	public IValue validateData(double b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid temporal grid state from a number");
-	}
-
 	@Override
 	public IConcept getUncertaintyType() {
 		return KnowledgeManager.Nothing();
+	}
+
+	@Override
+	public IValue validateLiteral(String value,
+			IObservationContextState contextState)
+			throws ThinklabValidationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

@@ -95,27 +95,7 @@ public class FeatureCoverageModel extends SubdividedCoverageConceptualModel {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public IValue validateData(byte b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid areal location from a number");
-	}
-
-	public IValue validateData(int b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid areal location from a number");
-	}
-
-	public IValue validateData(long b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid areal location from a number");
-	}
-
-	public IValue validateData(float b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid areal location from a number");
-	}
-
-	public IValue validateData(double b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid areal location from a number");
-	}
-
+	
 	@Override
 	protected IExtent createMergedExtent(ArealExtent orextent,
 			ArealExtent otextent, CoordinateReferenceSystem crs2,

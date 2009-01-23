@@ -35,11 +35,14 @@ package org.integratedmodelling.currency.observations;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
+import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.corescience.observation.ConceptualModel;
 import org.integratedmodelling.corescience.observation.IObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -48,17 +51,12 @@ import org.integratedmodelling.thinklab.value.NumberValue;
 import org.integratedmodelling.time.values.TimeValue;
 import org.jscience.mathematics.number.Rational;
 
-public class MonetaryValueConceptualModel extends ConceptualModel {
+public class MonetaryValueConceptualModel extends ConceptualModel 
+	implements MediatingConceptualModel, ValidatingConceptualModel {
 
 	IInstance currency = null;
 	TimeValue time = null;
 	
-	public IValueMediator getMediator(IConceptualModel conceptualModel,
-			IObservationContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public IConcept getStateType() {
 		// FIXME we may want to use a higher precision value from a financial 
 		// library.
@@ -133,5 +131,12 @@ public class MonetaryValueConceptualModel extends ConceptualModel {
 	@Override
 	public IConcept getUncertaintyType() {
 		return KnowledgeManager.Nothing();
+	}
+
+	@Override
+	public IValueMediator getMediator(IConceptualModel conceptualModel,
+			IObservationContext ctx) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

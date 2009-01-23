@@ -34,12 +34,8 @@ package org.integratedmodelling.time.cmodel;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.corescience.observation.ConceptualModel;
 import org.integratedmodelling.corescience.observation.IObservation;
@@ -48,12 +44,10 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.NumberValue;
 import org.integratedmodelling.time.TimePlugin;
 import org.integratedmodelling.time.extents.TemporalLocationExtent;
 import org.integratedmodelling.time.values.TimeValue;
 import org.integratedmodelling.utils.LogicalConnector;
-import org.jscience.mathematics.number.Rational;
 
 
 /**
@@ -122,83 +116,24 @@ public class InstantConceptualModel extends ConceptualModel implements ExtentCon
 		
 	}
 
-	public IValueMediator getMediator(IConceptualModel conceptualModel, IObservationContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IExtentMediator getExtentMediator(IExtent extent) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IValueAggregator getAggregator(IObservationContext ownContext, IObservationContext overallContext) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IValue partition(IValue originalValue, Rational ratio) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IValue validateLiteral(String value,
-			IObservationContextState contextState)
-			throws ThinklabValidationException {
-		// we just turn everything to null. We're not supposed to have a datasource.
-		return null;
-	}
-
-	public IValue validateValue(IValue value,
-			IObservationContextState contextState)
-			throws ThinklabValidationException {
-		// we just turn everything to null. We're not supposed to have a datasource.
-		return null;
-	}
-
-	public void setObjectName(String name) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public IValue validateData(byte b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
-	public IValue validateData(int b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
-	public IValue validateData(long b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
-	public IValue validateData(float b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
-	public IValue validateData(double b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
 	@Override
 	public IConcept getUncertaintyType() {
 		return KnowledgeManager.Nothing();
+	}
+
+	@Override
+	public IExtentMediator getExtentMediator(IExtent extent)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IValue validateLiteral(String value,
+			IObservationContextState contextState)
+			throws ThinklabValidationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

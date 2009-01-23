@@ -35,6 +35,9 @@ package org.integratedmodelling.corescience.observation.ranking;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
+import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.ScalingConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.corescience.observation.ConceptualModel;
@@ -54,7 +57,8 @@ import org.jscience.mathematics.number.Rational;
  * @author Ferdinando Villa
  *
  */
-public class RankingModel extends ConceptualModel {
+public class RankingModel extends ConceptualModel implements 
+	ValidatingConceptualModel, ScalingConceptualModel, MediatingConceptualModel {
 
 	boolean leftBounded = false;
 	boolean rightBounded = false;

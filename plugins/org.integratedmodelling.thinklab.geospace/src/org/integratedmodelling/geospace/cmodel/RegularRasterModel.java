@@ -33,12 +33,8 @@
 
 package org.integratedmodelling.geospace.cmodel;
 
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
@@ -49,7 +45,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -139,39 +134,6 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-
-	public IValueAggregator getAggregator(IObservationContext ownContext,
-			IObservationContext overallContext) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IValueMediator getMediator(IConceptualModel conceptualModel,
-			IObservationContext ctx) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IValue validateData(byte b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid areal location from a number");
-	}
-
-	public IValue validateData(int b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid areal location from a number");
-	}
-
-	public IValue validateData(long b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid areal location from a number");
-	}
-
-	public IValue validateData(float b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid areal location from a number");
-	}
-
-	public IValue validateData(double b) throws ThinklabValidationException {
-		throw new ThinklabValidationException("cannot create a valid areal location from a number");
 	}
 
 	@Override
