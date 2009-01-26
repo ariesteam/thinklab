@@ -201,4 +201,15 @@ public interface IOntology  extends IResource {
 	 * @return
 	 */
 	public boolean isAnonymous();
+
+
+	/**
+	 * Create a concept from a list specification and return it. This must be capable to create
+	 * hasValue restrictions on an existing concept, and throw an exception on anything else.
+	 * List syntax is parallel to what used to create an object.
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public IConcept createConcept(Polylist list) throws ThinklabException;
 }

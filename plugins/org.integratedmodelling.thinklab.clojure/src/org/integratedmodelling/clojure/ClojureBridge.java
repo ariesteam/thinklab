@@ -12,7 +12,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Polylist;
 
-import clojure.lang.DynamicClassLoader;
 import clojure.lang.IPersistentMap;
 import clojure.lang.ISeq;
 import clojure.lang.RT;
@@ -24,10 +23,25 @@ import clojure.lang.RT;
  */
 public class ClojureBridge {
 	
-	public static Polylist list2p(ISeq list) {
+	private static Polylist list2pInternal(ISeq list, Polylist plist) {
 	
-		return null;
+		if (plist == null)
+			plist = new Polylist();
 		
+		plist = 
+			plist.appendElement(list.first() instanceof ISeq ? 
+					list2pInternal(((ISeq)list.first()), null) : 
+					list.first());
+		
+		if (list.rest() != null)
+			plist = list2pInternal(list.rest(), plist);
+		
+		return plist;
+		
+	}
+	
+	public static Polylist list2p(ISeq list) {
+		return list2pInternal(list, null);
 	}
 
 	public static ISeq p2list(Polylist list) throws ThinklabException {

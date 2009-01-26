@@ -268,5 +268,11 @@ public class PSession implements ISession {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public IConcept createConcept(Polylist list) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

@@ -73,7 +73,7 @@ public class AFLPlugin extends ThinklabPlugin {
 	 * Get your engine here, passing the necessary configuration properties. 
 	 * @param properties 
 	 * 
-	 * @param id
+	 * @param subject
 	 * @param properties
 	 * @return
 	 * @throws ThinklabException

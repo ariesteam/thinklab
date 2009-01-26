@@ -118,7 +118,7 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 	/**
 	 * Get your engine here, passing the necessary configuration properties. 
 	 * 
-	 * @param id
+	 * @param subject
 	 * @param properties
 	 * @return
 	 * @throws ThinklabException

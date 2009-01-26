@@ -1,11 +1,14 @@
 <?xml version="1.0" ?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.semanticmodelling" version="0.8.0" class="org.integratedmodelling.semanticmodelling.SemanticModellingPlugin">
+<plugin id="org.integratedmodelling.thinklab.modelling" version="0.8.0" class="org.integratedmodelling.modelling.ModellingPlugin">
 
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
 		<import plugin-id="org.integratedmodelling.thinklab.clojure"/>
 		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
+		<import plugin-id="org.integratedmodelling.thinklab.geospace"/>
+		<import plugin-id="org.integratedmodelling.thinklab.time"/>
+		<import plugin-id="org.integratedmodelling.thinklab.dynamicmodelling"/>
 		<import plugin-id="org.integratedmodelling.thinklab.rules"/>
 	</requires>
 
@@ -21,7 +24,7 @@
 	<!-- bindings -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding" id="clj">
 		<parameter id="language" value="clojure"/>
-		<parameter id="resource" value="clojure/semanticmodelling.clj"/>
+		<parameter id="resource" value="clojure/modelling.clj"/>
 	</extension>
 	
 </plugin>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.corescience/classes" path="plugins/org.integratedmodelling.thinklab.corescience/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.semanticmodelling/classes" path="plugins/org.integratedmodelling.thinklab.semanticmodelling/src"/>
+	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.modelling/classes" path="plugins/org.integratedmodelling.thinklab.modelling/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.riskwiz/classes" path="plugins/org.integratedmodelling.thinklab.riskwiz/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.scheduler/classes" path="plugins/org.integratedmodelling.thinklab.scheduler/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.tclj/classes" path="plugins/org.integratedmodelling.thinklab.tclj/src"/>
@@ -14,7 +14,6 @@
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.shell/classes" path="plugins/org.integratedmodelling.thinklab.shell/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.geospace/classes" path="plugins/org.integratedmodelling.thinklab.geospace/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.searchengine/classes" path="plugins/org.integratedmodelling.thinklab.searchengine/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.databridge/classes" path="plugins/org.integratedmodelling.thinklab.databridge/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.groovy/classes" path="plugins/org.integratedmodelling.thinklab.groovy/src"/>
 	<classpathentry excluding="org/integratedmodelling/thinklab/impl/owlapi/" kind="src" output="plugins/org.integratedmodelling.thinklab.core/classes" path="plugins/org.integratedmodelling.thinklab.core/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.currency/classes" path="plugins/org.integratedmodelling.thinklab.currency/src"/>

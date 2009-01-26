@@ -61,6 +61,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeE
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.owlapi.ThinklabOWLManager;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -76,16 +78,20 @@ import org.semanticweb.owl.io.OWLXMLOntologyFormat;
 import org.semanticweb.owl.model.AddAxiom;
 import org.semanticweb.owl.model.OWLAxiom;
 import org.semanticweb.owl.model.OWLClass;
+import org.semanticweb.owl.model.OWLDataFactory;
 import org.semanticweb.owl.model.OWLDataProperty;
+import org.semanticweb.owl.model.OWLDescription;
 import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLIndividual;
 import org.semanticweb.owl.model.OWLObjectProperty;
 import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLOntologyChangeException;
+import org.semanticweb.owl.model.OWLOntologyManager;
 import org.semanticweb.owl.model.OWLOntologyStorageException;
 import org.semanticweb.owl.model.UnknownOWLOntologyException;
 import org.semanticweb.owl.util.OWLEntityRemover;
 import org.semanticweb.owl.util.OWLOntologyMerger;
+import org.semanticweb.owl.vocab.Namespaces;
 
 
 
@@ -601,6 +607,158 @@ public class Ontology implements IOntology {
 	@Override
 	public int hashCode() {
 		return getURI().hashCode();
+	}
+
+	@Override
+	public IConcept createConcept(Polylist list) throws ThinklabException {
+		
+		Concept ret = null;
+		
+		OWLOntologyManager manager = FileKnowledgeRepository.get().manager;
+		OWLDataFactory factory = FileKnowledgeRepository.get().manager.getOWLDataFactory();
+		
+		for (Object o : list.array()) {
+
+			if (ret == null) {
+
+				Pair<IConcept, String> cc = ThinklabOWLManager
+						.getConceptFromListObject(o);
+				
+				String id = cc.getSecond();
+				if (id == null)
+					id = NameGenerator.newName("tcl");
+				
+				OWLClass newcl = factory.getOWLClass(URI.create(getURI() + "#" + id));
+				OWLClass parent = (OWLClass) ((Concept)cc.getFirst()).entity;
+				OWLAxiom axiom = factory.getOWLSubClassAxiom(newcl, parent);
+				AddAxiom add = new AddAxiom(ont, axiom);
+				try {
+					manager.applyChange(add);
+				} catch (OWLOntologyChangeException e) {
+					throw new ThinklabValidationException(e);
+				}
+				
+				ret = new Concept(newcl);
+
+			} else if (o instanceof Polylist) {
+				
+				Polylist pl = (Polylist)o;
+				
+				/*
+				 * must be a property and a value, instance list, or list of values to restrict it with.
+				 */
+				Property property = ThinklabOWLManager.getPropertyFromListObject(pl.first());
+				
+				/*
+				 * we only allow multiple values if the property is a classification property.
+				 * In that case, they must all be concepts. Otherwise we restrict to concepts
+				 * or literal values.
+				 */
+				
+				if (property.isClassification()) {
+					
+					Object[] rs = pl.array();
+					
+					/*
+					 * all values should specify concepts. We should build an instance that is
+					 * child of a union of all of them and use it as a restriction.
+					 */
+					Set<OWLClass> concepts = new HashSet<OWLClass>();
+					
+					for (int i = 1; i < rs.length; i++) {
+					
+						/*
+						 * collect concept
+						 */
+						if (rs[i] instanceof IConcept)
+							concepts.add(((Concept)rs[i]).entity.asOWLClass());
+						else {
+							IConcept cc = KnowledgeManager.get().requireConcept(rs[i].toString());
+							concepts.add(((Concept)cc).entity.asOWLClass());
+						}
+					}
+					
+					/* 
+					 * create instance of concept (if one) or the union of all if > 1
+					 */
+					OWLIndividual ind = 
+						 FileKnowledgeRepository.df.getOWLIndividual(URI.create(ont.getURI() + "#" + NameGenerator.newName("dum")));						
+					OWLDescription type = null;
+					if (concepts.size() == 1) {
+						type = concepts.iterator().next();
+ 					} else {
+						type = factory.getOWLObjectUnionOf(concepts);
+					}
+					
+					OWLAxiom ax = 
+						FileKnowledgeRepository.df.getOWLClassAssertionAxiom(ind, type);
+					AddAxiom add = new AddAxiom(ont,ax);
+					
+					try {
+						manager.applyChange(add);
+					} catch (OWLOntologyChangeException e) {
+						throw new ThinklabValidationException(e);
+					}
+					
+					
+					/*
+					 * restrict property
+					 */
+					OWLDescription hasVal = 
+						factory.getOWLObjectValueRestriction(
+								(OWLObjectProperty)(property.entity), 
+								ind);
+					
+					OWLAxiom axiom = factory.getOWLSubClassAxiom((OWLClass)(ret.entity), hasVal);
+					add = new AddAxiom(ont, axiom);
+					try {
+						manager.applyChange(add);
+					} catch (OWLOntologyChangeException e) {
+						throw new ThinklabValidationException(e);
+					}
+					
+				} else if (property.isObjectProperty()) {
+
+					/*
+					 * pl.second should be an instance or a list that specifies an instance.
+					 */
+					Instance inst = null;
+					if (pl.second() instanceof Polylist) {
+						inst = (Instance) this.createInstance((Polylist) pl.second());
+					} else if (pl.second() instanceof Instance) {
+						inst = (Instance)pl.second();
+					} else {
+						throw new ThinklabValidationException("concept restriction: can't turn " + pl.second() + " into an instance");
+					}
+					
+					/*
+					 * add hasValue restriction
+					 */
+					OWLDescription hasVal = 
+						factory.getOWLObjectValueRestriction(
+								(OWLObjectProperty)(property.entity), 
+								(OWLIndividual)(inst.entity));
+					
+					OWLAxiom axiom = factory.getOWLSubClassAxiom((OWLClass)(ret.entity), hasVal);
+					AddAxiom add = new AddAxiom(ont, axiom);
+					try {
+						manager.applyChange(add);
+					} catch (OWLOntologyChangeException e) {
+						throw new ThinklabValidationException(e);
+					}
+					
+				} else {
+					
+					/*
+					 * TODO must be a literal or a IValue
+					 */
+					throw new ThinklabUnimplementedFeatureException("value restriction on literals unimplemented");
+				}
+			}
+		}
+
+		return ret;
+		
 	}
 	
 	

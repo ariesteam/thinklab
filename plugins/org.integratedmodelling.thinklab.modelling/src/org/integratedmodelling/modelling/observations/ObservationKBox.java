@@ -30,7 +30,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.databridge.kbox;
+package org.integratedmodelling.modelling.observations;
 
 import java.util.HashMap;
 import java.util.Properties;

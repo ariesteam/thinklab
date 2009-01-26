@@ -524,4 +524,9 @@ public class Session implements ISession {
 		return new TTYUserModel();
 	}
 
+	@Override
+	public IConcept createConcept(Polylist list) throws ThinklabException {
+		return ontology.createConcept(list);
+	}
+
 }

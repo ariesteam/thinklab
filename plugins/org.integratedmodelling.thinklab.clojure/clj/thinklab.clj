@@ -32,12 +32,12 @@
 			(throw (new ThinklabValidationException "no session is defined")))
 		(if (nil? (resolve '*session*)) nil (eval '*session*)))))
 
-(defn- plist 
+(defn plist 
 	"Internal: translates a polylist into a sequence"
 	[polylist]
 	(. ClojureBridge (p2list polylist)))
 
-(defn- listp 
+(defn listp 
 	"Internal: translates a sequence into a polylist"
 	[sequence]
 	(. ClojureBridge (list2p sequence)))

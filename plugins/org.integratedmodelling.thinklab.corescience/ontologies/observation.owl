@@ -63,6 +63,17 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#dependsOnObservable -->
+
+    <owl:ObjectProperty rdf:about="#dependsOnObservable">
+        <rdfs:comment
+            >Used to state the types that another observable depends on.A ModeledObservable states the schema of its dependencies when observed.</rdfs:comment>
+        <rdfs:domain rdf:resource="#ModeledObservable"/>
+        <rdfs:subPropertyOf rdf:resource="&thinklab-core;ClassificationProperty"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasClassMapping -->
 
     <owl:ObjectProperty rdf:about="#hasClassMapping">

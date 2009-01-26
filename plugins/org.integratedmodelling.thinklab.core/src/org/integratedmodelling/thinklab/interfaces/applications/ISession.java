@@ -55,22 +55,10 @@ import org.integratedmodelling.utils.Polylist;
 
 
 /**
- * <p>
  * A Session is a temporary concept space that contains all instances that are
  * created during a user session. The ontology metadata also contain details
- * about session creation. Sessions are not created by users but must be 
- * requested to the knowledge manager. In turn, the knowledge manager sends the request to
- * the knowledge interface, which is the component that knows what sessions are meant for in
- * the particular runtime context. Typically, all operations on sessions
+ * about session creation. Typically, all operations on sessions
  * are synchronized. 
- * 
- * A typical knowledge manager interface will create one or more sessions to
- * contain objects. Not all interfaces need to create sessions.
- * </p>
- * <p>
- * In the IMA, a session also contains a context for the interpreter. The language
- * sees the shared knowledge base and the contents of the session.
- * </p>
  * 
  * @author Ferdinando Villa
  * 
@@ -163,6 +151,17 @@ public interface ISession {
 	 * @throws ThinklabException if anything goes wrong
 	 */
 	public abstract String makePermanent() throws ThinklabException;
+	
+	/**
+	 * Sessions must be capable of creating temporary concepts from a list specification. These
+	 * concepts can only restrict "global" ones by specifying owl:hasValue restrictions. The list
+	 * syntax is very similar to the one used for instances.
+	 * 
+	 * @param list 
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public abstract IConcept createConcept(Polylist list) throws ThinklabException;
 		
 	/**
 	 * Create object of passed type. Object is all yours to define. The object must be validated

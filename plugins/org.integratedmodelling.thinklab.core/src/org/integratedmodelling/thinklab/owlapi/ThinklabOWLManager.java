@@ -49,6 +49,9 @@ import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabConstraintValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
+import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -148,15 +151,6 @@ public class ThinklabOWLManager {
 		}
 		return owlManager;
 	}
-	
-//	static public int getNRelationships(OWLEntity cl, OWLEntity p) {
-//		
-//        if (!(p instanceof OWLObjectProperty || p instanceof OWLDataProperty)) {
-//        	return 0;
-//        }
-//
-//        return /* TODO cl.getPropertyValueCount(p) */0;
-//	}
 	
 
 	/**
@@ -1108,6 +1102,18 @@ public class ThinklabOWLManager {
 		
 		return ret;
 		
+	}
+
+	public static Property getPropertyFromListObject(Object o) throws ThinklabException {
+		
+		Property ret = null;
+		
+		if (o instanceof Property) 
+			ret = (Property)o;
+		else
+			ret = (Property) KnowledgeManager.get().requireProperty(o.toString());
+		
+		return ret;
 	}
 
 }

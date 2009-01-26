@@ -868,5 +868,11 @@ public class Ontology implements IOntology {
 		return false;
 	}
 
+	@Override
+	public IConcept createConcept(Polylist list) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
