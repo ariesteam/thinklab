@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.corescience.values;
 
-import org.integratedmodelling.corescience.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**

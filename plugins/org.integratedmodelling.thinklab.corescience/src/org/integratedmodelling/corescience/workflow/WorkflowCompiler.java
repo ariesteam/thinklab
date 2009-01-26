@@ -4,8 +4,8 @@ import org.integratedmodelling.corescience.interfaces.context.IContextualization
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizer;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.observation.IObservation;
-import org.integratedmodelling.corescience.observation.IObservationState;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.observation.IObservationState;
 import org.integratedmodelling.corescience.observation.Observation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;

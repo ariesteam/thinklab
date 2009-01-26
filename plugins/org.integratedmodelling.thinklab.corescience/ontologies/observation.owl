@@ -360,6 +360,20 @@ Each instance in a concrete observation space is a &quot;grain&quot; and its cha
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#DiscreteNumericRankingSpace -->
+
+    <owl:Class rdf:about="#DiscreteNumericRankingSpace">
+        <rdfs:subClassOf rdf:resource="#DiscreteRankingSpace"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#hasClassMapping"/>
+                <owl:allValuesFrom rdf:resource="#MappedInterval"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#DiscreteObservationSpace -->
 
     <owl:Class rdf:about="#DiscreteObservationSpace">
@@ -385,6 +399,7 @@ Each instance in a concrete observation space is a &quot;grain&quot; and its cha
 
     <owl:Class rdf:about="#DiscreteRankingSpace">
         <rdfs:subClassOf rdf:resource="#ClassificationSpace"/>
+        <thinklab-core:AbstractClass>true</thinklab-core:AbstractClass>
         <rdfs:comment
             >A ranking made up of a number of different classes, each with a specified relationship to a continuous range. Because of this, the classes can be sorted based on their ordinal relationship to each other.</rdfs:comment>
     </owl:Class>
@@ -436,6 +451,16 @@ An Identification can also identify merelogical relationships of an observable t
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#MappedInterval -->
+
+    <owl:Class rdf:about="#MappedInterval">
+        <rdfs:subClassOf rdf:resource="&thinklab-core;NumericInterval"/>
+        <rdfs:comment
+            >A numeric interval mapped to a class. Can be specified by a literal of the form semantic-type-&gt;[x,y], using square or round brackets to mean closed or open interval.</rdfs:comment>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ModeledObservable -->
 
     <owl:Class rdf:about="#ModeledObservable">
@@ -483,6 +508,12 @@ An Identification can also identify merelogical relationships of an observable t
             >A concrete observation space where instances have an known relationship between each one and the next. Subclasses may define specific relationships and ordering constraints.</rdfs:comment>
         <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
     </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#NumericInterval -->
+
+    <owl:Class rdf:about="&thinklab-core;NumericInterval"/>
     
 
 

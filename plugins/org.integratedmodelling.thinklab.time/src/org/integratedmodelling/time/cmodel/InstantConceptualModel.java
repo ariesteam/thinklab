@@ -37,8 +37,8 @@ import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualMod
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.observation.ConceptualModel;
-import org.integratedmodelling.corescience.observation.IObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;

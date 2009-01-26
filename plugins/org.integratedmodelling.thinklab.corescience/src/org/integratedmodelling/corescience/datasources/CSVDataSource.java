@@ -44,7 +44,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueTransformationFilter;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
-import org.integratedmodelling.corescience.observation.IDataFilter;
+import org.integratedmodelling.corescience.interfaces.data.IDataFilter;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -85,11 +85,11 @@ import com.Ostermiller.util.LabeledCSVParser;
  * @since October, 2006
  *
  */
-public class CSVDataSource implements org.integratedmodelling.corescience.observation.IDataSource, IInstanceImplementation {
+public class CSVDataSource implements org.integratedmodelling.corescience.interfaces.data.IDataSource, IInstanceImplementation {
 
 	String url = null;
 	boolean isExcel = false;
-	ArrayList<org.integratedmodelling.corescience.observation.IDataFilter> filters = new ArrayList<org.integratedmodelling.corescience.observation.IDataFilter>();
+	ArrayList<org.integratedmodelling.corescience.interfaces.data.IDataFilter> filters = new ArrayList<org.integratedmodelling.corescience.interfaces.data.IDataFilter>();
 	ArrayList<String> data = new ArrayList<String>();
 	LiteralValidator validator = null;
 	int nrows = -1;
@@ -138,7 +138,7 @@ public class CSVDataSource implements org.integratedmodelling.corescience.observ
 		
 	}
 
-	public void initialize(String url, Collection<org.integratedmodelling.corescience.observation.IDataFilter> filters) throws ThinklabInconsistentDataSourceException, ThinklabIOException {
+	public void initialize(String url, Collection<org.integratedmodelling.corescience.interfaces.data.IDataFilter> filters) throws ThinklabInconsistentDataSourceException, ThinklabIOException {
 		
 		ColumnFilter cfilter = null;
 		

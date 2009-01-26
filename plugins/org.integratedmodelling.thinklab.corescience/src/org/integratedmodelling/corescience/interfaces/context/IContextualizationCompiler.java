@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.corescience.interfaces.context;
 
-import org.integratedmodelling.corescience.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 
 /**

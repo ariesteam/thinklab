@@ -95,7 +95,14 @@ public class Thinklab extends ThinklabPlugin {
 			}
 		}
 		
-		if (ret == null)
+		if (ret == null) {
+			
+			/*
+			 * automatically disambiguate partial word matches, which should not be found
+			 */
+			if (!name.startsWith("."))
+				name = "." + name;
+			
 			for (PluginDescriptor pd : get().getManager().getRegistry().getPluginDescriptors()) {
 				if (pd.getId().endsWith(name)) {
 					if (ret != null) {
@@ -105,6 +112,7 @@ public class Thinklab extends ThinklabPlugin {
 					ret = pd.getId();
 				}
 			}
+		}
 		
 		if (ret == null && complain)
 			throw new ThinklabPluginException("plugin name " + name + " unresolved or ambiguous");

@@ -790,17 +790,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
                 return (cc != null);
             }    
         }
-        
-//        Collection<IInstanceImplementationConstructor> cms = 
-//            new ConceptVisitor<IInstanceImplementationConstructor>().findAllMatchesInMapUpwards(instanceConstructors, new vmatch(instanceConstructors), type);
-//        
-//        if (cms.size() > 1)
-//            throw new ThinklabAmbiguousResultException("more than one concepts can validate a " + 
-//                                              type.getSemanticType().toString() + 
-//                                              "literal. Class structure should be revised.");
-//        
-//        return cms.size() > 0 ? cms.iterator().next() : null;
-        
+                
         /*
          * I may be wrong, but there's no problem finding more than one constructor - just return the
          * least general one... 

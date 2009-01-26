@@ -51,9 +51,9 @@ import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptua
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
-import org.integratedmodelling.corescience.observation.IDataSource;
-import org.integratedmodelling.corescience.observation.IObservation;
-import org.integratedmodelling.corescience.observation.IObservationState;
+import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.observation.IObservationState;
 import org.integratedmodelling.corescience.observation.Observation;
 import org.integratedmodelling.thinklab.exception.ThinklabCircularDependencyException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

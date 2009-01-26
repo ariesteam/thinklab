@@ -33,28 +33,18 @@
  * @link      http://www.integratedmodelling.org
  **/
 
-
 package org.integratedmodelling.utils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandManager;
-import org.integratedmodelling.thinklab.command.CommandParser;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**   
  <pre>

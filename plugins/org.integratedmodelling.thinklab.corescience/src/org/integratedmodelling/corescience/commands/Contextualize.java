@@ -35,7 +35,7 @@ package org.integratedmodelling.corescience.commands;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
-import org.integratedmodelling.corescience.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.workflow.DefaultWorkflow;
 import org.integratedmodelling.corescience.workflow.debug.DebugWorkflow;
 import org.integratedmodelling.thinklab.command.Command;

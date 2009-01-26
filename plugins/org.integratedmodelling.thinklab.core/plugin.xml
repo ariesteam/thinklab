@@ -224,6 +224,12 @@
 		<parameter id="class" value="org.integratedmodelling.thinklab.validators.TextValidator"/>
 		<parameter id="semantic-type" value="thinklab-core:Text"/>
 	</extension>
+
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" id="numints-validator">
+		<parameter id="class" value="org.integratedmodelling.thinklab.validators.IntervalValidator"/>
+		<parameter id="semantic-type" value="thinklab-core:NumericInterval"/>
+	</extension>
+
 	
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" id="number-validator">
 		<parameter id="class" value="org.integratedmodelling.thinklab.validators.NumberValidator"/>

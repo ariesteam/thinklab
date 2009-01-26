@@ -41,7 +41,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
-import org.integratedmodelling.corescience.observation.IDataSource;
+import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.cmodel.FeatureCoverageModel;
 import org.integratedmodelling.geospace.cmodel.RegularRasterModel;

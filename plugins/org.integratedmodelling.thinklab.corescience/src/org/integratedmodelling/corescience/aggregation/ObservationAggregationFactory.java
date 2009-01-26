@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.corescience.aggregation;
 
-import org.integratedmodelling.corescience.observation.IDataSource;
+import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 
 /**

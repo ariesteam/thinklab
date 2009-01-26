@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.geospace.datasources;
 
-import org.integratedmodelling.corescience.observation.IDataSource;
+import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;

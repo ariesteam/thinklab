@@ -296,6 +296,8 @@
 
     <owl:Class rdf:about="#NumericInterval">
         <rdfs:subClassOf rdf:resource="#Interval"/>
+        <rdfs:comment
+            >A numeric range specified by a literal of the form (x,y], with square or round parentheses meaning open (exclusive) or closed (inclusive) interval, and partial forms like [4, or 5) meaning &quot;4 or above&quot; or &quot;up to 5, not inclusive&quot;.</rdfs:comment>
     </owl:Class>
     
 

@@ -34,7 +34,7 @@ package org.integratedmodelling.geospace.cmodel;
 
 import org.geotools.referencing.CRS;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
-import org.integratedmodelling.corescience.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;

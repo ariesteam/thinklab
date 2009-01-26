@@ -33,7 +33,13 @@
  **/
 package org.integratedmodelling.thinklab.value;
 
+import java.io.IOException;
+import java.io.StreamTokenizer;
+import java.io.StringReader;
+
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.utils.MalformedListException;
 
 /**
  * A numeric interval parsed from conventional syntax (e.g. "[12 34)" )
@@ -49,10 +55,131 @@ public class IntervalValue extends ParsedLiteralValue {
 	boolean isLowerUndefined = true;
 	boolean isUpperUndefined = true;
 	
+	public IntervalValue(String intvs) throws ThinklabValidationException {
+		parseLiteral(intvs);
+	}
+
 	@Override
 	public void parseLiteral(String s) throws ThinklabValidationException {
-		// TODO Auto-generated method stub
 
+		StreamTokenizer scanner = new StreamTokenizer(new StringReader(s));
+		int token = 0;
+		double high = 0.0, low = 0.0;
+		int nnums = 0;
+		boolean lowdef = false, highdef = false;
+		
+		while (true) {
+
+			try {
+				token = scanner.nextToken();
+			} catch (IOException e) {
+				throw new ThinklabValidationException("invalid interval syntax: " + s);
+			}
+
+			if (token == StreamTokenizer.TT_NUMBER) {
+			
+				if (nnums > 0) {
+					high = scanner.nval;
+				} else {
+					low = scanner.nval;
+				}
+				nnums ++;
+				
+			} else if (token == StreamTokenizer.TT_EOF || token == StreamTokenizer.TT_EOL) {
+				break;
+			} else  if (token == '(') {
+				if (nnums > 0) 
+					throw new ThinklabValidationException("invalid interval syntax: " + s);
+				lowdef = true;
+				isLowerOpen = true;
+			} else  if (token == '[') {
+				if (nnums > 0) 
+					throw new ThinklabValidationException("invalid interval syntax: " + s);
+				lowdef = true;
+				isLowerOpen = false;
+			} else  if (token == ')') {
+				if (nnums == 0) 
+					throw new ThinklabValidationException("invalid interval syntax: " + s);
+				highdef = true;
+				isUpperOpen = true;
+			} else  if (token == ']') {
+				if (nnums == 0) 
+					throw new ThinklabValidationException("invalid interval syntax: " + s);
+				highdef = true;
+				isUpperOpen = false;
+			} else  if (token == ',') {
+				/* accept and move on */
+			} else {
+				throw new ThinklabValidationException("invalid interval syntax: " + s);
+			}			
+		}
+		
+		/*
+		 * all read, assemble interval info
+		 */
+		if (lowdef && highdef && nnums == 2) {
+			isLowerUndefined = isUpperUndefined = false;
+			lowerBound = low;
+			upperBound = high;
+		} else if (lowdef && !highdef && nnums == 1) {
+			isLowerUndefined = false;
+			lowerBound = low;
+		} else if (highdef && !lowdef && nnums == 1) {
+			isUpperUndefined = false;
+			upperBound = low;
+		} else {
+			throw new ThinklabValidationException("invalid interval syntax: " + s);
+		}
 	}
+
+	public int compare(IntervalValue i) {
+		
+		if (isLowerUndefined == i.isLowerUndefined &&
+				isLowerOpen == i.isLowerOpen &&
+				isUpperUndefined == i.isUpperUndefined &&
+				isUpperOpen == i.isUpperOpen &&
+				lowerBound == i.lowerBound &&
+				upperBound == i.upperBound)
+			return 0;
+		
+		if (this.upperBound <= i.lowerBound)
+			return -1;
+
+		if (this.lowerBound >= i.upperBound)
+			return 1;
+		
+		throw new ThinklabRuntimeException("error: trying to sort overlapping numeric intervals");
+		
+	}
+	
+
+	public boolean isRightBounded() {
+		return !isUpperOpen;
+	}
+
+	public boolean isLeftBounded() {
+		return !isLowerOpen;
+	}
+	
+	public double getMinimumValue() {
+		return lowerBound;
+	}
+
+	public double getMaximumValue() {
+		return upperBound;
+	}
+
+	public boolean contains(double d) {
+
+		if (isLowerUndefined)
+			return (isUpperOpen ? d < upperBound : d <= upperBound);
+		else if (isUpperUndefined)
+			return (isLowerOpen ? d > lowerBound : d >= lowerBound);
+		else 
+			return
+				(isUpperOpen ? d < upperBound : d <= upperBound) &&
+				(isLowerOpen ? d > lowerBound : d >= lowerBound);	
+	}
+
 
 }

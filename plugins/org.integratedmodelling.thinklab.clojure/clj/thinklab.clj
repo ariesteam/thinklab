@@ -33,12 +33,12 @@
 		(if (nil? (resolve '*session*)) nil (eval '*session*)))))
 
 (defn plist 
-	"Internal: translates a polylist into a sequence"
+	"Translates a polylist into a sequence for Thinklab->Clojure bridging of datastructures"
 	[polylist]
 	(. ClojureBridge (p2list polylist)))
 
 (defn listp 
-	"Internal: translates a sequence into a polylist"
+	"Translates a sequence into a polylist for Clojure->Thinklab bridging of datastructures"
 	[sequence]
 	(. ClojureBridge (list2p sequence)))
 	
@@ -66,7 +66,7 @@
    [concept textval]
    (.. KnowledgeManager 
    			(get) 
-   			(validateLiteral concept textval nil)))
+   			(validateLiteral (tl/conc concept) textval nil)))
 		
 (defn get-property-values
 	"Return a list of the values of a relationship (or a map of all relationships to their values

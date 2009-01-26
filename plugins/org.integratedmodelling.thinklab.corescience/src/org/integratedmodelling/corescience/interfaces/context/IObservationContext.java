@@ -36,7 +36,7 @@ import java.util.Collection;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabContextValidationException;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
-import org.integratedmodelling.corescience.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.LogicalConnector;

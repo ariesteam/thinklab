@@ -35,7 +35,7 @@ package org.integratedmodelling.corescience.datasources;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
-import org.integratedmodelling.corescience.observation.IDataSource;
+import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;

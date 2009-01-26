@@ -42,6 +42,9 @@ import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualMod
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.observation.IObservationState;
 import org.integratedmodelling.corescience.workflow.DefaultWorkflow;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

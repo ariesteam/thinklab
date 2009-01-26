@@ -104,7 +104,12 @@
 		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ColumnFilterValidator"/>
 		<parameter id="semantic-type" value="source:ColumnExtractor"/>
 	</extension>
-
+	<extension 
+		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
+		id="discrete-range-validator">
+		<parameter id="class" value="org.integratedmodelling.corescience.constructors.MappedIntervalValidator"/>
+		<parameter id="semantic-type" value="observation:MappedInterval"/>
+	</extension>
 
 	<!-- commands -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="contextualize">

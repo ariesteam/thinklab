@@ -43,7 +43,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.context.IContextStateGenerator;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.workflow.AsynchronousContextualizationWorkflow;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabCircularDependencyException;

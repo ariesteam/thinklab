@@ -42,7 +42,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.ScalingConceptualMo
 import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
-import org.integratedmodelling.corescience.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.values.UnitValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

@@ -40,7 +40,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
-import org.integratedmodelling.corescience.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.ShapeExtent;
 import org.integratedmodelling.geospace.values.ShapeValue;

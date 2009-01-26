@@ -1,7 +1,7 @@
 package org.integratedmodelling.corescience.interfaces.cmodel;
 
-import org.integratedmodelling.corescience.observation.IDataSource;
-import org.integratedmodelling.corescience.observation.IObservationState;
+import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.interfaces.observation.IObservationState;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 

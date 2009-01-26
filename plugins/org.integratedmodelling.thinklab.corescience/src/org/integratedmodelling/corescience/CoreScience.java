@@ -37,7 +37,10 @@ import java.util.HashMap;
 import org.integratedmodelling.corescience.interfaces.IWorkflowConstructor;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 /**
@@ -49,6 +52,9 @@ public class CoreScience extends ThinklabPlugin {
 	private final static String PLUGIN_ID = "org.integratedmodelling.thinklab.corescience";
 	
 	private HashMap<String, IWorkflowConstructor> modelLoaders = new HashMap<String, IWorkflowConstructor>();
+
+	private IConcept DiscreteNumericRankingSpace;
+	private IConcept MeasurementSpace;
 
 	
 	// properties
@@ -91,6 +97,7 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String EXTENT_OBSERVATION = "observation:ExtentObservation";
 	public static final String DATASOURCE_FUNCTION_LITERAL = "source:hasFunctionLiteral";
 	public static final String CLASSIFICATION_MODEL = "observation:ClassificationSpace";
+	public static final String DISCRETE_RANKING_MODEL = "observation:DiscreteNumericRankingSpace";
 	public static final String CLASS_MAPPING = "observation:ClassMapping";
 	
 	static final public String GENERIC_OBSERVABLE = "representation:GenericObservable";
@@ -105,6 +112,13 @@ public class CoreScience extends ThinklabPlugin {
 	 */
 	@Override
 	public void load(KnowledgeManager km) throws ThinklabPluginException {
+		
+		try {
+			DiscreteNumericRankingSpace = km.requireConcept(DISCRETE_RANKING_MODEL);
+			MeasurementSpace = km.requireConcept(UNIT);
+		} catch (Exception e) {
+			throw new ThinklabPluginException(e);
+		}
 	}
 
 
@@ -144,4 +158,11 @@ public class CoreScience extends ThinklabPlugin {
 		modelLoaders.put(id, constructor);
 	}
 
+	public IConcept DiscreteRankingModel() {
+		return this.DiscreteNumericRankingSpace;
+	}
+
+	public IConcept MeasurementModel() {
+		return this.MeasurementSpace;
+	}
 }

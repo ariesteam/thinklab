@@ -34,7 +34,7 @@ package org.integratedmodelling.corescience.interfaces.cmodel;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabConceptualModelValidationException;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
-import org.integratedmodelling.corescience.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.INamedObject;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
