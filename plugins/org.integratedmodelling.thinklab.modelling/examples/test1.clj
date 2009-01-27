@@ -10,9 +10,9 @@
 	dElevation (model/make-type 
 				(model/make-type 'habitat:Elevation (corescience/make-unit "m"))
 				(corescience/make-discretizer 
-					"elevation:Low<-200)" 
-					"elevation:Medium<-[200,650)" 
-					"elevation:High<-[650" ))
+					"elevation:Low <- 200)" 
+					"elevation:Medium <- [200,650)" 
+					"elevation:High <- [650" ))
      ]
   (model/make-model climateStabilityModel 
       [:elevation dElevation :population habitat:PopulationDensity]

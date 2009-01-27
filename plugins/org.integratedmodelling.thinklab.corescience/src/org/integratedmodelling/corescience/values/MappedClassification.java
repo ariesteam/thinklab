@@ -35,8 +35,8 @@ public class MappedClassification extends ParsedLiteralValue {
 		if (idx < 0)
 			throw new ThinklabValidationException("invalid mapped classification syntax: " + s);
 		
-		String cname = s.substring(0, idx);
-		String[] classes = s.substring(idx+2).split(",");
+		String cname = s.substring(0, idx).trim();
+		String[] classes = s.substring(idx+2).trim().split(",");
 		
 		try {
 			setConceptWithoutValidation(KnowledgeManager.get().requireConcept(cname));

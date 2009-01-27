@@ -24,8 +24,8 @@ public class MappedInterval extends ParsedLiteralValue {
 		if (idx < 0)
 			throw new ThinklabValidationException("invalid mapped interval syntax: " + s);
 		
-		String cname = s.substring(0, idx);
-		String intvs = s.substring(idx+2);
+		String cname = s.substring(0, idx).trim();
+		String intvs = s.substring(idx+2).trim();
 		
 		interval = new IntervalValue(intvs);
 		try {
