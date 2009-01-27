@@ -20,23 +20,24 @@
 	 					;; NOTE this should be ecology:RainfallAmount in order to be transparent
 	 					;; -------------------------------------------------------------------------
 	 					(model/make-type 'carbonEcology:RainfallAmount (corescience/make-unit "mm"))
+	 					
 	 					;; -------------------------------------------------------------------------
 	 					;; Observations of the above type (rainfall in mm) will be discretized as 
 	 					;; follows to obtain the kind of rainfall we want to use in the final model.
 	 					;; -------------------------------------------------------------------------
 	 					(corescience/make-discretizer 
-	 						(carbonEcology:RainfallClassA "400)"
-	 						 carbonEcology:RainfallClassB "[400,600)"
-	 						 carbonEcology:RainfallClassC "[600,800)"
-	 						 carbonEcology:RainfallClassD "[800,1000)"
-	 						 carbonEcology:RainfallClassE "[1000,1200)"
-	 						 carbonEcology:RainfallClassF "[1200,1600)"
-	 						 carbonEcology:RainfallClassG "[1600,2000)"
-	 						 carbonEcology:RainfallClassH "[2000,2600)"
-	 						 carbonEcology:RainfallClassI "[2600,3200)"
-	 						 carbonEcology:RainfallClassJ "[3200,3600)"
-	 						 carbonEcology:RainfallClassK "[3600,5000)"
-	 						 carbonEcology:RainfallClassL "[5000"] ))
+	 						('carbonEcology:RainfallClassA "400)"
+	 						 'carbonEcology:RainfallClassB "[400,600)"
+	 						 'carbonEcology:RainfallClassC "[600,800)"
+	 						 'carbonEcology:RainfallClassD "[800,1000)"
+	 						 'carbonEcology:RainfallClassE "[1000,1200)"
+	 						 'carbonEcology:RainfallClassF "[1200,1600)"
+	 						 'carbonEcology:RainfallClassG "[1600,2000)"
+	 						 'carbonEcology:RainfallClassH "[2000,2600)"
+	 						 'carbonEcology:RainfallClassI "[2600,3200)"
+	 						 'carbonEcology:RainfallClassJ "[3200,3600)"
+	 						 'carbonEcology:RainfallClassK "[3600,5000)"
+	 						 'carbonEcology:RainfallClassL "[5000"] ))
 	 ]
 
 	;; ---------------------------------------------------------------------------------------
