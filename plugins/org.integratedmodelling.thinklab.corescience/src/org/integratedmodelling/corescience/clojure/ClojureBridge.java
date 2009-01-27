@@ -17,31 +17,54 @@ import org.integratedmodelling.utils.Polylist;
 
 public class ClojureBridge {
 
-	public static IValue makeDiscretizer(ISession session, Polylist mappedIntervals) throws ThinklabException {
-		
-		ArrayList<MappedInterval> range = new ArrayList<MappedInterval>();
+	/**
+	 * The spec coming from Clojure is like:
+	 * 
+	 * ((owl:Thing "10.2 2.3")*)
+	 * 
+	 * @param session
+	 * @param mappedIntervals
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public static Polylist makeDiscretizer(Polylist mappedIntervals) throws ThinklabException {
 
+		ArrayList<Object> list = new ArrayList<Object>();
+		ArrayList<Object> plist = new ArrayList<Object>();
+		
+		list.add(CoreScience.get().DiscreteRankingModel());
+		
+		plist.add("observation:hasClassMapping");
+		
 		for (Object o : mappedIntervals.array()) {
-			range.add(new MappedInterval(o.toString()));
+			
+			Polylist pl = (Polylist)o;
+			
+			plist.add(
+				Polylist.list(
+					"observation:NumericRangeToClassMapping",
+					Polylist.list(
+							"observation.hasInterval",
+							Polylist.list("thinklab-core:Interval", pl.second().toString())),
+							Polylist.list(
+									"observation:hasTargetClass",
+									pl.first().toString())
+				));			
 		}
+		list.add(Polylist.PolylistFromArrayList(plist));
 		
-		Collections.sort(range, new Comparator<MappedInterval>() {
-
-			@Override
-			public int compare(MappedInterval o1, MappedInterval o2) {
-				return o1.getInterval().compare(o2.getInterval());
-			}
-		});
-		
-		IInstance ret = session.createObject(null, CoreScience.get().DiscreteRankingModel());
-		ret.setImplementation(new DiscretizedRankingModel(range.toArray(new MappedInterval[range.size()])));
-
-		return new ObjectReferenceValue(ret);
+		return Polylist.PolylistFromArrayList(list);
 	}
 	
-	public static IValue makeUnit(ISession session, String unitspecs) throws ThinklabException {
-				
-		return new MeasurementModel(CoreScience.get().MeasurementModel(), unitspecs);
+	public static Polylist makeUnit(String unitspecs) throws ThinklabException {
+
+		ArrayList<Object> list = new ArrayList<Object>();
+		
+		list.add("measurement:Unit");
+		list.add(unitspecs);
+		
+		return Polylist.PolylistFromArrayList(list);
+
 	}
 	
 }

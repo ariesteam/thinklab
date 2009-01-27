@@ -70,10 +70,12 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IResource;
+import org.integratedmodelling.utils.LogicalConnector;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.utils.Triple;
 import org.semanticweb.owl.io.OWLXMLOntologyFormat;
 import org.semanticweb.owl.model.AddAxiom;
 import org.semanticweb.owl.model.OWLAxiom;
@@ -621,23 +623,46 @@ public class Ontology implements IOntology {
 
 			if (ret == null) {
 
-				Pair<IConcept, String> cc = ThinklabOWLManager
-						.getConceptFromListObject(o);
+				Triple<Set<IConcept>, String, LogicalConnector> cc = ThinklabOWLManager.getConceptsFromListObject(o);
 				
 				String id = cc.getSecond();
 				if (id == null)
 					id = NameGenerator.newName("tcl");
 				
 				OWLClass newcl = factory.getOWLClass(URI.create(getURI() + "#" + id));
-				OWLClass parent = (OWLClass) ((Concept)cc.getFirst()).entity;
-				OWLAxiom axiom = factory.getOWLSubClassAxiom(newcl, parent);
-				AddAxiom add = new AddAxiom(ont, axiom);
-				try {
-					manager.applyChange(add);
-				} catch (OWLOntologyChangeException e) {
-					throw new ThinklabValidationException(e);
-				}
+
+				if (cc.getFirst().size() == 1) {
+					
+					OWLClass parent = (OWLClass) ((Concept)(cc.getFirst().iterator().next())).entity;
+					OWLAxiom axiom = factory.getOWLSubClassAxiom(newcl, parent);
+					AddAxiom add = new AddAxiom(ont, axiom);
+					try {
+						manager.applyChange(add);
+					} catch (OWLOntologyChangeException e) {
+						throw new ThinklabValidationException(e);
+					}
+					
+				} else {
 				
+					HashSet<OWLDescription> alld = new HashSet<OWLDescription>();
+					
+					for (IConcept c : cc.getFirst()) {
+						alld.add(((Concept)c).entity.asOWLClass());
+					}
+					
+					OWLDescription parents = 
+						cc.getThird().equals(LogicalConnector.UNION) ?
+								factory.getOWLObjectUnionOf(alld) :
+								factory.getOWLObjectIntersectionOf(alld);
+								
+					OWLAxiom axiom = factory.getOWLSubClassAxiom(newcl, parents);
+					AddAxiom add = new AddAxiom(ont, axiom);
+					try {
+						manager.applyChange(add);
+					} catch (OWLOntologyChangeException e) {
+						throw new ThinklabValidationException(e);
+					}
+				}				
 				ret = new Concept(newcl);
 
 			} else if (o instanceof Polylist) {

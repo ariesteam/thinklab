@@ -33,14 +33,12 @@
 package org.integratedmodelling.corescience.observation.ranking;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
-import org.integratedmodelling.corescience.interfaces.cmodel.ScalingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.TransformingConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -53,14 +51,13 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.NumberValue;
-import org.integratedmodelling.utils.Pair;
-import org.jscience.mathematics.number.Rational;
+import org.integratedmodelling.thinklab.value.IntervalValue;
 
 /**
  * Conceptual model for a discrete ranking - a classification bound to actual numeric ranges. 
+ * 
  * @author Ferdinando Villa
  *
  *
@@ -114,8 +111,7 @@ public class DiscretizedRankingModel extends ConceptualModel implements Transfor
 
 	@Override
 	public boolean canTransformFrom(IConcept otherConceptualModel) {
-		// TODO Auto-generated method stub
-		return false;
+		return otherConceptualModel.getType().is(KnowledgeManager.Number());
 	}
 
 	@Override
@@ -160,7 +156,36 @@ public class DiscretizedRankingModel extends ConceptualModel implements Transfor
 
 	@Override
 	public void validate(IInstance i) throws ThinklabException {
-		// TODO set from IValues
+
+		ArrayList<MappedInterval> irange = new ArrayList<MappedInterval>();
+		
+		for (IRelationship r : i.getRelationships()) {
+			
+			/* again, for speed */
+			if (!r.getProperty().is(CoreScience.HAS_CLASS_MAPPING)) {
+				IInstance mapping = r.getValue().asObjectReference().getObject();
+				
+				/* must be a NumericMapping */
+				IntervalValue val = (IntervalValue) mapping.get(CoreScience.HAS_INTERVAL);
+				IValue conc = mapping.get(CoreScience.HAS_TARGET_CLASS);
+				
+				irange.add(new MappedInterval(conc.getConcept(), val));
+				
+			}
+		}
+		
+		/*
+		 * you never know
+		 */
+		Collections.sort(irange, new Comparator<MappedInterval>() {
+
+			@Override
+			public int compare(MappedInterval o1, MappedInterval o2) {
+				return o1.getInterval().compare(o2.getInterval());
+			}
+		});
+
+		define(irange.toArray(new MappedInterval[irange.size()]));
 		
 	}
 

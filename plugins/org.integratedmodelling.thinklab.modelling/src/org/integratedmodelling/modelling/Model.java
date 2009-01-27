@@ -81,12 +81,16 @@ public class Model {
 	 * @throws ThinklabException 
 	 */
 	public static IConcept deftype(ISession session, IConcept type, Polylist cmodel, Polylist dependents) throws ThinklabException {
-		
+				
 		ArrayList<Object> ldef = new ArrayList<Object>();
 		
-		/* TODO must intersect the concept with ModeledObservable */
+		/* intersect the concept with ModeledObservable */
+		ldef.add(type + "+observation:ModeledObservable");
+		ldef.add(Polylist.list("observation:hasObservableModel", cmodel));
 		
-		
+		if (dependents != null) {
+			ldef.add(dependents.cons("observation:dependsOnObservable"));
+		}
 		
 		return session.createConcept(Polylist.PolylistFromArrayList(ldef));
 	}

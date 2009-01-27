@@ -11,10 +11,14 @@ import org.integratedmodelling.thinklab.value.ParsedLiteralValue;
 public class MappedInterval extends ParsedLiteralValue {
 
 	IntervalValue interval = null;
-	IConcept mapping = null;
 	
 	public MappedInterval(String s) throws ThinklabValidationException {
 		parseLiteral(s);
+	}
+
+	public MappedInterval(IConcept concept, IntervalValue val) {
+		setConceptWithoutValidation(concept);
+		interval = val;
 	}
 
 	@Override

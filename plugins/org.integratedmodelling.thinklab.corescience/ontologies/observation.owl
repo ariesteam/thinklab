@@ -105,6 +105,18 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasInterval -->
+
+    <owl:ObjectProperty rdf:about="#hasInterval">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:comment
+            >Links to the numeric interval in a numeric mapping.</rdfs:comment>
+        <rdfs:domain rdf:resource="#NumericRangeToClassMapping"/>
+        <rdfs:range rdf:resource="&thinklab-core;NumericInterval"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasObservable -->
 
     <owl:ObjectProperty rdf:about="#hasObservable">
@@ -163,6 +175,29 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasSourceClass -->
+
+    <owl:ObjectProperty rdf:about="#hasSourceClass">
+        <rdfs:comment
+            >Links to one or more classes to define the source set of classes in a classification mapping.</rdfs:comment>
+        <rdfs:domain rdf:resource="#ClassSetToClassMapping"/>
+        <rdfs:subPropertyOf rdf:resource="&thinklab-core;ClassificationProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasTargetClass -->
+
+    <owl:ObjectProperty rdf:about="#hasTargetClass">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:comment
+            >Links to the target class for a class mapping.</rdfs:comment>
+        <rdfs:domain rdf:resource="#ClassMapping"/>
+        <rdfs:subPropertyOf rdf:resource="&thinklab-core;ClassificationProperty"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#isContingentTo -->
 
     <owl:ObjectProperty rdf:about="#isContingentTo">
@@ -203,18 +238,6 @@
     
 
 
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#sourceValue -->
-
-    <owl:DatatypeProperty rdf:about="#sourceValue">
-        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >A literal that we try to match to data to determine the concept it represents.</rdfs:comment>
-        <rdfs:domain rdf:resource="#ClassMapping"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#sourceValueType -->
 
     <owl:DatatypeProperty rdf:about="#sourceValueType">
@@ -222,17 +245,6 @@
         <rdfs:comment rdf:datatype="&xsd;string"
             >The URI or semantic type of the source value expected for mapping data to concepts.</rdfs:comment>
         <rdfs:domain rdf:resource="#ClassificationSpace"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#targetConcept -->
-
-    <owl:DatatypeProperty rdf:about="#targetConcept">
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >The URI or semantic type of the concept we are mapping the sourceValue to.</rdfs:comment>
-        <rdfs:domain rdf:resource="#ClassMapping"/>
         <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
     
@@ -262,8 +274,25 @@
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ClassMapping -->
 
     <owl:Class rdf:about="#ClassMapping">
+        <rdfs:subClassOf rdf:resource="#Mapping"/>
         <rdfs:comment rdf:datatype="&xsd;string"
             >A mapping between a source value (expressed as a literal) and a target concept (expressed as a concept URI or semantic type). Used by ClassificationSpace.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ClassSetToClassMapping -->
+
+    <owl:Class rdf:about="#ClassSetToClassMapping">
+        <rdfs:subClassOf rdf:resource="#ClassMapping"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#hasSourceClass"/>
+                <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:comment
+            >A mapping that associates a set of classes to a class.</rdfs:comment>
     </owl:Class>
     
 
@@ -291,6 +320,7 @@
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="#hasClassMapping"/>
+                <owl:onClass rdf:resource="#ClassMapping"/>
                 <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
             </owl:Restriction>
         </rdfs:subClassOf>
@@ -367,7 +397,7 @@ Each instance in a concrete observation space is a &quot;grain&quot; and its cha
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="#hasClassMapping"/>
-                <owl:allValuesFrom rdf:resource="#MappedInterval"/>
+                <owl:allValuesFrom rdf:resource="#NumericRangeToClassMapping"/>
             </owl:Restriction>
         </rdfs:subClassOf>
     </owl:Class>
@@ -417,6 +447,16 @@ Each instance in a concrete observation space is a &quot;grain&quot; and its cha
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#FunctionalMapping -->
+
+    <owl:Class rdf:about="#FunctionalMapping">
+        <rdfs:subClassOf rdf:resource="#Mapping"/>
+        <rdfs:comment
+            >A mapping that associates one or more inputs to an arbitrary output based on the evaluation of a supplied function.</rdfs:comment>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Identification -->
 
     <owl:Class rdf:about="#Identification">
@@ -451,12 +491,13 @@ An Identification can also identify merelogical relationships of an observable t
     
 
 
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#MappedInterval -->
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Mapping -->
 
-    <owl:Class rdf:about="#MappedInterval">
-        <rdfs:subClassOf rdf:resource="&thinklab-core;NumericInterval"/>
+    <owl:Class rdf:about="#Mapping">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
         <rdfs:comment
-            >A numeric interval mapped to a class. Can be specified by a literal of the form semantic-type-&gt;[x,y], using square or round brackets to mean closed or open interval.</rdfs:comment>
+            >Superclass for types whose instances specify mapping of observable states to other observable states.</rdfs:comment>
+        <thinklab-core:AbstractClass>true</thinklab-core:AbstractClass>
     </owl:Class>
     
 
@@ -467,6 +508,16 @@ An Identification can also identify merelogical relationships of an observable t
         <rdfs:subClassOf rdf:resource="&owl;Thing"/>
         <rdfs:comment
             >An observable that specifies a particular observation space. bservables in observations can be of any types, but if they are instances of ModeledObservable, the conceptual model class of the observation will be validated against the restricted CM in the specific subclass of ModeledObservable.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#NumericRangeToClassMapping -->
+
+    <owl:Class rdf:about="#NumericRangeToClassMapping">
+        <rdfs:subClassOf rdf:resource="#ClassMapping"/>
+        <rdfs:comment
+            >A mappings that associates a numeric interval to a concepts.</rdfs:comment>
     </owl:Class>
     
 

@@ -71,6 +71,7 @@ import org.integratedmodelling.utils.LogicalConnector;
 import org.integratedmodelling.utils.MalformedListException;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.utils.Triple;
 import org.semanticweb.owl.model.OWLAnnotation;
 import org.semanticweb.owl.model.OWLConstant;
 import org.semanticweb.owl.model.OWLDataAllRestriction;
@@ -1114,6 +1115,72 @@ public class ThinklabOWLManager {
 			ret = (Property) KnowledgeManager.get().requireProperty(o.toString());
 		
 		return ret;
+	}
+
+
+	/**
+	 * Like getConceptFromListObject, but supports a syntax with multiple types and connectors + (union) or * (intersection); 
+	 * the first item returned is the list of all concepts encountered. The connector can only be LogicalConnector.AND or OR,
+	 * and only one type of logical connector is admitted throughout a specification. String name can be given as usual after
+	 * the # sign. 
+	 * 
+	 * @param o
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static Triple<Set<IConcept>, String, LogicalConnector> 
+		getConceptsFromListObject(Object o) throws ThinklabException {
+
+		if (o instanceof IConcept) {
+
+			HashSet<IConcept> hs = new HashSet<IConcept>();
+			hs.add((IConcept)o);
+			
+			return new Triple<Set<IConcept>, String, LogicalConnector>(hs, null, null);
+		}
+		
+		String ospec = o.toString();
+		String id = null;
+		HashSet<IConcept> concepts =  new HashSet<IConcept>();
+		LogicalConnector connector = null;
+		
+		int idx = ospec.indexOf("#");
+		if (idx >= 0) {
+			id = ospec.substring(idx+1);
+			ospec = ospec.substring(0, idx);
+		}
+		
+		String[] ccs = null;
+		if (ospec.contains("+")) {
+			connector = LogicalConnector.UNION;
+			ccs = ospec.split("\\+");
+		}
+		
+		if (ospec.contains("*")) {
+			
+			if (connector != null) {
+				throw new ThinklabValidationException(
+						"concept specification invalid: " + 
+						ospec + 
+						": cannot contain more than one type of connector");
+			}
+
+			connector = LogicalConnector.INTERSECTION;
+			ccs = ospec.split("\\*");
+		}
+		
+		if (ccs == null)
+			ccs = new String[]{ospec};
+		
+		for (String ss : ccs) {
+			concepts.add(KnowledgeManager.get().requireConcept(ss));
+		}
+		
+		return new Triple<Set<IConcept>, String, LogicalConnector>(
+				concepts,
+				id,
+				connector);
+		
 	}
 
 }

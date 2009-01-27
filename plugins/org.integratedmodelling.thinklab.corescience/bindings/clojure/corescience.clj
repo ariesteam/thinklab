@@ -171,20 +171,6 @@
 	"True if the observation is contingent to an observation of the passed concept."
 	[observation concept]
 	false)
-;; ================================================================================================
-;; simplified builders for object of common use
-;; ================================================================================================
-
-(defn make-discretizer
-   "Builds an initialized instance of a discrete ranking conceptual model"
-   [numspec & more]
-   (org.integratedmodelling.corescience.clojure.ClojureBridge/makeDiscretizer (tl/get-session) (tl/listp (cons numspec more))))
-
-(defn make-unit
-   "Builds an initialized instance of a Measurement conceptual model from the textual specification
-    of a measurement unit."
-   [unitspec]
-   (org.integratedmodelling.corescience.clojure.ClojureBridge/makeUnit (tl/get-session) unitspec))
 
 ;; ================================================================================================
 ;; utils
