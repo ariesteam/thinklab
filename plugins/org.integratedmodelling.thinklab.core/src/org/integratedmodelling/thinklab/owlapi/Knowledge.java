@@ -76,6 +76,10 @@ public abstract class Knowledge implements IKnowledge, IResource {
 		return FileKnowledgeRepository.KR.manager.getOntology(ontoURI);
 	}
 	
+	
+	public Ontology getThinklabOntology() {
+		return (Ontology) FileKnowledgeRepository.KR.retrieveOntology(getConceptSpace());
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -365,7 +365,7 @@ public class Ontology implements IOntology {
 			if (ret == null) {
 
 				Pair<IConcept, String> cc = ThinklabOWLManager
-						.getConceptFromListObject(o);
+						.getConceptFromListObject(o, this);
 				ret = createInstance(ID, cc.getFirst());
 
 			} else if (o instanceof Polylist) {
@@ -574,7 +574,7 @@ public class Ontology implements IOntology {
 			
 			if (ret == null) {
 
-				Pair<IConcept, String> cc = ThinklabOWLManager.getConceptFromListObject(o);
+				Pair<IConcept, String> cc = ThinklabOWLManager.getConceptFromListObject(o, this);
 				ret = createInstance(
 						cc.getSecond() == null ? getUniqueObjectName(getConceptSpace()) : cc.getSecond(),  
 						cc.getFirst());		
@@ -611,10 +611,33 @@ public class Ontology implements IOntology {
 		return getURI().hashCode();
 	}
 
+	/**
+	 * Used internally to find concepts: can see the internal concepts in the session as well
+	 * as the KM public ones.
+	 * 
+	 * @return
+	 * @throws ThinklabResourceNotFoundException
+	 */
+	IConcept findConcept(String id) throws ThinklabException {
+		
+		IConcept ret = null;
+		if (id.startsWith(getConceptSpace()))
+			ret = this.getConcept(id.substring(id.indexOf(":") + 1));
+		
+		if (ret == null)
+			ret = KnowledgeManager.get().requireConcept(id);
+		
+		if (ret == null)
+			throw new ThinklabResourceNotFoundException("concept " + id + " unknown to session");
+		
+		return ret;
+	}
+	
 	@Override
 	public IConcept createConcept(Polylist list) throws ThinklabException {
 		
 		Concept ret = null;
+		String id = null;
 		
 		OWLOntologyManager manager = FileKnowledgeRepository.get().manager;
 		OWLDataFactory factory = FileKnowledgeRepository.get().manager.getOWLDataFactory();
@@ -623,9 +646,9 @@ public class Ontology implements IOntology {
 
 			if (ret == null) {
 
-				Triple<Set<IConcept>, String, LogicalConnector> cc = ThinklabOWLManager.getConceptsFromListObject(o);
+				Triple<Set<IConcept>, String, LogicalConnector> cc = ThinklabOWLManager.getConceptsFromListObject(o, this);
 				
-				String id = cc.getSecond();
+				id = cc.getSecond();
 				if (id == null)
 					id = NameGenerator.newName("tcl");
 				
@@ -782,6 +805,8 @@ public class Ontology implements IOntology {
 			}
 		}
 
+		concepts.put(new SemanticType(cs, id), ret);
+		
 		return ret;
 		
 	}

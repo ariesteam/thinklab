@@ -4,22 +4,16 @@
 
 (ns corescience)
 
-;; "private" func to call Java from compiled code - won't load classes from the macro.
-
-(defn j-make-discretizer
-	""
-	[list]
-	(org.integratedmodelling.corescience.clojure.ClojureBridge/makeDiscretizer 
-		(tl/listp list)))
-		
 ;; ================================================================================================
 ;; public functions
 ;; ================================================================================================
 
-(defmacro make-discretizer
-   "Builds the list definition of an instance of a discrete ranking conceptual model"
-   [spec]
-   `(j-make-discretizer '~spec))
+(defn make-discretizer
+   "Builds the list definition of an instance of a discrete ranking conceptual model. Alternate 
+   concepts and literal intervals."
+   [spec & specs]
+   (org.integratedmodelling.corescience.clojure.ClojureBridge/makeDiscretizer 
+		(tl/listp (conj specs spec))))
 
 (defn make-unit
    "Builds the list definition of an instance of a Measurement conceptual model from the 

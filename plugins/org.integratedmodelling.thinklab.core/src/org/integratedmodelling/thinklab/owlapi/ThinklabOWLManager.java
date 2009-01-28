@@ -49,9 +49,6 @@ import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabConstraintValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -428,7 +425,7 @@ public class ThinklabOWLManager {
 		return ret;
 	}
 
-	public static Pair<IConcept, String> getConceptFromListObject(Object o) throws ThinklabException {
+	public static Pair<IConcept, String> getConceptFromListObject(Object o, Ontology ont) throws ThinklabException {
 		
 		IConcept concept = null;
 		String ID = null;
@@ -446,7 +443,7 @@ public class ThinklabOWLManager {
 			}
 			
 			try {
-				concept = KnowledgeManager.get().requireConcept(co);
+				concept = ont == null ? KnowledgeManager.get().requireConcept(co) : ont.findConcept(co);
 			} catch (ThinklabException e) {
 				throw new ThinklabValidationException(e);
 			}
@@ -605,7 +602,7 @@ public class ThinklabOWLManager {
 				/*
 				 * literal with no explicit type. First value must identify a concept, possibly with ID attached
 				 */
-				Pair<IConcept, String> cid = getConceptFromListObject(lvalue.first());
+				Pair<IConcept, String> cid = getConceptFromListObject(lvalue.first(), ont);
 				
 				/*
 				 * second element must be a string or an IValue
@@ -840,7 +837,7 @@ public class ThinklabOWLManager {
 				/*
 				 * class literal
 				 */
-				IConcept concept = getConceptFromListObject(o2).getFirst();
+				IConcept concept = getConceptFromListObject(o2, ont).getFirst();
 				inst.addClassificationRelationship(property, concept);
 
 			} else {
@@ -1051,7 +1048,7 @@ public class ThinklabOWLManager {
 		return ret;
 	}
 
-	public IConcept getRestrictionFiller(OWLRestriction r) {
+	public IConcept getRestrictionFiller(OWLRestriction r, Ontology ont) {
 
 		IConcept ret = null;
 		
@@ -1064,7 +1061,10 @@ public class ThinklabOWLManager {
 				String tltype = KnowledgeManager.get().getXSDMapping(dtype.getURI().toString());
 				if (tltype != null) {
 					try {
-						ret = KnowledgeManager.get().requireConcept(tltype);
+						ret = 
+							ont == null ? 
+									KnowledgeManager.get().requireConcept(tltype) : 
+									ont.findConcept(tltype);
 					} catch (Exception e) {
 						// nothing
 					}
@@ -1080,7 +1080,10 @@ public class ThinklabOWLManager {
 				String tltype = KnowledgeManager.get().getXSDMapping(dtype.getURI().toString());
 				if (tltype != null) {
 					try {
-						ret = KnowledgeManager.get().requireConcept(tltype);
+						ret =
+							ont == null ?
+								KnowledgeManager.get().requireConcept(tltype):
+								ont.findConcept(tltype);
 					} catch (Exception e) {
 						// nothing
 					}
@@ -1129,7 +1132,7 @@ public class ThinklabOWLManager {
 	 * @throws ThinklabException 
 	 */
 	public static Triple<Set<IConcept>, String, LogicalConnector> 
-		getConceptsFromListObject(Object o) throws ThinklabException {
+		getConceptsFromListObject(Object o, Ontology ontology) throws ThinklabException {
 
 		if (o instanceof IConcept) {
 
@@ -1173,7 +1176,9 @@ public class ThinklabOWLManager {
 			ccs = new String[]{ospec};
 		
 		for (String ss : ccs) {
-			concepts.add(KnowledgeManager.get().requireConcept(ss));
+			concepts.add(ontology == null ? 
+					KnowledgeManager.get().requireConcept(ss):
+					ontology.findConcept(ss));
 		}
 		
 		return new Triple<Set<IConcept>, String, LogicalConnector>(

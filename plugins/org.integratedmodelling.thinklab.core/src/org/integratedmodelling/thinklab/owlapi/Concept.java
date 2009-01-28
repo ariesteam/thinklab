@@ -563,7 +563,7 @@ public class Concept extends Knowledge implements IConcept {
 		 * This accumulates all restrictions from parents as well.
 		 */		
 		Collection<OWLRestriction> rs = OWLAPI.getRestrictions(this,true);
-
+		Ontology ont = getThinklabOntology();
 		Constraint ret = new Constraint(this);
 		
 			for (OWLRestriction r : rs) {
@@ -577,7 +577,7 @@ public class Concept extends Knowledge implements IConcept {
 					q = new Quantifier("all");
 
 					IConcept c = 
-						ThinklabOWLManager.get().getRestrictionFiller(r);
+						ThinklabOWLManager.get().getRestrictionFiller(r, ont);
 					
 					if (c != null)
 						ret.restrict(new Restriction(q, p, new Constraint(c)));
@@ -588,7 +588,7 @@ public class Concept extends Knowledge implements IConcept {
 					q = new Quantifier("any");
 					
 					IConcept c = 
-						ThinklabOWLManager.get().getRestrictionFiller(r);
+						ThinklabOWLManager.get().getRestrictionFiller(r, ont);
 					
 					if (c != null)
 						ret.restrict(new Restriction(q, p, new Constraint(c)));
@@ -722,7 +722,8 @@ public class Concept extends Knowledge implements IConcept {
 		ArrayList<OWLRestriction> rs = new ArrayList<OWLRestriction>();
 		
 		Constraint ret = getDefinitionInternal(this, rs);
-
+		Ontology ont = getThinklabOntology();
+		
 		if (rs != null)
 			for (OWLRestriction r : rs) {
 
@@ -735,7 +736,7 @@ public class Concept extends Knowledge implements IConcept {
 					q = new Quantifier("all");
 
 					IConcept c = 
-						ThinklabOWLManager.get().getRestrictionFiller(r);
+						ThinklabOWLManager.get().getRestrictionFiller(r, ont);
 					
 					if (c != null)
 						ret.restrict(new Restriction(q, p, new Constraint(c)));
@@ -746,7 +747,7 @@ public class Concept extends Knowledge implements IConcept {
 					q = new Quantifier("any");
 					
 					IConcept c = 
-						ThinklabOWLManager.get().getRestrictionFiller(r);
+						ThinklabOWLManager.get().getRestrictionFiller(r, ont);
 					
 					if (c != null)
 						ret.restrict(new Restriction(q, p, new Constraint(c)));

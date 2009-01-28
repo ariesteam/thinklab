@@ -54,7 +54,9 @@
 (defn conc
 	"Returns the concept named by the passed semantic type string."
 	[stype]
-	(.. KnowledgeManager (get) (requireConcept (str stype))))
+	(if (instance? org.integratedmodelling.thinklab.interfaces.knowledge.IConcept stype)
+		stype
+		(.. KnowledgeManager (get) (requireConcept (str stype)))))
 	
 (defn prop
 	"Returns the concept named by the passed semantic type string."

@@ -115,6 +115,28 @@ public class Session implements ISession {
 		}
 	}
 	
+	/**
+	 * Used internally to find concepts: can see the internal concepts in the session as well
+	 * as the KM public ones.
+	 * 
+	 * @return
+	 * @throws ThinklabResourceNotFoundException
+	 */
+	private IConcept getConcept(String id) throws ThinklabException {
+		
+		IConcept ret = null;
+		if (id.startsWith(ontology.getConceptSpace()))
+			ret = ontology.getConcept(id.substring(id.indexOf(":") + 1));
+		
+		if (ret == null)
+			ret = KnowledgeManager.get().requireConcept(id);
+		
+		if (ret == null)
+			throw new ThinklabResourceNotFoundException("concept " + id + " unknown to session");
+		
+		return ret;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.ima.core.ISession#getSessionID()
 	 */
@@ -333,19 +355,19 @@ public class Session implements ISession {
     }
 
 	public IInstance createObject(String concept) throws ThinklabException {
-		return createObject(ontology.getUniqueObjectName("JI"), KnowledgeManager.get().requireConcept(concept));
+		return createObject(ontology.getUniqueObjectName("JI"), getConcept(concept));
 	}
 
 	public IInstance createObject(SemanticType concept) throws ThinklabException {
-		return createObject(ontology.getUniqueObjectName("JI"), KnowledgeManager.get().requireConcept(concept));
+		return createObject(ontology.getUniqueObjectName("JI"), getConcept(concept.toString()));
 	}
 
 	public IInstance createObject(String name, String concept) throws ThinklabException {
-		return createObject(name, KnowledgeManager.get().requireConcept(concept));
+		return createObject(name, getConcept(concept));
 	}
 
 	public IInstance createObject(String name, SemanticType concept) throws ThinklabException {
-		return createObject(name, KnowledgeManager.get().requireConcept(concept));
+		return createObject(name, getConcept(concept.toString()));
 	}
 
 	public Collection<IInstance> loadObjects(String source) throws ThinklabException {
