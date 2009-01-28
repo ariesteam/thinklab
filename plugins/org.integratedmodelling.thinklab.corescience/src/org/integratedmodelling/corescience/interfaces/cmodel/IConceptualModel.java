@@ -33,12 +33,17 @@
 package org.integratedmodelling.corescience.interfaces.cmodel;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabConceptualModelValidationException;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.INamedObject;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.utils.Pair;
 
 /**
  * Each indirect observation has its state described by "data". A conceptual
@@ -94,5 +99,80 @@ public interface IConceptualModel extends INamedObject {
 	 * @throws ThinklabConceptualModelValidationException if inconsistent
 	 */
 	public abstract void validate(IObservation observation) throws ThinklabValidationException;
+	
+//	/**
+//	 * Called once to communicate the overall context and to negotiate communication with the
+//	 * datasource. Called whether or not a datasource is actually connected, BEFORE the twin 
+//	 * handshake() is called on the datasource itself.
+//	 * 
+//	 * @param cm
+//	 * @param observationContext
+//	 * @param overallContext
+//	 * @return
+//	 * @throws ThinklabException
+//	 */
+//	public abstract boolean handshake(
+//			IObservationContext observationContext,
+//			IObservationContext overallContext,
+//			IDataSource ds)
+//		 throws ThinklabException;
+//	
+//	
+//
+//	
+//	/**
+//	 * This should return the IValue created from the i-th data object by validating it as the
+//	 * passed concept. The index array contains the linear index of each dimension in the context exposed to
+//	 * the DS during handshaking. The context contains the corresponding values, and will not 
+//	 * contain values for the extents unless handshake() has returned false AND the workflow
+//	 * has agreed. The response from the workflow is passed in the useExtentIndex parameter.
+//	 * 
+//	 * Note that if the datasource needs to have memory of previous states, this is the place where you need to
+//	 * implement it. There is no memory in Thinklab's state interface.
+//	 *
+//	 * 
+//	 * You only need to implement this if getValueType() was defined to return ValueType.IVALUE.
+//	 * 
+//	 * @param context the context state, containing the current state of all dependencies.
+//	 * @param concept the type of value to return
+//	 * @param useExtentIndex if true, the method must use the index methods in the context
+//	 * state and not the value methods. 
+//	 * @return a pair containing the state value from the datasource that corresponds to the passed context
+//	 * 			state and the associated uncertainty (or null if there is none).
+//	 * @throws ThinklabValidationException if anything goes wrong. FIXME should be a datasource
+//	 * exception or something.
+//	 */
+//	public abstract Pair<IValue, IUncertainty> getValue(
+//			IObservationContextState context, 
+//			IConcept concept,
+//			boolean useExtentIndex) throws ThinklabValidationException;
+//		
+//	/**
+//	 * Exactly like getValue, but returns a raw string literal which is passed to the conceptual model
+//	 * for interpretation before being set in the state.
+//	 * 
+//	 * You only need to implement this if getValueType() was defined to return ValueType.LITERAL.
+//	 * 
+//	 * @param context
+//	 * @param concept
+//	 * @param useExtentIndex
+//	 * @return
+//	 * @throws ThinklabValidationException
+//	 * @see getValue
+//	 */
+//	public abstract Pair<String, IUncertainty> getValueLiteral(
+//			IObservationContextState context, 
+//			IConcept concept,
+//			boolean useExtentIndex) throws ThinklabValidationException;
+//		
+//
+//	/**
+//	 * Datasources may have an initial value before anything is computed or extracted. This value, if
+//	 * not null, is used to initialize state storage before contextualization. If the initial value
+//	 * makes sense for the datasource, return it here. Otherwise just return null.
+//	 * 
+//	 * @return
+//	 */
+//	public abstract Pair<IValue, IUncertainty> getInitialValue();
 	
 }

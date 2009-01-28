@@ -34,6 +34,11 @@ package org.integratedmodelling.corescience.interfaces;
 
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
 
+/**
+ * 
+ * @author Ferdinando
+ * @deprecated we need to get over these constructors, Java is better than that
+ */
 public interface IWorkflowConstructor {
 
 	public abstract IContextualizationWorkflow createWorkflow();

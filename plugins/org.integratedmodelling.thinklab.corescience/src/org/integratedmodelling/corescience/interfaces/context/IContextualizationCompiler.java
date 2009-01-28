@@ -75,9 +75,8 @@ public interface IContextualizationCompiler {
 	public abstract void addMediatedDependency(IObservation destination, IObservation source);
 
 	/*
-	 * Produce a compiled class that can be instantiated and run to produce the states.
+	 * Compile a contextualizer that can be run to produce the states.
 	 */
-	public abstract Class<?> compile(IObservation observation, IObservationContext context) throws ThinklabException;
-	
+	public abstract IContextualizer compile(IObservation observation, IObservationContext context) throws ThinklabException;
 	
 }

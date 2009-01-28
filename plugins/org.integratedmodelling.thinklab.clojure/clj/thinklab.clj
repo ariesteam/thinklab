@@ -52,11 +52,23 @@
 		(load-bindings pname))
 
 (defn conc
-	"Returns the concept named by the passed semantic type string."
+	"A passed concept is returned unmodified. If the passed object is not a concept, its string
+	value is taken to be a semantic type and the correspondent concept is returned. If no concept
+	exists for that object, an exception is thrown."
 	[stype]
 	(if (instance? org.integratedmodelling.thinklab.interfaces.knowledge.IConcept stype)
 		stype
 		(.. KnowledgeManager (get) (requireConcept (str stype)))))
+
+(defn find-concept
+	"A passed concept is returned unmodified. If the passed object is not a concept, its string
+	value is taken to be a semantic type and the correspondent concept is returned. If no concept
+	exists for that object, nil is returned without complaint."
+	[stype]
+	(if (instance? org.integratedmodelling.thinklab.interfaces.knowledge.IConcept stype)
+		stype
+		(.. KnowledgeManager (get) (retrieveConcept (str stype)))))
+
 	
 (defn prop
 	"Returns the concept named by the passed semantic type string."
