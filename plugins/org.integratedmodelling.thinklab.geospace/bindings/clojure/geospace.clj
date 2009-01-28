@@ -55,11 +55,10 @@
 	"Returns the number of rows in the grid extent of the passed observation. Throw an exception if
 	 the observation is not distributed over a grid extent."
 	 [observation]
-	 (.. (get-spatial-extent observation) (getRows)))
+	 (. (get-spatial-extent observation) (getRows)))
 
 (defn grid-columns
 	"Returns the number of rows in the grid extent of the passed observation. Throw an exception if
 	 the observation is not distributed over a grid extent."
 	 [observation]
-	 (.. (get-spatial-extent observation) (getColumns)))
-	     
+	 (. (get-spatial-extent observation) (getColumns)))
