@@ -18,6 +18,7 @@
 						;; whatever observation of RainfallAmount we decide to use, we need it 
 						;; converted into the model represented by unit "mm" before it's used.
 	 					;; NOTE this should be ecology:RainfallAmount in order to be transparent
+	 					;; to the database query.
 	 					;; -------------------------------------------------------------------------
 	 					(model/make-type 'carbonEcology:RainfallAmount (corescience/make-unit "mm"))
 	 					
@@ -45,24 +46,22 @@
 	;; a context of land use and including variables whose nature and observation model depend 
 	;; on the context.
 	;; ---------------------------------------------------------------------------------------
-    (model/make-model 'carbonService:ClimateStability
+  (model/make-model 'carbonService:ClimateStability
 
-		;; ---------------------------------------------------------------------------------
-		;; The context list defines the variables that influence the structure of the model.
-		;; ---------------------------------------------------------------------------------
-		;; the structure of this model depends on land use. In the specification, the variable
-		;; :landuse will be bound to the land use class in each context of valuation.
-		;; ---------------------------------------------------------------------------------
-		[:landuse 'carbonEcology:VegetationType]
-
-
+			;; ---------------------------------------------------------------------------------
+			;; The context bindings defines the variables that influence the structure of the model.
+			;; ---------------------------------------------------------------------------------
+			;; the structure of this model depends on land use. In the specification, the variable
+			;; :landuse will be bound to the land use class in each context of valuation.
+			;; ---------------------------------------------------------------------------------
+			[:landuse 'carbonEcology:VegetationType]
 
 
 
-		;; ---------------------------------------------------------------------------------
-		;; Rainfall is used everywhere just as data, discretized into 12 categories defined
-		;; in the discreteRainfall type. We only need to define its default model.
-		;; ---------------------------------------------------------------------------------
-		('carbonEcology:Rainfall :default discreteRainfall)))
+			;; ---------------------------------------------------------------------------------
+			;; Rainfall is used everywhere just as data, discretized into 12 categories defined
+			;; in the discreteRainfall type. We only need to define its default model.
+			;; ---------------------------------------------------------------------------------
+			('carbonEcology:Rainfall :default discreteRainfall)))
 
  
