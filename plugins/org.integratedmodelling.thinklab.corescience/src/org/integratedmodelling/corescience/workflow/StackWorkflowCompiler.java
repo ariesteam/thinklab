@@ -45,6 +45,10 @@ public abstract class StackWorkflowCompiler implements IStackContextualizationCo
 			this.mediated  = mediated;
 		}
 		
+		public boolean isMediated() {
+			return mediated;
+		}
+		
 	}
 	
 	DefaultDirectedGraph<IObservation, MediatedDependencyEdge> dependencies = 
@@ -73,7 +77,7 @@ public abstract class StackWorkflowCompiler implements IStackContextualizationCo
 		if (cycleDetector.detectCycles()) {
 			
 			/*
-			 * TODO list involved observations in message.
+			 * TODO (minor): list involved observations in message.
 			 */
 			Set<IObservation> problemObs = cycleDetector.findCycles();
 			throw new ThinklabCircularDependencyException(

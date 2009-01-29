@@ -7,14 +7,14 @@
 
 (let [
 	 ;; --------------------------------------------------------------------------------------- 
-	 ;; We ask the system to create a type of rainfall that we will use later, and bind it to
-	 ;; the variable "discreteRainfall". 
+	 ;; We ask the system to create the type of rainfall that we will need later, and bind it to
+	 ;; the variable "discreteRainfall" so it can be observed in the database supplied to run(). 
 	 ;; --------------------------------------------------------------------------------------- 
 	 discreteRainfall (model/make-type
 	 					;; -------------------------------------------------------------------------
 						;; In order for the discretization to make sense we must ensure the numbers
 						;; represent millimeters. By using the type below instead of the raw
-						;; Rainfall observable type, we tell the system that
+						;; carbonEcology:RainfallAmount observable type, we tell the system that
 						;; whatever observation of RainfallAmount we decide to use, we need it 
 						;; converted into the model represented by unit "mm" before it's used.
 	 					;; NOTE this should be ecology:RainfallAmount in order to be transparent
@@ -38,7 +38,7 @@
 	 						 'carbonEcology:RainfallClassI "[2600,3200)"
 	 						 'carbonEcology:RainfallClassJ "[3200,3600)"
 	 						 'carbonEcology:RainfallClassK "[3600,5000)"
-	 						 'carbonEcology:RainfallClassL "[5000" ))
+	 						 'carbonEcology:RainfallClassL "[5000" )) 
 	 ]
 
 	;; ---------------------------------------------------------------------------------------
