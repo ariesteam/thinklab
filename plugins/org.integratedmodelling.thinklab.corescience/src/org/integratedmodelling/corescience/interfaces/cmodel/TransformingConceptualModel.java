@@ -42,4 +42,11 @@ public interface TransformingConceptualModel {
 	public abstract IDataSource transformState(IConceptualModel otherConceptualModel, IObservationState state) 
 		throws ThinklabValidationException;
 	
+	/**
+	 * This one should return null if we have a datasource or can produce our own data,
+	 * and the CM we are transforming if there is one.
+	 * @return
+	 */
+	public abstract IConceptualModel nextConceptualModel();
+	
 }

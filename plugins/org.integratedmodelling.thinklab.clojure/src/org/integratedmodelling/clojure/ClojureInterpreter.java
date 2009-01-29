@@ -156,6 +156,7 @@ public class ClojureInterpreter implements Interpreter {
 	
 	@Override
 	public void loadBindings(URL source, ClassLoader cloader) throws ThinklabException {
+		
         try {
         	
         	DynamicClassLoader cl = null;
@@ -313,12 +314,12 @@ public class ClojureInterpreter implements Interpreter {
 		 * TODO the default namespace should be the plugin from which the code is
 		 * coming.
 		 */
-    	DynamicClassLoader cl = RT.ROOT_CLASSLOADER;
-    	RT.ROOT_CLASSLOADER = new DynamicClassLoader(sourcePlugin.getClassLoader());
+    	//DynamicClassLoader cl = RT.ROOT_CLASSLOADER;
+    	//RT.ROOT_CLASSLOADER = new DynamicClassLoader(sourcePlugin.getClassLoader());
    
     	IValue ret = evalInNamespace(code, session == null ? "user" : session.getSessionID());
 		
-    	RT.ROOT_CLASSLOADER = cl;
+    	//RT.ROOT_CLASSLOADER = cl;
     	
     	return ret;
 	}

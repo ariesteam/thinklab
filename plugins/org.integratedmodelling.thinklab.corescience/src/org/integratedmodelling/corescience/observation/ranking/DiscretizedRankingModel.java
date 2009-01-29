@@ -73,6 +73,7 @@ public class DiscretizedRankingModel extends ConceptualModel implements Transfor
 	double max = 0.0;
 	private ArrayList<MappedInterval> range;
 	IConcept valueType = null;
+	IConceptualModel wrapped = null;
 	
 	/**
 	 * NOTE: this expects a SORTED interval array. See ClojureBridge for how to sort it.
@@ -117,7 +118,6 @@ public class DiscretizedRankingModel extends ConceptualModel implements Transfor
 	@Override
 	public IDataSource transformState(IConceptualModel otherConceptualModel,
 			IObservationState state) throws ThinklabValidationException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -187,6 +187,11 @@ public class DiscretizedRankingModel extends ConceptualModel implements Transfor
 
 		define(irange.toArray(new MappedInterval[irange.size()]));
 		
+	}
+
+	@Override
+	public IConceptualModel nextConceptualModel() {
+		return wrapped;
 	}
 
 

@@ -3,10 +3,10 @@ package org.integratedmodelling.corescience.workflow;
 import java.util.ArrayList;
 import java.util.Set;
 
-import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizer;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.context.IStackContextualizationCompiler;
+import org.integratedmodelling.corescience.interfaces.context.IStackCompiler;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabCircularDependencyException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -22,7 +22,7 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
  * @author Ferdinando
  *
  */
-public abstract class StackWorkflowCompiler implements IStackContextualizationCompiler {
+public abstract class StackWorkflowCompiler implements IStackCompiler {
 
 	
 	/*
@@ -121,8 +121,8 @@ public abstract class StackWorkflowCompiler implements IStackContextualizationCo
 		/*
 		 * compile initialization sequence
 		 */
-		IObservation obs; 
-		ArrayList<IObservation> order = new ArrayList<IObservation>();
+		ActivationRecord obs; 
+		ArrayList<ActivationRecord> order = new ArrayList<ActivationRecord>();
 
 		boolean hasState = false;
 		boolean isStateSaved = true;
@@ -130,7 +130,11 @@ public abstract class StackWorkflowCompiler implements IStackContextualizationCo
 
 		while (ord.hasNext()) {
 			
-			order.add(obs = ord.next());
+			/*
+			 * build an activation record, which studies the dependencies and
+			 * contexts for the obs.
+			 */
+			order.add(obs = new ActivationRecord(ord.next(), dependencies));
 			
 			/*
 			 * determine the chain of CMs, mediators and aggregators to extract this state
@@ -154,12 +158,12 @@ public abstract class StackWorkflowCompiler implements IStackContextualizationCo
 		/*
 		 * compile contextualization sequence
 		 */
-		for (IObservation o : order) {
+		for (ActivationRecord o : order) {
 
 			/*
 			 * determine the chain of CMs, mediators and aggregators to extract this state
 			 */
-			
+			IConceptualModel cm = o.obs.getConceptualModel();
 			/*
 			 * determine if we have an initial state that is either saved or used by others
 			 */
