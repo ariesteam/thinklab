@@ -69,8 +69,8 @@ public class Model {
 	}
 	
 	/**
-	 * Create a ModeledObservable type in the given session, with conceptual model and 
-	 * possibly observable dependencies, and return it. It will be used to contextualize known 
+	 * Create a ModeledObservable type in the given session, subclass of the passed one, 
+	 * with conceptual model and possibly observable dependencies, and return it. It will be used to contextualize known 
 	 * observables into observations that can be used within this model.
 	 * 
 	 * @param session
@@ -89,6 +89,10 @@ public class Model {
 		ldef.add(Polylist.list("observation:hasObservableModel", cmodel));
 		
 		if (dependents != null) {
+			/*
+			 * TODO should use an authoritative ontology of observables such as
+			 * DOLCE for the dependencies.
+			 */
 			ldef.add(dependents.cons("observation:dependsOnObservable"));
 		}
 		
