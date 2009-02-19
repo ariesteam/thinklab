@@ -10,6 +10,27 @@
 	xmlns:habitat="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#"
 	xmlns:representation="http://www.integratedmodelling.org/ks/science/representation.owl#">
 
+	<observation:Identification id="test">
+
+		<observation:hasObservable>
+			<representation:GenericQuantifiable />
+		</observation:hasObservable>
+
+		<!-- the grid extent here constrains the one in the dependencies  -->
+		<observation:hasObservationExtent>
+			<geospace:RasterGrid>
+				<geospace:hasCoordinateReferenceSystem>EPSG:4326</geospace:hasCoordinateReferenceSystem>
+				<geospace:hasLatLowerBound>30.00</geospace:hasLatLowerBound>
+				<geospace:hasLatUpperBound>35.00</geospace:hasLatUpperBound>
+				<geospace:hasLonLowerBound>-100.00</geospace:hasLonLowerBound>
+				<geospace:hasLonUpperBound>-95.00</geospace:hasLonUpperBound>
+				<geospace:hasXRangeMax>512</geospace:hasXRangeMax>
+				<geospace:hasYRangeMax>512</geospace:hasYRangeMax>
+			</geospace:RasterGrid>
+		</observation:hasObservationExtent>
+
+		<observation:dependsOn>
+
 <measurement:Ranking id="landcover">
 		<rdfs:label>Vegetation type</rdfs:label>
 		<rdfs:comment>
@@ -210,4 +231,6 @@
 		</observation:hasObservationExtent>
 	</measurement:Ranking>
 
+		</observation:dependsOn>
+	</observation:Identification>
 </kbox>
