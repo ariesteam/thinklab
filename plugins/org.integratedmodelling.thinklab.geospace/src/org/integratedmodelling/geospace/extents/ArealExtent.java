@@ -35,7 +35,7 @@ package org.integratedmodelling.geospace.extents;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
-import org.integratedmodelling.geospace.cmodel.SpatialConceptualModel;
+import org.integratedmodelling.geospace.implementations.cmodels.SpatialConceptualModel;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;

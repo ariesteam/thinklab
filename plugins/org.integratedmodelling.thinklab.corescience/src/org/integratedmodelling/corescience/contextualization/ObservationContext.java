@@ -40,16 +40,16 @@ import org.integratedmodelling.corescience.exceptions.ThinklabContextValidationE
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
-import org.integratedmodelling.corescience.interfaces.context.IContextStateGenerator;
-import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
-import org.integratedmodelling.corescience.workflow.AsynchronousContextualizationWorkflow;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabCircularDependencyException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.utils.LogicalConnector;
+import org.integratedmodelling.utils.Polylist;
 
 
 public class ObservationContext implements IObservationContext {
@@ -81,10 +81,9 @@ public class ObservationContext implements IObservationContext {
 	}
 	
 	/*
-	 * must be called after all extents have been merged in. Defines dimensionalities and
-	 * creates the topological sort for the observations.
+	 * must be called after all extents have been merged in. Defines dimensionalities.
 	 */
-	public void initialize() throws ThinklabCircularDependencyException {
+	public void initialize()  {
 		
 		sortContext();
 		
@@ -121,9 +120,8 @@ public class ObservationContext implements IObservationContext {
 		
 		if (extent == null) {
 			
-			IExtent newExt = cm.getExtent();
-			
 			/* just add the extent */
+			IExtent newExt = cm.getExtent();
 			extents.put(dimension.toString(), newExt);
 		
 		} else {
@@ -140,16 +138,6 @@ public class ObservationContext implements IObservationContext {
 	public Collection<IConcept> getContextDimensions() {
 		return order;
 	}
-
-
-	public IContextStateGenerator getContextStates(IContextualizationWorkflow workflow) {
-		boolean idx = false;
-		if (workflow != null && workflow instanceof AsynchronousContextualizationWorkflow) {
-			idx = ((AsynchronousContextualizationWorkflow)workflow).canUseExtentIndex();
-		}
-		return new ContextStateGenerator(this, idx);
-	}
-
 
 	public IConcept getDimension(IConcept concept) throws ThinklabException {
 		
@@ -200,25 +188,19 @@ public class ObservationContext implements IObservationContext {
 		 */
 		for (String entry : coo.extents.keySet()) {
 			
-			IExtent foreign = coo.extents.get(entry);
-
 			// see if we already have an extent for this dimension
 			IExtent extent = extents.get(entry);
+			IExtent foreign = coo.extents.get(entry);
 			
 			if (extent == null) {
-				
 				/* just add the extent */
 				extents.put(entry, foreign);
-			
 			} else {
-				
 				// ask CM to modify the current extent record in order to represent the
 				// new one as well.
 				extents.put(entry, 
 						extent.getConceptualModel().mergeExtents(extent, foreign, connector, isConstraint));
-			}		
-
-			
+			}					
 		}
 		
 	}
@@ -270,9 +252,23 @@ public class ObservationContext implements IObservationContext {
 		return dimensionalities;
 	}
 
-
-
-
+	@Override
+	public Polylist conceptualizeExtent(IConcept c) throws ThinklabException {
+		
+		Polylist ret = null;
+		IExtent extent = getExtent(c);
+		
+		if (extent != null) {
+			if (extent instanceof IConceptualizable) {
+				ret = ((IConceptualizable)extent).conceptualize();
+			} else {
+				throw new ThinklabInappropriateOperationException(
+						"extent of type " + c + " cannot be turned into an observation");
+			}
+		}
+		
+		return ret;
+	}
 
 	
 }

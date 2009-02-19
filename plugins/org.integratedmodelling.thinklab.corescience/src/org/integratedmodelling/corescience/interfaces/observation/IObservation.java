@@ -32,132 +32,173 @@
  **/
 package org.integratedmodelling.corescience.interfaces.observation;
 
-import java.util.Collection;
-
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
+import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
+import org.integratedmodelling.corescience.interfaces.context.IContextualizer;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
+/**
+ * TODO this will need to have state (datasource) access methods, throwing
+ * exceptions unless contextualized.
+ * 
+ * @author Ferdinando
+ * 
+ */
 public interface IObservation {
 
 	/**
 	 * 
 	 * @return
-	 * @throws ThinklabException 
+	 * @throws ThinklabException
 	 * @model
 	 */
-	public abstract IDataSource getDataSource() throws ThinklabException;
-	
+	public abstract IDataSource<?> getDataSource() throws ThinklabException;
+
 	/**
-	 * Return the observable. It could be either a class or an instance. Can't be null.
+	 * Return the observable instance. Can't be null. If this observation is a
+	 * mediator and doesn't have an observable, scan the mediation chain until
+	 * one is found.
 	 * 
 	 * @return the observable for this observation
 	 */
-	public abstract IKnowledgeSubject getObservable();
-	
+	public abstract IInstance getObservable();
+
 	/**
-	 * Get the class of the main observable.
+	 * Get the class of the main observable. If this observation is a mediator
+	 * and doesn't have an observable, scan the mediation chain until one is
+	 * found.
+	 * 
 	 * @return
 	 * @model
 	 */
 	public abstract IConcept getObservableClass();
-	
+
 	/**
 	 * 
 	 * @return
 	 * @model
 	 */
-	public abstract IConceptualModel getConceptualModel() throws ThinklabException;
-	
+	public abstract IConceptualModel getConceptualModel()
+			throws ThinklabException;
 
 	/**
 	 * Return the class of the observation instance we implement.
+	 * 
 	 * @return
 	 */
 	public abstract IConcept getObservationClass();
 
 	/**
-	 * Obtain the observation context for this observation, recursing and compounding contingencies
-	 * and dependencies. Use the passed workflow to notify dependencies and links.
+	 * Obtain the observation context for this observation, recursing and
+	 * compounding contingencies and dependencies. Use the passed workflow to
+	 * notify dependencies and links.
 	 * 
 	 * @param workflow
-	 * @param compound 
+	 * @param compound
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public IObservationContext getOverallObservationContext(IContextualizationWorkflow workflow) throws ThinklabException;
-		
+	public IObservationContext getOverallObservationContext(
+			IContextualizationCompiler workflow) throws ThinklabException;
+
 	/**
-	 * Get the observation's own observation context, including extents and values only from the directly linked
-	 * dependencies. No recursion happens.
+	 * Get the observation's own observation context, including extents and
+	 * values only from the directly linked dependencies. No recursion happens.
 	 * 
-	 * @return a new observation context that's specific of the observation. 
-	 * @throws ThinklabException 
+	 * @return a new observation context that's specific of the observation.
+	 * @throws ThinklabException
 	 */
 	public IObservationContext getObservationContext() throws ThinklabException;
-		
+
 	/**
-	 * Return the observation instance.
+	 * Return the observation instance of which this is the Java peer
+	 * implementations.
+	 * 
 	 * @return
 	 */
 	public abstract IInstance getObservationInstance();
 
 	/**
-	 * Return a collection of all observations on which this one depends. 
+	 * Return a collection of all observations on which this one depends.
+	 * 
 	 * @return
 	 */
 	public abstract IObservation[] getDependencies();
 
 	/**
-	 * Return a collection of all observations that are contingent to this one. 
+	 * Return a collection of all observations that are contingent to this one.
+	 * 
 	 * @return
 	 */
 	public abstract IObservation[] getContingencies();
 
 	/**
-	 * Return the calculated observation state. Typically only available after contextualization.
-	 * @return the state in the current context, which may well be null. Should throw an exception
-	 * if the state makes no sense (e.g. no contextualization was done) but not if the state is 
-	 * legitimately null.
-	 * 
-	 * @throws ThinklabException 
-	 */
-	public IObservationState getObservationState() throws ThinklabException;
-	
-	/**
-	 * Return the observation context after the latest contextualization, or null if no
-	 * contextualization happened. Goes with getObservationState() as far as timing
-	 * and availability go. It's not the most elegant of things, but it allows
-	 * simple retrieval of contextualization results (with the default workflow
-	 * at least) without having to create a whole new observation structure.
+	 * If this observation is acting as a mediator for another, return it. If
+	 * it's a mediator, the datasource should be ignored and the observable may
+	 * be null.
 	 * 
 	 * @return
-	 * @throws ThinklabException
 	 */
-	public IObservationContext getCurrentObservationContext() throws ThinklabException;
-	
+	public IObservation getMediatedObservation();
+
 	/**
-	 * Contextualization using a specified workflow. 
+	 * If this observation is being mediated by another, return the mediator.
 	 * 
-	 * @param workflow
+	 * @return
+	 */
+	public IObservation getMediatorObservation();
+
+	/**
+	 * Return true if this observation is part of a chain of mediation and is
+	 * not the last one in the chain. Mediated observations can share
+	 * observables with the ones that mediate them, but are second-class
+	 * observations and their states are not visible after contextualization.
+	 * 
+	 * @return
+	 */
+	public abstract boolean isMediated();
+
+	/**
+	 * Return true if this observation is mediating another in a mediation
+	 * chain. Mediated observations can share observables with the ones that
+	 * mediate them, but are second-class observations and their states are not
+	 * visible after contextualization.
+	 * 
+	 * This is implemented as (getMediatedObservation() != null), provided in
+	 * the interface for completeness.
+	 * 
+	 * @return
+	 */
+	public abstract boolean isMediator();
+
+	/**
+	 * Return a dependent or contingent observation of the passed observable, or
+	 * null if it can't be found. Explores the whole structure of dependencies
+	 * and contingencies recursively, stopping at mediators and not considering
+	 * extents.
+	 * 
+	 * @param observable
+	 * @return
+	 */
+	public abstract IObservation getObservation(IConcept observable);
+
+	/**
+	 * Return the contextualized state of a dependent or contingent observation
+	 * of the passed observable, or null if the observation can't be found or it
+	 * hasn't been contextualized. Explores the whole structure of dependencies
+	 * and contingencies recursively, stopping at mediators and not considering
+	 * extents.
+	 * 
+	 * @param observable
+	 * @return
 	 * @throws ThinklabException 
 	 */
-	public IValue contextualize(IContextualizationWorkflow workflow) throws ThinklabException;
-	
-	/**
-	 * One-step contextualization using default workflow.
-
-	 * @return an ObjectReferenceValue containing a new observation structure, whose states are calculated
-	 * for the overall context. All datasources in the result are static and all mediators and links
-	 * have been eliminated.
-	 */
-	public IValue contextualize() throws ThinklabException;
-
+	public abstract IContextualizedState getState(IConcept observable) throws ThinklabException;
 
 }

@@ -6,7 +6,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundExcept
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 public class Application {
 

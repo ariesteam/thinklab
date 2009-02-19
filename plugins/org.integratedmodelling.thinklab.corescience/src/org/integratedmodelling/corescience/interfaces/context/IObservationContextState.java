@@ -32,7 +32,6 @@
  **/
 package org.integratedmodelling.corescience.interfaces.context;
 
-import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
@@ -60,6 +59,4 @@ public interface IObservationContextState  {
 
 	public IValue getValue(String dimensionID);
 
-	public IUncertainty getUncertainty(String dimensionID);
-	
 }

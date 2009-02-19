@@ -39,9 +39,9 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
+import org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository;
 
 /**
  * An ant task for generating java sources and hibernate mappings using the 
@@ -79,7 +79,7 @@ public class ThinklabPersistenceTools extends Task {
 	public void execute() throws BuildException {
 		KnowledgeManager km;
 		try {
-			km = new KnowledgeManager(new FileKnowledgeRepository(null));
+			km = new KnowledgeManager(new FileKnowledgeRepository());
 		} catch (ThinklabException e) {
 			throw new BuildException(e);
 		}

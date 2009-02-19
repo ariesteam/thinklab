@@ -41,8 +41,8 @@ import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.AlgorithmValue;
-import org.integratedmodelling.thinklab.value.Value;
+import org.integratedmodelling.thinklab.literals.AlgorithmValue;
+import org.integratedmodelling.thinklab.literals.Value;
 
 public class GroovyInterpreter implements LanguageInterpreter {
 

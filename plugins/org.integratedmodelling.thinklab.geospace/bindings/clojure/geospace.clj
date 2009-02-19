@@ -19,7 +19,7 @@
 	"Returns a new grid observation from a shape and a maximum linear resolution. The grid will
 	 be set to contain the shape, and the widest dimension will have the given number of cells."
 	[where max-linear-resolution]
-	(. org.integratedmodelling.geospace.observations.RasterGrid (createRasterGrid where max-linear-resolution)))
+	(. org.integratedmodelling.geospace.implementations.observations.RasterGrid (createRasterGrid where max-linear-resolution)))
 
 (defn make-grid
 	"Returns a new rectangular grid observation with the specified number of cells, each cell equal
@@ -49,7 +49,7 @@
 	(let [space (get-spatial-extent observation)]
 	  (and 
 	     (not (nil? space))
-	     (instance? org.integratedmodelling.geospace.observations.RasterGrid space)))) 
+	     (instance? org.integratedmodelling.geospace.implementations.observations.RasterGrid space)))) 
 	    
 (defn grid-rows
 	"Returns the number of rows in the grid extent of the passed observation. Throw an exception if

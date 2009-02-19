@@ -35,7 +35,7 @@ package org.integratedmodelling.utils;
 
 import java.util.HashMap;
 
-import org.integratedmodelling.thinklab.value.BooleanValue;
+import org.integratedmodelling.thinklab.literals.BooleanValue;
 
 /**
  * A simple class that parses a key-value string and initializes a map to its values.

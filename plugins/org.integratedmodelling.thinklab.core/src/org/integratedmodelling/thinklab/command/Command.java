@@ -41,7 +41,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.Value;
+import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.utils.Polylist;
 
 /**

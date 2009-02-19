@@ -48,7 +48,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.utils.MiscUtilities;
 
 /**

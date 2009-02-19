@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<measurement:Measurement id="obsGrassBiomassDensity">
+	<measurement:hasUnit>g·cm²</measurement:hasUnit>
+	<observation:mediates>
+		<measurement:Measurement id="obsGrassBiomassDensity">
+			<observation:value>123 kg·m²</observation:value> 	
+			<observation:hasObservable>
+				<representation:MassArealDensity id="GrassBiomass" />
+			</observation:hasObservable>
+		</measurement:Measurement>
+	</observation:mediates>
+</measurement:Measurement>

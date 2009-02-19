@@ -15,12 +15,14 @@ import org.geotools.coverage.CoverageFactoryFinder;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
+import org.geotools.coverage.grid.ViewType;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.FactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.gce.arcgrid.ArcGridReader;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.feature.AttributeTable;
@@ -120,27 +122,43 @@ public class CoverageFactory {
 			
 			try {
 
-				System.out.println("reading " + url);
+				System.out.println("reading TIFF " + url);
 				
 				GeoTiffReader reader = 
 					new GeoTiffReader(url, 
 							new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
 
-				coverage = (GridCoverage2D)reader.read(null);
-				
-				
+				coverage = (GridCoverage2D)reader.read(null);	
+								
 			} catch (Exception e) {
 				throw new ThinklabValidationException(e);
 			}
 			
-		}
+		} else 	if (url.toString().endsWith(".adf")) {
+				
+				try {
+
+					System.out.println("reading ArcGrid " + url);
+					
+					ArcGridReader reader = 
+						new ArcGridReader(url, 
+								new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+
+					coverage = (GridCoverage2D)reader.read(null);
+					
+					
+				} catch (Exception e) {
+					throw new ThinklabValidationException(e);
+				}
+				
+			}
 		
 		/* tsk tsk */
 		if (coverage == null) {
 			throw new ThinklabIOException("read error loading coverage from " + url);
 		}
 
-		/* analyze data content. FIXME This will give us an object per band. For this purpose, we consider
+		/* analyze data content. This will give us an object per band. For this purpose, we consider
 		 * each band a separate observation. */
 		GridSampleDimension[] sdims = coverage.getSampleDimensions();
 

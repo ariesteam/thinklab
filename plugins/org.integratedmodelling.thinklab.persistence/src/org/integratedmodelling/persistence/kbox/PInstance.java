@@ -55,7 +55,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IResource;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
-import org.integratedmodelling.thinklab.value.AlgorithmValue;
+import org.integratedmodelling.thinklab.literals.AlgorithmValue;
 import org.integratedmodelling.utils.Polylist;
 
 /**

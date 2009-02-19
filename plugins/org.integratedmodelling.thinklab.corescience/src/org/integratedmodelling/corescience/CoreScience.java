@@ -34,12 +34,10 @@ package org.integratedmodelling.corescience;
 
 import java.util.HashMap;
 
-import org.integratedmodelling.corescience.interfaces.IWorkflowConstructor;
-import org.integratedmodelling.corescience.interfaces.context.IContextualizationWorkflow;
+import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
@@ -51,7 +49,10 @@ public class CoreScience extends ThinklabPlugin {
 
 	private final static String PLUGIN_ID = "org.integratedmodelling.thinklab.corescience";
 	
-	private HashMap<String, IWorkflowConstructor> modelLoaders = new HashMap<String, IWorkflowConstructor>();
+	/**
+	 * TODO fix this, we need to build a new one per request
+	 */
+	private HashMap<String, String> compilerClasses = new HashMap<String,String>();
 
 	private IConcept DiscreteNumericRankingSpace;
 	private IConcept MeasurementSpace;
@@ -63,6 +64,7 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String HAS_CONTINGENCY = "observation:isContingentTo";
 	public static final String HAS_CONTEXT ="observation:hasObservationContext";
 	public static final String HAS_EXTENT ="observation:hasObservationExtent";
+	public static final String MEDIATES_OBSERVATION ="observation:mediates";
 	public static final String HAS_OBSERVABLE = "observation:hasObservable";
 	public static final String HAS_CONCEPTUAL_MODEL = "observation:hasConceptualModel";
 	public static final String HAS_SOURCE_URI = "source:hasSourceURI";
@@ -77,11 +79,6 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String HAS_TARGET_CLASS = "observation:targetClass";
 	public static final String HAS_INTERVAL = "observation:hasInterval";
 
-	
-	/*
-	 * for now we leave state out of the ontology, only as a product of contextualization
-	 public static final String HAS_OBSERVATION_STATE = "observation:hasState";
-	*/
 	// concepts
 	public static final String OBSERVATION = "observation:Observation";
 	public static final String RANKING = "measurement:Ranking";
@@ -101,9 +98,11 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String CLASSIFICATION_MODEL = "observation:ClassificationSpace";
 	public static final String DISCRETE_RANKING_MODEL = "observation:DiscreteNumericRankingSpace";
 	public static final String CLASS_MAPPING = "observation:ClassMapping";
+	public static final String CONTEXTUALIZED_DATASOURCE = "observation:ContextualizedDataSource";
 	
 	static final public String GENERIC_OBSERVABLE = "representation:GenericObservable";
 	static final public String GENERIC_QUANTIFIABLE = "representation:GenericQuantifiable";
+
 
 
 	public static CoreScience get() {
@@ -122,6 +121,10 @@ public class CoreScience extends ThinklabPlugin {
 		} catch (Exception e) {
 			throw new ThinklabPluginException(e);
 		}
+		
+		registerCompiler(
+				"default", 
+				"org.integratedmodelling.corescience.contextualization.StackWorkflowCompiler");
 	}
 
 
@@ -133,21 +136,39 @@ public class CoreScience extends ThinklabPlugin {
 	}
 
 	/**
-	 * TODO move to extension points
-	 * 
-	 * Construct a new model loader for passed type and return it. If no such loader type is registered, return
-	 * null without complaining.
-	 *  
-	 * @param id the type of model loader desired. Must match a constructor registered with registerModelLoader.
-	 * @return a new model loader of a type matching the passed id.
+	 * TODO define as extension
 	 * @see registerModelLoader
 	 */
-	public IContextualizationWorkflow retrieveWorkflow(String id) {
+	public IContextualizationCompiler getContextualizationCompiler(String id, IObservation obs) throws ThinklabPluginException {
 		
-		IContextualizationWorkflow ret = null;
-		IWorkflowConstructor mc = modelLoaders.get(id);
-		if (mc != null)
-			ret = mc.createWorkflow();
+		IContextualizationCompiler ret = null;
+		String cclass = null;
+		
+		if (id != null) {
+			cclass = compilerClasses.get(id);			
+		} else if (obs != null){
+			for (String s : compilerClasses.values()) {
+				
+				IContextualizationCompiler cc;
+				try {
+					cc = (IContextualizationCompiler) Class.forName(s, true, getClassLoader()).newInstance();
+				} catch (Exception e) {
+					throw new ThinklabPluginException(
+							"corescience: cannot create compiler for class " + s);
+				}
+				if (cc.canCompile(obs)) {
+					ret = cc;
+					break;
+				}
+			}
+		}
+		if (ret == null && cclass != null)
+			try {
+				ret =
+					(IContextualizationCompiler) Class.forName(cclass, true, getClassLoader()).newInstance();
+			} catch (Exception e) {
+				throw new ThinklabPluginException("corescience: cannot create compiler for class " + cclass);
+			}
 		return ret;
 	}
 	
@@ -157,8 +178,8 @@ public class CoreScience extends ThinklabPlugin {
 	 * @param id
 	 * @param constructor
 	 */
-	public void registerWorkflow(String id, IWorkflowConstructor constructor) {
-		modelLoaders.put(id, constructor);
+	public void registerCompiler(String id, String compilerClass) {
+		compilerClasses.put(id, compilerClass);
 	}
 
 	public IConcept DiscreteRankingModel() {

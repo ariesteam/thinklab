@@ -33,16 +33,11 @@
 package org.integratedmodelling.currency.observations;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabInexactConversionException;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.currency.CurrencyPlugin;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.time.values.TimeValue;
-import org.integratedmodelling.utils.Pair;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.time.literals.TimeValue;
 
 /**
  * Mediates the purchasing power of one currency at a time towards another at another
@@ -50,7 +45,7 @@ import org.integratedmodelling.utils.Pair;
  * @author Ferdinando Villa
  *
  */
-public class MonetaryValueMediator implements IValueMediator {
+public class MonetaryValueMediator implements IStateAccessor {
 
 	double conversionFactor = 1.0;
 	
@@ -61,49 +56,36 @@ public class MonetaryValueMediator implements IValueMediator {
 			CurrencyPlugin.get().getConverter().
 				getConversionFactor(currencyFrom, dateFrom, currencyTo, dateTo);
 	}
-	
-	public IValue getMediatedValue(IValue value,
-			IObservationContextState context)
-			throws ThinklabInexactConversionException {
-		
-		double val = 0.0;
-		try {
-			val = value.asNumber().asDouble() * conversionFactor;
-		} catch (ThinklabValueConversionException e1) {
-			/* won't happen */
-		}
-		IValue ret = value.clone();
-		try {
-			ret.asNumber().assign(val);
-		} catch (ThinklabValidationException e) {
-			/* won't happen */
-		}
-		return ret;
+
+	@Override
+	public Object getValue(Object[] registers) {
+		return ((Double)registers[0]) * conversionFactor;
 	}
 
-	public Pair<IValue, IUncertainty> getMediatedValue(IValue value,
-			IUncertainty uncertainty, IObservationContextState context) {
-
-		IValue v = null;
-		try {
-			v = getMediatedValue(value, context);
-		} catch (ThinklabInexactConversionException e) {
-			/* won't happen */
-		}
-		IUncertainty u = null;
-		
-		// TODO handle uncertainties. This should be fairly easy given a regular
-		// fractional uncertainty implementation.
-		
-		return new Pair<IValue, IUncertainty>(v, u);
-	}
-
-	public void initialize(IObservationContext overallContext) {
-		// nothing
-	}
-
-	public boolean isExact() {
+	@Override
+	public boolean hasInitialState() {
+		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public boolean isConstant() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean notifyDependencyObservable(IConcept observable)
+			throws ThinklabValidationException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void notifyDependencyRegister(IConcept observable, int register,
+			IConcept stateType) throws ThinklabValidationException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

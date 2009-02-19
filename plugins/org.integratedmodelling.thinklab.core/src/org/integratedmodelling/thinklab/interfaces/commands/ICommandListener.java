@@ -38,7 +38,7 @@ import java.util.Map;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.AlgorithmValue;
+import org.integratedmodelling.thinklab.literals.AlgorithmValue;
 
 /**
  * Classes implementing ICommandListener have the ability to react to a command and must implement a call method that is sent to

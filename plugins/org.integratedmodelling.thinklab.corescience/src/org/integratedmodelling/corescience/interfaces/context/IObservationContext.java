@@ -34,12 +34,12 @@ package org.integratedmodelling.corescience.interfaces.context;
 
 import java.util.Collection;
 
-import org.integratedmodelling.corescience.exceptions.ThinklabContextValidationException;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.LogicalConnector;
+import org.integratedmodelling.utils.Polylist;
 
 /**
  * An object that merges all extents from an observation structure and can generate and
@@ -108,18 +108,14 @@ public interface IObservationContext {
 	public IExtent getExtent(IConcept c);
 	
 	/**
-	 * Return an iterator over all context states in proper order of contextualization. Each
-	 * state is an instance of an IObservationContext, with one value for each dimension.
+	 * Return the description of an observation that can be used to create this extent.
 	 * 
-	 * We pass a workflow because it may have requests about the context state
-	 * generation. Any implementations should always allow for null here.
-	 * 
-	 * @param workflow the workflow that is contextualizing us, or null.
-	 * 
-	 * @return an iterator producing all the context states for a particular observation.
+	 * @param c
+	 * @return
+	 * @throws ThinklabException 
 	 */
-	public IContextStateGenerator getContextStates(IContextualizationWorkflow workflow);
-
+	public Polylist conceptualizeExtent(IConcept c) throws ThinklabException;
+	
 	/**
 	 * Return the total number of extent dimensions
 	 * @return

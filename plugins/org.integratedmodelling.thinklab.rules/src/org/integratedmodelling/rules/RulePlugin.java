@@ -39,10 +39,8 @@ import org.integratedmodelling.rules.interfaces.IThinklabRuleEngine;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.impl.protege.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
-//import edu.stanford.smi.protegex.owl.model.OWLModel;
 
 public class RulePlugin extends ThinklabPlugin {
 
@@ -94,13 +92,13 @@ public class RulePlugin extends ThinklabPlugin {
 			
 		} else if (engine.equals("jess")) {
 			
-				usingJess = true;
-			
-				/* 
-				 * make sure we're using the Protege repository, or we don't know what to do *
-				 */
-				if (!(km.getKnowledgeRepository() instanceof FileKnowledgeRepository))
-					throw new ThinklabPluginException("the Rule plugin can only work with a knowledge repository based on protege");		
+//				usingJess = true;
+//			
+//				/* 
+//				 * make sure we're using the Protege repository, or we don't know what to do *
+//				 */
+//				if (!(km.getKnowledgeRepository() instanceof FileKnowledgeRepository))
+//					throw new ThinklabPluginException("the Rule plugin can only work with a knowledge repository based on protege");		
 
 				/* create the SWRL factory based on common OWLModel */
 				//owlModel = ((FileKnowledgeRepository)km.getKnowledgeRepository()).getOWLModel();

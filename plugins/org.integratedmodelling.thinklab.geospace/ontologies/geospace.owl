@@ -4,9 +4,8 @@
 <!DOCTYPE rdf:RDF [
     <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
     <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
-    <!ENTITY owl11 "http://www.w3.org/2006/12/owl11#" >
     <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
-    <!ENTITY owl11xml "http://www.w3.org/2006/12/owl11-xml#" >
+    <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
     <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
     <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
     <!ENTITY geospace "http://www.integratedmodelling.org/ks/geospace/geospace.owl#" >
@@ -17,19 +16,18 @@
 
 <rdf:RDF xmlns="http://www.integratedmodelling.org/ks/geospace/geospace.owl#"
      xml:base="http://www.integratedmodelling.org/ks/geospace/geospace.owl"
+     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+     xmlns:geospace="http://www.integratedmodelling.org/ks/geospace/geospace.owl#"
+     xmlns:observation="http://www.integratedmodelling.org/ks/science/observation.owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:dc="http://purl.org/dc/elements/1.1/"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-     xmlns:observation="http://www.integratedmodelling.org/ks/science/observation.owl#"
-     xmlns:owl11="http://www.w3.org/2006/12/owl11#"
-     xmlns:geospace="http://www.integratedmodelling.org/ks/geospace/geospace.owl#"
-     xmlns:owl11xml="http://www.w3.org/2006/12/owl11-xml#"
-     xmlns:owl="http://www.w3.org/2002/07/owl#"
-     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-     xmlns:thinklab-core="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#">
+     xmlns:thinklab-core="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#">
     <owl:Ontology rdf:about="">
-        <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl"/>
         <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl"/>
+        <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl"/>
     </owl:Ontology>
     
 
@@ -72,9 +70,9 @@
     <owl:ObjectProperty rdf:about="#hasBoundingBox">
         <rdf:type rdf:resource="&owl;FunctionalProperty"/>
         <rdfs:label rdf:datatype="&xsd;string">hasBoundingBox</rdfs:label>
-        <rdfs:domain rdf:resource="#ArealLocation"/>
         <owl:versionInfo rdf:datatype="&xsd;string"
             >Created by Ferdinando Villa on Tue Aug 07 11:25:41 EDT 2007</owl:versionInfo>
+        <rdfs:domain rdf:resource="#ArealLocation"/>
         <rdfs:range rdf:resource="#SimpleShape"/>
     </owl:ObjectProperty>
     
@@ -163,8 +161,8 @@
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasAttributeUrl -->
 
     <owl:DatatypeProperty rdf:about="#hasAttributeUrl">
-        <rdfs:range rdf:resource="&xsd;string"/>
         <rdfs:domain rdf:resource="#ExternalVectorCoverageDataSource"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
     
 
@@ -173,8 +171,8 @@
 
     <owl:DatatypeProperty rdf:about="#hasCoordinateReferenceSystem">
         <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
         <rdfs:domain rdf:resource="#RasterGrid"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
     
 
@@ -183,8 +181,8 @@
 
     <owl:DatatypeProperty rdf:about="#hasLatLowerBound">
         <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:range rdf:resource="&xsd;double"/>
         <rdfs:domain rdf:resource="#RasterGrid"/>
+        <rdfs:range rdf:resource="&xsd;double"/>
     </owl:DatatypeProperty>
     
 
@@ -193,8 +191,8 @@
 
     <owl:DatatypeProperty rdf:about="#hasLatUpperBound">
         <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:range rdf:resource="&xsd;double"/>
         <rdfs:domain rdf:resource="#RasterGrid"/>
+        <rdfs:range rdf:resource="&xsd;double"/>
     </owl:DatatypeProperty>
     
 
@@ -213,8 +211,8 @@
 
     <owl:DatatypeProperty rdf:about="#hasLonUpperBound">
         <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:range rdf:resource="&xsd;double"/>
         <rdfs:domain rdf:resource="#RasterGrid"/>
+        <rdfs:range rdf:resource="&xsd;double"/>
     </owl:DatatypeProperty>
     
 
@@ -232,15 +230,15 @@
 
     <owl:DatatypeProperty rdf:about="#hasSourceURL">
         <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
         <rdfs:domain>
             <owl:Class>
                 <owl:unionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="#ExternalVectorCoverageDataSource"/>
                     <rdf:Description rdf:about="#ExternalRasterDataSource"/>
+                    <rdf:Description rdf:about="#ExternalVectorCoverageDataSource"/>
                 </owl:unionOf>
             </owl:Class>
         </rdfs:domain>
-        <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
     
 
@@ -257,15 +255,15 @@
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasValueAttribute -->
 
     <owl:DatatypeProperty rdf:about="#hasValueAttribute">
+        <rdfs:range rdf:resource="&xsd;string"/>
         <rdfs:domain>
             <owl:Class>
                 <owl:unionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="#ExternalVectorCoverageDataSource"/>
                     <rdf:Description rdf:about="#ExternalRasterDataSource"/>
+                    <rdf:Description rdf:about="#ExternalVectorCoverageDataSource"/>
                 </owl:unionOf>
             </owl:Class>
         </rdfs:domain>
-        <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
     
 
@@ -294,8 +292,8 @@
 
     <owl:DatatypeProperty rdf:about="#hasYRangeMax">
         <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:range rdf:resource="&xsd;int"/>
         <rdfs:domain rdf:resource="#RasterGrid"/>
+        <rdfs:range rdf:resource="&xsd;int"/>
     </owl:DatatypeProperty>
     
 
@@ -304,8 +302,8 @@
 
     <owl:DatatypeProperty rdf:about="#hasYRangeOffset">
         <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:range rdf:resource="&xsd;int"/>
         <rdfs:domain rdf:resource="#RasterGrid"/>
+        <rdfs:range rdf:resource="&xsd;int"/>
     </owl:DatatypeProperty>
     
 
@@ -597,10 +595,10 @@
 
     <owl:Class rdf:about="#SpaceObservable">
         <rdfs:label rdf:datatype="&xsd;string">SpaceConcept</rdfs:label>
-        <rdfs:comment xml:lang="en"
-            >Groups different concepts of space that we can use as observable for the extents observations. This ontology also contains one instance for each of them.</rdfs:comment>
         <owl:versionInfo rdf:datatype="&xsd;string"
             >Created by Ferdinando Villa on Tue Aug 07 10:03:38 EDT 2007</owl:versionInfo>
+        <rdfs:comment xml:lang="en"
+            >Groups different concepts of space that we can use as observable for the extents observations. This ontology also contains one instance for each of them.</rdfs:comment>
     </owl:Class>
     
 
@@ -608,6 +606,7 @@
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialCoverageObservation -->
 
     <owl:Class rdf:about="#SpatialCoverageObservation">
+        <rdfs:subClassOf rdf:resource="&observation;ExtentObservation"/>
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="&observation;hasObservable"/>
@@ -620,7 +619,6 @@
                 <owl:someValuesFrom rdf:resource="#SpatialRecord"/>
             </owl:Restriction>
         </rdfs:subClassOf>
-        <rdfs:subClassOf rdf:resource="&observation;ExtentObservation"/>
         <rdfs:comment rdf:datatype="&xsd;string"
             >The observation of a coverage in geographical space. It is an indirect observation as it describes space by dividing it into contiguous boundaries.  Such observations merely describe space, not any feature or property. They are used to contextualize other observations in geospace. Subclasses of this one can be initalized through literals such as  WKT shapes for brevity.</rdfs:comment>
     </owl:Class>
@@ -631,11 +629,12 @@
 
     <owl:Class rdf:about="#SpatialRecord">
         <rdfs:subClassOf rdf:resource="&observation;DataSource"/>
-        <rdfs:comment xml:lang="en"
-            >A recording of space. Admits WKT literals and can be used as a datasource.</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="&thinklab-core;LiteralValued"/>
         <rdfs:comment rdf:datatype="&xsd;string"
             >A Geographical Space  is defined through boundaries or points in space and implements the OpenGIS representational model.</rdfs:comment>
         <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
+        <rdfs:comment xml:lang="en"
+            >A recording of space. Admits WKT literals and can be used as a datasource.</rdfs:comment>
     </owl:Class>
     
 
@@ -765,6 +764,12 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralValued -->
+
+    <owl:Class rdf:about="&thinklab-core;LiteralValued"/>
+    
+
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -792,3 +797,8 @@
 
     <SubdividedSpace rdf:about="#SpatialCoverageInstance"/>
 </rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 2.2.1.962) http://owlapi.sourceforge.net -->
+

@@ -37,7 +37,6 @@ import java.util.HashSet;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
-import org.integratedmodelling.corescience.interfaces.observation.IObservationState;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -73,20 +72,7 @@ public class Olist implements ICommandHandler {
 			/*
 			 * TODO dump context
 			 */
-			
-			/*
-			 * TODO dump state
-			 */
-			IObservationState state = o.getObservationState();
-			if (state != null) {
-				double[] data = state.getDataAsDouble();
-				out.displayOutput(prefix + "State:");
-				for (int i = 0; i < data.length; i++) {
-					out.appendOutput(data[i] + " ");
-					if ((i % 100) == 0)
-						out.displayOutput("");
-				}
-			}
+	
 			
 			int i = 0;
 			for (IObservation dep : o.getContingencies()) {

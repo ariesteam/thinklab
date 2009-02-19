@@ -33,16 +33,14 @@
 package org.integratedmodelling.time.constructors;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.time.TimePlugin;
-import org.integratedmodelling.time.values.TimeValue;
+import org.integratedmodelling.time.literals.TimeValue;
 
 /**
  * This validator creates a whole Observation structure, complete with value, conceptual model and
@@ -50,10 +48,12 @@ import org.integratedmodelling.time.values.TimeValue;
  * literal string representing one or more ISO time points. Literal is passed unaltered to constructor
  * of TimeValue.
  * 
+ * FIXME use to build these things with ontology - needs to be figured out
+ * 
  * @author Ferdinando Villa
  * @see org.integratedmodelling.time.values.TimeValue;
  */
-public class TimeRecordValidator implements LiteralValidator {
+public class TimeRecordValidator  {
 
 	public IValue validate(String literalValue, IConcept concept, IOntology ontology) 
 		throws ThinklabValidationException {

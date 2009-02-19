@@ -45,24 +45,21 @@ import java.util.Properties;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.shapefile.indexed.IndexedShapefileDataStore;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
 import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.values.ShapeValue;
+import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.BooleanValue;
-import org.integratedmodelling.thinklab.value.NumberValue;
-import org.integratedmodelling.thinklab.value.TextValue;
-import org.integratedmodelling.thinklab.value.Value;
+import org.integratedmodelling.thinklab.literals.BooleanValue;
+import org.integratedmodelling.thinklab.literals.NumberValue;
+import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
+import org.integratedmodelling.thinklab.literals.TextValue;
+import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.utils.LookupTable;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.mvel.MVEL;
@@ -105,7 +102,7 @@ public class ShapefileReader {
 	Hashtable<String, Serializable> expressions = new Hashtable<String, Serializable>();
 	Hashtable<String, IConcept> concepts = new Hashtable<String, IConcept>();
 	
-	private FeatureSource source;
+	private FeatureSource<SimpleFeatureType, SimpleFeature> source;
 	
 	protected void initialize(URL url, Properties properties) {
 		
@@ -115,7 +112,7 @@ public class ShapefileReader {
 		
 	}
 	
-	protected FeatureSource getFeatureSource() {
+	protected FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource() {
 		return source;
 	}
 	
@@ -263,10 +260,11 @@ public class ShapefileReader {
 				tValue = avalue.toString();
 			
 			/* if we have a validator, use it */
-			LiteralValidator validator = KnowledgeManager.get().getValidator(type);
+			ParsedLiteralValue validator = KnowledgeManager.get().getRawLiteral(type);
 			
 			if (validator != null) {
-				ret = validator.validate(tValue, type, null);
+				validator.parseLiteral(tValue);
+				ret = validator;
 			} else {
 			
 				/* otherwise, must be a concept to classify with */
@@ -290,42 +288,42 @@ public class ShapefileReader {
 				ret = 
 					tValue == null ?
 						new NumberValue((Double)avalue) :
-						KnowledgeManager.get().validateLiteral(KnowledgeManager.Double(), tValue, null);
+						KnowledgeManager.get().validateLiteral(KnowledgeManager.Double(), tValue);
 						
 			} else if (avalue instanceof Boolean) {
 				
 				ret = 
 					tValue == null ?
 						new BooleanValue((Boolean)avalue) :
-						KnowledgeManager.get().validateLiteral(KnowledgeManager.Boolean(), tValue, null);
+						KnowledgeManager.get().validateLiteral(KnowledgeManager.Boolean(), tValue);
 						
 			} else if (avalue instanceof Integer) {
 
 				ret = 
 					tValue == null ?
 						new NumberValue((Integer)avalue) :
-						KnowledgeManager.get().validateLiteral(KnowledgeManager.Integer(), tValue, null);
+						KnowledgeManager.get().validateLiteral(KnowledgeManager.Integer(), tValue);
 	
 			} else if (avalue instanceof Float) {
 				
 				ret = 
 					tValue == null ?
 						new NumberValue((Float)avalue) :
-						KnowledgeManager.get().validateLiteral(KnowledgeManager.Float(), tValue, null);
+						KnowledgeManager.get().validateLiteral(KnowledgeManager.Float(), tValue);
 					
 			} else if (avalue instanceof String) {
 
 				ret = 
 					tValue == null ?
 						new TextValue((String)avalue) :
-						KnowledgeManager.get().validateLiteral(KnowledgeManager.Text(), tValue, null);
+						KnowledgeManager.get().validateLiteral(KnowledgeManager.Text(), tValue);
 						
 			} else if (avalue instanceof Geometry) {
 
 				ret = 
 					tValue == null ?
 						new ShapeValue((Geometry)avalue):
-						KnowledgeManager.get().validateLiteral(Geospace.get().Shape(), tValue, null);
+						KnowledgeManager.get().validateLiteral(Geospace.get().Shape(), tValue);
 			}
 		}
 		

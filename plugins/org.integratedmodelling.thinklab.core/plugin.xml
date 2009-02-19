@@ -181,25 +181,6 @@
 		<parameter-def id="description" multiplicity="none-or-one" />
 	</extension-point>
 
-	<!-- 
-		Literal validators can also be associated with XSD types. If that is present, the semantic
-		type and validator will be used to create the associated IValue when a dataproperty is 
-		found that links to that XSD type.
-	-->
-	<extension-point id="literal-validator">
-		<parameter-def id="class" />
-		<parameter-def id="semantic-type" />
-		<parameter-def id="xsd-uri" multiplicity="none-or-one" />
-		<parameter-def id="description" multiplicity="none-or-one" />
-		<parameter-def id="example" multiplicity="any" />
-	</extension-point>
-
-	<extension-point id="instance-constructor">
-		<parameter-def id="class" />
-		<parameter-def id="semantic-type" />
-		<parameter-def id="description" multiplicity="none-or-one" />
-	</extension-point>
-
 	<extension-point id="command-handler">
 		<parameter-def id="class" />
 		<parameter-def id="command-name" />
@@ -219,21 +200,5 @@
 		<parameter-def id="option-descriptions" multiplicity="none-or-one" />	
 		<parameter-def id="example" multiplicity="any" />
 	</extension-point>
-	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" id="text-validator">
-		<parameter id="class" value="org.integratedmodelling.thinklab.validators.TextValidator"/>
-		<parameter id="semantic-type" value="thinklab-core:Text"/>
-	</extension>
-
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" id="numints-validator">
-		<parameter id="class" value="org.integratedmodelling.thinklab.validators.IntervalValidator"/>
-		<parameter id="semantic-type" value="thinklab-core:NumericInterval"/>
-	</extension>
-
-	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" id="number-validator">
-		<parameter id="class" value="org.integratedmodelling.thinklab.validators.NumberValidator"/>
-		<parameter id="semantic-type" value="thinklab-core:Number"/>
-	</extension>
 
 </plugin>

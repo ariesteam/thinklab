@@ -359,7 +359,7 @@ public class Ontology implements IOntology {
 			Collection<ReferenceRecord> reftable) throws ThinklabException {
 
 		IInstance ret = null;
-
+		
 		for (Object o : list.array()) {
 
 			if (ret == null) {
@@ -371,7 +371,7 @@ public class Ontology implements IOntology {
 			} else if (o instanceof Polylist) {
 				ThinklabOWLManager.get().interpretPropertyList((Polylist) o,
 						this, ret, reftable);
-			}
+			} 
 		}
 
 		return ret;

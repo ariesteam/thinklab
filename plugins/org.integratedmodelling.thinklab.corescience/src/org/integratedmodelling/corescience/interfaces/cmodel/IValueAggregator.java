@@ -34,9 +34,7 @@ package org.integratedmodelling.corescience.interfaces.cmodel;
 
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.utils.Pair;
+import org.jscience.mathematics.number.Rational;
 
 /**
  * Conceptual models create these to enable aggregation of fine-grained dependencies into values to
@@ -45,7 +43,7 @@ import org.integratedmodelling.utils.Pair;
  * @author Ferdinando Villa
  *
  */
-public interface IValueAggregator {
+public interface IValueAggregator<T> {
 
 	/**
 	 * 
@@ -54,7 +52,7 @@ public interface IValueAggregator {
 	 * @param contextState
 	 * @throws ThinklabException
 	 */
-	public abstract void addValue(IValue value, IUncertainty uncertainty, IObservationContextState contextState)
+	public abstract void addValue(T value, IObservationContextState contextState)
 		throws ThinklabException;
 	
 	/**
@@ -62,5 +60,17 @@ public interface IValueAggregator {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public abstract Pair<IValue, IUncertainty> aggregateAndReset() throws ThinklabException;
+	public abstract T aggregateAndReset() throws ThinklabException;
+
+	/**
+	 * Partition the passed value into what makes sense for a new extent which stands in the
+	 * passed ratio with the original one. If partitioning makes no sense for this type and
+	 * concept, just return the original value.
+	 * 
+	 * @param originalValue
+	 * @param ratio
+	 * @return
+	 */
+	public abstract T partition(T originalValue, Rational ratio);
+
 }

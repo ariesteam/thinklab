@@ -40,7 +40,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.BooleanValue;
+import org.integratedmodelling.thinklab.literals.BooleanValue;
 
 public class Login implements ICommandHandler {
 

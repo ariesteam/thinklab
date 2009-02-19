@@ -34,8 +34,8 @@ package org.integratedmodelling.modelling.observations;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
-import org.integratedmodelling.geospace.observations.RasterGrid;
-import org.integratedmodelling.geospace.values.ShapeValue;
+import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
+import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

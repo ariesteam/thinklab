@@ -14,7 +14,7 @@
 					"elevation:Medium <- [200,650)" 
 					"elevation:High <- [650" ))
      ]
-  (model/make-model climateStabilityModel 
+  (model/make-model 'carbonService:climateStability 
       [:elevation dElevation :population habitat:PopulationDensity]
 	(carbonService:ClimateStability
 		(and (between :elevation 12.22 21.22) (between (get-longitude (get-space :context)) 30.22 34.84)) 

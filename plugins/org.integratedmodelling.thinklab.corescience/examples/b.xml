@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<kbox 
+    xmlns:observation="http://www.integratedmodelling.org/ks/science/observation.owl#"
+    xmlns:representation="http://www.integratedmodelling.org/ks/science/representation.owl#"
+	xmlns:measurement="http://www.integratedmodelling.org/ks/science/measurement.owl#"
+	xmlns:time="http://www.integratedmodelling.org/ks/time/time.owl#">
+  
+  <measurement:Measurement id="obs">
+	  <measurement:unit>g·cm²</measurement:unit>
+	  <observation:mediates>
+		<measurement:Measurement id="obsGrassBiomassDensity">
+			<observation:value>123 kg·m²</observation:value> 	
+			<observation:hasObservable>
+				<representation:MassAreaDensity id="GrassBiomass" />
+			</observation:hasObservable>
+			<observation:hasObservationExtent>
+				<time:RegularTemporalGrid>
+					<time:startsAt>2006-12-13T00:00:00.000-08:00</time:startsAt>
+					<time:endsAt>2006-12-14T00:00:00.000-08:00</time:endsAt>
+					<time:inStepsOf>1 h</time:inStepsOf>
+				</time:RegularTemporalGrid>
+		</observation:hasObservationExtent>
+		</measurement:Measurement>
+	  </observation:mediates>
+  </measurement:Measurement>
+  
+</kbox>

@@ -59,6 +59,8 @@ package org.integratedmodelling.thinklab.plugin;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -81,17 +83,19 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.extensions.KBoxHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
-import org.integratedmodelling.thinklab.extensions.LiteralValidator;
+import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
+import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.session.Session;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.Escape;
@@ -278,17 +282,6 @@ public abstract class ThinklabPlugin extends Plugin
 				continue;
 			
 			Interpreter intp = InterpreterManager.get().newInterpreter(language);
-			
-			/*
-			 * publish all of our stuff.
-			 */
-//			 intp.addClasspath(((PluginClassLoader)getClassLoader()).getURLs());
-//			try {
-//				// load bindings directory
-//				intp.addClasspath(new URL[]{ new File(getLoadDirectory() + "/bindings/" + language + "/").toURI().toURL() });
-//			} catch (MalformedURLException e) {
-//				throw new ThinklabInternalErrorException(e);
-//			}
 			
 			/*
 			 * automatically declare tasks included in package if supplied. These can't possibly
@@ -542,14 +535,45 @@ public abstract class ThinklabPlugin extends Plugin
 
 	protected void loadInstanceImplementationConstructors() throws ThinklabPluginException {
 		
-		for (Extension ext : getOwnThinklabExtensions("instance-constructor")) {
+		String ipack = this.getClass().getPackage().getName() + ".implementations";
+		
+		for (Class<?> cls : MiscUtilities.findSubclasses(IInstanceImplementation.class, ipack, getClassLoader())) {	
 			
-			InstanceImplementationConstructor lv = 
-				(InstanceImplementationConstructor) getHandlerInstance(ext, "class");
-			String type = ext.getParameter("semantic-type").valueAsString();
+			String concept = null;
+
+			/*
+			 * lookup annotation, ensure we can use the class
+			 */
+			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+				continue;
 			
-			KnowledgeManager.get().registerInstanceConstructor(type, lv);
+			/*
+			 * lookup implemented concept
+			 */
+			for (Annotation annotation : cls.getAnnotations()) {
+				if (annotation instanceof InstanceImplementation) {
+					concept = ((InstanceImplementation)annotation).concept();
+				}
+			}
+			
+			if (concept != null) {
+
+				logger().info("registering class " + cls + " as implementation for instances of type " + concept);				
+				KnowledgeManager.get().registerInstanceImplementationClass(concept, cls);
+			}
 		}
+		
+//		/*
+//		 * TODO eliminate; old, deprecated way
+//		 */
+//		for (Extension ext : getOwnThinklabExtensions("instance-constructor")) {
+//			
+//			InstanceImplementationConstructor lv = 
+//				(InstanceImplementationConstructor) getHandlerInstance(ext, "class");
+//			String type = ext.getParameter("semantic-type").valueAsString();
+//			
+//			KnowledgeManager.get().registerInstanceConstructor(type, lv);
+//		}
 	}
 
 	/**
@@ -601,22 +625,61 @@ public abstract class ThinklabPlugin extends Plugin
 
 	protected void loadLiteralValidators() throws ThinklabException {
 		
-		for (Extension ext : getOwnThinklabExtensions("literal-validator")) {
+		String ipack = this.getClass().getPackage().getName() + ".literals";
+		
+		for (Class<?> cls : MiscUtilities.findSubclasses(ParsedLiteralValue.class, ipack, getClassLoader())) {	
+			
+			String concept = null;
+			String xsd = null;
 
-			LiteralValidator lv = (LiteralValidator) getHandlerInstance(ext, "class");
-			String type = ext.getParameter("semantic-type").valueAsString();
+			/*
+			 * lookup annotation, ensure we can use the class
+			 */
+			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+				continue;
 			
 			/*
-			 * TODO handle xsd types 
+			 * lookup implemented concept
 			 */
-			String xsd = getParameter(ext, "xsd-uri");
-			
-			if (xsd != null) {
-				KnowledgeManager.get().registerXSDTypeMapping(xsd, type);
+			for (Annotation annotation : cls.getAnnotations()) {
+				if (annotation instanceof LiteralImplementation) {
+					concept = ((LiteralImplementation)annotation).concept();
+					xsd = ((LiteralImplementation)annotation).xsd();
+				}
 			}
 			
-			KnowledgeManager.get().registerLiteralValidator(type, lv);
+			if (concept != null) {
+				
+				logger().info("registering class " + cls + " as implementation for literals of type " + concept);
+				
+				KnowledgeManager.get().registerLiteralImplementationClass(concept, cls);
+				if (!xsd.equals(""))
+					
+					logger().info("registering XSD type mapping: " + xsd + " -> " + concept);
+					KnowledgeManager.get().registerXSDTypeMapping(xsd, concept);
+			}
+			
 		}
+		
+//		/**
+//		 * TODO eliminate; old, deprecated way
+//		 */
+//		for (Extension ext : getOwnThinklabExtensions("literal-validator")) {
+//
+//			LiteralValidator lv = (LiteralValidator) getHandlerInstance(ext, "class");
+//			String type = ext.getParameter("semantic-type").valueAsString();
+//			
+//			/*
+//			 * TODO handle xsd types 
+//			 */
+//			String xsd = getParameter(ext, "xsd-uri");
+//			
+//			if (xsd != null) {
+//				KnowledgeManager.get().registerXSDTypeMapping(xsd, type);
+//			}
+//			
+//			KnowledgeManager.get().registerLiteralValidator(type, lv);
+//		}
 
 	}
 

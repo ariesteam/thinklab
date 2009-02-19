@@ -34,7 +34,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.feature.AttributeTable;
-import org.integratedmodelling.geospace.values.ShapeValue;
+import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;

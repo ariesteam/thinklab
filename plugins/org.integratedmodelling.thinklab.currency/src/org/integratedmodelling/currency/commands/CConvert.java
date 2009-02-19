@@ -38,9 +38,9 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.NumberValue;
-import org.integratedmodelling.thinklab.value.TextValue;
-import org.integratedmodelling.time.values.TimeValue;
+import org.integratedmodelling.thinklab.literals.NumberValue;
+import org.integratedmodelling.thinklab.literals.TextValue;
+import org.integratedmodelling.time.literals.TimeValue;
 
 /**
  * The link command should take two observations as parameters, ensure their

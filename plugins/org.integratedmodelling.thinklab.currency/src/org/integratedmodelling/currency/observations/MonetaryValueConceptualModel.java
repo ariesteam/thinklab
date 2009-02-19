@@ -33,26 +33,24 @@
 package org.integratedmodelling.currency.observations;
 
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IStateValidator;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueMediator;
-import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
-import org.integratedmodelling.corescience.observation.ConceptualModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.NumberValue;
-import org.integratedmodelling.time.values.TimeValue;
+import org.integratedmodelling.time.literals.TimeValue;
 import org.jscience.mathematics.number.Rational;
 
-public class MonetaryValueConceptualModel extends ConceptualModel 
-	implements MediatingConceptualModel, ValidatingConceptualModel {
+public class MonetaryValueConceptualModel implements IConceptualModel, ValidatingConceptualModel {
 
 	IInstance currency = null;
 	TimeValue time = null;
@@ -86,57 +84,23 @@ public class MonetaryValueConceptualModel extends ConceptualModel
 		return null;
 	}
 
-	public IValue validateValue(IValue value,
-			IObservationContextState contextState)
-			throws ThinklabValidationException {
+	@Override
+	public IStateAccessor getStateAccessor(IConcept stateType, IObservationContext context) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public IValue validateData(byte b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
-	public IValue validateData(int b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
-	public IValue validateData(long b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
-	public IValue validateData(float b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
-	public IValue validateData(double b) throws ThinklabValidationException {
-
-		double dv = (double)b;
-		// TODO more validation
-		return new NumberValue(dv);
-	}
-
 	@Override
-	public IConcept getUncertaintyType() {
-		return KnowledgeManager.Nothing();
-	}
-
-	@Override
-	public IValueMediator getMediator(IConceptualModel conceptualModel,
-			IObservationContext ctx) throws ThinklabException {
+	public IStateValidator getValidator(IConcept valueType) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void handshake(IDataSource<?> dataSource,
+			IObservationContext observationContext,
+			IObservationContext overallContext) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 }

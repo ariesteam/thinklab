@@ -47,8 +47,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandExcept
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 
 /**
  * Defines the interface for a command. A CommandDeclaration passed to the KnowledgeManager declares a command that
@@ -142,12 +142,12 @@ public class CommandDeclaration {
 		for (Map.Entry<String, String> e :   command.args.entrySet()) {
             
             argDescriptor ad = findArgument(e.getKey());
-            LiteralValidator validator = null;
+            ParsedLiteralValue validator = null;
             boolean ok = true;
             
             try {
 				validator = 
-					KnowledgeManager.get().getValidator(ad.type);
+					KnowledgeManager.get().getRawLiteral(ad.type);
 			} catch (Exception e1) {
 				ok = false;
 			}
@@ -161,8 +161,8 @@ public class CommandDeclaration {
 						"'");
 			
 			try {
-				command.setArgumentValue(e.getKey(), 
-						validator.validate(e.getValue(), ad.type, null));
+				validator.parseLiteral(e.getValue());
+				command.setArgumentValue(e.getKey(), validator);
 			} catch (ThinklabValidationException e1) {
 				throw new ThinklabMalformedCommandException(
 						"cannot validate input '" + 
@@ -183,12 +183,12 @@ public class CommandDeclaration {
             if (ad.type == null)
             	continue;
             
-            LiteralValidator validator = null;
+            ParsedLiteralValue validator = null;
             boolean ok = true;
             
             try {
 				validator = 
-					KnowledgeManager.get().getValidator(ad.type);
+					KnowledgeManager.get().getRawLiteral(ad.type);
 			} catch (Exception e1) {
 				ok = false;
 			}
@@ -202,8 +202,8 @@ public class CommandDeclaration {
 						"'");
 			
 			try {
-				command.setOptionValue(e.getKey(), 
-						validator.validate(e.getValue(), ad.type, null));
+				validator.parseLiteral(e.getValue());
+				command.setOptionValue(e.getKey(), validator);
 			} catch (ThinklabValidationException e1) {
 				throw new ThinklabMalformedCommandException(
 						"cannot validate input '" + 

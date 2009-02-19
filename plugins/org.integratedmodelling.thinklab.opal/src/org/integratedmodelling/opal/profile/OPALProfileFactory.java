@@ -39,7 +39,7 @@ import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.value.BooleanValue;
+import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.XMLDocument;
 import org.w3c.dom.Node;

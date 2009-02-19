@@ -36,12 +36,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.utils.Pair;
 
 /**
  * Bare implementation based on hash map. IValues for dependencies can be added
@@ -54,7 +53,8 @@ import org.integratedmodelling.utils.Pair;
  * @author Ferdinando Villa
  *
  */
-public class ObservationContextState extends HashMap<String, Pair<IValue, IUncertainty>> implements IObservationContextState{
+public class ObservationContextState 
+	extends HashMap<String, IValue> implements IObservationContextState {
 
 	private static final long serialVersionUID = -1484076872514765528L;
 	
@@ -68,11 +68,7 @@ public class ObservationContextState extends HashMap<String, Pair<IValue, IUncer
 	}
 	
 	public void set(String id, IValue value) {
-		super.put(id, new Pair<IValue, IUncertainty>(value, null));
-	}
-
-	public void set(String id, IValue value, IUncertainty uncertainty) {
-		super.put(id, new Pair<IValue, IUncertainty>(value, uncertainty));
+		super.put(id, value);
 	}
 	
 	public void setIndexes(int[] indexes, boolean[] changed, long l) {
@@ -93,11 +89,11 @@ public class ObservationContextState extends HashMap<String, Pair<IValue, IUncer
 
 	public IValue getValue(int dimensionIndex) {
 		// TODO Auto-generated method stub
-		return super.get(idx.get(dimensionIndex)).getFirst();
+		return super.get(idx.get(dimensionIndex));
 	}
 
 	public IValue getValue(String dimensionID) {
-		return super.get(dimensionID).getFirst();
+		return super.get(dimensionID);
 	}
 
 	public String toString() {
@@ -114,9 +110,10 @@ public class ObservationContextState extends HashMap<String, Pair<IValue, IUncer
 			if (ret.length() > 1)
 				ret += " ";
 			
-			Iterator printMap = entrySet().iterator();
+			Iterator<Entry<String, IValue>> printMap = entrySet().iterator();
 			while (printMap.hasNext()) {
-				Map.Entry cellId = (Map.Entry)printMap.next();
+				Map.Entry<String, IValue> cellId = 
+					(Map.Entry<String, IValue>)printMap.next();
 				ret += "(" + cellId.getKey() + " = " + cellId.getValue() + ")";
 			}
 		}
@@ -126,10 +123,6 @@ public class ObservationContextState extends HashMap<String, Pair<IValue, IUncer
 
 	public int[] getIndexes() {
 		return indexes;
-	}
-
-	public IUncertainty getUncertainty(String dimensionID) {
-		return super.get(dimensionID).getSecond();
 	}
 
 	// return whether the given extent has changed state

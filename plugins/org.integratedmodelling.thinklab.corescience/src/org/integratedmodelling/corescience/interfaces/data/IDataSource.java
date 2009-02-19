@@ -34,37 +34,21 @@ package org.integratedmodelling.corescience.interfaces.data;
 
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.utils.Pair;
 
 /**
- * Base class for the implementation of a DataSource. A datasource has values, which can be distributed 
- * along dimensions each with its granularity. A datasource must be capable of returning any
- * of its values as an IValue representing a passed concept, or throw an exception. 
+ * Datasources negotiate all details of providing data with the conceptual model,
+ * and are not used by any other component. The only required behavior is to 
+ * associate a value with an index, and to know the Thinklab type they 
+ * provide. A handshake function is called on both the datasource and
+ * the conceptual model so they know each other. 
  * 
- * All the work of matching a datasource with a context is done by a IContextAdaptor, not by the
- * datasource. Context adaptors will know the datasource and context classes they can work.
- *  
  * @author Ferdinando Villa
  *
  */
-public interface IDataSource {
-	
-	/**
-	 * Return values for getValueType
-	 * @author Ferdinando Villa
-	 *
-	 */
-	public enum ValueType {
-		IVALUE,
-		LITERAL
-	}
-	
+public interface IDataSource<T> {	
+
 	/**
 	 * Called once before contextualization and after the overall context has been
 	 * computed. It's meant to negotiate communication parameters between the datasource
@@ -96,65 +80,13 @@ public interface IDataSource {
 	
 	
 	/**
-	 * All datasources must report to the conceptual model whether they are prepared to return
-	 * values directly, or they will return literal strings for the conceptual model to
-	 * interpret. If this method returns ValueType.IVALUE, the getValue function returning a IValue will
-	 * be used. The IValue is supposed to be what the conceptual model passed to handshake() knows as 
-	 * value type. The IValue will be passed to the conceptual model for further (optional) validation.
-	 * 
-	 * If the method returns ValueType.LITERAL, the conceptual model will be in charge of
-	 * interpreting the string returned by the getValueLiteral method that returns a string.
+	 * All datasources must report to the conceptual model what kind of
+	 * value they are going to return.
 	 * 
 	 * @return
 	 */
-	public abstract ValueType getValueType();
+	public abstract IConcept getValueType();
 
-	
-	/**
-	 * This should return the IValue created from the i-th data object by validating it as the
-	 * passed concept. The index array contains the linear index of each dimension in the context exposed to
-	 * the DS during handshaking. The context contains the corresponding values, and will not 
-	 * contain values for the extents unless handshake() has returned false AND the workflow
-	 * has agreed. The response from the workflow is passed in the useExtentIndex parameter.
-	 * 
-	 * Note that if the datasource needs to have memory of previous states, this is the place where you need to
-	 * implement it. There is no memory in Thinklab's state interface.
-	 *
-	 * 
-	 * You only need to implement this if getValueType() was defined to return ValueType.IVALUE.
-	 * 
-	 * @param context the context state, containing the current state of all dependencies.
-	 * @param concept the type of value to return
-	 * @param useExtentIndex if true, the method must use the index methods in the context
-	 * state and not the value methods. 
-	 * @return a pair containing the state value from the datasource that corresponds to the passed context
-	 * 			state and the associated uncertainty (or null if there is none).
-	 * @throws ThinklabValidationException if anything goes wrong. FIXME should be a datasource
-	 * exception or something.
-	 */
-	public abstract Pair<IValue, IUncertainty> getValue(
-			IObservationContextState context, 
-			IConcept concept,
-			boolean useExtentIndex) throws ThinklabValidationException;
-		
-	/**
-	 * Exactly like getValue, but returns a raw string literal which is passed to the conceptual model
-	 * for interpretation before being set in the state.
-	 * 
-	 * You only need to implement this if getValueType() was defined to return ValueType.LITERAL.
-	 * 
-	 * @param context
-	 * @param concept
-	 * @param useExtentIndex
-	 * @return
-	 * @throws ThinklabValidationException
-	 * @see getValue
-	 */
-	public abstract Pair<String, IUncertainty> getValueLiteral(
-			IObservationContextState context, 
-			IConcept concept,
-			boolean useExtentIndex) throws ThinklabValidationException;
-		
 
 	/**
 	 * Datasources may have an initial value before anything is computed or extracted. This value, if
@@ -163,6 +95,13 @@ public interface IDataSource {
 	 * 
 	 * @return
 	 */
-	public abstract Pair<IValue, IUncertainty> getInitialValue();
+	public abstract T getInitialValue();
+	
+	/**
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public abstract T getValue(int index);
 
 }

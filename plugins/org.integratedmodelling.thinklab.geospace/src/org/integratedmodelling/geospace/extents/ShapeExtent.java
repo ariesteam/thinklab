@@ -33,7 +33,7 @@
 package org.integratedmodelling.geospace.extents;
 
 import org.geotools.feature.FeatureCollection;
-import org.integratedmodelling.geospace.cmodel.SpatialConceptualModel;
+import org.integratedmodelling.geospace.implementations.cmodels.SpatialConceptualModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.MiscUtilities;

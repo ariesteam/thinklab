@@ -36,14 +36,13 @@ package org.integratedmodelling.thinklab.interfaces.literals;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.value.AlgorithmValue;
-import org.integratedmodelling.thinklab.value.BooleanValue;
-import org.integratedmodelling.thinklab.value.NumberValue;
-import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
-import org.integratedmodelling.thinklab.value.ObjectValue;
-import org.integratedmodelling.thinklab.value.TextValue;
+import org.integratedmodelling.thinklab.literals.AlgorithmValue;
+import org.integratedmodelling.thinklab.literals.BooleanValue;
+import org.integratedmodelling.thinklab.literals.NumberValue;
+import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.ObjectValue;
+import org.integratedmodelling.thinklab.literals.TextValue;
 
 /**
  * <p>
@@ -223,54 +222,6 @@ public interface IValue {
 	 */
 	public abstract IConcept getConcept();
 	
-	/**
-	 * 
-	 * @param operator
-	 * @return
-	 */
-	public boolean hasOperator(String operator);
-	
-	/**
-	 * 
-	 * @param operator
-	 * @return
-	 * @throws ThinklabValidationException 
-	 */
-	public int getNOfArguments(String operator) throws ThinklabValidationException;
-	
-	/**
-	 * 
-	 * @param operator
-	 * @return
-	 * @throws ThinklabException 
-	 */
-	public IConcept getReturnType(String operator) throws ThinklabException;
-	
-	/**
-	 * 
-	 * @param operator
-	 * @return
-	 * @throws ThinklabException 
-	 */
-	public LiteralValidator getReturnTypeValidator(String operator) throws ThinklabException;
-
-	/**
-	 * 
-	 * @param operator
-	 * @param argument
-	 * @return
-	 * @throws ThinklabException 
-	 */
-	public LiteralValidator getArgumentValidator(String operator, int argument) throws ThinklabException;
-
-	/**
-	 * 
-	 * @param operator
-	 * @param argument
-	 * @return
-	 * @throws ThinklabException 
-	 */
-	public IConcept getArgumentType(String operator, int argument) throws ThinklabException;
 	
 	/**
 	 * Return the literal we're wrapping stripped of its semantics, with the most appropriate type.

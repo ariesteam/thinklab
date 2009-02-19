@@ -43,7 +43,6 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
@@ -177,9 +176,9 @@ public interface IKnowledgeProvider {
 	 * @param literal a literal representing an instance of that concept
 	 * @return a Value containing the concept
 	 * @throws ThinklabValidationException
+	 * @throws ThinklabException 
 	 */
-	public abstract IValue validateLiteral(IConcept c, String literal,
-			IOntology ontology) throws ThinklabValidationException;
+	public abstract IValue validateLiteral(IConcept c, String literal) throws ThinklabException;
 	
 	public abstract void blacklistProperty(String semType);
 

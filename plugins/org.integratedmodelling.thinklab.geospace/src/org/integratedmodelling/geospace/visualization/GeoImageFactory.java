@@ -18,7 +18,7 @@ import java.util.HashSet;
 import javax.imageio.ImageIO;
 
 import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.values.ShapeValue;
+import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.utils.MiscUtilities;

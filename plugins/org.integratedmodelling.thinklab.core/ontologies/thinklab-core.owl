@@ -139,6 +139,7 @@
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Algorithm -->
 
     <owl:Class rdf:about="#Algorithm">
+        <rdfs:subClassOf rdf:resource="#LiteralValued"/>
         <rdfs:comment rdf:datatype="&xsd;string"
             >Utility class to derive other Algorithm classes for. These correspond to Algorithm literals that are bound to specific interpreters and represent executable code; the specific class selects the interpreter, which must be provided by a plug-in. It is not necessary to derive such classes from Algorithm now; it is provided for cleanliness and for possible future implementations.</rdfs:comment>
     </owl:Class>
@@ -161,9 +162,18 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#CaseSensitiveLike -->
+
+    <owl:Class rdf:about="#CaseSensitiveLike">
+        <rdfs:subClassOf rdf:resource="#Operation"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Constraint -->
 
     <owl:Class rdf:about="#Constraint">
+        <rdfs:subClassOf rdf:resource="#LiteralValued"/>
         <rdfs:comment rdf:datatype="&xsd;string"
             >Class Constraint is used to enable the definition of ThinkLab Constraint literals in ontologies. Constraints can be used as additional restrictions on a class or as queries on a knowledge base. Note that in order to extend the definition of a class with a constraint, the AdditionalRestrictions annotation should be used. The Constraint literal is provided to store Constraints in a knowledge model as first-class objects whenever it becomes necessary.</rdfs:comment>
     </owl:Class>
@@ -237,6 +247,7 @@
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Interval -->
 
     <owl:Class rdf:about="#Interval">
+        <rdfs:subClassOf rdf:resource="#LiteralValued"/>
         <rdfs:comment rdf:datatype="&xsd;string"
             >Abstract class subsuming different interval types (usually corresponding to literals)</rdfs:comment>
         <AbstractClass rdf:datatype="&xsd;string">true</AbstractClass>
@@ -256,6 +267,14 @@
 
     <owl:Class rdf:about="#LessThan">
         <rdfs:subClassOf rdf:resource="#Operation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralValued -->
+
+    <owl:Class rdf:about="#LiteralValued">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
     </owl:Class>
     
 
@@ -345,6 +364,7 @@
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#StorageType -->
 
     <owl:Class rdf:about="#StorageType">
+        <rdfs:subClassOf rdf:resource="#LiteralValued"/>
         <rdfs:comment rdf:datatype="&xsd;string"
             >Base storage type classes for use to create the basic ThinkLab literal types. Can be made equivalent to other storage types provided by more sophisticated representation ontologies.</rdfs:comment>
     </owl:Class>
@@ -461,6 +481,12 @@
     <LessOrEqual rdf:about="#le">
         <numOfParameters rdf:datatype="&xsd;int">2</numOfParameters>
     </LessOrEqual>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#like -->
+
+    <CaseSensitiveLike rdf:about="#like"/>
     
 
 

@@ -61,10 +61,10 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.value.AlgorithmValue;
-import org.integratedmodelling.thinklab.value.BooleanValue;
-import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
-import org.integratedmodelling.thinklab.value.Value;
+import org.integratedmodelling.thinklab.literals.AlgorithmValue;
+import org.integratedmodelling.thinklab.literals.BooleanValue;
+import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.LogicalConnector;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -1275,7 +1275,7 @@ public abstract class SQLThinklabServer {
 							.validateLiteral(
 									KnowledgeManager.get().requireConcept(
 											scriptLanguage),
-									tab.fieldValues.get(i), session.asOntology());
+									tab.fieldValues.get(i));
 
 						/*
 						 * calculate field in context of instance, add proper

@@ -39,7 +39,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.AlgorithmValue;
+import org.integratedmodelling.thinklab.literals.AlgorithmValue;
 
 /**
  * Load ontologies, OPAL files, objects from remote KBoxes into current session
@@ -59,7 +59,7 @@ public class Eval implements ICommandHandler {
 		String toEval = command.toString();
 
 		IValue algorithm = KnowledgeManager.get().validateLiteral(KnowledgeManager.get().requireConcept(language),
-				toEval, null);
+				toEval);
 
 		IValue ret = session.execute((AlgorithmValue) algorithm);
 

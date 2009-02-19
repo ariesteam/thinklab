@@ -36,12 +36,12 @@ import org.integratedmodelling.corescience.exceptions.ThinklabConceptualModelVal
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.INamedObject;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Pair;
 
@@ -54,125 +54,59 @@ import org.integratedmodelling.utils.Pair;
  * @author Ferdinando Villa
  * @model
  */
-public interface IConceptualModel extends INamedObject {
+public interface IConceptualModel {
 
 	/**
 	 * Return the concept that implements storage for one grain of this
-	 * conceptual model. FIXME could also return a IValue directly. The idea for
-	 * this is that we use it to create IValues to make a state vector out of.
+	 * conceptual model. 
 	 * 
-	 * We assume the convention that if the IConcept returned is null, the
-	 * storage model is a generic concept and the values are objects or classes.
-	 * Otherwise we could return the root concept from the KM, but it makes
-	 * everything more complicated.
+	 * If the observation is not supposed to have any state, the return value should
+	 * be KnowledgeManager.Nothing(). 
 	 * 
-	 * @return
+	 * @return a concept. Do not return null.
 	 * @model
 	 */
 	public abstract IConcept getStateType();
 	
 	/**
-	 * Return the type that uncertainty is characterized with. If no uncertainty model is
-	 * used, return KnowledgeManager.Nothing().
-	 * 
-	 * @return
-	 */
-	public abstract IConcept getUncertaintyType();
-
-	/**
-	 * Called every time a datasource has returned a string literal for the passed context state. The
-	 * CM is in charge of converting it to an appropriate value or to raise a validation error. The 
-	 * returned IValue will be used as the state for that context state.
-	 * 
-	 * @param value
-	 * @param contextState
-	 * @return
-	 * @throws ThinklabValidationException
-	 */
-	public abstract IValue validateLiteral(String value, IObservationContextState contextState) 
-		throws ThinklabValidationException;
-	
-	/**
 	 * Check that CM is internally consistent and that it fits the passed observation appropriately. 
+	 * NOTE: do NOT store the datasource from the observation. It may end up becoming a different
+	 * one, which is communicated to handshake() later, so that's the place for that.
 	 * 
 	 * @throws ThinklabValidationException 
 	 * @throws ThinklabConceptualModelValidationException if inconsistent
 	 */
 	public abstract void validate(IObservation observation) throws ThinklabValidationException;
+
+	/**
+	 * Return the state accessor that will be asked to produce states at contextualization. It will
+	 * also be notified of all dependencies and the types the compiler has chosen for them.
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public abstract IStateAccessor getStateAccessor(IConcept stateType, IObservationContext context);
 	
-//	/**
-//	 * Called once to communicate the overall context and to negotiate communication with the
-//	 * datasource. Called whether or not a datasource is actually connected, BEFORE the twin 
-//	 * handshake() is called on the datasource itself.
-//	 * 
-//	 * @param cm
-//	 * @param observationContext
-//	 * @param overallContext
-//	 * @return
-//	 * @throws ThinklabException
-//	 */
-//	public abstract boolean handshake(
-//			IObservationContext observationContext,
-//			IObservationContext overallContext,
-//			IDataSource ds)
-//		 throws ThinklabException;
-//	
-//	
-//
-//	
-//	/**
-//	 * This should return the IValue created from the i-th data object by validating it as the
-//	 * passed concept. The index array contains the linear index of each dimension in the context exposed to
-//	 * the DS during handshaking. The context contains the corresponding values, and will not 
-//	 * contain values for the extents unless handshake() has returned false AND the workflow
-//	 * has agreed. The response from the workflow is passed in the useExtentIndex parameter.
-//	 * 
-//	 * Note that if the datasource needs to have memory of previous states, this is the place where you need to
-//	 * implement it. There is no memory in Thinklab's state interface.
-//	 *
-//	 * 
-//	 * You only need to implement this if getValueType() was defined to return ValueType.IVALUE.
-//	 * 
-//	 * @param context the context state, containing the current state of all dependencies.
-//	 * @param concept the type of value to return
-//	 * @param useExtentIndex if true, the method must use the index methods in the context
-//	 * state and not the value methods. 
-//	 * @return a pair containing the state value from the datasource that corresponds to the passed context
-//	 * 			state and the associated uncertainty (or null if there is none).
-//	 * @throws ThinklabValidationException if anything goes wrong. FIXME should be a datasource
-//	 * exception or something.
-//	 */
-//	public abstract Pair<IValue, IUncertainty> getValue(
-//			IObservationContextState context, 
-//			IConcept concept,
-//			boolean useExtentIndex) throws ThinklabValidationException;
-//		
-//	/**
-//	 * Exactly like getValue, but returns a raw string literal which is passed to the conceptual model
-//	 * for interpretation before being set in the state.
-//	 * 
-//	 * You only need to implement this if getValueType() was defined to return ValueType.LITERAL.
-//	 * 
-//	 * @param context
-//	 * @param concept
-//	 * @param useExtentIndex
-//	 * @return
-//	 * @throws ThinklabValidationException
-//	 * @see getValue
-//	 */
-//	public abstract Pair<String, IUncertainty> getValueLiteral(
-//			IObservationContextState context, 
-//			IConcept concept,
-//			boolean useExtentIndex) throws ThinklabValidationException;
-//		
-//
-//	/**
-//	 * Datasources may have an initial value before anything is computed or extracted. This value, if
-//	 * not null, is used to initialize state storage before contextualization. If the initial value
-//	 * makes sense for the datasource, return it here. Otherwise just return null.
-//	 * 
-//	 * @return
-//	 */
-//	public abstract Pair<IValue, IUncertainty> getInitialValue();
+	
+	/**
+	 * Called once to communicate the overall context and to negotiate communication with the
+	 * datasource. Called only if a datasource is actually connected, AFTER the twin 
+	 * handshake() is called on the datasource itself and had a chance to return a different
+	 * datasource than the one originally intended (e.g. after interpolation).
+	 * 
+	 * @param cm
+	 * @param observationContext
+	 * @param overallContext
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public abstract void handshake(
+			IDataSource<?> dataSource,
+			IObservationContext observationContext,
+			IObservationContext overallContext)
+		 throws ThinklabException;
+
+
+
 	
 }

@@ -209,6 +209,18 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#mediates -->
+
+    <owl:ObjectProperty rdf:about="#mediates">
+        <rdfs:comment
+            >Mediation is a specific dependency that only links to one observation and makes the current one take its state from the mediated one, after mediation handled by the matching of the conceptual models. The observable in a mediating observation can be omitted and will be taken from the mediated. Any datasource in the mediating observation will be ignored.</rdfs:comment>
+        <rdfs:range rdf:resource="#Observation"/>
+        <rdfs:domain rdf:resource="#Observation"/>
+        <rdfs:subPropertyOf rdf:resource="#dependsOn"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ClassificationProperty -->
 
     <owl:ObjectProperty rdf:about="&thinklab-core;ClassificationProperty"/>
@@ -245,6 +257,17 @@
         <rdfs:comment rdf:datatype="&xsd;string"
             >The URI or semantic type of the source value expected for mapping data to concepts.</rdfs:comment>
         <rdfs:domain rdf:resource="#ClassificationSpace"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#value -->
+
+    <owl:DatatypeProperty rdf:about="#value">
+        <rdfs:comment
+            >A convenience relationship to enable specification of the value of a simple observation as a literal string, to be processed by the observation.</rdfs:comment>
+        <rdfs:domain rdf:resource="#IndirectObservation"/>
         <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
     
@@ -339,6 +362,16 @@
 
 Each instance in a concrete observation space is a &quot;grain&quot; and its characteristics determine the granularity of the observation. Its extent is the observation space itself, defined as the union of the granules. The granularity of the observation space is defined as the total number of granules, physical or implied.</rdfs:comment>
         <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ContextualizedDataSource -->
+
+    <owl:Class rdf:about="#ContextualizedDataSource">
+        <rdfs:subClassOf rdf:resource="#DataSource"/>
+        <rdfs:comment
+            >A data source produced by the process of contextualization.</rdfs:comment>
     </owl:Class>
     
 

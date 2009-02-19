@@ -65,7 +65,7 @@ import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.kbox.VirtualSessionKBox;
-import org.integratedmodelling.thinklab.value.AlgorithmValue;
+import org.integratedmodelling.thinklab.literals.AlgorithmValue;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Polylist;

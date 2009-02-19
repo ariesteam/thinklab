@@ -33,15 +33,21 @@
  **/
 package org.integratedmodelling.thinklab.interfaces.knowledge;
 
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.utils.Polylist;
+
 
 /**
- * Objects implementing this one are not concepts but are capable of being converted into an instance in a given concept
- * space. This means they need to know their type in terms of an existing ontology.
+ * Objects implementing this one are capable of being converted into an instance. In order to allow that,
+ * they return a list representation of the instance that represents them. Instance implementations are
+ * not automatically IConceptualizable, but if they are, they should be able to produce an instance that
+ * will create a clone of themselves as implementation, or if the implementation wasn't created with 
+ * an instance, may use themselves as implementation.
  * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  *
  */
 public interface IConceptualizable {
 	
-	IInstance conceptualize(String conceptSpace);
+	Polylist conceptualize() throws ThinklabException;
 }

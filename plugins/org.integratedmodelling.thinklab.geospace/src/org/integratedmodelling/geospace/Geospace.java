@@ -85,6 +85,7 @@ public class Geospace extends ThinklabPlugin  {
 	public static final String HAS_SOURCE_LINK_ATTRIBUTE = "geospace:hasSourceLinkAttribute";
 	public static final String HAS_TARGET_LINK_ATTRIBUTE = "geospace:hasTargetLinkAttribute";
 	public static final String HAS_ATTRIBUTE_URL = "geospace:hasAttributeUrl";
+	public static final String RASTER_GRID = "geospace:RasterGrid";
 	/*
 	 * if not null, we have a preferred crs in the properties, and we solve
 	 * all conflicts by translating to it. 

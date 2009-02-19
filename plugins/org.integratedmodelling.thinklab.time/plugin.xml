@@ -27,7 +27,7 @@
 	</extension>
 
 
-	<!-- instance constructors -->
+	<!-- instance constructors 
 	<extension 
 		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
 		id="time-record-constructor">
@@ -39,9 +39,9 @@
 		id="temporal-grid-coverage-constructor">
 		<parameter id="class" value="org.integratedmodelling.time.constructors.TemporalGridConstructor"/>
 		<parameter id="semantic-type" value="time:RegularTemporalGrid"/>
-	</extension>
+	</extension> -->
 
-	<!-- literal validators -->
+	<!-- literal validators 
 	<extension 
 		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
 		id="datetime-validator">
@@ -65,6 +65,6 @@
 		id="time-record-validator">
 		<parameter id="class" value="org.integratedmodelling.time.constructors.TimeRecordValidator"/>
 		<parameter id="semantic-type" value="time:TemporalLocationRecord"/>
-	</extension>
+	</extension> -->
 
 </plugin>

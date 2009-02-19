@@ -32,11 +32,8 @@
  **/
 package org.integratedmodelling.geospace.commands;
 
-import java.util.ArrayList;
-
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
-import org.integratedmodelling.corescience.interfaces.observation.IObservationState;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.districting.DistrictingPlugin;
@@ -75,7 +72,7 @@ public class District implements ICommandHandler {
 
 		// get the spatial extent and check it's a CellExtent, which it should
 		// be
-		IObservationContext ctx = obs.getCurrentObservationContext();
+		IObservationContext ctx = obs.getObservationContext();
 		GridExtent extent = (GridExtent) ctx.getExtent(Geospace.get().
 				RasterGridObservable());
 
@@ -107,48 +104,50 @@ public class District implements ICommandHandler {
 		}
 
 		IObservation observation = (IObservation) impl;
-		ArrayList<IObservationState> states = new ArrayList<IObservationState>();
+//		ArrayList<IObservationState> states = new ArrayList<IObservationState>();
+//
+//		for (IObservation dep : observation.getDependencies()) {
+//
+//			IObservationState state = dep.getObservationState();
+//			if (state != null) {
+//				states.add(state);
+//			}
+//		}
+//
+//		for (IObservation dep : observation.getContingencies()) {
+//
+//			IObservationState state = dep.getObservationState();
+//			if (state != null) {
+//				states.add(state);
+//			}
+//		}
+//
+//		if (states.size() < 1) {
+//			throw new ThinklabPluginException(
+//					"districting: can't find any state to work with in " + obs);
+//		}
+//
+//		/* build array and double-check that array sizes match */
+//		double[][] ret = new double[states.size()][];
+//
+//		int i = 0;
+//		int size = 0;
+//		for (IObservationState state : states) {
+//
+//			double[] data = state.getDataAsDouble();
+//
+//			if (i == 0)
+//				size = data.length;
+//			else if (size != data.length)
+//				throw new ThinklabPluginException(
+//						"districting: observation states are of different numerosity");
+//
+//			ret[i++] = data;
+//		}
 
-		for (IObservation dep : observation.getDependencies()) {
-
-			IObservationState state = dep.getObservationState();
-			if (state != null) {
-				states.add(state);
-			}
-		}
-
-		for (IObservation dep : observation.getContingencies()) {
-
-			IObservationState state = dep.getObservationState();
-			if (state != null) {
-				states.add(state);
-			}
-		}
-
-		if (states.size() < 1) {
-			throw new ThinklabPluginException(
-					"districting: can't find any state to work with in " + obs);
-		}
-
-		/* build array and double-check that array sizes match */
-		double[][] ret = new double[states.size()][];
-
-		int i = 0;
-		int size = 0;
-		for (IObservationState state : states) {
-
-			double[] data = state.getDataAsDouble();
-
-			if (i == 0)
-				size = data.length;
-			else if (size != data.length)
-				throw new ThinklabPluginException(
-						"districting: observation states are of different numerosity");
-
-			ret[i++] = data;
-		}
-
-		return ret;
+//		return ret;
+		
+		return null;
 	}
 
 	public IValue execute(Command command, ISession session) throws ThinklabException {

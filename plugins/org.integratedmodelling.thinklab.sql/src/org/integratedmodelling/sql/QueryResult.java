@@ -41,7 +41,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.BooleanValue;
+import org.integratedmodelling.thinklab.literals.BooleanValue;
 
 /**
  * Copies and holds the results of an SQL query for as long as you need. Returned on 
@@ -121,12 +121,12 @@ public class QueryResult extends ArrayList<ArrayList<String>> {
 	}
 	
 	public IValue getValue(int row, int column, IConcept concept) throws ThinklabException {
-		return KnowledgeManager.get().validateLiteral(concept, get(row,column), null);
+		return KnowledgeManager.get().validateLiteral(concept, get(row,column));
 	}
 
 	public IValue getValue(int row, int column, String concept) throws ThinklabException {
 		return KnowledgeManager.get().validateLiteral(
-				KnowledgeManager.get().requireConcept(concept), get(row,column), null);
+				KnowledgeManager.get().requireConcept(concept), get(row,column));
 	}
 
 }

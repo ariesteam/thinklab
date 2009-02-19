@@ -35,9 +35,9 @@ package org.integratedmodelling.geospace.grass;
 import java.io.File;
 
 import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.cmodel.RegularRasterModel;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
+import org.integratedmodelling.geospace.implementations.cmodels.RegularRasterModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 
 /**

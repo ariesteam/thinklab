@@ -6,7 +6,6 @@
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.scheduler/classes" path="plugins/org.integratedmodelling.thinklab.scheduler/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.tclj/classes" path="plugins/org.integratedmodelling.thinklab.tclj/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.clojure/classes" path="plugins/org.integratedmodelling.thinklab.clojure/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.afl/classes" path="plugins/org.integratedmodelling.thinklab.afl/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.mca/classes" path="plugins/org.integratedmodelling.thinklab.mca/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.ecology/classes" path="plugins/org.integratedmodelling.thinklab.ecology/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.commandline/classes" path="plugins/org.integratedmodelling.thinklab.commandline/src"/>

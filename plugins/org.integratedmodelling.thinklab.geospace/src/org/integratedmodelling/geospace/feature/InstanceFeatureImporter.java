@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Properties;
 
-import org.integratedmodelling.geospace.values.ShapeValue;
+import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Pair;

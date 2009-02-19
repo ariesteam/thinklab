@@ -35,8 +35,8 @@ package org.integratedmodelling.time.extents;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.time.cmodel.InstantConceptualModel;
-import org.integratedmodelling.time.values.TimeValue;
+import org.integratedmodelling.time.implementations.cmodels.InstantConceptualModel;
+import org.integratedmodelling.time.literals.TimeValue;
 
 /**
  * Extent class for a single temporal location.

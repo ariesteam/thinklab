@@ -42,7 +42,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.utils.Polylist;
 
 

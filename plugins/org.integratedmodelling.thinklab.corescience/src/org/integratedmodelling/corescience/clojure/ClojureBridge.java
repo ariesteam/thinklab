@@ -52,13 +52,11 @@ public class ClojureBridge {
 	
 	public static Polylist makeUnit(String unitspecs) throws ThinklabException {
 
-		ArrayList<Object> list = new ArrayList<Object>();
-		
-		list.add("measurement:Unit");
-		list.add(unitspecs);
-		
-		return Polylist.PolylistFromArrayList(list);
-
+		return Polylist.list(
+				CoreScience.UNIT,
+				Polylist.list("#", unitspecs));
 	}
+	
+	
 	
 }

@@ -44,8 +44,14 @@ import org.integratedmodelling.utils.LogicalConnector;
  * @author Ferdinando Villa
  *
  */
-public interface ExtentConceptualModel  {
+public interface ExtentConceptualModel extends IConceptualModel {
 
+	public enum Coverage {
+		FULL,
+		PARTIAL,
+		NONE
+	}
+	
 	/**
 	 * Produce the extent that describes the observation we're linked to.
 	 * @return
@@ -83,4 +89,6 @@ public interface ExtentConceptualModel  {
 	 * @throws ThinklabException 
 	 */
 	public IExtent mergeExtents(IExtent original, IExtent other, LogicalConnector connector, boolean isConstraint) throws ThinklabException;
+
+
 }

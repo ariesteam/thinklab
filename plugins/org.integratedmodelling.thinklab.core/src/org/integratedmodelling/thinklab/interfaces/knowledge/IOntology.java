@@ -119,7 +119,6 @@ public interface IOntology  extends IResource {
      */
     public abstract IInstance createInstance(Polylist list) throws ThinklabException;
 
-    
 
 	/**
 	 * Return a concept, or null if not found.

@@ -36,9 +36,12 @@ import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualMod
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.time.cmodel.TemporalGridConceptualModel;
-import org.integratedmodelling.time.values.PeriodValue;
+import org.integratedmodelling.time.TimePlugin;
+import org.integratedmodelling.time.implementations.cmodels.TemporalGridConceptualModel;
+import org.integratedmodelling.time.literals.PeriodValue;
+import org.integratedmodelling.utils.Polylist;
 import org.joda.time.DateTime;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -58,7 +61,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  * @author Ferdinando Villa
  *
  */
-public class RegularTimeGridExtent implements IExtent {
+public class RegularTimeGridExtent implements IExtent, IConceptualizable {
 
 	TemporalGridConceptualModel cModel = null;
 	
@@ -200,5 +203,16 @@ public class RegularTimeGridExtent implements IExtent {
 	public LineString getTimeExtent() {
 		// TODO Auto-generated method stub
 		return extent;
+	}
+
+
+	@Override
+	public Polylist conceptualize() throws ThinklabException {
+	
+		return Polylist.list(
+				TimePlugin.TEMPORALGRID_TYPE_ID,
+				Polylist.list(TimePlugin.STARTS_AT_PROPERTY_ID, cModel.getStart().toString()),
+				Polylist.list(TimePlugin.ENDS_AT_PROPERTY_ID, cModel.getEnd().toString()),
+				Polylist.list(TimePlugin.STEP_SIZE_PROPERTY_ID, cModel.getStep() + " ms"));
 	}
 }

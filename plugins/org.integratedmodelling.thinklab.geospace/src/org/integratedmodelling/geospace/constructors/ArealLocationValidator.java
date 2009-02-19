@@ -34,25 +34,22 @@ package org.integratedmodelling.geospace.constructors;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.values.ShapeValue;
-import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
-
+import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 
 /**
  * This validator creates a whole Observation structure, complete with value, conceptual model and
  * observable, corresponding to an areal location expressed in WKT.
  * 
  * @author Ferdinando Villa
-
+ * FIXME doesn't validate anything - must be put back into validation with ontology
  */
-public class ArealLocationValidator implements LiteralValidator {
+public class ArealLocationValidator {
 	
 	public IValue validate(String literalValue, IConcept concept, IOntology ontology) 
 		throws ThinklabValidationException {

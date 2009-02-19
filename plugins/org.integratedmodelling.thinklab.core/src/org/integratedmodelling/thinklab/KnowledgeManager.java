@@ -56,22 +56,24 @@ import org.integratedmodelling.thinklab.exception.ThinklabMissingResourceExcepti
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
-import org.integratedmodelling.thinklab.extensions.LiteralValidator;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.applications.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.thinklab.operators.Operator;
+import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
 import org.integratedmodelling.thinklab.session.SingleSessionManager;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -128,6 +130,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
     private IConcept booleanType;
     private IConcept longType;
     private IConcept doubleType;
+    private IConcept literalType;
 
     private IProperty classificationProperty;
     private IProperty reifiedLiteralProperty;
@@ -139,6 +142,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
     private SemanticType textTypeID;
     private SemanticType numberTypeID;
     private SemanticType booleanTypeID;
+    private SemanticType literalTypeID;
     private SemanticType doubleTypeID;
     private SemanticType longTypeID;
     private SemanticType operatorTypeID;
@@ -184,12 +188,15 @@ public class KnowledgeManager implements IKnowledgeProvider {
      */
 	private boolean typesInitialized = false;
 
-	private HashMap<String, InstanceImplementationConstructor> instanceConstructors =
-		new HashMap<String, InstanceImplementationConstructor>();
-
-	private HashMap<String, LiteralValidator> literalValidators =
-		new HashMap<String, LiteralValidator>();
-
+//	@Deprecated
+//	private HashMap<String, InstanceImplementationConstructor> instanceConstructors =
+//		new HashMap<String, InstanceImplementationConstructor>();
+//
+//	@Deprecated
+//	private HashMap<String, LiteralValidator> literalValidators =
+//		new HashMap<String, LiteralValidator>();
+//
+	@Deprecated
 	private HashMap<String, KnowledgeLoader> knowledgeLoaders =
 		new HashMap<String, KnowledgeLoader>();
 
@@ -203,7 +210,9 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	 * maps XSD URIs to thinklab types for translation of literals.
 	 */
 	private Hashtable<String, String> xsdMappings = new Hashtable<String, String>();
-
+	private Hashtable<String, Class<?>> instanceImplementationClasses = new Hashtable<String, Class<?>>();
+	private Hashtable<String, Class<?>> literalImplementationClasses = new Hashtable<String, Class<?>>();
+	
 	public KnowledgeManager(IKnowledgeRepository kr, ISessionManager ki) {
 
         /* set KM */
@@ -457,6 +466,8 @@ public class KnowledgeManager implements IKnowledgeProvider {
 				new SemanticType(p.getProperty("type.class.number",   "thinklab-core:Number"));
 			booleanTypeID = 
 				new SemanticType(p.getProperty("type.class.boolean", "thinklab-core:Boolean"));
+			literalTypeID = 
+				new SemanticType(p.getProperty("type.class.literal", "thinklab-core:LiteralValued"));
 			textTypeID = 
 				new SemanticType(p.getProperty("type.class.text",       "thinklab-core:Text"));
 			operatorTypeID = 
@@ -509,6 +520,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
             doubleType   = requireConcept(doubleTypeID);
             numberType   = requireConcept(numberTypeID);
             booleanType  = requireConcept(booleanTypeID);
+            literalType  = requireConcept(literalTypeID);
             operatorType  = requireConcept(operatorTypeID);
             
             classificationProperty = requireProperty(classificationPropertyID);
@@ -519,12 +531,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		} catch (ThinklabResourceNotFoundException e) {
 			throw new ThinklabValidationException("core type specifications are incomplete: " + e.getMessage());
 		}
-		
-		/*
-		 * install operator instance constructors for core operations
-		 */
-		Operator.installBasicOperators();
-		
+				
 		typesInitialized = true;
 	}
 	
@@ -634,27 +641,12 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		sessionListeners.remove(className);
 	}
 
-	public void registerInstanceConstructor(String conceptID, InstanceImplementationConstructor constructor) {
-		this.instanceConstructors.put(conceptID, constructor);
-	}
-
-	public void unregisterInstanceConstructor(String conceptID) {
-		this.instanceConstructors.remove(conceptID);
-	}
-	
-	public void registerLiteralValidator(String conceptID, LiteralValidator validator) {
-		validator.declareType();
-		this.literalValidators.put(conceptID, validator);
-	}
-
-	public void unregisterLiteralValidator(String conceptID) {
-		this.literalValidators.remove(conceptID);
-	}
-	
+	@Deprecated
 	public void registerKnowledgeLoader(String format, KnowledgeLoader loader) {
 		knowledgeLoaders.put(format, loader);
 	}
 
+	@Deprecated
 	public void unregisterKnowledgeLoader(String format) {
 		knowledgeLoaders.remove(format);
 	}
@@ -737,21 +729,25 @@ public class KnowledgeManager implements IKnowledgeProvider {
     }
     
     /**
-     * Return the concept manager that provides a literal validator for the
-     * passed concept.
+     * Return a new parsed literal of the proper type to handle the passed concept.
+     * The returned literal will need to be initialized by making it parse a 
+     * string value.
+     * 
      * @param type the concept
-     * @return a concept manager or null
+     * @return a raw literal or null if none is configured to handle the concept
      * @throws ThinklabException if there is ambiguity
+     * 
+     * TODO make it use the declared classes, abolish validators
      */
-    public LiteralValidator getValidator(IConcept type) throws ThinklabException {
+    public ParsedLiteralValue getRawLiteral(IConcept type) throws ThinklabValidationException {
 
         class vmatch implements ConceptVisitor.ConceptMatcher {
 
-            private HashMap<String, LiteralValidator> coll;
+            private Hashtable<String, Class<?>> coll;
 
-            public LiteralValidator ret = null;
+            public Class<?> ret = null;
             
-            public vmatch(HashMap<String, LiteralValidator> c) {
+            public vmatch(Hashtable<String, Class<?>> c) {
                 coll = c;
             }
             
@@ -761,12 +757,22 @@ public class KnowledgeManager implements IKnowledgeProvider {
             }    
         }
         
-        vmatch matcher = new vmatch(literalValidators);
+        vmatch matcher = new vmatch(literalImplementationClasses);
         
         IConcept cms = 
             ConceptVisitor.findMatchUpwards(matcher, type);
 
-        return cms == null ? null : matcher.ret;
+        ParsedLiteralValue ret = null;
+        
+        if (cms != null) {
+        	try {
+				ret = (ParsedLiteralValue) matcher.ret.newInstance();
+			} catch (Exception e) {
+				throw new ThinklabValidationException("cannot create literal: " + e.getMessage());
+			}
+        }
+        
+        return ret;
     }
 
     /**
@@ -774,33 +780,44 @@ public class KnowledgeManager implements IKnowledgeProvider {
      * @param type
      * @return
      * @throws ThinklabException
+     * TODO make it use classes directly, defined through annotations
      */
-    public InstanceImplementationConstructor getInstanceConstructor(IConcept type) throws ThinklabException{
+    public IInstanceImplementation newInstanceImplementation(IConcept type) throws ThinklabException{
 
         class vmatch implements ConceptVisitor.ConceptMatcher {
 
-            private HashMap<String, InstanceImplementationConstructor> coll;
+            private Hashtable<String, Class<?>> coll;
             
-            public vmatch(HashMap<String, InstanceImplementationConstructor> c) {
+            public vmatch(Hashtable<String, Class<?>> c) {
                 coll = c;
             }
             
             public boolean match(IConcept c) {
-                InstanceImplementationConstructor cc = coll.get(c.getSemanticType().toString());
+                Class<?> cc = coll.get(c.getSemanticType().toString());
                 return (cc != null);
             }    
         }
-                
+              
+        IInstanceImplementation ret = null;
+        
         /*
          * I may be wrong, but there's no problem finding more than one constructor - just return the
          * least general one... 
          * There IS a problem if the ambiguity comes from a logical union - this should be checked, but
          * not now.
          */
-        InstanceImplementationConstructor cms = 
-    	  new ConceptVisitor<InstanceImplementationConstructor>().findMatchingInMapUpwards(instanceConstructors, new vmatch(instanceConstructors), type);
+        Class<?> cms = 
+    	  new ConceptVisitor<Class<?>>().findMatchingInMapUpwards(instanceImplementationClasses, new vmatch(instanceImplementationClasses), type);
         
-        return cms;
+        if (cms != null) {
+        	try {
+				ret = (IInstanceImplementation) cms.newInstance();
+			} catch (Exception e) {
+				throw new ThinklabValidationException("cannot create implementation: " + e.getMessage());
+			}        	
+        }
+        
+        return ret;
     }
     
     /* (non-Javadoc)
@@ -1035,18 +1052,14 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#validateLiteral(org.integratedmodelling.thinklab.interfaces.IConcept, java.lang.String, org.integratedmodelling.thinklab.interfaces.IOntology)
 	 */
-	public IValue validateLiteral(IConcept c, String literal, IOntology ontology) throws ThinklabValidationException {
-		IValue ret = null;
-		LiteralValidator cm = null;
-		try {
-			cm = getValidator(c);
-		} catch (ThinklabException e) {
-			throw new ThinklabValidationException(e);
-		}
-		if (cm != null)
-			ret = cm.validate(literal, c, ontology);
+	public IValue validateLiteral(IConcept c, String literal) throws ThinklabException {
+		
+		ParsedLiteralValue ret = getRawLiteral(c);
+		if (ret != null)
+			ret.parseLiteral(literal);
 		else 
-			throw new ThinklabValidationException("don't know how to validate a literal of type " + c.toString());
+			throw 
+				new ThinklabValidationException("don't know how to validate a literal of type " + c.toString());
 
 		return ret;
 	}
@@ -1308,6 +1321,20 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	public static IConcept Nothing() {
 		// TODO Auto-generated method stub
 		return KM.knowledgeRepository.getNothingType();
+	}
+
+	public void registerInstanceImplementationClass(String concept, Class<?> cls) {
+		instanceImplementationClasses.put(concept, cls);
+		
+	}
+	
+	public void registerLiteralImplementationClass(String concept, Class<?> cls) {
+		literalImplementationClasses.put(concept, cls);	
+	}
+
+	public static IConcept LiteralValue() {
+		// TODO Auto-generated method stub
+		return KM.literalType;
 	}
 
 }

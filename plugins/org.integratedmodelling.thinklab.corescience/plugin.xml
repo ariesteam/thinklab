@@ -53,69 +53,6 @@
 		<parameter id="concept-space" value="modelling" /> 
 	</extension>
 
-	<!-- instance constructors -->
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
-		id="observation-constructor">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ObservationConstructor"/>
-		<parameter id="semantic-type" value="observation:Observation"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
-		id="ranking-constructor">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.RankingConstructor"/>
-		<parameter id="semantic-type" value="measurement:Ranking"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
-		id="csv-datasource-constructor">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.CSVDatasourceConstructor"/>
-		<parameter id="semantic-type" value="source:CSVDataSource"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
-		id="random-datasource-constructor">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.RandomDataSourceConstructor"/>
-		<parameter id="semantic-type" value="source:Randomizer"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
-		id="classification-model-constructor">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ClassificationModelConstructor"/>
-		<parameter id="semantic-type" value="observation:ClassificationSpace"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
-		id="discretized-ranking-model-constructor">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.DiscretizedRankingConstructor"/>
-		<parameter id="semantic-type" value="observation:DiscreteNumericRankingSpace"/>
-	</extension>
-	
-	<!-- literal validators -->
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
-		id="unit-validator">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.UnitValidator"/>
-		<parameter id="semantic-type" value="measurement:Unit"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
-		id="parsed-datasource-validator">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ParsedDatasourceValidator"/>
-		<parameter id="semantic-type" value="source:ParsedString"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
-		id="column-extractor-validator">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.ColumnFilterValidator"/>
-		<parameter id="semantic-type" value="source:ColumnExtractor"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
-		id="discrete-range-validator">
-		<parameter id="class" value="org.integratedmodelling.corescience.constructors.MappedIntervalValidator"/>
-		<parameter id="semantic-type" value="observation:MappedInterval"/>
-	</extension>
 
 	<!-- commands -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="contextualize">

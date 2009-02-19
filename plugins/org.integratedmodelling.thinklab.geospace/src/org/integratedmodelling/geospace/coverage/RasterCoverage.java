@@ -8,19 +8,26 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
+import javax.media.jai.Interpolation;
+import javax.media.jai.InterpolationBicubic;
+import javax.media.jai.InterpolationBilinear;
+import javax.media.jai.InterpolationNearest;
 import javax.media.jai.RasterFactory;
+import javax.media.jai.iterator.RandomIter;
+import javax.media.jai.iterator.RandomIterFactory;
 
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.grid.ViewType;
 import org.geotools.coverage.processing.DefaultProcessor;
+import org.geotools.coverage.processing.Operations;
 import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
@@ -29,8 +36,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.NumberValue;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
@@ -51,6 +56,7 @@ public class RasterCoverage implements ICoverage {
 	private String layerName;
 	private double xCellSize;
 	private double yCellSize;
+	private RandomIter itera;
 	
 	static GridCoverageFactory rasterFactory = new GridCoverageFactory();
 	
@@ -152,17 +158,13 @@ public class RasterCoverage implements ICoverage {
 		// here's the geometry we want and the crs for the derived coverage
 		this.gridGeometry = new GridGeometry2D(extent.getGridRange(), extent.getEnvelope());
 
-		// set up the resample operation
-		DefaultProcessor processor = new DefaultProcessor(null);
-		ParameterValueGroup resampleParams = processor.getOperation("Resample").getParameters();
-        resampleParams.parameter("Source").setValue(cov.coverage);
-        resampleParams.parameter("CoordinateReferenceSystem").setValue(extent.getCRS());
-        resampleParams.parameter("GridGeometry").setValue(this.gridGeometry);
-
-        // resample to create the new coverage
-        this.coverage = (GridCoverage2D)processor.doOperation(resampleParams);
-        
-       // coverage.show();
+		this.coverage = 
+			(GridCoverage2D) 
+				Operations.DEFAULT.resample(
+						cov.coverage, 
+						null, 
+						this.gridGeometry, 
+						new InterpolationNearest());
 	}
 
 	public RasterCoverage(String sourceURL, GridCoverage2D coverage, GridSampleDimension dimension, boolean isSingleBand) {
@@ -193,7 +195,18 @@ public class RasterCoverage implements ICoverage {
 				coverage.getEnvelope2D().getMaxX(),
 				coverage.getEnvelope2D().getMinY(),
 				coverage.getEnvelope2D().getMaxY(), crs);
-		
+
+//		RenderedImage zio = coverage.getRenderedImage();
+//		RandomIter iter = RandomIterFactory.create(zio, null);
+//		for (int x = 0; x < getXCells(); x++) {
+//			for (int y = 0; y < getYCells(); y++) {
+//				int dio = iter.getSample(x, y, 0);
+//				double zuz = iter.getSampleDouble(x, y, 0);
+//				
+//				if (dio != 0 || zuz != 0.0)
+//					System.out.println("FUCKA " + x + "," + y + " is " + zuz + " - " + dio);
+//			}
+//		}
 	}
 	
 	public RasterCoverage(String name, GridCoverage2D raster) {
@@ -217,7 +230,8 @@ public class RasterCoverage implements ICoverage {
 				coverage.getEnvelope2D().getMaxX(),
 				coverage.getEnvelope2D().getMinY(),
 				coverage.getEnvelope2D().getMaxY(), crs);
-		
+        coverage.show();
+
 	}
 
 	public BoundingBox getBoundingBox() {
@@ -243,6 +257,7 @@ public class RasterCoverage implements ICoverage {
 		}
 		
 		image = coverage.getRenderedImage();
+		itera = RandomIterFactory.create(image, null);
 	}
 	
 	public int getXCells() {
@@ -290,43 +305,28 @@ public class RasterCoverage implements ICoverage {
 		return new DirectPosition2D(xx, yy);
 	}
 	
-	public IValue getSubdivisionValue(int subdivisionOrder, IConceptualModel conceptualModel, ArealExtent extent) throws ThinklabValidationException {
+	public Object getSubdivisionValue(int subdivisionOrder, IConceptualModel conceptualModel, ArealExtent extent) throws ThinklabValidationException {
 		
 		/* determine which active x,y we should retrieve for this order */
 		Pair<Integer, Integer> xy = ((GridExtent)extent).getActivationLayer().getCell(subdivisionOrder);
-		Object data = coverage.evaluate(getPosition(xy.getFirst(),xy.getSecond()));
-		IValue ret = null;
+		return itera.getSampleDouble(xy.getFirst(), xy.getSecond(), 0);
 		
-        final int dataType = image.getSampleModel().getDataType();
-        
-        if (conceptualModel instanceof ValidatingConceptualModel) {
-        	
-        	ValidatingConceptualModel vcm = (ValidatingConceptualModel)conceptualModel;
-        
-        	switch (dataType) {
-            	case DataBuffer.TYPE_BYTE:   ret = vcm.validateData(((byte[])data)[0]); break;
-            	case DataBuffer.TYPE_SHORT:  ret = vcm.validateData(((int[])data)[0]); break;
-            	case DataBuffer.TYPE_USHORT: ret = vcm.validateData(((int[])data)[0]); break;
-            	case DataBuffer.TYPE_INT:    ret = vcm.validateData(((int[])data)[0]); break;
-            	case DataBuffer.TYPE_FLOAT:  ret = vcm.validateData(((float[])data)[0]); break;
-            	case DataBuffer.TYPE_DOUBLE: ret = vcm.validateData(((double[])data)[0]); break;
-        	}
-        	
-        } else {
-        	
-        	switch (dataType) {
-        		case DataBuffer.TYPE_BYTE:   ret = new NumberValue(((byte[])data)[0]); break;
-        		case DataBuffer.TYPE_SHORT:  ret = new NumberValue(((int[])data)[0]); break;
-        		case DataBuffer.TYPE_USHORT: ret = new NumberValue(((int[])data)[0]); break;
-        		case DataBuffer.TYPE_INT:    ret = new NumberValue(((int[])data)[0]); break;
-        		case DataBuffer.TYPE_FLOAT:  ret = new NumberValue(((float[])data)[0]); break;
-        		case DataBuffer.TYPE_DOUBLE: ret = new NumberValue(((double[])data)[0]); break;
-        	}	
-        }
-		
-		/* turn it into what the CM wants */
-		
-		return ret;
+//		Object data = coverage.evaluate(getPosition(xy.getFirst(),xy.getSecond()));
+				
+//		IValue ret = null;
+//		
+//        final int dataType = image.getSampleModel().getDataType();
+//       	
+//        switch (dataType) {
+//        case DataBuffer.TYPE_BYTE:   ret = new NumberValue(((byte[])data)[0]); break;
+//        case DataBuffer.TYPE_SHORT:  ret = new NumberValue(((int[])data)[0]); break;
+//        case DataBuffer.TYPE_USHORT: ret = new NumberValue(((int[])data)[0]); break;
+//        case DataBuffer.TYPE_INT:    ret = new NumberValue(((int[])data)[0]); break;
+//        case DataBuffer.TYPE_FLOAT:  ret = new NumberValue(((float[])data)[0]); break;
+//        case DataBuffer.TYPE_DOUBLE: ret = new NumberValue(((double[])data)[0]); break;
+//        }	
+//		
+//		return ret;
 	}
 
 

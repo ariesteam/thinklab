@@ -1,8 +1,6 @@
 package org.integratedmodelling.corescience.interfaces.cmodel;
 
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.jscience.mathematics.number.Rational;
 
 /**
  * If a conceptual model implements ScalingConceptualModel, it declares its capability of
@@ -26,17 +24,8 @@ public interface ScalingConceptualModel {
 	 * @return
 	 */
 	public abstract IValueAggregator getAggregator(IObservationContext ownContext, 
-			IObservationContext overallContext);
+			IObservationContext overallContext, IExtentMediator[] mediators);
 	
-	/**
-	 * Partition the passed value into what makes sense for a new extent which stands in the
-	 * passed ratio with the original one. If partitioning makes no sense for this type and
-	 * concept, just return the original value.
-	 * 
-	 * @param originalValue
-	 * @param ratio
-	 * @return
-	 */
-	public abstract IValue partition(IValue originalValue, Rational ratio);
+
 
 }

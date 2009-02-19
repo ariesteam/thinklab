@@ -48,7 +48,7 @@ public class IValueVariableEvaluator implements ExternalVariableEvaluator {
 		}
 		
 		try {		
-			val = KnowledgeManager.get().validateLiteral(c, lite, null);
+			val = KnowledgeManager.get().validateLiteral(c, lite);
 		} catch (ThinklabException e) {
 			throw new ThinklabWorkflowException("ivalue expression: literal " + lite + " does not validate as a " + type);
 		}

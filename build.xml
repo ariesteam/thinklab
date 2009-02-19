@@ -48,10 +48,9 @@ test  - runs some tests
 		<ant dir="plugins/org.integratedmodelling.thinklab.opal" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.sql" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.authentication" target="${target}" />
-		<ant dir="plugins/org.integratedmodelling.thinklab.clojure" target="${target}" />
-		<ant dir="plugins/org.integratedmodelling.thinklab.riskwiz" target="${target}" />
-		<ant dir="plugins/org.integratedmodelling.thinklab.modelling" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.commandline" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.riskwiz" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.clojure" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.shell" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.corescience" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.geospace" target="${target}" />
@@ -59,6 +58,7 @@ test  - runs some tests
 		<ant dir="plugins/org.integratedmodelling.thinklab.currency" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.dolce" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.dynamicmodelling" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.modelling" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.ecology" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.metadata" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.rules" target="${target}" />

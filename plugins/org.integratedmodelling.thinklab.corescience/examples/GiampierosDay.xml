@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?OPAL profile="tcs" version="1.0"?>
+
+<!-- 
+	We hereby identify Giampiero over a temporal extent of one day, stating that we see his day
+	 as a sequence of 24 contiguous hours. 
+-->
+<kbox xmlns:csdemo="http://www.integratedmodelling.org/ks/demo/csdemo.owl#">
+	<Identification name="GiampierosDay">
+		<hasObservable>
+			<csdemo:Person name="Giampiero" />
+		</hasObservable>
+		<hasObservationExtent>
+			<RegularTemporalGrid>
+				<startsAt>2006-12-13T00:00:00.000-08:00</startsAt>
+				<endsAt>2006-12-14T00:00:00.000-08:00</endsAt>
+				<inStepsOf>1 h</inStepsOf>
+			</RegularTemporalGrid>
+		</hasObservationExtent>
+	</Identification>
+</kbox>

@@ -32,7 +32,7 @@ public interface ICoverage {
 	 * @throws ThinklabValidationException 
 	 * @throws ThinklabException 
 	 */
-	public abstract IValue getSubdivisionValue(int subdivisionOrder, IConceptualModel conceptualModel, ArealExtent extent) throws ThinklabValidationException;
+	public abstract Object getSubdivisionValue(int subdivisionOrder, IConceptualModel conceptualModel, ArealExtent extent) throws ThinklabValidationException;
 	
 	public abstract String getSourceUrl();
 

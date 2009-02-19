@@ -53,14 +53,20 @@
 		<library type="code" id="gt2-geotiff" path="lib/gt-geotiff-2.5.2.jar"/>
 		<library type="code" id="gt2-graph" path="lib/gt-graph-2.5.2.jar"/>
 		<library type="code" id="gt2-gtopo30" path="lib/gt-gtopo30-2.5.2.jar"/>
-		<library type="code" id="gt2-image" path="lib/gt-image-2.5.2.jar"/>
+		<library type="code" id="gt2-image" path="lib/gt-image-2.5.2.jar">
+			<export prefix="*"/>
+		</library>
 		<library type="code" id="gt2-imagemosaic" path="lib/gt-imagemosaic-2.5.2.jar"/>
 		<library type="code" id="gt2-imagemosaic-JDBC" path="lib/gt-imagemosaic-jdbc-2.5.2.jar"/>
 		<library type="code" id="gt2-imagepyramid" path="lib/gt-imagepyramid-2.5.2.jar"/>
 		<library type="code" id="gt2-jdbc" path="lib/gt-jdbc-2.5.2.jar"/>
-		<library type="code" id="gt2-main" path="lib/gt-main-2.5.2.jar"/>
+		<library type="code" id="gt2-main" path="lib/gt-main-2.5.2.jar">
+			<export prefix="*"/>
+		</library>
 		<library type="code" id="gt2-mappane" path="lib/gt-mappane-2.5-SNAPSHOT.jar"/>
-		<library type="code" id="gt2-metadata" path="lib/gt-metadata-2.5.2.jar"/>
+		<library type="code" id="gt2-metadata" path="lib/gt-metadata-2.5.2.jar">
+			<export prefix="*"/>
+		</library>
 		<library type="code" id="gt2-openoffice" path="lib/gt-openoffice-2.5.2.jar"/>
 		<library type="code" id="gt2-postgis" path="lib/gt-postgis-2.5.2.jar"/>
 		<library type="code" id="gt2-referencing" path="lib/gt-referencing-2.5.2.jar">
@@ -70,15 +76,21 @@
 			<export prefix="*"/>
 		</library>
 		<library type="code" id="gt2-render" path="lib/gt-render-2.5.2.jar"/>
-		<library type="code" id="gt2-shapefile" path="lib/gt-shapefile-2.5.2.jar"/>
+		<library type="code" id="gt2-shapefile" path="lib/gt-shapefile-2.5.2.jar">
+			<export prefix="*"/>
+		</library>
 		<library type="code" id="gt2-shapefile-renderer" path="lib/gt-shapefile-renderer-2.5.2.jar"/>
 		<library type="code" id="gt2-svgsupport" path="lib/gt-svgsupport-2.5.2.jar"/>
 		<library type="code" id="gt2-validation" path="lib/gt-validation-2.5.2.jar"/>
-		<library type="code" id="gt2-wfs" path="lib/gt-wfs-2.5.2.jar"/>
+		<library type="code" id="gt2-wfs" path="lib/gt-wfs-2.5.2.jar">
+			<export prefix="*"/>
+		</library>
 		<library type="code" id="gt2-widgets-swing" path="lib/gt-widgets-swing-2.5.2.jar"/>
 		<library type="code" id="gt2-wms" path="lib/gt-wms-2.5.2.jar"/>
 		<library type="code" id="gt2-xml" path="lib/gt-xml-2.5.2.jar"/>
-		<library type="code" id="gt2-xsd-core" path="lib/gt-xsd-core-2.5.2.jar"/>
+		<library type="code" id="gt2-xsd-core" path="lib/gt-xsd-core-2.5.2.jar">
+			<export prefix="*"/>
+		</library>
 		<library type="code" id="gt2-xsd-filter" path="lib/gt-xsd-filter-2.5.2.jar"/>
 		<library type="code" id="gt2-xsd-gml2" path="lib/gt-xsd-gml2-2.5.2.jar"/>
 		<library type="code" id="gt2-xsd-gml3" path="lib/gt-xsd-gml3-2.5.2.jar"/>
@@ -127,52 +139,6 @@
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="geofeatures">
 		<parameter id="url" value="geofeatures.owl"/>
 		<parameter id="concept-space" value="geofeatures" />
-	</extension>
-
-	<!-- instance constructors -->
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
-		id="areal-location-constructor">
-		<parameter id="class" value="org.integratedmodelling.geospace.constructors.ArealLocationConstructor"/>
-		<parameter id="semantic-type" value="geospace:ArealLocation"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
-		id="polygon-spatial-coverage-constructor">
-		<parameter id="class" value="org.integratedmodelling.geospace.constructors.SubdividedCoverageModelConstructor"/>
-		<parameter id="semantic-type" value="geospace:PolygonSpatialCoverage"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
-		id="raster-spatial-coverage-constructor">
-		<parameter id="class" value="org.integratedmodelling.geospace.constructors.SubdividedCoverageModelConstructor"/>
-		<parameter id="semantic-type" value="geospace:RasterSpatialCoverage"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
-		id="raster-grid-constructor">
-		<parameter id="class" value="org.integratedmodelling.geospace.constructors.RasterGridConstructor"/>
-		<parameter id="semantic-type" value="geospace:RasterGrid"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
-		id="external-raster-datasource-constructor">
-		<parameter id="class" value="org.integratedmodelling.geospace.constructors.RasterDatasourceConstructor"/>
-		<parameter id="semantic-type" value="geospace:ExternalRasterDataSource"/>
-	</extension>
-
-	<!-- literal validators -->
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
-		id="spatial-record-validator">
-		<parameter id="class" value="org.integratedmodelling.geospace.constructors.GeospaceValidator"/>
-		<parameter id="semantic-type" value="geospace:SpatialRecord"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
-		id="areal-location-validator">
-		<parameter id="class" value="org.integratedmodelling.geospace.constructors.ArealLocationValidator"/>
-		<parameter id="semantic-type" value="geospace:ArealLocation"/>
 	</extension>
 
 	<!-- kbox handler for coverages -->

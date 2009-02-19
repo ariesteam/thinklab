@@ -33,9 +33,7 @@
 package org.integratedmodelling.corescience.interfaces.cmodel;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabMediationException;
-import org.integratedmodelling.thinklab.interfaces.literals.IUncertainty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.utils.Pair;
 import org.jscience.mathematics.number.Rational;
 
 
@@ -68,7 +66,7 @@ public interface IExtentMediator {
 	 * 
 	 * @return
 	 */
-	public abstract ExtentCoverage checkCoverage();
+	public abstract ExtentConceptualModel.Coverage checkCoverage();
 	
 	/**
 	 * Return the current coverage of the extent represented based on the foreign extents added. Use a 
@@ -78,7 +76,7 @@ public interface IExtentMediator {
 	 * 
 	 * @return
 	 */
-	public abstract Pair<Rational, IUncertainty> getCurrentCoverage(IUncertainty uncertainty);
+	public abstract Rational getCurrentCoverage();
 	
 	/**
 	 * Reset the coverage of the foreign extents to whatever is left after subtracting the fully covered

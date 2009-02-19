@@ -50,20 +50,20 @@ import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabConstraintValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.extensions.InstanceImplementationConstructor;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IParseable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.literals.BooleanValue;
+import org.integratedmodelling.thinklab.literals.NumberValue;
+import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.TextValue;
+import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.thinklab.owlapi.Ontology.ReferenceRecord;
-import org.integratedmodelling.thinklab.value.BooleanValue;
-import org.integratedmodelling.thinklab.value.NumberValue;
-import org.integratedmodelling.thinklab.value.ObjectReferenceValue;
-import org.integratedmodelling.thinklab.value.TextValue;
-import org.integratedmodelling.thinklab.value.Value;
 import org.integratedmodelling.utils.LogicalConnector;
 import org.integratedmodelling.utils.MalformedListException;
 import org.integratedmodelling.utils.Pair;
@@ -205,8 +205,7 @@ public class ThinklabOWLManager {
 							val = 
 								KnowledgeManager.get().validateLiteral(
 										KnowledgeManager.get().requireConcept(tltype),
-										cn.getLiteral(), 
-										null);
+										cn.getLiteral());
 						}
 					} 
 					
@@ -221,8 +220,7 @@ public class ThinklabOWLManager {
 							val = 
 								KnowledgeManager.get().validateLiteral(
 										KnowledgeManager.Text(),
-										cn.getLiteral(), 
-										null);
+										cn.getLiteral());
 						}
 					}
 
@@ -293,7 +291,7 @@ public class ThinklabOWLManager {
 								IConcept cc = new Instance(ind).getDirectType();
 
 								val = KnowledgeManager.get().validateLiteral(
-										cc, literAnnotation, null);
+										cc, literAnnotation);
 
 								/* retain ID */
 								val.setID(ind.getURI().toString());
@@ -336,11 +334,7 @@ public class ThinklabOWLManager {
 		// check if this uri passed here before
 		if (!instanceImplementations.containsKey(instance.getURI())) {
 
-			InstanceImplementationConstructor cm = KnowledgeManager.get().getInstanceConstructor(instance.getDirectType());
-			
-			if (cm != null) {
-				ret = cm.construct(instance);
-			}
+			ret = KnowledgeManager.get().newInstanceImplementation(instance.getDirectType());
 			
 			/*
 			 * use a synchronized function because this is a singleton and hashmap isn't
@@ -534,6 +528,9 @@ public class ThinklabOWLManager {
 		 */
 		IProperty property = null;
 		
+		IInstanceImplementation impl  = null;
+		String literalImpl = null;
+		
 		Object o1 = l.first();
 		if (o1 instanceof IProperty) 
 			property = (IProperty)o1;
@@ -550,8 +547,26 @@ public class ThinklabOWLManager {
 					
 					inst.addLabel(l.second().toString());
 					return;
-				} else if (o1.toString().equals("#")) {
+				} else if (o1.toString().equals("@")) {
 					inst.setImplementation((IInstanceImplementation) l.second());
+					return;
+				} else if (o1.toString().equals("#")) {
+
+					/* define implementation from a literal: instance implementation class must 
+					 * exist and be a IParsable */
+					impl = 
+						KnowledgeManager.get().newInstanceImplementation(inst.getDirectType());
+					
+					if (! (impl instanceof IParseable)) {
+						throw new ThinklabValidationException(
+								"inline literal passed for " + 
+								inst.getDirectType() +
+								" which is not a parseable implementation");
+					}
+					
+					setInstanceImplementation((Instance) inst, impl);	
+					((IParseable)impl).parseSpecifications(inst, l.second().toString());
+					return;
 				}
 				
 				property = KnowledgeManager.get().requireProperty((String)o1);
@@ -627,7 +642,7 @@ public class ThinklabOWLManager {
 				 * must be a string value for the extended literal, and the first 
 				 * value must be its concept.
 				 */
-				IValue value = KnowledgeManager.get().validateLiteral(cid.getFirst(), svalue, ont);
+				IValue value = KnowledgeManager.get().validateLiteral(cid.getFirst(), svalue);
 				
 				/*
 				 * If the validator creates an object, we set this as an object reference and the property must
@@ -853,7 +868,7 @@ public class ThinklabOWLManager {
 				}
 				
 				IConcept r = range.iterator().next();
-				IValue val = KnowledgeManager.get().validateLiteral(r, o2.toString(), ont);
+				IValue val = KnowledgeManager.get().validateLiteral(r, o2.toString());
 				
 				if (val != null) {
 					if (val.isObjectReference()) {

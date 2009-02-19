@@ -90,14 +90,14 @@
 	"True if the passed observation is a measurement."
 	[observation]
 	(instance? 
-        org.integratedmodelling.corescience.observation.measurement.MeasurementModel 
+        org.integratedmodelling.corescience.implementations.cmodels.MeasurementModel 
         (get-conceptual-model observation)))	
 	
 (defn classification?
 	"True if the passed observation is a classification."
 	[observation]
 	(instance? 
-        org.integratedmodelling.corescience.observation.classification.ClassificationModel 
+        org.integratedmodelling.corescience.implementations.cmodels.ClassificationModel 
         (get-conceptual-model observation)))	
 	
 (defn identification?

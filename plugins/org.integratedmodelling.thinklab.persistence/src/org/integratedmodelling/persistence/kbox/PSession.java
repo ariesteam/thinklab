@@ -54,7 +54,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.value.AlgorithmValue;
+import org.integratedmodelling.thinklab.literals.AlgorithmValue;
 import org.integratedmodelling.utils.Polylist;
 
 public class PSession implements ISession {

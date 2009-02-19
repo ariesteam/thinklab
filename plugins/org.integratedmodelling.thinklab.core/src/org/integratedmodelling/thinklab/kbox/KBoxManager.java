@@ -173,7 +173,7 @@ public class KBoxManager {
 								oo[i] + 
 								" has not been defined by any plugins");
 					
-					IValue val = KnowledgeManager.get().validateLiteral(c, sv, null);
+					IValue val = KnowledgeManager.get().validateLiteral(c, sv);
 					
 					ret.put(oo[i].toString(), val);
 				}

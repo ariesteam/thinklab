@@ -42,7 +42,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.value.TextValue;
+import org.integratedmodelling.thinklab.literals.TextValue;
 
 /**
  * A Thinklab shell command to generate Entity Beans and Hibernate mappings

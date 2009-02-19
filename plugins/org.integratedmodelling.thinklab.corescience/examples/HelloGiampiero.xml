@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?OPAL profile="tcs" version="1.0"?>
+
+<!-- We hereby state that we have identified Giampiero in a specific temporal location. Observing
+     Giampiero has the side effect of us observing his wife, Giuseppona, who is a much nicer person. In fact, it turns
+     out that our observation of Giampiero's wife happens in a year extent, while we only say hello to Giampiero for
+     a meager millisecond. So the contextualization of this will have to compound those observations and 
+     figure out the common temporal context.
+
+     If we were really sick, we could subclass Identification into, for example, Greeting, which implies
+     that a side effect of the identification is saying hello.
+	
+	Note how this becomes the observation ontology equivalent of Hello, World. Except we 
+	say hello to Giampiero instead, which makes more sense as we don't really observe
+	the World.
+-->
+<kbox xmlns:csdemo="http://www.integratedmodelling.org/ks/demo/csdemo.owl#">
+	<Identification name="HelloGiampiero">
+		<hasObservable>
+			<csdemo:Person name="Giampiero" />
+		</hasObservable>
+		<isContingentTo>
+			<Identification name="HelloGiampierosWife">
+				<hasObservable>
+					<csdemo:Person name="Giuseppona"/>
+				</hasObservable>
+				<hasObservationExtent>
+					<TemporalLocationRecord>12-2006</TemporalLocationRecord>
+				</hasObservationExtent>
+			</Identification>
+		</isContingentTo>
+		<hasObservationExtent>
+			<TemporalLocationRecord>2006-12-13T21:39:45.618-08:00</TemporalLocationRecord>
+		</hasObservationExtent>
+	</Identification>
+</kbox>

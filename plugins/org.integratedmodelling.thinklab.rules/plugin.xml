@@ -2,7 +2,7 @@
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
 <plugin id="org.integratedmodelling.thinklab.rules" version="0.8.0" class="org.integratedmodelling.rules.RulePlugin">
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="true"/>
 	</requires>
 	<runtime>
 		<library id="core" path="classes/" type="code">

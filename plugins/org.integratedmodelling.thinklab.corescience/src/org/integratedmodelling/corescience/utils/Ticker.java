@@ -185,4 +185,11 @@ public class Ticker {
 		return changed;
 	}
 
+	/*
+	 * return whethere there are more states to cover. 
+	 */
+	public boolean expired() {
+		return !(currentIndex < (states-1));
+	}
+
 };

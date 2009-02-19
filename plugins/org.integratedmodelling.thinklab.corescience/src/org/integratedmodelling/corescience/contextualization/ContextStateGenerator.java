@@ -34,14 +34,18 @@ package org.integratedmodelling.corescience.contextualization;
 
 import java.util.Iterator;
 
-import org.integratedmodelling.corescience.interfaces.context.IContextStateGenerator;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.corescience.utils.Ticker;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
-public class ContextStateGenerator implements IContextStateGenerator {
+/**
+ * @deprecated merge logics into actual iterators to be instantiated by API user
+ * @author Ferdinando Villa
+ *
+ */
+public class ContextStateGenerator {
 	
 	/**
 	 * 

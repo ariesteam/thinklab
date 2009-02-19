@@ -43,7 +43,7 @@ import org.integratedmodelling.sql.hsql.HSQLMemServer;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
-import org.integratedmodelling.time.values.TimeValue;
+import org.integratedmodelling.time.literals.TimeValue;
 
 public class CpiConversionFactory {
 

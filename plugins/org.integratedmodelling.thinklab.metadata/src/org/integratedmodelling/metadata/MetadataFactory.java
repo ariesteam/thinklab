@@ -38,7 +38,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.time.values.TimeValue;
+import org.integratedmodelling.time.literals.TimeValue;
 import org.integratedmodelling.utils.Polylist;
 
 /**
