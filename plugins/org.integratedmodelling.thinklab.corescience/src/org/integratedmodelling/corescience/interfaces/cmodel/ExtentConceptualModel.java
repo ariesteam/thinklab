@@ -74,7 +74,6 @@ public interface ExtentConceptualModel extends IConceptualModel {
 	 * @throws ThinklabContextualizationException
 	 */
 	public abstract IExtentMediator getExtentMediator(IExtent extent) throws ThinklabException;
-
 	
 	/**
 	 * Return an extent that can represent both extents passed, directly or through

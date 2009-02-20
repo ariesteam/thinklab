@@ -23,7 +23,7 @@ public interface ScalingConceptualModel {
 	 * @param ownContext
 	 * @return
 	 */
-	public abstract IValueAggregator getAggregator(IObservationContext ownContext, 
+	public abstract IValueAggregator<?> getAggregator(IObservationContext ownContext, 
 			IObservationContext overallContext, IExtentMediator[] mediators);
 	
 

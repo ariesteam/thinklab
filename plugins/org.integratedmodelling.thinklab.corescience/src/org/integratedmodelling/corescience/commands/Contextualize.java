@@ -33,7 +33,7 @@
 package org.integratedmodelling.corescience.commands;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.contextualization.AbstractCompiler;
+import org.integratedmodelling.corescience.contextualization.Compiler;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.command.Command;
@@ -57,7 +57,7 @@ public class Contextualize implements ICommandHandler {
 		}
 
 		IObservation observation = (IObservation) o.getImplementation();
-		IInstance iret = AbstractCompiler.contextualize(observation, session);
+		IInstance iret = Compiler.contextualize(observation, session);
 
 		IValue ret = null;
 		if (iret != null)

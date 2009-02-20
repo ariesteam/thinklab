@@ -1,9 +1,6 @@
 package org.integratedmodelling.corescience.interfaces.cmodel;
 
-import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
  * A validating conceptual model declares its intention to validate anything coming from a 

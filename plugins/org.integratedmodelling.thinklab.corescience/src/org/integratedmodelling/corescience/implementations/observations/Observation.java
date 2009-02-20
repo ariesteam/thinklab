@@ -38,10 +38,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.contextualization.Compiler;
 import org.integratedmodelling.corescience.contextualization.ObservationContext;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextValidationException;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.TransformingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
@@ -51,6 +53,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
@@ -64,7 +67,6 @@ import org.integratedmodelling.utils.LogicalConnector;
  * contexts, conceptual model and uncertainty model.
  * 
  * @author Ferdinando Villa
- * 
  */
 @InstanceImplementation(concept="observation:Observation")
 public class Observation implements IObservation, IInstanceImplementation {
@@ -83,9 +85,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 	protected IInstance observable = null;
 	protected IInstance observation = null;
 	protected IInstance dataSourceValue = null;
-	
-	// protected IObservationContext currentContext = null;
-	
 	protected IObservation[] contingencies = new IObservation[0];
 	protected IObservation[] dependencies = new IObservation[0];
 	protected IObservation[] extentDependencies = new IObservation[0];
@@ -130,7 +129,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 		return conceptualModel;
 	}
 
-	
 	/**
 	 * Create an appropriate conceptual model if it is missing. This one is not
 	 * relevant to observations whose CM is defined in OWL. Those whose CM can
@@ -198,7 +196,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 		ArrayList<IObservation> ext = new ArrayList<IObservation>(); 
 		ArrayList<IObservation> nxt = new ArrayList<IObservation>(); 
 
-		/* locate and store various related for efficiency. This method is faster than
+		/* 
+		 * locate and store various related for efficiency. This method is faster than
 		 * getting piece by piece.
 		 */
 		for (IRelationship r : i.getRelationships()) {
@@ -239,7 +238,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 							(IObservation)
 							r.getValue().asObjectReference().getObject().getImplementation());					
 				}
-
 			}
 		}
 
@@ -376,7 +374,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 		return ret;
 	}
 
-	public IObservationContext getOverallObservationContext(IContextualizationCompiler compiler) 
+	public IObservationContext getOverallObservationContext(
+			IContextualizationCompiler compiler) 
 		throws ThinklabException {
 	
 		ObservationContext ret = 
@@ -399,6 +398,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 	 * one with that of the dependencies.
 	 *  
 	 * @param compiler
+	 * @param session 
 	 * @return
 	 * @throws  
 	 * @throws ThinklabException 
@@ -409,6 +409,21 @@ public class Observation implements IObservation, IInstanceImplementation {
 		
 		if (inserted.contains(this))
 			return null;
+		
+		/*
+		 * if this is a transformer, we want to contextualize it, filter the obs through
+		 * the transformation, and return the result instead of recursing as usual.
+		 */
+//		if (getConceptualModel() instanceof TransformingConceptualModel) {
+//			
+//			/*
+//			 * TODO make sure we're not wasting instances
+//			 */
+//			IInstance inst = AbstractCompiler.contextualize(this, session);
+//			IObservation trs = ((TransformingConceptualModel)getConceptualModel()).
+//				transformObservation(extractObservationFromInstance(inst));
+//			return trs.getOverallObservationContext_(compiler)
+//		}
 		
 		ObservationContext ret = new ObservationContext(this);
 		
@@ -594,14 +609,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 			")]";
 	}
 
-//	public IObservationContext getCurrentObservationContext() throws ThinklabException {
-//		return currentContext;
-//	}
-//
-//	public void setCurrentObservationContext(IObservationContext context) {
-//		currentContext = context;
-//	}
-
 	@Override
 	public IObservation getMediatorObservation() {
 		return mediatorObservation;
@@ -664,8 +671,4 @@ public class Observation implements IObservation, IInstanceImplementation {
 			return (IContextualizedState) o.getDataSource();
 		return null;
 	}
-	
-	
-	
-
 }

@@ -30,7 +30,7 @@ import org.jgrapht.graph.DefaultEdge;
  * @author Ferdinando
  *
  */
-public abstract class AbstractCompiler implements IContextualizationCompiler {
+public abstract class Compiler implements IContextualizationCompiler {
 
 	
 	DefaultDirectedGraph<IObservation, MediatedDependencyEdge> dependencies = 

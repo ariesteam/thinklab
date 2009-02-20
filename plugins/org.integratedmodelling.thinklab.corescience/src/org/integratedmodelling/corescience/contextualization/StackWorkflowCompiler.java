@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
@@ -25,8 +26,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.jgrapht.alg.CycleDetector;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
 /**
@@ -36,7 +35,7 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
  * @author Ferdinando
  *
  */
-public class StackWorkflowCompiler extends AbstractCompiler {
+public class StackWorkflowCompiler extends Compiler {
 
 	/*
 	 * optimization - if this is false, validators are not compiled in. Not linked to any
@@ -173,8 +172,12 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 			/*
 			 * if we have no outgoing edges, we can work on the next dependencies independently;
 			 * make a contextualizer and reset the order and the stack type.
+			 * 
+			 * FIXME this should be no direct dependencies, excluding contingencies. Must avoid
+			 * compiling in "void" observations.
 			 */
-			if (dependencies.outgoingEdgesOf(obs).size() == 0) {
+			if (dependencies.outgoingEdgesOf(obs).size()
+					/*((Observation)obs).getNonExtentDependencies().length */ == 0) {
 				
 				StackVMContextualizer<?> ctxer = 
 					createThreadContextualizer(order, stackType, context, structure);
@@ -198,9 +201,11 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 		throws ThinklabException {
 
 		/*
-		 * if we have only one thing and we don't want its state, cut it off and return
-		 * null.
+		 * TODO if we have only one thing and we don't want its state, cut it off and return
+		 * null. Logics is in later but exceptions are thrown before then. 
 		 */
+		if (stackType == null)
+			return null;
 		
 		StackVMContextualizer<?> ret = null;
 		IConcept stateType = null;
@@ -238,11 +243,18 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 		 * build descriptors with all the needed info for each obs
 		 */
 		boolean needsContextStates = false;
+		boolean anyAccessors = false;
 		for (IObservation o : order) {		
 			
 			if (buildObsDesc(o, accessors, deactivatable, context, ret, stateType, structure).needsContextStates)
 				needsContextStates = true;
+			
+			if (accessors.get(o).accessorId >= 0)
+				anyAccessors = true;	
 		}
+		
+		if (!anyAccessors)
+			return null;
 		
 		/*
 		 * resolve the deactivations
