@@ -34,6 +34,7 @@ package org.integratedmodelling.corescience.interfaces.context;
 
 import java.util.Collection;
 
+import org.integratedmodelling.corescience.contextualization.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -127,5 +128,15 @@ public interface IObservationContext {
 	 * @return
 	 */
 	public int[] getDimensionSizes();
+
+	
+	/**
+	 * Return a new observation context that has all extents that we have substituted with
+	 * the correspondent ones in the passed context.
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public IObservationContext remapExtents(IObservationContext context);
 	
 }

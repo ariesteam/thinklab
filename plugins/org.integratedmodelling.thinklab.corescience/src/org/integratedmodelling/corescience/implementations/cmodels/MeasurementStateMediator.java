@@ -12,6 +12,7 @@ public class MeasurementStateMediator implements IStateAccessor {
 	private UnitValue uFrom;
 	private UnitValue uTo;
 	private UnitConverter converter;
+	private int reg = 0;
 
 	public MeasurementStateMediator(UnitValue unitFrom, UnitValue unitTo) {
 		this.uFrom = unitFrom;
@@ -28,11 +29,12 @@ public class MeasurementStateMediator implements IStateAccessor {
 	@Override
 	public void notifyDependencyRegister(IConcept observable, int register,
 			IConcept stateType) throws ThinklabValidationException {
+		this.reg = register;
 	}
 
 	@Override
 	public Object getValue(Object[] registers) {
-		return converter.convert((Double)registers[0]);
+		return converter.convert((Double)registers[reg]);
 	}
 
 	@Override

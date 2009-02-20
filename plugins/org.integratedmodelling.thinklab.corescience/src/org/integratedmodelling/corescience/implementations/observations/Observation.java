@@ -34,6 +34,7 @@ package org.integratedmodelling.corescience.implementations.observations;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import org.integratedmodelling.corescience.CoreScience;
@@ -257,6 +258,13 @@ public class Observation implements IObservation, IInstanceImplementation {
 		conceptualModel = getConceptualModel();
 		
 		/*
+		 * if we are mediating something and we have our own observable, we must 
+		 * be punished.
+		 */
+		if (mediatedObservation != null && observable != null)
+			throw new ThinklabValidationException("mediator observations should not declare an observable");
+		
+		/*
 		 * ensure we know the observable if we're mediating another obs and we don't have
 		 * our own observable.
 		 */
@@ -368,12 +376,12 @@ public class Observation implements IObservation, IInstanceImplementation {
 		return ret;
 	}
 
-	public IObservationContext getOverallObservationContext(IContextualizationCompiler workflow) 
+	public IObservationContext getOverallObservationContext(IContextualizationCompiler compiler) 
 		throws ThinklabException {
 	
 		ObservationContext ret = 
-			getOverallObservationContext_(workflow, new HashSet<Observation>());
-		ret.initialize();
+			getOverallObservationContext_(compiler, new HashSet<Observation>());
+		
 		return ret;
 	}
 		
@@ -420,7 +428,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 			/* contextualize obs */
 			ObservationContext oc = (ObservationContext)
 				(((Observation)contingency).getOverallObservationContext(compiler));
-
+			
 			/* merge extents appropriately */
 			if (oc != null)
 				ret.mergeExtents(oc, LogicalConnector.UNION, false);
@@ -481,10 +489,9 @@ public class Observation implements IObservation, IInstanceImplementation {
 				ret.mergeExtents(oc, LogicalConnector.INTERSECTION, true);
 			}
 		}
-
 		
-		// TODO we should perform a final step here to give all CMs the chance of finalizing
-		// the structure, reduce data, etc. once all the contexts have been exposed.
+		// initialize this context
+		ret.initialize();
 		
 		return ret;	
 	}
@@ -651,7 +658,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 	@Override
 	public IContextualizedState getState(IConcept observable) throws ThinklabException {
-		// TODO Auto-generated method stub
+
 		IObservation o = findObservation(this, observable);
 		if (o != null && o.getDataSource() != null && o.getDataSource() instanceof IContextualizedState)
 			return (IContextualizedState) o.getDataSource();

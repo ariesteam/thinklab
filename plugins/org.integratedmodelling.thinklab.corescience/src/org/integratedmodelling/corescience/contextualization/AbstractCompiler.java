@@ -1,9 +1,12 @@
 package org.integratedmodelling.corescience.contextualization;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
+import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizer;
@@ -17,6 +20,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
 
 /**
  * Provides some methods that all compilers are likely to need, without actually implementing
@@ -28,6 +33,40 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 public abstract class AbstractCompiler implements IContextualizationCompiler {
 
 	
+	DefaultDirectedGraph<IObservation, MediatedDependencyEdge> dependencies = 
+		new DefaultDirectedGraph<IObservation, MediatedDependencyEdge>(MediatedDependencyEdge.class);
+	
+	@Override
+	public void addObservation(IObservation observation) {		
+		dependencies.addVertex(observation);
+	}
+
+	@Override
+	public void addObservationDependency(IObservation destination, IObservation source) {
+		
+		dependencies.addVertex(source);
+		dependencies.addVertex(destination);
+		dependencies.addEdge(source, destination);
+	}
+
+	/*
+	 * the dependency edge holds all details of the necessary mediation or aggregation.
+	 */
+	public static class MediatedDependencyEdge extends DefaultEdge {
+
+		private static final long serialVersionUID = 5926757404834780955L;
+		
+		public IObservation getSourceObservation() {
+			return (IObservation)getSource();
+		}
+		
+		public IObservation getTargetObservation() {
+			return (IObservation)getTarget();
+		}
+		
+	}
+
+	
 	public static IInstance contextualize(IObservation observation, ISession session) 
 		throws ThinklabException {
 	
@@ -37,11 +76,31 @@ public abstract class AbstractCompiler implements IContextualizationCompiler {
 					"cannot find a compiler to contextualize " + observation);
 		
 		IObservationContext context = observation.getOverallObservationContext(compiler);
+		
+		/* compute and communicate individual merged contexts for each observation */
+		HashSet<IConcept> oobs = new HashSet<IConcept>();
+		
+		for (IObservation obs : compiler.getObservations()) {
+			if (!obs.isMediator() && !(obs.getConceptualModel() instanceof ExtentConceptualModel)) {
+
+				if (oobs.contains(obs.getObservableClass()))
+					throw new ThinklabContextualizationException(
+						"observable classes must be unique in an observation structure: " +
+						obs.getObservableClass());		
+				
+				oobs.add(obs.getObservableClass());
+				compiler.notifyContext(
+						obs.getObservableClass(),
+						obs.getObservationContext().remapExtents(context));
+			}
+		}
+		
 		IContextualizer contextualizer = compiler.compile(observation, context);
 		return contextualizer.run(session);
 	}
 	
-	public static boolean performHandshake(
+	protected boolean performHandshake(
+			
 			IConceptualModel cm, IDataSource<?> ds, 
 			IObservationContext overallContext, 
 			IObservationContext ownContext, 
@@ -119,6 +178,20 @@ public abstract class AbstractCompiler implements IContextualizationCompiler {
 	 */
 	public IObservation resolveTransformations(IObservation obs) {
 		return null;
+	}
+
+
+	@Override
+	public boolean canCompile(IObservation observation) {
+		// TODO analyze CMs - the thing is, it is the CM that should say whether a certain compiler
+		// is OK for it.
+		return true;
+	}
+
+	@Override
+	public Collection<IObservation> getObservations() {
+		// TODO Auto-generated method stub
+		return dependencies.vertexSet();
 	}
 
 }

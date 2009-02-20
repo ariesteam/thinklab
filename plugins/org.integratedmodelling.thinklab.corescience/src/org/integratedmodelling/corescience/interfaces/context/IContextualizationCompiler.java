@@ -32,8 +32,11 @@
  **/
 package org.integratedmodelling.corescience.interfaces.context;
 
+import java.util.Collection;
+
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 /**
  * Testing new approach to contextualization. Not used anywhere except for development.
@@ -45,6 +48,10 @@ public interface IContextualizationCompiler {
 	 * it can be compiled successfully. Making it relatively fast will pay - will be
 	 * called once per observation structure but all the available compilers will get
 	 * called.
+	 * 
+	 * FIXME this should be implemented in AbstractCompiler using a callback on the
+	 * conceptual model, which is the one that should accept compilers, not the other
+	 * way around.
 	 * 
 	 * @param observation
 	 * @return
@@ -65,6 +72,17 @@ public interface IContextualizationCompiler {
 	public abstract void addObservationDependency(IObservation destination, IObservation source);
 	
 	/**
+	 * During context generation, each observation gets its own context that depends on the 
+	 * overall one. This callback is passed the mediated context of each observation. Because
+	 * observable classes must be unique in an observation structure, this is indexed by
+	 * observable class rather than observation.
+	 * 
+	 * @param observable
+	 * @param context
+	 */
+	public abstract void notifyContext(IConcept observable, IObservationContext context);
+	
+	/**
 	 * Notify that the state of destination observation will be taken from the state of 
 	 * source destination, involving possible mediation of conceptual models and extents so
 	 * that the state of source is seen by destination under its own viewpoint.
@@ -74,9 +92,16 @@ public interface IContextualizationCompiler {
 	 */
 	public abstract void addMediatedDependency(IObservation destination, IObservation source);
 
-	/*
-	 * Compile a contextualizer that can be run to produce the states.
+	/**
+	 * Compile a contextualizer that can be run to produce a new observation with datasources that reflect
+	 * states in the passed overall context.
 	 */
 	public abstract IContextualizer compile(IObservation observation, IObservationContext context) throws ThinklabException;
+
+	/**
+	 * Return all the observations we have been notified so far.
+	 * @return
+	 */
+	public Collection<IObservation> getObservations();
 	
 }

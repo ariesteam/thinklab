@@ -59,22 +59,6 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 		public boolean[] activeDims;
 	}
 	
-	/*
-	 * the dependency edge holds all details of the necessary mediation or aggregation.
-	 */
-	public static class MediatedDependencyEdge extends DefaultEdge {
-
-		private static final long serialVersionUID = 5926757404834780955L;
-		
-		public IObservation getSourceObservation() {
-			return (IObservation)getSource();
-		}
-		
-		public IObservation getTargetObservation() {
-			return (IObservation)getTarget();
-		}
-		
-	}
 	
 	/**
 	 * Extent mediators are created to match our own context with the overall one.
@@ -113,8 +97,8 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 		return hasMed ? mediators : null;
 	}
 	
-	DefaultDirectedGraph<IObservation, MediatedDependencyEdge> dependencies = 
-		new DefaultDirectedGraph<IObservation, MediatedDependencyEdge>(MediatedDependencyEdge.class);
+	private HashMap<IConcept, IObservationContext> contexts = 
+		new HashMap<IConcept, IObservationContext>();
 	
 	@Override
 	public void addMediatedDependency(IObservation destination, IObservation source) {
@@ -123,18 +107,6 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 		throw new ThinklabRuntimeException("internal: addMediatedDependency needs to be reimplemented");
 	}
 
-	@Override
-	public void addObservation(IObservation observation) {
-		dependencies.addVertex(observation);
-	}
-
-	@Override
-	public void addObservationDependency(IObservation destination, IObservation source) {
-		
-		dependencies.addVertex(source);
-		dependencies.addVertex(destination);
-		dependencies.addEdge(source, destination);
-	}
 	
 	private void checkTopology() throws ThinklabCircularDependencyException {
 
@@ -295,8 +267,7 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 			IObservation o = order.get(i);
 			ObsDesc odesc = accessors.get(o);
 			
-			if (odesc.initialValueId != -1 && odesc.register != -1) {
-				
+			if (odesc.initialValueId != -1 && odesc.register != -1) {				
 				ret.encodeRegImmediate(odesc.register, odesc.initialValueId);
 			}
 		}
@@ -315,7 +286,7 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 			IObservation o = order.get(i);
 			ObsDesc odesc = accessors.get(o);
 						
-			if (!odesc.needed)
+			if (!odesc.needed || odesc.accessorId < 0)
 				continue;
 			
 			anythingNeeded = true;
@@ -439,7 +410,7 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 
 		IConceptualModel cm = o.getConceptualModel();
 		IDataSource<?> ds = o.getDataSource();
-		IObservationContext ownContext = o.getObservationContext();
+		IObservationContext ownContext = contexts.get(o.getObservableClass());
 		
 		/* perform datasource/cm handshaking. */
 		if (ds != null) {
@@ -497,31 +468,7 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 		 * notify context if any; this will raise a ruckus if the extents are not conceptualizable	
 		 */
 		if (!isExtent && !o.isMediated()) {
-			
-			/*
-			 * use overall context for root observation, add their own merged context if
-			 * one was there.
-			 */
-			if (o.getObservableClass().equals(structure.getRootObservable()))
-				structure.setContext(o.getObservableClass(), context);
-			else if (o.isMediator()) {
-				
-				/*
-				 * drill down the mediated chain until we find a context 
-				 */
-				IObservationContext ctt = ownContext;
-				IObservation oo = o;
-				while (ctt.size() == 0) {
-					oo = oo.getMediatedObservation();
-					if (oo == null)
-						break;
-					ctt = oo.getObservationContext();
-				}
-				if (ctt.size() > 0)
-					structure.setContext(o.getObservableClass(), ctt);
-				
-			} else if (ownContext.size() > 0)
-				structure.setContext(o.getObservableClass(), ownContext);
+			structure.setContext(o.getObservableClass(), ownContext);
 		}
 		
 		if (isValidating && _validate) {
@@ -544,11 +491,8 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 
 
 		if ( (odesc.stateStored = storeState && !isExtent && !o.isMediated())) {
-			/*
-			 * FIXME should use its own contexts' multiplicity if there is aggregation, but in 
-			 * the overall context. Don't know if there is a mechanism for that.
-			 */
-			int size = context.getMultiplicity();
+
+			int size = ownContext.getMultiplicity();
 			odesc.stateId = contextualizer.registerStateStorage(cm.getStateType(), o.getObservableClass(), size);
 		}
 		
@@ -565,9 +509,10 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 			ObsDesc odsc = 
 				buildObsDesc(dependent, accessors,deactivatable, context, contextualizer, stateType, structure);
 			
-			if (odsc.accessor != null && 
+			if (odsc.accessor != null &&
 					odsc.accessor.notifyDependencyObservable(o.getObservableClass())) {
-					odesc.needed = true;
+				accessorsThatWantUs.add(odsc.accessor);
+				odesc.needed = true;
 			}
 
 			if (odesc.aggregatorId != -1) {
@@ -576,7 +521,12 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 		}
 
 		/* another good reason to keep it is that we have and want its state, even if nothing
-		 * depends on us */
+		 * depends on us 
+		 * 
+		 * FIXME this should be different: needed = needed in a register; if stored, we can 
+		 * pop directly to state unless ALSO needed (or aggregated).
+		 * 
+		 */
 		if (odesc.stateStored && odesc.accessor != null)
 			odesc.needed = true;
 
@@ -589,7 +539,7 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 		
 			for (IStateAccessor acc : accessorsThatWantUs) {
 				acc.notifyDependencyRegister(
-							o.getObservableClass(), 
+							o.getObservableClass(),
 							odesc.register, stateType);
 			}
 			
@@ -632,10 +582,8 @@ public class StackWorkflowCompiler extends AbstractCompiler {
 	}
 
 	@Override
-	public boolean canCompile(IObservation observation) {
-		// TODO analyze CMs - the thing is, it is the CM that should say whether a certain compiler
-		// is OK for it.
-		return true;
+	public void notifyContext(IConcept observable, IObservationContext context) {
+		contexts.put(observable, context);
 	}
 
 

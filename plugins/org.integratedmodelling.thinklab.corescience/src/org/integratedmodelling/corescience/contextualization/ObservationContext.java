@@ -43,7 +43,6 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabCircularDependencyException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -201,10 +200,8 @@ public class ObservationContext implements IObservationContext {
 				extents.put(entry, 
 						extent.getConceptualModel().mergeExtents(extent, foreign, connector, isConstraint));
 			}					
-		}
-		
+		}	
 	}
-
 
 	/**
 	 * For debugging
@@ -266,6 +263,24 @@ public class ObservationContext implements IObservationContext {
 						"extent of type " + c + " cannot be turned into an observation");
 			}
 		}
+		
+		return ret;
+	}
+
+
+	@Override
+	public IObservationContext remapExtents(IObservationContext ctx) {
+	
+		ObservationContext ret = 
+			new ObservationContext(((ObservationContext)ctx).observation);
+		
+		for (IConcept c : getContextDimensions()) {
+			IExtent extent = ctx.getExtent(c);
+			if (extent != null)
+				ret.extents.put(c.toString(), extent);
+		}
+		
+		ret.initialize();
 		
 		return ret;
 	}

@@ -239,11 +239,11 @@ public class StackVMContextualizer<T> {
 				break;
 			case IREG:
 				regs[(ins & 0x00ff0000) >> 16] = 
-					(T) _immediates.get(ins & 0x00ffffff);
+					(T) _immediates.get(ins & 0x0000ffff);
 				break;
 			case IFCHNG:
 				if (!ticker.hasChanged((ins & 0x00ff0000) >> 16)) {
-					pc = (ins & 0x00fffff);
+					pc = (ins & 0x0000ffff);
 				}
 				break;
 			}
@@ -271,7 +271,7 @@ public class StackVMContextualizer<T> {
 
 	int makeInst(Ins i, int address) {
 
-		if (address > 0xffff)
+		if (address > 0x0000ffff)
 			throw new ThinklabRuntimeException("INTERNAL: compiler needs larger immediate integers in bytecode, tell the PI");
 
 		return (i.bytecode << 24) | (int) address;
