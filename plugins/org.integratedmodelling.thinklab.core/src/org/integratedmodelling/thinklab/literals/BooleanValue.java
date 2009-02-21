@@ -66,7 +66,7 @@ public class BooleanValue extends ParsedLiteralValue {
     }
     
     @Override
-    public IValue clone() {
+    public Object clone() {
     	BooleanValue ret = null;
 		try {
 			ret = new BooleanValue(concept);

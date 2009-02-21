@@ -106,7 +106,7 @@ public class Value implements IValue {
     /* (non-Javadoc)
      * @see org.integratedmodelling.ima.core.value.IValue#clone()
      */
-    public IValue clone() {
+    public Object clone() {
     	return new Value(concept);
     }
     

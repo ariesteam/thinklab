@@ -39,6 +39,7 @@ import org.integratedmodelling.corescience.interfaces.context.IObservationContex
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
@@ -96,16 +97,16 @@ public interface IObservation {
 
 	/**
 	 * Obtain the observation context for this observation, recursing and
-	 * compounding contingencies and dependencies. Use the passed workflow to
+	 * compounding contingencies and dependencies. Use the passed compiler to
 	 * notify dependencies and links.
 	 * 
-	 * @param workflow
-	 * @param compound
+	 * @param compiler
+	 * @param session
 	 * @return
 	 * @throws ThinklabException
 	 */
 	public IObservationContext getOverallObservationContext(
-			IContextualizationCompiler workflow) throws ThinklabException;
+			IContextualizationCompiler compiler, ISession session) throws ThinklabException;
 
 	/**
 	 * Get the observation's own observation context, including extents and

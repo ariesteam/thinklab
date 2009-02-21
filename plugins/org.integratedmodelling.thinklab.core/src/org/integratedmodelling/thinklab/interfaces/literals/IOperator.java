@@ -17,7 +17,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementa
 public interface IOperator extends IInstanceImplementation {
 
 	public abstract IValue eval(Object ... arg) throws ThinklabException;
-
 	public abstract String getOperatorId();
 
 }

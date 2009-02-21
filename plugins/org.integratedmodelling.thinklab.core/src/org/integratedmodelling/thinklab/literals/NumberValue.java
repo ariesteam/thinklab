@@ -171,7 +171,7 @@ public class NumberValue extends ParsedLiteralValue {
     
  
     @Override
-    public IValue clone() {
+    public Object clone() {
     	NumberValue ret = null;
     	try {
 			ret = new NumberValue(concept);

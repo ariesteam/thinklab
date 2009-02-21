@@ -54,44 +54,7 @@ public class ExpressionDatasource
 	implements IDataSource<Object>, IInstanceImplementation, ComputedDataSource {
 
 	String expressionSource = null;
-	
-	public Object getValue(
-			IObservationContextState context, IConcept concept,
-			boolean useExtentIndex) throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		
-		// bind variable values to context
-		
-		
-		// exec expression, make IValue from it
-//		IValue ret = null;
-//		try {
-//			ret = interpreter.execute(expression, expContext);
-//		} catch (ThinklabException e) {
-//			throw new ThinklabValidationException(e);
-//		}
-		
-		return null;
-	}
 
-	public boolean handshake(IConceptualModel cm,
-			IObservationContext observationContext,
-			IObservationContext overallContext)
-			throws ThinklabValidationException {
-
-		// TODO Auto-generated method stub
-		
-		// match variable names to dependency IDs
-		
-		// get compiled expression from factory
-		
-		return false;
-	}
-
-	public Object getInitialValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
@@ -129,6 +92,19 @@ public class ExpressionDatasource
 			throws ThinklabValidationException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Object getInitialValue() {
+		return null;
+	}
+
+	@Override
+	public boolean handshake(IConceptualModel cm,
+			IObservationContext observationContext,
+			IObservationContext overallContext) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

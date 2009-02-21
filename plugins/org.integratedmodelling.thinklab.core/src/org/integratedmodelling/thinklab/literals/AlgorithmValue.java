@@ -59,7 +59,7 @@ public class AlgorithmValue extends Value {
     }
     
     @Override
-    public IValue clone() {
+    public Object clone() {
     	AlgorithmValue ret = new AlgorithmValue(concept);
     	ret.value = value;
     	return ret;

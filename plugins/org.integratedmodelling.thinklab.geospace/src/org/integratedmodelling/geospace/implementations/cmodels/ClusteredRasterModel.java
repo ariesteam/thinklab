@@ -1,9 +1,18 @@
 package org.integratedmodelling.geospace.implementations.cmodels;
 
-import org.integratedmodelling.geospace.coverage.ICoverage;
+import org.integratedmodelling.corescience.implementations.datasources.MemValueContextualizedDatasource;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.TransformingConceptualModel;
+import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 /**
  * A spatial coverage model whose subdivisions are the equal-valued partitions of a main classification
@@ -14,35 +23,59 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * @author Ferdinando
  *
  */
-public class ClusteredRasterModel extends RegularRasterModel {
+public class ClusteredRasterModel implements IConceptualModel, TransformingConceptualModel {
 
-	/**
-	 * Build the cluster model from the passed coverage; classify the coverage on the
-	 * spot.
-	 */
-	public ClusteredRasterModel(RasterCoverage classification) {
-		
-		super(classification.getXRangeOffset(), 
-			  classification.getXRangeMax(),
-			  classification.getYRangeOffset(),
-			  classification.getYRangeMax(),
-			  classification.getLatLowerBound(),
-			  classification.getLatUpperBound(),
-			  classification.getLonLowerBound(),
-			  classification.getLonUpperBound(),
-			  classification.getCoordinateReferenceSystem());
+	@Override
+	public IStateAccessor getStateAccessor(IConcept stateType,
+			IObservationContext context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getStateType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void handshake(IDataSource<?> dataSource,
+			IObservationContext observationContext,
+			IObservationContext overallContext) throws ThinklabException {
+		// TODO Auto-generated method stub
 		
 	}
-	
-	/**
-	 * Build the cluster model using the passed coverage, containing the passed
-	 * classes of values.
-	 * 
-	 * @param classification
-	 * @param classes
-	 */
-	public ClusteredRasterModel(RasterCoverage classification, int[] classes) {
-		// TODO Auto-generated constructor stub
+
+	@Override
+	public void validate(IObservation observation)
+			throws ThinklabValidationException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public IInstance transformObservation(IInstance inst)
+			throws ThinklabException {
+		
+		IObservation obs = (IObservation) inst.getImplementation();
+		IObservationContext cm = obs.getObservationContext();
+		
+		if (cm.getDimension(Geospace.get().SpaceObservable()) == null) {
+			throw new ThinklabValidationException(
+					"clustering model: cannot use non-spatial observations");
+		}
+		
+		/* get all spatial dependencies of obs and set their states as cluster */
+		
+		
+		/* process the results of clustering into own datasource */
+//		MemValueContextualizedDatasource ds = new MemValueContextualizedDatasource();
+		
+		
+		/* build final transformed observation */
+		
+		
+		return null;
 	}
 
 

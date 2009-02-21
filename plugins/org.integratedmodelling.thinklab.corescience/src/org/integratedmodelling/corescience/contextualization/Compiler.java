@@ -1,5 +1,6 @@
 package org.integratedmodelling.corescience.contextualization;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -8,6 +9,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.TransformingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizer;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
@@ -22,6 +24,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.traverse.DepthFirstIterator;
 
 /**
  * Provides some methods that all compilers are likely to need, without actually implementing
@@ -69,13 +72,13 @@ public abstract class Compiler implements IContextualizationCompiler {
 	
 	public static IInstance contextualize(IObservation observation, ISession session) 
 		throws ThinklabException {
-	
+		
 		IContextualizationCompiler compiler = null;
 		if ((compiler = CoreScience.get().getContextualizationCompiler(null, observation)) == null)
 			throw new ThinklabContextualizationException(
 					"cannot find a compiler to contextualize " + observation);
 		
-		IObservationContext context = observation.getOverallObservationContext(compiler);
+		IObservationContext context = observation.getOverallObservationContext(compiler, session);
 		
 		/* compute and communicate individual merged contexts for each observation */
 		HashSet<IConcept> oobs = new HashSet<IConcept>();
@@ -100,7 +103,6 @@ public abstract class Compiler implements IContextualizationCompiler {
 	}
 	
 	protected boolean performHandshake(
-			
 			IConceptualModel cm, IDataSource<?> ds, 
 			IObservationContext overallContext, 
 			IObservationContext ownContext, 
@@ -166,18 +168,6 @@ public abstract class Compiler implements IContextualizationCompiler {
 		cm.handshake(ds, ownContext, overallContext);
 
 		return ret;
-	}
-	
-	
-	/**
-	 * Substitute all observations whose CM is a TransformingConceptualModel with the transformed result of
-	 * their contextualization. 
-	 * 
-	 * @param obs
-	 * @return
-	 */
-	public IObservation resolveTransformations(IObservation obs) {
-		return null;
 	}
 
 

@@ -34,13 +34,10 @@
 package org.integratedmodelling.thinklab.literals;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 @LiteralImplementation(concept="thinklab-core:Text")
 public class TextValue extends ParsedLiteralValue {
@@ -62,7 +59,7 @@ public class TextValue extends ParsedLiteralValue {
     }
 
     @Override
-    public IValue clone() {
+    public Object clone() {
     	TextValue ret = new TextValue(concept);
     	ret.value = value;
     	return ret;

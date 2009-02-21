@@ -112,8 +112,6 @@ public interface IValue {
 	public abstract void setToCommonConcept(IConcept setTo, IConcept mustBe)
 			throws ThinklabValueConversionException;
 
-	public abstract IValue clone();
-
 	public abstract boolean isNumber();
 
 	public abstract boolean isText();
