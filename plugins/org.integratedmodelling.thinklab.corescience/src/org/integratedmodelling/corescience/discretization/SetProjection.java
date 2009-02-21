@@ -33,7 +33,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.discretization;
+package org.integratedmodelling.corescience.discretization;
 
 import java.util.Set;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package org.integratedmodelling.thinklab.interfaces.literals;
+package org.integratedmodelling.corescience.interfaces.literals;
 
 import umontreal.iro.lecuyer.probdist.Distribution;
 

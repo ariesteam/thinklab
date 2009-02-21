@@ -1,9 +1,12 @@
-package org.integratedmodelling.thinklab.literals;
+package org.integratedmodelling.corescience.literals;
 
-import org.integratedmodelling.thinklab.discretization.Discretizer;
+import org.integratedmodelling.corescience.discretization.Discretizer;
+import org.integratedmodelling.corescience.interfaces.literals.IRandomValue;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.literals.IRandomValue;
+import org.integratedmodelling.thinklab.literals.BooleanValue;
+import org.integratedmodelling.thinklab.literals.NumberValue;
+import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 
 import umontreal.iro.lecuyer.probdist.DiscreteDistribution;
 import umontreal.iro.lecuyer.probdist.Distribution;
