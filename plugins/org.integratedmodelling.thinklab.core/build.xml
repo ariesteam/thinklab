@@ -33,7 +33,6 @@ Use top-level project build file to build application.
 		<javac destdir="${plugin.home}/classes"
 		       srcdir="${basedir}/src"
 		       classpathref="plugin.classpath"
-		       excludes="**/owlapi/*"
 		       target="1.5"
 		       debug="true"
 		       optimize="false">
