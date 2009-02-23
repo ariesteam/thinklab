@@ -5,6 +5,7 @@
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
 		<import plugin-id="org.integratedmodelling.thinklab.commandline"/>
+		<import plugin-id="org.integratedmodelling.thinklab.opal"/>
 	</requires>	
 	<runtime>
 		<library id="core" path="classes/" type="code">

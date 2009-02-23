@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?plugin id="aries.core" version="0.8"?>
+
 <kbox
 	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 	xmlns:geospace="http://www.integratedmodelling.org/ks/geospace/geospace.owl#"

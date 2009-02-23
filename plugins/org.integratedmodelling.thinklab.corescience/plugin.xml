@@ -14,7 +14,6 @@
 		<library type="resources" path="config/" id="config" />
 		<library type="resources" path="bindings/" id="bindings" />
 		
-		<library type="code" id="colt" path="lib/colt.jar"/>
 		<library type="code" id="ext" path="lib/ext-1.1.1.jar"/>
 		<library type="code" id="flanagan" path="lib/flanagan.jar"/>
 		<library type="code" id="javolution" path="lib/javolution.jar"/>
@@ -28,7 +27,20 @@
 		<library type="code" id="ostermillerutils" path="lib/ostermillerutils_1_06_00.jar">
 			<export prefix="*"/>
 		</library>
-		
+		<library type="code" id="blas"  path="lib/Blas.jar">
+			<export prefix="*"/>
+		</library>	
+		<library type="code" id="jcommon"  path="lib/jcommon-1.0.13.jar"/>	
+		<library type="code" id="colt"  path="lib/colt.jar">
+			<export prefix="*"/>
+		</library>	
+		<library type="code" id="jfreechart"  path="jfreechart-1.0.10.jar"/>	
+		<library type="code" id="optimization"  path="lib/optimization.jar">
+			<export prefix="*"/>
+		</library>	
+		<library type="code" id="ssj"  path="lib/ssj.jar">
+			<export prefix="*"/>
+		</library>	
 	</runtime>
 
 	<!-- ontologies -->

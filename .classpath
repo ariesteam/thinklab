@@ -249,11 +249,10 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-xsd-wps-2.5.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-mappane-2.5-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/riskwiz.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/Blas.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/colt.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/jcommon-1.0.13.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/jfreechart-1.0.10.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/optimization.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/ssj.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/Blas.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/jcommon-1.0.13.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/jfreechart-1.0.10.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/optimization.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/ssj.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

@@ -107,12 +107,6 @@
 		</library>
 		<library type="code" id="xsd"  path="lib/xsd-2.2.2.jar"/>
 		<library type="code" id="xsdlib"  path="lib/xsdlib-20050614.jar"/>	
-		<library type="code" id="blas"  path="lib/Blas.jar"/>	
-		<library type="code" id="jcommon"  path="lib/jcommon-1.0.13.jar"/>	
-		<library type="code" id="colt"  path="lib/colt.jar"/>	
-		<library type="code" id="jfreechart"  path="jfreechart-1.0.10.jar"/>	
-		<library type="code" id="optimization"  path="lib/optimization.jar"/>	
-		<library type="code" id="ssj"  path="lib/ssj.jar"/>	
 	</runtime>
 
 	<!-- declare an ontology -->

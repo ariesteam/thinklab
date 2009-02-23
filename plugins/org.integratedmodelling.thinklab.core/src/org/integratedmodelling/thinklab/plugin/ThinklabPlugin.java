@@ -100,10 +100,13 @@ import org.integratedmodelling.thinklab.session.Session;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.VersionString;
 import org.java.plugin.Plugin;
 import org.java.plugin.PluginLifecycleException;
+import org.java.plugin.PluginManager;
 import org.java.plugin.registry.Extension;
 import org.java.plugin.registry.ExtensionPoint;
+import org.java.plugin.registry.Version;
 import org.java.plugin.registry.Extension.Parameter;
 
 
@@ -562,18 +565,6 @@ public abstract class ThinklabPlugin extends Plugin
 				KnowledgeManager.get().registerInstanceImplementationClass(concept, cls);
 			}
 		}
-		
-//		/*
-//		 * TODO eliminate; old, deprecated way
-//		 */
-//		for (Extension ext : getOwnThinklabExtensions("instance-constructor")) {
-//			
-//			InstanceImplementationConstructor lv = 
-//				(InstanceImplementationConstructor) getHandlerInstance(ext, "class");
-//			String type = ext.getParameter("semantic-type").valueAsString();
-//			
-//			KnowledgeManager.get().registerInstanceConstructor(type, lv);
-//		}
 	}
 
 	/**
@@ -847,7 +838,7 @@ public abstract class ThinklabPlugin extends Plugin
 	@Override
 	protected final void doStop() throws Exception {
 		
-		for (IPluginLifecycleListener lis : KnowledgeManager.get().getPluginListeners()) {
+		for (IPluginLifecycleListener lis : KnowledgeManager.getPluginListeners()) {
 			lis.prePluginUnloaded(this);
 		}
 		
@@ -867,7 +858,7 @@ public abstract class ThinklabPlugin extends Plugin
 		loadExtensions();
 		unload();
 		
-		for (IPluginLifecycleListener lis : KnowledgeManager.get().getPluginListeners()) {
+		for (IPluginLifecycleListener lis : KnowledgeManager.getPluginListeners()) {
 			lis.onPluginUnloaded(this);
 		}
 	}
@@ -1001,12 +992,14 @@ public abstract class ThinklabPlugin extends Plugin
 	}
 	
 	public File getScratchPath() throws ThinklabException  {
-		
 		return dataFolder;
 	}
 	
 	public File getLoadPath() throws ThinklabException  {
-		
 		return plugFolder;	
+	}
+	
+	public Version getVersion() {
+		return getDescriptor().getVersion();
 	}
 }

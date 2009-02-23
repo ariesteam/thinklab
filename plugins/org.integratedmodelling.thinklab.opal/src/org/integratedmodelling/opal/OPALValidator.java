@@ -42,6 +42,7 @@ import java.util.Stack;
 import org.apache.log4j.Logger;
 import org.integratedmodelling.opal.profile.OPALProfile;
 import org.integratedmodelling.opal.profile.OPALProfileFactory;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -49,6 +50,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.KeyValueMap;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
@@ -122,10 +124,11 @@ public class OPALValidator {
 		Element root = xdoc.root();
 		rootPrefix = root.getPrefix();
 		
+		 // TODO handle version request if any
 		/* first see if document overrides profile with a processing instruction */
 		for (ProcessingInstruction pi : xdoc.getProcessingInstructions()) {
 
-			if (pi.getTarget().equals("OPAL")) {
+			if (pi.getTarget().equals("opal")) {
 				
 				if (profile != null)
 					throw new OPALValidationException("ambiguous profile definition in " + 
@@ -133,12 +136,15 @@ public class OPALValidator {
 						" (rename document to .xml?)");
 				
 				KeyValueMap kv = new KeyValueMap(pi.getData());
-					 
-					 profile = OPALProfileFactory.get().getProfile(kv.get("profile"), true);
-					 
-					 log.info("profile for XML document " + opalDocument + " set to " + profile.getName());
+				profile = OPALProfileFactory.get().getProfile(kv.get("profile"), true);
+				log.info("profile for XML document " + opalDocument + " set to " + profile.getName());
 
-					 // TODO handle version request if any
+
+			} else if (pi.getTarget().equals("plugin")) {
+
+				// TODO handle version request if any
+				KeyValueMap kv = new KeyValueMap(pi.getData());
+				Thinklab.get().requirePlugin(kv.get("id"), true);
 			}
 		}
 		

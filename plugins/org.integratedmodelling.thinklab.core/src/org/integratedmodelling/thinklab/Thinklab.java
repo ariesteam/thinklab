@@ -136,4 +136,10 @@ public class Thinklab extends ThinklabPlugin {
 		return ret;
 	}
 
+	public void requirePlugin(String pluginId, boolean complain) throws ThinklabException {
+
+		String pid = resolvePluginName(pluginId, complain);
+		super.requirePlugin(pid);
+	}
+	
 }
