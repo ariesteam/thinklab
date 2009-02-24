@@ -39,7 +39,6 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IStateValidator;
 import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -51,7 +50,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 public class ClassificationModel implements IConceptualModel, ValidatingConceptualModel, IInstanceImplementation {
 
@@ -69,13 +67,13 @@ public class ClassificationModel implements IConceptualModel, ValidatingConceptu
 		// TODO Auto-generated method stub
 	}
 
-	public String getObjectName() {
-		return name;
-	}
-
-	public void setObjectName(String name) {
-		this.name = name;
-	}
+//	public String getObjectName() {
+//		return name;
+//	}
+//
+//	public void setObjectName(String name) {
+//		this.name = name;
+//	}
 
 	public void initialize(IInstance i) throws ThinklabException {
 

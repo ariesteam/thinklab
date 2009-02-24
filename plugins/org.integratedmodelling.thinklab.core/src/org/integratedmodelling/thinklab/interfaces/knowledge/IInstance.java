@@ -39,7 +39,6 @@ import java.util.HashMap;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandListener;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.utils.Polylist;
@@ -94,7 +93,7 @@ import org.integratedmodelling.utils.Polylist;
  * @author Ioannis N. Athanasiadis
  * @see ISession
  */
-public interface IInstance extends IKnowledgeSubject, ICommandListener {
+public interface IInstance extends IKnowledgeSubject {
 
 	
 	/**

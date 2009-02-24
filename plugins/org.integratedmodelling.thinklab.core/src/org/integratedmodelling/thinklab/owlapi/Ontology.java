@@ -32,46 +32,32 @@
  **/
 package org.integratedmodelling.thinklab.owlapi;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
-import org.integratedmodelling.thinklab.exception.ThinklabAmbiguousResultException;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.owlapi.ThinklabOWLManager;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IResource;
 import org.integratedmodelling.utils.LogicalConnector;
-import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
@@ -83,17 +69,12 @@ import org.semanticweb.owl.model.OWLClass;
 import org.semanticweb.owl.model.OWLDataFactory;
 import org.semanticweb.owl.model.OWLDataProperty;
 import org.semanticweb.owl.model.OWLDescription;
-import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLIndividual;
 import org.semanticweb.owl.model.OWLObjectProperty;
 import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLOntologyChangeException;
 import org.semanticweb.owl.model.OWLOntologyManager;
-import org.semanticweb.owl.model.OWLOntologyStorageException;
-import org.semanticweb.owl.model.UnknownOWLOntologyException;
 import org.semanticweb.owl.util.OWLEntityRemover;
-import org.semanticweb.owl.util.OWLOntologyMerger;
-import org.semanticweb.owl.vocab.Namespaces;
 
 
 
@@ -352,7 +333,6 @@ public class Ontology implements IOntology {
 		resolveReferences(reftable);
 
 		return ret;
-
 	}
 	
 	IInstance createInstanceInternal(String ID, Polylist list,
@@ -500,17 +480,6 @@ public class Ontology implements IOntology {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IResource#equals(org.integratedmodelling.thinklab.interfaces.IResource)
-	 */
-	public boolean equals(IResource r) {
-		return 
-			(r != null) &&
-			(r instanceof Ontology) &&
-			(r.getURI().equals(getURI()));
-	}
-
-
-	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IResource#getDescription()
 	 */
 	public String getDescription() {
@@ -545,6 +514,7 @@ public class Ontology implements IOntology {
 		return null;
 	}
 	
+	@Override
 	public String toString(){
 		return cs;
 	}
@@ -592,11 +562,6 @@ public class Ontology implements IOntology {
 	public boolean isAnonymous() {
 		return ont.getURI().toString().startsWith(FileKnowledgeRepository.DEFAULT_TEMP_URI);
 	}
-
-//	@Override
-//	public boolean equals(String s) {
-//		return getURI().toString().equals(s);
-//	}
 
 	@Override
 	public boolean equals(Object obj) {

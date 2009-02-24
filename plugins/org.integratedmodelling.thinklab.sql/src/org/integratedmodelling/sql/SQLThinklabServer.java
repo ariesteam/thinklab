@@ -1269,23 +1269,26 @@ public abstract class SQLThinklabServer {
 
 				} else {
 				
-					try {
-						/* obtain an algorithm from the string stored in XML */
-						AlgorithmValue aa = (AlgorithmValue) KnowledgeManager.get()
-							.validateLiteral(
-									KnowledgeManager.get().requireConcept(
-											scriptLanguage),
-									tab.fieldValues.get(i));
-
-						/*
-						 * calculate field in context of instance, add proper
-						 * representation
-						 */
-						IValue v = c.execute(aa, session);
-						sql += ", " + translateLiteral(v, v.getConcept(), session);
-					} catch (ThinklabException e) {
-						throw new ThinklabStorageException(e);
-					}
+					// TODO move to IExpression interface, use eval with session and instance
+					// as parameters.
+					throw new ThinklabStorageException("internal: extension languages temporarily unsupported in SQL plugin");
+//					try {
+//						/* obtain an algorithm from the string stored in XML */
+//						AlgorithmValue aa = (AlgorithmValue) KnowledgeManager.get()
+//							.validateLiteral(
+//									KnowledgeManager.get().requireConcept(
+//											scriptLanguage),
+//									tab.fieldValues.get(i));
+//
+//						/*
+//						 * calculate field in context of instance, add proper
+//						 * representation
+//						 */
+//						IValue v = c.execute(aa, session);
+//						sql += ", " + translateLiteral(v, v.getConcept(), session);
+//					} catch (ThinklabException e) {
+//						throw new ThinklabStorageException(e);
+//					}
 				}
 			}
 		}

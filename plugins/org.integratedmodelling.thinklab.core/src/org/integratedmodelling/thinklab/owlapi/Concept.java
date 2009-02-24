@@ -264,9 +264,9 @@ public class Concept extends Knowledge implements IConcept {
 				.getOntologies();
 		Set<IProperty> properties = new HashSet<IProperty>();
 		for (OWLOntology ontology : ontologies) {
-			for ( OWLAnnotationAxiom op : ontology.getAnnotationAxioms()) {
+			for ( OWLAnnotationAxiom<?> op : ontology.getAnnotationAxioms()) {
 				if(op.getSubject().equals(this.entity)){
-					OWLAnnotation ann = op.getAnnotation();
+					OWLAnnotation<?> ann = op.getAnnotation();
 					if(ann.isAnnotationByConstant()){
 //					TODO	
 					} else {
@@ -388,7 +388,7 @@ public class Concept extends Knowledge implements IConcept {
 		
 		if (!((Property)property).isFunctional())
 
-			for (OWLRestriction r : OWLAPI.getRestrictions(this, true)) {
+			for (OWLRestriction<?> r : OWLAPI.getRestrictions(this, true)) {
 			
 				if (r instanceof OWLDataMaxCardinalityRestriction &&
 					r.getProperty().equals(((Property)property).entity)) {
@@ -414,7 +414,7 @@ public class Concept extends Knowledge implements IConcept {
 		
 		int ret = ((Property)property).isFunctional() ? 1 : 0;
 		if (ret != 1)
-			for (OWLRestriction r : OWLAPI.getRestrictions(this, true)) {
+			for (OWLRestriction<?> r : OWLAPI.getRestrictions(this, true)) {
 			
 				if (r instanceof OWLDataMinCardinalityRestriction &&
 					r.getProperty().equals(((Property)property).entity)) {
@@ -562,11 +562,11 @@ public class Concept extends Knowledge implements IConcept {
 		/*
 		 * This accumulates all restrictions from parents as well.
 		 */		
-		Collection<OWLRestriction> rs = OWLAPI.getRestrictions(this,true);
+		Collection<OWLRestriction<?>> rs = OWLAPI.getRestrictions(this,true);
 		Ontology ont = getThinklabOntology();
 		Constraint ret = new Constraint(this);
 		
-			for (OWLRestriction r : rs) {
+			for (OWLRestriction<?> r : rs) {
 
 				IProperty p = new Property(r.getProperty());
 				Quantifier q = null;
@@ -719,13 +719,13 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public Constraint getDefinition() throws ThinklabException {
 		
-		ArrayList<OWLRestriction> rs = new ArrayList<OWLRestriction>();
+		ArrayList<OWLRestriction<?>> rs = new ArrayList<OWLRestriction<?>>();
 		
 		Constraint ret = getDefinitionInternal(this, rs);
 		Ontology ont = getThinklabOntology();
 		
 		if (rs != null)
-			for (OWLRestriction r : rs) {
+			for (OWLRestriction<?> r : rs) {
 
 				IProperty p = new Property(r.getProperty());
 				Quantifier q = null;
@@ -832,14 +832,14 @@ public class Concept extends Knowledge implements IConcept {
 	 * If there are multiple parents, this will stop at the first that matches the
 	 * stop condition. Which is probably not the right thing to do.
 	 */ 
-	private static Constraint getDefinitionInternal(IConcept c, Collection<OWLRestriction> restrictions) 
+	private static Constraint getDefinitionInternal(IConcept c, Collection<OWLRestriction<?>> restrictions) 
 		throws ThinklabException {
 		
-		Collection<OWLRestriction> rs = OWLAPI.getRestrictions((Concept)c, false);
+		Collection<OWLRestriction<?>> rs = OWLAPI.getRestrictions((Concept)c, false);
 				
 		boolean found = false;
 		if (rs != null) {
-			for (OWLRestriction r : rs) {
+			for (OWLRestriction<?> r : rs) {
 
 				IProperty p = new Property(r.getProperty());
 			

@@ -365,54 +365,7 @@ public class Instance extends Knowledge implements IInstance {
 		return getDirectType();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.ICommandListener#execute(org.integratedmodelling.thinklab.value.AlgorithmValue, org.integratedmodelling.thinklab.interfaces.ISession)
-	 */
-	public IValue execute(AlgorithmValue algorithm, ISession session)
-			throws ThinklabException {
-		
-		/* retrieve an interpreter */
-		LanguageInterpreter interpreter =
-			InterpreterManager.get().getInterpreter(algorithm, session);
 
-		/* obtain a context; the session should be bound to it, but that depends on
-		 * the language. */
-		LanguageInterpreter.IContext context = 
-			InterpreterManager.get().getContext(algorithm, session);
-
-		/* bind self as "self" */
-		context.bind(this, "self");
-
-		return interpreter.execute(algorithm, context);
-
-	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.ICommandListener#execute(org.integratedmodelling.thinklab.value.AlgorithmValue, org.integratedmodelling.thinklab.interfaces.ISession, java.util.Map)
-	 */
-	public IValue execute(AlgorithmValue algorithm, ISession session,
-			Map<String, IValue> arguments) throws ThinklabException {
-		
-		/* retrieve an interpreter */
-		LanguageInterpreter interpreter =
-			InterpreterManager.get().getInterpreter(algorithm, session);
-
-		/* obtain a context; the session should be bound to it, but that depends on
-		 * the language. */
-		LanguageInterpreter.IContext context = 
-			InterpreterManager.get().getContext(algorithm, session);
-
-		/* bind self as "self" */
-		context.bind(this, "self");
-
-		/* bind arguments */
-		for (String key : arguments.keySet()) {
-			context.bind(arguments.get(key), key);
-		}
-
-		return interpreter.execute(algorithm, context);
-	}
-	
 	protected boolean is(IConcept c){
 		return getDirectType().is(c);
 	}
