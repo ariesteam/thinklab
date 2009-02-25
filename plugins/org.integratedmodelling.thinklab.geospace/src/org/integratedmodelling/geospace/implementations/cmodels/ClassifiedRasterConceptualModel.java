@@ -7,8 +7,11 @@ import org.integratedmodelling.corescience.interfaces.context.IObservationContex
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.geospace.Geospace;
+import org.integratedmodelling.geospace.extents.GridMaskExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.LogicalConnector;
 /**
@@ -19,18 +22,24 @@ import org.integratedmodelling.utils.LogicalConnector;
  * @author Ferdinando
  *
  */
+@InstanceImplementation(concept=Geospace.GRID_CLASSIFICATION_MODEL)
 public class ClassifiedRasterConceptualModel implements ExtentConceptualModel {
 
+	GridMaskExtent totalExtent = null;
+	
+	public ClassifiedRasterConceptualModel(int[] maskLayer, int xDivs, int yDivs, int nClasses, int[] classValues) {
+
+		totalExtent = new GridMaskExtent(this, maskLayer, xDivs, yDivs, nClasses, classValues);
+	}
+	
 	@Override
 	public IExtent getExtent() throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		return totalExtent;
 	}
 
 	@Override
 	public IExtentMediator getExtentMediator(IExtent extent)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -38,36 +47,29 @@ public class ClassifiedRasterConceptualModel implements ExtentConceptualModel {
 	public IExtent mergeExtents(IExtent original, IExtent other,
 			LogicalConnector connector, boolean isConstraint)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public IStateAccessor getStateAccessor(IConcept stateType,
 			IObservationContext context) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public IConcept getStateType() {
-		// TODO Auto-generated method stub
-		return null;
+		return Geospace.get().GridClassifier();
 	}
 
 	@Override
 	public void handshake(IDataSource<?> dataSource,
 			IObservationContext observationContext,
 			IObservationContext overallContext) throws ThinklabException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void validate(IObservation observation)
 			throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-
 	}
 
 }

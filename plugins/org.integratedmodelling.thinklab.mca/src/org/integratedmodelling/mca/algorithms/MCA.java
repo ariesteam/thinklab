@@ -1,4 +1,4 @@
-package org.integratedmodelling.mca;
+package org.integratedmodelling.mca.algorithms;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
  * 4. run analysis;
  * 5. use inquiry methods to obtain results.
  * 
- * Any operation in step 2 and 3 will freexe the declaration functions, which will throw
+ * Any operation in step 2 and 3 will freeze the declaration functions, which will throw
  * an exception if called after that. Operations 2 and 3 can be called again after running
  * the analysis, and will make incremental changes to the existing situation so that different
  * scenarios can be analyzed.

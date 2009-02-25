@@ -3,6 +3,8 @@ package org.integratedmodelling.geospace.implementations.cmodels;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.implementations.datasources.MemValueContextualizedDatasource;
+import org.integratedmodelling.corescience.implementations.observations.Measurement;
+import org.integratedmodelling.corescience.implementations.observations.Ranking;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.TransformingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
@@ -10,12 +12,15 @@ import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.corescience.utils.Obs;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.districting.algorithms.ISODATAAlgorithm;
 import org.integratedmodelling.geospace.districting.algorithms.KMeansAlgorithm;
 import org.integratedmodelling.geospace.districting.utils.DistrictingResults;
 import org.integratedmodelling.geospace.exceptions.ThinklabDistrictingException;
+import org.integratedmodelling.geospace.extents.GridExtent;
+import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -98,11 +103,13 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 		
 		/* get all spatial dependencies of obs and set their states as cluster */
 		IObservation obs = Obs.getObservation(inst);
-		IObservationContext cm = obs.getObservationContext();
-		
-		if (cm.getDimension(Geospace.get().SpaceObservable()) == null) {
+		IObservationContext ctx = obs.getObservationContext();
+		GridExtent extent = (GridExtent) ctx.getExtent(Geospace.get().
+				RasterGridObservable());
+
+		if (extent == null) {
 			throw new ThinklabValidationException(
-					"clustering model: cannot use non-spatial observations");
+					"clustering model: cannot use non-grid observations");
 		}
 		
 		/* cluster */
@@ -114,8 +121,10 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 		}
 
 		double[][] dset = new double[states.size()][]; int i = 0;
+		IConcept[] oos = new IConcept[states.size()];
 		
 		for (Map.Entry<IConcept, IContextualizedState> state : states.entrySet()) {
+			oos[i] = state.getKey();
 			dset[i++] = state.getValue().getDataAsDoubles();
 		}
 
@@ -127,11 +136,46 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 					new KMeansAlgorithm().createDistricts(dset, initialK);
 		
 		
-		/* process the results of clustering into own datasource */
+		/*
+		 * each dependency gets a new Measurement or Ranking (can't work with
+		 * anything else) with its own datasource, each with as many distributions
+		 * of the given observable as there are clusters
+		 */
+		for (IConcept co : oos) {
+			
+			IObservation origObs = Obs.findObservation(obs, co);
+			if (origObs instanceof Measurement) {
+				
+			} else if (origObs instanceof Ranking) {
+				
+			} else 
+				throw new ThinklabValidationException(
+						"clustering: can only generate distributions from ranking or measurements: "
+						+ origObs);
+			
+			for (int k = 0; k < results.getFinalK(); k++) {
+//				ds.addValue(new DistributionValue(
+//						DistributionValue.Distributions.NORMAL,
+//						results.get));
+			}
+			
+			
+		}
+					
+		/* process the results of clustering into a datasource per observable */
 		MemValueContextualizedDatasource ds = 
 			new MemValueContextualizedDatasource(
 					Geospace.get().GridClassifier(), results.getFinalK());
 		
+		
+		/* make a conceptual model for the spatial extent */
+		ClassifiedRasterConceptualModel cm =
+			new ClassifiedRasterConceptualModel(
+					results.getTypeset(),
+					extent.getXCells(),
+					extent.getYCells(),
+					results.getFinalK(),
+					null);
 		
 		/* build final transformed observation, turning all observations we have
 		 * clustered into distributions of their values per cluster. */

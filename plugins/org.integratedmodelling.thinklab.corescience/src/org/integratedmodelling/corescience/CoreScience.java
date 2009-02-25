@@ -92,6 +92,7 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String CSV_DATASOURCE = "source:CSVDataSource";
 	public static final String RANDOM_DATASOURCE = "source:Randomizer";
 	public static final String RANDOM_VALUE = "observation:RandomValue";
+	public static final String RANDOM_OBSERVATION = "observation:RandomObservation";
 	public static final String CONTINUOUS_DISTRIBUTION = "observation:ContinuousDistribution";
 	public static final String DISCRETE_DISTRIBUTION = "observation:DiscreteDistribution";
 	public static final String UNIT = "measurement:Unit";

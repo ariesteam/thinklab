@@ -2,6 +2,7 @@ package org.integratedmodelling.corescience.implementations.cmodels;
 
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.literals.IRandomValue;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
@@ -11,6 +12,7 @@ public class MeasurementStateAccessor implements IStateAccessor {
 	private double value = 0.0;
 	private int index = 0;
 	private IDataSource<?> ds = null;
+	private IRandomValue inlineRandom = null;
 
 	public MeasurementStateAccessor(double value) {
 		this.isConstant = true;
@@ -21,6 +23,11 @@ public class MeasurementStateAccessor implements IStateAccessor {
 		this.ds = src;
 	}
 	
+	public MeasurementStateAccessor(IRandomValue inlineRandom) {
+		this.inlineRandom  = inlineRandom;
+		isConstant = true;
+	}
+
 	@Override
 	public boolean notifyDependencyObservable(IConcept observable)
 			throws ThinklabValidationException {
@@ -36,7 +43,7 @@ public class MeasurementStateAccessor implements IStateAccessor {
 
 	@Override
 	public Object getValue(Object[] registers) {
-		return isConstant ? value : getNextValue();
+		return isConstant ? (inlineRandom == null ? value : inlineRandom) : getNextValue();
 	}
 
 	private Object getNextValue() {

@@ -133,6 +133,18 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/measurement.owl#distribution -->
+
+    <owl:DatatypeProperty rdf:about="#distribution">
+        <rdfs:comment
+            >Links to the definition of a distribution, according to Thinklab supported syntax. E.g. &quot;NormalDist (1.2, 32.34)&quot; is thinklab supported syntax.</rdfs:comment>
+        <rdfs:domain rdf:resource="#Measurement"/>
+        <rdfs:domain rdf:resource="#Ranking"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/measurement.owl#hasAbbreviation -->
 
     <owl:DatatypeProperty rdf:about="#hasAbbreviation">
@@ -305,14 +317,14 @@
         <rdfs:subClassOf rdf:resource="&observation;Quantification"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
-                <owl:allValuesFrom rdf:resource="#Unit"/>
+                <owl:onProperty rdf:resource="&observation;hasObservable"/>
+                <owl:allValuesFrom rdf:resource="&representation;PhysicalProperty"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&observation;hasObservable"/>
-                <owl:allValuesFrom rdf:resource="&representation;PhysicalProperty"/>
+                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
+                <owl:allValuesFrom rdf:resource="#Unit"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:comment rdf:datatype="&xsd;string"
@@ -364,12 +376,6 @@ A Measurement admits a literal equivalent in ThinkLab for simple numeric measure
         </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="#minValue"/>
-                <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
                 <owl:onProperty rdf:resource="#isInteger"/>
                 <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
             </owl:Restriction>
@@ -377,6 +383,12 @@ A Measurement admits a literal equivalent in ThinkLab for simple numeric measure
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="#maxValue"/>
+                <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#minValue"/>
                 <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
             </owl:Restriction>
         </rdfs:subClassOf>

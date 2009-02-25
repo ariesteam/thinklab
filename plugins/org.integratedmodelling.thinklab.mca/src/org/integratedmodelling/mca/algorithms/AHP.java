@@ -1,8 +1,7 @@
-package org.integratedmodelling.mca;
+package org.integratedmodelling.mca.algorithms;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 
 import cern.colt.matrix.impl.DenseDoubleMatrix2D;
 import cern.colt.matrix.linalg.EigenvalueDecomposition;

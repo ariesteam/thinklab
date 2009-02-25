@@ -38,7 +38,6 @@ import java.util.Comparator;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.TransformingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;

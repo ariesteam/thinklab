@@ -4,6 +4,8 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.cmodels.MeasurementModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.interfaces.literals.IRandomValue;
+import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
@@ -24,6 +26,7 @@ public class Measurement extends Observation implements IConceptualizable {
 	
 	String unitSpecs = null;
 	String valueSpecs = null;
+	private IRandomValue randomValue = null;
 	
 	@Override
 	protected IConceptualModel createMissingConceptualModel()
@@ -40,20 +43,11 @@ public class Measurement extends Observation implements IConceptualizable {
 
 	@Override
 	protected IDataSource<?> createMissingDatasource() throws ThinklabException {
-
-		/*
-		 * if we get here, no DS was given, so we must have value specs
-		 */
-// not really, ds may come later
-//		if (valueSpecs == null && !isMediator()) {
-//			throw new ThinklabValidationException(
-//					"no value specifications given in measurement " +
-//					" with no datasource associated");
-//		}
 		
 		if (valueSpecs != null)
 			((MeasurementModel)getConceptualModel()).setInlineValue(Double.parseDouble(valueSpecs));
-		
+		else if (randomValue != null)
+			((MeasurementModel)getConceptualModel()).setInlineValue(randomValue );
 		return null;
 	}
 
@@ -85,6 +79,14 @@ public class Measurement extends Observation implements IConceptualizable {
 				unitSpecs = v.toString().trim();
 			
 		}
+		
+		v = i.get("measurement:distribution");
+		if (v != null) {
+			if (valueSpecs != null)
+				throw new ThinklabValidationException(
+						"measurement value can contain either random or numeric values, not both");
+			randomValue = new DistributionValue(v.toString());
+		}
 	}
 
 	@Override
@@ -96,7 +98,9 @@ public class Measurement extends Observation implements IConceptualizable {
 						(getObservable() instanceof IConceptualizable) ? 
 								((IConceptualizable)getObservable()).conceptualize() :
 								getObservable().toList(null)),
-				Polylist.list("measurement:unit", unitSpecs));
+				(randomValue == null ?
+						Polylist.list("measurement:unit", unitSpecs):
+						Polylist.list("measurement:distribution", unitSpecs)));
 	}
 
 }

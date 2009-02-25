@@ -43,6 +43,7 @@ import org.integratedmodelling.corescience.interfaces.context.IObservationContex
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.data.ResamplingDataSource;
+import org.integratedmodelling.corescience.interfaces.literals.IRandomValue;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.literals.UnitValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -57,6 +58,8 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IParseable;
 import org.integratedmodelling.thinklab.literals.NumberValue;
 import org.integratedmodelling.utils.multidimensional.MultidimensionalArray;
 import org.jscience.mathematics.number.Rational;
+
+import sun.security.x509.IssuingDistributionPointExtension;
 
 
 /**
@@ -77,11 +80,17 @@ public class MeasurementModel extends UnitValue implements
 	
 	String id = null;
 	IDataSource<?> dataSource = null;
+	int[] dimensions = null;
+	MultidimensionalArray<NumberValue> data =  null;
+	PhysicalNature physicalNature = null;
 	
+	protected IKnowledgeSubject observable;
+
 	/*
 	 * if not null, a value has been passed and we have no datasource
 	 */
 	Double inlineValue = null;
+	private IRandomValue inlineRandom = null;
 	
 	/**  
 	 * Simple aggregator uses physical nature to decide how to aggregate properties.
@@ -96,7 +105,6 @@ public class MeasurementModel extends UnitValue implements
 			this.nature = nature;
 		}
 		
-		// FIXME uncertainty is thrown in without even thinking.
 		public void addValue(Double value, IObservationContextState contextState) throws ThinklabException {
 			
 			if (nature == PhysicalNature.EXTENSIVE) {
@@ -133,15 +141,9 @@ public class MeasurementModel extends UnitValue implements
 	public MeasurementModel(IConcept c, String s) throws ThinklabException {
 		super(c, s);
 	}
-
-	int[] dimensions = null;
-	MultidimensionalArray<NumberValue> data =  null;
-	PhysicalNature physicalNature = null;
-	
-	protected IKnowledgeSubject observable;
 	
 	public IConcept getStateType() {
-		return KnowledgeManager.Double();
+		return inlineRandom == null ? KnowledgeManager.Double() : CoreScience.get().RandomValue();
 	}
 
 	public void validate(IObservation observation) throws ThinklabValidationException {
@@ -192,12 +194,18 @@ public class MeasurementModel extends UnitValue implements
 	public void setInlineValue(double val) {
 		inlineValue = val;
 	}
+	
+	public void setInlineValue(IRandomValue val) {
+		inlineRandom = val;
+	}
 
 	@Override
 	public IStateAccessor getStateAccessor(IConcept stateType, IObservationContext context) {
 
 		if (inlineValue != null)
 			return new MeasurementStateAccessor(inlineValue);
+		else if (inlineRandom != null)
+			return new MeasurementStateAccessor(inlineRandom);
 		else if (dataSource != null) 
 			return new MeasurementStateAccessor(dataSource);
 		

@@ -1,4 +1,4 @@
-package org.integratedmodelling.mca;
+package org.integratedmodelling.mca.algorithms;
 
 import java.util.ArrayList;
 import java.util.Collection;

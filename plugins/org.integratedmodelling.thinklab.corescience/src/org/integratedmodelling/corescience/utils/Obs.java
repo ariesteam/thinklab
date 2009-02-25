@@ -91,5 +91,33 @@ public class Obs {
 			collectStates(o, ret);
 		}
 	}
+
+	/**
+	 * Find the observation in the structure starting at obs that observes the 
+	 * given observable class.
+	 * 
+	 * @param obs
+	 * @param co
+	 * @return
+	 */
+	public static IObservation findObservation(IObservation obs, IConcept co) {
+		
+		IObservation ret = null;
+		
+		if (obs.getObservable().is(co)) {
+			return obs;
+		}
+		for (IObservation o : obs.getContingencies()) {
+			ret = findObservation(o, co);
+			if (ret != null)
+				return ret;
+		}
+		for (IObservation o : obs.getDependencies()) {
+			ret = findObservation(o, co);
+			if (ret != null)
+				return ret;
+		}
+		return null;
+	}
 	
 }
