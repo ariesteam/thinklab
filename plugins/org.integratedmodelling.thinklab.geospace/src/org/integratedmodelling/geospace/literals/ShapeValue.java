@@ -77,6 +77,10 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
 	PrecisionModel precisionModel = null;
 	CoordinateReferenceSystem crs = null;
 	
+	public ShapeValue() {
+    	setConceptWithoutValidation(Geospace.get().Shape());
+	}
+	
     public ShapeValue(String s) throws ThinklabValidationException {
     	parseLiteral(s);
     	setConceptWithoutValidation(Geospace.get().Shape());
