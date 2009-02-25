@@ -8,9 +8,11 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
  * possibly the whole observation structure that they represent. For this
  * reason, observations that have transforming conceptual models are
  * contextualized in stages, exposing all transforming observations to the
- * result of their contextualization first, depth first, then removing all outgoing 
- * edges from the dependency structure and contextualizing the resulting
- * structure until no more transformations remain.
+ * result of their contextualization. Whatever observation is returned by 
+ * transformObservation will be used for contextualization instead of the
+ * original one, and its dependencies ignored.
+ * 
+ * Transformation is done depth 
  * 
  * @author Ferdinando Villa
  * 

@@ -1,10 +1,10 @@
 package org.integratedmodelling.corescience.literals;
 
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.literals.IRandomValue;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.literals.NumberValue;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
@@ -13,6 +13,7 @@ import umontreal.iro.lecuyer.probdist.ContinuousDistribution;
 import umontreal.iro.lecuyer.probdist.Distribution;
 import umontreal.iro.lecuyer.probdist.DistributionFactory;
 
+@InstanceImplementation(concept=CoreScience.CONTINUOUS_DISTRIBUTION)
 public class ContinuousDistributionValue extends ParsedLiteralValue implements IRandomValue {
 
 	public enum Distributions {

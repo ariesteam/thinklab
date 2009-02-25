@@ -153,7 +153,7 @@ public class ISODATAAlgorithm implements IDistrictingAlgorithm
 	    }
 
 	    if (allTestsPassed) {
-		System.out.println("Passed Test 2!");
+//		System.out.println("Passed Test 2!");
 
 		// Split cluster if within cluster variance > maxClusterVariance
 		// AND cluster membership >= 2 * minClusterMembership
@@ -193,7 +193,7 @@ public class ISODATAAlgorithm implements IDistrictingAlgorithm
 	    }
 
 	}
-	System.out.println("Passed Test 3!\nDistricting Results have been validated.");
+//	System.out.println("Passed Test 3!\nDistricting Results have been validated.");
 
 	results.setTypeset(typeset);
 	results.setPointsPerCluster(pointsPerCluster);

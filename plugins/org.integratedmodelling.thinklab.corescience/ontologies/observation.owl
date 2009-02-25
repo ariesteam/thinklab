@@ -376,6 +376,14 @@ Each instance in a concrete observation space is a &quot;grain&quot; and its cha
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ContinuousDistribution -->
+
+    <owl:Class rdf:about="#ContinuousDistribution">
+        <rdfs:subClassOf rdf:resource="#RandomValue"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ContinuousObservationSpace -->
 
     <owl:Class rdf:about="#ContinuousObservationSpace">
@@ -419,6 +427,14 @@ Each instance in a concrete observation space is a &quot;grain&quot; and its cha
         <rdfs:comment rdf:datatype="&xsd;string"
             >A DataSource is the abstract model for something that can provide information that characterizes an observation. This information is viewed through the lens of the ConceptualModel to define internal relationships to contexts and parts and to validate it. Datasources are agnostic about the conceptual model and only specify how the data are obtained, which can range from literal numbers to functions and statistical distribution, including parsed and internally organized sources such as tables, grids and collections. Details of the DataSource are expanded in the source ontology.</rdfs:comment>
         <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#DiscreteDistribution -->
+
+    <owl:Class rdf:about="#DiscreteDistribution">
+        <rdfs:subClassOf rdf:resource="#RandomValue"/>
     </owl:Class>
     
 
@@ -527,7 +543,7 @@ An Identification can also identify merelogical relationships of an observable t
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Mapping -->
 
     <owl:Class rdf:about="#Mapping">
-        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+        <rdfs:subClassOf rdf:resource="&thinklab-core;LiteralValued"/>
         <rdfs:comment
             >Superclass for types whose instances specify mapping of observable states to other observable states.</rdfs:comment>
         <thinklab-core:AbstractClass>true</thinklab-core:AbstractClass>
@@ -584,6 +600,14 @@ An Identification can also identify merelogical relationships of an observable t
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#RandomValue -->
+
+    <owl:Class rdf:about="#RandomValue">
+        <rdfs:subClassOf rdf:resource="&thinklab-core;LiteralValued"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#RegularGridObservationSpace -->
 
     <owl:Class rdf:about="#RegularGridObservationSpace">
@@ -592,6 +616,12 @@ An Identification can also identify merelogical relationships of an observable t
             >A concrete observation space where instances have an known relationship between each one and the next. Subclasses may define specific relationships and ordering constraints.</rdfs:comment>
         <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
     </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralValued -->
+
+    <owl:Class rdf:about="&thinklab-core;LiteralValued"/>
     
 
 

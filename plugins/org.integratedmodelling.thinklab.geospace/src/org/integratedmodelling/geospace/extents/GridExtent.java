@@ -36,7 +36,6 @@ import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
-import org.integratedmodelling.geospace.implementations.cmodels.RegularRasterModel;
 import org.integratedmodelling.geospace.implementations.cmodels.SubdividedCoverageConceptualModel;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

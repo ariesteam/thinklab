@@ -1,9 +1,11 @@
 package org.integratedmodelling.corescience.literals;
 
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.discretization.Discretizer;
 import org.integratedmodelling.corescience.interfaces.literals.IRandomValue;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.literals.NumberValue;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
@@ -18,6 +20,7 @@ import umontreal.iro.lecuyer.probdist.DistributionFactory;
  * @author Ferdinando Villa
  *
  */
+@InstanceImplementation(concept=CoreScience.DISCRETE_DISTRIBUTION)
 public class DiscreteDistributionValue extends ParsedLiteralValue implements IRandomValue {
 
 	public enum Distributions {

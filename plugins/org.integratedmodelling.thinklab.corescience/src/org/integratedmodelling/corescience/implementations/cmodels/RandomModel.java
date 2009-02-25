@@ -1,5 +1,5 @@
 /**
- * DefaultState.java
+ * MeasurementModel.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,68 +30,79 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.corescience.implementations.datasources;
-
-import java.util.Arrays;
+package org.integratedmodelling.corescience.implementations.cmodels;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
+import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.literals.IRandomValue;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
 
-public class MemClassContextualizedDatasource 
- 	implements IContextualizedState, IInstanceImplementation {
 
-	private static final long serialVersionUID = -6567783706189229920L;
-	private IConcept _type;
-	private IConcept[] data = null;
-	private int idx = 0;
+/**
 
-	public MemClassContextualizedDatasource(IConcept type, int size) {
-		_type = type;
-		data = new IConcept[size];
+ * @author Ferdinando Villa
+ *
+ */
+public class RandomModel implements IConceptualModel, IInstanceImplementation {
+	
+	String id = null;
+	IDataSource<?> dataSource = null;
+	
+	/*
+	 * if not null, a value has been passed and we have no datasource
+	 */
+	IRandomValue inlineValue = null;
+	
+	
+	public RandomModel() throws ThinklabException {
 	}
 	
+
+	protected IKnowledgeSubject observable;
+	
+	public IConcept getStateType() {
+		return CoreScience.get().RandomValue();
+	}
+
+	public void validate(IObservation observation) throws ThinklabValidationException {
+	}
+
+
+	public void setInlineValue(IRandomValue val) {
+		inlineValue = val;
+	}
+
 	@Override
-	public Object getInitialValue() {
+	public IStateAccessor getStateAccessor(IConcept stateType, IObservationContext context) {
+
+//		if (stateType.is(Corescience.get().R=))
+		
+		if (inlineValue != null)
+			return new RandomStateAccessor(inlineValue);
+		else if (dataSource != null) 
+			return new RandomStateAccessor(dataSource);
+		
 		return null;
 	}
 
 	@Override
-	public Object getValue(int index) {
-		return data[index];
-	}
-
-	@Override
-	public IConcept getValueType() {
-		return _type;
-	}
-
-	@Override
-	public boolean handshake(IConceptualModel cm,
+	public void handshake(IDataSource<?> dataSource,
 			IObservationContext observationContext,
 			IObservationContext overallContext) throws ThinklabException {
-		return false;
+		/* store DS for accessor */
+		this.dataSource = dataSource;
 	}
 
-	@Override
-	public void addValue(Object o) {
-		data[idx++] = ((IConcept)o);
-	}
-
-	@Override
-	public Polylist conceptualize() throws ThinklabException {
-
-		return Polylist.list(
-				CoreScience.CONTEXTUALIZED_DATASOURCE,
-				Polylist.list("@", this));
-	}
 
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
@@ -100,19 +111,6 @@ public class MemClassContextualizedDatasource
 	@Override
 	public void validate(IInstance i) throws ThinklabException {
 	}
-	
-	public String toString() {
-		return "[" + _type + ": " + Arrays.asList(data) + "]";
-	}
 
-	@Override
-	public Object getData() {
-		return data;
-	}
-
-	@Override
-	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
-		throw new ThinklabValueConversionException("can't convert concepts into doubles");
-	}
 
 }

@@ -1,8 +1,9 @@
 package org.integratedmodelling.corescience.interfaces.data;
 
+import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 
-
+@SuppressWarnings("unchecked")
 public interface IContextualizedState extends IDataSource, IConceptualizable {
 
 	public void addValue(Object o);
@@ -15,4 +16,13 @@ public interface IContextualizedState extends IDataSource, IConceptualizable {
 	 * @return
 	 */
 	public Object getData();
+
+	/**
+	 * Should endeavor to return doubles as long as it's not entirely meaningless. Many 
+	 * procedures will require doubles and the more are supported, the more can be done
+	 * with all scientific plugins.
+	 * 
+	 * @return
+	 */
+	public double[] getDataAsDoubles() throws ThinklabValueConversionException;
 }

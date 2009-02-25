@@ -61,6 +61,8 @@ public class Geospace extends ThinklabPlugin  {
 	private IConcept rasterGridObservable;
 	private IConcept subdividedSpaceObservable;
 	private IConcept spaceObservable;
+	private IConcept gridClassifierType;
+	
 	private static String hasBoundingBoxPropertyID;
 	private static String hasCentroidPropertyID;
 
@@ -86,6 +88,8 @@ public class Geospace extends ThinklabPlugin  {
 	public static final String HAS_TARGET_LINK_ATTRIBUTE = "geospace:hasTargetLinkAttribute";
 	public static final String HAS_ATTRIBUTE_URL = "geospace:hasAttributeUrl";
 	public static final String RASTER_GRID = "geospace:RasterGrid";
+	public static final String GRID_CLASSIFIER = "geospace:GridClassifier";
+
 	/*
 	 * if not null, we have a preferred crs in the properties, and we solve
 	 * all conflicts by translating to it. 
@@ -118,6 +122,7 @@ public class Geospace extends ThinklabPlugin  {
 			rasterGridObservable = km.requireConcept(RASTER_GRID_OBSERVABLE);
 			subdividedSpaceObservable = km.requireConcept("geospace:SubdividedSpace");
 			spaceObservable = km.requireConcept("geospace:SubdividedSpace");
+			gridClassifierType = km.requireConcept(GRID_CLASSIFIER);
 			
 			shapeType = km.requireConcept("geospace:SpatialRecord");
 			
@@ -228,8 +233,6 @@ public class Geospace extends ThinklabPlugin  {
 			format.equals("tiff");
 	}
 
-
-
 	public Hints getGeotoolsHints() {
 		// TODO we need to create appropriate hints at initialization, using the plugin's 
 		// properties.
@@ -271,6 +274,10 @@ public class Geospace extends ThinklabPlugin  {
 	protected void unload() throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public IConcept GridClassifier() {
+		return gridClassifierType;
 	}
 
 }

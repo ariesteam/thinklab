@@ -429,6 +429,16 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#GridClassifier -->
+
+    <owl:Class rdf:about="#GridClassifier">
+        <rdfs:subClassOf rdf:resource="&thinklab-core;LiteralValued"/>
+        <rdfs:comment
+            >A filter that operates on grid-distributed values, selecting only those that match a condition. </rdfs:comment>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#InlineRasterDataSource -->
 
     <owl:Class rdf:about="#InlineRasterDataSource">

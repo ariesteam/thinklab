@@ -36,8 +36,8 @@ import org.integratedmodelling.corescience.interfaces.context.IObservationContex
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
-import org.integratedmodelling.geospace.districting.DistrictingPlugin;
-import org.integratedmodelling.geospace.districting.interfaces.IDistrictingAlgorithm;
+import org.integratedmodelling.geospace.districting.algorithms.ISODATAAlgorithm;
+import org.integratedmodelling.geospace.districting.algorithms.KMeansAlgorithm;
 import org.integratedmodelling.geospace.districting.utils.DistrictingResults;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.command.Command;
@@ -161,19 +161,10 @@ public class District implements ICommandHandler {
 		String metric = command.getOptionAsString("metric", "euclidean");
 		String algorithm = command.getOptionAsString("algorithm", "k-means");
 
-		IDistrictingAlgorithm alg = DistrictingPlugin.get()
-				.retrieveDistrictingAlgorithm(algorithm);
-
-		if (alg == null) {
-			throw new ThinklabPluginException(
-					"No algorithm registered under name " + algorithm
-							+ " to partition dataset.");
-		}
-
 		DistrictingResults districtingResults;
 
 		if (algorithm.equals("k-means")) {
-			districtingResults = alg.createDistricts(dataset, k);
+			districtingResults = new KMeansAlgorithm().createDistricts(dataset, k);
 		} else if (algorithm.equals("isodata")) {
 			/*
 			 * TODO meaningful defaults (these should be very reasonable)
@@ -187,7 +178,7 @@ public class District implements ICommandHandler {
 			double separationRatio = command.getOptionAsDouble(
 					"separation-ratio", 0.25);
 
-			districtingResults = alg.createDistricts(dataset, k,
+			districtingResults = new ISODATAAlgorithm().createDistricts(dataset, k,
 					stoppingThreshold, varianceRatio, membershipRatio,
 					separationRatio);
 		} else {

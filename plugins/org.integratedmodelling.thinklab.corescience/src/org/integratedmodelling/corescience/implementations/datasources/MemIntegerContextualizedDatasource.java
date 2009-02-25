@@ -39,6 +39,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
@@ -113,5 +114,11 @@ public class MemIntegerContextualizedDatasource
 		return data;
 	}
 
+	@Override
+	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
+		// TODO try to convert if values are numbers
+		throw new ThinklabValueConversionException("can't convert int into double");
+	}
 
+	
 }

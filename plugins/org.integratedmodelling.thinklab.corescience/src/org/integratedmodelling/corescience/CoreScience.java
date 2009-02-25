@@ -56,6 +56,9 @@ public class CoreScience extends ThinklabPlugin {
 
 	private IConcept DiscreteNumericRankingSpace;
 	private IConcept MeasurementSpace;
+	private IConcept RandomValueType;
+	private IConcept ContinuousDistributionType;
+	private IConcept DiscreteDistributionType;
 
 	
 	// properties
@@ -88,6 +91,9 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String MEASUREMENT = "measurement:Measurement";
 	public static final String CSV_DATASOURCE = "source:CSVDataSource";
 	public static final String RANDOM_DATASOURCE = "source:Randomizer";
+	public static final String RANDOM_VALUE = "observation:RandomValue";
+	public static final String CONTINUOUS_DISTRIBUTION = "observation:ContinuousDistribution";
+	public static final String DISCRETE_DISTRIBUTION = "observation:DiscreteDistribution";
 	public static final String UNIT = "measurement:Unit";
 	public static final String PARSED_STRING = "source:ParsedString";
 	public static final String COLUMN_EXTRACTOR = "source:ColumnExtractor";
@@ -116,8 +122,13 @@ public class CoreScience extends ThinklabPlugin {
 	public void load(KnowledgeManager km) throws ThinklabPluginException {
 		
 		try {
+			
 			DiscreteNumericRankingSpace = km.requireConcept(DISCRETE_RANKING_MODEL);
 			MeasurementSpace = km.requireConcept(UNIT);
+			RandomValueType = km.requireConcept(RANDOM_VALUE);
+			ContinuousDistributionType = km.requireConcept(CONTINUOUS_DISTRIBUTION);
+			DiscreteDistributionType = km.requireConcept(DISCRETE_DISTRIBUTION);
+			
 		} catch (Exception e) {
 			throw new ThinklabPluginException(e);
 		}
@@ -189,4 +200,18 @@ public class CoreScience extends ThinklabPlugin {
 	public IConcept MeasurementModel() {
 		return this.MeasurementSpace;
 	}
+
+	public IConcept RandomValue() {
+		return this.RandomValueType;
+	}
+
+	public IConcept ContinuousDistribution() {
+		return this.ContinuousDistributionType;
+	}
+
+	public IConcept DiscreteDistribution() {
+		return this.DiscreteDistributionType;
+	}
+
+
 }
