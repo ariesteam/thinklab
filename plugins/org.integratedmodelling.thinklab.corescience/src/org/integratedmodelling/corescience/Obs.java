@@ -1,4 +1,4 @@
-package org.integratedmodelling.corescience.utils;
+package org.integratedmodelling.corescience;
 
 import java.util.Collection;
 import java.util.HashMap;

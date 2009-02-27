@@ -8,13 +8,10 @@
 (ns corescience)
 
 (defn contextualize
-	"Create the states in an observation tree. Ideally this should return new observations, but
-	 that is quite expensive, so for now it will just return the same observation with the
-	 added states."
+	"Create the states in an observation tree. Returns the IObservation from the result of contextualization."
 	 [observation]
-	 (do 
-         (.. observation (getImplementation) (contextualize)) 
-         observation))
+	 (.. (org.integratedmodelling.corescience.contextualization.Compiler 
+	 				(contextualize observation (tl/get-session))) (getImplementation)))
 
 (defn harmonized-intersection 
 	"Create a master observation that is contingent to all those in the passed list, and 

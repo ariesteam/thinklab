@@ -2,6 +2,7 @@ package org.integratedmodelling.geospace.implementations.cmodels;
 
 import java.util.Map;
 
+import org.integratedmodelling.corescience.Obs;
 import org.integratedmodelling.corescience.implementations.datasources.MemValueContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.observations.Measurement;
 import org.integratedmodelling.corescience.implementations.observations.Ranking;
@@ -13,7 +14,6 @@ import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.literals.DistributionValue;
-import org.integratedmodelling.corescience.utils.Obs;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.districting.algorithms.ISODATAAlgorithm;
 import org.integratedmodelling.geospace.districting.algorithms.KMeansAlgorithm;
