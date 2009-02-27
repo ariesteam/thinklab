@@ -2,6 +2,7 @@ package org.integratedmodelling.geospace.implementations.cmodels;
 
 import java.util.Map;
 
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.Obs;
 import org.integratedmodelling.corescience.implementations.datasources.MemValueContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.observations.Measurement;
@@ -13,18 +14,17 @@ import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
-import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.districting.algorithms.ISODATAAlgorithm;
 import org.integratedmodelling.geospace.districting.algorithms.KMeansAlgorithm;
 import org.integratedmodelling.geospace.districting.utils.DistrictingResults;
 import org.integratedmodelling.geospace.exceptions.ThinklabDistrictingException;
 import org.integratedmodelling.geospace.extents.GridExtent;
-import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.utils.Polylist;
 
 /**
  * The conceptual model that implements a transformation between a contextualized multiple
@@ -144,6 +144,7 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 		for (IConcept co : oos) {
 			
 			IObservation origObs = Obs.findObservation(obs, co);
+			
 			if (origObs instanceof Measurement) {
 				
 			} else if (origObs instanceof Ranking) {
@@ -182,13 +183,25 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 		
 		
 		/* build main identification, shares our observable */
-		
+		Polylist orobs = obs.getObservable().toList(null);
 		
 		/* connect spatial extent obs */
 		
 		/* connect all observables */
 		
 		return null;
+	}
+
+	@Override
+	public Polylist getTransformedConceptualModel() {
+		// we want to contextualize this as if it was an identification, so this should be fine.
+		return null;
+	}
+
+	@Override
+	public IConcept getTransformedObservationClass() {
+		// we operate as an identification, i.e. a simple observation with no CM.
+		return CoreScience.get().Observation();
 	}
 
 

@@ -34,7 +34,7 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
  * @author Ferdinando
  *
  */
-public class StackWorkflowCompiler extends Compiler {
+public class VMCompiler extends Compiler {
 
 	/*
 	 * optimization - if this is false, validators are not compiled in. Not linked to any
@@ -161,7 +161,9 @@ public class StackWorkflowCompiler extends Compiler {
 			/*
 			 * determine common stack type
 			 */
-			if (obs.getConceptualModel() != null && !(obs.getConceptualModel() instanceof ExtentConceptualModel)) {
+			if (obs.getConceptualModel() != null &&
+					obs.getConceptualModel().getStateType() != null &&
+					!(obs.getConceptualModel() instanceof ExtentConceptualModel)) {
 				stackType = 
 					stackType == null ? 
 							obs.getConceptualModel().getStateType() :
@@ -178,7 +180,7 @@ public class StackWorkflowCompiler extends Compiler {
 			if (dependencies.outgoingEdgesOf(obs).size()
 					/*((Observation)obs).getNonExtentDependencies().length */ == 0) {
 				
-				StackVMContextualizer<?> ctxer = 
+				VMContextualizer<?> ctxer = 
 					createThreadContextualizer(order, stackType, context, structure);
 				
 				if (ctxer != null)
@@ -192,7 +194,7 @@ public class StackWorkflowCompiler extends Compiler {
 		return ret;
 	}
 
-	private StackVMContextualizer<?> createThreadContextualizer(
+	private VMContextualizer<?> createThreadContextualizer(
 			ArrayList<IObservation> order, 
 			IConcept stackType, 
 			IObservationContext context, 
@@ -206,18 +208,18 @@ public class StackWorkflowCompiler extends Compiler {
 		if (stackType == null)
 			return null;
 		
-		StackVMContextualizer<?> ret = null;
+		VMContextualizer<?> ret = null;
 		IConcept stateType = null;
 		
 		/*
 		 * create a contextualizer appropriately for the stack type
 		 */
 		if (stackType.is(KnowledgeManager.Number())) {
-			ret = new StackVMContextualizer<Float>(stackType);
+			ret = new VMContextualizer<Float>(stackType);
 			stateType = KnowledgeManager.Float();
 		} else if (KnowledgeManager.Thing().equals(stackType) || 
 				stackType.is(KnowledgeManager.LiteralValue())) {
-			ret = new StackVMContextualizer<IValue>(stackType);
+			ret = new VMContextualizer<IValue>(stackType);
 			stateType = KnowledgeManager.LiteralValue();
 		} else {
 			
@@ -227,7 +229,7 @@ public class StackWorkflowCompiler extends Compiler {
 			 * TODO we could use integers to
 			 * hold the values efficiently, but establish a mapping to concepts.
 			 */
-			ret = new StackVMContextualizer<IConcept>(stackType);
+			ret = new VMContextualizer<IConcept>(stackType);
 			stateType = stackType;
 		}
 		
@@ -410,7 +412,7 @@ public class StackWorkflowCompiler extends Compiler {
 			HashMap<IObservation, ObsDesc> accessors, 
 			HashSet<IObservation> deactivatable, 
 			IObservationContext context, 
-			StackVMContextualizer<?> contextualizer, 
+			VMContextualizer<?> contextualizer, 
 			IConcept stateType, 
 			ObservationStructure structure) throws ThinklabException {
 		
@@ -464,7 +466,8 @@ public class StackWorkflowCompiler extends Compiler {
 			odesc.needed = true;
 		}
 		
-		boolean storeState = (cm != null) && isStored(o.getObservableClass());
+		boolean storeState = 
+			(cm != null) && cm.getStateType() != null && isStored(o.getObservableClass());
 		
 		
 		/*

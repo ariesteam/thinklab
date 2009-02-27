@@ -2,8 +2,10 @@ package org.integratedmodelling.geospace.implementations.observations;
 
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.cmodels.ClusteringRasterModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
@@ -14,6 +16,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
  * @author Ferdinando
  *
  */
+@InstanceImplementation(concept=Geospace.CLASSIFIED_GRID)
 public class DistrictingObservation extends Observation {
 
 	private String method = "k-means";

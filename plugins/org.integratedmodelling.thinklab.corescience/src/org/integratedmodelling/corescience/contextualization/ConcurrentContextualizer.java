@@ -21,11 +21,11 @@ public class ConcurrentContextualizer implements IContextualizer {
 
 	private static class RunContext implements Runnable {
 
-		StackVMContextualizer<?>  ctx = null;
+		VMContextualizer<?>  ctx = null;
 		Map<IConcept, IDataSource<?>> result = null;
 		ISession session = null;
 		
-		public RunContext(StackVMContextualizer<?>  ctx, ISession session) {
+		public RunContext(VMContextualizer<?>  ctx, ISession session) {
 			this.ctx = ctx;
 			this.session = session;
 			
@@ -48,7 +48,7 @@ public class ConcurrentContextualizer implements IContextualizer {
 		
 	}
 	
-	ArrayList<StackVMContextualizer<?> > runnables = new ArrayList<StackVMContextualizer<?>>();
+	ArrayList<VMContextualizer<?> > runnables = new ArrayList<VMContextualizer<?>>();
 	
 	/**
 	 * Pass the original observation structure so we can reconstruct the final instance using it
@@ -61,7 +61,7 @@ public class ConcurrentContextualizer implements IContextualizer {
 		this.structure = structure;
 	}
 	
-	public void addContextualizer(StackVMContextualizer<?> ctxer) {
+	public void addContextualizer(VMContextualizer<?> ctxer) {
 		runnables.add(ctxer);
 	}
 	

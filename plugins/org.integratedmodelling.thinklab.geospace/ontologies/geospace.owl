@@ -177,6 +177,15 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasInitialK -->
+
+    <owl:DatatypeProperty rdf:about="#hasInitialK">
+        <rdfs:domain rdf:resource="#ClassifiedGrid"/>
+        <rdfs:range rdf:resource="&xsd;integer"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasLatLowerBound -->
 
     <owl:DatatypeProperty rdf:about="#hasLatLowerBound">
@@ -217,6 +226,24 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasMembershipRatio -->
+
+    <owl:DatatypeProperty rdf:about="#hasMembershipRatio">
+        <rdfs:domain rdf:resource="#ClassifiedGrid"/>
+        <rdfs:range rdf:resource="&xsd;double"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasSeparationRatio -->
+
+    <owl:DatatypeProperty rdf:about="#hasSeparationRatio">
+        <rdfs:domain rdf:resource="#ClassifiedGrid"/>
+        <rdfs:range rdf:resource="&xsd;double"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasSourceLinkAttribute -->
 
     <owl:DatatypeProperty rdf:about="#hasSourceLinkAttribute">
@@ -243,6 +270,15 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasStoppingThreshold -->
+
+    <owl:DatatypeProperty rdf:about="#hasStoppingThreshold">
+        <rdfs:domain rdf:resource="#ClassifiedGrid"/>
+        <rdfs:range rdf:resource="&xsd;double"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasTargetLinkAttribute -->
 
     <owl:DatatypeProperty rdf:about="#hasTargetLinkAttribute">
@@ -264,6 +300,15 @@
                 </owl:unionOf>
             </owl:Class>
         </rdfs:domain>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasVarianceRatio -->
+
+    <owl:DatatypeProperty rdf:about="#hasVarianceRatio">
+        <rdfs:domain rdf:resource="#ClassifiedGrid"/>
+        <rdfs:range rdf:resource="&xsd;double"/>
     </owl:DatatypeProperty>
     
 

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?plugin id="aries.core" version="0.8"?>
+
+<kbox
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:geospace="http://www.integratedmodelling.org/ks/geospace/geospace.owl#"
+	xmlns:measurement="http://www.integratedmodelling.org/ks/science/measurement.owl#"
+	xmlns:observation="http://www.integratedmodelling.org/ks/science/observation.owl#"
+	xmlns:metadata="http://www.integratedmodelling.org/ks/metadata/metadata.owl#"
+	xmlns:carbonService="http://www.integratedmodelling.org/ks/es/services/carbonService.owl#"
+	xmlns:carbonEcology="http://www.integratedmodelling.org/ks/es/services/carbonEcology.owl#"
+	xmlns:habitat="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#"
+	xmlns:representation="http://www.integratedmodelling.org/ks/science/representation.owl#">
+
+	<geospace:ClassifiedGrid id="test" geospace:hasInitialK="6" >
+
+		<observation:hasObservable>
+			<representation:GenericQuantifiable />
+		</observation:hasObservable>
+
+		<!-- the grid extent here constrains the one in the dependencies  -->
+		<observation:hasObservationExtent>
+			<geospace:RasterGrid>
+				<geospace:hasCoordinateReferenceSystem>EPSG:4326</geospace:hasCoordinateReferenceSystem>
+				<geospace:hasLatLowerBound>30.00</geospace:hasLatLowerBound>
+				<geospace:hasLatUpperBound>35.00</geospace:hasLatUpperBound>
+				<geospace:hasLonLowerBound>-100.00</geospace:hasLonLowerBound>
+				<geospace:hasLonUpperBound>-95.00</geospace:hasLonUpperBound>
+				<geospace:hasXRangeMax>512</geospace:hasXRangeMax>
+				<geospace:hasYRangeMax>512</geospace:hasYRangeMax>
+			</geospace:RasterGrid>
+		</observation:hasObservationExtent>
+
+		<observation:dependsOn>
+
+<measurement:Ranking id="landcover">
+		<rdfs:label>Vegetation type</rdfs:label>
+		<rdfs:comment>
+			Land cover type can be used as a proxy variable to establish the spatial
+			pattern of provision for different ecosystem services. For example, it
+			relates to vegetation structure and soil permeability.</rdfs:comment>
+		<metadata:hasImageUrl>file:/d:/A/thumbs/LandCoverClass.png</metadata:hasImageUrl>
+		<metadata:hasSourceCitation>UMD Global Landcover Facility</metadata:hasSourceCitation>
+		<observation:hasObservable>
+			<carbonEcology:VegetationType />
+		</observation:hasObservable>
+		<observation:hasDataSource>
+			<geospace:RasterFileDataSource>
+				<geospace:hasSourceURL>
+					file:/d:/A/LandCoverClass.tif
+				</geospace:hasSourceURL>
+			</geospace:RasterFileDataSource>
+		</observation:hasDataSource>
+		<observation:hasObservationExtent>
+			<geospace:RasterGrid>
+				<geospace:hasXRangeMax>43200</geospace:hasXRangeMax>
+				<geospace:hasYRangeMax>16353</geospace:hasYRangeMax>
+				<geospace:hasCoordinateReferenceSystem>
+					EPSG:4326
+				</geospace:hasCoordinateReferenceSystem>
+				<geospace:hasLatLowerBound>
+					-90.0
+				</geospace:hasLatLowerBound>
+				<geospace:hasLonLowerBound>
+					-180.0
+				</geospace:hasLonLowerBound>
+				<geospace:hasLatUpperBound>
+					90.0
+				</geospace:hasLatUpperBound>
+				<geospace:hasLonUpperBound>
+					180.0
+				</geospace:hasLonUpperBound>
+			</geospace:RasterGrid>
+		</observation:hasObservationExtent>
+	</measurement:Ranking>
+
+	<measurement:Ranking id="precipitation">
+		<rdfs:label>Rainfall yearly totals</rdfs:label>
+		<rdfs:comment>Rainfall is key to determining many variables that influence ecosystem
+			services, like net primary productivity. High resolution rainfall data are available 
+			for recent years. </rdfs:comment>
+		<metadata:hasImageUrl>file:/d:/A/thumbs/Rainfall.png</metadata:hasImageUrl>
+		<metadata:hasSourceCitation>WorldClim data</metadata:hasSourceCitation>
+		<observation:hasDataSource>
+			<geospace:RasterFileDataSource>
+				<geospace:hasSourceURL>
+					file:/d:/A/Rainfall.tif
+				</geospace:hasSourceURL>
+			</geospace:RasterFileDataSource>
+		</observation:hasDataSource>
+		<observation:hasObservable>
+			<carbonEcology:Rainfall />
+		</observation:hasObservable>
+		<observation:hasObservationExtent>
+			<geospace:RasterGrid>
+				<geospace:hasCoordinateReferenceSystem>
+					EPSG:4326
+				</geospace:hasCoordinateReferenceSystem>
+				<geospace:hasLatLowerBound>
+					-90.0
+				</geospace:hasLatLowerBound>
+				<geospace:hasLatUpperBound>
+					90.0
+				</geospace:hasLatUpperBound>
+				<geospace:hasLonLowerBound>
+					-180.0
+				</geospace:hasLonLowerBound>
+				<geospace:hasLonUpperBound>
+					180.0
+				</geospace:hasLonUpperBound>
+				<geospace:hasXRangeMax>43200</geospace:hasXRangeMax>
+				<geospace:hasYRangeMax>18000</geospace:hasYRangeMax>
+			</geospace:RasterGrid>
+		</observation:hasObservationExtent>
+	</measurement:Ranking>
+	
+	<measurement:Ranking id="growing-season">
+		<rdfs:label>Growing Season</rdfs:label>
+		<rdfs:comment>Growing season lenght determinea the pattern of vegetative carbon sequestration and
+		the likelyhood of carbon storage from vegetation.  </rdfs:comment>
+		<metadata:hasImageUrl>file:/d:/A/thumbs/GrowingSeason.png</metadata:hasImageUrl>
+		<metadata:hasSourceCitation>WorldClim data</metadata:hasSourceCitation>
+		<observation:hasDataSource>
+			<geospace:RasterFileDataSource>
+				<geospace:hasSourceURL>
+					file:/d:/A/GrowingSeason.tif
+				</geospace:hasSourceURL>
+			</geospace:RasterFileDataSource>
+		</observation:hasDataSource>
+		<observation:hasObservable>
+			<carbonEcology:GrowingSeason />
+		</observation:hasObservable>
+		<observation:hasObservationExtent>
+			<geospace:RasterGrid>
+				<geospace:hasCoordinateReferenceSystem>
+					EPSG:4326
+				</geospace:hasCoordinateReferenceSystem>
+				<geospace:hasLatLowerBound>
+					-90.0
+				</geospace:hasLatLowerBound>
+				<geospace:hasLatUpperBound>
+					90.0
+				</geospace:hasLatUpperBound>
+				<geospace:hasLonLowerBound>
+					-180.0
+				</geospace:hasLonLowerBound>
+				<geospace:hasLonUpperBound>
+					180.0
+				</geospace:hasLonUpperBound>
+				<geospace:hasXRangeMax>720</geospace:hasXRangeMax>
+				<geospace:hasYRangeMax>360</geospace:hasYRangeMax>
+			</geospace:RasterGrid>
+		</observation:hasObservationExtent>
+	</measurement:Ranking>
+
+	<measurement:Ranking id="vegetative-c-sequestration">
+		<rdfs:label>Net primary productivity</rdfs:label>
+		<rdfs:comment>Primary production is the production of organic compounds from atmospheric or aquatic carbon dioxide, 
+		principally through the process of photosynthesis, with chemosynthesis being much less important. 
+		All life on earth is directly or indirectly reliant on primary production. </rdfs:comment>
+		<metadata:hasImageUrl>file:/d:/A/thumbs/VegetativeCSequestration.png</metadata:hasImageUrl>
+		<metadata:hasSourceCitation>MODIS data</metadata:hasSourceCitation>
+		<observation:hasDataSource>
+			<geospace:RasterFileDataSource>
+				<geospace:hasSourceURL>
+					file:/d:/A/VegetativeCSequestration.tif
+				</geospace:hasSourceURL>
+			</geospace:RasterFileDataSource>
+		</observation:hasDataSource>
+		<observation:hasObservable>
+			<carbonEcology:VegetativeCSequestration />
+		</observation:hasObservable>
+		<observation:hasObservationExtent>
+			<geospace:RasterGrid>
+				<geospace:hasCoordinateReferenceSystem>
+					EPSG:4326
+				</geospace:hasCoordinateReferenceSystem>
+				<geospace:hasLatLowerBound>
+					-60.0
+				</geospace:hasLatLowerBound>
+				<geospace:hasLatUpperBound>
+					80.0
+				</geospace:hasLatUpperBound>
+				<geospace:hasLonLowerBound>
+					-180.0
+				</geospace:hasLonLowerBound>
+				<geospace:hasLonUpperBound>
+					180.0
+				</geospace:hasLonUpperBound>
+				<geospace:hasXRangeMax>42544</geospace:hasXRangeMax>
+				<geospace:hasYRangeMax>16545</geospace:hasYRangeMax>
+			</geospace:RasterGrid>
+		</observation:hasObservationExtent>
+	</measurement:Ranking>
+	
+	<measurement:Ranking id="vegetative-c-storage">
+		<rdfs:label>Vegetative carbon storage</rdfs:label>
+		<rdfs:comment>Carbon (C) density (carbon mass per hectare) is a critical variable in determining the
+		 extent of the effect of human activity on ecosystems and our environment,
+		 because many ecological processes depend on the C cycle.</rdfs:comment>
+		<metadata:hasImageUrl>file:/d:/A/thumbs/VegetativeCStorage.png</metadata:hasImageUrl>
+		<metadata:hasSourceCitation>WorldClim data</metadata:hasSourceCitation>
+		<observation:hasDataSource>
+			<geospace:RasterFileDataSource>
+				<geospace:hasSourceURL>
+					file:/d:/A/VegetativeCStorage.tif
+				</geospace:hasSourceURL>
+			</geospace:RasterFileDataSource>
+		</observation:hasDataSource>
+		<observation:hasObservable>
+			<carbonEcology:VegetativeCStorage />
+		</observation:hasObservable>
+		<observation:hasObservationExtent>
+			<geospace:RasterGrid>
+				<geospace:hasCoordinateReferenceSystem>
+					EPSG:4326
+				</geospace:hasCoordinateReferenceSystem>
+				<geospace:hasLatLowerBound>
+					-90.0
+				</geospace:hasLatLowerBound>
+				<geospace:hasLatUpperBound>
+					90.0
+				</geospace:hasLatUpperBound>
+				<geospace:hasLonLowerBound>
+					-180.0
+				</geospace:hasLonLowerBound>
+				<geospace:hasLonUpperBound>
+					180.0
+				</geospace:hasLonUpperBound>
+				<geospace:hasXRangeMax>4320</geospace:hasXRangeMax>
+				<geospace:hasYRangeMax>2160</geospace:hasYRangeMax>
+			</geospace:RasterGrid>
+		</observation:hasObservationExtent>
+	</measurement:Ranking>
+
+		</observation:dependsOn>
+	</geospace:ClassifiedGrid>
+</kbox>

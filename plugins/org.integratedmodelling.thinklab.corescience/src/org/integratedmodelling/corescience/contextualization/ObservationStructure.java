@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.TransformingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
@@ -43,13 +44,24 @@ public class ObservationStructure {
 				observable = obs.getObservableClass();
 				
 				if (obs instanceof IConceptualizable) {
+					
 					wholeObs = ((IConceptualizable)obs).conceptualize();
+					
 				} else {
 				
-					observationType = obs.getObservationClass();
+					observationType = 
+						(obs.getConceptualModel() instanceof TransformingConceptualModel) ? 
+								((TransformingConceptualModel)obs.getConceptualModel()).
+								getTransformedObservationClass() :
+								obs.getObservationClass();
 				
-					if (obs.getConceptualModel() != null && obs.getConceptualModel() instanceof IConceptualizable) {
-						cmDesc = ((IConceptualizable)obs.getConceptualModel()).conceptualize();
+					if (obs.getConceptualModel() != null && 
+							(obs.getConceptualModel() instanceof IConceptualizable || obs.getConceptualModel() instanceof TransformingConceptualModel)) {
+						cmDesc = 
+							(obs.getConceptualModel() instanceof TransformingConceptualModel) ?
+									((TransformingConceptualModel)obs.getConceptualModel()).getTransformedConceptualModel() :
+									((IConceptualizable)obs.getConceptualModel()).conceptualize();
+									
 					} else if (obs.getConceptualModel() != null) 
 						throw new ThinklabValidationException(
 							"conceptual model " + 

@@ -43,7 +43,6 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 /**
  * @author Ferdinando Villa
- *
  */
 public class CoreScience extends ThinklabPlugin {
 
@@ -59,7 +58,7 @@ public class CoreScience extends ThinklabPlugin {
 	private IConcept RandomValueType;
 	private IConcept ContinuousDistributionType;
 	private IConcept DiscreteDistributionType;
-
+	private IConcept ObservationType;
 	
 	// properties
 	public static final String DEPENDS_ON = "observation:dependsOn";
@@ -129,6 +128,7 @@ public class CoreScience extends ThinklabPlugin {
 			RandomValueType = km.requireConcept(RANDOM_VALUE);
 			ContinuousDistributionType = km.requireConcept(CONTINUOUS_DISTRIBUTION);
 			DiscreteDistributionType = km.requireConcept(DISCRETE_DISTRIBUTION);
+			ObservationType = km.requireConcept(OBSERVATION);
 			
 		} catch (Exception e) {
 			throw new ThinklabPluginException(e);
@@ -136,9 +136,8 @@ public class CoreScience extends ThinklabPlugin {
 		
 		registerCompiler(
 				"default", 
-				"org.integratedmodelling.corescience.contextualization.StackWorkflowCompiler");
+				"org.integratedmodelling.corescience.contextualization.VMCompiler");
 	}
-
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.ima.core.plugin.Plugin#unload(org.integratedmodelling.ima.core.KnowledgeManager)
@@ -214,5 +213,8 @@ public class CoreScience extends ThinklabPlugin {
 		return this.DiscreteDistributionType;
 	}
 
+	public IConcept Observation() {
+		return this.ObservationType;
+	}
 
 }

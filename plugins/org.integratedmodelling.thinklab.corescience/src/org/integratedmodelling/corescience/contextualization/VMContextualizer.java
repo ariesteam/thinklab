@@ -33,7 +33,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
  * @author Ferdinando
  *
  */
-public class StackVMContextualizer<T> {
+public class VMContextualizer<T> {
 
 	private int _pc = 0;
 	private int _actregs = 0;
@@ -132,7 +132,7 @@ public class StackVMContextualizer<T> {
 	private IConcept _stackType;
 	private boolean needsContextState;
 
-	public StackVMContextualizer(IConcept stackType) {
+	public VMContextualizer(IConcept stackType) {
 		_stackType = stackType;
 	}
 	
@@ -511,7 +511,6 @@ public class StackVMContextualizer<T> {
 		}
 	}
 
-	
 	private void dumpIns(PrintStream writer, int pc, Ins ins, Object ... args) {
 		
 		writer.print(

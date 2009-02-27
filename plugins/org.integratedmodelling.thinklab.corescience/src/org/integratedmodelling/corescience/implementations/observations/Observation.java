@@ -94,6 +94,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 	protected IObservation[] nonExtentDependencies = new IObservation[0];
 	protected IObservation mediatedObservation = null;
 	protected IObservation mediatorObservation = null;
+	private boolean beingTransformed = false;
 
 	/*
 	 * (non-Javadoc)
@@ -432,13 +433,18 @@ public class Observation implements IObservation, IInstanceImplementation {
 		 * is returned is the observation we want to use: we notify the result
 		 * to the compiler and return its context instead of the original one.
 		 */
-		if (getConceptualModel() instanceof TransformingConceptualModel) {
+		if (getConceptualModel() instanceof TransformingConceptualModel && !this.beingTransformed) {
 
+			this.beingTransformed = true;
+			
 			IInstance inst = Compiler.contextualize(this, session);
 			IInstance trs = ((TransformingConceptualModel) getConceptualModel())
 					.transformObservation(inst);
 			Observation obs = extractObservationFromInstance(trs);
 			compiler.addObservation(obs);
+
+			this.beingTransformed = false;
+			
 			return (ObservationContext) obs.getObservationContext();
 		}
 
