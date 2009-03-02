@@ -26,9 +26,7 @@ public class InstanceCoverageLoader extends CoverageHandler {
 		process();
 		
 		for (Polylist list : olist) {
-			
 			System.out.println(Polylist.prettyPrint(list));
-			
 			instances.add(session.createObject(list));
 		}
 		

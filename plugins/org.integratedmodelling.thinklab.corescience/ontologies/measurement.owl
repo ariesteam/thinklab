@@ -155,6 +155,26 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/measurement.owl#hasDefaultValue -->
+
+    <owl:DatatypeProperty rdf:about="#hasDefaultValue">
+        <rdfs:domain rdf:resource="#MappingObservation"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/measurement.owl#hasMapping -->
+
+    <owl:DatatypeProperty rdf:about="#hasMapping">
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >Associates a mapping observation to the string specification of its mapping (see the mapping literals for syntax).</rdfs:comment>
+        <rdfs:domain rdf:resource="#MappingObservation"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/measurement.owl#hasScaleFactor -->
 
     <owl:DatatypeProperty rdf:about="#hasScaleFactor">
@@ -311,20 +331,29 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/measurement.owl#MappingObservation -->
+
+    <owl:Class rdf:about="#MappingObservation">
+        <rdfs:subClassOf rdf:resource="&observation;Quantification"/>
+        <thinklab-core:AbstractClass>true</thinklab-core:AbstractClass>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/measurement.owl#Measurement -->
 
     <owl:Class rdf:about="#Measurement">
         <rdfs:subClassOf rdf:resource="&observation;Quantification"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&observation;hasObservable"/>
-                <owl:allValuesFrom rdf:resource="&representation;PhysicalProperty"/>
+                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
+                <owl:allValuesFrom rdf:resource="#Unit"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
-                <owl:allValuesFrom rdf:resource="#Unit"/>
+                <owl:onProperty rdf:resource="&observation;hasObservable"/>
+                <owl:allValuesFrom rdf:resource="&representation;PhysicalProperty"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:comment rdf:datatype="&xsd;string"
@@ -370,6 +399,12 @@ A Measurement admits a literal equivalent in ThinkLab for simple numeric measure
         <rdfs:subClassOf rdf:resource="&observation;Quantification"/>
         <rdfs:subClassOf>
             <owl:Restriction>
+                <owl:onProperty rdf:resource="#minValue"/>
+                <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
                 <owl:onProperty rdf:resource="#isScale"/>
                 <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
             </owl:Restriction>
@@ -386,12 +421,6 @@ A Measurement admits a literal equivalent in ThinkLab for simple numeric measure
                 <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
             </owl:Restriction>
         </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="#minValue"/>
-                <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
-            </owl:Restriction>
-        </rdfs:subClassOf>
         <owl:versionInfo rdf:datatype="&xsd;string"
             >Created by Ferdinando Villa on Mon Jul 02 10:10:42 EDT 2007</owl:versionInfo>
         <rdfs:comment xml:lang="en"
@@ -401,6 +430,26 @@ A Measurement admits a literal equivalent in ThinkLab for simple numeric measure
     bounded or unbounded on either side. Those that are bounded on both sides 
     and have been defined as scales (isScale = true) can be mediated 
     automatically. Rankings can be forced to have integer values if desired.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/measurement.owl#RankingIntervalRemapper -->
+
+    <owl:Class rdf:about="#RankingIntervalRemapper">
+        <rdfs:subClassOf rdf:resource="#MappingObservation"/>
+        <rdfs:comment
+            >An observation that maps the datasource states to different numbers, checking the values against an interval of possible input values.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/measurement.owl#RankingSetRemapper -->
+
+    <owl:Class rdf:about="#RankingSetRemapper">
+        <rdfs:subClassOf rdf:resource="#MappingObservation"/>
+        <rdfs:comment
+            >An observation that maps the datasource states to different numbers, checking the values against a set (not an interval) of possible inputs.</rdfs:comment>
     </owl:Class>
     
 
