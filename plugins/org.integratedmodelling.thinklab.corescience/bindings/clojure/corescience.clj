@@ -53,7 +53,7 @@
 (defn get-state
      ""
      [observation]
-     (.. observation (getImplementation) (getObservationState) (getDataAsDouble)))
+     (.. observation (getImplementation) (getDataSource) (getDataAsDoubles)))
 
 (defn get-extent
 	"Retrieve and return the extent that observes the given concept (e.g. space) or nil. Note:

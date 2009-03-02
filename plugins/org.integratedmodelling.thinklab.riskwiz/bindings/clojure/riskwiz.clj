@@ -10,9 +10,4 @@
 	([source] nil)
 	([name nodelist] nil))
 	
-(defn make-node
-	""
-	([id] nil) 
-	([id parents] nil)
-	([id parents cpt] nil))
 	
