@@ -18,6 +18,7 @@ public class MappedIntSet extends ParsedLiteralValue {
 
 	Set<Integer> cset = new HashSet<Integer>();
 	Integer mapped = null;
+	String sform = null;
 	
 	public MappedIntSet(String s) throws ThinklabValidationException {
 		parseLiteral(s);
@@ -26,12 +27,14 @@ public class MappedIntSet extends ParsedLiteralValue {
 	@Override
 	public void parseLiteral(String s) throws ThinklabValidationException {
 
-		int idx = s.indexOf("<-");
+		sform = s;
+		
+		int idx = s.indexOf(":");
 		if (idx < 0)
 			throw new ThinklabValidationException("invalid mapped classification syntax: " + s);
 		
 		String iset = s.substring(0, idx).trim();
-		String[] classes = s.substring(idx+2).trim().split(",");
+		String[] classes = s.substring(idx+1).trim().split(",");
 		
 		for (String ss : classes) {
 			cset.add(Integer.parseInt(ss));
@@ -49,4 +52,7 @@ public class MappedIntSet extends ParsedLiteralValue {
 		return mapped;
 	}
 	
+	public String toString() {
+		return sform;
+	}
 }

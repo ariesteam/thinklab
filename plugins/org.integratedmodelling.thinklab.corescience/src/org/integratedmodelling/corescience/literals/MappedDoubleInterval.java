@@ -1,22 +1,26 @@
 package org.integratedmodelling.corescience.literals;
 
-import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 
-public class MappedInterval extends ParsedLiteralValue {
+/**
+ * Maps numbers to other numbers
+ * @author Ferdinando
+ *
+ */
+public class MappedDoubleInterval extends ParsedLiteralValue {
 
 	IntervalValue interval = null;
 	String sform = null;
+	Double mapped = null;
 	
-	public MappedInterval(String s) throws ThinklabValidationException {
+	public MappedDoubleInterval(String s) throws ThinklabValidationException {
 		parseLiteral(s);
 	}
 
-	public MappedInterval(IConcept concept, IntervalValue val) {
+	public MappedDoubleInterval(IConcept concept, IntervalValue val) {
 		setConceptWithoutValidation(concept);
 		interval = val;
 	}
@@ -34,12 +38,7 @@ public class MappedInterval extends ParsedLiteralValue {
 		String intvs = s.substring(idx+1).trim();
 		
 		interval = new IntervalValue(intvs);
-		try {
-			setConceptWithoutValidation(KnowledgeManager.get().requireConcept(cname));
-		} catch (ThinklabException e) {
-			throw new ThinklabValidationException(
-					"invalid mapped interval: " + s + ": " + e.getMessage());
-		}
+		mapped = Double.parseDouble(cname);
 
 	}
 
@@ -49,6 +48,14 @@ public class MappedInterval extends ParsedLiteralValue {
 	
 	public boolean contains(double d) {
 		return interval.contains(d);
+	}
+	
+	public double getValue() {
+		return mapped;
+	}
+	
+	public String toString() {
+		return sform;
 	}
 
 }

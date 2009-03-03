@@ -8,7 +8,7 @@ import org.integratedmodelling.corescience.interfaces.context.IObservationContex
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
-import org.integratedmodelling.corescience.literals.MappedIntSet;
+import org.integratedmodelling.corescience.literals.MappedDoubleInterval;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
@@ -21,17 +21,17 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Polylist;
 
-@InstanceImplementation(concept=CoreScience.RANKING_SET_REMAPPER)
-public class RankingSetRemapper extends Observation implements IConceptualizable {
+@InstanceImplementation(concept=CoreScience.RANKING_INTERVAL_REMAPPER)
+public class RankingIntervalRemapper extends Observation implements IConceptualizable {
 	
-	private ArrayList<MappedIntSet> mappings = new ArrayList<MappedIntSet>();
+	private ArrayList<MappedDoubleInterval> mappings = new ArrayList<MappedDoubleInterval>();
 	private Double defValue = null;
 	private IDataSource<?> ds = null;
 	
-	public class RankingSetRemappingAccessor implements IStateAccessor {
+	public class RankingIntervalRemappingAccessor implements IStateAccessor {
 
 		int index = 0;
-		
+
 		@Override
 		public Object getValue(Object[] registers) {
 			
@@ -52,9 +52,9 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 						"reclassification: cannot deal with value type: " + 
 						o);
 			
-			for (MappedIntSet m : mappings) {
+			for (MappedDoubleInterval m : mappings) {
 				if (m.contains(mval)) {
-					ret = (double)m.getValue();
+					ret = m.getValue();
 					break;
 				}
 			}
@@ -81,7 +81,6 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 		@Override
 		public boolean notifyDependencyObservable(IConcept observable)
 				throws ThinklabValidationException {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
@@ -91,18 +90,16 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 		}
 
 	}
-	public class RankingSetRemappingModel implements IConceptualModel {
-
-
+	public class RankingIntervalRemappingModel implements IConceptualModel {
+		
 		@Override
 		public IStateAccessor getStateAccessor(IConcept stateType,
 				IObservationContext context) {
-			return new RankingSetRemappingAccessor();
+			return new RankingIntervalRemappingAccessor();
 		}
 
 		@Override
 		public IConcept getStateType() {
-			/* FIXME this should be an integer, no time to deal with the consequences right now */
 			return KnowledgeManager.Double();
 		}
 
@@ -122,16 +119,16 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 	@Override
 	protected IConceptualModel createMissingConceptualModel()
 			throws ThinklabException {
-		return new RankingSetRemappingModel();
+		return new RankingIntervalRemappingModel();
 	}
 
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
-
+		
 		super.initialize(i);
 		
 		for (IRelationship r : i.getRelationships("measurement:hasMapping")) {
-			mappings.add(new MappedIntSet(r.getValue().toString()));
+			mappings.add(new MappedDoubleInterval(r.getValue().toString()));
 		}
 		
 		IValue def = i.get("measurement:hasDefaultValue");
@@ -149,7 +146,7 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 		arr.add(this.getObservationClass());
 		arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, getObservable().toList(null)));
 		
-		for (MappedIntSet m : mappings) {
+		for (MappedDoubleInterval m : mappings) {
 			arr.add(Polylist.list("measurement:hasMapping", m.toString()));
 			
 		if (defValue != null)

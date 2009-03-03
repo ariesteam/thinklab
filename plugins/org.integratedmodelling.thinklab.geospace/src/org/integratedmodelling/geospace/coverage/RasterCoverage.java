@@ -158,6 +158,11 @@ public class RasterCoverage implements ICoverage {
 		// here's the geometry we want and the crs for the derived coverage
 		this.gridGeometry = new GridGeometry2D(extent.getGridRange(), extent.getEnvelope());
 
+		/*
+		 * FIXME passing anything other than null here will result in all values being
+		 * zero. Even the original CRS causes that. Until this works, no reprojection
+		 * can take place.
+		 */
 		this.coverage = 
 			(GridCoverage2D) 
 				Operations.DEFAULT.resample(
@@ -165,6 +170,7 @@ public class RasterCoverage implements ICoverage {
 						null, 
 						this.gridGeometry, 
 						new InterpolationNearest());
+		
 	}
 
 	public RasterCoverage(String sourceURL, GridCoverage2D coverage, GridSampleDimension dimension, boolean isSingleBand) {
@@ -308,11 +314,13 @@ public class RasterCoverage implements ICoverage {
 	public Object getSubdivisionValue(int subdivisionOrder, IConceptualModel conceptualModel, ArealExtent extent) throws ThinklabValidationException {
 		
 		/* determine which active x,y we should retrieve for this order */
-		Pair<Integer, Integer> xy = ((GridExtent)extent).getActivationLayer().getCell(subdivisionOrder);
+		Pair<Integer, Integer> xy = ((GridExtent)extent).getActivationLayer().getCell(subdivisionOrder);		
+//
+//		System.out.println("integer@" + xy.getFirst() + "," + xy.getSecond() + " = " + itera.getSample(xy.getFirst(), xy.getSecond(), 0));
+//		System.out.println("double@" + xy.getFirst() + "," + xy.getSecond() + " = " + itera.getSampleDouble(xy.getFirst(), xy.getSecond(), 0));	
 		return itera.getSampleDouble(xy.getFirst(), xy.getSecond(), 0);
 		
 //		Object data = coverage.evaluate(getPosition(xy.getFirst(),xy.getSecond()));
-				
 //		IValue ret = null;
 //		
 //        final int dataType = image.getSampleModel().getDataType();
