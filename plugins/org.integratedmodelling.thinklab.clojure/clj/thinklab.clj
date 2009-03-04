@@ -80,7 +80,7 @@
    [concept textval]
    (.. KnowledgeManager 
    			(get) 
-   			(validateLiteral (tl/conc concept) textval nil)))
+   			(validateLiteral (tl/conc concept) textval)))
 		
 (defn get-property-values
 	"Return a list of the values of a relationship (or a map of all relationships to their values
