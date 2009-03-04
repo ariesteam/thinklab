@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.integratedmodelling.corescience.implementations.datasources.MemValueContextualizedDatasource;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -11,6 +13,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
+import org.integratedmodelling.utils.Polylist;
 
 /**
  * Helper methods to access and study observations
@@ -117,6 +120,13 @@ public class Obs {
 			if (ret != null)
 				return ret;
 		}
+		return null;
+	}
+
+	public static Polylist makeObservation(IConcept measurement,
+			IInstance observable, IConceptualModel conceptualModel,
+			MemValueContextualizedDatasource ds) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	

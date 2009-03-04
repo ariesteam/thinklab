@@ -1,5 +1,6 @@
 package org.integratedmodelling.geospace.implementations.cmodels;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
@@ -14,6 +15,7 @@ import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.districting.algorithms.ISODATAAlgorithm;
 import org.integratedmodelling.geospace.districting.algorithms.KMeansAlgorithm;
@@ -121,11 +123,11 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 		}
 
 		double[][] dset = new double[states.size()][]; int i = 0;
-		IConcept[] oos = new IConcept[states.size()];
+		IConcept[] oob = new IConcept[states.size()];
 		
 		for (Map.Entry<IConcept, IContextualizedState> state : states.entrySet()) {
-			oos[i] = state.getKey();
-			dset[i++] = state.getValue().getDataAsDoubles();
+			dset[i] = state.getValue().getDataAsDoubles();
+			oob[i++] = state.getKey();
 		}
 
 		DistrictingResults results =
@@ -136,38 +138,52 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 					new KMeansAlgorithm().createDistricts(dset, initialK);
 		
 		
+		ArrayList<Polylist> deps = new ArrayList<Polylist>();			
 		/*
 		 * each dependency gets a new Measurement or Ranking (can't work with
 		 * anything else) with its own datasource, each with as many distributions
 		 * of the given observable as there are clusters
 		 */
-		for (IConcept co : oos) {
+		int obsidx = 0;
+		for (IConcept co : oob) {
 			
 			IObservation origObs = Obs.findObservation(obs, co);
 			
+			/* process the results of clustering into a datasource per observable */
+			MemValueContextualizedDatasource ds = 
+				new MemValueContextualizedDatasource(
+						Geospace.get().GridClassifier(), results.getFinalK());
+
+			for (int k = 0; k < results.getFinalK(); k++) {
+				ds.addValue(new DistributionValue(
+						DistributionValue.Distributions.NORMAL,
+						results.getCentroids(k)[obsidx],
+						results.getStdevs()[k].get(obsidx)));
+			}
+			
 			if (origObs instanceof Measurement) {
 				
+				deps.add(Obs.makeObservation(
+						CoreScience.Measurement(),
+						origObs.getObservable(),
+						origObs.getConceptualModel(),
+						ds));
+				
 			} else if (origObs instanceof Ranking) {
+
+				deps.add(Obs.makeObservation(
+						CoreScience.Ranking(),
+						origObs.getObservable(),
+						origObs.getConceptualModel(),
+						ds));
 				
 			} else 
 				throw new ThinklabValidationException(
 						"clustering: can only generate distributions from ranking or measurements: "
 						+ origObs);
 			
-			for (int k = 0; k < results.getFinalK(); k++) {
-//				ds.addValue(new DistributionValue(
-//						DistributionValue.Distributions.NORMAL,
-//						results.get));
-			}
-			
-			
+			obsidx++;
 		}
-					
-		/* process the results of clustering into a datasource per observable */
-		MemValueContextualizedDatasource ds = 
-			new MemValueContextualizedDatasource(
-					Geospace.get().GridClassifier(), results.getFinalK());
-		
 		
 		/* make a conceptual model for the spatial extent */
 		ClassifiedRasterConceptualModel cm =
@@ -182,7 +198,7 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 		 * clustered into distributions of their values per cluster. */
 		
 		
-		/* build main identification, shares our observable */
+		/* main identification, shares our observable */
 		Polylist orobs = obs.getObservable().toList(null);
 		
 		/* connect spatial extent obs */

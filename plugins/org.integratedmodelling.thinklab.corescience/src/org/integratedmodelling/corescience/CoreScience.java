@@ -55,6 +55,8 @@ public class CoreScience extends ThinklabPlugin {
 
 	private IConcept DiscreteNumericRankingSpace;
 	private IConcept MeasurementSpace;
+	private IConcept MeasurementType;
+	private IConcept RankingType;
 	private IConcept RandomValueType;
 	private IConcept ContinuousDistributionType;
 	private IConcept DiscreteDistributionType;
@@ -129,6 +131,8 @@ public class CoreScience extends ThinklabPlugin {
 			ContinuousDistributionType = km.requireConcept(CONTINUOUS_DISTRIBUTION);
 			DiscreteDistributionType = km.requireConcept(DISCRETE_DISTRIBUTION);
 			ObservationType = km.requireConcept(OBSERVATION);
+			MeasurementType = km.requireConcept(MEASUREMENT);
+			RankingType = km.requireConcept(RANKING);
 			
 		} catch (Exception e) {
 			throw new ThinklabPluginException(e);
@@ -193,28 +197,36 @@ public class CoreScience extends ThinklabPlugin {
 		compilerClasses.put(id, compilerClass);
 	}
 
-	public IConcept DiscreteRankingModel() {
-		return this.DiscreteNumericRankingSpace;
+	public static IConcept DiscreteRankingModel() {
+		return get().DiscreteNumericRankingSpace;
 	}
 
-	public IConcept MeasurementModel() {
-		return this.MeasurementSpace;
+	public static IConcept MeasurementModel() {
+		return get().MeasurementSpace;
 	}
 
-	public IConcept RandomValue() {
-		return this.RandomValueType;
+	public static IConcept RandomValue() {
+		return get().RandomValueType;
 	}
 
-	public IConcept ContinuousDistribution() {
-		return this.ContinuousDistributionType;
+	public static IConcept ContinuousDistribution() {
+		return get().ContinuousDistributionType;
 	}
 
-	public IConcept DiscreteDistribution() {
-		return this.DiscreteDistributionType;
+	public static IConcept DiscreteDistribution() {
+		return get().DiscreteDistributionType;
 	}
 
-	public IConcept Observation() {
-		return this.ObservationType;
+	public static IConcept Observation() {
+		return get().ObservationType;
+	}
+
+	public static IConcept Measurement() {
+		return get().MeasurementType;
+	}
+
+	public static IConcept Ranking() {
+		return get().RankingType;
 	}
 
 }
