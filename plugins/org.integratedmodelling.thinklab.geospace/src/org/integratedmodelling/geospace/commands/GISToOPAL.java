@@ -78,7 +78,7 @@ public class GISToOPAL implements ICommandHandler {
 
 			document.writeToFile(new File(output));
 
-			session.displayOutput(nObjects + " objects written to "
+			session.getOutputStream().println(nObjects + " objects written to "
 					+ output);
 
 		} else if (toload.endsWith(".tif") || toload.endsWith(".tiff")) {
@@ -94,7 +94,7 @@ public class GISToOPAL implements ICommandHandler {
 
 			document.writeToFile(new File(output));
 
-			session.displayOutput(nObjects + " objects written to "
+			session.getOutputStream().println(nObjects + " objects written to "
 					+ output);
 
 		} else {

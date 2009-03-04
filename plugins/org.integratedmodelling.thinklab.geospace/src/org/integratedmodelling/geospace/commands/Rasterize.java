@@ -32,8 +32,11 @@
  **/
 package org.integratedmodelling.geospace.commands;
 
+import java.io.File;
 import java.net.URL;
 
+import org.geotools.gce.geotiff.GeoTiffFormat;
+import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.extents.GridExtent;
@@ -44,6 +47,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.opengis.coverage.grid.GridCoverageWriter;
 
 /**
  * Load ontologies, OPAL files, objects from remote KBoxes into current session
@@ -60,7 +64,9 @@ public class Rasterize implements ICommandHandler {
 		int yCells = command.getArgument("yCells").asNumber().asInteger();
 
 		String attrName = command.getOptionAsString("attribute", "the_value");
-
+		String output = command.getOptionAsString("output", null);
+		float nodata = (float)command.getOptionAsDouble("n", Float.NaN);
+		
 		URL theUrl = MiscUtilities.getURLForResource(toload);
 
 		VectorCoverage vCoverage = new VectorCoverage(theUrl, attrName, false);
@@ -74,11 +80,16 @@ public class Rasterize implements ICommandHandler {
 				vCoverage.getLatUpperBound(), xCells, yCells);
 
 		RasterCoverage rCoverage = ThinklabRasterizer.rasterize(vCoverage,
-				attrName, Float.NaN, extent);
+				attrName, nodata, extent);
 
 		// TODO we should obviously endeavor to save it if an output arg is
 		// passed.
 		rCoverage.show();
+		
+		if (output != null) {
+			File f = new File(output);
+			rCoverage.write(f);
+		}
 
 		return null;
 	}

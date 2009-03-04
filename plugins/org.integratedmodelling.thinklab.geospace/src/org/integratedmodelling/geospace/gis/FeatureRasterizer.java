@@ -370,7 +370,10 @@ public class FeatureRasterizer {
         	
         	if (this.attributeTable == null) {
 
-        		value = Float.parseFloat(feature.getAttribute(attributeName).toString());               
+        		Object attr = feature.getAttribute(attributeName);
+        		if (attr == null)
+        			return;
+        		value = Float.parseFloat(attr.toString());               
 
         		if (value > maxAttValue) { maxAttValue = value; }
         		if (value < minAttValue) { minAttValue = value; }

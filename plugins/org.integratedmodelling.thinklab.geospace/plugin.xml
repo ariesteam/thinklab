@@ -154,40 +154,41 @@
 	</extension>
 	
 	<!-- commands -->
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="GISToOpal">
-		<parameter id="class" value="org.integratedmodelling.corescience.commands.Contextualize"/>
-		<parameter id="command-name" value="contextualize"/>
-		<parameter id="command-description" value="contextualize an observation"/>
-		<parameter id="argument-names" value="c1"/>
-		<parameter id="argument-types" value="thinklab-core:Text"/>
-		<parameter id="argument-descriptions" value="ID of the observation instance to contextualize"/>
-		<parameter id="option-names" value="d"/>
-		<parameter id="option-long-names" value="debug"/>
-		<parameter id="option-types" value="owl:Nothing"/>
-		<parameter id="option-descriptions" value="debug workflow"/>
-	</extension>
+<!--	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="GISToOpal">
+		<parameter id="class" value="org.integratedmodelling.geospace.commands.GISToOpal"/>
+		<parameter id="command-name" value="gis2opal"/>
+		<parameter id="command-description" value="convert a GIS file to its OPAL annotations"/>
+		<parameter id="argument-names" value="resource,output"/>
+		<parameter id="argument-types" value="thinklab-core:Text,thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="URL of gis file,name of output file"/>
+		<parameter id="option-names" value="p"/>
+		<parameter id="option-long-names" value="profile"/>
+		<parameter id="option-types" value="thinklab-core:Text"/>
+		<parameter id="option-descriptions" value="OPAL profile"/>
+	</extension> -->
 
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="rasterize">
-		<parameter id="class" value="org.integratedmodelling.corescience.commands.Link"/>
-		<parameter id="command-name" value="link"/>
-		<parameter id="command-description" value="link two observations so that the state of the source is mediated from the destination"/>
-		<parameter id="argument-names" value="c1,c2"/>
-		<parameter id="argument-types" value="thinklab-core:Text,thinklab-core:Text"/>
-		<parameter id="argument-descriptions" value="source observation,destination observation"/>
-		<parameter id="option-names" value="c"/>
-		<parameter id="option-long-names" value="conformance"/>
-		<parameter id="option-types" value="thinklab-core:Text"/>
-		<parameter id="option-descriptions" value="use specified conformance policy for mediation"/>
+		<parameter id="class" value="org.integratedmodelling.geospace.commands.Rasterize"/>
+		<parameter id="command-name" value="rasterize"/>
+		<parameter id="command-description" value="rasterize a layer"/>
+		<parameter id="argument-names" value="resource,xCells,yCells"/>
+		<parameter id="argument-types" value="thinklab-core:Text,thinklab-core:Integer,thinklab-core:Integer"/>
+		<parameter id="argument-descriptions" value="URL,x cells,y cells"/>
+		<parameter id="option-names" value="a,o,n"/>
+		<parameter id="option-argument-labels" value="1,2,3"/>
+		<parameter id="option-long-names" value="attribute,output,nodata"/>
+		<parameter id="option-types" value="thinklab-core:Text,thinklab-core:Text,thinklab-core:LongFloatingPoint"/>
+		<parameter id="option-descriptions" value="attribute name,output file (GeoTiff),no data value (default NaN)"/>
 	</extension>
 
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="vectorize">
+<!--	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="vectorize">
 		<parameter id="class" value="org.integratedmodelling.corescience.commands.Olist"/>
 		<parameter id="command-name" value="olist"/>
 		<parameter id="command-description" value="list the structure and state of an observation"/>
 		<parameter id="argument-names" value="observation"/>
 		<parameter id="argument-types" value="thinklab-core:Text"/>
 		<parameter id="argument-descriptions" value="ID of the observation instance to inspect"/>
-	</extension>
+	</extension> -->
 
 	<!-- bindings -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding" id="clj">

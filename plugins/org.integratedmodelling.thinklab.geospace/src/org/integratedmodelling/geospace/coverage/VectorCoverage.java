@@ -34,19 +34,13 @@ package org.integratedmodelling.geospace.coverage;
 
 import java.awt.Color;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URL;
-import java.util.Hashtable;
 
 import javax.swing.JFrame;
 
 import org.geotools.data.shapefile.ShapefileDataStore;
-import org.geotools.data.shapefile.shp.ShapefileWriter;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.gce.geotiff.GeoTiffWriter;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gui.swing.JMapPane;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.DefaultMapLayer;
@@ -73,8 +67,6 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 public class VectorCoverage implements ICoverage {
 
