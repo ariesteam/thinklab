@@ -33,6 +33,8 @@
  **/
 package org.integratedmodelling.thinklab.interfaces.knowledge;
 
+import java.util.Properties;
+
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 
@@ -41,16 +43,17 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
  * model has been read.
  * 
  * @author UVM Affiliate
- *
+ * @see org.integratedmodelling.thinklab.interfaces.knowledge.OntoBean for automatically wiring properties to class fields.
  */
 public interface IInstanceImplementation {
 	
 	/**
 	 * Called just after creation, passing the OWL counterpart. 
 	 * @param i
+	 * @param properties TODO
 	 * @throws ThinklabException
 	 */
-	public abstract void initialize(IInstance i) throws ThinklabException;
+	public abstract void initialize(IInstance i, Properties properties) throws ThinklabException;
 	
 	/**
 	 * Called when the OWL counterpart is validated. Supposed to throw

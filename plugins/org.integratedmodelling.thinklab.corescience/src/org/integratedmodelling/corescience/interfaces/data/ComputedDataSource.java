@@ -17,9 +17,10 @@ public interface ComputedDataSource {
 	 * 
 	 * @param observable
 	 * @param type
+	 * @param register the index of the state in the register array passed to getValue()
 	 * @throws ThinklabValidationException
 	 */
-	public void notifyDependency(IConcept observable, IConcept type)  throws ThinklabValidationException;
+	public void notifyDependency(IConcept observable, IConcept type, int register)  throws ThinklabValidationException;
 	
 	/**
 	 * Called once after all dependencies have been notified. Should ensure that all the needed 

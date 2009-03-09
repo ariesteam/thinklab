@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -127,9 +128,9 @@ public class ThinklabOWLManager {
 	
 	static ThinklabOWLManager owlManager;
 
-	public static OWLProperty abstractAnnotationProperty;
-	public static OWLProperty classLiteralAnnotationProperty;
-	public static OWLProperty extendedLiteralAnnotationProperty;
+	public static OWLProperty<?,?> abstractAnnotationProperty;
+	public static OWLProperty<?,?> classLiteralAnnotationProperty;
+	public static OWLProperty<?,?> extendedLiteralAnnotationProperty;
 
 	
 	public static ThinklabOWLManager get() throws ThinklabException {
@@ -140,11 +141,11 @@ public class ThinklabOWLManager {
 
 			/* TODO set properties */
 			abstractAnnotationProperty = 
-				(OWLProperty) ((Property)KnowledgeManager.get().getAbstractProperty()).entity;
+				(OWLProperty<?,?>) ((Property)KnowledgeManager.get().getAbstractProperty()).entity;
 			classLiteralAnnotationProperty = 
-				(OWLProperty) ((Property)KnowledgeManager.get().getClassificationProperty()).entity;
+				(OWLProperty<?,?>) ((Property)KnowledgeManager.get().getClassificationProperty()).entity;
 			extendedLiteralAnnotationProperty = 
-				(OWLProperty) ((Property)KnowledgeManager.get().getReifiedLiteralProperty()).entity;
+				(OWLProperty<?,?>) ((Property)KnowledgeManager.get().getReifiedLiteralProperty()).entity;
 			
 		}
 		return owlManager;
@@ -169,7 +170,7 @@ public class ThinklabOWLManager {
 	 * @return
 	 */
 	Collection<IValue> translateRelationship(OWLOntology ontology,
-			OWLIndividual cl, OWLEntity property) throws ThinklabException {
+			OWLIndividual cl, OWLEntity property, Properties properties) throws ThinklabException {
 
 		ArrayList<IValue> ret = new ArrayList<IValue>();
 
@@ -257,7 +258,7 @@ public class ThinklabOWLManager {
 						if (new Property((OWLObjectProperty) property)
 								.isClassification()) {
 
-							Instance cin = new Instance(ind);
+							Instance cin = new Instance(ind, properties);
 
 							/*
 							 * classAnnotation must be the semantic type or URL
@@ -288,7 +289,7 @@ public class ThinklabOWLManager {
 								 * figure out how to construct literal using the
 								 * concept manager closest to the object's class
 								 */
-								IConcept cc = new Instance(ind).getDirectType();
+								IConcept cc = new Instance(ind, properties).getDirectType();
 
 								val = KnowledgeManager.get().validateLiteral(
 										cc, literAnnotation);
@@ -305,7 +306,7 @@ public class ThinklabOWLManager {
 
 								/* it's just a stupid object property */
 								val = new ObjectReferenceValue(
-										new Instance(ind));
+										new Instance(ind, properties));
 								ret.add(val);
 
 							}
@@ -327,32 +328,53 @@ public class ThinklabOWLManager {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public IInstanceImplementation getInstanceImplementation(Instance instance) throws ThinklabException {
+	public IInstanceImplementation getInstanceImplementation(Instance instance, Properties properties) throws ThinklabException {
 
 		IInstanceImplementation ret = null;
+		boolean isVolatile = instance instanceof VolatileInstance;
+		
+		boolean hasIt = isVolatile ?
+				instance._initialized :
+				instanceImplementations.containsKey(instance.getURI());
 		
 		// check if this uri passed here before
-		if (!instanceImplementations.containsKey(instance.getURI())) {
+		if (!hasIt) {
 
 			ret = KnowledgeManager.get().newInstanceImplementation(instance.getDirectType());
 			
-			/*
-			 * use a synchronized function because this is a singleton and hashmap isn't
-			 * synchronized.
-			 */
-			addImpl(instance.getURI(), ret);
+			if (isVolatile)
+				((VolatileInstance)instance).implementation = ret;
+			else
+				/*
+				 * use a synchronized function because this is a singleton and hashmap isn't
+				 * synchronized.
+				 */
+				addImpl(instance.getURI(), ret);
 
 			if (ret != null)
-				ret.initialize(instance);
-		
+				ret.initialize(instance, properties);
+
+
 		} else {
-			ret = instanceImplementations.get(instance.getURI()); 
+		
+			ret = 
+				isVolatile ?
+						((VolatileInstance)instance).implementation :
+						instanceImplementations.get(instance.getURI()); 
 		}
+		
+		instance._initialized = true;
+
 		return ret;
 	}
 	
 	public void setInstanceImplementation(Instance instance, IInstanceImplementation impl) {
-		addImpl(instance.getURI(), impl);
+
+		if (instance instanceof VolatileInstance) {
+			((VolatileInstance)instance).implementation = impl;
+		} else {
+			addImpl(instance.getURI(), impl);
+		}
 	}
 	
 
@@ -453,6 +475,9 @@ public class ThinklabOWLManager {
 	/* FIXME there must be something wrong here, or maybe not. In that case, don't FIXME. */
 	public Instance getClassLiteralInstance(IConcept concept) throws ThinklabException {
 		
+		/*
+		 * TODO these should be volatile if anything
+		 */
 		IInstance ret = classLiterals.get(concept.toString());
 		
 		if (ret == null) {
@@ -549,6 +574,7 @@ public class ThinklabOWLManager {
 					return;
 				} else if (o1.toString().equals("@")) {
 					inst.setImplementation((IInstanceImplementation) l.second());
+					((Instance)inst)._initialized = true;
 					return;
 				} else if (o1.toString().equals("#")) {
 
@@ -566,6 +592,7 @@ public class ThinklabOWLManager {
 					
 					setInstanceImplementation((Instance) inst, impl);	
 					((IParseable)impl).parseSpecifications(inst, l.second().toString());
+					((Instance)inst)._initialized = true;
 					return;
 				}
 				
@@ -830,7 +857,6 @@ public class ThinklabOWLManager {
 				}
 				
 				inst.addLiteralRelationship(property, toAdd);
-				
 				
 			} else if (svalue.startsWith("#")) {
 

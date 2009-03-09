@@ -171,7 +171,8 @@ public interface ISession {
 	 * @throws ThinklabException
 	 */
 	public abstract IConcept createConcept(Polylist list) throws ThinklabException;
-		
+
+
 	/**
 	 * Create object of passed type. Object is all yours to define. 
 	 * 
@@ -188,7 +189,7 @@ public interface ISession {
 	 * Create object of passed type. Object is all yours to define. The object must be validated
 	 * using validate() before it can be used. Name of object is automatically assigned.
 	 * @param concept a string representing the semantic type of the parent concept.
-	 * @return a new unvalidate IInstance
+	 * @return a new unvalidated IInstance
 	 * @throws ThinklabException  if anything wrong.
 	 * 
 	 * 	 * FIXME must return a garbage collected instance, if we ever manage to implement it.
@@ -259,11 +260,13 @@ public interface ISession {
 	/**
 	 * Create instance, using made up name. Identical to createObject(String, Polylist) otherwise.
 	 * @param polylist
+	 * @param properties TODO
+	 * @param properties for defaults and such, passed to implementation.initialize()
 	 * @return a new validated instance.
 	 * 
 	 *  FIXME must return a garbage collected instance, if we ever manage to implement it.
 	 */
-	public abstract IInstance createObject(Polylist polylist) throws ThinklabException;
+	public abstract IInstance createObject(Polylist polylist, Properties properties) throws ThinklabException;
 	
 	/**
 	 * Read in objects from the given URL. What can be read depends on the implementation, but it should
@@ -329,33 +332,6 @@ public interface ISession {
      */
     public abstract IInstance createObject(IInstance ii) throws ThinklabException;
 
-    /**
-     * 
-     * @param algorithm
-     * @param arguments
-     * @return
-     * @throws ThinklabException
-     * @deprecated old logic for embedded code execution, use interpreters
-     */
-    public abstract IValue execute(AlgorithmValue algorithm, Map<String, IValue> arguments) throws ThinklabException;
-
-    /**
-     * 
-     * @param algorithm
-     * @return
-     * @throws ThinklabException
-     * @deprecated old logic for embedded code execution, use interpreters
-     */
-    public abstract IValue execute(AlgorithmValue algorithm) throws ThinklabException;
-
-    /**
-     * A session is an ontology and we enforce that. Therefore there should be a method that returns
-     * something that implements IOntology. 
-     * 
-     * @return an ontology "view" of the session.
-     * @deprecated wtf
-     */
-	public abstract IOntology asOntology();
 
 	/**
 	 * Return all the listeners registered with the session. Can return null if no listeners are registered or
@@ -364,16 +340,6 @@ public interface ISession {
 	 * @return a collection of all listeners added to the session using addListener(), or null.
 	 */
 	public abstract Collection<IThinklabSessionListener> getListeners();
-	
-	/**
-	 * Declare that the objects passed are equivalent in the underlying logical model.
-	 * Used for integration in all plugins.
-	 * 
-	 * @param o1
-	 * @param o2
-	 * @deprecated link objects directly
-	 */
-	public abstract void linkObjects(IInstance o1, IInstance o2);
 
 	/**
 	 * KBox retrieval is moved to the session level because kboxes may be local to sessions.

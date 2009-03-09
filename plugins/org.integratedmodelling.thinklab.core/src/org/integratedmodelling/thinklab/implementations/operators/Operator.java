@@ -1,5 +1,7 @@
 package org.integratedmodelling.thinklab.implementations.operators;
 
+import java.util.Properties;
+
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
@@ -73,7 +75,7 @@ public abstract class Operator implements IOperator {
 	}
 
 	@Override
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 		this.id = i.getLocalName();
 	}
 

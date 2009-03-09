@@ -47,7 +47,7 @@ import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBoxCapabilities;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.thinklab.session.Session;
+import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.MalformedListException;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
@@ -88,14 +88,14 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 			throws ThinklabException {
 
 		Polylist list = this.retrieveObjectAsList(id);
-		return session.createObject(list);
+		return session.createObject(list, getProperties());
 	}
 
 	public IInstance getObjectFromID(String id, ISession session,
 			HashMap<String, String> refTable) throws ThinklabException {
 
 		Polylist list = this.retrieveObjectAsList(id, refTable);
-		return session.createObject(list);
+		return session.createObject(list, getProperties());
 	}
 
 	public String storeObject(IInstance object, ISession session)
@@ -225,7 +225,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		if (session == null)
 			session = new Session();
 		
-		IInstance object = session.createObject(list);
+		IInstance object = session.createObject(list, getProperties());
 
 		Pair<String, String> sql = storeInstanceSQL(object, session);
 
@@ -250,7 +250,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		if (session == null)
 			session = new Session();
 		
-		IInstance object = session.createObject(list);
+		IInstance object = session.createObject(list, getProperties());
 
 		Pair<String, String> sql = storeInstanceSQL(object, session, refTable);
 

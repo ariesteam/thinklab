@@ -54,7 +54,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.session.Session;
+import org.integratedmodelling.thinklab.owlapi.Session;
 
 import bsh.util.JConsole;
 

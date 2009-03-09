@@ -99,7 +99,7 @@ public class PSession implements ISession {
 		return null;
 	}
 
-	public IInstance createObject(Polylist polylist) throws ThinklabException {
+	public IInstance createObject(Polylist polylist, Properties properties) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

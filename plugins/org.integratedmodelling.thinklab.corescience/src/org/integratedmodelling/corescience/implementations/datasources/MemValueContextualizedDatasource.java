@@ -33,6 +33,7 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
 import java.util.Arrays;
+import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
@@ -65,7 +66,7 @@ public class MemValueContextualizedDatasource
 	}
 
 	@Override
-	public Object getValue(int index) {
+	public Object getValue(int index, Object[] parameters) {
 		return data[index];
 	}
 
@@ -95,7 +96,7 @@ public class MemValueContextualizedDatasource
 	}
 
 	@Override
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 	}
 
 	@Override

@@ -34,6 +34,7 @@
 package org.integratedmodelling.thinklab.kbox;
 
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -62,6 +63,8 @@ import org.integratedmodelling.utils.Polylist;
  */
 public class MultipleKBox implements IKBox {
 
+	Properties properties = new Properties();
+	
 	public IKBoxCapabilities getKBoxCapabilities() {
 		// TODO Auto-generated method stub
 		return null;
@@ -140,6 +143,11 @@ public class MultipleKBox implements IKBox {
 	public String getUri() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Properties getProperties() {
+		return properties;
 	}
 
 }

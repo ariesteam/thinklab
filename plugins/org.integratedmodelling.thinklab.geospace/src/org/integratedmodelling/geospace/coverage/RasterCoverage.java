@@ -5,24 +5,17 @@ import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
-import javax.media.jai.Interpolation;
-import javax.media.jai.InterpolationBicubic;
-import javax.media.jai.InterpolationBilinear;
 import javax.media.jai.InterpolationNearest;
 import javax.media.jai.RasterFactory;
 import javax.media.jai.iterator.RandomIter;
 import javax.media.jai.iterator.RandomIterFactory;
 
 import org.geotools.coverage.GridSampleDimension;
-import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
 import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.coverage.grid.ViewType;
-import org.geotools.coverage.processing.DefaultProcessor;
 import org.geotools.coverage.processing.Operations;
 import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.geometry.DirectPosition2D;
@@ -40,7 +33,6 @@ import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 import org.opengis.geometry.BoundingBox;
-import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 public class RasterCoverage implements ICoverage {
@@ -60,11 +52,11 @@ public class RasterCoverage implements ICoverage {
 	
 	static GridCoverageFactory rasterFactory = new GridCoverageFactory();
 	
-    private static int floatBitsToInt(float f) {
-        ByteBuffer conv = ByteBuffer.allocate(4);
-        conv.putFloat(0, f);
-        return conv.getInt(0);
-    }
+//    private static int floatBitsToInt(float f) {
+//        ByteBuffer conv = ByteBuffer.allocate(4);
+//        conv.putFloat(0, f);
+//        return conv.getInt(0);
+//    }
 	
 	/**
 	 * Produce a new raster coverage from a cell extent and a vector of values that follow the
@@ -376,7 +368,8 @@ public class RasterCoverage implements ICoverage {
 	}
 
 	public int getXRangeMax() {
-		return gridGeometry.getGridRange().getUpper(0);
+		// todo use getEnvelope2D, then who knows
+		return gridGeometry.getGridRange2D().getUpper(0);
 	}
 
 	public int getXRangeOffset() {
@@ -435,14 +428,6 @@ public class RasterCoverage implements ICoverage {
 		return null;
 	}
 
-	public double getDataAsDouble(int x, int y) {
-
-		double[] ret =
-			coverage.getDataBlock(new GeneralGridRange(new int[] {x, y}, null), (double[])null);
-		
-		return ret[0];
-	}
-	
 	/**
 	 * Vectorize into a vector coverage.
 	 * 

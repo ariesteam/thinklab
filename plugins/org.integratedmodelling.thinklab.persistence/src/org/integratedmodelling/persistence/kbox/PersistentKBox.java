@@ -55,6 +55,7 @@ import org.integratedmodelling.utils.Polylist;
  */
 public class PersistentKBox implements IKBox {
 	
+	private Properties properties = new Properties();
 	protected ClassLoader PersistentClassLoader = Thread.currentThread().getContextClassLoader();
 
 	public IInstance getObjectFromID(String id, ISession session) throws ThinklabException {
@@ -136,6 +137,11 @@ public class PersistentKBox implements IKBox {
 	public String getUri() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Properties getProperties() {
+		return properties;
 	}
 
 

@@ -257,5 +257,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/ext-1.1.1.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/jep-2.4.1.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/ojAlgo.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/deegree2.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

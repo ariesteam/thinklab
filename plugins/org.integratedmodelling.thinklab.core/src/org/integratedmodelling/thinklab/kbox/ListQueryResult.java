@@ -3,6 +3,7 @@ package org.integratedmodelling.thinklab.kbox;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -26,11 +27,13 @@ public class ListQueryResult implements IQueryResult {
 	IQuery query = null;
 	IQueriable queriable = null;
 	float[] scores = null;
+	Properties properties;
 	
-	public ListQueryResult(IQuery query, IQueriable queriable, Collection<Polylist> lists) {
+	public ListQueryResult(IQuery query, IQueriable queriable, Collection<Polylist> lists, Properties properties) {
 		
 		this.query = query;
 		this.queriable = queriable;
+		this.properties = properties;
 		
 		if (lists != null)
 			for (Polylist l : lists) {
@@ -53,7 +56,7 @@ public class ListQueryResult implements IQueryResult {
 	public IValue getResult(int n, ISession session) throws ThinklabException {
 		
 		Polylist l = lists.get(n);
-		IInstance i = session.createObject(l);
+		IInstance i = session.createObject(l, properties);
 		return new ObjectReferenceValue(i);
 	}
 

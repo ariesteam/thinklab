@@ -34,6 +34,7 @@
 package org.integratedmodelling.thinklab.interfaces.storage;
 
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -111,6 +112,15 @@ public abstract interface IKBox extends IQueriable {
 	
 	public final String KBOX_METADATA_SCHEMA_PROPERTY = "kbox.metadata.schema";
 
+	/**
+	 * Most KBoxes should have properties, so that instances can check for 
+	 * base URLs or other things when loading. If you don't need properties, return
+	 * an empty map.
+	 * 
+	 * @return the kbox's properties. Can be empty, but should never return null.
+	 */
+	public abstract Properties getProperties();
+	
 	/**
 	 * Return the list definition of an object in the kbox. If the second parameter is not null, 
 	 * it will contain a map between string IDs of objects and their full URL; these objects, when present,

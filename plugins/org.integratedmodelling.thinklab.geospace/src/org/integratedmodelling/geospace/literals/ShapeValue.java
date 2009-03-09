@@ -340,7 +340,7 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
 	}
 
 	@Override
-	public ShapeValue getValue(int index) {
+	public ShapeValue getValue(int index, Object[] parameters) {
 		// TODO Auto-generated method stub
 		return this;
 	}

@@ -66,6 +66,7 @@ public class OntologyKBox implements IKBox {
 
     IOntology storage;
     boolean  modified = false;
+    Properties properties = new Properties();
     
     public OntologyKBox(String kboxURI) throws ThinklabException {
 		initialize("owl", kboxURI, null);
@@ -187,6 +188,11 @@ public class OntologyKBox implements IKBox {
 	public String getUri() {
 		// TODO Auto-generated method stub
 		return storage.getURI();
+	}
+
+	@Override
+	public Properties getProperties() {
+		return properties;
 	}
 
 }

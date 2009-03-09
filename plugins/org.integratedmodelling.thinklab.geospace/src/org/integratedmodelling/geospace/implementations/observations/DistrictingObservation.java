@@ -1,5 +1,7 @@
 package org.integratedmodelling.geospace.implementations.observations;
 
+import java.util.Properties;
+
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.geospace.Geospace;
@@ -39,8 +41,8 @@ public class DistrictingObservation extends Observation {
 	}
 
 	@Override
-	public void initialize(IInstance i) throws ThinklabException {
-		super.initialize(i);
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+		super.initialize(i, properties);
 		
 		/*
 		 * recover clustering parameters, "infer" method

@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.geospace.implementations.observations;
 
+import java.util.Properties;
+
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
@@ -57,7 +59,7 @@ public class SpatialCoverage extends Observation {
 	double latLB, lonLB, latUB, lonUB;
 	CoordinateReferenceSystem crs;
 	
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 
 		/*
 		 * link the obvious observable - do it now, so that super.initialize() finds it.
@@ -91,7 +93,7 @@ public class SpatialCoverage extends Observation {
 		if (crsId != null)
 			crs = SubdividedCoverageConceptualModel.getCRSFromID(crsId);
 		
-		super.initialize(i);
+		super.initialize(i, properties);
 
 	}
 	

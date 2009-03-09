@@ -36,11 +36,11 @@ public class RankingStateAccessor implements IStateAccessor {
 
 	@Override
 	public Object getValue(Object[] registers) {
-		return isConstant ? value : getNextValue();
+		return isConstant ? value : getNextValue(registers);
 	}
 
-	private Object getNextValue() {
-		return ds.getValue(index++);
+	private Object getNextValue(Object[] registers) {
+		return ds.getValue(index++, registers);
 	}
 
 	@Override

@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabInconsistentDataSourceException;
@@ -89,7 +90,7 @@ public class CSVDataSource implements IDataSource<Object>, IInstanceImplementati
 	int nrows = -1;
 	int ncols = -1;
 		
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 		
 		// FIXME use class tree
 		isExcel = i.is(KnowledgeManager.get().requireConcept(CoreScience.EXCEL_CSV_DATASOURCE));
@@ -263,7 +264,7 @@ public class CSVDataSource implements IDataSource<Object>, IInstanceImplementati
 	}
 
 	@Override
-	public Object getValue(int index) {
+	public Object getValue(int index, Object[] parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}

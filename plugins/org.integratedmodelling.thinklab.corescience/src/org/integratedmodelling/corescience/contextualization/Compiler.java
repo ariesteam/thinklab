@@ -1,15 +1,12 @@
 package org.integratedmodelling.corescience.contextualization;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.TransformingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizer;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
@@ -24,7 +21,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.traverse.DepthFirstIterator;
 
 /**
  * Provides some methods that all compilers are likely to need, without actually implementing
@@ -78,7 +74,7 @@ public abstract class Compiler implements IContextualizationCompiler {
 			throw new ThinklabContextualizationException(
 					"cannot find a compiler to contextualize " + observation);
 		
-		IObservationContext context = observation.getOverallObservationContext(compiler, session);
+		IObservationContext context = observation.getCommonObservationContext(compiler, session);
 		
 		/* compute and communicate individual merged contexts for each observation */
 		HashSet<IConcept> oobs = new HashSet<IConcept>();
@@ -99,7 +95,22 @@ public abstract class Compiler implements IContextualizationCompiler {
 		}
 		
 		IContextualizer contextualizer = compiler.compile(observation, context);
-		return contextualizer.run(session);
+		IInstance ret = contextualizer.run(session);
+		
+		/*
+		 * contextualize all contingencies and merge with the result 
+		 * observation
+		 */
+		IObservation result = (IObservation) ret.getImplementation();
+		
+		for (IObservation contingency : observation.getContingencies()) {
+			
+			IInstance cont = contextualize(contingency, session);
+			cont.addObjectRelationship(CoreScience.HAS_CONTINGENCY, cont);
+		}
+		
+		
+		return ret;
 	}
 	
 	protected boolean performHandshake(
@@ -148,18 +159,15 @@ public abstract class Compiler implements IContextualizationCompiler {
 		}
 		
 		if (ds instanceof ComputedDataSource) {
-			
+						
 			/*
-			 * TODO communicate dependencies and stack types
+			 * Ensure all dependencies are OK and give the DS a chance to
+			 * switch to a more efficient implementation (e.g compiled code)
 			 */
-			for (IObservation dep : dependencies) {
-				((ComputedDataSource)ds).notifyDependency(dep.getObservableClass(), stateType);
-			}
-			
 			dds = ((ComputedDataSource)ds).validateDependencies();
 			if (dds != null)
 				ds = dds;
-
+			
 		}
 
 		/*

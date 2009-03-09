@@ -102,6 +102,6 @@ public interface IDataSource<T> {
 	 * @param index
 	 * @return
 	 */
-	public abstract T getValue(int index);
+	public abstract T getValue(int index, Object[] parameters);
 
 }

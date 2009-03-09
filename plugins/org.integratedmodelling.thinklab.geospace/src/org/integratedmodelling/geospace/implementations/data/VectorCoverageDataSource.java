@@ -55,6 +55,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
+import org.integratedmodelling.utils.URLUtils;
 
 /**
  * TODO it's just a verbatim copy of the raster one for now.
@@ -136,7 +137,7 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 		return true;
 	}
 
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 
 		// these are compulsory
 		String sourceURL = null;
@@ -153,7 +154,9 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 			if (r.isLiteral()) {
 				
 				if (r.getProperty().equals(Geospace.COVERAGE_SOURCE_URL)) {
-					sourceURL = r.getValue().toString();
+					sourceURL = URLUtils.resolveUrl(
+							r.getValue().toString(),
+							Geospace.get().getProperties());
 				} else if (r.getProperty().equals(Geospace.HAS_SOURCE_LINK_ATTRIBUTE)) {
 					sourceAttr = r.getValue().toString();
 				} else if (r.getProperty().equals(Geospace.HAS_TARGET_LINK_ATTRIBUTE)) {
@@ -175,17 +178,20 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 
 		try {
 
-			Properties properties = new Properties();
+			Properties p = new Properties();
 			
-			properties.setProperty(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, valueAttr);
+			if (properties != null)
+				p.putAll(properties);
+			
+			p.setProperty(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, valueAttr);
 			
 			if (dataURL != null) {
-				properties.setProperty(CoverageFactory.ATTRIBUTE_URL_PROPERTY, dataURL);
-				properties.setProperty(CoverageFactory.SOURCE_LINK_ATTRIBUTE_PROPERTY, sourceAttr);
-				properties.setProperty(CoverageFactory.TARGET_LINK_ATTRIBUTE_PROPERTY, targetAttr);
+				p.setProperty(CoverageFactory.ATTRIBUTE_URL_PROPERTY, dataURL);
+				p.setProperty(CoverageFactory.SOURCE_LINK_ATTRIBUTE_PROPERTY, sourceAttr);
+				p.setProperty(CoverageFactory.TARGET_LINK_ATTRIBUTE_PROPERTY, targetAttr);
 			}
 			
-			this.coverage = CoverageFactory.requireCoverage(new URL(sourceURL), properties);
+			this.coverage = CoverageFactory.requireCoverage(new URL(sourceURL), p);
 			
 		} catch (MalformedURLException e) {
 			throw new ThinklabIOException(e);
@@ -210,7 +216,7 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 	}
 
 	@Override
-	public Object getValue(int index) {
+	public Object getValue(int index, Object[] parameters) {
 		
 		try {
 			return coverage.getSubdivisionValue(

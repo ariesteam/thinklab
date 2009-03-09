@@ -5,8 +5,8 @@ import java.net.URL;
 
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.integratedmodelling.thinklab.session.Session;
 import org.integratedmodelling.utils.JPFUtils;
 import org.java.plugin.Plugin;
 import org.java.plugin.registry.Extension;

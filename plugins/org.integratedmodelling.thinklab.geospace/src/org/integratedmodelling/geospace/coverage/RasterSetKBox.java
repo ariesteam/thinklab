@@ -55,6 +55,7 @@ import org.integratedmodelling.utils.Polylist;
 public class RasterSetKBox implements IKBox {
 
 	String uri = null;
+	Properties properties = new Properties();
 	
 	public IQuery parseQuery(String toEval) throws ThinklabException {
 		return null;
@@ -137,6 +138,11 @@ public class RasterSetKBox implements IKBox {
 	public String getUri() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Properties getProperties() {
+		return properties;
 	}
 
 

@@ -53,7 +53,7 @@ public class Model {
 			//IInstance observation = 
 		}
 		
-		return session.createObject(main);
+		return session.createObject(main, null);
 	}
 	
 	/**

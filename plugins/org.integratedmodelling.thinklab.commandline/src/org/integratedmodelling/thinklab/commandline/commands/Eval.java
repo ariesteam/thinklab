@@ -61,9 +61,9 @@ public class Eval implements ICommandHandler {
 		IValue algorithm = KnowledgeManager.get().validateLiteral(KnowledgeManager.get().requireConcept(language),
 				toEval);
 
-		IValue ret = session.execute((AlgorithmValue) algorithm);
+//		IValue ret = session.execute((AlgorithmValue) algorithm);
 
-		return ret;
+		return null;
 	}
 
 }

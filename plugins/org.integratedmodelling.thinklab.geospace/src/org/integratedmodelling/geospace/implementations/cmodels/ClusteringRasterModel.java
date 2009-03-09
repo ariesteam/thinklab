@@ -177,11 +177,11 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 						origObs.getConceptualModel(),
 						ds));
 				
-			} else 
+			} else {
 				throw new ThinklabValidationException(
 						"clustering: can only generate distributions from ranking or measurements: "
 						+ origObs);
-			
+			}
 			obsidx++;
 		}
 		
@@ -201,9 +201,8 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 		/* main identification, shares our observable */
 		Polylist orobs = obs.getObservable().toList(null);
 		
-		/* connect spatial extent obs */
+		/* connect spatial extent obs: this needs to be a ClassifiedRasterCM */
 		
-		/* connect all observables */
 		
 		return null;
 	}

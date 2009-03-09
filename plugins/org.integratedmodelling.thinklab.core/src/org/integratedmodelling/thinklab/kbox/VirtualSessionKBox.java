@@ -35,6 +35,7 @@ package org.integratedmodelling.thinklab.kbox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -60,12 +61,13 @@ import org.integratedmodelling.utils.instancelist.InstanceList;
  */
 public class VirtualSessionKBox implements IKBox {
 
-	
+	Properties properties = new Properties();
 	ArrayList<IInstance> instances = new ArrayList<IInstance>();
 	ISession session;
 	
 	public VirtualSessionKBox(ISession session) {
 		this.session = session;
+		this.properties.putAll(session.getProperties());
 	}
 	
 	public IQuery parseQuery(String toEval) throws ThinklabException {
@@ -86,7 +88,6 @@ public class VirtualSessionKBox implements IKBox {
 
 	public Polylist getObjectAsListFromID(String id,
 			HashMap<String, String> refTable) throws ThinklabException {
-
 		
 		IInstance inst = session.requireObject(id);
 		return inst.toList(null, refTable);
@@ -105,7 +106,7 @@ public class VirtualSessionKBox implements IKBox {
 
 	public String storeObject(Polylist list, ISession s) throws ThinklabException {
 
-		IInstance ninst = session.createObject(list);
+		IInstance ninst = session.createObject(list, getProperties());
 		instances.add(ninst);
 		return ninst.getLocalName();
 	}
@@ -128,7 +129,7 @@ public class VirtualSessionKBox implements IKBox {
 		String ret = id;
 		
 		if (!refTable.containsKey(id)) {
-			IInstance ninst = session.createObject(list);
+			IInstance ninst = session.createObject(list, getProperties());
 			instances.add(ninst);
 			ret = ninst.getLocalName();
 			refTable.put(id, ret);
@@ -195,6 +196,11 @@ public class VirtualSessionKBox implements IKBox {
 	public String getUri() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Properties getProperties() {
+		return properties;
 	}
 
 }

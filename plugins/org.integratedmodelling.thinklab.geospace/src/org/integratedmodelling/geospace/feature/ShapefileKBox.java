@@ -83,7 +83,7 @@ public class ShapefileKBox extends InstanceShapefileHandler implements IKBox {
 					"resource " + id + " matches multiple objects in kbox " + super.getLayerName());
 		}
 		
-		return session.createObject(observations.get(0));
+		return session.createObject(observations.get(0), null);
 	}
 
 	public IInstance getObjectFromID(String id, ISession session, HashMap<String, String> refTable) 

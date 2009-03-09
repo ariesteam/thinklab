@@ -35,8 +35,10 @@ package org.integratedmodelling.corescience.implementations.observations;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.Obs;
 import org.integratedmodelling.corescience.contextualization.ObservationContext;
 import org.integratedmodelling.corescience.contextualization.Compiler;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextValidationException;
@@ -192,7 +194,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 	 * createMissingConceptualModel() and createMissingDatasource() will be
 	 * called in sequence if no CM or DS are provided.
 	 */
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 
 		/*
 		 * this one is easy
@@ -368,6 +370,15 @@ public class Observation implements IObservation, IInstanceImplementation {
 				: null;
 	}
 
+	/**
+	 * TODO we should have contingencies merged in here, but then it becomes
+	 * much more complex to merge in extent CMs and it may be impossible if
+	 * they're not representation-compatible along contingencies, which may 
+	 * well happen. If we throw an exception in that case, we cut out a lot
+	 * of useful possibilities, so we should have a "lenient" way of merging
+	 * that isn't used in contextualization but returns the full extents for
+	 * all dimensions.
+	 */
 	public IObservationContext getObservationContext() throws ThinklabException {
 
 		ObservationContext ret = new ObservationContext(this);
@@ -388,11 +399,21 @@ public class Observation implements IObservation, IInstanceImplementation {
 		return ret;
 	}
 
-	public IObservationContext getOverallObservationContext(
+	/**
+	 * Build the COMMON observation context, which is the merged
+	 * intersection of all extents along the dependency tree, so that 
+	 * states of all dependencies can be calculated by a contextualizer 
+	 * according to it. Called by Compiler.compile(). This will not
+	 * merge contingencies, which may be completely different structures
+	 * not intended for being harmonized; rather, they will be contextualized
+	 * separately and merged into the resulting instance. 
+	 * 
+	 */
+	public IObservationContext getCommonObservationContext(
 			IContextualizationCompiler compiler, ISession session)
 			throws ThinklabException {
 
-		ObservationContext ret = getOverallObservationContext_(compiler,
+		ObservationContext ret = getCommonObservationContext_(compiler,
 				session, new HashSet<Observation>());
 
 		return ret;
@@ -419,7 +440,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 	 * @throws
 	 * @throws ThinklabException
 	 */
-	private ObservationContext getOverallObservationContext_(
+	private ObservationContext getCommonObservationContext_(
 			IContextualizationCompiler compiler, ISession session,
 			HashSet<Observation> inserted) throws ThinklabException {
 
@@ -462,21 +483,22 @@ public class Observation implements IObservation, IInstanceImplementation {
 					LogicalConnector.INTERSECTION, true);
 		}
 
-		/*
-		 * scan all contingencies and build overall maximum context by merging
-		 * extents for all.
-		 */
-		for (IObservation contingency : getContingencies()) {
-
-			/* contextualize obs */
-			ObservationContext oc = (ObservationContext) (((Observation) contingency)
-					.getOverallObservationContext(compiler, session));
-
-			/* merge extents appropriately */
-			if (oc != null)
-				ret.mergeExtents(oc, LogicalConnector.UNION, false);
-
-		}
+// TODO contingencies must be brought in after full contextualization
+//		/*
+//		 * scan all contingencies and build overall maximum context by merging
+//		 * extents for all.
+//		 */
+//		for (IObservation contingency : getContingencies()) {
+//
+//			/* contextualize obs */
+//			ObservationContext oc = (ObservationContext) (((Observation) contingency)
+//					.getOverallObservationContext(compiler, session));
+//
+//			/* merge extents appropriately */
+//			if (oc != null)
+//				ret.mergeExtents(oc, LogicalConnector.UNION, false);
+//
+//		}
 
 		/*
 		 * AND the merged extent of the contingencies that are not extents with
@@ -486,7 +508,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 			/* contextualize obs */
 			ObservationContext oc = (ObservationContext) (((Observation) dependency)
-					.getOverallObservationContext(compiler, session));
+					.getCommonObservationContext(compiler, session));
 
 			/* notify dependency */
 			if (oc != null) {
@@ -497,26 +519,30 @@ public class Observation implements IObservation, IInstanceImplementation {
 			}
 		}
 
-		/* see if we have a linked observation */
-		Observation lobs = getAssociatedActualObservation(this);
-
-		if (lobs != null) {
-
-			ObservationContext oc = (ObservationContext) lobs
-					.getOverallObservationContext(compiler, session);
-
-			if (oc != null) {
-				/*
-				 * contextualize it and merge using intersection, because if we
-				 * are redefined to be that observation, we are able to see its
-				 * extents and only those.
-				 */
-				ret.mergeExtents(oc, LogicalConnector.INTERSECTION, false);
-
-				/* notify mediated dependency to workflow */
-				compiler.addMediatedDependency(this, lobs);
-			}
-		}
+// TODO I don't think this is a good model. What we want to do is to install
+// a mediator observation, not arbitrarily "linking" external observations, but
+// this MAY still make sense.
+// 
+//		/* see if we have a linked observation */
+//		Observation lobs = getAssociatedActualObservation(this);
+//
+//		if (lobs != null) {
+//
+//			ObservationContext oc = (ObservationContext) lobs
+//					.getOverallObservationContext(compiler, session);
+//
+//			if (oc != null) {
+//				/*
+//				 * contextualize it and merge using intersection, because if we
+//				 * are redefined to be that observation, we are able to see its
+//				 * extents and only those.
+//				 */
+//				ret.mergeExtents(oc, LogicalConnector.INTERSECTION, false);
+//
+//				/* notify mediated dependency to workflow */
+//				compiler.addMediatedDependency(this, lobs);
+//			}
+//		}
 
 		/*
 		 * Constrain all existing extents with any extents we may have with the
@@ -526,7 +552,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 			/* contextualize obs */
 			ObservationContext oc = (ObservationContext) (((Observation) dependency)
-					.getOverallObservationContext(compiler, session));
+					.getCommonObservationContext(compiler, session));
 
 			/* notify dependency */
 			if (oc != null) {
@@ -590,39 +616,39 @@ public class Observation implements IObservation, IInstanceImplementation {
 		return ctg;
 	}
 
-	/**
-	 * Check that formal observation (without datasource) has an associated
-	 * actual observation, and return it.
-	 * 
-	 * @param cobs
-	 * @return
-	 * @throws ThinklabException
-	 */
-	private static Observation getAssociatedActualObservation(IObservation cobs)
-			throws ThinklabException {
-
-		Collection<IInstance> same = cobs.getObservationInstance()
-				.getEquivalentInstances();
-
-		if (same.size() == 0)
-			return null;
-
-		if (same.size() != 1)
-			throw new ThinklabContextValidationException(
-					"formal observation "
-							+ cobs
-							+ " has no link to an actual observation, or link is ambiguous");
-
-		Observation ret = extractObservationFromInstance(same.iterator().next());
-
-		if (ret != null && isFormalObservation(ret))
-			throw new ThinklabContextValidationException(
-					"actual observation linked to "
-							+ cobs
-							+ " is formal (has no datasource); dependency cannot be satisfied.");
-
-		return ret;
-	}
+//	/**
+//	 * Check that formal observation (without datasource) has an associated
+//	 * actual observation, and return it.
+//	 * 
+//	 * @param cobs
+//	 * @return
+//	 * @throws ThinklabException
+//	 */
+//	private static Observation getAssociatedActualObservation(IObservation cobs)
+//			throws ThinklabException {
+//
+//		Collection<IInstance> same = cobs.getObservationInstance()
+//				.getEquivalentInstances();
+//
+//		if (same.size() == 0)
+//			return null;
+//
+//		if (same.size() != 1)
+//			throw new ThinklabContextValidationException(
+//					"formal observation "
+//							+ cobs
+//							+ " has no link to an actual observation, or link is ambiguous");
+//
+//		Observation ret = extractObservationFromInstance(same.iterator().next());
+//
+//		if (ret != null && isFormalObservation(ret))
+//			throw new ThinklabContextValidationException(
+//					"actual observation linked to "
+//							+ cobs
+//							+ " is formal (has no datasource); dependency cannot be satisfied.");
+//
+//		return ret;
+//	}
 
 	static boolean isFormalObservation(IObservation obs)
 			throws ThinklabException {
@@ -670,36 +696,14 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 	@Override
 	public IObservation getObservation(IConcept observable) {
-		// TODO Auto-generated method stub
-		return findObservation(this, observable);
-	}
-
-	private static IObservation findObservation(Observation o,
-			IConcept observable) {
-
-		if (o.getObservable().is(observable))
-			return o;
-
-		for (IObservation oo : o.nonExtentDependencies) {
-			IObservation ret = findObservation((Observation) oo, observable);
-			if (ret != null)
-				return ret;
-		}
-
-		for (IObservation oo : o.contingencies) {
-			IObservation ret = findObservation((Observation) oo, observable);
-			if (ret != null)
-				return ret;
-		}
-
-		return null;
+		return Obs.findObservation(this, observable);
 	}
 
 	@Override
 	public IContextualizedState getState(IConcept observable)
 			throws ThinklabException {
 
-		IObservation o = findObservation(this, observable);
+		IObservation o = getObservation(observable);
 		if (o != null && o.getDataSource() != null
 				&& o.getDataSource() instanceof IContextualizedState)
 			return (IContextualizedState) o.getDataSource();

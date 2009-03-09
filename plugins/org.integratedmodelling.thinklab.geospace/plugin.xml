@@ -31,6 +31,7 @@
 		<library type="code" id="batik-util" path="lib/batik-util-1.6.jar"/>
 		<library type="code" id="batik-xml" path="lib/batik-xml-1.6.jar"/>
 		<library type="code" id="bufr" path="lib/bufr-1.1.00.jar"/>
+		<library type="code" id="deegree" path="lib/deegree2.jar"/>
 		<library type="code" id="ecore" path="lib/ecore-2.2.2.jar"/>
 		<library type="code" id="geoapi" path="lib/geoapi-2.2-M1.jar">
 			<export prefix="*"/>
@@ -154,8 +155,8 @@
 	</extension>
 	
 	<!-- commands -->
-<!--	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="GISToOpal">
-		<parameter id="class" value="org.integratedmodelling.geospace.commands.GISToOpal"/>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="GISToOpal">
+		<parameter id="class" value="org.integratedmodelling.geospace.commands.GISToOPAL"/>
 		<parameter id="command-name" value="gis2opal"/>
 		<parameter id="command-description" value="convert a GIS file to its OPAL annotations"/>
 		<parameter id="argument-names" value="resource,output"/>
@@ -165,7 +166,7 @@
 		<parameter id="option-long-names" value="profile"/>
 		<parameter id="option-types" value="thinklab-core:Text"/>
 		<parameter id="option-descriptions" value="OPAL profile"/>
-	</extension> -->
+	</extension>
 
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="rasterize">
 		<parameter id="class" value="org.integratedmodelling.geospace.commands.Rasterize"/>

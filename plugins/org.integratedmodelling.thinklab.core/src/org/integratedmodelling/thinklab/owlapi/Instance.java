@@ -22,15 +22,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.extensions.LanguageInterpreter;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
@@ -39,8 +37,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
-import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
-import org.integratedmodelling.thinklab.literals.AlgorithmValue;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 import org.semanticweb.owl.model.OWLIndividual;
@@ -52,13 +48,17 @@ import org.semanticweb.owl.model.OWLOntology;
  */
 public class Instance extends Knowledge implements IInstance {
 
+	Properties properties = null;
+	boolean _initialized = false;
+	
 	/**
 	 * @param i
 	 * @param ontology 
 	 * @throws ThinklabResourceNotFoundException 
 	 */
-	public Instance(OWLIndividual i) {
+	public Instance(OWLIndividual i, Properties properties) {
 		super(i,OWLType.INDIVIDUAL);
+		this.properties = properties;
 	}
 
 	/* (non-Javadoc)
@@ -171,7 +171,7 @@ public class Instance extends Knowledge implements IInstance {
 		
 		for (OWLOntology o : FileKnowledgeRepository.get().manager.getOntologies()) {
 			for (OWLIndividual ind : this.entity.asOWLIndividual().getSameIndividuals(o)) {
-				ret.add(new Instance(ind));
+				ret.add(new Instance(ind, null));
 			}
 		}
 		
@@ -182,7 +182,7 @@ public class Instance extends Knowledge implements IInstance {
 	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#getImplementation()
 	 */
 	public IInstanceImplementation getImplementation() throws ThinklabException {
-		return ThinklabOWLManager.get().getInstanceImplementation(this);
+		return ThinklabOWLManager.get().getInstanceImplementation(this, properties);
 	}
 
 	/* (non-Javadoc)
@@ -299,7 +299,7 @@ public class Instance extends Knowledge implements IInstance {
 				ThinklabOWLManager.get().translateRelationship(
 						getOntology(),
 						entity.asOWLIndividual(), 
-						((Property)p).entity);
+						((Property)p).entity, null);
 
 			for (IValue v : rrel) {
 				ret.add(new Relationship(p,v));
@@ -323,7 +323,7 @@ public class Instance extends Knowledge implements IInstance {
 			ThinklabOWLManager.get().translateRelationship(
 					getOntology(),
 					entity.asOWLIndividual(), 
-					((Property)p).entity);
+					((Property)p).entity, null);
 
 		for (IValue v : rrel) {
 			ret.add(new Relationship(p,v));
@@ -348,7 +348,7 @@ public class Instance extends Knowledge implements IInstance {
 				ThinklabOWLManager.get().translateRelationship(
 						getOntology(),
 						entity.asOWLIndividual(), 
-						((Property)prop).entity);
+						((Property)prop).entity, null);
 
 			for (IValue v : rrel) {
 				ret.add(new Relationship(prop,v));

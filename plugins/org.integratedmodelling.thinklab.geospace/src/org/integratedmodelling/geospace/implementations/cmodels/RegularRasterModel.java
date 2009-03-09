@@ -33,6 +33,8 @@
 
 package org.integratedmodelling.geospace.implementations.cmodels;
 
+import java.util.Properties;
+
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
@@ -103,9 +105,9 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 
-		super.initialize(i);
+		super.initialize(i, properties);
 		
 		// read requested parameters from properties
 		for (IRelationship r : i.getRelationships()) {

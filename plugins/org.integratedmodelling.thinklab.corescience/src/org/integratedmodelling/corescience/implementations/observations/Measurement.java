@@ -1,5 +1,7 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
+import java.util.Properties;
+
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.cmodels.MeasurementModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
@@ -53,9 +55,9 @@ public class Measurement extends Observation implements IConceptualizable {
 	}
 
 	@Override
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 
-		super.initialize(i);
+		super.initialize(i, properties);
 
 		// lookup defs - either unit and value or textual definition of both
 		IValue v = i.get("observation:value");

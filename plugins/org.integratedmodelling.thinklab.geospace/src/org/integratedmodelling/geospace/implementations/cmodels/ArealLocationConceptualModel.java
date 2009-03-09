@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.geospace.implementations.cmodels;
 
+import java.util.Properties;
+
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
@@ -156,7 +158,7 @@ public class ArealLocationConceptualModel extends SpatialConceptualModel {
 		throw new ThinklabValidationException("cannot create a valid areal location from a number");
 	}
 
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}

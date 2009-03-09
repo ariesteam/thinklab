@@ -167,6 +167,11 @@ public class KnowledgeManager implements IKnowledgeProvider {
 
 	public static final String IGNORE_CONCEPT_PROPERTY = "thinklab.concept.ignore";
 	
+	/**
+	 * colon-separated path to find resources
+	 */
+	public static final String RESOURCE_PATH_PROPERTY = "thinklab.resource.path";
+	
 	/*
 	 * map URIs to concept space names 
 	 */

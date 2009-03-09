@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
+import java.util.Properties;
+
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
@@ -89,7 +91,7 @@ public class RandomDataSource implements IDataSource<Float>, IInstanceImplementa
 	}
 
 
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 		
 		/* read parameters, if any */
 		IValue min = i.get(MINVALUE_PROPERTY);
@@ -108,7 +110,7 @@ public class RandomDataSource implements IDataSource<Float>, IInstanceImplementa
 	}
 
 	@Override
-	public Float getValue(int index) {
+	public Float getValue(int index, Object[] parameters) {
 		
 		float ret;
 		

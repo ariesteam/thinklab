@@ -61,7 +61,7 @@ public class ObjectValue extends ListValue {
     }
 
     public IInstance getObject(ISession s) throws ThinklabException {
-       return s.createObject(value);
+       return s.createObject(value, null);
     }
     
     public boolean isClass() {

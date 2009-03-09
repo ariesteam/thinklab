@@ -236,7 +236,7 @@ public class ObservationStructure {
 			// TODO remove
 			session.getOutputStream().println(Polylist.prettyPrint(l));
 			
-			return session.createObject(l);
+			return session.createObject(l, null);
 		}
 		
 		private Polylist buildObservationList(ObservationContents od,

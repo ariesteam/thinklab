@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.geospace.implementations.cmodels;
 
+import java.util.Properties;
+
 import org.geotools.referencing.CRS;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -95,7 +97,7 @@ public abstract class SubdividedCoverageConceptualModel extends SpatialConceptua
 		this.name = name;
 	}
 
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 
 		String crsID = null;
 		

@@ -15,6 +15,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.ScalingConceptualMo
 import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizer;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.data.ComputedDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -52,9 +53,10 @@ public class VMCompiler extends Compiler {
 		boolean stateStored = false;
 		int stateId = -1;
 		int validatorId = -1;
-		public int initialValueId = -1;
-		public boolean needsContextStates = false;
-		public boolean[] activeDims;
+		int initialValueId = -1;
+		boolean needsContextStates = false;
+		boolean[] activeDims;
+		IDataSource<?> datasource = null;
 	}
 	
 	
@@ -425,6 +427,8 @@ public class VMCompiler extends Compiler {
 		IDataSource<?> ds = o.getDataSource();
 		IObservationContext ownContext = contexts.get(o.getObservableClass());
 		
+		odesc.datasource = ds;
+		
 		/* perform datasource/cm handshaking. */
 		if (ds != null) {
 			
@@ -512,6 +516,7 @@ public class VMCompiler extends Compiler {
 		
 		/* store them all here, we notify our register to them at the end when we have one */
 		ArrayList<IStateAccessor> accessorsThatWantUs = new ArrayList<IStateAccessor>();
+		ArrayList<IDataSource<?>> datasourcesThatWantUs = new ArrayList<IDataSource<?>>();
 		
 		/* 
 		 * notify our state to our dependents, and determine if they
@@ -526,6 +531,7 @@ public class VMCompiler extends Compiler {
 			if (odsc.accessor != null &&
 					odsc.accessor.notifyDependencyObservable(o.getObservableClass())) {
 				accessorsThatWantUs.add(odsc.accessor);
+				datasourcesThatWantUs.add(odsc.datasource);
 				odesc.needed = true;
 			}
 
@@ -551,10 +557,21 @@ public class VMCompiler extends Compiler {
 		
 			odesc.register = contextualizer.getNewRegister();
 		
-			for (IStateAccessor acc : accessorsThatWantUs) {
+			for (int oo = 0; oo < accessorsThatWantUs.size(); oo++) { 
+				
+				IStateAccessor acc = accessorsThatWantUs.get(oo); 
+				IDataSource<?> dsc = datasourcesThatWantUs.get(oo); 
+
 				acc.notifyDependencyRegister(
 							o.getObservableClass(),
 							odesc.register, stateType);
+				
+				/* we also notify the register to the data sources
+				 * of the target observation */
+				if (dsc != null && dsc instanceof ComputedDataSource) 
+					((ComputedDataSource)dsc).notifyDependency(
+							o.getObservableClass(), stateType, odesc.register);
+				
 			}
 			
 			/*

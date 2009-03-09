@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.searchengine.kbox;
 
+import java.util.Properties;
+
 import org.integratedmodelling.searchengine.QueryString;
 import org.integratedmodelling.searchengine.SearchEngine;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -102,6 +104,11 @@ public class SearchEngineKBoxWrapper extends KBoxWrapper {
 	@Override
 	public String getUri() {
 		return kbox.getUri();
+	}
+
+	@Override
+	public Properties getProperties() {
+		return kbox.getProperties();
 	}
 
 	

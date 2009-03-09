@@ -97,6 +97,7 @@ public class Ontology implements IOntology {
 	private Map<SemanticType,IProperty> properties;
 	private Map<SemanticType,IInstance> instances;
 	private String cs;
+	private boolean storeInstances = true;
 
 	class ReferenceRecord {
 		public IInstance target;
@@ -131,6 +132,20 @@ public class Ontology implements IOntology {
 		this.instances = new HashMap<SemanticType, IInstance>();
 	}
 	
+	/**
+	 * If this is true (the default), instances created from that point on are stored and indexed 
+	 * by URI in the ontology, so they can be retrieved. If false, instances will 
+	 * retract their axioms when they are garbage collected, and won't be retrievable -
+	 * i.e. when the Instance object is lost, they're gone, behaving like standard
+	 * Java objects. You'll want to set this to false when programming in functional
+	 * style. 
+	 * 
+	 * @param b
+	 */
+	public void setInstanceStorage(boolean b) {
+		storeInstances = b;
+	}
+	
 	protected void initialize(String cs){
 		
 		this.cs = cs;
@@ -156,7 +171,7 @@ public class Ontology implements IOntology {
 		Set<OWLIndividual> allIn = ont.getReferencedIndividuals();
 		for(OWLIndividual i:allIn){
 			if (i.getURI().toString().startsWith(ont.getURI().toString()))
-				instances.put(kr.registry.getSemanticType(i), new Instance(i));
+				instances.put(kr.registry.getSemanticType(i), new Instance(i, null));
 		}
 	}
 
@@ -291,8 +306,14 @@ public class Ontology implements IOntology {
 			throw new ThinklabRuntimeException(e);
 		}
 		
-		Instance inst = new Instance(ind);
-		instances.put(new SemanticType(cs, ID), inst);
+		Instance inst = null;
+		
+		if (this.storeInstances ) {
+			inst = new Instance(ind, null);
+			instances.put(new SemanticType(cs, ID), inst); 
+		} else {
+			inst = new VolatileInstance(ind, null);
+		}
 		return inst;
 	}
 

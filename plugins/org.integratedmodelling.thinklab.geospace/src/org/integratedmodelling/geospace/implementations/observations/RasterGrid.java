@@ -33,6 +33,7 @@
 package org.integratedmodelling.geospace.implementations.observations;
 
 import java.util.Hashtable;
+import java.util.Properties;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.CoreScience;
@@ -68,7 +69,7 @@ public class RasterGrid extends Observation {
 	double latLB, lonLB, latUB, lonUB;
 	CoordinateReferenceSystem crs;
 	
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 
 		/*
 		 * link the obvious observable - do it now, so that super.initialize() finds it.
@@ -110,7 +111,7 @@ public class RasterGrid extends Observation {
 		if (crsId != null)
 			crs = SubdividedCoverageConceptualModel.getCRSFromID(crsId);
 		
-		super.initialize(i);
+		super.initialize(i, properties);
 
 	}
 	

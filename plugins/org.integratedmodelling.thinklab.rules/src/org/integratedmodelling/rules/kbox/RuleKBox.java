@@ -151,4 +151,10 @@ public class RuleKBox implements IKBox {
 		return null;
 	}
 
+	@Override
+	public Properties getProperties() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -41,7 +41,7 @@ import org.integratedmodelling.thinklab.extensions.KnowledgeImporter;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.session.Session;
+import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.instancelist.InstanceList;
 

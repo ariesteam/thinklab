@@ -1,8 +1,10 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
 import java.util.ArrayList;
+import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.implementations.cmodels.SimpleEmbeddedConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
@@ -38,7 +40,7 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 			int mval = 0; 
 			Double ret = defValue;
 			
-			Object o = ds.getValue(index++);
+			Object o = ds.getValue(index++, registers);
 			if (o instanceof Double)
 				mval = (int)(double)(Double)o;
 			else if (o instanceof Integer)
@@ -91,8 +93,7 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 		}
 
 	}
-	public class RankingSetRemappingModel implements IConceptualModel {
-
+	public class RankingSetRemappingModel extends SimpleEmbeddedConceptualModel {
 
 		@Override
 		public IStateAccessor getStateAccessor(IConcept stateType,
@@ -105,18 +106,6 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 			/* FIXME this should be an integer, no time to deal with the consequences right now */
 			return KnowledgeManager.Double();
 		}
-
-		@Override
-		public void handshake(IDataSource<?> dataSource,
-				IObservationContext observationContext,
-				IObservationContext overallContext) throws ThinklabException {
-		}
-
-		@Override
-		public void validate(IObservation observation)
-				throws ThinklabValidationException {
-		}
-
 	}
 	
 	@Override
@@ -126,9 +115,9 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 	}
 
 	@Override
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 
-		super.initialize(i);
+		super.initialize(i, properties);
 		
 		for (IRelationship r : i.getRelationships("measurement:hasMapping")) {
 			mappings.add(new MappedIntSet(r.getValue().toString()));

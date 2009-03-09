@@ -45,20 +45,20 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
  * @author Ferdinando Villa
  *
  */
-public class Counter implements IDataSource {
+public class Counter implements IDataSource<Integer> {
 
 	public IConcept getValueType() {
 		return KnowledgeManager.Integer();
 	}
 
 	@Override
-	public Object getInitialValue() {
+	public Integer getInitialValue() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Object getValue(int index) {
+	public Integer getValue(int index, Object[] parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -139,47 +139,6 @@ public class LocalConfiguration {
 	 * FV properties must now be loaded explicitly - done in the core plugin
 	 */
 	static public Properties getProperties() {
-
-//		
-//        if (properties == null) {
-//
-//            properties = new Properties();
-//			
-//			/* look for properties file in typical places and load it if existing. */
-//			File sysconf = new File("/usr/share/thinklab");
-//            File wprefix = new File(System.getProperty("user.dir") + "/thinklab/data");
-//
-//            switch (getOS()) {
-//            case MACOS: 
-//                // TODO where the heck should this be on a Mac?
-//                sysconf = new File("/usr/share/thinklab");
-//            	break;
-//            case WIN: 
-//                sysconf = new File("C:\\Program Files\\ThinkLab");
-//            	break;
-//            case UNIX:
-//                sysconf = new File("/usr/share/thinklab");
-//            	break;
-//            }
-//            
-//            File sysconfig = new File(getUserConfigDirectory() + "/thinklab.properties");
-//            
-//            if (!sysconfig.exists()) 
-//                sysconfig = new File(sysconf + "/config/thinklab.properties");
-//
-//            if (sysconfig.exists())
-//                try {
-//                	log.info("ThinkLab configuration loaded from : " + sysconfig);
-//                    properties.load(new FileInputStream(sysconfig));
-//                } catch (Exception e) {
-//                    // just do nothing
-//                } 
-//                
-//            if (properties.getProperty("thinklab.system.prefix") == null)
-//                properties.setProperty("thinklab.system.prefix", sysconf.toString());
-//            if (properties.getProperty("thinklab.data.prefix") == null)
-//                properties.setProperty("thinklab.data.prefix", wprefix.toString());
-//		}
         return properties;
 	}
 	

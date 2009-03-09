@@ -32,9 +32,10 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
+import java.util.Properties;
+
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.corescience.interfaces.data.ComputedDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -55,9 +56,8 @@ public class ExpressionDatasource
 
 	String expressionSource = null;
 
-
 	@Override
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 		// TODO read expression
 		
 	}
@@ -69,7 +69,7 @@ public class ExpressionDatasource
 	}
 
 	@Override
-	public Object getValue(int index) {
+	public Object getValue(int index, Object[] parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -81,7 +81,7 @@ public class ExpressionDatasource
 	}
 
 	@Override
-	public void notifyDependency(IConcept observable, IConcept type)
+	public void notifyDependency(IConcept observable, IConcept type, int register)
 			throws ThinklabValidationException {
 		// TODO Auto-generated method stub
 		

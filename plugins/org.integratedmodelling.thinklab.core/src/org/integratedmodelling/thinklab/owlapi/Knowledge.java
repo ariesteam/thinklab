@@ -19,19 +19,12 @@
 package org.integratedmodelling.thinklab.owlapi;
 
 import java.net.URI;
-import java.util.Set;
 
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabUnknownResourceException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IResource;
 import org.semanticweb.owl.model.AddAxiom;
 import org.semanticweb.owl.model.OWLAnnotation;
@@ -42,12 +35,7 @@ import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLOntologyChangeException;
 import org.semanticweb.owl.model.OWLProperty;
-import org.semanticweb.owl.vocab.Namespaces;
 import org.semanticweb.owl.vocab.OWLRDFVocabulary;
-
-import uk.ac.manchester.cs.owl.OWLDataFactoryImpl;
-
-import com.sun.org.apache.xpath.internal.operations.Equals;
 
 /**
  * An abstract class that implements the IKnowledge interface.

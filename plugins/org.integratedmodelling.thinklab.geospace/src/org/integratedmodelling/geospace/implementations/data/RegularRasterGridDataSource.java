@@ -53,6 +53,7 @@ import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplement
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
+import org.integratedmodelling.utils.URLUtils;
 
 @InstanceImplementation(concept="geospace:ExternalRasterDataSource")
 public class RegularRasterGridDataSource 
@@ -105,7 +106,7 @@ public class RegularRasterGridDataSource
 	}
 	
 
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 
 		String sourceURL = null;
 		String valueAttr = null;
@@ -121,7 +122,9 @@ public class RegularRasterGridDataSource
 					 * this can also point to a vector source, as long as the value attribute is
 					 * provided.
 					 */
-					sourceURL = r.getValue().toString();
+					sourceURL = URLUtils.resolveUrl(
+							r.getValue().toString(),
+							Geospace.get().getProperties());
 					
 				} else if (r.getProperty().equals(Geospace.HAS_VALUE_ATTRIBUTE)) {
 					valueAttr = r.getValue().toString();
@@ -131,14 +134,16 @@ public class RegularRasterGridDataSource
 
 		try {
 			
-			Properties properties = null;
+			Properties p = null;
 			
 			if (valueAttr != null) {
-				properties = new Properties();
-				properties.setProperty(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, valueAttr);
+				p = new Properties();
+				if (properties != null)
+					p.putAll(properties);
+				p.setProperty(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, valueAttr);
 			}
 			
-			this.coverage = CoverageFactory.requireCoverage(new URL(sourceURL), properties);
+			this.coverage = CoverageFactory.requireCoverage(new URL(sourceURL), p);
 			
 		} catch (MalformedURLException e) {
 			throw new ThinklabIOException(e);
@@ -161,7 +166,7 @@ public class RegularRasterGridDataSource
 
 
 	@Override
-	public Object getValue(int index) {
+	public Object getValue(int index, Object[] parameters) {
 		
 		try {
 			return coverage.getSubdivisionValue(index, dataCM, gridExtent);

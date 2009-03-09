@@ -40,7 +40,7 @@ import org.integratedmodelling.clojure.REPL;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.session.Session;
+import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.boot.Application;

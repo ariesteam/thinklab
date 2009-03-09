@@ -11,6 +11,7 @@ import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.utils.Polylist;
@@ -48,14 +49,15 @@ public class Obs {
 				!(observation.getDataSource() instanceof IContextualizedState)) {
 			return false;
 		}
-		for (IObservation o : observation.getContingencies()) {
-			if (!isContextualized(o))
-				return false;
-		}
 		for (IObservation o : observation.getDependencies()) {
 			if (!isContextualized(o))
 				return false;
 		}
+		for (IObservation o : observation.getContingencies()) {
+			if (!isContextualized(o))
+				return false;
+		}
+
 		return true;
 	}
 	
@@ -97,7 +99,11 @@ public class Obs {
 
 	/**
 	 * Find the observation in the structure starting at obs that observes the 
-	 * given observable class.
+	 * given observable class. Looks in the dependencies first, then in the
+	 * contingencies. 
+	 * 
+	 * TODO check if we want to change the logics by limiting to the 
+	 * dependencies.
 	 * 
 	 * @param obs
 	 * @param co
@@ -110,12 +116,14 @@ public class Obs {
 		if (obs.getObservable().is(co)) {
 			return obs;
 		}
-		for (IObservation o : obs.getContingencies()) {
+
+		for (IObservation o : obs.getDependencies()) {
 			ret = findObservation(o, co);
 			if (ret != null)
 				return ret;
 		}
-		for (IObservation o : obs.getDependencies()) {
+		
+		for (IObservation o : obs.getContingencies()) {
 			ret = findObservation(o, co);
 			if (ret != null)
 				return ret;
@@ -123,11 +131,48 @@ public class Obs {
 		return null;
 	}
 
-	public static Polylist makeObservation(IConcept measurement,
+	/**
+	 * 
+	 * @param observationType
+	 * @param observable
+	 * @param conceptualModel 
+	 * @param ds
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public static Polylist makeObservation(IConcept observationType,
 			IInstance observable, IConceptualModel conceptualModel,
-			MemValueContextualizedDatasource ds) {
-		// TODO Auto-generated method stub
-		return null;
+			MemValueContextualizedDatasource ds) throws ThinklabException {
+		
+		Polylist c = null;
+		
+		if (conceptualModel != null) {
+			if (! (conceptualModel instanceof IConceptualizable))
+				throw new ThinklabValidationException(
+					"makeObservation: internal: cannot obtain " + 
+					"representation of conceptual model " + 
+					conceptualModel);
+		
+			c = ((IConceptualizable)conceptualModel).conceptualize();
+		}
+		
+		Polylist o = 
+			observable instanceof IConceptualizable ?
+					((IConceptualizable)observable).conceptualize() :
+					observable.toList(null);
+		
+		return c == null ?
+				Polylist.list(
+						observationType,
+						Polylist.list(CoreScience.HAS_OBSERVABLE, o),
+						Polylist.list(CoreScience.HAS_DATASOURCE,
+								Polylist.list("@", ds))) :
+				Polylist.list(
+						observationType,
+						Polylist.list(CoreScience.HAS_OBSERVABLE, o),
+						Polylist.list(CoreScience.HAS_CONCEPTUAL_MODEL, c),
+						Polylist.list(CoreScience.HAS_DATASOURCE,
+						Polylist.list("@", ds)));			
 	}
 	
 }

@@ -51,7 +51,7 @@ import org.integratedmodelling.thinklab.interfaces.query.IConformance;
  * mediate as needed.
  * 
  * @author Ferdinando Villa
- * 
+ * @deprecated
  */
 public class Link implements ICommandHandler {
 
@@ -94,7 +94,7 @@ public class Link implements ICommandHandler {
 		/* TODO use conformance policy to ensure that observable2 conforms */
 
 		/* insert equivalence between the observations */
-		session.linkObjects(o1, o2);
+		//session.linkObjects(o1, o2);
 
 		return null;
 	}

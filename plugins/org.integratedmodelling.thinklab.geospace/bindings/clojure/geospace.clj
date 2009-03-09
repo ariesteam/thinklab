@@ -62,3 +62,8 @@
 	 the observation is not distributed over a grid extent."
 	 [observation]
 	 (. (get-spatial-extent observation) (getColumns)))
+	 
+(defn build-coverage
+	"Build and show a coverage from a passed spatial extent, data vector, and x/y size info"
+	[extent data]
+	(org.integratedmodelling.geospace.coverage.CoverageFactory/makeCoverage extent data))

@@ -468,7 +468,7 @@ public class OPALValidator {
 		Polylist ls = validateInstanceToList(inst, contextStack);
 
         if (sess != null) {
-        	ret = sess.createObject(ls);
+        	ret = sess.createObject(ls, kbox.getProperties());
         	if (kbox != null) {
         		kbox.storeObject(ret, sess);
         	}

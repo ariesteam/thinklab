@@ -39,7 +39,7 @@
 			Land cover type can be used as a proxy variable to establish the spatial
 			pattern of provision for different ecosystem services. For example, it
 			relates to vegetation structure and soil permeability.</rdfs:comment>
-		<metadata:hasImageUrl>file:/d:/A/thumbs/LandCoverClass.png</metadata:hasImageUrl>
+		<metadata:hasImageUrl>file:/C:/A/thumbs/LandCoverClass.png</metadata:hasImageUrl>
 		<metadata:hasSourceCitation>UMD Global Landcover Facility</metadata:hasSourceCitation>
 		<observation:hasObservable>
 			<carbonEcology:VegetationType />
@@ -47,7 +47,7 @@
 		<observation:hasDataSource>
 			<geospace:RasterFileDataSource>
 				<geospace:hasSourceURL>
-					file:/d:/A/LandCoverClass.tif
+					file:/C:/A/LandCoverClass.tif
 				</geospace:hasSourceURL>
 			</geospace:RasterFileDataSource>
 		</observation:hasDataSource>
@@ -79,12 +79,12 @@
 		<rdfs:comment>Rainfall is key to determining many variables that influence ecosystem
 			services, like net primary productivity. High resolution rainfall data are available 
 			for recent years. </rdfs:comment>
-		<metadata:hasImageUrl>file:/d:/A/thumbs/Rainfall.png</metadata:hasImageUrl>
+		<metadata:hasImageUrl>file:/C:/A/thumbs/Rainfall.png</metadata:hasImageUrl>
 		<metadata:hasSourceCitation>WorldClim data</metadata:hasSourceCitation>
 		<observation:hasDataSource>
 			<geospace:RasterFileDataSource>
 				<geospace:hasSourceURL>
-					file:/d:/A/Rainfall.tif
+					file:/C:/A/Rainfall.tif
 				</geospace:hasSourceURL>
 			</geospace:RasterFileDataSource>
 		</observation:hasDataSource>
@@ -118,12 +118,12 @@
 		<rdfs:label>Growing Season</rdfs:label>
 		<rdfs:comment>Growing season lenght determinea the pattern of vegetative carbon sequestration and
 		the likelyhood of carbon storage from vegetation.  </rdfs:comment>
-		<metadata:hasImageUrl>file:/d:/A/thumbs/GrowingSeason.png</metadata:hasImageUrl>
+		<metadata:hasImageUrl>file:/C:/A/thumbs/GrowingSeason.png</metadata:hasImageUrl>
 		<metadata:hasSourceCitation>WorldClim data</metadata:hasSourceCitation>
 		<observation:hasDataSource>
 			<geospace:RasterFileDataSource>
 				<geospace:hasSourceURL>
-					file:/d:/A/GrowingSeason.tif
+					file:/C:/A/GrowingSeason.tif
 				</geospace:hasSourceURL>
 			</geospace:RasterFileDataSource>
 		</observation:hasDataSource>
@@ -158,12 +158,12 @@
 		<rdfs:comment>Primary production is the production of organic compounds from atmospheric or aquatic carbon dioxide, 
 		principally through the process of photosynthesis, with chemosynthesis being much less important. 
 		All life on earth is directly or indirectly reliant on primary production. </rdfs:comment>
-		<metadata:hasImageUrl>file:/d:/A/thumbs/VegetativeCSequestration.png</metadata:hasImageUrl>
+		<metadata:hasImageUrl>file:/C:/A/thumbs/VegetativeCSequestration.png</metadata:hasImageUrl>
 		<metadata:hasSourceCitation>MODIS data</metadata:hasSourceCitation>
 		<observation:hasDataSource>
 			<geospace:RasterFileDataSource>
 				<geospace:hasSourceURL>
-					file:/d:/A/VegetativeCSequestration.tif
+					file:/C:/A/VegetativeCSequestration.tif
 				</geospace:hasSourceURL>
 			</geospace:RasterFileDataSource>
 		</observation:hasDataSource>
@@ -198,12 +198,12 @@
 		<rdfs:comment>Carbon (C) density (carbon mass per hectare) is a critical variable in determining the
 		 extent of the effect of human activity on ecosystems and our environment,
 		 because many ecological processes depend on the C cycle.</rdfs:comment>
-		<metadata:hasImageUrl>file:/d:/A/thumbs/VegetativeCStorage.png</metadata:hasImageUrl>
+		<metadata:hasImageUrl>file:/C:/A/thumbs/VegetativeCStorage.png</metadata:hasImageUrl>
 		<metadata:hasSourceCitation>WorldClim data</metadata:hasSourceCitation>
 		<observation:hasDataSource>
 			<geospace:RasterFileDataSource>
 				<geospace:hasSourceURL>
-					file:/d:/A/VegetativeCStorage.tif
+					file:/C:/A/VegetativeCStorage.tif
 				</geospace:hasSourceURL>
 			</geospace:RasterFileDataSource>
 		</observation:hasDataSource>

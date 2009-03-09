@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.corescience.implementations.cmodels;
 
+import java.util.Properties;
+
 import javax.measure.unit.Unit;
 
 import org.integratedmodelling.corescience.CoreScience;
@@ -246,7 +248,7 @@ public class MeasurementModel extends UnitValue implements
 	}
 
 	@Override
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 	}
 
 	@Override

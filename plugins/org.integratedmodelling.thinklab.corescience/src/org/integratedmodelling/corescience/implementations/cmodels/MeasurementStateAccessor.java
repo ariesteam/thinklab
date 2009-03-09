@@ -43,11 +43,11 @@ public class MeasurementStateAccessor implements IStateAccessor {
 
 	@Override
 	public Object getValue(Object[] registers) {
-		return isConstant ? (inlineRandom == null ? value : inlineRandom) : getNextValue();
+		return isConstant ? (inlineRandom == null ? value : inlineRandom) : getNextValue(registers);
 	}
 
-	private Object getNextValue() {
-		return ds.getValue(index++);
+	private Object getNextValue(Object[] registers) {
+		return ds.getValue(index++, registers);
 	}
 
 	@Override

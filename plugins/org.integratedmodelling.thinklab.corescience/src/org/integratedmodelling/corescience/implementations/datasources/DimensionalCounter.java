@@ -48,7 +48,7 @@ public class DimensionalCounter extends Ticker implements IDataSource<Integer> {
 
 
 	@Override
-	public Integer getValue(int index) {
+	public Integer getValue(int index, Object[] parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}

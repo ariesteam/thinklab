@@ -34,7 +34,7 @@ public class ModelKnowledgeLoader implements KnowledgeLoader {
 		if (instances != null)
 			for (Polylist list : instances) {
 				if (list != null) {
-					IInstance i = session.createObject(list);
+					IInstance i = session.createObject(list, null);
 					ret.add(i);
 					if (kbox != null) {
 						kbox.storeObject(i, session);

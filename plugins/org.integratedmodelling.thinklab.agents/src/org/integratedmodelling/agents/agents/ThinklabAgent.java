@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.agents.agents;
 
+import java.util.Properties;
+
 import jade.core.Agent;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -63,7 +65,7 @@ public class ThinklabAgent extends Agent implements IInstanceImplementation {
 		/* clear session */
 	}
 
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(IInstance i, Properties properties) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}

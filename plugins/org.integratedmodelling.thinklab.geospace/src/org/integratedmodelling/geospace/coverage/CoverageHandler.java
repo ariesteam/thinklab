@@ -112,11 +112,7 @@ public abstract class CoverageHandler  implements ISpatialDataImporter {
 		if (coverages != null) {
 			
 			for (ICoverage coverage : coverages) {
-				
 				notifyCoverage(coverage, properties);
-				
-				// FIXME remove
-				//coverage.show();
 			}
 		}
 		return coverages == null ? 0 : coverages.size();
@@ -130,7 +126,6 @@ public abstract class CoverageHandler  implements ISpatialDataImporter {
 		/* produce all necessary variables for macro substitution */
 		Hashtable<String, Object> vmap = new Hashtable<String,Object>();
 		
-
 		vmap.put("latLowerBound", coverage.getLatLowerBound());
 		vmap.put("latUpperBound", coverage.getLatUpperBound());
 		vmap.put("lonLowerBound", coverage.getLonLowerBound());

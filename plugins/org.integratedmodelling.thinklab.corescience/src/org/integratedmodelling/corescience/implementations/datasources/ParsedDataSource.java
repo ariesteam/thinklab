@@ -101,7 +101,7 @@ public class ParsedDataSource<T> extends TextValue implements IDataSource<T> {
 
 
 	@Override
-	public T getValue(int index) {
+	public T getValue(int index, Object[] parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}

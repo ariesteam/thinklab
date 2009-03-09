@@ -105,7 +105,7 @@ public interface IObservation {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public IObservationContext getOverallObservationContext(
+	public IObservationContext getCommonObservationContext(
 			IContextualizationCompiler compiler, ISession session) throws ThinklabException;
 
 	/**

@@ -6,30 +6,32 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import org.geotools.coverage.CoverageFactoryFinder;
+import org.deegree.ogcwebservices.wcs.getcoverage.GetCoverage;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.grid.GridCoverageFactory;
-import org.geotools.coverage.grid.ViewType;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
-import org.geotools.factory.FactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gce.arcgrid.ArcGridReader;
 import org.geotools.gce.geotiff.GeoTiffReader;
-import org.integratedmodelling.geospace.Geospace;
+import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
+import org.integratedmodelling.geospace.implementations.cmodels.RegularRasterModel;
+import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.NameGenerator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
@@ -113,10 +115,7 @@ public class CoverageFactory {
 		 * TODO we will need to connect the hints to the plugin's properties, and have our own
 		 * hints object in the plugin, assuming the stupid hints interface stays this way.
 		 */
-		GridCoverageFactory factory = 
-			CoverageFactoryFinder.getGridCoverageFactory(Geospace.get().getGeotoolsHints());
 		GridCoverage2D coverage = null;
-		
 		
 		if (url.toString().endsWith(".tif") || url.toString().endsWith(".tiff")) {
 			
@@ -178,8 +177,7 @@ public class CoverageFactory {
 		 * must define the link field in the properties
 		 */
 		
-		FeatureCollection fc = featureCollections.get(url.toString());
-		String layerName = MiscUtilities.getURLBaseName(url.toString()).toLowerCase();
+		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = featureCollections.get(url.toString());
 		
 		if (fc == null) {
 		
@@ -189,7 +187,7 @@ public class CoverageFactory {
 			try {
 				DataStore dataStore = DataStoreFinder.getDataStore(connect);
 				String name = dataStore.getTypeNames()[0];
-				FeatureSource fc1 = dataStore.getFeatureSource(name);
+				FeatureSource<SimpleFeatureType, SimpleFeature> fc1 = dataStore.getFeatureSource(name);
 				fc = fc1.getFeatures();
 				
 			} catch (IOException e) {
@@ -257,20 +255,55 @@ public class CoverageFactory {
 	 */
 	private static ICoverage getCoverage(URL url, Properties properties) throws ThinklabException {
 		
-		ICoverage ret = coverages.get(url.toString());
+		ICoverage ret = null;
 		
-		if (ret == null) {
+		if (url.toString().startsWith("http:")) {
+		
+			/* 
+			 * we don't read coverages from web-based files; interpret as
+			 * a WCS call
+			 */
+            GetCoverage req = null;
+			try {
+				req = GetCoverage.create(
+						NameGenerator.newName("WCS"), 
+						url.toString());
+			} catch (Exception e) {
+				throw new ThinklabIOException("can't access WCS service for " + url);		
+			}
 			
-			ArrayList<ICoverage> cret = readResource(url, null);
+			ret = new WCSCoverage(req.getOutput());
+//            if ( !req.getOutput().getFormat().getCode().equals("image/tiff") ) {
+//            }
+//            if ( !req.getDomainSubset().getRequestSRS().getCode().equals("EPSG:4326") ) {
+//
+//            }
+//            Envelope env = GeometryFactory.createEnvelope(-1.5,-1.5,1.5,1.5, CRSFactory.create( "EPSG:4326" ));
+//            if ( !req.getDomainSubset().getSpatialSubset().getEnvelope().equals(env) ) {
+//
+//            }
+//            env = GeometryFactory.createEnvelope(0,0,600-1,500-1, null);
+//            if ( !req.getDomainSubset().getSpatialSubset().getGrid().equals(env) ) {
+//
+//            }
+//            if ( !req.getSourceCoverage().equals("MapNeatline") ) {
+//
+//            }
 			
-			for (ICoverage c : cret) {
+		} else {
+		
+			ret = coverages.get(url.toString());
+		
+			if (ret == null) {
 				
-				if (c.getSourceUrl().equals(url.toString())) {
-					ret = c;
+				ArrayList<ICoverage> cret = readResource(url, null);
+				for (ICoverage c : cret) {	
+					if (c.getSourceUrl().equals(url.toString())) {
+						ret = c;
+					}
 				}
 			}
 		}
-		
 		return ret;
 	}
 	
@@ -363,4 +396,29 @@ public class CoverageFactory {
 		return ret;
 	}
 	
+	public static ICoverage makeCoverage(RasterGrid extent, Map<Collection<Integer>,Double> data) throws ThinklabException {
+		
+		GridExtent ext =
+			(GridExtent) ((RegularRasterModel)(extent.getConceptualModel())).getExtent();
+		
+		double[] dataset = new double[ext.getYCells() * ext.getXCells()];
+		
+		for (Collection<Integer> o : data.keySet()) {
+			
+			Iterator<Integer> it = o.iterator();
+			
+			int y = it.next();
+			int x = it.next();
+			double d = data.get(o);
+//			System.out.println(x + "," + y + " = " + d);
+			
+			dataset [(y * ext.getXCells()) + x] = d;
+		}
+		
+		RasterCoverage ret = new RasterCoverage("", ext, dataset);
+		
+		ret.write(new File("C:\\A\\results\\temp.tif"));
+		
+		return ret;
+	}
 }
