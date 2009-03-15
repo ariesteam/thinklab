@@ -33,7 +33,6 @@
 package org.integratedmodelling.corescience.implementations.cmodels;
 
 import java.util.HashMap;
-import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
@@ -76,7 +75,7 @@ public class ClassificationModel implements IConceptualModel, ValidatingConceptu
 //		this.name = name;
 //	}
 
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 
 		for (IRelationship r : i.getRelationships()) {
 			

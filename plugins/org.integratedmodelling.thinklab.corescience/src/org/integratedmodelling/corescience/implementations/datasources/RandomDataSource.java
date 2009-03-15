@@ -91,7 +91,7 @@ public class RandomDataSource implements IDataSource<Float>, IInstanceImplementa
 	}
 
 
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 		
 		/* read parameters, if any */
 		IValue min = i.get(MINVALUE_PROPERTY);

@@ -90,7 +90,7 @@ public class CSVDataSource implements IDataSource<Object>, IInstanceImplementati
 	int nrows = -1;
 	int ncols = -1;
 		
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 		
 		// FIXME use class tree
 		isExcel = i.is(KnowledgeManager.get().requireConcept(CoreScience.EXCEL_CSV_DATASOURCE));

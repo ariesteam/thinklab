@@ -38,11 +38,9 @@ import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabAmbiguousResultException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
@@ -83,7 +81,7 @@ public class ShapefileKBox extends InstanceShapefileHandler implements IKBox {
 					"resource " + id + " matches multiple objects in kbox " + super.getLayerName());
 		}
 		
-		return session.createObject(observations.get(0), null);
+		return session.createObject(observations.get(0));
 	}
 
 	public IInstance getObjectFromID(String id, ISession session, HashMap<String, String> refTable) 

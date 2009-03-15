@@ -119,7 +119,7 @@ public class Concept extends Knowledge implements IConcept {
 				for (OWLIndividual ind : 
 						FileKnowledgeRepository.get().instanceReasoner.
 							getIndividuals(this.entity.asOWLClass(), false)) {
-					ret.add(new Instance(ind, null));
+					ret.add(new Instance(ind));
 				}
 			}
 		} catch (OWLReasonerException e) {
@@ -129,7 +129,7 @@ public class Concept extends Knowledge implements IConcept {
 		
 		Set<OWLOntology> ontologies = FileKnowledgeRepository.KR.manager.getOntologies();
 		for (OWLIndividual ind : this.entity.asOWLClass().getIndividuals(ontologies)) {
-			ret.add(new Instance(ind, null));
+			ret.add(new Instance(ind));
 		}
 		
 		return ret;
@@ -337,7 +337,7 @@ public class Concept extends Knowledge implements IConcept {
 				for (OWLIndividual ind : 
 						FileKnowledgeRepository.get().instanceReasoner.
 							getIndividuals(this.entity.asOWLClass(), true)) {
-					ret.add(new Instance(ind, null));
+					ret.add(new Instance(ind));
 				}
 			}
 		} catch (OWLReasonerException e) {
@@ -347,7 +347,7 @@ public class Concept extends Knowledge implements IConcept {
 		
 		Set<OWLOntology> ontologies = FileKnowledgeRepository.KR.manager.getOntologies();
 		for (OWLIndividual ind : this.entity.asOWLClass().getIndividuals(ontologies)) {
-			ret.add(new Instance(ind, null));
+			ret.add(new Instance(ind));
 		}
 		
 		return ret;

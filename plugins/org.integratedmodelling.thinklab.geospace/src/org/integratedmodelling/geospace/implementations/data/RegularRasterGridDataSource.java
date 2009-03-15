@@ -106,7 +106,7 @@ public class RegularRasterGridDataSource
 	}
 	
 
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 
 		String sourceURL = null;
 		String valueAttr = null;
@@ -134,15 +134,8 @@ public class RegularRasterGridDataSource
 
 		try {
 			
-			Properties p = null;
-			
-			if (valueAttr != null) {
-				p = new Properties();
-				if (properties != null)
-					p.putAll(properties);
-				p.setProperty(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, valueAttr);
-			}
-			
+			Properties p = new Properties();
+			p.setProperty(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, valueAttr);
 			this.coverage = CoverageFactory.requireCoverage(new URL(sourceURL), p);
 			
 		} catch (MalformedURLException e) {

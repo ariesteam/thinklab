@@ -171,7 +171,7 @@ public class Ontology implements IOntology {
 		Set<OWLIndividual> allIn = ont.getReferencedIndividuals();
 		for(OWLIndividual i:allIn){
 			if (i.getURI().toString().startsWith(ont.getURI().toString()))
-				instances.put(kr.registry.getSemanticType(i), new Instance(i, null));
+				instances.put(kr.registry.getSemanticType(i), new Instance(i));
 		}
 	}
 
@@ -309,10 +309,10 @@ public class Ontology implements IOntology {
 		Instance inst = null;
 		
 		if (this.storeInstances ) {
-			inst = new Instance(ind, null);
+			inst = new Instance(ind);
 			instances.put(new SemanticType(cs, ID), inst); 
 		} else {
-			inst = new VolatileInstance(ind, null);
+			inst = new VolatileInstance(ind);
 		}
 		return inst;
 	}

@@ -75,6 +75,7 @@ public abstract class Compiler implements IContextualizationCompiler {
 					"cannot find a compiler to contextualize " + observation);
 		
 		IObservationContext context = observation.getCommonObservationContext(compiler, session);
+
 		
 		/* compute and communicate individual merged contexts for each observation */
 		HashSet<IConcept> oobs = new HashSet<IConcept>();
@@ -98,8 +99,10 @@ public abstract class Compiler implements IContextualizationCompiler {
 		IInstance ret = contextualizer.run(session);
 		
 		/*
-		 * contextualize all contingencies and merge with the result 
-		 * observation
+		 * TODO fix this
+		 * contextualize all contingencies. If there are contingencies, the result
+		 * observation will be a contingency structure of them, contextualized
+		 * with self.
 		 */
 		IObservation result = (IObservation) ret.getImplementation();
 		

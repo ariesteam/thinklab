@@ -33,8 +33,6 @@
  **/
 package org.integratedmodelling.thinklab.interfaces.knowledge;
 
-import java.util.Properties;
-
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 
@@ -50,10 +48,10 @@ public interface IInstanceImplementation {
 	/**
 	 * Called just after creation, passing the OWL counterpart. 
 	 * @param i
-	 * @param properties TODO
+	 * @param session the session that created the object, or null 
 	 * @throws ThinklabException
 	 */
-	public abstract void initialize(IInstance i, Properties properties) throws ThinklabException;
+	public abstract void initialize(IInstance i) throws ThinklabException;
 	
 	/**
 	 * Called when the OWL counterpart is validated. Supposed to throw

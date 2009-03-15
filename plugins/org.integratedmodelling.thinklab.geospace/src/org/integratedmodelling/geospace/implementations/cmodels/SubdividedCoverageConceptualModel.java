@@ -97,7 +97,7 @@ public abstract class SubdividedCoverageConceptualModel extends SpatialConceptua
 		this.name = name;
 	}
 
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 
 		String crsID = null;
 		

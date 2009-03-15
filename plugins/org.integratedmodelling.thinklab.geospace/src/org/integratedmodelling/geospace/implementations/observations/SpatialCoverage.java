@@ -59,7 +59,7 @@ public class SpatialCoverage extends Observation {
 	double latLB, lonLB, latUB, lonUB;
 	CoordinateReferenceSystem crs;
 	
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 
 		/*
 		 * link the obvious observable - do it now, so that super.initialize() finds it.
@@ -93,7 +93,7 @@ public class SpatialCoverage extends Observation {
 		if (crsId != null)
 			crs = SubdividedCoverageConceptualModel.getCRSFromID(crsId);
 		
-		super.initialize(i, properties);
+		super.initialize(i);
 
 	}
 	

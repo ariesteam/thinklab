@@ -11,19 +11,19 @@
 ;; at runtime. The classes are only visible when the bindings are loaded. 
 ;; ----------------------------------------------------------------------------------------------
 
-(defn j-make-type
-	"Invoke static deftype at the Java side of the package"
-	( [typename cmodel-specs]
-	(. org.integratedmodelling.modelling.Model
-			(deftype (tl/get-session) (tl/conc typename) cmodel-specs nil)))
-	( [typename cmodel-specs dependencies]
-	(. org.integratedmodelling.modelling.Model
-			(deftype (tl/get-session) (tl/conc typename) cmodel-specs (tl/listp dependencies)))))
+;(defn j-make-type
+;	"Invoke static deftype at the Java side of the package"
+;	( [typename cmodel-specs]
+;	(. org.integratedmodelling.modelling.Model
+;			(deftype (tl/get-session) (tl/conc typename) cmodel-specs nil)))
+;	( [typename cmodel-specs dependencies]
+;	(. org.integratedmodelling.modelling.Model
+;			(deftype (tl/get-session) (tl/conc typename) cmodel-specs (tl/listp dependencies)))))
 
-(defn j-make-model
-	"Make a new instance of Model and return it"
-	[concept]
-	(new org.integratedmodelling.modelling.Model (tl/conc concept)))
+;(defn j-make-model
+;	"Make a new instance of Model and return it"
+;	[concept]
+;	(new org.integratedmodelling.modelling.Model))
 	
 
 ;; ----------------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@
 	([typename cmodel-specs] `(j-make-type ~typename ~cmodel-specs))
 	([typename cmodel-specs dependent-types] `(j-make-type ~typename ~cmodel-specs '~dependent-types)))
 						
-(defmacro make-model [model-name type-bindings & rules]
+(defmacro defmodel [model-name type-bindings & rules]
   `(let [model# (j-make-model ~model-name)]
      (doseq [[id# type#] (apply zipmap (tl/uninterleave ~type-bindings))]
          (.observe model# (tl/conc type#) (str id#)))

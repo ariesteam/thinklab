@@ -113,9 +113,9 @@ public class RankingIntervalRemapper extends Observation implements IConceptuali
 	}
 
 	@Override
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 		
-		super.initialize(i, properties);
+		super.initialize(i);
 		
 		for (IRelationship r : i.getRelationships("measurement:hasMapping")) {
 			mappings.add(new MappedDoubleInterval(r.getValue().toString()));

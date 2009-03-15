@@ -56,7 +56,7 @@ public class ListQueryResult implements IQueryResult {
 	public IValue getResult(int n, ISession session) throws ThinklabException {
 		
 		Polylist l = lists.get(n);
-		IInstance i = session.createObject(l, properties);
+		IInstance i = session.createObject(l);
 		return new ObjectReferenceValue(i);
 	}
 

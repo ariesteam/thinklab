@@ -336,10 +336,9 @@ public class Session implements ISession {
 		return null;
 	}
 
-	public IInstance createObject(Polylist polylist, Properties properties) throws ThinklabException {
+	public IInstance createObject(Polylist polylist) throws ThinklabException {
 
 		IInstance ret = ontology.createInstance(polylist);
-		((Instance)ret).properties = properties;
 
 		/* TODO see if we want to use OWL validation, maybe connected to a parameter or preference */
 		ret.validate();
@@ -353,7 +352,7 @@ public class Session implements ISession {
 	}
 
     public IInstance createObject(IInstance ii) throws ThinklabException {
-        return createObject(ii.toList(null), ((Instance)ii).properties);
+        return createObject(ii.toList(null));
     }
 
 	public IInstance importObject(String kboxURI) throws ThinklabException {

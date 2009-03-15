@@ -41,7 +41,7 @@ public class Measurement extends Observation implements IConceptualizable {
 		 * 
 		 * TODO catch the exception and generate an informative error message
 		 */
-		return new MeasurementModel(CoreScience.get().MeasurementModel(), unitSpecs);
+		return new MeasurementModel(CoreScience.MeasurementModel(), unitSpecs);
 	}
 
 	@Override
@@ -55,9 +55,9 @@ public class Measurement extends Observation implements IConceptualizable {
 	}
 
 	@Override
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 
-		super.initialize(i, properties);
+		super.initialize(i);
 
 		// lookup defs - either unit and value or textual definition of both
 		IValue v = i.get("observation:value");

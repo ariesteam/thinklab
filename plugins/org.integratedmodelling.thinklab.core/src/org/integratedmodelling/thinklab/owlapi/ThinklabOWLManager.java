@@ -258,7 +258,7 @@ public class ThinklabOWLManager {
 						if (new Property((OWLObjectProperty) property)
 								.isClassification()) {
 
-							Instance cin = new Instance(ind, properties);
+							Instance cin = new Instance(ind);
 
 							/*
 							 * classAnnotation must be the semantic type or URL
@@ -289,7 +289,7 @@ public class ThinklabOWLManager {
 								 * figure out how to construct literal using the
 								 * concept manager closest to the object's class
 								 */
-								IConcept cc = new Instance(ind, properties).getDirectType();
+								IConcept cc = new Instance(ind).getDirectType();
 
 								val = KnowledgeManager.get().validateLiteral(
 										cc, literAnnotation);
@@ -306,7 +306,7 @@ public class ThinklabOWLManager {
 
 								/* it's just a stupid object property */
 								val = new ObjectReferenceValue(
-										new Instance(ind, properties));
+										new Instance(ind));
 								ret.add(val);
 
 							}
@@ -328,7 +328,7 @@ public class ThinklabOWLManager {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public IInstanceImplementation getInstanceImplementation(Instance instance, Properties properties) throws ThinklabException {
+	public IInstanceImplementation getInstanceImplementation(Instance instance) throws ThinklabException {
 
 		IInstanceImplementation ret = null;
 		boolean isVolatile = instance instanceof VolatileInstance;
@@ -352,7 +352,7 @@ public class ThinklabOWLManager {
 				addImpl(instance.getURI(), ret);
 
 			if (ret != null)
-				ret.initialize(instance, properties);
+				ret.initialize(instance);
 
 
 		} else {

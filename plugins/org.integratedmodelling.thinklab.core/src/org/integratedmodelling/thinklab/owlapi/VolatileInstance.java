@@ -41,8 +41,8 @@ public class VolatileInstance extends  Instance {
 
 	IInstanceImplementation implementation = null;
 	
-	public VolatileInstance(OWLIndividual i, Properties properties) {
-		super(i, properties);
+	public VolatileInstance(OWLIndividual i) {
+		super(i);
 	}
 
 	@Override

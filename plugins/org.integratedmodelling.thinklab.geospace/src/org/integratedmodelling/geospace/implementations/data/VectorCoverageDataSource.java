@@ -137,7 +137,7 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 		return true;
 	}
 
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 
 		// these are compulsory
 		String sourceURL = null;
@@ -179,10 +179,6 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 		try {
 
 			Properties p = new Properties();
-			
-			if (properties != null)
-				p.putAll(properties);
-			
 			p.setProperty(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, valueAttr);
 			
 			if (dataURL != null) {

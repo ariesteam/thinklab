@@ -106,7 +106,7 @@ public class VirtualSessionKBox implements IKBox {
 
 	public String storeObject(Polylist list, ISession s) throws ThinklabException {
 
-		IInstance ninst = session.createObject(list, getProperties());
+		IInstance ninst = session.createObject(list);
 		instances.add(ninst);
 		return ninst.getLocalName();
 	}
@@ -129,7 +129,7 @@ public class VirtualSessionKBox implements IKBox {
 		String ret = id;
 		
 		if (!refTable.containsKey(id)) {
-			IInstance ninst = session.createObject(list, getProperties());
+			IInstance ninst = session.createObject(list);
 			instances.add(ninst);
 			ret = ninst.getLocalName();
 			refTable.put(id, ret);

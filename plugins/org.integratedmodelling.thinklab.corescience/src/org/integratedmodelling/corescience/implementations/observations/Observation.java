@@ -194,7 +194,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 	 * createMissingConceptualModel() and createMissingDatasource() will be
 	 * called in sequence if no CM or DS are provided.
 	 */
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 
 		/*
 		 * this one is easy

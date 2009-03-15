@@ -105,9 +105,9 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 
-		super.initialize(i, properties);
+		super.initialize(i);
 		
 		// read requested parameters from properties
 		for (IRelationship r : i.getRelationships()) {

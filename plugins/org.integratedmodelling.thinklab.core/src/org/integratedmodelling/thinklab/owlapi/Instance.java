@@ -48,7 +48,6 @@ import org.semanticweb.owl.model.OWLOntology;
  */
 public class Instance extends Knowledge implements IInstance {
 
-	Properties properties = null;
 	boolean _initialized = false;
 	
 	/**
@@ -56,9 +55,8 @@ public class Instance extends Knowledge implements IInstance {
 	 * @param ontology 
 	 * @throws ThinklabResourceNotFoundException 
 	 */
-	public Instance(OWLIndividual i, Properties properties) {
+	public Instance(OWLIndividual i) {
 		super(i,OWLType.INDIVIDUAL);
-		this.properties = properties;
 	}
 
 	/* (non-Javadoc)
@@ -171,7 +169,7 @@ public class Instance extends Knowledge implements IInstance {
 		
 		for (OWLOntology o : FileKnowledgeRepository.get().manager.getOntologies()) {
 			for (OWLIndividual ind : this.entity.asOWLIndividual().getSameIndividuals(o)) {
-				ret.add(new Instance(ind, null));
+				ret.add(new Instance(ind));
 			}
 		}
 		
@@ -182,7 +180,7 @@ public class Instance extends Knowledge implements IInstance {
 	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#getImplementation()
 	 */
 	public IInstanceImplementation getImplementation() throws ThinklabException {
-		return ThinklabOWLManager.get().getInstanceImplementation(this, properties);
+		return ThinklabOWLManager.get().getInstanceImplementation(this);
 	}
 
 	/* (non-Javadoc)

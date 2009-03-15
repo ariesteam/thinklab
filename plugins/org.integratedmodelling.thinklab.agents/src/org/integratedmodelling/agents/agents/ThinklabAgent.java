@@ -65,7 +65,7 @@ public class ThinklabAgent extends Agent implements IInstanceImplementation {
 		/* clear session */
 	}
 
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}

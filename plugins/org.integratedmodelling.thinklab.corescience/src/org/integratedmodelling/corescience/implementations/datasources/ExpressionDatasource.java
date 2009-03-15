@@ -32,8 +32,6 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import java.util.Properties;
-
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.ComputedDataSource;
@@ -57,7 +55,7 @@ public class ExpressionDatasource
 	String expressionSource = null;
 
 	@Override
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 		// TODO read expression
 		
 	}

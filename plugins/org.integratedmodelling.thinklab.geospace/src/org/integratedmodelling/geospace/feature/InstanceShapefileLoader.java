@@ -70,7 +70,7 @@ public class InstanceShapefileLoader extends InstanceShapefileHandler {
 		ArrayList<IInstance> ret = new ArrayList<IInstance>();
 		
 		for (Polylist list : observations) {		
-			ret.add(session.createObject(list, null));
+			ret.add(session.createObject(list));
 		}
 		
 		return ret;

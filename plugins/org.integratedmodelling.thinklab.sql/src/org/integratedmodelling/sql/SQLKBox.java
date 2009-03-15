@@ -88,14 +88,14 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 			throws ThinklabException {
 
 		Polylist list = this.retrieveObjectAsList(id);
-		return session.createObject(list, getProperties());
+		return session.createObject(list);
 	}
 
 	public IInstance getObjectFromID(String id, ISession session,
 			HashMap<String, String> refTable) throws ThinklabException {
 
 		Polylist list = this.retrieveObjectAsList(id, refTable);
-		return session.createObject(list, getProperties());
+		return session.createObject(list);
 	}
 
 	public String storeObject(IInstance object, ISession session)
@@ -225,7 +225,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		if (session == null)
 			session = new Session();
 		
-		IInstance object = session.createObject(list, getProperties());
+		IInstance object = session.createObject(list);
 
 		Pair<String, String> sql = storeInstanceSQL(object, session);
 
@@ -250,7 +250,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		if (session == null)
 			session = new Session();
 		
-		IInstance object = session.createObject(list, getProperties());
+		IInstance object = session.createObject(list);
 
 		Pair<String, String> sql = storeInstanceSQL(object, session, refTable);
 

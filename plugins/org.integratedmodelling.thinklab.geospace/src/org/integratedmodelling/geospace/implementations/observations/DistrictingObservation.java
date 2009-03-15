@@ -41,8 +41,9 @@ public class DistrictingObservation extends Observation {
 	}
 
 	@Override
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
-		super.initialize(i, properties);
+	public void initialize(IInstance i) throws ThinklabException {
+		
+		super.initialize(i);
 		
 		/*
 		 * recover clustering parameters, "infer" method

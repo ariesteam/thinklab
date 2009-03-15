@@ -96,7 +96,7 @@ public class MemValueContextualizedDatasource
 	}
 
 	@Override
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 	}
 
 	@Override

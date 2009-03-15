@@ -266,7 +266,7 @@ public interface ISession {
 	 * 
 	 *  FIXME must return a garbage collected instance, if we ever manage to implement it.
 	 */
-	public abstract IInstance createObject(Polylist polylist, Properties properties) throws ThinklabException;
+	public abstract IInstance createObject(Polylist polylist) throws ThinklabException;
 	
 	/**
 	 * Read in objects from the given URL. What can be read depends on the implementation, but it should

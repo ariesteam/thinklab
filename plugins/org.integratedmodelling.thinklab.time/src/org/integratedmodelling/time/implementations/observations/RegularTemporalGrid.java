@@ -32,8 +32,6 @@
  **/
 package org.integratedmodelling.time.implementations.observations;
 
-import java.util.Properties;
-
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
@@ -60,7 +58,7 @@ public class RegularTemporalGrid extends Observation implements IConceptualizabl
 
 
 	@Override
-	public void initialize(IInstance i, Properties properties) throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
 
 		/* complete definition with observable. */
 		i.addObjectRelationship(CoreScience.HAS_OBSERVABLE, TimePlugin.continuousTimeInstance());
@@ -75,7 +73,7 @@ public class RegularTemporalGrid extends Observation implements IConceptualizabl
 			step  = (DurationValue) i.get(TimePlugin.STEP_SIZE_PROPERTY_ID);
 		}
 		
-		super.initialize(i, properties);
+		super.initialize(i);
 	}
 
 	@Override

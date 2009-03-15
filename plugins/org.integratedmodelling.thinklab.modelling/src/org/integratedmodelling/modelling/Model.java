@@ -1,10 +1,10 @@
 package org.integratedmodelling.modelling;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Iterator;
 
-import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
-import org.integratedmodelling.modelling.observations.ObservationFactory;
+import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -13,25 +13,29 @@ import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
 /**
- * The most high-level notion in Thinklab. A model defined only on semantic grounds, that selects
- * the way things are observed based on reasoning, and build a model that depends entirely (structurally
- * and functionally) on the context.
+ * The most high-level notion in Thinklab. Essentially a conceptual blueprint to build 
+ * observations of a concept given a kbox and a session. It is nothing but a set of 
+ * axioms, and it should be serializable to a class in DL. It is here represented 
+ * as a Java class for practical (efficiency, storage, cleanup of unneeded axioms) but
+ * it has a toConcept() methods that should return a properly restricted class, not
+ * implemented because likely useless for now.
  * 
- * Docs to come.
+ *  The Java side is usable as is but the whole model definition machinery is meant to be 
+ *  used from Clojure, which makes a beautiful and compact syntax for model specification. See
+ *  the examples/ folder in the plugin directory.
+ * 
+ * More docs will come.
  * 
  * @author Ferdinando Villa
  * @date Jan 25th, 2008.
  * 
  */
-public class Model {
+public class Model implements IModel {
 
 	IConcept subject = null;
-	HashMap<String, IConcept> observables = new HashMap<String, IConcept>();
-	
-	
-	public Model(IConcept id) {
-		this.subject = id;
-	}
+	Collection<IModel> dependencies = null;
+	Collection<IModel> context = null;
+	Collection<String> contextIds = null;
 	
 	/*
 	 * Build a main observation using all the observables that we depend on and can be found in
@@ -39,64 +43,31 @@ public class Model {
 	 * add any further dependencies that come from the types referred to. Each context state of
 	 * this observation will determine the model to be built.
 	 */
-	public IInstance buildModelContext(IKBox kbox, ISession session) throws ThinklabException {
-	
-		Polylist main = ObservationFactory.createIdentification(subject.toString());
-		
-		for (IConcept observable : observables.values()) {
-			
-			/*
-			 * query observable until there is at least one or we encounter an abstract class;
-			 * skip temporary concepts.
-			 */
-			
-			//IInstance observation = 
-		}
-		
-		return session.createObject(main, null);
+	public IInstance buildModelContext(Collection<Object> contextSpecs, IKBox kbox, ISession session) throws ThinklabException {
+		return null;
 	}
 	
-	/**
-	 * Define a concept that will need to be observed when this model is built, and whose
-	 * contextualized state will be referred to in the rules as the passed ID.
-	 * 
-	 * @param session
-	 * @param baseType
-	 * @param transformType
-	 */
-	public void observe(IConcept concept, String constraintID) {
-		observables.put(constraintID, concept);
-	}
 	
-	/**
-	 * Create a ModeledObservable type in the given session, subclass of the passed one, 
-	 * with conceptual model and possibly observable dependencies, and return it. It will be used to contextualize known 
-	 * observables into observations that can be used within this model.
-	 * 
-	 * @param session
-	 * @param typename
-	 * @param cmodel
-	 * @param dependents
-	 * @return
-	 * @throws ThinklabException 
+	
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.IModel#define(org.integratedmodelling.thinklab.interfaces.knowledge.IConcept, java.util.Collection, java.util.Collection)
 	 */
-	public static IConcept deftype(ISession session, IConcept type, Polylist cmodel, Polylist dependents) throws ThinklabException {
-				
-		ArrayList<Object> ldef = new ArrayList<Object>();
+	public void define(IConcept concept, Collection<Object> context, Collection<IModel> dependents) throws ThinklabException {
+
+		this.subject = concept;
 		
-		/* intersect the concept with ModeledObservable */
-		ldef.add(type + "+observation:ModeledObservable");
-		ldef.add(Polylist.list("observation:hasObservableModel", cmodel));
-		
-		if (dependents != null) {
-			/*
-			 * TODO should use an authoritative ontology of observables such as
-			 * DOLCE for the dependencies.
-			 */
-			ldef.add(dependents.cons("observation:dependsOnObservable"));
+		for (Iterator<Object> it = context.iterator(); it.hasNext(); ) {
+			
+			if (this.context == null) {
+				this.context = new ArrayList<IModel>();
+				this.contextIds = new ArrayList<String>();
+			}
+
+			this.contextIds.add(it.next().toString());
+			this.context.add((IModel) it.next());
 		}
 		
-		return session.createConcept(Polylist.PolylistFromArrayList(ldef));
+		this.dependencies = dependents;
 	}
 	
 	/**
@@ -106,18 +77,30 @@ public class Model {
 	 * @param basetype
 	 * @param cond
 	 */
-	public void defrule(ISession session, IConcept baseType, Polylist cond, IConcept targetType) {
-	
+	public void defrule(ISession session, IConcept baseType, Polylist cond, IConcept targetType) {	
 	}
 	
-	public IInstance buildModel(IKBox kbox, ISession session) throws ThinklabException {
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.IModel#buildObservation(org.integratedmodelling.thinklab.interfaces.storage.IKBox, org.integratedmodelling.thinklab.interfaces.applications.ISession)
+	 */
+	public IInstance buildObservation(IKBox kbox, ISession session) throws ThinklabException {
 		
-		IInstance world = buildModelContext(kbox, session);
-		
-		if (world == null) {
-			throw new ThinklabModelException("model " + subject + " cannot be built because its context cannot be observed with the available information.");
-		}
 		
 		return null;
 	}
+
+
+	@Override
+	public IConcept getObservable() {
+		return subject;
+	}
+
+
+
+	@Override
+	public IConcept getCompatibleObservationType(ISession session) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

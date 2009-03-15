@@ -6,16 +6,19 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 public class ModellingPlugin extends ThinklabPlugin {
 
+	public static String PLUGIN_ID = "org.integratedmodelling.thinklab.modelling";
+	
+	public static ModellingPlugin get() {
+		return (ModellingPlugin) getPlugin(PLUGIN_ID);
+	}
+	
 	@Override
 	protected void load(KnowledgeManager km) throws ThinklabException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	protected void unload() throws ThinklabException {
-		// TODO Auto-generated method stub
-
 	}
+	
 
 }
