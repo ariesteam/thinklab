@@ -37,6 +37,7 @@ import java.util.Vector;
 import java.util.Hashtable;
 
 public class Model extends DirectedSparseGraph {
+	
 	private String name;
 	private String program;
 	private String version;

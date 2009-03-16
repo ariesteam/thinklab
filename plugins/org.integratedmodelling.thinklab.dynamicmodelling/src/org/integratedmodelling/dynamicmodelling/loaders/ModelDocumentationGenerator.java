@@ -193,7 +193,7 @@ public class ModelDocumentationGenerator extends ModelOWLLoader implements IDocu
 		 
 		 gv.addln(gv.start_graph(graphOptions));
 		 
-		 for (Iterator iter = model.getVertices().iterator(); iter.hasNext(); ) {
+		 for (Iterator<?> iter = model.getVertices().iterator(); iter.hasNext(); ) {
 	           
 			 	Vertex v = (Vertex) iter.next();
 
@@ -218,7 +218,7 @@ public class ModelDocumentationGenerator extends ModelOWLLoader implements IDocu
 
 	        }
 	        		 
-	    for (Iterator iter = model.getEdges().iterator(); iter.hasNext(); ) {
+	    for (Iterator<?> iter = model.getEdges().iterator(); iter.hasNext(); ) {
 	    	
 	            Edge e = (Edge) iter.next();
 	            Vertex src = (Vertex)e.getEndpoints().getFirst();
@@ -572,7 +572,7 @@ public class ModelDocumentationGenerator extends ModelOWLLoader implements IDocu
 		outputOverallModelDiv(writer, model, modelDir, annotation);
 		outputModelAnnotationDiv(writer, model, modelDir, annotation);
 
-		for (Iterator iter = model.getVertices().iterator(); iter.hasNext(); ) {
+		for (Iterator<?> iter = model.getVertices().iterator(); iter.hasNext(); ) {
 	           
 		 	Vertex v = (Vertex) iter.next();
 		 	if (v instanceof Submodel) {
@@ -584,7 +584,7 @@ public class ModelDocumentationGenerator extends ModelOWLLoader implements IDocu
 		 * don't have a classification section or sort anything. 
 		 */
 		int idx = 0;
-		for (Iterator iter = model.getVertices().iterator(); iter.hasNext(); ) {
+		for (Iterator<?> iter = model.getVertices().iterator(); iter.hasNext(); ) {
 	           
 			 	Vertex v = (Vertex) iter.next();
 			 	if (v instanceof Stock) {
@@ -593,7 +593,7 @@ public class ModelDocumentationGenerator extends ModelOWLLoader implements IDocu
 		 }
 		 
 		 idx = 0;
-		 for (Iterator iter = model.getVertices().iterator(); iter.hasNext(); ) {
+		 for (Iterator<?> iter = model.getVertices().iterator(); iter.hasNext(); ) {
 	           
 			 	Vertex v = (Vertex) iter.next();
 			 	if (v instanceof Flow) {
@@ -602,7 +602,7 @@ public class ModelDocumentationGenerator extends ModelOWLLoader implements IDocu
 		 }
 		 
 		 idx = 0;
-		 for (Iterator iter = model.getVertices().iterator(); iter.hasNext(); ) {
+		 for (Iterator<?> iter = model.getVertices().iterator(); iter.hasNext(); ) {
 	           
 			 	Vertex v = (Vertex) iter.next();
 			 	if (v instanceof Variable) {

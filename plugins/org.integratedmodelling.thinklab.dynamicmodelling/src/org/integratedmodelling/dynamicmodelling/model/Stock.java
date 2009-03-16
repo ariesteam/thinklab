@@ -35,8 +35,6 @@ package org.integratedmodelling.dynamicmodelling.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.integratedmodelling.dynamicmodelling.DynamicModellingPlugin;
-
 import edu.uci.ics.jung.graph.impl.SimpleDirectedSparseVertex;
 
 public class Stock extends SimpleDirectedSparseVertex {

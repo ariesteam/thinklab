@@ -1,6 +1,6 @@
-(ns model)
+(ns modelling)
 
-(tl/load-bindings 'corescience)
+(tl/load-bindings 'org.integratedmodelling.thinklab.corescience)
 
 (defn measurement 
 	"Build a model for a measurement, optionally mediating another model (which must also be
@@ -8,6 +8,19 @@
 	[concept-or-model unitspecs]
 	(new org.integratedmodelling.modelling.corescience.MeasurementModel
 			concept-or-model (str unitspecs)))
+			
+(defn classification
+	[concept-or-model & class-specs]
+	(new org.integratedmodelling.modelling.corescience.ClassificationModel
+	    concept-or-model class-specs))
+	
+(defn discrete-random-model
+	[concept-or-model & cpt]
+	())
+	
+(defn discrete-noisymax-model
+	[concept-or-model & cpt]
+	())
 			
 ;(defn computed-measurement 
 ; 	""

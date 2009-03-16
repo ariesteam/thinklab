@@ -153,7 +153,7 @@ public class ModelOWLLoader implements IModelLoader {
 		if (ctx != null)
 			mdl.addElement(ctx);
 		
-		for (Iterator iter = model.getVertices().iterator(); iter.hasNext(); ) {
+		for (Iterator<?> iter = model.getVertices().iterator(); iter.hasNext(); ) {
 	           
 			 	Vertex v = (Vertex) iter.next();
 	            

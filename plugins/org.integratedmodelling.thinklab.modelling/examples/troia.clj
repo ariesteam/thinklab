@@ -14,12 +14,18 @@
 (defmodel view-usage 'aesthetics:SensoryEnjoyment
 		""
 		;; if we have a contingency model, a conditional model follows
-		[(classification 'lulc:LandUseClass 'lulc:anderson1) :as landuse]
+		[:landuse (classification 'lulc:LandUseClass 'lulc:anderson1)]
 		(tl/is :landuse 'anderson1:Forest) ()
 		() ()
 		:default ())
 		
-	 		   
+(model/defmodel zio 'representation:Mass 
+	[] 
+	(model/measurement 'representation:Mass "kg"))
+
+(model/defmodel ziocane 'representation:Mass 
+	[] 
+	(model/measurement 'representation:Mass "kg"))
 	 		   
 	 		   
 	 		  

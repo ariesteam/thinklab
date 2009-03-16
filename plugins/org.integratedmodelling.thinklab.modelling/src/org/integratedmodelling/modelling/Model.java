@@ -65,6 +65,7 @@ public class Model implements IModel {
 			context = new ArrayList<IModel>();
 		context.add(m);
 	}
+	
 	/*
 	 * Build a main observation using all the observables that we depend on and
 	 * can be found in the passed kbox, contextualize it, and add any further
@@ -93,7 +94,9 @@ public class Model implements IModel {
 		System.out.println(subject + " seen as " + model + " iif " + rule);
 	}
 
+	
 	public void setModel(IModel model) {
+		System.out.println("setting unconditional " + model);
 		unconditional = model;
 	}
 	
