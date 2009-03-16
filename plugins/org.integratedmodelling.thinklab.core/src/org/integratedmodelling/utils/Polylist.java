@@ -63,10 +63,9 @@ public class Polylist {
 	/**
 	 *  nil is the empty-list constant
 	 */
-
 	public static final Polylist nil = new Polylist();
 
-	private polycell ptr;
+	private ConsCell ptr;
 
 	/*
 	 * simple functor that transforms tokens into objects when lists are read from strings.
@@ -90,7 +89,7 @@ public class Polylist {
 	 */
 
 	Polylist(Object First, Polylist Rest) {
-		ptr = new polycell(First, Rest);
+		ptr = new ConsCell(First, Rest);
 	}
 
 	/**
@@ -98,7 +97,7 @@ public class Polylist {
 	 */
 
 	Polylist(Object First, Seed Rest) {
-		ptr = new polycell(First, Rest);
+		ptr = new ConsCell(First, Rest);
 	}
 
 	/**
@@ -154,10 +153,6 @@ public class Polylist {
 		
 		for (int i = 0; i < indentLevel*indentAmount; i++)
 			inds += ' ';
-		
-		// will parameterize later
-		boolean indent = true;
-		int ind = 2;
 
 		if (list == null)
 			return "(nil)";
@@ -292,7 +287,7 @@ public class Polylist {
 	 *  PolylistFromEnum makes a Polylist out of any Enumeration.
 	 */
 
-	public static Polylist PolylistFromEnum(java.util.Enumeration e) {
+	public static Polylist PolylistFromEnum(java.util.Enumeration<?> e) {
 		if (e.hasMoreElements())
 			return cons(e.nextElement(), PolylistFromEnum(e));
 		else
@@ -307,164 +302,173 @@ public class Polylist {
 		return nil;
 	}
 
-	/**
-	 *  return a list of one element
-	 */
-
-	public static Polylist list(Object A) {
-		return cons(A, nil);
+	public static Polylist list(Object ... objs) {
+		return PolylistFromArray(objs);
 	}
 
-	/**
-	 *  return a list of two elements
-	 */
-
-	public static Polylist list(Object A, Object B) {
-		return cons(A, cons(B, nil));
+	public static Polylist listNotNull(Object ... objs) {
+		return PolylistFromArrayNotNull(objs);
 	}
 
-	/**
-	 *  return a list of three elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C) {
-		return cons(A, cons(B, cons(C, nil)));
-	}
-
-	/**
-	 *  return a list of four elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C, Object D) {
-		return cons(A, cons(B, cons(C, cons(D, nil))));
-	}
-
-	/**
-	 *  return a list of five elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C, Object D, Object E) {
-		return cons(A, cons(B, cons(C, cons(D, cons(E, nil)))));
-	}
-
-	/**
-	 *  return a list of six elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C, Object D,
-			Object E, Object F) {
-		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, nil))))));
-	}
-
-	/**
-	 *  return a list of seven elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C, Object D,
-			Object E, Object F, Object G) {
-		return cons(A,
-				cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, nil)))))));
-	}
-
-	/**
-	 *  return a list of eight elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C, Object D,
-			Object E, Object F, Object G, Object H) {
-		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
-				nil))))))));
-	}
-
-	/**
-	 *  return a list of nine elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C, Object D,
-			Object E, Object F, Object G, Object H, Object I) {
-		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
-				cons(I, nil)))))))));
-	}
-
-	/**
-	 *  return a list of ten elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C, Object D,
-			Object E, Object F, Object G, Object H, Object I, Object J) {
-		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
-				cons(I, cons(J, nil))))))))));
-	}
-
-	/**
-	 *  return a list of eleven elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C, Object D,
-			Object E, Object F, Object G, Object H, Object I, Object J, Object K) {
-		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
-				cons(I, cons(J, cons(K, nil)))))))))));
-	}
-
-	/**
-	 *  return a list of twelve elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C, Object D,
-			Object E, Object F, Object G, Object H, Object I, Object J,
-			Object K, Object L) {
-		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
-				cons(I, cons(J, cons(K, cons(L, nil))))))))))));
-	}
-
-	/**
-	 *  return a list of thirteen elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C, Object D,
-			Object E, Object F, Object G, Object H, Object I, Object J,
-			Object K, Object L, Object M) {
-		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
-				cons(I, cons(J, cons(K, cons(L, cons(M, nil)))))))))))));
-	}
-
-	/**
-	 *  return a list of fourteen elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C, Object D,
-			Object E, Object F, Object G, Object H, Object I, Object J,
-			Object K, Object L, Object M, Object N) {
-		return cons(
-				A,
-				cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H, cons(I,
-						cons(J, cons(K, cons(L, cons(M, cons(N, nil))))))))))))));
-	}
-
-	/**
-	 *  return a list of fifteen elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C, Object D,
-			Object E, Object F, Object G, Object H, Object I, Object J,
-			Object K, Object L, Object M, Object N, Object O) {
-		return cons(A,
-				cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
-						cons(I, cons(J, cons(K, cons(L, cons(M, cons(N, cons(O,
-								nil)))))))))))))));
-	}
-
-	/**
-	 *  return a list of sixteen elements
-	 */
-
-	public static Polylist list(Object A, Object B, Object C, Object D,
-			Object E, Object F, Object G, Object H, Object I, Object J,
-			Object K, Object L, Object M, Object N, Object O, Object P) {
-		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
-				cons(I, cons(J, cons(K, cons(L, cons(M, cons(N, cons(O, cons(P,
-						nil))))))))))))))));
-	}
+	
+//	/**
+//	 *  return a list of one element
+//	 */
+//
+//	public static Polylist list(Object A) {
+//		return cons(A, nil);
+//	}
+//
+//	/**
+//	 *  return a list of two elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B) {
+//		return cons(A, cons(B, nil));
+//	}
+//
+//	/**
+//	 *  return a list of three elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C) {
+//		return cons(A, cons(B, cons(C, nil)));
+//	}
+//
+//	/**
+//	 *  return a list of four elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C, Object D) {
+//		return cons(A, cons(B, cons(C, cons(D, nil))));
+//	}
+//
+//	/**
+//	 *  return a list of five elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C, Object D, Object E) {
+//		return cons(A, cons(B, cons(C, cons(D, cons(E, nil)))));
+//	}
+//
+//	/**
+//	 *  return a list of six elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C, Object D,
+//			Object E, Object F) {
+//		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, nil))))));
+//	}
+//
+//	/**
+//	 *  return a list of seven elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C, Object D,
+//			Object E, Object F, Object G) {
+//		return cons(A,
+//				cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, nil)))))));
+//	}
+//
+//	/**
+//	 *  return a list of eight elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C, Object D,
+//			Object E, Object F, Object G, Object H) {
+//		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
+//				nil))))))));
+//	}
+//
+//	/**
+//	 *  return a list of nine elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C, Object D,
+//			Object E, Object F, Object G, Object H, Object I) {
+//		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
+//				cons(I, nil)))))))));
+//	}
+//
+//	/**
+//	 *  return a list of ten elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C, Object D,
+//			Object E, Object F, Object G, Object H, Object I, Object J) {
+//		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
+//				cons(I, cons(J, nil))))))))));
+//	}
+//
+//	/**
+//	 *  return a list of eleven elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C, Object D,
+//			Object E, Object F, Object G, Object H, Object I, Object J, Object K) {
+//		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
+//				cons(I, cons(J, cons(K, nil)))))))))));
+//	}
+//
+//	/**
+//	 *  return a list of twelve elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C, Object D,
+//			Object E, Object F, Object G, Object H, Object I, Object J,
+//			Object K, Object L) {
+//		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
+//				cons(I, cons(J, cons(K, cons(L, nil))))))))))));
+//	}
+//
+//	/**
+//	 *  return a list of thirteen elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C, Object D,
+//			Object E, Object F, Object G, Object H, Object I, Object J,
+//			Object K, Object L, Object M) {
+//		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
+//				cons(I, cons(J, cons(K, cons(L, cons(M, nil)))))))))))));
+//	}
+//
+//	/**
+//	 *  return a list of fourteen elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C, Object D,
+//			Object E, Object F, Object G, Object H, Object I, Object J,
+//			Object K, Object L, Object M, Object N) {
+//		return cons(
+//				A,
+//				cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H, cons(I,
+//						cons(J, cons(K, cons(L, cons(M, cons(N, nil))))))))))))));
+//	}
+//
+//	/**
+//	 *  return a list of fifteen elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C, Object D,
+//			Object E, Object F, Object G, Object H, Object I, Object J,
+//			Object K, Object L, Object M, Object N, Object O) {
+//		return cons(A,
+//				cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
+//						cons(I, cons(J, cons(K, cons(L, cons(M, cons(N, cons(O,
+//								nil)))))))))))))));
+//	}
+//
+//	/**
+//	 *  return a list of sixteen elements
+//	 */
+//
+//	public static Polylist list(Object A, Object B, Object C, Object D,
+//			Object E, Object F, Object G, Object H, Object I, Object J,
+//			Object K, Object L, Object M, Object N, Object O, Object P) {
+//		return cons(A, cons(B, cons(C, cons(D, cons(E, cons(F, cons(G, cons(H,
+//				cons(I, cons(J, cons(K, cons(L, cons(M, cons(N, cons(O, cons(P,
+//						nil))))))))))))))));
+//	}
 
 	/**
 	 *  return the length of this list
@@ -472,7 +476,7 @@ public class Polylist {
 
 	public int length() {
 		int len = 0;
-		for (Enumeration e = elements(); e.hasMoreElements(); e.nextElement()) {
+		for (Enumeration<?> e = elements(); e.hasMoreElements(); e.nextElement()) {
 			len++;
 		}
 		return len;
@@ -511,7 +515,7 @@ public class Polylist {
 
 	public Polylist reverse() {
 		Polylist rev = nil;
-		for (Enumeration e = elements(); e.hasMoreElements();) {
+		for (Enumeration<?> e = elements(); e.hasMoreElements();) {
 			rev = cons(e.nextElement(), rev);
 		}
 		return rev;
@@ -534,7 +538,7 @@ public class Polylist {
 	 */
 
 	public boolean member(Object A) {
-		for (Enumeration e = elements(); e.hasMoreElements();)
+		for (Enumeration<?> e = elements(); e.hasMoreElements();)
 			if (Arith.equal(e.nextElement(), A))
 				return true;
 		return false;
@@ -669,8 +673,8 @@ public class Polylist {
 	 */
 
 	public static boolean equals(Polylist L, Polylist M) {
-		Enumeration e = L.elements();
-		Enumeration f = M.elements();
+		Enumeration<?> e = L.elements();
+		Enumeration<?> f = M.elements();
 
 		while (e.hasMoreElements() && f.hasMoreElements()) {
 			if (!Arith.equal(e.nextElement(), f.nextElement()))
@@ -964,14 +968,14 @@ public class Polylist {
 
 		System.out.println("Printed using an enumeration:");
 
-		for (Enumeration e = q.elements(); e.hasMoreElements();) {
+		for (Enumeration<?> e = q.elements(); e.hasMoreElements();) {
 			System.out.print(e.nextElement() + "  ");
 		}
 		System.out.println();
 
 		// check out ListFromEnum
 
-		Stack s = new Stack();
+		Stack<Integer> s = new Stack<Integer>();
 		for (int i = 0; i < 20; i++)
 			s.push(new Integer(i));
 
@@ -1112,8 +1116,8 @@ public class Polylist {
 		int len = length();
 		buff.append("A Polylist consisting of " + len + " element"
 				+ (len > 1 ? "s" : "") + ": \n");
-		Polylist L = this;
-		for (Enumeration e = elements(); e.hasMoreElements();) {
+
+		for (Enumeration<?> e = elements(); e.hasMoreElements();) {
 			buff.append(analysis(e.nextElement(), N + 1));
 		}
 		return buff.toString();
@@ -1151,7 +1155,7 @@ public class Polylist {
 	public Object[] array() {
 		Object[] result = new Object[length()];
 		int i = 0;
-		for (Enumeration e = elements(); e.hasMoreElements();) {
+		for (Enumeration<?> e = elements(); e.hasMoreElements();) {
 			result[i++] = e.nextElement();
 		}
 		return result;
@@ -1166,6 +1170,19 @@ public class Polylist {
 			result = cons(array[i], result);
 		return result;
 	}
+	
+	/**
+	 * PolylistFromArrayNotNull makes a list out of an array of objects where
+	 * any nulls are not included in the list
+	 */
+	public static Polylist PolylistFromArrayNotNull(Object array[]) {
+		Polylist result = nil;
+		for (int i = array.length - 1; i >= 0; i--)
+			if (array[i] != null)
+				result = cons(array[i], result);
+		return result;
+	}
+	
 	
 	/**
 	 * PolylistFromArray makes a list out of an array of objects
@@ -1194,7 +1211,7 @@ public class Polylist {
 
 	public String implode() {
 		StringBuffer buff = new StringBuffer();
-		for (Enumeration e = elements(); e.hasMoreElements();) {
+		for (Enumeration<?> e = elements(); e.hasMoreElements();) {
 			buff.append(e.nextElement().toString());
 		}
 		return buff.toString();
@@ -1228,7 +1245,7 @@ public class Polylist {
 		return result;
 	}
 
-	public boolean hasMemberOfClass(Class cls) {
+	public boolean hasMemberOfClass(Class<?> cls) {
 		boolean ret = false;
 		for (Object o : array())
 			if (ret = (o.getClass().equals(cls)))
@@ -1240,7 +1257,7 @@ public class Polylist {
 		
 		ArrayList<Object> ret = new ArrayList<Object>();
 
-		for (Enumeration e = elements(); e.hasMoreElements();) {
+		for (Enumeration<?> e = elements(); e.hasMoreElements();) {
 			ret.add(e.nextElement());
 		}
 		return ret;

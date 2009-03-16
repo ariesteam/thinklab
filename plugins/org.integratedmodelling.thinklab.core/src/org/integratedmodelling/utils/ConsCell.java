@@ -43,7 +43,7 @@ package org.integratedmodelling.utils;
   *  lists.  Every NonEmptyList has a first and a rest.
  **/
 
-class polycell
+class ConsCell
   {
   private Object First;
   private Object Rest;
@@ -81,7 +81,7 @@ class polycell
     *  explicitly.
    **/ 
 
-  polycell(Object First, Object Rest)
+  ConsCell(Object First, Object Rest)
     {
     this.First = First;
     this.Rest = Rest;

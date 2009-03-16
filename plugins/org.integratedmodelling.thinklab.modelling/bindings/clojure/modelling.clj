@@ -20,32 +20,36 @@
 ;	(. org.integratedmodelling.modelling.Model
 ;			(deftype (tl/get-session) (tl/conc typename) cmodel-specs (tl/listp dependencies)))))
 
-;(defn j-make-model
-;	"Make a new instance of Model and return it"
-;	[concept]
-;	(new org.integratedmodelling.modelling.Model))
+(defn j-make-model
+	"Make a new instance of Model and return it"
+	[]
+	(new org.integratedmodelling.modelling.Model))
 	
 
 ;; ----------------------------------------------------------------------------------------------
 ;; public macros
 ;; ----------------------------------------------------------------------------------------------
-	
-(defmacro make-type 
-	"Define and return a subtype of a known type by defining its conceptual model and optionally known types of
-	 observables it depends upon."
-	([typename cmodel-specs] `(j-make-type ~typename ~cmodel-specs))
-	([typename cmodel-specs dependent-types] `(j-make-type ~typename ~cmodel-specs '~dependent-types)))
-						
-(defmacro defmodel [model-name type-bindings & rules]
-  `(let [model# (j-make-model ~model-name)]
-     (doseq [[id# type#] (apply zipmap (tl/uninterleave ~type-bindings))]
-         (.observe model# (tl/conc type#) (str id#)))
-     (doseq [rule-spec# '~rules]
-         (let [type-from# (first rule-spec#)]
-           (doseq [[constraint-list# type-to#] (apply zipmap (tl/uninterleave (rest rule-spec#)))]
+
+         
+(defmacro defmodel [model-name observable & body]
+	 `(let [desc#  (if (string? (first '~body)) (first '~body))
+ 	  	    specs# (if (nil? desc#) '~body (rest '~body))
+ 	   			contingency-model# (first specs#)
+ 	        conditional-model# (if (empty? contingency-model#) nil (rest specs#))
+ 	        dependency-model#  (if (nil? conditional-model#) (rest specs#))
+ 	        model# (model/j-make-model)]
+ 	     (.setObservable model# (tl/conc ~observable))
+ 	     (if (not (empty? contingency-model#))
+ 	         (doseq [[id# contingent-model#] (apply zipmap (tl/uninterleave contingency-model#))]
+         	  	(.addContingency model# (str id#) (eval contingent-model#))))
+       (if (not (nil? conditional-model#))
+        	 (doseq [[constraint-list# type-to#] (apply zipmap (tl/uninterleave conditional-model#))]
                (if (= :default constraint-list#)
-                 (.defrule model# (tl/get-session) (tl/conc (eval type-from#)) nil (tl/conc (eval type-to#)))
-                 (.defrule model# (tl/get-session) (tl/conc (eval type-from#)) (tl/listp constraint-list#) (tl/conc (eval type-to#)))))))
-     model#))
-     
-     
+                 (.defrule model# nil (tl/conc (eval type-to#)))
+                 (.defrule model# (tl/listp constraint-list#) (tl/conc (eval type-to#))))))
+       (if (not (nil? dependency-model#))
+           (.setModel model# (eval (first dependency-model#))))
+       model#))
+       
+; (model/defmodel zio 'thinklab-core:Number [] (model/measurement 'thinklab-core:Number "km"))
+    

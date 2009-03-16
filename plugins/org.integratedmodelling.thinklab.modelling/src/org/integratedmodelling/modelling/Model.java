@@ -4,27 +4,32 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.Obs;
+import org.integratedmodelling.corescience.contextualization.Compiler;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.thinklab.constraint.Constraint;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.kbox.RankingKBox;
+import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
 /**
- * The most high-level notion in Thinklab. Essentially a conceptual blueprint to build 
- * observations of a concept given a kbox and a session. It is nothing but a set of 
- * axioms, and it should be serializable to a class in DL. It is here represented 
- * as a Java class for practical (efficiency, storage, cleanup of unneeded axioms) but
- * it has a toConcept() methods that should return a properly restricted class, not
- * implemented because likely useless for now.
+ * The "default" model class is the one that reflects the defmodel form. It has
+ * both a contingency structure and a dependency structure, which are both resolved
+ * to observations using a kbox and a session; then the contingency structure is 
+ * used to contextualize the dependencies, and the result is a set of contextualizable
+ * models wrapped in one observation.
  * 
- *  The Java side is usable as is but the whole model definition machinery is meant to be 
- *  used from Clojure, which makes a beautiful and compact syntax for model specification. See
- *  the examples/ folder in the plugin directory.
- * 
- * More docs will come.
+ * The run() method will build and contextualize the model, returning a new 
+ * observation of the models' contextualized states.
  * 
  * @author Ferdinando Villa
  * @date Jan 25th, 2008.
@@ -33,43 +38,44 @@ import org.integratedmodelling.utils.Polylist;
 public class Model implements IModel {
 
 	IConcept subject = null;
-	Collection<IModel> dependencies = null;
+	IModel unconditional = null;
+	ArrayList<Pair<Polylist,IModel>> conditional = null;
 	Collection<IModel> context = null;
 	Collection<String> contextIds = null;
+	IKBox contKbox = null;
+
+	public IInstance run(IKBox kbox, ISession session) throws ThinklabException {
+		
+		IInstance ret = null;
+		IInstance model = buildObservation(kbox, session);
+		if (model != null) {
+			ret = Compiler.contextualize(Obs.getObservation(model), session);
+		}
+		return ret;
+	}
 	
+	public void setObservable(IConcept c) {
+		subject = c;
+		System.out.println("observable set to " + c);
+	}
+	
+	public void addContingency(String s, IModel m) {
+		
+		if (context == null)
+			context = new ArrayList<IModel>();
+		context.add(m);
+	}
 	/*
-	 * Build a main observation using all the observables that we depend on and can be found in
-	 * the passed kbox, contextualize it, and
-	 * add any further dependencies that come from the types referred to. Each context state of
+	 * Build a main observation using all the observables that we depend on and
+	 * can be found in the passed kbox, contextualize it, and add any further
+	 * dependencies that come from the types referred to. Each context state of
 	 * this observation will determine the model to be built.
 	 */
-	public IInstance buildModelContext(Collection<Object> contextSpecs, IKBox kbox, ISession session) throws ThinklabException {
+	private IInstance buildContingencyStructure(IKBox kbox, ISession session) throws ThinklabException {
 		return null;
 	}
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.modelling.IModel#define(org.integratedmodelling.thinklab.interfaces.knowledge.IConcept, java.util.Collection, java.util.Collection)
-	 */
-	public void define(IConcept concept, Collection<Object> context, Collection<IModel> dependents) throws ThinklabException {
 
-		this.subject = concept;
-		
-		for (Iterator<Object> it = context.iterator(); it.hasNext(); ) {
-			
-			if (this.context == null) {
-				this.context = new ArrayList<IModel>();
-				this.contextIds = new ArrayList<String>();
-			}
 
-			this.contextIds.add(it.next().toString());
-			this.context.add((IModel) it.next());
-		}
-		
-		this.dependencies = dependents;
-	}
-	
 	/**
 	 * Define rules to choose specific types to represent basic type in model
 	 * 
@@ -77,30 +83,100 @@ public class Model implements IModel {
 	 * @param basetype
 	 * @param cond
 	 */
-	public void defrule(ISession session, IConcept baseType, Polylist cond, IConcept targetType) {	
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.modelling.IModel#buildObservation(org.integratedmodelling.thinklab.interfaces.storage.IKBox, org.integratedmodelling.thinklab.interfaces.applications.ISession)
-	 */
-	public IInstance buildObservation(IKBox kbox, ISession session) throws ThinklabException {
+	public void defrule(Polylist rule, IModel model) {
 		
+		if (conditional == null)
+			conditional = new ArrayList<Pair<Polylist,IModel>>();
 		
-		return null;
+		conditional.add(new Pair<Polylist, IModel>(rule, model));
+		
+		System.out.println(subject + " seen as " + model + " iif " + rule);
 	}
 
+	public void setModel(IModel model) {
+		unconditional = model;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.integratedmodelling.modelling.IModel#buildObservation(org.
+	 * integratedmodelling.thinklab.interfaces.storage.IKBox,
+	 * org.integratedmodelling.thinklab.interfaces.applications.ISession)
+	 */
+	public IInstance buildObservation(IKBox kbox, ISession session)
+			throws ThinklabException {
+
+		IInstance ret = null;
+		
+		if (conditional != null) {
+			
+			/*
+			 * build and contextualize the contingency structure
+			 */
+			
+			/*
+			 * infer an observation structure per contingent state
+			 */
+
+
+		} else if (unconditional != null) {
+			ret = unconditional.buildObservation(kbox, session);
+		}
+		
+		return ret;
+	}
 
 	@Override
 	public IConcept getObservable() {
 		return subject;
 	}
 
-
-
 	@Override
 	public IConcept getCompatibleObservationType(ISession session) {
+		return CoreScience.Observation();
+	}
+
+	@Override
+	public boolean isResolved() {
 		// TODO Auto-generated method stub
-		return null;
+		return true;
+	}
+
+	/**
+	 * Utility: find a unambiguous instance in a kbox that represents the passed
+	 * observable, and make sure it is an observation of the given type before
+	 * returning it.
+	 * 
+	 * @param observable
+	 * @param kbox
+	 * @param requiredObsType
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public static IInstance resolveObservable(IConcept observable, IKBox kbox,
+			IConcept requiredObsType, ISession session)
+			throws ThinklabException {
+
+		IInstance ret = null;
+
+		Constraint c = new Constraint(requiredObsType)
+				.restrict(new Restriction(CoreScience.HAS_OBSERVABLE,
+						new Constraint(observable)));
+
+		IQueryResult res = kbox.query(c);
+
+		if (res.getTotalResultCount() > 0) {
+
+			if (res.getTotalResultCount() > 1 && !(kbox instanceof RankingKBox))
+				throw new ThinklabValidationException(
+						"ambiguous results resolving observation of "
+								+ observable + " in kbox " + kbox);
+
+			ret = res.getResult(0, session).asObjectReference().getObject();
+		}
+
+		return ret;
 	}
 
 }

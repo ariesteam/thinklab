@@ -32,15 +32,10 @@
  **/
 package org.integratedmodelling.modelling.observations;
 
-import java.util.HashMap;
 import java.util.Properties;
 
-import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
-import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.kbox.KBoxWrapper;
 import org.integratedmodelling.utils.Polylist;
 
@@ -49,19 +44,10 @@ import org.integratedmodelling.utils.Polylist;
  * recontextualization and matching of formal vs. abstract dependencies. It can be 
  * implemented simply by wrapping an existing kbox as long as all the query
  * functions are supported.
- * 
- * TODO may become an interface extending IKbox, and add protocol independent methods
- * in an abstract class implementing it.
- * 
- * FIXME this should be a IKBoxWrapper when we have it.
- * 
+ *  
  * @author Ferdinando Villa
  *
  */
 public abstract class ObservationKBox extends KBoxWrapper {
-
-
-	
-
 
 }
