@@ -454,7 +454,7 @@ public class VMCompiler extends Compiler {
 			// to behave accordingly (if parameter, notify it and build parm support;
 			// if initial value, make it a parameter and load value into register			
 			boolean constant = false;
-			if ( (constant = accessor.isConstant()) || accessor.hasInitialState()) {
+			if ( (constant = accessor.isConstant())) {
 				odesc.initialValueId = contextualizer.registerValue(accessor.getValue(null));
 			} 
 			

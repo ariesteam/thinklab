@@ -10,6 +10,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.utils.Polylist;
 
 public class ClassificationModel implements IModel {
 
@@ -35,11 +36,37 @@ public class ClassificationModel implements IModel {
 			/*
 			 * class def should be a string specification or a list of concepts
 			 */
+			if (classSpec instanceof String) {
+				
+				/*
+				 * should be a numeric range
+				 */
+				
+			} else if (classSpec instanceof Polylist) {
+				
+			}
 			
 			/*
 			 * class target should be a number, a concept or an instance 
 			 */
-			
+			if (classRet instanceof Integer) {
+				
+			} else if (classRet instanceof Double) {
+				
+			} else if (classRet instanceof Float) {
+				
+			} else if (classRet instanceof Long) {
+				
+			} else if (classRet instanceof IConcept) {
+				
+			} else if (classRet instanceof Polylist) {
+				
+			} else {
+				
+				/*
+				 * last try: use the string value as a semantic type
+				 */
+			}
 			/*
 			 * define the type of observation we need to build according
 			 * to the classification specs

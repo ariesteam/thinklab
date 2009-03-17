@@ -1,7 +1,6 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
 import java.util.ArrayList;
-import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.cmodels.SimpleEmbeddedConceptualModel;
@@ -9,7 +8,6 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.literals.MappedDoubleInterval;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -65,14 +63,7 @@ public class RankingIntervalRemapper extends Observation implements IConceptuali
 				throw new ThinklabRuntimeException(
 						"reclassification: no mapping found for value " + o);
 			
-			System.out.println(o + "->" + ret + ";");
-			
 			return ret;
-		}
-
-		@Override
-		public boolean hasInitialState() {
-			return false;
 		}
 
 		@Override

@@ -139,7 +139,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 	 * Create an appropriate conceptual model if it is missing. This one is not
 	 * relevant to observations whose CM is defined in OWL. Those whose CM can
 	 * be implicit, like any observation created through a literal or shortened
-	 * form, should implement this one.
+	 * form, should implement this one unless the observation class itself is
+	 * also the CM, which is handled correctly.
 	 * 
 	 * @return a new conceptual model value for the observation.
 	 * @throws ThinklabException
@@ -147,6 +148,10 @@ public class Observation implements IObservation, IInstanceImplementation {
 	 */
 	protected IConceptualModel createMissingConceptualModel()
 			throws ThinklabException {
+		
+		if (this instanceof IConceptualModel)
+			return (IConceptualModel) this;
+		
 		return null;
 	}
 

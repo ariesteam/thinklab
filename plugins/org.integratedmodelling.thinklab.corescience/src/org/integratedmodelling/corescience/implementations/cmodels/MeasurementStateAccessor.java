@@ -51,11 +51,6 @@ public class MeasurementStateAccessor implements IStateAccessor {
 	}
 
 	@Override
-	public boolean hasInitialState() {
-		return false;
-	}
-
-	@Override
 	public boolean isConstant() {
 		return isConstant;
 	}

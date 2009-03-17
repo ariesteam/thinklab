@@ -63,12 +63,6 @@ public class MonetaryValueMediator implements IStateAccessor {
 	}
 
 	@Override
-	public boolean hasInitialState() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean isConstant() {
 		// TODO Auto-generated method stub
 		return false;

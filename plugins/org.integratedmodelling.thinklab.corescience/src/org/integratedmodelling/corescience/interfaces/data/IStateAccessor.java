@@ -68,11 +68,5 @@ public interface IStateAccessor {
 	 * @return
 	 */
 	public boolean isConstant();
-	
-	/**
-	 * Returning true here means that the value exists before any context
-	 * is computed, and can be retrieved using getValue(null). It does not
-	 * mean that the value won't change when the context is passed.
-	 */
-	public boolean hasInitialState();
+
 }

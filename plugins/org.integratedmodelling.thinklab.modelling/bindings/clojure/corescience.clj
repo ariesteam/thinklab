@@ -10,9 +10,12 @@
 			concept-or-model (str unitspecs)))
 			
 (defn classification
+  "Build a classification model of a type appropriate to the passed mappings."
 	[concept-or-model & class-specs]
 	(new org.integratedmodelling.modelling.corescience.ClassificationModel
-	    concept-or-model class-specs))
+	    concept-or-model 
+	    ; switch any clojure lists to thinklab lists so we can build instances from them
+	    (map #(if (list? %) (tl/listp %) %) class-specs)))
 	
 (defn discrete-random-model
 	[concept-or-model & cpt]

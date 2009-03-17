@@ -50,7 +50,14 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.utils.LogicalConnector;
 import org.integratedmodelling.utils.Polylist;
 
-
+/**
+ * An observation context represents the cartesian product of all topologies
+ * that are in the context of an observation. Each "dimension" of the context
+ * is the topology of one observable, and it has its own internal dimensionality.
+ * 
+ * @author Ferdinando Villa
+ * 
+ */
 public class ObservationContext implements IObservationContext {
 
 	IObservation observation;
@@ -59,11 +66,9 @@ public class ObservationContext implements IObservationContext {
 	int totalSize = -1;
 	int[] dimensionalities = null;
 	
-	
 	public ObservationContext(IObservation mainObservation) {
 		observation = mainObservation;
 	}
-	
 	
 	private void sortContext() {
 			

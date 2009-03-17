@@ -38,11 +38,6 @@ public class MeasurementStateMediator implements IStateAccessor {
 	}
 
 	@Override
-	public boolean hasInitialState() {
-		return false;
-	}
-
-	@Override
 	public boolean isConstant() {
 		return false;
 	}

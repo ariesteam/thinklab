@@ -36,9 +36,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
- * An Extent record is produced by a Conceptual Model to describe the extent of the observation
- * it's linked to. Conceptual models can produce IContextAdaptors to mediate between two
- * compatible extents, and are capable of merging extents to produce unions or intersections
+ * An Extent describes the topology of the observable
+ * it's linked to. Conceptual models are capable of producing unions or intersections
  * of extents.
  * 
  * @author Ferdinando Villa
@@ -54,7 +53,8 @@ public interface IExtent {
 	int getTotalGranularity();
 	
 	/**
-	 * Return the value of the granule indicated.
+	 * Return the value of the granule indicated according to the natural order of
+	 * the topology.
 	 * 
 	 * @param granule
 	 * @return
