@@ -36,7 +36,7 @@
 					'(ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:GreyWolf)))
 					"ind/m^2") :as wolf-abundance
 				(measurement 
-					'(ecology:BirthRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
+					'(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"ind/d") :as wolf-consumption-rate :initially 0.023)))
 		
 ;; -------------------------------------------------------------------------------

@@ -1,6 +1,8 @@
 (ns aries.models.test
 	(:refer-clojure)
   (:use [modelling :only (defmodel measurement classification)]))
+	
+(load-bindings 'aries.core)	
 	 
 (defmodel valuable-mountain 'aestheticService:Mountain
    "Classifies an elevation model into three levels of provision of beautiful mountains"
