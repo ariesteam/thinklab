@@ -52,34 +52,51 @@
   [pred coll]
   (when (seq coll)
     (let [[taken dropped] (split-pair-with pred coll)]
-      (cond (empty? dropped) (list taken)
-	    (empty? taken) (lazy-cat (list (first dropped))
-				     (group-while pred (rest dropped)))
-	    :otherwise (lazy-cat (list taken)
-				 (group-while pred dropped))))))
+      (cond 
+      	(empty? dropped) (list taken)
+	    	(empty? taken)
+	    			(lazy-cat (list (first dropped))
+				    	(group-while pred (rest dropped)))
+	    	:otherwise 
+	    			(lazy-cat (list taken)
+							(group-while pred dropped))))))
 
 (defn group-with-following
   "Group pairs of items if their second element matches pred, else
    pair single elements with filler."
   [pred coll filler]
-  (cond (empty? coll) coll
-	(empty? (rest coll)) (list (first coll) filler)
-	:otherwise (if (pred (second coll))
-		     (lazy-cons (take 2 coll)
-				(group-with-following pred (rrest coll) filler))
-		     (lazy-cons (list (first coll) filler)
-				(group-with-following pred (rest coll) filler)))))
+  (cond 
+  	(empty? coll)   coll
+		(empty? (rest coll)) (list (first coll) filler)
+		:otherwise 
+			(if (pred (second coll))
+		     (lazy-cons 
+		     		(take 2 coll)
+						(group-with-following pred (rrest coll) filler))
+		     (lazy-cons 
+		     		(list (first coll) filler)
+						(group-with-following pred (rest coll) filler)))))
 
 (defn group-with-keywords
   "Take a seq where each element may be followed by a keyword, value
    pair and group each element with a list of its keywords if any, or
    an empty list otherwise"
   [coll]
-  (group-with-following seq? (group-while keyword? coll) ()))
+  (group-with-following seq? (group-while keyword? coll) nil))
+  
 
-
-;(def res1 '(a (:k1 b) c d (:k2 e :k3 f)))
-;(def res2 (group-while keyword? '(a :k1 b c d :k2 e :k3 f))) ; => (a (:k1 b) c d (:k2 e :k3 f))
-;(= res1 res2) ; => true!
-;(group-with-following seq? res1 nil) ; => ((a (:k1 b)) (c nil) (d (:k2 e :k3 f))) [ok]
-;(group-with-following seq? res2 nil) ; => ((a nil) ((:k1 b) nil) (c nil) (d nil) (:k2 e :k3 f) nil) [WHAT?]
+(defn count-not-nil
+	"Return the number of elements in the collection that are not nil"
+	[coll]
+	(count (filter #(not (nil? %)) coll)))
+	
+(defn count-nil
+	"Return the number of elements in the collection that are nil"
+	[coll]
+	(count (filter nil? coll)))
+	
+(defn map-lists
+	"Return the same collection as the input but with all clojure seqs translated to
+	polylists."
+	[coll]
+	(map #(if (seq? %) (tl/listp %) %) coll))
