@@ -46,7 +46,7 @@ if [ -z "$THINKLAB_INST" ] ; then
   THINKLAB_INST=$THINKLAB_HOME
 fi
 
-THINKLAB_CMD="$JAVACMD $THINKLAB_OPTS -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_HOME/lib/endorsed -jar $THINKLAB_HOME/lib/im-boot.jar org.java.plugin.boot.Boot -Djpf.boot.config=$THINKLAB_HOME/tclj.properties"
+THINKLAB_CMD="$JAVACMD $THINKLAB_OPTS -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH  -Djpf.boot.config=$THINKLAB_HOME/tclj.properties -Dthinklab.plugins=$THINKLAB_PLUGINS -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_HOME/lib/endorsed -jar $THINKLAB_HOME/lib/im-boot.jar org.java.plugin.boot.Boot"
 
 #echo JAVA_HOME $JAVA_HOME
 #echo JAVACMD $JAVACMD

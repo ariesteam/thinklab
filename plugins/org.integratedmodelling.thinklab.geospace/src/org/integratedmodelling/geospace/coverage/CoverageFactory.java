@@ -417,7 +417,7 @@ public class CoverageFactory {
 		
 		RasterCoverage ret = new RasterCoverage("", ext, dataset);
 		
-		ret.write(new File("C:\\A\\results\\temp.tif"));
+		ret.write(new File("D:\\A\\results\\temp.tif"));
 		
 		return ret;
 	}

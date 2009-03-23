@@ -135,7 +135,8 @@ public class RegularRasterGridDataSource
 		try {
 			
 			Properties p = new Properties();
-			p.setProperty(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, valueAttr);
+			if (valueAttr != null)	
+				p.setProperty(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, valueAttr);
 			this.coverage = CoverageFactory.requireCoverage(new URL(sourceURL), p);
 			
 		} catch (MalformedURLException e) {
