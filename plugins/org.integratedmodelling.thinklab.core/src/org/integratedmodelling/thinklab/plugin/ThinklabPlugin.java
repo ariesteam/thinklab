@@ -605,8 +605,6 @@ public abstract class ThinklabPlugin extends Plugin
 			String url = ext.getParameter("url").valueAsString();
 			String csp = ext.getParameter("concept-space").valueAsString();
 
-			System.out.println("poppa " + url);
-			
 			KnowledgeManager.get().getKnowledgeRepository().refreshOntology(getResourceURL(url), csp, false);
 			
 			ontologies.add(csp);
