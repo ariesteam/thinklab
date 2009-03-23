@@ -82,8 +82,8 @@ public class REPL {
 			refer.invoke(TL);
 			
 			// load any supplied files
-			for (String file : RT.processCommandLine(args))
-				Compiler.loadFile(file);
+//			for (String file : RT.processCommandLine(args))
+//				Compiler.loadFile(file);
 
 			// repl IO support
 			LineNumberingPushbackReader rdr = new LineNumberingPushbackReader(
