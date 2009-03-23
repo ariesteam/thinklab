@@ -33,6 +33,7 @@
 package org.integratedmodelling.geospace.extents;
 
 import org.geotools.feature.FeatureCollection;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.geospace.implementations.cmodels.SpatialConceptualModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -118,6 +119,12 @@ public class ShapeExtent extends ArealExtent {
 			ret = !(this.featureURL.equals(otextent.featureURL));
 		}
 		return ret;
+	}
+
+	@Override
+	public IExtent getExtent(int granule) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

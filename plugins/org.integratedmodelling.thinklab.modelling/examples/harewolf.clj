@@ -1,4 +1,4 @@
-(ns modelling.examples
+(ns modelling.examplesb
 	(:refer-clojure)
   (:use [modelling :only (defmodel measurement dde-measurement identification 
   												classified-raster)]))
@@ -22,7 +22,7 @@
 	; Note: this is incomplete as it doesn't specify the mappings; in real life 
 	; we'll want the result of another defmodel in here. Note that the other defmodel
 	; can also be conditional.
-	[(classified-raster 'ecology:Biome) :as biome] 
+	[(classification 'ecology:Biome) :as biome] 
 	
 	; conditional specs allow fine-grained choice of individual dependencies
 	; --
@@ -45,20 +45,21 @@
 					'(ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:GreyWolf)))
 					"ind/m^2") :as wolf-abundance
 					
-			; two alternatives for the same observable, depending on context
+			; two alternatives views of the same observable, depending on context
 			(measurement 
 					'(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"ind/d") 
 						:as wolf-consumption-rate 
-						:when (is? biome 'ecology:BorealForest)
+						:when (tl/is? biome 'ecology:BorealForest)
 						; if we don't link an observation, make a parameter with this value
-						:parameter 0.023 
+						:default-value 0.023
+						:parameter true 
 			(measurement 
 					'(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"ind/d") 
 						:as wolf-consumption-rate 
-						:parameter 0.123 
-						:default) :as self )
+						:default-value 0.123 
+						:parameter true) :as self )
 						 		
 ;; -------------------------------------------------------------------------------
 ;; the (independent) wolf model

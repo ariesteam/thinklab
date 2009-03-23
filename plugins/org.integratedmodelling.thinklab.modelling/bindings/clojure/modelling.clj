@@ -12,7 +12,7 @@
 ;; ----------------------------------------------------------------------------------------------
 
 (defn j-make-model
-	"Make a new instance of Model and return it"
+	"Make a new instance of Model and return it."
 	[]
 	(new org.integratedmodelling.modelling.Model))
 	
@@ -29,7 +29,7 @@
 	 					(if (string? (first '~body)) (first '~body))
 	        contingency-model# 
 	        	(if (vector? (first (drop (if (nil? desc#) 0 1) '~body)))
-	        		  (first (drop (if (nil? desc#) 0 1) '~body)))
+	        		(first (drop (if (nil? desc#) 0 1) '~body)))
  	        dependency-model# 
  	        	(drop (tl/count-not-nil (list desc# contingency-model#)) '~body)
  	        model# 
@@ -38,15 +38,15 @@
  	     (.setObservable  model# (tl/conc ~observable))
  	     (.setDescription model# desc#)
  	     
- 	     ; pass the contingency model along
+ 	     ; pass the contingency model
  	     (doseq [mdef# (tl/group-with-keywords contingency-model#)]
          	(.addContingency model# (eval (first mdef#)) (second mdef#)))         	  	
-        ; pass the dependency model along
+        ; pass the dependency model
        (doseq [mdef# (tl/group-with-keywords dependency-model#)]
           (.defModel model# (eval (first mdef#))(tl/map-lists (second mdef#))))
        model#))
        
-(defmacro defmodel 
+(defmacro defmodel
 	 "Define a model for the given observable, using the given contingency 
 	  structure and conditional specifications, or the given unconditional model if no 
 	  contingency structure is supplied."

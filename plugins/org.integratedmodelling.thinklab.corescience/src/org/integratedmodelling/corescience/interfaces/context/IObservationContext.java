@@ -34,7 +34,6 @@ package org.integratedmodelling.corescience.interfaces.context;
 
 import java.util.Collection;
 
-import org.integratedmodelling.corescience.contextualization.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -54,7 +53,7 @@ import org.integratedmodelling.utils.Polylist;
  * @author Ferdinando Villa
  *
  */
-public interface IObservationContext {
+public interface IObservationContext extends Iterable<IObservationContext> {
 
 	/**
 	 * Recursively descend through contingencies and dependencies of a top-level observation, 

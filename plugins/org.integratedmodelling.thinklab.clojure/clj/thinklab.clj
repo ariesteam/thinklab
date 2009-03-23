@@ -48,17 +48,20 @@
 	(do (.. 
 			(. Thinklab (get)) 
 			  (getManager) 
-			  (activatePlugin pname)))
+			  (activatePlugin pname))) 
 		(load-bindings pname))
 
 (defn conc
-	"A passed concept is returned unmodified. If the passed object is not a concept, its string
+	"A passed concept is returned unmodified. A list is taken to be a concept definition and passed
+	to a session to create the return value. If the passed object is not a concept, its string
 	value is taken to be a semantic type and the correspondent concept is returned. If no concept
 	exists for that object, an exception is thrown."
 	[stype]
 	(if (instance? org.integratedmodelling.thinklab.interfaces.knowledge.IConcept stype)
 		stype
-		(.. KnowledgeManager (get) (requireConcept (str stype)))))
+		(if (list? stype)
+			(.createConcept (tl/get-session) (tl/listp stype)) 
+			(.. KnowledgeManager (get) (requireConcept (str stype))))))
 
 (defn find-concept
 	"A passed concept is returned unmodified. If the passed object is not a concept, its string

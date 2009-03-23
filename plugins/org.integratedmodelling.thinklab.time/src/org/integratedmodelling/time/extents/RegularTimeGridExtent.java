@@ -144,16 +144,12 @@ public class RegularTimeGridExtent implements IExtent, IConceptualizable {
 	}
 
 	public IValue getState(int granule) throws ThinklabException {
-
 		long ls = (long)(extent.getStartPoint().getX()) + granuleSize*granule;
 		return new PeriodValue(ls, ls + granuleSize);
-	
 	}
 
 	public int getTotalGranularity() {
-
 		return (int)((long)(extent.getEndPoint().getX() - extent.getStartPoint().getX())/granuleSize);
-		
 	}
 
 	public ExtentConceptualModel getConceptualModel() {
@@ -214,5 +210,12 @@ public class RegularTimeGridExtent implements IExtent, IConceptualizable {
 				Polylist.list(TimePlugin.STARTS_AT_PROPERTY_ID, cModel.getStart().toString()),
 				Polylist.list(TimePlugin.ENDS_AT_PROPERTY_ID, cModel.getEnd().toString()),
 				Polylist.list(TimePlugin.STEP_SIZE_PROPERTY_ID, cModel.getStep() + " ms"));
+	}
+
+
+	@Override
+	public IExtent getExtent(int granule) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

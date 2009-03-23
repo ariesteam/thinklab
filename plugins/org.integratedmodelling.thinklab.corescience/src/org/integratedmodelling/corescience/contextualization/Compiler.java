@@ -62,9 +62,7 @@ public abstract class Compiler implements IContextualizationCompiler {
 		public IObservation getTargetObservation() {
 			return (IObservation)getTarget();
 		}
-		
 	}
-
 	
 	public static IInstance contextualize(IObservation observation, ISession session) 
 		throws ThinklabException {
@@ -75,7 +73,6 @@ public abstract class Compiler implements IContextualizationCompiler {
 					"cannot find a compiler to contextualize " + observation);
 		
 		IObservationContext context = observation.getCommonObservationContext(compiler, session);
-
 		
 		/* compute and communicate individual merged contexts for each observation */
 		HashSet<IConcept> oobs = new HashSet<IConcept>();
@@ -96,24 +93,8 @@ public abstract class Compiler implements IContextualizationCompiler {
 		}
 		
 		IContextualizer contextualizer = compiler.compile(observation, context);
-		IInstance ret = contextualizer.run(session);
 		
-		/*
-		 * TODO fix this
-		 * contextualize all contingencies. If there are contingencies, the result
-		 * observation will be a contingency structure of them, contextualized
-		 * with self.
-		 */
-		IObservation result = (IObservation) ret.getImplementation();
-		
-		for (IObservation contingency : observation.getContingencies()) {
-			
-			IInstance cont = contextualize(contingency, session);
-			cont.addObjectRelationship(CoreScience.HAS_CONTINGENCY, cont);
-		}
-		
-		
-		return ret;
+		return contextualizer.run(session);
 	}
 	
 	protected boolean performHandshake(

@@ -34,7 +34,6 @@ package org.integratedmodelling.corescience.interfaces.observation;
 
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
-import org.integratedmodelling.corescience.interfaces.context.IContextualizer;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
@@ -42,7 +41,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
 
 /**
  * TODO this will need to have state (datasource) access methods, throwing
@@ -202,4 +200,16 @@ public interface IObservation {
 	 */
 	public abstract IContextualizedState getState(IConcept observable) throws ThinklabException;
 
+	/**
+	 * Contingencies do not arise as the product of contextualization but
+	 * as the result of creating observations from models that need more
+	 * than one observation structures. As such, it must be possible to
+	 * add contingencies programmatically. The implementation must ensure
+	 * that the contingency is linked both to the OWL and to the Java
+	 * sides.
+	 * @param instance
+	 * @throws ThinklabException 
+	 */
+	public abstract void addContingency(IInstance instance) throws ThinklabException;
+	
 }

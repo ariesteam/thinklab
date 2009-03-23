@@ -70,6 +70,13 @@ public interface IExtent {
 	IValue getFullExtentValue();
 
 	/**
+	 * Return the n-th member of the ordered topology.
+	 * @param granule
+	 * @return
+	 */
+	IExtent getExtent(int granule);
+	
+	/**
 	 * An extent must be capable of returning the conceptual model that generated it.
 	 * @return
 	 */

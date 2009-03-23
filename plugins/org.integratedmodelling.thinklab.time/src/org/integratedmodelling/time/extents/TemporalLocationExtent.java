@@ -76,4 +76,9 @@ public class TemporalLocationExtent implements IExtent {
 	public String toString() {
 		return value.toString();
 	}
+
+	@Override
+	public IExtent getExtent(int granule) {
+		return this;
+	}
 }

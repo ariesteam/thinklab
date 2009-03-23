@@ -82,4 +82,10 @@ public class GridMaskExtent implements IExtent {
 		return nClasses;
 	}
 
+	@Override
+	public IExtent getExtent(int granule) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

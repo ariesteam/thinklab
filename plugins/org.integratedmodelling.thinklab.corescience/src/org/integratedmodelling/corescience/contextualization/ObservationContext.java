@@ -35,6 +35,7 @@ package org.integratedmodelling.corescience.contextualization;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabContextValidationException;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
@@ -42,6 +43,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.utils.Ticker;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
@@ -56,7 +58,6 @@ import org.integratedmodelling.utils.Polylist;
  * is the topology of one observable, and it has its own internal dimensionality.
  * 
  * @author Ferdinando Villa
- * 
  */
 public class ObservationContext implements IObservationContext {
 
@@ -65,6 +66,45 @@ public class ObservationContext implements IObservationContext {
 	ArrayList<IConcept> order = new ArrayList<IConcept>();
 	int totalSize = -1;
 	int[] dimensionalities = null;
+	
+	public class TopologyIterator implements Iterator<IObservationContext> {
+
+		Ticker ticker = new Ticker();
+
+		public TopologyIterator() {
+			
+			for (int i : dimensionalities)
+				ticker.addDimension(i);
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return ticker.expired();
+		}
+
+		@Override
+		public IObservationContext next() {
+			ObservationContext ret = new ObservationContext(observation);
+			int i = 0;
+			for (IConcept c : order) {
+				IExtent e = extents.get(c);
+				if (e != null)
+					ret.extents.put(
+							c.toString(), 
+							e.getExtent(ticker.current(i++)));
+			}
+			ticker.increment();
+			
+			ret.initialize();
+			return ret;
+			
+		}
+
+		@Override
+		public void remove() {
+		}
+		
+	}
 	
 	public ObservationContext(IObservation mainObservation) {
 		observation = mainObservation;
@@ -103,7 +143,6 @@ public class ObservationContext implements IObservationContext {
 			totalSize *= gr;
 		}		
 	}
-	
 
 	public void mergeExtent(IObservation observation, IConcept dimension, LogicalConnector connector, boolean isConstraint) 
 		throws ThinklabException {
@@ -268,7 +307,6 @@ public class ObservationContext implements IObservationContext {
 						"extent of type " + c + " cannot be turned into an observation");
 			}
 		}
-		
 		return ret;
 	}
 
@@ -288,6 +326,11 @@ public class ObservationContext implements IObservationContext {
 		ret.initialize();
 		
 		return ret;
+	}
+
+	@Override
+	public Iterator<IObservationContext> iterator() {
+		return new TopologyIterator();
 	}
 
 	

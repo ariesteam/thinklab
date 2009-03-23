@@ -32,7 +32,9 @@
  **/
 package org.integratedmodelling.corescience.implementations.observations;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Properties;
@@ -713,5 +715,21 @@ public class Observation implements IObservation, IInstanceImplementation {
 				&& o.getDataSource() instanceof IContextualizedState)
 			return (IContextualizedState) o.getDataSource();
 		return null;
+	}
+
+	@Override
+	public void addContingency(IInstance cont) throws ThinklabException {
+
+		this.observation.addObjectRelationship(
+				CoreScience.HAS_CONTINGENCY, cont);
+		
+		IObservation[] oc = new IObservation[contingencies.length+1];
+		int i = 0;
+		for (IObservation o : contingencies)
+			oc[i++] = o;
+		oc[i] = Obs.getObservation(cont);
+		
+		contingencies = oc;
+		
 	}
 }

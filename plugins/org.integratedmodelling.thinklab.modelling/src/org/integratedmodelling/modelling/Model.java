@@ -18,6 +18,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.RankingKBox;
+import org.integratedmodelling.utils.Polylist;
 
 /**
  * The "default" model class is the one that reflects the defmodel form. It has
@@ -41,6 +42,13 @@ public class Model implements IModel {
 	Collection<String> contextIds = null;
 	IKBox contKbox = null;
 	String description = null;
+	
+	public class Dependency {
+		IModel model;
+		Polylist clause = null;
+		String id = null;
+		Object parameterValue = null;
+	}
 	
 	/**
 	 * Run the model in the given session, using the passed kboxes and topology if

@@ -34,6 +34,7 @@ package org.integratedmodelling.geospace.extents;
 
 import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.implementations.cmodels.SubdividedCoverageConceptualModel;
@@ -257,6 +258,12 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 				Polylist.list(Geospace.LON_UPPER_BOUND, ""+getEast()),
 				Polylist.list(Geospace.CRS_CODE, 
 						Geospace.getCRSIdentifier(getCRS(), false)));
+	}
+
+	@Override
+	public IExtent getExtent(int granule) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -80,11 +80,10 @@
 (defn group-with-keywords
   "Take a seq where each element may be followed by a keyword, value
    pair and group each element with a list of its keywords if any, or
-   an empty list otherwise"
+   with nil"
   [coll]
   (group-with-following seq? (group-while keyword? coll) nil))
   
-
 (defn count-not-nil
 	"Return the number of elements in the collection that are not nil"
 	[coll]
