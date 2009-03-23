@@ -261,6 +261,10 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	 *      java.lang.String)
 	 */
 	public String refreshOntology(URL url, String cs, boolean saveToRepository) throws ThinklabException {
+		
+		System.out.println("fuck -1 " + url);
+
+		
 		if (registry.containsConceptSpace(cs)) {
 			try {
 				URI physicalURI = url.toURI();
