@@ -584,7 +584,7 @@ public abstract class ThinklabPlugin extends Plugin
 			File f = new File(resource);
 			
 			if (f.exists()) {
-				ret = f .toURI().toURL();
+				ret = f.toURI().toURL();
 			} else if (resource.contains("://")) {
 				ret = new URL(resource);
 			} else {			
@@ -605,6 +605,8 @@ public abstract class ThinklabPlugin extends Plugin
 			String url = ext.getParameter("url").valueAsString();
 			String csp = ext.getParameter("concept-space").valueAsString();
 
+			System.out.println("poppa " + url);
+			
 			KnowledgeManager.get().getKnowledgeRepository().refreshOntology(getResourceURL(url), csp, false);
 			
 			ontologies.add(csp);
