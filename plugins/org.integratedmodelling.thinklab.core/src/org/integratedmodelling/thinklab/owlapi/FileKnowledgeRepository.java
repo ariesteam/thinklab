@@ -191,6 +191,8 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	 */
 	public String importOntology(URL url, String name, boolean saveToRepository) throws ThinklabException {
 		try {
+			System.out.println("fuck 0 " + url);
+
 			URI physicalURI = url.toURI();
 
 			System.out.println("fuck 1 " + physicalURI);
