@@ -15,9 +15,9 @@
 (defmodel valuable-mountain 'aestheticService:Mountain
    "Classifies an elevation model into three levels of provision of beautiful mountains"
    (classification  (measurement 'ecology:Elevation "m")
-   		"2000)"       [:lower 2000]  'aestheticService:NoMountain 
-   		"[2000-2750)" [2000 2750] 'aestheticService:SmallMountain 
-   		"[2750"       [2750 :higher] 'aestheticService:LargeMountain ))
+   		[:< 2000]     'aestheticService:NoMountain 
+   		[2000 2750]  'aestheticService:SmallMountain 
+   		[2750 :>]     'aestheticService:LargeMountain ))
    		    		 
 (defmodel aesthetic-enjoyment-provision 'aestheticService:SensoryEnjoyment
  	 "Unconditional bayesian model of sensory enjoyment provision."

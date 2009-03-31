@@ -59,7 +59,7 @@
 					"ind/d") 
 						:as wolf-consumption-rate 
 						:default-value 0.123 
-						:parameter true) :as self )
+						:parameter true) :as self ) 
 						 		
 ;; -------------------------------------------------------------------------------
 ;; the (independent) wolf model

@@ -10,6 +10,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
 public interface KnowledgeLoader {
+	
 	/**
 	 * Define this one to load knowledge from the URL into the session passed. The loader in
 	 * Session will do the rest.

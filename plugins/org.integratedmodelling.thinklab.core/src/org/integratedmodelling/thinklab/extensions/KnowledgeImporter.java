@@ -51,6 +51,6 @@ public interface KnowledgeImporter {
 
 	public abstract void importKnowledge(String targetURL, Polylist knowledge) throws ThinklabException;
 	
-	public abstract void transferKnowledge(String sourceURL, String targetURL, ISession session) throws ThinklabException;
+//	public abstract void transferKnowledge(String sourceURL, String targetURL, ISession session) throws ThinklabException;
 
 }
