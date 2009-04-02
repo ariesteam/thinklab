@@ -54,14 +54,12 @@
 						:as   wolf-consumption-rate 
 						:when (tl/is? biome 'ecology:BorealForest)
 						; if we don't link an observation, make a parameter with this value
-						:default-value 0.023
-						:parameter true 
+						:parameter 0.023 
 			(count 
 					(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"ind/d") 
 						:as wolf-consumption-rate 
-						:default-value 0.123 
-						:parameter true))
+						:parameter 0.123))
 						 		
 ;; -------------------------------------------------------------------------------
 ;; the (independent) wolf model
