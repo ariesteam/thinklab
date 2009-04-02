@@ -100,9 +100,13 @@
 	[coll]
 	(map #(if (seq? %) (tl/listp %) %) coll))
 	
-(defn map-fn-to-kw-val
-	"Take a list of keyword, value pairs and return the same with values substituted by
-	 the result of the function indexed by the kw in the passed map"
+(defn map-keywords
+	"Take a list of keyword, value pairs and return a list of (kw value) pairs with 
+	 with values substituted by the result of the function indexed by the same kw in the 
+	 passed map."
 	 [coll fmap]
-	 ; TODO
-	 coll)
+	 (map 
+				#(list 
+						(first %)
+						((if (contains? fmap (first %)) (get fmap (first %)) identity) (second %)))
+	 			(partition 2 coll)))

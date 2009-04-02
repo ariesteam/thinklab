@@ -20,6 +20,12 @@
 ;; public macros
 ;; ----------------------------------------------------------------------------------------------
 
+;; transformer functions for values of specific keywords before they hit Java
+(def kw-mappings
+	{
+		:when    #(tl/listp %) 
+	})
+
 (defmacro model 
 	"Return a new model for the given observable, defined using the given contingency 
 	 structure and conditional specifications, or the given unconditional model if no 
@@ -40,10 +46,10 @@
  	     
  	     ; pass the contingency model
  	     (doseq [mdef# (tl/group-with-keywords contingency-model#)]
-         	(.addContingency model# (eval (first mdef#)) (second mdef#)))         	  	
+         	(.addContingency model# (eval (first mdef#)) (tl/map-keywords (second mdef#) kw-mappings)))         	  	
         ; pass the dependency model
        (doseq [mdef# (tl/group-with-keywords dependency-model#)]
-          (.defModel model# (eval (first mdef#))(tl/map-lists (second mdef#))))
+          (.defModel model# (eval (first mdef#))(tl/map-keywords (second mdef#) kw-mappings)))
        model#))
        
 (defmacro defmodel
