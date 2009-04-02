@@ -29,7 +29,7 @@
 	; only a defmodel form can specify a contingency model, but the dependency
 	; structure in all model forms that can have dependencies will be able to
 	; use the tags defined in the form they're in.
-	(dde-measurement 
+	(dde-count 
 			(ecology:PopulationAbundance)
 			"ind/m^2" 
 			(- (* hare-birth-rate self) (* wolf-abundance wolf-consumption-rate)))
@@ -40,15 +40,15 @@
 			; also, being a dde, it will ensure that it's contextualized on a temporal
 			; topology. Note that the unit determines the "temporal scaling" here, and
 			; it will run on any time topology with appropriate conversions. 
-			((measurement
+			((count
 					(ecology:BirthRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"ind/d") :as hare-birth-rate
-			(measurement
+			(count
 					(ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:GreyWolf)))
 					"ind/m^2") :as wolf-abundance
 					
 			; two alternatives views of the same observable, depending on context
-			(measurement 
+			(count 
 					(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"ind/d") 
 						:as   wolf-consumption-rate 
@@ -56,7 +56,7 @@
 						; if we don't link an observation, make a parameter with this value
 						:default-value 0.023
 						:parameter true 
-			(measurement 
+			(count 
 					(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"ind/d") 
 						:as wolf-consumption-rate 
@@ -74,12 +74,12 @@
 	   availability of hare prey and on a predation efficiency rate parameter. The 
 	   prey model will vary according to where the wolf is."
 	   
-	(dde-measurement 
+	(dde-count 
 			(ecology:PopulationAbundance) 
 			"ind/m^2" 
 			(* hare-abundance hare-conversion-efficiency self))
 	:context
-			((measurement 
+			((count 
 					(ecology:PredationEfficiency 
 							(ecology:hasSource (biodiversity:SnowShoeHare))
 							(ecology:hasTarget (biodiversity:GreyWolf)))					
@@ -87,7 +87,7 @@
 						:as hare-conversion-efficiency 
 						:parameter 0.0034
 						
-			(measurement
+			(count
 					(ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"ind/m^2") 
 						:as hare-abundance))

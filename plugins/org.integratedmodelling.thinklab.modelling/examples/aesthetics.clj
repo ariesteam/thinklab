@@ -22,13 +22,13 @@
 
  	 "Unconditional bayesian model of sensory enjoyment provision."
  	  
- 	 	 (discrete-noisymax-model (aestheticService:SensoryEnjoyment)
-	 	 	  ; cpt for the noisymax - all others default to uniform
- 		 	  [0.4 0.3 0.2 0.1 0.2 0.3 0.3 0.2 0.0 0.0 0.0 1.0 0.7 0.1
- 	 		   0.1 0.1 0.5 0.2 0.2 0.1 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0]) 	
+ 	 (discrete-noisymax-model (aestheticService:SensoryEnjoyment)
+	  	; cpt for the noisymax - all others default to uniform
+ 		 	[0.4 0.3 0.2 0.1 0.2 0.3 0.3 0.2 0.0 0.0 0.0 1.0 0.7 0.1
+ 	 		 0.1 0.1 0.5 0.2 0.2 0.1 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0]) 	
  	 	 :context
-  	 	 ((discrete-random-model valuable-mountain) :as mountains, 
-  	 	  (discrete-random-model valuable-waterbodies) :as waterbodies))
+  	 	 ((discrete-random-model valuable-mountain)
+  	 	  (discrete-random-model valuable-waterbodies)))
 
 ; ------------------------------------------------------------------------------------
 ; the following command:	 	   
