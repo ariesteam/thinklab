@@ -19,7 +19,7 @@
 ;; ----------------------------------------------------------------------------------------------
 ;; public macros
 ;; ----------------------------------------------------------------------------------------------
-        
+
 (defmacro model 
 	"Return a new model for the given observable, defined using the given contingency 
 	 structure and conditional specifications, or the given unconditional model if no 

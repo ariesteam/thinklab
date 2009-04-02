@@ -99,3 +99,10 @@
 	polylists."
 	[coll]
 	(map #(if (seq? %) (tl/listp %) %) coll))
+	
+(defn map-fn-to-kw-val
+	"Take a list of keyword, value pairs and return the same with values substituted by
+	 the result of the function indexed by the kw in the passed map"
+	 [coll fmap]
+	 ; TODO
+	 coll)
