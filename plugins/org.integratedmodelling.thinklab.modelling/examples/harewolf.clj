@@ -29,10 +29,10 @@
 	; only a defmodel form can specify a contingency model, but the dependency
 	; structure in all model forms that can have dependencies will be able to
 	; use the tags defined in the form they're in.
-	(dde-count 
+	(count 
 			(ecology:PopulationAbundance)
 			"ind/m^2" 
-			(- (* hare-birth-rate self) (* wolf-abundance wolf-consumption-rate)))
+			:derivative (- (* hare-birth-rate self) (* wolf-abundance wolf-consumption-rate)))
 			
 	:context
 			
@@ -72,11 +72,13 @@
 	   availability of hare prey and on a predation efficiency rate parameter. The 
 	   prey model will vary according to where the wolf is."
 	   
-	(dde-count 
+	(count 
 			(ecology:PopulationAbundance) 
 			"ind/m^2" 
-			(* hare-abundance hare-conversion-efficiency self))
+			:derivative (* hare-abundance hare-conversion-efficiency self))
+	
 	:context
+	
 			((count 
 					(ecology:PredationEfficiency 
 							(ecology:hasSource (biodiversity:SnowShoeHare))
@@ -99,9 +101,10 @@
 ;; -------------------------------------------------------------------------------
 (defmodel hare-wolf-system 
 		(ecology:Community (ecology:hasSpecies (biodiversity:Hare biodiversity:Wolf)))
-		(identification 
-			wolf-controlled-hare-density :as hare
-			hare-dependent-wolf-density :as wolf))
+		(identification 'ecology:Community)
+		  :context 
+			  (wolf-controlled-hare-density :as hare
+			   hare-dependent-wolf-density :as wolf))
 			
 ; we need a kbox (for the contingency) and a topology with at least time to run 
 ; ignored for now. We should deactivate the inference engine and default
