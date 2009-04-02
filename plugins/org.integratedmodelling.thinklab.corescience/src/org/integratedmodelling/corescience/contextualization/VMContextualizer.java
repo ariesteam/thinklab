@@ -267,7 +267,6 @@ public class VMContextualizer<T> {
 
 		return i.bytecode << 24;
 	}
-	
 
 	int makeInst(Ins i, int address) {
 

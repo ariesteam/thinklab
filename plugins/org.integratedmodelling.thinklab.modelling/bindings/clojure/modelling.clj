@@ -35,7 +35,7 @@
  	        model# 
  	        	(modelling/j-make-model)]
  	        	
- 	     (.setObservable  model# (tl/conc ~observable))
+ 	     (.setObservable  model# (tl/listp ~observable))
  	     (.setDescription model# desc#)
  	     
  	     ; pass the contingency model
