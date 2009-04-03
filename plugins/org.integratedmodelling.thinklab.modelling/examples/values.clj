@@ -1,7 +1,7 @@
 (defmodel esdval-2 '(eserv:GroupAssignedValue (hasBenefit 'eserv:NutrientRegulation))
 
   "Estimated value of Nutrient regulation in Open Ocean
-   138.890 USD-2001 using Direct Non-Market Group Valuation "
+   138.890 USD-2001 using Direct Non-Market Group Valuation"
    
 	(measurement (currency:MonetaryValue) "USD@2002/(ha yr)") 
   	:state 138.890					

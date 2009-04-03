@@ -6,7 +6,7 @@
 (load-bindings 'aries.core)	
 
 (defmodel valuable-waterbodies (aestheticService:WaterBody)
-		 (classification (ranking (lulc:NCLD1Numeric))
+		 (classification (ranking (lulc:NCLDNumeric))
 	 			(= % 23)   'aestheticService:Lake
 	 			(= % 32)   'aestheticService:Ocean
 	 			:otherwise 'aestheticService:NoWater))
