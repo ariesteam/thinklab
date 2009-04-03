@@ -18,7 +18,8 @@ public class MeasurementModel implements IModel {
 	IConcept observable = null;
 	boolean hasValue = false;
 	
-	public MeasurementModel(Object observableOrModel, String unitSpecs) {
+	
+	public void define(Object observableOrModel, String unitSpecs) {
 		
 		if (observableOrModel instanceof IModel) {
 			/*

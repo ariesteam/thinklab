@@ -17,7 +17,7 @@ public class ClassificationModel implements IModel {
 	IModel classified = null;
 	IConcept toClassify = null;
 	
-	public ClassificationModel(Object concOrMod, Collection<?> classdefs) throws ThinklabException {
+	public void define(Object concOrMod, Collection<?> classdefs) throws ThinklabException {
 	
 		if (concOrMod instanceof IModel) {
 			classified = (IModel) concOrMod;

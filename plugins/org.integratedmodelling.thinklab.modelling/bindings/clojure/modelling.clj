@@ -46,7 +46,7 @@
  	     
  	     ; pass the contingency model
  	     (doseq [mdef# (tl/group-with-keywords contingency-model#)]
-         	(.addContingency model# (eval (first mdef#)) (tl/map-keywords (second mdef#) kw-mappings)))         	  	
+         	(.addContingency model# (eval (first mdef#)) (tl/map-keywords (second mdef#) kw-mappings)))       	  	
         ; pass the dependency model
        (doseq [mdef# (tl/group-with-keywords dependency-model#)]
           (.defModel model# (eval (first mdef#))(tl/map-keywords (second mdef#) kw-mappings)))

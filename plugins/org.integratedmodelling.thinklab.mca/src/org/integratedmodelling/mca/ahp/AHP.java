@@ -1,5 +1,6 @@
-package org.integratedmodelling.mca.algorithms;
+package org.integratedmodelling.mca.ahp;
 
+import org.integratedmodelling.mca.evamix.Evamix;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 
@@ -39,7 +40,7 @@ public class AHP {
 		}
 	}
 	
-	void rankPair(int critA, int critB, double ranking) {
+	public void rankPair(int critA, int critB, double ranking) {
 		
 		if (rankings == null)
 			throw new ThinklabRuntimeException("PairwiseComparison: no rankings defined, please use static methods.");			

@@ -1,8 +1,11 @@
-package org.integratedmodelling.mca.algorithms;
+package org.integratedmodelling.mca;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.integratedmodelling.mca.ahp.AHP;
+import org.integratedmodelling.mca.evamix.Evamix;
+import org.integratedmodelling.mca.evamix.Evamix.Results;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 

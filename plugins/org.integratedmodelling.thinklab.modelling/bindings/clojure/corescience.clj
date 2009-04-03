@@ -2,68 +2,91 @@
 
 (tl/load-bindings 'org.integratedmodelling.thinklab.corescience)
 
-(defn measurement 
-	"Build a model for a measurement, optionally mediating another model (which must also be
-	a measurement. No dependency structure is allowed."
-	[concept-or-model unitspecs]
-	(new org.integratedmodelling.modelling.corescience.MeasurementModel
-			concept-or-model (str unitspecs)))
-			
-(defn classification
-  "Build a classification model of a type appropriate to the passed mappings. No
-  dependency structure is allowed."
-	[concept-or-model & class-specs]
-	(new org.integratedmodelling.modelling.corescience.ClassificationModel
-	    concept-or-model 
-	    ; switch any clojure lists to thinklab lists so we can build instances from them
-	    (map #(if (list? %) (tl/listp %) %) class-specs)))
-	
-(defn discrete-random-model
+(defn j-make-measurement
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.MeasurementModel))
+
+(defn j-make-count
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.CountModel))
+
+(defn j-make-classification
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.ClassificationModel))
+
+(defn j-make-observation
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.ObservationModel))
+
+(defn j-make-ranking
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.RankingModel))
+
+(defmacro classification
 	""
-	[concept-or-model & cpt-deps-body]
-	nil)
-	
-(defn continuous-random-model
+	[observable & specs]
+	'(let [model# 
+ 	        	(modelling/j-make-classification)] 
+ ;	    ()    	
+ 	  model#))
+
+(defmacro enumeration
 	""
-	[concept-or-model & cpt-deps-body]
-	nil)
+	[observable & specs]
+	'(let [model# 
+ 	        	(modelling/j-make-count)] 
+ ;	    ()  	
+ 	  model#))
 	
-(defn discrete-noisymax-model
+(defmacro ranking
 	""
-	[concept-or-model & cpt-deps-body]
-	nil)
-			
-(defn computed-measurement 
-  	""
-		[concept unitspecs equation & deps]
-		nil)
+	[observable & specs]
+	'(let [model# 
+ 	        	(modelling/j-make-ranking)] 
+ ;	    () 	
+ 	  model#))
 	
-(defn dde-measurement 
- 	""
-		[concept unitspecs equation & deps]
-		nil)
-; 	
-;(defn ranking 
-;	"Build a model for a measurement, optionally mediating another model (which must also be
-;	a measurement"
-;	([concept-or-model & specs]
-;	(new 
-;		(org.integratedmodelling.modelling.corescience.MeasurementModel
-;			((tl/conc concept) (str unitspecs) nil))))
-;	([concept-or-model unitspecs]
-;	(new
-;		(org.integratedmodelling.modelling.corescience.MeasurementModel
-;			((tl/conc concept) (str unitspecs) model)))))
-					
-(defn computed-ranking 
- 	""
-		[concept unitspecs equation & deps]
-		nil)
+(defmacro measurement
+	""
+	[observable & specs]
+	'(let [model# 
+ 	        	(modelling/j-make-measurement)] 
+ ;	    ()
+ 	  model#))
 	
-(defn dde-ranking 
- 	""
-		[concept unitspecs equation & deps]
-		nil)
-	
- 	
-			
+(defmacro identification
+	""
+	[observable & specs]
+	'(let [model# 
+ 	        	(modelling/j-make-observation)] 
+ ;	    ()
+ 	  model#))
+
+;(defmacro discrete-noisymax-model
+;	""
+;	[observable & specs]
+;	'(let [model# 
+; 	        	(modelling/j-make-noisymax)]
+; 	    ()
+; 	  model#))
+ 	  
+;(defmacro discrete-random-model
+;	""
+;	[observable & specs]
+;	'(let [model# 
+; 	        	(modelling/j-make-random)]
+; 	    ()
+; 	  model#))
+ 	  
+;(defmacro discrete-continuous-model
+;	""
+;	[observable & specs]
+;	'(let [model# 
+; 	        	(modelling/j-make-random-continuous)]
+; 	    ()
+; 	  model#))

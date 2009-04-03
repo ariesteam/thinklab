@@ -1,4 +1,4 @@
-package org.integratedmodelling.mca.algorithms;
+package org.integratedmodelling.mca.evamix;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -606,7 +606,7 @@ public class Evamix {
 		return new_matrix;
 	}
 
-	static double min(double[] input) {
+	public static double min(double[] input) {
 		double ret = input[0];
 		for (int i = 1; i < input.length; i++)
 			if (input[i] < ret)
@@ -614,7 +614,7 @@ public class Evamix {
 		return ret;
 	}
 
-	static double max(double[] input) {
+	public static double max(double[] input) {
 		double ret = input[0];
 		for (int i = 1; i < input.length; i++)
 			if (input[i] > ret)

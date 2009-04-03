@@ -16,24 +16,24 @@
 
 	[(classification (ecology:IGBPBiome)) :clustered discontinuous :as biome] 
 	
-	(count (ecology:PopulationAbundance)"n/m^2") 	
+	(enumeration (ecology:PopulationAbundance)"n/m^2") 	
 	  :change
 	  	('time:ContinuousTime 
 	  	 (- (* hare-birth-rate self) (* wolf-abundance wolf-consumption-rate)))	  	 	
 	  :context
-			((count
+			((enumeration
 					(ecology:BirthRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"n/d") :as hare-birth-rate
-			 (count
+			 (enumeration
 					(ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:GreyWolf)))
 					"n/m^2") :as wolf-abundance
-			 (count 
+			 (enumeration 
 					(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"n/d") 
 						:as   wolf-consumption-rate 
 						:when (tl/is? biome 'ecology:BorealForest)
 						:parameter 0.023 
-			 (count 
+			 (enumeration 
 					(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"n/d") 
 						:as wolf-consumption-rate 
@@ -48,21 +48,21 @@
 	 availability of hare prey and on a predation efficiency rate parameter. The 
 	 prey model will vary according to where the wolf is."
 	   
-	(count (ecology:PopulationAbundance) "n/m^2") 
+	(enumeration (ecology:PopulationAbundance) "n/m^2") 
 
 	  :as wolf
 	  :change 
 	  	('time:ContinuousTime
 	  	 (* hare-abundance hare-conversion-efficiency wolf))
 	  :context
-			((count 
+			((enumeration 
 					(ecology:PredationEfficiency 
 							(ecology:hasSource (biodiversity:SnowShoeHare))
 							(ecology:hasTarget (biodiversity:GreyWolf)))					
 					"n/d") 
 				    :as hare-conversion-efficiency
 						:parameter 0.0034
-			 (count
+			 (enumeration
 					(ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"ind/m^2") 
 						:as hare-abundance))
