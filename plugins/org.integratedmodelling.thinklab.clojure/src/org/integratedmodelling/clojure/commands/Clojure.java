@@ -53,7 +53,7 @@ public class Clojure implements ICommandHandler {
 	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		IValue ret = null;
-		String[] args = null;
+		String arg = null;
 		ClassLoader cloader = null;
 
 		if (command.hasOption("context")) {
@@ -71,12 +71,9 @@ public class Clojure implements ICommandHandler {
 				return null;
 			}
 			
-			args = new String[0];
-			
 		} else {
 
-			args = new String[1];
-			args[0] = command.getArgumentAsString("resource");
+			arg = command.getArgumentAsString("resource");
 		}
 
 		try {
@@ -88,7 +85,11 @@ public class Clojure implements ICommandHandler {
 			repl.setSession(session);
 			repl.setClassloader(cloader);
 			
-			repl.run(args);
+			if (arg == null) {
+				repl.run(null);
+			} else {
+				repl.runFile(arg);
+			}
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

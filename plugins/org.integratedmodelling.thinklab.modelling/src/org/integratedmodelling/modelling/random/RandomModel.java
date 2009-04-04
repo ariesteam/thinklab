@@ -1,4 +1,4 @@
-package org.integratedmodelling.modelling.corescience;
+package org.integratedmodelling.modelling.random;
 
 import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
@@ -9,17 +9,22 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
-public class RankingModel extends DefaultAbstractModel {
+public class RandomModel extends DefaultAbstractModel {
 
-	public void setUnits(Object unitSpecs) {
-		System.out.println("units: " + unitSpecs);
+	final static int DISCRETE = 0;
+	final static int CONTINUOUS = 1;
+	final static int NOISYMAX = 2;
+	
+	double[] cptDesc = null;
+	int type = DISCRETE;
+	
+	public RandomModel(int type) {
+		this.type = type;
 	}
 	
 	@Override
 	protected void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -41,6 +46,5 @@ public class RankingModel extends DefaultAbstractModel {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }

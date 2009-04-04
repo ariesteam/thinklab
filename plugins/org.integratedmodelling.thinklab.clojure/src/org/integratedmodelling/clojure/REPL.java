@@ -17,6 +17,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabScriptException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 
 import clojure.lang.DynamicClassLoader;
@@ -134,7 +136,14 @@ public class REPL {
     	if (this.classloader != null) {
 			RT.ROOT_CLASSLOADER = cl;
 		}
-
+	}
+	
+	public void runFile(String script) throws ThinklabException {
+		try {
+			RT.loadResourceScript(script);
+		} catch (Exception e) {
+			throw new ThinklabScriptException(e);
+		}
 	}
 
 	public void setInput(InputStream inputStream) {

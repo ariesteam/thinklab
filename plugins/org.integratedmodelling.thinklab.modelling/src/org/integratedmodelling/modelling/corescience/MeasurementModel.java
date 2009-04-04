@@ -1,9 +1,14 @@
 package org.integratedmodelling.modelling.corescience;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
+import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -11,15 +16,14 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
-public class MeasurementModel implements IModel {
+public class MeasurementModel extends DefaultAbstractModel {
 
 	IModel mediated = null;
 	String unitSpecs = null;
 	IConcept observable = null;
-	boolean hasValue = false;
+	Polylist observableSpecs = null;
 	
-	
-	public void define(Object observableOrModel, String unitSpecs) {
+	public void setObservable(Object observableOrModel) throws ThinklabException {
 		
 		if (observableOrModel instanceof IModel) {
 			/*
@@ -27,17 +31,21 @@ public class MeasurementModel implements IModel {
 			 */
 			this.mediated = (IModel) observableOrModel;
 			this.observable = ((IModel)observableOrModel).getObservable();
+			
+			validateMediatedModel(this.mediated);
+			
 		} else if (observableOrModel instanceof IConcept) {
 			this.observable = (IConcept) observableOrModel;
-		} else {
+		} else if (observableOrModel instanceof Polylist) {
 			
-			/*
-			 * TODO complain - internal error
-			 */
+		} else {			
+			this.observable = KnowledgeManager.get().requireConcept(observableOrModel.toString());
 		}
 		
-		this.unitSpecs = unitSpecs;
-		hasValue = unitSpecs.contains(" ");
+	}
+	
+	public void setUnits(Object unitSpecs) {
+		this.unitSpecs = unitSpecs.toString();
 	}
 	
 	@Override
@@ -79,19 +87,25 @@ public class MeasurementModel implements IModel {
 		return session.createObject(def);
 	}
 
-	@Override
-	public IConcept getObservable() {
-		return observable;
-	}
 
 	@Override
 	public IConcept getCompatibleObservationType(ISession session) {
 		return CoreScience.Measurement();
 	}
 
+
+
 	@Override
-	public boolean isResolved() {
-		return hasValue || mediated != null;
+	public void validateMediatedModel(IModel model) throws ThinklabValidationException {
+		if (! (model instanceof MeasurementModel)) {
+			throw new ThinklabValidationException("measurement models can only mediate other measurements");
+		}
+	}
+
+	@Override
+	protected Object validateState(Object state)
+			throws ThinklabValidationException {
+		return state instanceof Double ? state : Double.parseDouble(state.toString());
 	}
 
 }

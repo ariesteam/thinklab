@@ -30,63 +30,57 @@
 (defmacro classification
 	""
 	[observable & specs]
-	'(let [model# 
- 	        	(modelling/j-make-classification)] 
- ;	    ()    	
- 	  model#))
+	`(let [model# (modelling/j-make-classification)] 
+ 	   (.setObservable model# 
+	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
+ 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
+ 	   					(eval ~observable)))
+		 (doseq [classifier# (partition 2 '~specs)]
+		 	   (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (eval (second classifier#))))
+ 	   model#))
 
 (defmacro enumeration
 	""
-	[observable & specs]
-	'(let [model# 
+	[observable & units]
+	`(let [model# 
  	        	(modelling/j-make-count)] 
- ;	    ()  	
- 	  model#))
+ 	   (.setObservable model# 
+	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
+ 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
+ 	   					(eval ~observable))) 	
+ 	   (if (not (nil? '~units)) (.setUnits model# (first '~units)))    
+ 	    model#))
 	
 (defmacro ranking
 	""
-	[observable & specs]
-	'(let [model# 
+	[observable & units]
+	`(let [model# 
  	        	(modelling/j-make-ranking)] 
- ;	    () 	
- 	  model#))
+ 	   (.setObservable model# 
+	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
+ 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
+ 	   					(eval ~observable)))
+ 	   (if (not (nil? '~units)) (.setUnits model# (first '~units))) 
+ 	   model#))
 	
 (defmacro measurement
-	""
-	[observable & specs]
-	'(let [model# 
+	"Create a measurement model. The observable can be another measurement model or a semantic object."
+	[observable units]
+	`(let [model# 
  	        	(modelling/j-make-measurement)] 
- ;	    ()
- 	  model#))
+ 	   (.setObservable model# 
+	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
+ 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
+ 	   					(eval ~observable)))
+ 	    (.setUnits model# ~units) 	  
+ 	    model#))
 	
 (defmacro identification
-	""
-	[observable & specs]
-	'(let [model# 
+	"Create an identification model. The observable can only be a semantic object."
+	[observable]
+	`(let [model# 
  	        	(modelling/j-make-observation)] 
- ;	    ()
- 	  model#))
+ 	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	   model#))
 
-;(defmacro discrete-noisymax-model
-;	""
-;	[observable & specs]
-;	'(let [model# 
-; 	        	(modelling/j-make-noisymax)]
-; 	    ()
-; 	  model#))
- 	  
-;(defmacro discrete-random-model
-;	""
-;	[observable & specs]
-;	'(let [model# 
-; 	        	(modelling/j-make-random)]
-; 	    ()
-; 	  model#))
- 	  
-;(defmacro discrete-continuous-model
-;	""
-;	[observable & specs]
-;	'(let [model# 
-; 	        	(modelling/j-make-random-continuous)]
-; 	    ()
-; 	  model#))
+

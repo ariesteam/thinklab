@@ -8,6 +8,7 @@ import org.integratedmodelling.corescience.Obs;
 import org.integratedmodelling.corescience.contextualization.Compiler;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -36,7 +37,6 @@ import org.integratedmodelling.utils.Polylist;
  */
 public class Model implements IModel {
 
-	IConcept subject = null;
 	ArrayList<IModel> models = null;
 	Collection<IModel> context = null;
 	Collection<String> contextIds = null;
@@ -49,6 +49,25 @@ public class Model implements IModel {
 		String id = null;
 		Object parameterValue = null;
 	}
+	
+	IConcept observable = null;
+	Polylist observableSpecs = null;
+	Object state = null;
+	
+	public void setObservable(Object observableOrModel) throws ThinklabException {
+		
+		System.out.println("model: got observable " + observableOrModel.getClass() + ": " + observableOrModel);
+		
+		if (observableOrModel instanceof IConcept) {
+			this.observable = (IConcept) observableOrModel;
+		} else if (observableOrModel instanceof Polylist) {
+			this.observableSpecs = (Polylist)observableOrModel;
+			this.observable = KnowledgeManager.get().requireConcept(this.observableSpecs.first().toString());
+		} else {
+			this.observable = KnowledgeManager.get().requireConcept(observableOrModel.toString());
+		}
+	}
+	
 	
 	/**
 	 * Run the model in the given session, using the passed kboxes and topology if
@@ -92,12 +111,7 @@ public class Model implements IModel {
 	public void setDescription(String s) {
 		description = s;
 	}
-	
-	public void setObservable(IConcept c) {
-		subject = c;
-		System.out.println("observable set to " + c);
-	}
-	
+
 	public void addContingency(IModel m, Collection<Object> auxInfo) {
 		
 		if (context == null)
@@ -150,7 +164,7 @@ public class Model implements IModel {
 
 	@Override
 	public IConcept getObservable() {
-		return subject;
+		return observable;
 	}
 
 	@Override
@@ -160,7 +174,6 @@ public class Model implements IModel {
 
 	@Override
 	public boolean isResolved() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
@@ -198,6 +211,12 @@ public class Model implements IModel {
 		}
 
 		return ret;
+	}
+
+	@Override
+	public void setState(Object object) throws ThinklabValidationException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

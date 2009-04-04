@@ -41,14 +41,14 @@
  	        model# 
  	        	(modelling/j-make-model)]
  	        	
- 	     (.setObservable  model# (tl/listp ~observable))
+ 	     (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
  	     (.setDescription model# desc#)
  	     
  	     ; pass the contingency model
- 	     (doseq [mdef# (tl/group-with-keywords contingency-model#)]
+ 	     (doseq [mdef# (partition 2 (tl/group-with-keywords contingency-model#))]
          	(.addContingency model# (eval (first mdef#)) (tl/map-keywords (second mdef#) kw-mappings)))       	  	
-        ; pass the dependency model
-       (doseq [mdef# (tl/group-with-keywords dependency-model#)]
+        ; pass the model definitions
+       (doseq [mdef# (partition 2 (tl/group-with-keywords dependency-model#))]
           (.defModel model# (eval (first mdef#))(tl/map-keywords (second mdef#) kw-mappings)))
        model#))
        
@@ -67,6 +67,6 @@
 	[model & params]
 	(.run model (tl/get-session) params))
 	       
-; (modelling/model 'thinklab-core:Number [] (modelling/measurement 'thinklab-core:Number "km"))
+; (modelling/model 'thinklab-core:Number (modelling/measurement 'thinklab-core:Number "km"))
 ; (modelling/defmodel zio 'thinklab-core:Number [] (modelling/measurement 'thinklab-core:Number "km") :as zorro)
   

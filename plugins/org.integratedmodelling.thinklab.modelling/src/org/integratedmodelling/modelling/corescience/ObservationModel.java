@@ -1,13 +1,29 @@
 package org.integratedmodelling.modelling.corescience;
 
+import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
-public class ObservationModel implements IModel {
+public class ObservationModel extends DefaultAbstractModel {
+
+	@Override
+	protected void validateMediatedModel(IModel model)
+			throws ThinklabValidationException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected Object validateState(Object state)
+			throws ThinklabValidationException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public IInstance buildObservation(IKBox kbox, ISession session)
@@ -22,16 +38,5 @@ public class ObservationModel implements IModel {
 		return null;
 	}
 
-	@Override
-	public IConcept getObservable() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isResolved() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 }

@@ -1,6 +1,7 @@
 package org.integratedmodelling.modelling.interfaces;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -67,5 +68,14 @@ public interface IModel {
 	 * @return
 	 */
 	public abstract boolean isResolved();
+
+
+	/**
+	 * Called when parsing the specs if a :state clause is present
+	 * 
+	 * @param object
+	 * @throws ThinklabValidationException
+	 */
+	public abstract void setState(Object object) throws ThinklabValidationException;
 	
 }

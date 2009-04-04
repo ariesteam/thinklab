@@ -110,3 +110,9 @@
 						(first %)
 						((if (contains? fmap (first %)) (get fmap (first %)) identity) (second %)))
 	 			(partition 2 coll)))
+
+(defn unquote-if-quoted 
+	"If the argument is a list starting with quote, return the unquoted argument, otherwise return
+	 the unmodified argument"
+	 [arg]
+	 (if (and (list? arg) (= (str (first arg)) "quote")) (eval arg) arg))
