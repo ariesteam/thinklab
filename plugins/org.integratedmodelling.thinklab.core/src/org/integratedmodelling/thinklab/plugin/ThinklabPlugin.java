@@ -565,6 +565,10 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 
+	public URL getResourceURL(String resource) throws ThinklabIOException 	{
+		return getResourceURL(resource, null);
+	}
+	
 	/**
 	 * Retrieve an URL for the named resource: if the resource string represents a URL, return the
 	 * url constructed from it; otherwise, check if the resource string represents an existing
@@ -575,7 +579,7 @@ public abstract class ThinklabPlugin extends Plugin
 	 * @return
 	 * @throws ThinklabIOException 
 	 */
-	public URL getResourceURL(String resource) throws ThinklabIOException 	{
+	public URL getResourceURL(String resource, ThinklabPlugin plugin) throws ThinklabIOException 	{
 
 		URL ret = null;
 		
@@ -588,8 +592,10 @@ public abstract class ThinklabPlugin extends Plugin
 			} else if (resource.contains("://")) {
 				ret = new URL(resource);
 			} else {			
-				ret = getManager().getPluginClassLoader(getDescriptor()).
-					getResource(resource);
+				ret = 
+					getManager().
+						getPluginClassLoader(plugin == null ? getDescriptor() : plugin.getDescriptor()).
+							getResource(resource);
 			}
 		} catch (MalformedURLException e) {
 			throw new ThinklabIOException(e);

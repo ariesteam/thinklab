@@ -1,38 +1,109 @@
 <?xml version="1.0"?>
-<rdf:RDF
-	xmlns="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns:habitat="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#"
-    xmlns:assert="http://www.owl-ontologies.com/assert.owl#"
-    xmlns:owl="http://www.w3.org/2002/07/owl#"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-  xml:base="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl">
-  <owl:Ontology rdf:about="">
-    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl"/>
-  </owl:Ontology>
-  <owl:Class rdf:ID="LandUseTypology">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="LandTypology"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="LandClassificationSystem"/>
-  <owl:Class rdf:ID="LandCoverTypology">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#LandTypology"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#LandTypology">
-    <owl:equivalentClass>
-      <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Habitat">
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY assert "http://www.owl-ontologies.com/assert.owl#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY lulc "http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#" >
+    <!ENTITY habitat "http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#" >
+]>
+
+
+<rdf:RDF xmlns="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#"
+     xml:base="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl"
+     xmlns:habitat="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:assert="http://www.owl-ontologies.com/assert.owl#"
+     xmlns:lulc="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#">
+    <owl:Ontology rdf:about="">
+        <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#containsTypology -->
+
+    <owl:ObjectProperty rdf:about="#containsTypology">
+        <rdfs:domain rdf:resource="#LandClassificationSystem"/>
+        <rdfs:range rdf:resource="#LandTypology"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Habitat -->
+
+    <owl:Class rdf:about="&habitat;Habitat">
         <owl:equivalentClass rdf:resource="#LandTypology"/>
-      </rdf:Description>
-    </owl:equivalentClass>
-  </owl:Class>
-  <owl:ObjectProperty rdf:ID="containsTypology">
-    <rdfs:domain rdf:resource="#LandClassificationSystem"/>
-    <rdfs:range rdf:resource="#LandTypology"/>
-  </owl:ObjectProperty>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandClassificationNumericMapping -->
+
+    <owl:Class rdf:about="#LandClassificationNumericMapping">
+        <rdfs:subClassOf rdf:resource="#LandClassificationSystem"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandClassificationSystem -->
+
+    <owl:Class rdf:about="#LandClassificationSystem"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandCoverTypology -->
+
+    <owl:Class rdf:about="#LandCoverTypology">
+        <rdfs:subClassOf rdf:resource="#LandTypology"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandTypology -->
+
+    <owl:Class rdf:about="#LandTypology"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandUseTypology -->
+
+    <owl:Class rdf:about="#LandUseTypology">
+        <rdfs:subClassOf rdf:resource="#LandTypology"/>
+    </owl:Class>
 </rdf:RDF>
 
-<!-- Created with Protege (with OWL Plugin 3.3.1, Build 430)  http://protege.stanford.edu -->
+
+
+<!-- Generated by the OWL API (version 2.2.1.1042) http://owlapi.sourceforge.net -->
+

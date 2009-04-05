@@ -146,7 +146,7 @@ public class Model implements IModel {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @seeorg.integratedmodelling.modelling.IModel#buildObservation(org.
+	 * @see org.integratedmodelling.modelling.IModel#buildObservation(org.
 	 * integratedmodelling.thinklab.interfaces.storage.IKBox,
 	 * org.integratedmodelling.thinklab.interfaces.applications.ISession)
 	 */
@@ -217,6 +217,10 @@ public class Model implements IModel {
 	public void setState(Object object) throws ThinklabValidationException {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public String toString() {
+		return "[" + getObservable() + "->" + getCompatibleObservationType(null)+"]";
 	}
 
 }

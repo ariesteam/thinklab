@@ -5,23 +5,23 @@
 	[rtype]
 	(new org.integratedmodelling.modelling.random.RandomModel rtype))
 	
-(defmacro discrete-noisymax-model
+(defmacro noisymax-classification
   ""
-	[observable & cpt]
+	[observable & body]
 	'(let [model# 
  	        	(modelling/j-make-random 2)]
  	  model#))
  	  
-(defmacro discrete-random-model
+(defmacro random-classification
 	""
-	[observable & cpt]
+	[observable & body]
 	'(let [model# 
  	        	(modelling/j-make-random 0)]
  	  model#))
  	  
-(defmacro discrete-continuous-model
+(defmacro random-function
 	""
-	[observable function & cpt]
+	[observable function & body]
 	'(let [model# 
  	        	(modelling/j-make-random 1)]
 	  model#))

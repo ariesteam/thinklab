@@ -33,14 +33,19 @@
  **/
 package org.integratedmodelling.clojure.commands;
 
+import java.net.URL;
+
+import org.integratedmodelling.clojure.ClojureInterpreter;
 import org.integratedmodelling.clojure.ClojurePlugin;
 import org.integratedmodelling.clojure.REPL;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabScriptException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 /**
  * Run an application configured in plugin.xml, or even pass a list to run inline
@@ -54,12 +59,14 @@ public class Clojure implements ICommandHandler {
 
 		IValue ret = null;
 		String arg = null;
+		ThinklabPlugin plugin = null;
 		ClassLoader cloader = null;
 
 		if (command.hasOption("context")) {
 
 			String contextplugin = command.getOptionAsString("context");
-			cloader = Thinklab.resolvePlugin(contextplugin, true).getClassLoader();
+			plugin = Thinklab.resolvePlugin(contextplugin, true);
+			cloader = plugin.getClassLoader();
 		}
 
 		
@@ -78,22 +85,28 @@ public class Clojure implements ICommandHandler {
 
 		try {
 			
-			REPL repl = new REPL();
-			
-			repl.setInput(session.getInputStream());
-			repl.setOutput(session.getOutputStream());
-			repl.setSession(session);
-			repl.setClassloader(cloader);
+
 			
 			if (arg == null) {
+				
+				REPL repl = new REPL();
+				repl.setInput(session.getInputStream());
+				repl.setOutput(session.getOutputStream());
+				repl.setSession(session);
+				repl.setClassloader(cloader);
 				repl.run(null);
+				
 			} else {
-				repl.runFile(arg);
+				
+				URL url = Thinklab.get().getResourceURL(arg, plugin);
+				ClojureInterpreter intp = new ClojureInterpreter();
+				intp.setInput(session.getInputStream());
+				intp.setOutput(session.getOutputStream());
+				ret = intp.eval(url);
 			}
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ThinklabScriptException(e);
 		}
 		
 		return ret;

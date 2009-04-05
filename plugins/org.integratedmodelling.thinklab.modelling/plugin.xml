@@ -18,6 +18,8 @@
 		</library>
 		<library type="resources" path="config/" id="config" />
 		<library type="resources" path="bindings/" id="bindings" />
+		<!-- this is only so we can run clj -context modelling example.clj - may be removed --> 
+		<library type="resources" path="examples/" id="examples" />
 	</runtime>
 	
 	<!-- bindings -->

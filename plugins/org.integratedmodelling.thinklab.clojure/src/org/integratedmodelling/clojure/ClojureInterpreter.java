@@ -132,7 +132,7 @@ public class ClojureInterpreter implements Interpreter {
 	}
 
 	@Override
-	public IValue eval(Object code, ThinklabPlugin sourcePlugin, HashMap<String, Object> args)
+	public IValue eval(Object code, HashMap<String, Object> args)
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
@@ -308,20 +308,8 @@ public class ClojureInterpreter implements Interpreter {
 	}
 
 	@Override
-	public IValue eval(Object code, ThinklabPlugin sourcePlugin) throws ThinklabException {
-		
-		/*
-		 * TODO the default namespace should be the plugin from which the code is
-		 * coming.
-		 */
-    	//DynamicClassLoader cl = RT.ROOT_CLASSLOADER;
-    	//RT.ROOT_CLASSLOADER = new DynamicClassLoader(sourcePlugin.getClassLoader());
-   
-    	IValue ret = evalInNamespace(code, session == null ? "user" : session.getSessionID());
-		
-    	//RT.ROOT_CLASSLOADER = cl;
-    	
-    	return ret;
+	public IValue eval(Object code) throws ThinklabException {   
+    	return evalInNamespace(code, session == null ? "user" : session.getSessionID());    	
 	}
 	
 }

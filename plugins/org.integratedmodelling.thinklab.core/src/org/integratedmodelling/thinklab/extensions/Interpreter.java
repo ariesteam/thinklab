@@ -54,13 +54,11 @@ public interface Interpreter {
 	 * 
 	 * @param code Anything that represents code to eval. Should be something that can be 
 	 * associated to an InputStream. 
-	 * @param sourcePlugin the plugin that is the source of the code. Pass null if none. Used to
-	 * set appropriate classloaders and find any external resources if necessary.
 	 * 
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public abstract IValue eval(Object code, ThinklabPlugin sourcePlugin) throws ThinklabException;
+	public abstract IValue eval(Object code) throws ThinklabException;
 	
 	/**
 	 * Like eval but with some externally supplied context, passed as a map of varname,object pairs.
@@ -73,7 +71,7 @@ public interface Interpreter {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public abstract IValue eval(Object code, ThinklabPlugin sourcePlugin, HashMap<String,Object> args) throws ThinklabException;
+	public abstract IValue eval(Object code, HashMap<String,Object> args) throws ThinklabException;
 
 	/**
 	 * This one is different from eval because the bindings must remain in effect 

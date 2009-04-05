@@ -80,9 +80,7 @@ public class Application {
 					appdesc.sessionClass);
 			}
 		}
-		
-		((RunScript)task).setSourcePlugin(appdesc.registeringPlugin);
-		
+
 		/*
 		 * Run task and return 
 		 */

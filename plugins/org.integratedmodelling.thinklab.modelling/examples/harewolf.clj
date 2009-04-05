@@ -14,27 +14,27 @@
 	"A differential equation model of hare density that is controlled by wolf predation
 	 and depends on birth rate and consumption rate from the predator."
 
-	[(classification (ecology:IGBPBiome)) :clustered discontinuous :as biome] 
+	[(classification 'ecology:IGBPBiome) :clustered discontinuous :as biome] 
 	
-	(enumeration (ecology:PopulationAbundance)"n/m^2") 	
-	  :change
+	(enumeration 'ecology:PopulationAbundance "n/m^2")
+	  :derivative
 	  	('time:ContinuousTime 
 	  	 (- (* hare-birth-rate self) (* wolf-abundance wolf-consumption-rate)))	  	 	
 	  :context
 			((enumeration
-					(ecology:BirthRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
+					'(ecology:BirthRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"n/d") :as hare-birth-rate
 			 (enumeration
-					(ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:GreyWolf)))
+					'(ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:GreyWolf)))
 					"n/m^2") :as wolf-abundance
 			 (enumeration 
-					(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
+					'(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"n/d") 
 						:as   wolf-consumption-rate 
 						:when (tl/is? biome 'ecology:BorealForest)
 						:parameter 0.023 
 			 (enumeration 
-					(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
+					'(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"n/d") 
 						:as wolf-consumption-rate 
 						:parameter 0.123))
@@ -42,33 +42,33 @@
 ;; wolf model
 (defmodel hare-dependent-wolf-density
 
-  (ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:GreyWolf)))
+  '(ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:GreyWolf)))
 				
 	"A differential equation model of wolf density that depends on the 
 	 availability of hare prey and on a predation efficiency rate parameter. The 
 	 prey model will vary according to where the wolf is."
 	   
-	(enumeration (ecology:PopulationAbundance) "n/m^2") 
+	(enumeration 'ecology:PopulationAbundance "n/m^2") 
 
 	  :as wolf
-	  :change 
+	  :derivative 
 	  	('time:ContinuousTime
 	  	 (* hare-abundance hare-conversion-efficiency wolf))
 	  :context
 			((enumeration 
-					(ecology:PredationEfficiency 
+					'(ecology:PredationEfficiency 
 							(ecology:hasSource (biodiversity:SnowShoeHare))
 							(ecology:hasTarget (biodiversity:GreyWolf)))					
 					"n/d") 
 				    :as hare-conversion-efficiency
 						:parameter 0.0034
 			 (enumeration
-					(ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:SnowShoeHare)))
+					'(ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:SnowShoeHare)))
 					"ind/m^2") 
 						:as hare-abundance))
 
 (defmodel hare-wolf-system 
-		(ecology:Community (ecology:hasSpecies (biodiversity:Hare biodiversity:Wolf)))
+	 '(ecology:Community (ecology:hasSpecies (biodiversity:Hare biodiversity:Wolf)))
 		(identification 'ecology:Community)
 		  :context 
 			  (wolf-controlled-hare-density :as hare :state 10

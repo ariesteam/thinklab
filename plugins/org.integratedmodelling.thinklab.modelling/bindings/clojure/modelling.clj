@@ -16,6 +16,12 @@
 	[]
 	(new org.integratedmodelling.modelling.Model))
 	
+(defn register-model
+	"Get the single instance of the model manager from the modelling plugin and register the passed model
+	 with it."
+	[model]
+	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerModel model)))
+	
 ;; ----------------------------------------------------------------------------------------------
 ;; public macros
 ;; ----------------------------------------------------------------------------------------------
@@ -44,10 +50,10 @@
  	     (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
  	     (.setDescription model# desc#)
  	     
- 	     ; pass the contingency model
+ 	     ; process the contingency model - as many models as we like, will build an id from all
  	     (doseq [mdef# (partition 2 (tl/group-with-keywords contingency-model#))]
          	(.addContingency model# (eval (first mdef#)) (tl/map-keywords (second mdef#) kw-mappings)))       	  	
-        ; pass the model definitions
+        ; process the model definitions - one or more models, must be conditional if > 1
        (doseq [mdef# (partition 2 (tl/group-with-keywords dependency-model#))]
           (.defModel model# (eval (first mdef#))(tl/map-keywords (second mdef#) kw-mappings)))
        model#))
@@ -57,7 +63,7 @@
 	  structure and conditional specifications, or the given unconditional model if no 
 	  contingency structure is supplied."
 		[model-name observable & body]
- 		`(def ~model-name (eval '(modelling/model ~observable ~@body))))
+ 		`(def ~model-name (modelling/register-model (eval '(modelling/model ~observable ~@body)))))
        
 (defn run 
 	"Build an observation from the passed model. If the model has unresolved dependencies
