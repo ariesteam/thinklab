@@ -38,10 +38,9 @@ import org.integratedmodelling.utils.Triple;
 
 public class MultidimensionalCursor {
 
-	
 	public enum StorageOrdering {
-		C,
-		FORTRAN;
+		ROW_FIRST,
+		COLUMN_FIRST;
 	}
 	
 	/**
@@ -59,9 +58,9 @@ public class MultidimensionalCursor {
 			ordering.clear();
 			
 			for (int i = 0; i < dimensions; i++) {
-				if (order == StorageOrdering.C) {
+				if (order == StorageOrdering.ROW_FIRST) {
 					ordering.add(dimensions - 1 - i);
-				} else if (order == StorageOrdering.FORTRAN) {
+				} else if (order == StorageOrdering.COLUMN_FIRST) {
 					ordering.add(i);
 				}
 			}
@@ -74,6 +73,7 @@ public class MultidimensionalCursor {
     ArrayList<Integer> strides = new ArrayList<Integer>();
     StorageOrdering    storageOrderType;
     StorageOrder       storageOrder = new StorageOrder();
+    int[] ordering = null;
 
     public MultidimensionalCursor(StorageOrdering order) {
     	multiplicity = 0;
@@ -94,12 +94,15 @@ public class MultidimensionalCursor {
     	strides.clear(); 
     	for (int n = 0; n != dimensions; ++n)
     	  strides.add(0);
+    	ordering = new int[dimensions];
     	storageOrder.set(dimensions, storageOrderType);
     	for (int n = 0; n != dimensions; ++n) {
+    		ordering[n] = storageOrder.ordering.get(n);
     		strides.set(storageOrder.ordering.get(n), stride);
     	    stride *= extents.get(storageOrder.ordering.get(n));
     	    multiplicity *= extents.get(storageOrder.ordering.get(n));
     	}
+    	    	
     	return multiplicity;
     }
 
@@ -112,14 +115,21 @@ public class MultidimensionalCursor {
     	
     	int[] ret = new int[dimensions];
     	int rest = offset;
-    	int n = dimensions - 1;
-    	for (int i = dimensions - 1; i > 0; i--) {
-    		
-    		ret[n--] = offset/strides.get(i);
-    		rest -= ret[n+1] * strides.get(i);
-    	}
     	
-    	ret[0] = rest;
+    	if (storageOrderType == StorageOrdering.COLUMN_FIRST) {
+    		for (int i = dimensions - 1; i > 0; i--) {
+    			ret[i] = offset/strides.get(i);
+    			rest -= ret[i] * strides.get(i);
+    		}
+    		ret[0] = rest;
+    	} else {
+    	
+    		for (int i = 0; i < dimensions-1; i++) {
+    			ret[i] = offset/strides.get(i);
+    			rest -= ret[i]*strides.get(i);
+    		}
+    		ret[dimensions-1] = rest;
+    	}
     	
     	return ret;
     }
@@ -196,5 +206,30 @@ public class MultidimensionalCursor {
     	return multiplicity;
     }
     
+    public static void main(String[] args) {
+    	
+    	int[][] data = {
+    			{0,1,2,3,4,5,6},
+    			{7,8,9,10,11,12,13},
+    			{14,15,16,17,18,19,20}};
+    	
+    	MultidimensionalCursor md = 
+    		new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
+    	
+    	// x size (cols), y size (rows)
+    	System.out.println("dimensions are x = " + data[0].length + 
+    						" (columns) * y=" + data.length + " (rows)");
+    	
+    	int size = md.defineDimensions(data[0].length, data.length);
+    	
+    	System.out.println("strides = " + md.strides);
+    	System.out.println("orderin = " + md.storageOrder.ordering);
+    	
+    	for (int i = 0; i < size; i++) {
+    		int[] xy = md.getElementIndexes(i);	
+    		System.out.println("order " + i + "-> (" + xy[0] + "," + xy[1] + ")");
+    		System.out.println("\t -> " + data[xy[1]][xy[0]]);
+    	}
+    }
 		
 }

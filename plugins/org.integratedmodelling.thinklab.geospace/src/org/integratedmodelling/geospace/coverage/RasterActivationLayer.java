@@ -20,7 +20,8 @@ public class RasterActivationLayer extends BitSet {
 
 	private static final long serialVersionUID = 2831346054544907423L;
 	private int active;
-	MultidimensionalCursor cursor = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.C);
+	MultidimensionalCursor cursor = 
+		new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
 
 	// nothing for now
 	Object gaps = null;
@@ -37,10 +38,8 @@ public class RasterActivationLayer extends BitSet {
 	
 	public Pair<Integer, Integer> getCell(int index) {
 		
-		int y = index / cursor.getDimensionSize(0); // row
-		int x = index - (y * cursor.getDimensionSize(0)); //column
-		
-		return new Pair<Integer, Integer>(x, y);
+		int[] xy = cursor.getElementIndexes(index);
+		return new Pair<Integer, Integer>(xy[0], xy[1]);
 	}
 	
 	public boolean isActive(int x, int y) {
@@ -99,10 +98,8 @@ public class RasterActivationLayer extends BitSet {
 		if (ofs == -1) 
 			return null;
 		
-		int y = ofs / cursor.getDimensionSize(0);
-		int x = ofs - (y * cursor.getDimensionSize(0));
-		
-		return new Pair<Integer, Integer>(x, y);
+		int[] xy = cursor.getElementIndexes(ofs);
+		return new Pair<Integer, Integer>(xy[0], xy[1]);
 	}
 
 	public Pair<Integer, Integer> nextActiveCell(int fromOffset) {
@@ -112,10 +109,14 @@ public class RasterActivationLayer extends BitSet {
 		if (ofs == -1) 
 			return null;
 		
-		int y = ofs / cursor.getDimensionSize(0);
-		int x = ofs - (y * cursor.getDimensionSize(0));
+		int[] xy = cursor.getElementIndexes(ofs);
+		return new Pair<Integer, Integer>(xy[0], xy[1]);
+	}
+	
+	public static void main(String args[]) {
 		
-		return new Pair<Integer, Integer>(x, y);
+		
+		
 	}
 
 }

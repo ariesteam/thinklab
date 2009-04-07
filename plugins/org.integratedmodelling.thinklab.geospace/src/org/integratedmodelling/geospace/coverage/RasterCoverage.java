@@ -163,6 +163,8 @@ public class RasterCoverage implements ICoverage {
 						this.gridGeometry, 
 						new InterpolationNearest());
 		
+//		this.coverage.show();
+		
 	}
 
 	public RasterCoverage(String sourceURL, GridCoverage2D coverage, GridSampleDimension dimension, boolean isSingleBand) {
@@ -193,18 +195,6 @@ public class RasterCoverage implements ICoverage {
 				coverage.getEnvelope2D().getMaxX(),
 				coverage.getEnvelope2D().getMinY(),
 				coverage.getEnvelope2D().getMaxY(), crs);
-
-//		RenderedImage zio = coverage.getRenderedImage();
-//		RandomIter iter = RandomIterFactory.create(zio, null);
-//		for (int x = 0; x < getXCells(); x++) {
-//			for (int y = 0; y < getYCells(); y++) {
-//				int dio = iter.getSample(x, y, 0);
-//				double zuz = iter.getSampleDouble(x, y, 0);
-//				
-//				if (dio != 0 || zuz != 0.0)
-//					System.out.println("FUCKA " + x + "," + y + " is " + zuz + " - " + dio);
-//			}
-//		}
 	}
 	
 	public RasterCoverage(String name, GridCoverage2D raster) {
@@ -228,7 +218,8 @@ public class RasterCoverage implements ICoverage {
 				coverage.getEnvelope2D().getMaxX(),
 				coverage.getEnvelope2D().getMinY(),
 				coverage.getEnvelope2D().getMaxY(), crs);
-        coverage.show();
+
+		coverage.show();
 
 	}
 
@@ -305,28 +296,9 @@ public class RasterCoverage implements ICoverage {
 	
 	public Object getSubdivisionValue(int subdivisionOrder, IConceptualModel conceptualModel, ArealExtent extent) throws ThinklabValidationException {
 		
-		/* determine which active x,y we should retrieve for this order */
-		Pair<Integer, Integer> xy = ((GridExtent)extent).getActivationLayer().getCell(subdivisionOrder);		
-//
-//		System.out.println("integer@" + xy.getFirst() + "," + xy.getSecond() + " = " + itera.getSample(xy.getFirst(), xy.getSecond(), 0));
-//		System.out.println("double@" + xy.getFirst() + "," + xy.getSecond() + " = " + itera.getSampleDouble(xy.getFirst(), xy.getSecond(), 0));	
-		return itera.getSampleDouble(xy.getFirst(), xy.getSecond(), 0);
-		
-//		Object data = coverage.evaluate(getPosition(xy.getFirst(),xy.getSecond()));
-//		IValue ret = null;
-//		
-//        final int dataType = image.getSampleModel().getDataType();
-//       	
-//        switch (dataType) {
-//        case DataBuffer.TYPE_BYTE:   ret = new NumberValue(((byte[])data)[0]); break;
-//        case DataBuffer.TYPE_SHORT:  ret = new NumberValue(((int[])data)[0]); break;
-//        case DataBuffer.TYPE_USHORT: ret = new NumberValue(((int[])data)[0]); break;
-//        case DataBuffer.TYPE_INT:    ret = new NumberValue(((int[])data)[0]); break;
-//        case DataBuffer.TYPE_FLOAT:  ret = new NumberValue(((float[])data)[0]); break;
-//        case DataBuffer.TYPE_DOUBLE: ret = new NumberValue(((double[])data)[0]); break;
-//        }	
-//		
-//		return ret;
+		/* determine which active x,y we should retrieve for this order. Must flip rows to make it match the original image. */
+		Pair<Integer, Integer> xy = ((GridExtent)extent).getActivationLayer().getCell(subdivisionOrder);
+		return itera.getSampleDouble(xy.getFirst(), getYCells() - xy.getSecond() - 1, 0);
 	}
 
 
@@ -369,6 +341,7 @@ public class RasterCoverage implements ICoverage {
 
 	public int getXRangeMax() {
 		// todo use getEnvelope2D, then who knows
+//		gridGeometry.getEnvelope2D().getMaximum(0);
 		return gridGeometry.getGridRange2D().getUpper(0);
 	}
 
