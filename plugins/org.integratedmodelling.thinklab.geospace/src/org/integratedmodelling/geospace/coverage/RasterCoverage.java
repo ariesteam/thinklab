@@ -150,20 +150,37 @@ public class RasterCoverage implements ICoverage {
 		// here's the geometry we want and the crs for the derived coverage
 		this.gridGeometry = new GridGeometry2D(extent.getGridRange(), extent.getEnvelope());
 
+		
+//		1> get the world-to-grid transform (I am assuming the grid-to-world is
+//		a simple scale and translate hence we have a fairly simple case)
+//		2> get a very small envelope completely contained in the original
+//		envelope but which leads to a very small raster area. let's assume it
+//	    is represented by the rectangle2d  (minLon,minLat,lonSpa/4,latSpan/4).
+//	    3> transform the envelope using the world-to-grid transform in order
+//		to get the corresponding raster area
+//		4> create a GeneralGridRange for the just created envelope which
+//		resides in the raster area
 		/*
 		 * FIXME passing anything other than null here will result in all values being
 		 * zero. Even the original CRS causes that. Until this works, no reprojection
 		 * can take place.
 		 */
+//		this.coverage = 
+//			(GridCoverage2D) 
+//				Operations.DEFAULT.resample(
+//						cov.coverage, 
+//						null, 
+//						this.gridGeometry, 
+//						new InterpolationNearest());
+
 		this.coverage = 
 			(GridCoverage2D) 
 				Operations.DEFAULT.resample(
 						cov.coverage, 
-						null, 
-						this.gridGeometry, 
-						new InterpolationNearest());
+						extent.getEnvelope(), new InterpolationNearest());
+
 		
-//		this.coverage.show();
+		this.coverage.show();
 		
 	}
 

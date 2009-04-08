@@ -30,6 +30,7 @@ import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.NameGenerator;
 import org.opengis.feature.simple.SimpleFeature;
@@ -98,6 +99,23 @@ public class CoverageFactory {
 		return atable;
 	}
 	
+	public static void main(String args[]) {
+		
+		String req = 
+			"http://127.0.0.1:8080/geoserver/wcs?service=wcs&version=1.0.0&request=GetCoverage&coverage=puget:NCLD_King&bbox=1088921.93,-96339.66,1111495.9,-76887.06&crs=EPSG:2285&width=512&height=298&format=geotiff";
+		
+		try {
+			ArrayList<ICoverage> zio = readRaster(new URL(req), null);
+			System.out.println(zio);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ThinklabException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Read the source and set properties, but do not render any image or waste any more memory
 	 * than necessary at this stage. Load the data using loadImage, possibly after setting different
@@ -110,6 +128,17 @@ public class CoverageFactory {
 	public synchronized static ArrayList<ICoverage> readRaster(URL url, Properties properties) throws ThinklabException {
 		
 		ArrayList<ICoverage> ret = new ArrayList<ICoverage>();
+		
+		if (url.toString().startsWith("http:")) {
+			
+			try {
+				File f = File.createTempFile("geo", ".tiff");
+				CopyURL.copy(url, f);
+				url = f.toURI().toURL();
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+		}
 		
 		/*
 		 * TODO we will need to connect the hints to the plugin's properties, and have our own

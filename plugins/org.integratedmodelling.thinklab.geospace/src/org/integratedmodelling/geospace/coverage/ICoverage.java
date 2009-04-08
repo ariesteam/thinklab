@@ -79,7 +79,9 @@ public interface ICoverage {
 	 */
 	public void write(File f) throws ThinklabException;
 	
-
+	/**
+	 * No need to load any files until this is called.
+	 */
 	void loadData();
 
 }
