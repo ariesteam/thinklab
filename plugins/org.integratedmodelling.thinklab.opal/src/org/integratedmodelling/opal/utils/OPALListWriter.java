@@ -34,12 +34,9 @@ package org.integratedmodelling.opal.utils;
 
 import java.util.HashSet;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.integratedmodelling.opal.profile.OPALProfile;
 import org.integratedmodelling.opal.profile.OPALProfileFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.XMLDocument;
 import org.integratedmodelling.utils.instancelist.InstanceList;
@@ -61,14 +58,8 @@ public class OPALListWriter {
 	 */
 	public static XMLDocument getNewDocument(String profile) throws ThinklabException {
 
-		XMLDocument doc = null;
 		OPALProfile prof = OPALProfileFactory.get().getProfile(profile, true);
-
-		try {
-			doc = new XMLDocument(prof.getDefaultRootNodeID());
-		} catch (ParserConfigurationException e) {
-			throw new ThinklabIOException(e);
-		}
+		XMLDocument doc =  new XMLDocument(prof.getDefaultRootNodeID());
 		
 		if (!prof.isDefault()) {
 			/* add processing instruction to set profile  */

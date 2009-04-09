@@ -35,13 +35,10 @@ package org.integratedmodelling.opal;
 import java.io.File;
 import java.util.HashSet;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.integratedmodelling.opal.profile.OPALProfile;
 import org.integratedmodelling.opal.profile.OPALProfileFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -227,12 +224,7 @@ public class OPALWriter {
 		 * create xml document; if file name ends with .xml, add profile processing
 		 * instruction unless profile is null.
 		 */
-		XMLDocument doc = null;
-		try {
-			doc = new XMLDocument(prof.getDefaultRootNodeID());
-		} catch (ParserConfigurationException e) {
-			throw new ThinklabIOException(e);
-		}
+		XMLDocument doc = new XMLDocument(prof.getDefaultRootNodeID());
 		
 		HashSet<String> refs = new HashSet<String>();
 		

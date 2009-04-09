@@ -40,6 +40,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,13 +50,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -89,10 +93,15 @@ public class XMLDocument {
 	File      docFile = null;
 	Element  root = null;
 	
-	public XMLDocument(String rootNode) throws ParserConfigurationException {
+	public XMLDocument(String rootNode) throws ThinklabValidationException {
 	
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance ();
-		DocumentBuilder docBuilder = factory.newDocumentBuilder();
+		DocumentBuilder docBuilder = null;
+		try {
+			docBuilder = factory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			throw new ThinklabValidationException(e);
+		}
 		dom = docBuilder.newDocument();
 		root = dom.createElement(rootNode);
 		dom.appendChild(root);
@@ -274,7 +283,7 @@ public class XMLDocument {
 		for (int i = 0; i < children.getLength(); i++) {
 			Node textChild = children.item(i);
 			if (textChild.getNodeType() != Node.TEXT_NODE) {
-				System.err.println("Mixed content! Skipping child element " + textChild.getNodeName());
+				//System.err.println("Mixed content! Skipping child element " + textChild.getNodeName());
 				continue;
 	        }
 			buf.append(textChild.getNodeValue());
@@ -336,8 +345,9 @@ public class XMLDocument {
 	
 	public static Node findNode(Node node, String string) {
 		
-		Node ret = null;
-		if (node.getNodeName().equals(string))
+		Node ret = null; 
+		String name = node.getNodeName();
+		if (name != null && name.equals(string))
 			return node;
 		
 		for (Node n = node.getFirstChild(); n != null; n = n.getNextSibling())
@@ -349,7 +359,7 @@ public class XMLDocument {
 	}
 	
 	public Node findNode(String s) {
-		return findNode(root, s);
+		return findNode(root(), s);
 	}
 	
 	public Collection<ProcessingInstruction> getProcessingInstructions() {
@@ -386,41 +396,19 @@ public class XMLDocument {
 	 */
 	public void writeToFile(File outfile) throws ThinklabIOException {
 
-		/* 
-		 * if this looks like something I cut-and-pasted from a Java forum,
-		 * it's just because it is.
-		 */
-		System.setProperty(
-				DOMImplementationRegistry.PROPERTY, 
-				"org.apache.xerces.dom.DOMImplementationSourceImpl"); 
-
-		DOMImplementationRegistry registry = null; 
-		DOMImplementation domImpl = null;
+		Transformer transformer;
 		try {
-			
-			registry = DOMImplementationRegistry.newInstance();
-			domImpl = registry.getDOMImplementation("LS 3.0"); 
-			
+			transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			StreamResult result = new StreamResult(new StringWriter());
+			DOMSource source = new DOMSource(dom);
+			transformer.transform(source, result);
+			String xmlString = result.getWriter().toString();
+			OutputStream outputStream =  new FileOutputStream(outfile);
+			outputStream.write(xmlString.getBytes());
+			outputStream.close();
 		} catch (Exception e) {
 			throw new ThinklabIOException(e);
-		} 
-	
-		DOMImplementationLS implLS = (DOMImplementationLS)domImpl; 
-		LSSerializer dom3Writer = implLS.createLSSerializer(); 
-		
-		dom3Writer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE);
-		LSOutput output = implLS.createLSOutput(); 
-		
-		OutputStream outputStream = null; 
-		try {
-			outputStream = new FileOutputStream(outfile);
-		} catch (FileNotFoundException e) {
-			throw new ThinklabIOException(e);
-		} 
-		output.setByteStream(outputStream); 
-		output.setEncoding("UTF-8"); 
-		
-		dom3Writer.write(dom, output); 
+		}
 	}
-	 
 }

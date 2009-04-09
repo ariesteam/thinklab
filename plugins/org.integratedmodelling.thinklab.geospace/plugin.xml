@@ -2,7 +2,7 @@
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
 <plugin id="org.integratedmodelling.thinklab.geospace" version="0.8.0" class="org.integratedmodelling.geospace.Geospace">
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="true"/>
 		<import plugin-id="org.integratedmodelling.thinklab.opal"/>
 		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
 		<import plugin-id="org.integratedmodelling.thinklab.clojure"/>
@@ -166,6 +166,15 @@
 		<parameter id="option-long-names" value="profile"/>
 		<parameter id="option-types" value="thinklab-core:Text"/>
 		<parameter id="option-descriptions" value="OPAL profile"/>
+	</extension>
+	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="WCSToOpal">
+		<parameter id="class" value="org.integratedmodelling.geospace.commands.WCSToOPAL"/>
+		<parameter id="command-name" value="wcs2opal"/>
+		<parameter id="command-description" value="convert a WCS repository to OPAL annotations"/>
+		<parameter id="argument-names" value="server,output"/>
+		<parameter id="argument-types" value="thinklab-core:Text,thinklab-core:Text"/>
+		<parameter id="argument-descriptions" value="URL of wcs service,name of output file"/>
 	</extension>
 
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="rasterize">

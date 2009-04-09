@@ -60,15 +60,8 @@ public interface ICoverage {
 	 *        instead of a vector); otherwise we must stay our type, and throw an exception if impossible.
 	 * @return a new coverage or self. It should never return null.
 	 */
-	public abstract ICoverage requireMatch(ArealExtent arealExtent, boolean allowClassChange) throws ThinklabException;
-
-	/**
-	 * Return a coverage reprojected to the passed CRS, either self or another.
-	 * @param crs
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public VectorCoverage requireCRS(CoordinateReferenceSystem crs)  throws ThinklabException;
+	public abstract ICoverage requireMatch(ArealExtent arealExtent, boolean allowClassChange)
+		throws ThinklabException;
 	
 	/**
 	 * Write the coverage to a suitable GIS format, determined by the extension in the

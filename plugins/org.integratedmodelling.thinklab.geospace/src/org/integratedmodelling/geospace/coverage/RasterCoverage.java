@@ -6,7 +6,6 @@ import java.awt.image.WritableRaster;
 
 import javax.media.jai.InterpolationNearest;
 import javax.media.jai.RasterFactory;
-import javax.media.jai.iterator.RandomIter;
 import javax.media.jai.iterator.RandomIterFactory;
 
 import org.geotools.coverage.GridSampleDimension;
@@ -23,18 +22,16 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
-import org.opengis.geometry.BoundingBox;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 public class RasterCoverage extends AbstractRasterCoverage {
 
-	GridCoverage2D coverage = null;
-	private CoordinateReferenceSystem crs = null;
-	private BoundingBox boundingBox = null;
+//	GridCoverage2D coverage = null;
+//	private CoordinateReferenceSystem crs = null;
+//	private BoundingBox boundingBox = null;
 	private RenderedImage image = null;
-	private GridGeometry2D gridGeometry = null;
-	private GridSampleDimension dimension = null;
-	private String sourceURL;
+//	private GridGeometry2D gridGeometry = null;
+//	private GridSampleDimension dimension = null;
+//	private String sourceURL;
 
 	
 	static GridCoverageFactory rasterFactory = new GridCoverageFactory();
@@ -254,12 +251,6 @@ public class RasterCoverage extends AbstractRasterCoverage {
 		 * resamples our coverage into another that reflects our extent. 
 		 */
 		return new RasterCoverage(this, cext);
-	}
-
-	public VectorCoverage requireCRS(CoordinateReferenceSystem crs)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
