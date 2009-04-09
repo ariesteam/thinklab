@@ -1,14 +1,10 @@
 package org.integratedmodelling.geospace.gis;
 
-import org.geotools.feature.FeatureCollection;
+import org.integratedmodelling.geospace.coverage.AbstractRasterCoverage;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
-import org.integratedmodelling.geospace.exceptions.ThinklabVectorizationException;
 import org.integratedmodelling.geospace.extents.GridExtent;
-//import org.integratedmodelling.geospace.gis.Vectorizer.VectorizationException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 
 /**
  * A Thinklab-aware vectorizer that produces a Thinklab coverage and optionally, an observation
@@ -21,7 +17,7 @@ public class ThinklabVectorizer  {
 
 	RasterCoverage coverage = null;
 	
-	public VectorCoverage vectorize(RasterCoverage rCoverage, GridExtent extent)
+	public VectorCoverage vectorize(AbstractRasterCoverage rCoverage, GridExtent extent)
 			throws ThinklabException {
 
 //		FeatureCollection<SimpleFeatureType, SimpleFeature> ret = null;

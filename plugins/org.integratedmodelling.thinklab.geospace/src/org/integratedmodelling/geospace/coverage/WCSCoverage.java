@@ -1,97 +1,74 @@
 package org.integratedmodelling.geospace.coverage;
 
-import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Properties;
 
-import org.deegree.ogcwebservices.wcs.getcoverage.Output;
-import org.geotools.referencing.CRS;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.opengis.geometry.BoundingBox;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.utils.XMLDocument;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-public class WCSCoverage implements ICoverage {
+public class WCSCoverage extends AbstractRasterCoverage {
 
-	CoordinateReferenceSystem crs = null;
+	public static final String WCS_SERVICE_PROPERTY = "wcs.service.url";
 	
-	public WCSCoverage(Output output) throws ThinklabValidationException {
+	String wcsService = null;
+	
+	/**
+	 * This constructor reads the WCS coverage descriptor and initializes all fields from it. Data are
+	 * not loaded until loadData(), so the coverage is null.
+	 * 
+	 * @param url
+	 * @param properties should contain the URL of the WCS service; if null, geoserver on
+	 * localhost:8080 is used (not elegant, but OK for now).
+	 */
+	public WCSCoverage(String coverageID, Properties properties) throws ThinklabException {
+
+		wcsService = properties.getProperty(WCS_SERVICE_PROPERTY, "http://127.0.0.1:8080/geoserver/wcs");
+		
+		XMLDocument desc = new XMLDocument(buildDescribeUrl(coverageID));
+		parseDescriptor(desc);
+		
+	}
+	
+	/**
+	 * This constructor creates the coverage by reading the WCS coverage passed from the
+	 * associated WCS service, reading data only for the specified extent.
+	 * 
+	 * @param coverage
+	 * @param arealExtent
+	 */
+	public WCSCoverage(WCSCoverage coverage, ArealExtent extent) {
+		
+	}
+	
+	private void parseDescriptor(XMLDocument desc) {
+		
+		// TODO Auto-generated method stub
+		// we need at least: CRS, pixel size and bounding box
+		
+	}
+
+	private URL buildDescribeUrl(String coverageID) throws ThinklabInternalErrorException {
+
+		URL url = null;
 		try {
-			crs = CRS.decode(output.getCrs().getCode());
-		} catch (Exception e) {
-			throw new ThinklabValidationException(
-					"wcs coverage: reference system unknown: " + 
-					output.getCrs().getCode());
+			url = new URL(wcsService +
+					"?service=WCS&version=1.0.0&request=DescribeCoverage&identifiers=" +
+					coverageID);
+		} catch (MalformedURLException e) {
+			throw new ThinklabInternalErrorException(e);
 		}
-	}
-
-	@Override
-	public BoundingBox getBoundingBox() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public CoordinateReferenceSystem getCoordinateReferenceSystem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getCoordinateReferenceSystemCode() throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public double getLatLowerBound() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public double getLatUpperBound() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public String getLayerName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public double getLonLowerBound() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public double getLonUpperBound() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public String getSourceUrl() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object getSubdivisionValue(int subdivisionOrder,
-			IConceptualModel conceptualModel, ArealExtent extent)
-			throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return url;
 	}
 
 	@Override
 	public void loadData() {
-		// TODO read data from output
-
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -104,27 +81,9 @@ public class WCSCoverage implements ICoverage {
 	@Override
 	public ICoverage requireMatch(ArealExtent arealExtent,
 			boolean allowClassChange) throws ThinklabException {
-		// TODO return a new coverage from service to reflect new extent
+		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public void show() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write(File f) throws ThinklabException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void writeImage(File outfile, String format)
-			throws ThinklabIOException {
-		// TODO Auto-generated method stub
-
-	}
 
 }

@@ -292,16 +292,16 @@ public class CoverageFactory {
 			 * we don't read coverages from web-based files; interpret as
 			 * a WCS call
 			 */
-            GetCoverage req = null;
-			try {
-				req = GetCoverage.create(
-						NameGenerator.newName("WCS"), 
-						url.toString());
-			} catch (Exception e) {
-				throw new ThinklabIOException("can't access WCS service for " + url);		
-			}
-			
-			ret = new WCSCoverage(req.getOutput());
+//            GetCoverage req = null;
+//			try {
+//				req = GetCoverage.create(
+//						NameGenerator.newName("WCS"), 
+//						url.toString());
+//			} catch (Exception e) {
+//				throw new ThinklabIOException("can't access WCS service for " + url);		
+//			}
+//			
+//			ret = new WCSCoverage(req.getOutput());
 //            if ( !req.getOutput().getFormat().getCode().equals("image/tiff") ) {
 //            }
 //            if ( !req.getDomainSubset().getRequestSRS().getCode().equals("EPSG:4326") ) {

@@ -109,18 +109,8 @@ public class OPALValidator {
 	
 	private Node openOPALDocument(URL opalDocument) throws ThinklabException {
 		
-		XMLDocument xdoc = null;
+		XMLDocument xdoc = new XMLDocument(opalDocument);
 		reftable.clear();
-
-		try {
-			xdoc = new XMLDocument(opalDocument);
-		} catch (SAXException e) {
-			throw new OPALValidationException("malformed OPAL document: " + opalDocument);
-		} catch (IOException e) {
-			throw new ThinklabIOException(e);
-		}
-		
-		
 		Element root = xdoc.root();
 		rootPrefix = root.getPrefix();
 		

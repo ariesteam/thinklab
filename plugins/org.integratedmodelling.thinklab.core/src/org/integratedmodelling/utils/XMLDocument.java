@@ -103,6 +103,10 @@ public class XMLDocument {
 		createFromFile(f,null);
 	}
 	
+	public XMLDocument(URL f) throws ThinklabIOException {
+		createFromUrl(f);
+	}
+	
 	public XMLDocument(File f, String namespace) throws ThinklabIOException {
 		createFromFile(f, namespace);
 	}
@@ -134,6 +138,34 @@ public class XMLDocument {
 		}
 	}
 	
+	private void createFromUrl(URL url) throws ThinklabIOException {
+
+		InputStream is = null;
+		try {
+			is = url.openStream();
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}
+		createFromInputStream(is);
+		
+		try {
+			is.close();
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}
+	}
+	
+	private void createFromInputStream(InputStream is) throws ThinklabIOException {
+		
+		parser = new DOMParser();
+		try {
+			parser.setFeature("http://xml.org/sax/features/namespaces", true);
+			parser.parse(new InputSource(is));	
+		} catch (Exception e) {
+			throw new ThinklabIOException(e);
+		}
+		dom = parser.getDocument();
+	}
 	
 	private void createFromFile(File f, String namespace) throws ThinklabIOException {
 		
@@ -163,14 +195,13 @@ public class XMLDocument {
 				throw new ThinklabIOException(e);
 			}
 			
-			parser = new DOMParser();
+			createFromInputStream(is);
+			
 			try {
-				parser.setFeature("http://xml.org/sax/features/namespaces", true);
-				parser.parse(new InputSource(is));	
-			} catch (Exception e) {
+				is.close();
+			} catch (IOException e) {
 				throw new ThinklabIOException(e);
 			}
-			dom = parser.getDocument();
 		}
 	}
 	
@@ -179,13 +210,13 @@ public class XMLDocument {
 			flush();
 	}
 	
-	public XMLDocument(URL u) throws SAXException, IOException {
-		
-		parser = new DOMParser();
-		parser.setFeature("http://xml.org/sax/features/namespaces", true);
-		parser.parse(u.toString());
-		dom = parser.getDocument();
-	}
+//	public XMLDocument(URL u) throws SAXException, IOException {
+//		
+//		parser = new DOMParser();
+//		parser.setFeature("http://xml.org/sax/features/namespaces", true);
+//		parser.parse(u.toString());
+//		dom = parser.getDocument();
+//	}
 	
 	public XMLDocument(InputStream is) throws SAXException, IOException {
 		parser = new DOMParser();
@@ -301,6 +332,24 @@ public class XMLDocument {
 				break;
 			}
 		return ret;
+	}
+	
+	public static Node findNode(Node node, String string) {
+		
+		Node ret = null;
+		if (node.getNodeName().equals(string))
+			return node;
+		
+		for (Node n = node.getFirstChild(); n != null; n = n.getNextSibling())
+			if ((ret = findNode(n, string)) != null) {
+				return ret;
+			}
+		
+		return null;
+	}
+	
+	public Node findNode(String s) {
+		return findNode(root, s);
 	}
 	
 	public Collection<ProcessingInstruction> getProcessingInstructions() {
