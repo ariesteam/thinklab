@@ -1,20 +1,64 @@
+/**
+ * WCSCoverage.java
+ * ----------------------------------------------------------------------------------
+ * 
+ * Copyright (C) 2009 www.integratedmodelling.org
+ * Created: Apr 9, 2009
+ *
+ * ----------------------------------------------------------------------------------
+ * This file is part of thinklab.
+ * 
+ * thinklab is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Thinklab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with the software; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ * ----------------------------------------------------------------------------------
+ * 
+ * @copyright 2009 www.integratedmodelling.org
+ * @author    Ferdinando Villa (fvilla@uvm.edu)
+ * @date      Apr 9, 2009
+ * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
+ * @link      http://www.integratedmodelling.org
+ **/
 package org.integratedmodelling.geospace.coverage;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
+import javax.media.jai.iterator.RandomIterFactory;
+
 import org.geotools.coverage.grid.GeneralGridEnvelope;
+import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.data.DataSourceException;
+import org.geotools.factory.Hints;
+import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
+import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.XMLDocument;
 import org.w3c.dom.Node;
 
@@ -163,18 +207,54 @@ public class WCSCoverage extends AbstractRasterCoverage {
 
 		  this.gridGeometry = 
 				new GridGeometry2D(
-					new GeneralGridEnvelope( new int[] {sx1,sy1}, new int[] {sx2, sy2}, false), 
+					new GeneralGridEnvelope( new int[] {sx1, sy1}, new int[] {sx2, sy2}, false), 
 					boundingBox);
 
 	}
 
-	private URL buildDescribeUrl(String coverageID) throws ThinklabInternalErrorException {
+	private URL buildDescribeUrl(String coverageId) throws ThinklabInternalErrorException {
 
 		URL url = null;
 		try {
 			url = new URL(wcsService +
 					"?service=WCS&version=1.0.0&request=DescribeCoverage&coverage=" +
-					coverageID);
+					coverageId);
+		} catch (MalformedURLException e) {
+			throw new ThinklabInternalErrorException(e);
+		}
+		
+		return url;
+	}
+	
+	private URL buildRetrieveUrl(GridExtent extent) throws ThinklabException {
+		
+		URL url = null;
+		String rcrs = Geospace.getCRSIdentifier(extent.getCRS(), false);
+		
+		String s = 
+			wcsService + 
+			"?service=WCS&version=1.0.0&request=GetCoverage&coverage=" +
+			layerName +
+			"&bbox=" + 
+			extent.getEast() +
+			"," +
+			extent.getSouth() +
+			"," +
+			extent.getWest() +
+			"," +
+			extent.getNorth() +
+			"&crs=" + 
+			rcrs +
+			"&responseCRS=" +
+			rcrs +
+			"&width=" +
+			extent.getXCells() +
+			"&height=" +
+			extent.getYCells() +
+			"&format=geotiff";
+		
+		try {
+			url = new URL(s);
 		} catch (MalformedURLException e) {
 			throw new ThinklabInternalErrorException(e);
 		}
@@ -183,36 +263,77 @@ public class WCSCoverage extends AbstractRasterCoverage {
 	}
 
 	@Override
-	public void loadData() {
+	public void loadData() throws ThinklabException {
+		
+		checkCoverage();
 
+		/*
+		 * get rid of old image if we had one
+		 */
+		if (image != null) {
+			image = null;
+		}
+		
+		image = coverage.getRenderedImage();
+		itera = RandomIterFactory.create(image, null);
+		
+
+	}
+
+	private void checkCoverage() throws ThinklabException {
+		
 		if (coverage == null) {
-			
 			/*
-			 * place call to read data from WCS and read coverage
+			 * TODO we should read it as is, but typically we don't care for downloading a gigabyte
+			 * from the net, so the case with coverage == null is normally an error - no specification
+			 * of a subrange has been asked. For now let's just throw an error.
 			 */
+			throw new ThinklabInappropriateOperationException(
+					"WCS coverage " + layerName + " being read in its entirety without subsetting: " +
+					"this is most likely an error causing extremely long download times.");
 		}
 	}
-
-
+	
 	@Override
-	public ICoverage requireMatch(ArealExtent arealExtent,
-			boolean allowClassChange) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static void main(String args[]) {
+	public ICoverage requireMatch(ArealExtent arealExtent, boolean allowClassChange) throws ThinklabException {
+		
+		if (! (arealExtent instanceof GridExtent))
+			throw new ThinklabValidationException("coverage can only be reprojected on a grid extent for now");
+		
+		URL getCov = buildRetrieveUrl((GridExtent) arealExtent);
 		
 		try {
 			
-			WCSCoverage cov = new WCSCoverage("puget:NCLD_King", null);
+			File f = File.createTempFile("geo", ".tiff");
+			CopyURL.copy(getCov, f);
+			getCov = f.toURI().toURL();
+			GeoTiffReader reader = new GeoTiffReader(getCov, 
+					new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));	
+			this.coverage = (GridCoverage2D)reader.read(null);	
 			
-			
-		} catch (ThinklabException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
 		}
+
+		setExtent((GridExtent) arealExtent);
 		
+		return this;
+	}
+
+
+	private void setExtent(GridExtent e) {
+
+		  this.xCellSize = e.getEWResolution();
+		  this.xCellSize = e.getNSResolution();
+			
+		  this.boundingBox = e.getEnvelope();
+
+		  this.gridGeometry = 
+				new GridGeometry2D(
+					new GeneralGridEnvelope( 
+							new int[] {e.getXMinCell(), e.getYMinCell()}, 
+							new int[] {e.getXMaxCell(), e.getYMaxCell()}, false), 
+					boundingBox);
 	}
 
 	/**

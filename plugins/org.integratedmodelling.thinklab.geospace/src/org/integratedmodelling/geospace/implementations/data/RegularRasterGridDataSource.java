@@ -64,7 +64,7 @@ public class RegularRasterGridDataSource
 	 */
 	private IConceptualModel dataCM = null;
 	
-	private ICoverage coverage = null;
+	protected ICoverage coverage = null;
 
 	/* same here - these are overall extents that we need to conform to */
 	private GridExtent gridExtent;

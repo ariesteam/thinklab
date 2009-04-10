@@ -25,22 +25,7 @@ import org.integratedmodelling.utils.Pair;
 
 public class RasterCoverage extends AbstractRasterCoverage {
 
-//	GridCoverage2D coverage = null;
-//	private CoordinateReferenceSystem crs = null;
-//	private BoundingBox boundingBox = null;
-	private RenderedImage image = null;
-//	private GridGeometry2D gridGeometry = null;
-//	private GridSampleDimension dimension = null;
-//	private String sourceURL;
-
-	
 	static GridCoverageFactory rasterFactory = new GridCoverageFactory();
-	
-//    private static int floatBitsToInt(float f) {
-//        ByteBuffer conv = ByteBuffer.allocate(4);
-//        conv.putFloat(0, f);
-//        return conv.getInt(0);
-//    }
 	
 	/**
 	 * Produce a new raster coverage from a cell extent and a vector of values that follow the
@@ -214,11 +199,10 @@ public class RasterCoverage extends AbstractRasterCoverage {
 				coverage.getEnvelope2D().getMaxY(), crs);
 
 		coverage.show();
-
 	}
 
-	
-	public void loadData() {
+	@Override
+	public void loadData() throws ThinklabException {
 		
 		/*
 		 * get rid of old image if we had one

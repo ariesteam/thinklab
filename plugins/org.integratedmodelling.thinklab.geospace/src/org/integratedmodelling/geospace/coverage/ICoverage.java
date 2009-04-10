@@ -74,7 +74,8 @@ public interface ICoverage {
 	
 	/**
 	 * No need to load any files until this is called.
+	 * @throws ThinklabException 
 	 */
-	void loadData();
+	void loadData() throws ThinklabException;
 
 }

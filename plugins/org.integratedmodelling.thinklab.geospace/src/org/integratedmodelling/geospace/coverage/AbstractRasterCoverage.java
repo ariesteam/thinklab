@@ -1,5 +1,6 @@
 package org.integratedmodelling.geospace.coverage;
 
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -38,6 +39,7 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	protected double xCellSize;
 	protected double yCellSize;
 	protected RandomIter itera;
+	protected RenderedImage image = null;
 	
 	static GridCoverageFactory rasterFactory = new GridCoverageFactory();
 	
