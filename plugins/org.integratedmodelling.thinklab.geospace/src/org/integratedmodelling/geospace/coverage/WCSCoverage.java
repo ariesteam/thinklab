@@ -236,11 +236,11 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			"?service=WCS&version=1.0.0&request=GetCoverage&coverage=" +
 			layerName +
 			"&bbox=" + 
-			extent.getEast() +
+			extent.getWest() +
 			"," +
 			extent.getSouth() +
 			"," +
-			extent.getWest() +
+			extent.getEast() +
 			"," +
 			extent.getNorth() +
 			"&crs=" + 

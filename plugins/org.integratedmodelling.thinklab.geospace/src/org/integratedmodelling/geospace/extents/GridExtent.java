@@ -84,6 +84,11 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 		
 		super(cm, crs, new Envelope(x1,x2,y1,y2));
 		
+		if ((x1 + 122.0) < 2.0 && (x1 + 122.0) > -2.0) {
+			System.out.println("do nothing");
+		}
+			
+		
 		this.xOrigin = x1;
 		this.yOrigin = y1;
 
