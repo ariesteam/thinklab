@@ -9,21 +9,25 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
+/**
+ * All that is required from an identification is to build a dependency structure. Its state
+ * may be an instance (same as its observable).
+ * 
+ * @author Ferdinando Villa
+ *
+ */
 public class ObservationModel extends DefaultAbstractModel {
 
 	@Override
 	protected void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		
+		/*
+		 * TODO a fairly sophisticated mediation may actually take place - a real semantic
+		 * mediation of observables - but that's for another stage.
+		 */
+		throw new ThinklabValidationException("no mediation is allowed in identifications");
 	}
 
-	@Override
-	protected Object validateState(Object state)
-			throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public IInstance buildObservation(IKBox kbox, ISession session)
@@ -38,5 +42,14 @@ public class ObservationModel extends DefaultAbstractModel {
 		return null;
 	}
 
+	@Override
+	public IModel getConfigurableClone() {
+		// TODO configure it (observable etc)
+		ObservationModel ret = new ObservationModel();
+		ret.copy(this);
+		return ret;
+	}
+
+	
 
 }

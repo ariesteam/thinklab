@@ -1,6 +1,6 @@
 package org.integratedmodelling.modelling.corescience;
 
-import org.integratedmodelling.modelling.DefaultAbstractModel;
+import org.integratedmodelling.modelling.DefaultStatefulAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -9,7 +9,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
-public class ClassificationModel extends DefaultAbstractModel {
+public class ClassificationModel extends DefaultStatefulAbstractModel {
 
 	@Override
 	public void validateMediatedModel(IModel model) throws ThinklabValidationException {
@@ -26,7 +26,6 @@ public class ClassificationModel extends DefaultAbstractModel {
 	public void addClassifier(Object classifier, Object concept) {
 
 		System.out.println("got classifier " + classifier.getClass() + ": " + classifier + " for " + concept);
-			
 	}
 	
 	
@@ -48,6 +47,15 @@ public class ClassificationModel extends DefaultAbstractModel {
 			throws ThinklabValidationException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public IModel getConfigurableClone() {
+
+		ClassificationModel ret = new ClassificationModel();
+		ret.copy(this);
+		// TODO add class specs
+		return ret;
 	}
 
 }

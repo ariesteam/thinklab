@@ -42,7 +42,6 @@ public interface IModel {
 	public abstract IInstance buildObservation(IKBox kbox, ISession session)
 			throws ThinklabException;
 
-	
 	/**
 	 * Return the base observable concept
 	 * 
@@ -69,13 +68,20 @@ public interface IModel {
 	 */
 	public abstract boolean isResolved();
 
-
 	/**
-	 * Called when parsing the specs if a :state clause is present
+	 * Called by defmodel with any keyword parameters added after the model. Will set
+	 * properties such as :as, :when etc.
 	 * 
-	 * @param object
-	 * @throws ThinklabValidationException
+	 * @param keyword
+	 * @param argument
+	 * @throws ThinklabException 
 	 */
-	public abstract void setState(Object object) throws ThinklabValidationException;
+	public abstract void applyClause(String keyword, Object argument) throws ThinklabException;
+	
+	/**
+	 * When models are postfixed with modifier clauses, we want to 
+	 * @return
+	 */
+	public abstract IModel getConfigurableClone();
 	
 }

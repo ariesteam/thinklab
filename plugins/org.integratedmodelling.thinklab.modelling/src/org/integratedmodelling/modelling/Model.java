@@ -12,6 +12,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -31,9 +32,11 @@ import org.integratedmodelling.utils.Polylist;
  * The run() method will build and contextualize the model, returning a new 
  * observation of the models' contextualized states.
  * 
+ * A Model won't receive any clauses, because the copy-on-write pattern built into 
+ * defmodel will create a ProxyModel whenever clauses are specified. 
+ * 
  * @author Ferdinando Villa
  * @date Jan 25th, 2008.
- * 
  */
 public class Model implements IModel {
 
@@ -55,8 +58,6 @@ public class Model implements IModel {
 	Object state = null;
 	
 	public void setObservable(Object observableOrModel) throws ThinklabException {
-		
-		System.out.println("model: got observable " + observableOrModel.getClass() + ": " + observableOrModel);
 		
 		if (observableOrModel instanceof IConcept) {
 			this.observable = (IConcept) observableOrModel;
@@ -112,34 +113,28 @@ public class Model implements IModel {
 		description = s;
 	}
 
-	public void addContingency(IModel m, Collection<Object> auxInfo) {
+	public void addContingency(IModel m) {
 		
 		if (context == null)
 			context = new ArrayList<IModel>();
 		context.add(m);
 	}
-	
-	/*
-	 * Build a main observation using all the observables that we depend on and
-	 * can be found in the passed kbox, contextualize it, and add any further
-	 * dependencies that come from the types referred to. Each context state of
-	 * this observation will determine the model to be built.
-	 */
-	private IInstance buildContingencyStructure(IKBox kbox, ISession session) throws ThinklabException {
-		return null;
-	}
 
+	
 	/**
 	 * Can be called once or more; models passed may have a list of aux info
 	 * attached, which contains keywords and their values. If their values
 	 * are lists, they will be polylists. KW can be :as, :if, :otherwise, :parameter
 	 * etc.
 	 */
-	public void defModel(IModel model, Collection<?> aux) {
+	public void defModel(IModel model) {
+		
 		System.out.println("setting unconditional " + model);
 		if (models == null) {
 			models = new ArrayList<IModel>();
 		}
+
+		
 		models.add(model);
 	}
 	
@@ -212,15 +207,22 @@ public class Model implements IModel {
 
 		return ret;
 	}
-
-	@Override
-	public void setState(Object object) throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	public String toString() {
 		return "[" + getObservable() + "->" + getCompatibleObservationType(null)+"]";
+	}
+
+
+	@Override
+	public void applyClause(String keyword, Object argument) throws ThinklabException {
+		throw new ThinklabInternalErrorException("internal error: a Model should only be configured through a proxy");
+	}
+
+
+	@Override
+	public IModel getConfigurableClone() {
+		// TODO Auto-generated method stub
+		return new ModelProxy(this);
 	}
 
 }

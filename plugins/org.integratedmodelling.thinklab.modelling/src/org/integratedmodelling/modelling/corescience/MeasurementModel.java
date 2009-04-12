@@ -1,14 +1,10 @@
 package org.integratedmodelling.modelling.corescience;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.modelling.DefaultAbstractModel;
+import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
 import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.interfaces.IModel;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -16,33 +12,10 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
-public class MeasurementModel extends DefaultAbstractModel {
+public class MeasurementModel extends DefaultDynamicAbstractModel {
 
-	IModel mediated = null;
 	String unitSpecs = null;
-	IConcept observable = null;
-	Polylist observableSpecs = null;
 	
-	public void setObservable(Object observableOrModel) throws ThinklabException {
-		
-		if (observableOrModel instanceof IModel) {
-			/*
-			 * TODO check that it's a Measurement too
-			 */
-			this.mediated = (IModel) observableOrModel;
-			this.observable = ((IModel)observableOrModel).getObservable();
-			
-			validateMediatedModel(this.mediated);
-			
-		} else if (observableOrModel instanceof IConcept) {
-			this.observable = (IConcept) observableOrModel;
-		} else if (observableOrModel instanceof Polylist) {
-			
-		} else {			
-			this.observable = KnowledgeManager.get().requireConcept(observableOrModel.toString());
-		}
-		
-	}
 	
 	public void setUnits(Object unitSpecs) {
 		this.unitSpecs = unitSpecs.toString();
@@ -108,4 +81,15 @@ public class MeasurementModel extends DefaultAbstractModel {
 		return state instanceof Double ? state : Double.parseDouble(state.toString());
 	}
 
+	@Override
+	public IModel getConfigurableClone() {
+		// TODO Auto-generated method stub
+		MeasurementModel ret = new MeasurementModel();
+		ret.copy(this);
+		ret.unitSpecs = unitSpecs;
+		return ret;
+	}
+
+
+	
 }

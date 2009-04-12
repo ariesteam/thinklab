@@ -5,14 +5,16 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.Polylist;
 
 public abstract class DefaultAbstractModel implements IModel {
 
-	IModel mediated = null;
-	IConcept observable = null;
-	Polylist observableSpecs = null;
-	Object state = null;
+	protected IModel mediated = null;
+	protected IConcept observable = null;
+	protected Polylist observableSpecs = null;
+	protected Object state = null;
+	protected String id = null;
 	
 	public void setObservable(Object observableOrModel) throws ThinklabException {
 		
@@ -30,20 +32,54 @@ public abstract class DefaultAbstractModel implements IModel {
 			this.observable = KnowledgeManager.get().requireConcept(observableOrModel.toString());
 		}
 		
+		id = CamelCase.toLowerCase(observable.toString(), '-');
 	}
+	
 	
 	@Override
-	public void setState(Object object) throws ThinklabValidationException {
+	public void applyClause(String keyword, Object argument) throws ThinklabException {
 		
-		/**
-		 * TODO this only validates ATOMIC states; this one should recognize computed 
-		 * states, vectors, sets as well, and call validateState repeatedly as necessary.
-		 */
+		System.out.println(this + "processing clause " + keyword + " -> " + argument);
 		
-		state = validateState(state);
+		if (keyword.equals(":context")) {
+			
+		} else if (keyword.equals(":as")) {
+			
+			setLocalId(argument.toString());
+			
+		} else if (keyword.equals(":when")) {
+			
+		}
 	}
 	
-	protected abstract Object validateState(Object state) throws ThinklabValidationException;
+	/**
+	 * This is called for each model defined for us in a :context clause, after the dependent has been
+	 * completely specified.
+	 * 
+	 * @param model
+	 */
+	public void addDependentModel(IModel model) {
+		
+	}
+
+	/**
+	 * This handles the :when condition if any is given for us in defmodel.
+	 * 
+	 * @param condition
+	 */
+	public void addConditionalClause(Polylist condition) {
+		
+	}
+	
+	/**
+	 * This handles the :as clause. If we don't have one, our id is the de-camelized name of
+	 * our observable class.
+	 * 
+	 * @param id
+	 */
+	public void setLocalId(String id) {
+		this.id = id;
+	}
 	
 	protected abstract void validateMediatedModel(IModel model) throws ThinklabValidationException;
 	
@@ -56,6 +92,16 @@ public abstract class DefaultAbstractModel implements IModel {
 	@Override
 	public boolean isResolved() {
 		return state != null || mediated != null;
+	}
+	
+	/*
+	 * Copy the relevant fields when a clone is created before configuration
+	 */
+	protected void copy(DefaultAbstractModel model) {
+		id = model.id;
+		mediated = model.mediated;
+		observable = model.observable;
+		observableSpecs = model.observableSpecs;
 	}
 
 }

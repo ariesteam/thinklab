@@ -1,6 +1,6 @@
 package org.integratedmodelling.modelling.corescience;
 
-import org.integratedmodelling.modelling.DefaultAbstractModel;
+import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -9,7 +9,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
-public class CountModel extends DefaultAbstractModel {
+public class CountModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	protected void validateMediatedModel(IModel model)
@@ -36,6 +36,12 @@ public class CountModel extends DefaultAbstractModel {
 	public IConcept getCompatibleObservationType(ISession session) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public IModel getConfigurableClone() {
+		// TODO configure it
+		return new CountModel();
 	}
 
 }

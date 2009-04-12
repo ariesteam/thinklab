@@ -67,7 +67,7 @@
   [pred coll filler]
   (cond 
   	(empty? coll)   coll
-		(empty? (rest coll)) (list (first coll) filler)
+		(empty? (rest coll)) (list (list (first coll) filler))
 		:otherwise 
 			(if (pred (second coll))
 		     (lazy-cons 
@@ -99,17 +99,6 @@
 	polylists."
 	[coll]
 	(map #(if (seq? %) (tl/listp %) %) coll))
-	
-(defn map-keywords
-	"Take a list of keyword, value pairs and return a list of (kw value) pairs with 
-	 with values substituted by the result of the function indexed by the same kw in the 
-	 passed map."
-	 [coll fmap]
-	 (map 
-				#(list 
-						(first %)
-						((if (contains? fmap (first %)) (get fmap (first %)) identity) (second %)))
-	 			(partition 2 coll)))
 
 (defn unquote-if-quoted 
 	"If the argument is a list starting with quote, return the unquoted argument, otherwise return
