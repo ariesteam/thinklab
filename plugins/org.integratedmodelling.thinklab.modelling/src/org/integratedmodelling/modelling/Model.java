@@ -2,24 +2,19 @@ package org.integratedmodelling.modelling;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.Obs;
-import org.integratedmodelling.corescience.contextualization.Compiler;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.modelling.interfaces.IModel;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.kbox.RankingKBox;
 import org.integratedmodelling.utils.Polylist;
 
 /**
@@ -38,55 +33,111 @@ import org.integratedmodelling.utils.Polylist;
  * @author Ferdinando Villa
  * @date Jan 25th, 2008.
  */
-public class Model implements IModel {
+public class Model extends DefaultAbstractModel {
 
 	ArrayList<IModel> models = null;
 	Collection<IModel> context = null;
 	Collection<String> contextIds = null;
 	IKBox contKbox = null;
 	String description = null;
+	IObservation contingencyModel = null;
 	
-	public class Dependency {
-		IModel model;
-		Polylist clause = null;
-		String id = null;
-		Object parameterValue = null;
+	
+	/**
+	 * Stores state and variable info related to the specific contingency for which we're building
+	 * a model. Each state of the contingency model corresponds to one of these, returned by the
+	 * contingency iterator. Just a stub class for now.
+	 * 
+	 * @author Ferdinando
+	 *
+	 */
+	public class Contingency {
+		
+	}
+	
+	public class LinkedModel {
+		
+	}
+	
+	/**
+	 * Iterates the states of the contingency observation - which may be simply the 
+	 * identification of the model if no contingency model is seen across the hierarchy.
+	 * 
+	 * @author Ferdinando
+	 *
+	 */
+	public class ContingencyIterator implements Iterator<Contingency> {
+
+		int cState = 0;
+		int nStates = 1;
+		IObservation contingencyModel = null;
+		
+		/*
+		 * pass null if no contingency model exists
+		 */
+		public ContingencyIterator(IObservation contingencyModel) {
+		}
+		
+		@Override
+		public boolean hasNext() {
+			// TODO Auto-generated method stub
+			return cState < nStates;
+		}
+
+		@Override
+		public Contingency next() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void remove() {
+			// TODO Auto-generated method stub
+		}
 	}
 	
 	IConcept observable = null;
 	Polylist observableSpecs = null;
 	Object state = null;
+	private boolean contingencyModelBuilt;
 	
-	public void setObservable(Object observableOrModel) throws ThinklabException {
-		
-		if (observableOrModel instanceof IConcept) {
-			this.observable = (IConcept) observableOrModel;
-		} else if (observableOrModel instanceof Polylist) {
-			this.observableSpecs = (Polylist)observableOrModel;
-			this.observable = KnowledgeManager.get().requireConcept(this.observableSpecs.first().toString());
-		} else {
-			this.observable = KnowledgeManager.get().requireConcept(observableOrModel.toString());
+	protected ContingencyIterator getContingencyIterator(ISession session, IKBox contingencyKbox) {
+
+		if (!contingencyModelBuilt) {
+			buildContingencyModel(session);
 		}
+		return new ContingencyIterator(contingencyModel);
 	}
 	
-	
+	private void buildContingencyModel(ISession session) {
+		
+		/*
+		 * TODO build the contingency model. For now this only passes a null, resulting
+		 * in one contingency state.
+		 */
+		
+		contingencyModelBuilt = true;
+	}
+
 	/**
 	 * Run the model in the given session, using the passed kboxes and topology if
-	 * any.
+	 * any. It just builds the instance of an observation for the given concept, but
+	 * it is left to the user to contextualize it to obtain states.
 	 * 
 	 * @param session where we create the whole thing
 	 * @param params may contain one kbox (used for both context and deps), two
 	 * 	kboxes (used for context and deps respectively) and/or a topology (observation
 	 *  context) used to define the overall topology for the context.
 	 *   
-	 * @return
+	 * @return the uncontextualized observation representing the model.
+	 * 
 	 * @throws ThinklabException
 	 */
 	public IInstance run(ISession session, Collection<Object> params) throws ThinklabException {
 		
 		IKBox contKbox = null;
 		IKBox depsKbox = null;
-		IObservationContext topology = null;
+		Constraint contextQuery = null;
 		
 		if (params != null)
 			for (Object o : params) {
@@ -95,20 +146,96 @@ public class Model implements IModel {
 						contKbox = (IKBox) o;
 					else 
 						depsKbox = (IKBox) o;
-				} else if (o instanceof IObservationContext) {
-					topology = (IObservationContext) o;
+				} else if (o instanceof IInstance) {
+					contextQuery = null; // TODO turn the ctx of the instance into a query
 				}
 			}
-		
-		IInstance ret = null;
-		// FIXME must use both kboxes and the topology
-		IInstance model = buildObservation(contKbox, session);
-		if (model != null) {
-			ret = Compiler.contextualize(Obs.getObservation(model), session);
+
+		if (contextQuery != null) {
+			// TODO filter kboxes or pass query downstream
 		}
-		return ret;
+		
+		return session.createObject(buildObservation(session, contKbox, depsKbox));
+
 	}
 	
+	private Polylist buildObservation(ISession session, IKBox contKbox, IKBox depsKbox) 
+		throws ThinklabException {
+	
+		
+		Polylist ret = null;
+		ArrayList<Polylist> cmodels = new ArrayList<Polylist>();
+		
+		for (ContingencyIterator it = getContingencyIterator(session, contKbox); it.hasNext(); ) {
+			
+			Contingency contingency = it.next();
+			LinkedModel context = linkDependencies(contingency, depsKbox);
+			
+			// TODO this should take no argument or a substitution observation if the obs is unresoslved.
+			cmodels.add(buildObservation(context));
+		}
+		
+		if (cmodels.size() == 1)
+			ret = cmodels.get(0);
+		else {
+
+			/*
+			 * TODO create a spec for a main obs with all contingencies linked
+			 */
+		}
+		
+		return ret;
+		
+	}
+
+	private Polylist buildObservation(LinkedModel context) {
+		
+		/*
+		 * 1. 
+		 * 
+		 * 2. build specs for the chosen obs for our observable
+		 * 
+		 * 3. for all dependent observables, add the chosen obs;
+		 * 
+		 * 4. add the mediated obs if any;
+		 * 
+		 * 5. for each transformer, wrap current result as its dependency (ret = transform(ret)).
+		 */
+		
+		return null;
+	}
+	
+	/**
+	 * Produce a map of observable -> model/observation handling linkage of models to observables
+	 * using the passed kbox. If unlinked observables exist or linkage is ambiguous, throw an exception.
+	 * 
+	 * This should configure and run the RETE engine if any when clauses exist. As such, it's not
+	 * necessarily a simple function.
+	 * 
+	 * @param contingency
+	 * @param depsKbox
+	 * @return
+	 */
+	private LinkedModel linkDependencies(Contingency contingency, IKBox depsKbox) throws ThinklabException {
+
+		/*
+		 * scan context; for all unresolved ones, lookup an appropriate obs - meaning
+		 * we need to pass the context here, too, as a query built from another obs most
+		 * likely. If any remain unresolved (and have no :ask clause which we will 
+		 * implement later) throw an exception. If the one being built is a Model, we
+		 * must choose among its definitions according to the context, not use the model
+		 * itself.
+		 */
+		
+		LinkedModel ret = new LinkedModel();
+		
+		/*
+		 * TODO
+		 */
+		
+		return ret;
+	}
+
 	public void setDescription(String s) {
 		description = s;
 	}
@@ -119,13 +246,11 @@ public class Model implements IModel {
 			context = new ArrayList<IModel>();
 		context.add(m);
 	}
-
 	
 	/**
-	 * Can be called once or more; models passed may have a list of aux info
-	 * attached, which contains keywords and their values. If their values
-	 * are lists, they will be polylists. KW can be :as, :if, :otherwise, :parameter
-	 * etc.
+	 * Can be called once or more; models are passed after being configured with their
+	 * clauses. If more than one model get here, they must be "disjoint" i.e. have mutually
+	 * exclusive :when clauses with only one possible "default" one without.
 	 */
 	public void defModel(IModel model) {
 		
@@ -137,30 +262,6 @@ public class Model implements IModel {
 		
 		models.add(model);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.integratedmodelling.modelling.IModel#buildObservation(org.
-	 * integratedmodelling.thinklab.interfaces.storage.IKBox,
-	 * org.integratedmodelling.thinklab.interfaces.applications.ISession)
-	 */
-	public IInstance buildObservation(IKBox kbox, ISession session)
-			throws ThinklabException {
-
-		IInstance ret = null;
-		
-		if (models.size() == 1) {
-			ret = models.get(0).buildObservation(kbox, session);
-		}
-		
-		return ret;
-	}
-
-	@Override
-	public IConcept getObservable() {
-		return observable;
-	}
 
 	@Override
 	public IConcept getCompatibleObservationType(ISession session) {
@@ -169,43 +270,8 @@ public class Model implements IModel {
 
 	@Override
 	public boolean isResolved() {
+		// TODO this depends
 		return true;
-	}
-
-	/**
-	 * Utility: find a unambiguous instance in a kbox that represents the passed
-	 * observable, and make sure it is an observation of the given type before
-	 * returning it.
-	 * 
-	 * @param observable
-	 * @param kbox
-	 * @param requiredObsType
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public static IInstance resolveObservable(IConcept observable, IKBox kbox,
-			IConcept requiredObsType, ISession session)
-			throws ThinklabException {
-
-		IInstance ret = null;
-
-		Constraint c = new Constraint(requiredObsType)
-				.restrict(new Restriction(CoreScience.HAS_OBSERVABLE,
-						new Constraint(observable)));
-
-		IQueryResult res = kbox.query(c);
-
-		if (res.getTotalResultCount() > 0) {
-
-			if (res.getTotalResultCount() > 1 && !(kbox instanceof RankingKBox))
-				throw new ThinklabValidationException(
-						"ambiguous results resolving observation of "
-								+ observable + " in kbox " + kbox);
-
-			ret = res.getResult(0, session).asObjectReference().getObject();
-		}
-
-		return ret;
 	}
 	
 	public String toString() {
@@ -221,8 +287,26 @@ public class Model implements IModel {
 
 	@Override
 	public IModel getConfigurableClone() {
-		// TODO Auto-generated method stub
+		/*
+		 * Skip copying
+		 */
 		return new ModelProxy(this);
+	}
+
+	@Override
+	protected void validateMediatedModel(IModel model)
+			throws ThinklabValidationException {
+		throw new ThinklabValidationException("model " + id + " cannot mediate another model");
+	}
+
+	@Override
+	public Polylist buildDefinition() throws ThinklabException {
+		
+		/*
+		 * we should build the definition of the chosen def'd models, not on the defmodel
+		 * result itself.
+		 */
+		throw new ThinklabInternalErrorException("internal error: buildDefinition should not be called on a Model");
 	}
 
 }

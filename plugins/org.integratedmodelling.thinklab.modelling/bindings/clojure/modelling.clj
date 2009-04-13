@@ -38,14 +38,21 @@
 
 (defn- transform-model 
 	"Apply the passed clause to the passed model after transforming the argument according to 
-	 the keyword. A map would be much more elegant but won't work in the bi-recursive pattern."
+	 the keyword. A map would be much more elegant but won't work in the bi-recursive pattern.
+	 Just passes through anything that isn't handled - leave it to Java to validate the keyword."
 	[model clause]
 	(cond (= (first clause) :when)
 				(.applyClause model ":when" (tl/listp (second clause)))
 				(= (first clause) :as)
 				(.applyClause model ":as" (str (second clause)))
+				(= (first clause) :probability)
+				(.applyClause model ":probability" (eval (second clause)))
+				(= (first clause) :derivative)
+				(.applyClause model ":derivative" (tl/listp (second clause)))
 				(= (first clause) :context)
-				(.applyClause model ":context" (map configure-model (tl/group-with-keywords (second clause))))))
+				(.applyClause model ":context" (map configure-model (tl/group-with-keywords (second clause))))
+				:otherwise
+				(.applyClause model (str (first clause)) (second clause))))
 
 (defmacro model 
 	"Return a new model for the given observable, defined using the given contingency 

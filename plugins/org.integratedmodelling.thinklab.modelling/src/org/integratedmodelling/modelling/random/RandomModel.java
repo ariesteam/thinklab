@@ -6,8 +6,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.utils.Polylist;
 
 public class RandomModel extends DefaultStatefulAbstractModel {
 
@@ -35,13 +34,6 @@ public class RandomModel extends DefaultStatefulAbstractModel {
 	}
 
 	@Override
-	public IInstance buildObservation(IKBox kbox, ISession session)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public IConcept getCompatibleObservationType(ISession session) {
 		// TODO Auto-generated method stub
 		return null;
@@ -54,6 +46,12 @@ public class RandomModel extends DefaultStatefulAbstractModel {
 		ret.copy(this);
 		ret.cptDesc = cptDesc;
 		return ret;
+	}
+
+	@Override
+	public Polylist buildDefinition() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

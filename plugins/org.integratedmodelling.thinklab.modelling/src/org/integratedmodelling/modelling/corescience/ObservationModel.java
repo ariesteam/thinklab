@@ -6,8 +6,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.utils.Polylist;
 
 /**
  * All that is required from an identification is to build a dependency structure. Its state
@@ -28,14 +27,6 @@ public class ObservationModel extends DefaultAbstractModel {
 		throw new ThinklabValidationException("no mediation is allowed in identifications");
 	}
 
-
-	@Override
-	public IInstance buildObservation(IKBox kbox, ISession session)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public IConcept getCompatibleObservationType(ISession session) {
 		// TODO Auto-generated method stub
@@ -50,6 +41,10 @@ public class ObservationModel extends DefaultAbstractModel {
 		return ret;
 	}
 
-	
+	@Override
+	public Polylist buildDefinition() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

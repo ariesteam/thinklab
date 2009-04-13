@@ -8,6 +8,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.utils.Polylist;
 
 public class ClassificationModel extends DefaultStatefulAbstractModel {
 
@@ -40,12 +41,6 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 	}
 	
 	
-	@Override
-	public IInstance buildObservation(IKBox kbox, ISession session)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public IConcept getCompatibleObservationType(ISession session) {
@@ -67,6 +62,12 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 		ret.copy(this);
 		// TODO add class specs
 		return ret;
+	}
+
+	@Override
+	public Polylist buildDefinition() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

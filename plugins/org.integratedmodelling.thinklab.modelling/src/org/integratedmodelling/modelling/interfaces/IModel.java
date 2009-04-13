@@ -6,6 +6,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.utils.Polylist;
 
 /**
  * The most high-level notion in Thinklab. Essentially a blueprint to build an
@@ -28,19 +29,6 @@ import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
  */
 public interface IModel {
 
-	/**
-	 * As a default behavior, build an observation reflecting the structure we
-	 * represent. If we are a "leaf" node, lookup observations of our concept 
-	 * in the kbox. 
-	 * 
-	 * 
-	 * @param kbox
-	 * @param session
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public abstract IInstance buildObservation(IKBox kbox, ISession session)
-			throws ThinklabException;
 
 	/**
 	 * Return the base observable concept
@@ -83,5 +71,16 @@ public interface IModel {
 	 * @return
 	 */
 	public abstract IModel getConfigurableClone();
+	
+
+	/**
+	 * Create the base list definition for the resulting observation, to which 
+	 * the main buildObservation() in Model will add mediated models, dependencies
+	 * and transformers.
+	 * 
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public Polylist buildDefinition() throws ThinklabException;
 	
 }
