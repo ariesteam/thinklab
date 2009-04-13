@@ -1,5 +1,9 @@
 package org.integratedmodelling.modelling;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -15,6 +19,8 @@ public abstract class DefaultAbstractModel implements IModel {
 	protected Polylist observableSpecs = null;
 	protected Object state = null;
 	protected String id = null;
+	private ArrayList<IModel> dependents = new ArrayList<IModel>();
+	private Polylist whenClause = null;
 	
 	public void setObservable(Object observableOrModel) throws ThinklabException {
 		
@@ -35,6 +41,16 @@ public abstract class DefaultAbstractModel implements IModel {
 		id = CamelCase.toLowerCase(observable.toString(), '-');
 	}
 	
+	/*
+	 * collect all the observable and the models for them. If any of the
+	 * concepts has more than one models, we must have a contingency model
+	 * to choose it in each contingency. If any of the concepts has a null
+	 * or empty array of models, or the model linked is unresolved,
+	 * we need to resolve the observable from external resources.
+	 */
+	protected HashMap<IConcept, ArrayList<IModel>> collectModels() {
+		return null;
+	}
 	
 	@Override
 	public void applyClause(String keyword, Object argument) throws ThinklabException {
@@ -43,12 +59,18 @@ public abstract class DefaultAbstractModel implements IModel {
 		
 		if (keyword.equals(":context")) {
 			
+			Collection<?> c = (Collection<?>) argument;
+			for (Object o : c) {
+				addDependentModel((IModel) o);
+			}
+			
 		} else if (keyword.equals(":as")) {
 			
 			setLocalId(argument.toString());
 			
 		} else if (keyword.equals(":when")) {
 			
+			whenClause = (Polylist) argument;
 		}
 	}
 	
@@ -59,7 +81,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * @param model
 	 */
 	public void addDependentModel(IModel model) {
-		
+		dependents.add(model);
 	}
 
 	/**

@@ -26,6 +26,17 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 	public void addClassifier(Object classifier, Object concept) {
 
 		System.out.println("got classifier " + classifier.getClass() + ": " + classifier + " for " + concept);
+		
+		/*
+		 * classifier can be:
+		 * 
+		 *  Number  (specific match)
+		 *  Concept (concept to concept, using the reasoner)
+		 * 	Vector  (numeric range, honoring :< :> :open :closed keywords)
+		 *  List    (executable code, run after setting self to state)
+		 *  Set     (set of values to choose from: final match is an OR on the contents)
+		 */
+		
 	}
 	
 	

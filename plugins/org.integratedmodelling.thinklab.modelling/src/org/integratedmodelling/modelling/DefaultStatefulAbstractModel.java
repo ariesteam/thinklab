@@ -1,12 +1,7 @@
 package org.integratedmodelling.modelling;
 
-import org.integratedmodelling.modelling.interfaces.IModel;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.utils.CamelCase;
-import org.integratedmodelling.utils.Polylist;
 
 public abstract class DefaultStatefulAbstractModel extends DefaultAbstractModel {
 

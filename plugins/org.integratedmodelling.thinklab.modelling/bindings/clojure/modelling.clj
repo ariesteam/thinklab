@@ -4,15 +4,12 @@
 
 (ns modelling)
 
-;; ----------------------------------------------------------------------------------------------
-;; Private Java binding functions, which need to actually be public because they're used in macros
-;;
-;; Must defer the java binding to compiled functions, or the classloader won't find the classes
-;; at runtime. The classes are only visible when the bindings are loaded. 
-;; ----------------------------------------------------------------------------------------------
+; birecursive patterns be damned
+(declare transform-model)
 
 (defn j-make-model
-	"Make a new instance of Model and return it."
+	"Make a new instance of Model and return it. We need this because the class won't be visible when
+	the macro is expanded at runtime."
 	[]
 	(new org.integratedmodelling.modelling.Model))
 	
@@ -22,13 +19,6 @@
 	[model]
 	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerModel model)))
 	
-;; ----------------------------------------------------------------------------------------------
-;; public macros
-;; ----------------------------------------------------------------------------------------------
-
-; birecursive patterns are fun
-(declare transform-model)
-
 (defn- get-configurable-model
 	"Return a model clone that we can safely configure. Essentially a copy on write pattern, called
 	 only when there are non-empty clauses in a dependent model."
