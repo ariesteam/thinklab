@@ -71,7 +71,12 @@ public class NetCDFArchive {
 		if (!filename.endsWith(".nc"))
 			filename += ".nc";
 		
-		NetcdfFileWriteable ncfile = NetcdfFileWriteable.createNew(filename, false);
+		NetcdfFileWriteable ncfile;
+		try {
+			ncfile = NetcdfFileWriteable.createNew(filename, false);
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}
 		
 		/*
 		 * add dimensions
