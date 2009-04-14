@@ -84,7 +84,6 @@ public interface Interpreter {
 	public abstract void loadBindings(URL source, ClassLoader cloader) throws ThinklabException;
 
 	/**
-	 * EXPERIMENTAL
 	 * Automatically define a binding for the given ITask class, discovered at initialization.
 	 * 
 	 * @param taskClass

@@ -39,7 +39,6 @@ import org.integratedmodelling.thinklab.literals.AlgorithmValue;
 
 /**
  * @author UVM Affiliate
- *
  */
 @LiteralImplementation(concept="groovy:GroovyCode")
 public class GroovyAlgorithm extends AlgorithmValue {

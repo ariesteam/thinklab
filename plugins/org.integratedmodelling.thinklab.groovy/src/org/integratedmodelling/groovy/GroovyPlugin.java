@@ -53,7 +53,6 @@ public class GroovyPlugin extends ThinklabPlugin {
 	@Override
 	protected void unload() throws ThinklabException {
 		// TODO Auto-generated method stub
-		
 	}
 
 }
