@@ -13,6 +13,7 @@ import clojure.lang.ISeq;
  */
 public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstractModel {
 
+	
 	@Override
 	public void applyClause(String keyword, Object argument) throws ThinklabException {
 		
@@ -23,6 +24,10 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 		} else if (keyword.equals(":derivative")) {
 			
 			// TODO accept dynamic derivative specs
+			
+		} else if (keyword.equals(":probability")) {
+			
+			// TODO accept bayesian node form
 			
 		} else super.applyClause(keyword, argument);
 	}

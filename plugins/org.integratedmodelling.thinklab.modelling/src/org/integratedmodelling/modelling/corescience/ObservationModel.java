@@ -35,7 +35,6 @@ public class ObservationModel extends DefaultAbstractModel {
 
 	@Override
 	public IModel getConfigurableClone() {
-		// TODO configure it (observable etc)
 		ObservationModel ret = new ObservationModel();
 		ret.copy(this);
 		return ret;

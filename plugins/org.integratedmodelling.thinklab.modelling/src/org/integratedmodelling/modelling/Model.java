@@ -18,16 +18,16 @@ import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
 /**
- * The "default" model class is the one that reflects the defmodel form. It has
- * both a contingency structure and a dependency structure, which are both resolved
- * to observations using a kbox and a session; then the contingency structure is 
+ * The "default" model class reflects the defmodel form, and has
+ * both a contingency structure and a dependency structure, which can be resolved
+ * to observations using a kbox and a session. The contingency structure is 
  * used to contextualize the dependencies, and the result is a set of contextualizable
  * models wrapped in one observation.
  * 
- * The run() method will build and contextualize the model, returning a new 
- * observation of the models' contextualized states.
+ * The run() method will build the model, returning a new main observation that can be 
+ * contextualized to produce states for ("run") all the observations computed.
  * 
- * A Model won't receive any clauses, because the copy-on-write pattern built into 
+ * A Model won't receive any clauses from defmodel, because the copy-on-write pattern built into 
  * defmodel will create a ProxyModel whenever clauses are specified. 
  * 
  * @author Ferdinando Villa
@@ -148,6 +148,8 @@ public class Model extends DefaultAbstractModel {
 						depsKbox = (IKBox) o;
 				} else if (o instanceof IInstance) {
 					contextQuery = null; // TODO turn the ctx of the instance into a query
+				} else if (o instanceof Constraint) {
+					contextQuery = (Constraint) o;
 				}
 			}
 
@@ -155,11 +157,11 @@ public class Model extends DefaultAbstractModel {
 			// TODO filter kboxes or pass query downstream
 		}
 		
-		return session.createObject(buildObservation(session, contKbox, depsKbox));
+		return session.createObject(buildObservation(session, contKbox, depsKbox, contextQuery));
 
 	}
 	
-	private Polylist buildObservation(ISession session, IKBox contKbox, IKBox depsKbox) 
+	private Polylist buildObservation(ISession session, IKBox contKbox, IKBox depsKbox, Constraint contextQuery) 
 		throws ThinklabException {
 	
 		
