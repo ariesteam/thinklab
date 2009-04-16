@@ -1,11 +1,8 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
-import java.util.Properties;
-
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.cmodels.MeasurementModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.literals.IRandomValue;
 import org.integratedmodelling.corescience.literals.DistributionValue;

@@ -24,13 +24,32 @@ public class GeneralClassifier {
 			}
 		} else if (interval != null) {
 			
+			Double d = asNumber(o);
+			if (d != null)
+				return interval.contains(d);
+			
 		} else if (concepts != null) {
 			
+			IConcept co = asConcept(o);
+			for (IConcept c : concepts) {
+				if (c.is(co))
+					return true;
+			}
 		} else if (code != null) {
 			
 		}
 		
 		return false;
+	}
+
+	private IConcept asConcept(Object o) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Double asNumber(Object o) {
+
+		return null;
 	}
 
 	public void setClass(IConcept c) {
