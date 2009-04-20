@@ -14,12 +14,11 @@
 	"A differential equation model of hare density that is controlled by wolf predation
 	 and depends on birth rate and consumption rate from the predator."
 
-	[(classification 'ecology:IGBPBiome) :clustered discontinuous :as biome] 
+	[(classification 'ecology:IGBPBiome) :rescale (geospace:ArealSpace discontinuous) :as biome] 
 	
 	(enumeration 'ecology:PopulationAbundance "n/m^2")
 	  :derivative
-	  	('time:ContinuousTime 
-	  	 (- (* hare-birth-rate self) (* wolf-abundance wolf-consumption-rate)))	  	 	
+	  	(time:ContinuousTime (- (* hare-birth-rate self) (* wolf-abundance wolf-consumption-rate)))	  	 	
 	  :context
 			((enumeration
 					'(ecology:BirthRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
@@ -52,8 +51,7 @@
 
 	  :as wolf
 	  :derivative 
-	  	('time:ContinuousTime
-	  	 (* hare-abundance hare-conversion-efficiency wolf))
+	  	(time:ContinuousTime (* hare-abundance hare-conversion-efficiency wolf))
 	  :context
 			((enumeration 
 					'(ecology:PredationEfficiency 
