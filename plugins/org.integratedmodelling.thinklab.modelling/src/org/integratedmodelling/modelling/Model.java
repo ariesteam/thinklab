@@ -13,6 +13,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
@@ -33,7 +34,7 @@ import org.integratedmodelling.utils.Polylist;
  * @author Ferdinando Villa
  * @date Jan 25th, 2008.
  */
-public class Model extends DefaultAbstractModel {
+public class Model extends DefaultAbstractModel implements IConceptualizable {
 
 	ArrayList<IModel> models = null;
 	Collection<IModel> context = null;
@@ -309,6 +310,12 @@ public class Model extends DefaultAbstractModel {
 		 * result itself.
 		 */
 		throw new ThinklabInternalErrorException("internal error: buildDefinition should not be called on a Model");
+	}
+
+	@Override
+	public Polylist conceptualize() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
