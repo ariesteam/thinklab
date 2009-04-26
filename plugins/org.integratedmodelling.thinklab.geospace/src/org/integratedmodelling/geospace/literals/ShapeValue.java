@@ -41,6 +41,7 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
+import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
@@ -362,6 +363,32 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
 	public ShapeValue getInitialValue() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public ShapeValue union(ShapeValue region) throws ThinklabException {
+		
+		if ((crs != null || region.crs != null) && !crs.equals(region.crs))
+			throw new ThinklabUnimplementedFeatureException(
+					"shape projections differ: reprojection on shape operations unimplemented");
+
+		ShapeValue ret = new ShapeValue(shape.union(region.shape));
+		ret.crs = crs;
+		return ret;
+	}
+	
+	public ShapeValue difference(ShapeValue region) throws ThinklabException {
+		
+		if ((crs != null || region.crs != null) && !crs.equals(region.crs))
+			throw new ThinklabUnimplementedFeatureException(
+					"shape projections differ: reprojection on shape operations unimplemented");
+
+		ShapeValue ret = new ShapeValue(shape.difference(region.shape));
+		ret.crs = crs;
+		return ret;
+	}
+
+	public String getWKT() {
+		return new WKTWriter().write(shape);
 	}
 
 }
