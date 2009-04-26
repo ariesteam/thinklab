@@ -391,4 +391,8 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
 		return new WKTWriter().write(shape);
 	}
 
+	public boolean isValid() {
+		return shape == null ? true : shape.isValid();
+	}
+
 }
