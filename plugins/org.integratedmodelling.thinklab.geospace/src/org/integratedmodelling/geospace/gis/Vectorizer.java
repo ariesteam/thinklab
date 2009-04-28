@@ -1,5 +1,16 @@
 package org.integratedmodelling.geospace.gis;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.util.ProgressListener;
+
+
 //import java.util.ArrayList;
 //import java.util.Vector;
 //
@@ -26,7 +37,7 @@ package org.integratedmodelling.geospace.gis;
 //import com.vividsolutions.jts.geom.LinearRing;
 //import com.vividsolutions.jts.geom.MultiLineString;
 //import com.vividsolutions.jts.geom.MultiPolygon;
-//import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Extract features from a raster. Vectorization algorithm based on GRASS' r.to.vect.
@@ -41,6 +52,47 @@ package org.integratedmodelling.geospace.gis;
  */
 public class Vectorizer {
 
+    public void testConvert() {
+    	
+        System.out.println("Vectorizing test grid coverage...");
+        int band = 0;
+        Set<Double> outsideValues = new HashSet<Double>();
+        outsideValues.add(0d);
+        
+        ProgressListener progress = null;
+// TODO this needs the unsupported process module in 2.6M1 
+//        Process r2v = (new RasterToVectorFactory()).create();
+//        
+//        Map<String, Object> input = new HashMap<String, Object>();
+//        input.put(RasterToVectorFactory.RASTER.key, grid);
+//        input.put(RasterToVectorFactory.BAND.key, band);
+//        input.put(RasterToVectorFactory.OUTSIDE.key, outsideValues);
+//
+//        //FeatureCollection result =
+//        Map<String, Object> result = r2v.execute(input, progress);
+//        
+//        double perimeter = 0;
+//        double area = 0;
+//
+//        FeatureCollection fc = (FeatureCollection) result.get(RasterToVectorFactory.RESULT_FEATURES);
+//        FeatureIterator iter = fc.features();
+//        try {
+//            while (iter.hasNext()) {
+//                SimpleFeature feature = (SimpleFeature)iter.next();
+//                Polygon poly = (Polygon) feature.getDefaultGeometry();
+//                perimeter += poly.getLength();
+//                area += poly.getArea();
+//            }
+//        } finally {
+//            iter.close();
+//        }
+        
+//        System.out.println("Total feature area: expected " + AREA + " got " + (int)Math.round(area));
+//        System.out.println("Total feature perimeter: expected " + PERIMETER + " got " + (int)Math.round(perimeter));
+//
+//        assertTrue(AREA == (int)Math.round(area) && PERIMETER == (int)Math.round(perimeter));
+    }
+	
 //	private int datarows = 0;
 //	private int datacols = 0;
 //	BoundingBox extent = null;
