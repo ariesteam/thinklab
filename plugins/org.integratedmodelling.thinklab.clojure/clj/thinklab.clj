@@ -111,10 +111,10 @@
 	([resource session]
 	(concat (. session (loadObjects (str resource))))))
 	
-(defn is 
+(defn is? 
 	"Returns true if a concept or an instance is subsumed by another concept"
-	[knowledge conc]
-	(. knowledge (is conc))) 
+	[knowledge concept]
+	(. knowledge (is (conc concept)))) 
 	
 (defn get-type 
 	"Returns the type of the passed object"
