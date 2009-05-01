@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling.corescience;
 
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -29,14 +30,12 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 	@Override
 	protected Object validateState(Object state)
 			throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		return null;
+		return state instanceof Double ? state : Double.parseDouble(state.toString());
 	}
 
 	@Override
 	public IConcept getCompatibleObservationType(ISession session) {
-		// TODO Auto-generated method stub
-		return null;
+		return CoreScience.Ranking();
 	}
 
 	@Override

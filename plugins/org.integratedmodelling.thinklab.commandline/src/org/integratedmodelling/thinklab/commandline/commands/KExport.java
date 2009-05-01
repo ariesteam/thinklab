@@ -122,7 +122,7 @@ public class KExport implements ICommandHandler {
 					.toArray(new IInstance[objs.size()]));
 		}
 
-		session.displayOutput(objs.size() + "  objects written to "
+		session.getOutputStream().println(objs.size() + "  objects written to "
 				+ output);
 
 		return null;

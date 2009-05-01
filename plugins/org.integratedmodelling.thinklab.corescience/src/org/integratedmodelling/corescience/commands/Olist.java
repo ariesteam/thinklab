@@ -52,13 +52,14 @@ public class Olist implements ICommandHandler {
 				ids = new HashSet<String>();
 			
 			if (ids.contains(o.getObservationInstance().toString())) {
-				out.displayOutput(prefix + "(" + o.getObservationInstance().toString() + ")");
+				out.getOutputStream().
+					println(prefix + "(" + o.getObservationInstance().toString() + ")");
 				return;
 			}
 			
 			ids.add(o.getObservationInstance().toString());
 			
-			out.displayOutput(
+			out.getOutputStream().println(
 					prefix +
 					o.getObservationInstance().getLocalName() + 
 					" (a " +
@@ -72,12 +73,11 @@ public class Olist implements ICommandHandler {
 			/*
 			 * TODO dump context
 			 */
-	
-			
+
 			int i = 0;
 			for (IObservation dep : o.getContingencies()) {
 				if (i++ == 0)
-					out.displayOutput(prefix + "Contingent to:");
+					out.getOutputStream().println(prefix + "Contingent to:");
 
 				dumpObservation(dep, prefix + "  ", out, ids);
 			}
@@ -86,7 +86,7 @@ public class Olist implements ICommandHandler {
 			for (IObservation dep : o.getDependencies()) {
 
 				if (i++ == 0)
-					out.displayOutput(prefix + "Dependent on:");
+					out.getOutputStream().println(prefix + "Dependent on:");
 
 				dumpObservation(dep, prefix + "  ", out, ids);
 			}

@@ -238,19 +238,7 @@ public class PSession implements ISession {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public void appendOutput(String string) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void displayOutput(String string) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	@Override
 	public InputStream getInputStream() {
 		// TODO Auto-generated method stub
@@ -263,11 +251,6 @@ public class PSession implements ISession {
 		return null;
 	}
 
-	@Override
-	public String readLine() throws ThinklabIOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public IConcept createConcept(Polylist list) throws ThinklabException {

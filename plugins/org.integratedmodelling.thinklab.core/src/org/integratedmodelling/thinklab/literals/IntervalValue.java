@@ -70,6 +70,18 @@ public class IntervalValue extends ParsedLiteralValue {
 		parseLiteral(intvs);
 	}
 
+	public IntervalValue(Double left, Double right, boolean leftOpen, boolean rightOpen) {
+		if (left == null)
+			isLowerUndefined = true;
+		else lowerBound = left;
+		if (right == null)
+			isUpperUndefined = true;
+		else upperBound = right;
+
+		isLowerOpen = leftOpen;
+		isUpperOpen = rightOpen;
+	}
+	
 	@Override
 	public void parseLiteral(String s) throws ThinklabValidationException {
 

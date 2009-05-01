@@ -91,7 +91,7 @@ public class Load implements ICommandHandler {
 			}
 		}
 
-		session.displayOutput((objs == null ? 0 : objs.size())
+		session.getOutputStream().println((objs == null ? 0 : objs.size())
 				+ " main objects loaded from " + toload
 				+ (kbox == null ? "" : " [stored to kbox: " + kbox + "]"));
 
@@ -99,7 +99,7 @@ public class Load implements ICommandHandler {
 			int cnt = 0;
 			for (IInstance obj : objs) {
 
-				session.displayOutput("\t#"
+				session.getOutputStream().println("\t#"
 						+ obj.getLocalName()
 						+ (kids == null ? "" : ("\t-> " + kbox + "#" + kids
 								.get(cnt++))));

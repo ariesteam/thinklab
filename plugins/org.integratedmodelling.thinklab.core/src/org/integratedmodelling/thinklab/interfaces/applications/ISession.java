@@ -379,34 +379,6 @@ public interface ISession {
 	public abstract IUserModel getUserModel();
 
 	/**
-	 * If the user model is given and has defined an output, show the passed string in the
-	 * output, on a line by itself. Otherwise ignore it.
-	 * 
-	 * @param string
-	 * @deprecated use output stream
-	 */
-	public abstract void displayOutput(String string);
-	
-
-	/**
-	 * If the user model is given and has defined an output, show the passed string in the
-	 * output, appending to previous output with no newline. Otherwise ignore it.
-	 * 
-	 * @param string
-	 * @deprecated use output stream
-	 */
-	public abstract void appendOutput(String string);
-	
-	/**
-	 * Read a line from the input if we have an input connected to the user model; otherwise
-	 * return null.
-	 * @return
-	 * @throws ThinklabIOException
-	 * @deprecated use input stream
-	 */
-	public abstract String readLine() throws ThinklabIOException;
-	
-	/**
 	 * Get the input stream if the user model has it, or return null.
 	 * 
 	 * @return

@@ -74,11 +74,11 @@ public class Query implements ICommandHandler {
 
 			if (nres > 0) {
 
-				session.displayOutput("\tID\tClass\tLabel\tDescription");
+				session.getOutputStream().println("\tID\tClass\tLabel\tDescription");
 
 				for (int i = 0; i < nres; i++) {
 
-					session.displayOutput("\t"
+					session.getOutputStream().println("\t"
 							+ result.getResultField(i,
 									IQueryResult.ID_FIELD_NAME)
 							+ "\t"
@@ -94,7 +94,7 @@ public class Query implements ICommandHandler {
 				}
 			}
 
-			session.displayOutput("total: " + nres);
+			session.getOutputStream().println("total: " + nres);
 
 			// just once if we had a kbox specified
 			if (kbox == null)

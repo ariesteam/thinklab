@@ -72,9 +72,9 @@ public class Login implements ICommandHandler {
 			/*
 			 * let the interactive bastard know
 			 */
-			session.displayOutput("user " + username + " logged in");
+			session.getOutputStream().println("user " + username + " logged in");
 		} else {
-			session.displayOutput("login failed");
+			session.getOutputStream().println("login failed");
 
 		}
 

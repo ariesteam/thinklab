@@ -40,6 +40,7 @@ public abstract class DefaultAbstractModel implements IModel {
 			this.observable = ((IModel)observableOrModel).getObservable();
 		} else if (observableOrModel instanceof IConcept) {
 			this.observable = (IConcept) observableOrModel;
+			this.observableSpecs = Polylist.list(this.observable);
 		} else if (observableOrModel instanceof Polylist) {
 			this.observableSpecs = (Polylist)observableOrModel;
 			this.observable = KnowledgeManager.get().requireConcept(this.observableSpecs.first().toString());
@@ -70,7 +71,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		} else if (keyword.equals(":when")) {
 			
 			whenClause = (Polylist) argument;
-		}
+		} 
 	}
 	
 	/**

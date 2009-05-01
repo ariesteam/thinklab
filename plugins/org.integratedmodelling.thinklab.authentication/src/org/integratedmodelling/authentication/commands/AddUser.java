@@ -54,7 +54,7 @@ public class AddUser implements ICommandHandler {
 		/*
 		 * let the interactive bastard know
 		 */
-		session.displayOutput("user " + username + " added");
+		session.getOutputStream().println("user " + username + " added");
 		return null;
 	}
 

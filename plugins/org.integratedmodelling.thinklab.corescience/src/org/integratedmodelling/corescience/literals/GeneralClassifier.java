@@ -1,23 +1,43 @@
 package org.integratedmodelling.corescience.literals;
 
-import java.util.HashSet;
+import java.util.Vector;
 
+import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.literals.AlgorithmValue;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
 
 public class GeneralClassifier {
 
-	GeneralClassifier[] classifiers = null;
-	
+	Vector<GeneralClassifier> classifiers = null;
+	Double number = null;
 	IntervalValue interval = null;
-	HashSet<IConcept> concepts = null;
+	IConcept concept = null;
 	AlgorithmValue code = null;
-	IConcept target = null;
+	
+	public void parse(String s) {
+		
+		String selector = s.substring(0,4);
+		String def = s.substring(4);
+		
+		if (selector.equals("num:")) {
+			
+		} else if (selector.equals("int:")) {
+			
+		} else if (selector.equals("con:")) {
+			
+		} else if (selector.equals("lit:")) {
+			
+		}
+		
+	}
 	
 	public boolean classify(Object o) {
 		
-		if (classifiers != null) {
+		if (number != null) {
+			return number == asNumber(o);
+		} else if (classifiers != null) {
 			for (GeneralClassifier cl : classifiers) {
 				if (cl.classify(o))
 					return true;
@@ -28,34 +48,83 @@ public class GeneralClassifier {
 			if (d != null)
 				return interval.contains(d);
 			
-		} else if (concepts != null) {
-			
-			IConcept co = asConcept(o);
-			for (IConcept c : concepts) {
-				if (c.is(co))
-					return true;
-			}
+		} else if (concept != null) {
+
+			return asConcept(o).is(concept);
+
 		} else if (code != null) {
-			
+		
+			/*
+			 * TODO
+			 */
 		}
 		
 		return false;
 	}
 
 	private IConcept asConcept(Object o) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		if (o instanceof IConcept)
+			return (IConcept)o;
+
+		IConcept ret = null;
+		try {
+			ret = KnowledgeManager.get().requireConcept(o.toString());
+		} catch (Exception e) {
+			throw new ThinklabRuntimeException("cannot match " + o + " to a concept name for classification");
+		}
+		
+		return ret;
 	}
 
 	private Double asNumber(Object o) {
 
-		return null;
-	}
-
-	public void setClass(IConcept c) {
-		target = c;
+		Double ret = null;
+		if (o instanceof Integer) {
+			ret = (double)((Integer)o);
+		} else if (o instanceof Double) {
+			ret = (Double)o;
+		} else if (o instanceof Float) {
+			ret = (double)((Float)o);
+		} else if (o instanceof Long) {
+			ret = (double)((Long)o);
+		} 
+		return ret;
 	}
 	
+	public void addClassifier(GeneralClassifier c) {
+		if (classifiers == null)
+			classifiers = new Vector<GeneralClassifier>();
+		classifiers.add(c);
+	}
 
+	public void setConcept(IConcept c) {
+			concept = c;
+	}
+
+	public void setInterval(IntervalValue interval) {
+		this.interval = interval;
+	}
+
+	public void setNumber(Object classifier) {
+		number = asNumber(classifier);
+	}
+	
+	public String toString() {
+		String ret = null;
+		if (classifiers != null) {
+			ret = "mul:";
+			for (GeneralClassifier c : classifiers) {
+				ret += "[" + c + "]";
+			}
+		} else if (number != null) {
+			ret = "num:" + number;
+		} else if (interval != null) {
+			ret = "int:" + interval;
+		} else if (concept != null) {
+			ret = "con:" + concept;
+		}
+		return ret;
+	}
 	
 }

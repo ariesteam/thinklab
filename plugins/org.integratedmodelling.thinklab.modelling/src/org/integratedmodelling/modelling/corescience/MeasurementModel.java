@@ -7,7 +7,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.utils.Polylist;
 
 public class MeasurementModel extends DefaultDynamicAbstractModel {
@@ -42,8 +41,6 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 	public IConcept getCompatibleObservationType(ISession session) {
 		return CoreScience.Measurement();
 	}
-
-
 
 	@Override
 	public void validateMediatedModel(IModel model) throws ThinklabValidationException {

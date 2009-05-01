@@ -61,7 +61,7 @@ public class KImport implements ICommandHandler {
 
 		name = KnowledgeManager.get().registerOntology(toload, name);
 
-		session.displayOutput("ontology " + name + " loaded");
+		session.getOutputStream().println("ontology " + name + " loaded");
 
 		return null;
 	}

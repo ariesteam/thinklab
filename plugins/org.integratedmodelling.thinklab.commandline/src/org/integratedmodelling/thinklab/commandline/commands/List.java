@@ -63,21 +63,21 @@ public class List implements ICommandHandler {
 	void listOntology(IOntology ont, ISession session)
 			throws ThinklabException {
 
-		session.displayOutput("Listing ontology " + ont);
+		session.getOutputStream().println("Listing ontology " + ont);
 
-		session.displayOutput("\nConcepts:");
+		session.getOutputStream().println("\nConcepts:");
 		for (IConcept i : ont.getConcepts()) {
-			session.displayOutput("\t" + i.getSemanticType().toString()
+			session.getOutputStream().println("\t" + i.getSemanticType().toString()
 					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
 		}
-		session.displayOutput("\nProperties:");
+		session.getOutputStream().println("\nProperties:");
 		for (IProperty i : ont.getProperties()) {
-			session.displayOutput("\t" + i.getSemanticType().toString()
+			session.getOutputStream().println("\t" + i.getSemanticType().toString()
 					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
 		}
-		session.displayOutput("\nInstances:");
+		session.getOutputStream().println("\nInstances:");
 		for (IInstance i : ont.getInstances()) {
-			session.displayOutput("\t" + i.getSemanticType().toString()
+			session.getOutputStream().println("\t" + i.getSemanticType().toString()
 					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
 		}
 
@@ -87,67 +87,67 @@ public class List implements ICommandHandler {
 			ISession session) throws ThinklabException {
 
 		if (mode == listmode.DESCRIPTIVE) {
-			session.displayOutput("Instance URI is " + c.getURI());
+			session.getOutputStream().println("Instance URI is " + c.getURI());
 
-			session.displayOutput("list representation:\n"
+			session.getOutputStream().println("list representation:\n"
 					+ Polylist.prettyPrint(c.toList(null)));
 
-			session.displayOutput(c.getDescription());
+			session.getOutputStream().println(c.getDescription());
 
 			if (c.getImplementation() == null) {
-				session.displayOutput("has no implementation");
+				session.getOutputStream().println("has no implementation");
 			} else {
-				session.displayOutput("has implementation of class "
+				session.getOutputStream().println("has implementation of class "
 						+ c.getImplementation().getClass().toString());
 			}
 
 			for (IRelationship r : c.getRelationships()) {
-				session.displayOutput("  " + r.toString());
+				session.getOutputStream().println("  " + r.toString());
 			}
 
 		} else if (mode == listmode.LIST) {
-			session.displayOutput(Polylist.prettyPrint(c.toList(null)));
+			session.getOutputStream().println(Polylist.prettyPrint(c.toList(null)));
 		}
 	}
 
 	void listConcept(IConcept c, listmode l, ISession session)
 			throws ThinklabException {
 
-		session.displayOutput("Concept URI is " + c.getURI());
+		session.getOutputStream().println("Concept URI is " + c.getURI());
 
-		session.displayOutput(c.getDescription());
+		session.getOutputStream().println(c.getDescription());
 
-		session.displayOutput("  Properties:");
+		session.getOutputStream().println("  Properties:");
 		for (IProperty r : c.getAllProperties()) {
-			session.displayOutput("    " + r);
+			session.getOutputStream().println("    " + r);
 		}
 
-		session.displayOutput("  Direct Instances:");
+		session.getOutputStream().println("  Direct Instances:");
 		for (IInstance r : c.getInstances()) {
-			session.displayOutput("    " + r);
+			session.getOutputStream().println("    " + r);
 		}
 
-		session.displayOutput("  Restrictions:");
-		session.displayOutput(Polylist.prettyPrint(c.getRestrictions()
+		session.getOutputStream().println("  Restrictions:");
+		session.getOutputStream().println(Polylist.prettyPrint(c.getRestrictions()
 				.asList(), 2));
 
-		session.displayOutput("  Definition:");
-		session.displayOutput(Polylist.prettyPrint(c.getDefinition()
+		session.getOutputStream().println("  Definition:");
+		session.getOutputStream().println(Polylist.prettyPrint(c.getDefinition()
 				.asList(), 2));
 
 	}
 
 	void listProperty(IProperty p, listmode l, ISession outputWriter) {
 
-		outputWriter.displayOutput("Property URI is " + p.getURI());
-		outputWriter.displayOutput(p.getDescription());
+		outputWriter.getOutputStream().println("Property URI is " + p.getURI());
+		outputWriter.getOutputStream().println(p.getDescription());
 
-		outputWriter.displayOutput("  Domain:");
-		outputWriter.displayOutput("    " + p.getDomain());
+		outputWriter.getOutputStream().println("  Domain:");
+		outputWriter.getOutputStream().println("    " + p.getDomain());
 
-		outputWriter.displayOutput("  Range:");
+		outputWriter.getOutputStream().println("  Range:");
 		for (IConcept c : p.getRange()) {
-			outputWriter.displayOutput("    " + c);
+			outputWriter.getOutputStream().println("    " + c);
 		}
 
 	}
@@ -155,18 +155,18 @@ public class List implements ICommandHandler {
 	void listKBox(IKBox kbox, String kbname, ISession outputWriter)
 			throws ThinklabException {
 
-		outputWriter.displayOutput("Listing contents of kBox " + kbname);
+		outputWriter.getOutputStream().println("Listing contents of kBox " + kbname);
 
 
 		IQueryResult result = kbox.query(null, 0, -1);
 
-		outputWriter.displayOutput("\tID\tClass\tLabel\tDescription");
+		outputWriter.getOutputStream().println("\tID\tClass\tLabel\tDescription");
 
 		if (result.getResultCount() > 0) {
 
 			for (int i = 0; i < result.getResultCount(); i++) {
 
-				outputWriter.displayOutput("\t"
+				outputWriter.getOutputStream().println("\t"
 						+ result.getResultField(i, IQueryResult.ID_FIELD_NAME)
 						+ "\t"
 						+ result.getResultField(i,
@@ -181,7 +181,7 @@ public class List implements ICommandHandler {
 			}
 		}
 
-		outputWriter.displayOutput("total: " + result.getResultCount());
+		outputWriter.getOutputStream().println("total: " + result.getResultCount());
 	}
 
 	public IValue execute(Command command, ISession session) throws ThinklabException {
@@ -195,17 +195,17 @@ public class List implements ICommandHandler {
 
 		if (subject == null || subject.equals("__NONE__")) {
 
-			session.displayOutput("Listing session contents: \n");
+			session.getOutputStream().println("Listing session contents: \n");
 			int c = 0;
 
 			for (IInstance i : session.listObjects()) {
 
-				session.displayOutput("\t" + i.getLocalName() + ": "
+				session.getOutputStream().println("\t" + i.getLocalName() + ": "
 						+ i.getDirectType());
 				c++;
 			}
 
-			session.displayOutput(c + " objects");
+			session.getOutputStream().println(c + " objects");
 			return null;
 		}
 
@@ -213,7 +213,7 @@ public class List implements ICommandHandler {
 
 			for (IOntology o : KnowledgeManager.get().getKnowledgeRepository()
 					.retrieveAllOntologies()) {
-				session.displayOutput(o.getConceptSpace() + ":\t"
+				session.getOutputStream().println(o.getConceptSpace() + ":\t"
 						+ o.getURI());
 			}
 
@@ -222,7 +222,7 @@ public class List implements ICommandHandler {
 			for (PluginDescriptor pd :
 					CommandLine.get().getManager().getRegistry().getPluginDescriptors()) {
 
-				session.displayOutput(
+				session.getOutputStream().println(
 						pd.getId() + 
 						" (" +
 						pd.getVersion() + 
@@ -235,12 +235,12 @@ public class List implements ICommandHandler {
 		} else if ("kboxes".equals(subject)) {
 
 			for (String kb : KBoxManager.get().getInstalledKboxes()) {
-				session.displayOutput(MiscUtilities.getURLBaseName(kb)
+				session.getOutputStream().println(MiscUtilities.getURLBaseName(kb)
 						+ ":\t" + kb);
 			}
 
 			for (String kb : session.getLocalKBoxes()) {
-				session.displayOutput(kb + " (local)");
+				session.getOutputStream().println(kb + " (local)");
 			}
 
 		} else {
@@ -252,7 +252,7 @@ public class List implements ICommandHandler {
 
 				if (obj == null) {
 					session
-							.displayOutput("nothing known about " + subject);
+							.getOutputStream().println("nothing known about " + subject);
 				} else {
 					listIndividual(obj, listmode.DESCRIPTIVE, session);
 				}
@@ -290,7 +290,7 @@ public class List implements ICommandHandler {
 					if (kbox != null) {
 						listKBox(kbox, subject, session);
 					} else {
-						session.displayOutput("nothing known about "
+						session.getOutputStream().println("nothing known about "
 								+ subject);
 					}
 				}

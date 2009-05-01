@@ -52,10 +52,10 @@ public class Help implements ICommandHandler {
 		if ("__none".equals(topic)) {
 			/* loop over commands in KM; print a line for each one */
 			session
-					.displayOutput("Available commands (\'help <command>\' for more):");
+					.getOutputStream().println("Available commands (\'help <command>\' for more):");
 			for (CommandDeclaration decl : CommandManager.get()
 					.getCommandDeclarations()) {
-				session.displayOutput("\t" + decl.ID + "\t"
+				session.getOutputStream().println("\t" + decl.ID + "\t"
 						+ decl.description);
 			}
 		} else {

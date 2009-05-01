@@ -39,7 +39,10 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 
 import javax.swing.BorderFactory;
@@ -51,6 +54,7 @@ import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -135,6 +139,18 @@ public class GraphicalShell {
 		console.println();
 	}
 
+	
+	public static String readLine(InputStream stream) throws ThinklabIOException {
+		String ret = null;
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		try {
+			ret = reader.readLine();
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}
+		return ret;
+	}
+	
 	public void startConsole() throws Exception {
 				
 		ConsolePanel jpanels = new ConsolePanel();
@@ -150,7 +166,7 @@ public class GraphicalShell {
 			console.print("> ");
 			console.setStyle(inputFont);
 			
-			input = session.readLine();
+			input = readLine(session.getInputStream());
 
 			console.setStyle(outputFont);
 			
