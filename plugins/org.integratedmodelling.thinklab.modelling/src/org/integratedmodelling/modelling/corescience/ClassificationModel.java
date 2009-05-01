@@ -123,6 +123,13 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 			 * code to be execd, to be passed back to Clojure at runtime
 			 */
 			
+		} else if (classifier.toString().equals(":otherwise")) {
+	
+			/*
+			 * catch-all
+			 */
+			ret.setCatchAll();
+			
 		} else {
 			
 			/*

@@ -3,6 +3,7 @@ package org.integratedmodelling.corescience.literals;
 import java.util.Vector;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.literals.AlgorithmValue;
@@ -15,25 +16,31 @@ public class GeneralClassifier {
 	IntervalValue interval = null;
 	IConcept concept = null;
 	AlgorithmValue code = null;
+	private boolean catchAll = false;
 	
-	public void parse(String s) {
+	public void parse(String s) throws ThinklabException {
 		
 		String selector = s.substring(0,4);
 		String def = s.substring(4);
 		
 		if (selector.equals("num:")) {
-			
+			number = Double.parseDouble(def);
 		} else if (selector.equals("int:")) {
-			
+			interval = new IntervalValue(def);
 		} else if (selector.equals("con:")) {
-			
-		} else if (selector.equals("lit:")) {
-			
+			concept = KnowledgeManager.get().requireConcept(def);
+		} else if (selector.equals("mul:")) {
+			// TODO
+		} else if (selector.equals("tru:")) {
+			catchAll = true;
 		}
-		
 	}
 	
 	public boolean classify(Object o) {
+
+		if (catchAll) {
+			return true;
+		}
 		
 		if (number != null) {
 			return number == asNumber(o);
@@ -123,8 +130,13 @@ public class GeneralClassifier {
 			ret = "int:" + interval;
 		} else if (concept != null) {
 			ret = "con:" + concept;
-		}
+		} else if (catchAll)
+			ret = "tru:true";
 		return ret;
+	}
+
+	public void setCatchAll() {
+		this.catchAll = true;
 	}
 	
 }
