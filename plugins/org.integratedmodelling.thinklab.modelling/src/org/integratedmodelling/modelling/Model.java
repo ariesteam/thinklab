@@ -261,7 +261,6 @@ public class Model extends DefaultAbstractModel implements IConceptualizable {
 		if (models == null) {
 			models = new ArrayList<IModel>();
 		}
-
 		
 		models.add(model);
 	}
