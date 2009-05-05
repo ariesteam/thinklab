@@ -59,7 +59,6 @@ import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
-import org.java.plugin.registry.PluginRegistry;
 
 /**
  * A singleton that manages KBoxes. One of these is created by and accessed through

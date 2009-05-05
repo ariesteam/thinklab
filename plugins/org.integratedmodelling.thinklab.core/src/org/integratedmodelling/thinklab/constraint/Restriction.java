@@ -40,11 +40,9 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabConstraintValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
@@ -469,148 +467,6 @@ public class Restriction  {
 		
 		return ret;
 	}
-	
-//	public static Restriction parseListOld(Polylist content) throws ThinklabException {
-//
-//		Restriction ret = new Restriction();
-//		
-//		/* inspect first elements: can be a lone connector */
-//		if (content.first() instanceof String && 
-//			LogicalConnector.isLogicalConnector(content.first().toString())) {
-//
-//			try {
-//				ret.connector = LogicalConnector.parseLogicalConnector(content.first().toString());
-//			} catch (MalformedLogicalConnectorException e) {
-//				/* won't happen */
-//			}
-//			
-//			if (!ret.connector.equals(LogicalConnector.INTERSECTION) &&
-//				!ret.connector.equals(LogicalConnector.UNION))
-//				throw new ThinklabConstraintValidationException(
-//						content + 
-//						"restrictions can only be connected in AND and OR; please use quantifiers for remaining cases");
-//				
-//			/* all others must be restrictions */
-//			Object[] def = content.array();
-//			for (int i = 1; i < def.length; i++) {
-//				
-//				if (! (def[i] instanceof Polylist)) {
-//					throw new ThinklabConstraintValidationException(
-//							"restriction: " +
-//							def[i] + 
-//							": all elements in  " + 
-//							ret.connector + " " +
-//							"list must be restrictions");
-//				}
-//				ret.siblings.add(parseList((Polylist)def[i]));
-//			}
-//			return ret;
-//		}
-//		
-//		/* otherwise we must have a quantifier, a property, or both. Count the elements to 
-//		 * use for the scope */
-//		Object[] def = content.array();
-//
-//		int nn;
-//		
-//		for (nn = 0; nn < def.length && !(def[nn] instanceof Polylist) && nn < 2; nn++) {
-//			
-//			if (def[nn] instanceof IProperty) {	
-//				ret.property = (IProperty)def[nn];	
-//			} else if (def[nn] instanceof Quantifier)  {
-//				ret.quantifier = (Quantifier)def[nn];
-//			} else if (Quantifier.isQuantifier(def[nn].toString())) {
-//				try {
-//					ret.quantifier = Quantifier.parseQuantifier(def[nn].toString());
-//				} catch (MalformedQuantifierException e) {
-//				}
-//			} else if (SemanticType.validate(def[nn].toString())) {
-//				if (ret.property == null)
-//					ret.property = KnowledgeManager.get().requireProperty(def[nn].toString());
-//				else 	
-//					ret.classification = KnowledgeManager.get().requireConcept(def[nn].toString());
-//			} else if (def[nn] instanceof String){
-//				/* can only be an operator as second argument */
-//				ret.operator = (String)def[nn];
-//			} else {
-//				throw new ThinklabConstraintValidationException(
-//						"restriction: can't recognize element " + 
-//						def[nn] +
-//						" in " +
-//						content);
-//			}
-//		}
-//		
-//		/* the rest can be an operator specification for literals, a concept for classifications, or
-//		 * a constraint list for object properties */
-//		int remaining = def.length - nn;
-//		
-//		if (remaining == 1 && def[nn] instanceof Polylist) {
-//			/* object or class restriction */
-//			ret.constraint = new Constraint((Polylist)def[nn]);
-//		} else /* if (remaining == 1 && ret.classification == null && SemanticType.validate(def[nn].toString())) {
-//			// class restriction 
-//			ret.classification = KnowledgeManager.get().requireConcept(def[nn].toString());
-//		} else */if (remaining >= 1) {
-//			
-//			/* 
-//			 * operator: must be an initial string with no strange stuff in it, and an optional
-//			 * number of parameters, to be stored as they come.
-//			 */
-//			IOperator op = null;
-//			
-//			if (def[nn] instanceof IInstance && ((IInstance)def[nn]).is(KnowledgeManager.OperatorType())) {
-//				
-//				op = (IOperator) ((IInstance)def[nn]).getImplementation();
-//				
-//			} else if (def[nn] instanceof String) {
-//			
-//				/* 
-//				 * must be the semantic type of an Operator instance. If we don't have a namespace,
-//				 * we try thinklab-core before giving up.
-//				 */
-//				String ss = (String) def[nn];
-//				if (!SemanticType.validate(ss))
-//					ss = "thinklab-core:" + ss;
-//				IInstance oo = KnowledgeManager.get().retrieveInstance(ss);
-//				
-//				if (oo != null && oo.is(KnowledgeManager.OperatorType())) {
-//					op = (IOperator) oo.getImplementation();
-//				}
-//			}
-//			
-//			if (op == null)
-//				throw new ThinklabConstraintValidationException("invalid restriction operator at " + def[nn]);
-//			
-//			if (ret.operator == null) {
-//				ret.operator = op;
-//				remaining --;
-//				nn++;
-//			}
-//			
-//			if (remaining > 0) {
-//				
-//				ret.opArgs = new Object[remaining];
-//
-//				int i = 0;
-//				for (; nn < def.length; nn++) {
-//					ret.opArgs[i++] = def[nn];
-//				}
-//			}
-//			
-//		} else {
-//			throw new ThinklabConstraintValidationException(
-//					"invalid restriction specification in " +
-//					content);
-//		}
-//		
-//		if (ret.property == null)
-//			throw new ThinklabConstraintValidationException(
-//					"invalid restriction specification: missing property in " +
-//					content);
-//		
-//		return ret;
-//	}
 
 	public Polylist asList() {
 
@@ -733,7 +589,6 @@ public class Restriction  {
 			appropriate parameter type, and pass ALL parameters to op()
 		 */	
 		return operator.eval(opArgs).asBoolean().value;
-		
 	}
 
 	public boolean match(IKnowledgeSubject c) throws ThinklabException {

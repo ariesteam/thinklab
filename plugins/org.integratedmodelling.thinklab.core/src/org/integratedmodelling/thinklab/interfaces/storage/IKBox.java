@@ -239,7 +239,7 @@ public abstract interface IKBox extends IQueriable {
 
 	/**
 	 * If the kbox properties define a schema, return it. Otherwise return the 
-	 * default schema which is (id, type, label, comment). The schema must be 
+	 * default schema which is (id, rdfs:type, rdfs:label, rdfs:comment). The schema must be 
 	 * valid (use IKboxManager.validateSchema).
 	 * 
 	 * @return
