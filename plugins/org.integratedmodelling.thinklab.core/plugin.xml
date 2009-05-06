@@ -44,9 +44,10 @@
 		</library>
 		<library type="code" id="concurrent"  path="lib/concurrent-1.3.4.jar"/>
 		<library type="code" id="http"  path="lib/http.jar"/>
-		<library type="code" id="icu4j"  path="lib/icu4j_3_4.jar"/>
-		<library type="code" id="iri"  path="lib/iri.jar"/>
+		<library type="code" id="icu4j" path="lib/icu4j_3_4.jar"/>
+		<library type="code" id="iri"   path="lib/iri.jar"/>
 		<library type="code" id="jena"  path="lib/jena.jar"/>
+		<library type="code" id="jep"   path="lib/jep-2.4.1.jar"/>
 		<library type="code" id="jgrapht"  path="lib/jgrapht.jar">
 			<export prefix="*" />
 		</library>
