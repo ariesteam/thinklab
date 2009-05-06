@@ -56,7 +56,7 @@
 			<export prefix="*" />
 		</library>
 		<library type="code" id="kazuki"  path="lib/kazuki.jar"/>
-		<library type="code" id="mvel"  path="lib/mvel-1.3.1-java1.4.jar">
+		<library type="code" id="mvel"  path="lib/mvel2-2.0.7.jar">
 				<export prefix="*" />
 		</library>
 
