@@ -23,7 +23,6 @@ import org.integratedmodelling.thinklab.interfaces.annotations.TaskNamespace;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.literals.Value;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -37,6 +36,18 @@ import clojure.lang.RT;
 import clojure.lang.Symbol;
 import clojure.lang.Var;
 
+//// Fetch the current namespace (should be "user")
+//Var nsVar = RT.var("clojure.core", "*ns*");
+//Namespace ns = (Namespace)nsVar.getRoot();
+//
+//// Intern a new var in this namespace ("user")
+//Var carbonVal = Var.intern(ns, Symbol.create("carbon-val"), RT.readString("(+ CarbonStock (* CarbonFlow TimePeriod))"));
+//System.out.println("carbonVal = " + carbonVal.get());
+//
+//// Just create a new Var without interning (and eval its result)
+//Var addition = Var.create(Compiler.eval(RT.readString("(+ 1 2)")));
+//System.out.println("addition = " + addition.get());
+//}
 public class ClojureInterpreter implements Interpreter {
 
 	InputStream input = System.in;

@@ -81,19 +81,17 @@ public class Model extends DefaultAbstractModel implements IConceptualizable {
 		
 		@Override
 		public boolean hasNext() {
-			// TODO Auto-generated method stub
 			return cState < nStates;
 		}
 
 		@Override
 		public Contingency next() {
-			// TODO Auto-generated method stub
+			cState ++;
 			return null;
 		}
 
 		@Override
 		public void remove() {
-			// TODO Auto-generated method stub
 		}
 	}
 	
@@ -116,7 +114,6 @@ public class Model extends DefaultAbstractModel implements IConceptualizable {
 		 * TODO build the contingency model. For now this only passes a null, resulting
 		 * in one contingency state.
 		 */
-		
 		contingencyModelBuilt = true;
 	}
 
