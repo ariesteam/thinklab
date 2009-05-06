@@ -23,6 +23,10 @@
 		<library id="jep" path="lib/jep-2.4.1.jar" type="code">
 			<export prefix="*" />
 		</library>
+				
+		<library id="mvel" path="lib/mvel2-2.0.7.jar" type="code">
+			<export prefix="*" />
+		</library>
 		
 		<library id="ojalgo" path="lib/ojAlgo.jar" type="code">
 			<export prefix="*" />
