@@ -2,9 +2,11 @@ package org.integratedmodelling.modelling.visualization;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.Obs;
+import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.geospace.Geospace;
@@ -35,6 +37,8 @@ public class NetCDFArchive {
 	RasterGrid space         = null;
 	RegularTemporalGrid time = null;
 	Map<IConcept,IContextualizedState> variables;
+	Map<String,IContextualizedState> auxVariables = 
+		new Hashtable<String, IContextualizedState>();
 	
 	/**
 	 * Add a contextualized observation and we do the rest.
@@ -56,7 +60,27 @@ public class NetCDFArchive {
 	public void setTimeGrid() {
 	}
 	
-	public void addRasterVariable(String name, String units, double[] data) {
+	/**
+	 * Add another variable passing the data array directly. Must have called 
+	 * setObservation first to set the context.
+	 * 
+	 * @param concept
+	 * @param data
+	 */
+	public void addRasterVariable(String concept,  double[] data) {
+		
+		IContextualizedState st = 
+			new MemDoubleContextualizedDatasource(null, data);
+		
+		auxVariables.put(concept, st);
+	}
+	
+	public void addRasterVariable(String concept,  double[][] data) {
+		
+		IContextualizedState st = 
+			new MemDoubleContextualizedDatasource(null, data);
+		
+		auxVariables.put(concept, st);
 	}
 	
 	public void write(String filename) throws ThinklabException {
@@ -114,6 +138,14 @@ public class NetCDFArchive {
 			}
 		}
 		
+		for (String var : auxVariables.keySet()) {
+			
+			// TODO implement the rest
+			
+			if (spdims.size() == 2) {
+				ncfile.addVariable(var, DataType.DOUBLE, new Dimension[]{latDim,lonDim});
+			}
+		}
 		/*
 		 * create the file before we add variables
 		 */
@@ -165,6 +197,28 @@ public class NetCDFArchive {
 				ArrayDouble data = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
 				Index ind = data.getIndex();
 				double[] dd = variables.get(obs).getDataAsDoubles();
+				int i = 0;
+				for (int lat = 0; lat < latDim.getLength(); lat++) {
+					for (int lon = 0; lon < lonDim.getLength(); lon++) {
+						data.setDouble(ind.set(lat,lon), dd[i++]);
+					}	
+				}
+				
+				try {
+					ncfile.write(varname, data);
+				} catch (Exception e) {
+					throw new ThinklabIOException(e);
+				}
+			}
+		}
+		
+		for (String varname : auxVariables.keySet()) {
+			
+			if (spdims.size() == 2) {
+			
+				ArrayDouble data = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
+				Index ind = data.getIndex();
+				double[] dd = auxVariables.get(varname).getDataAsDoubles();
 				int i = 0;
 				for (int lat = 0; lat < latDim.getLength(); lat++) {
 					for (int lon = 0; lon < lonDim.getLength(); lon++) {

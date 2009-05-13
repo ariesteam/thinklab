@@ -54,6 +54,22 @@ public class MemDoubleContextualizedDatasource
 	private double[] data = null;
 	private int idx = 0;
 
+	public MemDoubleContextualizedDatasource(IConcept type, double[] data) {
+		_type = type;
+		this.data = data;
+	}
+	
+	public MemDoubleContextualizedDatasource(IConcept type, double[][] d) {
+		_type = type;
+		this.data = new double[d.length*d[0].length];
+		int k = 0;
+		for (int i = 0; i < d.length; i++) {
+			for (int j = 0; j < d[0].length; j++) {
+				data[k++] = d[i][j];
+			}
+		}
+	}
+	
 	public MemDoubleContextualizedDatasource(IConcept type, int size) {
 		_type = type;
 		data = new double[size];

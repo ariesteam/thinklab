@@ -1,7 +1,6 @@
 package org.integratedmodelling.corescience.contextualization;
 
 import org.integratedmodelling.corescience.interfaces.context.IContextualizer;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
