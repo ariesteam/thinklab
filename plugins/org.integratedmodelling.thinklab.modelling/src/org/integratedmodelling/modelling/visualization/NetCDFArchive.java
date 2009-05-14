@@ -27,7 +27,7 @@ import ucar.nc2.NetcdfFileWriteable;
 
 /**
  * Easily create a NetCDF file with all the data from an observation set, or add data piece by
- * piece.
+ * piece. Not flexible and not complete.
  * 
  * @author Ferdinando
  *
@@ -239,5 +239,15 @@ public class NetCDFArchive {
 		} catch (IOException e) {
 			throw new ThinklabIOException(e);
 		}
+	}
+
+	/**
+	 * add all the states of another observation. setObservation() must have been
+	 * called, and all states must conform to the topology of the "master" obs.
+	 */
+	public void addObservation(IInstance obs) throws ThinklabException {
+		IObservation o = Obs.getObservation(obs);
+		space = (RasterGrid) Obs.findObservation(o, Geospace.get().RasterGridObservable());
+		variables.putAll(Obs.getStateMap(o));
 	}
 }
