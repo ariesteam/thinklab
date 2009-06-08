@@ -59,7 +59,6 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 public class SQLPlugin extends ThinklabPlugin {
 
 	public File coreSchema = null;
-	public ArrayList<URL> schemata = new ArrayList<URL>();
 	private HashMap<String, SQLServerConstructor> serverConstructors =
 		new HashMap<String, SQLServerConstructor>();
 

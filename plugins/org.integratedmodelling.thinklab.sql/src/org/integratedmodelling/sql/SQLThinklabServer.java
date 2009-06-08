@@ -1760,21 +1760,8 @@ public abstract class SQLThinklabServer {
 
 	private void loadSchema(String schemaID) throws ThinklabException {
 		
-		URL schema = null;
-		
-		for (URL sch : SQLPlugin.get().schemata) {
-			if (sch.toString().endsWith(schemaID + ".sqx")) { 
-				schema = sch;
-				break;
-			}
-		}
-
-		if (schema == null) {
-			throw new ThinklabIOException("schema " + schemaID + " referenced in kbox is not installed");
-		}
-		
+		URL schema = SQLPlugin.get().getSchema(schemaID);
 		this.readSchema(schema);
-		
 		SQLPlugin.get().logger().info("sql: reading schema " + schema);
 	}
 	

@@ -134,7 +134,12 @@ public class NetCDFArchive {
 				// we have space only
 				String varname = obs.getLocalName();
 				ncfile.addVariable(varname, DataType.DOUBLE, new Dimension[]{latDim,lonDim});
-				// TODO if var is a measurement, add units attribute
+				// TODO if var is a measurement, add units attribute - this is a stupid stub
+				if (varname.equals("Altitude")) {
+					ncfile.addVariableAttribute("Altitude", "units", "meters");
+					ncfile.addVariableAttribute("Altitude", "positive", "up");
+					ncfile.addVariableAttribute("Altitude", "axis", "z");
+				}
 			}
 		}
 		

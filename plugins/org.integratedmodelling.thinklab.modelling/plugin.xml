@@ -49,6 +49,7 @@
 		<parameter id="resource" value="clojure/corescience.clj"/>
 		<parameter id="resource" value="clojure/random.clj"/>
 		<parameter id="resource" value="clojure/visualization.clj"/>
+		<parameter id="resource" value="clojure/kbox.clj"/>
 	</extension>
 	
 </plugin>
