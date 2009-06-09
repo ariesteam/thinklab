@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -251,7 +250,7 @@ public class Instance extends Knowledge implements IInstance {
 
 		IInstanceImplementation impl = getImplementation();
 		if (impl != null) {
-			implementations.add(new Pair(this, impl));
+			implementations.add(new Pair<IInstance, IInstanceImplementation>(this, impl));
 		}
 	}
 

@@ -33,7 +33,6 @@
  **/
 package org.integratedmodelling.thinklab.interfaces.knowledge;
 
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;

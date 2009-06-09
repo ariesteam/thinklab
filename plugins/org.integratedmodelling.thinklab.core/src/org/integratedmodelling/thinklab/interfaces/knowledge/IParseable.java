@@ -1,6 +1,5 @@
 package org.integratedmodelling.thinklab.interfaces.knowledge;
 
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * If an instance implementation class implements IParseable, whole instances can be specified as string 

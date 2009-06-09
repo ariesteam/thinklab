@@ -5,15 +5,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.MalformedURLException;
 import java.util.Iterator;
 
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
 import clojure.lang.PersistentList;
@@ -44,9 +43,16 @@ public class KBoxHandler {
 		
 	public IKBox getKbox() {
 
-		return null;
+		resolveForwardReferences();
+		
+		return kbox;
 	}
 	
+	private void resolveForwardReferences() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public synchronized IKBox createKbox(Object id, Object ur, Object options) throws ThinklabException {
 		
 		IKBox  ret = null;
@@ -103,6 +109,16 @@ public class KBoxHandler {
 		}
 
 		return ret;
+	}
+
+	public void declareForwardReference(String _forward, String targetId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void registerObject(String _id, IInstance _instance) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

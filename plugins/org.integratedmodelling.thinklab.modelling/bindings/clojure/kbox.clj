@@ -1,14 +1,25 @@
 (ns modelling)
 
+; root binding for kbox variable
+(def *_kbox_* nil)
+
 (defn j-make-kbox-handler
 	[]
 	(new org.integratedmodelling.modelling.data.KBoxHandler))
+	
+(defn j-make-object-handler
+	[concept kbox]
+	(new org.integratedmodelling.modelling.data.InstanceHandler (tl/get-session) concept kbox))
 
 (defmacro object
-	"Define an instance. Forward references will only work if used within a with-kbox form."
+	"Define an instance. Forward references (InstanceHandler) may also be returned, but will only 
+	 be allowed within a with-kbox form."
 	[concept & body]
-	`(let [conc# (tl/conc ~concept)] 
-		nil))
+	`(let [conc# (str ~concept)
+				 inst# (j-make-object-handler conc# (eval '*_kbox_*))] 
+		(doseq [prop# '~body]
+			(.addProperty inst# (tl/prop (first prop#)) (eval (second prop#))))
+		(.getObject inst#)))
 
 (defmacro kbox 
 	"Define a kbox and return it."
@@ -25,7 +36,8 @@
 	 `(let [body#  (tl/group-with-keywords '~body)
 	 	 	    kbox#   (modelling/j-make-kbox-handler)
 	 	 	    ]
-			 (.setKbox kbox# (first (first body#)) (second (first body#)))	      	     
- 	     (doseq [mdef# (rest body#)]
-         	(.addKnowledge kbox# (eval (first mdef#)) (second mdef#)))          	    	  	          
-       (.getKbox kbox#)))
+	 	 	 (binding [*_kbox_* kbox#]
+				 (.setKbox kbox# (first (first body#)) (second (first body#)))	      	     
+ 		     (doseq [mdef# (rest body#)]
+    	     	(.addKnowledge kbox# (eval (first mdef#)) (second mdef#)))          	    	  	          
+      	 (.getKbox kbox#))))
