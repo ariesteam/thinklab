@@ -1182,8 +1182,7 @@ public abstract class SQLThinklabServer {
 		
 		return ret;
 	}
-	
-	
+
 	/**
 	 * Obtain the SQL source code that stores the passed instance and the ID of the
 	 * instance in the new kbox defined by the storage. Keep all references local - i.e., 
