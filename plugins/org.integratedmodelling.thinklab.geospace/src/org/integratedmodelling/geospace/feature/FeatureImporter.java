@@ -69,7 +69,7 @@ import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.utils.LookupTable;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
-import org.mvel.MVEL;
+import org.mvel2.MVEL;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;

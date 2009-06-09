@@ -39,7 +39,7 @@ import java.util.Hashtable;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.mvel.MVEL;
+import org.mvel2.MVEL;
 
 /**
  * Encapsulates expression and template functionalities in a properties document, used in several places in
@@ -82,7 +82,6 @@ public class PropertiesTemplateAdapter {
 				variables.put(varname, MVEL.compileExpression(expr));
 			}
 		}
-		
 	}
 	
 	/**

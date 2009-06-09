@@ -5,7 +5,7 @@
 
 (defn j-make-kbox-handler
 	[]
-	(new org.integratedmodelling.modelling.data.KBoxHandler))
+	(new org.integratedmodelling.modelling.data.KBoxHandler (tl/get-session)))
 	
 (defn j-make-object-handler
 	[concept kbox]
@@ -37,7 +37,7 @@
 	 	 	    kbox#   (modelling/j-make-kbox-handler)
 	 	 	    ]
 	 	 	 (binding [*_kbox_* kbox#]
-				 (.setKbox kbox# (first (first body#)) (second (first body#)))	      	     
+				 (.setKbox kbox# (eval (first (first body#))) (second (first body#)))	      	     
  		     (doseq [mdef# (rest body#)]
     	     	(.addKnowledge kbox# (eval (first mdef#)) (second mdef#)))          	    	  	          
       	 (.getKbox kbox#))))

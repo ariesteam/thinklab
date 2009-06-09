@@ -5,17 +5,20 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Iterator;
+import java.util.Hashtable;
 
+import org.integratedmodelling.clojure.utils.OptionListIterator;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-
-import clojure.lang.PersistentList;
+import org.integratedmodelling.utils.Pair;
 
 /**
  * Interacts with a kbox on behalf of a with-kbox form.
@@ -26,31 +29,84 @@ import clojure.lang.PersistentList;
 public class KBoxHandler {
 
 	IKBox kbox = null;
-		
+	String kpref = "";
+	ISession session = null;
+	Hashtable<String, IInstance> _references = new Hashtable<String, IInstance>();
+	Hashtable<String, String> _danglingRefs = new Hashtable<String, String>(); 	
+	
+	public KBoxHandler(ISession session) {
+		this.session = session;
+	}
+	
 	public void setKbox(Object kbox, Object options) {
 		
 		/*
 		 * input could be anything that points to a kbox
 		 */
+		if (kbox instanceof IKBox) {
+			this.kbox = (IKBox)kbox;
+		}
+		
+		OptionListIterator opts = new OptionListIterator(options);
+		while (opts.hasNext()) {
+			
+			Pair<String, Object> kv = opts.next();
+			if (kv.getFirst().equals("id-prefix")) {
+				
+				kpref = kv.getSecond().toString();
+				
+			} else if (kv.getFirst().equals("storage-policy")) {
+				
+				String policy = kv.getSecond().toString();
+				if (policy.equals("require-empty")) {
+					// must be empty
+				}
+			} 
+		}
+		
 	}
 	
-	public void addKnowledge(Object kbox, Object options) {
+	public void addKnowledge(Object object, Object options) throws ThinklabException {
 		
 		/*
 		 * just ignore anything we don't know what to do with
 		 */
+		IInstance instance = null;
+		IConcept  concept = null;
+		
+		if (object instanceof IInstance) {
+			instance = (IInstance)object;
+		} else if (object instanceof IConcept) {
+			concept = (IConcept)object;
+		}
+		
+		OptionListIterator opts = new OptionListIterator(options);
+		while (opts.hasNext()) {
+			
+			Pair<String, Object> kv = opts.next();
+			if (kv.getFirst().equals("as") && instance != null) {
+				_references.put(kv.getSecond().toString(), instance);
+			}
+		}
+		
+		/*
+		 * store it right away unless it has unresolved references
+		 */
+		if (kbox != null && instance != null && _danglingRefs.get(instance.getLocalName()) == null)
+			kbox.storeObject(instance, session);
 	}
 		
 	public IKBox getKbox() {
-
 		resolveForwardReferences();
-		
 		return kbox;
 	}
 	
 	private void resolveForwardReferences() {
-		// TODO Auto-generated method stub
-		
+
+		for (String id : _danglingRefs.keySet()) {
+			
+		}
+		_danglingRefs.clear();
 	}
 
 	public synchronized IKBox createKbox(Object id, Object ur, Object options) throws ThinklabException {
@@ -72,23 +128,18 @@ public class KBoxHandler {
 		
 		if (options != null) {
 			
-			PersistentList pl = (PersistentList) options;
-			Iterator<?> it = pl.iterator();
+			OptionListIterator it = new OptionListIterator(options);
 			
 			while (it.hasNext()) {
 				
-				String key = it.next().toString();
-				Object val = it.next();
+				Pair<String, Object> kv = it.next();
+				String key = kv.getFirst();
 				
-				if (!key.startsWith(":"))
-					continue;
-				
-				key = key.substring(1);
 				if (!key.contains("."))
 					key = "kbox." + key;
 				
 				try {
-					out.write(key + "=" + val + "\n");
+					out.write(key + "=" + kv.getSecond() + "\n");
 				} catch (IOException e) {
 					throw new ThinklabIOException(e);
 				}
@@ -111,7 +162,7 @@ public class KBoxHandler {
 		return ret;
 	}
 
-	public void declareForwardReference(String _forward, String targetId) {
+	public void declareForwardReference(String _forward, IProperty property, String targetId) {
 		// TODO Auto-generated method stub
 		
 	}

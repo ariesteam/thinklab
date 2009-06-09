@@ -32,7 +32,6 @@
  **/
 package org.integratedmodelling.sql;
 
-import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -48,9 +47,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -61,7 +58,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.literals.AlgorithmValue;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.thinklab.literals.Value;
@@ -74,7 +70,7 @@ import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.Quantifier;
 import org.integratedmodelling.utils.Triple;
 import org.integratedmodelling.utils.XMLDocument;
-import org.mvel.MVEL;
+import org.mvel2.MVEL;
 import org.w3c.dom.Node;
 
 

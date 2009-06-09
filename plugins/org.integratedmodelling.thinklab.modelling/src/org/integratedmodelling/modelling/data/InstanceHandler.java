@@ -8,8 +8,6 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.utils.NameGenerator;
 
 public class InstanceHandler {
@@ -22,6 +20,7 @@ public class InstanceHandler {
 	String _id = null;
 	
 	public InstanceHandler(ISession session, String concept, KBoxHandler handler) throws ThinklabException {
+		
 		_session = session;
 		_handler = handler;
 		_id = NameGenerator.newName("obj_");
@@ -54,7 +53,7 @@ public class InstanceHandler {
 			/*
 			 * record a forward ref to resolve later
 			 */
-			_handler.declareForwardReference(((InstanceHandler)value)._forward, _id);
+			_handler.declareForwardReference(((InstanceHandler)value)._forward, property, _id);
 			
 		} else if (value instanceof IConcept) {
 			_instance.addClassificationRelationship(property, (IConcept)value);
