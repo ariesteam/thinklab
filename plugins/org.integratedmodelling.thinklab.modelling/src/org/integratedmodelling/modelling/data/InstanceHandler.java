@@ -25,6 +25,8 @@ public class InstanceHandler {
 	KBoxHandler _handler = null;
 	String _forward = null;
 	String _id = null;
+	String _label = null;
+	String _comment = null;
 	
 	public InstanceHandler(ISession session, String concept, KBoxHandler handler) throws ThinklabException {
 		
@@ -40,6 +42,22 @@ public class InstanceHandler {
 				throw new ThinklabValidationException(
 						"object: cannot define a forward reference outside of a with-kbox form");
 			_forward = concept;
+		}
+	}
+	
+	/**
+	 * Annotations are added in order of appearance; if there's only one it's a comment, if two they're
+	 * label and comment. Any further ones are ignored.
+	 * 
+	 * @param annotation
+	 */
+	public void addAnnotation(String annotation) {
+		
+		if (_label == null && _comment == null)
+			_comment = annotation;
+		else if (_comment != null && _label == null) {
+			_label = _comment;
+			_comment = annotation;
 		}
 	}
 	
@@ -72,6 +90,16 @@ public class InstanceHandler {
 	 * will be self if a forward reference, the finished object otherwise
 	 */
 	public Object getObject() {
+		
+		/*
+		 * add annotations
+		 */
+		if (_instance != null) {
+			if (_label != null)
+				_instance.addLabel(_label);
+			if (_comment != null)
+				_instance.addDescription(_comment);
+		}
 		
 		if (_handler != null && _instance != null) {
 			_handler.registerObject(_id, _instance);

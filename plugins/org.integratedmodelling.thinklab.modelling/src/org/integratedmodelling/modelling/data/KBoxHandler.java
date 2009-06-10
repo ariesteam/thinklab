@@ -53,7 +53,7 @@ public class KBoxHandler {
 			
 			Pair<String, Object> kv = opts.next();
 			if (kv.getFirst().equals("id-prefix")) {
-				
+
 				kpref = kv.getSecond().toString();
 				
 			} else if (kv.getFirst().equals("storage-policy")) {
@@ -68,7 +68,6 @@ public class KBoxHandler {
 				}
 			} 
 		}
-		
 	}
 	
 	public void addKnowledge(Object object, Object options) throws ThinklabException {

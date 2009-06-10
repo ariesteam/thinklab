@@ -18,7 +18,9 @@
 	`(let [conc# (str ~concept)
 				 inst# (j-make-object-handler conc# (eval '*_kbox_*))] 
 		(doseq [prop# '~body]
-			(.addProperty inst# (tl/prop (first prop#)) (eval (second prop#))))
+			(if (string? prop#)
+				(.addAnnotation inst# prop#)
+				(.addProperty inst# (tl/prop (first prop#)) (eval (second prop#)))))
 		(.getObject inst#)))
 
 (defmacro kbox 
