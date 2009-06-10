@@ -37,7 +37,7 @@ public class ModelKnowledgeLoader implements KnowledgeLoader {
 					IInstance i = session.createObject(list);
 					ret.add(i);
 					if (kbox != null) {
-						kbox.storeObject(i, session);
+						kbox.storeObject(i, null, session);
 					}
 				}
 			}

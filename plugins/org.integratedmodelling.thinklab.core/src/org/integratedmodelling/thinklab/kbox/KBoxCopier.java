@@ -110,7 +110,7 @@ public class KBoxCopier implements KnowledgeImporter {
 			String id = il.getLocalName();
 			
 			if (!refs.containsKey(id) && filterObject(l)) {
-				targetKB.storeObject(l, s, refs);
+				targetKB.storeObject(l, null, s, refs);
 			}
 		}
 	}
@@ -152,7 +152,7 @@ public class KBoxCopier implements KnowledgeImporter {
 		ISession session = new Session();
 		
 		for (int i = 0; i < os.length; i++) {
-			targetKB.storeObject((Polylist) os[i], session, refs);
+			targetKB.storeObject((Polylist) os[i], null, session, refs);
 		}
 
 	}

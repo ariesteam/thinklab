@@ -97,11 +97,11 @@ public class OntologyKBox implements IKBox {
 		storage.read(url);
 	}
 
-	public String storeObject(IInstance object, ISession session) throws ThinklabException {
+	public String storeObject(IInstance object, String id, ISession session) throws ThinklabException {
 		return storage.createInstance(object).getLocalName();
 	}
 
-	public String storeObject(IInstance object, ISession session, HashMap<String, String> references) throws ThinklabException {
+	public String storeObject(IInstance object, String id, ISession session, HashMap<String, String> references) throws ThinklabException {
 		return storage.createInstance(object).getLocalName();
 	}
 
@@ -139,7 +139,7 @@ public class OntologyKBox implements IKBox {
 		return query(q, 0, -1);
 	}
 
-	public String storeObject(Polylist list, ISession session) throws ThinklabException {
+	public String storeObject(Polylist list, String id, ISession session) throws ThinklabException {
 		return storage.createInstance(list).getLocalName();
 	}
 
@@ -150,7 +150,7 @@ public class OntologyKBox implements IKBox {
        return ii.toList(id, refTable);
 	}
 
-	public String storeObject(Polylist list, ISession session,
+	public String storeObject(Polylist list, String id, ISession session,
 			HashMap<String, String> refTable) throws ThinklabException {
 
 		InstanceList il = new InstanceList(list);

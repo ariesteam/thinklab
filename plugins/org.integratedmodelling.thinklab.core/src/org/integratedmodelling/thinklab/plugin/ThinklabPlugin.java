@@ -372,7 +372,7 @@ public abstract class ThinklabPlugin extends Plugin
 				HashMap<String, String> references = new HashMap<String, String>();
 
 				for (IInstance obj : objs) {
-					kbox.storeObject(obj, session, references);
+					kbox.storeObject(obj, null, session, references);
 				}
 			}
 		}

@@ -10,6 +10,13 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.utils.NameGenerator;
 
+/**
+ * Interacts with a new instance on behalf of an object clojure form. Handles forward referencing in
+ * kbox definition.
+ * 
+ * @author Ferdinando Villa
+ *
+ */
 public class InstanceHandler {
 
 	ISession _session = null;
@@ -25,9 +32,10 @@ public class InstanceHandler {
 		_handler = handler;
 		_id = NameGenerator.newName("obj_");
 		
-		if (SemanticType.validate(concept))
+		if (SemanticType.validate(concept)) {
 			_type = KnowledgeManager.get().requireConcept(concept);
-		else {
+				_instance = _session.createObject(_type.getSemanticType());
+		} else {
 			if (_handler == null)
 				throw new ThinklabValidationException(
 						"object: cannot define a forward reference outside of a with-kbox form");
@@ -39,10 +47,6 @@ public class InstanceHandler {
 		
 		if (_forward  != null) {
 			throw new ThinklabValidationException("object: cannot add properties to a forward reference");
-		}
-		
-		if (_instance == null) {
-			_instance = _session.createObject(_type.getSemanticType());
 		}
 		
 		if (value instanceof InstanceHandler) {

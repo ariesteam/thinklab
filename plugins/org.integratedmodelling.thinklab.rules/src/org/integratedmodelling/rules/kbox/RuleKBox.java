@@ -90,13 +90,13 @@ public class RuleKBox implements IKBox {
 
 	}
 
-	public String storeObject(IInstance object, ISession session)
+	public String storeObject(IInstance object, String id, ISession session)
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String storeObject(IInstance object, ISession session,
+	public String storeObject(IInstance object, String id, ISession session,
 			HashMap<String, String> references) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
@@ -119,7 +119,7 @@ public class RuleKBox implements IKBox {
 		return null;
 	}
 
-	public String storeObject(Polylist list, ISession session) throws ThinklabException {
+	public String storeObject(Polylist list, String id, ISession session) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -135,7 +135,7 @@ public class RuleKBox implements IKBox {
 		return null;
 	}
 
-	public String storeObject(Polylist list, ISession session,
+	public String storeObject(Polylist list, String id, ISession session,
 			HashMap<String, String> refTable) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;

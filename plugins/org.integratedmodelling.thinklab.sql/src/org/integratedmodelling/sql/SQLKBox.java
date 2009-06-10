@@ -98,12 +98,13 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		return session.createObject(list);
 	}
 
-	public String storeObject(IInstance object, ISession session)
+	@Override
+	public String storeObject(IInstance object, String id, ISession session)
 			throws ThinklabException {
 
 		String ret = null;
 
-		Pair<String, String> sql = storeInstanceSQL(object, session);
+		Pair<String, String> sql = storeInstanceSQL(object, session, id);
 
 		if (sql != null && sql.getSecond() != null && sql.getFirst() != "") {
 			server.execute(sql.getSecond());
@@ -119,12 +120,14 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 	 * @see org.integratedmodelling.ima.core.interfaces.IKBox#storeObject(org.integratedmodelling.ima.core.interfaces.IInstance,
 	 *      org.integratedmodelling.ima.core.interfaces.ISession,
 	 *      java.util.HashSet)
+	 * 
 	 */
-	public String storeObject(IInstance object, ISession session,
+	@Override
+	public String storeObject(IInstance object, String id, ISession session,
 			HashMap<String, String> references) throws ThinklabException {
 		String ret = null;
 
-		Pair<String, String> sql = storeInstanceSQL(object, session, references);
+		Pair<String, String> sql = storeInstanceSQL(object, session, references, id);
 
 		if (sql != null && sql.getSecond() != null && sql.getFirst() != "") {
 			server.execute(sql.getSecond());
@@ -213,7 +216,8 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 				(Constraint) q, this);
 	}
 
-	public String storeObject(Polylist list, ISession session) throws ThinklabException {
+	@Override
+	public String storeObject(Polylist list, String id, ISession session) throws ThinklabException {
 
 		String ret = null;
 		/*
@@ -227,7 +231,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		
 		IInstance object = session.createObject(list);
 
-		Pair<String, String> sql = storeInstanceSQL(object, session);
+		Pair<String, String> sql = storeInstanceSQL(object, session, id);
 
 		if (sql != null && sql.getSecond() != null && sql.getFirst() != "") {
 			server.execute(sql.getSecond());
@@ -237,7 +241,8 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		return ret;
 	}
 	
-	public String storeObject(Polylist list, ISession session,
+	@Override
+	public String storeObject(Polylist list, String id, ISession session,
 			HashMap<String, String> refTable) throws ThinklabException {
 
 		String ret = null;
@@ -252,7 +257,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		
 		IInstance object = session.createObject(list);
 
-		Pair<String, String> sql = storeInstanceSQL(object, session, refTable);
+		Pair<String, String> sql = storeInstanceSQL(object, session, refTable, id);
 
 		if (sql != null && sql.getSecond() != null && sql.getFirst() != "") {
 			server.execute(sql.getSecond());

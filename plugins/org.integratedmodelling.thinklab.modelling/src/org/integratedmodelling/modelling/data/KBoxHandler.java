@@ -68,6 +68,8 @@ public class KBoxHandler {
 	
 	public void addKnowledge(Object object, Object options) throws ThinklabException {
 		
+		String id = null;
+		
 		/*
 		 * just ignore anything we don't know what to do with
 		 */
@@ -86,6 +88,9 @@ public class KBoxHandler {
 			Pair<String, Object> kv = opts.next();
 			if (kv.getFirst().equals("as") && instance != null) {
 				_references.put(kv.getSecond().toString(), instance);
+			} else if (kv.getFirst().equals("id") && instance != null) {
+				_references.put(kv.getSecond().toString(), instance);
+				id = kv.getSecond().toString();
 			}
 		}
 		
@@ -93,7 +98,7 @@ public class KBoxHandler {
 		 * store it right away unless it has unresolved references
 		 */
 		if (kbox != null && instance != null && _danglingRefs.get(instance.getLocalName()) == null)
-			kbox.storeObject(instance, session);
+			kbox.storeObject(instance, id, session);
 	}
 		
 	public IKBox getKbox() {

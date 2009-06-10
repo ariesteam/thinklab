@@ -87,7 +87,7 @@ public class Load implements ICommandHandler {
 			HashMap<String, String> references = new HashMap<String, String>();
 
 			for (IInstance obj : objs) {
-				kids.add(kb.storeObject(obj, session, references));
+				kids.add(kb.storeObject(obj, null, session, references));
 			}
 		}
 

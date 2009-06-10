@@ -421,7 +421,7 @@ public abstract class SQLThinklabServer {
 		return new Pair<String, Long>(ssql, ret);
 	}
 	
-	private Triple<String, Long, String> getClassID(IKnowledgeSubject c, String sql) {
+	private Triple<String, Long, String> getClassID(IKnowledgeSubject c, String sql, String id) {
 
 		long conceptID = 0;
 		String objectID = null;
@@ -461,10 +461,14 @@ public abstract class SQLThinklabServer {
 			conceptID = iid;
 		}
 
-		if (!useLocalNames ) {
-			objectID = server.getDatabase() + "_" + IDs.objectID++;
+		if (id != null) {
+			objectID = id;
 		} else {
-			objectID = c.getLocalName();
+			if (!useLocalNames ) {
+				objectID = server.getDatabase() + "_" + IDs.objectID++;
+			} else {
+				objectID = c.getLocalName();
+			}
 		}
 		
 		return new Triple<String, Long, String>(objectID, new Long(conceptID),
@@ -1148,9 +1152,9 @@ public abstract class SQLThinklabServer {
 	 * @return the ID of the stored instance in the kbox.
 	 * @throws ThinklabStorageException 
 	 */
-	synchronized public String storeInstance(IInstance c, ISession session) throws ThinklabException {
+	synchronized public String storeInstance(IInstance c, ISession session, String id) throws ThinklabException {
 		
-		Pair<String, String> sql = storeInstanceSQL(c, session);
+		Pair<String, String> sql = storeInstanceSQL(c, session, id);
 		if (sql != null && !sql.getSecond().equals(""))
 			server.execute(sql.getSecond());
 		return sql.getFirst();
@@ -1171,14 +1175,14 @@ public abstract class SQLThinklabServer {
 	 * @throws ThinklabStorageException 
 	 */
 	public Pair<String, String> storeInstanceSQL(IInstance c, ISession session,
-												 HashMap<String, String> referenceTable) 
+												 HashMap<String, String> referenceTable, String id) 
 				throws ThinklabException {
 		
 		if (referenceTable == null)
 			referenceTable = new HashMap<String, String>();
 		
 		Pair<String, String> ret = 
-			storeInstanceSQLInternal(c, "", 0, "", 0, referenceTable, session);
+			storeInstanceSQLInternal(c, "", 0, "", 0, referenceTable, session, id);
 		
 		return ret;
 	}
@@ -1193,13 +1197,13 @@ public abstract class SQLThinklabServer {
 	 * @return
 	 * @throws ThinklabStorageException 
 	 */
-	public Pair<String, String> storeInstanceSQL(IInstance c, ISession session)
+	public Pair<String, String> storeInstanceSQL(IInstance c, ISession session, String id)
 		throws ThinklabException {
 		
 		HashMap<String, String> references = new HashMap<String, String>();
 		
 		Pair<String, String> ret = 
-			storeInstanceSQLInternal(c, "", 0, "", 0, references, session);
+			storeInstanceSQLInternal(c, "", 0, "", 0, references, session, id);
 		
 		return ret;
 	}
@@ -1219,7 +1223,7 @@ public abstract class SQLThinklabServer {
 	 */
 	private Pair<String, String> storeInstanceSQLInternal(IInstance c,
 			String query, long relationshipID, String conceptID, int totalRels,
-			HashMap<String, String> references, ISession session)
+			HashMap<String, String> references, ISession session, String id)
 			throws ThinklabException {
 		
 		String sql = query;
@@ -1232,7 +1236,7 @@ public abstract class SQLThinklabServer {
 			return new Pair<String, String>(references.get(c.getLocalName()), sql);
 
 		/* Retrieve new ID for concept and its ancestor concepts. */
-		Triple<String, Long, String> cid = getClassID(c, sql);
+		Triple<String, Long, String> cid = getClassID(c, sql, id);
 		sql = cid.getThird();
 
 		/* update references catalog so we don't store it more than once */
@@ -1263,27 +1267,9 @@ public abstract class SQLThinklabServer {
 					sql += ", " + translateLiteral(v, v.getConcept(), session);
 
 				} else {
-				
-					// TODO move to IExpression interface, use eval with session and instance
-					// as parameters.
+
 					throw new ThinklabStorageException("internal: extension languages temporarily unsupported in SQL plugin");
-//					try {
-//						/* obtain an algorithm from the string stored in XML */
-//						AlgorithmValue aa = (AlgorithmValue) KnowledgeManager.get()
-//							.validateLiteral(
-//									KnowledgeManager.get().requireConcept(
-//											scriptLanguage),
-//									tab.fieldValues.get(i));
-//
-//						/*
-//						 * calculate field in context of instance, add proper
-//						 * representation
-//						 */
-//						IValue v = c.execute(aa, session);
-//						sql += ", " + translateLiteral(v, v.getConcept(), session);
-//					} catch (ThinklabException e) {
-//						throw new ThinklabStorageException(e);
-//					}
+
 				}
 			}
 		}
@@ -1389,7 +1375,7 @@ public abstract class SQLThinklabServer {
 					/* it's a concept: retrieve its ID (store if necessary) */
 					Pair<String, String> iid = storeInstanceSQLInternal(
 							((ObjectReferenceValue) rel.getValue()).getObject(),
-							sql, rid, cid.getFirst(), tot, references, session);
+							sql, rid, cid.getFirst(), tot, references, session, id);
 
 					sql = iid.getSecond();
 

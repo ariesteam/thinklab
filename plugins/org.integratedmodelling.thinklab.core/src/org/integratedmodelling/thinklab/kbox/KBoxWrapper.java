@@ -69,14 +69,14 @@ public abstract class KBoxWrapper implements IKBox {
 		return kbox.getObjectAsListFromID(id, refTable);
 	}
 
-	public String storeObject(Polylist list, ISession session,
+	public String storeObject(Polylist list, String id, ISession session,
 			HashMap<String, String> refTable) throws ThinklabException {
-		return kbox.storeObject(list, session, refTable);
+		return kbox.storeObject(list, id, session, refTable);
 	}
 
-	public String storeObject(Polylist list, ISession session)
+	public String storeObject(Polylist list, String id, ISession session)
 			throws ThinklabException {
-		return kbox.storeObject(list, session);
+		return kbox.storeObject(list, id, session);
 	}
 
 	public IQueryResult query(IQuery q, int offset, int maxResults)
@@ -107,14 +107,14 @@ public abstract class KBoxWrapper implements IKBox {
 		return kbox.getObjectFromID(id, session, refTable);
 	}
 
-	public String storeObject(IInstance object, ISession session)
+	public String storeObject(IInstance object, String id, ISession session)
 			throws ThinklabException {
-		return kbox.storeObject(object, session);
+		return kbox.storeObject(object, id, session);
 	}
 
-	public String storeObject(IInstance object, ISession session,
+	public String storeObject(IInstance object, String id, ISession session,
 			HashMap<String, String> references) throws ThinklabException {
-		return kbox.storeObject(object, session, references);
+		return kbox.storeObject(object, id, session, references);
 	}
 
 }

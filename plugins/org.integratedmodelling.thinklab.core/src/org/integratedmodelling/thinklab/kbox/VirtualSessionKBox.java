@@ -104,21 +104,21 @@ public class VirtualSessionKBox implements IKBox {
 		return session.requireObject(id);
 	}
 
-	public String storeObject(Polylist list, ISession s) throws ThinklabException {
+	public String storeObject(Polylist list, String id, ISession s) throws ThinklabException {
 
 		IInstance ninst = session.createObject(list);
 		instances.add(ninst);
 		return ninst.getLocalName();
 	}
 
-	public String storeObject(IInstance object, ISession session)
+	public String storeObject(IInstance object, String id, ISession session)
 			throws ThinklabException {
 		
 		instances.add(object);
 		return object.getLocalName();
 	}
 
-	public String storeObject(Polylist list, ISession session,
+	public String storeObject(Polylist list, String iid, ISession session,
 			HashMap<String, String> refTable) throws ThinklabException {
 
 		/*
@@ -138,7 +138,7 @@ public class VirtualSessionKBox implements IKBox {
 		return ret;
 		
 	}
-	public String storeObject(IInstance object, ISession session,
+	public String storeObject(IInstance object, String id, ISession session,
 			HashMap<String, String> references) throws ThinklabException {
 
 		String oid = object.getLocalName();

@@ -460,7 +460,7 @@ public class OPALValidator {
         if (sess != null) {
         	ret = sess.createObject(ls);
         	if (kbox != null) {
-        		kbox.storeObject(ret, sess);
+        		kbox.storeObject(ret, null, sess);
         	}
         }
         

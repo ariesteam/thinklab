@@ -174,7 +174,7 @@ public abstract interface IKBox extends IQueriable {
 
 	 * @throws ThinklabException
 	 */
-	public abstract String storeObject(Polylist list, ISession session) throws ThinklabException;
+	public abstract String storeObject(Polylist list, String id, ISession session) throws ThinklabException;
 	
 	/**
 	 * A Kbox should be capable of storing an object from its list description. If necessary, the
@@ -194,7 +194,7 @@ public abstract interface IKBox extends IQueriable {
 
 	 * @throws ThinklabException
 	 */
-	public abstract String storeObject(Polylist list, ISession session, HashMap<String, String> refTable) throws ThinklabException;
+	public abstract String storeObject(Polylist list, String id, ISession session, HashMap<String, String> refTable) throws ThinklabException;
 	
 	/**
 	 * Store an object in the KBox. Return its ID in it, which may or may not be the same ID as the
@@ -207,7 +207,7 @@ public abstract interface IKBox extends IQueriable {
 	 *         instance's, but if not a different one may be returned.
 	 * @throws ThinklabException if anything goes wrong.
 	 */
-	public abstract String storeObject(IInstance object, ISession session) throws ThinklabException;
+	public abstract String storeObject(IInstance object, String id, ISession session) throws ThinklabException;
 
 	/**
 	 * Store an object in the KBox. Return its ID in it, which may or may not be the same ID as the
@@ -227,7 +227,7 @@ public abstract interface IKBox extends IQueriable {
 	 * 
 	 * @throws ThinklabException if anything goes wrong.
 	 */
-	public abstract String storeObject(IInstance object, ISession session, HashMap<String, String> references) throws ThinklabException;
+	public abstract String storeObject(IInstance object, String id, ISession session, HashMap<String, String> references) throws ThinklabException;
 
 	/**
 	 * Return an object that we can query to know what operators and such are supported by
