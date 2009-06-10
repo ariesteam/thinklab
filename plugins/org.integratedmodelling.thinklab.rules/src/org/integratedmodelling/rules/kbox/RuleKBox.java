@@ -157,4 +157,10 @@ public class RuleKBox implements IKBox {
 		return null;
 	}
 
+	@Override
+	public long getObjectCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

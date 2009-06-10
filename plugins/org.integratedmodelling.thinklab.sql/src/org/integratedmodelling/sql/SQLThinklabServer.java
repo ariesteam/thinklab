@@ -1732,7 +1732,11 @@ public abstract class SQLThinklabServer {
 		}
     	
     }
-	
+    
+    public long getObjectCount() throws ThinklabStorageException {
+    	QueryResult rsq = server.query("SELECT COUNT(object_id) FROM object;");
+    	return rsq.getLong(0, 0);
+    }
 
 	protected boolean isStorageInitialized() throws ThinklabStorageException {
 		// just check if we have key tables

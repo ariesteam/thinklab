@@ -285,4 +285,14 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		return uri;
 	}
 
+	@Override
+	public long getObjectCount() {
+		long ret = 0l;
+		try {
+			ret = super.getObjectCount();
+		} catch (ThinklabStorageException e) {
+		}
+		return ret;
+	}
+
 }

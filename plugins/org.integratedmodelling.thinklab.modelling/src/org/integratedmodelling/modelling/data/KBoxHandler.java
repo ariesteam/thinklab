@@ -31,6 +31,7 @@ public class KBoxHandler {
 	IKBox kbox = null;
 	String kpref = "";
 	ISession session = null;
+	boolean _disabled = false;
 	Hashtable<String, IInstance> _references = new Hashtable<String, IInstance>();
 	Hashtable<String, String> _danglingRefs = new Hashtable<String, String>(); 	
 	
@@ -58,8 +59,12 @@ public class KBoxHandler {
 			} else if (kv.getFirst().equals("storage-policy")) {
 				
 				String policy = kv.getSecond().toString();
-				if (policy.equals("require-empty")) {
-					// must be empty
+				if (policy.equals(":disable-unless-empty") && this.kbox != null) {
+					if (this.kbox.getObjectCount() > 0l) {
+						_disabled = true;
+						ModellingPlugin.get().logger().info("kbox not empty: any object definitions ignored");
+					}
+						
 				}
 			} 
 		}
@@ -177,6 +182,9 @@ public class KBoxHandler {
 		
 	}
 	
+	public boolean isDisabled() {
+		return _disabled;
+	}
 }
 
 

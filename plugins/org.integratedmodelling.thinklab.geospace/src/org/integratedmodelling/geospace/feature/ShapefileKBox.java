@@ -162,5 +162,11 @@ public class ShapefileKBox extends InstanceShapefileHandler implements IKBox {
 		return uri;
 	}
 
+	@Override
+	public long getObjectCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 
 }

@@ -150,4 +150,10 @@ public class MultipleKBox implements IKBox {
 		return properties;
 	}
 
+	@Override
+	public long getObjectCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

@@ -203,4 +203,9 @@ public class VirtualSessionKBox implements IKBox {
 		return properties;
 	}
 
+	@Override
+	public long getObjectCount() {
+		return instances.size();
+	}
+
 }

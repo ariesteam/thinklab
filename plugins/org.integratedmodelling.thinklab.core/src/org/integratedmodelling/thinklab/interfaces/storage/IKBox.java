@@ -238,6 +238,12 @@ public abstract interface IKBox extends IQueriable {
 	public IKBoxCapabilities getKBoxCapabilities();
 
 	/**
+	 * KBoxes must be capable to return the number of objects they contain.
+	 * @return
+	 */
+	public abstract long getObjectCount();
+	
+	/**
 	 * If the kbox properties define a schema, return it. Otherwise return the 
 	 * default schema which is (id, rdfs:type, rdfs:label, rdfs:comment). The schema must be 
 	 * valid (use IKboxManager.validateSchema).

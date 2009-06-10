@@ -38,6 +38,7 @@
 	 	 	    ]
 	 	 	 (binding [*_kbox_* kbox#]
 				 (.setKbox kbox# (eval (first (first body#))) (second (first body#)))	      	     
- 		     (doseq [mdef# (rest body#)]
-    	     	(.addKnowledge kbox# (eval (first mdef#)) (second mdef#)))          	    	  	          
+ 		     (if (not (.isDisabled kbox#)) 
+ 		     		 (doseq [mdef# (rest body#)]
+    	     		  (.addKnowledge kbox# (eval (first mdef#)) (second mdef#)))) 
       	 (.getKbox kbox#))))

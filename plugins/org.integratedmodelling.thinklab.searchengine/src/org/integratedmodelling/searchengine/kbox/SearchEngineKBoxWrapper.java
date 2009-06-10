@@ -112,5 +112,10 @@ public class SearchEngineKBoxWrapper extends KBoxWrapper implements RankingKBox 
 		return kbox.getProperties();
 	}
 
+	@Override
+	public long getObjectCount() {
+		return kbox.getObjectCount();
+	}
+
 	
 }
