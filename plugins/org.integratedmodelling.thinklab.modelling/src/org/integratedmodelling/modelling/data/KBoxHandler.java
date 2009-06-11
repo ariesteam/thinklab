@@ -12,6 +12,7 @@ import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -33,7 +34,29 @@ public class KBoxHandler {
 	ISession session = null;
 	boolean _disabled = false;
 	Hashtable<String, IInstance> _references = new Hashtable<String, IInstance>();
-	Hashtable<String, String> _danglingRefs = new Hashtable<String, String>(); 	
+	Hashtable<String, ReferenceRecord> _danglingRefs = new Hashtable<String, ReferenceRecord>(); 	
+	
+	class ReferenceRecord {
+		
+		public IInstance target;
+		public String reference;
+		public IProperty property;
+		
+		public ReferenceRecord(IInstance t, IProperty prop, String ref) {
+			target = t;
+			reference = ref;
+			property = prop;
+		}
+		
+		public void resolve() throws ThinklabException {
+			
+			IInstance refd = _references.get(reference);
+			if (refd == null) {
+				throw new ThinklabResourceNotFoundException("kbox doesn't define forward reference " + reference);
+			}
+			target.addObjectRelationship(property, refd);
+		}
+	}
 	
 	public KBoxHandler(ISession session) {
 		this.session = session;
