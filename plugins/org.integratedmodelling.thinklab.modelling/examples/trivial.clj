@@ -14,10 +14,6 @@
 		:derivative (time '(* self (^  growth-rate time)))
 		:initially  23.0)
 		
-		
-		
-
-
 (defmodel classified-biomass 'ecology:Biomass
 	(classification (measurement 'ecology:Biomass "kg/m^2") 
 			[0 2.5]  'biomass:Low 
