@@ -34,6 +34,7 @@ package org.integratedmodelling.persistence.kbox;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -333,6 +334,12 @@ public class PInstance implements IInstance {
 		return null;
 	}
 	public void setImplementation(IInstanceImplementation second)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void addObjectRelationship(IProperty p, URI externalObject)
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		

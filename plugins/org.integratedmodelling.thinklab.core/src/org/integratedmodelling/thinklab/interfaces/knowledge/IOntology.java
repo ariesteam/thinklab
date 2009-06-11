@@ -41,6 +41,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.utils.Polylist;
 
 /**

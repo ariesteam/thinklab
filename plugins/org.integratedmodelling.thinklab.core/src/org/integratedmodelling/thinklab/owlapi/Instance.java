@@ -18,6 +18,7 @@
  */
 package org.integratedmodelling.thinklab.owlapi;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import java.util.Set;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -414,6 +416,13 @@ public class Instance extends Knowledge implements IInstance {
 			refs = new HashMap<String, String>();
 
 		return convertToList(refs, name);
+	}
+
+	@Override
+	public void addObjectRelationship(IProperty p, URI externalObject)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		throw new ThinklabUnimplementedFeatureException("UNIMPLEMENTED: storing objects as URIs");
 	}
 
 }

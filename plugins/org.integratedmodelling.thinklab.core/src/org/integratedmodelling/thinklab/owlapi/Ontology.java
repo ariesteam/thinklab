@@ -110,6 +110,7 @@ public class Ontology implements IOntology {
 			property = prop;
 		}
 	}
+	
 	private void resolveReferences (Collection<ReferenceRecord> refs) throws ThinklabException {
 
 		for (ReferenceRecord r : refs) {

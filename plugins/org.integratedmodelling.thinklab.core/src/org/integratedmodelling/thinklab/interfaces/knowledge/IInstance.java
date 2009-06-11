@@ -33,6 +33,7 @@
  **/
 package org.integratedmodelling.thinklab.interfaces.knowledge;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -249,6 +250,21 @@ public interface IInstance extends IKnowledgeSubject {
 	public abstract void addObjectRelationship(IProperty p, IInstance object)
 			throws ThinklabException;
 
+	/**
+	 * Add a relationship between the instance and another instance in an external kbox without
+	 * creating the instance, but just storing the URI. The relationship will need to retrieve the
+	 * instance at runtime.
+	 * 
+	 * @category Modifying methods
+	 * @param p
+	 *            a property
+	 * @param object
+	 *            an object value
+	 * @throws ThinklabException
+	 */
+	public abstract void addObjectRelationship(IProperty p, URI externalObject)
+			throws ThinklabException;
+	
 	/**
 	 * Add a relationship between the instance and another Instance through
 	 * passed property.

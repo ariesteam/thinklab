@@ -33,6 +33,7 @@
  **/
 package org.integratedmodelling.thinklab.owlapi;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -59,6 +60,8 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IParseable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.literals.NumberValue;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
@@ -689,6 +692,21 @@ public class ThinklabOWLManager {
 			 * a direct instance was stuck in the list - why not.
 			 */
 			inst.addObjectRelationship(property, (IInstance)o2);
+			
+		} else if ((o2 instanceof URL || (o2 instanceof String && ((String)o2).contains("://"))) && 
+						property.isObjectProperty()) {
+					
+			String uri = o2.toString();
+			String[] up = uri.split("#");
+			
+			if (up.length != 2) {
+				throw new ThinklabValidationException("parsing reference " + uri + ": invalid external object URI");
+			}
+			
+			IKBox kbox = KBoxManager.get().requireGlobalKBox(up[0]);
+			Polylist list = kbox.getObjectAsListFromID(up[1], null);
+			IInstance linked = ont.createInstance(list);  
+			inst.addObjectRelationship(property, linked);
 			
 		} else {
 			

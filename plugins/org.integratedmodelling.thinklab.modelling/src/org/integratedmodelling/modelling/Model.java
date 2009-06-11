@@ -43,7 +43,6 @@ public class Model extends DefaultAbstractModel implements IConceptualizable {
 	String description = null;
 	IObservation contingencyModel = null;
 	
-	
 	/**
 	 * Stores state and variable info related to the specific contingency for which we're building
 	 * a model. Each state of the contingency model corresponds to one of these, returned by the

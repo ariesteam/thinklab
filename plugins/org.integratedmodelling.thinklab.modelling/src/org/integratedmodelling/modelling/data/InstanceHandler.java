@@ -1,5 +1,8 @@
 package org.integratedmodelling.modelling.data;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -8,7 +11,10 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.NameGenerator;
+import org.integratedmodelling.utils.Polylist;
 
 /**
  * Interacts with a new instance on behalf of an object clojure form. Handles forward referencing in
@@ -24,6 +30,7 @@ public class InstanceHandler {
 	IConcept  _type = null;
 	KBoxHandler _handler = null;
 	String _forward = null;
+	String _external = null;
 	String _id = null;
 	String _label = null;
 	String _comment = null;
@@ -34,14 +41,21 @@ public class InstanceHandler {
 		_handler = handler;
 		_id = NameGenerator.newName("obj_");
 		
-		if (SemanticType.validate(concept)) {
-			_type = KnowledgeManager.get().requireConcept(concept);
-				_instance = _session.createObject(_type.getSemanticType());
+		if (concept.contains("://")) {
+			/* URL of external object, will be stored as is */
+			_external = concept;
+			
 		} else {
-			if (_handler == null)
-				throw new ThinklabValidationException(
+		
+			if (SemanticType.validate(concept)) {
+				_type = KnowledgeManager.get().requireConcept(concept);
+					_instance = _session.createObject(_type.getSemanticType());
+			} else {
+				if (_handler == null)
+					throw new ThinklabValidationException(
 						"object: cannot define a forward reference outside of a with-kbox form");
-			_forward = concept;
+				_forward = concept;
+			}
 		}
 	}
 	
@@ -69,14 +83,50 @@ public class InstanceHandler {
 		
 		if (value instanceof InstanceHandler) {
 			
-			if (_handler == null)
-				throw new ThinklabValidationException(
+			InstanceHandler ih = (InstanceHandler)value;
+
+			if (ih._external != null) {
+
+				/*
+				 * behavior differs if we're building an object or storing into a kbox
+				 */
+				if (_handler != null) {
+					
+					/*
+					 * store proxy for external record in kbox
+					 */
+					try {
+						_instance.addObjectRelationship(property, new URI(ih._external));
+					} catch (URISyntaxException e) {
+						throw new ThinklabValidationException(e);
+					}
+					
+				} else {
+					/*
+					 * build object and link it up
+					 */
+					String uri = ih._external.toString();
+					String[] up = uri.split("#");
+					
+					if (up.length != 2) {
+						throw new ThinklabValidationException("parsing reference " + uri + ": invalid external object URI");
+					}
+					
+					IKBox kbox = KBoxManager.get().requireGlobalKBox(up[0]);
+					Polylist list = kbox.getObjectAsListFromID(up[1], null);
+					IInstance linked = _session.createObject(list);  
+					_instance.addObjectRelationship(property, linked);
+				}
+				
+			} else {
+				if (_handler == null)
+					throw new ThinklabValidationException(
 						"object: cannot handle a forward reference outside of a with-kbox form");
-			/*
-			 * record a forward ref to resolve later
-			 */
-			_handler.declareForwardReference(((InstanceHandler)value)._forward, property, _id);
-			
+				/*
+				 * record a forward ref to resolve later
+				 */
+				_handler.declareForwardReference(ih._forward, property, _id);
+			}
 		} else if (value instanceof IConcept) {
 			_instance.addClassificationRelationship(property, (IConcept)value);
 		}else if (value instanceof IInstance) {
