@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import org.integratedmodelling.clojure.utils.OptionListIterator;
@@ -34,7 +35,7 @@ public class KBoxHandler {
 	ISession session = null;
 	boolean _disabled = false;
 	Hashtable<String, IInstance> _references = new Hashtable<String, IInstance>();
-	Hashtable<String, ReferenceRecord> _danglingRefs = new Hashtable<String, ReferenceRecord>(); 	
+	ArrayList<ReferenceRecord> _danglingRefs = new ArrayList<ReferenceRecord>(); 	
 	
 	class ReferenceRecord {
 		
@@ -102,9 +103,11 @@ public class KBoxHandler {
 		 */
 		IInstance instance = null;
 		IConcept  concept = null;
+		String iid = null;
 		
 		if (object instanceof IInstance) {
 			instance = (IInstance)object;
+			iid = instance.getLocalName();
 		} else if (object instanceof IConcept) {
 			concept = (IConcept)object;
 		}
@@ -114,31 +117,37 @@ public class KBoxHandler {
 			
 			Pair<String, Object> kv = opts.next();
 			if (kv.getFirst().equals("as") && instance != null) {
-				_references.put(kv.getSecond().toString(), instance);
+				iid = kv.getSecond().toString();
+				_references.put(iid, instance);
 			} else if (kv.getFirst().equals("id") && instance != null) {
-				_references.put(kv.getSecond().toString(), instance);
-				id = kv.getSecond().toString();
+				id = iid = kv.getSecond().toString();
+				_references.put(iid, instance);
 			}
 		}
 		
 		/*
 		 * store it right away unless it has unresolved references
 		 */
-		if (kbox != null && instance != null && _danglingRefs.get(instance.getLocalName()) == null)
+		if (kbox != null && instance != null && _references.get(iid) == null)
 			kbox.storeObject(instance, id, session);
 	}
 		
-	public IKBox getKbox() {
+	public IKBox getKbox() throws ThinklabException {
 		resolveForwardReferences();
 		return kbox;
 	}
 	
-	private void resolveForwardReferences() {
+	private void resolveForwardReferences() throws ThinklabException {
 
-		for (String id : _danglingRefs.keySet()) {
-			
+		for (String iid : _references.keySet()) {
+			kbox.storeObject(_references.get(iid), iid, session);
 		}
+		for (ReferenceRecord ref : _danglingRefs) {
+			ref.resolve();
+		}
+		
 		_danglingRefs.clear();
+		_references.clear();
 	}
 
 	public synchronized IKBox createKbox(Object id, Object ur, Object options) throws ThinklabException {
@@ -194,9 +203,8 @@ public class KBoxHandler {
 		return ret;
 	}
 
-	public void declareForwardReference(String _forward, IProperty property, String targetId) {
-		// TODO Auto-generated method stub
-		
+	public void declareForwardReference(IInstance instance, IProperty property, String targetId) {
+		_danglingRefs.add(new ReferenceRecord(instance, property, targetId));
 	}
 
 	public void registerObject(String _id, IInstance _instance) {

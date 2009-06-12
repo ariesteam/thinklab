@@ -123,9 +123,9 @@ public class InstanceHandler {
 					throw new ThinklabValidationException(
 						"object: cannot handle a forward reference outside of a with-kbox form");
 				/*
-				 * record a forward ref to resolve later
+				 * record a forward ref to resolve later by the kbox handler
 				 */
-				_handler.declareForwardReference(ih._forward, property, _id);
+				_handler.declareForwardReference(_instance, property, ih._forward);
 			}
 		} else if (value instanceof IConcept) {
 			_instance.addClassificationRelationship(property, (IConcept)value);
