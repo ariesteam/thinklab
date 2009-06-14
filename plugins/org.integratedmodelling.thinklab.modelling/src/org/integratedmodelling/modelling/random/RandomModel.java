@@ -54,4 +54,10 @@ public class RandomModel extends DefaultStatefulAbstractModel {
 		return null;
 	}
 
+	@Override
+	public Polylist conceptualize() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

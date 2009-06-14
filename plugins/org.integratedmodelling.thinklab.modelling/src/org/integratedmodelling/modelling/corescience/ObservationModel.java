@@ -46,4 +46,10 @@ public class ObservationModel extends DefaultAbstractModel {
 		return Polylist.list(CoreScience.Observation());
 	}
 
+	@Override
+	public Polylist conceptualize() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

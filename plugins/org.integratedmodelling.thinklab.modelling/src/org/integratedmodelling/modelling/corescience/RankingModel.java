@@ -53,4 +53,10 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 		return null;
 	}
 
+	@Override
+	public Polylist conceptualize() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

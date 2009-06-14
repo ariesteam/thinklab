@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.interfaces;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.utils.Polylist;
 
 /**
@@ -24,7 +25,7 @@ import org.integratedmodelling.utils.Polylist;
  * @date Jan 25th, 2008.
  * 
  */
-public interface IModel {
+public interface IModel extends IConceptualizable {
 
 
 	/**

@@ -64,6 +64,12 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 		return ret;
 	}
 
+	@Override
+	public Polylist conceptualize() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	
 }

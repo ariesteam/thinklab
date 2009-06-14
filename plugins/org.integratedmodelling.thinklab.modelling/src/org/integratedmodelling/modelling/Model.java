@@ -34,7 +34,7 @@ import org.integratedmodelling.utils.Polylist;
  * @author Ferdinando Villa
  * @date Jan 25th, 2008.
  */
-public class Model extends DefaultAbstractModel implements IConceptualizable {
+public class Model extends DefaultAbstractModel {
 
 	ArrayList<IModel> models = null;
 	Collection<IModel> context = null;

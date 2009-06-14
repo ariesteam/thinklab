@@ -65,4 +65,9 @@ public class ModelProxy extends DefaultAbstractModel {
 	public IInstance run(ISession session, Collection<Object> params) throws ThinklabException {
 		return model.run(session,params);
 	}
+
+	@Override
+	public Polylist conceptualize() throws ThinklabException {
+		return model.conceptualize();
+	}
 }

@@ -209,4 +209,10 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 		return Polylist.PolylistFromArrayList(arr);
 	}
 
+	@Override
+	public Polylist conceptualize() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
