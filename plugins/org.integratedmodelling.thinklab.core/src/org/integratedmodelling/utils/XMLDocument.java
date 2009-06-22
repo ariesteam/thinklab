@@ -44,6 +44,7 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -57,6 +58,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -85,6 +87,42 @@ public class XMLDocument {
 	boolean   needsWrite = false;
 	File      docFile = null;
 	Element  root = null;
+
+	
+	public class NodeIterator implements Iterator<Node> {
+
+		Node _current = null;
+		
+		public NodeIterator(Node node) {
+			_current = node.getFirstChild();
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return _current != null;
+		}
+
+		@Override
+		public Node next() {
+			Node ret = _current;
+			_current = _current.getNextSibling();
+			return ret;
+		}
+
+		@Override
+		public void remove() {
+			throw new ThinklabRuntimeException("Node iterator is read only");
+		}
+		
+	}
+	
+	public NodeIterator iterator() {
+		return new NodeIterator(root);
+	}
+	
+	public NodeIterator iterator(Node node) {
+		return new NodeIterator(node);
+	}
 	
 	public XMLDocument(String rootNode) throws ThinklabValidationException {
 	

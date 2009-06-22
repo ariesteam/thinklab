@@ -32,6 +32,14 @@
    		(bibtex:hasAbstract "This study presents a framework for (V) under bar isually (I) under bar nteractive (D) under bar ecision-making and (D) under bar esign using (E) under bar volutionary Multi-objective Optimization (V (I) under bar DEO). The VI (D) under bar EO framework allows users to visually navigate large multi-objective solution sets while aiding decision makers in identifying one or more optimal designs. Specifically, the interactive visualization framework is intended to provide an innovative exploration tool for high-order Pareto-optimal solution sets (i.e., solution sets for three or more objectives). The framework is demonstrated for a long-term ground-water monitoring (LTM) application in which users can explore and visualize tradeoffs for up to four design objectives, simultaneously. Interactive functionality within the framework allows the user to select solutions within the objective space and visualize the corresponding monitoring plan's perfon-nance in the design space. This functionality provides the user with a holistic picture of the information provided by a particular solution, ultimately allowing them to make a more informed decision. In addition, the ease with which the framework allows users to navigate and compare solutions as well as design tradeoffs leads to a time efficient analysis, even when there are thousands of potential solutions. (c) 2007 Elsevier Ltd. All rights reserved.")
   		(metadata:hasDownloadLink "articles/08003011183020297.pdf")) 
   	:id 'KollatRed2007
+  	
+  	(object currency/monetary-value 
+  		(modelling/hasObservable (object 'esval:CollectiveValueAssessment (hasBenefit 'eserv:NutrientRegulation)))
+  		
+  		
+  		
+  		)
+  		 
  ) 
 
 					
