@@ -27,7 +27,7 @@ public class GeospaceKnowledgeLoader implements KnowledgeLoader {
 			ret = new InstanceShapefileLoader(url).loadObservations(session);
 			if (kbox != null) {
 				for (IInstance inst : ret)
-					kbox.storeObject(inst, null, session);
+					kbox.storeObject(inst, null, null, session);
 			}
 		} else if (MiscUtilities.getFileExtension(url.toString()).equals("tif")) {
 
@@ -35,7 +35,7 @@ public class GeospaceKnowledgeLoader implements KnowledgeLoader {
 					.loadObservations(session);
 			if (kbox != null) {
 				for (IInstance inst : ret)
-					kbox.storeObject(inst, null, session);
+					kbox.storeObject(inst, null, null, session);
 			}
 		}
 

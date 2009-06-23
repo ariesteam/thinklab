@@ -34,10 +34,12 @@
 package org.integratedmodelling.thinklab.kbox;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
@@ -69,14 +71,14 @@ public abstract class KBoxWrapper implements IKBox {
 		return kbox.getObjectAsListFromID(id, refTable);
 	}
 
-	public String storeObject(Polylist list, String id, ISession session,
-			HashMap<String, String> refTable) throws ThinklabException {
-		return kbox.storeObject(list, id, session, refTable);
+	public String storeObject(Polylist list, String id, Map<String, IValue> metadata,
+			ISession session, HashMap<String, String> refTable) throws ThinklabException {
+		return kbox.storeObject(list, id, null, session, refTable);
 	}
 
-	public String storeObject(Polylist list, String id, ISession session)
+	public String storeObject(Polylist list, String id, Map<String, IValue> metadata, ISession session)
 			throws ThinklabException {
-		return kbox.storeObject(list, id, session);
+		return kbox.storeObject(list, id, null, session);
 	}
 
 	public IQueryResult query(IQuery q, int offset, int maxResults)
@@ -107,14 +109,14 @@ public abstract class KBoxWrapper implements IKBox {
 		return kbox.getObjectFromID(id, session, refTable);
 	}
 
-	public String storeObject(IInstance object, String id, ISession session)
+	public String storeObject(IInstance object, String id, Map<String, IValue> metadata, ISession session)
 			throws ThinklabException {
-		return kbox.storeObject(object, id, session);
+		return kbox.storeObject(object, id, null, session);
 	}
 
-	public String storeObject(IInstance object, String id, ISession session,
-			HashMap<String, String> references) throws ThinklabException {
-		return kbox.storeObject(object, id, session, references);
+	public String storeObject(IInstance object, String id, Map<String, IValue> metadata,
+			ISession session, HashMap<String, String> references) throws ThinklabException {
+		return kbox.storeObject(object, id, null, session, references);
 	}
 
 }

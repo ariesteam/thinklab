@@ -36,6 +36,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -97,6 +98,12 @@ public abstract class SQLThinklabServer {
     HashMap<Long, String> id2Property  = new HashMap<Long, String>();
     HashMap<String, Long> property2ID  = new HashMap<String, Long>();
 
+    HashMap<String, IConcept> metadataCatalog = new HashMap<String, IConcept>();
+    /*
+     * sorted metadata keys 
+     */
+    ArrayList<String> metadataKeys = new ArrayList<String>();
+    
 	private static  Logger log = Logger.getLogger(SQLThinklabServer.class);
 	
     private String databaseIDString = null;
@@ -139,6 +146,24 @@ public abstract class SQLThinklabServer {
 
 		public TableDesc(String name) {
 			this.name = name; 
+		}
+		
+		public void requireField(String name, IConcept concept) throws ThinklabStorageException {
+			
+			TypeTranslator tt = getTypeTranslator(concept);
+			
+			if (tt == null) 
+				throw new ThinklabStorageException("don't know how to translate type " + concept + " to sql in kbox");
+			
+			/*
+			 * if we have the field, it must match the concept
+			 */
+			int idx = Collections.binarySearch(fieldNames, name);
+			
+			if (idx < 0) {	
+				
+			}
+			
 		}
 		
 		/**
@@ -1689,6 +1714,29 @@ public abstract class SQLThinklabServer {
 				loadSchema(ss.trim());
 		}
 		
+		/*
+		 * TODO setup metadata from properties now that we know how to handle all types
+		*/
+		int sl = IKBox.KBOX_METADATA_PROPERTY_PREFIX.length();
+		
+		for (Object key : properties.keySet()) {
+			
+			if (key.toString().startsWith(IKBox.KBOX_METADATA_PROPERTY_PREFIX)) {
+				
+				/*
+				 * add type to metadata catalog
+				 */
+				String mk = key.toString().substring(sl);
+				IConcept con = KnowledgeManager.get().requireConcept(properties.getProperty(key.toString()));
+				
+				metadataCatalog.put(mk, con);
+				metadataKeys.add(mk);
+			}
+		}
+		
+		Collections.sort(metadataKeys);
+		setupMetadataStorage(metadataKeys);
+		
     	/* check if we need to create schema */
     	if (!isStorageInitialized()) {
     		
@@ -1733,14 +1781,33 @@ public abstract class SQLThinklabServer {
     	
     }
     
-    public long getObjectCount() throws ThinklabStorageException {
+    private void setupMetadataStorage(ArrayList<String> metadataKeys) throws ThinklabStorageException {
+	
+    	// get object table descriptor
+		TableDesc od = getTableDescriptor("object");
+		
+    	// ensure all metadata fields are in
+		for (String key : metadataKeys) {
+			od.requireField(key, metadataCatalog.get(key));
+		}
+	}
+
+	public long getObjectCount() throws ThinklabStorageException {
     	QueryResult rsq = server.query("SELECT COUNT(object_id) FROM object;");
     	return rsq.getLong(0, 0);
     }
 
 	protected boolean isStorageInitialized() throws ThinklabStorageException {
-		// just check if we have key tables
-		return server.haveTable("object");
+		
+		// check if we have key tables
+		boolean ret = server.haveTable("object");
+		
+		if (ret) {
+			
+			// TODO ensure the metadata keys match the existing table, and complain if not.
+		}
+		
+		return ret;
 	}
 
 	private void loadSchema(String schemaID) throws ThinklabException {
@@ -1953,7 +2020,6 @@ public abstract class SQLThinklabServer {
 		else 
 			useRestrictions = UseRestrictions.PARTIAL;
 			
-						
 		
 		initialize(protocol, properties);
 		

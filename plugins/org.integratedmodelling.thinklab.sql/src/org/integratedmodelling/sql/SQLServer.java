@@ -283,6 +283,10 @@ public abstract class SQLServer {
     	}
     	
         startServer(properties);     
+ 
+        /*
+         * TODO lookup and memorize metadata schema
+         */
         
         if (usePooling)
         	dataSource = setupDataSource(getURI());

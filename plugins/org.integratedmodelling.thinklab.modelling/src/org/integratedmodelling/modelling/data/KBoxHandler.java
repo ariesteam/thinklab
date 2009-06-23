@@ -129,7 +129,7 @@ public class KBoxHandler {
 		 * store it right away unless it has unresolved references
 		 */
 		if (kbox != null && instance != null && _references.get(iid) == null)
-			kbox.storeObject(instance, id, session);
+			kbox.storeObject(instance, id, null, session);
 	}
 		
 	public IKBox getKbox() throws ThinklabException {
@@ -140,7 +140,7 @@ public class KBoxHandler {
 	private void resolveForwardReferences() throws ThinklabException {
 
 		for (String iid : _references.keySet()) {
-			kbox.storeObject(_references.get(iid), iid, session);
+			kbox.storeObject(_references.get(iid), iid, null, session);
 		}
 		for (ReferenceRecord ref : _danglingRefs) {
 			ref.resolve();

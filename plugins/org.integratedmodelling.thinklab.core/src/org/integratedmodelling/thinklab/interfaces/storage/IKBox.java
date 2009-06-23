@@ -34,12 +34,14 @@
 package org.integratedmodelling.thinklab.interfaces.storage;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
 import org.integratedmodelling.utils.Polylist;
 
@@ -108,9 +110,10 @@ public abstract interface IKBox extends IQueriable {
 	 */
 	public final String KBOX_LOCALNAMES_PROPERTY = "kbox.localnames";
 
-	public final String KBOX_METADATA_TYPES_PROPERTY = "kbox.metadata.types";
-	
-	public final String KBOX_METADATA_SCHEMA_PROPERTY = "kbox.metadata.schema";
+	/**
+	 * TODO document
+	 */
+	public final String KBOX_METADATA_PROPERTY_PREFIX = "kbox.metadata.";
 
 	/**
 	 * Most KBoxes should have properties, so that instances can check for 
@@ -166,15 +169,15 @@ public abstract interface IKBox extends IQueriable {
 	 * that strategies are adopted to keep memory size in control.
 	 * 
 	 * @param list
+	 * @param metadata TODO
 	 * @param session
 	 * 	a session is usually necessary anyway, but this function should be prepared to be
 	 *  passed a null.
-	 * 
 	 * @return the name of the stored instance in the KBox.
 
 	 * @throws ThinklabException
 	 */
-	public abstract String storeObject(Polylist list, String id, ISession session) throws ThinklabException;
+	public abstract String storeObject(Polylist list, String id, Map<String, IValue> metadata, ISession session) throws ThinklabException;
 	
 	/**
 	 * A Kbox should be capable of storing an object from its list description. If necessary, the
@@ -183,18 +186,18 @@ public abstract interface IKBox extends IQueriable {
 	 * that strategies are adopted to keep memory size in control.
 	 * 
 	 * @param list
-	 *
+	 * @param metadata TODO
 	 * @param references 
 	 * 	a hashmap to catalog the stored instances, initially empty. The reference table should map
 	 * 	the local name of the stored instance with the name of the same instance in the
 	 * 	kbox (possibly the same name). If the passed instance local name is in the map,
 	 *  no instance should be stored. This should apply recursively to all linked instances.
-	 * 
+	 *
 	 * @return the name of the stored instance in the KBox.
 
 	 * @throws ThinklabException
 	 */
-	public abstract String storeObject(Polylist list, String id, ISession session, HashMap<String, String> refTable) throws ThinklabException;
+	public abstract String storeObject(Polylist list, String id, Map<String, IValue> metadata, ISession session, HashMap<String, String> refTable) throws ThinklabException;
 	
 	/**
 	 * Store an object in the KBox. Return its ID in it, which may or may not be the same ID as the
@@ -202,12 +205,13 @@ public abstract interface IKBox extends IQueriable {
 	 * required to understand the object and make sure that those are in the KB (possibly in appropriate
 	 * versions).
 	 * @param object an IInstance to store
+	 * @param metadata TODO
 	 * @param session the current session
 	 * @return the name of the stored instance in the KBox. If possible this should be the same as the
 	 *         instance's, but if not a different one may be returned.
 	 * @throws ThinklabException if anything goes wrong.
 	 */
-	public abstract String storeObject(IInstance object, String id, ISession session) throws ThinklabException;
+	public abstract String storeObject(IInstance object, String id, Map<String, IValue> metadata, ISession session) throws ThinklabException;
 
 	/**
 	 * Store an object in the KBox. Return its ID in it, which may or may not be the same ID as the
@@ -215,6 +219,7 @@ public abstract interface IKBox extends IQueriable {
 	 * referenced by subsequent instances are stored only once.
 	 * @param object 
 	 * 	an IInstance to store
+	 * @param metadata TODO
 	 * @param session 
 	 * 	the current session
 	 * @param references 
@@ -222,12 +227,11 @@ public abstract interface IKBox extends IQueriable {
 	 * 	the local name of the stored instance with the name of the same instance in the
 	 * 	kbox (possibly the same name). If the passed instance local name is in the map,
 	 *  no instance should be stored. This should apply recursively to all linked instances.
-	 * 
 	 * @return the name of the stored instance in the KBox.
 	 * 
 	 * @throws ThinklabException if anything goes wrong.
 	 */
-	public abstract String storeObject(IInstance object, String id, ISession session, HashMap<String, String> references) throws ThinklabException;
+	public abstract String storeObject(IInstance object, String id, Map<String, IValue> metadata, ISession session, HashMap<String, String> references) throws ThinklabException;
 
 	/**
 	 * Return an object that we can query to know what operators and such are supported by

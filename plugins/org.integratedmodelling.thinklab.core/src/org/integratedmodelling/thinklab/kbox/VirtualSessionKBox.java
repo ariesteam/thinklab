@@ -35,6 +35,7 @@ package org.integratedmodelling.thinklab.kbox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.constraint.Constraint;
@@ -42,6 +43,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
@@ -104,22 +106,22 @@ public class VirtualSessionKBox implements IKBox {
 		return session.requireObject(id);
 	}
 
-	public String storeObject(Polylist list, String id, ISession s) throws ThinklabException {
+	public String storeObject(Polylist list, String id, Map<String, IValue> metadata, ISession s) throws ThinklabException {
 
 		IInstance ninst = session.createObject(list);
 		instances.add(ninst);
 		return ninst.getLocalName();
 	}
 
-	public String storeObject(IInstance object, String id, ISession session)
+	public String storeObject(IInstance object, String id, Map<String, IValue> metadata, ISession session)
 			throws ThinklabException {
 		
 		instances.add(object);
 		return object.getLocalName();
 	}
 
-	public String storeObject(Polylist list, String iid, ISession session,
-			HashMap<String, String> refTable) throws ThinklabException {
+	public String storeObject(Polylist list, String iid, Map<String, IValue> metadata,
+			ISession session, HashMap<String, String> refTable) throws ThinklabException {
 
 		/*
 		 * FIXME not really needed, should not even be called; make sure 
@@ -138,8 +140,8 @@ public class VirtualSessionKBox implements IKBox {
 		return ret;
 		
 	}
-	public String storeObject(IInstance object, String id, ISession session,
-			HashMap<String, String> references) throws ThinklabException {
+	public String storeObject(IInstance object, String id, Map<String, IValue> metadata,
+			ISession session, HashMap<String, String> references) throws ThinklabException {
 
 		String oid = object.getLocalName();
 		instances.add(object);

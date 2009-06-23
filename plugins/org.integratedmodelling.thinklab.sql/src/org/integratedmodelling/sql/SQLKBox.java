@@ -34,6 +34,7 @@ package org.integratedmodelling.sql;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.constraint.Constraint;
@@ -42,6 +43,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
@@ -99,7 +101,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 	}
 
 	@Override
-	public String storeObject(IInstance object, String id, ISession session)
+	public String storeObject(IInstance object, String id, Map<String, IValue> metadata, ISession session)
 			throws ThinklabException {
 
 		String ret = null;
@@ -123,8 +125,8 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 	 * 
 	 */
 	@Override
-	public String storeObject(IInstance object, String id, ISession session,
-			HashMap<String, String> references) throws ThinklabException {
+	public String storeObject(IInstance object, String id, Map<String, IValue> metadata,
+			ISession session, HashMap<String, String> references) throws ThinklabException {
 		String ret = null;
 
 		Pair<String, String> sql = storeInstanceSQL(object, session, references, id);
@@ -217,7 +219,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 	}
 
 	@Override
-	public String storeObject(Polylist list, String id, ISession session) throws ThinklabException {
+	public String storeObject(Polylist list, String id, Map<String, IValue> metadata, ISession session) throws ThinklabException {
 
 		String ret = null;
 		/*
@@ -242,8 +244,8 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 	}
 	
 	@Override
-	public String storeObject(Polylist list, String id, ISession session,
-			HashMap<String, String> refTable) throws ThinklabException {
+	public String storeObject(Polylist list, String id, Map<String, IValue> metadata,
+			ISession session, HashMap<String, String> refTable) throws ThinklabException {
 
 		String ret = null;
 		/*

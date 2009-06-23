@@ -315,6 +315,7 @@ public abstract class ThinklabPlugin extends Plugin
 			String url = getParameter(ext, "url");
 			String id = getParameter(ext, "id");
 			String schema  = getParameter(ext, "schema");
+			// TODO modernize handling of metadata
 			String mschema = getParameter(ext, "metadata-schema");
 			
 			File pfile = new File(
@@ -329,10 +330,11 @@ public abstract class ThinklabPlugin extends Plugin
 			if (schema != null) {
 				kpro.setProperty(IKBox.KBOX_SCHEMA_PROPERTY, schema);
 			}
-			
-			if (mschema != null ) {
-				kpro.setProperty(IKBox.KBOX_METADATA_SCHEMA_PROPERTY, mschema);
-			}
+
+			// TODO should list pairs of field, concept to store as kbox.metadata.fieldname=concept
+//			if (mschema != null ) {
+//				kpro.setProperty(IKBox.KBOX_METADATA_SCHEMA_PROPERTY, mschema);
+//			}
 			
 			try {
 				kpro.store(new FileOutputStream(pfile), 
@@ -372,7 +374,7 @@ public abstract class ThinklabPlugin extends Plugin
 				HashMap<String, String> references = new HashMap<String, String>();
 
 				for (IInstance obj : objs) {
-					kbox.storeObject(obj, null, session, references);
+					kbox.storeObject(obj, null, null, session, references);
 				}
 			}
 		}
