@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.integratedmodelling.clojure.utils.OptionListIterator;
 import org.integratedmodelling.modelling.ModellingPlugin;
@@ -94,7 +95,7 @@ public class KBoxHandler {
 		}
 	}
 	
-	public void addKnowledge(Object object, Object options) throws ThinklabException {
+	public void addKnowledge(Object object, Object options, Map<?,?> metadata) throws ThinklabException {
 		
 		String id = null;
 		
