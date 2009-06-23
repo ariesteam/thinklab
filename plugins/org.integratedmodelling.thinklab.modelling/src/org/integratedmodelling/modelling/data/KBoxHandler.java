@@ -176,13 +176,20 @@ public class KBoxHandler {
 				Pair<String, Object> kv = it.next();
 				String key = kv.getFirst();
 				
-				if (!key.contains("."))
-					key = "kbox." + key;
+				if (key.equals("metadata")) {
+					
+					/* TODO set metadata into props */
+					
+				} else {
 				
-				try {
-					out.write(key + "=" + kv.getSecond() + "\n");
-				} catch (IOException e) {
-					throw new ThinklabIOException(e);
+					if (!key.contains("."))
+						key = "kbox." + key;
+				
+					try {
+						out.write(key + "=" + kv.getSecond() + "\n");
+					} catch (IOException e) {
+						throw new ThinklabIOException(e);
+					}
 				}
 			}
 			

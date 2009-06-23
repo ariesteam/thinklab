@@ -6,15 +6,28 @@
 	(modelling/kbox test "postgres://postgres:rnbh304@localhost:5432" 
 				:protocol "pg" 
 				:schema   "postgis"
-				:metadata-schema {
+				:metadata (
+					:comment          'thinklab-core:Text
+					:label            'thinklab-core:Text
+					:centroid         'geospace:Point
+					:bbox             'geospace:Polygon
+					:valueUSD2001     'thinklab-core:FloatingPoint
+					:originalCurrency 'thinklab-core:Text
+					:originalValue    'thinklab-core:FloatingPoint)				
+				:sql.use.pooling "false" 
+				:sql.log.queries "true")
+				
+		:storage-policy :disable-unless-empty
+		:id-prefix "biblio-"
+		:metadata-generator {
 							:comment #(.getDescription %) 
 							:label   #(.getLabel %) 
 							:centroid #(if (observation? %) 
-														(.. (getImplementation %) (getContext 'space) (getShape) (getCentroid)))}
-				:sql.use.pooling "false" 
-				:sql.log.queries "true")
-		:storage-policy :disable-unless-empty
-		:id-prefix "biblio-"
+														(.. (getImplementation %) (getContext 'space) (getShape) (getCentroid)))
+														
+														
+														
+														}
 					
 		(modelling/object 'bibtex:Article
 			"Test article"

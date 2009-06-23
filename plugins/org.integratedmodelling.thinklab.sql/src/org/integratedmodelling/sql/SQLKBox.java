@@ -106,7 +106,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 
 		String ret = null;
 
-		Pair<String, String> sql = storeInstanceSQL(object, session, id);
+		Pair<String, String> sql = storeInstanceSQL(object, session, id, metadata);
 
 		if (sql != null && sql.getSecond() != null && sql.getFirst() != "") {
 			server.execute(sql.getSecond());
@@ -129,7 +129,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 			ISession session, HashMap<String, String> references) throws ThinklabException {
 		String ret = null;
 
-		Pair<String, String> sql = storeInstanceSQL(object, session, references, id);
+		Pair<String, String> sql = storeInstanceSQL(object, session, references, id, metadata);
 
 		if (sql != null && sql.getSecond() != null && sql.getFirst() != "") {
 			server.execute(sql.getSecond());
@@ -233,7 +233,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		
 		IInstance object = session.createObject(list);
 
-		Pair<String, String> sql = storeInstanceSQL(object, session, id);
+		Pair<String, String> sql = storeInstanceSQL(object, session, id, metadata);
 
 		if (sql != null && sql.getSecond() != null && sql.getFirst() != "") {
 			server.execute(sql.getSecond());
@@ -259,7 +259,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		
 		IInstance object = session.createObject(list);
 
-		Pair<String, String> sql = storeInstanceSQL(object, session, refTable, id);
+		Pair<String, String> sql = storeInstanceSQL(object, session, refTable, id, metadata);
 
 		if (sql != null && sql.getSecond() != null && sql.getFirst() != "") {
 			server.execute(sql.getSecond());

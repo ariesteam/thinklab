@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -142,6 +143,7 @@ public abstract class SQLThinklabServer {
 		public ArrayList<Boolean> isKey = new ArrayList<Boolean>();
 		public ArrayList<Integer> system = new ArrayList<Integer>();
 		public ArrayList<Integer> index = new ArrayList<Integer>();
+		public ArrayList<String> statements = new ArrayList<String>();
 		public boolean isTemplate = false;
 
 		public TableDesc(String name) {
@@ -164,6 +166,27 @@ public abstract class SQLThinklabServer {
 				
 			}
 			
+			if (tt.createAsStatement) {
+				
+				/*
+				 * build statement and add to array
+				 */
+				String ts = tt.sqlType;
+				ts = ts.replace("$dbname", server.getDatabase());
+				ts = ts.replace("$fieldname", name);
+				ts = ts.replace("$tablename", this.name);
+//				ts = tt.substituteVariables(ts, val, session);
+				statements.add(ts);
+				
+			} else {
+				fieldNames.add(name);
+				fieldTypes.add(tt.sqlType);
+				fieldValues.add(""); // TODO check
+				isKey.add(false);
+				index.add(1);
+				system.add(0);
+			}
+			
 		}
 		
 		/**
@@ -175,6 +198,7 @@ public abstract class SQLThinklabServer {
 			String ret =  "CREATE TABLE " + name + " (\n";
 
 			for (int i = 0; i < fieldNames.size(); i++) {
+				
 			    ret += 
 			      "\t" + 
 			      fieldNames.get(i) +
@@ -186,13 +210,17 @@ public abstract class SQLThinklabServer {
 
 			ret += ");\n";
 
-			  for (int i = 0; i < fieldNames.size(); i++) {
-			    if (index.get(i) != 0 || isKey.get(i))
+			for (int i = 0; i < fieldNames.size(); i++) {
+				if (index.get(i) != 0 || isKey.get(i))
 			      ret += 
 			    	  "CREATE INDEX " + name + "_" + fieldNames.get(i) + " ON " + 
 			    	  name + " (" + fieldNames.get(i) + ");\n";
-			  }
-			  
+			}
+			 
+			for (String s : statements) {
+				ret += s + "\n";
+			}
+			
 			return ret;
 		}
 		
@@ -1177,9 +1205,9 @@ public abstract class SQLThinklabServer {
 	 * @return the ID of the stored instance in the kbox.
 	 * @throws ThinklabStorageException 
 	 */
-	synchronized public String storeInstance(IInstance c, ISession session, String id) throws ThinklabException {
+	synchronized public String storeInstance(IInstance c, ISession session, String id, Map<String, IValue> metadata) throws ThinklabException {
 		
-		Pair<String, String> sql = storeInstanceSQL(c, session, id);
+		Pair<String, String> sql = storeInstanceSQL(c, session, id, metadata);
 		if (sql != null && !sql.getSecond().equals(""))
 			server.execute(sql.getSecond());
 		return sql.getFirst();
@@ -1200,7 +1228,7 @@ public abstract class SQLThinklabServer {
 	 * @throws ThinklabStorageException 
 	 */
 	public Pair<String, String> storeInstanceSQL(IInstance c, ISession session,
-												 HashMap<String, String> referenceTable, String id) 
+												 HashMap<String, String> referenceTable, String id, Map<String, IValue> metadata) 
 				throws ThinklabException {
 		
 		if (referenceTable == null)
@@ -1222,7 +1250,7 @@ public abstract class SQLThinklabServer {
 	 * @return
 	 * @throws ThinklabStorageException 
 	 */
-	public Pair<String, String> storeInstanceSQL(IInstance c, ISession session, String id)
+	public Pair<String, String> storeInstanceSQL(IInstance c, ISession session, String id, Map<String, IValue> metadata)
 		throws ThinklabException {
 		
 		HashMap<String, String> references = new HashMap<String, String>();
