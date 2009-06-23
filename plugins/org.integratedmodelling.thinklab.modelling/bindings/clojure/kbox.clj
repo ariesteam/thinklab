@@ -11,13 +11,6 @@
 	[concept kbox]
 	(new org.integratedmodelling.modelling.data.InstanceHandler (tl/get-session) concept kbox))
 
-(defn- extract-metadata
-	"Compute metadata by mapping a list of functions to an object and returning the computed values"
-	[object md-def]
-	;; TODO
-	nil)
-
-;; (zipmap (keys md_def) (map (vals md_def) object))
 
 (defmacro object
 	"Define an instance. Forward references (InstanceHandler) may also be returned, but will only 
@@ -44,7 +37,7 @@
 	 Behavior can be modified using the keywords."
 	[& body]
 	 `(let [body#  (tl/group-with-keywords '~body)
-	 			  md-extractor# (eval (:metadata-extractor (second (first body#))))
+	 			  md-extractor# (eval (:metadata-generator (second (first body#))))
 	 	 	    kbox#   (modelling/j-make-kbox-handler)
 	 	 	    ]
 	 	 	 (binding [*_kbox_* kbox#]
@@ -52,5 +45,5 @@
  		     (if (not (.isDisabled kbox#)) 
  		     		 (doseq [mdef# (rest body#)]
  		     		 		(let [object# (eval (first mdef#))]
-    	     		       (.addKnowledge kbox# #object (second mdef#) (extract-metadata object# md-extractor#))))) 
+    	     		       (.addKnowledge kbox# #object (second mdef#) (tl/map-keyed-functions md-extractor# object#))))) 
       	 (.getKbox kbox#))))

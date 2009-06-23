@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -20,7 +21,9 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.utils.Pair;
 
 /**
@@ -127,10 +130,24 @@ public class KBoxHandler {
 		}
 		
 		/*
+		 * fix metadata if any
+		 */
+		HashMap<String, IValue> md = null;
+		if (metadata != null) {
+			md = new HashMap<String, IValue>();
+			for (Object k : metadata.keySet()) {
+				String s = k.toString();
+				if (s.startsWith(":")) 
+					s = s.substring(1);
+				md.put(s, Value.getValueForObject(metadata.get(k)));
+			}
+		}
+		
+		/*
 		 * store it right away unless it has unresolved references
 		 */
 		if (kbox != null && instance != null && _references.get(iid) == null)
-			kbox.storeObject(instance, id, null, session);
+			kbox.storeObject(instance, id, md, session);
 	}
 		
 	public IKBox getKbox() throws ThinklabException {

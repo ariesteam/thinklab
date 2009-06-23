@@ -105,3 +105,9 @@
 	 the unmodified argument"
 	 [arg]
 	 (if (and (list? arg) (= (str (first arg)) "quote")) (eval arg) arg))
+	 
+(defn map-keyed-functions
+	"Apply a map of functions to one argument and return a map of results with the correspondent keys"
+	[function-map arg]
+	(zipmap (keys function-map) (map #(% arg) (vals function-map))))
+	 
