@@ -16,6 +16,7 @@
       <field name="concept_id" type="integer" index="yes" system="yes"/>
       <field name="total_rel" type="integer" index="no" system="yes"/>
       <field name="is_instance" type="boolean" index="no" system="yes"/>
+      <field name="external_uri" type="text" index="no" system="yes" />      
       <!-- the following ones aren't necessary for the system, and can be
          eliminated or added to. The fields that are here are available to 
          retrieve with the schema passed to query(). -->

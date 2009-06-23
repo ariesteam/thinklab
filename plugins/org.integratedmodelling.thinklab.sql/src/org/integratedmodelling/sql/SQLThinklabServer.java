@@ -1235,7 +1235,7 @@ public abstract class SQLThinklabServer {
 			referenceTable = new HashMap<String, String>();
 		
 		Pair<String, String> ret = 
-			storeInstanceSQLInternal(c, "", 0, "", 0, referenceTable, session, id);
+			storeInstanceSQLInternal(c, "", 0, "", 0, referenceTable, session, id, metadata);
 		
 		return ret;
 	}
@@ -1256,7 +1256,7 @@ public abstract class SQLThinklabServer {
 		HashMap<String, String> references = new HashMap<String, String>();
 		
 		Pair<String, String> ret = 
-			storeInstanceSQLInternal(c, "", 0, "", 0, references, session, id);
+			storeInstanceSQLInternal(c, "", 0, "", 0, references, session, id, metadata);
 		
 		return ret;
 	}
@@ -1270,13 +1270,14 @@ public abstract class SQLThinklabServer {
 	 * @param total
 	 * @param references
 	 * @param session
+	 * @param metadata 
 	 * @return two strings: the ID of the instance in the kbox and the SQL instructions 
 	 * that store it
 	 * @throws ThinklabStorageException 
 	 */
 	private Pair<String, String> storeInstanceSQLInternal(IInstance c,
 			String query, long relationshipID, String conceptID, int totalRels,
-			HashMap<String, String> references, ISession session, String id)
+			HashMap<String, String> references, ISession session, String id, Map<String, IValue> metadata)
 			throws ThinklabException {
 		
 		String sql = query;
@@ -1428,7 +1429,7 @@ public abstract class SQLThinklabServer {
 					/* it's a concept: retrieve its ID (store if necessary) */
 					Pair<String, String> iid = storeInstanceSQLInternal(
 							((ObjectReferenceValue) rel.getValue()).getObject(),
-							sql, rid, cid.getFirst(), tot, references, session, id);
+							sql, rid, cid.getFirst(), tot, references, session, id, metadata);
 
 					sql = iid.getSecond();
 

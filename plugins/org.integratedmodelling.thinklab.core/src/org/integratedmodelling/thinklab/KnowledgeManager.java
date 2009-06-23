@@ -136,6 +136,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
     private IProperty reifiedLiteralProperty;
     private IProperty abstractProperty;
 	private IProperty additionalRestrictionsProperty;
+    private IProperty importedProperty;
     
     private SemanticType integerTypeID;
     private SemanticType floatTypeID;    
@@ -151,6 +152,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
     private SemanticType reifiedLiteralPropertyID;
     private SemanticType additionalRestrictionsPropertyID;
 	private SemanticType abstractPropertyID;
+	private SemanticType importedPropertyID;
 	
 	protected IKnowledgeRepository knowledgeRepository;
 	protected ISessionManager  sessionManager = null;
@@ -495,6 +497,10 @@ public class KnowledgeManager implements IKnowledgeProvider {
 			abstractPropertyID = 
 				new SemanticType(p.getProperty("type.property.abstract",
         			 			 "thinklab-core:AbstractClass"));
+			
+			importedPropertyID = 
+				new SemanticType(p.getProperty("type.property.imported",
+        			 			 "thinklab-core:importedFrom"));
 
 			/*
 			 * define XSD mappings for simple types.
@@ -532,6 +538,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
             reifiedLiteralProperty = requireProperty(reifiedLiteralPropertyID);
             additionalRestrictionsProperty = requireProperty(additionalRestrictionsPropertyID);
             abstractProperty = requireProperty(abstractPropertyID);
+            importedProperty = requireProperty(importedPropertyID);
             
 		} catch (ThinklabResourceNotFoundException e) {
 			throw new ThinklabValidationException("core type specifications are incomplete: " + e.getMessage());
@@ -1340,6 +1347,12 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	public static IConcept LiteralValue() {
 		// TODO Auto-generated method stub
 		return KM.literalType;
+	}
+
+	public IProperty getImportedProperty() throws ThinklabValidationException {
+		if (!typesInitialized)
+			initializeThinklabTypes();
+		return importedProperty;
 	}
 
 }

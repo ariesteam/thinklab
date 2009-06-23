@@ -116,6 +116,14 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#importedFrom -->
+
+    <owl:DatatypeProperty rdf:about="#importedFrom">
+        <rdfs:range rdf:resource="&xsd;anyURI"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#numOfParameters -->
 
     <owl:DatatypeProperty rdf:about="#numOfParameters">

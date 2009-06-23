@@ -705,7 +705,9 @@ public class ThinklabOWLManager {
 			
 			IKBox kbox = KBoxManager.get().requireGlobalKBox(up[0]);
 			Polylist list = kbox.getObjectAsListFromID(up[1], null);
-			IInstance linked = ont.createInstance(list);  
+			IInstance linked = ont.createInstance(list); 
+			// add a marker to notify where we come from, so we can serialize back to a URI
+			linked.addLiteralRelationship(KnowledgeManager.get().getImportedProperty(), uri);
 			inst.addObjectRelationship(property, linked);
 			
 		} else {
