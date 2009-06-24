@@ -408,6 +408,8 @@ public abstract class SQLThinklabServer {
 	 */
 	private boolean useLocalNames = true;
 	private Properties properties;
+	/* if true, all instances that have been imported from external kboxes are stored as references only */
+	private boolean externalizeReferences = true;
         
 	private Pair<String, Long> getRelationshipId(String s, IConcept c, IValue val, ISession session,
 			String sql, boolean isLiteral) throws ThinklabException {
@@ -1288,7 +1290,7 @@ public abstract class SQLThinklabServer {
 		 */
 		if (references.get(c.getLocalName()) != null)
 			return new Pair<String, String>(references.get(c.getLocalName()), sql);
-
+		
 		/* Retrieve new ID for concept and its ancestor concepts. */
 		Triple<String, Long, String> cid = getClassID(c, sql, id);
 		sql = cid.getThird();
@@ -1296,6 +1298,17 @@ public abstract class SQLThinklabServer {
 		/* update references catalog so we don't store it more than once */
 		references.put(c.getLocalName(), cid.getFirst());
 
+		/*
+		 * check if it was an external kbox object. If the behavior is to keep these
+		 * external (default) just store a reference and exit.
+		 */
+		if (this.externalizeReferences ) {
+			IValue v = c.get(KnowledgeManager.get().getImportedProperty().toString());
+			if (v != null) {
+				
+			}
+		}
+		
 		/*
 		 * generate insert instruction for concept. Exec all extensions and add
 		 * that as well. If concept is not an instance, set flag to define a
