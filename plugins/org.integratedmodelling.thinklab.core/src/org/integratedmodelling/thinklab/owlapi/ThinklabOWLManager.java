@@ -33,6 +33,7 @@
  **/
 package org.integratedmodelling.thinklab.owlapi;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -693,7 +694,7 @@ public class ThinklabOWLManager {
 			 */
 			inst.addObjectRelationship(property, (IInstance)o2);
 			
-		} else if ((o2 instanceof URL || (o2 instanceof String && ((String)o2).contains("://"))) && 
+		} else if ((o2 instanceof URL || o2 instanceof URI || (o2 instanceof String && ((String)o2).contains("://"))) && 
 						property.isObjectProperty()) {
 					
 			String uri = o2.toString();

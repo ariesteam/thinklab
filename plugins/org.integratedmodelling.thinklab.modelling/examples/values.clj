@@ -20,11 +20,10 @@
 		:storage-policy :disable-unless-empty
 		:id-prefix "biblio-"
 		:metadata-generator {
-							:comment (memfn getDescription) 
-							:label   (memfn getLabel)
-							:centroid #(if (observation? %) 
-														(.. (getImplementation %) (getContext 'space) (getShape) (getCentroid)))
-														
+							:comment   (memfn getDescription) 
+							:label     (memfn getLabel)
+							:centroid #(geospace/get-centroid %)														
+							:bbox     #(geospace/get-bounding-box %)														
 														
 														
 														}

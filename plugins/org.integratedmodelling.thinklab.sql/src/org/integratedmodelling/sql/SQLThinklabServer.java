@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.sql;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -140,6 +142,8 @@ public abstract class SQLThinklabServer {
 		public ArrayList<String> fieldNames = new ArrayList<String>();
 		public ArrayList<String> fieldTypes = new ArrayList<String>();
 		public ArrayList<String> fieldValues = new ArrayList<String>();
+		// FIXME this one has nulls for the configured fields, but gets concepts for metadata
+		public ArrayList<IConcept> fieldConcept = new ArrayList<IConcept>();
 		public ArrayList<Boolean> isKey = new ArrayList<Boolean>();
 		public ArrayList<Integer> system = new ArrayList<Integer>();
 		public ArrayList<Integer> index = new ArrayList<Integer>();
@@ -179,9 +183,11 @@ public abstract class SQLThinklabServer {
 				statements.add(ts);
 				
 			} else {
+				
 				fieldNames.add(name);
 				fieldTypes.add(tt.sqlType);
 				fieldValues.add(""); // TODO check
+				fieldConcept.add(concept);
 				isKey.add(false);
 				index.add(1);
 				system.add(0);
@@ -242,7 +248,7 @@ public abstract class SQLThinklabServer {
 					fieldTypes.add(XMLDocument.getAttributeValue(nn, "type"));
 					fieldValues.add(XMLDocument.getNodeValue(nn));
 					isKey.add(BooleanValue.parseBoolean(XMLDocument.getAttributeValue(nn, "primary-key", "false")));
-					
+					fieldConcept.add(null);
 					tAttr = XMLDocument.getAttributeValue(nn, "index", "false");
 					index.add(new Integer(BooleanValue.parseBoolean(tAttr) ? 1 : 0));
 					tAttr = XMLDocument.getAttributeValue(nn, "system", "false");
@@ -1302,10 +1308,11 @@ public abstract class SQLThinklabServer {
 		 * check if it was an external kbox object. If the behavior is to keep these
 		 * external (default) just store a reference and exit.
 		 */
+		String extUri = "";
 		if (this.externalizeReferences ) {
 			IValue v = c.get(KnowledgeManager.get().getImportedProperty().toString());
 			if (v != null) {
-				
+				extUri = v.toString();
 			}
 		}
 		
@@ -1317,7 +1324,8 @@ public abstract class SQLThinklabServer {
 		sql += "INSERT INTO object VALUES ('" + cid.getFirst() + // object_id
 				"', " + cid.getSecond() + // concept_id
 				", " + totalRels + // total_rel
-				", " + ((c instanceof IInstance) ? "true" : "false");
+				", " + ((c instanceof IInstance) ? "true" : "false") + // is-instance
+				", " + extUri; // external_uri
 
 		/* add all extensions, calculated fields */
 		TableDesc tab = getTableDescriptor("object");
@@ -1325,8 +1333,20 @@ public abstract class SQLThinklabServer {
 		for (int i = 0; i < tab.system.size(); i++) {
 
 			if (tab.system.get(i) == 0) {
-
-				if (scriptLanguage.equals("MVEL")) {
+				
+				/*
+				 * metadata fields passed to storeInstance take over any definition
+				 */
+				if (metadata != null && metadata.containsKey(tab.fieldNames.get(i))) {
+					
+					sql += 
+						", " + 
+						translateLiteral(
+								metadata.get(tab.fieldNames.get(i)), 
+								tab.fieldConcept.get(i), 
+								session);
+					
+				} else if (scriptLanguage.equals("MVEL")) {
 				
 					HashMap<String, IInstance> context = new HashMap<String, IInstance>();
 					context.put("self", c);
@@ -1577,7 +1597,8 @@ public abstract class SQLThinklabServer {
 		 * so much space that I want to be messy and lean. retrieve concept and
 		 * see what class it belongs to. Start list with type.
 		 */
-		QueryResult res = server.query("SELECT object_id, concept_id, is_instance, label, description FROM object " +
+		QueryResult res = server.query(
+				"SELECT object_id, concept_id, is_instance, label, description, external_uri FROM object " +
 				"WHERE object_id = '" +	
 				id + 
 				"';");
@@ -1585,6 +1606,21 @@ public abstract class SQLThinklabServer {
 		if (res.size() == 0)
 			return null;
 
+		String extUri = res.get(0, 5);
+		if (!extUri.trim().equals("")) {
+			
+			/*
+			 * TODO
+			 * communicate the external reference to the outer level
+			 */
+			try {
+				return Polylist.list(new URI(extUri));
+			} catch (URISyntaxException e) {
+				throw new ThinklabStorageException("sql: stored URI is invalid: " + extUri);
+			}
+		}
+		
+		
 		String pc = id2Type.get(res.getLong(0,1));
 
 		if (pc == null) 
@@ -1660,9 +1696,17 @@ public abstract class SQLThinklabServer {
 							+ rst.getString(row, 1) + ";");
 
 					for (int drow = 0; drow < rsq.nRows(); drow++) {
-						alist.add(Polylist.list(pr,
-								retrieveObjectAsListInternal(rsq
-										.getString(drow, 1), refs)));
+						Polylist ppl = retrieveObjectAsListInternal(rsq.getString(drow, 1), refs);
+						
+						/*
+						 * URI of external object should only be at the inner level, so this
+						 * should suffice.
+						 */
+						if (ppl.length() == 1 && ppl.first() instanceof URI) {
+							ppl = Polylist.list(pr, ppl.first());
+						}
+						
+						alist.add(Polylist.list(pr, ppl));
 					}
 				}
 

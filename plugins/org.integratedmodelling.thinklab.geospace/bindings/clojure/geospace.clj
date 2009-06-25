@@ -38,6 +38,33 @@
 	[observation]	
 	(corescience/get-extent observation (.. org.integratedmodelling.geospace.Geospace (get) (SpaceObservable))))
 	
+(defn get-centroid 
+	"Return a ShapeValue with the centroid of the spatial extent of the passed observation, or 
+	 nil if no spatial extent is there."
+	[observation]
+	(let [extent (get-spatial-extent observation)]
+		(if (instance? org.integratedmodelling.geospace.interfaces.IGeolocatedObject extent)
+				(.getCentroid extent)
+				nil)))
+
+(defn get-bounding-box 
+	"Return a ShapeValue with the bounding box (polygon) of the spatial extent of the passed observation, or 
+	 nil if no spatial extent is there."
+	[observation]
+	(let [extent (get-spatial-extent observation)]
+		(if (instance? org.integratedmodelling.geospace.interfaces.IGeolocatedObject extent)
+				(.getBoundingBox extent)
+				nil)))
+		
+(defn get-shape 
+	"Return a ShapeValue with the overall shape (polygon) of the spatial extent of the passed observation, or 
+	 nil if no spatial extent is there."
+	[observation]
+	(let [extent (get-spatial-extent observation)]
+		(if (instance? org.integratedmodelling.geospace.interfaces.IGeolocatedObject extent)
+				(.getShape extent)
+				nil)))
+		
 (defn spatial? 
 	"Returns true if the given observation is spatial, i.e. has an extent that observes space."
 	[observation]

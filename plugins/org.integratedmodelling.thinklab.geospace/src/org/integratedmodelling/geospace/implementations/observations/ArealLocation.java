@@ -36,6 +36,7 @@ import org.integratedmodelling.corescience.implementations.observations.Observat
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.cmodels.ArealLocationConceptualModel;
+import org.integratedmodelling.geospace.interfaces.IGeolocatedObject;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -52,8 +53,13 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  */
 @InstanceImplementation(concept="geospace:ArealLocation")
-public class ArealLocation extends Observation implements IParseable {
+public class ArealLocation extends Observation implements IParseable, IGeolocatedObject {
 
+	ShapeValue boundingBox = null;
+	ShapeValue shape = null;
+	ShapeValue centroid = null;
+	
+	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.corescience.observation.Observation#validate(org.integratedmodelling.thinklab.interfaces.IInstance)
 	 */
@@ -65,18 +71,18 @@ public class ArealLocation extends Observation implements IParseable {
 		 * OWL model.
 		 */
 		try {
-			Geometry shape = ((ShapeValue)getDataSource()).getGeometry();
+			this.shape = (ShapeValue)getDataSource();
 
 			if (i.getRelationships(Geospace.hasBoundingBox()).size() == 0) {
 			
-				Geometry bbox = shape.getEnvelope();
+				Geometry bbox = shape.getGeometry().getEnvelope();
 				i.addLiteralRelationship(Geospace.hasBoundingBox(),
-						new ShapeValue(bbox));
+						(boundingBox = new ShapeValue(bbox)));
 			}
 			
 			if (i.getRelationships(Geospace.hasCentroid()).size() == 0) {
 				i.addLiteralRelationship(Geospace.hasCentroid(),
-						new ShapeValue(shape.getCentroid()));	
+						(centroid = new ShapeValue(shape.getGeometry().getCentroid())));	
 			}
 
 		} catch (ThinklabException e) {
@@ -99,6 +105,21 @@ public class ArealLocation extends Observation implements IParseable {
 	public void parseSpecifications(IInstance inst, String literal) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public ShapeValue getBoundingBox() {
+		return boundingBox;
+	}
+
+	@Override
+	public ShapeValue getCentroid() {
+		return centroid;
+	}
+
+	@Override
+	public ShapeValue getShape() {
+		return shape;
 	}
 
 	
