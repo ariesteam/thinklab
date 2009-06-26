@@ -45,5 +45,6 @@
  		     (if (not (.isDisabled kbox#)) 
  		     		 (doseq [mdef# (rest body#)]
  		     		 		(let [object# (eval (first mdef#))]
-    	     		       (.addKnowledge kbox# #object (second mdef#) (tl/map-keyed-functions md-extractor# object#))))) 
+    	     		       (.addKnowledge kbox# object# (second mdef#) (tl/map-keyed-functions md-extractor# object#))))) 
       	 (.getKbox kbox#))))
+      	 

@@ -117,7 +117,7 @@ public class XMLDocument {
 	}
 	
 	public NodeIterator iterator() {
-		return new NodeIterator(root);
+		return new NodeIterator(root());
 	}
 	
 	public NodeIterator iterator(Node node) {
