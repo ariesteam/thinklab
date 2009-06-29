@@ -117,5 +117,10 @@ public class SearchEngineKBoxWrapper extends KBoxWrapper implements RankingKBox 
 		return kbox.getObjectCount();
 	}
 
+	@Override
+	public void resetToEmpty() throws ThinklabException {
+		kbox.resetToEmpty();
+	}
+
 	
 }

@@ -263,5 +263,12 @@ public abstract interface IKBox extends IQueriable {
 	 */
 	public abstract String getUri();
 
+	/**
+	 * This must remove any data from the kbox and leave it empty and initialized,
+	 * so that a new storeObject can be performed next.
+	 * @throws ThinklabException TODO
+	 */
+	public abstract void resetToEmpty() throws ThinklabException;
+
 
 }

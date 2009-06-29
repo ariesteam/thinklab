@@ -210,4 +210,10 @@ public class VirtualSessionKBox implements IKBox {
 		return instances.size();
 	}
 
+	@Override
+	public void resetToEmpty() throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

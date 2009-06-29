@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.integratedmodelling.clojure.utils.OptionListIterator;
@@ -38,8 +38,12 @@ public class KBoxHandler {
 	String kpref = "";
 	ISession session = null;
 	boolean _disabled = false;
-	Hashtable<String, IInstance> _references = new Hashtable<String, IInstance>();
+	HashMap<String, Pair<IInstance, HashMap<String, IValue>>> _references = 
+		new HashMap<String, Pair<IInstance, HashMap<String, IValue>>>();
 	ArrayList<ReferenceRecord> _danglingRefs = new ArrayList<ReferenceRecord>(); 	
+	HashSet<String> _objectsWithRefs = new HashSet<String>();
+	HashMap<String,String> idToLocalName = new HashMap<String, String>();
+	HashMap<String,String> localNameToId = new HashMap<String, String>();
 	
 	class ReferenceRecord {
 		
@@ -55,11 +59,11 @@ public class KBoxHandler {
 		
 		public void resolve() throws ThinklabException {
 			
-			IInstance refd = _references.get(reference);
+			Pair<IInstance,HashMap<String, IValue>> refd = _references.get(idToLocalName.get(reference));
 			if (refd == null) {
 				throw new ThinklabResourceNotFoundException("kbox doesn't define forward reference " + reference);
 			}
-			target.addObjectRelationship(property, refd);
+			target.addObjectRelationship(property, refd.getFirst());
 		}
 	}
 	
@@ -67,7 +71,7 @@ public class KBoxHandler {
 		this.session = session;
 	}
 	
-	public void setKbox(Object kbox, Object options) {
+	public void setKbox(Object kbox, Object options) throws ThinklabException {
 		
 		/*
 		 * input could be anything that points to a kbox
@@ -92,7 +96,8 @@ public class KBoxHandler {
 						_disabled = true;
 						ModellingPlugin.get().logger().info("kbox not empty: any object definitions ignored");
 					}
-						
+				} else if (policy.equals(":recreate-always") && this.kbox != null) {
+					this.kbox.resetToEmpty();
 				}
 			} 
 		}
@@ -120,12 +125,8 @@ public class KBoxHandler {
 		while (opts.hasNext()) {
 			
 			Pair<String, Object> kv = opts.next();
-			if (kv.getFirst().equals("as") && instance != null) {
-				iid = kv.getSecond().toString();
-				_references.put(iid, instance);
-			} else if (kv.getFirst().equals("id") && instance != null) {
-				id = iid = kv.getSecond().toString();
-				_references.put(iid, instance);
+			if (kv.getFirst().equals("id") && instance != null) {
+				id = kv.getSecond().toString();
 			}
 		}
 		
@@ -136,6 +137,9 @@ public class KBoxHandler {
 		if (metadata != null) {
 			md = new HashMap<String, IValue>();
 			for (Object k : metadata.keySet()) {
+				// empty metadata - ignore
+				if (metadata.get(k) == null)
+					continue;
 				String s = k.toString();
 				if (s.startsWith(":")) 
 					s = s.substring(1);
@@ -143,11 +147,20 @@ public class KBoxHandler {
 			}
 		}
 		
+		if (id == null)
+			id = iid;
+		
 		/*
 		 * store it right away unless it has unresolved references
 		 */
-		if (kbox != null && instance != null && _references.get(iid) == null)
-			kbox.storeObject(instance, id, md, session);
+		if (kbox != null && instance != null) {
+			this.idToLocalName.put(id, iid);
+			this.localNameToId.put(iid, id);
+			if (_objectsWithRefs.contains(instance.getLocalName()))
+				_references.put(iid, new Pair<IInstance, HashMap<String, IValue>>(instance, md));
+			else
+				kbox.storeObject(instance, id, md, session);
+		}
 	}
 		
 	public IKBox getKbox() throws ThinklabException {
@@ -157,12 +170,15 @@ public class KBoxHandler {
 	
 	private void resolveForwardReferences() throws ThinklabException {
 
-		for (String iid : _references.keySet()) {
-			kbox.storeObject(_references.get(iid), iid, null, session);
-		}
 		for (ReferenceRecord ref : _danglingRefs) {
 			ref.resolve();
 		}
+		
+		for (String iid : _references.keySet()) {
+			Pair<IInstance, HashMap<String, IValue>> kkd = _references.get(iid);
+			kbox.storeObject(kkd.getFirst(), localNameToId.get(iid), kkd.getSecond(), session);
+		}
+
 		
 		_danglingRefs.clear();
 		_references.clear();
@@ -196,7 +212,16 @@ public class KBoxHandler {
 				
 				if (key.equals("metadata")) {
 					
-					/* TODO set metadata into props */
+					/* set metadata into props */
+					OptionListIterator ol = new OptionListIterator(kv.getSecond());
+					while (ol.hasNext()) {
+						Pair<String, Object> kkv = ol.next();
+						try {
+							out.write(IKBox.KBOX_METADATA_PROPERTY_PREFIX + kkv.getFirst() + "=" + kkv.getSecond() + "\n");
+						} catch (IOException e) {
+							throw new ThinklabIOException(e);
+						}
+					}
 					
 				} else {
 				
@@ -230,6 +255,7 @@ public class KBoxHandler {
 
 	public void declareForwardReference(IInstance instance, IProperty property, String targetId) {
 		_danglingRefs.add(new ReferenceRecord(instance, property, targetId));
+		_objectsWithRefs.add(instance.getLocalName());
 	}
 
 	public void registerObject(String _id, IInstance _instance) {

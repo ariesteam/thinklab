@@ -207,4 +207,10 @@ public class OntologyKBox implements IKBox {
 		}
 	}
 
+	@Override
+	public void resetToEmpty() throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -38,6 +38,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -501,8 +503,8 @@ public abstract class SQLServer {
     
 	public boolean haveTable(String tableName) throws ThinklabStorageException {
 
-		boolean ret = false;
-		
+
+		boolean ret = false;	
 		Connection conn = getConnection();
 		ResultSet rset = null;
 
@@ -521,6 +523,30 @@ public abstract class SQLServer {
 		return ret;
 	}
 
+	public Collection<String> getTablesLike(String tableExpr) throws ThinklabStorageException {
+
+		ArrayList<String> ret = new ArrayList<String>();
+		Connection conn = getConnection();
+		ResultSet rset = null;
+
+		try {
+			rset = conn.getMetaData().getTables(null, null, tableExpr, null);
+		    while (rset.next()) {
+		    	String table = rset.getString("TABLE_NAME");
+		    	ret.add(table);
+		    }			
+		} catch (SQLException e) {
+
+		} finally {
+			try {
+				rset.close();
+				conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return ret;
+	}
+	
 	/**
 	 * Submits the given query to the server and saves the result in a new
 	 * QueryResult object. To be used knowingly. 
@@ -637,5 +663,9 @@ public abstract class SQLServer {
 	public void setLogger() {
 		logger  = Logger.getLogger(this.getClass());
 	}
+
+	public abstract void dropDatabase() throws ThinklabStorageException;
+
+	public abstract void createDatabase() throws ThinklabStorageException;
     
 }

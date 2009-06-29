@@ -626,8 +626,8 @@ public abstract class SQLThinklabServer {
 	private String translateLiteral(IValue value, IConcept c, ISession session) throws ThinklabException {
 
 		String ret = "";
-
-		if (!value.isLiteral())
+		
+		if (value != null && !value.isLiteral())
 			throw new ThinklabStorageException(
 					"sql: translation of non-literal value of type " + c);
 
@@ -1325,19 +1325,23 @@ public abstract class SQLThinklabServer {
 				"', " + cid.getSecond() + // concept_id
 				", " + totalRels + // total_rel
 				", " + ((c instanceof IInstance) ? "true" : "false") + // is-instance
-				", " + extUri; // external_uri
+				", '" + extUri + "'"; // external_uri
 
 		/* add all extensions, calculated fields */
 		TableDesc tab = getTableDescriptor("object");
 
 		for (int i = 0; i < tab.system.size(); i++) {
 
+			String zorba = tab.fieldNames.get(i);
+			
 			if (tab.system.get(i) == 0) {
 				
 				/*
-				 * metadata fields passed to storeInstance take over any definition
+				 * metadata fields passed to storeInstance take over any definition. Field concept is null if
+				 * it's a field declared through the loaded schema; if not, it's a metadata field. We need to
+				 * set a value even if the metadata map do not contain the field.
 				 */
-				if (metadata != null && metadata.containsKey(tab.fieldNames.get(i))) {
+				if (metadata != null && tab.fieldConcept.get(i) != null) {
 					
 					sql += 
 						", " + 
@@ -1801,7 +1805,7 @@ public abstract class SQLThinklabServer {
 		}
 		
 		/*
-		 * TODO setup metadata from properties now that we know how to handle all types
+		 * setup metadata from properties now that we know how to handle all types
 		*/
 		int sl = IKBox.KBOX_METADATA_PROPERTY_PREFIX.length();
 		
@@ -2109,6 +2113,37 @@ public abstract class SQLThinklabServer {
 		
 		initialize(protocol, properties);
 		
+	}
+
+	public void resetToEmpty() throws ThinklabException {
+    		
+		log.info("reinitializing database " + server.getDatabase() + "...");
+
+		for (int i = 0; i < tables.size(); i++)
+			if (!tables.get(i).isTemplate) {
+				server.execute("DROP TABLE " + tables.get(i).name + ";");
+    	}
+
+		for (String tb : server.getTablesLike("literal_%")) {
+			server.execute("DROP TABLE " + tb + ";");
+		}
+		
+		/* create SQL instructions from schema and run them */
+		for (int i = 0; i < tables.size(); i++)
+			if (!tables.get(i).isTemplate) {
+				server.execute(tables.get(i).creationCode());
+    	}
+
+    	/* initialize ID table */
+    	initializeIDs();
+
+    	type2ID.clear();
+    	id2Type.clear();
+    	property2ID.clear();
+    	id2Property.clear();
+
+    	log.info("done reinitializing database " + server.getDatabase() + ".");
+
 	}
 
 }

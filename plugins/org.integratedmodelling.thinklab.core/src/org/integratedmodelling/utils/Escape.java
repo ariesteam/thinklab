@@ -374,5 +374,55 @@ public final class Escape {
 	    }
 	    return result.toString();
 	  }
+
+
+public static String forDoubleQuotedString(String s, boolean removeNewlines){
+    final StringBuilder result = new StringBuilder();
+
+    final StringCharacterIterator iterator = new StringCharacterIterator(s);
+    char character =  iterator.current();
+    while (character != CharacterIterator.DONE ){
+      /*
+      * All literals need to have backslashes doubled.
+      */
+      if (character == '"') {
+        result.append("\\\"");
+      } else if (character == '\n' && removeNewlines) {
+    	  result.append(' ');
+      }  else {
+        //the char is not a special one
+        //add it to the result as is
+        result.append(character);
+      }
+      character = iterator.next();
+    }
+    return result.toString();
+  }
+
+
+   public static String collapseWhitespace(String s) {
+	
+		final StringBuilder result = new StringBuilder();
+		final StringCharacterIterator iterator = new StringCharacterIterator(s);
+		char character =  iterator.current();
+		while (character != CharacterIterator.DONE ){
+			/*
+			 * All literals need to have backslashes doubled.
+			 */
+			boolean wasw = false;
+			while (Character.isWhitespace(character)) {
+				wasw = true;
+				character = iterator.next();
+			}
+			if (wasw) {
+				result.append(' ');
+			} else {
+				result.append(character);
+				character = iterator.next();
+			}
+		}
+		return result.toString();
+	}
+	    
 }
  

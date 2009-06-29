@@ -37,7 +37,7 @@
 	 Behavior can be modified using the keywords."
 	[& body]
 	 `(let [body#  (tl/group-with-keywords '~body)
-	 			  md-extractor# (eval (:metadata-generator (second (first body#))))
+	 			  md-extractor# (eval (:metadata-generator (tl/assoc-map (second (first body#)))))
 	 	 	    kbox#   (modelling/j-make-kbox-handler)
 	 	 	    ]
 	 	 	 (binding [*_kbox_* kbox#]

@@ -23,6 +23,18 @@
              (rrest rem))
       [odds evens])))
       
+      
+(defn assoc-map
+  "Turns a seq into the map it wanted to be: (assoc-map '(:one 1 :two 2)) -> {:one 1, :two 2}."
+  [aseq]
+  (loop [aseq aseq
+	 amap {}]
+    (if (empty? aseq)
+      amap
+      (let [[key val] [(first aseq) (second aseq)]]
+	(recur (rest (rest aseq))
+	       (assoc amap key val))))))    
+      
 (defn take-pair-while
   "Returns a lazy seq of successive pairs of items from coll
    while (pred item) returns true for the first item in the pair. pred

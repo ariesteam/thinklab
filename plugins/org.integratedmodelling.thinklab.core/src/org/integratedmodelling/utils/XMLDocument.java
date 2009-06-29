@@ -106,6 +106,9 @@ public class XMLDocument {
 		public Node next() {
 			Node ret = _current;
 			_current = _current.getNextSibling();
+			
+			if (ret == null)
+				System.out.println("FUCK I'M RETURNING A FUCKING NULL");
 			return ret;
 		}
 

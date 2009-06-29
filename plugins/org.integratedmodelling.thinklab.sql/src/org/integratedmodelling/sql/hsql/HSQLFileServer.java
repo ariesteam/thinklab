@@ -137,4 +137,14 @@ public class HSQLFileServer extends SQLServer {
 	   	execute("SHUTDOWN");
 	}
 
+	@Override
+	public void createDatabase() throws ThinklabStorageException {
+		// TODO add character set and anything needed to fit loaded schemata
+		this.execute("CREATE DATABASE " + getDatabase() + ";");
+	}
+
+	@Override
+	public void dropDatabase() throws ThinklabStorageException {
+		this.execute("DROP DATABASE " + getDatabase() + ";");		
+	}
 }

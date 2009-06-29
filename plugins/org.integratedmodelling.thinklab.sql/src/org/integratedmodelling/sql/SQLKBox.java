@@ -297,4 +297,9 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		return ret;
 	}
 
+	@Override
+	public void resetToEmpty() throws ThinklabException {
+		super.resetToEmpty();
+	}
+
 }

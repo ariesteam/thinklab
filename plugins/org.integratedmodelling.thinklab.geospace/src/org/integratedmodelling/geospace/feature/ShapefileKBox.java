@@ -170,5 +170,11 @@ public class ShapefileKBox extends InstanceShapefileHandler implements IKBox {
 		return 0;
 	}
 
+	@Override
+	public void resetToEmpty() throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }
