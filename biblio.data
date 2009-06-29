@@ -3,17 +3,19 @@
 	"The value of the world's ecosystem services and natural capital."
 	(bibtex:hasJournal "Costanza, R., d'Arge, R., de Groot, R., Farber, S., Grasso, M., Hannon,B., Limburg,K., Naeem,S., O'Neill,R.V., Paruelo,J., Raskiin,R.G., Sutton,P., Van den Belt, M.")
 	(bibtex:hasAuthor "Costanza, R., d'Arge, R., de Groot, R., Farber, S., Grasso, M., Hannon,B., Limburg,K., Naeem,S., O'Neill,R.V., Paruelo,J., Raskiin,R.G., Sutton,P., Van den Belt, M.")
+	(bibtex:hasTitle "The value of the world's ecosystem services and natural capital.")
 	(bibtex:hasYear 1997)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "253-260")
 	(bibtex:hasAbstract "The services of ecological systems and the natural capital stocks that produce them are critical to the functioning of the Earth's life-support system. They contribute to human welfare, both directly and indirectly, and therefore represent part of the total economic value of the planet. We have estimated the current economic value of 17 ecosystem services for 16 biomes, based on published studies and a few original calculations. For the entire biosphere, the value (most of which is outside the market) is estimated to be in the range of US$16-54 trillion (10(12)) per year, with an average of US$33 trillion per year. Because of the nature of the uncertainties, this must be considered a minimum estimate. Global gross national product total is around US$18 trillion per year.")
 	(bibtex:hasKeywords "year trillion around total product national gross Global estimate minimum considered must this uncertainties nature Because average with range estimated outside which value biosphere entire calculations original studies published based services ecosystem economic current have planet part represent therefore indirectly directly both welfare human contribute They system Earth's functioning critical them produce that stocks capital natural systems ecological world's Belt Sutton Limburg Hannon Grasso Farber Groot Costanza Nature")
 	) :id esdbr-2
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Kim, Global biogeochemical cycles, 1992."
 	"The Global Carbon Cycle"
 	(bibtex:hasBooktitle "Holmen Kim")
 	(bibtex:hasAuthor "Holmen Kim")
+	(bibtex:hasTitle "The Global Carbon Cycle")
 	(bibtex:hasYear 1992)
 	(bibtex:hasPages "239--262")
 	(bibtex:hasKeywords "Cycle Carbon Global Holmen cycles biogeochemical The Kim")
@@ -23,6 +25,7 @@
 	"Calcium carbonate precipitation on the Bahama Banks"
 	(bibtex:hasJournal "Broecker,W.S., Takahashi,T.")
 	(bibtex:hasAuthor "Broecker,W.S., Takahashi,T.")
+	(bibtex:hasTitle "Calcium carbonate precipitation on the Bahama Banks")
 	(bibtex:hasYear 1966)
 	(bibtex:hasNumber 71)
 	(bibtex:hasPages "1575-1602")
@@ -33,6 +36,7 @@
 	"Valuing public goods: a comparision of survey and hedonic approach"
 	(bibtex:hasJournal "Brookshire,D., Thayer,M.A., Schulze,W.D., D'Arge,R.C.")
 	(bibtex:hasAuthor "Brookshire,D., Thayer,M.A., Schulze,W.D., D'Arge,R.C.")
+	(bibtex:hasTitle "Valuing public goods: a comparision of survey and hedonic approach")
 	(bibtex:hasYear 1982)
 	(bibtex:hasNumber 72)
 	(bibtex:hasPages "165-177")
@@ -43,6 +47,7 @@
 	"Soil organic matter recovery in semiarid grasslands: implications for the conservation reserve program."
 	(bibtex:hasJournal "Burke,I.C., Lauenroth,W.K., Coffin,D.P.")
 	(bibtex:hasAuthor "Burke,I.C., Lauenroth,W.K., Coffin,D.P.")
+	(bibtex:hasTitle "Soil organic matter recovery in semiarid grasslands: implications for the conservation reserve program.")
 	(bibtex:hasYear 1995)
 	(bibtex:hasNumber 5)
 	(bibtex:hasPages "793-801")
@@ -54,6 +59,7 @@
 	"Economic value of wetlands-based recreation"
 	(bibtex:hasJournal "Bergstrom,J.C., Soll, J.R., Titre,J.P., Wright,V.L.")
 	(bibtex:hasAuthor "Bergstrom,J.C., Soll, J.R., Titre,J.P., Wright,V.L.")
+	(bibtex:hasTitle "Economic value of wetlands-based recreation")
 	(bibtex:hasYear 1990)
 	(bibtex:hasNumber 2)
 	(bibtex:hasPages "129-147")
@@ -64,6 +70,7 @@
 	"Ecological economic modeling and valuation of ecosystems"
 	(bibtex:hasJournal "Bockstael,N., Costanza,R., Strand,I., Boynton,W. Bell,K.,Kainger,L.")
 	(bibtex:hasAuthor "Bockstael,N., Costanza,R., Strand,I., Boynton,W. Bell,K.,Kainger,L.")
+	(bibtex:hasTitle "Ecological economic modeling and valuation of ecosystems")
 	(bibtex:hasYear 1995)
 	(bibtex:hasNumber 14)
 	(bibtex:hasPages "143-159")
@@ -75,6 +82,7 @@
 	"Texture, climate, and cultivaiton effects on soil organic content in US grassland soils."
 	(bibtex:hasJournal "Burke,I.C., Yonker,C.M., Parton,W.J., Cole,C.V., Flach,K., Schimel, D.S.")
 	(bibtex:hasAuthor "Burke,I.C., Yonker,C.M., Parton,W.J., Cole,C.V., Flach,K., Schimel, D.S.")
+	(bibtex:hasTitle "Texture, climate, and cultivaiton effects on soil organic content in US grassland soils.")
 	(bibtex:hasYear 1989)
 	(bibtex:hasNumber 53)
 	(bibtex:hasPages "800-805")
@@ -85,6 +93,7 @@
 	"The value of non-timber forest products: an estimation for tropical deciduous forests in India."
 	(bibtex:hasJournal "Chopra,K.")
 	(bibtex:hasAuthor "Chopra,K.")
+	(bibtex:hasTitle "The value of non-timber forest products: an estimation for tropical deciduous forests in India.")
 	(bibtex:hasYear 1993)
 	(bibtex:hasNumber 47)
 	(bibtex:hasPages "251-257")
@@ -96,6 +105,7 @@
 	"Theories and methods of valuation ofnatural systems: a comparison of willingness-to-pay and energy analysis based approaches."
 	(bibtex:hasJournal "Costanza, R., Farber,S.C.")
 	(bibtex:hasAuthor "Costanza, R., Farber,S.C.")
+	(bibtex:hasTitle "Theories and methods of valuation ofnatural systems: a comparison of willingness-to-pay and energy analysis based approaches.")
 	(bibtex:hasYear 1985)
 	(bibtex:hasNumber 4)
 	(bibtex:hasPages "1-38")
@@ -106,6 +116,7 @@
 	"Potential climatic impacts of vegetation change: a regional modelling study."
 	(bibtex:hasJournal "Copeland,J.H., Pielke,R.A., Kittel,T.G.F.")
 	(bibtex:hasAuthor "Copeland,J.H., Pielke,R.A., Kittel,T.G.F.")
+	(bibtex:hasTitle "Potential climatic impacts of vegetation change: a regional modelling study.")
 	(bibtex:hasYear 1996)
 	(bibtex:hasNumber 101)
 	(bibtex:hasPages "7409")
@@ -117,6 +128,7 @@
 	"Predation by birds on spruce budworm, Choristoneura fumiferana: functional, nemerical and total responses."
 	(bibtex:hasJournal "Crawford, H.S., Jennings,D.T.")
 	(bibtex:hasAuthor "Crawford, H.S., Jennings,D.T.")
+	(bibtex:hasTitle "Predation by birds on spruce budworm, Choristoneura fumiferana: functional, nemerical and total responses.")
 	(bibtex:hasYear 1989)
 	(bibtex:hasNumber 70)
 	(bibtex:hasPages "152-163")
@@ -127,6 +139,7 @@
 	"The on-site and downstream costs of soil erosion in the Magat and Pantabangan watersheds."
 	(bibtex:hasJournal "Cruz,W., Francisco,H.A., Conway, Z.T.")
 	(bibtex:hasAuthor "Cruz,W., Francisco,H.A., Conway, Z.T.")
+	(bibtex:hasTitle "The on-site and downstream costs of soil erosion in the Magat and Pantabangan watersheds.")
 	(bibtex:hasYear 1988)
 	(bibtex:hasNumber 26)
 	(bibtex:hasPages "85-")
@@ -137,6 +150,7 @@
 	"Economic evaluaiton of Coastal Resources: the El Nino Study."
 	(bibtex:hasJournal "Dixon,J.A., Hodgson,G.")
 	(bibtex:hasAuthor "Dixon,J.A., Hodgson,G.")
+	(bibtex:hasTitle "Economic evaluaiton of Coastal Resources: the El Nino Study.")
 	(bibtex:hasYear 1988)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "5-7")
@@ -147,6 +161,7 @@
 	"Valuation of non-priced amenities provided by the biological resources whithin the Monteverde Cloud Forest preserve, Costa Rita."
 	(bibtex:hasJournal "Echeverria,J., Hanrahan,M., Solorzano,R.")
 	(bibtex:hasAuthor "Echeverria,J., Hanrahan,M., Solorzano,R.")
+	(bibtex:hasTitle "Valuation of non-priced amenities provided by the biological resources whithin the Monteverde Cloud Forest preserve, Costa Rita.")
 	(bibtex:hasYear 1995)
 	(bibtex:hasNumber 13)
 	(bibtex:hasPages "43-52")
@@ -158,6 +173,7 @@
 	"The demand for Galapagos vacations: estimation and application to wildness preservation."
 	(bibtex:hasJournal "Edwards, S.F.")
 	(bibtex:hasAuthor "Edwards, S.F.")
+	(bibtex:hasTitle "The demand for Galapagos vacations: estimation and application to wildness preservation.")
 	(bibtex:hasYear 1991)
 	(bibtex:hasNumber 19)
 	(bibtex:hasPages "155-199")
@@ -169,6 +185,7 @@
 	"The economic value of wetlands systems."
 	(bibtex:hasJournal "Farber,S., Costanza, R.")
 	(bibtex:hasAuthor "Farber,S., Costanza, R.")
+	(bibtex:hasTitle "The economic value of wetlands systems.")
 	(bibtex:hasYear 1987)
 	(bibtex:hasNumber 24)
 	(bibtex:hasPages "41-51")
@@ -179,6 +196,7 @@
 	"Asynthesis of ecological and economic theory toward more complete valuation of tropical moist forest."
 	(bibtex:hasJournal "Farnworth, E.G., Tidrick, T.H., Smather, W.M., Jordan, C.F.")
 	(bibtex:hasAuthor "Farnworth, E.G., Tidrick, T.H., Smather, W.M., Jordan, C.F.")
+	(bibtex:hasTitle "Asynthesis of ecological and economic theory toward more complete valuation of tropical moist forest.")
 	(bibtex:hasYear 1983)
 	(bibtex:hasNumber 21)
 	(bibtex:hasPages "11-28")
@@ -189,6 +207,7 @@
 	"The value of honeybee pollination to society."
 	(bibtex:hasJournal "Gill,R.A.")
 	(bibtex:hasAuthor "Gill,R.A.")
+	(bibtex:hasTitle "The value of honeybee pollination to society.")
 	(bibtex:hasYear 1991)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "62-68")
@@ -199,6 +218,7 @@
 	"Amethod for the economic valuation of non-timber tropocal forest products."
 	(bibtex:hasJournal "Godoy,R., Lubowski,R., Markandya,A.")
 	(bibtex:hasAuthor "Godoy,R., Lubowski,R., Markandya,A.")
+	(bibtex:hasTitle "Amethod for the economic valuation of non-timber tropocal forest products.")
 	(bibtex:hasYear 1993)
 	(bibtex:hasNumber 47)
 	(bibtex:hasPages "220-223")
@@ -210,6 +230,7 @@
 	"Primary and secondaary values of wetlands ecosystems."
 	(bibtex:hasJournal "Gren,I.M., Folke,C. et al")
 	(bibtex:hasAuthor "Gren,I.M., Folke,C. et al")
+	(bibtex:hasTitle "Primary and secondaary values of wetlands ecosystems.")
 	(bibtex:hasYear 1994)
 	(bibtex:hasNumber 4)
 	(bibtex:hasPages "55-74")
@@ -220,6 +241,7 @@
 	"Valuing the Rain Forest: the economic value of nontimber forest products in Ecuador."
 	(bibtex:hasJournal "Grimes, A., Loomis, S., Jahnige,P., Burnham,M., Onthank,K., Alarcon,R., Cuenca, W.P., Martinez,C.C., Neil,D., Balick, M., Bennett,B., Mendelsohn,R..")
 	(bibtex:hasAuthor "Grimes, A., Loomis, S., Jahnige,P., Burnham,M., Onthank,K., Alarcon,R., Cuenca, W.P., Martinez,C.C., Neil,D., Balick, M., Bennett,B., Mendelsohn,R..")
+	(bibtex:hasTitle "Valuing the Rain Forest: the economic value of nontimber forest products in Ecuador.")
 	(bibtex:hasYear 1994)
 	(bibtex:hasNumber 23)
 	(bibtex:hasPages "405-410")
@@ -231,6 +253,7 @@
 	"Economic creteriz for freshwater wetland policy in Massachussettss."
 	(bibtex:hasJournal "Gupta, T.R., Forster,J.H.")
 	(bibtex:hasAuthor "Gupta, T.R., Forster,J.H.")
+	(bibtex:hasTitle "Economic creteriz for freshwater wetland policy in Massachussettss.")
 	(bibtex:hasYear 1975)
 	(bibtex:hasNumber 57)
 	(bibtex:hasPages "40-45")
@@ -241,6 +264,7 @@
 	"Forested-wetland trends in the United States: an economic perspective."
 	(bibtex:hasJournal "Hickman,C")
 	(bibtex:hasAuthor "Hickman,C")
+	(bibtex:hasTitle "Forested-wetland trends in the United States: an economic perspective.")
 	(bibtex:hasYear 1990)
 	(bibtex:hasNumber 33)
 	(bibtex:hasPages "227-238")
@@ -251,6 +275,7 @@
 	"An economical simulation model of mountain fynbos ecosystems: dynamics, valuation and management."
 	(bibtex:hasJournal "Higgins, S.I., Turpie, J.K., Costanza,R., Cowling,R.W., Le Maitre, D.C., Marais, C., Midgley, G.F.")
 	(bibtex:hasAuthor "Higgins, S.I., Turpie, J.K., Costanza,R., Cowling,R.W., Le Maitre, D.C., Marais, C., Midgley, G.F.")
+	(bibtex:hasTitle "An economical simulation model of mountain fynbos ecosystems: dynamics, valuation and management.")
 	(bibtex:hasYear 1997)
 	(bibtex:hasNumber 22)
 	(bibtex:hasAbstract "Mountain fynbos ecosystems in South Africa are threatened by alien plant invasions and by a lack of funding for effective management of these invasions. This paper develops an ecological-economic argument for the effective management of plant invasions in mountain fynbos ecosystems. We do this by building a dynamic ecological economic model which values the ecosystem services that fynbos ecosystems provide under different management regimes. We propose that the services that mountain fynbos ecosystems provide fall into six components: water production, wildflower harvest, hiker visitation, ecotourist visitation, endemic species and genetic storage. A scenario analysis based on a hypothetical 4 km(2) mountain fynbos ecosystem in the western part of the fynbos biome estimated that the ecosystem's value varies from R19 million (under low valuation and poor management scenario) to R300 million (under high valuation and good management scenario) [R4.50=US$1]. Water production and genetic storage were the most valuable ecosystem services. The model showed that the cost of clearing alien plants (under the proactive management scenario) was a tiny (0.6-5%) proportion of the value of mountain fynbos ecosystems. This result motivates an injection of funds for clearing alien plants from mountain fynbos ecosystems. (C) 1997 Elsevier Science B.V.")
@@ -261,6 +286,7 @@
 	"Recent trends in estuarine fisheries: predictions of fish production and yield."
 	(bibtex:hasJournal "Houde,E.D., Rutherford, E.S.")
 	(bibtex:hasAuthor "Houde,E.D., Rutherford, E.S.")
+	(bibtex:hasTitle "Recent trends in estuarine fisheries: predictions of fish production and yield.")
 	(bibtex:hasYear 1993)
 	(bibtex:hasNumber 16)
 	(bibtex:hasPages "161-176")
@@ -272,6 +298,7 @@
 	"Regional nitrogen budgets and riverine N and P fluxes of the drainages to the North Atlantic Ocean: Natural and human influences."
 	(bibtex:hasJournal "Howarth,R.W., Billen, G., Swaney,D., Townsend, A., Jaworski,N., Lajtha,K., Downing, J.A., Elmgren,R., Caraco,N., Jordan,T., Beremdse,F., Feemeu,J., Kudeyarov,V., Murdoch,P., Zhu,Z.")
 	(bibtex:hasAuthor "Howarth,R.W., Billen, G., Swaney,D., Townsend, A., Jaworski,N., Lajtha,K., Downing, J.A., Elmgren,R., Caraco,N., Jordan,T., Beremdse,F., Feemeu,J., Kudeyarov,V., Murdoch,P., Zhu,Z.")
+	(bibtex:hasTitle "Regional nitrogen budgets and riverine N and P fluxes of the drainages to the North Atlantic Ocean: Natural and human influences.")
 	(bibtex:hasYear 1996)
 	(bibtex:hasNumber 35)
 	(bibtex:hasPages "75")
@@ -283,6 +310,7 @@
 	"Effects of cultivation and abandonment on soil organic matter in northeastern Colorado."
 	(bibtex:hasJournal "Ihori,T.,Burke,I.C., Lauenroth, W.K., Coffin,D.P.")
 	(bibtex:hasAuthor "Ihori,T.,Burke,I.C., Lauenroth, W.K., Coffin,D.P.")
+	(bibtex:hasTitle "Effects of cultivation and abandonment on soil organic matter in northeastern Colorado.")
 	(bibtex:hasYear 1995)
 	(bibtex:hasNumber 59)
 	(bibtex:hasPages "1112-1119")
@@ -294,6 +322,7 @@
 	"Runoff, soil and nutrient losses from rangeland and dry-farmed cropland in the southern high plain."
 	(bibtex:hasJournal "Jones,O.R.,Eck,H.V., Smith, S.J., Coleman,G.A., Hauser,V.L.")
 	(bibtex:hasAuthor "Jones,O.R.,Eck,H.V., Smith, S.J., Coleman,G.A., Hauser,V.L.")
+	(bibtex:hasTitle "Runoff, soil and nutrient losses from rangeland and dry-farmed cropland in the southern high plain.")
 	(bibtex:hasYear 1985)
 	(bibtex:hasNumber 1)
 	(bibtex:hasPages "161-164")
@@ -304,6 +333,7 @@
 	"Greenbelts in the cornbelt: riparian wetlands, instrinsic values and market failure."
 	(bibtex:hasJournal "Lant,C.L., Roberts, R.S.")
 	(bibtex:hasAuthor "Lant,C.L., Roberts, R.S.")
+	(bibtex:hasTitle "Greenbelts in the cornbelt: riparian wetlands, instrinsic values and market failure.")
 	(bibtex:hasYear 1990)
 	(bibtex:hasNumber 22)
 	(bibtex:hasPages "1375-1388")
@@ -314,6 +344,7 @@
 	"Economic valuation of marsh areas to marine production processes."
 	(bibtex:hasJournal "Lynne, G.D., Conroy,P.D., Pochasta,F.")
 	(bibtex:hasAuthor "Lynne, G.D., Conroy,P.D., Pochasta,F.")
+	(bibtex:hasTitle "Economic valuation of marsh areas to marine production processes.")
 	(bibtex:hasYear 1981)
 	(bibtex:hasNumber 8)
 	(bibtex:hasPages "175-186")
@@ -324,6 +355,7 @@
 	"Global vegetation and land-use: new high-resolution data bases for climatic studies."
 	(bibtex:hasJournal "Mattews, E.")
 	(bibtex:hasAuthor "Mattews, E.")
+	(bibtex:hasTitle "Global vegetation and land-use: new high-resolution data bases for climatic studies.")
 	(bibtex:hasYear 1983)
 	(bibtex:hasNumber 22)
 	(bibtex:hasPages "474-487")
@@ -334,6 +366,7 @@
 	"Methane and nitrous oxide fluxes in native, fertilized and cultivated grassland."
 	(bibtex:hasJournal "Moister, A.D., Schimel,d., Valentine,D., Bronson,K., Parton,W.")
 	(bibtex:hasAuthor "Moister, A.D., Schimel,d., Valentine,D., Bronson,K., Parton,W.")
+	(bibtex:hasTitle "Methane and nitrous oxide fluxes in native, fertilized and cultivated grassland.")
 	(bibtex:hasYear 1991)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "330-332")
@@ -344,6 +377,7 @@
 	"The fate of nitrogen and phosphorus at the land-sea margin of the North Atlantic Ocean."
 	(bibtex:hasJournal "Nixon,S.W., Ammerman,J.W., Atkinson,L.P., Berounsky,V.M., Billen,G., Boicourt,W.C., Boynton,W.R., Church,T.M., DiToro,D.M., Elmgren,r., Garber,J.H., Giblin,A.E., Jahnke, R.A.,Owens, N.J.P., Pilson,M.")
 	(bibtex:hasAuthor "Nixon,S.W., Ammerman,J.W., Atkinson,L.P., Berounsky,V.M., Billen,G., Boicourt,W.C., Boynton,W.R., Church,T.M., DiToro,D.M., Elmgren,r., Garber,J.H., Giblin,A.E., Jahnke, R.A.,Owens, N.J.P., Pilson,M.")
+	(bibtex:hasTitle "The fate of nitrogen and phosphorus at the land-sea margin of the North Atlantic Ocean.")
 	(bibtex:hasYear 1996)
 	(bibtex:hasNumber 35)
 	(bibtex:hasPages "141")
@@ -355,6 +389,7 @@
 	"Effect of animal husbandry on herbivore carrying capacity at a regional scale."
 	(bibtex:hasJournal "Oesterheld,M., Sala,O.E., McNaughton, S.J.")
 	(bibtex:hasAuthor "Oesterheld,M., Sala,O.E., McNaughton, S.J.")
+	(bibtex:hasTitle "Effect of animal husbandry on herbivore carrying capacity at a regional scale.")
 	(bibtex:hasYear 1992)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "234-236")
@@ -366,6 +401,7 @@
 	"Primary production required to sustain global fishersies."
 	(bibtex:hasJournal "Pauly,D., Christensen,V.")
 	(bibtex:hasAuthor "Pauly,D., Christensen,V.")
+	(bibtex:hasTitle "Primary production required to sustain global fishersies.")
 	(bibtex:hasYear 1995)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "255-257")
@@ -377,6 +413,7 @@
 	"Valuation of an Amazonian Rain Forest"
 	(bibtex:hasJournal "Peters,C.M., Genrty,A.H., Mendelsohn,R.O.")
 	(bibtex:hasAuthor "Peters,C.M., Genrty,A.H., Mendelsohn,R.O.")
+	(bibtex:hasTitle "Valuation of an Amazonian Rain Forest")
 	(bibtex:hasYear 1989)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "655-656")
@@ -387,6 +424,7 @@
 	"Use of USGS-provided data to improve weather and climate simulations."
 	(bibtex:hasJournal "Pielke,R.A., Lee,T.J., Copeland, J.H., Eastman,J.L., Ziegler,C.L., Finley,C.A.")
 	(bibtex:hasAuthor "Pielke,R.A., Lee,T.J., Copeland, J.H., Eastman,J.L., Ziegler,C.L., Finley,C.A.")
+	(bibtex:hasTitle "Use of USGS-provided data to improve weather and climate simulations.")
 	(bibtex:hasYear 1996)
 	(bibtex:hasNumber 7)
 	(bibtex:hasPages "3")
@@ -398,6 +436,7 @@
 	"Environmental and economic costs of soil erosion and conservation benefits."
 	(bibtex:hasJournal "Pimentel,D., Harvey,C., Resosudarmo,P., Sinclair,K., Kurz,D., McNair,M., Crist,S., Sphpritz,P., Fitton,L., Saffouri,R., Blair,R.")
 	(bibtex:hasAuthor "Pimentel,D., Harvey,C., Resosudarmo,P., Sinclair,K., Kurz,D., McNair,M., Crist,S., Sphpritz,P., Fitton,L., Saffouri,R., Blair,R.")
+	(bibtex:hasTitle "Environmental and economic costs of soil erosion and conservation benefits.")
 	(bibtex:hasYear 1995)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "1117-1123")
@@ -409,6 +448,7 @@
 	"Economic returns from forest conversion in the Peruvian Amazon."
 	(bibtex:hasJournal "Pinedo-Vasques,M., Jip,D.Z.")
 	(bibtex:hasAuthor "Pinedo-Vasques,M., Jip,D.Z.")
+	(bibtex:hasTitle "Economic returns from forest conversion in the Peruvian Amazon.")
 	(bibtex:hasYear 1992)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "76-78")
@@ -419,6 +459,7 @@
 	"Value of wilderness designation in Utah."
 	(bibtex:hasJournal "Pope,C.A., Jones,J.W.")
 	(bibtex:hasAuthor "Pope,C.A., Jones,J.W.")
+	(bibtex:hasTitle "Value of wilderness designation in Utah.")
 	(bibtex:hasYear 1990)
 	(bibtex:hasNumber 30)
 	(bibtex:hasPages "157-174")
@@ -429,6 +470,7 @@
 	"The value of honey bees as pollinators of US crops."
 	(bibtex:hasJournal "Robinson,W.E., Nowogrodzki,R., Morse,R.A.")
 	(bibtex:hasAuthor "Robinson,W.E., Nowogrodzki,R., Morse,R.A.")
+	(bibtex:hasTitle "The value of honey bees as pollinators of US crops.")
 	(bibtex:hasYear 1989)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "477-487")
@@ -439,6 +481,7 @@
 	"Photosynthesis and fish production in the sea."
 	(bibtex:hasJournal "Ryther,J.H.")
 	(bibtex:hasAuthor "Ryther,J.H.")
+	(bibtex:hasTitle "Photosynthesis and fish production in the sea.")
 	(bibtex:hasYear 1969)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "72-76")
@@ -449,6 +492,7 @@
 	"Primary production of the central grassland region o f the United States."
 	(bibtex:hasJournal "Sala,O.E., Parton,W.J., Joyce,L.A., Lauenroth,W.K.")
 	(bibtex:hasAuthor "Sala,O.E., Parton,W.J., Joyce,L.A., Lauenroth,W.K.")
+	(bibtex:hasTitle "Primary production of the central grassland region o f the United States.")
 	(bibtex:hasYear 1988)
 	(bibtex:hasNumber 69)
 	(bibtex:hasPages "40-45")
@@ -459,6 +503,7 @@
 	"Estimating the economic value of honey bees (Hymenoptera:Apidae) as agricultural pollinators in the United States."
 	(bibtex:hasJournal "Southwick, E.E., Southwich,Lawrence,Jr.")
 	(bibtex:hasAuthor "Southwick, E.E., Southwich,Lawrence,Jr.")
+	(bibtex:hasTitle "Estimating the economic value of honey bees (Hymenoptera:Apidae) as agricultural pollinators in the United States.")
 	(bibtex:hasYear 1992)
 	(bibtex:hasNumber 85)
 	(bibtex:hasPages "622-633")
@@ -470,6 +515,7 @@
 	"The economic valution of coral reefs."
 	(bibtex:hasJournal "Spurgeon,J.P.G.")
 	(bibtex:hasAuthor "Spurgeon,J.P.G.")
+	(bibtex:hasTitle "The economic valution of coral reefs.")
 	(bibtex:hasYear 1992)
 	(bibtex:hasNumber 24)
 	(bibtex:hasPages "529-536")
@@ -480,6 +526,7 @@
 	"Estuary Values."
 	(bibtex:hasJournal "Stroud, R.H.,")
 	(bibtex:hasAuthor "Stroud, R.H.,")
+	(bibtex:hasTitle "Estuary Values.")
 	(bibtex:hasYear 1970)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "7-8")
@@ -490,6 +537,7 @@
 	"An Economic analysis of wetland protection"
 	(bibtex:hasJournal "Thibodeau, F.R., Ostro,B.D.")
 	(bibtex:hasAuthor "Thibodeau, F.R., Ostro,B.D.")
+	(bibtex:hasTitle "An Economic analysis of wetland protection")
 	(bibtex:hasYear 1981)
 	(bibtex:hasNumber 12)
 	(bibtex:hasPages "19-30")
@@ -500,170 +548,190 @@
 	"Valuing ecotourism in a tropical rainforest."
 	(bibtex:hasJournal "Tobias, A.H., Wood, S.E.")
 	(bibtex:hasAuthor "Tobias, A.H., Wood, S.E.")
+	(bibtex:hasTitle "Valuing ecotourism in a tropical rainforest.")
 	(bibtex:hasYear 1991)
 	(bibtex:hasNumber 20)
 	(bibtex:hasPages "91-93")
 	(bibtex:hasKeywords "rainforest tropical Valuing Wood Tobias")
 	) :id esdbr-58
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Fankhauser et al., The economics of climate change. Proceedings of an OECD/IEA Conference., 1994."
 	"The social costs of greenhouse gas emissions."
 	(bibtex:hasBooktitle "Fankhauser,S., Pearce,D.W.")
 	(bibtex:hasAuthor "Fankhauser,S., Pearce,D.W.")
+	(bibtex:hasTitle "The social costs of greenhouse gas emissions.")
 	(bibtex:hasYear 1994)
 	(bibtex:hasPages "71-86")
 	(bibtex:hasKeywords "emissions greenhouse costs social Pearce Fankhauser Conference Proceedings change climate economics")
 	) :id esdbr-60
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Brown et al., The economics of project appraisal and the environment., 1994."
 	"The economic value of non-marked benefits of tropical forests:carbon storage."
 	(bibtex:hasBooktitle "Brown,K., Pearce, D.W.")
 	(bibtex:hasAuthor "Brown,K., Pearce, D.W.")
+	(bibtex:hasTitle "The economic value of non-marked benefits of tropical forests:carbon storage.")
 	(bibtex:hasYear 1994)
 	(bibtex:hasPages "102-123")
 	(bibtex:hasKeywords "storage carbon forests tropical benefits value economic Pearce Brown environment appraisal project economics")
 	) :id esdbr-61
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Cowling et al., Nature's Services., 1997."
 	"Services supplied by South African fynbos ecosystems."
 	(bibtex:hasBooktitle "Cowling,R.M., Costanza,R., Higgins,S.I.")
 	(bibtex:hasAuthor "Cowling,R.M., Costanza,R., Higgins,S.I.")
+	(bibtex:hasTitle "Services supplied by South African fynbos ecosystems.")
 	(bibtex:hasYear 1997)
 	(bibtex:hasKeywords "ecosystems African South supplied Services Higgins Costanza Cowling Nature's")
 	) :id esdbr-62
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"de Groot, Functions of nature: evaluation of nature in environmental planning, management and decision making., 1992."
 	"Funtions and values of the Dutch Wadden Sea"
 	(bibtex:hasBooktitle "de Groot,R.S.")
 	(bibtex:hasAuthor "de Groot,R.S.")
+	(bibtex:hasTitle "Funtions and values of the Dutch Wadden Sea")
 	(bibtex:hasYear 1992)
 	(bibtex:hasPages "197-217")
 	(bibtex:hasKeywords "Wadden Dutch values Groot making decision management planning environmental nature evaluation Functions Sea")
 	) :id esdbr-63
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Foster, Wetland functions and values: the state of our understanding., 1978."
 	"Measuring the social value of wetland benefits."
 	(bibtex:hasBooktitle "Foster,J.H.")
 	(bibtex:hasAuthor "Foster,J.H.")
+	(bibtex:hasTitle "Measuring the social value of wetland benefits.")
 	(bibtex:hasYear 1978)
 	(bibtex:hasPages "84-92")
 	(bibtex:hasKeywords "benefits wetland value social Measuring Foster understanding state values functions Wetland")
 	) :id esdbr-64
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Holland et al., The chemistry of the atmosphere and oceans., 1978."
 	"Holland et al., The chemistry of the atmosphere and oceans., 1978."
 	(bibtex:hasBooktitle "Holland, H. D.")
 	(bibtex:hasAuthor "Holland, H. D.")
+	(bibtex:hasTitle "The chemistry of the atmosphere and oceans.")
 	(bibtex:hasYear 1978)
 	(bibtex:hasPages "351")
 	(bibtex:hasKeywords "oceans atmosphere chemistry Holland")
 	) :id esdbr-65
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Kramer et al., Managing the world's forests: looking for balance between conservation and development., 1992."
 	"Forest valuation."
 	(bibtex:hasBooktitle "Kramer,R.A.,Healy,R., Mendelsohn,R.")
 	(bibtex:hasAuthor "Kramer,R.A.,Healy,R., Mendelsohn,R.")
+	(bibtex:hasTitle "Forest valuation.")
 	(bibtex:hasYear 1992)
 	(bibtex:hasKeywords "valuation Forest Mendelsohn Healy Kramer development conservation between balance looking forests world's Managing")
 	) :id esdbr-66
- (modelling/object 'bibtext:Techreport
+ (modelling/object 'bibtex:Techreport
 	"Lampietti et al., Environmental Economics., 1995."
 	"Human influence on biodiversity."
 	(bibtex:hasJournal "Lampietti,J.A., Dixon,J.A.")
 	(bibtex:hasAuthor "Lampietti,J.A., Dixon,J.A.")
+	(bibtex:hasTitle "Human influence on biodiversity.")
 	(bibtex:hasYear 1995)
 	(bibtex:hasKeywords "biodiversity influence Human Dixon Economics Environmental")
 	) :id esdbr-67
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Mori, Sustainable harvesting and marketing of rain forest products., 1992."
 	"The Brazil nut industry: past,present and future."
 	(bibtex:hasBooktitle "Mori,S.A.")
 	(bibtex:hasAuthor "Mori,S.A.")
+	(bibtex:hasTitle "The Brazil nut industry: past,present and future.")
 	(bibtex:hasYear 1992)
 	(bibtex:hasKeywords "future present past industry Brazil Mori products forest rain marketing harvesting Sustainable")
 	) :id esdbr-68
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Pearce, Economic policy toward the environment., 1991."
 	"An economic approach to saving the tropical forests."
 	(bibtex:hasBooktitle "Pearce,D.")
 	(bibtex:hasAuthor "Pearce,D.")
+	(bibtex:hasTitle "An economic approach to saving the tropical forests.")
 	(bibtex:hasYear 1991)
 	(bibtex:hasPages "239-262")
 	(bibtex:hasKeywords "forests tropical saving approach economic Pearce environment toward policy Economic")
 	) :id esdbr-69
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Pimental, Techniques for reducing pesticides-environmental an economic benefits., 0."
 	"Pest management in agriculture."
 	(bibtex:hasBooktitle "Pimental,D.")
 	(bibtex:hasAuthor "Pimental,D.")
+	(bibtex:hasTitle "Pest management in agriculture.")
 	(bibtex:hasYear 1990)
 	(bibtex:hasKeywords "agriculture management Pest Pimental benefits economic reducing Techniques")
 	) :id esdbr-70
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Postel et al., Nature's services, 1997."
 	"Freshwater ecosystem services."
 	(bibtex:hasBooktitle "Postel,S., Carpenter,S.")
 	(bibtex:hasAuthor "Postel,S., Carpenter,S.")
+	(bibtex:hasTitle "Freshwater ecosystem services.")
 	(bibtex:hasYear 1997)
 	(bibtex:hasPages "195-214")
 	(bibtex:hasKeywords "services ecosystem Freshwater Carpenter Postel Nature's")
 	) :id esdbr-71
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Sala et al., Ecosystem services., 1996."
 	"Ecosystem services in grasslands."
 	(bibtex:hasBooktitle "Sala,O.E., Paruelo,J.M.")
 	(bibtex:hasAuthor "Sala,O.E., Paruelo,J.M.")
+	(bibtex:hasTitle "Ecosystem services in grasslands.")
 	(bibtex:hasYear 1996)
 	(bibtex:hasKeywords "grasslands services Ecosystem Sala")
 	) :id esdbr-72
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Schlesinger, Biogeochemistry: an analysis of global change., 1991."
 	"The Sea."
 	(bibtex:hasBooktitle "Schlesinger,W.H.")
 	(bibtex:hasAuthor "Schlesinger,W.H.")
+	(bibtex:hasTitle "The Sea.")
 	(bibtex:hasYear 1991)
 	(bibtex:hasPages "254-293")
 	(bibtex:hasKeywords "Schlesinger change global analysis Biogeochemistry")
 	) :id esdbr-73
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Shiklomanov, Water in crisis: a guide to the World's fresh water resources., 1993."
 	"World fresh water resources."
 	(bibtex:hasBooktitle "Shiklomanov,L.A.")
 	(bibtex:hasAuthor "Shiklomanov,L.A.")
+	(bibtex:hasTitle "World fresh water resources.")
 	(bibtex:hasYear 1993)
 	(bibtex:hasPages "13-24")
 	(bibtex:hasKeywords "resources water fresh World World's guide crisis Water")
 	) :id esdbr-74
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Schlesinger, Biogeochemistry, 1991."
 	"The Global Carbon Cycle"
 	(bibtex:hasBooktitle "Schlesinger,W.H.")
 	(bibtex:hasAuthor "Schlesinger,W.H.")
+	(bibtex:hasTitle "The Global Carbon Cycle")
 	(bibtex:hasYear 1991)
 	(bibtex:hasPages "308-321")
 	(bibtex:hasKeywords "Cycle Carbon Global Schlesinger Biogeochemistry The")
 	) :id esdbr-75
- (modelling/object 'bibtext:Techreport
+ (modelling/object 'bibtex:Techreport
 	"Adger et al., Global Environmental Change Series, 1994."
 	"Towards estimating total economic value of forest in Mexico."
 	(bibtex:hasJournal "Adger,N., Brown,K., Cerigni,R., Moran,D.")
 	(bibtex:hasAuthor "Adger,N., Brown,K., Cerigni,R., Moran,D.")
+	(bibtex:hasTitle "Towards estimating total economic value of forest in Mexico.")
 	(bibtex:hasYear 1994)
 	(bibtex:hasKeywords "Mexico forest value economic total estimating Towards Moran Brown Adger Series Change Environmental Global")
 	) :id esdbr-77
- (modelling/object 'bibtext:Techreport
+ (modelling/object 'bibtex:Techreport
 	"Lampietti et al., Environmental Economics, 1995."
 	"To see the forest for the Trees: a guide to non-timber forest benefits."
 	(bibtex:hasBooktitle "Lampietti,J.A., Dixon,J.A.")
 	(bibtex:hasAuthor "Lampietti,J.A., Dixon,J.A.")
+	(bibtex:hasTitle "To see the forest for the Trees: a guide to non-timber forest benefits.")
 	(bibtex:hasYear 1995)
 	(bibtex:hasKeywords "benefits forest guide Trees Dixon Economics Environmental")
 	) :id esdbr-78
- (modelling/object 'bibtext:Techreport
+ (modelling/object 'bibtex:Techreport
 	"Adger et al., Global Environmental Change Series, 1994."
 	"Towards estimating total economic valueof forests in Mexico"
 	(bibtex:hasBooktitle "Adger,N., Brown,K.,Cervigni,R.,Moran,D.")
 	(bibtex:hasAuthor "Adger,N., Brown,K.,Cervigni,R.,Moran,D.")
+	(bibtex:hasTitle "Towards estimating total economic valueof forests in Mexico")
 	(bibtex:hasYear 1994)
 	(bibtex:hasPages "1-41")
 	(bibtex:hasKeywords "Mexico forests economic total estimating Towards Moran Brown Adger Series Change Environmental Global")
@@ -673,6 +741,7 @@
 	"Subsoil accumulation of mineral nitrogen under polyculture and monoculture plantations, fallow and primary forest in a ferralitic Amazonia upland soil"
 	(bibtex:hasJournal "Schroth, Gotz; Ferreira Da Silva, Luciana; Seixas, Rosangela; Teixeira, Wenceslau Geraldes; Macaeda, Jeferson L.V.; Zech, Wolfgang")
 	(bibtex:hasAuthor "Schroth, Gotz; Ferreira Da Silva, Luciana; Seixas, Rosangela; Teixeira, Wenceslau Geraldes; Macaeda, Jeferson L.V.; Zech, Wolfgang")
+	(bibtex:hasTitle "Subsoil accumulation of mineral nitrogen under polyculture and monoculture plantations, fallow and primary forest in a ferralitic Amazonia upland soil")
 	(bibtex:hasYear 1999)
 	(bibtex:hasNumber 75)
 	(bibtex:hasPages "109-120")
@@ -684,6 +753,7 @@
 	"Biodiversity and ecosystem functioning: importance of species evenness in an old field"
 	(bibtex:hasJournal "Wilsey, B.J., Potvin, C.")
 	(bibtex:hasAuthor "Wilsey, B.J., Potvin, C.")
+	(bibtex:hasTitle "Biodiversity and ecosystem functioning: importance of species evenness in an old field")
 	(bibtex:hasYear 2000)
 	(bibtex:hasNumber 81)
 	(bibtex:hasPages "887-892")
@@ -695,6 +765,7 @@
 	"Estimating net primary productivity from grassland biomass dynamics measurements"
 	(bibtex:hasJournal "Scurlock, J.M.O., Johnson, K., Olson, J.")
 	(bibtex:hasAuthor "Scurlock, J.M.O., Johnson, K., Olson, J.")
+	(bibtex:hasTitle "Estimating net primary productivity from grassland biomass dynamics measurements")
 	(bibtex:hasYear 2002)
 	(bibtex:hasNumber 8)
 	(bibtex:hasPages "736-753")
@@ -706,6 +777,7 @@
 	"\"With-in Stand Nutrient Cycling in Artic and Boreal Wetlands\""
 	(bibtex:hasJournal "Sven Jonasson; Gaius R. Shaver")
 	(bibtex:hasAuthor "Sven Jonasson; Gaius R. Shaver")
+	(bibtex:hasTitle "\"With-in Stand Nutrient Cycling in Artic and Boreal Wetlands\"")
 	(bibtex:hasYear 1999)
 	(bibtex:hasNumber 80)
 	(bibtex:hasPages "2139")
@@ -717,6 +789,7 @@
 	"\"Organic matter cycling in grassland soils of the Swiss Jura mountains: biodiversity and strategies of the living communities\""
 	(bibtex:hasJournal "Nicolas Maire, Daniel Borcard, Endre Laczko, Willy Matthey")
 	(bibtex:hasAuthor "Nicolas Maire, Daniel Borcard, Endre Laczko, Willy Matthey")
+	(bibtex:hasTitle "\"Organic matter cycling in grassland soils of the Swiss Jura mountains: biodiversity and strategies of the living communities\"")
 	(bibtex:hasYear 1999)
 	(bibtex:hasNumber 31)
 	(bibtex:hasPages "1281-1293")
@@ -728,6 +801,7 @@
 	"Changes in carbon, nitrogen, and phopshorus levels due to deforestation and cultivation: A case study in Simlipal National Park, India"
 	(bibtex:hasJournal "Saikh, H., Varadachari, C., and Ghosh, K.")
 	(bibtex:hasAuthor "Saikh, H., Varadachari, C., and Ghosh, K.")
+	(bibtex:hasTitle "Changes in carbon, nitrogen, and phopshorus levels due to deforestation and cultivation: A case study in Simlipal National Park, India")
 	(bibtex:hasYear 1998)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "137 - 145")
@@ -739,6 +813,7 @@
 	"Plant diversity enhances ecosystem resposes to elevated CO2 and nitrogen deposition."
 	(bibtex:hasJournal "Relch, P.B., Knops, J., Tilman, D., Craine, J., Ellsworth, D., Tjoelker, M., Lee, T., Wedin, D., Naeem, S., Bahauddin, D., Hendrey, G., Jose, S., Wrage, K., Goth, J., and Bengston, W.")
 	(bibtex:hasAuthor "Relch, P.B., Knops, J., Tilman, D., Craine, J., Ellsworth, D., Tjoelker, M., Lee, T., Wedin, D., Naeem, S., Bahauddin, D., Hendrey, G., Jose, S., Wrage, K., Goth, J., and Bengston, W.")
+	(bibtex:hasTitle "Plant diversity enhances ecosystem resposes to elevated CO2 and nitrogen deposition.")
 	(bibtex:hasYear 2001)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "809-812")
@@ -749,6 +824,7 @@
 	"Successional responses of a tropical forest termite assemblage to experimental habitat perterbation"
 	(bibtex:hasJournal "Davies, R., Eggleton, P., Dibog, L., Lawton, J.H., Bignell, D., Brauman, A., Hartmann, C., Nunes, L., Holt, J., Rouland, C.")
 	(bibtex:hasAuthor "Davies, R., Eggleton, P., Dibog, L., Lawton, J.H., Bignell, D., Brauman, A., Hartmann, C., Nunes, L., Holt, J., Rouland, C.")
+	(bibtex:hasTitle "Successional responses of a tropical forest termite assemblage to experimental habitat perterbation")
 	(bibtex:hasYear 1999)
 	(bibtex:hasNumber 36)
 	(bibtex:hasPages "946-962")
@@ -760,6 +836,7 @@
 	"Reversing borealization as a means to restore biodiversity in Central-European mountain forests - an example from the Krkonose Mountains, Czech Republic"
 	(bibtex:hasJournal "Emmer, Igino M.; Fanta, Josef; Kobus, Anita Th.; Kooijman, Annemieke; Sevink, Jan")
 	(bibtex:hasAuthor "Emmer, Igino M.; Fanta, Josef; Kobus, Anita Th.; Kooijman, Annemieke; Sevink, Jan")
+	(bibtex:hasTitle "Reversing borealization as a means to restore biodiversity in Central-European mountain forests - an example from the Krkonose Mountains, Czech Republic")
 	(bibtex:hasYear 1998)
 	(bibtex:hasNumber 7)
 	(bibtex:hasPages "229-247")
@@ -771,6 +848,7 @@
 	"Successional changes in live and dead wood carbon stores: implications for net ecosystem productivity."
 	(bibtex:hasJournal "Janisch, J.E., Harmon, M.E.")
 	(bibtex:hasAuthor "Janisch, J.E., Harmon, M.E.")
+	(bibtex:hasTitle "Successional changes in live and dead wood carbon stores: implications for net ecosystem productivity.")
 	(bibtex:hasYear 2002)
 	(bibtex:hasNumber 22)
 	(bibtex:hasPages "77-89")
@@ -782,6 +860,7 @@
 	"Nitrogen in two contrasting antartic bryophyte communities"
 	(bibtex:hasJournal "P. Christie")
 	(bibtex:hasAuthor "P. Christie")
+	(bibtex:hasTitle "Nitrogen in two contrasting antartic bryophyte communities")
 	(bibtex:hasYear 1987)
 	(bibtex:hasNumber 75)
 	(bibtex:hasPages "73-93")
@@ -792,6 +871,7 @@
 	"Are old forests underestimated as global carbon sinks?"
 	(bibtex:hasJournal "Carey, Eileen V.; Sala, Anna; Keane, Robert; Callaway, Ragan M.")
 	(bibtex:hasAuthor "Carey, Eileen V.; Sala, Anna; Keane, Robert; Callaway, Ragan M.")
+	(bibtex:hasTitle "Are old forests underestimated as global carbon sinks?")
 	(bibtex:hasYear 2001)
 	(bibtex:hasNumber 7)
 	(bibtex:hasPages "339-344")
@@ -803,6 +883,7 @@
 	"Nitrogen dynamics in soils of forests and active pastures in the western brazilian amazon basin"
 	(bibtex:hasJournal "Neill, Christopher; Piccolo, Marisa C.; Steudler, Paul A.; Melillo, Jerry M.; Feigl, Brigitte J.; Cerri, Carlos C.")
 	(bibtex:hasAuthor "Neill, Christopher; Piccolo, Marisa C.; Steudler, Paul A.; Melillo, Jerry M.; Feigl, Brigitte J.; Cerri, Carlos C.")
+	(bibtex:hasTitle "Nitrogen dynamics in soils of forests and active pastures in the western brazilian amazon basin")
 	(bibtex:hasYear 1995)
 	(bibtex:hasNumber 27)
 	(bibtex:hasPages "1167-1175")
@@ -814,6 +895,7 @@
 	"Succession and nutrient dynamics following forest cutting and burning in Amazonia"
 	(bibtex:hasJournal "Uhl, Christopher; Jordan, Carl F.")
 	(bibtex:hasAuthor "Uhl, Christopher; Jordan, Carl F.")
+	(bibtex:hasTitle "Succession and nutrient dynamics following forest cutting and burning in Amazonia")
 	(bibtex:hasYear 1984)
 	(bibtex:hasNumber 65)
 	(bibtex:hasPages "1476-1490")
@@ -824,16 +906,18 @@
 	"Production of nitrous oxide and consumption of methane by forest soils."
 	(bibtex:hasJournal "Keller, M., T.j. Goreau, S.C. Wofsy, W.A. kaplan, and M.B. McElroy")
 	(bibtex:hasAuthor "Keller, M., T.j. Goreau, S.C. Wofsy, W.A. kaplan, and M.B. McElroy")
+	(bibtex:hasTitle "Production of nitrous oxide and consumption of methane by forest soils.")
 	(bibtex:hasYear 1981)
 	(bibtex:hasNumber 10)
 	(bibtex:hasPages "1156-1159")
 	(bibtex:hasKeywords "soils forest methane consumption oxide nitrous Production kaplan Keller Lett")
 	) :id esdbr-109
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"Goreau et al., to be published in Proceedings: Workshop on biogeochemistry of tropical rainforst: Problems for research., 1985."
 	"Effects of deforestation on sources and sinks of atmospheric carbon dioxide, nitrous oxide and methane from some Amazonian biota and soils"
 	(bibtex:hasBooktitle "Goreau, T.J., and W.Z. DeMello")
 	(bibtex:hasAuthor "Goreau, T.J., and W.Z. DeMello")
+	(bibtex:hasTitle "Effects of deforestation on sources and sinks of atmospheric carbon dioxide, nitrous oxide and methane from some Amazonian biota and soils")
 	(bibtex:hasYear 1985)
 	(bibtex:hasKeywords "soils biota some from methane oxide nitrous dioxide carbon atmospheric sinks sources deforestation Effects research Problems tropical biogeochemistry Workshop Proceedings published and")
 	) :id esdbr-110
@@ -842,6 +926,7 @@
 	"Nitrous oxide emissions from a native shortgrass prairie"
 	(bibtex:hasJournal "Mosier, A.R., M. Stillwell, W.J. Parton, and R.G. Woodman")
 	(bibtex:hasAuthor "Mosier, A.R., M. Stillwell, W.J. Parton, and R.G. Woodman")
+	(bibtex:hasTitle "Nitrous oxide emissions from a native shortgrass prairie")
 	(bibtex:hasYear 1981)
 	(bibtex:hasNumber 45)
 	(bibtex:hasPages "617-619")
@@ -852,6 +937,7 @@
 	"Nitrous oxide emission from Gulf Coast wetlands"
 	(bibtex:hasJournal "Smith, C.J., R.D. DeLaune, and W.h. Patrick Jr.")
 	(bibtex:hasAuthor "Smith, C.J., R.D. DeLaune, and W.h. Patrick Jr.")
+	(bibtex:hasTitle "Nitrous oxide emission from Gulf Coast wetlands")
 	(bibtex:hasYear 1983)
 	(bibtex:hasNumber 47)
 	(bibtex:hasPages "1805-1814")
@@ -862,6 +948,7 @@
 	"Emissions of nitrous oxide from soils"
 	(bibtex:hasJournal "Duxbury, J.M., D.R. Bouldin, R.E. Terry, and R.L. Tate III")
 	(bibtex:hasAuthor "Duxbury, J.M., D.R. Bouldin, R.E. Terry, and R.L. Tate III")
+	(bibtex:hasTitle "Emissions of nitrous oxide from soils")
 	(bibtex:hasYear 1982)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "462-464")
@@ -872,6 +959,7 @@
 	"Seasonal variability in emission of nitrous oxide from soil"
 	(bibtex:hasJournal "Bremer, J.M., S.G. Robbins, and A.M. Blackmer")
 	(bibtex:hasAuthor "Bremer, J.M., S.G. Robbins, and A.M. Blackmer")
+	(bibtex:hasTitle "Seasonal variability in emission of nitrous oxide from soil")
 	(bibtex:hasYear 1980)
 	(bibtex:hasNumber 7)
 	(bibtex:hasPages "641-644")
@@ -882,6 +970,7 @@
 	"Effects of differetn nitrogen fertilizers on emission of nitrous oxide from soil"
 	(bibtex:hasJournal "Breitenbeck, G.A., A.M. Blackmer, and J.M. Bremner")
 	(bibtex:hasAuthor "Breitenbeck, G.A., A.M. Blackmer, and J.M. Bremner")
+	(bibtex:hasTitle "Effects of differetn nitrogen fertilizers on emission of nitrous oxide from soil")
 	(bibtex:hasYear 1980)
 	(bibtex:hasNumber 7)
 	(bibtex:hasPages "85-88")
@@ -892,6 +981,7 @@
 	"Improved soil cover method for field measurement of nitrous oxide fluxes"
 	(bibtex:hasJournal "Hutchinson, G.L., and A.R. Mosier")
 	(bibtex:hasAuthor "Hutchinson, G.L., and A.R. Mosier")
+	(bibtex:hasTitle "Improved soil cover method for field measurement of nitrous oxide fluxes")
 	(bibtex:hasYear 1981)
 	(bibtex:hasNumber 45)
 	(bibtex:hasPages "311-316")
@@ -902,6 +992,7 @@
 	"Rates of N20 evolution from N fertilized soil"
 	(bibtex:hasJournal "McKenny, D.J., D.L. Wade, and W.I. Findlay")
 	(bibtex:hasAuthor "McKenny, D.J., D.L. Wade, and W.I. Findlay")
+	(bibtex:hasTitle "Rates of N20 evolution from N fertilized soil")
 	(bibtex:hasYear 1978)
 	(bibtex:hasNumber 5)
 	(bibtex:hasPages "777-780")
@@ -912,6 +1003,7 @@
 	"N20 exchange between grassland and the atmosphere"
 	(bibtex:hasJournal "Ryden, J.C.")
 	(bibtex:hasAuthor "Ryden, J.C.")
+	(bibtex:hasTitle "N20 exchange between grassland and the atmosphere")
 	(bibtex:hasYear 1981)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "235-237")
@@ -922,6 +1014,7 @@
 	"Nitrous oxide emissions from drained, cultivated organic soils of South Florida"
 	(bibtex:hasJournal "Terry, R.E., R.L. Tate, and J.M. Duxbury")
 	(bibtex:hasAuthor "Terry, R.E., R.L. Tate, and J.M. Duxbury")
+	(bibtex:hasTitle "Nitrous oxide emissions from drained, cultivated organic soils of South Florida")
 	(bibtex:hasYear 1981)
 	(bibtex:hasNumber 31)
 	(bibtex:hasPages "1173-1176")
@@ -932,6 +1025,7 @@
 	"Soil as a source of sink for atmospheric nitrous oxide"
 	(bibtex:hasJournal "Freney, J.R., D.T. Denmead, and J.R. Simpson")
 	(bibtex:hasAuthor "Freney, J.R., D.T. Denmead, and J.R. Simpson")
+	(bibtex:hasTitle "Soil as a source of sink for atmospheric nitrous oxide")
 	(bibtex:hasYear 1978)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "530-532")
@@ -942,6 +1036,7 @@
 	"Nitrous oxide emissions from fertilized and unfertilized soils in a subtropical region"
 	(bibtex:hasJournal "Slemr, F., R. Conrad, and W. Seiler")
 	(bibtex:hasAuthor "Slemr, F., R. Conrad, and W. Seiler")
+	(bibtex:hasTitle "Nitrous oxide emissions from fertilized and unfertilized soils in a subtropical region")
 	(bibtex:hasYear 1984)
 	(bibtex:hasNumber 1)
 	(bibtex:hasPages "159-169")
@@ -952,6 +1047,7 @@
 	"Factors influencing the loss of fertilizer nitrogen in the atmosphere as N20"
 	(bibtex:hasJournal "Conrad, R., W. Seiler, and G. Bunse")
 	(bibtex:hasAuthor "Conrad, R., W. Seiler, and G. Bunse")
+	(bibtex:hasTitle "Factors influencing the loss of fertilizer nitrogen in the atmosphere as N20")
 	(bibtex:hasYear 1984)
 	(bibtex:hasNumber 88)
 	(bibtex:hasPages "6709-6718")
@@ -962,6 +1058,7 @@
 	"Field measurements of natural and fertilized-induced N20 release rates from soils"
 	(bibtex:hasJournal "Seiler, W. an dr. Conrad")
 	(bibtex:hasAuthor "Seiler, W. an dr. Conrad")
+	(bibtex:hasTitle "Field measurements of natural and fertilized-induced N20 release rates from soils")
 	(bibtex:hasYear 1981)
 	(bibtex:hasNumber 31)
 	(bibtex:hasPages "767-772")
@@ -972,6 +1069,7 @@
 	"Emissions of N20, CH4, and CO2 from tropical forest soils"
 	(bibtex:hasJournal "Keller, M., Kaplan, W.A., and Wofsy, S.C.")
 	(bibtex:hasAuthor "Keller, M., Kaplan, W.A., and Wofsy, S.C.")
+	(bibtex:hasTitle "Emissions of N20, CH4, and CO2 from tropical forest soils")
 	(bibtex:hasYear 1986)
 	(bibtex:hasNumber 91)
 	(bibtex:hasPages "791-802")
@@ -982,6 +1080,7 @@
 	"Nitrate formation and movement before and after clear-cutting of a monitored watershet in central New Brunswick, Canada"
 	(bibtex:hasJournal "Krause, H.H.")
 	(bibtex:hasAuthor "Krause, H.H.")
+	(bibtex:hasTitle "Nitrate formation and movement before and after clear-cutting of a monitored watershet in central New Brunswick, Canada")
 	(bibtex:hasYear 1982)
 	(bibtex:hasNumber 12)
 	(bibtex:hasPages "922-930")
@@ -992,6 +1091,7 @@
 	"Nitrous oxide flux and nitrogen transformations across a landscape gradient in Amazonia"
 	(bibtex:hasJournal "Livingston, G.P., Vitousek, P.M., Matson, P.A.")
 	(bibtex:hasAuthor "Livingston, G.P., Vitousek, P.M., Matson, P.A.")
+	(bibtex:hasTitle "Nitrous oxide flux and nitrogen transformations across a landscape gradient in Amazonia")
 	(bibtex:hasYear 1988)
 	(bibtex:hasNumber 93)
 	(bibtex:hasPages "1593-1599")
@@ -1002,6 +1102,7 @@
 	"Plant diversity enhances ecosystem responses to elevated CO2 and nitrogen deposition"
 	(bibtex:hasJournal "Reich, P.B., Knops, J., Tilman, D., Craine, J., Ellsworth,D., Tjoelker, M., Lee, T., Wedin, D., Naeem, S., Bahauddin, D., Hendrey, G., Jose, S., Wrage, K., Goth, J., and Bengston, W.")
 	(bibtex:hasAuthor "Reich, P.B., Knops, J., Tilman, D., Craine, J., Ellsworth,D., Tjoelker, M., Lee, T., Wedin, D., Naeem, S., Bahauddin, D., Hendrey, G., Jose, S., Wrage, K., Goth, J., and Bengston, W.")
+	(bibtex:hasTitle "Plant diversity enhances ecosystem responses to elevated CO2 and nitrogen deposition")
 	(bibtex:hasYear 2001)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "809-812")
@@ -1013,6 +1114,7 @@
 	"A link between plant diversity, elevated CO2, and soil nitrate"
 	(bibtex:hasJournal "Niklaus, P.A., Kandeler, E., Leadley, P.W., Schmid, B., Tsherko, D., Korner, C.")
 	(bibtex:hasAuthor "Niklaus, P.A., Kandeler, E., Leadley, P.W., Schmid, B., Tsherko, D., Korner, C.")
+	(bibtex:hasTitle "A link between plant diversity, elevated CO2, and soil nitrate")
 	(bibtex:hasYear 2001)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "540-548")
@@ -1024,6 +1126,7 @@
 	"Nitrate losses from Disturbed Forests"
 	(bibtex:hasJournal "Vitousek, Peter M. Melillo, Jerry M.")
 	(bibtex:hasAuthor "Vitousek, Peter M. Melillo, Jerry M.")
+	(bibtex:hasTitle "Nitrate losses from Disturbed Forests")
 	(bibtex:hasYear 1979)
 	(bibtex:hasNumber 25)
 	(bibtex:hasPages "605-619")
@@ -1034,6 +1137,7 @@
 	"Nitrogen transformations following tropical forest felling and burning on a volcanic soil"
 	(bibtex:hasJournal "Matson, Pamela; Vitousek, Peter M.; Ewel, John J.; Mazzarino, Maria Julia; Robertson, G. Philip")
 	(bibtex:hasAuthor "Matson, Pamela; Vitousek, Peter M.; Ewel, John J.; Mazzarino, Maria Julia; Robertson, G. Philip")
+	(bibtex:hasTitle "Nitrogen transformations following tropical forest felling and burning on a volcanic soil")
 	(bibtex:hasYear 1987)
 	(bibtex:hasNumber 68)
 	(bibtex:hasPages "491-502")
@@ -1044,6 +1148,7 @@
 	"Marine macrophytes as a global carbon sink."
 	(bibtex:hasJournal "Smith, S.V.")
 	(bibtex:hasAuthor "Smith, S.V.")
+	(bibtex:hasTitle "Marine macrophytes as a global carbon sink.")
 	(bibtex:hasYear 1981)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "838-840")
@@ -1054,6 +1159,7 @@
 	"Exchange of carbon dioxide by a deciduous forest: response to interannual climate variability."
 	(bibtex:hasJournal "Goulden, M.L, Munger, J.W, Fan, S.M., Daube, B.C., Wofsy, S.C.")
 	(bibtex:hasAuthor "Goulden, M.L, Munger, J.W, Fan, S.M., Daube, B.C., Wofsy, S.C.")
+	(bibtex:hasTitle "Exchange of carbon dioxide by a deciduous forest: response to interannual climate variability.")
 	(bibtex:hasYear 1996)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "1576-1578")
@@ -1065,6 +1171,7 @@
 	"Comparing the carbon budgets of boreal and temperate deciduous forest stands."
 	(bibtex:hasJournal "Barr, A.G., Griffis, T.J., Black, T.A., Lee, L, Staebler, R.M., Fuentes, J.D., Chen, Z., Morganstern, K.")
 	(bibtex:hasAuthor "Barr, A.G., Griffis, T.J., Black, T.A., Lee, L, Staebler, R.M., Fuentes, J.D., Chen, Z., Morganstern, K.")
+	(bibtex:hasTitle "Comparing the carbon budgets of boreal and temperate deciduous forest stands.")
 	(bibtex:hasYear 2002)
 	(bibtex:hasNumber 32)
 	(bibtex:hasPages "813-822")
@@ -1076,6 +1183,7 @@
 	"Nitorgen mineraliazation and nitrification following land conversion in montane Ecuador"
 	(bibtex:hasJournal "C.C Rhoades and D.C. Coleman")
 	(bibtex:hasAuthor "C.C Rhoades and D.C. Coleman")
+	(bibtex:hasTitle "Nitorgen mineraliazation and nitrification following land conversion in montane Ecuador")
 	(bibtex:hasYear 1999)
 	(bibtex:hasNumber 31)
 	(bibtex:hasPages "1347-1354")
@@ -1087,6 +1195,7 @@
 	"\"The Role of Fine Roots in the Organic Matter and Nitrogen Budgets of Two Forested Ecosystems\""
 	(bibtex:hasJournal "McClaugherty, Charles A.; Aber, John D.: Melillo, Jerry M.")
 	(bibtex:hasAuthor "McClaugherty, Charles A.; Aber, John D.: Melillo, Jerry M.")
+	(bibtex:hasTitle "\"The Role of Fine Roots in the Organic Matter and Nitrogen Budgets of Two Forested Ecosystems\"")
 	(bibtex:hasYear 1982)
 	(bibtex:hasNumber 63)
 	(bibtex:hasPages "1481-1490")
@@ -1097,15 +1206,17 @@
 	"Contribution of shrubs to the nitrogen economy of a desert-wash plant community."
 	(bibtex:hasJournal "Garcia-Moya, Edmundo; McKell, Cyrus M.")
 	(bibtex:hasAuthor "Garcia-Moya, Edmundo; McKell, Cyrus M.")
+	(bibtex:hasTitle "Contribution of shrubs to the nitrogen economy of a desert-wash plant community.")
 	(bibtex:hasYear 1970)
 	(bibtex:hasNumber 51)
 	(bibtex:hasPages "81-No d")
 	(bibtex:hasKeywords "community plant economy nitrogen shrubs Contribution Cyrus Edmundo")
 	) :id esdbr-137
- (modelling/object 'bibtext:Techreport
+ (modelling/object 'bibtex:Techreport
 	"Comeau et al., 1999."
 	"NPP Boreal Forest: Canal Flats, Canada, 1984"
 	(bibtex:hasAuthor "Comeau, P. G., and J. P. Kimmins")
+	(bibtex:hasTitle "NPP Boreal Forest: Canal Flats, Canada, 1984")
 	(bibtex:hasYear 1999)
 	(bibtex:hasKeywords "Canada Flats Canal Forest Boreal Kimmins Comeau")
 	) :id esdbr-138
@@ -1114,6 +1225,7 @@
 	"Nitrous oxide flux and nitrogen transformations across a landscape gradient in Amazonia"
 	(bibtex:hasJournal "Livingston, G.P., Vitousek, P.M., and P.A. Matson")
 	(bibtex:hasAuthor "Livingston, G.P., Vitousek, P.M., and P.A. Matson")
+	(bibtex:hasTitle "Nitrous oxide flux and nitrogen transformations across a landscape gradient in Amazonia")
 	(bibtex:hasYear 1988)
 	(bibtex:hasNumber 93)
 	(bibtex:hasPages "1593-1599")
@@ -1124,6 +1236,7 @@
 	"The structure and function of ten western North American grasslands"
 	(bibtex:hasJournal "Sims, P. L., J. S. Singh, and W. K. Lauenroth")
 	(bibtex:hasAuthor "Sims, P. L., J. S. Singh, and W. K. Lauenroth")
+	(bibtex:hasTitle "The structure and function of ten western North American grasslands")
 	(bibtex:hasYear 1978)
 	(bibtex:hasNumber 66)
 	(bibtex:hasPages "251-285")
@@ -1134,15 +1247,17 @@
 	"Canopy lichens with blue-green algae: a nitrogen source in a Columbian rain forest."
 	(bibtex:hasJournal "Forman, Richard T. T.")
 	(bibtex:hasAuthor "Forman, Richard T. T.")
+	(bibtex:hasTitle "Canopy lichens with blue-green algae: a nitrogen source in a Columbian rain forest.")
 	(bibtex:hasYear 1975)
 	(bibtex:hasNumber 56)
 	(bibtex:hasPages "1176-1184")
 	(bibtex:hasKeywords "forest rain Columbian source nitrogen algae with lichens Canopy Richard Forman Ecology")
 	) :id esdbr-141
- (modelling/object 'bibtext:Techreport
+ (modelling/object 'bibtex:Techreport
 	"Hall et al., , 1992."
 	"Biophysical, morphological, canopy optical property, and productivity data from the Superior National Forest, NASA Technical Memorandum 104568"
 	(bibtex:hasAuthor "Hall, F.G., K.F. Huemmrich, D.E. Strebel, S.J. Goetz, J.E. Nickeson, and K.D. Woods")
+	(bibtex:hasTitle "Biophysical, morphological, canopy optical property, and productivity data from the Superior National Forest, NASA Technical Memorandum 104568")
 	(bibtex:hasYear 1992)
 	(bibtex:hasKeywords "Memorandum Technical NASA Forest National Superior from data productivity property optical canopy morphological Biophysical Woods Nickeson Goetz Strebel Hall and the")
 	) :id esdbr-142
@@ -1151,6 +1266,7 @@
 	"Nitrogen fixation and the nitrogen balance in Peatland ecosystems"
 	(bibtex:hasJournal "Waughman G.J. Bellamy D.J")
 	(bibtex:hasAuthor "Waughman G.J. Bellamy D.J")
+	(bibtex:hasTitle "Nitrogen fixation and the nitrogen balance in Peatland ecosystems")
 	(bibtex:hasYear 1980)
 	(bibtex:hasNumber 61)
 	(bibtex:hasPages "1185-1198")
@@ -1161,6 +1277,7 @@
 	"Analysis of the reponse of a grassland ecosystem to stress"
 	(bibtex:hasJournal "Dodd, J. L., and W. K. Lauenroth")
 	(bibtex:hasAuthor "Dodd, J. L., and W. K. Lauenroth")
+	(bibtex:hasTitle "Analysis of the reponse of a grassland ecosystem to stress")
 	(bibtex:hasYear 1979)
 	(bibtex:hasNumber 32)
 	(bibtex:hasPages "43-58")
@@ -1171,6 +1288,7 @@
 	"A ten year record of above-ground biomass in a Kansas tallgrass prairie: effects of fire and topographic position"
 	(bibtex:hasJournal "Abrams, M. D., A. K. Knapp, and L. C. Hulbert")
 	(bibtex:hasAuthor "Abrams, M. D., A. K. Knapp, and L. C. Hulbert")
+	(bibtex:hasTitle "A ten year record of above-ground biomass in a Kansas tallgrass prairie: effects of fire and topographic position")
 	(bibtex:hasYear 1986)
 	(bibtex:hasNumber 73)
 	(bibtex:hasPages "1509-1515")
@@ -1181,6 +1299,7 @@
 	"US/IBP Synthesis 16"
 	(bibtex:hasJournal "Risser, P. G., E. C. Birney, H. D. Blocker, S. W. May, W. J. Parton, and J. A. Wiens")
 	(bibtex:hasAuthor "Risser, P. G., E. C. Birney, H. D. Blocker, S. W. May, W. J. Parton, and J. A. Wiens")
+	(bibtex:hasTitle "US/IBP Synthesis 16")
 	(bibtex:hasYear 1981)
 	(bibtex:hasPages "557")
 	(bibtex:hasKeywords "Synthesis Wiens Parton Blocker Birney Risser Ecosystem Prairie True")
@@ -1190,6 +1309,7 @@
 	"Soil carbon, nutirents, and mycorrhizae during conversion of dry tropical forest to grassland"
 	(bibtex:hasJournal "Johnson, N.C. and D. A. Wedin")
 	(bibtex:hasAuthor "Johnson, N.C. and D. A. Wedin")
+	(bibtex:hasTitle "Soil carbon, nutirents, and mycorrhizae during conversion of dry tropical forest to grassland")
 	(bibtex:hasYear 1997)
 	(bibtex:hasNumber 7)
 	(bibtex:hasPages "171-182")
@@ -1201,30 +1321,34 @@
 	"Market and nonmarket values of the Georgia landscape"
 	(bibtex:hasJournal "Turner,M G, Odum,E P, Costanza,R, Springer, T M")
 	(bibtex:hasAuthor "Turner,M G, Odum,E P, Costanza,R, Springer, T M")
+	(bibtex:hasTitle "Market and nonmarket values of the Georgia landscape")
 	(bibtex:hasYear 1988)
 	(bibtex:hasNumber 12)
 	(bibtex:hasPages "209-217")
 	(bibtex:hasKeywords "landscape Georgia values Market Springer Costanza Odum Turner Management Environmental and the")
 	) :id esdbr-80
- (modelling/object 'bibtext:Techreport
+ (modelling/object 'bibtex:Techreport
 	"Lynne et al., Economic value of the coastal zone, 1978."
 	"Economic value of the coastal zone"
 	(bibtex:hasAuthor "Lynne, Gary D., Conroy, Patricia D.")
+	(bibtex:hasTitle "Economic value of the coastal zone")
 	(bibtex:hasYear 1978)
 	(bibtex:hasKeywords "zone coastal value Economic Patricia Conroy Gary Lynne the")
 	) :id esdbr-81
- (modelling/object 'bibtext:Techreport
+ (modelling/object 'bibtex:Techreport
 	"Bell et al., Application of wetland valuation theory to Florida Fisheries, 1989."
 	"Application of wetland valuation theory to Florida Fisheries"
 	(bibtex:hasAuthor "Bell,Frederick W.")
+	(bibtex:hasTitle "Application of wetland valuation theory to Florida Fisheries")
 	(bibtex:hasYear 1989)
 	(bibtex:hasKeywords "Fisheries Florida theory valuation wetland Application Frederick Bell")
 	) :id esdbr-82
- (modelling/object 'bibtext:Incollection
+ (modelling/object 'bibtex:Incollection
 	"et al., Global marine biological biodiversity, 1993."
 	"Marine biological diversity: definition and importance"
 	(bibtex:hasBooktitle "Unknown")
 	(bibtex:hasAuthor "Unknown")
+	(bibtex:hasTitle "Marine biological diversity: definition and importance")
 	(bibtex:hasYear 1993)
 	(bibtex:hasPages "9-36")
 	(bibtex:hasKeywords "importance definition diversity biological Marine Unknown biodiversity marine Global and")
@@ -1234,6 +1358,7 @@
 	"Measuring the benefits of improvements in water quality: the Chesapeake Bay"
 	(bibtex:hasJournal "Bockstael, N. E., McConnell, K.E., Strand, I.E.")
 	(bibtex:hasAuthor "Bockstael, N. E., McConnell, K.E., Strand, I.E.")
+	(bibtex:hasTitle "Measuring the benefits of improvements in water quality: the Chesapeake Bay")
 	(bibtex:hasYear 1989)
 	(bibtex:hasNumber 6)
 	(bibtex:hasPages "1-18")
@@ -1244,6 +1369,7 @@
 	"Economics values attributable to virginia's coastal wetlands as inputs in oyster production"
 	(bibtex:hasJournal "Batie, Sandra, Wilson, James")
 	(bibtex:hasAuthor "Batie, Sandra, Wilson, James")
+	(bibtex:hasTitle "Economics values attributable to virginia's coastal wetlands as inputs in oyster production")
 	(bibtex:hasYear 1978)
 	(bibtex:hasPages "111-118")
 	(bibtex:hasKeywords "production oyster inputs wetlands coastal virginia's attributable values Economics James Wilson Sandra Batie Agricultural Journal Southern")
@@ -1253,17 +1379,19 @@
 	"Economic analysis of an estuarine quality improvement program: the Ambemarle-Pamlico System"
 	(bibtex:hasJournal "Whitehead, John, Hoban, Thomas, Clifford, William")
 	(bibtex:hasAuthor "Whitehead, John, Hoban, Thomas, Clifford, William")
+	(bibtex:hasTitle "Economic analysis of an estuarine quality improvement program: the Ambemarle-Pamlico System")
 	(bibtex:hasYear 1997)
 	(bibtex:hasNumber 25)
 	(bibtex:hasPages "43-57")
 	(bibtex:hasAbstract "As part of the National Estuary Program, the extensive 5-year Albemarle-Pamlico Estuarine Study was recently concluded. The resultant Comprehensive Conservation and Management Plan was designed to maintain the ecological integrity of the estuary through long-term planning and management. One of the components of this plan is the consideration of human dimensions of the Albemarle-Pamlico system, including benefits and costs for present and future generations. This article presents an economic efficiency analysis of the proposed management plan. Under plausible conditions and reasonable data for benefits and costs, it appears that the management plan would be an efficient government program if the negative externalities associated with economic growth of the Albemarle-Pamlico region are controlled.")
 	(bibtex:hasKeywords "controlled region growth economic with associated externalities negative program government efficient would plan management that appears costs benefits data reasonable conditions plausible Under proposed analysis efficiency presents article This generations future present including system dimensions human consideration this components planning term long through estuary integrity ecological maintain designed Plan Management Conservation Comprehensive resultant concluded recently Study Estuarine extensive Program Estuary National part System improvement quality estuarine Economic William Clifford Thomas Hoban John Whitehead Coastal")
 	) :id esdbr-86
- (modelling/object 'bibtext:Techreport
+ (modelling/object 'bibtex:Techreport
 	"et al., a world bank country study, 1989."
 	"Philippines-Environment and Natural Resource Mangagement Study"
 	(bibtex:hasBooktitle "The World Bank")
 	(bibtex:hasAuthor "The World Bank")
+	(bibtex:hasTitle "Philippines-Environment and Natural Resource Mangagement Study")
 	(bibtex:hasYear 1989)
 	(bibtex:hasKeywords "Study Resource Natural Bank World study country bank world and The")
 	) :id esdbr-87
@@ -1272,6 +1400,7 @@
 	"Valuing mangrove conservation in Southern Thailand"
 	(bibtex:hasJournal "Sathirathai, Suthawan, Barbier, Edward B.")
 	(bibtex:hasAuthor "Sathirathai, Suthawan, Barbier, Edward B.")
+	(bibtex:hasTitle "Valuing mangrove conservation in Southern Thailand")
 	(bibtex:hasYear 2001)
 	(bibtex:hasNumber 19)
 	(bibtex:hasPages "109-122")
@@ -1283,6 +1412,7 @@
 	"A meta-analysis of the response of soil respiration, net nitrogen mineralization, and aboveground plant growth to experimental ecosystem warming"
 	(bibtex:hasJournal "Rustad, L.E., Campbell, J.L., Marion, G.M., Norby, R. J., Mitchell, M.J., Hartley, A.E., Cornelissen, J.H.C., and J. Gurevitch")
 	(bibtex:hasAuthor "Rustad, L.E., Campbell, J.L., Marion, G.M., Norby, R. J., Mitchell, M.J., Hartley, A.E., Cornelissen, J.H.C., and J. Gurevitch")
+	(bibtex:hasTitle "A meta-analysis of the response of soil respiration, net nitrogen mineralization, and aboveground plant growth to experimental ecosystem warming")
 	(bibtex:hasYear 2001)
 	(bibtex:hasNumber 126)
 	(bibtex:hasPages "543-562")
@@ -1294,6 +1424,7 @@
 	"Nitrate formation and movement before and after clear-cutting of a monitored watershed in central New Brunswick, Canada"
 	(bibtex:hasJournal "Krause, H.H.")
 	(bibtex:hasAuthor "Krause, H.H.")
+	(bibtex:hasTitle "Nitrate formation and movement before and after clear-cutting of a monitored watershed in central New Brunswick, Canada")
 	(bibtex:hasYear 1982)
 	(bibtex:hasNumber 12)
 	(bibtex:hasPages "922-930")
@@ -1304,6 +1435,7 @@
 	"Effects of plant compostion and diversity on nutrient cycling"
 	(bibtex:hasJournal "Hooper, D., and P.M. Vitousek")
 	(bibtex:hasAuthor "Hooper, D., and P.M. Vitousek")
+	(bibtex:hasTitle "Effects of plant compostion and diversity on nutrient cycling")
 	(bibtex:hasYear 1998)
 	(bibtex:hasNumber 68)
 	(bibtex:hasPages "121-149")
@@ -1315,6 +1447,7 @@
 	"Diversity loss, recruitment limitation, and ecosystem functioning: lessons learned from a removal experiment"
 	(bibtex:hasJournal "Symstad, A.J., and D. Tilman")
 	(bibtex:hasAuthor "Symstad, A.J., and D. Tilman")
+	(bibtex:hasTitle "Diversity loss, recruitment limitation, and ecosystem functioning: lessons learned from a removal experiment")
 	(bibtex:hasYear 2001)
 	(bibtex:hasNumber 92)
 	(bibtex:hasPages "424-435")
@@ -1326,6 +1459,7 @@
 	"Plant species richness in riparian wetlands-a test of biodiversity theory"
 	(bibtex:hasJournal "Pollock, M.M., Naiman, R.J., and T.A. Hanley")
 	(bibtex:hasAuthor "Pollock, M.M., Naiman, R.J., and T.A. Hanley")
+	(bibtex:hasTitle "Plant species richness in riparian wetlands-a test of biodiversity theory")
 	(bibtex:hasYear 1998)
 	(bibtex:hasNumber 79)
 	(bibtex:hasPages "94-105")
@@ -1337,6 +1471,7 @@
 	"Denitrification and nitrous oxide production in successional and old-growth Michigan forests"
 	(bibtex:hasJournal "Robertson, G.P. and J.M. Tiedje")
 	(bibtex:hasAuthor "Robertson, G.P. and J.M. Tiedje")
+	(bibtex:hasTitle "Denitrification and nitrous oxide production in successional and old-growth Michigan forests")
 	(bibtex:hasYear 1984)
 	(bibtex:hasNumber 48)
 	(bibtex:hasPages "383-389")
@@ -1347,6 +1482,7 @@
 	"Nitrogen transformations and nitrous oxide flux in a tropical deciduous forest in Mexico"
 	(bibtex:hasJournal "Garcia-Mendez, Goergina; Maass, J. Manuel; Matson, Pamela A.; Vitousek, Peter M.")
 	(bibtex:hasAuthor "Garcia-Mendez, Goergina; Maass, J. Manuel; Matson, Pamela A.; Vitousek, Peter M.")
+	(bibtex:hasTitle "Nitrogen transformations and nitrous oxide flux in a tropical deciduous forest in Mexico")
 	(bibtex:hasYear 1991)
 	(bibtex:hasNumber 88)
 	(bibtex:hasPages "362-366")
@@ -1358,6 +1494,7 @@
 	"Nitrogen assessments in a constructed and a natural salt marsh of San Diego Bay."
 	(bibtex:hasJournal "Langis R, Zalejko M, Zedler JB")
 	(bibtex:hasAuthor "Langis R, Zalejko M, Zedler JB")
+	(bibtex:hasTitle "Nitrogen assessments in a constructed and a natural salt marsh of San Diego Bay.")
 	(bibtex:hasYear 1991)
 	(bibtex:hasNumber 1)
 	(bibtex:hasPages "40-51")
@@ -1369,23 +1506,26 @@
 	"Productivity and sustainability influenced by biodiversity in grassland ecosystems"
 	(bibtex:hasJournal "Tilman, D., Wedin, D., and J. Knops")
 	(bibtex:hasAuthor "Tilman, D., Wedin, D., and J. Knops")
+	(bibtex:hasTitle "Productivity and sustainability influenced by biodiversity in grassland ecosystems")
 	(bibtex:hasYear 1996)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "718-720")
 	(bibtex:hasAbstract "THE functioning and sustainability of ecosystems may depend on their biological diversity(1-8). Elton's(9) hypothesis that more diverse ecosystems are more stable has received much attention(1,3,6,7,10-14), but Darwin's proposal(6,15) that more diverse plant communities are more productive, and the related conjectures(4,5,16,17) that they have lower nutrient losses and more sustainable soils, are less well studied(4-6,8,17,18). Here we use a well-replicated field experiment, in which species diversity was directly controlled, to show that ecosystem productivity in 147 grassland plots increased significantly with plant biodiversity, Moreover, the main limiting nutrient, soil mineral nitrogen, was utilized more completely when there was a greater diversity of species, leading to lower leaching loss of nitrogen from these ecosystems. Similarly, in nearby native grassland, plant productivity and soil nitrogen utilization increased with increasing plant species richness. This supports the diversity-productivity and diversity-sustainability hypotheses. Our results demonstrate that the loss of species threatens ecosystem functioning and sustainability.")
 	(bibtex:hasKeywords "sustainability functioning ecosystem threatens species loss that demonstrate results hypotheses supports This richness plant increasing with increased utilization nitrogen soil productivity grassland native nearby Similarly ecosystems these from leaching lower leading diversity greater there when completely more utilized mineral nutrient limiting main Moreover biodiversity significantly plots show controlled directly which experiment field Here well less soils sustainable losses have they related productive communities diverse much received stable hypothesis biological their depend influenced Productivity Wedin Tilman Nature")
 	) :id esdbr-156
- (modelling/object 'bibtext:Techreport
+ (modelling/object 'bibtex:Techreport
 	"Maass et al., , 2001."
 	"NPP Tropical Forest: Chamela, Mexico, 1982-1995"
 	(bibtex:hasAuthor "Maass, M., and A. Martinez-Yrizar")
+	(bibtex:hasTitle "NPP Tropical Forest: Chamela, Mexico, 1982-1995")
 	(bibtex:hasYear 2001)
 	(bibtex:hasKeywords "Mexico Forest Tropical Maass")
 	) :id esdbr-157
- (modelling/object 'bibtext:Techreport
+ (modelling/object 'bibtex:Techreport
 	"Weaver, , 1999."
 	"NPP Tropical Forest: Cinnamon Bay, U.S. Virgin Islands"
 	(bibtex:hasAuthor "Weaver, P.L.")
+	(bibtex:hasTitle "NPP Tropical Forest: Cinnamon Bay, U.S. Virgin Islands")
 	(bibtex:hasYear 1999)
 	(bibtex:hasKeywords "Islands Virgin Cinnamon Forest Tropical Weaver")
 	) :id esdbr-158
@@ -1393,6 +1533,7 @@
 	"Matson et al., , 1990."
 	"Sources of variation in nitrous oxide flux from amazonian ecosystems"
 	(bibtex:hasAuthor "Matson, P. A.; Vitousek, P. M.; Livingston, G. P.; Swanberg, N. A.")
+	(bibtex:hasTitle "Sources of variation in nitrous oxide flux from amazonian ecosystems")
 	(bibtex:hasYear 1990)
 	(bibtex:hasNumber 95)
 	(bibtex:hasPages "16,789-16,798")
@@ -1403,6 +1544,7 @@
 	"Biogeochemistry in a shortgrass landscape: Control by topography, soil texture, and microclimate"
 	(bibtex:hasJournal "Hook, P.B. and Burke, I.C.")
 	(bibtex:hasAuthor "Hook, P.B. and Burke, I.C.")
+	(bibtex:hasTitle "Biogeochemistry in a shortgrass landscape: Control by topography, soil texture, and microclimate")
 	(bibtex:hasYear 2000)
 	(bibtex:hasNumber 81)
 	(bibtex:hasPages "2686-2703")
@@ -1414,6 +1556,7 @@
 	"Net exchange of CO2 in a mid-latitude forest."
 	(bibtex:hasJournal "Wofsy, S.C., Goulden, M.L., Munger, J.W., Fan, S.M., Bakwin, P.S., Daube, B.C., Bassow, S.L., Bazzaz, F.A.")
 	(bibtex:hasAuthor "Wofsy, S.C., Goulden, M.L., Munger, J.W., Fan, S.M., Bakwin, P.S., Daube, B.C., Bassow, S.L., Bazzaz, F.A.")
+	(bibtex:hasTitle "Net exchange of CO2 in a mid-latitude forest.")
 	(bibtex:hasYear 1993)
 	(bibtex:hasNumber 127)
 	(bibtex:hasPages "1314-1317")
@@ -1425,6 +1568,7 @@
 	"Effects of seasonal and interannual climate variability on net ecosystem productivity of boreal deciduous and conifer forests."
 	(bibtex:hasJournal "Arain, M.A., Black, T.A., Barr, A.G., Jarvis, P.G., Massheder, J.M., Verseghy, D.L., and Nesic, Z.")
 	(bibtex:hasAuthor "Arain, M.A., Black, T.A., Barr, A.G., Jarvis, P.G., Massheder, J.M., Verseghy, D.L., and Nesic, Z.")
+	(bibtex:hasTitle "Effects of seasonal and interannual climate variability on net ecosystem productivity of boreal deciduous and conifer forests.")
 	(bibtex:hasYear 2002)
 	(bibtex:hasNumber 32)
 	(bibtex:hasPages "878-891")
@@ -1436,6 +1580,7 @@
 	"Trends in bole biomass accumulation, net promary production and tree mortality in Pseudotsuga menziesii forests of constrasting age."
 	(bibtex:hasJournal "Acker, S.A.; Halpern, C.B.; Harmon, M.E.; Dyrness, C.T.")
 	(bibtex:hasAuthor "Acker, S.A.; Halpern, C.B.; Harmon, M.E.; Dyrness, C.T.")
+	(bibtex:hasTitle "Trends in bole biomass accumulation, net promary production and tree mortality in Pseudotsuga menziesii forests of constrasting age.")
 	(bibtex:hasYear 2002)
 	(bibtex:hasNumber 22)
 	(bibtex:hasPages "213-217")
@@ -1447,21 +1592,24 @@
 	"Standing Crops and Primary Prodction in Savanna derived from semi-decidous forest in Coasta Rica"
 	(bibtex:hasJournal "Daubenmire, R.")
 	(bibtex:hasAuthor "Daubenmire, R.")
+	(bibtex:hasTitle "Standing Crops and Primary Prodction in Savanna derived from semi-decidous forest in Coasta Rica")
 	(bibtex:hasYear 1972)
 	(bibtex:hasPages "133")
 	(bibtex:hasKeywords "Rica forest from derived Savanna Primary Crops Standing Daubenmire Gazette Botanical and")
 	) :id esdbr-167
- (modelling/object 'bibtext:Techreport
+ (modelling/object 'bibtex:Techreport
 	"Condit et al., , 1996."
 	"NPP Tropical Forest: Barro Colorado, Panama"
 	(bibtex:hasAuthor "Condit, R., D.M. Windsor, and S.P. Hubbell")
+	(bibtex:hasTitle "NPP Tropical Forest: Barro Colorado, Panama")
 	(bibtex:hasYear 1996)
 	(bibtex:hasKeywords "Panama Colorado Barro Forest Tropical Hubbell Windsor Condit")
 	) :id esdbr-168
- (modelling/object 'bibtext:Techreport
+ (modelling/object 'bibtex:Techreport
 	"Shaver, , 2001."
 	"NPP Tundra: Toolik Lake, Alaska"
 	(bibtex:hasAuthor "Shaver, G.R.")
+	(bibtex:hasTitle "NPP Tundra: Toolik Lake, Alaska")
 	(bibtex:hasYear 2001)
 	(bibtex:hasKeywords "Alaska Lake Tundra Shaver")
 	) :id esdbr-169
@@ -1470,6 +1618,7 @@
 	"Nitrogen mineralization and nitrification potentials following clearcutting in the Hoosier National Forest, Indiana"
 	(bibtex:hasJournal "Matson, P.A; Vitousek, P.M.")
 	(bibtex:hasAuthor "Matson, P.A; Vitousek, P.M.")
+	(bibtex:hasTitle "Nitrogen mineralization and nitrification potentials following clearcutting in the Hoosier National Forest, Indiana")
 	(bibtex:hasYear 1981)
 	(bibtex:hasNumber 27)
 	(bibtex:hasPages "781-791")
@@ -1480,6 +1629,7 @@
 	"Distribution of carbon and nutrients and fluxes of mineral nitrogen after clear-felling a Pinus radiata plantation"
 	(bibtex:hasJournal "Smethurst, P.J. and Nambiar, E.K.S.")
 	(bibtex:hasAuthor "Smethurst, P.J. and Nambiar, E.K.S.")
+	(bibtex:hasTitle "Distribution of carbon and nutrients and fluxes of mineral nitrogen after clear-felling a Pinus radiata plantation")
 	(bibtex:hasYear 1990)
 	(bibtex:hasNumber 20)
 	(bibtex:hasPages "1490-1497")
@@ -1490,6 +1640,7 @@
 	"Plant Removals in Perennial Grassland: Vegetation Dynamics, Decomposers, soil biodiversity, and ecosystem properties."
 	(bibtex:hasJournal "Wardle, David A.; Bonner, Karen I.;Barker, Gary M.; Yeates, Gregor W.;Nicholson,Kathryn S.; Bardgett, Richard D.;Watson, Richard N.; Ghani, Anwar")
 	(bibtex:hasAuthor "Wardle, David A.; Bonner, Karen I.;Barker, Gary M.; Yeates, Gregor W.;Nicholson,Kathryn S.; Bardgett, Richard D.;Watson, Richard N.; Ghani, Anwar")
+	(bibtex:hasTitle "Plant Removals in Perennial Grassland: Vegetation Dynamics, Decomposers, soil biodiversity, and ecosystem properties.")
 	(bibtex:hasYear 1999)
 	(bibtex:hasNumber 69)
 	(bibtex:hasPages "535-568")

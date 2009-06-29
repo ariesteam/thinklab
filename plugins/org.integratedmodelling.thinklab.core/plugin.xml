@@ -179,7 +179,7 @@
 		<parameter-def id="declaration" multiplicity="none-or-one">
 			<parameter-def id="language" multiplicity="one" />
 			<parameter-def id="code" multiplicity="none-or-one" />
-			<parameter-def id="script" multiplicity="none-or-one" />
+			<parameter-def id="script" multiplicity="any" />
 		</parameter-def>
 		<parameter-def id="description" multiplicity="none-or-one" />
 	</extension-point>

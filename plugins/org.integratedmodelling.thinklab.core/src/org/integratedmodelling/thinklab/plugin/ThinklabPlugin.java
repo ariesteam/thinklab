@@ -83,11 +83,13 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.extensions.KBoxHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
+import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -222,6 +224,7 @@ public abstract class ThinklabPlugin extends Plugin
 		loadKnowledgeImporters();
 		loadKnowledgeLoaders();
 		loadLanguageInterpreters();
+		loadCommandHandlers();
 		loadCommands();
 		loadInstanceImplementationConstructors();
 		loadSessionListeners();
@@ -657,29 +660,86 @@ public abstract class ThinklabPlugin extends Plugin
 			}
 			
 		}
-		
-//		/**
-//		 * TODO eliminate; old, deprecated way
-//		 */
-//		for (Extension ext : getOwnThinklabExtensions("literal-validator")) {
-//
-//			LiteralValidator lv = (LiteralValidator) getHandlerInstance(ext, "class");
-//			String type = ext.getParameter("semantic-type").valueAsString();
-//			
-//			/*
-//			 * TODO handle xsd types 
-//			 */
-//			String xsd = getParameter(ext, "xsd-uri");
-//			
-//			if (xsd != null) {
-//				KnowledgeManager.get().registerXSDTypeMapping(xsd, type);
-//			}
-//			
-//			KnowledgeManager.get().registerLiteralValidator(type, lv);
-//		}
 
 	}
 
+	protected void loadCommandHandlers() throws ThinklabException {
+		
+		String ipack = this.getClass().getPackage().getName() + ".commands";
+		
+		for (Class<?> cls : MiscUtilities.findSubclasses(ICommandHandler.class, ipack, getClassLoader())) {	
+			
+			/*
+			 * lookup annotation, ensure we can use the class
+			 */
+			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+				continue;
+			
+			/*
+			 * lookup implemented concept
+			 */
+			for (Annotation annotation : cls.getAnnotations()) {
+				if (annotation instanceof ThinklabCommand) {
+					
+					String name = ((ThinklabCommand)annotation).name();
+					String description = ((ThinklabCommand)annotation).description();
+					
+					CommandDeclaration declaration = new CommandDeclaration(name, description);
+					
+					String retType = ((ThinklabCommand)annotation).returnType();
+					
+					if (!retType.equals(""))
+						declaration.setReturnType(KnowledgeManager.get().requireConcept(retType));
+					
+					String[] aNames = ((ThinklabCommand)annotation).argumentNames().split(",");
+					String[] aTypes = ((ThinklabCommand)annotation).argumentTypes().split(",");
+					String[] aDesc =  ((ThinklabCommand)annotation).argumentDescriptions().split(",");
+
+					for (int i = 0; i < aNames.length; i++) {
+						if (!aNames[i].isEmpty())
+							declaration.addMandatoryArgument(aNames[i], aDesc[i], aTypes[i]);
+					}
+					
+					String[] oaNames = ((ThinklabCommand)annotation).optionalArgumentNames().split(",");
+					String[] oaTypes = ((ThinklabCommand)annotation).optionalArgumentTypes().split(",");
+					String[] oaDesc =  ((ThinklabCommand)annotation).optionalArgumentDescriptions().split(",");
+					String[] oaDefs =  ((ThinklabCommand)annotation).optionalArgumentDefaultValues().split(",");
+
+					for (int i = 0; i < oaNames.length; i++) {
+						if (!oaNames[i].isEmpty())
+							declaration.addOptionalArgument(oaNames[i], oaDesc[i], oaTypes[i], oaDefs[i]);				
+					}
+
+					String[] oNames = ((ThinklabCommand)annotation).optionNames().split(",");
+					String[] olNames = ((ThinklabCommand)annotation).optionLongNames().split(",");
+					String[] oaLabel = ((ThinklabCommand)annotation).optionArgumentLabels().split(",");
+					String[] oTypes = ((ThinklabCommand)annotation).optionTypes().split(",");
+					String[] oDesc = ((ThinklabCommand)annotation).optionDescriptions().split(",");
+
+					for (int i = 0; i < oNames.length; i++) {
+						if (!oNames[i].isEmpty())
+								declaration.addOption(
+										oNames[i],
+										olNames[i], 
+										(oaLabel[i].equals("") ? null : oaLabel[i]), 
+										oDesc[i], 
+										oTypes[i]);
+					}
+					
+					try {
+						CommandManager.get().registerCommand(declaration, (ICommandHandler) cls.newInstance());
+					} catch (Exception e) {
+						throw new ThinklabValidationException(e);
+					}
+					
+					break;
+				}
+			}
+		}
+
+	}
+
+	
 	protected void loadSessionListeners() throws ThinklabException {
 		
 		for (Extension ext : getOwnThinklabExtensions("session-listener")) {
