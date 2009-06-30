@@ -2,8 +2,8 @@ package org.integratedmodelling.thinklab.application;
 
 
 import java.net.URL;
+import java.util.ArrayList;
 
-import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
@@ -18,7 +18,7 @@ public class ApplicationDescriptor {
 	String description;
 	String taskClass;
 	String code;
-	URL script;
+	ArrayList<URL> scripts = new ArrayList<URL>();
 	String language;
 	String sessionClass;
 
@@ -37,13 +37,18 @@ public class ApplicationDescriptor {
 		if (aext != null) {
 			
 			this.code = JPFUtils.getParameter(aext, "code");
-			String s = JPFUtils.getParameter(aext, "script");
+			String[] ss = JPFUtils.getParameters(aext, "script");
 			
-			if (s != null) {
-				this.script = ((ThinklabPlugin)plugin).getResourceURL(s);
-			
-				if (this.script == null) 
-					throw new ThinklabIOException("application script " + s + " not found in classpath");
+			if (ss != null) {
+				
+				for (String s: ss) {
+					
+					URL url = ((ThinklabPlugin)plugin).getResourceURL(s);
+					if (url == null) {
+						throw new ThinklabIOException("application script " + s + " not found in classpath");
+					}
+					this.scripts.add(url);
+				}
 			}
 			
 			this.language = JPFUtils.getParameter(aext, "language");

@@ -1,6 +1,7 @@
 package org.integratedmodelling.thinklab.application;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
@@ -17,13 +18,13 @@ import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 public class RunScript implements ITask {
 
 	private String code = null;
-	private URL codeUrl = null;
+	private ArrayList<URL> codeUrl = new ArrayList<URL>();
 	private String language = null;
 	private IValue result = null;
 	
 	public void setCode(Object code) {
 		if (code instanceof URL)
-			this.codeUrl = (URL) code;
+			this.codeUrl.add((URL) code);
 		else 
 			this.code = code.toString();
 	}
@@ -48,9 +49,14 @@ public class RunScript implements ITask {
 		/*
 		 * run whatever
 		 */
-		if (codeUrl != null) {
-			result = intp.eval(codeUrl);
-		} else if (code != null) {
+		for (URL url : codeUrl) {
+			result = intp.eval(url);
+		}
+		
+		/*
+		 * if there's any inline code, run it last
+		 */
+		if (code != null) {
 			result = intp.eval(code);
 		}
 

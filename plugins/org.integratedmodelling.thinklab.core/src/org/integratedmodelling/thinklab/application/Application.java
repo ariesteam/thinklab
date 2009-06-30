@@ -1,5 +1,7 @@
 package org.integratedmodelling.thinklab.application;
 
+import java.net.URL;
+
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
@@ -57,8 +59,9 @@ public class Application {
 			
 			if (appdesc.code != null) 
 				((RunScript)task).setCode(appdesc.code);
-			else if (appdesc.script != null)
-				((RunScript)task).setCode(appdesc.script);
+			
+			for (URL url : appdesc.scripts)
+				((RunScript)task).setCode(url);
 		}	
 		
 		/*

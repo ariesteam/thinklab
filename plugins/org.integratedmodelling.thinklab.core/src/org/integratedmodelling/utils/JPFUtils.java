@@ -1,5 +1,7 @@
 package org.integratedmodelling.utils;
 
+import java.util.Collection;
+
 import org.java.plugin.registry.Extension;
 import org.java.plugin.registry.Extension.Parameter;
 
@@ -23,5 +25,18 @@ public class JPFUtils {
 	public static String getParameter(Extension.Parameter ext, String extName) {
 		Parameter prm = ext.getSubParameter(extName);
 		return prm == null ? null : prm.valueAsString();
+	}
+
+	public static String[] getParameters(Parameter aext, String field) {
+		String[] ret = null;
+		Collection<Parameter> p = aext.getSubParameters(field);
+		if (p != null) {
+			
+			int i = 0;
+			ret = new String[p.size()];
+			for (Parameter pp : p)
+				ret[i++] = pp.valueAsString();
+		}
+		return ret;
 	}
 }

@@ -41,6 +41,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -56,7 +57,9 @@ import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.interfaces.storage.IMetadataExtractor;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.kbox.VirtualSessionKBox;
 import org.integratedmodelling.thinklab.session.TTYUserModel;
@@ -73,6 +76,9 @@ import org.integratedmodelling.utils.Polylist;
 public class Session implements ISession {
 
 	IOntology ontology;
+	
+	private IKBox withKbox = null;
+	private IMetadataExtractor withMetadataExtractor = null;
 
 	HashMap<String, IInstance> importedObjects = new HashMap<String, IInstance>();
 	HashMap<String, String> refs = new HashMap<String, String>();
@@ -106,6 +112,18 @@ public class Session implements ISession {
 			KnowledgeManager.get().notifySessionDeletion(this);
 		} catch (ThinklabException e) {
 		}
+	}
+	
+	/**
+	 * Called by reflection, not published in ISession interface. Users should not know this one.
+	 * When set, kboxes will receive a copy of each object created in the session.
+	 * 
+	 * @param kbox
+	 * @param metadataExtractor
+	 */
+	public void setWithKbox(IKBox kbox, IMetadataExtractor metadataExtractor) {
+		withKbox = kbox;
+		withMetadataExtractor = metadataExtractor;
 	}
 	
 	/**
@@ -208,38 +226,51 @@ public class Session implements ISession {
 			String id = url.getRef();
 			if (id != null && !id.equals(""))
 				ret.add(kbox.getObjectFromID(id, this));
-			return ret;
+		} else {
+
+			if (format != null) {
+
+				/* find the plugin that handles these */
+				KnowledgeLoader plu = KnowledgeManager.get().getKnowledgeLoader(format);
+
+				if (plu != null) {
+
+					String sname = MiscUtilities.getURLBaseName(url.toString());
+					IKBox kb = vKboxes.get(sname);
+					if (kb == null)
+						kb = new VirtualSessionKBox(this);
+					else if (kb instanceof VirtualSessionKBox) {
+						/*
+						 * TODO should erase all objects in kbox if it is virtual,
+						 * so we just substitute the sessions' contents?
+						 */
+					}
+
+					ret = plu.loadKnowledge(url, this, kb);
+				
+					vKboxes.put(sname, kb);
+
+					loaded = true;
+				}
+			}
+			
+			if (!loaded)
+				throw new ThinklabIOException("don't know how to handle format: "
+					+ format);
 		}
-
-		if (format != null) {
-
-			/* find the plugin that handles these */
-			KnowledgeLoader plu = KnowledgeManager.get().getKnowledgeLoader(format);
-
-			if (plu != null) {
-
-				String sname = MiscUtilities.getURLBaseName(url.toString());
-				IKBox kb = vKboxes.get(sname);
-				if (kb == null)
-					kb = new VirtualSessionKBox(this);
-				else if (kb instanceof VirtualSessionKBox) {
-					/*
-					 * TODO should erase all objects in kbox if it is virtual,
-					 * so we just substitute the sessions' contents?
-					 */
+		
+		if (this.withKbox != null) {
+			
+			HashMap<String, String> refes = new HashMap<String, String>();
+			for (IInstance object : ret) {
+				Map<String,IValue> metadata = null;
+				if (this.withMetadataExtractor  != null) {
+					metadata = this.withMetadataExtractor.extractMetadata(object);
 				}
 
-				ret = plu.loadKnowledge(url, this, kb);
-
-				vKboxes.put(sname, kb);
-
-				loaded = true;
+				this.withKbox.storeObject(object, null, metadata, this, refes);
 			}
 		}
-		if (!loaded)
-			throw new ThinklabIOException("don't know how to handle format: "
-					+ format);
-
 		return ret;
 	}
 
