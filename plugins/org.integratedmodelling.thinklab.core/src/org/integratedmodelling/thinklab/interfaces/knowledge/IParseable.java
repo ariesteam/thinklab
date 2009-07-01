@@ -1,5 +1,7 @@
 package org.integratedmodelling.thinklab.interfaces.knowledge;
 
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+
 
 /**
  * If an instance implementation class implements IParseable, whole instances can be specified as string 
@@ -16,7 +18,8 @@ public interface IParseable {
 	 * @param inst
 	 * @param literal
 	 * @return
+	 * @throws ThinklabValidationException 
 	 */
-	public abstract void parseSpecifications(IInstance inst, String literal);
+	public abstract void parseSpecifications(IInstance inst, String literal) throws ThinklabValidationException;
 	
 }

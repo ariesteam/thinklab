@@ -167,7 +167,7 @@ public abstract class SQLThinklabServer {
 			int idx = Collections.binarySearch(fieldNames, name);
 			
 			if (idx < 0) {	
-				
+				idx = fieldNames.size();
 			}
 			
 			if (tt.createAsStatement) {
@@ -179,6 +179,7 @@ public abstract class SQLThinklabServer {
 				ts = ts.replace("$dbname", server.getDatabase());
 				ts = ts.replace("$fieldname", name);
 				ts = ts.replace("$tablename", this.name);
+				ts = ts.replace("$fieldnumber", idx+"");
 //				ts = tt.substituteVariables(ts, val, session);
 				statements.add(ts);
 				

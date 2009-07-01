@@ -50,6 +50,12 @@
 			  (getManager) 
 			  (activatePlugin pname))) 
 		(load-bindings pname))
+		
+		
+(defn get-plugin-resource
+	"Return an URL corresponding to the resource in the classpath of a passed plugin, or nil if absent."
+	[plugin-name resource-path]
+	(.getResourceURL (. Thinklab (resolvePlugin (str plugin-name) true)) resource-path))
 
 (defn conc
 	"A passed concept is returned unmodified. A list is taken to be a concept definition and passed
@@ -159,3 +165,8 @@
 	 constraint in a query."
 	 [concept]
 	 (. (conc concept) (getDefinition)))
+	 
+	 
+;; these just return types that are hidden
+	 
+;(defn 

@@ -11,6 +11,11 @@
 	[concept kbox]
 	(new org.integratedmodelling.modelling.data.InstanceHandler (tl/get-session) concept kbox))
 
+(defn get-metadata-extractor
+	"Return a metadata extractor whose extractMetadata method will apply a Clojure function map to an instance"
+	[fnmap]
+	(proxy [org.integratedmodelling.thinklab.interfaces.storage.IMetadataExtractor] []
+		(extractMetadata [instance] (tl/map-keyed-functions fnmap instance))))
 
 (defmacro object
 	"Define an instance. Forward references (InstanceHandler) may also be returned, but will only 
@@ -33,7 +38,8 @@
 (defmacro with-kbox
 	"The first argument must be a kbox. All other arguments must eval to knowledge (usually objects). 
 	 Each argument can be followed by an arbitrary number of keyword-value pairs. 
-	 Will eval all the s-expressions in body and if they represent knowledge, store them in the passed kbox. 
+	 Will eval all the s-expressions in body and if they represent knowledge, store them in the passed kbox. If a 
+	 (import url) form is passed, knowledge is imported from there. 
 	 Behavior can be modified using the keywords."
 	[& body]
 	 `(let [body#  (tl/group-with-keywords '~body)
@@ -44,7 +50,12 @@
 				 (.setKbox kbox# (eval (first (first body#))) (second (first body#)))	      	     
  		     (if (not (.isDisabled kbox#)) 
  		     		 (doseq [mdef# (rest body#)]
- 		     		 		(let [object# (eval (first mdef#))]
-    	     		       (.addKnowledge kbox# object# (second mdef#) (tl/map-keyed-functions md-extractor# object#))))) 
+ 		     		 		(if (and (seq? (first mdef#)) (= (str (first (first mdef#))) "import"))
+ 		     		 			(let [url# (str (eval (second (first mdef#))))]
+ 		     		 				(.setWithKbox (tl/get-session) (.getKbox kbox#) (modelling/get-metadata-extractor md-extractor#))
+ 		     		 				(.loadObjects (tl/get-session) url#)
+ 		     		 				(.setWithKbox (tl/get-session) nil nil))
+ 			     		 		(let [object# (eval (first mdef#))]
+    	     		       (.addKnowledge kbox# object# (second mdef#) (tl/map-keyed-functions md-extractor# object#)))))) 
       	 (.getKbox kbox#))))
       	 

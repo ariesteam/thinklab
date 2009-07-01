@@ -71,7 +71,8 @@ public class ArealLocation extends Observation implements IParseable, IGeolocate
 		 * OWL model.
 		 */
 		try {
-			this.shape = (ShapeValue)getDataSource();
+			if (this.shape == null)
+				this.shape = (ShapeValue)getDataSource();
 
 			if (i.getRelationships(Geospace.hasBoundingBox()).size() == 0) {
 			
@@ -98,13 +99,16 @@ public class ArealLocation extends Observation implements IParseable, IGeolocate
 	@Override
 	public IConceptualModel createMissingConceptualModel()
 			throws ThinklabException {
-		return new ArealLocationConceptualModel((ShapeValue)getDataSource());
+		
+		if (this.shape == null)
+			this.shape = (ShapeValue)getDataSource();
+		
+		return new ArealLocationConceptualModel(shape);
 	}
 
 	@Override
-	public void parseSpecifications(IInstance inst, String literal) {
-		// TODO Auto-generated method stub
-		
+	public void parseSpecifications(IInstance inst, String literal) throws ThinklabValidationException {
+		shape = new ShapeValue(literal);
 	}
 
 	@Override
