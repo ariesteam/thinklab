@@ -124,7 +124,7 @@ public class Geospace extends ThinklabPlugin  {
 			rasterSpaceType = km.requireConcept(RASTER_CONCEPTUAL_MODEL);
 			rasterGridObservable = km.requireConcept(RASTER_GRID_OBSERVABLE);
 			subdividedSpaceObservable = km.requireConcept("geospace:SubdividedSpace");
-			spaceObservable = km.requireConcept("geospace:SubdividedSpace");
+			spaceObservable = km.requireConcept("geospace:SpaceObservable");
 			gridClassifierType = km.requireConcept(GRID_CLASSIFIER);
 			
 			shapeType = km.requireConcept("geospace:SpatialRecord");

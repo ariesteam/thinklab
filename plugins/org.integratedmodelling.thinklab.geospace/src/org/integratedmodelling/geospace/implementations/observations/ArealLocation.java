@@ -67,6 +67,11 @@ public class ArealLocation extends Observation implements IParseable, IGeolocate
 	public void validate(IInstance i) throws ThinklabException {
 		
 		/*
+		 * we set the observable
+		 */
+		this.observable = Geospace.get().absoluteArealLocationInstance();
+		
+		/*
 		 * add properties with bounding box and centroid if they're not in the
 		 * OWL model.
 		 */
@@ -108,6 +113,7 @@ public class ArealLocation extends Observation implements IParseable, IGeolocate
 
 	@Override
 	public void parseSpecifications(IInstance inst, String literal) throws ThinklabValidationException {
+		observation = inst;
 		shape = new ShapeValue(literal);
 	}
 

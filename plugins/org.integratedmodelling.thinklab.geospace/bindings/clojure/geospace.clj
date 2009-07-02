@@ -44,8 +44,7 @@
 	[observation]
 	(let [extent (get-spatial-extent observation)]
 		(if (instance? org.integratedmodelling.geospace.interfaces.IGeolocatedObject extent)
-				(.getCentroid extent)
-				nil)))
+			  (.getCentroid extent))))
 
 (defn get-bounding-box 
 	"Return a ShapeValue with the bounding box (polygon) of the spatial extent of the passed observation, or 

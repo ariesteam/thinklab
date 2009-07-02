@@ -32,17 +32,14 @@
  **/
 package org.integratedmodelling.corescience.implementations.observations;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.Obs;
-import org.integratedmodelling.corescience.contextualization.ObservationContext;
 import org.integratedmodelling.corescience.contextualization.Compiler;
+import org.integratedmodelling.corescience.contextualization.ObservationContext;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextValidationException;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
