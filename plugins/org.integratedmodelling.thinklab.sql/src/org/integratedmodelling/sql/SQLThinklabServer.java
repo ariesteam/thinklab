@@ -170,6 +170,13 @@ public abstract class SQLThinklabServer {
 				idx = fieldNames.size();
 			}
 			
+			fieldNames.add(name);
+			fieldValues.add(""); // TODO check
+			fieldConcept.add(concept);
+			isKey.add(false);
+			index.add(1);
+			system.add(0);
+
 			if (tt.createAsStatement) {
 				
 				/*
@@ -182,16 +189,11 @@ public abstract class SQLThinklabServer {
 				ts = ts.replace("$fieldnumber", idx+"");
 //				ts = tt.substituteVariables(ts, val, session);
 				statements.add(ts);
+				fieldTypes.add("_STATEMENT_");
+
 				
 			} else {
-				
-				fieldNames.add(name);
 				fieldTypes.add(tt.sqlType);
-				fieldValues.add(""); // TODO check
-				fieldConcept.add(concept);
-				isKey.add(false);
-				index.add(1);
-				system.add(0);
 			}
 			
 		}
@@ -206,6 +208,9 @@ public abstract class SQLThinklabServer {
 
 			for (int i = 0; i < fieldNames.size(); i++) {
 				
+				if (fieldTypes.get(i).equals("_STATEMENT_"))
+					continue;
+				
 			    ret += 
 			      "\t" + 
 			      fieldNames.get(i) +
@@ -218,6 +223,10 @@ public abstract class SQLThinklabServer {
 			ret += ");\n";
 
 			for (int i = 0; i < fieldNames.size(); i++) {
+				
+				if (fieldTypes.get(i).equals("_STATEMENT_"))
+					continue;
+				
 				if (index.get(i) != 0 || isKey.get(i))
 			      ret += 
 			    	  "CREATE INDEX " + name + "_" + fieldNames.get(i) + " ON " + 
@@ -315,6 +324,8 @@ public abstract class SQLThinklabServer {
 		// variables (name, code) that we want to create when a specific type of value is 
 		// encountered.
 		ArrayList<Pair<String,String>> variables = new ArrayList<Pair<String,String>>();
+
+		public String nullLiteral = null;
 		
 		public OpTranslator getOperator(String s) {
 			OpTranslator ret = null;
@@ -650,7 +661,7 @@ public abstract class SQLThinklabServer {
 		} else {
 			
 			if (value == null) {
-				ret = "''";
+				ret = tt.nullLiteral == null ? "''" : tt.nullLiteral;
 			} else {
 				String zt = value.toString();
 				zt = Escape.forSQL(zt);
@@ -1038,7 +1049,6 @@ public abstract class SQLThinklabServer {
 		}
 		
 		return ret;
-		
 	}
 	
 	/**
@@ -1981,6 +1991,10 @@ public abstract class SQLThinklabServer {
 									.parseBoolean(XMLDocument
 											.getAttributeValue(ss, "use-plugin", "false"));
 
+						} else if (ss.getNodeName().equals("sql-null-literal")) {
+							
+							tt.nullLiteral = XMLDocument.getNodeValue(ss);
+							
 						} else if (ss.getNodeName().equals("variable")) {
 							
 							tt.variables.add(
