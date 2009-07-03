@@ -144,10 +144,12 @@ public abstract class SQLThinklabServer {
 		public ArrayList<String> fieldValues = new ArrayList<String>();
 		// FIXME this one has nulls for the configured fields, but gets concepts for metadata
 		public ArrayList<IConcept> fieldConcept = new ArrayList<IConcept>();
+		public ArrayList<IConcept> fieldAsStatementConcept = new ArrayList<IConcept>();
 		public ArrayList<Boolean> isKey = new ArrayList<Boolean>();
 		public ArrayList<Integer> system = new ArrayList<Integer>();
 		public ArrayList<Integer> index = new ArrayList<Integer>();
 		public ArrayList<String> statements = new ArrayList<String>();
+		public ArrayList<String> fieldAsStatementNames = new ArrayList<String>();
 		public boolean isTemplate = false;
 
 		public TableDesc(String name) {
@@ -170,12 +172,6 @@ public abstract class SQLThinklabServer {
 				idx = fieldNames.size();
 			}
 			
-			fieldNames.add(name);
-			fieldValues.add(""); // TODO check
-			fieldConcept.add(concept);
-			isKey.add(false);
-			index.add(1);
-			system.add(0);
 
 			if (tt.createAsStatement) {
 				
@@ -189,10 +185,17 @@ public abstract class SQLThinklabServer {
 				ts = ts.replace("$fieldnumber", idx+"");
 //				ts = tt.substituteVariables(ts, val, session);
 				statements.add(ts);
-				fieldTypes.add("_STATEMENT_");
-
+				fieldAsStatementNames.add(name);
+				fieldAsStatementConcept.add(concept);
 				
 			} else {
+				
+				fieldNames.add(name);
+				fieldValues.add(""); // TODO check
+				fieldConcept.add(concept);
+				isKey.add(false);
+				index.add(1);
+				system.add(0);			
 				fieldTypes.add(tt.sqlType);
 			}
 			
@@ -208,9 +211,6 @@ public abstract class SQLThinklabServer {
 
 			for (int i = 0; i < fieldNames.size(); i++) {
 				
-				if (fieldTypes.get(i).equals("_STATEMENT_"))
-					continue;
-				
 			    ret += 
 			      "\t" + 
 			      fieldNames.get(i) +
@@ -223,9 +223,6 @@ public abstract class SQLThinklabServer {
 			ret += ");\n";
 
 			for (int i = 0; i < fieldNames.size(); i++) {
-				
-				if (fieldTypes.get(i).equals("_STATEMENT_"))
-					continue;
 				
 				if (index.get(i) != 0 || isKey.get(i))
 			      ret += 
@@ -1343,8 +1340,6 @@ public abstract class SQLThinklabServer {
 
 		for (int i = 0; i < tab.system.size(); i++) {
 
-			String zorba = tab.fieldNames.get(i);
-			
 			if (tab.system.get(i) == 0) {
 				
 				/*
@@ -1369,11 +1364,30 @@ public abstract class SQLThinklabServer {
 					sql += ", " + translateLiteral(v, v.getConcept(), session);
 
 				} else {
-
 					throw new ThinklabStorageException("internal: extension languages temporarily unsupported in SQL plugin");
-
 				}
 			}
+		}
+		
+		/*
+		 * these are necessarily last because of the way they have been defined
+		 */
+		int i = 0;
+		for (String s : tab.fieldAsStatementNames) {
+
+			/*
+			 * TODO check - this only works for metadata
+			 */
+			if (metadata != null) {
+				
+				sql += 
+					", " + 
+					translateLiteral(
+							metadata.get(s), 
+							tab.fieldAsStatementConcept.get(i++), 
+							session);
+			}
+			
 		}
 
 		/* finish off */

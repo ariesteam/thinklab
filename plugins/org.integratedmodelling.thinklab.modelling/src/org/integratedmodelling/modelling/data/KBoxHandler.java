@@ -103,6 +103,25 @@ public class KBoxHandler {
 		}
 	}
 	
+	
+	public static HashMap<String, IValue> fixMetadata (Map<?,?> metadata) throws ThinklabException {
+	
+		HashMap<String, IValue> md = null;
+		if (metadata != null) {
+			md = new HashMap<String, IValue>();
+			for (Object k : metadata.keySet()) {
+				// empty metadata - ignore
+				if (metadata.get(k) == null)
+					continue;
+				String s = k.toString();
+				if (s.startsWith(":")) 
+					s = s.substring(1);
+				md.put(s, Value.getValueForObject(metadata.get(k)));
+			}
+		}
+		return md;
+	}
+	
 	public void addKnowledge(Object object, Object options, Map<?,?> metadata) throws ThinklabException {
 		
 		String id = null;
@@ -133,19 +152,7 @@ public class KBoxHandler {
 		/*
 		 * fix metadata if any
 		 */
-		HashMap<String, IValue> md = null;
-		if (metadata != null) {
-			md = new HashMap<String, IValue>();
-			for (Object k : metadata.keySet()) {
-				// empty metadata - ignore
-				if (metadata.get(k) == null)
-					continue;
-				String s = k.toString();
-				if (s.startsWith(":")) 
-					s = s.substring(1);
-				md.put(s, Value.getValueForObject(metadata.get(k)));
-			}
-		}
+		HashMap<String, IValue> md = fixMetadata(metadata);
 		
 		if (id == null)
 			id = iid;

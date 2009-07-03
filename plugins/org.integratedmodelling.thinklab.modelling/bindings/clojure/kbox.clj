@@ -15,7 +15,9 @@
 	"Return a metadata extractor whose extractMetadata method will apply a Clojure function map to an instance"
 	[fnmap]
 	(proxy [org.integratedmodelling.thinklab.interfaces.storage.IMetadataExtractor] []
-		(extractMetadata [instance] (tl/map-keyed-functions fnmap instance))))
+		(extractMetadata [instance] 
+			(org.integratedmodelling.modelling.data.KBoxHandler/fixMetadata 
+				(tl/map-keyed-functions fnmap instance)))))
 
 (defmacro object
 	"Define an instance. Forward references (InstanceHandler) may also be returned, but will only 
