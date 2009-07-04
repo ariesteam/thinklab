@@ -136,9 +136,13 @@
 			
 (defn query
 	"Query the passed kbox with a constraint list, return a list of result objects"
-	[kbox constraint]
-	(.query kbox (new org.integratedmodelling.thinklab.constraint.Constraint (listp constraint))))
-	
+	([kbox constraint]
+		(.query kbox (new org.integratedmodelling.thinklab.constraint.Constraint (listp constraint))))
+	([kbox constraint fields]
+	  (.query kbox 
+	  		(new org.integratedmodelling.thinklab.constraint.Constraint (listp constraint))
+				(make-array (map str fields)))))
+					
 (defn serialize-object
 	"Serialize the passed instance to a list"
 	[inst]

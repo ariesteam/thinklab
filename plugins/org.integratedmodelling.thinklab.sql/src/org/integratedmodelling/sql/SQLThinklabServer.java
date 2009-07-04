@@ -2181,10 +2181,19 @@ public abstract class SQLThinklabServer {
 		return  "SELECT object_id FROM object";		
 	}
 	
-	public static String addSchemaFieldsToQuery(String query, String[] resultSchema) throws ThinklabException {
+	public String addSchemaFieldsToQuery(String query, String[] resultSchema) throws ThinklabException {
 		
-		if (resultSchema == null || resultSchema.length == 0) 
+		if (resultSchema == null && metadataCatalog.size() > 0) {
+		
+			resultSchema = new String[metadataCatalog.size()];
+			int i = 0;
+			for (String s : metadataCatalog.keySet()) {
+				resultSchema[i++] = s;
+			}
+			
+		} else if (resultSchema.length == 0) {
 			return query;
+		}
 		
 		int cnt = 0;
 		String fields = "";
