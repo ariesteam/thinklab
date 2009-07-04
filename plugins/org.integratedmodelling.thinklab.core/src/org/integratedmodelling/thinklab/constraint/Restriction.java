@@ -121,6 +121,40 @@ public class Restriction  {
 		return ret;
 	}
 	
+	public boolean hasMetadataRestriction() {
+		
+		boolean ret = metadataField != null;
+		if (!ret && siblings.size() != 0) {
+			for (Restriction r : siblings) {
+				if (r.isMetadataRestriction()) {
+					return true;
+				}
+			}
+		}
+		return ret;
+	}
+	
+	public Restriction getRestrictions() {
+		
+		if (!this.hasMetadataRestriction()) {
+			return this;
+		}
+		
+		ArrayList<Restriction> mr = new ArrayList<Restriction>();
+		for (Restriction r : siblings) {
+			if (!r.isMetadataRestriction())
+				mr.add(r);
+		}
+		
+		if (mr.size() == 1) 
+			return mr.get(0);
+		else if (mr.size() > 1)
+			return CONNECTOR(getConnector(), (Restriction[])mr.toArray(new Restriction[mr.size()]));
+		
+		return null;
+		
+	}
+	
 	public Restriction getMetadataRestrictions() {
 		
 		if (this.isMetadataRestriction()) {
@@ -135,7 +169,7 @@ public class Restriction  {
 		if (mr.size() == 1) 
 			return mr.get(0);
 		else if (mr.size() > 1)
-			return AND((Restriction[])mr.toArray(new Restriction[mr.size()]));
+			return CONNECTOR(getConnector(), (Restriction[])mr.toArray(new Restriction[mr.size()]));
 		
 		return null;
 		
@@ -187,6 +221,18 @@ public class Restriction  {
 		return ret;
 	}
 
+	/**
+	 * make a new restriction that ORs together all the passed ones.
+	 */
+	public static Restriction CONNECTOR(LogicalConnector connector, Restriction ... restrictions) {
+		Restriction ret = new Restriction();
+		ret.connector = connector;
+		for (Restriction restriction : restrictions)
+			ret.siblings.add(restriction);
+		return ret;
+	}
+
+	
 	/**
 	 * Create a restriction on having a value for the passed property
 	 * @param property

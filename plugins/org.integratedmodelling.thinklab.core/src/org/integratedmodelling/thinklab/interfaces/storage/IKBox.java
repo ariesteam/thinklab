@@ -119,6 +119,11 @@ public abstract interface IKBox extends IQueriable {
 	public final String KBOX_METADATA_PROPERTY_PREFIX = "kbox.metadata.";
 
 	/**
+	 * TODO document
+	 */
+	public final String KBOX_PARAMETER_PREFIX = "kbox.parameter.";
+
+	/**
 	 * Most KBoxes should have properties, so that instances can check for 
 	 * base URLs or other things when loading. If you don't need properties, return
 	 * an empty map.

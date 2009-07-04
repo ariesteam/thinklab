@@ -140,7 +140,6 @@ public interface IQueryResult {
 	 * @param n
 	 * @param schemaField
 	 * @return
-	 * TODO this should return a IValue, not an Object
 	 * @throws ThinklabException 
 	 */
 	public IValue getResultField(int n, String schemaField) throws ThinklabException;

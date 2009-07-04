@@ -379,7 +379,7 @@ public class Constraint implements IQuery {
 	 * @return
 	 */
 	public Restriction getRestrictions() {
-		return body;
+		return body.getRestrictions();
 	}
 		
 	/**

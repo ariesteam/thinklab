@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 <sqldef>
+
+	<!-- we need the SRID as a kbox-wide parameter for substitution in expressions-->
+	<require-parameter name="srid" />
+
 	<type-translation>
 		<type name="geospace:SpatialRecord">
 
-			<!-- we want to extract the SRID as a variable for substitution -->
-			<variable id="srid">new Integer(self.getSRID(4326)).toString()</variable>
 
 			<sql-literal-format use-plugin="no">
 				GeometryFromText('$$', $srid)

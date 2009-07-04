@@ -230,6 +230,19 @@ public class KBoxHandler {
 						}
 					}
 					
+				} else if (key.equals("parameters")) {
+					
+					/* set metadata into props */
+					OptionListIterator ol = new OptionListIterator(kv.getSecond());
+					while (ol.hasNext()) {
+						Pair<String, Object> kkv = ol.next();
+						try {
+							out.write(IKBox.KBOX_PARAMETER_PREFIX + kkv.getFirst() + "=" + kkv.getSecond() + "\n");
+						} catch (IOException e) {
+							throw new ThinklabIOException(e);
+						}
+					}
+					
 				} else {
 				
 					if (!key.contains("."))

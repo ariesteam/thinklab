@@ -132,6 +132,9 @@ public abstract class SQLThinklabServer {
 	 */
 	protected String scriptLanguage = null;
 
+
+	public HashMap<String,String>   parameterVals = new HashMap<String, String>();
+
 	/**
 	 * Descriptor for a table in XML schema, read from plug-in.
 	 * @author UVM Affiliate
@@ -183,6 +186,7 @@ public abstract class SQLThinklabServer {
 				ts = ts.replace("$fieldname", name);
 				ts = ts.replace("$tablename", this.name);
 				ts = ts.replace("$fieldnumber", idx+"");
+				ts = substituteParameters(ts);
 //				ts = tt.substituteVariables(ts, val, session);
 				statements.add(ts);
 				fieldAsStatementNames.add(name);
@@ -474,6 +478,7 @@ public abstract class SQLThinklabServer {
 					ts = ts.replace("$dbname", server.getDatabase());
 					ts = ts.replace("$fieldname", "value");
 					ts = ts.replace("$tablename", tabname);
+					ts = substituteParameters(ts);
 					ts = tt.substituteVariables(ts, val, session);
 					ssql += ts + "\n";
 				}
@@ -491,6 +496,14 @@ public abstract class SQLThinklabServer {
 		return new Pair<String, Long>(ssql, ret);
 	}
 	
+	public String substituteParameters(String ts) {
+		
+		for (String pname : parameterVals.keySet()) {
+			ts = ts.replace("$" + pname, parameterVals.get(pname));
+		}
+		return ts;
+	}
+
 	private Triple<String, Long, String> getClassID(IKnowledgeSubject c, String sql, String id) {
 
 		long conceptID = 0;
@@ -663,6 +676,7 @@ public abstract class SQLThinklabServer {
 				String zt = value.toString();
 				zt = Escape.forSQL(zt);
 				String tmpl = tt.substituteVariables(template, value, session);
+				tmpl = substituteParameters(tmpl);
 				ret = tmpl.replaceAll(Pattern.quote("$$"), Matcher.quoteReplacement(zt));
 			}
 		}
@@ -1166,6 +1180,7 @@ public abstract class SQLThinklabServer {
 	    		 aa[a] = restriction.getOperatorArguments()[a].toString();
 	    	 } else {
 	    		 String templ = op.argTemplates.get(a);
+	    		 templ = substituteParameters(templ);
 	    		 aa[a] = templ.replaceAll(
 	    				 Pattern.quote("$$"), 
 	    				 Matcher.quoteReplacement(
@@ -1864,7 +1879,24 @@ public abstract class SQLThinklabServer {
      * @throws SQLException 
 	 */
     protected synchronized void initialize(String protocol, Properties properties) throws ThinklabException {
-    	    	
+    	 
+    	/*
+    	 * read in all parameters, so that schemata that require them can see if they're defined
+    	 */
+		int sl = IKBox.KBOX_PARAMETER_PREFIX.length();
+		for (Object key : properties.keySet()) {
+			
+			if (key.toString().startsWith(IKBox.KBOX_PARAMETER_PREFIX)) {
+				
+				/*
+				 * add type to metadata catalog
+				 */
+				String mk  = key.toString().substring(sl);
+				String val = properties.getProperty(key.toString());
+				parameterVals.put(mk,val);
+			}
+		}
+    	
 		/* read core schema */
 		try {
 			readSchema(SQLPlugin.get().getSchema(protocol));
@@ -1893,8 +1925,7 @@ public abstract class SQLThinklabServer {
 		/*
 		 * setup metadata from properties now that we know how to handle all types
 		*/
-		int sl = IKBox.KBOX_METADATA_PROPERTY_PREFIX.length();
-		
+		sl = IKBox.KBOX_METADATA_PROPERTY_PREFIX.length();
 		for (Object key : properties.keySet()) {
 			
 			if (key.toString().startsWith(IKBox.KBOX_METADATA_PROPERTY_PREFIX)) {
@@ -2006,7 +2037,22 @@ public abstract class SQLThinklabServer {
 		for (Node n = doc.root().getFirstChild(); n != null; n = n
 				.getNextSibling()) {
 
-			if (n.getNodeName().equals("schema")) {
+			if (n.getNodeName().equals("require-parameter")) {
+				
+				String pname = XMLDocument.getAttributeValue(n, "name", "");
+				String dvalu = XMLDocument.getAttributeValue(n, "default", "");
+				
+				if (parameterVals.get(pname) == null) {
+					if (dvalu != null) {
+						parameterVals.put(pname, dvalu);
+					} else {
+						throw new ThinklabStorageException(
+								"kbox " + this.server.getDatabase() + " requires parameter " +
+								pname + " in schema " + MiscUtilities.getNameFromURL(f.toString()));
+ 					}
+				}
+				
+			} else if (n.getNodeName().equals("schema")) {
 
 				for (Node nn = n.getFirstChild(); nn != null; nn = nn
 						.getNextSibling()) {
