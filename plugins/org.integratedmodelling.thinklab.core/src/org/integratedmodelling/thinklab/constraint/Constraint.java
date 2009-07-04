@@ -82,6 +82,7 @@ import org.integratedmodelling.utils.Polylist;
              ({"and"|"or"} restriction+) |
              ([quantifier] {object-property|class-property} constraint) |
              ([quantifier] literal-property operator arg+)
+             (metadata-field operator arg+)
      
      </pre>
  *
@@ -123,6 +124,10 @@ public class Constraint implements IQuery {
 		this.concept = KnowledgeManager.Thing();
     }
 
+	public Restriction getMetadataRestrictions() {
+		return body.getMetadataRestrictions();
+	}
+	
 	/**
 	 * Create a constraint that will select the passed type and its subclasses.
 	 * @param concept

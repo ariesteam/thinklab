@@ -12,7 +12,8 @@
 	(new org.integratedmodelling.modelling.data.InstanceHandler (tl/get-session) concept kbox))
 
 (defn get-metadata-extractor
-	"Return a metadata extractor whose extractMetadata method will apply a Clojure function map to an instance"
+	"Return a metadata extractor whose extractMetadata method will apply a Clojure function map to 
+	an instance, and return a corresponding map of the results."
 	[fnmap]
 	(proxy [org.integratedmodelling.thinklab.interfaces.storage.IMetadataExtractor] []
 		(extractMetadata [instance] 

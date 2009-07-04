@@ -42,6 +42,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
@@ -146,10 +147,10 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 
 	public IQueryResult query(IQuery q, int offset, int maxResults)
 			throws ThinklabException {
-		return query(q, getMetadataSchema(), offset, maxResults);
+		return query(q, null, offset, maxResults);
 	}
 
-	public IQueryResult query(IQuery q, Polylist resultSchema, int offset,
+	public IQueryResult query(IQuery q, String[] metadata, int offset,
 			int maxResults) throws ThinklabException {
 
 		if (q != null && !q.isEmpty() && !(q instanceof Constraint)) {
@@ -198,7 +199,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		}
 
 		/* inject other fields in expected result */
-		query = addSchemaFieldsToQuery(query, resultSchema);
+		query = addSchemaFieldsToQuery(query, metadata);
 
 		/* add limits if any */
 		query = addLimitsToQuery(query, offset, maxResults);
@@ -270,16 +271,12 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 	}
 
 	public IQueryResult query(IQuery q) throws ThinklabException {
-		return query(q, getMetadataSchema(), 0, -1);
+		return query(q, null, 0, -1);
 	}
 
 	public Polylist getObjectAsListFromID(String id,
 			HashMap<String, String> refTable) throws ThinklabException {
 		return retrieveObjectAsList(id, refTable);
-	}
-
-	public Polylist getMetadataSchema()  throws ThinklabException  {
-		return KBoxManager.get().parseSchema(getProperties());
 	}
 
 	@Override
@@ -300,6 +297,11 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 	@Override
 	public void resetToEmpty() throws ThinklabException {
 		super.resetToEmpty();
+	}
+
+	@Override
+	public Map<String, IConcept> getMetadataSchema() {
+		return super.getMetadataSchema();
 	}
 
 }

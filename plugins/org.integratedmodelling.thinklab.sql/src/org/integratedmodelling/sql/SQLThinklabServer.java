@@ -738,21 +738,34 @@ public abstract class SQLThinklabServer {
 	 * superclasses, using the asserted class hierarchy only. 
 	 * 
 	 * @param concept
+	 * @param metadata 
 	 * @return an SQL expression, an empty string if we would select the whole kbox, or null if 
 	 * no objects of those classes exist in the database.
 	 * @throws ThinklabStorageException
 	 */
-	private String translateConceptRestriction(IConcept concept) throws ThinklabException {
+	private String translateConceptRestriction(IConcept concept, Restriction metadata) throws ThinklabException {
 
 		String ret = getTypeClosure(concept);
 		
 		if (ret == null || ret.equals(""))
 			return ret;
+
+
+		String msql = null;
+		if (metadata != null) {
+			msql = translateMetadataRestriction(metadata);
+		}
 		
-		return 
+		ret = 
 			"SELECT object_id FROM object WHERE concept_id IN (" +
 			ret +
 			")";
+		
+		if (msql != null) {
+			ret += " AND (" + msql + ")";
+		}
+		
+		return ret;
 	}
 	
 	/**
@@ -770,7 +783,8 @@ public abstract class SQLThinklabServer {
 		 */
 		setTypeRestriction(constraint); 
 		
-        String classSelector = translateConceptRestriction(constraint.getConcept());
+        String classSelector = 
+        	translateConceptRestriction(constraint.getConcept(), constraint.getMetadataRestrictions());
 			
         if (classSelector == null)
         	return null;
@@ -817,6 +831,51 @@ public abstract class SQLThinklabServer {
 		}
 	}
 
+	private String translateMetadataRestriction(Restriction restriction) throws ThinklabException {
+
+		if (restriction == null)
+			return "";
+		
+		String ret = "";
+		
+		if (restriction.isConnector()) {
+			
+			LogicalConnector connector = restriction.getConnector();
+			
+			for (Restriction r : restriction.getChildren()) {
+				
+				String sql = translateMetadataRestriction(r);
+				
+				/* if any of the ANDed queries has no context, the whole thing has no context. */
+				if (sql == null && connector.equals(LogicalConnector.INTERSECTION))
+					return null;
+
+				/* 
+				 * if a negated query selects the whole database, we get nothing and no query is
+				 * required. Otherwise, no need to use it.
+				 */
+				if (sql.equals("")) {
+						continue;
+				}
+			
+				/* connect properly to whatever was there */
+				if (!ret.equals("")) {
+					ret += ") " + getSQLConnector(connector) + " (";
+				} else {
+					ret = "(";
+				}
+				
+				ret += sql;
+			}
+			ret += ")";
+						
+		} else {
+			ret = translateOperator(restriction);			
+		}
+		return ret;
+		
+	}
+	
 	/*
 	 * Translate a restriction in the proper SQL that selects object IDs based on it.
 	 * 
@@ -895,21 +954,12 @@ public abstract class SQLThinklabServer {
         		if ((ret = getTypeClosure(restriction.getClassificationConcept())) == null)
         			return null;
 
-// this does not work. not sure if the quantifier is handled properly in the current approach, though:        		
-//        		String selector = "class_id IN";
-//        		
-//        		if (any)
-//        			selector = "EXISTS";
-//        		else if (negate)
-//        			selector = "NOT EXISTS";
-// here's the right (?) one:
         		String selector = "class_id";
         		
         		if (negate)
         			selector += " NOT IN";
         		else
         			selector += " IN";
- // end of right(?) approach
         		
         		if (!ret.equals("")) {
         			ret = 
@@ -943,21 +993,12 @@ public abstract class SQLThinklabServer {
 
         	} else if (restriction.isObject()) {
         
-// this does not work. not sure if the quantifier is handled properly in the current approach, though:        		
-//        		String selector = "class_id IN";
-//        		
-//        		if (any)
-//        			selector = "EXISTS";
-//        		else if (negate)
-//        			selector = "NOT EXISTS";
-// here's the right (?) one:
         		String selector = "target_id";
         		
         		if (negate)
         			selector += " NOT IN";
         		else
         			selector += " IN";
- // end of right(?) approach
 
         		/* 
         		 * select the domain objects of the object relationships that link to the
@@ -1057,10 +1098,30 @@ public abstract class SQLThinklabServer {
 	private String translateOperator(Restriction restriction) throws ThinklabException {
 		
     	/* determine the common base type of the range, or throw an exception. */
-    	IConcept rcls = 
-    		KnowledgeManager.get().getLeastGeneralCommonConcept(
+    	IConcept rcls = null;
+    	String fieldname = "value";
+    	
+    	if (restriction.isMetadataRestriction()) {
+    		
+			fieldname = restriction.getMetadataField();
+			TableDesc tt = getTableDescriptor("object");
+			
+			/*
+			 * lookup concept 
+			 */
+			int idx = Collections.binarySearch(tt.fieldNames, fieldname);
+			if (idx < 0) {
+				idx = Collections.binarySearch(tt.fieldAsStatementNames, fieldname);
+				if (idx >= 0)
+					rcls = tt.fieldAsStatementConcept.get(idx);
+			} else {
+				rcls = tt.fieldConcept.get(idx);
+			}
+			
+    	} else {
+    		rcls = KnowledgeManager.get().getLeastGeneralCommonConcept(
     				restriction.getProperty().getRange());
-		
+    	}
 		if (rcls == null)
 			throw new ThinklabStorageException("sql: can't determine class context for property" +
 					restriction.getProperty() +
@@ -1087,7 +1148,7 @@ public abstract class SQLThinklabServer {
 	     if (op.argTypes.size() != restriction.getOperatorArguments().length) {
 	    	 
 	    	 throw new ThinklabStorageException("sql: operator " +
-	    			 op +
+	    			 op.jimtName +
 	    			 " (" +
 	    			 rcls +
 	    			 " ) should take " +
@@ -1117,15 +1178,15 @@ public abstract class SQLThinklabServer {
 	     switch (op.type) {
 	     
 	     case INFIX:
-	    	 ret += "(value " + op.sqlName + " " + aa[0];
+	    	 ret += "(" + fieldname + " " + op.sqlName + " " + aa[0];
 	    	 break;
 	     case POSTFIX:
 	    	 /* hmmm.... */
 	    	 break;
 	     case PREFIX:
-	    	 ret += "(" + op.sqlName + " value";
+	    	 ret += "(" + op.sqlName + " " + fieldname;
 	     case FUNCTION:
-	    	 ret += "(" + op.sqlName + "(value";
+	    	 ret += "(" + op.sqlName + "(" + fieldname;
 	    	 for (String z : aa) {
 	    		 ret += ", " + z;
 	    	 }
@@ -2074,17 +2135,17 @@ public abstract class SQLThinklabServer {
 		return  "SELECT object_id FROM object";		
 	}
 	
-	public static String addSchemaFieldsToQuery(String query, Polylist resultSchema) throws ThinklabException {
+	public static String addSchemaFieldsToQuery(String query, String[] resultSchema) throws ThinklabException {
 		
-		if (resultSchema == null || resultSchema.isEmpty()) 
+		if (resultSchema == null || resultSchema.length == 0) 
 			return query;
 		
 		int cnt = 0;
 		String fields = "";
-		Object[] flds = resultSchema.array();
-		for (Object o : flds) {
-			fields += o.toString();
-			if (cnt++ < (flds.length - 1))
+
+		for (String field : resultSchema) {
+			fields += field;
+			if (cnt++ < (resultSchema.length - 1))
 				fields += ", ";
 		}
 		
@@ -2173,6 +2234,10 @@ public abstract class SQLThinklabServer {
 
     	log.info("done reinitializing database " + server.getDatabase() + ".");
 
+	}
+
+	public Map<String, IConcept> getMetadataSchema() {
+		return metadataCatalog;
 	}
 
 }

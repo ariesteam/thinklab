@@ -47,6 +47,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -113,7 +114,7 @@ public class OntologyKBox implements IKBox {
 		return query(q, null, offset, maxResults);
 	}
 
-	public IQueryResult query(IQuery q, Polylist resultSchema, int offset, int maxResults) 
+	public IQueryResult query(IQuery q, String[] metadata, int offset, int maxResults) 
 		throws ThinklabException {
 
 		ArrayList<IInstance> rret = new ArrayList<IInstance>();
@@ -182,11 +183,6 @@ public class OntologyKBox implements IKBox {
 		return new Constraint(l);
 	}
 
-	public Polylist getMetadataSchema() {
-		// TODO Auto-generated method stub
-		return KBoxManager.get().getDefaultSchema();
-	}
-
 	@Override
 	public String getUri() {
 		// TODO Auto-generated method stub
@@ -211,6 +207,12 @@ public class OntologyKBox implements IKBox {
 	public void resetToEmpty() throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Map<String, IConcept> getMetadataSchema() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

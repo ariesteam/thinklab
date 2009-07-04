@@ -86,7 +86,6 @@ import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * A search index for thinklab. The plugin maintains a list of these. Should only be created
@@ -765,7 +764,7 @@ public final class SearchEngine implements IQueriable {
 		return query(q, null, offset, maxResults);
 	}
 
-	public IQueryResult query(IQuery q, Polylist resultSchema, int offset, int maxResults) 
+	public IQueryResult query(IQuery q, String[] metadata, int offset, int maxResults) 
 		throws ThinklabException {
 
 		ResultContainer ret = new ResultContainer(this, q, offset, maxResults);

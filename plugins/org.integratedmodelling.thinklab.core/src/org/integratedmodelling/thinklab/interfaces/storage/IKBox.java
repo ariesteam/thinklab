@@ -40,9 +40,12 @@ import java.util.Properties;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
+import org.integratedmodelling.thinklab.interfaces.query.IQuery;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.utils.Polylist;
 
 /**
@@ -248,14 +251,12 @@ public abstract interface IKBox extends IQueriable {
 	public abstract long getObjectCount();
 	
 	/**
-	 * If the kbox properties define a schema, return it. Otherwise return the 
-	 * default schema which is (id, rdfs:type, rdfs:label, rdfs:comment). The schema must be 
-	 * valid (use IKboxManager.validateSchema).
-	 * 
+	 * If the kbox properties define a schema, return it. A metadata schema is a map
+	 * of field names to concepts.
 	 * @return
 	 * @throws ThinklabException 
 	 */
-	public Polylist getMetadataSchema() throws ThinklabException;
+	public Map<String, IConcept> getMetadataSchema() throws ThinklabException;
 
 	/**
 	 * 

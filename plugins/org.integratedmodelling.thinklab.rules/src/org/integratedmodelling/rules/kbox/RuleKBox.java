@@ -40,6 +40,7 @@ import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
@@ -115,7 +116,7 @@ public class RuleKBox implements IKBox {
 		return null;
 	}
 
-	public IQueryResult query(IQuery q, Polylist resultSchema, int offset,
+	public IQueryResult query(IQuery q, String[] metadata, int offset,
 			int maxResults) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
@@ -143,10 +144,6 @@ public class RuleKBox implements IKBox {
 		return null;
 	}
 
-	public Polylist getMetadataSchema() throws ThinklabException {
-		return KBoxManager.get().parseSchema(null);
-	}
-
 	@Override
 	public String getUri() {
 		// TODO Auto-generated method stub
@@ -169,6 +166,12 @@ public class RuleKBox implements IKBox {
 	public void resetToEmpty() throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Map<String, IConcept> getMetadataSchema() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

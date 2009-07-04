@@ -32,17 +32,18 @@
  **/
 package org.integratedmodelling.searchengine.kbox;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.integratedmodelling.searchengine.QueryString;
 import org.integratedmodelling.searchengine.SearchEngine;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBoxCapabilities;
 import org.integratedmodelling.thinklab.kbox.KBoxWrapper;
 import org.integratedmodelling.thinklab.kbox.RankingKBox;
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * Adds textual search capabilities to a kbox by expanding it with a search engine.
@@ -73,13 +74,13 @@ public class SearchEngineKBoxWrapper extends KBoxWrapper implements RankingKBox 
 	}
 
 	@Override
-	public IQueryResult query(IQuery q, Polylist resultSchema, int offset,
+	public IQueryResult query(IQuery q, String[] metadata, int offset,
 			int maxResults) throws ThinklabException {
 		
 		if (q instanceof QueryString) {
 			//
 		}
-		return kbox.query(q, resultSchema, offset, maxResults);
+		return kbox.query(q, metadata, offset, maxResults);
 	}
 
 	@Override
@@ -98,9 +99,6 @@ public class SearchEngineKBoxWrapper extends KBoxWrapper implements RankingKBox 
 		return new QueryString(toEval);
 	}
 
-	public Polylist getMetadataSchema()  throws ThinklabException  {
-		return kbox.getMetadataSchema();
-	}
 
 	@Override
 	public String getUri() {
@@ -120,6 +118,12 @@ public class SearchEngineKBoxWrapper extends KBoxWrapper implements RankingKBox 
 	@Override
 	public void resetToEmpty() throws ThinklabException {
 		kbox.resetToEmpty();
+	}
+
+	@Override
+	public Map<String, IConcept> getMetadataSchema() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

@@ -101,9 +101,44 @@ public class Restriction  {
 	IConcept classification = null;
 	LogicalConnector connector = LogicalConnector.INTERSECTION;
 	ArrayList<Restriction> siblings = new ArrayList<Restriction>();	
+	String metadataField = null;
 	
 	public boolean isConnector() {
 		return siblings.size() > 0;
+	}
+	
+	public boolean isMetadataRestriction() {
+		
+		boolean ret = metadataField != null;
+		if (siblings.size() != 0) {
+			ret = true;
+			for (Restriction r : siblings) {
+				if (!r.isMetadataRestriction()) {
+					return false;
+				}
+			}
+		}
+		return ret;
+	}
+	
+	public Restriction getMetadataRestrictions() {
+		
+		if (this.isMetadataRestriction()) {
+			return this;
+		}
+		ArrayList<Restriction> mr = new ArrayList<Restriction>();
+		for (Restriction r : siblings) {
+			if (r.isMetadataRestriction())
+				mr.add(r);
+		}
+		
+		if (mr.size() == 1) 
+			return mr.get(0);
+		else if (mr.size() > 1)
+			return AND((Restriction[])mr.toArray(new Restriction[mr.size()]));
+		
+		return null;
+		
 	}
 	
 	public IProperty getProperty() {
@@ -112,6 +147,10 @@ public class Restriction  {
 	
 	public Quantifier getQuantifier() {
 		return quantifier;
+	}
+	
+	public String getMetadataField() {
+		return metadataField;
 	}
 	
 	public boolean isLiteral() {
@@ -223,9 +262,7 @@ public class Restriction  {
 	 * Create a classification restriction
 	 * @param property
 	 * @param classification
-	 * @throws ThinklabNoKMException 
-	 * @throws ThinklabResourceNotFoundException 
-	 * @throws ThinklabMalformedSemanticTypeException 
+	 * @throws ThinklabException 
 	 */
 	public Restriction(String property, IConcept classification) throws ThinklabException {
 		this.property = KnowledgeManager.get().requireProperty(property);
@@ -233,13 +270,20 @@ public class Restriction  {
 	}	
 	
 	/**
-	 * Create a literal restriction passing a String for the argument 
+	 * Create a literal restriction passing a String for the argument. If property is 
+	 * a string starting with #, it's a metadata restriction.
+	 * 
 	 * @param property
 	 * @param operator
 	 * @param value
 	 */		
 	public Restriction(String property, String operator, Object ... values) throws ThinklabException {
-		this.property = KnowledgeManager.get().requireProperty(property);
+		
+		if (!property.contains(":")) {
+			this.metadataField = property;
+		} else {
+			this.property = KnowledgeManager.get().requireProperty(property);
+		}
 		this.operator = retrieveOperator(operator);
 		this.opArgs = values;
 	}
@@ -369,6 +413,7 @@ public class Restriction  {
 		ret.operator = operator;
 		ret.classification = classification;
 		ret.connector = connector;
+		ret.metadataField = metadataField;
 		
 		for (Restriction r : siblings) {
 			ret.siblings.add(r.duplicate());
@@ -431,11 +476,15 @@ public class Restriction  {
 				start = 1;
 			}
 			
-			ret.property = 
-				objs[start] instanceof IProperty ? 
-					(IProperty)objs[start] :
-					KnowledgeManager.get().requireProperty(objs[start].toString());
-					
+			if (objs[start].toString().contains(":")) {
+				ret.property = 
+					objs[start] instanceof IProperty ? 
+							(IProperty)objs[start] :
+							KnowledgeManager.get().requireProperty(objs[start].toString());
+			} else {
+				ret.metadataField = objs[start].toString();
+			}
+			
 			if (objs.length > (start + 1)) {
 				
 				start ++;
@@ -450,14 +499,14 @@ public class Restriction  {
 					 */
 					if (rest instanceof IInstance) {
 						ret.operator = (IOperator)((IInstance)rest).getImplementation();
-					} else if (rest instanceof String) {
-						ret.operator = retrieveOperator((String)rest);
+					} else {
+						ret.operator = retrieveOperator(rest.toString());
 					}
 					
 					for (int arg = 0, i = start+1; i < objs.length ; i++) {
 						
 						if (ret.opArgs == null)
-							ret.opArgs = new Object[objs.length - start];
+							ret.opArgs = new Object[objs.length - start - 1];
 						ret.opArgs[arg++] = objs[i];
 					}
 				}
@@ -479,7 +528,11 @@ public class Restriction  {
 		} else {
 			
 			ret.add(quantifier);
-			ret.add(property);
+			
+			if (metadataField != null)
+				ret.add(metadataField);
+			else
+				ret.add(property);
 			
 			if (operator != null) {
 				ret.add(operator);

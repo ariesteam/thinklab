@@ -86,9 +86,9 @@ public abstract class KBoxWrapper implements IKBox {
 		return kbox.query(q, offset, maxResults);
 	}
 
-	public IQueryResult query(IQuery q, Polylist resultSchema, int offset,
+	public IQueryResult query(IQuery q, String[] metadata, int offset,
 			int maxResults) throws ThinklabException {
-		return kbox.query(q, resultSchema, offset, maxResults);
+		return kbox.query(q, metadata, offset, maxResults);
 	}
 
 	public IQueryResult query(IQuery q) throws ThinklabException {

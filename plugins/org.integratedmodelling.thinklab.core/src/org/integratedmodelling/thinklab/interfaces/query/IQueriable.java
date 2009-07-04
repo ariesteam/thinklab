@@ -34,7 +34,6 @@
 package org.integratedmodelling.thinklab.interfaces.query;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.utils.Polylist;
 
 
 /**
@@ -55,13 +54,13 @@ public interface IQueriable {
 	
 	/**
 	 * The simplest query operation just returns all results that match the query, with no
-	 * result schema and no query boundaries.
+	 * metadata schema (meaning all metadata are retrieved) and no query boundaries.
 	 */
 	public abstract IQueryResult query(IQuery q) throws ThinklabException;
 	
 	/**
-	 * Submit the query and return results. Do not use any specific schema for the results;
-	 * leave it to the implementation to decide the schema to be used.
+	 * Submit the query and return results with specified offsets and max number of results. All
+	 * metadata will be included in the results.
 	 * 
 	 * @param q
 	 * @param offset
@@ -72,15 +71,15 @@ public interface IQueriable {
 	public abstract IQueryResult query(IQuery q, int offset, int maxResults) throws ThinklabException;
 
 	/**
-	 * Submit the query with a specified schema and return results.
+	 * Submit the query with specified metadata and return results.
 	 * 
 	 * @param q
-	 * @param resultSchema
+	 * @param metadata
 	 * @param offset
 	 * @param maxResults
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public abstract IQueryResult query(IQuery q, Polylist resultSchema, int offset, int maxResults) throws ThinklabException;
+	public abstract IQueryResult query(IQuery q, String[] metadata, int offset, int maxResults) throws ThinklabException;
 
 }
