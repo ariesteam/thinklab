@@ -81,8 +81,8 @@ public class CurrencyPlugin extends ThinklabPlugin  {
 		convFactory = new CpiConversionFactory();
 		convFactory.initialize(
 				sqls,
-				new File(exchangeDataURL.getFile()), 
-				new File(cpiDataURL.getFile()));
+				exchangeDataURL, 
+				cpiDataURL);
 	}
 
 	@Override

@@ -33,13 +33,12 @@
 package org.integratedmodelling.currency.cpi;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.integratedmodelling.corescience.exceptions.ThinklabInexactConversionException;
 import org.integratedmodelling.sql.SQLServer;
-import org.integratedmodelling.sql.hsql.HSQLMemServer;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
@@ -52,7 +51,7 @@ public class CpiConversionFactory {
 	/* log4j logger used for this class. Can be used by other classes through logger()  */
 	private static  Logger log = Logger.getLogger(CpiConversionFactory.class);
 	
-	public void initialize(SQLServer server, File ratesFile, File cpiFile) throws ThinklabException {
+	public void initialize(SQLServer server, URL ratesFile, URL cpiFile) throws ThinklabException {
 
 		int exchCount = 0;
 		int cpiCount = 0;
@@ -80,7 +79,8 @@ public class CpiConversionFactory {
 
 			try {
 				
-				BufferedReader reader = new BufferedReader(new FileReader(ratesFile));
+				BufferedReader reader = 
+					new BufferedReader(new InputStreamReader(ratesFile.openStream()));
 
 				String line = null;
 				while ((line = reader.readLine()) != null) {
@@ -101,7 +101,8 @@ public class CpiConversionFactory {
 				reader.close();
 
 
-				reader = new BufferedReader(new FileReader(cpiFile));
+				reader = new BufferedReader(
+						new InputStreamReader(cpiFile.openStream()));
 
 				while ((line = reader.readLine()) != null) {
 
@@ -243,21 +244,6 @@ public class CpiConversionFactory {
 		return cto/cfrom;
 	}
 	
-	
-	public static void main(String[] args) {
-
-		CpiConversionFactory cpi = new CpiConversionFactory();
-		
-		try {
-			SQLServer sqls = new HSQLMemServer("currency");
-			cpi.initialize(sqls, new File("data/exchrates.txt"), new File("data/cpidata.txt"));
-			
-			
-		} catch (ThinklabException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 	public double convert(double value, String currencyFrom, TimeValue dateFrom,
 			String currencyTo, TimeValue dateTo) throws ThinklabInexactConversionException {
