@@ -33,7 +33,9 @@
  **/
 package org.integratedmodelling.thinklab.interfaces.query;
 
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.utils.LogicalConnector;
 
 /**
  * A query class whose purpose is to generalize the querying
@@ -68,5 +70,14 @@ public interface IQuery {
 	 * @return
 	 */
 	abstract boolean isEmpty();
+
+	/**
+	 * Return a new query which is the logical connection of self with the passed one.
+	 * 
+	 * @param constraint
+	 * @param intersection
+	 * @return
+	 */
+	abstract IQuery merge(IQuery constraint, LogicalConnector intersection) throws ThinklabException ;
 	
 }

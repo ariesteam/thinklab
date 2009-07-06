@@ -442,7 +442,6 @@ public class KBoxManager {
 			} catch (Exception e) {
 				throw new ThinklabIOException("kbox wrapper error: " + e.getMessage());
 			}
-			
 		}
 		
 		return ret;

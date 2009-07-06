@@ -32,8 +32,10 @@
  **/
 package org.integratedmodelling.searchengine;
 
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
+import org.integratedmodelling.utils.LogicalConnector;
 
 /**
  * A textual query that is initialized from a string. We may want to preprocess it and
@@ -63,6 +65,23 @@ public class QueryString implements IQuery {
 
 	public boolean isEmpty() {
 		return query == null || query.trim().equals("");
+	}
+
+	@Override
+	public IQuery merge(IQuery constraint, LogicalConnector connector)
+			throws ThinklabException {
+		
+		if (! (constraint instanceof QueryString))
+			throw new ThinklabValidationException("query string can't be merged with a different query");
+		
+		String txt = query;
+		if (constraint != null) {
+			txt += 
+				connector.equals(LogicalConnector.INTERSECTION) ? " AND " : " OR " +
+				((QueryString)constraint).query;
+		}
+		
+		return new QueryString(txt);
 	}
 
 }

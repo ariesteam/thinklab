@@ -282,11 +282,20 @@ public class Constraint implements IQuery {
 	 * @param constraint
 	 * @param connector
 	 * @throws ThinklabIncompatibleConstraintException
+	 * @Override
 	 */
-	public void merge(Constraint constraint, LogicalConnector connector) throws ThinklabIncompatibleConstraintException {
+	public IQuery merge(IQuery query, LogicalConnector connector) throws ThinklabException {
 
-		if (constraint == null)
-			return;
+		if (query == null)
+			// COW
+			return this;
+		
+		if (! (query instanceof Constraint)) {
+			throw new ThinklabIncompatibleConstraintException("constraints are incompatible");
+		}
+		
+		Constraint constraint = (Constraint)query;		
+		Constraint ret = null;
 		
 		/* merge concepts if possible. Must match of course. */
         IConcept c1 = concept;
@@ -306,20 +315,22 @@ public class Constraint implements IQuery {
                         c2);
         }
 		
-        concept = ck;
+        ret = new Constraint(ck);
         
         /* merge bodies if necessary */
 		if (constraint.body == null)
-			return;
+			return ret;
 		
 		if (body == null) {
-			body = constraint.body.duplicate();
+			ret.body = constraint.body.duplicate();
 		} else {
 			Restriction old = body;
-			body = new Restriction(connector);
-			body.siblings.add(old);
-			body.siblings.add(constraint.body.duplicate());
+			ret.body = new Restriction(connector);
+			ret.body.siblings.add(old);
+			ret.body.siblings.add(constraint.body.duplicate());
 		}
+		
+		return ret;
 	}
 	
 	/**

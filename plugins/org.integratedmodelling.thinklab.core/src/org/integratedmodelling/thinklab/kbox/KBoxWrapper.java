@@ -35,9 +35,11 @@ package org.integratedmodelling.thinklab.kbox;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
@@ -117,6 +119,36 @@ public abstract class KBoxWrapper implements IKBox {
 	public String storeObject(IInstance object, String id, Map<String, IValue> metadata,
 			ISession session, HashMap<String, String> references) throws ThinklabException {
 		return kbox.storeObject(object, id, null, session, references);
+	}
+	
+	@Override
+	public Map<String, IConcept> getMetadataSchema() throws ThinklabException {
+		return kbox.getMetadataSchema();
+	}
+
+	@Override
+	public long getObjectCount() {
+		return kbox.getObjectCount();
+	}
+
+	@Override
+	public Properties getProperties() {
+		return kbox.getProperties();
+	}
+
+	@Override
+	public String getUri() {
+		return kbox.getUri();
+	}
+
+	@Override
+	public void resetToEmpty() throws ThinklabException {
+		kbox.resetToEmpty();
+	}
+
+	@Override
+	public IQuery parseQuery(String toEval) throws ThinklabException {
+		return kbox.parseQuery(toEval);
 	}
 
 }
