@@ -101,6 +101,12 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
     	this.shape = geometry;
     	setConceptWithoutValidation(null);
 	}
+    
+    public ShapeValue(Geometry geometry, CoordinateReferenceSystem crs) {
+    	this.shape = geometry;
+    	this.crs = crs;
+    	setConceptWithoutValidation(null);
+	}
 
     /**
      * Construct a rectangular "cell" from two points.
@@ -310,6 +316,14 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
 	public IValue clone() {
 		return new ShapeValue((Geometry)(shape.clone()), concept);
 	}
+	
+	public ShapeValue getBoundingBox() {
+		return new ShapeValue(shape.getEnvelope(), crs);
+	}
+
+	public ShapeValue getCentroid() {
+		return new ShapeValue(shape.getCentroid(), crs);
+	}
 
 	public Geometry getGeometry() {
 		return shape;
@@ -342,7 +356,6 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
 
 	@Override
 	public ShapeValue getValue(int index, Object[] parameters) {
-		// TODO Auto-generated method stub
 		return this;
 	}
 
@@ -355,13 +368,11 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
 	public boolean handshake(IConceptualModel cm,
 			IObservationContext observationContext,
 			IObservationContext overallContext) throws ThinklabException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public ShapeValue getInitialValue() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
