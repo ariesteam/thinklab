@@ -38,59 +38,45 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 
-public abstract class Conformance implements IConformance {
+public abstract class DefaultAbstractConformance implements IConformance {
 
 	public abstract IConcept getMatchingConcept(IConcept concept);
-	
-	Constraint constraint = null; 
-	
-	public Constraint getConstraint() {
-		return constraint;
-	}
 
 	/**
-	 * By default, we create a restriction from a conformance constraint of the same
-	 * class.
+	 * Set the extent of the conformance for a classification property.
+	 * Basically the conceptual limit of the match between instances.
+	 * 
+	 * @param property
+	 * @param extent
 	 */
-	public Restriction setConformance(IProperty property, IInstance object) {
-		
-		IConformance conf = null;
-		
-		try {
-			conf = this.getClass().newInstance();
-		} catch (Exception e) {
-			return null;
-		}
-		
-		try {
-			conf.setTo(object);
-		} catch (ThinklabException e) {
-			return null;
-		}
-		
-		return new Restriction(property, conf.getConstraint());
+	public abstract Restriction setConformance(IProperty property, IConcept extent);
 
-	}
+	/**
+	 * Set the extent of the comparison for a literal property.
+	 * 
+	 * @param property
+	 * @param extent
+	 */
+	public abstract Restriction setConformance(IProperty property, IValue extent);
 
-	public void setTo(IInstance i) throws ThinklabException {
-		
-		reset();
-		
-		constraint = new Constraint(getMatchingConcept(i.getDirectType()));
-		
+
+	public Constraint getConstraint(IInstance instance) throws ThinklabException {
+
+		Constraint constraint = new Constraint(getMatchingConcept(instance.getDirectType()));
 		Restriction res = null;
 		
-		for (IRelationship r : i.getRelationships()) {
+		for (IRelationship r : instance.getRelationships()) {
 
 			Restriction rr = null;
 			
 			if (r.isClassification()) {				
 				rr = setConformance(r.getProperty(), r.getValue().getConcept());
 			} else if (r.isObject()) {
-				rr = 
-					setConformance(r.getProperty(), r.getValue().asObjectReference().getObject());
+				rr = new Restriction(r.getProperty(), 
+						getConstraint(r.getValue().asObjectReference().getObject()));
 			} else {		
 				rr = setConformance(r.getProperty(), r.getValue());
 			}
@@ -99,17 +85,14 @@ public abstract class Conformance implements IConformance {
 				if (res == null)
 					res = rr;
 				else
-					res.AND(rr);
+					res = Restriction.AND(rr);
 			}
-			
 		}
 		
 		if (res != null)
 			constraint.restrict(res);
-	}
-	
-	public void reset() {
-		constraint = null;
+		
+		return constraint;
 	}
 
 }

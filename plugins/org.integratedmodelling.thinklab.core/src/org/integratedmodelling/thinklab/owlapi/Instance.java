@@ -189,8 +189,7 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public boolean isConformant(IInstance otherInstance,
 			IConformance conformance) throws ThinklabException {
-		conformance.setTo(this);
-		return conformance.getConstraint().match(otherInstance);
+		return conformance.getConstraint(this).match(otherInstance);
 	}
 
 	/* (non-Javadoc)

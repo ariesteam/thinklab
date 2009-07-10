@@ -18,6 +18,10 @@ public class ModelManager {
 
 	public Hashtable<IConcept, IModel> models = new Hashtable<IConcept, IModel>();
 	
+	public static ModelManager get() {
+		return ModellingPlugin.get().getModelManager();
+	}
+	
 	/*
 	 * called by the defmodel macro. 
 	 */

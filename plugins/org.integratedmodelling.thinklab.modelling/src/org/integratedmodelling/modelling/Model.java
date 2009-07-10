@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -14,6 +15,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
@@ -38,7 +40,6 @@ public class Model extends DefaultAbstractModel {
 	ArrayList<IModel> models = null;
 	Collection<IModel> context = null;
 	Collection<String> contextIds = null;
-	IKBox contKbox = null;
 	String description = null;
 	IObservation contingencyModel = null;
 	
@@ -98,6 +99,7 @@ public class Model extends DefaultAbstractModel {
 	Object state = null;
 	private boolean contingencyModelBuilt;
 	
+	
 	protected ContingencyIterator getContingencyIterator(ISession session, IKBox contingencyKbox) {
 
 		if (!contingencyModelBuilt) {
@@ -114,6 +116,47 @@ public class Model extends DefaultAbstractModel {
 		 */
 		contingencyModelBuilt = true;
 	}
+	
+	/**
+	 * 
+	 * @param kbox
+	 * @param session
+	 * @param conformancePolicies
+	 * @param extentQuery
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public Collection<IInstance> realize(IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Constraint extentQuery) throws ThinklabException {
+		
+		ArrayList<Polylist> defs = new ArrayList<Polylist>();
+		
+		/*
+		 * realize context first; if no context, get our one all-including contingency
+		 */
+		for (ContingencyIterator it = getContingencyIterator(session, kbox); it.hasNext(); ) {			
+			
+			Contingency contingency = it.next();
+			
+			/*
+			 * build observable query
+			 */
+
+			
+			/*
+			 * compatible observation type
+			 */
+			
+		}
+		
+		ArrayList<IInstance> ret = new ArrayList<IInstance>();
+		
+		for (Polylist l : defs) {
+			ret.add(session.createObject(l));
+		}
+		
+		return ret;
+	}
+	
 
 	/**
 	 * Run the model in the given session, using the passed kboxes and topology if

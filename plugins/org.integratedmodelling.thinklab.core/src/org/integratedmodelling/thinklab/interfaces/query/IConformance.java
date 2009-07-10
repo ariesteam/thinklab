@@ -34,16 +34,12 @@
 package org.integratedmodelling.thinklab.interfaces.query;
 
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
 /**
- * Conformance objects are created to be used as "policies" for comparing
+ * Conformance objects are "policies" for comparing
  * instances. The conformance idea is used to recognize the fact that two
  * instance may be equivalent or not according to the particular context of the
  * comparison. For example, in the context of model/data mediation we may be
@@ -65,57 +61,11 @@ import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 public interface IConformance {
 
 	/**
-	 * Restrict to select whatever conforms with the passed instance under the
-	 * conformance notion we represent. At the very least this should set the
-	 * concept another object needs to match to be conformant with the passed
-	 * one.
-	 * 
-	 * @param i
-	 * @throws ThinklabException
-	 */
-	public abstract void setTo(IInstance i) throws ThinklabException;
-
-	/**
-	 * Set the extent of the conformance for a classification property.
-	 * Basically the conceptual limit of the match between instances.
-	 * 
-	 * @param property
-	 * @param extent
-	 */
-	public abstract Restriction setConformance(IProperty property,
-			IConcept extent);
-
-	/**
-	 * Set the extent of the comparison for a literal property.
-	 * 
-	 * @param property
-	 * @param extent
-	 */
-	public abstract Restriction setConformance(IProperty property, IValue extent);
-
-	/**
-	 * Set the extent of the comparison for an object property. By default this
-	 * should probably just create another conformance of the same class for the
-	 * linked object.
-	 * 
-	 * @param property
-	 * @param objectSelector
-	 */
-	public abstract Restriction setConformance(IProperty property,
-			IInstance object);
-
-	/**
-	 * Return a constraint that selects conformant objects reflecting this
-	 * conformance notion and our specific configuration.
+	 * Return a constraint that selects conformant objects, reflecting this
+	 * conformance notion.
 	 * 
 	 * @return
 	 */
-	public abstract Constraint getConstraint();
+	public abstract Constraint getConstraint(IInstance instance) throws ThinklabException;
 
-	/**
-	 * Reset the conformance object to a pristine state (before the setTo()
-	 * method has been called).
-	 * 
-	 */
-	public abstract void reset();
 }
