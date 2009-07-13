@@ -3,9 +3,13 @@ package org.integratedmodelling.modelling;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.modelling.Model.Contingency;
+import org.integratedmodelling.modelling.Model.ContingencyIterator;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.thinklab.IntelligentTable;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
@@ -14,20 +18,21 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
+import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.kbox.RankingKBox;
 import org.integratedmodelling.utils.CamelCase;
+import org.integratedmodelling.utils.LogicalConnector;
 import org.integratedmodelling.utils.Polylist;
 
 public abstract class DefaultAbstractModel implements IModel {
 
 	protected IModel mediated = null;
+	private ArrayList<IModel> dependents = new ArrayList<IModel>();
+
 	protected IConcept observable = null;
 	protected Polylist observableSpecs = null;
 	protected Object state = null;
 	protected String id = null;
-	private ArrayList<IModel> dependents = new ArrayList<IModel>();
 	private Polylist whenClause = null;
 	private LinkedList<Polylist> transformerQueue = new LinkedList<Polylist>();
 	
@@ -93,7 +98,6 @@ public abstract class DefaultAbstractModel implements IModel {
 		
 	}
 	
-	
 	/**
 	 * If the resulting observation is to be transformed by a transformer obs,
 	 * add a transformer definition from defmodel (e.g. :cluster (def)) in the transformer
@@ -139,40 +143,64 @@ public abstract class DefaultAbstractModel implements IModel {
 	}
 	
 	/**
-	 * Utility: find a unambiguous instance in a kbox that represents the passed
-	 * observable, and make sure it is an observation of the given type before
-	 * returning it.
+	 * Generate a query that will select the requested observation type and restrict the
+	 * observable to the specifications we got for this model. Use passed conformance table
+	 * to define the observable constraint. Optionally add in an extent restriction.
 	 * 
-	 * @param observable
-	 * @param kbox
-	 * @param requiredObsType
+	 * @param extentRestriction
+	 * @param conformancePolicies
+	 * @param session
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public static IInstance resolveObservable(IConcept observable, IKBox kbox,
-			IConcept requiredObsType, ISession session)
-			throws ThinklabException {
+	public Constraint generateObservableQuery(
+			Restriction extentRestriction, 
+			IntelligentTable<IConformance> conformancePolicies,
+			ISession session) throws ThinklabException {
 
-		IInstance ret = null;
-
-		Constraint c = new Constraint(requiredObsType)
-				.restrict(new Restriction(CoreScience.HAS_OBSERVABLE,
-						new Constraint(observable)));
-
-		IQueryResult res = kbox.query(c);
-
-		if (res.getTotalResultCount() > 0) {
-
-			if (res.getTotalResultCount() > 1 && !(kbox instanceof RankingKBox))
-				throw new ThinklabValidationException(
-						"ambiguous results resolving observation of "
-								+ observable + " in kbox " + kbox);
-
-			ret = res.getResult(0, session).asObjectReference().getObject();
-		}
-
-		return ret;
+		Constraint c = new Constraint(this.getCompatibleObservationType(session));
+		
+		IInstance inst = session.createObject(observableSpecs);
+		IConformance conf = conformancePolicies.get(inst.getDirectType());
+		return c.restrict(
+					LogicalConnector.INTERSECTION,
+					new Restriction(CoreScience.HAS_OBSERVABLE, conf.getConstraint(inst)),
+					extentRestriction);
 	}
 
+	
+	/**
+	 * Return one realization of the model on this kbox. Should keep returning these in a lazy
+	 * fashion until there are no more. Then it should return null.
+	 * 
+	 * This version of realize() applies to predefined (not defmodel) models, so it will only handle
+	 * mediation, dependencies and kbox search. The derived Model class will override this to also handle 
+	 * contingencies and alternative model definitions.
+	 * 
+	 * TODO so this should return a query result instead, with one field and pointers to all results
+	 * for kbox-based obs, the defs of the fixed ones etc. Contingencies complicate this one enormously,
+	 * so for now we do it all inside the model.
+	 * 
+	 * @param kbox
+	 * @param session
+	 * @param conformancePolicies
+	 * @param extentQuery
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public IInstance realize(IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Constraint extentQuery) throws ThinklabException {
+		
+		/*
+		 * if we had a previous query done AND it's our turn to change, we want another result from it.
+		 * TODO we need a shared ticker and an index for each changing model. This should probably be
+		 * a query result kind of object.
+		 */
+		
+		/*
+		 * if we have a state, we're realized
+		 */
+		
+		return null;
+	}
 
 }

@@ -240,11 +240,30 @@ public class Constraint implements IQuery {
 	 * Restrict the current constraint by properly merging in the passed connections using the passed
 	 * mode. Don't even think about passing anything but AND and OR, although no check is made.
 	 * @param connector LogicalConnector.INTERSECTION or UNION. Nothing else please.
-	 * @param restrictions as many new restrictions as you want
+	 * @param restrictions as many new restrictions as you want. NULLs are accepted and will be ignored for
+	 *        convenience.
 	 * @returns this, not a new constraint; it's done only to enable shorter idioms when creating
 	 *    a constraint like new Constraint(..).restrict(...);
 	 */
 	public Constraint restrict(LogicalConnector connector, Restriction ... restrictions) {
+		
+		/*
+		 * remove all NULLs from the restriction array. A bit messy but the convenience is 
+		 * priceless.
+		 */
+		int nulls = 0;
+		for (Restriction r: restrictions) 
+			if (r == null)
+				nulls++;
+		if (nulls > 0) {
+			Restriction[] repl = new Restriction[restrictions.length - nulls];
+			int i = 0;
+			for (Restriction r : restrictions) {
+				if (r != null)
+					repl[i++] = r;
+			}
+			restrictions = repl;
+		}
 		
 		/* empty body, just add the AND of the restrictions, or if it's just one make it the body. */
 		if (body == null) {

@@ -118,6 +118,9 @@ public class Model extends DefaultAbstractModel {
 	}
 	
 	/**
+	 * This version of realize() also handles contingencies and alternative model definitions. Mediation
+	 * and kbox direct search are not used here because a defmodel form is always a nontrivial observation.
+	 * 
 	 * 
 	 * @param kbox
 	 * @param session
@@ -125,10 +128,9 @@ public class Model extends DefaultAbstractModel {
 	 * @param extentQuery
 	 * @return
 	 * @throws ThinklabException
+	 * @Override
 	 */
-	public Collection<IInstance> realize(IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Constraint extentQuery) throws ThinklabException {
-		
-		ArrayList<Polylist> defs = new ArrayList<Polylist>();
+	public IInstance realize(IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Constraint extentQuery) throws ThinklabException {
 		
 		/*
 		 * realize context first; if no context, get our one all-including contingency
@@ -145,16 +147,9 @@ public class Model extends DefaultAbstractModel {
 			/*
 			 * compatible observation type
 			 */
-			
 		}
 		
-		ArrayList<IInstance> ret = new ArrayList<IInstance>();
-		
-		for (Polylist l : defs) {
-			ret.add(session.createObject(l));
-		}
-		
-		return ret;
+		return null;
 	}
 	
 

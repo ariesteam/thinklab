@@ -1,9 +1,15 @@
 package org.integratedmodelling.modelling.interfaces;
 
+import java.util.Map;
+
+import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.query.IConformance;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
 /**
@@ -70,6 +76,25 @@ public interface IModel extends IConceptualizable {
 	 */
 	public abstract IModel getConfigurableClone();
 	
+	/**
+	 * Return one realization of the model on the passed kbox. It should support calling many times, each
+	 * time returning a different observation structure in a lazy fashion until there are no more to be
+	 * found. At that point it should return null.
+	 * 
+	 * @param kbox a kbox to use to resolve any unresolved observables in the model.
+	 * @param session to hold any instances created.
+	 * @param conformancePolicies if not null, an IntelligentTable of conformance policies to be used to
+	 * 	match observables to those stored in the kbox. If null is passed, it will use the default conformance
+	 *  policy, which matches classes and classification properties exactly and ignores literals.
+	 *  
+	 * @param extentQuery an optional query to specify further extents to restrict the kbox with. Used to
+	 * 		  avoid explosion when matching on large kboxes. Of course a pre-constrained kbox can also be
+	 *        used.
+	 * @return one realization of the model over the kbox, or null if there aren't any.
+	 * @throws ThinklabException
+	 */
+	public abstract IInstance realize(IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Constraint extentQuery) 
+		throws ThinklabException;
 
 	/**
 	 * Create the base list definition for the resulting observation, to which 
