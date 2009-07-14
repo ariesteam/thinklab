@@ -309,6 +309,7 @@ public class Model extends DefaultAbstractModel {
 		return true;
 	}
 	
+	@Override
 	public String toString() {
 		return "[" + getObservable() + "->" + getCompatibleObservationType(null)+"]";
 	}
