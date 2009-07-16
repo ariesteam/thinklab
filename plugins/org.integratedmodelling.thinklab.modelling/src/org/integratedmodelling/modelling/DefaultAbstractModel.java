@@ -9,7 +9,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.modelling.Model.Contingency;
 import org.integratedmodelling.modelling.Model.ContingencyIterator;
 import org.integratedmodelling.modelling.interfaces.IModel;
-import org.integratedmodelling.thinklab.IntelligentTable;
+import org.integratedmodelling.thinklab.IntelligentMap;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
@@ -155,7 +155,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	 */
 	public Constraint generateObservableQuery(
 			Restriction extentRestriction, 
-			IntelligentTable<IConformance> conformancePolicies,
+			IntelligentMap<IConformance> conformancePolicies,
 			ISession session) throws ThinklabException {
 
 		Constraint c = new Constraint(this.getCompatibleObservationType(session));
