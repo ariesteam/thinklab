@@ -27,9 +27,10 @@ public class ModelResult extends DefaultMutableTreeNode implements IQueryResult 
 	private static final long serialVersionUID = 5204113167121644188L;
 
 	/**
-	 * Each node has the same ticker
+	 * Each node has a ref to the same root ticker
 	 */
 	Ticker ticker = null;
+	
 	/*
 	 * 
 	 */
