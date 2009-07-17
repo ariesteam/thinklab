@@ -26,10 +26,21 @@ public class ModelResult extends DefaultMutableTreeNode implements IQueryResult 
 
 	private static final long serialVersionUID = 5204113167121644188L;
 
+	public static final int MEDIATOR = 0;
+	public static final int TRANSFORMER = 1;
+	public static final int EXTERNAL = 2;
+	
+	int type = 0;
+	
 	/**
 	 * Each node has a ref to the same root ticker
 	 */
 	Ticker ticker = null;
+	
+	/*
+	 * 
+	 */
+	int id = 0;
 	
 	/*
 	 * 
@@ -40,6 +51,11 @@ public class ModelResult extends DefaultMutableTreeNode implements IQueryResult 
 	 * The model that we describe. TODO check if this is necessary.
 	 */
 	IModel model = null;
+
+	/*
+	 * specifications to build our observation
+	 */
+	public Polylist specs;
 	
 	@Override
 	public IValue getBestResult(ISession session) throws ThinklabException {
@@ -112,6 +128,10 @@ public class ModelResult extends DefaultMutableTreeNode implements IQueryResult 
 	public float setResultScore(int n, float score) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public void initialize() {
+		// initialize the ticker in this (root) node and give all nodes their dimension ID.
 	}
 
 }

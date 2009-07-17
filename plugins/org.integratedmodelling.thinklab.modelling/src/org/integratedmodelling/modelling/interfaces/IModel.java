@@ -2,12 +2,12 @@ package org.integratedmodelling.modelling.interfaces;
 
 import java.util.Map;
 
-import org.integratedmodelling.thinklab.constraint.Constraint;
+import org.integratedmodelling.modelling.ModelResult;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
@@ -32,7 +32,6 @@ import org.integratedmodelling.utils.Polylist;
  * 
  */
 public interface IModel extends IConceptualizable {
-
 
 	/**
 	 * Return the base observable concept
@@ -93,7 +92,7 @@ public interface IModel extends IConceptualizable {
 	 * @return one realization of the model over the kbox, or null if there aren't any.
 	 * @throws ThinklabException
 	 */
-	public abstract IInstance realize(IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Constraint extentQuery) 
+	public abstract ModelResult realize(IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Restriction extentQuery) 
 		throws ThinklabException;
 
 	/**

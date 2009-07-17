@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.utils.Ticker;
 import org.integratedmodelling.modelling.Model.Contingency;
 import org.integratedmodelling.modelling.Model.ContingencyIterator;
 import org.integratedmodelling.modelling.interfaces.IModel;
@@ -188,18 +189,63 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public IInstance realize(IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Constraint extentQuery) throws ThinklabException {
+	public ModelResult realize(IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Restriction extentQuery) throws ThinklabException {
+		ModelResult ret = realizeInternal(null, kbox, session, conformancePolicies, extentQuery);
+		ret.initialize();
+		return ret;
+	}
+	
+	protected ModelResult realizeInternal(ModelResult root, IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Restriction extentQuery) throws ThinklabException {
+		
+		ModelResult ret = new ModelResult();
+		
+		if (root == null) {
+			ret.ticker = new Ticker();
+		} else {
+			ret.ticker = root.ticker;
+		}
+		
+		boolean solved = false;
 		
 		/*
-		 * if we had a previous query done AND it's our turn to change, we want another result from it.
-		 * TODO we need a shared ticker and an index for each changing model. This should probably be
-		 * a query result kind of object.
+		 * do we have a mediated model? Add that
 		 */
+		if (mediated != null) {
+			ret.type = ModelResult.MEDIATOR;
+			ret.add(((DefaultAbstractModel) mediated).realizeInternal(ret, kbox, session, conformancePolicies, extentQuery));
+			solved = true;
+		}
 		
 		/*
-		 * if we have a state, we're realized
+		 * are we a transformer? Just realize the dependencies
 		 */
+
+		/*
+		 * if we have a state, we don't need anything else but our specs
+		 */
+		if (state == null) {
+			solved = true;
+		}
+
+		/*
+		 * get the specs
+		 */
+		ret.specs = buildDefinition();
 		
+		/*
+		 * if we don't have a state and we are neither, we need to lookup the 
+		 */
+		if (!solved) {
+			/*
+			 * we need an external observation
+			 */
+			// FIXME pass the map appropriately
+			Constraint c = generateObservableQuery(extentQuery, (IntelligentMap<IConformance>) conformancePolicies, session);
+			if (c != null) {
+				ret.obsHits = kbox.query(c);
+			}
+			ret.type = ModelResult.EXTERNAL;
+		}
 		return null;
 	}
 

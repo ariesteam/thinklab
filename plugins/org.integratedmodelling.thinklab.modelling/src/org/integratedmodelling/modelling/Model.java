@@ -130,7 +130,7 @@ public class Model extends DefaultAbstractModel {
 	 * @throws ThinklabException
 	 * @Override
 	 */
-	public IInstance realize(IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Constraint extentQuery) throws ThinklabException {
+	protected ModelResult realizeInternal(ModelResult root, IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Constraint extentQuery) throws ThinklabException {
 		
 		/*
 		 * realize context first; if no context, get our one all-including contingency
