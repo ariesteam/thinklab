@@ -1,11 +1,18 @@
 package org.integratedmodelling.modelling;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.ConceptVisitor;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 
 /**
  * A singleton (access from ModellingPlugin) that catalogs models and provides search functions for models
@@ -67,6 +74,22 @@ public class ModelManager {
 		if (ret == null)
 			throw new ThinklabResourceNotFoundException("no model found for observable " + concept);
 		return ret;
+	}
+
+	public static IInstance runModel(IModel mod, IKBox kbox, IInstance context, ISession session) throws ThinklabException {
+
+		if ( !(mod instanceof Model))
+			throw new ThinklabValidationException("only models defined by a defmodel instruction can be resolved");
+		
+		Model model = (Model)mod;
+		ArrayList<Object> params = new ArrayList<Object>();
+		
+		if (kbox != null)
+			params.add(kbox);
+		if (context != null) 
+			params.add(context);
+		
+		return model.run(session, params);
 	}
 	
 }

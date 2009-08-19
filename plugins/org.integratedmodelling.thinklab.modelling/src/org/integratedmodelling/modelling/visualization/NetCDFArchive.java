@@ -18,6 +18,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.time.implementations.observations.RegularTemporalGrid;
+import org.integratedmodelling.utils.Pair;
 
 import ucar.ma2.ArrayDouble;
 import ucar.ma2.DataType;
@@ -39,6 +40,11 @@ public class NetCDFArchive {
 	Map<IConcept,IContextualizedState> variables;
 	Map<String,IContextualizedState> auxVariables = 
 		new Hashtable<String, IContextualizedState>();
+	
+	/*
+	 * container for variables to write
+	 */
+	ArrayList<Pair<String, String>> attributes;
 	
 	/**
 	 * Add a contextualized observation and we do the rest.

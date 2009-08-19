@@ -13,8 +13,8 @@ import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
 /**
- * The most high-level notion in Thinklab. Essentially a blueprint to build an
- * observation of a concept given a kbox and a session. It is nothing but a set
+ * The most high-level notion in Thinklab. Essentially a query that returns 
+ * observations of a concept given a kbox and a session. It is nothing but a set
  * of axioms, and it should be serializable to an appropriately restricted
  * observation class; it is here represented as a Java class for practical
  * reasons (of efficiency, storage and cleanup of unneeded axioms); make it a
@@ -22,7 +22,7 @@ import org.integratedmodelling.utils.Polylist;
  * unneeded overhead for now.
  * 
  * The Java side is usable as is but the whole model definition machinery is
- * meant to be used from Clojure, which allows a beautiful and compact syntax for
+ * meant to be used from Clojure, which provides an elegant and compact syntax for
  * model specification. See the examples/ folder in the plugin directory.
  * 
  * More docs will come or I'm not a real academic...
@@ -104,5 +104,13 @@ public interface IModel extends IConceptualizable {
 	 * @throws ThinklabException
 	 */
 	public Polylist buildDefinition() throws ThinklabException;
+
+	/**
+	 * Merge the definition returned by buildObservation with all dependencies.
+	 * @param kbox
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public abstract Polylist buildObservation(IKBox kbox) throws ThinklabException;
 	
 }

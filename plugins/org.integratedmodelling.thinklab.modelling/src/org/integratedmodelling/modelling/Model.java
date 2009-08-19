@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -54,11 +55,7 @@ public class Model extends DefaultAbstractModel {
 	public class Contingency {
 		
 	}
-	
-	public class LinkedModel {
 		
-	}
-	
 	/**
 	 * Iterates the states of the contingency observation - which may be simply the 
 	 * identification of the model if no contingency model is seen across the hierarchy.
@@ -99,7 +96,10 @@ public class Model extends DefaultAbstractModel {
 	Object state = null;
 	private boolean contingencyModelBuilt;
 	
-	
+	/*
+	 * This iterates over the states of the contingency model. Each Contingency contains the 
+	 * values of the context variables for each state.
+	 */
 	protected ContingencyIterator getContingencyIterator(ISession session, IKBox contingencyKbox) {
 
 		if (!contingencyModelBuilt) {
@@ -176,10 +176,10 @@ public class Model extends DefaultAbstractModel {
 		if (params != null)
 			for (Object o : params) {
 				if (o instanceof IKBox) {
-					if (contKbox == null)
-						contKbox = (IKBox) o;
-					else 
+					if (depsKbox == null)
 						depsKbox = (IKBox) o;
+					else 
+						contKbox = (IKBox) o;
 				} else if (o instanceof IInstance) {
 					contextQuery = null; // TODO turn the ctx of the instance into a query
 				} else if (o instanceof Constraint) {
@@ -187,6 +187,9 @@ public class Model extends DefaultAbstractModel {
 				}
 			}
 
+		if (contKbox == null)
+			contKbox = depsKbox;
+		
 		if (contextQuery != null) {
 			// TODO filter kboxes or pass query downstream
 		}
@@ -205,10 +208,7 @@ public class Model extends DefaultAbstractModel {
 		for (ContingencyIterator it = getContingencyIterator(session, contKbox); it.hasNext(); ) {
 			
 			Contingency contingency = it.next();
-			LinkedModel context = linkDependencies(contingency, depsKbox);
-			
-			// TODO this should take no argument or a substitution observation if the obs is unresoslved.
-			cmodels.add(buildObservation(context));
+			cmodels.add(buildObservation(contingency, depsKbox));
 		}
 		
 		if (cmodels.size() == 1)
@@ -224,53 +224,44 @@ public class Model extends DefaultAbstractModel {
 		
 	}
 
-	private Polylist buildObservation(LinkedModel context) {
+	/**
+	 * Build a model using our specifications, the passed context to resolve any :when clauses,
+	 * and the given kbox.
+	 * 
+	 * @param context
+	 * @return
+	 */
+	private Polylist buildObservation(Contingency context, IKBox kbox) throws ThinklabException {
 		
 		/*
-		 * 1. 
-		 * 
-		 * 2. build specs for the chosen obs for our observable
-		 * 
-		 * 3. for all dependent observables, add the chosen obs;
-		 * 
-		 * 4. add the mediated obs if any;
-		 * 
-		 * 5. for each transformer, wrap current result as its dependency (ret = transform(ret)).
+		 * if there's only one model, that's what we return
 		 */
+		IModel model = chooseModel(models, context, kbox);
+		if (model == null) {
+			throw new ThinklabModelException("cannot choose a model formulation for "
+					+ id 
+					+ " - TODO improve this message");
+		}
+		return model.buildObservation(kbox);
+	}
+	
+	/*
+	 * Choose the appropriate model for the context. 
+	 * @param models2
+	 * @param context2
+	 * @param kbox
+	 * @return
+	 */
+	private IModel chooseModel(ArrayList<IModel> models2, Contingency context2,
+			IKBox kbox) {
+		
+		if (models.size() == 1)
+			return models.get(0);
+		
 		
 		return null;
 	}
-	
-	/**
-	 * Produce a map of observable -> model/observation handling linkage of models to observables
-	 * using the passed kbox. If unlinked observables exist or linkage is ambiguous, throw an exception.
-	 * 
-	 * This should configure and run the RETE engine if any when clauses exist. As such, it's not
-	 * necessarily a simple function.
-	 * 
-	 * @param contingency
-	 * @param depsKbox
-	 * @return
-	 */
-	private LinkedModel linkDependencies(Contingency contingency, IKBox depsKbox) throws ThinklabException {
 
-		/*
-		 * scan context; for all unresolved ones, lookup an appropriate obs - meaning
-		 * we need to pass the context here, too, as a query built from another obs most
-		 * likely. If any remain unresolved (and have no :ask clause which we will 
-		 * implement later) throw an exception. If the one being built is a Model, we
-		 * must choose among its definitions according to the context, not use the model
-		 * itself.
-		 */
-		
-		LinkedModel ret = new LinkedModel();
-		
-		/*
-		 * TODO
-		 */
-		
-		return ret;
-	}
 
 	public void setDescription(String s) {
 		description = s;

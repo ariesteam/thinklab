@@ -7,9 +7,8 @@ import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.utils.Ticker;
-import org.integratedmodelling.modelling.Model.Contingency;
-import org.integratedmodelling.modelling.Model.ContingencyIterator;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.observations.ObservationFactory;
 import org.integratedmodelling.thinklab.IntelligentMap;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.constraint.Constraint;
@@ -249,4 +248,59 @@ public abstract class DefaultAbstractModel implements IModel {
 		return null;
 	}
 
+	@Override
+	public Polylist buildObservation(IKBox kbox) throws ThinklabException {
+
+		boolean solved = false;
+		Polylist ret = null;
+		
+		/*
+		 * do we have a mediated model? Add that
+		 */
+		if (mediated != null) {
+		}
+		
+		/*
+		 * are we a transformer? Just realize the dependencies
+		 */
+		
+
+		/*
+		 * get the specs
+		 */
+		Polylist specs = buildDefinition();
+		
+		/*
+		 * if we have a state, we don't need anything else but our specs
+		 */
+		if (state != null) {
+			solved = true;
+		} else {
+			for (IModel dep : dependents) {
+				/*
+				 * TODO screw this - we need a MAIN one, top down, to replace run() returning a list. The whole ticker thing should be
+				 * external - collect queries in a tree and run all, then build ticker and call it.
+				 */
+				specs = ObservationFactory.addDependency(specs, dep.buildObservation(kbox));
+			}
+		}
+		
+		/*
+		 * if we don't have a state and we are neither, we need to lookup the 
+		 */
+		if (!solved) {
+			
+			/*
+			 * lookup the best (first) external observation TODO THIS MUST BE EXTERNAL - JUST GET THE PROPER INDEX AND MOD RESULT FROM 
+			 * OUTSIDE LOGICS
+			 */
+//			Constraint c = generateObservableQuery(extentQuery, (IntelligentMap<IConformance>) conformancePolicies, session);
+//			if (c != null) {
+				// TODO this is an instance 
+//			}
+		}
+		
+		return ret;
+		
+	}
 }
