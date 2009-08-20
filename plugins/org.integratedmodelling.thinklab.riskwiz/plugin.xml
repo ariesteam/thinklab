@@ -24,6 +24,10 @@
 			<export prefix="*" />
 		</library>
 				
+		<library id="smile" path="lib/smile.jar" type="code">
+			<export prefix="*" />
+		</library>
+
 		<library id="mvel" path="lib/mvel2-2.0.7.jar" type="code">
 			<export prefix="*" />
 		</library>

@@ -9,6 +9,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.thinklab.IntelligentMap;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
@@ -130,7 +131,7 @@ public class Model extends DefaultAbstractModel {
 	 * @throws ThinklabException
 	 * @Override
 	 */
-	protected ModelResult realizeInternal(ModelResult root, IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Constraint extentQuery) throws ThinklabException {
+	protected Polylist realizeInternal(ModelResult root, IKBox kbox, ISession session, IntelligentMap<IConformance> conformancePolicies, Constraint extentQuery) throws ThinklabException {
 		
 		/*
 		 * realize context first; if no context, get our one all-including contingency
@@ -201,7 +202,6 @@ public class Model extends DefaultAbstractModel {
 	private Polylist buildObservation(ISession session, IKBox contKbox, IKBox depsKbox, Constraint contextQuery) 
 		throws ThinklabException {
 	
-		
 		Polylist ret = null;
 		ArrayList<Polylist> cmodels = new ArrayList<Polylist>();
 		
