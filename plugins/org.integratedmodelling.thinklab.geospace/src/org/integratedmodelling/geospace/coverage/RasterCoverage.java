@@ -1,7 +1,6 @@
 package org.integratedmodelling.geospace.coverage;
 
 import java.awt.image.DataBuffer;
-import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 
 import javax.media.jai.InterpolationNearest;
