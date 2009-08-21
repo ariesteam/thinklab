@@ -118,6 +118,8 @@ test  - runs some tests
 		<copy todir="${thinklab.inst}">
 			<fileset dir="${build.home}" includes="bin,**/*" />
 		</copy>
+		<chmod file="${thinklab.inst}/bin/thinklab.sh" perm="755"/>
+		<chmod file="${thinklab.inst}/bin/tclj.sh" perm="755"/>
 	</target>
 	
 	<target name="dist"
