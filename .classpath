@@ -40,7 +40,6 @@
 	<classpathentry kind="lib" path="lib/jpf.jar" sourcepath="/JPF 1.5"/>
 	<classpathentry kind="lib" path="lib/jpf-tools.jar"/>
 	<classpathentry kind="lib" path="lib/jxp.jar"/>
-	<classpathentry kind="lib" path="lib/log4j.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.agents/lib/iiop.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.agents/lib/jade.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.agents/lib/jadeTools.jar"/>
@@ -274,7 +273,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/visad.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JAI"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/jsmile.dll"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/libjsmile.so"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/smile.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

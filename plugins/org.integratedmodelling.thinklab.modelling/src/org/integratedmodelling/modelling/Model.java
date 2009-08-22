@@ -3,7 +3,6 @@ package org.integratedmodelling.modelling;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
