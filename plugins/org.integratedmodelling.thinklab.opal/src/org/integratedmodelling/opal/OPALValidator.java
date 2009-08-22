@@ -425,6 +425,9 @@ public class OPALValidator {
 		  * if concept node has text content, what we want is to define a concept
 		  * with a literal. Just add the content. There should be no relevant property, but we
 		  * let the instance validator catch any errors.
+		  * 
+		  * Solves TLC-23: Enhance OPAL syntax with specific fields to support mixing literal definition with other fields
+http://ecoinformatics.uvm.edu/jira/browse/TLC-23
 		  */
 		 String gg = XMLDocument.getNodeValue(n);
 		 
