@@ -12,7 +12,6 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 
 /**
  * A singleton (access from ModellingPlugin) that catalogs models and provides search functions for models
@@ -23,7 +22,7 @@ import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
  */
 public class ModelManager {
 
-	public Hashtable<IConcept, IModel> models = new Hashtable<IConcept, IModel>();
+	public Hashtable<IConcept, Model> models = new Hashtable<IConcept, Model>();
 	
 	public static ModelManager get() {
 		return ModellingPlugin.get().getModelManager();
@@ -32,7 +31,7 @@ public class ModelManager {
 	/*
 	 * called by the defmodel macro. 
 	 */
-	public IModel registerModel(IModel model) {
+	public Model registerModel(Model model) {
 	
 		IConcept obs = model.getObservable();
 		if (models.containsKey(obs))
@@ -45,14 +44,14 @@ public class ModelManager {
 		return model;
 	}
 	
-	public IModel retrieveModel(IConcept concept) {
+	public Model retrieveModel(IConcept concept) {
 		
         class Matcher implements ConceptVisitor.ConceptMatcher {
 
-            Hashtable<IConcept, IModel> coll;
-            IModel ret = null;
+            Hashtable<IConcept, Model> coll;
+            Model ret = null;
             
-            public Matcher(Hashtable<IConcept,IModel> c) {
+            public Matcher(Hashtable<IConcept,Model> c) {
                 coll = c;
             }
             
@@ -69,27 +68,27 @@ public class ModelManager {
         
 	}
 	
-	public IModel requireModel(IConcept concept) throws ThinklabResourceNotFoundException {
-		IModel ret = retrieveModel(concept);
+	public Model requireModel(IConcept concept) throws ThinklabResourceNotFoundException {
+		
+		Model ret = retrieveModel(concept);
 		if (ret == null)
 			throw new ThinklabResourceNotFoundException("no model found for observable " + concept);
 		return ret;
 	}
 
-	public static IInstance runModel(IModel mod, IKBox kbox, IInstance context, ISession session) throws ThinklabException {
-
-		if ( !(mod instanceof Model))
-			throw new ThinklabValidationException("only models defined by a defmodel instruction can be resolved");
+	/**
+	 * The main operation in modelling is to query an observation kbox, which may be null if we're certain
+	 * that the model is resolved. This produces a ModelResult object which we can use to retrieve
+	 * compliant result observations, whose contextualization is the result of running each model.
+	 * 
+	 * Use a pre-constrained kbox to add context restrictions such as where and when.
+	 * 
+	 * @param kbox
+	 * @return
+	 */
+	public static ModelResult query(Model model, IKBox kbox, ISession session) {
 		
-		Model model = (Model)mod;
-		ArrayList<Object> params = new ArrayList<Object>();
-		
-		if (kbox != null)
-			params.add(kbox);
-		if (context != null) 
-			params.add(context);
-		
-		return model.run(session, params);
+		return null;
 	}
 	
 }

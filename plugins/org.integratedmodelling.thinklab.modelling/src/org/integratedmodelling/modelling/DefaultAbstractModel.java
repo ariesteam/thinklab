@@ -3,10 +3,8 @@ package org.integratedmodelling.modelling;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.utils.Ticker;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.observations.ObservationFactory;
 import org.integratedmodelling.thinklab.IntelligentMap;
@@ -168,85 +166,60 @@ public abstract class DefaultAbstractModel implements IModel {
 					extentRestriction);
 	}
 
-	
-	/**
-	 * Return one realization of the model on this kbox. Should keep returning these in a lazy
-	 * fashion until there are no more. Then it should return null.
-	 * 
-	 * This version of realize() applies to predefined (not defmodel) models, so it will only handle
-	 * mediation, dependencies and kbox search. The derived Model class will override this to also handle 
-	 * contingencies and alternative model definitions.
-	 * 
-	 * TODO so this should return a query result instead, with one field and pointers to all results
-	 * for kbox-based obs, the defs of the fixed ones etc. Contingencies complicate this one enormously,
-	 * so for now we do it all inside the model.
-	 * 
-	 * @param kbox
-	 * @param session
-	 * @param conformancePolicies
-	 * @param extentQuery
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public ModelResult realize(IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Restriction extentQuery) throws ThinklabException {
-		ModelResult ret = realizeInternal(null, kbox, session, conformancePolicies, extentQuery);
-		ret.initialize();
-		return ret;
-	}
-	
-	protected ModelResult realizeInternal(ModelResult root, IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Restriction extentQuery) throws ThinklabException {
 		
-		ModelResult ret = new ModelResult();
-		
-		if (root == null) {
-			ret.ticker = new Ticker();
-		} else {
-			ret.ticker = root.ticker;
-		}
-		
-		boolean solved = false;
-		
-		/*
-		 * do we have a mediated model? Add that
-		 */
-		if (mediated != null) {
-			ret.type = ModelResult.MEDIATOR;
-			ret.add(((DefaultAbstractModel) mediated).realizeInternal(ret, kbox, session, conformancePolicies, extentQuery));
-			solved = true;
-		}
-		
-		/*
-		 * are we a transformer? Just realize the dependencies
-		 */
-
-		/*
-		 * if we have a state, we don't need anything else but our specs
-		 */
-		if (state == null) {
-			solved = true;
-		}
-
-		/*
-		 * get the specs
-		 */
-		ret.specs = buildDefinition();
-		
-		/*
-		 * if we don't have a state and we are neither, we need to lookup the 
-		 */
-		if (!solved) {
-			/*
-			 * we need an external observation
-			 */
-			// FIXME pass the map appropriately
-			Constraint c = generateObservableQuery(extentQuery, (IntelligentMap<IConformance>) conformancePolicies, session);
-			if (c != null) {
-				ret.obsHits = kbox.query(c);
-			}
-			ret.type = ModelResult.EXTERNAL;
-		}
-		return null;
-	}
+//	protected ModelResult realizeInternal(ModelResult root, IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Restriction extentQuery) throws ThinklabException {
+//		
+//		ModelResult ret = new ModelResult();
+//		
+//		if (root == null) {
+//			ret.ticker = new Ticker();
+//		} else {
+//			ret.ticker = root.ticker;
+//		}
+//		
+//		boolean solved = false;
+//		
+//		/*
+//		 * do we have a mediated model? Add that
+//		 */
+//		if (mediated != null) {
+//			ret.type = ModelResult.MEDIATOR;
+//			ret.add(((DefaultAbstractModel) mediated).realizeInternal(ret, kbox, session, conformancePolicies, extentQuery));
+//			solved = true;
+//		}
+//		
+//		/*
+//		 * are we a transformer? Just realize the dependencies
+//		 */
+//
+//		/*
+//		 * if we have a state, we don't need anything else but our specs
+//		 */
+//		if (state == null) {
+//			solved = true;
+//		}
+//
+//		/*
+//		 * get the specs
+//		 */
+//		ret.specs = buildDefinition();
+//		
+//		/*
+//		 * if we don't have a state and we are neither, we need to lookup the 
+//		 */
+//		if (!solved) {
+//			/*
+//			 * we need an external observation
+//			 */
+//			// FIXME pass the map appropriately
+//			Constraint c = generateObservableQuery(extentQuery, (IntelligentMap<IConformance>) conformancePolicies, session);
+//			if (c != null) {
+//				ret.obsHits = kbox.query(c);
+//			}
+//			ret.type = ModelResult.EXTERNAL;
+//		}
+//		return null;
+//	}
 
 	@Override
 	public Polylist buildObservation(IKBox kbox) throws ThinklabException {

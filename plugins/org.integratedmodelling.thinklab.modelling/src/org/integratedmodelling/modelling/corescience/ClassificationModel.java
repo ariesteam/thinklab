@@ -116,7 +116,8 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 		} else if (classifier instanceof ISeq) {
 			
 			/*
-			 * TODO 
+			 * TODO must pass Clojure class proxy to be stored here - needs to be handled in 
+			 * 	clj
 			 * code to be execd, to be passed back to Clojure at runtime
 			 */
 			

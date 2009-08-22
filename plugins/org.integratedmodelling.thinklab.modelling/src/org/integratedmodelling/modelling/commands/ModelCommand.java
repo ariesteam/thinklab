@@ -1,6 +1,8 @@
 package org.integratedmodelling.modelling.commands;
 
+import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModelManager;
+import org.integratedmodelling.modelling.ModelResult;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
@@ -25,7 +27,7 @@ import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text",
 		optionArgumentLabels="kbox,context",
 		returnType="observation:Observation")
-public class Model implements ICommandHandler {
+public class ModelCommand implements ICommandHandler {
 
 	@Override
 	public IValue execute(Command command, ISession session)
@@ -37,12 +39,10 @@ public class Model implements ICommandHandler {
 		IKBox kbox = null;
 		IInstance context = null;
 		
-		IModel model = ModelManager.get().requireModel(concept);
+		Model model = ModelManager.get().requireModel(concept);
 	
-		IInstance observation = ModelManager.runModel(model, kbox, context, session);
-		
-		
-		
+		ModelResult observation = ModelManager.query(model, kbox, session);
+				
 		return null;
 	}
 

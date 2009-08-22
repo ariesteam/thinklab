@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -12,6 +13,8 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
 /**
@@ -22,7 +25,7 @@ import org.integratedmodelling.utils.Polylist;
  * @author Ferdinando
  *
  */
-public class ModelResult extends DefaultMutableTreeNode implements IQueryResult  {
+public class ModelResult implements IQueryResult  {
 
 	private static final long serialVersionUID = 5204113167121644188L;
 
@@ -30,10 +33,22 @@ public class ModelResult extends DefaultMutableTreeNode implements IQueryResult 
 	public static final int TRANSFORMER = 1;
 	public static final int EXTERNAL = 2;
 	
+	/*
+	 * each node contains the model, which is used to build each observation
+	 */
+	IModel _model = null;
+	
+	/*
+	 * realizing each dependent must have returned another query result, each a dimension in
+	 * our final result options.
+	 */
+	ArrayList<Pair<IConcept,IQueryResult>> _realizedDependents;
+	
+	
 	int type = 0;
 	
 	/**
-	 * Each node has a ref to the same root ticker
+	 * The ticker tells us what dependents are retrieved next
 	 */
 	Ticker ticker = null;
 	
@@ -42,20 +57,6 @@ public class ModelResult extends DefaultMutableTreeNode implements IQueryResult 
 	 */
 	int id = 0;
 	
-	/*
-	 * 
-	 */
-	IQueryResult obsHits = null;
-	
-	/*
-	 * The model that we describe. TODO check if this is necessary.
-	 */
-	IModel model = null;
-
-	/*
-	 * specifications to build our observation
-	 */
-	public Polylist specs;
 	
 	@Override
 	public IValue getBestResult(ISession session) throws ThinklabException {
