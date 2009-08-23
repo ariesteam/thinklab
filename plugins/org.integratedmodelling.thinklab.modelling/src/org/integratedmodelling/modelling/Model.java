@@ -8,15 +8,11 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
-import org.integratedmodelling.thinklab.IntelligentMap;
-import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
@@ -117,97 +113,63 @@ public class Model extends DefaultAbstractModel {
 		contingencyModelBuilt = true;
 	}
 	
-	/**
-	 * This version of realize() also handles contingencies and alternative model definitions. Mediation
-	 * and kbox direct search are not used here because a defmodel form is always a nontrivial observation.
-	 * 
-	 * 
-	 * @param kbox
-	 * @param session
-	 * @param conformancePolicies
-	 * @param extentQuery
-	 * @return
-	 * @throws ThinklabException
-	 * @Override
-	 */
-	protected Polylist realizeInternal(ModelResult root, IKBox kbox, ISession session, IntelligentMap<IConformance> conformancePolicies, Constraint extentQuery) throws ThinklabException {
-		
-		/*
-		 * realize context first; if no context, get our one all-including contingency
-		 */
-		for (ContingencyIterator it = getContingencyIterator(session, kbox); it.hasNext(); ) {			
-			
-			Contingency contingency = it.next();
-			
-			/*
-			 * build observable query
-			 */
-
-			
-			/*
-			 * compatible observation type
-			 */
-		}
-		
-		return null;
-	}
 	
 
-	/**
-	 * Run the model in the given session, using the passed kboxes and topology if
-	 * any. It just builds the instance of an observation for the given concept, but
-	 * it is left to the user to contextualize it to obtain states.
-	 * 
-	 * @param session where we create the whole thing
-	 * @param params may contain one kbox (used for both context and deps), two
-	 * 	kboxes (used for context and deps respectively) and/or a topology (observation
-	 *  context) used to define the overall topology for the context.
-	 *   
-	 * @return the uncontextualized observation representing the model.
-	 * 
-	 * @throws ThinklabException
-	 */
-	public IInstance run(ISession session, Collection<Object> params) throws ThinklabException {
-		
-		IKBox contKbox = null;
-		IKBox depsKbox = null;
-		Constraint contextQuery = null;
-		
-		if (params != null)
-			for (Object o : params) {
-				if (o instanceof IKBox) {
-					if (depsKbox == null)
-						depsKbox = (IKBox) o;
-					else 
-						contKbox = (IKBox) o;
-				} else if (o instanceof IInstance) {
-					contextQuery = null; // TODO turn the ctx of the instance into a query
-				} else if (o instanceof Constraint) {
-					contextQuery = (Constraint) o;
-				}
-			}
-
-		if (contKbox == null)
-			contKbox = depsKbox;
-		
-		if (contextQuery != null) {
-			// TODO filter kboxes or pass query downstream
-		}
-		
-		return session.createObject(buildObservation(session, contKbox, depsKbox, contextQuery));
-
-	}
+//	/**
+//	 * Run the model in the given session, using the passed kboxes and topology if
+//	 * any. It just builds the instance of an observation for the given concept, but
+//	 * it is left to the user to contextualize it to obtain states.
+//	 * 
+//	 * @param session where we create the whole thing
+//	 * @param params may contain one kbox (used for both context and deps), two
+//	 * 	kboxes (used for context and deps respectively) and/or a topology (observation
+//	 *  context) used to define the overall topology for the context.
+//	 *   
+//	 * @return the uncontextualized observation representing the model.
+//	 * 
+//	 * @throws ThinklabException
+//	 */
+//	public IInstance run(ISession session, Collection<Object> params) throws ThinklabException {
+//		
+//		IKBox contKbox = null;
+//		IKBox depsKbox = null;
+//		Constraint contextQuery = null;
+//		
+//		if (params != null)
+//			for (Object o : params) {
+//				if (o instanceof IKBox) {
+//					if (depsKbox == null)
+//						depsKbox = (IKBox) o;
+//					else 
+//						contKbox = (IKBox) o;
+//				} else if (o instanceof IInstance) {
+//					contextQuery = null; // TODO turn the ctx of the instance into a query
+//				} else if (o instanceof Constraint) {
+//					contextQuery = (Constraint) o;
+//				}
+//			}
+//
+//		if (contKbox == null)
+//			contKbox = depsKbox;
+//		
+//		if (contextQuery != null) {
+//			// TODO filter kboxes or pass query downstream
+//		}
+//		
+//		return session.createObject(buildObservation(session, contKbox, depsKbox, contextQuery));
+//
+//	}
 	
-	private Polylist buildObservation(ISession session, IKBox contKbox, IKBox depsKbox, Constraint contextQuery) 
-		throws ThinklabException {
+	@Override
+	public Polylist buildDefinition(IKBox kbox, ISession session)  throws ThinklabException {
 	
 		Polylist ret = null;
 		ArrayList<Polylist> cmodels = new ArrayList<Polylist>();
 		
-		for (ContingencyIterator it = getContingencyIterator(session, contKbox); it.hasNext(); ) {
+		for (ContingencyIterator it = getContingencyIterator(session, kbox); it.hasNext(); ) {
 			
 			Contingency contingency = it.next();
-			cmodels.add(buildObservation(contingency, depsKbox));
+			cmodels.add(buildDefinition(contingency, kbox, session));
 		}
 		
 		if (cmodels.size() == 1)
@@ -230,7 +192,7 @@ public class Model extends DefaultAbstractModel {
 	 * @param context
 	 * @return
 	 */
-	private Polylist buildObservation(Contingency context, IKBox kbox) throws ThinklabException {
+	private Polylist buildDefinition(Contingency context, IKBox kbox, ISession session) throws ThinklabException {
 		
 		/*
 		 * if there's only one model, that's what we return
@@ -241,7 +203,7 @@ public class Model extends DefaultAbstractModel {
 					+ id 
 					+ " - TODO improve this message");
 		}
-		return model.buildObservation(kbox);
+		return model.buildDefinition(kbox, session);
 	}
 	
 	/*
@@ -257,6 +219,7 @@ public class Model extends DefaultAbstractModel {
 		if (models.size() == 1)
 			return models.get(0);
 		
+		/* TODO RETE stuff goes here */
 		
 		return null;
 	}
@@ -323,16 +286,6 @@ public class Model extends DefaultAbstractModel {
 	protected void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
 		throw new ThinklabValidationException("model " + id + " cannot mediate another model");
-	}
-
-	@Override
-	public Polylist buildDefinition() throws ThinklabException {
-		
-		/*
-		 * we should build the definition of the chosen def'd models, not on the defmodel
-		 * result itself.
-		 */
-		throw new ThinklabInternalErrorException("internal error: buildDefinition should not be called on a Model");
 	}
 
 	@Override

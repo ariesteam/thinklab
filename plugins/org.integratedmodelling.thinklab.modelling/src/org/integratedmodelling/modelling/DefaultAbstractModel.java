@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.observations.ObservationFactory;
 import org.integratedmodelling.thinklab.IntelligentMap;
@@ -33,6 +34,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	protected String id = null;
 	private Polylist whenClause = null;
 	private LinkedList<Polylist> transformerQueue = new LinkedList<Polylist>();
+
 	
 	public void setObservable(Object observableOrModel) throws ThinklabException {
 		
@@ -152,7 +154,6 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * @throws ThinklabException
 	 */
 	public Constraint generateObservableQuery(
-			Restriction extentRestriction, 
 			IntelligentMap<IConformance> conformancePolicies,
 			ISession session) throws ThinklabException {
 
@@ -161,119 +162,54 @@ public abstract class DefaultAbstractModel implements IModel {
 		IInstance inst = session.createObject(observableSpecs);
 		IConformance conf = conformancePolicies.get(inst.getDirectType());
 		return c.restrict(
-					LogicalConnector.INTERSECTION,
-					new Restriction(CoreScience.HAS_OBSERVABLE, conf.getConstraint(inst)),
-					extentRestriction);
+				new Restriction(CoreScience.HAS_OBSERVABLE, conf.getConstraint(inst)));
+
 	}
 
 		
-//	protected ModelResult realizeInternal(ModelResult root, IKBox kbox, ISession session, Map<IConcept, IConformance> conformancePolicies, Restriction extentQuery) throws ThinklabException {
-//		
-//		ModelResult ret = new ModelResult();
-//		
-//		if (root == null) {
-//			ret.ticker = new Ticker();
-//		} else {
-//			ret.ticker = root.ticker;
-//		}
-//		
-//		boolean solved = false;
-//		
-//		/*
-//		 * do we have a mediated model? Add that
-//		 */
-//		if (mediated != null) {
-//			ret.type = ModelResult.MEDIATOR;
-//			ret.add(((DefaultAbstractModel) mediated).realizeInternal(ret, kbox, session, conformancePolicies, extentQuery));
-//			solved = true;
-//		}
-//		
-//		/*
-//		 * are we a transformer? Just realize the dependencies
-//		 */
-//
-//		/*
-//		 * if we have a state, we don't need anything else but our specs
-//		 */
-//		if (state == null) {
-//			solved = true;
-//		}
-//
-//		/*
-//		 * get the specs
-//		 */
-//		ret.specs = buildDefinition();
-//		
-//		/*
-//		 * if we don't have a state and we are neither, we need to lookup the 
-//		 */
-//		if (!solved) {
-//			/*
-//			 * we need an external observation
-//			 */
-//			// FIXME pass the map appropriately
-//			Constraint c = generateObservableQuery(extentQuery, (IntelligentMap<IConformance>) conformancePolicies, session);
-//			if (c != null) {
-//				ret.obsHits = kbox.query(c);
-//			}
-//			ret.type = ModelResult.EXTERNAL;
-//		}
-//		return null;
-//	}
-
-	@Override
-	public Polylist buildObservation(IKBox kbox) throws ThinklabException {
-
-		boolean solved = false;
-		Polylist ret = null;
+	ModelResult query(IKBox kbox, IntelligentMap<IConformance> cp, ISession session) throws ThinklabException {
+		
+		ModelResult ret = new ModelResult(this);
 		
 		/*
-		 * do we have a mediated model? Add that
+		 * if we're resolved, the model result contains all we need to know
+		 */
+		if (state != null)
+			return ret;
+		
+		/*
+		 * if mediated, realize mediated and add it
 		 */
 		if (mediated != null) {
+			ret.addMediatedResult(((DefaultAbstractModel)mediated).query(kbox, cp, session));
 		}
 		
 		/*
-		 * are we a transformer? Just realize the dependencies
+		 * query dependencies
 		 */
+		for (IModel dep : dependents) {
+			ret.addDependentResult(((DefaultAbstractModel)dep).query(kbox, cp, session));
+		}
 		
+		/*
+		 * if no state, dependents and no mediated, we need to find an observable to mediate
+		 */
+		if (mediated == null && dependents.size() == 0) {
 
-		/*
-		 * get the specs
-		 */
-		Polylist specs = buildDefinition();
-		
-		/*
-		 * if we have a state, we don't need anything else but our specs
-		 */
-		if (state != null) {
-			solved = true;
-		} else {
-			for (IModel dep : dependents) {
-				/*
-				 * TODO screw this - we need a MAIN one, top down, to replace run() returning a list. The whole ticker thing should be
-				 * external - collect queries in a tree and run all, then build ticker and call it.
-				 */
-				specs = ObservationFactory.addDependency(specs, dep.buildObservation(kbox));
+			if (kbox == null) {
+				throw new ThinklabModelException("unresolved model " + id + " cannot be resolved on a null kbox");
 			}
+			
+			ret.addMediatedResult(kbox.query(generateObservableQuery(cp, session)));
 		}
 		
-		/*
-		 * if we don't have a state and we are neither, we need to lookup the 
-		 */
-		if (!solved) {
-			
-			/*
-			 * lookup the best (first) external observation TODO THIS MUST BE EXTERNAL - JUST GET THE PROPER INDEX AND MOD RESULT FROM 
-			 * OUTSIDE LOGICS
-			 */
-//			Constraint c = generateObservableQuery(extentQuery, (IntelligentMap<IConformance>) conformancePolicies, session);
-//			if (c != null) {
-				// TODO this is an instance 
-//			}
-		}
+		ret.initialize();
 		
 		return ret;
-		
+	}
+
+	@Override
+	public String getId() {
+		return id;
 	}
 }

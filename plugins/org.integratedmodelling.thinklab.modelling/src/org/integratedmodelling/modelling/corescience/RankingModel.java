@@ -7,6 +7,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
 public class RankingModel extends DefaultDynamicAbstractModel {
@@ -48,7 +49,7 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 	}
 
 	@Override
-	public Polylist buildDefinition() throws ThinklabException {
+	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

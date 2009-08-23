@@ -12,6 +12,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
 import org.integratedmodelling.utils.Polylist;
 
@@ -191,7 +192,7 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 	}
 
 	@Override
-	public Polylist buildDefinition() throws ThinklabException {
+	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException {
 
 		if (state == null)
 			state = KnowledgeManager.get().getLeastGeneralCommonConcept(concepts);
