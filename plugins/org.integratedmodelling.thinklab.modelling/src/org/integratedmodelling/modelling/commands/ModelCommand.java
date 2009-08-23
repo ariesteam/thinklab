@@ -3,7 +3,6 @@ package org.integratedmodelling.modelling.commands;
 import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModelManager;
 import org.integratedmodelling.modelling.ModelResult;
-import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -11,9 +10,9 @@ import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
 
 @ThinklabCommand(
 		name="model",
@@ -35,15 +34,22 @@ public class ModelCommand implements ICommandHandler {
 		
 		IConcept concept = 
 			KnowledgeManager.get().requireConcept(command.getArgumentAsString("concept"));
-		
+
+		String kb = command.getArgumentAsString("kbox");
+
 		IKBox kbox = null;
-		IInstance context = null;
+		if (kb != null && !kb.equals("_NONE_"))
+			kbox = KBoxManager.get().requireGlobalKBox(kb);
 		
 		Model model = ModelManager.get().requireModel(concept);
-	
-		ModelResult observation = ModelManager.query(model, kbox, session);
+		
+		ModelResult obs = model.observe(kbox, session, null);
 				
-		return null;
+		if (session.getOutputStream() != null)
+			session.getOutputStream().println(
+					"\tQuery returned " + obs.getTotalResultCount() + " results");
+		
+		return obs.getTotalResultCount() == 0 ? null : obs.getResult(0, session);
 	}
 
 }

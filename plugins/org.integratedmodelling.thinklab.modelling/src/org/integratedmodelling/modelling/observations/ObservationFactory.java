@@ -228,7 +228,6 @@ public class ObservationFactory {
 				Polylist.list(
 						CoreScience.HAS_OBSERVABLE,
 						observable));
-
 	}
 
 	/**
@@ -305,7 +304,6 @@ public class ObservationFactory {
 				Polylist.list(CoreScience.HAS_CONTINGENCY, dependent));
 	}
 	
-	
 	/**
 	 * 
 	 * @return
@@ -322,8 +320,31 @@ public class ObservationFactory {
 	 * @throws ThinklabException 
 	 */
 	public static IConcept getObservableClass(IInstance data) throws ThinklabException {
-
 		return ((IObservation)(data.getImplementation())).getObservableClass();
+	}
+
+	/**
+	 * Add the given observable definition to the given observation spec.
+	 * 
+	 * @param observation
+	 * @param observableSpecs
+	 * @return
+	 */
+	public static Polylist setObservable(Polylist observation, Polylist observableSpecs) {
+		return observation.appendElement(
+				Polylist.list(CoreScience.HAS_OBSERVABLE, observableSpecs));
+	}
+
+	/**
+	 * Add the given mediated definition
+	 * 
+	 * @param observation
+	 * @param mediated
+	 * @return
+	 */
+	public static Polylist addMediatedObservation(Polylist observation, Polylist mediated) {
+		return observation.appendElement(
+				Polylist.list(CoreScience.MEDIATES_OBSERVATION, mediated));
 	}
 	
 	

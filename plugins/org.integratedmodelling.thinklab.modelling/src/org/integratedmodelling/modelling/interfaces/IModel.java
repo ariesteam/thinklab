@@ -1,9 +1,7 @@
 package org.integratedmodelling.modelling.interfaces;
 
-import java.util.Map;
-
 import org.integratedmodelling.modelling.ModelResult;
-import org.integratedmodelling.thinklab.constraint.Restriction;
+import org.integratedmodelling.thinklab.IntelligentMap;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -75,7 +73,6 @@ public interface IModel extends IConceptualizable {
 	 */
 	public abstract IModel getConfigurableClone();
 
-
 	/**
 	 * Create the base list definition for the resulting observation
 	 * 
@@ -84,7 +81,30 @@ public interface IModel extends IConceptualizable {
 	 */
 	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException;
 
+	/**
+	 * Models must have an ID
+	 * @return
+	 */
 	public abstract String getId();
+
+	/**
+	 * Observing a model over a kbox is a query that produces zero or more observations of 
+	 * that model. Contextualizing each observation is equivalent to running the model.
+	 * 
+	 * @param kbox a kbox to lookup unresolved observations. May be null, but make sure
+	 *        that the model is fully resolved or exceptions will be generated.
+	 * @param session 
+	 * @param cp if not null, contains the definition of conformity that will be used to 
+	 * 	      lookup each observable for the observations in the kbox. If null, the default
+	 * 		  conformance will be used, matching all object and classification properties but
+	 *        no literals.
+	 * @return A model result object, which works like any query result and will return 
+	 *         a "lazy" sequence of observation objects (generated only on demand). The 
+	 *         observations will need to be contextualized by the user.
+	 *         
+	 * @throws ThinklabException
+	 */
+	public ModelResult observe(IKBox kbox, ISession session, IntelligentMap<IConformance> cp) throws ThinklabException;
 
 	
 }

@@ -3,32 +3,35 @@ package org.integratedmodelling.modelling;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.integratedmodelling.corescience.utils.Ticker;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.observations.ObservationFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.utils.multidimensional.MultidimensionalCursor;
 
 /**
- * The realize() operation on a IModel produces one of these objects, which acts as a lazy generator of result
+ * The query() operation on a IModel produces one of these objects, which acts as a lazy generator of result
  * observations. It reflects the tree of models with their realization options (corresponding to hits from a
  * kbox for each unresolved source).
  * 
  * @author Ferdinando
- *
  */
 public class ModelResult implements IQueryResult  {
 
 	private static final long serialVersionUID = 5204113167121644188L;
-
-	public static final int MEDIATOR = 0;
-	public static final int TRANSFORMER = 1;
-	public static final int EXTERNAL = 2;
+	
+	// we need these later
+	IKBox _kbox;
+	ISession _session;
 	
 	/*
 	 * each node contains the model, which is used to build each observation
@@ -50,12 +53,14 @@ public class ModelResult implements IQueryResult  {
 	int type = 0;
 	
 	/**
-	 * The ticker tells us what dependents are retrieved next
+	 * The ticker tells us what results are retrieved
 	 */
-	Ticker ticker = null;
+	MultidimensionalCursor ticker = null;
 		
-	public ModelResult(IModel model) {
+	public ModelResult(IModel model, IKBox kbox, ISession session) {
 		_model = model;
+		_kbox = kbox;
+		_session = session;
 	}
 
 	@Override
@@ -66,50 +71,68 @@ public class ModelResult implements IQueryResult  {
 
 	@Override
 	public IQueriable getQueriable() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new ThinklabRuntimeException("getQueriable called on ModelResult");
 	}
 
 	@Override
 	public IQuery getQuery() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new ThinklabRuntimeException("getQuery called on ModelResult");
 	}
 
 	@Override
 	public IValue getResult(int n, ISession session) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		Polylist lst = getResultAsList(n, null);
+		return new ObjectReferenceValue(session.createObject(lst));
 	}
 
 	@Override
 	public Polylist getResultAsList(int n, HashMap<String, String> references)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+
+		int[] ofs = null;
+		if (ticker != null) {
+			ofs = ticker.getElementIndexes(n);
+		} else {
+			ofs = new int[1];
+			ofs[0] = n;
+		}
+		
+		Polylist ret = _model.buildDefinition(_kbox, _session);
+		
+		if (_mediated != null) {
+			Polylist med = _mediated.getResultAsList(ofs[0], null);
+			ret = ObservationFactory.addMediatedObservation(ret, med);
+		} else if (_dependents.size() > 0) {
+			
+			for (int i = 0; i < _dependents.size(); i++) {
+				Polylist dep = _dependents.get(0).getResultAsList(ofs[i], null);
+				ret = ObservationFactory.addDependency(ret, dep);
+			}
+		}
+
+		return ret;
 	}
 
 	@Override
 	public int getResultCount() {
-		return ticker == null ? 1 : (int) ticker.size();
+		return ticker == null ? 1 : (int) ticker.getMultiplicity();
 	}
 
 	@Override
 	public IValue getResultField(int n, String schemaField)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new ThinklabRuntimeException("getResultField called on ModelResult");
+
 	}
 
 	@Override
 	public int getResultOffset() {
-		return 0;
+		throw new ThinklabRuntimeException("getResultOffset called on ModelResult");
 	}
 
 	@Override
 	public float getResultScore(int n) {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1.0f;
 	}
 
 	@Override
@@ -120,26 +143,27 @@ public class ModelResult implements IQueryResult  {
 	@Override
 	public void moveTo(int currentItem, int itemsPerPage)
 			throws ThinklabException {
-		
-		// TODO Auto-generated method stub
-
+		throw new ThinklabRuntimeException("moveTo called on ModelResult");
 	}
 
 	@Override
 	public float setResultScore(int n, float score) {
-		return 1.0f;
+		throw new ThinklabRuntimeException("setResultScore called on ModelResult");
 	}
 
 	public void initialize() {
 
 		// initialize the ticker in this (root) node and give all nodes their dimension ID.
 		if (_mediated != null) {
-			ticker = new Ticker();
-			ticker.addDimension(_mediated.getTotalResultCount());
+			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
+			ticker.defineDimensions(_mediated.getTotalResultCount());
 		} else if (_dependents.size() > 0) {
-			ticker = new Ticker();
+			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
+			int[] dims = new int[_dependents.size()];
+			int i = 0;
 			for (IQueryResult r : _dependents)
-				ticker.addDimension(r.getTotalResultCount());
+				dims[i++] = r.getTotalResultCount();
+			ticker.defineDimensions(dims);
 		}
 	}
 

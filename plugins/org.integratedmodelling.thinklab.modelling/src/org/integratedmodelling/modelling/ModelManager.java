@@ -1,17 +1,10 @@
 package org.integratedmodelling.modelling;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 
-import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.ConceptVisitor;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
 /**
  * A singleton (access from ModellingPlugin) that catalogs models and provides search functions for models
@@ -65,7 +58,6 @@ public class ModelManager {
         IConcept cms = ConceptVisitor.findMatchUpwards(matcher, concept);
 
         return cms == null ? null : matcher.ret;
-        
 	}
 	
 	public Model requireModel(IConcept concept) throws ThinklabResourceNotFoundException {
@@ -76,19 +68,4 @@ public class ModelManager {
 		return ret;
 	}
 
-	/**
-	 * The main operation in modelling is to query an observation kbox, which may be null if we're certain
-	 * that the model is resolved. This produces a ModelResult object which we can use to retrieve
-	 * compliant result observations, whose contextualization is the result of running each model.
-	 * 
-	 * Use a pre-constrained kbox to add context restrictions such as where and when.
-	 * 
-	 * @param kbox
-	 * @return
-	 */
-	public static ModelResult query(Model model, IKBox kbox, ISession session) {
-		
-		return null;
-	}
-	
 }

@@ -166,10 +166,9 @@ public abstract class DefaultAbstractModel implements IModel {
 
 	}
 
+	public ModelResult observe(IKBox kbox, ISession session, IntelligentMap<IConformance> cp) throws ThinklabException {
 		
-	ModelResult query(IKBox kbox, IntelligentMap<IConformance> cp, ISession session) throws ThinklabException {
-		
-		ModelResult ret = new ModelResult(this);
+		ModelResult ret = new ModelResult(this, kbox, session);
 		
 		/*
 		 * if we're resolved, the model result contains all we need to know
@@ -181,14 +180,14 @@ public abstract class DefaultAbstractModel implements IModel {
 		 * if mediated, realize mediated and add it
 		 */
 		if (mediated != null) {
-			ret.addMediatedResult(((DefaultAbstractModel)mediated).query(kbox, cp, session));
+			ret.addMediatedResult(((DefaultAbstractModel)mediated).observe(kbox, session, cp));
 		}
 		
 		/*
 		 * query dependencies
 		 */
 		for (IModel dep : dependents) {
-			ret.addDependentResult(((DefaultAbstractModel)dep).query(kbox, cp, session));
+			ret.addDependentResult(((DefaultAbstractModel)dep).observe(kbox, session, cp));
 		}
 		
 		/*

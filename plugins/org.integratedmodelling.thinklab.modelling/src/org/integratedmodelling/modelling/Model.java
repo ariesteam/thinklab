@@ -8,6 +8,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.observations.ObservationFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -96,15 +97,15 @@ public class Model extends DefaultAbstractModel {
 	 * This iterates over the states of the contingency model. Each Contingency contains the 
 	 * values of the context variables for each state.
 	 */
-	protected ContingencyIterator getContingencyIterator(ISession session, IKBox contingencyKbox) {
+	protected ContingencyIterator getContingencyIterator(ISession session, IKBox kbox) {
 
 		if (!contingencyModelBuilt) {
-			buildContingencyModel(session);
+			buildContingencyModel(kbox, session);
 		}
 		return new ContingencyIterator(contingencyModel);
 	}
 	
-	private void buildContingencyModel(ISession session) {
+	private void buildContingencyModel(IKBox kbox, ISession session) {
 		
 		/*
 		 * TODO build the contingency model. For now this only passes a null, resulting
@@ -113,52 +114,6 @@ public class Model extends DefaultAbstractModel {
 		contingencyModelBuilt = true;
 	}
 	
-	
-
-//	/**
-//	 * Run the model in the given session, using the passed kboxes and topology if
-//	 * any. It just builds the instance of an observation for the given concept, but
-//	 * it is left to the user to contextualize it to obtain states.
-//	 * 
-//	 * @param session where we create the whole thing
-//	 * @param params may contain one kbox (used for both context and deps), two
-//	 * 	kboxes (used for context and deps respectively) and/or a topology (observation
-//	 *  context) used to define the overall topology for the context.
-//	 *   
-//	 * @return the uncontextualized observation representing the model.
-//	 * 
-//	 * @throws ThinklabException
-//	 */
-//	public IInstance run(ISession session, Collection<Object> params) throws ThinklabException {
-//		
-//		IKBox contKbox = null;
-//		IKBox depsKbox = null;
-//		Constraint contextQuery = null;
-//		
-//		if (params != null)
-//			for (Object o : params) {
-//				if (o instanceof IKBox) {
-//					if (depsKbox == null)
-//						depsKbox = (IKBox) o;
-//					else 
-//						contKbox = (IKBox) o;
-//				} else if (o instanceof IInstance) {
-//					contextQuery = null; // TODO turn the ctx of the instance into a query
-//				} else if (o instanceof Constraint) {
-//					contextQuery = (Constraint) o;
-//				}
-//			}
-//
-//		if (contKbox == null)
-//			contKbox = depsKbox;
-//		
-//		if (contextQuery != null) {
-//			// TODO filter kboxes or pass query downstream
-//		}
-//		
-//		return session.createObject(buildObservation(session, contKbox, depsKbox, contextQuery));
-//
-//	}
 	
 	@Override
 	public Polylist buildDefinition(IKBox kbox, ISession session)  throws ThinklabException {
@@ -175,10 +130,11 @@ public class Model extends DefaultAbstractModel {
 		if (cmodels.size() == 1)
 			ret = cmodels.get(0);
 		else {
-
-			/*
-			 * TODO create a spec for a main obs with all contingencies linked
-			 */
+			ret = Polylist.list(getCompatibleObservationType(session));
+			ret = ObservationFactory.setObservable(ret, observableSpecs);
+			
+			for (Polylist cont : cmodels) 
+				ret = ObservationFactory.addContingency(ret, cont);
 		}
 		
 		return ret;

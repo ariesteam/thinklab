@@ -127,7 +127,7 @@ public class Ticker {
 	}
 
 	/** 
-	 * Returns whether the last increment changed the specifien dimension. It
+	 * Returns whether the last increment changed the specified dimension. It
 	 * resets the status to false after that, so call it only once and
 	 * save the value if required more than once. 
 	 */
@@ -169,7 +169,6 @@ public class Ticker {
 	 * @return
 	 */
 	public long current() {
-		// TODO Auto-generated method stub
 		return currentIndex ;
 	}
 	

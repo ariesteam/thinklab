@@ -32,12 +32,7 @@
  **/
 package org.integratedmodelling.modelling.observations;
 
-import java.util.Properties;
-
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.kbox.KBoxWrapper;
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * A specialized abstract kbox made to handle observation structures and ease  

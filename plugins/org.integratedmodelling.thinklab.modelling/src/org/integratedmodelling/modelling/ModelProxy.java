@@ -1,13 +1,12 @@
 package org.integratedmodelling.modelling;
 
-import java.util.Collection;
-
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.thinklab.IntelligentMap;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
@@ -61,5 +60,10 @@ public class ModelProxy extends DefaultAbstractModel {
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
 		return model.conceptualize();
+	}
+	
+	@Override
+	public ModelResult observe(IKBox kbox, ISession session, IntelligentMap<IConformance> cp) throws ThinklabException {
+		return model.observe(kbox, session, cp);
 	}
 }
