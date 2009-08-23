@@ -9,11 +9,13 @@ import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.observations.ObservationFactory;
+import org.integratedmodelling.thinklab.IntelligentMap;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
@@ -116,6 +118,43 @@ public class Model extends DefaultAbstractModel {
 	
 	
 	@Override
+	public ModelResult observe(IKBox kbox, ISession session, IntelligentMap<IConformance> cp)  throws ThinklabException {
+	
+		ModelResult ret = null;
+		ArrayList<Polylist> cmodels = new ArrayList<Polylist>();
+		
+		if (models.size() == 1)
+			ret = models.get(0).observe(kbox, session, cp);
+		else {
+
+			ret = new ModelResult(this, kbox, session);
+			
+			for (ContingencyIterator it = getContingencyIterator(session, kbox); it.hasNext(); ) {
+
+				Contingency cn = it.next();
+				IModel cmod = chooseModel(models, cn, kbox);
+				if (cmod == null) {
+					throw new ThinklabModelException(
+							"cannot choose a model formulation for " +
+							observable +
+							" in context " +
+							cn +
+							": no matching submodel");
+				}
+				
+				ModelResult contingentRes = cmod.observe(kbox, session, cp);
+				
+				ret.addContingentResult(contingentRes);
+			}
+
+		}
+		
+		return ret;
+		
+	}
+
+	
+	@Override
 	public Polylist buildDefinition(IKBox kbox, ISession session)  throws ThinklabException {
 	
 		Polylist ret = null;
@@ -155,9 +194,12 @@ public class Model extends DefaultAbstractModel {
 		 */
 		IModel model = chooseModel(models, context, kbox);
 		if (model == null) {
-			throw new ThinklabModelException("cannot choose a model formulation for "
-					+ id 
-					+ " - TODO improve this message");
+			throw new ThinklabModelException(
+					"cannot choose a model formulation for " +
+					observable +
+					" in context " +
+					context +
+					": no matching submodel");
 		}
 		return model.buildDefinition(kbox, session);
 	}
@@ -226,7 +268,8 @@ public class Model extends DefaultAbstractModel {
 
 	@Override
 	public void applyClause(String keyword, Object argument) throws ThinklabException {
-		throw new ThinklabInternalErrorException("internal error: a Model should only be configured through a proxy");
+		throw new ThinklabInternalErrorException(
+				"internal error: a Model should only be configured through a proxy");
 	}
 
 

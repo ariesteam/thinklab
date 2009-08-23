@@ -168,17 +168,16 @@ public class ModelResult implements IQueryResult  {
 	}
 
 	public void addMediatedResult(IQueryResult res) throws ThinklabException {
-		if (res.getTotalResultCount() <= 0)
-			throw new ThinklabModelException(
-					"mediated model for " + _model.getId() + " returned no results" );
 		_mediated = res;
 	}
 
 	public void addDependentResult(IQueryResult res) throws ThinklabException {
-		if (res.getTotalResultCount() <= 0)
-			throw new ThinklabModelException(
-					"dependent model for " + _model.getId() + " returned no results" );
 		_dependents.add(res);
+	}
+
+	public void addContingentResult(ModelResult contingentRes) {
+		// TODO figure out how to manage the multiplicity
+		throw new ThinklabRuntimeException("unimplemented addContingentResult called on ModelResult");
 	}
 
 

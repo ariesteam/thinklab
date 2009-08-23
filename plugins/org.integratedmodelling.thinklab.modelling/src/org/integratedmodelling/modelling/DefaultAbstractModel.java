@@ -18,6 +18,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.LogicalConnector;
@@ -180,7 +181,18 @@ public abstract class DefaultAbstractModel implements IModel {
 		 * if mediated, realize mediated and add it
 		 */
 		if (mediated != null) {
-			ret.addMediatedResult(((DefaultAbstractModel)mediated).observe(kbox, session, cp));
+
+			ModelResult res = ((DefaultAbstractModel)mediated).observe(kbox, session, cp);
+
+			if (res == null || res.getTotalResultCount() == 0) {
+				throw new ThinklabModelException(
+						"model: cannot observe " +
+						((DefaultAbstractModel)mediated).observable +
+						" in kbox " +
+						kbox);
+			}
+			
+			ret.addMediatedResult(res);
 		}
 		
 		/*
@@ -196,10 +208,20 @@ public abstract class DefaultAbstractModel implements IModel {
 		if (mediated == null && dependents.size() == 0) {
 
 			if (kbox == null) {
-				throw new ThinklabModelException("unresolved model " + id + " cannot be resolved on a null kbox");
+				throw new ThinklabModelException(
+						"model: cannot observe " + observable + ": no kbox given");
 			}
 			
-			ret.addMediatedResult(kbox.query(generateObservableQuery(cp, session)));
+			IQueryResult rs = kbox.query(generateObservableQuery(cp, session));
+			
+			if (rs == null || rs.getTotalResultCount() == 0)
+				throw new ThinklabModelException(
+						"model: cannot observe " +
+						observable +
+						" in kbox " +
+						kbox);
+			
+			ret.addMediatedResult(rs);
 		}
 		
 		ret.initialize();
