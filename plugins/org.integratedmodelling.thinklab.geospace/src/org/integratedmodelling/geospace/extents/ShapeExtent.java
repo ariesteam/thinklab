@@ -35,10 +35,9 @@ package org.integratedmodelling.geospace.extents;
 import org.geotools.feature.FeatureCollection;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.geospace.implementations.cmodels.SpatialConceptualModel;
+import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.NameGenerator;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -56,14 +55,14 @@ public class ShapeExtent extends ArealExtent {
 	// we either have one shape or a feature collection. If we see space as a collection of features, the
 	// shape should be the convex hull of all features, but we don't compute it unless necessary.
 	Geometry shape = null;
-	FeatureCollection features = null;
+	FeatureCollection<?,?> features = null;
 	private String featureURL;
 	
 	public ShapeExtent(Envelope envelope, CoordinateReferenceSystem crs, SpatialConceptualModel cm) {
 		super(cm, crs, envelope);
 	}
 
-	public ShapeExtent(FeatureCollection features, String sourceURL, CoordinateReferenceSystem crs, SpatialConceptualModel cm) {
+	public ShapeExtent(FeatureCollection<?,?> features, String sourceURL, CoordinateReferenceSystem crs, SpatialConceptualModel cm) {
 		super(cm, crs, features.getBounds());
 		this.features = features;
 		this.featureURL = sourceURL;
@@ -75,8 +74,7 @@ public class ShapeExtent extends ArealExtent {
 	}
 
 	public IValue getFullExtentValue() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ShapeValue(shape, getCRS());
 	}
 
 	public IValue getState(int granule) throws ThinklabException {
@@ -92,7 +90,7 @@ public class ShapeExtent extends ArealExtent {
 		return shape;
 	}
 
-	public void setFeatures(FeatureCollection features, String sourceURL) {
+	public void setFeatures(FeatureCollection<?,?> features, String sourceURL) {
 		this.features = features;
 		this.featureURL = sourceURL;
 	}

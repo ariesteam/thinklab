@@ -17,6 +17,7 @@
 			<export prefix="*" />
 		</library>
 		<library type="resources" path="config/" id="config" />
+		<library type="resources" path="ontologies/" id="ontologies" />
 		<library type="resources" path="bindings/" id="bindings" />
 		<!-- this is only so we can run clj -context modelling example.clj - may be removed --> 
 		<library type="resources" path="examples/" id="examples" />
@@ -41,6 +42,13 @@
 		<library type="code" id="visad" path="lib/visad.jar"/>
 		
 	</runtime>
+	
+	<!-- ontologies -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="modeltypes">
+		<parameter id="url" value="modeltypes.owl"/>
+		<parameter id="concept-space" value="modeltypes" /> 
+	</extension>
+	
 	
 	<!-- bindings -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding" id="clj">

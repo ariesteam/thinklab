@@ -317,7 +317,7 @@ public class Restriction  {
 	
 	/**
 	 * Create a literal restriction passing a String for the argument. If property is 
-	 * a string starting with #, it's a metadata restriction.
+	 * a string not containing a colon, it's a metadata restriction.
 	 * 
 	 * @param property
 	 * @param operator

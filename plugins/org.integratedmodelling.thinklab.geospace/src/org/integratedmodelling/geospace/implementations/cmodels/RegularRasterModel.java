@@ -45,6 +45,7 @@ import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.implementations.data.RasterCoverageAccessor;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -247,6 +248,11 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 		// TODO get the coverage from the ds; make sure dimensions are
 		// coherent
 		
+	}
+
+	@Override
+	public Restriction getConstraint(String operator) throws ThinklabException {
+		return new Restriction("boundingbox", operator, extent.getFullExtentValue().toString());
 	}
 
 }

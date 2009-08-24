@@ -1,5 +1,7 @@
 package org.integratedmodelling.modelling.interfaces;
 
+import java.util.ArrayList;
+
 import org.integratedmodelling.modelling.ModelResult;
 import org.integratedmodelling.thinklab.IntelligentMap;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -7,8 +9,10 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 
 /**
  * The most high-level notion in Thinklab. Essentially a query that returns 
@@ -98,13 +102,14 @@ public interface IModel extends IConceptualizable {
 	 * 	      lookup each observable for the observations in the kbox. If null, the default
 	 * 		  conformance will be used, matching all object and classification properties but
 	 *        no literals.
+	 * @param extents TODO
 	 * @return A model result object, which works like any query result and will return 
 	 *         a "lazy" sequence of observation objects (generated only on demand). The 
 	 *         observations will need to be contextualized by the user.
 	 *         
 	 * @throws ThinklabException
 	 */
-	public ModelResult observe(IKBox kbox, ISession session, IntelligentMap<IConformance> cp) throws ThinklabException;
+	public IQueryResult observe(IKBox kbox, ISession session, Object ... arguments) throws ThinklabException;
 
 	
 }

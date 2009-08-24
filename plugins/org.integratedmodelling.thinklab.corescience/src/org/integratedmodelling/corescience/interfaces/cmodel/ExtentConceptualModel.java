@@ -33,6 +33,7 @@
 package org.integratedmodelling.corescience.interfaces.cmodel;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.utils.LogicalConnector;
 
@@ -57,7 +58,19 @@ public interface ExtentConceptualModel extends IConceptualModel {
 	 * @return
 	 * @throws ThinklabException 
 	 */
-	public IExtent getExtent() throws ThinklabException;
+	public abstract IExtent getExtent() throws ThinklabException;
+	
+	
+	/**
+	 * Return a restriction that can be used to select the extent on the literal target of the
+	 * specified property, or null if that is not possible. The restriction should act on a 
+	 * known metadata field declared by the plugin.
+	 * @param operator TODO
+	 * 
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public abstract Restriction getConstraint(String operator) throws ThinklabException;
 	
 	/**
 	 * The extent mediator manages the relationship between the extent being contextualized and the one that

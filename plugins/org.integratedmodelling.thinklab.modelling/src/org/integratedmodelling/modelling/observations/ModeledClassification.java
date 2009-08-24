@@ -13,6 +13,7 @@ import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.utils.Pair;
@@ -23,8 +24,8 @@ import org.integratedmodelling.utils.Polylist;
  * beautifully defined in Clojure.
  * 
  * @author Ferdinando
- *
  */
+@InstanceImplementation(concept="modeltypes:ModeledClassification")
 public class ModeledClassification 
 	extends Observation 
 	implements IConceptualModel, MediatingConceptualModel, IConceptualizable {

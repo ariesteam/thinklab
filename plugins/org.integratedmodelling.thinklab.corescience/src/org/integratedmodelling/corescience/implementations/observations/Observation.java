@@ -275,7 +275,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 		 */
 		if (mediatedObservation != null && observable != null)
 			throw new ThinklabValidationException(
-					"mediator observations should not declare an observable");
+					"mediator observations should not declare an observable: " + 
+					observable.getDirectType());
 
 		/*
 		 * ensure we know the observable if we're mediating another obs and we

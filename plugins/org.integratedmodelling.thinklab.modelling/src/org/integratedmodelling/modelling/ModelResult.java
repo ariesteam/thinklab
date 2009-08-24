@@ -45,6 +45,11 @@ public class ModelResult implements IQueryResult  {
 	ArrayList<IQueryResult> _dependents = new ArrayList<IQueryResult>();
 	
 	/*
+	 * extent specifications we may need to add
+	 */
+	ArrayList<Polylist> _extents = new ArrayList<Polylist>();
+	
+	/*
 	 * the mediated model, if any, is either an external query or a model query.
 	 */
 	IQueryResult _mediated = null;
@@ -108,6 +113,13 @@ public class ModelResult implements IQueryResult  {
 				Polylist dep = _dependents.get(0).getResultAsList(ofs[i], null);
 				ret = ObservationFactory.addDependency(ret, dep);
 			}
+		}
+		
+		/*
+		 * if we had any extents added, add them too
+		 */
+		for (Polylist ext : _extents) {
+			ret = ObservationFactory.addExtent(ret, ext);
 		}
 
 		return ret;
@@ -178,6 +190,10 @@ public class ModelResult implements IQueryResult  {
 	public void addContingentResult(ModelResult contingentRes) {
 		// TODO figure out how to manage the multiplicity
 		throw new ThinklabRuntimeException("unimplemented addContingentResult called on ModelResult");
+	}
+
+	public void addExtentObservation(Polylist list) {
+		_extents.add(list);
 	}
 
 

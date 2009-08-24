@@ -162,9 +162,6 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 					
 		classifiers.add(cl);
 		concepts.add(c);
-		
-		System.out.println("got classifier " + classifier.getClass() + ": " + classifier + " for " + concept + " -> " + cl);
-
 	}
 	
 
@@ -172,7 +169,7 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 	public IConcept getCompatibleObservationType(ISession session) {
 		
 		try {
-			return KnowledgeManager.get().requireConcept("modelling:Classification");
+			return KnowledgeManager.get().requireConcept("modeltypes:ModeledClassification");
 		} catch (ThinklabException e) {
 			throw new ThinklabRuntimeException(e);
 		}
@@ -202,13 +199,15 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 
 		ArrayList<Object> arr = new ArrayList<Object>();
 		
-		arr.add("modelling:Classification");
-		arr.add(Polylist.list("observation:conceptualSpace", Polylist.list(state)));
-		arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, this.observableSpecs));
+		arr.add("modeltypes:ModeledClassification");
+		arr.add(Polylist.list("observation:hasObservationClass", Polylist.list(state)));
+		
+		if (!isMediating())
+			arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, this.observableSpecs));
 		
 		for (int i = 0; i < classifiers.size(); i++) {
 			arr.add(Polylist.list(
-						"modelling:hasClassifier", 
+						"modeltypes:hasClassifier", 
 						concepts.get(i) + "->" + classifiers.get(i)));
 		}
 		return Polylist.PolylistFromArrayList(arr);

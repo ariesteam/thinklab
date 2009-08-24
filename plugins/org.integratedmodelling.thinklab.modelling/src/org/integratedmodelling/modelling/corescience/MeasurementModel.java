@@ -14,7 +14,6 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 
 	String unitSpecs = null;
 	
-	
 	public void setUnits(Object unitSpecs) {
 		this.unitSpecs = unitSpecs.toString();
 	}
@@ -30,9 +29,11 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 				unitSpecs.contains(" ") ?
 						Polylist.list("measurement:value", unitSpecs) :
 						Polylist.list("measurement:unit", unitSpecs),
-				Polylist.list(
-						CoreScience.HAS_OBSERVABLE,
-						Polylist.list(getObservable())));
+				(isMediating() ? 
+						null :
+						Polylist.list(
+								CoreScience.HAS_OBSERVABLE,
+								Polylist.list(getObservable()))));
 		
 		return def;
 	}

@@ -39,6 +39,7 @@ import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -345,6 +346,35 @@ public class ObservationFactory {
 	public static Polylist addMediatedObservation(Polylist observation, Polylist mediated) {
 		return observation.appendElement(
 				Polylist.list(CoreScience.MEDIATES_OBSERVATION, mediated));
+	}
+
+	/**
+	 * Return the associated IObservation from an instance, making sure it's actually an observation.
+	 * 
+	 * @param o
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static IObservation getObservation(IInstance o) throws ThinklabException {
+		
+		Object iret = o.getImplementation();
+		
+		if (iret == null || !(iret instanceof IObservation))
+			throw new ThinklabValidationException("object " + o.getLocalName() + " is not an observation");
+		
+		return (IObservation)iret;
+	}
+
+	/**
+	 * Add an extent to the passed obs
+	 * 
+	 * @param observation
+	 * @param extent
+	 * @return
+	 */
+	public static Polylist addExtent(Polylist observation, Polylist extent) {
+		return observation.appendElement(
+				Polylist.list(CoreScience.HAS_EXTENT, extent));
 	}
 	
 	

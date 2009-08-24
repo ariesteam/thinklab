@@ -44,7 +44,9 @@ public class ObservationModel extends DefaultAbstractModel {
 
 	@Override
 	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException {
-		return Polylist.list(CoreScience.Observation());
+		return Polylist.list(
+				CoreScience.Observation(),
+				Polylist.list(CoreScience.HAS_OBSERVABLE, observableSpecs));
 	}
 
 	@Override

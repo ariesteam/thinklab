@@ -32,10 +32,7 @@
  **/
 package org.integratedmodelling.geospace.implementations.cmodels;
 
-import java.util.Properties;
-
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
@@ -47,7 +44,7 @@ import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.ShapeExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -189,6 +186,12 @@ public class ArealLocationConceptualModel extends SpatialConceptualModel {
 			IObservationContext overallContext) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Restriction getConstraint(String operator) throws ThinklabException {
+		return new Restriction("boundingbox", operator, getExtent().getFullExtentValue().toString());
+
 	}
 
 }
