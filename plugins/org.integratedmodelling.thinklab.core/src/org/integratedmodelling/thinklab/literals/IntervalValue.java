@@ -71,12 +71,11 @@ public class IntervalValue extends ParsedLiteralValue {
 	}
 
 	public IntervalValue(Double left, Double right, boolean leftOpen, boolean rightOpen) {
-		if (left == null)
-			isLowerUndefined = true;
-		else lowerBound = left;
-		if (right == null)
-			isUpperUndefined = true;
-		else upperBound = right;
+
+		if (!( isLowerUndefined = (left == null))) 
+			lowerBound = left;
+		if (!( isUpperUndefined = (right == null))) 
+			upperBound = right;
 
 		isLowerOpen = leftOpen;
 		isUpperOpen = rightOpen;
@@ -204,5 +203,23 @@ public class IntervalValue extends ParsedLiteralValue {
 				(isLowerOpen ? d > lowerBound : d >= lowerBound);	
 	}
 
+	@Override
+	public String toString() {
+	
+		String ret = "";
+		
+		if (!isLowerUndefined) {
+			ret += isLowerOpen ? "(" : "[";
+			ret += lowerBound;
+		}
+		if (!isUpperUndefined) {
+			if (!isLowerUndefined) 
+				ret += " ";
+			ret += upperBound;
+			ret += isUpperOpen ? ")" : "]";
+		}
+		
+		return ret;
+	}
 
 }

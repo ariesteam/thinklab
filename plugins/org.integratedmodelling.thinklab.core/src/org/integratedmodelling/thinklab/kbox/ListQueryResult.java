@@ -62,27 +62,22 @@ public class ListQueryResult implements IQueryResult {
 
 	public Polylist getResultAsList(int n, HashMap<String, String> references)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
 		return lists.get(n);
 	}
 
 	public int getResultCount() {
-		// TODO Auto-generated method stub
 		return lists.size();
 	}
 
 	public IValue getResultField(int n, String schemaField) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public int getResultOffset() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	public Polylist getResultSchema() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -96,8 +91,6 @@ public class ListQueryResult implements IQueryResult {
 
 	public void moveTo(int currentItem, int itemsPerPage)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

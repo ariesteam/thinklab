@@ -11,6 +11,7 @@ import org.integratedmodelling.modelling.observations.ObservationFactory;
 import org.integratedmodelling.thinklab.IntelligentMap;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.constraint.Constraint;
+import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -44,6 +45,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		if (observableOrModel instanceof IModel) {
 			this.mediated = (IModel) observableOrModel;
 			this.observable = ((IModel)observableOrModel).getObservable();
+			this.observableSpecs = ((DefaultAbstractModel)observableOrModel).observableSpecs;
 		} else if (observableOrModel instanceof IConcept) {
 			this.observable = (IConcept) observableOrModel;
 			this.observableSpecs = Polylist.list(this.observable);
@@ -52,12 +54,12 @@ public abstract class DefaultAbstractModel implements IModel {
 			this.observable = KnowledgeManager.get().requireConcept(this.observableSpecs.first().toString());
 		} else {
 			this.observable = KnowledgeManager.get().requireConcept(observableOrModel.toString());
+			this.observableSpecs = Polylist.list(this.observable);
 		}
 		
 		id = CamelCase.toLowerCase(observable.toString(), '-');
 	}
 	
-
 	@Override
 	public void applyClause(String keyword, Object argument) throws ThinklabException {
 		
@@ -161,7 +163,11 @@ public abstract class DefaultAbstractModel implements IModel {
 		Constraint c = new Constraint(this.getCompatibleObservationType(session));
 		
 		IInstance inst = session.createObject(observableSpecs);
-		IConformance conf = conformancePolicies.get(inst.getDirectType());
+		IConformance conf = 
+			conformancePolicies == null ? 
+					new DefaultConformance() :
+					conformancePolicies.get(inst.getDirectType());
+					
 		return c.restrict(
 				new Restriction(CoreScience.HAS_OBSERVABLE, conf.getConstraint(inst)));
 

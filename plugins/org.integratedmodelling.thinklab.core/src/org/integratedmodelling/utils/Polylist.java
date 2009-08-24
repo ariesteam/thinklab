@@ -167,7 +167,7 @@ public class Polylist {
 				ret += "\n" + prettyPrintInternal((Polylist)o, indentLevel+1, indentAmount);
 			} else {
 				String sep = " ";
-				String z = o.toString();
+				String z = o == null ? "*null*" : o.toString();
 				if (z.contains(" ")) {
 					z = "'" + z + "'";
 				}

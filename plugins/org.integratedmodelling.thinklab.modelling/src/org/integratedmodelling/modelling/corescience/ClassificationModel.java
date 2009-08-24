@@ -98,13 +98,15 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 				} else if (o instanceof Integer) {
 					if (!gotOne) b1 = (double)((Integer)o);
 					else b2 = (double)((Integer)o);
+					gotOne = true;
 				}  else if (o instanceof Double) {
 					if (!gotOne) b1 = (double)((Double)o);
 					else b2 = (double)((Double)o);
+					gotOne = true;
 				}
-				
-				ret.setInterval(new IntervalValue(b1, b2, !inclusiveLeft, !inclusiveRight));
 			}
+			
+			ret.setInterval(new IntervalValue(b1, b2, !inclusiveLeft, !inclusiveRight));
 			
 		} else if (classifier instanceof IPersistentSet) {
 			
@@ -152,8 +154,6 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 	
 	public void addClassifier(Object classifier, Object concept) throws ThinklabException {
 
-		System.out.println("got classifier " + classifier.getClass() + ": " + classifier + " for " + concept);
-		
 		GeneralClassifier cl = getClassifier(classifier);
 		IConcept c = 
 			concept instanceof IConcept ? 
@@ -162,6 +162,9 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 					
 		classifiers.add(cl);
 		concepts.add(c);
+		
+		System.out.println("got classifier " + classifier.getClass() + ": " + classifier + " for " + concept + " -> " + cl);
+
 	}
 	
 
