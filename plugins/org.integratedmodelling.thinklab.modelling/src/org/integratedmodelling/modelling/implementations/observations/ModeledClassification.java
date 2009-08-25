@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.implementations.observations;
 
 import java.util.ArrayList;
 
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;
@@ -38,6 +39,8 @@ public class ModeledClassification
 		new ArrayList<Pair<GeneralClassifier,IConcept>>();
 	
 	IConcept cSpace = null;
+
+	private IDataSource<?> ds;
 	
 	public class ClassificationAccessor implements IStateAccessor {
 
@@ -45,15 +48,10 @@ public class ModeledClassification
 		
 		@Override
 		public Object getValue(Object[] registers) {
-
-			try {
-				Object o = getDataSource().getValue(index++, registers);
-				for (Pair<GeneralClassifier, IConcept> p : classifiers) {
-					if (p.getFirst().classify(o))
-						return p.getSecond();
-				}
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
+			Object o = ds.getValue(index++, registers);
+			for (Pair<GeneralClassifier, IConcept> p : classifiers) {
+				if (p.getFirst().classify(o))
+					return p.getSecond();
 			}
 			return null;
 		}
@@ -71,9 +69,49 @@ public class ModeledClassification
 
 		@Override
 		public void notifyDependencyRegister(IConcept observable, int register,
-				IConcept stateType) throws ThinklabValidationException {			
+				IConcept stateType) throws ThinklabValidationException {	
 		}
 	}
+	
+
+	public class ClassificationMediator implements IStateAccessor {
+
+		int index = 0;
+		
+		@Override
+		public Object getValue(Object[] registers) {
+
+			Object o = registers[index];
+			for (Pair<GeneralClassifier, IConcept> p : classifiers) {
+				if (p.getFirst().classify(o))
+					return p.getSecond();
+			}
+			return null;
+		}
+
+		@Override
+		public boolean isConstant() {
+			return false;
+		}
+
+		@Override
+		public boolean notifyDependencyObservable(IConcept observable)
+				throws ThinklabValidationException {
+			return false;
+		}
+
+		@Override
+		public void notifyDependencyRegister(IConcept observable, int register,
+				IConcept stateType) throws ThinklabValidationException {	
+			index = register;
+		}
+		
+		@Override
+		public String toString() {
+			return "[Classifier " + classifiers + " @ " + index + " ]";
+		}
+	}
+
 	
 	@Override
 	public IStateAccessor getStateAccessor(IConcept stateType,
@@ -103,8 +141,8 @@ public class ModeledClassification
 		IValue def = i.get("observation:hasObservationClass");
 		if (def != null)
 			cSpace = def.getConcept();
-//		
-//		ds = getDataSource();
+
+		ds = getDataSource();
 	}
 	
 	@Override
@@ -120,14 +158,32 @@ public class ModeledClassification
 
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
-		// TODO
-		return null;
+		
+		ArrayList<Object> arr = new ArrayList<Object>();
+		
+		/*
+		 * FIXME
+		 * TODO
+		 * TLC-42: ModeledClassification should conceptualize to observation:Classification
+		 * http://ecoinformatics.uvm.edu/jira/browse/TLC-42
+		 * ------------------------------------------------------------------------------
+		 */
+		arr.add("modeltypes:ModeledClassification");
+		arr.add(Polylist.list("observation:hasObservationClass", Polylist.list(cSpace)));
+		arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, Polylist.list(cSpace)));
+				
+		for (int i = 0; i < classifiers.size(); i++) {
+			arr.add(Polylist.list(
+						"modeltypes:hasClassifier", 
+						classifiers.get(i).getSecond() + "->" + classifiers.get(i).getFirst()));
+		}
+		return Polylist.PolylistFromArrayList(arr);
 	}
 
 	@Override
 	public IStateAccessor getMediator(IConceptualModel conceptualModel,
 			IConcept stateType, IObservationContext context)
 			throws ThinklabException {
-		return new ClassificationAccessor();
+		return new ClassificationMediator();
 	}
 }

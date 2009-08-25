@@ -67,14 +67,6 @@ public class ClassificationModel implements IConceptualModel, ValidatingConceptu
 		// TODO Auto-generated method stub
 	}
 
-//	public String getObjectName() {
-//		return name;
-//	}
-//
-//	public void setObjectName(String name) {
-//		this.name = name;
-//	}
-
 	public void initialize(IInstance i) throws ThinklabException {
 
 		for (IRelationship r : i.getRelationships()) {
