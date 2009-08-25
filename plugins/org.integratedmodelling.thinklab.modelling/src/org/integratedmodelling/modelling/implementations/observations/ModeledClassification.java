@@ -1,9 +1,7 @@
-package org.integratedmodelling.modelling.observations;
+package org.integratedmodelling.modelling.implementations.observations;
 
 import java.util.ArrayList;
 
-import org.integratedmodelling.corescience.literals.GeneralClassifier;
-import org.integratedmodelling.corescience.literals.MappedIntSet;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;
@@ -11,6 +9,8 @@ import org.integratedmodelling.corescience.interfaces.context.IObservationContex
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.literals.GeneralClassifier;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -36,6 +36,8 @@ public class ModeledClassification
 	
 	ArrayList<Pair<GeneralClassifier, IConcept>> classifiers = 
 		new ArrayList<Pair<GeneralClassifier,IConcept>>();
+	
+	IConcept cSpace = null;
 	
 	public class ClassificationAccessor implements IStateAccessor {
 
@@ -81,8 +83,7 @@ public class ModeledClassification
 
 	@Override
 	public IConcept getStateType() {
-		// TODO return hasObservationClass
-		return null;
+		return cSpace;
 	}
 
 	@Override
@@ -90,13 +91,18 @@ public class ModeledClassification
 
 		super.initialize(i);
 		
-//		for (IRelationship r : i.getRelationships("measurement:hasMapping")) {
-//			mappings.add(new MappedIntSet(r.getValue().toString()));
-//		}
-//		
-//		IValue def = i.get("measurement:hasDefaultValue");
-//		if (def != null)
-//			defValue = Double.parseDouble(def.toString());
+		for (IRelationship r : i.getRelationships("modeltypes:hasClassifier")) {
+			String[] rz = r.getValue().toString().split("->");
+			classifiers.add(
+				new Pair<GeneralClassifier, IConcept>(
+					new GeneralClassifier(rz[1]), 
+					KnowledgeManager.get().requireConcept(rz[0])));
+					
+		}
+		
+		IValue def = i.get("observation:hasObservationClass");
+		if (def != null)
+			cSpace = def.getConcept();
 //		
 //		ds = getDataSource();
 	}

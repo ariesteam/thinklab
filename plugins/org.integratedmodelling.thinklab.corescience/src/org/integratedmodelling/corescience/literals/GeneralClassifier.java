@@ -18,6 +18,13 @@ public class GeneralClassifier {
 	AlgorithmValue code = null;
 	private boolean catchAll = false;
 	
+	public GeneralClassifier(String s) throws ThinklabException {
+		parse(s);
+	}
+	
+	public GeneralClassifier() {
+	}
+
 	public void parse(String s) throws ThinklabException {
 		
 		String selector = s.substring(0,4);
