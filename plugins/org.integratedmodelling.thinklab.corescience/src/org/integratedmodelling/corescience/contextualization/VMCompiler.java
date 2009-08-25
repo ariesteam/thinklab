@@ -508,7 +508,7 @@ public class VMCompiler extends Compiler {
 		}
 
 
-		if ( (odesc.stateStored = storeState && !isExtent && !o.isMediated())) {
+		if ( (odesc.stateStored = (storeState && !isExtent && !o.isMediated()))) {
 
 			int size = ownContext.getMultiplicity();
 			odesc.stateId = contextualizer.registerStateStorage(cm.getStateType(), o.getObservableClass(), size);
@@ -527,6 +527,16 @@ public class VMCompiler extends Compiler {
 			IObservation dependent = e.getTargetObservation();
 			ObsDesc odsc = 
 				buildObsDesc(dependent, accessors,deactivatable, context, contextualizer, stateType, structure);
+
+			/**
+			 * TODO -- check logics:
+			 * If the dependent is a mediator and we are an extent, the dependent only wants
+			 * whatever is mediating, which is not going to be an extent. At this time it's hard
+			 * to catch this condition from the mediator itself, so it's best to avoid exposing
+			 * it altogether.
+			 */
+			if (isExtent && dependent.isMediator())
+				continue;
 			
 			if (odsc.accessor != null &&
 					odsc.accessor.notifyDependencyObservable(o.getObservableClass())) {
@@ -584,17 +594,17 @@ public class VMCompiler extends Compiler {
 			int xind = 0;
 			boolean hasAll = true;
 			for (IConcept dc : context.getContextDimensions()) {
-				if (ownContext.getExtent(dc) != null) {
+				if (ownContext != null && ownContext.getExtent(dc) != null) {
 					activeDims[xind] = true;
 				} else {
 					hasAll = false;
 				} 
 				xind++;	
 			}
-		
 			if (!hasAll) {
 				odesc.activeDims = activeDims;
 			}
+		
 		}
 			
 		accessors.put(o, odesc);
