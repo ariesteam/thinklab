@@ -32,9 +32,7 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;

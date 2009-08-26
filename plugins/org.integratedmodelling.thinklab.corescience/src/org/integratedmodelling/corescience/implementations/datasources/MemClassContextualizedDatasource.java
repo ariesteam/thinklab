@@ -33,8 +33,8 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
 import java.util.Arrays;
-import java.util.Properties;
 
+import org.apache.commons.collections.bidimap.TreeBidiMap;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
@@ -53,7 +53,7 @@ public class MemClassContextualizedDatasource
 	private IConcept _type;
 	private IConcept[] data = null;
 	private int idx = 0;
-
+	
 	public MemClassContextualizedDatasource(IConcept type, int size) {
 		_type = type;
 		data = new IConcept[size];
@@ -103,7 +103,7 @@ public class MemClassContextualizedDatasource
 	}
 	
 	public String toString() {
-		return "[" + _type + ": " + Arrays.asList(data) + "]";
+		return "[" + _type + ": " + Arrays.toString(data) + "]";
 	}
 
 	@Override

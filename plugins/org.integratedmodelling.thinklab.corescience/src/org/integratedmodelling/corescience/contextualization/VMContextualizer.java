@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceByte;
 import org.integratedmodelling.corescience.implementations.datasources.MemClassContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemFloatContextualizedDatasource;
@@ -320,9 +321,16 @@ public class VMContextualizer<T> {
 			ret = new MemDoubleContextualizedDatasource(stateType, size);
 		else if (stateType.is(KnowledgeManager.LiteralValue()))
 			ret = new MemValueContextualizedDatasource(stateType, size);
-		else 
-			ret = new MemClassContextualizedDatasource(stateType, size);
-		
+		else {
+// 			ret = new MemClassContextualizedDatasource(stateType, size);
+			/**
+			 * TODO
+			 * FIXME
+			 * The datasource type should really be decided by the observation, this will only 
+			 * work for some things.
+			 */
+			ret = new IndexedContextualizedDatasourceByte<IConcept>(stateType, size);
+		}
 		return ret;
 	}
 	
