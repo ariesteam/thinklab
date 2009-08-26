@@ -4,6 +4,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualMod
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -11,6 +12,7 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridMaskExtent;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -77,6 +79,12 @@ public class ClassifiedRasterConceptualModel implements ExtentConceptualModel {
 	public Restriction getConstraint(String operator) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public IContextualizedState createContextualizedStorage(int size)
+			throws ThinklabException {
+		throw new ThinklabUnimplementedFeatureException("storage of extents states not implemented");
 	}
 
 }

@@ -35,6 +35,7 @@ package org.integratedmodelling.corescience.interfaces.cmodel;
 import org.integratedmodelling.corescience.exceptions.ThinklabConceptualModelValidationException;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -104,6 +105,17 @@ public interface IConceptualModel {
 			IObservationContext observationContext,
 			IObservationContext overallContext)
 		 throws ThinklabException;
+
+	/**
+	 * Create a customized datasource to hold the results of contextualization. Only called if
+	 * the state type is not a number. Should raise an exception in case of problem, never return
+	 * null or bull.
+	 * 
+	 * @param size
+	 * @return
+	 */
+	public abstract IContextualizedState createContextualizedStorage(int size) 
+		throws ThinklabException;
 
 
 

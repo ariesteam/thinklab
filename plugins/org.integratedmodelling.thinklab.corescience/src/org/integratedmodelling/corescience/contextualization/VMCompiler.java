@@ -210,6 +210,12 @@ public class VMCompiler extends Compiler {
 		if (stackType == null)
 			return null;
 		
+		/**
+		 *  if this becomes true later, we want observations to build their 
+		 *  own datasources for contextualized result storage.
+		 */
+		boolean customDS = false;
+		
 		VMContextualizer<?> ret = null;
 		IConcept stateType = null;
 		
@@ -228,11 +234,12 @@ public class VMCompiler extends Compiler {
 			/*
 			 * we should be using a mapping to abstract classifications
 			 * 
-			 * TODO we could use integers to
-			 * hold the values efficiently, but establish a mapping to concepts.
+			 * TODO analyze the stack type; make it Object if not any of the 
+			 * above, and ensure that observations build their own datasources.
 			 */
 			ret = new VMContextualizer<IConcept>(stackType);
 			stateType = stackType;
+			customDS = true;
 		}
 		
 		/*
@@ -511,7 +518,7 @@ public class VMCompiler extends Compiler {
 		if ( (odesc.stateStored = (storeState && !isExtent && !o.isMediated()))) {
 
 			int size = ownContext.getMultiplicity();
-			odesc.stateId = contextualizer.registerStateStorage(cm.getStateType(), o.getObservableClass(), size);
+			odesc.stateId = contextualizer.registerStateStorage(cm, o.getObservableClass(), size);
 		}
 		
 		/* store them all here, we notify our register to them at the end when we have one */

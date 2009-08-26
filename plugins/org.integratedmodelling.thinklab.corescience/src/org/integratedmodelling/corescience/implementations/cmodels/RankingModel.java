@@ -40,6 +40,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.ScalingConceptualMo
 import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -266,6 +267,13 @@ public class RankingModel implements IConceptualModel, ValidatingConceptualModel
 	public IValueAggregator<?> getAggregator(IObservationContext ownContext,
 			IObservationContext overallContext, IExtentMediator[] mediators) {
 		return new RankingAggregator();
+	}
+
+	@Override
+	public IContextualizedState createContextualizedStorage(int size)
+			throws ThinklabException {
+		// fine as is, we create POD.
+		return null;
 	}
 
 

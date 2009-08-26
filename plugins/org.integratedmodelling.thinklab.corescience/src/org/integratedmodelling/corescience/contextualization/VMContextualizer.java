@@ -12,6 +12,7 @@ import org.integratedmodelling.corescience.implementations.datasources.MemFloatC
 import org.integratedmodelling.corescience.implementations.datasources.MemIntegerContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemLongContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemValueContextualizedDatasource;
+import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IStateValidator;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
@@ -21,6 +22,7 @@ import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.utils.Ticker;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -45,6 +47,7 @@ public class VMContextualizer<T> {
 	private int _valregs = 0;
 	private int _vldregs = 0;
 	private int _immregs = 0;
+	private int _cstords = 0;
 	
 	public ArrayList<Integer> _code = new ArrayList<Integer>();
 	
@@ -53,6 +56,7 @@ public class VMContextualizer<T> {
 	public ArrayList<IValueAggregator<?>> _aggregators = new ArrayList<IValueAggregator<?>>();
 	public ArrayList<Object> _immediates = new ArrayList<Object>();
 	public ArrayList<IConcept> _observed = new ArrayList<IConcept>();
+	public ArrayList<IContextualizedState> _datasources = new ArrayList<IContextualizedState>();
 	
 	public static class ContextRegister {
 		int multiplicity = 1;
@@ -101,6 +105,7 @@ public class VMContextualizer<T> {
 	static final int ACTIVATE = 17;
 	static final int IREG = 18;
 	static final int IFCHNG = 19;
+	static final int MKSTOR = 20;
 	
 	// bytecodes
 	static public final Ins JMP_I = new Ins(JMP, "JMP", "jump to address");
@@ -123,12 +128,8 @@ public class VMContextualizer<T> {
 	static public final Ins ACTIVATE_I = new Ins(ACTIVATE, "ACTIVATE", "activate all registries");
 	static public final Ins IREG_I = new Ins(IREG, "IREG", "push immediate value in register");
 	static public final Ins IFCHNG_I = new Ins(IFCHNG, "IFCHNG", "jump unless given context register has changed");
+	static public final Ins MKSTOR_I = new Ins(MKSTOR, "MKTOR", "declare custom datasource for storage of given observable");
 	
-//	static public final Ins[] instructionSet = {
-//		JMP_I, AACT_I, AREG_I, APARM_I, AACCS_I, ASTOR_I, PLOAD_I, RPOP_I, 
-//		SSTORE_I, RSTORE_I, CACCS_I, CVALID_I,
-//		IFACT_I, IFCOV_I, INCRC_I, DEACT_I, RETURN_I, ACTIVATE_I, IREG_I};
-//	
 	ContextRegister[] contextRegister = null;
 	private IConcept _stackType;
 	private boolean needsContextState;
@@ -247,6 +248,11 @@ public class VMContextualizer<T> {
 					pc = (ins & 0x0000ffff);
 				}
 				break;
+			case MKSTOR:
+				// TODO transfer custom ds to storage register identified
+				states[ins & 0x0000ffff] =
+					_datasources.get((ins & 0x00ff0000) >> 16);
+				break;
 			}
 		}
 
@@ -322,14 +328,14 @@ public class VMContextualizer<T> {
 		else if (stateType.is(KnowledgeManager.LiteralValue()))
 			ret = new MemValueContextualizedDatasource(stateType, size);
 		else {
-// 			ret = new MemClassContextualizedDatasource(stateType, size);
-			/**
-			 * TODO
-			 * FIXME
-			 * The datasource type should really be decided by the observation, this will only 
-			 * work for some things.
+			/*
+			 * if we get here, we have failed to ask the CMs what datasource 
+			 * they want.
 			 */
-			ret = new IndexedContextualizedDatasourceByte<IConcept>(stateType, size);
+			throw new ThinklabRuntimeException(
+					"internal error: datasource creation for custom concept " + 
+					stateType + 
+					"not properly set up");
 		}
 		return ret;
 	}
@@ -352,10 +358,20 @@ public class VMContextualizer<T> {
 		return _accregs++;
 	}
 
-	public int registerStateStorage(IConcept stateType, IConcept observable, int size) {
+	public int registerStateStorage(IConceptualModel cm, IConcept observable, int size) {
 		_observed.add(observable);
-		encode(makeInst(ASTOR_I, _storegs));
-		encode(size);
+		if (cm.getStateType().is(KnowledgeManager.Number())) {
+			encode(makeInst(ASTOR_I, _storegs));
+			encode(size);
+		} else {
+			try {
+				_datasources.add(cm.createContextualizedStorage(size));
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+			encode(makeInst(MKSTOR_I, _storegs, _cstords++));
+			
+		}
 		return _storegs++;
 	}
 
@@ -511,6 +527,11 @@ public class VMContextualizer<T> {
 				break;
 			case IFCHNG: 
 				dumpIns(printStream, pc, IFCHNG_I, 
+						(ins & 0x00ff0000) >> 16, 
+						ins & 0x0000ffff);
+				break;
+			case MKSTOR: 
+				dumpIns(printStream, pc, MKSTOR_I, 
 						(ins & 0x00ff0000) >> 16, 
 						ins & 0x0000ffff);
 				break;

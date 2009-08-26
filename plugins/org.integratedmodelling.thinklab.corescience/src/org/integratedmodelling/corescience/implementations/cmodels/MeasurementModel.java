@@ -42,6 +42,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
 import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.data.ResamplingDataSource;
@@ -253,6 +254,13 @@ public class MeasurementModel extends UnitValue implements
 
 	@Override
 	public void validate(IInstance i) throws ThinklabException {
+	}
+
+	@Override
+	public IContextualizedState createContextualizedStorage(int size)
+			throws ThinklabException {
+		// fine as is, we create POD.
+		return null;
 	}
 
 

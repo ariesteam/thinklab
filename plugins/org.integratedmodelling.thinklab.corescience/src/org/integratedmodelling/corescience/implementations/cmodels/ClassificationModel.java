@@ -35,10 +35,12 @@ package org.integratedmodelling.corescience.implementations.cmodels;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceByte;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IStateValidator;
 import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -54,6 +56,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 public class ClassificationModel implements IConceptualModel, ValidatingConceptualModel, IInstanceImplementation {
 
 	String name;
+	IConcept cSpace;
 	
 	HashMap<Object, IKnowledgeSubject> mapping = new HashMap<Object, IKnowledgeSubject>();
 	
@@ -79,7 +82,7 @@ public class ClassificationModel implements IConceptualModel, ValidatingConceptu
 				if (r.getProperty().is(CoreScience.HAS_SOURCE_VALUE_TYPE)) {
 					
 				} else if (r.getProperty().is(CoreScience.HAS_CONCEPTUAL_SPACE)) {
-					
+					cSpace = r.getValue().getConcept();
 				}
 
 				
@@ -147,6 +150,12 @@ public class ClassificationModel implements IConceptualModel, ValidatingConceptu
 			IObservationContext overallContext) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public IContextualizedState createContextualizedStorage(int size)
+			throws ThinklabException {
+		return new IndexedContextualizedDatasourceByte<IConcept>(cSpace, size);
 	}
 
 }

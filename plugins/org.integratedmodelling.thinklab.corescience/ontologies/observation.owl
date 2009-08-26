@@ -85,6 +85,15 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasConceptSpace -->
+
+    <owl:ObjectProperty rdf:about="#hasConceptSpace">
+        <rdfs:domain rdf:resource="#Classification"/>
+        <rdfs:subPropertyOf rdf:resource="&thinklab-core;ClassificationProperty"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasConceptualModel -->
 
     <owl:ObjectProperty rdf:about="#hasConceptualModel">

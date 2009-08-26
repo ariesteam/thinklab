@@ -21,6 +21,12 @@ import clojure.lang.IPersistentVector;
 import clojure.lang.ISeq;
 import clojure.lang.Keyword;
 
+/**
+ * Handles the classification form. 
+ * 
+ * @author Ferdinando
+ *
+ */
 public class ClassificationModel extends DefaultStatefulAbstractModel {
 
 	ArrayList<GeneralClassifier> classifiers = new ArrayList<GeneralClassifier>();	
@@ -200,7 +206,7 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 		ArrayList<Object> arr = new ArrayList<Object>();
 		
 		arr.add("modeltypes:ModeledClassification");
-		arr.add(Polylist.list("observation:hasObservationClass", Polylist.list(state)));
+		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(state)));
 		
 		if (!isMediating())
 			arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, this.observableSpecs));

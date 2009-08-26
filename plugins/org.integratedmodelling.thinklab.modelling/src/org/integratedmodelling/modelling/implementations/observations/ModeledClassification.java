@@ -3,10 +3,12 @@ package org.integratedmodelling.modelling.implementations.observations;
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceByte;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -144,7 +146,7 @@ public class ModeledClassification
 					
 		}
 		
-		IValue def = i.get("observation:hasObservationClass");
+		IValue def = i.get(CoreScience.HAS_CONCEPTUAL_SPACE);
 		if (def != null)
 			cSpace = def.getConcept();
 
@@ -175,7 +177,7 @@ public class ModeledClassification
 		 * ------------------------------------------------------------------------------
 		 */
 		arr.add("modeltypes:ModeledClassification");
-		arr.add(Polylist.list("observation:hasObservationClass", Polylist.list(cSpace)));
+		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(cSpace)));
 		arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, Polylist.list(cSpace)));
 				
 		for (int i = 0; i < classifiers.size(); i++) {
@@ -191,5 +193,11 @@ public class ModeledClassification
 			IConcept stateType, IObservationContext context)
 			throws ThinklabException {
 		return new ClassificationMediator();
+	}
+
+	@Override
+	public IContextualizedState createContextualizedStorage(int size)
+			throws ThinklabException {
+		return new IndexedContextualizedDatasourceByte<IConcept>(cSpace, size);
 	}
 }

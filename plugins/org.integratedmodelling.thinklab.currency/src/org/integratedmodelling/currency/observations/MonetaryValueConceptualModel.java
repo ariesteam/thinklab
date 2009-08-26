@@ -38,6 +38,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
 import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -102,5 +103,12 @@ public class MonetaryValueConceptualModel implements IConceptualModel, Validatin
 			IObservationContext overallContext) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public IContextualizedState createContextualizedStorage(int size)
+			throws ThinklabException {
+		// fine as is, we return POD.
+		return null;
 	}
 }

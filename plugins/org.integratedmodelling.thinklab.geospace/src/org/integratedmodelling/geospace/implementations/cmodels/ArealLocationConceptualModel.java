@@ -38,6 +38,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -46,6 +47,7 @@ import org.integratedmodelling.geospace.extents.ShapeExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -192,6 +194,12 @@ public class ArealLocationConceptualModel extends SpatialConceptualModel {
 	public Restriction getConstraint(String operator) throws ThinklabException {
 		return new Restriction("boundingbox", operator, getExtent().getFullExtentValue().toString());
 
+	}
+
+	@Override
+	public IContextualizedState createContextualizedStorage(int size)
+			throws ThinklabException {
+		throw new ThinklabUnimplementedFeatureException("storage of extents states not implemented");
 	}
 
 }

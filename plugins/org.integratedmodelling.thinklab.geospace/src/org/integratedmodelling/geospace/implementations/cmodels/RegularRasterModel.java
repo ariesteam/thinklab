@@ -38,6 +38,7 @@ import java.util.Properties;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.geospace.Geospace;
@@ -253,6 +254,12 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 	@Override
 	public Restriction getConstraint(String operator) throws ThinklabException {
 		return new Restriction("boundingbox", operator, extent.getFullExtentValue().toString());
+	}
+
+	@Override
+	public IContextualizedState createContextualizedStorage(int size)
+			throws ThinklabException {
+		throw new ThinklabUnimplementedFeatureException("storage of extents states not implemented");
 	}
 
 }

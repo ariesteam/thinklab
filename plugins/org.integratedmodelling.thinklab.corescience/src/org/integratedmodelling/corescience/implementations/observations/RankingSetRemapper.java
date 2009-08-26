@@ -6,6 +6,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.cmodels.SimpleEmbeddedConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.literals.MappedIntSet;
@@ -99,6 +100,15 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 			/* FIXME this should be an integer, no time to deal with the consequences right now */
 			return KnowledgeManager.Double();
 		}
+
+		@Override
+		public IContextualizedState createContextualizedStorage(int size)
+				throws ThinklabException {
+			// not required, we create POD.
+			return null;
+		}
+		
+		
 	}
 	
 	@Override

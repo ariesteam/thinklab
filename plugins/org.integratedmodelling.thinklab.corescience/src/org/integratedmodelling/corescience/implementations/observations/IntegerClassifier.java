@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceByte;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -20,6 +22,17 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Polylist;
 
+/**
+ * FIXME
+ * TODO
+ * Classifies integers into concepts. 
+ * 
+ * Not quite sure this is still necessary - the classification model form takes care of this and
+ * more.
+ * 
+ * @author Ferdinando
+ *
+ */
 public class IntegerClassifier extends Observation implements IConceptualModel, IConceptualizable {
 
 	IConcept observationSpace = null;
@@ -71,7 +84,7 @@ public class IntegerClassifier extends Observation implements IConceptualModel, 
 
 		observationSpace =
 			KnowledgeManager.get().requireConcept(
-					i.get("observation:conceptualSpace").toString());
+					i.get(CoreScience.HAS_CONCEPTUAL_SPACE).toString());
 
 		IConcept cc = null;
 		for (IRelationship r : i.getRelationships("measurement:hasMapping")) {
@@ -130,7 +143,7 @@ public class IntegerClassifier extends Observation implements IConceptualModel, 
 		
 		arr.add(this.getObservationClass());
 
-		arr.add(Polylist.list("observation:conceptualSpace", 
+		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, 
 				observationSpace.toString()));
 		arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, 
 				getObservable().toList(null)));
@@ -145,6 +158,12 @@ public class IntegerClassifier extends Observation implements IConceptualModel, 
 		}
 		
 		return Polylist.PolylistFromArrayList(arr);
+	}
+
+	@Override
+	public IContextualizedState createContextualizedStorage(int size)
+			throws ThinklabException {
+		return new IndexedContextualizedDatasourceByte<IConcept>(observationSpace, size);
 	}
 
 }

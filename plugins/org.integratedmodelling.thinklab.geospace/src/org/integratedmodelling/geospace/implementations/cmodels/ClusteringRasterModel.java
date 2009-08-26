@@ -23,6 +23,7 @@ import org.integratedmodelling.geospace.districting.utils.DistrictingResults;
 import org.integratedmodelling.geospace.exceptions.ThinklabDistrictingException;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -217,6 +218,12 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 	public IConcept getTransformedObservationClass() {
 		// we operate as an identification, i.e. a simple observation with no CM.
 		return CoreScience.get().Observation();
+	}
+
+	@Override
+	public IContextualizedState createContextualizedStorage(int size)
+			throws ThinklabException {
+		throw new ThinklabUnimplementedFeatureException("storage of clustered states not implemented");
 	}
 
 

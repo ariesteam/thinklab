@@ -2,6 +2,7 @@ package org.integratedmodelling.corescience.implementations.observations;
 
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -44,6 +45,13 @@ public class ProbabilisticClassification extends Observation implements IConcept
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IContextualizedState createContextualizedStorage(int size)
+			throws ThinklabException {
+		// TODO make some nice probabilistic DS that encodes distributions.
 		return null;
 	}
 

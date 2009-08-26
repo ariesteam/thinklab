@@ -6,6 +6,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.cmodels.SimpleEmbeddedConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.literals.MappedDoubleInterval;
@@ -94,6 +95,12 @@ public class RankingIntervalRemapper extends Observation implements IConceptuali
 		@Override
 		public IConcept getStateType() {
 			return KnowledgeManager.Double();
+		}
+
+		@Override
+		public IContextualizedState createContextualizedStorage(int size)
+				throws ThinklabException {
+			return null;
 		}
 	}
 	

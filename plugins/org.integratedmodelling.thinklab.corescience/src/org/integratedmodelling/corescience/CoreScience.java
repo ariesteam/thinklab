@@ -76,7 +76,7 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String HAS_UNIT = "measurement:hasUnit";
 	public static final String HAS_CLASS_MAPPING = "observation:hasClassMapping";
 	public static final String HAS_SOURCE_VALUE_TYPE = "observation:sourceValueType";
-	public static final String HAS_CONCEPTUAL_SPACE = "observation:conceptualSpace";
+	public static final String HAS_CONCEPTUAL_SPACE = "observation:hasConceptSpace";
 	public static final String HAS_SOURCE_VALUE = "observation:sourceValue";
 	public static final String HAS_TARGET_CONCEPT = "observation:targetConcept";
 	public static final String HAS_TARGET_INSTANCE = "observation:targetInstance";
