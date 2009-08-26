@@ -15,6 +15,7 @@ import org.integratedmodelling.corescience.interfaces.data.DimensionalDataSource
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.ResamplingDataSource;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -64,7 +65,32 @@ public abstract class Compiler implements IContextualizationCompiler {
 		}
 	}
 	
+	/**
+	 * The main contextualization driver. Use this one on an observation to produce its contextualized 
+	 * realization.
+	 * 
+	 * @param observation
+	 * @param session
+	 * @return
+	 * @throws ThinklabException
+	 */
 	public static IInstance contextualize(IObservation observation, ISession session) 
+		throws ThinklabException {
+		return contextualize(observation, session, null);
+	}
+
+	/**
+	 * The main contextualization driver. Use this one on an observation to produce its contextualized 
+	 * realization. This version takes a collection of listeners as a parameter, in case we want to
+	 * monitor what happens with transformers.
+	 * 
+	 * @param observation
+	 * @param session
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public static IInstance contextualize(IObservation observation, ISession session, 
+			Collection<IContextualizationListener> listeners) 
 		throws ThinklabException {
 		
 		IContextualizationCompiler compiler = null;
@@ -72,7 +98,8 @@ public abstract class Compiler implements IContextualizationCompiler {
 			throw new ThinklabContextualizationException(
 					"cannot find a compiler to contextualize " + observation);
 		
-		IObservationContext context = observation.getCommonObservationContext(compiler, session);
+		IObservationContext context = 
+			observation.getCommonObservationContext(compiler, session, listeners);
 		
 		/* compute and communicate individual merged contexts for each observation */
 		HashSet<IConcept> oobs = new HashSet<IConcept>();

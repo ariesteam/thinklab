@@ -49,6 +49,7 @@ import org.integratedmodelling.corescience.interfaces.context.IObservationContex
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -415,11 +416,12 @@ public class Observation implements IObservation, IInstanceImplementation {
 	 * 
 	 */
 	public IObservationContext getCommonObservationContext(
-			IContextualizationCompiler compiler, ISession session)
+			IContextualizationCompiler compiler, ISession session,
+			Collection<IContextualizationListener> listeners)
 			throws ThinklabException {
 
 		ObservationContext ret = getCommonObservationContext_(compiler,
-				session, new HashSet<Observation>());
+				session, new HashSet<Observation>(), listeners);
 
 		return ret;
 	}
@@ -447,7 +449,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 	 */
 	private ObservationContext getCommonObservationContext_(
 			IContextualizationCompiler compiler, ISession session,
-			HashSet<Observation> inserted) throws ThinklabException {
+			HashSet<Observation> inserted, 
+			Collection<IContextualizationListener> listeners) throws ThinklabException {
 
 		if (inserted.contains(this))
 			return null;
@@ -463,10 +466,21 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 			this.beingTransformed = true;
 			
-			IInstance inst = Compiler.contextualize(this, session);
-			IInstance trs = ((TransformingConceptualModel) getConceptualModel())
+			IInstance inst = Compiler.contextualize(this, session, listeners);
+			IInstance trs = 
+				((TransformingConceptualModel) getConceptualModel())
 					.transformObservation(inst);
 			Observation obs = extractObservationFromInstance(trs);
+			
+			/**
+			 * TODO call listeners on obs. Pass both the transformed and the transformer.
+			 * See TLC-37
+			 */
+			if (listeners != null) {
+				for (IContextualizationListener l : listeners)
+					l.onObservationTransformed(this, obs);
+			}
+			
 			compiler.addObservation(obs);
 
 			this.beingTransformed = false;
@@ -513,7 +527,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 			/* contextualize obs */
 			ObservationContext oc = (ObservationContext) (((Observation) dependency)
-					.getCommonObservationContext(compiler, session));
+					.getCommonObservationContext(compiler, session, listeners));
 
 			/* notify dependency */
 			if (oc != null) {
@@ -557,7 +571,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 			/* contextualize obs */
 			ObservationContext oc = (ObservationContext) (((Observation) dependency)
-					.getCommonObservationContext(compiler, session));
+					.getCommonObservationContext(compiler, session, listeners));
 
 			/* notify dependency */
 			if (oc != null) {

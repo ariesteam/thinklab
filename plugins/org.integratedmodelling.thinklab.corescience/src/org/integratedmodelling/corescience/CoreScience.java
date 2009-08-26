@@ -32,6 +32,7 @@
  **/
 package org.integratedmodelling.corescience;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
@@ -40,6 +41,8 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+
+import umontreal.iro.lecuyer.probdistmulti.MultinomialDist;
 
 /**
  * @author Ferdinando Villa

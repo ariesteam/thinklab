@@ -32,11 +32,14 @@
  **/
 package org.integratedmodelling.corescience.interfaces.observation;
 
+import java.util.Collection;
+
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -93,10 +96,13 @@ public interface IObservation {
 	 */
 	public abstract IConcept getObservationClass();
 
-	/**
+	/*
 	 * Obtain the observation context for this observation, recursing and
 	 * compounding contingencies and dependencies. Use the passed compiler to
 	 * notify dependencies and links.
+	 * 
+	 * FIXME this should probably be removed from the interface, and just cast to
+	 * Observation, which should be renamed DefaultAbstractObservation.
 	 * 
 	 * @param compiler
 	 * @param session
@@ -104,7 +110,8 @@ public interface IObservation {
 	 * @throws ThinklabException
 	 */
 	public IObservationContext getCommonObservationContext(
-			IContextualizationCompiler compiler, ISession session) throws ThinklabException;
+			IContextualizationCompiler compiler, ISession session,
+			Collection<IContextualizationListener> listeners) throws ThinklabException;
 
 	/**
 	 * Get the observation's own observation context, including extents and
