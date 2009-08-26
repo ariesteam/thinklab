@@ -13,7 +13,6 @@ import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -42,6 +41,13 @@ public class ModeledClassification
 
 	private IDataSource<?> ds;
 	
+	/**
+	 * TODO 
+	 * FIXME
+	 * this may not be necessary; this is intended as a mediator class only
+	 * @author Ferdinando Villa
+	 *
+	 */
 	public class ClassificationAccessor implements IStateAccessor {
 
 		int index = 0;
@@ -64,7 +70,7 @@ public class ModeledClassification
 		@Override
 		public boolean notifyDependencyObservable(IConcept observable)
 				throws ThinklabValidationException {
-			return false;
+			return true;
 		}
 
 		@Override
@@ -97,7 +103,7 @@ public class ModeledClassification
 		@Override
 		public boolean notifyDependencyObservable(IConcept observable)
 				throws ThinklabValidationException {
-			return false;
+			return true;
 		}
 
 		@Override
