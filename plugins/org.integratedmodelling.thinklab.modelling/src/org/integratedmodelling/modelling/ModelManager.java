@@ -3,6 +3,10 @@ package org.integratedmodelling.modelling;
 import java.util.Hashtable;
 
 import org.integratedmodelling.thinklab.ConceptVisitor;
+import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
+import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
@@ -16,6 +20,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 public class ModelManager {
 
 	public Hashtable<IConcept, Model> models = new Hashtable<IConcept, Model>();
+	public Hashtable<String, Model> modelsById = new Hashtable<String, Model>();
 	
 	public static ModelManager get() {
 		return ModellingPlugin.get().getModelManager();
@@ -33,38 +38,45 @@ public class ModelManager {
 					 " has been defined already: previous definition overridden");
 		
 		models.put(obs, model);
+		modelsById.put(model.id, model);
 		ModellingPlugin.get().logger().info("model " + model + " registered");
 		return model;
 	}
 	
-	public Model retrieveModel(IConcept concept) {
+	public Model retrieveModel(String s) throws ThinklabException {
 		
-        class Matcher implements ConceptVisitor.ConceptMatcher {
+		if (s.contains(":")) {
+		
+			IConcept concept = KnowledgeManager.get().requireConcept(s);
+			
+			class Matcher implements ConceptVisitor.ConceptMatcher {
 
-            Hashtable<IConcept, Model> coll;
-            Model ret = null;
+				Hashtable<IConcept, Model> coll;
+				Model ret = null;
             
-            public Matcher(Hashtable<IConcept,Model> c) {
-                coll = c;
-            }
+				public Matcher(Hashtable<IConcept,Model> c) {
+					coll = c;
+				}
             
-            public boolean match(IConcept c) {
-                ret = coll.get(c);
-                return(ret != null);	
-            }    
-        }
+				public boolean match(IConcept c) {
+					ret = coll.get(c);
+					return(ret != null);	
+				}    
+			}
+	        Matcher matcher = new Matcher(models);
+	        IConcept cms = ConceptVisitor.findMatchUpwards(matcher, concept);
+	        return cms == null ? null : matcher.ret;
+		}
+		
+		return modelsById.get(s);
         
-        Matcher matcher = new Matcher(models);
-        IConcept cms = ConceptVisitor.findMatchUpwards(matcher, concept);
-
-        return cms == null ? null : matcher.ret;
 	}
 	
-	public Model requireModel(IConcept concept) throws ThinklabResourceNotFoundException {
+	public Model requireModel(String s) throws ThinklabException {
 		
-		Model ret = retrieveModel(concept);
+		Model ret = retrieveModel(s);
 		if (ret == null)
-			throw new ThinklabResourceNotFoundException("no model found for observable " + concept);
+			throw new ThinklabResourceNotFoundException("no model found for " + s);
 		return ret;
 	}
 

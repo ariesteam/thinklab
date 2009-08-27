@@ -19,7 +19,7 @@ import org.integratedmodelling.thinklab.kbox.KBoxManager;
 		description="build a model observation of the given concept and return it",
 		argumentNames="concept",
 		argumentTypes="thinklab-core:Text",
-		argumentDescriptions="the concept to build a model for",
+		argumentDescriptions="the concept to build a model for or the model id",
 		optionalArgumentNames="kbox,context",
 		optionalArgumentDefaultValues="_NONE_,_NONE_",
 		optionalArgumentDescriptions="a kbox to resolve dependent concepts,a context observation to set time and/or space for the results",
@@ -32,9 +32,7 @@ public class ModelCommand implements ICommandHandler {
 	public IValue execute(Command command, ISession session)
 			throws ThinklabException {
 		
-		IConcept concept = 
-			KnowledgeManager.get().requireConcept(command.getArgumentAsString("concept"));
-
+		String concept = command.getArgumentAsString("concept");
 		String kb = command.getArgumentAsString("kbox");
 
 		IKBox kbox = null;
