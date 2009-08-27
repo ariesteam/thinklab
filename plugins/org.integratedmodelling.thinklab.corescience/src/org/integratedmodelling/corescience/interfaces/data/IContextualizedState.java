@@ -15,7 +15,7 @@ public interface IContextualizedState extends IDataSource, IConceptualizable {
 	 * 
 	 * @return
 	 */
-	public Object getData();
+	public Object getRawData();
 
 	/**
 	 * Should endeavor to return doubles as long as it's not entirely meaningless. Many 

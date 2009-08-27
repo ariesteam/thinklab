@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.implementations.observations;
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.implementations.datasources.ClassData;
 import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceByte;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
@@ -198,6 +199,6 @@ public class ModeledClassification
 	@Override
 	public IContextualizedState createContextualizedStorage(int size)
 			throws ThinklabException {
-		return new IndexedContextualizedDatasourceByte<IConcept>(cSpace, size);
+		return new ClassData(cSpace, size);
 	}
 }

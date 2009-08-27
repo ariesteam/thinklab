@@ -123,7 +123,7 @@ public class MemDoubleContextualizedDatasource
 	}
 
 	@Override
-	public Object getData() {
+	public Object getRawData() {
 		return data;
 	}
 

@@ -88,7 +88,7 @@ public interface IObservationContext extends Iterable<IObservationContext> {
 	 * 
 	 * @return
 	 */
-	public Collection<IConcept> getContextDimensions();
+	public Collection<IConcept> getDimensions();
 	
 	/**
 	 * Return the specific concept of the dimension that is the passed concept, 

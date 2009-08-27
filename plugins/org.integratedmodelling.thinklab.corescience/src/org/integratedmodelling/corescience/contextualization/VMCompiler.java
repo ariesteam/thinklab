@@ -79,7 +79,7 @@ public class VMCompiler extends Compiler {
 		IExtentMediator[] mediators = new IExtentMediator[ctx.size()];
 		
 		int i = 0;
-		for (IConcept c : ctx.getContextDimensions()) {
+		for (IConcept c : ctx.getDimensions()) {
 			
 			IExtentMediator mediator = null;
 			IExtent extown = ownContext.getExtent(c);
@@ -600,7 +600,7 @@ public class VMCompiler extends Compiler {
 			boolean[] activeDims = new boolean[context.size()];
 			int xind = 0;
 			boolean hasAll = true;
-			for (IConcept dc : context.getContextDimensions()) {
+			for (IConcept dc : context.getDimensions()) {
 				if (ownContext != null && ownContext.getExtent(dc) != null) {
 					activeDims[xind] = true;
 				} else {

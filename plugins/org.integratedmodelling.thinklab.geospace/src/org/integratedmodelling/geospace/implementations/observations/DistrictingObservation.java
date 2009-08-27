@@ -1,7 +1,5 @@
 package org.integratedmodelling.geospace.implementations.observations;
 
-import java.util.Properties;
-
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.geospace.Geospace;

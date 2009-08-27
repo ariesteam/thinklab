@@ -111,7 +111,7 @@ public class MemIntegerContextualizedDatasource
 	}
 	
 	@Override
-	public Object getData() {
+	public Object getRawData() {
 		return data;
 	}
 

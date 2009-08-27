@@ -178,7 +178,7 @@ public class ObservationContext implements IObservationContext {
 	}
 
 
-	public Collection<IConcept> getContextDimensions() {
+	public Collection<IConcept> getDimensions() {
 		return order;
 	}
 
@@ -317,7 +317,7 @@ public class ObservationContext implements IObservationContext {
 		ObservationContext ret = 
 			new ObservationContext(((ObservationContext)ctx).observation);
 		
-		for (IConcept c : getContextDimensions()) {
+		for (IConcept c : getDimensions()) {
 			IExtent extent = ctx.getExtent(c);
 			if (extent != null)
 				ret.extents.put(c.toString(), extent);

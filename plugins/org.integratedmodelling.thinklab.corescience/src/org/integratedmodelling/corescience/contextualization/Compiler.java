@@ -138,7 +138,7 @@ public abstract class Compiler implements IContextualizationCompiler {
 		
 		if (ds instanceof DimensionalDataSource) {
 
-			for (IConcept c : ownContext.getContextDimensions()) {
+			for (IConcept c : ownContext.getDimensions()) {
 				
 				((DimensionalDataSource)ds).notifyContextDimension(
 						c, 

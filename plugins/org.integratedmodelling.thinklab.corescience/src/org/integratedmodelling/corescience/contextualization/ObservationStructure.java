@@ -209,7 +209,7 @@ public class ObservationStructure {
 						"observation structure: can't set context of non-existent observation of " +
 						observable);
 			
-			for (IConcept dimension : context.getContextDimensions()) {
+			for (IConcept dimension : context.getDimensions()) {
 				
 				Polylist l = context.conceptualizeExtent(dimension);
 				if (l != null) { // which shouldn't happen 

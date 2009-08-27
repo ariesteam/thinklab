@@ -112,9 +112,11 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String CONTEXTUALIZED_DATASOURCE = "observation:ContextualizedDataSource";
 	public static final String RANKING_SET_REMAPPER = "measurement:RankingSetRemapper";
 	public static final String RANKING_INTERVAL_REMAPPER = "measurement:RankingIntervalRemapper";
+	public static final String PROBABILISTIC_CLASSIFICATION = "observation:ProbabilisticClassification";
 	
 	static final public String GENERIC_OBSERVABLE = "representation:GenericObservable";
 	static final public String GENERIC_QUANTIFIABLE = "representation:GenericQuantifiable";
+
 
 	public static CoreScience get() {
 		return (CoreScience) getPlugin(PLUGIN_ID );

@@ -38,6 +38,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
+import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 import org.semanticweb.owl.model.OWLIndividual;
@@ -385,7 +386,8 @@ public class Instance extends Knowledge implements IInstance {
 		references.put(iname, getURI());
 		
 		ArrayList<Object> alist = new ArrayList<Object>();
-		alist.add(getDirectType().toString() + "#" + iname);
+		alist.add(getDirectType().toString() + 
+				(NameGenerator.isGenerated(iname) ? "" : "#" + iname));
 
 		String comment = getDescription();
 		String label = getLabel();

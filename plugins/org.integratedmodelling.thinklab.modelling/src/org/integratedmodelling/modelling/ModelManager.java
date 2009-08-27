@@ -29,7 +29,7 @@ public class ModelManager {
 	/*
 	 * called by the defmodel macro. 
 	 */
-	public Model registerModel(Model model) {
+	public Model registerModel(Model model, String name) {
 	
 		IConcept obs = model.getObservable();
 		if (models.containsKey(obs))
@@ -38,7 +38,7 @@ public class ModelManager {
 					 " has been defined already: previous definition overridden");
 		
 		models.put(obs, model);
-		modelsById.put(model.id, model);
+		modelsById.put(name, model);
 		ModellingPlugin.get().logger().info("model " + model + " registered");
 		return model;
 	}

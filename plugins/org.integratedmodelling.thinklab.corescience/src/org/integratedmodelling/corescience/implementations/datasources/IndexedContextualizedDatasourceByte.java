@@ -31,13 +31,13 @@ public class IndexedContextualizedDatasourceByte<T>
  	implements IContextualizedState, IInstanceImplementation {
 
 	private static final long serialVersionUID = -6567783706189229920L;
-	private IConcept _type;
-	private byte[] data = null;
+	IConcept _type;
+	byte[] data = null;
 	private byte max = 1;
 	private int idx = 0;
 	
-	HashMap<Object, Integer> map = new HashMap<Object, Integer>();
-	HashMap<Integer, Object> inverseMap = new HashMap<Integer, Object>();
+	HashMap<T, Integer> map = new HashMap<T, Integer>();
+	HashMap<Integer, T> inverseMap = new HashMap<Integer, T>();
 
 	public IndexedContextualizedDatasourceByte(IConcept type, int size) {
 		_type = type;
@@ -68,10 +68,10 @@ public class IndexedContextualizedDatasourceByte<T>
 
 	@Override
 	public void addValue(Object o) {
-		data[idx++] = getIndex(o);
+		data[idx++] = getIndex((T)o);
 	}
 
-	private byte getIndex(Object o) {
+	private byte getIndex(T o) {
 		Integer i = (Integer) map.get(o);
 		if (i == null) {
 			map.put(o, (i = new Integer(max++)));
@@ -101,7 +101,7 @@ public class IndexedContextualizedDatasourceByte<T>
 	}
 
 	@Override
-	public Object getData() {
+	public Object getRawData() {
 		return data;
 	}
 

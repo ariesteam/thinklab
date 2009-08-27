@@ -16,8 +16,8 @@
 (defn register-model
 	"Get the single instance of the model manager from the modelling plugin and register the passed model
 	 with it."
-	[model]
-	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerModel model)))
+	[model name]
+	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerModel model name)))
 	
 (defn- get-configurable-model
 	"Return a model clone that we can safely configure. Essentially a copy on write pattern, called
@@ -87,7 +87,7 @@
 	  structure and conditional specifications, or the given unconditional model if no 
 	  contingency structure is supplied."
 		[model-name observable & body]
- 		`(def ~model-name (modelling/register-model (eval '(modelling/model ~observable ~@body)))))
+ 		`(def ~model-name (modelling/register-model (eval '(modelling/model ~observable ~@body)) (str '~model-name))))
        
 (defn run 
 	"Build an observation from the passed model. If the model has unresolved dependencies

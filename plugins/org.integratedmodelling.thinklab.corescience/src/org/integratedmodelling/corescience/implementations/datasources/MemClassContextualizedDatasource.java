@@ -34,7 +34,6 @@ package org.integratedmodelling.corescience.implementations.datasources;
 
 import java.util.Arrays;
 
-import org.apache.commons.collections.bidimap.TreeBidiMap;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
@@ -107,7 +106,7 @@ public class MemClassContextualizedDatasource
 	}
 
 	@Override
-	public Object getData() {
+	public Object getRawData() {
 		return data;
 	}
 
@@ -115,5 +114,6 @@ public class MemClassContextualizedDatasource
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
 		throw new ThinklabValueConversionException("can't convert concepts into doubles");
 	}
+
 
 }

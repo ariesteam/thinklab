@@ -106,7 +106,7 @@ public class MemLongContextualizedDatasource
 	}
 	
 	@Override
-	public Object getData() {
+	public Object getRawData() {
 		return data;
 	}
 

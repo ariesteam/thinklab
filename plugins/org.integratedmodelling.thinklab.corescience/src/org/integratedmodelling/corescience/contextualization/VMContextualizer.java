@@ -412,7 +412,7 @@ public class VMContextualizer<T> {
 		this.contextRegister = new ContextRegister[context.size()];
 	
 		int i = 0;
-		for (IConcept c : context.getContextDimensions()) {
+		for (IConcept c : context.getDimensions()) {
 			
 			ContextRegister reg = new ContextRegister();
 			

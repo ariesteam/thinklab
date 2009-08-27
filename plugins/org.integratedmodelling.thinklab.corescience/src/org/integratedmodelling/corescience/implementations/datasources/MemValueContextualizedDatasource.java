@@ -107,7 +107,7 @@ public class MemValueContextualizedDatasource
 	}
 	
 	@Override
-	public Object getData() {
+	public Object getRawData() {
 		return data;
 	}
 

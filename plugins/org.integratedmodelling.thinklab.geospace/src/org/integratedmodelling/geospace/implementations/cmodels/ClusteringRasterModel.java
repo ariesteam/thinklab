@@ -196,7 +196,11 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 					null);
 		
 		/* build final transformed observation, turning all observations we have
-		 * clustered into distributions of their values per cluster. */
+		 * clustered into distributions of their values per cluster. 
+		 * 
+		 * TODO add back the non-spatial extents of the original obs
+		 * 
+		 * */
 		
 		
 		/* main identification, shares our observable */
@@ -217,7 +221,7 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 	@Override
 	public IConcept getTransformedObservationClass() {
 		// we operate as an identification, i.e. a simple observation with no CM.
-		return CoreScience.get().Observation();
+		return CoreScience.Observation();
 	}
 
 	@Override

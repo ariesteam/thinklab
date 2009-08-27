@@ -598,6 +598,16 @@ An Identification can also identify merelogical relationships of an observable t
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ProbabilisticClassification -->
+
+    <owl:Class rdf:about="#ProbabilisticClassification">
+        <rdfs:subClassOf rdf:resource="#Classification"/>
+        <rdfs:comment
+            >The state of a probabilistic classification gives a probability to each concept in the observation space.</rdfs:comment>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Quantification -->
 
     <owl:Class rdf:about="#Quantification">

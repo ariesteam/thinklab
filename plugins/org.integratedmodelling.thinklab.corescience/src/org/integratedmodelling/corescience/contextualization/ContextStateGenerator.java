@@ -63,7 +63,7 @@ public class ContextStateGenerator {
 			this.context = context;
 			this.ticker = new Ticker();
 			
-			for (IConcept c : context.getContextDimensions()) {
+			for (IConcept c : context.getDimensions()) {
 				try {
 					ticker.addDimension(context.getMultiplicity(c));
 					state.defineDimension(c);
@@ -93,7 +93,7 @@ public class ContextStateGenerator {
 			// extract specific granules from extents			
 			if (!useIndex) {
 				int i = 0;
-				for (IConcept c : context.getContextDimensions()) {
+				for (IConcept c : context.getDimensions()) {
 					try {
 						state.set(c.toString(), context.getExtent(c).getState(ticker.current(i++)));
 					} catch (ThinklabException e) {

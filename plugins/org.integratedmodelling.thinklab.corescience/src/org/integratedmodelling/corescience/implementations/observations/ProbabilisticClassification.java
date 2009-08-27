@@ -8,10 +8,12 @@ import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.utils.Polylist;
 
+@InstanceImplementation(concept="observation:ProbabilisticClassification")
 public class ProbabilisticClassification extends Observation implements IConceptualModel, IConceptualizable {
 
 	@Override
