@@ -37,6 +37,7 @@ import java.util.Collection;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 /**
  * Testing new approach to contextualization. Not used anywhere except for development.
@@ -103,5 +104,16 @@ public interface IContextualizationCompiler {
 	 * @return
 	 */
 	public Collection<IObservation> getObservations();
+
+	/*
+	 * just a setter/getter - we need a way to inform the observation that the obs comes from a transformer, so no further
+	 * compilation is necessary.
+	 */
+	public void setTransformedObservation(IInstance instance);
+
+	/*
+	 * just set/get. Ugly, I know.
+	 */
+	public IInstance getTransformedObservation();
 	
 }

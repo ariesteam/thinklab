@@ -13,6 +13,10 @@ public class IndexedCategoricalDistribution {
 		data = new double[n];
 	}
 
+	public IndexedCategoricalDistribution(double[] data) {
+		this.data = data;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -37,6 +41,10 @@ public class IndexedCategoricalDistribution {
 			return false;
 		}
 		return true;
+	}
+	
+	public String toString() {
+		return Arrays.toString(data);
 	}
 	
 

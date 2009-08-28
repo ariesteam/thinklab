@@ -10,6 +10,7 @@ import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.utils.Polylist;
@@ -28,7 +29,7 @@ import org.integratedmodelling.utils.Polylist;
  * @param <ObjectType>
  */
 public class IndexedContextualizedDatasourceLong<T> 
- 	implements IContextualizedState, IInstanceImplementation {
+ 	implements IContextualizedState, IInstanceImplementation, IConceptualizable {
 
 	private static final long serialVersionUID = -6567783706189229920L;
 	IConcept _type;
@@ -51,7 +52,7 @@ public class IndexedContextualizedDatasourceLong<T>
 
 	@Override
 	public Object getValue(int index, Object[] parameters) {
-		return map.get(new Long(data[index]));
+		return inverseMap.get(new Long(data[index]));
 	}
 
 	@Override

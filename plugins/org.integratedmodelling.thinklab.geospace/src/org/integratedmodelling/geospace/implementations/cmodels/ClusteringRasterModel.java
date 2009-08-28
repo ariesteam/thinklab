@@ -27,6 +27,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureEx
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.utils.Polylist;
 
 /**
@@ -101,7 +102,7 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 	}
 
 	@Override
-	public IInstance transformObservation(IInstance inst)
+	public IInstance transformObservation(IInstance inst, ISession session)
 			throws ThinklabException {
 		
 		/* get all spatial dependencies of obs and set their states as cluster */

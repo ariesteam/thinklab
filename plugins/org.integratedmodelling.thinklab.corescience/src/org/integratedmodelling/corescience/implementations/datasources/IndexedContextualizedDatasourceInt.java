@@ -10,6 +10,7 @@ import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.utils.Polylist;
@@ -28,16 +29,16 @@ import org.integratedmodelling.utils.Polylist;
  * @param <ObjectType>
  */
 public class IndexedContextualizedDatasourceInt<T> 
- 	implements IContextualizedState, IInstanceImplementation {
+ 	implements IContextualizedState, IInstanceImplementation, IConceptualizable {
 
 	private static final long serialVersionUID = -6567783706189229920L;
 	IConcept _type;
-	int[] data = null;
+	protected int[] data = null;
 	private int max = 1;
 	private int idx = 0;
 	
-	HashMap<T, Integer> map = new HashMap<T, Integer>();
-	HashMap<Integer, T> inverseMap = new HashMap<Integer, T>();
+	protected HashMap<T, Integer> map = new HashMap<T, Integer>();
+	protected HashMap<Integer, T> inverseMap = new HashMap<Integer, T>();
 
 	public IndexedContextualizedDatasourceInt(IConcept type, int size) {
 		_type = type;
@@ -51,7 +52,7 @@ public class IndexedContextualizedDatasourceInt<T>
 
 	@Override
 	public Object getValue(int index, Object[] parameters) {
-		return map.get(new Integer(data[index]));
+		return inverseMap.get(new Integer(data[index]));
 	}
 
 	@Override

@@ -72,7 +72,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -89,6 +88,7 @@ import java.util.Vector;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 
 //}}}
@@ -379,326 +379,6 @@ public class MiscUtilities{
 	      }
 	    }
 	  }
-	//{{{ Path name methods
-
-	//{{{ canonPath() method
-	/**
-	 * Returns the canonical form of the specified path name. Currently
-	 * only expands a leading <code>~</code>. <b>For local path names
-	 * only.</b>
-	 * @param path The path name
-	 * @since jEdit 4.0pre2
-	 */
-//	public static String canonPath(String path)
-//	{
-//		if(path.length() == 0)
-//			return path;
-//
-//		if(path.startsWith("file://"))
-//			path = path.substring("file://".length());
-//		else if(path.startsWith("file:"))
-//			path = path.substring("file:".length());
-//		else if(isURL(path))
-//			return path;
-//
-//		if(File.separatorChar == '\\')
-//		{
-//			// get rid of mixed paths on Windows
-//			path = path.replace('/','\\');
-//			// also get rid of trailing spaces on Windows
-//			int trim = path.length();
-//			while(path.charAt(trim - 1) == ' ')
-//				trim--;
-//			path = path.substring(0,trim);
-//		}
-//		else if(OperatingSystem.isMacOS())
-//		{
-//			// do the same on OS X
-//			path = path.replace(':','/');
-//		}
-//
-//		if(path.startsWith("~" + File.separator))
-//		{
-//			path = path.substring(2);
-//			String home = System.getProperty("user.home");
-//
-//			if(home.endsWith(File.separator))
-//				return home + path;
-//			else
-//				return home + File.separator + path;
-//		}
-//		else if(path.equals("~"))
-//			return System.getProperty("user.home");
-//		else
-//			return path;
-//	} //}}}
-
-//	//{{{ resolveSymlinks() method
-//	/**
-//	 * Resolves any symbolic links in the path name specified
-//	 * using <code>File.getCanonicalPath()</code>. <b>For local path
-//	 * names only.</b>
-//	 * @since jEdit 4.2pre1
-//	 */
-//	public static String resolveSymlinks(String path)
-//	{
-//		if(isURL(path))
-//			return path;
-//
-//		// 2 aug 2003: OS/2 Java has a broken getCanonicalPath()
-//		if(OperatingSystem.isOS2())
-//			return path;
-//		// 18 nov 2003: calling this on a drive letter on Windows causes
-//		// drive access
-//		if(OperatingSystem.isDOSDerived())
-//		{
-//			if(path.length() == 2 || path.length() == 3)
-//			{
-//				if(path.charAt(1) == ':')
-//					return path;
-//			}
-//		}
-//		try
-//		{
-//			return new File(path).getCanonicalPath();
-//		}
-//		catch(IOException io)
-//		{
-//			return path;
-//		}
-//	} //}}}
-
-//	//{{{ isAbsolutePath() method
-//	/**
-//	 * Returns if the specified path name is an absolute path or URL.
-//	 * @since jEdit 4.1pre11
-//	 */
-//	public static boolean isAbsolutePath(String path)
-//	{
-//		if(isURL(path))
-//			return true;
-//		else if(path.startsWith("~/") || path.startsWith("~" + File.separator) || path.equals("~"))
-//			return true;
-//		else if(OperatingSystem.isDOSDerived())
-//		{
-//			if(path.length() == 2 && path.charAt(1) == ':')
-//				return true;
-//			if(path.length() > 2 && path.charAt(1) == ':'
-//				&& (path.charAt(2) == '\\'
-//				|| path.charAt(2) == '/'))
-//				return true;
-//			if(path.startsWith("\\\\")
-//				|| path.startsWith("//"))
-//				return true;
-//		}
-//		// not sure if this is correct for OpenVMS.
-//		else if(OperatingSystem.isUnix()
-//			|| OperatingSystem.isVMS())
-//		{
-//			// nice and simple
-//			if(path.length() > 0 && path.charAt(0) == '/')
-//				return true;
-//		}
-//
-//		return false;
-//	} //}}}
-
-//	//{{{ constructPath() method
-//	/**
-//	 * Constructs an absolute path name from a directory and another
-//	 * path name. This method is VFS-aware.
-//	 * @param parent The directory
-//	 * @param path The path name
-//	 */
-//	public static String constructPath(String parent, String path)
-//	{
-//		if(isAbsolutePath(path))
-//			return canonPath(path);
-//
-//		// have to handle this case specially on windows.
-//		// insert \ between, eg A: and myfile.txt.
-//		if(OperatingSystem.isDOSDerived())
-//		{
-//			if(path.length() == 2 && path.charAt(1) == ':')
-//				return path;
-//			else if(path.length() > 2 && path.charAt(1) == ':'
-//				&& path.charAt(2) != '\\')
-//			{
-//				path = path.substring(0,2) + '\\'
-//					+ path.substring(2);
-//				return canonPath(path);
-//			}
-//		}
-//
-//		String dd = ".." + File.separator;
-//		String d = "." + File.separator;
-//
-//		if(parent == null)
-//			parent = System.getProperty("user.dir");
-//
-//		for(;;)
-//		{
-//			if(path.equals("."))
-//				return parent;
-//			else if(path.equals(".."))
-//				return getParentOfPath(parent);
-//			else if(path.startsWith(dd) || path.startsWith("../"))
-//			{
-//				parent = getParentOfPath(parent);
-//				path = path.substring(3);
-//			}
-//			else if(path.startsWith(d) || path.startsWith("./"))
-//				path = path.substring(2);
-//			else
-//				break;
-//		}
-//
-//		if(OperatingSystem.isDOSDerived()
-//			&& !isURL(parent)
-//			&& path.startsWith("\\"))
-//			parent = parent.substring(0,2);
-//
-//		VFS vfs = VFSManager.getVFSForPath(parent);
-//
-//		return canonPath(vfs.constructPath(parent,path));
-//	} //}}}
-//
-//	//{{{ constructPath() method
-//	/**
-//	 * Constructs an absolute path name from three path components.
-//	 * This method is VFS-aware.
-//	 * @param parent The parent directory
-//	 * @param path1 The first path
-//	 * @param path2 The second path
-//	 */
-//	public static String constructPath(String parent,
-//		String path1, String path2)
-//	{
-//		return constructPath(constructPath(parent,path1),path2);
-//	} //}}}
-//
-//	//{{{ concatPath() method
-//	/**
-//	 * Like {@link #constructPath}, except <code>path</code> will be
-//	 * appended to <code>parent</code> even if it is absolute.
-//	 * <b>For local path names only.</b>.
-//	 *
-//	 * @param path
-//	 * @param parent
-//	 */
-//	public static String concatPath(String parent, String path)
-//	{
-//		parent = canonPath(parent);
-//		path = canonPath(path);
-//
-//		// Make all child paths relative.
-//		if (path.startsWith(File.separator))
-//			path = path.substring(1);
-//		else if ((path.length() >= 3) && (path.charAt(1) == ':'))
-//			path = path.replace(':', File.separatorChar);
-//
-//		if (parent == null)
-//			parent = System.getProperty("user.dir");
-//
-//		if (parent.endsWith(File.separator))
-//			return parent + path;
-//		else
-//			return parent + File.separator + path;
-//	} //}}}
-
-//	//{{{ getFirstSeparatorIndex() method
-//	/**
-//	 * Return the first index of either / or the OS-specific file
-//	 * separator.
-//	 * @param path The path
-//	 * @since jEdit 4.3pre3
-//	 */
-//	public static int getFirstSeparatorIndex(String path)
-//	{
-//		int start = getPathStart(path);
-//		int index = path.indexOf('/',start);
-//		if(index == -1)
-//			index = path.indexOf(File.separatorChar,start);
-//		return index;
-//	} //}}}
-
-//	//{{{ getLastSeparatorIndex() method
-//	/**
-//	 * Return the last index of either / or the OS-specific file
-//	 * separator.
-//	 * @param path The path
-//	 * @since jEdit 4.3pre3
-//	 */
-//	public static int getLastSeparatorIndex(String path)
-//	{
-//		int start = getPathStart(path);
-//		if(start != 0)
-//			path = path.substring(start);
-//		int index = Math.max(path.lastIndexOf('/'),
-//			path.lastIndexOf(File.separatorChar));
-//		if(index == -1)
-//			return index;
-//		else
-//			return index + start;
-//	} //}}}
-
-//	//{{{ getFileExtension() method
-//	/**
-//	 * Returns the extension of the specified filename, or an empty
-//	 * string if there is none.
-//	 * @param path The path
-//	 */
-//	public static String getFileExtension(String path)
-//	{
-//		int fsIndex = getLastSeparatorIndex(path);
-//		int index = path.indexOf('.',fsIndex);
-//		if(index == -1)
-//			return "";
-//		else
-//			return path.substring(index);
-//	} //}}}
-
-//	//{{{ getFileName() method
-//	/**
-//	 * Returns the last component of the specified path.
-//	 * This method is VFS-aware.
-//	 * @param path The path name
-//	 */
-//	public static String getFileName(String path)
-//	{
-//		return VFSManager.getVFSForPath(path).getFileName(path);
-//	} //}}}
-//
-//	//{{{ getFileNameNoExtension() method
-//	/**
-//	 * Returns the last component of the specified path name without the
-//	 * trailing extension (if there is one).
-//	 * @param path The path name
-//	 * @since jEdit 4.0pre8
-//	 */
-//	public static String getFileNameNoExtension(String path)
-//	{
-//		String name = getFileName(path);
-//		int index = name.indexOf('.');
-//		if(index == -1)
-//			return name;
-//		else
-//			return name.substring(0,index);
-//	} //}}}
-
-
-
-//	//{{{ getParentOfPath() method
-//	/**
-//	 * Returns the parent of the specified path. This method is VFS-aware.
-//	 * @param path The path name
-//	 * @since jEdit 2.6pre5
-//	 */
-//	public static String getParentOfPath(String path)
-//	{
-//		return VFSManager.getVFSForPath(path).getParentOfPath(path);
-//	} //}}}
-
 
 	//{{{ getProtocolOfURL() method
 	/**
@@ -710,249 +390,6 @@ public class MiscUtilities{
 	{
 		return url.substring(0,url.indexOf(':'));
 	} //}}}
-
-//	//{{{ isURL() method
-//	/**
-//	 * Checks if the specified string is a URL.
-//	 * @param str The string to check
-//	 * @return True if the string is a URL, false otherwise
-//	 */
-//	public static boolean isURL(String str)
-//	{
-//		int fsIndex = getLastSeparatorIndex(str);
-//		if(fsIndex == 0) // /etc/passwd
-//			return false;
-//		else if(fsIndex == 2) // C:\AUTOEXEC.BAT
-//			return false;
-//
-//		int cIndex = str.indexOf(':');
-//		if(cIndex <= 1) // D:\WINDOWS, or doesn't contain : at all
-//			return false;
-//
-//		String protocol = str.substring(0,cIndex);
-//		VFS vfs = VFSManager.getVFSForProtocol(protocol);
-//		if(vfs != null && !(vfs instanceof UrlVFS))
-//			return true;
-//
-//		try
-//		{
-//			new URL(str);
-//			return true;
-//		}
-//		catch(MalformedURLException mf)
-//		{
-//			return false;
-//		}
-//	} //}}}
-
-//	//{{{ saveBackup() method
-//	/**
-//	 * Saves a backup (optionally numbered) of a file.
-//	 * @param file A local file
-//	 * @param backups The number of backups. Must be >= 1. If > 1, backup
-//	 * files will be numbered.
-//	 * @param backupPrefix The backup file name prefix
-//	 * @param backupSuffix The backup file name suffix
-//	 * @param backupDirectory The directory where to save backups; if null,
-//	 * they will be saved in the same directory as the file itself.
-//	 * @since jEdit 4.0pre1
-//	 */
-//	public static void saveBackup(File file, int backups,
-//		String backupPrefix, String backupSuffix,
-//		String backupDirectory)
-//	{
-//		saveBackup(file,backups,backupPrefix,backupSuffix,backupDirectory,0);
-//	} //}}}
-
-//	//{{{ saveBackup() method
-//	/**
-//	 * Saves a backup (optionally numbered) of a file.
-//	 * @param file A local file
-//	 * @param backups The number of backups. Must be >= 1. If > 1, backup
-//	 * files will be numbered.
-//	 * @param backupPrefix The backup file name prefix
-//	 * @param backupSuffix The backup file name suffix
-//	 * @param backupDirectory The directory where to save backups; if null,
-//	 * they will be saved in the same directory as the file itself.
-//	 * @param backupTimeDistance The minimum time in minutes when a backup
-//	 * version 1 shall be moved into version 2; if 0, backups are always
-//	 * moved.
-//	 * @since jEdit 4.2pre5
-//	 */
-//	public static void saveBackup(File file, int backups,
-//		String backupPrefix, String backupSuffix,
-//		String backupDirectory, int backupTimeDistance)
-//	{
-//		if(backupPrefix == null)
-//			backupPrefix = "";
-//		if(backupSuffix == null)
-//			backupSuffix = "";
-//
-//		String name = file.getName();
-//
-//		// If backups is 1, create ~ file
-//		if(backups == 1)
-//		{
-//			File backupFile = new File(backupDirectory,
-//				backupPrefix + name + backupSuffix);
-//			long modTime = backupFile.lastModified();
-//			/* if backup file was created less than
-//			 * 'backupTimeDistance' ago, we do not
-//			 * create the backup */
-//			if(System.currentTimeMillis() - modTime
-//				>= backupTimeDistance)
-//			{
-//				backupFile.delete();
-//				if (!file.renameTo(backupFile))
-//					moveFile(file, backupFile);
-//			}
-//		}
-//		// If backups > 1, move old ~n~ files, create ~1~ file
-//		else
-//		{
-//			/* delete a backup created using above method */
-//			new File(backupDirectory,
-//				backupPrefix + name + backupSuffix
-//				+ backups + backupSuffix).delete();
-//
-//			File firstBackup = new File(backupDirectory,
-//				backupPrefix + name + backupSuffix
-//				+ "1" + backupSuffix);
-//			long modTime = firstBackup.lastModified();
-//			/* if backup file was created less than
-//			 * 'backupTimeDistance' ago, we do not
-//			 * create the backup */
-//			if(System.currentTimeMillis() - modTime
-//				>= backupTimeDistance)
-//			{
-//				for(int i = backups - 1; i > 0; i--)
-//				{
-//					File backup = new File(backupDirectory,
-//						backupPrefix + name
-//						+ backupSuffix + i
-//						+ backupSuffix);
-//
-//					backup.renameTo(
-//						new File(backupDirectory,
-//						backupPrefix + name
-//						+ backupSuffix + (i+1)
-//						+ backupSuffix));
-//				}
-//
-//				File backupFile = new File(backupDirectory,
-//					backupPrefix + name + backupSuffix
-//					+ "1" + backupSuffix);
-//				if (!file.renameTo(backupFile))
-//					moveFile(file, backupFile);
-//			}
-//		}
-//	} //}}}
-
-//	//{{{ moveFile() method
-//	/**
-//	 * Moves the source file to the destination.
-//	 *
-//	 * If the destination cannot be created or is a read-only file, the
-//	 * method returns <code>false</code>. Otherwise, the contents of the
-//	 * source are copied to the destination, the source is deleted,
-//	 * and <code>true</code> is returned.
-//	 *
-//	 * @param source The source file to move.
-//	 * @param dest   The destination where to move the file.
-//	 * @return true on success, false otherwise.
-//	 *
-//	 * @since jEdit 4.3pre1
-//	 */
-//	public static boolean moveFile(File source, File dest)
-//	{
-//		boolean ok = false;
-//
-//		if ((dest.exists() && dest.canWrite())
-//			|| (!dest.exists() && dest.getParentFile().canWrite()))
-//		{
-//			OutputStream fos = null;
-//			InputStream fis = null;
-//			try
-//			{
-//				fos = new FileOutputStream(dest);
-//				fis = new FileInputStream(source);
-//				ok = copyStream(32768,null,fis,fos,false);
-//			}
-//			catch (IOException ioe)
-//			{
-//				Log.log(Log.WARNING, MiscUtilities.class,
-//					"Error moving file: " + ioe + " : " + ioe.getMessage());
-//			}
-//			finally
-//			{
-//				try
-//				{
-//					if(fos != null)
-//						fos.close();
-//					if(fis != null)
-//						fis.close();
-//				}
-//				catch(Exception e)
-//				{
-//					Log.log(Log.ERROR,MiscUtilities.class,e);
-//				}
-//			}
-//
-//			if(ok)
-//				source.delete();
-//		}
-//		return ok;
-//	} //}}}
-
-//	//{{{ copyStream() method
-//	/**
-//	 * Copy an input stream to an output stream.
-//	 *
-//	 * @param bufferSize the size of the buffer
-//	 * @param progress the progress observer it could be null
-//	 * @param in the input stream
-//	 * @param out the output stream
-//	 * @param canStop if true, the copy can be stopped by interrupting the thread
-//	 * @return <code>true</code> if the copy was done, <code>false</code> if it was interrupted
-//	 * @throws IOException  IOException If an I/O error occurs
-//	 * @since jEdit 4.3pre3
-//	 */
-//	public static boolean copyStream(int bufferSize, ProgressObserver progress,
-//		InputStream in, OutputStream out, boolean canStop)
-//	throws IOException
-//	{
-//		byte[] buffer = new byte[bufferSize];
-//		int n;
-//		long copied = 0;
-//		while (-1 != (n = in.read(buffer)))
-//		{
-//			out.write(buffer, 0, n);
-//			copied += n;
-//			if(progress != null)
-//				progress.setValue(copied);
-//			if(canStop && Thread.interrupted()) return false;
-//		}
-//		return true;
-//	} //}}}
-//
-//	//{{{ copyStream() method
-//	/**
-//	 * Copy an input stream to an output stream with a buffer of 4096 bytes.
-//	 *
-//	 * @param progress the progress observer it could be null
-//	 * @param in the input stream
-//	 * @param out the output stream
-//	 * @param canStop if true, the copy can be stopped by interrupting the thread
-//	 * @return <code>true</code> if the copy was done, <code>false</code> if it was interrupted
-//	 * @throws IOException  IOException If an I/O error occurs
-//	 * @since jEdit 4.3pre3
-//	 */
-//	public static boolean copyStream(ProgressObserver progress,
-//		InputStream in, OutputStream out, boolean canStop)
-//	throws IOException
-//	{
-//		return copyStream(4096,progress, in, out, canStop);
-//	} //}}}
 
 	//{{{ closeQuietly() method
 	/**
@@ -2091,6 +1528,39 @@ loop:		for(;;)
 				}
 			}
 		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Resolve a passed string into an existing file name, or 
+	 * @param msource
+	 * @return
+	 * @throws ThinklabResourceNotFoundException
+	 */
+	public static File resolveUrlToFile(String msource) 
+		throws ThinklabResourceNotFoundException {
+		
+		File ret = null;
+		
+		if (msource.startsWith("http:") || msource.startsWith("file:")) {
+			try {
+				ret = CopyURL.getFileForURL(new URL(msource));
+			} catch (Exception e) {
+				throw new ThinklabResourceNotFoundException(
+						"resource " +
+						msource +
+						": invalid URL");	
+			}
+		} else {			
+			ret = new File(msource);
+		}
+		
+		if (!ret.exists())
+			throw new ThinklabResourceNotFoundException(
+					"file " +
+					msource +
+					" cannot be read");	
 		
 		return ret;
 	}

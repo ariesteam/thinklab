@@ -24,6 +24,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabCircularDependencyExce
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -42,6 +43,7 @@ public class VMCompiler extends Compiler {
 	 * interface yet, so useless until we figure out general parameters.
 	 */
 	boolean _validate = true;
+	IInstance transformedObservation = null;
 	
 	class ObsDesc {
 		int accessorId = -1;
@@ -632,6 +634,18 @@ public class VMCompiler extends Compiler {
 	@Override
 	public void notifyContext(IConcept observable, IObservationContext context) {
 		contexts.put(observable, context);
+	}
+
+
+	@Override
+	public IInstance getTransformedObservation() {
+		return transformedObservation;
+	}
+
+
+	@Override
+	public void setTransformedObservation(IInstance instance) {
+		transformedObservation = instance;
 	}
 
 

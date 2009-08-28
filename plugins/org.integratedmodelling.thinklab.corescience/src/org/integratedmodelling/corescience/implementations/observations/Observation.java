@@ -461,6 +461,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 		 * transforming model, which may produce a transformed observation. Whatever
 		 * is returned is the observation we want to use: we notify the result
 		 * to the compiler and return its context instead of the original one.
+		 * 
+		 * TODO: check: is the overall context set in the top obs being used when cont
 		 */
 		if (getConceptualModel() instanceof TransformingConceptualModel && !this.beingTransformed) {
 
@@ -469,7 +471,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 			IInstance inst = Compiler.contextualize(this, session, listeners);
 			IInstance trs = 
 				((TransformingConceptualModel) getConceptualModel())
-					.transformObservation(inst);
+					.transformObservation(inst, session);
 			Observation obs = extractObservationFromInstance(trs);
 			
 			/**
@@ -484,6 +486,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 			compiler.addObservation(obs);
 
 			this.beingTransformed = false;
+			
+			compiler.setTransformedObservation(trs);
 			
 			return (ObservationContext) obs.getObservationContext();
 		}

@@ -27,6 +27,11 @@
 	[]
 	(new org.integratedmodelling.modelling.corescience.RankingModel))
 
+(defn j-make-bayesian
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.random.BayesianModel))
+
 (defmacro classification
 	""
 	[observable & specs]
@@ -83,4 +88,11 @@
  	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
  	   model#))
 
-
+(defmacro bayesian
+	"Create a bayesian model. The observable can only be a semantic object. For now the only way to
+	 define it is through the :import clause; bayesian network specifications are admitted but ignored."
+	[observable & specs]
+	`(let [model# 
+ 	        	(modelling/j-make-bayesian)] 
+ 	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	   model#))

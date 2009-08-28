@@ -1,14 +1,11 @@
 package org.integratedmodelling.modelling.implementations.observations;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.Obs;
-import org.integratedmodelling.corescience.implementations.datasources.ClassData;
-import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceInt;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.TransformingConceptualModel;
@@ -19,21 +16,23 @@ import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
+import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
-import org.integratedmodelling.utils.Triple;
 
 import smile.Network;
 
@@ -47,6 +46,11 @@ public class BayesianTransformer
 	extends Observation 
 	implements IConceptualModel, TransformingConceptualModel {
 	
+	// relevant properties from ontology
+	public static final String RETAINS_STATES = "modeltypes:retainsState";
+	public static final String HAS_NETWORK_SOURCE = "modeltypes:hasBayesianNetworkSource";
+	public static final String HAS_BAYESIAN_ALGORITHM = "modeltypes:hasBayesianAlgorithm";
+
 	ArrayList<Pair<GeneralClassifier, IConcept>> classifiers = 
 		new ArrayList<Pair<GeneralClassifier,IConcept>>();
 	
@@ -58,7 +62,8 @@ public class BayesianTransformer
 	@Override
 	public IStateAccessor getStateAccessor(IConcept stateType,
 			IObservationContext context) {
-		throw new ThinklabRuntimeException("internal: bayesian transformer: get accessor called");
+		// we contextualize as an identification, so no accessor is required.
+		return null;
 	}
 
 	@Override
@@ -71,8 +76,8 @@ public class BayesianTransformer
 
 		super.initialize(i);
 				
-		IValue url = i.get("modeltypes:hasBayesianNetworkSource");
-		IValue alg = i.get("modeltypes:hasBayesianAlgorithm");
+		IValue url = i.get(HAS_NETWORK_SOURCE);
+		IValue alg = i.get(HAS_BAYESIAN_ALGORITHM);
 
 		if (url != null) {
 			
@@ -83,7 +88,8 @@ public class BayesianTransformer
 			this.bn = new Network();
 			
 			try {
-				this.bn.readFile(url.toString());
+				this.bn.readFile(
+						MiscUtilities.resolveUrlToFile(url.toString()).toString());
 				
 				if (alg != null) {
 
@@ -98,7 +104,11 @@ public class BayesianTransformer
 						"bayesian transformer: problem reading network from " + url);
 			}
 			
-			for (IRelationship r : i.getRelationships("modeltypes:retainsState")) {
+			/*
+			 * read the states we want
+			 */
+			for (IRelationship r : i.getRelationships(RETAINS_STATES)) {
+				outputStates.add(KnowledgeManager.get().requireConcept(r.getValue().toString()));
 			}
 			
 		} else {
@@ -134,7 +144,8 @@ public class BayesianTransformer
 	@Override
 	public IContextualizedState createContextualizedStorage(int size)
 			throws ThinklabException {
-		return new CategoricalDistributionDatasource(cSpace, size);
+		// we contextualize this as an identification, so no storage is needed. 
+		return null;
 	}
 
 	@Override
@@ -149,7 +160,7 @@ public class BayesianTransformer
 	}
 
 	@Override
-	public IInstance transformObservation(IInstance inst)
+	public IInstance transformObservation(IInstance inst, ISession session)
 			throws ThinklabException {
 		
 		IObservation orig = Obs.getObservation(inst);
@@ -158,17 +169,22 @@ public class BayesianTransformer
 		int size = context.getMultiplicity();
 
 		/*
-		 * see what states we want to retain as RandomClassifications. If no other
-		 * specification has been made, use the set of our dependent evidence.
+		 * see what states we want to retain as RandomClassifications. If no 
+		 * specification has been made, log a warning.
 		 */
 		if (outputStates.size() == 0) {
-			throw new ThinklabModelException("bayesian transformer: no states are being retained, exiting");
+			ModellingPlugin.get().logger().warn(
+					"bayesian transformer: " + 
+					getObservableClass() + 
+					": no states are being retained, bayesian network will be " +
+					"computed without producing useful results");
 		}
 		
 		/*
 		 * prepare storage for each observable in all retained states, using the state ID for speed
 		 */
-		class PStorage { int field; IConcept observable; CategoricalDistributionDatasource data; };
+		class PStorage { int field; IConcept observable; 
+						CategoricalDistributionDatasource data; };
 		PStorage[] pstorage = new PStorage[outputStates.size()];
 		int i = 0;
 		for (IConcept var : outputStates) {
@@ -176,15 +192,21 @@ public class BayesianTransformer
 			PStorage st = new PStorage();
 			st.field = bn.getNode(var.getLocalName());
 			st.observable = var;
-			st.data = new CategoricalDistributionDatasource(var, size);
-			pstorage[i++] = st;
 			
 			/*
-			 * TODO determine all possible states and their IDs in the net;
+			 * determine all possible states and their IDs in the net;
 			 * map each to its concept (same concept space as var) and set
-			 * legend in datasource.
+			 * value key in datasource.
 			 */
-			
+			String[] pstates    = bn.getOutcomeIds(st.field);
+			IConcept[] pcstates = new IConcept[pstates.length];
+ 			for (int j = 0; j < pstates.length; j++) {
+				if (! (pstates[j].contains(":")))
+					pstates[j] = var.getConceptSpace() + ":" + pstates[j];
+				pcstates[j] = KnowledgeManager.get().requireConcept(pstates[j]);
+			}
+			st.data = new CategoricalDistributionDatasource(var, size, pcstates);
+			pstorage[i++] = st;
 		}
 		
 		/*
@@ -224,9 +246,13 @@ public class BayesianTransformer
 			
 			/*
 			 * submit evidence - we set the same values at each cycle, so we don't need to
-			 * clear previous evidence unless we have a null.
+			 * clear all previous evidence unless we have a null.
+			 * 
+			 * TODO this should be memoized. Still, doing so may require quite a bit of memory and
+			 * setup time, so we should compare results before adopting it as default.
+			 * 
 			 */
-			for (int e =0; e < evidence.length; e++) {
+			for (int e = 0; e < evidence.length; e++) {
 				IConcept ev = evidence[e].data.getCategory(state);
 				if (ev == null)
 					bn.clearEvidence(evidence[e].field);
@@ -242,12 +268,10 @@ public class BayesianTransformer
 			bn.updateBeliefs();
 			
 			/*
-			 * set states
-			 * TODO must map the possible states for each var and set the legend in the
-			 * storage beforehand
+			 * set states of all desired outcomes
 			 */
 			for (int s = 0; s < pstorage.length; s++) {
-				
+				pstorage[s].data.addValue(bn.getNodeValue(pstorage[s].field));
 			}
 			
 		}
@@ -276,11 +300,22 @@ public class BayesianTransformer
 					CoreScience.PROBABILISTIC_CLASSIFICATION,
 					Polylist.list(
 							CoreScience.HAS_OBSERVABLE, Polylist.list(pstorage[s].observable)),
-					Polylist.list(CoreScience.HAS_DATASOURCE, Polylist.list("@", pstorage[s].data)));
+					Polylist.list(
+							CoreScience.HAS_DATASOURCE, 
+							pstorage[s].data.conceptualize()));
 			
 			rdef = ObservationFactory.addDependency(rdef, ddef);
 		}
 
-		return null;
+		// TODO remove
+		System.out.println(
+				"\n >>>>>>>>>>>>>>>>>>>>>>>>> \n" + 
+				Polylist.prettyPrint(rdef) + 
+				"\n <<<<<<<<<<<<<<<<<<<<<<<<< \n");
+		
+		/*
+		 * go for it
+		 */
+		return session.createObject(rdef);
 	}
 }

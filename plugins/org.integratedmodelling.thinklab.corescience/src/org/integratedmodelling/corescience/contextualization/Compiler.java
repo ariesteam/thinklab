@@ -101,6 +101,9 @@ public abstract class Compiler implements IContextualizationCompiler {
 		IObservationContext context = 
 			observation.getCommonObservationContext(compiler, session, listeners);
 		
+		if (compiler.getTransformedObservation() != null) 
+			return compiler.getTransformedObservation();
+		
 		/* compute and communicate individual merged contexts for each observation */
 		HashSet<IConcept> oobs = new HashSet<IConcept>();
 		
@@ -199,7 +202,6 @@ public abstract class Compiler implements IContextualizationCompiler {
 
 	@Override
 	public Collection<IObservation> getObservations() {
-		// TODO Auto-generated method stub
 		return dependencies.vertexSet();
 	}
 

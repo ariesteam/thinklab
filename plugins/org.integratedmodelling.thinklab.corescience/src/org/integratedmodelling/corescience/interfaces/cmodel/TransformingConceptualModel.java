@@ -1,6 +1,7 @@
 package org.integratedmodelling.corescience.interfaces.cmodel;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.utils.Polylist;
@@ -35,10 +36,11 @@ public interface TransformingConceptualModel {
 	 * another, as similar or different as it wants.
 	 * 
 	 * @param inst
+	 * @param session 
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public abstract IInstance transformObservation(IInstance inst)
+	public abstract IInstance transformObservation(IInstance inst, ISession session)
 			throws ThinklabException;
 
 	/**
