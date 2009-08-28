@@ -271,7 +271,7 @@ public class Ontology implements IOntology {
 		}
 
 		if (ID == null) {
-			ID = getUniqueObjectName(getConceptSpace());
+			ID = getUniqueObjectName("ins");
 		}
 		
 		if (getInstance(ID) != null) {
@@ -568,7 +568,7 @@ public class Ontology implements IOntology {
 
 				Pair<IConcept, String> cc = ThinklabOWLManager.getConceptFromListObject(o, this);
 				ret = createInstance(
-						cc.getSecond() == null ? getUniqueObjectName(getConceptSpace()) : cc.getSecond(),  
+						cc.getSecond() == null ? getUniqueObjectName("ins") : cc.getSecond(),  
 						cc.getFirst());		
 				
 			} else if (o instanceof Polylist) {

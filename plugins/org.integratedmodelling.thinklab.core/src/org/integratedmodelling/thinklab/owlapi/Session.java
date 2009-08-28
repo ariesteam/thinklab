@@ -340,11 +340,11 @@ public class Session implements ISession {
     }
 
 	public IInstance createObject(String concept) throws ThinklabException {
-		return createObject(ontology.getUniqueObjectName("JI"), getConcept(concept));
+		return createObject(ontology.getUniqueObjectName("jis"), getConcept(concept));
 	}
 
 	public IInstance createObject(SemanticType concept) throws ThinklabException {
-		return createObject(ontology.getUniqueObjectName("JI"), getConcept(concept.toString()));
+		return createObject(ontology.getUniqueObjectName("jis"), getConcept(concept.toString()));
 	}
 
 	public IInstance createObject(String name, String concept) throws ThinklabException {
