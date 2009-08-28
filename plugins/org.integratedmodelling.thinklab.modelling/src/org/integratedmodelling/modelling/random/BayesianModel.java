@@ -1,5 +1,7 @@
 package org.integratedmodelling.modelling.random;
 
+import java.util.HashSet;
+
 import org.integratedmodelling.modelling.DefaultStatefulAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -9,19 +11,25 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
-public class RandomModel extends DefaultStatefulAbstractModel {
+public class BayesianModel extends DefaultStatefulAbstractModel {
 
-	final static int DISCRETE = 0;
-	final static int CONTINUOUS = 1;
-	final static int NOISYMAX = 2;
+	String source = null;
+	HashSet<IConcept> keeper = new HashSet<IConcept>();
 	
-	double[] cptDesc = null;
-	int type = DISCRETE;
-	
-	public RandomModel(int type) {
-		this.type = type;
+	@Override
+	public void applyClause(String keyword, Object argument)
+			throws ThinklabException {
+		
+		if (keyword.equals(":import")) {
+			this.source = argument.toString();
+		} else if (keyword.equals(":keep")) {
+		
+
+		} else super.applyClause(keyword, argument);
+		
+		
 	}
-	
+
 	@Override
 	protected void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
@@ -43,9 +51,11 @@ public class RandomModel extends DefaultStatefulAbstractModel {
 	@Override
 	public IModel getConfigurableClone() {
 		
-		RandomModel ret = new RandomModel(type);
+		BayesianModel ret = new BayesianModel();
 		ret.copy(this);
-		ret.cptDesc = cptDesc;
+
+		// TODO the rest
+		
 		return ret;
 	}
 
