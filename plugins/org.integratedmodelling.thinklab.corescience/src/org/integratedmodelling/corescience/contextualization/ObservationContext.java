@@ -38,6 +38,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabContextValidationException;
+import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
@@ -331,6 +332,41 @@ public class ObservationContext implements IObservationContext {
 	@Override
 	public Iterator<IObservationContext> iterator() {
 		return new TopologyIterator();
+	}
+
+	public void mergeExtent(IObservation extent, LogicalConnector connector) throws ThinklabException {
+		
+		// retrieve conceptual model of obs and ensure it is an extent model
+		IConceptualModel cmv = extent.getConceptualModel();
+		IConcept dimension = Observation.getContextDimension(extent);
+		
+		if (!(cmv instanceof ExtentConceptualModel))
+			throw new ThinklabContextValidationException("extent relationship on " +
+					observation + 
+					" does not link to an extent observation: " +
+					dimension);
+
+		ExtentConceptualModel cm = (ExtentConceptualModel)cmv;
+		
+		// see if we already have an extent for this dimension
+		IExtent ext = extents.get(dimension.toString());
+		
+		if (ext == null) {
+			
+			/* just add the extent */
+			IExtent newExt = cm.getExtent();
+			extents.put(dimension.toString(), newExt);
+		
+		} else {
+
+			/* ask CM to modify the current extent record in order to represent the
+			   new one as well. 
+			   FIXME make sure the isConstraint parameter is necessary and if so, correct.
+			   */
+			IExtent merged = cm.mergeExtents(ext, cm.getExtent(), connector, true);
+			extents.put(dimension.toString(), merged);
+		}		
+
 	}
 
 	

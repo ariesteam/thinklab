@@ -404,7 +404,93 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 		return ret;
 	}
+	
+	public IObservationContext computeOverallContext(
+			IContextualizationCompiler compiler,
+			ISession session,
+			IObservationContext context,
+			Collection<IContextualizationListener> listeners) throws ThinklabException {
+		
+		if (context == null)
+			context = new ObservationContext(this);
+		
+		computeOverallContext(
+					(ObservationContext) context, 
+					compiler, 
+					session,  
+					new HashSet<Observation>(), 
+					listeners);
+		
+		return context;
+	}
 
+	private IObservationContext computeOverallContext(
+			ObservationContext context,
+			IContextualizationCompiler compiler, 
+			ISession session,
+			HashSet<Observation> inserted, 
+			Collection<IContextualizationListener> listeners) throws ThinklabException {
+		
+		/*
+		 * TODO - check: necessary? Plus, at most the check should concern the observable and be done
+		 * on the context itself.
+		 */
+		if (inserted.contains(this))
+			return null;
+
+		/*
+		 * 1. merge all extents
+		 */
+		for (IObservation extent : getExtentDependencies()) {
+			compiler.addObservationDependency(this, extent);
+			context.mergeExtent(extent, LogicalConnector.INTERSECTION);
+		}
+		
+		/*
+		 * 2. if a transformer, transform; else add all dependencies;
+		 */
+		if (getConceptualModel() instanceof TransformingConceptualModel && !this.beingTransformed) {
+
+			this.beingTransformed = true;
+			
+			IInstance inst = Compiler.contextualize(this, session, listeners, context);
+			IInstance trs = 
+				((TransformingConceptualModel) getConceptualModel())
+					.transformObservation(inst, session);
+			Observation obs = extractObservationFromInstance(trs);
+
+			if (listeners != null) {
+				for (IContextualizationListener l : listeners)
+					l.onObservationTransformed(this, obs);
+			}
+			
+			compiler.addObservation(obs);
+			this.beingTransformed = false;
+			compiler.setTransformedObservation(trs);
+			
+			/*
+			 * swap context with the new one.
+			 */
+			context = (ObservationContext) obs.getObservationContext();
+			
+		} else {
+			
+			for (IObservation dependency : getNonExtentDependencies()) {
+				((Observation)dependency)
+						.computeOverallContext(context, compiler, session, inserted, listeners);
+				compiler.addObservationDependency(this, dependency);
+			}
+		}
+		
+		/*
+		 * 3. initialize and return.
+		 */
+		
+		context.initialize();
+		
+		return context;
+	}
+	
 	/**
 	 * Build the COMMON observation context, which is the merged
 	 * intersection of all extents along the dependency tree, so that 
@@ -468,7 +554,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 			this.beingTransformed = true;
 			
-			IInstance inst = Compiler.contextualize(this, session, listeners);
+			IInstance inst = Compiler.contextualizeOld(this, session, listeners, null);
 			IInstance trs = 
 				((TransformingConceptualModel) getConceptualModel())
 					.transformObservation(inst, session);
@@ -541,31 +627,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 				ret.mergeExtents(oc, LogicalConnector.INTERSECTION, false);
 			}
 		}
-
-// TODO I don't think this is a good model. What we want to do is to install
-// a mediator observation, not arbitrarily "linking" external observations, but
-// this MAY still make sense.
-// 
-//		/* see if we have a linked observation */
-//		Observation lobs = getAssociatedActualObservation(this);
-//
-//		if (lobs != null) {
-//
-//			ObservationContext oc = (ObservationContext) lobs
-//					.getOverallObservationContext(compiler, session);
-//
-//			if (oc != null) {
-//				/*
-//				 * contextualize it and merge using intersection, because if we
-//				 * are redefined to be that observation, we are able to see its
-//				 * extents and only those.
-//				 */
-//				ret.mergeExtents(oc, LogicalConnector.INTERSECTION, false);
-//
-//				/* notify mediated dependency to workflow */
-//				compiler.addMediatedDependency(this, lobs);
-//			}
-//		}
 
 		/*
 		 * Constrain all existing extents with any extents we may have with the
