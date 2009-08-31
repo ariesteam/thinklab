@@ -94,7 +94,7 @@ public class InstantConceptualModel implements ExtentConceptualModel {
 	 * 
 	 * For now the only resolutions supported are year, month, day and millisecond.
 	 */
-	public IExtent mergeExtents(IExtent original, IExtent other, LogicalConnector connector, boolean isConstraint) throws ThinklabContextualizationException {
+	public IExtent mergeExtents(IExtent original, IExtent other, LogicalConnector connector) throws ThinklabContextualizationException {
 		
 		if (!((original instanceof TemporalLocationExtent) && (other instanceof TemporalLocationExtent))) {
 			throw new ThinklabContextualizationException("temporal extents are incompatible: heterogeneous time models used in observations");

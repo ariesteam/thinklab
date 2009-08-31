@@ -84,7 +84,7 @@ public class TemporalGridConceptualModel implements ExtentConceptualModel {
 	/**
 	 * TODO implement constrained logics
 	 */
-	public IExtent mergeExtents(IExtent original, IExtent other, LogicalConnector connector, boolean isConstraint)
+	public IExtent mergeExtents(IExtent original, IExtent other, LogicalConnector connector)
 			throws ThinklabException {
 
 		RegularTimeGridExtent ori = (RegularTimeGridExtent) original;

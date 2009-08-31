@@ -47,13 +47,6 @@ public class ClassifiedRasterConceptualModel implements ExtentConceptualModel {
 	}
 
 	@Override
-	public IExtent mergeExtents(IExtent original, IExtent other,
-			LogicalConnector connector, boolean isConstraint)
-			throws ThinklabException {
-		return null;
-	}
-
-	@Override
 	public IStateAccessor getStateAccessor(IConcept stateType,
 			IObservationContext context) {
 		return null;
@@ -85,6 +78,13 @@ public class ClassifiedRasterConceptualModel implements ExtentConceptualModel {
 	public IContextualizedState createContextualizedStorage(int size)
 			throws ThinklabException {
 		throw new ThinklabUnimplementedFeatureException("storage of extents states not implemented");
+	}
+
+	@Override
+	public IExtent mergeExtents(IExtent original, IExtent other,
+			LogicalConnector connector) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

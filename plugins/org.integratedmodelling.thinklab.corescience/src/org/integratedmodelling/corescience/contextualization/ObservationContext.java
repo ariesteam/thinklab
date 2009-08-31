@@ -67,6 +67,7 @@ public class ObservationContext implements IObservationContext {
 	ArrayList<IConcept> order = new ArrayList<IConcept>();
 	int totalSize = -1;
 	int[] dimensionalities = null;
+	boolean _initialized = false;
 	
 	public class TopologyIterator implements Iterator<IObservationContext> {
 
@@ -113,6 +114,8 @@ public class ObservationContext implements IObservationContext {
 	
 	private void sortContext() {
 			
+		order.clear();
+		
 		for (String ss : extents.keySet())
 			try {
 				order.add(KnowledgeManager.get().retrieveConcept(ss));
@@ -130,6 +133,9 @@ public class ObservationContext implements IObservationContext {
 	 */
 	public void initialize()  {
 		
+		if (_initialized)
+			return;
+		
 		sortContext();
 		
 		dimensionalities = new int[extents.size()];
@@ -143,40 +149,41 @@ public class ObservationContext implements IObservationContext {
 			dimensionalities[i++] = gr;
 			totalSize *= gr;
 		}		
+		_initialized = true;
 	}
 
-	public void mergeExtent(IObservation observation, IConcept dimension, LogicalConnector connector, boolean isConstraint) 
-		throws ThinklabException {
-
-		// retrieve conceptual model of obs and ensure it is an extent model
-		IConceptualModel cmv = observation.getConceptualModel();
-		
-		if (!(cmv instanceof ExtentConceptualModel))
-			throw new ThinklabContextValidationException("extent relationship on " +
-					observation + 
-					" does not link to an extent observation: " +
-					dimension);
-
-		ExtentConceptualModel cm = (ExtentConceptualModel)cmv;
-		
-		// see if we already have an extent for this dimension
-		IExtent extent = extents.get(dimension.toString());
-		
-		if (extent == null) {
-			
-			/* just add the extent */
-			IExtent newExt = cm.getExtent();
-			extents.put(dimension.toString(), newExt);
-		
-		} else {
-
-			/* ask CM to modify the current extent record in order to represent the
-			   new one as well. */
-			IExtent merged = cm.mergeExtents(extent, cm.getExtent(), connector, isConstraint);
-			extents.put(dimension.toString(), merged);
-		}		
-		
-	}
+//	public void mergeExtent(IObservation observation, IConcept dimension, LogicalConnector connector, boolean isConstraint) 
+//		throws ThinklabException {
+//
+//		// retrieve conceptual model of obs and ensure it is an extent model
+//		IConceptualModel cmv = observation.getConceptualModel();
+//		
+//		if (!(cmv instanceof ExtentConceptualModel))
+//			throw new ThinklabContextValidationException("extent relationship on " +
+//					observation + 
+//					" does not link to an extent observation: " +
+//					dimension);
+//
+//		ExtentConceptualModel cm = (ExtentConceptualModel)cmv;
+//		
+//		// see if we already have an extent for this dimension
+//		IExtent extent = extents.get(dimension.toString());
+//		
+//		if (extent == null) {
+//			
+//			/* just add the extent */
+//			IExtent newExt = cm.getExtent();
+//			extents.put(dimension.toString(), newExt);
+//		
+//		} else {
+//
+//			/* ask CM to modify the current extent record in order to represent the
+//			   new one as well. */
+//			IExtent merged = cm.mergeExtents(extent, cm.getExtent(), connector, isConstraint);
+//			extents.put(dimension.toString(), merged);
+//		}		
+//		
+//	}
 
 
 	public Collection<IConcept> getDimensions() {
@@ -224,29 +231,29 @@ public class ObservationContext implements IObservationContext {
 	}
 
 	
-	public void mergeExtents(ObservationContext coo, LogicalConnector connector, boolean isConstraint) 
-		throws ThinklabException {
-
-		/* take all extents in foreign context and merge with appropriate
-		 * extent.
-		 */
-		for (String entry : coo.extents.keySet()) {
-			
-			// see if we already have an extent for this dimension
-			IExtent extent = extents.get(entry);
-			IExtent foreign = coo.extents.get(entry);
-			
-			if (extent == null) {
-				/* just add the extent */
-				extents.put(entry, foreign);
-			} else {
-				// ask CM to modify the current extent record in order to represent the
-				// new one as well.
-				extents.put(entry, 
-						extent.getConceptualModel().mergeExtents(extent, foreign, connector, isConstraint));
-			}					
-		}	
-	}
+//	public void mergeExtents(ObservationContext coo, LogicalConnector connector, boolean isConstraint) 
+//		throws ThinklabException {
+//
+//		/* take all extents in foreign context and merge with appropriate
+//		 * extent.
+//		 */
+//		for (String entry : coo.extents.keySet()) {
+//			
+//			// see if we already have an extent for this dimension
+//			IExtent extent = extents.get(entry);
+//			IExtent foreign = coo.extents.get(entry);
+//			
+//			if (extent == null) {
+//				/* just add the extent */
+//				extents.put(entry, foreign);
+//			} else {
+//				// ask CM to modify the current extent record in order to represent the
+//				// new one as well.
+//				extents.put(entry, 
+//						extent.getConceptualModel().mergeExtents(extent, foreign, connector, isConstraint));
+//			}					
+//		}	
+//	}
 
 	/**
 	 * For debugging
@@ -363,7 +370,7 @@ public class ObservationContext implements IObservationContext {
 			   new one as well. 
 			   FIXME make sure the isConstraint parameter is necessary and if so, correct.
 			   */
-			IExtent merged = cm.mergeExtents(ext, cm.getExtent(), connector, true);
+			IExtent merged = cm.mergeExtents(ext, cm.getExtent(), connector);
 			extents.put(dimension.toString(), merged);
 		}		
 

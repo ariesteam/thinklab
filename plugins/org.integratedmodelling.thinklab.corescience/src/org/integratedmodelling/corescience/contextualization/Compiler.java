@@ -77,58 +77,10 @@ public abstract class Compiler implements IContextualizationCompiler {
 	 */
 	public static IInstance contextualize(IObservation observation, ISession session) 
 		throws ThinklabException {
-		return contextualizeOld(observation, session, null, null);
+		return contextualize(observation, session, null, null);
 	}
 
-	/**
-	 * The main contextualization driver. Use this one on an observation to produce its contextualized 
-	 * realization. This version takes a collection of listeners as a parameter, in case we want to
-	 * monitor what happens with transformers.
-	 * 
-	 * @param observation
-	 * @param session
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public static IInstance contextualizeOld(IObservation observation, ISession session, 
-			Collection<IContextualizationListener> listeners, IObservationContext ctx) 
-		throws ThinklabException {
-		
-		IContextualizationCompiler compiler = null;
-		if ((compiler = CoreScience.get().getContextualizationCompiler(null, observation)) == null)
-			throw new ThinklabContextualizationException(
-					"cannot find a compiler to contextualize " + observation);
-		
-		IObservationContext context = 
-			observation.getCommonObservationContext(compiler, session, listeners);
-		
-		if (compiler.getTransformedObservation() != null) 
-			return compiler.getTransformedObservation();
-		
-		/* compute and communicate individual merged contexts for each observation */
-		HashSet<IConcept> oobs = new HashSet<IConcept>();
-		
-		for (IObservation obs : compiler.getObservations()) {
-			if (!obs.isMediator() && !(obs.getConceptualModel() instanceof ExtentConceptualModel)) {
 
-				if (oobs.contains(obs.getObservableClass()))
-					throw new ThinklabContextualizationException(
-						"observable classes must be unique in an observation structure: " +
-						obs.getObservableClass());		
-				
-				oobs.add(obs.getObservableClass());
-				compiler.notifyContext(
-						obs.getObservableClass(),
-						obs.getObservationContext().remapExtents(context));
-			}
-		}
-		
-		IContextualizer contextualizer = compiler.compile(observation, context);
-		
-		return contextualizer.run(session);
-	}
-	
-	
 	/**
 	 * The main contextualization driver. Use this one on an observation to produce its contextualized 
 	 * realization. This version takes a collection of listeners as a parameter, in case we want to

@@ -149,7 +149,7 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 	@Override
 	protected ArealExtent createMergedExtent(ArealExtent orextent,
 			ArealExtent otextent, CoordinateReferenceSystem ccr,
-			Envelope common, boolean isConstraint) throws ThinklabException {
+			Envelope common) throws ThinklabException {
 
 		if ( !(orextent instanceof GridExtent && otextent instanceof GridExtent)) {
 			throw new ThinklabUnimplementedFeatureException("RasterModel: cannot yet merge extents of different types");
@@ -172,47 +172,36 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 		double errx = 0.0;
 		double erry = 0.0;
 		
-		if (!isConstraint) {
-		
-			/* choose the smallest of the reprojected cells unless we're constrained to accept otextent */
-			Envelope cor = null;
-			Envelope cot = null; 
-		
-			try {
+		/* choose the smallest of the reprojected cells unless we're constrained to accept otextent */
+		Envelope cor = null;
+		Envelope cot = null; 
 			
-				cor = orext.getCellEnvelope(0, 0).transform(ccr, true, 10);
-				cot = otext.getCellEnvelope(0, 0).transform(ccr, true, 10);
-						
-			} catch (Exception e) {
-				throw new ThinklabValidationException(e);
-			}
-		
-			double aor = cor.getHeight() * cor.getWidth();
-			double aot = cot.getHeight() * cot.getWidth();
-		
-			/*
-			 * We take the finest res
-			 */
-			Envelope cell = aor < aot ? cor : cot;
-	
-			// System.out.println("cells are " + cor + " and " + cot + "; chosen " + cell + " because areas are " + aor + " and " + aot);
-		
-			/* recompute the number of cells in the new extent */
-			xc = (int)Math.floor(nwext.getEnvelope().getWidth()/cell.getWidth());
-			yc = (int)Math.floor(nwext.getEnvelope().getHeight()/cell.getHeight());
-
-			errx = nwext.getEnvelope().getWidth() - (cell.getWidth() * xc);
-			erry = nwext.getEnvelope().getHeight() - (cell.getHeight() * yc);
-
-		} else {
+		try {
 			
-			/* 
-			 * TODO
-			 * just compute the error, which we're not using right now;
-			 * so compute it another time.
-			 */
+			cor = orext.getCellEnvelope(0, 0).transform(ccr, true, 10);
+			cot = otext.getCellEnvelope(0, 0).transform(ccr, true, 10);
 			
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
 		}
+		
+		double aor = cor.getHeight() * cor.getWidth();
+		double aot = cot.getHeight() * cot.getWidth();
+		
+		/*
+		 * We take the finest res
+		 */
+		Envelope cell = aor < aot ? cor : cot;
+	
+		// System.out.println("cells are " + cor + " and " + cot + "; chosen " + cell + " because areas are " + aor + " and " + aot);
+		
+		/* recompute the number of cells in the new extent */
+		xc = (int)Math.floor(nwext.getEnvelope().getWidth()/cell.getWidth());
+		yc = (int)Math.floor(nwext.getEnvelope().getHeight()/cell.getHeight());
+
+		errx = nwext.getEnvelope().getWidth() - (cell.getWidth() * xc);
+		erry = nwext.getEnvelope().getHeight() - (cell.getHeight() * yc);
+
 		
 		// System.out.println("new cell size is " + xc + "," + yc);
 		

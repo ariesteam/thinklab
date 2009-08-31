@@ -55,18 +55,6 @@ import org.integratedmodelling.utils.Polylist;
  */
 public interface IObservationContext extends Iterable<IObservationContext> {
 
-	/**
-	 * Recursively descend through contingencies and dependencies of a top-level observation, 
-	 * merging contexts as we go along to build an overall context.
-	 * 
-	 * @param observation
-	 * @param dimension 
-	 * @param connector
-	 * @param isConstraint
-	 * @throws ThinklabException 
-	 */
-	public void mergeExtent(IObservation observation, IConcept dimension, LogicalConnector connector, boolean isConstraint) 
-		throws ThinklabException;
 
 	/**
 	 * Return the total number of states in the context.

@@ -96,23 +96,6 @@ public interface IObservation {
 	 */
 	public abstract IConcept getObservationClass();
 
-	/*
-	 * Obtain the observation context for this observation, recursing and
-	 * compounding contingencies and dependencies. Use the passed compiler to
-	 * notify dependencies and links.
-	 * 
-	 * FIXME this should probably be removed from the interface, and just cast to
-	 * Observation, which should be renamed DefaultAbstractObservation.
-	 * 
-	 * @param compiler
-	 * @param session
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public IObservationContext getCommonObservationContext(
-			IContextualizationCompiler compiler, ISession session,
-			Collection<IContextualizationListener> listeners) throws ThinklabException;
-
 	/**
 	 * Get the observation's own observation context, including extents and
 	 * values only from the directly linked dependencies. No recursion happens.

@@ -53,7 +53,7 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 	}
 	
 	public IExtent mergeExtents(IExtent original, IExtent other,
-			LogicalConnector connector, boolean isConstraint)
+			LogicalConnector connector)
 			throws ThinklabException {
 		
 		if ( !(other instanceof ArealExtent) || !(original instanceof ArealExtent)) {
@@ -92,18 +92,15 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 		 */
 		Envelope common = env2;
 		
-		if (!isConstraint) {
-			
-			if (connector.equals(LogicalConnector.INTERSECTION))
-				common = env1.intersection(env2); 
-			else {
-				/* no union in frickin' JTS envelope */
-				Envelope2D e1 = new Envelope2D(env1);
-				Envelope2D e2 = new Envelope2D(env2);
-				Envelope2D ee = new Envelope2D(env1);
-				Envelope2D.union(e1, e2, ee);
-				common = new Envelope(ee.getMinX(), ee.getMaxX(), ee.getMinY(), ee.getMaxY());
-			}
+		if (connector.equals(LogicalConnector.INTERSECTION))
+			common = env1.intersection(env2); 
+		else {
+			/* no union in frickin' JTS envelope */
+			Envelope2D e1 = new Envelope2D(env1);
+			Envelope2D e2 = new Envelope2D(env2);
+			Envelope2D ee = new Envelope2D(env1);
+			Envelope2D.union(e1, e2, ee);
+			common = new Envelope(ee.getMinX(), ee.getMaxX(), ee.getMinY(), ee.getMaxY());
 		}
 		
 
@@ -111,7 +108,7 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 		 * Here we send out to a virtual to create the appropriate areal extent with this envelope and CRS, 
 		 * adding whatever else we need to use it.
 		 */
-		return createMergedExtent(orextent, otextent, ccr, common, isConstraint);
+		return createMergedExtent(orextent, otextent, ccr, common);
 	}
 
 	
@@ -149,7 +146,7 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 	 */
 	protected abstract IExtent createMergedExtent(ArealExtent orextent,
 			ArealExtent otextent, CoordinateReferenceSystem crs2,
-			Envelope common, boolean isConstraint) throws ThinklabException;
+			Envelope common) throws ThinklabException;
 
 
 }

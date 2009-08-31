@@ -170,7 +170,7 @@ public class ArealLocationConceptualModel extends SpatialConceptualModel {
 	@Override
 	protected IExtent createMergedExtent(ArealExtent orextent,
 			ArealExtent otextent, CoordinateReferenceSystem crs2,
-			Envelope common, boolean isConstraint)
+			Envelope common)
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;

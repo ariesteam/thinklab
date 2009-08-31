@@ -65,7 +65,7 @@ import org.integratedmodelling.utils.LogicalConnector;
 /**
  * Base implementation for an Observation instance. Initializes the observation
  * and its context, defers operations to subclasses. Gives API access to data,
- * contexts, conceptual model and uncertainty model.
+ * contexts, observable and conceptual model.
  * 
  * Most importantly, it provides the contextualization functionalities that
  * allow context compilation to work. So unless you don't plan to contextualize,
@@ -393,8 +393,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 			/* merge extents appropriately */
 			if (((Observation) oo).conceptualModel instanceof ExtentConceptualModel)
-				ret.mergeExtent(oo, getContextDimension(oo),
-						LogicalConnector.INTERSECTION, true);
+				ret.mergeExtent(oo, LogicalConnector.INTERSECTION);
 			else {
 				/* FIXME should notify dependency, too? */
 			}
@@ -421,6 +420,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 					new HashSet<Observation>(), 
 					listeners);
 		
+		((ObservationContext)context).initialize();
+
 		return context;
 	}
 
@@ -439,20 +440,13 @@ public class Observation implements IObservation, IInstanceImplementation {
 			return null;
 
 		/*
-		 * 1. merge all extents
-		 */
-		for (IObservation extent : getExtentDependencies()) {
-			compiler.addObservationDependency(this, extent);
-			context.mergeExtent(extent, LogicalConnector.INTERSECTION);
-		}
-		
-		/*
-		 * 2. if a transformer, transform; else add all dependencies;
+		 * If a transformer, transform and return transformed context; else initialize from
+		 * extents and merge context across dependencies.
 		 */
 		if (getConceptualModel() instanceof TransformingConceptualModel && !this.beingTransformed) {
 
 			this.beingTransformed = true;
-			
+
 			IInstance inst = Compiler.contextualize(this, session, listeners, context);
 			IInstance trs = 
 				((TransformingConceptualModel) getConceptualModel())
@@ -475,184 +469,31 @@ public class Observation implements IObservation, IInstanceImplementation {
 			
 		} else {
 			
+			/*
+			 * 1. merge all extents
+			 */
+			for (IObservation extent : getExtentDependencies()) {
+				compiler.addObservationDependency(this, extent);
+				context.mergeExtent(extent, LogicalConnector.INTERSECTION);
+			}
+
+			/*
+			 * 2. recurse over dependencies
+			 */
 			for (IObservation dependency : getNonExtentDependencies()) {
-				((Observation)dependency)
+				context = (ObservationContext) ((Observation)dependency)
 						.computeOverallContext(context, compiler, session, inserted, listeners);
 				compiler.addObservationDependency(this, dependency);
 			}
+			
+			compiler.addObservation(this);
 		}
 		
-		/*
-		 * 3. initialize and return.
-		 */
-		
-		context.initialize();
 		
 		return context;
 	}
 	
-	/**
-	 * Build the COMMON observation context, which is the merged
-	 * intersection of all extents along the dependency tree, so that 
-	 * states of all dependencies can be calculated by a contextualizer 
-	 * according to it. Called by Compiler.compile(). This will not
-	 * merge contingencies, which may be completely different structures
-	 * not intended for being harmonized; rather, they will be contextualized
-	 * separately and merged into the resulting instance. 
-	 * 
-	 */
-	public IObservationContext getCommonObservationContext(
-			IContextualizationCompiler compiler, ISession session,
-			Collection<IContextualizationListener> listeners)
-			throws ThinklabException {
-
-		ObservationContext ret = getCommonObservationContext_(compiler,
-				session, new HashSet<Observation>(), listeners);
-
-		return ret;
-	}
-
-	/**
-	 * Create the overall observation context for this observation in order for
-	 * the observation structure can be contextualized by the passed workflow.
-	 * Specifically:
-	 * 
-	 * 1. insert observation in workflow and notes all dependencies so that a
-	 * topological order can be constructed;
-	 * 
-	 * 2. Creates a new observation context; contextualizes all contingent
-	 * observations and sets the context to be the union of the extents of all
-	 * contingents.
-	 * 
-	 * 3. Contextualizes all dependencies and sets the context to the
-	 * intersection of the current one with that of the dependencies.
-	 * 
-	 * @param compiler
-	 * @param session
-	 * @return
-	 * @throws
-	 * @throws ThinklabException
-	 */
-	private ObservationContext getCommonObservationContext_(
-			IContextualizationCompiler compiler, ISession session,
-			HashSet<Observation> inserted, 
-			Collection<IContextualizationListener> listeners) throws ThinklabException {
-
-		if (inserted.contains(this))
-			return null;
-
-		/*
-		 * if this is a transformer, we want to contextualize it with its own
-		 * compiler and filter the resulting observation through the
-		 * transforming model, which may produce a transformed observation. Whatever
-		 * is returned is the observation we want to use: we notify the result
-		 * to the compiler and return its context instead of the original one.
-		 * 
-		 * TODO: check: is the overall context set in the top obs being used when cont
-		 */
-		if (getConceptualModel() instanceof TransformingConceptualModel && !this.beingTransformed) {
-
-			this.beingTransformed = true;
-			
-			IInstance inst = Compiler.contextualizeOld(this, session, listeners, null);
-			IInstance trs = 
-				((TransformingConceptualModel) getConceptualModel())
-					.transformObservation(inst, session);
-			Observation obs = extractObservationFromInstance(trs);
-			
-			/**
-			 * TODO call listeners on obs. Pass both the transformed and the transformer.
-			 * See TLC-37
-			 */
-			if (listeners != null) {
-				for (IContextualizationListener l : listeners)
-					l.onObservationTransformed(this, obs);
-			}
-			
-			compiler.addObservation(obs);
-
-			this.beingTransformed = false;
-			
-			compiler.setTransformedObservation(trs);
-			
-			return (ObservationContext) obs.getObservationContext();
-		}
-
-		ObservationContext ret = new ObservationContext(this);
-
-		/*
-		 * first thing, make sure that the compiler knows it must calculate us,
-		 * or we won't be able to set dependencies later.
-		 */
-		compiler.addObservation(this);
-
-		/* if I am an extent, set context from it. */
-		if (conceptualModel instanceof ExtentConceptualModel) {
-			ret.mergeExtent(this, getContextDimension(this),
-					LogicalConnector.INTERSECTION, true);
-		}
-
-// TODO contingencies must be brought in after full contextualization
-//		/*
-//		 * scan all contingencies and build overall maximum context by merging
-//		 * extents for all.
-//		 */
-//		for (IObservation contingency : getContingencies()) {
-//
-//			/* contextualize obs */
-//			ObservationContext oc = (ObservationContext) (((Observation) contingency)
-//					.getOverallObservationContext(compiler, session));
-//
-//			/* merge extents appropriately */
-//			if (oc != null)
-//				ret.mergeExtents(oc, LogicalConnector.UNION, false);
-//
-//		}
-
-		/*
-		 * AND the merged extent of the contingencies that are not extents with
-		 * the extents of the dependencies
-		 */
-		for (IObservation dependency : getNonExtentDependencies()) {
-
-			/* contextualize obs */
-			ObservationContext oc = (ObservationContext) (((Observation) dependency)
-					.getCommonObservationContext(compiler, session, listeners));
-
-			/* notify dependency */
-			if (oc != null) {
-				compiler.addObservationDependency(this, dependency);
-
-				/* merge extents appropriately */
-				ret.mergeExtents(oc, LogicalConnector.INTERSECTION, false);
-			}
-		}
-
-		/*
-		 * Constrain all existing extents with any extents we may have with the
-		 * extents of the dependencies
-		 */
-		for (IObservation dependency : getExtentDependencies()) {
-
-			/* contextualize obs */
-			ObservationContext oc = (ObservationContext) (((Observation) dependency)
-					.getCommonObservationContext(compiler, session, listeners));
-
-			/* notify dependency */
-			if (oc != null) {
-				compiler.addObservationDependency(this, dependency);
-
-				/* merge extents appropriately */
-				ret.mergeExtents(oc, LogicalConnector.INTERSECTION, true);
-			}
-		}
-
-		// initialize this context
-		ret.initialize();
-
-		return ret;
-	}
-
+	
 	public IConcept getObservationClass() {
 		return observation.getDirectType();
 	}
@@ -699,52 +540,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 		return ctg;
 	}
-
-//	/**
-//	 * Check that formal observation (without datasource) has an associated
-//	 * actual observation, and return it.
-//	 * 
-//	 * @param cobs
-//	 * @return
-//	 * @throws ThinklabException
-//	 */
-//	private static Observation getAssociatedActualObservation(IObservation cobs)
-//			throws ThinklabException {
-//
-//		Collection<IInstance> same = cobs.getObservationInstance()
-//				.getEquivalentInstances();
-//
-//		if (same.size() == 0)
-//			return null;
-//
-//		if (same.size() != 1)
-//			throw new ThinklabContextValidationException(
-//					"formal observation "
-//							+ cobs
-//							+ " has no link to an actual observation, or link is ambiguous");
-//
-//		Observation ret = extractObservationFromInstance(same.iterator().next());
-//
-//		if (ret != null && isFormalObservation(ret))
-//			throw new ThinklabContextValidationException(
-//					"actual observation linked to "
-//							+ cobs
-//							+ " is formal (has no datasource); dependency cannot be satisfied.");
-//
-//		return ret;
-//	}
-
-	static boolean isFormalObservation(IObservation obs)
-			throws ThinklabException {
-
-		/*
-		 * FIXME checking for ID as only class without an explicit DS could be
-		 * weak.
-		 */
-		return obs.getDataSource() == null
-				&& !obs.getObservationInstance().is(CoreScience.IDENTIFICATION);
-	}
-
+	
 	public String toString() {
 		return "[" + this.observation.getDirectType() + ": "
 				+ this.observable.getLocalName() + " ("

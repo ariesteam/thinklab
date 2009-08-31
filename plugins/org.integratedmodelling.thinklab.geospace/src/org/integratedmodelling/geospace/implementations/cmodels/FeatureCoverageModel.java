@@ -97,7 +97,7 @@ public class FeatureCoverageModel extends SubdividedCoverageConceptualModel {
 	@Override
 	protected IExtent createMergedExtent(ArealExtent orextent,
 			ArealExtent otextent, CoordinateReferenceSystem crs2,
-			Envelope common, boolean isConstraint)
+			Envelope common)
 			throws ThinklabException {
 		
 		ArealExtent ret = null;
