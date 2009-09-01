@@ -241,6 +241,10 @@ public class Command {
         return getOptionAsString(optName) != null;
     }
     
+    public String getName() {
+    	return declaration.ID;
+    }
+    
     public String toString() {
     	
     	/* if we were not read from a string, reconstruct it */

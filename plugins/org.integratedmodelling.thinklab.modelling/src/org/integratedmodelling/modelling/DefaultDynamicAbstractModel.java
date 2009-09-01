@@ -19,7 +19,7 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 		
 		if (keyword.equals(":state") && (argument instanceof ISeq)) {
 			
-			// TODO accept dynamic state specs
+			System.out.println("got state " + argument);
 			
 		} else if (keyword.equals(":derivative")) {
 			
