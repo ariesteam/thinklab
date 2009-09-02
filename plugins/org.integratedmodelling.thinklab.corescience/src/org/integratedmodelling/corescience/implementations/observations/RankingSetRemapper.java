@@ -75,7 +75,7 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 		}
 
 		@Override
-		public boolean notifyDependencyObservable(IConcept observable)
+		public boolean notifyDependencyObservable(IConcept observable, String formalName)
 				throws ThinklabValidationException {
 			// TODO Auto-generated method stub
 			return false;

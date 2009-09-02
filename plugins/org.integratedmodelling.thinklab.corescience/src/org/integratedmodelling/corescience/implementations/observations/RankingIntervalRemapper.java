@@ -73,7 +73,7 @@ public class RankingIntervalRemapper extends Observation implements IConceptuali
 		}
 
 		@Override
-		public boolean notifyDependencyObservable(IConcept observable)
+		public boolean notifyDependencyObservable(IConcept observable, String formalName)
 				throws ThinklabValidationException {
 			return false;
 		}

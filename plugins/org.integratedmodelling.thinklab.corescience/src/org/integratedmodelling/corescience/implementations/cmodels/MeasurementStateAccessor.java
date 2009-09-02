@@ -29,7 +29,7 @@ public class MeasurementStateAccessor implements IStateAccessor {
 	}
 
 	@Override
-	public boolean notifyDependencyObservable(IConcept observable)
+	public boolean notifyDependencyObservable(IConcept observable, String formalName)
 			throws ThinklabValidationException {
 		// we don't need anything
 		return false;

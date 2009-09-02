@@ -201,5 +201,14 @@ public interface IObservation {
 	 * @throws ThinklabException 
 	 */
 	public abstract void addContingency(IInstance instance) throws ThinklabException;
+
+	/**
+	 * If the observation has been given a formal name for linking in code or other
+	 * reference, return it, otherwise return null. This is linked to the annotation
+	 * property observation:hasFormalName.
+	 *  
+	 * @return
+	 */
+	public abstract String getFormalName();
 	
 }

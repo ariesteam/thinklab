@@ -71,7 +71,7 @@ public class ModeledClassification
 		}
 
 		@Override
-		public boolean notifyDependencyObservable(IConcept observable)
+		public boolean notifyDependencyObservable(IConcept observable, String formalName)
 				throws ThinklabValidationException {
 			return true;
 		}
@@ -104,7 +104,7 @@ public class ModeledClassification
 		}
 
 		@Override
-		public boolean notifyDependencyObservable(IConcept observable)
+		public boolean notifyDependencyObservable(IConcept observable, String formalName)
 				throws ThinklabValidationException {
 			return true;
 		}
@@ -180,7 +180,11 @@ public class ModeledClassification
 		arr.add("modeltypes:ModeledClassification");
 		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(cSpace)));
 		arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, Polylist.list(cSpace)));
-				
+
+		if (getFormalName() != null) {
+			arr.add(Polylist.list(CoreScience.HAS_FORMAL_NAME, getFormalName()));			
+		}
+		
 		for (int i = 0; i < classifiers.size(); i++) {
 			arr.add(Polylist.list(
 						"modeltypes:hasClassifier", 

@@ -26,6 +26,9 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 		 */
 		Polylist def = Polylist.listNotNull(
 				CoreScience.MEASUREMENT,
+				(id != null ? 
+					Polylist.list(CoreScience.HAS_FORMAL_NAME, id) :
+					null),
 				unitSpecs.contains(" ") ?
 						Polylist.list("measurement:value", unitSpecs) :
 						Polylist.list("measurement:unit", unitSpecs),

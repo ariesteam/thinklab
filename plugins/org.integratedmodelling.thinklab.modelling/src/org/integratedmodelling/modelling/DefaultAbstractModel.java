@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -25,7 +24,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.Polylist;
 
 public abstract class DefaultAbstractModel implements IModel {
@@ -62,7 +60,7 @@ public abstract class DefaultAbstractModel implements IModel {
 			this.observableSpecs = Polylist.list(this.observable);
 		}
 		
-		id = CamelCase.toLowerCase(observable.toString(), '-');
+		id = observable.toString().replace(':','_');
 	}
 	
 	@Override
@@ -173,7 +171,6 @@ public abstract class DefaultAbstractModel implements IModel {
 			conformancePolicies == null ? 
 					new DefaultConformance() :
 					conformancePolicies.get(inst.getDirectType());
-					
 					
 		c = c.restrict(
 				new Restriction(CoreScience.HAS_OBSERVABLE, conf.getConstraint(inst)));

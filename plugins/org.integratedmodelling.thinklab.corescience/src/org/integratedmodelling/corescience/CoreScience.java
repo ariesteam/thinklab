@@ -85,6 +85,8 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String HAS_TARGET_INSTANCE = "observation:targetInstance";
 	public static final String HAS_TARGET_CLASS = "observation:targetClass";
 	public static final String HAS_INTERVAL = "observation:hasInterval";
+	public static final String HAS_FORMAL_NAME = "observation:hasFormalName";
+
 
 	// concepts
 	public static final String OBSERVATION = "observation:Observation";
@@ -116,7 +118,6 @@ public class CoreScience extends ThinklabPlugin {
 	
 	static final public String GENERIC_OBSERVABLE = "representation:GenericObservable";
 	static final public String GENERIC_QUANTIFIABLE = "representation:GenericQuantifiable";
-
 
 	public static CoreScience get() {
 		return (CoreScience) getPlugin(PLUGIN_ID );

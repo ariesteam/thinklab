@@ -41,7 +41,6 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public IModel getConfigurableClone() {
-		// TODO Auto-generated method stub
 		RankingModel ret = new RankingModel();
 		ret.copy(this);
 		ret.unitSpecs = unitSpecs;

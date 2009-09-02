@@ -60,7 +60,7 @@ public class IntegerClassifier extends Observation implements IConceptualModel, 
 		}
 
 		@Override
-		public boolean notifyDependencyObservable(IConcept observable)
+		public boolean notifyDependencyObservable(IConcept observable, String formalName)
 				throws ThinklabValidationException {
 			return false;
 		}

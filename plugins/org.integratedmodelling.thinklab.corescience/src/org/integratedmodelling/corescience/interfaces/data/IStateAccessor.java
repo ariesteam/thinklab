@@ -28,13 +28,15 @@ public interface IStateAccessor {
 	 * given state by returning a boolean.
 	 * 
 	 * If the obs doesn't know what to do with the observable, it should throw an exception here.
+	 * @param formalName the id of this dependency, so that we can link in code to something other
+	 * 	      than the observable concept
 	 *  
 	 * @throws ThinklabValidationException
 	 * @return true if the observable's state really needs to be passed at contextualization. Used
 	 * to optimize contextualization.
 	 */
-	public boolean notifyDependencyObservable(IConcept observable) throws ThinklabValidationException;
-
+	public boolean notifyDependencyObservable(IConcept observable, String formalName) throws ThinklabValidationException;
+	
 	/**
 	 * If notifyDependencyObservable has returned true for this observable, a register will be allocated
 	 * and communicated through a call to this one, so that its value can be accessed using the register

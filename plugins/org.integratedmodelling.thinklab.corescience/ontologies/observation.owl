@@ -259,6 +259,15 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasFormalName -->
+
+    <owl:DatatypeProperty rdf:about="#hasFormalName">
+        <rdfs:domain rdf:resource="#Observation"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#sourceValueType -->
 
     <owl:DatatypeProperty rdf:about="#sourceValueType">

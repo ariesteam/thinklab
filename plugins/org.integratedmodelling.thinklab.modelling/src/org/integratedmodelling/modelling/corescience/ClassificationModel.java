@@ -208,6 +208,10 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 		arr.add("modeltypes:ModeledClassification");
 		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(state)));
 		
+		if (id != null) {
+			arr.add(Polylist.list(CoreScience.HAS_FORMAL_NAME, id));			
+		}
+		
 		if (!isMediating())
 			arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, this.observableSpecs));
 		

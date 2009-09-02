@@ -76,6 +76,8 @@ import org.integratedmodelling.utils.LogicalConnector;
 @InstanceImplementation(concept = "observation:Observation")
 public class Observation implements IObservation, IInstanceImplementation {
 
+	private String formalName = null;
+	
 	/*
 	 * these can be both objects implementations or literals, coming from OWL,
 	 * so we store the value and convert on usage. Observation structures built
@@ -97,6 +99,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 	protected IObservation mediatedObservation = null;
 	protected IObservation mediatorObservation = null;
 	private boolean beingTransformed = false;
+	
 
 	/*
 	 * (non-Javadoc)
@@ -211,6 +214,10 @@ public class Observation implements IObservation, IInstanceImplementation {
 		ArrayList<IObservation> ext = new ArrayList<IObservation>();
 		ArrayList<IObservation> nxt = new ArrayList<IObservation>();
 
+		IValue fn = i.get(CoreScience.HAS_FORMAL_NAME);
+		if (fn != null)
+			formalName = fn.toString();
+		
 		/*
 		 * locate and store various related for efficiency. This method is
 		 * faster than getting piece by piece.
@@ -604,5 +611,10 @@ public class Observation implements IObservation, IInstanceImplementation {
 		
 		contingencies = oc;
 		
+	}
+
+	@Override
+	public String getFormalName() {
+		return formalName;
 	}
 }

@@ -548,7 +548,7 @@ public class VMCompiler extends Compiler {
 				continue;
 			
 			if (odsc.accessor != null &&
-					odsc.accessor.notifyDependencyObservable(o.getObservableClass())) {
+					odsc.accessor.notifyDependencyObservable(o.getObservableClass(), o.getFormalName())) {
 				accessorsThatWantUs.add(odsc.accessor);
 				datasourcesThatWantUs.add(odsc.datasource);
 				odesc.needed = true;
