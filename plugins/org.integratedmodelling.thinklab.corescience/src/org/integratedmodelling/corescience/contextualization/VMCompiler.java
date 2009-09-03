@@ -404,7 +404,6 @@ public class VMCompiler extends Compiler {
 					ret.resolveJump(ctxInact[z], jumpAddr);
 				}
 			}
-
 		}
 		
 		/*

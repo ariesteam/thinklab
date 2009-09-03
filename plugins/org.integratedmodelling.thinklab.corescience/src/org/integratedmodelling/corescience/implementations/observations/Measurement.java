@@ -24,7 +24,7 @@ import org.integratedmodelling.utils.Polylist;
 @InstanceImplementation(concept="measurement:Measurement")
 public class Measurement extends Observation implements IConceptualizable {
 	
-	String unitSpecs = null;
+	protected String unitSpecs = null;
 	String valueSpecs = null;
 	private IRandomValue randomValue = null;
 	
@@ -53,8 +53,6 @@ public class Measurement extends Observation implements IConceptualizable {
 
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
-
-		super.initialize(i);
 
 		// lookup defs - either unit and value or textual definition of both
 		IValue v = i.get("observation:value");
@@ -87,6 +85,10 @@ public class Measurement extends Observation implements IConceptualizable {
 						"measurement value can contain either random or numeric values, not both");
 			randomValue = new DistributionValue(v.toString());
 		}
+
+		// call it now, or the conceptual model won't know the units
+		super.initialize(i);
+
 	}
 
 	@Override

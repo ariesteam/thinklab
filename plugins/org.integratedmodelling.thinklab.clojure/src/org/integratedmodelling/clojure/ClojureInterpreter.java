@@ -61,84 +61,7 @@ public class ClojureInterpreter implements Interpreter {
 	
 	public IValue evalInNamespace(Object code, String namespace) throws ThinklabException {
 		
-		InputStream inp = null;
-		try {
-			if (code instanceof URL) {
-				inp = ((URL)code).openStream();
-			} else if (code instanceof File) {
-				inp = new FileInputStream((File)code);
-			} else {
-				inp = new ByteArrayInputStream(code.toString().getBytes("UTF-8"));
-			}
-		} catch (Exception e) {
-			throw new ThinklabInternalErrorException(e);
-		}
-		
-		final Symbol TL = Symbol.intern("tl");
-		final Symbol CLOJURE = Symbol.intern("clojure.core");
-
-		final Var refer = RT.var("clojure.core", "refer");
-		final Var ns = RT.var("clojure.core", "*ns*");
-		final Var star1 = RT.var("clojure.core", "*1");
-		final Var star2 = RT.var("clojure.core", "*2");
-		final Var star3 = RT.var("clojure.core", "*3");
-		final Var stare = RT.var("clojure.core", "*e");
-		final Var sess  = RT.var("tl", "*session*");
-
-		final Namespace CUSTOM_NS = Namespace.findOrCreate(newGlobalSymbol(namespace));		
-
-		Object ret = null;
-		
-		try {
-
-			Var.pushThreadBindings(
-				RT.map(
-					//RT.USE_CONTEXT_CLASSLOADER, RT.T, 
-					ns, CUSTOM_NS, 
-					star1, null,
-					star2, null, 
-					star3, null, 
-					stare, null, 
-					sess, this.session));
-			
-			refer.invoke(CLOJURE);
-			refer.invoke(TL);
-			
-			LineNumberingPushbackReader rdr = new LineNumberingPushbackReader(
-					new InputStreamReader(inp, RT.UTF8));
-			
-			Object EOF = new Object();
-
-			for (;;) {
-				
-				try {
-					Object r = LispReader.read(rdr, false, EOF, false);
-					if (r == EOF) {
-						break;
-					}
-					ret = Compiler.eval(r);
-					star3.set(star2.get());
-					star2.set(star1.get());
-					star1.set(ret);
-					
-				} catch (Exception e) {
-					stare.set(e);
-					throw e;
-				}
-			}
-		} catch (Exception e) {
-			throw new ThinklabScriptException(e);
-		} finally {
-			Var.popThreadBindings();
-		}
-		
-
-		/*
-		 * FIXME remove
-		 */
-		System.out.println("EXECUTED: [" + namespace + "] " + code);
-		
-		// TODO Auto-generated method stub
+		Object ret = evalRaw(code, namespace);
 		return ret == null ? null : Value.getValueForObject(ret);
 	}
 
@@ -321,6 +244,88 @@ public class ClojureInterpreter implements Interpreter {
 	@Override
 	public IValue eval(Object code) throws ThinklabException {   
     	return evalInNamespace(code, session == null ? "user" : session.getSessionID());    	
+	}
+
+	public Object evalRaw(Object code, String namespace) throws ThinklabException {
+		
+		InputStream inp = null;
+		try {
+			if (code instanceof URL) {
+				inp = ((URL)code).openStream();
+			} else if (code instanceof File) {
+				inp = new FileInputStream((File)code);
+			} else {
+				inp = new ByteArrayInputStream(code.toString().getBytes("UTF-8"));
+			}
+		} catch (Exception e) {
+			throw new ThinklabInternalErrorException(e);
+		}
+		
+		final Symbol TL = Symbol.intern("tl");
+		final Symbol CLOJURE = Symbol.intern("clojure.core");
+
+		final Var refer = RT.var("clojure.core", "refer");
+		final Var ns = RT.var("clojure.core", "*ns*");
+		final Var star1 = RT.var("clojure.core", "*1");
+		final Var star2 = RT.var("clojure.core", "*2");
+		final Var star3 = RT.var("clojure.core", "*3");
+		final Var stare = RT.var("clojure.core", "*e");
+		final Var sess  = RT.var("tl", "*session*");
+
+		final Namespace CUSTOM_NS = Namespace.findOrCreate(newGlobalSymbol(namespace));		
+
+		Object ret = null;
+		
+		try {
+
+			Var.pushThreadBindings(
+				RT.map(
+					//RT.USE_CONTEXT_CLASSLOADER, RT.T, 
+					ns, CUSTOM_NS, 
+					star1, null,
+					star2, null, 
+					star3, null, 
+					stare, null, 
+					sess, this.session));
+			
+			refer.invoke(CLOJURE);
+			refer.invoke(TL);
+			
+			LineNumberingPushbackReader rdr = new LineNumberingPushbackReader(
+					new InputStreamReader(inp, RT.UTF8));
+			
+			Object EOF = new Object();
+
+			for (;;) {
+				
+				try {
+					Object r = LispReader.read(rdr, false, EOF, false);
+					if (r == EOF) {
+						break;
+					}
+					ret = Compiler.eval(r);
+					star3.set(star2.get());
+					star2.set(star1.get());
+					star1.set(ret);
+					
+				} catch (Exception e) {
+					stare.set(e);
+					throw e;
+				}
+			}
+		} catch (Exception e) {
+			throw new ThinklabScriptException(e);
+		} finally {
+			Var.popThreadBindings();
+		}
+		
+		/*
+		 * FIXME remove
+		 */
+		System.out.println("EXECUTED: [" + namespace + "] " + code);
+		
+		// TODO Auto-generated method stub
+		return ret;
 	}
 	
 }

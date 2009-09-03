@@ -11,6 +11,7 @@ import org.integratedmodelling.corescience.implementations.datasources.MemDouble
 import org.integratedmodelling.corescience.implementations.datasources.MemFloatContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemIntegerContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemLongContextualizedDatasource;
+import org.integratedmodelling.corescience.implementations.datasources.MemObjectContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemValueContextualizedDatasource;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IStateValidator;
@@ -128,7 +129,7 @@ public class VMContextualizer<T> {
 	static public final Ins ACTIVATE_I = new Ins(ACTIVATE, "ACTIVATE", "activate all registries");
 	static public final Ins IREG_I = new Ins(IREG, "IREG", "push immediate value in register");
 	static public final Ins IFCHNG_I = new Ins(IFCHNG, "IFCHNG", "jump unless given context register has changed");
-	static public final Ins MKSTOR_I = new Ins(MKSTOR, "MKTOR", "declare custom datasource for storage of given observable");
+	static public final Ins MKSTOR_I = new Ins(MKSTOR, "MKSTOR", "declare custom datasource for storage of given observable");
 	
 	ContextRegister[] contextRegister = null;
 	private IConcept _stackType;
@@ -249,9 +250,9 @@ public class VMContextualizer<T> {
 				}
 				break;
 			case MKSTOR:
-				// TODO transfer custom ds to storage register identified
-				states[ins & 0x0000ffff] =
-					_datasources.get((ins & 0x00ff0000) >> 16);
+				// transfer custom ds to storage register identified
+				states[(ins & 0x00ff0000) >> 16] =
+					_datasources.get(ins & 0x0000ffff);
 				break;
 			}
 		}
@@ -327,6 +328,9 @@ public class VMContextualizer<T> {
 			ret = new MemDoubleContextualizedDatasource(stateType, size);
 		else if (stateType.is(KnowledgeManager.LiteralValue()))
 			ret = new MemValueContextualizedDatasource(stateType, size);
+		else if (stateType.equals(KnowledgeManager.Thing()))
+			// we have a mixed situation with no common types, can ony use an object 
+			ret = new MemObjectContextualizedDatasource(stateType, size);
 		else {
 			/*
 			 * if we get here, we have failed to ask the CMs what datasource 

@@ -13,14 +13,13 @@ import clojure.lang.ISeq;
  */
 public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstractModel {
 
+	protected Object dynSpecs = null;
 	
 	@Override
 	public void applyClause(String keyword, Object argument) throws ThinklabException {
 		
 		if (keyword.equals(":state") && (argument instanceof ISeq)) {
-			
-			System.out.println("got state " + argument);
-			
+			this.dynSpecs = argument;
 		} else if (keyword.equals(":derivative")) {
 			
 			// TODO accept dynamic derivative specs

@@ -25,9 +25,12 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 		 * TODO choose observation class according to derivative, probability etc.
 		 */
 		Polylist def = Polylist.listNotNull(
-				CoreScience.MEASUREMENT,
+				(dynSpecs == null ? CoreScience.MEASUREMENT : "modeltypes:DynamicMeasurement"),
 				(id != null ? 
 					Polylist.list(CoreScience.HAS_FORMAL_NAME, id) :
+					null),
+				(dynSpecs != null?
+					Polylist.list("modeltypes:hasStateFunction", dynSpecs) :
 					null),
 				unitSpecs.contains(" ") ?
 						Polylist.list("measurement:value", unitSpecs) :
