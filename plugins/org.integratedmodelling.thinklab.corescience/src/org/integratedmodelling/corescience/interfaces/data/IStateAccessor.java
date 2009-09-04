@@ -1,6 +1,7 @@
 package org.integratedmodelling.corescience.interfaces.data;
 
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 /**
@@ -28,14 +29,15 @@ public interface IStateAccessor {
 	 * given state by returning a boolean.
 	 * 
 	 * If the obs doesn't know what to do with the observable, it should throw an exception here.
+	 * @param o 
 	 * @param formalName the id of this dependency, so that we can link in code to something other
 	 * 	      than the observable concept
 	 *  
-	 * @throws ThinklabValidationException
 	 * @return true if the observable's state really needs to be passed at contextualization. Used
 	 * to optimize contextualization.
+	 * @throws ThinklabException TODO
 	 */
-	public boolean notifyDependencyObservable(IConcept observable, String formalName) throws ThinklabValidationException;
+	public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName) throws ThinklabException;
 	
 	/**
 	 * If notifyDependencyObservable has returned true for this observable, a register will be allocated
@@ -44,11 +46,13 @@ public interface IStateAccessor {
 	 * 
 	 * If there's anything wrong with the type, throw an exception, although this should not happen
 	 * and the accessor should be prepared to deal with the type returned by the CM.
-	 * 
-	 * @param newRegister
+	 * @param observation TODO
 	 * @param stateType
+	 * @param newRegister
+	 * 
+	 * @throws ThinklabException TODO
 	 */
-	public void notifyDependencyRegister(IConcept observable, int register, IConcept stateType) throws ThinklabValidationException;
+	public void notifyDependencyRegister(IObservation observation, IConcept observable, int register, IConcept stateType) throws ThinklabException;
 	
 	/**
 	 * Compute or retrieve the value. The passed array contains values

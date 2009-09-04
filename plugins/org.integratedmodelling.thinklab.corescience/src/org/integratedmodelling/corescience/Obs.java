@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.implementations.datasources.MemValueContextualizedDatasource;
+import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -173,6 +174,10 @@ public class Obs {
 						Polylist.list(CoreScience.HAS_CONCEPTUAL_MODEL, c),
 						Polylist.list(CoreScience.HAS_DATASOURCE,
 						Polylist.list("@", ds)));			
+	}
+
+	public static boolean isExtent(IObservation o) throws ThinklabException {
+		return o.getConceptualModel() instanceof ExtentConceptualModel;
 	}
 	
 }

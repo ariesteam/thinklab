@@ -3,8 +3,9 @@ package org.integratedmodelling.corescience.implementations.cmodels;
 import javax.measure.converter.UnitConverter;
 
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.literals.UnitValue;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 public class MeasurementStateMediator implements IStateAccessor {
@@ -21,14 +22,14 @@ public class MeasurementStateMediator implements IStateAccessor {
 	}
 	
 	@Override
-	public boolean notifyDependencyObservable(IConcept observable, String formalName)
-			throws ThinklabValidationException {
+	public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
+			throws ThinklabException {
 		return true;
 	}
 
 	@Override
-	public void notifyDependencyRegister(IConcept observable, int register,
-			IConcept stateType) throws ThinklabValidationException {
+	public void notifyDependencyRegister(IObservation observation, IConcept observable,
+			int register, IConcept stateType) throws ThinklabException {
 		this.reg = register;
 	}
 

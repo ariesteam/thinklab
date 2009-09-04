@@ -9,6 +9,7 @@ import org.integratedmodelling.corescience.interfaces.context.IObservationContex
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.literals.MappedIntSet;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -75,15 +76,15 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 		}
 
 		@Override
-		public boolean notifyDependencyObservable(IConcept observable, String formalName)
+		public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
 				throws ThinklabValidationException {
 			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
-		public void notifyDependencyRegister(IConcept observable, int register,
-				IConcept stateType) throws ThinklabValidationException {
+		public void notifyDependencyRegister(IObservation observation, IConcept observable,
+				int register, IConcept stateType) throws ThinklabException {
 		}
 
 	}

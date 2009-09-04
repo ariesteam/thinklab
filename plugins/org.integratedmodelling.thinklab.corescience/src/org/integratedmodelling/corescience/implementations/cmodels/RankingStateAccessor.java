@@ -2,7 +2,8 @@ package org.integratedmodelling.corescience.implementations.cmodels;
 
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 public class RankingStateAccessor implements IStateAccessor {
@@ -22,15 +23,15 @@ public class RankingStateAccessor implements IStateAccessor {
 	}
 	
 	@Override
-	public boolean notifyDependencyObservable(IConcept observable, String formalName)
-			throws ThinklabValidationException {
+	public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
+			throws ThinklabException {
 		// we don't need anything
 		return false;
 	}
 
 	@Override
-	public void notifyDependencyRegister(IConcept observable, int register,
-			IConcept stateType) throws ThinklabValidationException {
+	public void notifyDependencyRegister(IObservation observation, IConcept observable,
+			int register, IConcept stateType) throws ThinklabException {
 		// won't be called
 	}
 

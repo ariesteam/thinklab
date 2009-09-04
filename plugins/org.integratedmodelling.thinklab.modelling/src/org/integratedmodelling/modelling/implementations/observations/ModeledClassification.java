@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.implementations.observations;
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.Obs;
 import org.integratedmodelling.corescience.implementations.datasources.ClassData;
 import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceByte;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
@@ -71,14 +72,14 @@ public class ModeledClassification
 		}
 
 		@Override
-		public boolean notifyDependencyObservable(IConcept observable, String formalName)
-				throws ThinklabValidationException {
-			return true;
+		public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
+				throws ThinklabException {
+			return !Obs.isExtent(o);
 		}
 
 		@Override
-		public void notifyDependencyRegister(IConcept observable, int register,
-				IConcept stateType) throws ThinklabValidationException {	
+		public void notifyDependencyRegister(IObservation observation, IConcept observable,
+				int register, IConcept stateType) throws ThinklabException {	
 		}
 	}
 	
@@ -104,14 +105,14 @@ public class ModeledClassification
 		}
 
 		@Override
-		public boolean notifyDependencyObservable(IConcept observable, String formalName)
-				throws ThinklabValidationException {
+		public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
+				throws ThinklabException {
 			return true;
 		}
 
 		@Override
-		public void notifyDependencyRegister(IConcept observable, int register,
-				IConcept stateType) throws ThinklabValidationException {	
+		public void notifyDependencyRegister(IObservation observation, IConcept observable,
+				int register, IConcept stateType) throws ThinklabException {	
 			index = register;
 		}
 		

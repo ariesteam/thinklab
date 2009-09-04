@@ -36,18 +36,6 @@ import clojure.lang.RT;
 import clojure.lang.Symbol;
 import clojure.lang.Var;
 
-//// Fetch the current namespace (should be "user")
-//Var nsVar = RT.var("clojure.core", "*ns*");
-//Namespace ns = (Namespace)nsVar.getRoot();
-//
-//// Intern a new var in this namespace ("user")
-//Var carbonVal = Var.intern(ns, Symbol.create("carbon-val"), RT.readString("(+ CarbonStock (* CarbonFlow TimePeriod))"));
-//System.out.println("carbonVal = " + carbonVal.get());
-//
-//// Just create a new Var without interning (and eval its result)
-//Var addition = Var.create(Compiler.eval(RT.readString("(+ 1 2)")));
-//System.out.println("addition = " + addition.get());
-//}
 public class ClojureInterpreter implements Interpreter {
 
 	InputStream input = System.in;
@@ -61,21 +49,21 @@ public class ClojureInterpreter implements Interpreter {
 	
 	public IValue evalInNamespace(Object code, String namespace) throws ThinklabException {
 		
-		Object ret = evalRaw(code, namespace);
+		Object ret = evalRaw(code, namespace, null);
 		return ret == null ? null : Value.getValueForObject(ret);
 	}
 
 	@Override
 	public IValue eval(Object code, HashMap<String, Object> args)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return Value.getValueForObject(
+				evalRaw(code, session == null ? "user" : session.getSessionID(), args));
 	}
-
+	
 	private synchronized void addRTClasspath(URL[] urls) throws ThinklabInternalErrorException {
 		for (URL url : urls) {
 			try {
-				//System.out.println("ADDING URL: " + url);
 				RT.addURL(url);
 			} catch (Exception e) {
 				throw new ThinklabInternalErrorException(e);
@@ -246,7 +234,7 @@ public class ClojureInterpreter implements Interpreter {
     	return evalInNamespace(code, session == null ? "user" : session.getSessionID());    	
 	}
 
-	public Object evalRaw(Object code, String namespace) throws ThinklabException {
+	public Object evalRaw(Object code, String namespace, HashMap<String, Object> args) throws ThinklabException {
 		
 		InputStream inp = null;
 		try {
@@ -287,6 +275,12 @@ public class ClojureInterpreter implements Interpreter {
 					star3, null, 
 					stare, null, 
 					sess, this.session));
+
+			if (args != null)
+				for (String arg : args.keySet()) {
+					final Var vz = RT.var(CUSTOM_NS.toString(), arg);
+					Var.pushThreadBindings(RT.map(vz, args.get(arg)));
+				}
 			
 			refer.invoke(CLOJURE);
 			refer.invoke(TL);
