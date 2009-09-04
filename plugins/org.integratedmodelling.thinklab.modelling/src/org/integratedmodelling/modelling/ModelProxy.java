@@ -16,6 +16,7 @@ import org.integratedmodelling.utils.Polylist;
 /**
  * A model proxy wraps a Model so it can receive configuration through clauses.
  * 
+ * Coraggio ciccio, coraggio.
  * @author Ferdinando Villa
  *
  */
