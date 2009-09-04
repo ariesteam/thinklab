@@ -7,7 +7,6 @@ import org.integratedmodelling.clojure.ClojureInterpreter;
 import org.integratedmodelling.corescience.Obs;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
-import org.integratedmodelling.modelling.interfaces.ClojureEvaluator;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -23,8 +22,6 @@ public class ClojureAccessor implements IStateAccessor {
 	ArrayList<Pair<String,Integer>> parmList = new ArrayList<Pair<String,Integer>>();
 	boolean isMediator;
 	String namespace = NameGenerator.newName("clj");
-	
-	ClojureEvaluator _evaluator = null;
 	
 	public ClojureAccessor(String code, boolean isMediator) {
 		clojureCode = code;

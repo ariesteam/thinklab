@@ -185,9 +185,9 @@ public class GraphicalShell {
 					IValue result = CommandManager.get().submitCommand(cmd, session);
                     if (result != null)
                         console.println(result.toString());
-				} catch (ThinklabException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
-					console.println(" error: " + e.getMessage());
+					console.println(">>> error: " + e.getMessage() + " <<<");
 				}
 			}
 		}

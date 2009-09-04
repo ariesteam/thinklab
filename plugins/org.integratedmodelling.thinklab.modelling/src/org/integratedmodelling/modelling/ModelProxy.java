@@ -44,8 +44,7 @@ public class ModelProxy extends DefaultAbstractModel {
 
 	@Override
 	public boolean isResolved() {
-		// TODO Auto-generated method stub
-		return false;
+		return model.isResolved();
 	}
 
 	@Override
@@ -56,7 +55,6 @@ public class ModelProxy extends DefaultAbstractModel {
 
 	@Override
 	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException {
-		// TODO Auto-generated method stub
 		return model.buildDefinition(kbox, session);
 	}
 

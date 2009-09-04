@@ -199,16 +199,14 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 		return null;
 	}
 
-
 	public void validate(IInstance i) throws ThinklabException {
 
 		if (coverage != null) {
 			
-		} else {
-			
+		} else {	
 			// TODO we should support inline data
-			throw new ThinklabValidationException("raster datasource: no coverage specified");		}
-		
+			throw new ThinklabValidationException("vector datasource: no coverage specified");		
+		}
 	}
 
 	@Override
