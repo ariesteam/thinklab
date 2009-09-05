@@ -171,13 +171,16 @@ public class WCSCoverage extends AbstractRasterCoverage {
 
 		  /* read no data values. FIXME: limited to one SingleValue spec */
 		  n = desc.findNode("nullValues");
-		  next = (Node)n.getFirstChild();
-		  while ((child = next) != null) {
-			  next = child.getNextSibling(); 
-			  if (child.getNodeName().equals("SingleValue")) {
-				  this.noData = new double[1];
-				  this.noData[0] = 
-					  Double.parseDouble(XMLDocument.getNodeValue(child).toString());
+		  if (n != null)  {
+			  
+			  next = (Node)n.getFirstChild();
+			  while ((child = next) != null) {
+				  next = child.getNextSibling(); 
+				  if (child.getNodeName().equals("SingleValue")) {
+					  this.noData = new double[1];
+					  this.noData[0] = 
+						  Double.parseDouble(XMLDocument.getNodeValue(child).toString());
+				  }
 			  }
 		  }
 

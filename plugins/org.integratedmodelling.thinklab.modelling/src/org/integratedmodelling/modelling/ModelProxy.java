@@ -71,4 +71,8 @@ public class ModelProxy extends DefaultAbstractModel {
 		return model.observeInternal(kbox, session, cp, extents);
 	}
 	
+	@Override
+	public String toString() {
+		return model.toString() + " (proxied)";
+	}
 }

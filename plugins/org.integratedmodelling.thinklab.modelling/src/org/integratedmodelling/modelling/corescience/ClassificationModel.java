@@ -33,6 +33,11 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 	ArrayList<IConcept> concepts = new ArrayList<IConcept>();
 	IConcept state = null;
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.DefaultStatefulAbstractModel#copy(org.integratedmodelling.modelling.DefaultStatefulAbstractModel)
+	 */
+	
+
 	@Override
 	public void validateMediatedModel(IModel model) throws ThinklabValidationException {
 		if (! (
