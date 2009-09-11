@@ -64,7 +64,7 @@ public class DurationConceptualModel implements  ExtentConceptualModel {
 	}
 
 
-	public IExtent mergeExtents(IExtent original, IExtent other, LogicalConnector connector) throws ThinklabContextualizationException {
+	public IExtent mergeExtents(IExtent original, IExtent other, LogicalConnector connector, boolean constrainExtent) throws ThinklabContextualizationException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -101,7 +101,8 @@ public abstract class Compiler implements IContextualizationCompiler {
 					"cannot find a compiler to contextualize " + observation);
 		
 		IObservationContext context = 
-			((Observation)observation).computeOverallContext(compiler, session, ctx, listeners);
+//			((Observation)observation).computeOverallContext(compiler, session, ctx, listeners);
+			((Observation)observation).getOverallContext(compiler, session, listeners);
 		
 		if (compiler.getTransformedObservation() != null) 
 			return compiler.getTransformedObservation();

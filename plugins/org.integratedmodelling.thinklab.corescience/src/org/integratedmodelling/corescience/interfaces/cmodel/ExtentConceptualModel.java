@@ -95,11 +95,12 @@ public interface ExtentConceptualModel extends IConceptualModel {
 	 * @param original
 	 * @param other
 	 * @param connector
+	 * @param constrainExtent if true, we want the "other" extent to constrain the first
 	 * @return a new extent, or the original one if no mediation is necessary. Should never
 	 * return null.
 	 * @throws ThinklabException 
 	 */
-	public IExtent mergeExtents(IExtent original, IExtent other, LogicalConnector connector) throws ThinklabException;
+	public IExtent mergeExtents(IExtent original, IExtent other, LogicalConnector connector, boolean constrainExtent) throws ThinklabException;
 
 
 }

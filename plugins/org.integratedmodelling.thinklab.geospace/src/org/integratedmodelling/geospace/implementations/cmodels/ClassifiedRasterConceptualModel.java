@@ -82,7 +82,7 @@ public class ClassifiedRasterConceptualModel implements ExtentConceptualModel {
 
 	@Override
 	public IExtent mergeExtents(IExtent original, IExtent other,
-			LogicalConnector connector) throws ThinklabException {
+			LogicalConnector connector, boolean constrainExtent) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -53,7 +53,7 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 	}
 	
 	public IExtent mergeExtents(IExtent original, IExtent other,
-			LogicalConnector connector)
+			LogicalConnector connector, boolean constrainExtent)
 			throws ThinklabException {
 		
 		if ( !(other instanceof ArealExtent) || !(original instanceof ArealExtent)) {
@@ -108,7 +108,7 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 		 * Here we send out to a virtual to create the appropriate areal extent with this envelope and CRS, 
 		 * adding whatever else we need to use it.
 		 */
-		return createMergedExtent(orextent, otextent, ccr, common);
+		return createMergedExtent(orextent, otextent, ccr, common, constrainExtent);
 	}
 
 	
@@ -146,7 +146,7 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 	 */
 	protected abstract IExtent createMergedExtent(ArealExtent orextent,
 			ArealExtent otextent, CoordinateReferenceSystem crs2,
-			Envelope common) throws ThinklabException;
+			Envelope common, boolean otherExtentConstrainsOurs) throws ThinklabException;
 
 
 }

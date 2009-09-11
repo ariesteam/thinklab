@@ -78,7 +78,7 @@ public class ArealLocationConceptualModel extends SpatialConceptualModel {
 	}
 
 	public IExtent mergeExtents(IExtent original, IExtent other,
-			LogicalConnector connector)
+			LogicalConnector connector, boolean constrainExtent)
 			throws ThinklabContextualizationException, ThinklabException {
 		
 		/*
@@ -170,7 +170,7 @@ public class ArealLocationConceptualModel extends SpatialConceptualModel {
 	@Override
 	protected IExtent createMergedExtent(ArealExtent orextent,
 			ArealExtent otextent, CoordinateReferenceSystem crs2,
-			Envelope common)
+			Envelope common, boolean isConstraint)
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;

@@ -411,6 +411,113 @@ public class Observation implements IObservation, IInstanceImplementation {
 		return ret;
 	}
 	
+//////////////////////////////////////////////////////////////////////////////////////////
+// METHOD 1 - switch to getOverallContext in Compiler.contextualize() to enable
+//////////////////////////////////////////////////////////////////////////////////////////
+
+	public IObservationContext getOverallContext(
+			IContextualizationCompiler compiler, ISession session,
+			Collection<IContextualizationListener> listeners)
+			throws ThinklabException {
+
+		ObservationContext ret = getCommonObservationContext_(compiler,
+				session, new HashSet<Observation>(), listeners);
+
+		return ret;
+	}
+	
+	private ObservationContext getCommonObservationContext_(
+			IContextualizationCompiler compiler, ISession session,
+			HashSet<Observation> inserted, 
+			Collection<IContextualizationListener> listeners) throws ThinklabException {
+
+		if (inserted.contains(this))
+			return null;
+
+		ObservationContext ret = new ObservationContext(this);
+
+		if (getConceptualModel() instanceof TransformingConceptualModel && !this.beingTransformed) {
+
+			this.beingTransformed = true;
+
+			IInstance inst = Compiler.contextualize(this, session, listeners, ret);
+			IInstance trs = 
+				((TransformingConceptualModel) getConceptualModel())
+					.transformObservation(inst, session);
+			Observation obs = extractObservationFromInstance(trs);
+
+			if (listeners != null) {
+				for (IContextualizationListener l : listeners)
+					l.onObservationTransformed(this, obs);
+			}
+			
+			compiler.addObservation(obs);
+			this.beingTransformed = false;
+			compiler.setTransformedObservation(trs);
+
+			ret = (ObservationContext) obs.getObservationContext();
+		}
+
+		/*
+		 * first thing, make sure that the compiler knows it must calculate us,
+		 * or we won't be able to set dependencies later.
+		 */
+		compiler.addObservation(this);
+
+		/* if I am an extent, set context from it. */
+		if (conceptualModel instanceof ExtentConceptualModel) {
+			ret.mergeExtent(this, /*getContextDimension(this),*/
+					LogicalConnector.INTERSECTION/*, true */);
+		}
+
+		/*
+		 * AND the merged extent of the contingencies that are not extents with
+		 * the extents of the dependencies
+		 */
+		for (IObservation dependency : getNonExtentDependencies()) {
+
+			/* contextualize obs */
+			ObservationContext oc = (ObservationContext) (((Observation) dependency)
+					.getOverallContext(compiler, session, listeners));
+
+			/* notify dependency */
+			if (oc != null) {
+				compiler.addObservationDependency(this, dependency);
+
+				/* merge extents appropriately */
+				ret.mergeExtents(oc, LogicalConnector.INTERSECTION, false);
+			}
+		}
+
+		/*
+		 * Constrain all existing extents with any extents we may have with the
+		 * extents of the dependencies
+		 */
+		for (IObservation dependency : getExtentDependencies()) {
+
+			/* contextualize obs */
+			ObservationContext oc = (ObservationContext) (((Observation) dependency)
+					.getOverallContext(compiler, session, listeners));
+
+			/* notify dependency */
+			if (oc != null) {
+				compiler.addObservationDependency(this, dependency);
+
+				/* merge extents appropriately */
+				ret.mergeExtents(oc, LogicalConnector.INTERSECTION, true);
+			}
+		}
+
+		// initialize this context
+		ret.initialize();
+
+		return ret;
+	}
+	
+//////////////////////////////////////////////////////////////////////////////////////////
+// METHOD 2 - switch to computeOverallContext in Compiler.contextualize() to enable
+//////////////////////////////////////////////////////////////////////////////////////////
+	
 	public IObservationContext computeOverallContext(
 			IContextualizationCompiler compiler,
 			ISession session,
@@ -500,6 +607,9 @@ public class Observation implements IObservation, IInstanceImplementation {
 		return context;
 	}
 	
+//////////////////////////////////////////////////////////////////////////////////////////
+// END contextualization methods
+//////////////////////////////////////////////////////////////////////////////////////////
 	
 	public IConcept getObservationClass() {
 		return observation.getDirectType();

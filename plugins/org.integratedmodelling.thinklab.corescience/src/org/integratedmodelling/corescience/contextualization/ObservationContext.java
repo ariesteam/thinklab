@@ -231,29 +231,29 @@ public class ObservationContext implements IObservationContext {
 	}
 
 	
-//	public void mergeExtents(ObservationContext coo, LogicalConnector connector, boolean isConstraint) 
-//		throws ThinklabException {
-//
-//		/* take all extents in foreign context and merge with appropriate
-//		 * extent.
-//		 */
-//		for (String entry : coo.extents.keySet()) {
-//			
-//			// see if we already have an extent for this dimension
-//			IExtent extent = extents.get(entry);
-//			IExtent foreign = coo.extents.get(entry);
-//			
-//			if (extent == null) {
-//				/* just add the extent */
-//				extents.put(entry, foreign);
-//			} else {
-//				// ask CM to modify the current extent record in order to represent the
-//				// new one as well.
-//				extents.put(entry, 
-//						extent.getConceptualModel().mergeExtents(extent, foreign, connector, isConstraint));
-//			}					
-//		}	
-//	}
+	public void mergeExtents(ObservationContext coo, LogicalConnector connector, boolean isConstraint) 
+		throws ThinklabException {
+
+		/* take all extents in foreign context and merge with appropriate
+		 * extent.
+		 */
+		for (String entry : coo.extents.keySet()) {
+			
+			// see if we already have an extent for this dimension
+			IExtent extent = extents.get(entry);
+			IExtent foreign = coo.extents.get(entry);
+			
+			if (extent == null) {
+				/* just add the extent */
+				extents.put(entry, foreign);
+			} else {
+				// ask CM to modify the current extent record in order to represent the
+				// new one as well.
+				extents.put(entry, 
+						extent.getConceptualModel().mergeExtents(extent, foreign, connector, isConstraint));
+			}					
+		}	
+	}
 
 	/**
 	 * For debugging
@@ -370,7 +370,7 @@ public class ObservationContext implements IObservationContext {
 			   new one as well. 
 			   FIXME make sure the isConstraint parameter is necessary and if so, correct.
 			   */
-			IExtent merged = cm.mergeExtents(ext, cm.getExtent(), connector);
+			IExtent merged = cm.mergeExtents(ext, cm.getExtent(), connector, false);
 			extents.put(dimension.toString(), merged);
 		}		
 

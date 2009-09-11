@@ -65,7 +65,7 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 				throw new ThinklabRuntimeException(
 						"reclassification: no mapping found for value " + o);
 			
-			System.out.println(o + "->" + ret + ";");
+			// System.out.println(o + "->" + ret + ";");
 			
 			return ret;
 		}
