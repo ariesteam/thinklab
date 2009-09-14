@@ -49,8 +49,28 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+
+		/*
+		 * TODO choose observation class according to derivative, probability etc.
+		 */
+		Polylist def = Polylist.listNotNull(
+				(dynSpecs == null ? CoreScience.RANKING : "modeltypes:DynamicRanking"),
+				(id != null ? 
+					Polylist.list(CoreScience.HAS_FORMAL_NAME, id) :
+					null),
+				(dynSpecs != null?
+					Polylist.list("modeltypes:hasStateFunction", dynSpecs) :
+					null),
+				/*
+				 * TODO add scale attributes, possibly units
+				 */
+				(isMediating() ? 
+						null :
+						Polylist.list(
+								CoreScience.HAS_OBSERVABLE,
+								Polylist.list(getObservable()))));
+		
+		return def;
 	}
 
 	@Override

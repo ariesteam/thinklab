@@ -32,28 +32,24 @@
  **/
 package org.integratedmodelling.geospace.implementations.observations;
 
-import java.util.Properties;
-
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.cmodels.FeatureCoverageModel;
-import org.integratedmodelling.geospace.implementations.cmodels.RegularRasterModel;
 import org.integratedmodelling.geospace.implementations.cmodels.SubdividedCoverageConceptualModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
- * An observation class that represents a gridded view of space, perfect to serve
- * as the spatial extent observation of another observation. Will create all its
- * conceptual model etc. from the OWL specs, so it's typically all you need to
- * define to provide a raster spatial context to an observation.
- * 
+ * An observation class that represents a view of space subdivided into irregular,
+ * discontinuous areal extents. 
  * @author Ferdinando Villa
  */
+@InstanceImplementation(concept="geospace:ArealFeatureSet")
 public class SpatialCoverage extends Observation {
 
 	double latLB, lonLB, latUB, lonUB;

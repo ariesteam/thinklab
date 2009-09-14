@@ -181,7 +181,7 @@ public class FeatureRasterizer {
 
     }
     
-    public GridCoverage2D rasterize(String name, FeatureCollection fc, String attributeName, ReferencedEnvelope env) throws FeatureRasterizerException {
+    public GridCoverage2D rasterize(String name, FeatureCollection<SimpleFeatureType, SimpleFeature> fc, String attributeName, ReferencedEnvelope env) throws FeatureRasterizerException {
     	
     	if (raster == null) {
     	
@@ -251,7 +251,6 @@ public class FeatureRasterizer {
         
         System.out.println("BOUNDS: "+bounds);
         System.out.println("FCBNDS: "+fc.getBounds());
-
         
         rasterize(fc, bounds, attributeName);
         
@@ -287,7 +286,7 @@ public class FeatureRasterizer {
 
             resetRaster = false;
 
-            //System.out.println("---------------- RESETING FeatureRasterizer WritableRaster OBJECT -------------------- ");
+            //System.out.println("---------------- RESETTING FeatureRasterizer WritableRaster OBJECT -------------------- ");
         }
         // initialize raster to NoData value
         clearRaster();
@@ -369,12 +368,19 @@ public class FeatureRasterizer {
         try {
         	
         	if (this.attributeTable == null) {
-
-        		Object attr = feature.getAttribute(attributeName);
-        		if (attr == null)
-        			return;
-        		value = Float.parseFloat(attr.toString());               
-
+        		
+        		if (attributeName != null) {
+        			Object attr = feature.getAttribute(attributeName);
+        			if (attr == null)
+        				return;
+        			value = Float.parseFloat(attr.toString());               
+        		} else {
+        			
+        			// no attribute means use 1.0 for presence of feature, 0 otherwise
+        			value = 1.0f;
+        			noDataValue = 0.0;
+        		}
+        		
         		if (value > maxAttValue) { maxAttValue = value; }
         		if (value < minAttValue) { minAttValue = value; }
         		

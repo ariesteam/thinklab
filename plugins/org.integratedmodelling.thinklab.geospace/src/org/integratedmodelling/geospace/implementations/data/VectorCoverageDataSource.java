@@ -67,12 +67,8 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 	/**
 	 * The conceptual model that defines the data we need to return, saved at handshaking
 	 */
-	private IConceptualModel dataCM = null;
-	private ICoverage coverage = null;
-
-	/* we can have either of these, but not both */
-	private RegularRasterModel rasterCM = null;
-	private FeatureCoverageModel vectorCM = null;
+	private   IConceptualModel dataCM = null;
+	protected ICoverage coverage = null;
 
 	/* same here - these are overall extents that we need to conform to */
 	private GridExtent gridExtent;
@@ -86,28 +82,16 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 		dataCM = cm;
 		
 		IExtent extent = overallContext.getExtent(Geospace.get().SubdividedSpaceObservable());
-		ExtentConceptualModel cmodel = extent.getConceptualModel();
-		
-		System.out.println(extent);
 
 		/*
 		 * See what we have to deal with overall. 
 		 */
-		if (cmodel instanceof RegularRasterModel) {
-
-			this.rasterCM = (RegularRasterModel) cmodel;
-			gridExtent = (GridExtent)extent;
-			
-		} else if (cmodel instanceof FeatureCoverageModel) {
-			
-			this.vectorCM = (FeatureCoverageModel) cmodel;
-			this.shapeExtent = (ShapeExtent)extent;
-			
+		if (extent instanceof GridExtent) {
+			gridExtent = (GridExtent)extent;			
+		} else {
+			this.shapeExtent = (ShapeExtent)extent;			
 			// communicate the features to the extent, so that we can compute multiplicity and overall shape
 			this.shapeExtent.setFeatures(((VectorCoverage)coverage).getFeatures(), coverage.getSourceUrl());
-
-		} else {
-			throw new ThinklabValidationException("raster datasource cannot work with conceptual model " + cm.getClass());
 		}
 		
 		/*
@@ -136,7 +120,7 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 		// whatever happens, we can definitely use indexes here, so return true.
 		return true;
 	}
-
+	
 	public void initialize(IInstance i) throws ThinklabException {
 
 		// these are compulsory
@@ -187,7 +171,8 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 				p.setProperty(CoverageFactory.TARGET_LINK_ATTRIBUTE_PROPERTY, targetAttr);
 			}
 			
-			this.coverage = CoverageFactory.requireCoverage(new URL(sourceURL), p);
+			this.coverage = 
+				CoverageFactory.requireCoverage(new URL(sourceURL), p);
 			
 		} catch (MalformedURLException e) {
 			throw new ThinklabIOException(e);

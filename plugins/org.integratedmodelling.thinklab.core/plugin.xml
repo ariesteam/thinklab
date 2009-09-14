@@ -26,7 +26,9 @@
 		<library type="code" id="common"  path="lib/common-2.2.1.jar">
 			<export prefix="*" />
 		</library>
-		<library type="code" id="commons-beanutils"  path="lib/commons-beanutils-1.7.0.jar"/>
+		<library type="code" id="commons-beanutils"  path="lib/commons-beanutils-1.7.0.jar">
+			<export prefix="*" />
+		</library>
 		<library type="code" id="commons-codec"  path="lib/commons-codec-1.3.jar"/>
 		<library type="code" id="commons-collections"  path="lib/commons-collections-3.2.jar">
 			<export prefix="*"/>
@@ -108,7 +110,9 @@
 		<library type="code" id="xmlParserAPIs"  path="lib/xmlParserAPIs.jar">
 				<export prefix="*" />
 		</library>
-		<library type="code" id="xsd"  path="lib/xsd-2.2.2.jar"/>
+		<library type="code" id="xsd"  path="lib/xsd-2.2.2.jar">
+				<export prefix="*" />
+		</library>
 		<library type="code" id="xsdlib"  path="lib/xsdlib-20050614.jar"/>	
 	</runtime>
 

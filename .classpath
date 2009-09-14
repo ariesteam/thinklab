@@ -273,5 +273,10 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/visad.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JAI"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/smile.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/net.opengis.ows-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/net.opengis.wcs-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/net.opengis.wfs-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/net.opengis.wfsv-2.5.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/net.opengis.wps-2.5.2.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

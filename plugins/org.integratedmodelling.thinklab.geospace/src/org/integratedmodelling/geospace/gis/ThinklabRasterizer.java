@@ -30,7 +30,10 @@ public class ThinklabRasterizer {
 		try {
 			
 			coverage = rasterizer.rasterize(
-					vCoverage.getLayerName()+ "_" + valueId + "_raster",
+					vCoverage.getLayerName() + 
+						"_" + 
+						(valueId == null ? "" : valueId) + 
+						"_raster",
 					vCoverage.getFeatures(), 
 					valueId,
 					extent.getEnvelope());
@@ -39,7 +42,11 @@ public class ThinklabRasterizer {
 			throw new ThinklabRasterizationException(e);
 		}
 		
-		return new RasterCoverage(vCoverage.getLayerName() + "_" + valueId + "_raster", coverage);
+		return new RasterCoverage(
+				vCoverage.getLayerName() + 
+				"_" + 
+				(valueId == null ? "" : valueId) + 
+				"_raster", coverage);
 	}
 	
 	

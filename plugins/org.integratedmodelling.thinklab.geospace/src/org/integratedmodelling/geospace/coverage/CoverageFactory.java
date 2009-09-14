@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import org.deegree.ogcwebservices.wcs.getcoverage.GetCoverage;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataStore;
@@ -23,6 +22,7 @@ import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gce.arcgrid.ArcGridReader;
 import org.geotools.gce.geotiff.GeoTiffReader;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
 import org.integratedmodelling.geospace.implementations.cmodels.RegularRasterModel;
@@ -32,7 +32,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.NameGenerator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
@@ -62,7 +61,9 @@ public class CoverageFactory {
 	public static final String SOURCE_LINK_ATTRIBUTE_PROPERTY = "geospace.internal.source-link-attribute";
 	public static final String TARGET_LINK_ATTRIBUTE_PROPERTY = "geospace.internal.target-link-attribute";
 	public static final String ATTRIBUTE_URL_PROPERTY = "geospace.internal.attribute-url";
-		
+	public static final String WFS_SERVICE_PROPERTY = "wfs.service.url";
+	public static final String COVERAGE_ID_PROPERTY = "wfs.coverage.id";
+	
 	static Hashtable<String, ICoverage> coverages = 
 		new Hashtable<String, ICoverage>();
 	
@@ -197,6 +198,48 @@ public class CoverageFactory {
 		return ret;
 	}
 	
+	public static ArrayList<ICoverage> readWFS(URL url, Properties properties) throws ThinklabException {
+		
+		ArrayList<ICoverage> ret = new ArrayList<ICoverage>();
+		ICoverage coverage = null;
+		
+		String wfsService = 
+			properties.getProperty(WFS_SERVICE_PROPERTY);
+		String valAttr = properties.getProperty(VALUE_ATTRIBUTE_PROPERTY);
+		String covId = properties.getProperty(COVERAGE_ID_PROPERTY);
+		Map<Object,Object> connectionParameters = new HashMap<Object,Object>();
+		connectionParameters.put(
+					"WFSDataStoreFactory:GET_CAPABILITIES_URL", 
+					wfsService + "?request=getCapabilities" );
+		
+		try {
+
+			DataStore data = DataStoreFinder.getDataStore(connectionParameters);
+			FeatureSource<SimpleFeatureType, SimpleFeature> source = data
+					.getFeatureSource(covId);
+			
+			System.out.println("Metadata Bounds:" + source.getBounds());
+
+			FeatureCollection<SimpleFeatureType, SimpleFeature> features = 
+				source.getFeatures();
+
+			coverage = new VectorCoverage(
+					features, 
+					features.getSchema().getCoordinateReferenceSystem(), 
+					valAttr,
+					source.getBounds(),
+					false);
+			
+			((VectorCoverage)coverage).setSourceUrl(url.toString());
+			ret.add(coverage);
+			
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}
+		
+		return ret;
+	}
+	
 	public synchronized static ArrayList<ICoverage> readVector(URL url, Properties properties) throws ThinklabException {
 
 		ArrayList<ICoverage> ret = new ArrayList<ICoverage>();
@@ -207,6 +250,7 @@ public class CoverageFactory {
 		 */
 		
 		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = featureCollections.get(url.toString());
+		ReferencedEnvelope envelope = null;
 		
 		if (fc == null) {
 		
@@ -218,6 +262,7 @@ public class CoverageFactory {
 				String name = dataStore.getTypeNames()[0];
 				FeatureSource<SimpleFeatureType, SimpleFeature> fc1 = dataStore.getFeatureSource(name);
 				fc = fc1.getFeatures();
+				envelope = fc.getBounds();
 				
 			} catch (IOException e) {
 				throw new ThinklabIOException(e);
@@ -226,7 +271,6 @@ public class CoverageFactory {
 		}
 
 		String valAttr = properties.getProperty(VALUE_ATTRIBUTE_PROPERTY);
-		
 		String srcAttr = properties.getProperty(SOURCE_LINK_ATTRIBUTE_PROPERTY);
 		String lnkAttr = properties.getProperty(TARGET_LINK_ATTRIBUTE_PROPERTY);
 		String dataURL = properties.getProperty(ATTRIBUTE_URL_PROPERTY);
@@ -257,6 +301,7 @@ public class CoverageFactory {
 					fc, 
 					fc.getSchema().getCoordinateReferenceSystem(), 
 					valAttr, 
+					envelope,
 					false);
 		}
 		
@@ -289,35 +334,20 @@ public class CoverageFactory {
 		if (url.toString().startsWith("http:")) {
 		
 			/* 
-			 * we don't read coverages from web-based files; interpret as
-			 * a WCS call
+			 * we don't read coverages directly from web-based files; interpret as
+			 * a WFS call
 			 */
-//            GetCoverage req = null;
-//			try {
-//				req = GetCoverage.create(
-//						NameGenerator.newName("WCS"), 
-//						url.toString());
-//			} catch (Exception e) {
-//				throw new ThinklabIOException("can't access WCS service for " + url);		
-//			}
-//			
-//			ret = new WCSCoverage(req.getOutput());
-//            if ( !req.getOutput().getFormat().getCode().equals("image/tiff") ) {
-//            }
-//            if ( !req.getDomainSubset().getRequestSRS().getCode().equals("EPSG:4326") ) {
-//
-//            }
-//            Envelope env = GeometryFactory.createEnvelope(-1.5,-1.5,1.5,1.5, CRSFactory.create( "EPSG:4326" ));
-//            if ( !req.getDomainSubset().getSpatialSubset().getEnvelope().equals(env) ) {
-//
-//            }
-//            env = GeometryFactory.createEnvelope(0,0,600-1,500-1, null);
-//            if ( !req.getDomainSubset().getSpatialSubset().getGrid().equals(env) ) {
-//
-//            }
-//            if ( !req.getSourceCoverage().equals("MapNeatline") ) {
-//
-//            }
+			ret = coverages.get(url.toString());
+			
+			if (ret == null) {
+				
+				ArrayList<ICoverage> cret = readWFS(url, properties);
+				for (ICoverage c : cret) {	
+					if (c.getSourceUrl().equals(url.toString())) {
+						ret = c;
+					}
+				}
+			}
 			
 		} else {
 		
@@ -325,7 +355,7 @@ public class CoverageFactory {
 		
 			if (ret == null) {
 				
-				ArrayList<ICoverage> cret = readResource(url, null);
+				ArrayList<ICoverage> cret = readResource(url, properties);
 				for (ICoverage c : cret) {	
 					if (c.getSourceUrl().equals(url.toString())) {
 						ret = c;
@@ -446,7 +476,7 @@ public class CoverageFactory {
 		
 		RasterCoverage ret = new RasterCoverage("", ext, dataset);
 		
-		ret.write(new File("C:\\A\\results\\temp.tif"));
+//		ret.write(new File("C:\\A\\results\\temp.tif"));
 		
 		return ret;
 	}

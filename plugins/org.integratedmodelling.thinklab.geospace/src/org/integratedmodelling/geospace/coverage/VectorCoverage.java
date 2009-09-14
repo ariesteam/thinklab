@@ -41,6 +41,7 @@ import javax.swing.JFrame;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gui.swing.JMapPane;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.DefaultMapLayer;
@@ -119,6 +120,7 @@ public class VectorCoverage implements ICoverage {
 			FeatureCollection<SimpleFeatureType, SimpleFeature> features,
 			CoordinateReferenceSystem crs, 
 			String valueField, 
+			ReferencedEnvelope envelope,
 			boolean validate) {
 		
 		this.features = features;
@@ -128,7 +130,11 @@ public class VectorCoverage implements ICoverage {
 		if (validate)
 			validateFeatures();
 		
-		computeEnvelope();
+		if (envelope == null)
+			computeEnvelope();
+		else {
+			boundingBox = envelope;
+		}
 	}
 	
 	/**
@@ -253,6 +259,7 @@ public class VectorCoverage implements ICoverage {
 				 * WOW - we want a raster - rasterize it 
 				 * TODO implement some sort of caching mechanism
 				 */
+				System.out.println("rasterizing vector coverage over " + arealExtent + " ...");
 				ret = convertToRaster((GridExtent) arealExtent);
 
 		}  else {
@@ -275,7 +282,7 @@ public class VectorCoverage implements ICoverage {
 	 * @throws ThinklabException
 	 */
 	public ICoverage convertToRaster(GridExtent arealExtent) throws ThinklabException {
-		return ThinklabRasterizer.rasterize(this, valueField, -9999.0f, arealExtent);
+		return ThinklabRasterizer.rasterize(this, valueField, Float.NaN, arealExtent);
 	}
 
 	public void show() {
@@ -305,6 +312,10 @@ public class VectorCoverage implements ICoverage {
         frame.setVisible(true);
 	}
 
+	public void setSourceUrl(String s) {
+		sourceUrl = s;
+	}
+	
 	public void writeImage(File outfile, String format)
 			throws ThinklabIOException {
 		// TODO Auto-generated method stub

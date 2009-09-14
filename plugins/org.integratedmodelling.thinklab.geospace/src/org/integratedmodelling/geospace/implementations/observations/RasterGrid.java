@@ -72,11 +72,14 @@ public class RasterGrid extends Observation {
 	public void initialize(IInstance i) throws ThinklabException {
 
 		/*
-		 * link the obvious observable - do it now, so that super.initialize() finds it.
+		 * link the observable - do it now, so that super.initialize() finds it.
+		 * NOTE: if we subclass the observable to a grid-specific one, no 
+		 * rasterization of vector coverages will take place.
 		 */
 		i.addObjectRelationship(
 					CoreScience.HAS_OBSERVABLE, 
-					Geospace.get().absoluteRasterGridInstance());
+//					Geospace.get().absoluteRasterGridInstance());
+					Geospace.get().absoluteSpatialCoverageInstance());
 		
 		String crsId = null;
 				
