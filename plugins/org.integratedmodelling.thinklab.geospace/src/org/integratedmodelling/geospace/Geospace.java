@@ -32,6 +32,11 @@
  **/
 package org.integratedmodelling.geospace;
 
+import java.util.Iterator;
+
+import javax.imageio.spi.ServiceRegistry;
+
+import org.geotools.data.wfs.protocol.wfs.WFSResponseParserFactory;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
@@ -44,6 +49,8 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Node;
+
+import sun.misc.Service;
 
 public class Geospace extends ThinklabPlugin  {
 
@@ -136,7 +143,14 @@ public class Geospace extends ThinklabPlugin  {
 			throw new ThinklabPluginException(e);
 		}
 		
+		Iterator<WFSResponseParserFactory> providers =
+			Service.providers(WFSResponseParserFactory.class, getClassLoader());
 		
+		 while (providers.hasNext()) {
+             WFSResponseParserFactory provider = providers.next();
+             System.out.println(""+provider);
+         }
+		 
 		/*
 		 * create preferred CRS if one is specified. Highly adviceable to set one if hybrid data
 		 * are used.

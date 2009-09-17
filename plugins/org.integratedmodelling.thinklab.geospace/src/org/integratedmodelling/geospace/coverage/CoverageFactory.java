@@ -220,6 +220,18 @@ public class CoverageFactory {
 			
 			System.out.println("Metadata Bounds:" + source.getBounds());
 
+			// TODO if we have an envelope in the properties, query just the intersecting features; put the
+			// query and the feature source, not the features, in the members
+//			String geomName = schema.getDefaultGeometry().getLocalName();
+//			Envelope bbox = new Envelope( -100.0, -70, 25, 40 );
+//					
+//			FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2( GeoTools.getDefaultHints() );
+//			Object polygon = JTS.toGeometry( bbox );
+//			Intersects filter = ff.intersects( ff.property( geomName ), ff.literal( polygon ) );
+//					
+//			Query query = new DefaultQuery( typeName, filter, new String[]{ geomName } );
+//			FeatureCollection<SimpleFeatureType, SimpleFeature> features = source.getFeatures( query );
+			
 			FeatureCollection<SimpleFeatureType, SimpleFeature> features = 
 				source.getFeatures();
 

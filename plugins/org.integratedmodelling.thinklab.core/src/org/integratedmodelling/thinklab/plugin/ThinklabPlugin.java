@@ -310,6 +310,16 @@ public abstract class ThinklabPlugin extends Plugin
 		
 	}
 	
+	public ClassLoader swapClassloader() {
+		ClassLoader clsl = Thread.currentThread().getContextClassLoader();
+		Thread.currentThread().setContextClassLoader(getClassLoader());
+		return clsl;
+	}
+	
+	public void resetClassLoader(ClassLoader clsl) {
+		Thread.currentThread().setContextClassLoader(clsl);
+	}
+	
 	private void loadKboxes() throws ThinklabException {
 
 		for (Extension ext : getOwnThinklabExtensions("kbox")) {
