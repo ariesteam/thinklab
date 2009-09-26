@@ -240,7 +240,7 @@ public class CoverageFactory {
 					features.getSchema().getCoordinateReferenceSystem(), 
 					valAttr,
 					source.getBounds(),
-					false);
+					source, false);
 			
 			((VectorCoverage)coverage).setSourceUrl(url.toString());
 			ret.add(coverage);
@@ -263,6 +263,7 @@ public class CoverageFactory {
 		
 		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = featureCollections.get(url.toString());
 		ReferencedEnvelope envelope = null;
+		FeatureSource<SimpleFeatureType, SimpleFeature> fc1 = null;
 		
 		if (fc == null) {
 		
@@ -272,7 +273,7 @@ public class CoverageFactory {
 			try {
 				DataStore dataStore = DataStoreFinder.getDataStore(connect);
 				String name = dataStore.getTypeNames()[0];
-				FeatureSource<SimpleFeatureType, SimpleFeature> fc1 = dataStore.getFeatureSource(name);
+				fc1 = dataStore.getFeatureSource(name);
 				fc = fc1.getFeatures();
 				envelope = fc.getBounds();
 				
@@ -314,7 +315,7 @@ public class CoverageFactory {
 					fc.getSchema().getCoordinateReferenceSystem(), 
 					valAttr, 
 					envelope,
-					false);
+					fc1, false);
 		}
 		
 		if (coverage != null)

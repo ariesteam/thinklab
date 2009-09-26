@@ -34,13 +34,20 @@ package org.integratedmodelling.geospace.coverage;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Iterator;
 
 import javax.swing.JFrame;
 
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
+import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gui.swing.JMapPane;
 import org.geotools.map.DefaultMapContext;
@@ -65,6 +72,8 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.spatial.Intersects;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -73,7 +82,10 @@ public class VectorCoverage implements ICoverage {
 
 	private FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
 	CoordinateReferenceSystem crs = null;
+	// this is never null and may come from the source or be passed by the user
 	private BoundingBox boundingBox = null;
+	// this may be null, if not it has been passed and will constraint the collection
+	private BoundingBox boundingConstraint = null;
 	private String layerName = null;
 	private String valueField = null;
 	private String sourceUrl = null;
@@ -84,6 +96,7 @@ public class VectorCoverage implements ICoverage {
 	 * translation table for the attribute.
 	 */
 	int attributeHandle = -1;
+	private FeatureSource<SimpleFeatureType, SimpleFeature> source;
 
 	
 	public VectorCoverage(URL url, String valueField, boolean validate) throws ThinklabException {
@@ -121,11 +134,13 @@ public class VectorCoverage implements ICoverage {
 			CoordinateReferenceSystem crs, 
 			String valueField, 
 			ReferencedEnvelope envelope,
-			boolean validate) {
+			FeatureSource<SimpleFeatureType, SimpleFeature> source, 
+			boolean validate) throws ThinklabException {
 		
 		this.features = features;
 		this.crs = crs;
 		this.valueField = valueField;
+		this.source = source;
 
 		if (validate)
 			validateFeatures();
@@ -133,7 +148,7 @@ public class VectorCoverage implements ICoverage {
 		if (envelope == null)
 			computeEnvelope();
 		else {
-			boundingBox = envelope;
+			boundingConstraint = boundingBox = envelope;
 		}
 	}
 	
@@ -174,13 +189,41 @@ public class VectorCoverage implements ICoverage {
 		computeEnvelope();
 	}
 	
-	private void computeEnvelope() {
+	public Iterator<SimpleFeature> getFeatureIterator() throws ThinklabException {
+		
+		Iterator<SimpleFeature> ret = null;
+		
+		if (boundingConstraint == null)
+			ret = features.iterator();
+		else {
+			
+			/*
+			 * query
+			 */
+			FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2( GeoTools.getDefaultHints() );
+			Object polygon = JTS.toGeometry( boundingConstraint );
+			String geomName = features.getSchema().getGeometryDescriptor().getLocalName();
+			String typeName = features.getSchema().getTypeName();
+			Intersects filter = ff.intersects( ff.property( geomName ), ff.literal( polygon ) );
+					
+			Query query = new DefaultQuery( typeName, filter, new String[]{ geomName } );
+			FeatureCollection<SimpleFeatureType, SimpleFeature> feat;
+			try {
+				feat = source.getFeatures(query);
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+			ret = feat.iterator();
+		}
+		return ret;
+	}
+	
+	private void computeEnvelope() throws ThinklabException {
 		
 		// determine common envelope for all features.
-		for (FeatureIterator<SimpleFeature> f = features.features(); f.hasNext() ; ) {
+		for (Iterator<SimpleFeature> f = getFeatureIterator(); f.hasNext() ; ) {
 			
 			SimpleFeature ff = f.next();
-			
 			BoundingBox env = ff.getBounds();
 			
 			if (boundingBox == null) {
@@ -331,6 +374,7 @@ public class VectorCoverage implements ICoverage {
 	}
 
 	public void write(File f) throws ThinklabException {
+		
 		if ( ! (f.toString().endsWith(".shp"))) {
 			throw new ThinklabUnimplementedFeatureException(
 					"vector coverage: writing: only shapefile format is supported for now");

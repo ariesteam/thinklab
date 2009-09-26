@@ -23,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
+import java.util.Iterator;
 
 import javax.media.jai.RasterFactory;
 
@@ -228,6 +229,48 @@ public class FeatureRasterizer {
 		
     	return coverage;
     }
+    
+    public GridCoverage2D rasterize(String name, Iterator<SimpleFeature> fc, String attributeName, ReferencedEnvelope env) throws FeatureRasterizerException {
+    	
+    	if (raster == null) {
+    	
+    		WritableRaster raster = 
+    			RasterFactory.createBandedRaster(
+    				DataBuffer.TYPE_FLOAT, 
+					this.width, 
+					this.height, 
+					1, 
+					null);
+		
+			setWritableRaster(raster);
+    	} 
+
+    	clearRaster();
+    	
+    	if (env == null) {
+    	    
+    		throw new FeatureRasterizerException("rasterizer: envelope must be passed");
+
+    	} 
+    	
+    	/*
+    	 * TODO check if we need to use a buffer like in Steve's code above
+    	 */
+    	java.awt.geom.Rectangle2D.Double box =
+    		new java.awt.geom.Rectangle2D.Double(
+    				env.getMinX(),
+    				env.getMinY(), 
+    				env.getWidth(), 
+    				env.getHeight());
+			 
+		rasterize(fc, box, attributeName);
+
+    	
+		GridCoverage2D coverage = 
+			rasterFactory.create(name, raster, env);
+		
+    	return coverage;
+    }
 
     /**
      *  Gets the raster attribute of the FeatureRasterizer object
@@ -317,6 +360,72 @@ public class FeatureRasterizer {
         while (fci.hasNext()) {
         	
             feature = fci.next();
+            addFeature(feature);
+        }
+        close();
+    }
+
+    
+    /**
+     *  Gets the raster attribute of the FeatureRasterizer object
+     *  Processes data from the FeatureCollection and approximates onto a Raster Grid.
+     *
+     * @param  fc                             Description of the Parameter
+     * @param  bounds                         Description of the Parameter
+     * @param  attributeName                  Name of attribute from feature collection to provide as the cell value.
+     * @exception  FeatureRasterizerException  An error when rasterizing the data
+     */
+    public void rasterize(Iterator<SimpleFeature> fc, java.awt.geom.Rectangle2D.Double bounds, String attributeName)
+    	throws FeatureRasterizerException {
+
+        this.attributeName = attributeName;
+        
+        // Check if we need to change the underlying raster
+        if (resetRaster) {
+            raster = RasterFactory.createBandedRaster(DataBuffer.TYPE_FLOAT,
+                    width, height, 1, null);
+
+            bimage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            bimage.setAccelerationPriority(1.0f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//          System.out.println("IMAGE ACCELERATED? "+bimage.getCapabilities(ge.getDefaultScreenDevice().getDefaultConfiguration()).isAccelerated());
+            graphics = bimage.createGraphics();
+            graphics.setPaintMode();
+            graphics.setComposite(AlphaComposite.Src);
+
+
+            resetRaster = false;
+
+            //System.out.println("---------------- RESETTING FeatureRasterizer WritableRaster OBJECT -------------------- ");
+        }
+        // initialize raster to NoData value
+        clearRaster();
+        setBounds(bounds);
+
+        // TODO - change method calls to account for a switch to control if rasterizer should work if vis bounds > feature bounds
+
+
+        // All the data should start in the lower left corner.  Don't export what we don't need.
+        double ratio = bounds.height / bounds.width;
+        int ncols;
+        int nrows;
+        if (ratio < 1) {
+            // wider than tall
+            nrows = (int) (ratio * height);
+            ncols = width;
+        }
+        else {
+            nrows = height;
+            ncols = (int) (height / ratio);
+        }
+
+        //System.out.println("1 --- WIDTH: " + ncols + "   HEIGHT: " + nrows);
+
+        SimpleFeature feature;
+
+        while (fc.hasNext()) {
+        	
+            feature = fc.next();
             addFeature(feature);
         }
         close();

@@ -34,7 +34,7 @@ public class ThinklabRasterizer {
 						"_" + 
 						(valueId == null ? "" : valueId) + 
 						"_raster",
-					vCoverage.getFeatures(), 
+					vCoverage.getFeatureIterator(), 
 					valueId,
 					extent.getEnvelope());
 			
