@@ -62,6 +62,7 @@ public class CoverageFactory {
 	public static final String TARGET_LINK_ATTRIBUTE_PROPERTY = "geospace.internal.target-link-attribute";
 	public static final String ATTRIBUTE_URL_PROPERTY = "geospace.internal.attribute-url";
 	public static final String WFS_SERVICE_PROPERTY = "wfs.service.url";
+	public static final String WFS_TIMEOUT_PROPERTY = "wfs.service.timeout";
 	public static final String COVERAGE_ID_PROPERTY = "wfs.coverage.id";
 	
 	static Hashtable<String, ICoverage> coverages = 
@@ -205,33 +206,25 @@ public class CoverageFactory {
 		
 		String wfsService = 
 			properties.getProperty(WFS_SERVICE_PROPERTY);
+		Integer wfsTimeout = 
+			Integer.parseInt(properties.getProperty(WFS_TIMEOUT_PROPERTY, "10000"));
+		
 		String valAttr = properties.getProperty(VALUE_ATTRIBUTE_PROPERTY);
 		String covId = properties.getProperty(COVERAGE_ID_PROPERTY);
+		
 		Map<Object,Object> connectionParameters = new HashMap<Object,Object>();
 		connectionParameters.put(
 					"WFSDataStoreFactory:GET_CAPABILITIES_URL", 
 					wfsService + "?request=getCapabilities" );
-		
+		connectionParameters.put(
+				"WFSDataStoreFactory.TIMEOUT", 
+				wfsTimeout);
 		try {
 
 			DataStore data = DataStoreFinder.getDataStore(connectionParameters);
 			FeatureSource<SimpleFeatureType, SimpleFeature> source = data
 					.getFeatureSource(covId);
-			
-			System.out.println("Metadata Bounds:" + source.getBounds());
 
-			// TODO if we have an envelope in the properties, query just the intersecting features; put the
-			// query and the feature source, not the features, in the members
-//			String geomName = schema.getDefaultGeometry().getLocalName();
-//			Envelope bbox = new Envelope( -100.0, -70, 25, 40 );
-//					
-//			FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2( GeoTools.getDefaultHints() );
-//			Object polygon = JTS.toGeometry( bbox );
-//			Intersects filter = ff.intersects( ff.property( geomName ), ff.literal( polygon ) );
-//					
-//			Query query = new DefaultQuery( typeName, filter, new String[]{ geomName } );
-//			FeatureCollection<SimpleFeatureType, SimpleFeature> features = source.getFeatures( query );
-			
 			FeatureCollection<SimpleFeatureType, SimpleFeature> features = 
 				source.getFeatures();
 

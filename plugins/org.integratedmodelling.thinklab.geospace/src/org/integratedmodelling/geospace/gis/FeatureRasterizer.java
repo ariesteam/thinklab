@@ -398,6 +398,7 @@ public class FeatureRasterizer {
 
             //System.out.println("---------------- RESETTING FeatureRasterizer WritableRaster OBJECT -------------------- ");
         }
+        
         // initialize raster to NoData value
         clearRaster();
         setBounds(bounds);
