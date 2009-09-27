@@ -60,6 +60,7 @@ import org.geotools.renderer.shape.ShapefileRenderer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
@@ -73,6 +74,7 @@ import org.integratedmodelling.utils.MiscUtilities;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.spatial.BBOX;
 import org.opengis.filter.spatial.Intersects;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.FactoryException;
@@ -84,8 +86,6 @@ public class VectorCoverage implements ICoverage {
 	CoordinateReferenceSystem crs = null;
 	// this is never null and may come from the source or be passed by the user
 	private BoundingBox boundingBox = null;
-	// this may be null, if not it has been passed and will constraint the collection
-	private BoundingBox boundingConstraint = null;
 	private String layerName = null;
 	private String valueField = null;
 	private String sourceUrl = null;
@@ -148,7 +148,7 @@ public class VectorCoverage implements ICoverage {
 		if (envelope == null)
 			computeEnvelope();
 		else {
-			boundingConstraint = boundingBox = envelope;
+			boundingBox = envelope;
 		}
 	}
 	
@@ -189,39 +189,59 @@ public class VectorCoverage implements ICoverage {
 		computeEnvelope();
 	}
 	
-	public Iterator<SimpleFeature> getFeatureIterator() throws ThinklabException {
-		
+	public Iterator<SimpleFeature> getFeatureIterator(
+			ReferencedEnvelope envelope) throws ThinklabException {
+
+		ClassLoader clsl = null;
 		Iterator<SimpleFeature> ret = null;
 		
-		if (boundingConstraint == null)
-			ret = features.iterator();
-		else {
+		try {
+
+			// SPI be damned
+			clsl = Geospace.get().swapClassloader();			
 			
-			/*
-			 * query
-			 */
-			FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2( GeoTools.getDefaultHints() );
-			Object polygon = JTS.toGeometry( boundingConstraint );
-			String geomName = features.getSchema().getGeometryDescriptor().getLocalName();
-			String typeName = features.getSchema().getTypeName();
-			Intersects filter = ff.intersects( ff.property( geomName ), ff.literal( polygon ) );
-					
-			Query query = new DefaultQuery( typeName, filter, new String[]{ geomName } );
-			FeatureCollection<SimpleFeatureType, SimpleFeature> feat;
-			try {
-				feat = source.getFeatures(query);
-			} catch (IOException e) {
-				throw new ThinklabIOException(e);
+			if (envelope == null) {
+				try {
+					ret = source.getFeatures().iterator();
+				} catch (IOException e) {
+					throw new ThinklabIOException(e);
+				}
+			} else {
+				
+				/*
+				 * query
+				 */
+				FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+				String geomName = source.getSchema().getGeometryDescriptor().getLocalName();
+				String typeName = source.getSchema().getTypeName();
+				BBOX filter = ff.bbox(ff.property(geomName), envelope);
+				
+		    	System.out.println("upper: " + envelope.getUpperCorner());
+		    	System.out.println("lower: " + envelope.getLowerCorner());
+				
+				DefaultQuery query = new DefaultQuery(typeName, filter,
+						new String[] { geomName });
+				
+				query.setCoordinateSystem(envelope.getCoordinateReferenceSystem());
+				
+				FeatureCollection<SimpleFeatureType, SimpleFeature> feat;
+				try {
+					feat = source.getFeatures(query);
+				} catch (IOException e) {
+					throw new ThinklabIOException(e);
+				}
+				ret = feat.iterator();
 			}
-			ret = feat.iterator();
+		} finally {
+			Geospace.get().resetClassLoader(clsl);
 		}
 		return ret;
 	}
-	
+
 	private void computeEnvelope() throws ThinklabException {
 		
 		// determine common envelope for all features.
-		for (Iterator<SimpleFeature> f = getFeatureIterator(); f.hasNext() ; ) {
+		for (Iterator<SimpleFeature> f = getFeatureIterator(null); f.hasNext() ; ) {
 			
 			SimpleFeature ff = f.next();
 			BoundingBox env = ff.getBounds();

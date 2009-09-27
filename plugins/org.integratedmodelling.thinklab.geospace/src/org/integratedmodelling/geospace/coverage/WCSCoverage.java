@@ -314,7 +314,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			CopyURL.copy(getCov, f);
 			getCov = f.toURI().toURL();
 			GeoTiffReader reader = new GeoTiffReader(getCov, 
-					new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));	
+					Geospace.get().getGeotoolsHints());	
 			this.coverage = (GridCoverage2D)reader.read(null);	
 			
 		} catch (IOException e) {
@@ -334,7 +334,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		  this.xCellSize = e.getEWResolution();
 		  this.xCellSize = e.getNSResolution();
 			
-		  this.boundingBox = e.getEnvelope();
+		  this.boundingBox = e.getNormalizedEnvelope();
 
 		  this.gridGeometry = 
 				new GridGeometry2D(

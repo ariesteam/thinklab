@@ -23,6 +23,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.gce.arcgrid.ArcGridReader;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
 import org.integratedmodelling.geospace.implementations.cmodels.RegularRasterModel;
@@ -156,7 +157,7 @@ public class CoverageFactory {
 				
 				GeoTiffReader reader = 
 					new GeoTiffReader(url, 
-							new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+							Geospace.get().getGeotoolsHints());
 
 				coverage = (GridCoverage2D)reader.read(null);	
 								

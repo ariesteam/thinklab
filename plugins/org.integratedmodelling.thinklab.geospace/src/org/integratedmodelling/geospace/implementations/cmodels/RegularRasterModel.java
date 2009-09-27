@@ -198,11 +198,11 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 			// System.out.println("cells are " + cor + " and " + cot + "; chosen " + cell + " because areas are " + aor + " and " + aot);
 		
 			/* recompute the number of cells in the new extent */
-			xc = (int)Math.floor(nwext.getEnvelope().getWidth()/cell.getWidth());
-			yc = (int)Math.floor(nwext.getEnvelope().getHeight()/cell.getHeight());
+			xc = (int)Math.floor(nwext.getNormalizedEnvelope().getWidth()/cell.getWidth());
+			yc = (int)Math.floor(nwext.getNormalizedEnvelope().getHeight()/cell.getHeight());
 
-			errx = nwext.getEnvelope().getWidth() - (cell.getWidth() * xc);
-			erry = nwext.getEnvelope().getHeight() - (cell.getHeight() * yc);
+			errx = nwext.getNormalizedEnvelope().getWidth() - (cell.getWidth() * xc);
+			erry = nwext.getNormalizedEnvelope().getHeight() - (cell.getHeight() * yc);
 		}
 		
 		// System.out.println("new cell size is " + xc + "," + yc);

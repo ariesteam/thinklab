@@ -75,10 +75,10 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 	public GridExtent(
 				SubdividedCoverageConceptualModel cm, 
 				CoordinateReferenceSystem crs, 
-				double x1, 
-				double y1, 
-				double x2,
-				double y2,
+				double x1, // lonLowerBound
+				double y1, // latLowerBound
+				double x2, // lonUpperBound
+				double y2, // latUpperBound
 				int xDivs, 
 				int yDivs) {
 		
@@ -91,7 +91,7 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 	}
 
 	public GridExtent(SubdividedCoverageConceptualModel cm, GridExtent gridExtent) {
-		super(cm, gridExtent.getCRS(), gridExtent.getEnvelope());
+		super(cm, gridExtent.getCRS(), gridExtent.getNormalizedEnvelope());
 		
 		this.xOrigin = gridExtent.getEast();
 		this.yOrigin = gridExtent.getSouth();
@@ -103,8 +103,8 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 
 		this.xDivs = xDivs;
 		this.yDivs = yDivs;
-		cellLength = getEnvelope().getWidth() / xDivs;
-		cellHeight = getEnvelope().getHeight() / yDivs;
+		cellLength = getNormalizedEnvelope().getWidth() / xDivs;
+		cellHeight = getNormalizedEnvelope().getHeight() / yDivs;
 	}
 	
 	/**
@@ -116,7 +116,6 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 		double y1 = yOrigin + (cellHeight * y);
 		double x2 = x1 + cellLength;
 		double y2 = y1 + cellHeight;
-		
 		return new ReferencedEnvelope(x1,x2,y1,y2, getCRS());
 	}
 	

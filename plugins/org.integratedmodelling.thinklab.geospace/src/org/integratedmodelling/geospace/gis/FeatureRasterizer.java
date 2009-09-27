@@ -37,8 +37,10 @@ import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.feature.AttributeTable;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.utils.image.ImageUtil;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.cs.AxisDirection;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -91,7 +93,7 @@ public class FeatureRasterizer {
     private int[] coordGridX = new int[3500];
     private int[] coordGridY = new int[3500];
     private float value = 0.0f;
-
+    private boolean swapAxis = false;
     private boolean emptyGrid = false;
 
     private Geometry extentGeometry;
@@ -174,7 +176,6 @@ public class FeatureRasterizer {
         bimage.setAccelerationPriority(1.0f);
 
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//      System.out.println("IMAGE ACCELERATED? "+bimage.getCapabilities(ge.getDefaultScreenDevice().getDefaultConfiguration()).isAccelerated());
         graphics = bimage.createGraphics();
         graphics.setPaintMode();
         graphics.setComposite(AlphaComposite.Src);
@@ -224,14 +225,16 @@ public class FeatureRasterizer {
 			 rasterize(fc, box, attributeName);
     	}
     	
+    	
 		GridCoverage2D coverage = 
 			rasterFactory.create(name, raster, env);
 		
     	return coverage;
     }
     
-    public GridCoverage2D rasterize(String name, Iterator<SimpleFeature> fc, String attributeName, ReferencedEnvelope env) throws FeatureRasterizerException {
+    public GridCoverage2D rasterize(String name, Iterator<SimpleFeature> fc, String attributeName, ReferencedEnvelope env, ReferencedEnvelope normEnv) throws FeatureRasterizerException {
     	
+
     	if (raster == null) {
     	
     		WritableRaster raster = 
@@ -244,28 +247,29 @@ public class FeatureRasterizer {
 		
 			setWritableRaster(raster);
     	} 
-
-    	clearRaster();
-    	
     	if (env == null) {
-    	    
     		throw new FeatureRasterizerException("rasterizer: envelope must be passed");
-
     	} 
+    	
+    	/*
+    	 * if we have north-south on the X axis, swap the coordinates.
+    	 */
+    	if (env.getCoordinateReferenceSystem().getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH)) {
+    		swapAxis = true;
+    	}
     	
     	/*
     	 * TODO check if we need to use a buffer like in Steve's code above
     	 */
     	java.awt.geom.Rectangle2D.Double box =
     		new java.awt.geom.Rectangle2D.Double(
-    				env.getMinX(),
-    				env.getMinY(), 
-    				env.getWidth(), 
-    				env.getHeight());
+    				normEnv.getMinX(),
+    				normEnv.getMinY(), 
+    				normEnv.getWidth(), 
+    				normEnv.getHeight());
 			 
 		rasterize(fc, box, attributeName);
 
-    	
 		GridCoverage2D coverage = 
 			rasterFactory.create(name, raster, env);
 		
@@ -296,7 +300,6 @@ public class FeatureRasterizer {
         System.out.println("FCBNDS: "+fc.getBounds());
         
         rasterize(fc, bounds, attributeName);
-        
     }
 
     /**
@@ -325,35 +328,11 @@ public class FeatureRasterizer {
             graphics = bimage.createGraphics();
             graphics.setPaintMode();
             graphics.setComposite(AlphaComposite.Src);
-
-
             resetRaster = false;
-
-            //System.out.println("---------------- RESETTING FeatureRasterizer WritableRaster OBJECT -------------------- ");
         }
         // initialize raster to NoData value
         clearRaster();
         setBounds(bounds);
-
-        // TODO - change method calls to account for a switch to control if rasterizer should work if vis bounds > feature bounds
-
-
-        // All the data should start in the lower left corner.  Don't export what we don't need.
-        double ratio = bounds.height / bounds.width;
-        int ncols;
-        int nrows;
-        if (ratio < 1) {
-            // wider than tall
-            nrows = (int) (ratio * height);
-            ncols = width;
-        }
-        else {
-            nrows = height;
-            ncols = (int) (height / ratio);
-        }
-
-        //System.out.println("1 --- WIDTH: " + ncols + "   HEIGHT: " + nrows);
-
         FeatureIterator<SimpleFeature> fci = fc.features();
         SimpleFeature feature;
 
@@ -362,6 +341,7 @@ public class FeatureRasterizer {
             feature = fci.next();
             addFeature(feature);
         }
+        
         close();
     }
 
@@ -388,48 +368,32 @@ public class FeatureRasterizer {
             bimage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             bimage.setAccelerationPriority(1.0f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//          System.out.println("IMAGE ACCELERATED? "+bimage.getCapabilities(ge.getDefaultScreenDevice().getDefaultConfiguration()).isAccelerated());
             graphics = bimage.createGraphics();
             graphics.setPaintMode();
             graphics.setComposite(AlphaComposite.Src);
-
-
             resetRaster = false;
-
-            //System.out.println("---------------- RESETTING FeatureRasterizer WritableRaster OBJECT -------------------- ");
+        }
+        
+        if (attributeName == null) {
+			// no attribute means use 1.0 for presence of feature, 0 otherwise
+			value = 1.0f;
+			noDataValue = 0.0;
         }
         
         // initialize raster to NoData value
         clearRaster();
         setBounds(bounds);
 
-        // TODO - change method calls to account for a switch to control if rasterizer should work if vis bounds > feature bounds
-
-
-        // All the data should start in the lower left corner.  Don't export what we don't need.
-        double ratio = bounds.height / bounds.width;
-        int ncols;
-        int nrows;
-        if (ratio < 1) {
-            // wider than tall
-            nrows = (int) (ratio * height);
-            ncols = width;
-        }
-        else {
-            nrows = height;
-            ncols = (int) (height / ratio);
-        }
-
-        //System.out.println("1 --- WIDTH: " + ncols + "   HEIGHT: " + nrows);
-
         SimpleFeature feature;
-
-        while (fc.hasNext()) {
-        	
+        while (fc.hasNext()) {        	
             feature = fc.next();
+			System.out.println(feature.getID() + ": feature bounds: " + feature.getBounds());
             addFeature(feature);
         }
+        
+        ImageUtil.saveImage(bimage, "zio.png");
         close();
+       
     }
 
     public void addShape(ShapeValue shape) {
@@ -437,8 +401,8 @@ public class FeatureRasterizer {
         int rgbVal = floatBitsToInt(value);
 
         graphics.setColor(new Color(rgbVal, true));
-
         Geometry geometry = (Geometry) shape.getGeometry();
+        
         if (geometry.intersects(extentGeometry)) {
 
             if (geometry.getClass().equals(MultiPolygon.class)) {
@@ -473,8 +437,6 @@ public class FeatureRasterizer {
      */   
     public void addFeature(SimpleFeature feature) {
 
-    	//System.out.println("rasterizer - processing feature: "+ attributeName + " -- " + feature);
-    	
         try {
         	
         	if (this.attributeTable == null) {
@@ -484,12 +446,7 @@ public class FeatureRasterizer {
         			if (attr == null)
         				return;
         			value = Float.parseFloat(attr.toString());               
-        		} else {
-        			
-        			// no attribute means use 1.0 for presence of feature, 0 otherwise
-        			value = 1.0f;
-        			noDataValue = 0.0;
-        		}
+        		} 
         		
         		if (value > maxAttValue) { maxAttValue = value; }
         		if (value < minAttValue) { minAttValue = value; }
@@ -548,6 +505,7 @@ public class FeatureRasterizer {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 double val = Float.intBitsToFloat(bimage.getRGB(i, j));
+                System.out.print(val + "f,");
                 raster.setSample(i, j, 0, val);
             }
         }
@@ -572,10 +530,18 @@ public class FeatureRasterizer {
         }
 
         // Go through coordinate array in order received (clockwise)
-        for (int n = 0; n < coords.length; n++) {
-            coordGridX[n] = (int) (((coords[n].x - bounds.x) / xInterval));
-            coordGridY[n] = (int) (((coords[n].y - bounds.y) / yInterval));
-            coordGridY[n] = bimage.getHeight() - coordGridY[n]; 
+        if (swapAxis) {
+        	for (int n = 0; n < coords.length; n++) {
+        		coordGridX[n] = (int) (((coords[n].y - bounds.x) / xInterval));
+        		coordGridY[n] = (int) (((coords[n].x - bounds.y) / yInterval));
+        		coordGridY[n] = bimage.getHeight() - coordGridY[n]; 
+        	}        	
+        } else {
+        	for (int n = 0; n < coords.length; n++) {
+        		coordGridX[n] = (int) (((coords[n].x - bounds.x) / xInterval));
+        		coordGridY[n] = (int) (((coords[n].y - bounds.y) / yInterval));
+        		coordGridY[n] = bimage.getHeight() - coordGridY[n]; 
+        	}
         }
 
 
@@ -654,12 +620,20 @@ public class FeatureRasterizer {
 
         // Clip geometries to the provided bounds      
         // Create extent geometry  
-        Envelope env = new Envelope(
-                bounds.getX(), 
-                bounds.getX() + bounds.getWidth(),
-                bounds.getY(),
-                bounds.getY() + bounds.getHeight()
-        );
+        Envelope env = 
+        	swapAxis ? 
+        			new Envelope(
+                        	bounds.getY(), 
+                       		bounds.getY() + bounds.getHeight(),
+                       		bounds.getX(),
+                     		bounds.getX() + bounds.getWidth()
+                       ) : 
+                    new Envelope(
+                    		bounds.getX(), 
+                       		bounds.getX() + bounds.getWidth(),
+                       		bounds.getY(),
+                       		bounds.getY() + bounds.getHeight()
+                    );
         extentGeometry = geoFactory.toGeometry(env);
     }
 
@@ -703,7 +677,6 @@ public class FeatureRasterizer {
         return cellsize;
     }
 
-
     public double getNoDataValue() {
         return noDataValue;
     }
@@ -720,7 +693,7 @@ public class FeatureRasterizer {
     }
 
     public void setHeight(int height) {
-        if (height != height) {
+        if (this.height != height) {
             resetRaster = true;
         }
         this.height = height;
@@ -731,7 +704,7 @@ public class FeatureRasterizer {
     }
 
     public void setWidth(int width) {
-        if (width != width) {
+        if (this.width != width) {
             resetRaster = true;
         }
         this.width = width;

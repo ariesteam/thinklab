@@ -68,8 +68,8 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 		
 		CoordinateReferenceSystem ccr = chooseCRS(crs1, crs2);;
 		
-		ReferencedEnvelope env1 = orextent.getEnvelope();
-		ReferencedEnvelope env2 = otextent.getEnvelope();
+		ReferencedEnvelope env1 = orextent.getNormalizedEnvelope();
+		ReferencedEnvelope env2 = otextent.getNormalizedEnvelope();
 		
 		if (!(crs1.equals(crs2) && ccr.equals(crs1))) {
 		

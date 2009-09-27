@@ -37,12 +37,15 @@ import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualMod
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.geospace.implementations.cmodels.SpatialConceptualModel;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.AxisDirection;
 
 import com.vividsolutions.jts.geom.Envelope;
 
 public abstract class ArealExtent implements IExtent {
 
 	SpatialConceptualModel cm = null;
+	// the envelope in here is always east-west on the X axis. getDefaultEnvelope() can be used to retrieve
+	// the envelope that will work with the CRS. 
 	ReferencedEnvelope envelope = null;
 	private CoordinateReferenceSystem crs;
 	
@@ -60,8 +63,32 @@ public abstract class ArealExtent implements IExtent {
 		return cm;
 	}
 
-	public ReferencedEnvelope getEnvelope() {
+	/**
+	 * Get an envelope where the X axis is always east-west.
+	 * @return
+	 */
+	public ReferencedEnvelope getNormalizedEnvelope() {
 		return envelope;
+	}
+	
+	/**
+	 * Get the envelope with the axis order decided by the CRS.
+	 * @return
+	 */
+	public ReferencedEnvelope getDefaultEnvelope() {
+		
+		ReferencedEnvelope ret = envelope;
+		
+		if (crs != null && crs.getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH)) {
+			/*
+			 * swap x/y to obtain the right envelope according to the CRS
+			 */
+			ret = new ReferencedEnvelope(
+					envelope.getMinY(), envelope.getMaxY(),
+					envelope.getMinX(), envelope.getMaxX(), crs);
+		} 
+		
+		return ret;
 	}
 
 	public double getNorth() {

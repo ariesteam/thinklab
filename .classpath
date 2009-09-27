@@ -223,8 +223,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JAI"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/smile.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/geoapi-2.2.0.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-api-2.5.7.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-arcgrid-2.5.7.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-api-2.5.7.jar" sourcepath="C:/Users/Ferdinando Villa/Documents/Downloads/geotools-2.5.7-src.zip"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-arcgrid-2.5.7.jar" sourcepath="C:/Users/Ferdinando Villa/Documents/Downloads/geotools-2.5.7-src.zip"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-arcsde-2.5.7.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-arcsde-common-2.5.7.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-brewer-2.5.7.jar"/>

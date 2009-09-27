@@ -77,7 +77,7 @@ public class RasterCoverage extends AbstractRasterCoverage {
 			throw new ThinklabValidationException("cannot create a raster coverage from a " + data.getClass());
 		}
 		
-		this.coverage = rasterFactory.create(name, raster, extent.getEnvelope());
+		this.coverage = rasterFactory.create(name, raster, extent.getNormalizedEnvelope());
 		this.layerName = name;
 		this.dimension = (GridSampleDimension)coverage.getSampleDimension(0);
 		this.crs = coverage.getCoordinateReferenceSystem2D();
@@ -112,13 +112,13 @@ public class RasterCoverage extends AbstractRasterCoverage {
 		
 		this.sourceURL = cov.sourceURL;
 		this.dimension = cov.dimension;
-		this.boundingBox = extent.getEnvelope();
+		this.boundingBox = extent.getNormalizedEnvelope();
 		this.xCellSize = boundingBox.getWidth()/(double)extent.getXCells();
 		this.yCellSize = boundingBox.getHeight()/(double)extent.getYCells();
 		this.crs = extent.getCRS();
 		
 		// here's the geometry we want and the crs for the derived coverage
-		this.gridGeometry = new GridGeometry2D(extent.getGridRange(), extent.getEnvelope());
+		this.gridGeometry = new GridGeometry2D(extent.getGridRange(), extent.getNormalizedEnvelope());
 
 		/*
 		 * FIXME passing anything other than null here will result in all values being

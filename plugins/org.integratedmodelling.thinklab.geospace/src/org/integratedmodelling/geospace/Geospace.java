@@ -143,13 +143,13 @@ public class Geospace extends ThinklabPlugin  {
 			throw new ThinklabPluginException(e);
 		}
 		
-		Iterator<WFSResponseParserFactory> providers =
-			Service.providers(WFSResponseParserFactory.class, getClassLoader());
-		
-		 while (providers.hasNext()) {
-             WFSResponseParserFactory provider = providers.next();
-             System.out.println(""+provider);
-         }
+//		Iterator<WFSResponseParserFactory> providers =
+//			Service.providers(WFSResponseParserFactory.class, getClassLoader());
+//		
+//		 while (providers.hasNext()) {
+//             WFSResponseParserFactory provider = providers.next();
+//             System.out.println(""+provider);
+//         }
 		 
 		/*
 		 * create preferred CRS if one is specified. Highly adviceable to set one if hybrid data
