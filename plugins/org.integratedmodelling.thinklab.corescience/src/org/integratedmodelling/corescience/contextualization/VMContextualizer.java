@@ -329,7 +329,7 @@ public class VMContextualizer<T> {
 		else if (stateType.is(KnowledgeManager.LiteralValue()))
 			ret = new MemValueContextualizedDatasource(stateType, size);
 		else if (stateType.equals(KnowledgeManager.Thing()))
-			// we have a mixed situation with no common types, can ony use an object 
+			// we have a mixed situation with no common types, can only use an object 
 			ret = new MemObjectContextualizedDatasource(stateType, size);
 		else {
 			/*

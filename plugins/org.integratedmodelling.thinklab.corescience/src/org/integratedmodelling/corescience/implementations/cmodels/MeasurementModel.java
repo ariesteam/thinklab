@@ -32,8 +32,6 @@
  **/
 package org.integratedmodelling.corescience.implementations.cmodels;
 
-import java.util.Properties;
-
 import javax.measure.unit.Unit;
 
 import org.integratedmodelling.corescience.CoreScience;
@@ -61,8 +59,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IParseable;
 import org.integratedmodelling.thinklab.literals.NumberValue;
 import org.integratedmodelling.utils.multidimensional.MultidimensionalArray;
 import org.jscience.mathematics.number.Rational;
-
-import sun.security.x509.IssuingDistributionPointExtension;
 
 
 /**

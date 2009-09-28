@@ -36,6 +36,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
 import org.integratedmodelling.corescience.interfaces.cmodel.IStateValidator;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
+import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.ScalingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
@@ -58,7 +59,7 @@ import org.jscience.mathematics.number.Rational;
  * @author Ferdinando Villa
  *
  */
-public class RankingModel implements IConceptualModel, ValidatingConceptualModel, ScalingConceptualModel {
+public class RankingModel implements IConceptualModel, MediatingConceptualModel, ValidatingConceptualModel, ScalingConceptualModel {
 
 	boolean leftBounded = false;
 	boolean rightBounded = false;
@@ -96,6 +97,61 @@ public class RankingModel implements IConceptualModel, ValidatingConceptualModel
 		public Double partition(Double originalValue, Rational ratio) {
 			// TODO Auto-generated method stub
 			return null;
+		}
+		
+	}
+	
+	public class RankingMediator implements IStateAccessor {
+
+		private int reg;
+		private double conversion = 1.0;
+		private double offset = 0.0;
+		private boolean integer = false;
+		private boolean noConv = true;
+
+		public RankingMediator(double ownMin, double ownMax, boolean integer, double othMin, double othMax) {
+			this.conversion = (ownMax - ownMin)/(othMax - othMin);
+			this.offset = ownMin;
+			this.integer = integer;
+		}
+		
+		public RankingMediator() {
+		}
+
+		@Override
+		public Object getValue(Object[] registers) {
+			return noConv? registers[reg] : convert((Double)(registers[reg]));
+		}
+
+		private double convert(double d) {
+		
+			double ret = d*conversion;
+			ret += offset;
+		
+			if (integer)
+				ret = Math.rint(ret);
+			return ret;
+		}
+		
+
+		@Override
+		public boolean isConstant() {
+			return false;
+		}
+
+		@Override
+		public boolean notifyDependencyObservable(IObservation o,
+				IConcept observable, String formalName)
+				throws ThinklabException {
+			return true;
+		}
+
+		@Override
+		public void notifyDependencyRegister(IObservation observation,
+				IConcept observable, int register, IConcept stateType)
+				throws ThinklabException {
+			// TODO Auto-generated method stub
+			this.reg = register;
 		}
 		
 	}
@@ -274,6 +330,48 @@ public class RankingModel implements IConceptualModel, ValidatingConceptualModel
 			throws ThinklabException {
 		// fine as is, we create POD.
 		return null;
+	}
+
+	@Override
+	public IStateAccessor getMediator(IConceptualModel conceptualModel,
+			IConcept stateType, IObservationContext context)
+			throws ThinklabException {
+		
+		RankingMediator ret = null;
+		
+		if (!(conceptualModel instanceof RankingModel)) {
+			throw new ThinklabValidationException("can't mediate between " + this.getClass() +
+				" and " + conceptualModel.getClass());
+		}
+	
+		if ((isScale && !((RankingModel)conceptualModel).isScale) || 
+				(!isScale && ((RankingModel)conceptualModel).isScale))
+			throw new ThinklabValidationException("scale ranking can't be mediated with non-scale");
+
+	
+		/**
+		 * if rankings aren't fully bounded left and right, we just pass them along, and the
+		 * conformance of the observable is our guarantee of compatibility. CM validation will
+		 * catch values out of bounds.
+		 */
+		if (!bounded() || !((RankingModel)conceptualModel).bounded()) {
+			return new RankingMediator();
+		}
+	
+		/*
+		 * we only need to mediate ranking models that are different.
+		 */
+		if (min != ((RankingModel)conceptualModel).min || 
+				max != ((RankingModel)conceptualModel).max ||
+				integer != ((RankingModel)conceptualModel).integer) {
+		
+			ret = new RankingMediator(
+					min, max, integer,
+					((RankingModel)conceptualModel).min,
+					((RankingModel)conceptualModel).max);
+		}
+		
+		return ret;
 	}
 
 

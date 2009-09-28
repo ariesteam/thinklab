@@ -42,12 +42,12 @@ import javax.swing.JFrame;
 
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.Query;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.geometry.jts.JTS;
+import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.collection.DelegateFeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gui.swing.JMapPane;
 import org.geotools.map.DefaultMapContext;
@@ -75,7 +75,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.spatial.BBOX;
-import org.opengis.filter.spatial.Intersects;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -189,11 +188,10 @@ public class VectorCoverage implements ICoverage {
 		computeEnvelope();
 	}
 	
-	public Iterator<SimpleFeature> getFeatureIterator(
-			ReferencedEnvelope envelope) throws ThinklabException {
+	public FeatureIterator<SimpleFeature> getFeatureIterator(ReferencedEnvelope envelope) throws ThinklabException {
 
 		ClassLoader clsl = null;
-		Iterator<SimpleFeature> ret = null;
+		FeatureIterator<SimpleFeature> ret = null;
 		
 		try {
 
@@ -201,11 +199,7 @@ public class VectorCoverage implements ICoverage {
 			clsl = Geospace.get().swapClassloader();			
 			
 			if (envelope == null) {
-				try {
-					ret = source.getFeatures().iterator();
-				} catch (IOException e) {
-					throw new ThinklabIOException(e);
-				}
+				ret = new DelegateFeatureIterator<SimpleFeature>(getFeatures(), getFeatures().iterator());
 			} else {
 				
 				/*
@@ -230,18 +224,21 @@ public class VectorCoverage implements ICoverage {
 				} catch (IOException e) {
 					throw new ThinklabIOException(e);
 				}
-				ret = feat.iterator();
+				ret = new DelegateFeatureIterator<SimpleFeature>(feat, feat.iterator());
 			}
+
 		} finally {
 			Geospace.get().resetClassLoader(clsl);
 		}
+	
 		return ret;
 	}
 
 	private void computeEnvelope() throws ThinklabException {
 		
-		// determine common envelope for all features.
-		for (Iterator<SimpleFeature> f = getFeatureIterator(null); f.hasNext() ; ) {
+		FeatureIterator<SimpleFeature> f = null;
+		try {
+			for ( f = getFeatureIterator(null); f.hasNext() ; ) {
 			
 			SimpleFeature ff = f.next();
 			BoundingBox env = ff.getBounds();
@@ -251,6 +248,9 @@ public class VectorCoverage implements ICoverage {
 			} else {
 				boundingBox.include(env);
 			}
+		}
+		} finally {
+			f.close();
 		}
 			
 	}

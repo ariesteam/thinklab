@@ -23,7 +23,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
-import java.util.Iterator;
 
 import javax.media.jai.RasterFactory;
 
@@ -37,7 +36,6 @@ import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.feature.AttributeTable;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.utils.image.ImageUtil;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.cs.AxisDirection;
@@ -175,7 +173,7 @@ public class FeatureRasterizer {
         bimage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         bimage.setAccelerationPriority(1.0f);
 
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+ //       GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         graphics = bimage.createGraphics();
         graphics.setPaintMode();
         graphics.setComposite(AlphaComposite.Src);
@@ -232,7 +230,7 @@ public class FeatureRasterizer {
     	return coverage;
     }
     
-    public GridCoverage2D rasterize(String name, Iterator<SimpleFeature> fc, String attributeName, ReferencedEnvelope env, ReferencedEnvelope normEnv) throws FeatureRasterizerException {
+    public GridCoverage2D rasterize(String name, FeatureIterator<SimpleFeature> fc, String attributeName, ReferencedEnvelope env, ReferencedEnvelope normEnv) throws FeatureRasterizerException {
     	
 
     	if (raster == null) {
@@ -296,8 +294,8 @@ public class FeatureRasterizer {
         double height = fc.getBounds().getHeight() + edgeBuffer * 2;
         java.awt.geom.Rectangle2D.Double bounds = new java.awt.geom.Rectangle2D.Double(x, y, width, height);
         
-        System.out.println("BOUNDS: "+bounds);
-        System.out.println("FCBNDS: "+fc.getBounds());
+        //System.out.println("BOUNDS: "+bounds);
+        //System.out.println("FCBNDS: "+fc.getBounds());
         
         rasterize(fc, bounds, attributeName);
     }
@@ -323,7 +321,7 @@ public class FeatureRasterizer {
 
             bimage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             bimage.setAccelerationPriority(1.0f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//          GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 //          System.out.println("IMAGE ACCELERATED? "+bimage.getCapabilities(ge.getDefaultScreenDevice().getDefaultConfiguration()).isAccelerated());
             graphics = bimage.createGraphics();
             graphics.setPaintMode();
@@ -355,9 +353,9 @@ public class FeatureRasterizer {
      * @param  attributeName                  Name of attribute from feature collection to provide as the cell value.
      * @exception  FeatureRasterizerException  An error when rasterizing the data
      */
-    public void rasterize(Iterator<SimpleFeature> fc, java.awt.geom.Rectangle2D.Double bounds, String attributeName)
+    public void rasterize(FeatureIterator<SimpleFeature> fc, java.awt.geom.Rectangle2D.Double bounds, String attributeName)
     	throws FeatureRasterizerException {
-
+    	
         this.attributeName = attributeName;
         
         // Check if we need to change the underlying raster
@@ -367,7 +365,7 @@ public class FeatureRasterizer {
 
             bimage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             bimage.setAccelerationPriority(1.0f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             graphics = bimage.createGraphics();
             graphics.setPaintMode();
             graphics.setComposite(AlphaComposite.Src);
@@ -384,15 +382,16 @@ public class FeatureRasterizer {
         clearRaster();
         setBounds(bounds);
 
-        SimpleFeature feature;
+        SimpleFeature feature; int n = 0;
         while (fc.hasNext()) {        	
             feature = fc.next();
-			System.out.println(feature.getID() + ": feature bounds: " + feature.getBounds());
             addFeature(feature);
+            n++;
         }
         
-        ImageUtil.saveImage(bimage, "zio.png");
         close();
+
+        Geospace.get().logger().info("rasterized " + n + " features");
        
     }
 
@@ -505,7 +504,6 @@ public class FeatureRasterizer {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 double val = Float.intBitsToFloat(bimage.getRGB(i, j));
-                System.out.print(val + "f,");
                 raster.setSample(i, j, 0, val);
             }
         }
@@ -607,7 +605,7 @@ public class FeatureRasterizer {
         xInterval = bounds.width / (double) width;
         yInterval = bounds.height / (double) height;
 
-        System.out.println("xInterval: " + xInterval + "  yInterval: " + yInterval);
+        // System.out.println("xInterval: " + xInterval + "  yInterval: " + yInterval);
 
         if (xInterval > yInterval) {
             yInterval = xInterval;
@@ -726,17 +724,6 @@ public class FeatureRasterizer {
 
     public String toString() {
         return "FEATURE RASTERIZER: WIDTH="+width+" , HEIGHT="+height+" , NODATA="+noDataValue;
-    }
-    
-    /**
-     * Extract an activation layer from the raster, turning on any pixel that is not nodata.
-     * 
-     * To be called AFTER rasterizing!
-     *
-     * @return
-     */
-    public RasterActivationLayer getActivationLayer() {
-    	return null;
     }
     
 }

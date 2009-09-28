@@ -3,6 +3,7 @@ package org.integratedmodelling.geospace.gis;
 import java.util.Iterator;
 
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.feature.FeatureIterator;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.exceptions.ThinklabRasterizationException;
@@ -29,7 +30,7 @@ public class ThinklabRasterizer {
 		
 		GridCoverage2D coverage = null;
 		FeatureRasterizer rasterizer = new FeatureRasterizer(extent.getYCells(), extent.getXCells(), noData);
-		Iterator<SimpleFeature> iterator = null;
+		FeatureIterator<SimpleFeature> iterator = null;
 		try {
 			iterator = vCoverage.getFeatureIterator(extent.getDefaultEnvelope());
 			coverage = rasterizer.rasterize(
@@ -46,7 +47,7 @@ public class ThinklabRasterizer {
 			throw new ThinklabRasterizationException(e);
 		} finally {
 			if (iterator != null)
-				/* TODO how to close the thing? iterator.close() */;
+				iterator.close();
 		}
 		
 		return new RasterCoverage(
