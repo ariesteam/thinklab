@@ -32,11 +32,6 @@
  **/
 package org.integratedmodelling.geospace;
 
-import java.util.Iterator;
-
-import javax.imageio.spi.ServiceRegistry;
-
-import org.geotools.data.wfs.protocol.wfs.WFSResponseParserFactory;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
@@ -49,8 +44,6 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Node;
-
-import sun.misc.Service;
 
 public class Geospace extends ThinklabPlugin  {
 
@@ -99,12 +92,15 @@ public class Geospace extends ThinklabPlugin  {
 	public static final String CLASSIFIED_GRID = "geospace:ClassifiedGrid";
 	public static final String GRID_CLASSIFICATION_MODEL = "geospace:GridClassification";
 	
+	// the projection to use if we need meters
+	public static final String EPSG_PROJECTION_METERS = "EPSG:3005";
 
 	/*
 	 * if not null, we have a preferred crs in the properties, and we solve
 	 * all conflicts by translating to it. 
 	 */
 	CoordinateReferenceSystem preferredCRS = null;
+	CoordinateReferenceSystem metersCRS = null;
 	
 	public static Geospace get() {
 		return (Geospace) getPlugin(PLUGIN_ID);
@@ -143,14 +139,15 @@ public class Geospace extends ThinklabPlugin  {
 			throw new ThinklabPluginException(e);
 		}
 		
-//		Iterator<WFSResponseParserFactory> providers =
-//			Service.providers(WFSResponseParserFactory.class, getClassLoader());
-//		
-//		 while (providers.hasNext()) {
-//             WFSResponseParserFactory provider = providers.next();
-//             System.out.println(""+provider);
-//         }
-		 
+		/*
+		 * load the CRS for meter conversions
+		 */
+		try {
+			metersCRS = CRS.decode(EPSG_PROJECTION_METERS);
+		} catch (Exception e) {
+			throw new ThinklabPluginException(e);
+		}
+		
 		/*
 		 * create preferred CRS if one is specified. Highly adviceable to set one if hybrid data
 		 * are used.
@@ -192,6 +189,9 @@ public class Geospace extends ThinklabPlugin  {
 
 	}
 	
+	public CoordinateReferenceSystem getMetersCRS() {
+		return metersCRS;
+	}
 
 	public IConcept Point() {
 		return pointType;

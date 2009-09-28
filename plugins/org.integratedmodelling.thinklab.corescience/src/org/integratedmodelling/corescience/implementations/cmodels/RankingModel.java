@@ -49,9 +49,6 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.literals.NumberValue;
-import org.integratedmodelling.utils.Pair;
 import org.jscience.mathematics.number.Rational;
 
 /**
@@ -156,58 +153,6 @@ public class RankingModel implements IConceptualModel, MediatingConceptualModel,
 		
 	}
 	
-	/**
-	 * A simple mediator to compare bounded rankings with different scales.
-	 * TODO make this a IStateAccessor and return it when the dependency is
-	 * another ranking.
-	 * 
-	 * @author Ferdinando Villa
-	 *
-	 */
-//	public class RankingMediator implements IMediator {
-//
-//		// TODO we can just store a normalization factor
-//		double conversion = 0.0;
-//		double offset = 0.0;
-//		boolean integer;
-//		
-//		private double convert(double d) {
-//			
-//			double ret = d*conversion;
-//			ret += offset;
-//			
-//			if (integer)
-//				ret = Math.rint(ret);
-//			return ret;
-//		}
-//		
-//		public RankingMediator(double ownMin, double ownMax, boolean integer, double othMin, double othMax) {
-//
-//			this.conversion = (ownMax - ownMin)/(othMax - othMin);
-//			this.offset = ownMin;
-//			this.integer = integer;
-//		}
-//		
-//		public IValue getMediatedValue(IValue value, IObservationContextState context) throws ThinklabException {
-//			return new NumberValue(convert(value.asNumber().asDouble()));
-//		}
-//
-//		public Pair<IValue, IUncertainty> getMediatedValue(IValue value, IUncertainty uncertainty, IObservationContextState context) {
-//			// FIXME not called for now; we will need it later
-//			return null;
-//		}
-//
-//		/**
-//		 * TODO
-//		 * Sort of - actually we lose precision if any ranking is integer, but we know no
-//		 * uncertainty model for now.
-//		 */
-//		public boolean isExact() {
-//			return true;
-//		}
-//		
-//	}
-	
 	public RankingModel(
 			double minV, double maxV, boolean integer, 
 			boolean leftBounded, boolean rightBounded,
@@ -223,47 +168,6 @@ public class RankingModel implements IConceptualModel, MediatingConceptualModel,
 	protected boolean bounded() {
 		return leftBounded && rightBounded;
 	}
-
-
-//	public IMediator getMediator(IConceptualModel conceptualModel,
-//			IObservationContext ctx) throws ThinklabException {
-//		
-//		RankingMediator ret = null;
-//		
-//		if (!(conceptualModel instanceof RankingModel)) {
-//			throw new ThinklabValidationException("can't mediate between " + this.getClass() +
-//					" and " + conceptualModel.getClass());
-//		}
-//		
-//		if ((isScale && !((RankingModel)conceptualModel).isScale) || 
-//			(!isScale && ((RankingModel)conceptualModel).isScale))
-//			throw new ThinklabValidationException("scale ranking can't be mediated with non-scale");
-//
-//		
-//		/**
-//		 * if rankings aren't fully bounded left and right, we just pass them along, and the
-//		 * conformance of the observable is our guarantee of compatibility. CM validation will
-//		 * catch values out of bounds.
-//		 */
-//		if (!bounded() || !((RankingModel)conceptualModel).bounded()) {
-//			return null;
-//		}
-//		
-//		/*
-//		 * we only need to mediate ranking models that are different.
-//		 */
-//		if (min != ((RankingModel)conceptualModel).min || 
-//			max != ((RankingModel)conceptualModel).max ||
-//			integer != ((RankingModel)conceptualModel).integer) {
-//			
-//			ret = new RankingMediator(
-//					min, max, integer,
-//					((RankingModel)conceptualModel).min,
-//					((RankingModel)conceptualModel).max);
-//		}
-//			
-//		return ret;
-//	}
 
 	public IConcept getStateType() {
 		return KnowledgeManager.Double();
@@ -291,7 +195,6 @@ public class RankingModel implements IConceptualModel, MediatingConceptualModel,
 			throw new ThinklabValidationException("value " + val + " out of boundaries");
 		if (integer && Double.compare(val - Math.floor(val), 0.0) != 0)
 			throw new ThinklabValidationException("value " + val + " is not an integer as requested");
-
 	}
 
 	@Override

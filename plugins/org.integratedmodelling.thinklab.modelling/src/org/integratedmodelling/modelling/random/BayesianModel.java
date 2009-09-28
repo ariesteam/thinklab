@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.modelling.DefaultStatefulAbstractModel;
 import org.integratedmodelling.modelling.implementations.observations.BayesianTransformer;
+import org.integratedmodelling.modelling.interfaces.IContextOptional;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -15,7 +16,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
-public class BayesianModel extends DefaultStatefulAbstractModel {
+public class BayesianModel extends DefaultStatefulAbstractModel implements IContextOptional {
 
 	String source = null;
 	String algorithm = null;

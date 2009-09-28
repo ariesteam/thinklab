@@ -66,9 +66,10 @@ public class ModelProxy extends DefaultAbstractModel {
 
 	@Override
 	public ModelResult observeInternal(IKBox kbox, ISession session,
-			IntelligentMap<IConformance> cp, ArrayList<IObservation> extents)
+			IntelligentMap<IConformance> cp, ArrayList<IObservation> extents,
+			boolean acceptEmpty)
 			throws ThinklabException {
-		return model.observeInternal(kbox, session, cp, extents);
+		return model.observeInternal(kbox, session, cp, extents, acceptEmpty);
 	}
 	
 	@Override

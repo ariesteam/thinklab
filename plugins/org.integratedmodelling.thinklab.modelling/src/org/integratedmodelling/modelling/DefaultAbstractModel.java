@@ -9,6 +9,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualMod
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
+import org.integratedmodelling.modelling.interfaces.IContextOptional;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.IntelligentMap;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -221,7 +222,7 @@ public abstract class DefaultAbstractModel implements IModel {
 				}
 			}
 
-		ModelResult ret = observeInternal(kbox, session, conformances, extents);
+		ModelResult ret = observeInternal(kbox, session, conformances, extents, false);
 		
 		/*
 		 * add all extent specifications to the root observation
@@ -240,7 +241,10 @@ public abstract class DefaultAbstractModel implements IModel {
 	/*
 	 * this should be protected, but...
 	 */
-	public ModelResult observeInternal(IKBox kbox, ISession session, IntelligentMap<IConformance> cp, ArrayList<IObservation> extents) throws ThinklabException {
+	public ModelResult observeInternal(
+				IKBox kbox, ISession session, 
+				IntelligentMap<IConformance> cp, ArrayList<IObservation> extents,
+				boolean acceptEmpty) throws ThinklabException {
 		
 		ModelResult ret = new ModelResult(this, kbox, session);
 		
@@ -255,7 +259,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		 */
 		if (mediated != null) {
 
-			ModelResult res = ((DefaultAbstractModel)mediated).observeInternal(kbox, session, cp, extents);
+			ModelResult res = ((DefaultAbstractModel)mediated).observeInternal(kbox, session, cp, extents, false);
 
 			if (res == null || res.getTotalResultCount() == 0) {
 				throw new ThinklabModelException(
@@ -271,8 +275,14 @@ public abstract class DefaultAbstractModel implements IModel {
 		/*
 		 * query dependencies
 		 */
+		boolean optional = (this instanceof IContextOptional);
 		for (IModel dep : dependents) {
-			ret.addDependentResult(((DefaultAbstractModel)dep).observeInternal(kbox, session, cp, extents));
+			ModelResult d = 
+				((DefaultAbstractModel)dep).observeInternal(kbox, session, cp, extents, optional);
+			
+			// can only return null if optional is true
+			if (d != null)
+				ret.addDependentResult(d);
 		}
 		
 		/*
@@ -281,14 +291,20 @@ public abstract class DefaultAbstractModel implements IModel {
 		if (mediated == null && dependents.size() == 0) {
 
 			if (kbox == null) {
-				throw new ThinklabModelException(
+				if (acceptEmpty)
+					return null;
+				else 
+					throw new ThinklabModelException(
 						"model: cannot observe " + observable + ": no kbox given");
 			}
 			
 			IQueryResult rs = kbox.query(generateObservableQuery(cp, session, extents));
 			
 			if (rs == null || rs.getTotalResultCount() == 0)
-				throw new ThinklabModelException(
+				if (acceptEmpty)
+					return null;
+				else
+					throw new ThinklabModelException(
 						"model: cannot observe " +
 						observable +
 						" in kbox " +

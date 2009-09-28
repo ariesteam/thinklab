@@ -117,13 +117,13 @@ public class Model extends DefaultAbstractModel {
 	
 	
 	@Override
-	public ModelResult observeInternal(IKBox kbox, ISession session, IntelligentMap<IConformance> cp, ArrayList<IObservation> extents)  throws ThinklabException {
+	public ModelResult observeInternal(IKBox kbox, ISession session, IntelligentMap<IConformance> cp, ArrayList<IObservation> extents, boolean acceptEmpty)  throws ThinklabException {
 	
 		ModelResult ret = null;
 		ArrayList<Polylist> cmodels = new ArrayList<Polylist>();
 		
 		if (models.size() == 1)
-			ret = ((DefaultAbstractModel)(models.get(0))).observeInternal(kbox, session, cp, extents);
+			ret = ((DefaultAbstractModel)(models.get(0))).observeInternal(kbox, session, cp, extents, acceptEmpty);
 		else {
 
 			ret = new ModelResult(this, kbox, session);
@@ -141,7 +141,7 @@ public class Model extends DefaultAbstractModel {
 							": no matching submodel");
 				}
 				
-				ModelResult contingentRes = ((DefaultAbstractModel)cmod).observeInternal(kbox, session, cp, extents);
+				ModelResult contingentRes = ((DefaultAbstractModel)cmod).observeInternal(kbox, session, cp, extents, acceptEmpty);
 				
 				ret.addContingentResult(contingentRes);
 			}

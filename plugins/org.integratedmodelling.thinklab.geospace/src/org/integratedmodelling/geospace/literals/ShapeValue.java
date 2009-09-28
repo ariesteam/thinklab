@@ -32,6 +32,7 @@
  **/
 package org.integratedmodelling.geospace.literals;
 
+import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
@@ -406,4 +407,53 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
 		return shape == null ? true : shape.isValid();
 	}
 
+	/**
+	 * Return the area of the shape in square meters. Transforms the shape if 
+	 * necessary and computes the area, so it may be expensive. The shape must
+	 * have a CRS.
+	 * 
+	 * @return the area in square meters, using projection EPSG:3005
+	 * @throws ThinklabException if the shape has no CRS or a transformation cannot be found.
+	 */
+	public double getArea() throws ThinklabException {
+		
+		if (crs == null)
+			throw new ThinklabValidationException("shape: cannot compute area of shape without CRS");
+		
+		double ret = 0.0;
+		
+		try {
+			ret = 
+				JTS.transform(
+						shape, 
+						CRS.findMathTransform(crs, Geospace.get().getMetersCRS())).
+						getArea();
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Return a new ShapeValue transformed to the passed CRS. Must have a crs.
+	 * 
+	 * @param ocrs the CRS to transform to.
+	 * @return a new shapevalue
+	 * @throws ThinklabException if we have no CRS or a transformation cannot be found.
+	 */
+	public ShapeValue transform(CoordinateReferenceSystem ocrs) throws ThinklabException {
+		
+		if (crs == null)
+			throw new ThinklabValidationException("shape: cannot compute area of shape without CRS");
+		
+		Geometry g = null;
+		try {
+			 g = JTS.transform(shape, CRS.findMathTransform(crs, ocrs));
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		}
+		
+		return new ShapeValue(g, ocrs);
+	}
 }
