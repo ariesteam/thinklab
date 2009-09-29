@@ -109,8 +109,7 @@ public abstract class SQLServer {
 	
 	private boolean readOnly = false;
 	private boolean autoCommit = true;
-	// FIXME should be true, but it never worked so far
-	private boolean usePooling = false;
+	private boolean usePooling = true;
 	
 	public static SQLServer newInstance(String uri, Properties properties) throws ThinklabException {
 		return SQLPlugin.get().createSQLServer(uri, properties);
@@ -157,17 +156,25 @@ public abstract class SQLServer {
 
     private DataSource setupDataSource(String connectURI) throws ThinklabStorageException {
     	
-        ObjectPool connectionPool = new GenericObjectPool(null);
-        ConnectionFactory connectionFactory = 
-        	new DriverManagerConnectionFactory(connectURI, getUser(), getPassword());
-        @SuppressWarnings("unused")
-		PoolableConnectionFactory poolableConnectionFactory =
-        	new PoolableConnectionFactory(connectionFactory,connectionPool,
-        			null,null,readOnly,autoCommit);
-        PoolingDataSource dataSource = new PoolingDataSource(connectionPool);
+    	PoolingDataSource dataSource = null;
+    	ClassLoader clsl = null;
+    	
+    	try {
+    		clsl = SQLPlugin.get().swapClassloader();
+    	
+    		ObjectPool connectionPool = new GenericObjectPool(null);
+    		ConnectionFactory connectionFactory = 
+    			new DriverManagerConnectionFactory(connectURI, getUser(), getPassword());
+    		@SuppressWarnings("unused")
+    		PoolableConnectionFactory poolableConnectionFactory =
+    			new PoolableConnectionFactory(connectionFactory,connectionPool,
+    					null,null,readOnly,autoCommit);
+    		dataSource = new PoolingDataSource(connectionPool);
+    	} finally {
+    		SQLPlugin.get().resetClassLoader(clsl);
+    	}
     	
     	return dataSource;
-    	
     }
 	
     private void parseURI(URI uri) {
