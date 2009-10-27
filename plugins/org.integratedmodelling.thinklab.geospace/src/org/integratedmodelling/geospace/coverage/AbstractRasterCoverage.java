@@ -149,19 +149,19 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	public int getXRangeMax() {
 		// todo use getEnvelope2D, then who knows
 //		gridGeometry.getEnvelope2D().getMaximum(0);
-		return gridGeometry.getGridRange2D().getUpper(0);
+		return gridGeometry.getGridRange2D().getHigh(0) + 1;
 	}
 
 	public int getXRangeOffset() {
-		return gridGeometry.getGridRange().getLower(0);
+		return gridGeometry.getGridRange().getLow(0);
 	}
 
 	public int getYRangeMax() {
-		return gridGeometry.getGridRange().getUpper(1);
+		return gridGeometry.getGridRange().getHigh(1) + 1;
 	}
 
 	public int getYRangeOffset() {
-		return gridGeometry.getGridRange().getLower(1);
+		return gridGeometry.getGridRange().getLow(1);
 	}
 
 	public String getLayerName() {
