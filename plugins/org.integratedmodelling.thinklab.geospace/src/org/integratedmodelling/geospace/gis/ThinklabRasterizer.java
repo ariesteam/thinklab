@@ -33,6 +33,11 @@ public class ThinklabRasterizer {
 		FeatureIterator<SimpleFeature> iterator = null;
 		try {
 			iterator = vCoverage.getFeatureIterator(extent.getDefaultEnvelope());
+			
+			/*
+			 * TODO 
+			 * validate attribute, infer raster type to use and assess need for a lookup table
+			 */
 			coverage = rasterizer.rasterize(
 					vCoverage.getLayerName() + 
 						"_" + 

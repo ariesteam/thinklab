@@ -444,6 +444,11 @@ public class FeatureRasterizer {
         			Object attr = feature.getAttribute(attributeName);
         			if (attr == null)
         				return;
+        			
+        			/*
+        			 * TODO string values may need to be turned into classifications and the final
+        			 * set of classes returned in the coverage
+        			 */
         			value = Float.parseFloat(attr.toString());               
         		} 
         		
@@ -455,7 +460,7 @@ public class FeatureRasterizer {
         		// TODO account for value being used as key into a hash. If so, the value may be null or empty, 
             	// and nodata should be left undisturbed with no error (warning maybe).
         		// value = Float.parseFloat(attributeTable.getIndexedValue(feature.getAttribute(attributeName), attributeHandle));
-        		
+        		// attributeTable.getIndexedValue(feature.getAttribute(attributeName), attributeHandle)
         	}
         } catch (Exception e) {	        
             e.printStackTrace();	        
