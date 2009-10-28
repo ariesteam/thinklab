@@ -29,7 +29,10 @@ public class ThinklabRasterizer {
 			vCoverage = (VectorCoverage)vCoverage.requireMatch(extent, false);
 		
 		GridCoverage2D coverage = null;
-		FeatureRasterizer rasterizer = new FeatureRasterizer(extent.getYCells(), extent.getXCells(), noData);
+		FeatureRasterizer rasterizer = 
+			new FeatureRasterizer(
+					extent.getYCells(), extent.getXCells(), noData, 
+					vCoverage.getAttributeDescriptor(valueId));
 		FeatureIterator<SimpleFeature> iterator = null;
 		try {
 			
@@ -39,7 +42,7 @@ public class ThinklabRasterizer {
 			 * pass it below, which will have to validate it,
 			 * infer raster type to use and assess need for a lookup table
 			 */
-			iterator = vCoverage.getFeatureIterator(extent.getDefaultEnvelope());
+			iterator = vCoverage.getFeatureIterator(extent.getDefaultEnvelope(), valueId);
 			
 			coverage = rasterizer.rasterize(
 					vCoverage.getLayerName() + 

@@ -23,13 +23,17 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.media.jai.RasterFactory;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
+import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.type.NumericAttributeType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
@@ -38,6 +42,8 @@ import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.AttributeType;
 import org.opengis.referencing.cs.AxisDirection;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -109,6 +115,14 @@ public class FeatureRasterizer {
     
 	private AttributeTable attributeTable;
 	private int attributeHandle = -1;
+	private AttributeDescriptor attributeDescriptor;
+	
+	/*
+	 * if this is not null, we have rasterized a string attribute, and the map
+	 * defines the values encountered and the corresponding short integer in
+	 * the resulting coverage.
+	 */
+	private HashMap<String, Integer> classification = null;
 	
     /**
      *Constructor for the FeatureRasterizer object
@@ -116,7 +130,7 @@ public class FeatureRasterizer {
      * @exception  FeatureRasterizerException  Description of the Exception
      */
     public FeatureRasterizer() {
-        this(800, 800, -999.0f);
+        this(800, 800, Float.NaN);
     }
     
     /**
@@ -146,6 +160,27 @@ public class FeatureRasterizer {
         this(800, 800, noData);
     }
 
+    public boolean isClassification() {
+    	return classification != null;
+    }
+    
+    /**
+     * Returns values of the rasterized attribute that correspond to consecutive numeric
+     * IDs, ranging from 1 to the number of classes (inclusive), in the raster.
+     *  
+     * @return
+     */
+    public String[] getClassification() {
+
+    	String[] ret = new String[classification.size()];
+    	
+    	for (String s : classification.keySet()) {
+    		ret[classification.get(s)] = s;
+    	}
+    	
+    	return ret;
+    }
+    
     /**
      * Constructor for the FeatureRasterizer object.  No Data value defaults to -999.0
      *
@@ -153,7 +188,7 @@ public class FeatureRasterizer {
      * @param  width                          Width of raster (number of grid cells)
      */
     public FeatureRasterizer(int height, int width) {
-        this(height, width, -999.0f);
+        this(height, width, Float.NaN);
     }
 
     /**
@@ -180,14 +215,29 @@ public class FeatureRasterizer {
 
 
     }
-    
-    public GridCoverage2D rasterize(String name, FeatureCollection<SimpleFeatureType, SimpleFeature> fc, String attributeName, ReferencedEnvelope env) throws FeatureRasterizerException {
+    /**
+     * Call this one when you need to analyze the attribute for rasterization and
+     * behave accordingly. 
+     * 
+     * @param yCells
+     * @param xCells
+     * @param noData
+     * @param attributeDescriptor
+     */
+    public FeatureRasterizer(int yCells, int xCells, float noData,
+			AttributeDescriptor attributeDescriptor) {
+		this(yCells, xCells, noData);
+		this.attributeDescriptor = attributeDescriptor;
+		
+	}
+
+	public GridCoverage2D rasterize(String name, FeatureCollection<SimpleFeatureType, SimpleFeature> fc, String attributeName, ReferencedEnvelope env) throws FeatureRasterizerException {
     	
     	if (raster == null) {
     	
     		WritableRaster raster = 
     			RasterFactory.createBandedRaster(
-    				DataBuffer.TYPE_FLOAT, 
+    				getRasterType(), 
 					this.width, 
 					this.height, 
 					1, 
@@ -230,14 +280,32 @@ public class FeatureRasterizer {
     	return coverage;
     }
     
-    public GridCoverage2D rasterize(String name, FeatureIterator<SimpleFeature> fc, String attributeName, ReferencedEnvelope env, ReferencedEnvelope normEnv) throws FeatureRasterizerException {
+    private int getRasterType() {
+
+    	int ret = DataBuffer.TYPE_FLOAT;
+    	
+    	
+    	if (attributeDescriptor != null) {
+    		
+    		if ( !(attributeDescriptor.getType() instanceof NumericAttributeType)) {
+    			/*
+    			 * default to classification, use short integers for parsimony
+    			 */
+    			ret = DataBuffer.TYPE_SHORT;
+    		}
+    	}
+    	
+    	return ret;
+	}
+
+	public GridCoverage2D rasterize(String name, FeatureIterator<SimpleFeature> fc, String attributeName, ReferencedEnvelope env, ReferencedEnvelope normEnv) throws FeatureRasterizerException {
     	
 
     	if (raster == null) {
     	
     		WritableRaster raster = 
     			RasterFactory.createBandedRaster(
-    				DataBuffer.TYPE_FLOAT, 
+    				getRasterType(), 
 					this.width, 
 					this.height, 
 					1, 
@@ -360,7 +428,7 @@ public class FeatureRasterizer {
         
         // Check if we need to change the underlying raster
         if (resetRaster) {
-            raster = RasterFactory.createBandedRaster(DataBuffer.TYPE_FLOAT,
+            raster = RasterFactory.createBandedRaster(getRasterType(),
                     width, height, 1, null);
 
             bimage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

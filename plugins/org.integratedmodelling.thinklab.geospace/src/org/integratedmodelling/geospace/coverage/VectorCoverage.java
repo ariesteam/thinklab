@@ -73,6 +73,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.spatial.BBOX;
 import org.opengis.geometry.BoundingBox;
@@ -188,7 +189,15 @@ public class VectorCoverage implements ICoverage {
 		computeEnvelope();
 	}
 	
-	public FeatureIterator<SimpleFeature> getFeatureIterator(ReferencedEnvelope envelope) throws ThinklabException {
+	/**
+	 * 
+	 * @param envelope
+	 * @param attributes If we want the features to retain an attribute other than the
+	 *        geometry, pass it here
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public FeatureIterator<SimpleFeature> getFeatureIterator(ReferencedEnvelope envelope, String ... attributes) throws ThinklabException {
 
 		ClassLoader clsl = null;
 		FeatureIterator<SimpleFeature> ret = null;
@@ -213,8 +222,20 @@ public class VectorCoverage implements ICoverage {
 		    	System.out.println("upper: " + envelope.getUpperCorner());
 		    	System.out.println("lower: " + envelope.getLowerCorner());
 				
-				DefaultQuery query = new DefaultQuery(typeName, filter,
-						new String[] { geomName });
+		    	/*
+		    	 * attributes to put in the query
+		    	 */
+		    	String[] attnames = new String[] { geomName };
+		    	if (attributes != null) {
+		    		int i = 0;
+		    		attnames = new String[attributes.length + 1];
+		    		attributes[i++] = geomName;
+		    		for (String a : attributes) {
+		    			attnames[i++] = a;
+		    		}
+		    	}
+		    	
+				DefaultQuery query = new DefaultQuery(typeName, filter, attnames);
 				
 				query.setCoordinateSystem(envelope.getCoordinateReferenceSystem());
 				
@@ -238,21 +259,21 @@ public class VectorCoverage implements ICoverage {
 		
 		FeatureIterator<SimpleFeature> f = null;
 		try {
-			for ( f = getFeatureIterator(null); f.hasNext() ; ) {
 			
-			SimpleFeature ff = f.next();
-			BoundingBox env = ff.getBounds();
+			for ( f = getFeatureIterator(null, (String[]) null); f.hasNext() ; ) {
+			
+				SimpleFeature ff = f.next();
+				BoundingBox env = ff.getBounds();
 			
 			if (boundingBox == null) {
 				boundingBox = env;
 			} else {
 				boundingBox.include(env);
 			}
-		}
+		  }
 		} finally {
 			f.close();
 		}
-			
 	}
 
 	public String getCoordinateReferenceSystemCode()
@@ -416,6 +437,10 @@ public class VectorCoverage implements ICoverage {
 //		    transaction.rollback();
 //		}
 		
+	}
+
+	public AttributeDescriptor getAttributeDescriptor(String valueId) {
+		return null;
 	}
 
 
