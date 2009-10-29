@@ -58,6 +58,7 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 		 * classifier can be:
 		 * 
 		 *  Number  (specific match)
+		 *  String  (specific match)
 		 *  Concept (concept to concept, using the reasoner)
 		 * 	Vector  (numeric range, honoring :< :> :open :closed keywords)
 		 *  List    (executable code, run after setting self to state)
@@ -141,6 +142,13 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 			 * catch-all
 			 */
 			ret.setCatchAll();
+			
+		} else if (classifier instanceof String) {
+			
+			/*
+			 * match value from classified numeric datasource, e.g. categorical raster
+			 */
+			ret.setString((String)classifier);
 			
 		} else {
 			

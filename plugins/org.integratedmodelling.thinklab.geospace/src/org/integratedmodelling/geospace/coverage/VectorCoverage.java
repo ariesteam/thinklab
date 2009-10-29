@@ -226,12 +226,18 @@ public class VectorCoverage implements ICoverage {
 		    	 * attributes to put in the query
 		    	 */
 		    	String[] attnames = new String[] { geomName };
+		    	int ii = 0;
+		    	for (String ss : attributes) {
+		    		if (ss != null)
+		    			ii++;
+		    	}
+	    		attnames = new String[ii + 1];
+	    		attnames[0] = geomName;
 		    	if (attributes != null) {
-		    		int i = 0;
-		    		attnames = new String[attributes.length + 1];
-		    		attributes[i++] = geomName;
+		    		int i = 1;
 		    		for (String a : attributes) {
-		    			attnames[i++] = a;
+		    			if (a != null)
+		    				attnames[i++] = a;
 		    		}
 		    	}
 		    	
@@ -440,7 +446,7 @@ public class VectorCoverage implements ICoverage {
 	}
 
 	public AttributeDescriptor getAttributeDescriptor(String valueId) {
-		return null;
+		return source.getSchema().getDescriptor(valueId);
 	}
 
 

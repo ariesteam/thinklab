@@ -1156,14 +1156,15 @@ public class ThinklabOWLManager {
 			
 			OWLDescription range = 
 				((OWLObjectAllRestriction)r).getFiller();
+			if (!range.isAnonymous())
+				ret = new Concept(range.asOWLClass());
 			
-			ret = new Concept(range.asOWLClass());
 		} else if (r instanceof OWLObjectSomeRestriction) {
 			
 			OWLDescription range = 
 				((OWLObjectSomeRestriction)r).getFiller();
-			
-			ret = new Concept(range.asOWLClass());
+			if (!range.isAnonymous())					
+				ret = new Concept(range.asOWLClass());
 		}
 		
 		return ret;

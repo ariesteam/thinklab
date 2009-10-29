@@ -16,6 +16,7 @@ public class GeneralClassifier {
 	IntervalValue interval = null;
 	IConcept concept = null;
 	AlgorithmValue code = null;
+	String string = null;
 	private boolean catchAll = false;
 	
 	public GeneralClassifier(String s) throws ThinklabException {
@@ -38,6 +39,8 @@ public class GeneralClassifier {
 			concept = KnowledgeManager.get().requireConcept(def);
 		} else if (selector.equals("mul:")) {
 			// TODO
+		} else if (selector.equals("str:")) {
+			string = def;
 		} else if (selector.equals("tru:")) {
 			catchAll = true;
 		}
@@ -65,6 +68,10 @@ public class GeneralClassifier {
 		} else if (concept != null) {
 
 			return asConcept(o).is(concept);
+
+		} else if (string != null) { 
+
+			return string.equals(o.toString());
 
 		} else if (code != null) {
 		
@@ -137,6 +144,8 @@ public class GeneralClassifier {
 			ret = "int:" + interval;
 		} else if (concept != null) {
 			ret = "con:" + concept;
+		} else if (string != null) {
+			ret = "str:" + string;
 		} else if (catchAll)
 			ret = "tru:true";
 		return ret;
@@ -144,6 +153,10 @@ public class GeneralClassifier {
 
 	public void setCatchAll() {
 		this.catchAll = true;
+	}
+
+	public void setString(String classifier) {
+		string = classifier;
 	}
 	
 }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.Obs;
 import org.integratedmodelling.corescience.implementations.datasources.ClassData;
-import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceByte;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;

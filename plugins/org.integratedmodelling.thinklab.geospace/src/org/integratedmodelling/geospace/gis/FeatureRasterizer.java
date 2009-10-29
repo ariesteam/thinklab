@@ -111,7 +111,7 @@ public class FeatureRasterizer {
 
     // Any change in height, width or no_data values will cause 
     // the raster to 'reset' at the next call to .rasterize(...)
-    private boolean resetRaster = false;
+    private boolean resetRaster = true;
     
 	private AttributeTable attributeTable;
 	private int attributeHandle = -1;
@@ -203,8 +203,8 @@ public class FeatureRasterizer {
         this.width = width;
         this.noDataValue = noData;
 
-        raster = RasterFactory.createBandedRaster(DataBuffer.TYPE_FLOAT,
-                width, height, 1, null);
+        raster = /* RasterFactory.createBandedRaster(DataBuffer.TYPE_FLOAT,
+                width, height, 1, null)*/ null;
         bimage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         bimage.setAccelerationPriority(1.0f);
 

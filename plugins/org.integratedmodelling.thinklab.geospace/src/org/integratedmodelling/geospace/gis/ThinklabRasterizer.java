@@ -1,7 +1,5 @@
 package org.integratedmodelling.geospace.gis;
 
-import java.util.Iterator;
-
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.feature.FeatureIterator;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
