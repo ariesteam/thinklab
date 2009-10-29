@@ -212,9 +212,8 @@ public class FeatureRasterizer {
         graphics = bimage.createGraphics();
         graphics.setPaintMode();
         graphics.setComposite(AlphaComposite.Src);
-
-
     }
+    
     /**
      * Call this one when you need to analyze the attribute for rasterization and
      * behave accordingly. 
@@ -273,7 +272,6 @@ public class FeatureRasterizer {
 			 rasterize(fc, box, attributeName);
     	}
     	
-    	
 		GridCoverage2D coverage = 
 			rasterFactory.create(name, raster, env);
 		
@@ -284,7 +282,6 @@ public class FeatureRasterizer {
 
     	int ret = DataBuffer.TYPE_FLOAT;
     	
-    	
     	if (attributeDescriptor != null) {
     		
     		if ( !(attributeDescriptor.getType() instanceof NumericAttributeType)) {
@@ -292,6 +289,11 @@ public class FeatureRasterizer {
     			 * default to classification, use short integers for parsimony
     			 */
     			ret = DataBuffer.TYPE_SHORT;
+    			if (classification == null) {
+    				classification = new HashMap<String, Integer>();
+    			}
+    			/* force nodata to 0 */
+    			noDataValue = 0.0;
     		}
     	}
     	
@@ -300,7 +302,6 @@ public class FeatureRasterizer {
 
 	public GridCoverage2D rasterize(String name, FeatureIterator<SimpleFeature> fc, String attributeName, ReferencedEnvelope env, ReferencedEnvelope normEnv) throws FeatureRasterizerException {
     	
-
     	if (raster == null) {
     	
     		WritableRaster raster = 
@@ -465,7 +466,7 @@ public class FeatureRasterizer {
 
     public void addShape(ShapeValue shape) {
     	
-        int rgbVal = floatBitsToInt(value);
+        int rgbVal = classification == null ? floatBitsToInt(value) : (int)value;
 
         graphics.setColor(new Color(rgbVal, true));
         Geometry geometry = (Geometry) shape.getGeometry();
@@ -517,7 +518,11 @@ public class FeatureRasterizer {
         			 * TODO string values may need to be turned into classifications and the final
         			 * set of classes returned in the coverage
         			 */
-        			value = Float.parseFloat(attr.toString());               
+        			if (classification != null) {
+        				value = getClassifiedValue(attr.toString());
+        			} else {
+        				value = Float.parseFloat(attr.toString());                       				
+        			}
         		} 
         		
         		if (value > maxAttValue) { maxAttValue = value; }
@@ -570,14 +575,27 @@ public class FeatureRasterizer {
         }
     }
 
-    /**
-     * Implementation the StreamingProcess interface - this copies values from BufferedImage RGB to WritableRaster of floats.
+    private float getClassifiedValue(String string) {
+    	Integer ret = classification.get(string);
+		if (ret == null) {
+			ret = classification.size() + 1;
+			classification.put(string,ret);
+		}
+		return (float)ret;
+	}
+
+	/**
+     * this copies values from BufferedImage RGB to WritableRaster of floats or integers.
      */
     public void close() {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                double val = Float.intBitsToFloat(bimage.getRGB(i, j));
-                raster.setSample(i, j, 0, val);
+            	if (classification != null) {
+            		raster.setSample(i, j, 0, bimage.getRGB(i, j));
+            	} else {
+            		double val = Float.intBitsToFloat(bimage.getRGB(i, j));
+            		raster.setSample(i, j, 0, val);
+            	}
             }
         }
     }
@@ -615,7 +633,6 @@ public class FeatureRasterizer {
         	}
         }
 
-
         if (geometry.getClass().equals(Polygon.class)) {
             graphics.fillPolygon(coordGridX, coordGridY, coords.length);
         }
@@ -638,7 +655,6 @@ public class FeatureRasterizer {
     public boolean isEmptyGrid() {
         return emptyGrid;
     }
-
 
     /**
      *  Gets the writableRaster attribute of the FeatureRasterizer object
@@ -719,8 +735,13 @@ public class FeatureRasterizer {
         // initialize raster to NoData value
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                raster.setSample(i, j, 0, noDataValue);
-                bimage.setRGB(i, j, floatBitsToInt((float)noDataValue));
+            	if (classification != null) {
+            		raster.setSample(i, j, 0, 0);
+            		bimage.setRGB(i, j, 0);	
+            	} else {
+            		raster.setSample(i, j, 0, noDataValue);
+            		bimage.setRGB(i, j, floatBitsToInt((float)noDataValue));
+            	}
             }
         }
     }
@@ -789,7 +810,15 @@ public class FeatureRasterizer {
         return maxAttValue;
     }
 
-    private static int floatBitsToInt(float f) {
+    private int floatBitsToInt(float f) {
+    	
+    	/*
+    	 * if we're classifying, this is actually the value we want to store
+    	 */
+    	if (classification != null) {
+    		return (int)f;
+    	}
+    	
         ByteBuffer conv = ByteBuffer.allocate(4);
         conv.putFloat(0, f);
         return conv.getInt(0);

@@ -112,6 +112,7 @@ public class RegularRasterGridDataSource
 		String valueAttr = null;
 		
 		// read requested parameters from properties
+		// TODO read class mappings if any - could be to concepts or to instances
 		for (IRelationship r : i.getRelationships()) {
 			
 			if (r.isLiteral()) {
@@ -162,6 +163,9 @@ public class RegularRasterGridDataSource
 	@Override
 	public Object getValue(int index, Object[] parameters) {
 		
+		/*
+		 * TODO reinterpret through classification lookup table if any is provided
+		 */
 		try {
 			return coverage.getSubdivisionValue(index, dataCM, gridExtent);
 		} catch (ThinklabValidationException e) {
@@ -172,7 +176,7 @@ public class RegularRasterGridDataSource
 
 	@Override
 	public IConcept getValueType() {
-		// TODO Auto-generated method stub
+		// TODO could be numbers or knowledge
 		return null;
 	}
 

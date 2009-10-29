@@ -41,6 +41,11 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	protected RandomIter itera;
 	protected RenderedImage image = null;
 	
+	/* if this is not null, the raster encodes mappings to these values, with each raster value mapping
+	 * to classMappings[value - 1] and 0 representing no data.
+	 */
+	String[] classMappings = null;
+	
 	static GridCoverageFactory rasterFactory = new GridCoverageFactory();
 	
 	public BoundingBox getBoundingBox() {
@@ -101,13 +106,19 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 		return new DirectPosition2D(xx, yy);
 	}
 	
+	/**
+	 * Return the value at the given subdivision, either a double or whatever string our value maps to
+	 * if we're classifying.
+	 */
 	public Object getSubdivisionValue(int subdivisionOrder, IConceptualModel conceptualModel, ArealExtent extent) throws ThinklabValidationException {
 		
 		/* determine which active x,y we should retrieve for this order. Must flip rows to make it match the original image. */
 		Pair<Integer, Integer> xy = ((GridExtent)extent).getActivationLayer().getCell(subdivisionOrder);
-		return itera.getSampleDouble(xy.getFirst(), getYCells() - xy.getSecond() - 1, 0);
+		return 
+			classMappings == null?
+					itera.getSampleDouble(xy.getFirst(), getYCells() - xy.getSecond() - 1, 0) :
+					classMappings[itera.getSample(xy.getFirst(), getYCells() - xy.getSecond() - 1, 0) + 1];
 	}
-
 
 	public double getLatLowerBound() {
 		return boundingBox.getMinY();
@@ -135,7 +146,7 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 
 	public double getNoDataValue() {
 		// TODO check this is OK - it's clearly not
-		return noData == null ? -9999.0 : noData[0];
+		return noData == null ? Double.NaN : noData[0];
 	}
 	
 	public String getCoordinateReferenceSystemCode() throws ThinklabException {

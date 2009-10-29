@@ -36,12 +36,6 @@ public class ThinklabRasterizer {
 		FeatureIterator<SimpleFeature> iterator = null;
 		try {
 			
-			/*
-			 * TODO
-			 * if we need an attribute, we must request it in the query, so
-			 * pass it below, which will have to validate it,
-			 * infer raster type to use and assess need for a lookup table
-			 */
 			iterator = vCoverage.getFeatureIterator(extent.getDefaultEnvelope(), valueId);
 			
 			coverage = rasterizer.rasterize(
@@ -61,11 +55,17 @@ public class ThinklabRasterizer {
 				iterator.close();
 		}
 		
-		return new RasterCoverage(
+		RasterCoverage ret = new RasterCoverage(
 				vCoverage.getLayerName() + 
 				"_" + 
 				(valueId == null ? "" : valueId) + 
 				"_raster", coverage);
+		
+		if (rasterizer.isClassification()) {
+			ret.setClassMappings(rasterizer.getClassification());
+		}
+		
+		return ret;
 	}
 	
 	
