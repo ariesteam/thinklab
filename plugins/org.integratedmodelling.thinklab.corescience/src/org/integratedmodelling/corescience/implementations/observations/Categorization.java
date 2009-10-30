@@ -33,6 +33,7 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceInt;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
 import org.integratedmodelling.corescience.interfaces.cmodel.IStateValidator;
@@ -74,98 +75,30 @@ import org.jscience.mathematics.number.Rational;
  * @author Ferdinando Villa
  *
  */
-@InstanceImplementation(concept="measurement:Ranking")
-public class Ranking extends Observation implements IConceptualizable {
-
-	private static final String MINVALUE_PROPERTY = "measurement:minValue";
-	private static final String MAXVALUE_PROPERTY = "measurement:maxValue";
-	private static final String ISINTEGER_PROPERTY = "measurement:isInteger";
-	private static final String ISSCALE_PROPERTY = "measurement:isScale";
-	
-	double minV = 0.0;
-	double maxV = -1.0;
-	boolean integer = false;
-	boolean isScale = false;
+@InstanceImplementation(concept="observation:Categorization")
+public class Categorization extends Observation implements IConceptualizable {
 
 	/**
-	 * Conceptual model for a simple numeric ranking. 
+	 * Conceptual model for a simple string tagging of state. 
 	 * @author Ferdinando Villa
 	 *
 	 */
-	public class RankingModel implements IConceptualModel, MediatingConceptualModel, ValidatingConceptualModel, ScalingConceptualModel {
-
-		boolean leftBounded = false;
-		boolean rightBounded = false;
-		boolean integer = false;
-		boolean isScale = false;
-		double min = 0.0;
-		double max = 0.0;
+	public class CategorizationModel implements IConceptualModel, MediatingConceptualModel, ValidatingConceptualModel, ScalingConceptualModel {
 		
 		IDataSource<?> datasource = null;
 		Double inlineValue = null;
 		
-		/**  
-		 * simple aggregator for ranks, considered as a quality measure and therefore treated
-		 * like an intensive property.
-		 */ 
-		public class RankingAggregator implements IValueAggregator<Double> {
-
-			double val = 0.0;
-			boolean isnew = true;
-
-			public void addValue(Double value, IObservationContextState contextState) throws ThinklabException {
-
-				val = isnew ? value : (val + value)/2;
-				isnew = false;
-			}
-
-			public Double aggregateAndReset() throws ThinklabException {
-				
-				double ret = val;
-				val = 0.0;
-				return ret;
-			}
-
-			@Override
-			public Double partition(Double originalValue, Rational ratio) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-		}
-		
-		public class RankingMediator implements IStateAccessor {
+		public class CategorizationMediator implements IStateAccessor {
 
 			private int reg;
-			private double conversion = 1.0;
-			private double offset = 0.0;
-			private boolean integer = false;
-			private boolean noConv = true;
-
-			public RankingMediator(double ownMin, double ownMax, boolean integer, double othMin, double othMax) {
-				this.conversion = (ownMax - ownMin)/(othMax - othMin);
-				this.offset = ownMin;
-				this.integer = integer;
-			}
 			
-			public RankingMediator() {
+			public CategorizationMediator() {
 			}
 
 			@Override
 			public Object getValue(Object[] registers) {
-				return noConv? registers[reg] : convert((Double)(registers[reg]));
-			}
-
-			private double convert(double d) {
-			
-				double ret = d*conversion;
-				ret += offset;
-			
-				if (integer)
-					ret = Math.rint(ret);
-				return ret;
-			}
-			
+				return registers[reg];
+			}			
 
 			@Override
 			public boolean isConstant() {
@@ -183,65 +116,24 @@ public class Ranking extends Observation implements IConceptualizable {
 			public void notifyDependencyRegister(IObservation observation,
 					IConcept observable, int register, IConcept stateType)
 					throws ThinklabException {
-				// TODO Auto-generated method stub
 				this.reg = register;
 			}
 			
 		}
-		
-		public RankingModel(
-				double minV, double maxV, boolean integer, 
-				boolean leftBounded, boolean rightBounded,
-				boolean isScale) {
-			this.min = minV;
-			this.max = maxV;
-			this.integer = integer;
-			this.leftBounded = leftBounded;
-			this.rightBounded = rightBounded;
-			this.isScale = isScale;
-		}
 
-		protected boolean bounded() {
-			return leftBounded && rightBounded;
-		}
 
 		public IConcept getStateType() {
-			return KnowledgeManager.Double();
+			return KnowledgeManager.Text();
 		}
 
 		public void validate(IObservation observation)
 				throws ThinklabValidationException {
-		
-			if (isScale && !bounded())
-				throw new ThinklabValidationException("scaled ranking must be bounded: provide minimum and maximum value");
 		}
 
-
-		/**
-		 * TODO move to the validator and pass it boundaries.
-		 * 
-		 * @param val
-		 * @throws ThinklabValidationException
-		 */
-		private void checkBoundaries(double val) throws ThinklabValidationException {
-
-			// TODO need a smart way to define IDs for observations, conceptual models etc so we can
-			// generate appropriate error messages.
-			if ((leftBounded && val < min) || rightBounded && (val > max))
-				throw new ThinklabValidationException("value " + val + " out of boundaries");
-			if (integer && Double.compare(val - Math.floor(val), 0.0) != 0)
-				throw new ThinklabValidationException("value " + val + " is not an integer as requested");
-		}
 
 		@Override
 		public IStateAccessor getStateAccessor(IConcept stateType, IObservationContext context) {
-
-			if (inlineValue != null)
-				return new RankingStateAccessor(inlineValue);
-			else if (datasource != null) 
-				return new RankingStateAccessor(datasource);
-			
-			return null;
+			return new CategorizationStateAccessor(datasource);
 		}
 
 		@Override
@@ -261,14 +153,14 @@ public class Ranking extends Observation implements IConceptualizable {
 		@Override
 		public IValueAggregator<?> getAggregator(IObservationContext ownContext,
 				IObservationContext overallContext, IExtentMediator[] mediators) {
-			return new RankingAggregator();
+			return null;
 		}
 
 		@Override
 		public IContextualizedState createContextualizedStorage(int size)
 				throws ThinklabException {
-			// fine as is, we create POD.
-			return null;
+			return new IndexedContextualizedDatasourceInt<String>(
+							KnowledgeManager.Text(),size);
 		}
 
 		@Override
@@ -276,58 +168,25 @@ public class Ranking extends Observation implements IConceptualizable {
 				IConcept stateType, IObservationContext context)
 				throws ThinklabException {
 			
-			RankingMediator ret = null;
-			
-			if (!(conceptualModel instanceof RankingModel)) {
+			if (!(conceptualModel instanceof CategorizationModel)) {
 				throw new ThinklabValidationException("can't mediate between " + this.getClass() +
 					" and " + conceptualModel.getClass());
 			}
-		
-			if ((isScale && !((RankingModel)conceptualModel).isScale) || 
-					(!isScale && ((RankingModel)conceptualModel).isScale))
-				throw new ThinklabValidationException("scale ranking can't be mediated with non-scale");
-
-		
-			/**
-			 * if rankings aren't fully bounded left and right, we just pass them along, and the
-			 * conformance of the observable is our guarantee of compatibility. CM validation will
-			 * catch values out of bounds.
-			 */
-			if (!bounded() || !((RankingModel)conceptualModel).bounded()) {
-				return new RankingMediator();
-			}
-		
-			/*
-			 * we only need to mediate ranking models that are different.
-			 */
-			if (min != ((RankingModel)conceptualModel).min || 
-					max != ((RankingModel)conceptualModel).max ||
-					integer != ((RankingModel)conceptualModel).integer) {
 			
-				ret = new RankingMediator(
-						min, max, integer,
-						((RankingModel)conceptualModel).min,
-						((RankingModel)conceptualModel).max);
-			}
-			
-			return ret;
+			return new CategorizationMediator();
 		}
 	}
 	
 
-	public class RankingStateAccessor implements IStateAccessor {
+	public class CategorizationStateAccessor implements IStateAccessor {
 
 		private boolean isConstant = false;
-		private double value = 0.0;
+		private String value = null;
 		private int index = 0;
 		private IDataSource<?> ds = null;
 
-		public RankingStateAccessor(double value) {
-			this.isConstant = true;
-			this.value = value;
-		}
 		
-		public RankingStateAccessor(IDataSource<?> src) {
+		public CategorizationStateAccessor(IDataSource<?> src) {
 			this.ds = src;
 		}
 		
@@ -360,47 +219,25 @@ public class Ranking extends Observation implements IConceptualizable {
 		
 		@Override
 		public String toString() {
-			return "[RankingAccessor]";
+			return "[CategorizationAccessor]";
 		}
 
 	}
-
 	
 	@Override
 	public IConceptualModel createMissingConceptualModel() throws ThinklabException {
-		
-		// read in scale attributes and pass to CM
-		IValue min = getObservationInstance().get(MINVALUE_PROPERTY);
-		IValue max = getObservationInstance().get(MAXVALUE_PROPERTY);
-		IValue isi = getObservationInstance().get(ISINTEGER_PROPERTY);
-		IValue iss = getObservationInstance().get(ISSCALE_PROPERTY);
-
-		if (min != null)
-			minV = min.asNumber().asDouble();
-		if (max != null) 
-			maxV = max.asNumber().asDouble();
-		if (isi != null)
-			integer = BooleanValue.parseBoolean(isi.toString());
-		if (iss != null)
-			isScale = BooleanValue.parseBoolean(iss.toString());
-
-		return new RankingModel(minV, maxV, integer, min != null, max != null, isScale);
-
+		return new CategorizationModel();
 	}
 
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
 
 		return Polylist.list(
-				CoreScience.RANKING,
+				CoreScience.CATEGORIZATION,
 				Polylist.list(CoreScience.HAS_OBSERVABLE,
 						(getObservable() instanceof IConceptualizable) ? 
 								((IConceptualizable)getObservable()).conceptualize() :
-								getObservable().toList(null)),
-						Polylist.list(MINVALUE_PROPERTY, minV+""),
-						Polylist.list(MAXVALUE_PROPERTY, maxV+""),
-						Polylist.list(ISINTEGER_PROPERTY, integer ? "true" : "false"),
-						Polylist.list(ISSCALE_PROPERTY, isScale ? "true" : "false"));
+								getObservable().toList(null)));
 	}
 
 }

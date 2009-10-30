@@ -43,10 +43,11 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 		if (! (
 				(model instanceof CountModel) ||
 				(model instanceof RankingModel) ||
+				(model instanceof CategorizationModel) ||
 				(model instanceof ClassificationModel) ||
 				(model instanceof MeasurementModel))) {
 			throw new ThinklabValidationException(
-					"classification models can only mediate classifications, counts, rankings or measurements");
+					"classification models can only mediate classifications, counts, categorizations, rankings or measurements");
 		}
 	}
 

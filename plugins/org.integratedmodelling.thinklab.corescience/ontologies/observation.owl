@@ -354,6 +354,15 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Categorization -->
+
+    <owl:Class rdf:about="#Categorization">
+        <rdfs:subClassOf rdf:resource="#IndirectObservation"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >Categorizes value with an arbitrary string assumed consistent i.e. same tag means same value but with no other formal value.</rdfs:comment>
+    </owl:Class>
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ClassificationSpace -->
 
     <owl:Class rdf:about="#ClassificationSpace">

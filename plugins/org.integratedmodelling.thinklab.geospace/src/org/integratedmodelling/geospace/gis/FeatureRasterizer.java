@@ -175,7 +175,7 @@ public class FeatureRasterizer {
     	String[] ret = new String[classification.size()];
     	
     	for (String s : classification.keySet()) {
-    		ret[classification.get(s)] = s;
+    		ret[classification.get(s)-1] = s;
     	}
     	
     	return ret;

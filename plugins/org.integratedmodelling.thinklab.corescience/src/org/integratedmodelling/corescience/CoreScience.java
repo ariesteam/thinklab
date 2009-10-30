@@ -60,6 +60,7 @@ public class CoreScience extends ThinklabPlugin {
 	private IConcept MeasurementSpace;
 	private IConcept MeasurementType;
 	private IConcept RankingType;
+	private IConcept CategorizationType;
 	private IConcept RandomValueType;
 	private IConcept ContinuousDistributionType;
 	private IConcept DiscreteDistributionType;
@@ -91,6 +92,7 @@ public class CoreScience extends ThinklabPlugin {
 	// concepts
 	public static final String OBSERVATION = "observation:Observation";
 	public static final String RANKING = "measurement:Ranking";
+	public static final String CATEGORIZATION = "observation:Categorization";
 	public static final String IDENTIFICATION = "observation:Identification";
 	public static final String INDIRECT_OBSERVATION = "observation:IndirectObservation";
 	public static final String EXCEL_CSV_DATASOURCE = "source:ExcelCSVDataSource";
@@ -119,6 +121,7 @@ public class CoreScience extends ThinklabPlugin {
 	static final public String GENERIC_OBSERVABLE = "representation:GenericObservable";
 	static final public String GENERIC_QUANTIFIABLE = "representation:GenericQuantifiable";
 
+
 	public static CoreScience get() {
 		return (CoreScience) getPlugin(PLUGIN_ID );
 	}
@@ -139,6 +142,7 @@ public class CoreScience extends ThinklabPlugin {
 			ObservationType = km.requireConcept(OBSERVATION);
 			MeasurementType = km.requireConcept(MEASUREMENT);
 			RankingType = km.requireConcept(RANKING);
+			CategorizationType = km.requireConcept(CATEGORIZATION);
 			
 		} catch (Exception e) {
 			throw new ThinklabPluginException(e);
@@ -233,6 +237,10 @@ public class CoreScience extends ThinklabPlugin {
 
 	public static IConcept Ranking() {
 		return get().RankingType;
+	}
+
+	public static IConcept Categorization() {
+		return get().CategorizationType;
 	}
 
 }

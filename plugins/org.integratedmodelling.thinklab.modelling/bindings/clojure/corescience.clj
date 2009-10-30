@@ -26,6 +26,12 @@
 	"Make a new instance of Model and return it."
 	[]
 	(new org.integratedmodelling.modelling.corescience.RankingModel))
+	
+(defn j-make-categorization
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.CategorizationModel))
+
 
 (defn j-make-bayesian
 	"Make a new instance of Model and return it."
@@ -66,6 +72,18 @@
  	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
  	   					(eval ~observable)))
  	   (if (not (nil? '~units)) (.setUnits model# (first '~units))) 
+ 	   model#))
+	
+(defmacro categorization
+	""
+	[observable & categories]
+	`(let [model# 
+ 	        	(modelling/j-make-categorization)] 
+ 	   (.setObservable model# 
+	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
+ 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
+ 	   					(eval ~observable)))
+ 	   (if (not (nil? '~categories)) (.setCategories model# (first '~categories))) 
  	   model#))
 	
 (defmacro measurement
