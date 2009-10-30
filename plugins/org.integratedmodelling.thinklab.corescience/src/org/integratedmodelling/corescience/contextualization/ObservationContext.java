@@ -249,8 +249,9 @@ public class ObservationContext implements IObservationContext {
 			} else {
 				// ask CM to modify the current extent record in order to represent the
 				// new one as well.
-				extents.put(entry, 
-						extent.getConceptualModel().mergeExtents(extent, foreign, connector, isConstraint));
+				IExtent ext = extent.getConceptualModel().mergeExtents(extent, foreign, connector, isConstraint);
+				if (ext != null)
+					extents.put(entry,ext);
 			}					
 		}	
 	}

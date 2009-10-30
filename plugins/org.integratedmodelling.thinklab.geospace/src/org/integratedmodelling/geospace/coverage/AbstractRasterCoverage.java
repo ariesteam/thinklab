@@ -114,6 +114,7 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 		
 		/* determine which active x,y we should retrieve for this order. Must flip rows to make it match the original image. */
 		Pair<Integer, Integer> xy = ((GridExtent)extent).getActivationLayer().getCell(subdivisionOrder);
+		//System.out.print(itera.getSample(xy.getFirst(), getYCells() - xy.getSecond() - 1, 0) + ",");
 		return 
 			classMappings == null?
 					itera.getSampleDouble(xy.getFirst(), getYCells() - xy.getSecond() - 1, 0) :

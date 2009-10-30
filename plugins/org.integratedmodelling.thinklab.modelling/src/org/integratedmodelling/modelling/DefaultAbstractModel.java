@@ -277,6 +277,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		 */
 		boolean optional = (this instanceof IContextOptional);
 		for (IModel dep : dependents) {
+			
 			ModelResult d = 
 				((DefaultAbstractModel)dep).observeInternal(kbox, session, cp, extents, optional);
 			

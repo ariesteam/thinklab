@@ -98,7 +98,7 @@ public class IndexedContextualizedDatasourceInt<T>
 	}
 	
 	public String toString() {
-		return "[" + _type + ": " + Arrays.toString(data) + "]";
+		return "[" + _type + " {" + map + "}: " + Arrays.toString(data) + "]";
 	}
 
 	@Override

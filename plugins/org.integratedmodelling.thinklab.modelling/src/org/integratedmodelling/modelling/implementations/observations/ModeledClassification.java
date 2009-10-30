@@ -91,6 +91,9 @@ public class ModeledClassification
 		public Object getValue(Object[] registers) {
 
 			Object o = registers[index];
+			
+			System.out.println("Got Fucc " + o);
+			
 			for (Pair<GeneralClassifier, IConcept> p : classifiers) {
 				if (p.getFirst().classify(o))
 					return p.getSecond();

@@ -53,12 +53,16 @@ public class GeneralClassifier {
 		}
 		
 		if (number != null) {
-			return number == asNumber(o);
+			
+			return number.equals(asNumber(o));
+			
 		} else if (classifiers != null) {
+			
 			for (GeneralClassifier cl : classifiers) {
 				if (cl.classify(o))
 					return true;
 			}
+			
 		} else if (interval != null) {
 			
 			Double d = asNumber(o);

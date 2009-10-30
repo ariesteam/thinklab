@@ -18,32 +18,27 @@ package org.integratedmodelling.geospace.gis;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.media.jai.RasterFactory;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
-import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.type.NumericAttributeType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.feature.AttributeTable;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.AttributeType;
 import org.opengis.referencing.cs.AxisDirection;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -466,7 +461,7 @@ public class FeatureRasterizer {
 
     public void addShape(ShapeValue shape) {
     	
-        int rgbVal = classification == null ? floatBitsToInt(value) : (int)value;
+        int rgbVal = floatBitsToInt(value);
 
         graphics.setColor(new Color(rgbVal, true));
         Geometry geometry = (Geometry) shape.getGeometry();
@@ -544,7 +539,6 @@ public class FeatureRasterizer {
         }
 
         int rgbVal = floatBitsToInt(value);
-
         graphics.setColor(new Color(rgbVal, true));
 
         // Extract polygon and rasterize!
@@ -576,6 +570,7 @@ public class FeatureRasterizer {
     }
 
     private float getClassifiedValue(String string) {
+    	
     	Integer ret = classification.get(string);
 		if (ret == null) {
 			ret = classification.size() + 1;
@@ -590,10 +585,10 @@ public class FeatureRasterizer {
     public void close() {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
+        		double val = Float.intBitsToFloat(bimage.getRGB(i, j));
             	if (classification != null) {
-            		raster.setSample(i, j, 0, bimage.getRGB(i, j));
+            		raster.setSample(i, j, 0, (int)val);
             	} else {
-            		double val = Float.intBitsToFloat(bimage.getRGB(i, j));
             		raster.setSample(i, j, 0, val);
             	}
             }
@@ -811,14 +806,7 @@ public class FeatureRasterizer {
     }
 
     private int floatBitsToInt(float f) {
-    	
-    	/*
-    	 * if we're classifying, this is actually the value we want to store
-    	 */
-    	if (classification != null) {
-    		return (int)f;
-    	}
-    	
+    	    	
         ByteBuffer conv = ByteBuffer.allocate(4);
         conv.putFloat(0, f);
         return conv.getInt(0);
