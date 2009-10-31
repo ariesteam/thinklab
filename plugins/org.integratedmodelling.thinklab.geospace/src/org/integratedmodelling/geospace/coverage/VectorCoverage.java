@@ -36,8 +36,6 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Iterator;
-
 import javax.swing.JFrame;
 
 import org.geotools.data.DefaultQuery;
@@ -242,10 +240,11 @@ public class VectorCoverage implements ICoverage {
 		    	}
 		    	
 				DefaultQuery query = new DefaultQuery(typeName, filter, attnames);
-				
+				// TODO check: we want the results to match the CRS that the query is expressed in
 				query.setCoordinateSystem(envelope.getCoordinateReferenceSystem());
-				
+				query.setCoordinateSystemReproject(envelope.getCoordinateReferenceSystem());
 				FeatureCollection<SimpleFeatureType, SimpleFeature> feat;
+				
 				try {
 					feat = source.getFeatures(query);
 				} catch (IOException e) {

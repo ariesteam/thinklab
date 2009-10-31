@@ -104,12 +104,14 @@ public class ModelResult implements IQueryResult  {
 		Polylist ret = _model.buildDefinition(_kbox, _session);
 		
 		if (_mediated != null) {
+			
 			Polylist med = _mediated.getResultAsList(ofs[0], null);
 			ret = ObservationFactory.addMediatedObservation(ret, med);
+			
 		} else if (_dependents.size() > 0) {
 			
 			for (int i = 0; i < _dependents.size(); i++) {
-				Polylist dep = _dependents.get(0).getResultAsList(ofs[i], null);
+				Polylist dep = _dependents.get(i).getResultAsList(ofs[i], null);
 				ret = ObservationFactory.addDependency(ret, dep);
 			}
 		}

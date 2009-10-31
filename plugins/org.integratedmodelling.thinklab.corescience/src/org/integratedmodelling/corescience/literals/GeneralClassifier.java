@@ -46,6 +46,10 @@ public class GeneralClassifier {
 		}
 	}
 	
+	public boolean isUniversal() {
+		return catchAll;
+	}
+	
 	public boolean classify(Object o) {
 
 		if (catchAll) {

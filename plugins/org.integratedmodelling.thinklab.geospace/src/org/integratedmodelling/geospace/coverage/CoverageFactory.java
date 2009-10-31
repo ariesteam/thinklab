@@ -18,6 +18,7 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gce.arcgrid.ArcGridReader;
@@ -64,6 +65,7 @@ public class CoverageFactory {
 	public static final String ATTRIBUTE_URL_PROPERTY = "geospace.internal.attribute-url";
 	public static final String WFS_SERVICE_PROPERTY = "wfs.service.url";
 	public static final String WFS_TIMEOUT_PROPERTY = "wfs.service.timeout";
+	public static final String WFS_BUFFER_SIZE_PROPERTY = "wfs.service.buffersize";
 	public static final String COVERAGE_ID_PROPERTY = "wfs.coverage.id";
 	
 	static Hashtable<String, ICoverage> coverages = 
@@ -209,17 +211,23 @@ public class CoverageFactory {
 			properties.getProperty(WFS_SERVICE_PROPERTY);
 		Integer wfsTimeout = 
 			Integer.parseInt(properties.getProperty(WFS_TIMEOUT_PROPERTY, "10000"));
+		Integer wfsBufsize = 
+			Integer.parseInt(properties.getProperty(WFS_BUFFER_SIZE_PROPERTY, "2048"));
 		
 		String valAttr = properties.getProperty(VALUE_ATTRIBUTE_PROPERTY);
 		String covId = properties.getProperty(COVERAGE_ID_PROPERTY);
 		
 		Map<Object,Object> connectionParameters = new HashMap<Object,Object>();
 		connectionParameters.put(
-					"WFSDataStoreFactory:GET_CAPABILITIES_URL", 
+					WFSDataStoreFactory.URL.key, 
 					wfsService + "?request=getCapabilities" );
 		connectionParameters.put(
-				"WFSDataStoreFactory.TIMEOUT", 
+				WFSDataStoreFactory.TIMEOUT.key, 
 				wfsTimeout);
+		connectionParameters.put(
+				WFSDataStoreFactory.BUFFER_SIZE.key, 
+				wfsBufsize);
+		
 		try {
 
 			DataStore data = DataStoreFinder.getDataStore(connectionParameters);

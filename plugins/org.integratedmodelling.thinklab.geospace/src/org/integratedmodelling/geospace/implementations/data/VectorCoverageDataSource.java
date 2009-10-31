@@ -36,7 +36,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
-import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
@@ -46,8 +45,6 @@ import org.integratedmodelling.geospace.coverage.ICoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.extents.ShapeExtent;
-import org.integratedmodelling.geospace.implementations.cmodels.FeatureCoverageModel;
-import org.integratedmodelling.geospace.implementations.cmodels.RegularRasterModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;

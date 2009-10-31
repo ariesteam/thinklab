@@ -447,10 +447,18 @@ public class FeatureRasterizer {
         setBounds(bounds);
 
         SimpleFeature feature; int n = 0;
-        while (fc.hasNext()) {        	
-            feature = fc.next();
-            addFeature(feature);
-            n++;
+        while (fc.hasNext()) {       
+        	try {
+        		feature = fc.next();
+        		addFeature(feature);
+        		n++;
+        	} catch (Exception e) {
+        		// timeouts are easy to get into here, we don't want them to kill the rasterization
+        		Geospace.get().logger().warn("problem reading feature #" + n + ": " + e.getMessage());
+        	}
+        	// log when we have to rasterize lots of features, so we know we should take action otherwise 
+        	if (n > 0 && (n % 5000) == 0)
+        		Geospace.get().logger().info("rasterized " + n + "-th feature... that's a lot to rasterize");
         }
         
         close();

@@ -92,8 +92,6 @@ public class ModeledClassification
 
 			Object o = registers[index];
 			
-			System.out.println("Got Fucc " + o);
-			
 			for (Pair<GeneralClassifier, IConcept> p : classifiers) {
 				if (p.getFirst().classify(o))
 					return p.getSecond();
@@ -140,15 +138,25 @@ public class ModeledClassification
 	public void initialize(IInstance i) throws ThinklabException {
 
 		super.initialize(i);
+		Pair<GeneralClassifier, IConcept> universal = null;
+		Pair<GeneralClassifier, IConcept> cls = null;
 		
+		/*
+		 * we have no guarantee that the universal classifier will be last, given that it
+		 * comes from an OWL multiproperty
+		 */
 		for (IRelationship r : i.getRelationships("modeltypes:hasClassifier")) {
 			String[] rz = r.getValue().toString().split("->");
-			classifiers.add(
-				new Pair<GeneralClassifier, IConcept>(
+			cls = new Pair<GeneralClassifier, IConcept>(
 					new GeneralClassifier(rz[1]), 
-					KnowledgeManager.get().requireConcept(rz[0])));
-					
+					KnowledgeManager.get().requireConcept(rz[0]));
+			if (cls.getFirst().isUniversal())
+				universal = cls;
+			else 
+				classifiers.add(cls);					
 		}
+		if (universal != null) 
+			classifiers.add(universal);
 		
 		IValue def = i.get(CoreScience.HAS_CONCEPTUAL_SPACE);
 		if (def != null)
