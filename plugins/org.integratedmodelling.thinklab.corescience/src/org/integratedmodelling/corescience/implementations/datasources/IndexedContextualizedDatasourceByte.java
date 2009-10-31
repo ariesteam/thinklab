@@ -7,6 +7,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -61,7 +62,7 @@ public class IndexedContextualizedDatasourceByte<T>
 	}
 
 	@Override
-	public boolean handshake(IConceptualModel cm,
+	public boolean handshake(IObservation observation, IConceptualModel cm,
 			IObservationContext observationContext,
 			IObservationContext overallContext) throws ThinklabException {
 		return false;

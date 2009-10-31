@@ -32,9 +32,8 @@
  **/
 package org.integratedmodelling.geospace.implementations.cmodels;
 
-import java.util.Properties;
-
 import org.geotools.referencing.CRS;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.geospace.Geospace;
@@ -58,6 +57,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 public abstract class SubdividedCoverageConceptualModel extends SpatialConceptualModel {
 
 	private String name;
+	protected IExtent overriddenExtent;
 
 	public IConcept getStateType() {
 		return Geospace.get().Polygon();
@@ -143,6 +143,10 @@ public abstract class SubdividedCoverageConceptualModel extends SpatialConceptua
 		
 	}
 
+	public void overrideExtent(IExtent extent) {
+		this.overriddenExtent = extent;
+	}
+	
 	public void validate(IInstance i) throws ThinklabValidationException {
 		// TODO Auto-generated method stub
 

@@ -36,15 +36,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
+import org.integratedmodelling.corescience.Obs;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.CoverageFactory;
 import org.integratedmodelling.geospace.coverage.ICoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.extents.ShapeExtent;
+import org.integratedmodelling.geospace.implementations.cmodels.SubdividedCoverageConceptualModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
@@ -71,7 +74,8 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 	private GridExtent gridExtent;
 	private ShapeExtent shapeExtent;
 	
-	public boolean handshake(IConceptualModel cm,
+	public boolean handshake(IObservation observation, 
+			IConceptualModel cm,
 			IObservationContext observationContext,
 			IObservationContext overallContext)
 			throws ThinklabException {
@@ -109,6 +113,21 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 			 */
 			defineActivationLayer(
 					gridExtent.requireActivationLayer(true), gridExtent);
+			
+			/*
+			 * if we have rasterized the vector, the spatial extent of the specific obs 
+			 * must now become the passed gridExtent. Get the spatial CM of the root obs and
+			 * inject the grid extent.
+			 */
+			IObservation ospat = 
+				Obs.findObservation(observation, Geospace.get().SpaceObservable());
+			
+			if (ospat != null) { // which should always be the case, given that WE are spatial...
+				IConceptualModel scm = ospat.getConceptualModel();
+				if (scm instanceof SubdividedCoverageConceptualModel) {
+					((SubdividedCoverageConceptualModel)scm).overrideExtent(gridExtent);
+				}
+			}
 		}
 		
 		// if we get to handshaking, we need to load the data

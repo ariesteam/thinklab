@@ -35,6 +35,7 @@ package org.integratedmodelling.corescience.implementations.datasources;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.utils.Ticker;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -60,7 +61,7 @@ public class DimensionalCounter extends Ticker implements IDataSource<Integer> {
 	}
 
 	@Override
-	public boolean handshake(IConceptualModel cm,
+	public boolean handshake(IObservation observation, IConceptualModel cm,
 			IObservationContext observationContext,
 			IObservationContext overallContext) throws ThinklabException {
 		// TODO Auto-generated method stub

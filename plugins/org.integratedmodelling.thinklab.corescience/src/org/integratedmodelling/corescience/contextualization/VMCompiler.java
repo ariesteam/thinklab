@@ -441,7 +441,7 @@ public class VMCompiler extends Compiler {
 		if (ds != null) {
 			
 			odesc.needsContextStates = 
-				performHandshake(cm, ds, context, ownContext, 
+				performHandshake(o, cm, ds, context, ownContext, 
 						o.getDependencies(), stateType);
 		}
 		

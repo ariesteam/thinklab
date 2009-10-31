@@ -38,6 +38,7 @@ import org.integratedmodelling.corescience.exceptions.ThinklabInconsistentDataSo
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -84,7 +85,7 @@ public class ParsedDataSource<T> extends TextValue implements IDataSource<T> {
 	}
 
 
-	public boolean handshake(IConceptualModel cm, IObservationContext observationContext, IObservationContext overallContext) throws ThinklabValidationException {
+	public boolean handshake(IObservation observation, IConceptualModel cm, IObservationContext observationContext, IObservationContext overallContext) throws ThinklabValidationException {
 		
 		/* 
 		 * If only one value, must make sure that we don't depend on any extent, or we won't be able to 

@@ -34,6 +34,7 @@ package org.integratedmodelling.corescience.interfaces.data;
 
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
@@ -62,6 +63,7 @@ public interface IDataSource<T> {
 	 * the actual extent values (returned by IExtent.getValue()) are needed. This saves time
 	 * during contextualization when getValue() is called; if true is returned, the IObservationContextState
 	 * passed will only contain values for the dependencies, and not for the extents.
+	 * @param observation 
 	 * 
 	 * @param cm the conceptual model of the connected observation
 	 * @param observationContext the finished context of the connected observation
@@ -73,6 +75,7 @@ public interface IDataSource<T> {
 	 * @throws ThinklabException 
 	 */
 	public abstract boolean handshake(
+			IObservation observation, 
 			IConceptualModel cm, 
 			IObservationContext observationContext,
 			IObservationContext overallContext)

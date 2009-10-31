@@ -37,6 +37,7 @@ import java.util.Properties;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -74,7 +75,7 @@ public class RandomDataSource implements IDataSource<Float>, IInstanceImplementa
 	 * asked, ignoring all the parameters. We just ensure the conceptual manager
 	 * wants numbers.
 	 */
-	public boolean handshake(IConceptualModel cm,
+	public boolean handshake(IObservation observation, IConceptualModel cm,
 			IObservationContext observationContext,
 			IObservationContext overallContext)
 			throws ThinklabValidationException {

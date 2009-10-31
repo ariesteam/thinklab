@@ -41,6 +41,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.ResamplingDataSource;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.CoverageFactory;
 import org.integratedmodelling.geospace.coverage.ICoverage;
@@ -69,7 +70,7 @@ public class RegularRasterGridDataSource
 	/* same here - these are overall extents that we need to conform to */
 	private GridExtent gridExtent;
 	
-	public boolean handshake(IConceptualModel cm,
+	public boolean handshake(IObservation observation, IConceptualModel cm,
 			IObservationContext observationContext,
 			IObservationContext overallContext)
 			throws ThinklabException {

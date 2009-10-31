@@ -36,6 +36,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.ComputedDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -98,7 +99,7 @@ public class ExpressionDatasource
 	}
 
 	@Override
-	public boolean handshake(IConceptualModel cm,
+	public boolean handshake(IObservation observation, IConceptualModel cm,
 			IObservationContext observationContext,
 			IObservationContext overallContext) throws ThinklabException {
 		// TODO Auto-generated method stub

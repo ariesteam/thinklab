@@ -46,6 +46,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IValueTransformatio
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IDataFilter;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -242,7 +243,7 @@ public class CSVDataSource implements IDataSource<Object>, IInstanceImplementati
 	}
 
 
-	public boolean handshake(IConceptualModel cm, IObservationContext observationContext, IObservationContext overallContext) throws ThinklabValidationException {
+	public boolean handshake(IObservation observation, IConceptualModel cm, IObservationContext observationContext, IObservationContext overallContext) throws ThinklabValidationException {
 		// TODO Auto-generated method stub
 		
 		/* ensure mappings are understood and we have appropriate info to resolve contexts */

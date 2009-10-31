@@ -212,7 +212,7 @@ public class CoverageFactory {
 		Integer wfsTimeout = 
 			Integer.parseInt(properties.getProperty(WFS_TIMEOUT_PROPERTY, "10000"));
 		Integer wfsBufsize = 
-			Integer.parseInt(properties.getProperty(WFS_BUFFER_SIZE_PROPERTY, "2048"));
+			Integer.parseInt(properties.getProperty(WFS_BUFFER_SIZE_PROPERTY, "512"));
 		
 		String valAttr = properties.getProperty(VALUE_ATTRIBUTE_PROPERTY);
 		String covId = properties.getProperty(COVERAGE_ID_PROPERTY);

@@ -131,6 +131,7 @@ public abstract class Compiler implements IContextualizationCompiler {
 	}
 	
 	protected boolean performHandshake(
+			IObservation observation,
 			IConceptualModel cm, IDataSource<?> ds, 
 			IObservationContext overallContext, 
 			IObservationContext ownContext, 
@@ -139,7 +140,7 @@ public abstract class Compiler implements IContextualizationCompiler {
 		/*
 		 * perform handshaking
 		 */
-		boolean ret = ds.handshake(cm, ownContext, overallContext);
+		boolean ret = ds.handshake(observation, cm, ownContext, overallContext);
 		IDataSource<?> dds = null;
 		
 		if (ds instanceof DimensionalDataSource) {

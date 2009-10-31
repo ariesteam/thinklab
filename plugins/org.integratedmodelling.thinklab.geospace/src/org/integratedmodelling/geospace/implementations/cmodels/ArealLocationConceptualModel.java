@@ -91,7 +91,7 @@ public class ArealLocationConceptualModel extends SpatialConceptualModel {
 				new ShapeExtent(((ShapeExtent)original).getShape().intersection(((ShapeExtent)other).getShape()), getCRS(), this);
 	}
 
-	public IValueAggregator getAggregator(IObservationContext ownContext,
+	public IValueAggregator<?> getAggregator(IObservationContext ownContext,
 			IObservationContext overallContext) {
 		// TODO Auto-generated method stub
 		return null;

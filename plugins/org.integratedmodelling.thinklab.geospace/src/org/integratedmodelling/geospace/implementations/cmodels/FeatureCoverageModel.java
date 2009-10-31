@@ -78,6 +78,13 @@ public class FeatureCoverageModel extends SubdividedCoverageConceptualModel {
 	}
 
 	public IExtent getExtent() throws ThinklabException {
+		
+		/*
+		 * we may have been rasterized to match a higher-level grid extent
+		 */
+		if (overriddenExtent != null)
+			return overriddenExtent;
+		
 		return new ShapeExtent(this.getBoundary(), this.getCRS(), this);
 	}
 
@@ -87,7 +94,7 @@ public class FeatureCoverageModel extends SubdividedCoverageConceptualModel {
 		return null;
 	}
 
-	public IValueAggregator getAggregator(IObservationContext ownContext,
+	public IValueAggregator<?> getAggregator(IObservationContext ownContext,
 			IObservationContext overallContext) {
 		// TODO Auto-generated method stub
 		return null;
