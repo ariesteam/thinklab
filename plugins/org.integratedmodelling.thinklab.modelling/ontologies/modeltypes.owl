@@ -115,7 +115,14 @@
             >A commodity class to simplify definition of a measurement with dynamic code.</rdfs:comment>
     </owl:Class>
     
+    <!-- http://www.integratedmodelling.org/ks/modelling/modeltypes.owl#DynamicMeasurement -->
 
+    <owl:Class rdf:about="#DynamicRanking">
+        <rdfs:subClassOf rdf:resource="&measurement;Ranking"/>
+        <rdfs:comment
+            >A commodity class to simplify definition of a ranking with dynamic code.</rdfs:comment>
+    </owl:Class>
+    
 
     <!-- http://www.integratedmodelling.org/ks/modelling/modeltypes.owl#ModeledClassification -->
 

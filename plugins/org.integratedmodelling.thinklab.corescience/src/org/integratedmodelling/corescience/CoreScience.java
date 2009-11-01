@@ -56,6 +56,7 @@ public class CoreScience extends ThinklabPlugin {
 	 */
 	private HashMap<String, String> compilerClasses = new HashMap<String,String>();
 
+	private IConcept NumericRankingSpace;
 	private IConcept DiscreteNumericRankingSpace;
 	private IConcept MeasurementSpace;
 	private IConcept MeasurementType;
@@ -112,6 +113,7 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String DATASOURCE_FUNCTION_LITERAL = "source:hasFunctionLiteral";
 	public static final String CLASSIFICATION_MODEL = "observation:ClassificationSpace";
 	public static final String DISCRETE_RANKING_MODEL = "observation:DiscreteNumericRankingSpace";
+	public static final String RANKING_MODEL = "observation:DiscreteNumericRankingSpace";
 	public static final String CLASS_MAPPING = "observation:ClassMapping";
 	public static final String CONTEXTUALIZED_DATASOURCE = "observation:ContextualizedDataSource";
 	public static final String RANKING_SET_REMAPPER = "measurement:RankingSetRemapper";
@@ -133,7 +135,7 @@ public class CoreScience extends ThinklabPlugin {
 	public void load(KnowledgeManager km) throws ThinklabPluginException {
 		
 		try {
-			
+			NumericRankingSpace = km.requireConcept(RANKING_MODEL);
 			DiscreteNumericRankingSpace = km.requireConcept(DISCRETE_RANKING_MODEL);
 			MeasurementSpace = km.requireConcept(UNIT);
 			RandomValueType = km.requireConcept(RANDOM_VALUE);
@@ -207,6 +209,10 @@ public class CoreScience extends ThinklabPlugin {
 		compilerClasses.put(id, compilerClass);
 	}
 
+	public static IConcept RankingModel() {
+		return get().NumericRankingSpace;
+	}
+	
 	public static IConcept DiscreteRankingModel() {
 		return get().DiscreteNumericRankingSpace;
 	}

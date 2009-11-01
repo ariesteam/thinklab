@@ -52,6 +52,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.utils.Polylist;
@@ -86,7 +87,8 @@ public class Ranking extends Observation implements IConceptualizable {
 	double maxV = -1.0;
 	boolean integer = false;
 	boolean isScale = false;
-
+	boolean leftBounded = false;
+	boolean rightBounded = false;
 	/**
 	 * Conceptual model for a simple numeric ranking. 
 	 * @author Ferdinando Villa
@@ -94,12 +96,11 @@ public class Ranking extends Observation implements IConceptualizable {
 	 */
 	public class RankingModel implements IConceptualModel, MediatingConceptualModel, ValidatingConceptualModel, ScalingConceptualModel {
 
-		boolean leftBounded = false;
-		boolean rightBounded = false;
-		boolean integer = false;
-		boolean isScale = false;
-		double min = 0.0;
-		double max = 0.0;
+//
+//		boolean integer = false;
+//		boolean isScale = false;
+//		double min = 0.0;
+//		double max = 0.0;
 		
 		IDataSource<?> datasource = null;
 		Double inlineValue = null;
@@ -189,22 +190,34 @@ public class Ranking extends Observation implements IConceptualizable {
 			
 		}
 		
-		public RankingModel(
-				double minV, double maxV, boolean integer, 
-				boolean leftBounded, boolean rightBounded,
-				boolean isScale) {
-			this.min = minV;
-			this.max = maxV;
-			this.integer = integer;
-			this.leftBounded = leftBounded;
-			this.rightBounded = rightBounded;
-			this.isScale = isScale;
-		}
+//		public RankingModel(
+//				double minV, double maxV, boolean integer, 
+//				boolean leftBounded, boolean rightBounded,
+//				boolean isScale) {
+//			this.min = minV;
+//			this.max = maxV;
+//			this.integer = integer;
+//			this.leftBounded = leftBounded;
+//			this.rightBounded = rightBounded;
+//			this.isScale = isScale;
+//		}
 
 		protected boolean bounded() {
 			return leftBounded && rightBounded;
 		}
 
+		protected double getMin() {
+			return minV;
+		}
+		
+		protected double getMax() {
+			return maxV;
+		}
+
+		protected boolean isInteger() {
+			return integer;
+		}
+		
 		public IConcept getStateType() {
 			return KnowledgeManager.Double();
 		}
@@ -227,7 +240,7 @@ public class Ranking extends Observation implements IConceptualizable {
 
 			// TODO need a smart way to define IDs for observations, conceptual models etc so we can
 			// generate appropriate error messages.
-			if ((leftBounded && val < min) || rightBounded && (val > max))
+			if ((leftBounded && val < minV) || rightBounded && (val > maxV))
 				throw new ThinklabValidationException("value " + val + " out of boundaries");
 			if (integer && Double.compare(val - Math.floor(val), 0.0) != 0)
 				throw new ThinklabValidationException("value " + val + " is not an integer as requested");
@@ -283,8 +296,8 @@ public class Ranking extends Observation implements IConceptualizable {
 					" and " + conceptualModel.getClass());
 			}
 		
-			if ((isScale && !((RankingModel)conceptualModel).isScale) || 
-					(!isScale && ((RankingModel)conceptualModel).isScale))
+			if ((isScale && !isScale) || 
+					(!isScale && isScale))
 				throw new ThinklabValidationException("scale ranking can't be mediated with non-scale");
 
 		
@@ -300,14 +313,14 @@ public class Ranking extends Observation implements IConceptualizable {
 			/*
 			 * we only need to mediate ranking models that are different.
 			 */
-			if (min != ((RankingModel)conceptualModel).min || 
-					max != ((RankingModel)conceptualModel).max ||
-					integer != ((RankingModel)conceptualModel).integer) {
+			if (minV != ((RankingModel)conceptualModel).getMin() || 
+					maxV != ((RankingModel)conceptualModel).getMax() ||
+					integer != ((RankingModel)conceptualModel).isInteger()) {
 			
 				ret = new RankingMediator(
-						min, max, integer,
-						((RankingModel)conceptualModel).min,
-						((RankingModel)conceptualModel).max);
+						minV, maxV, integer,
+						((RankingModel)conceptualModel).getMin(),
+						((RankingModel)conceptualModel).getMax());
 			}
 			
 			return ret;
@@ -367,13 +380,15 @@ public class Ranking extends Observation implements IConceptualizable {
 
 	
 	@Override
-	public IConceptualModel createMissingConceptualModel() throws ThinklabException {
+	public void initialize(IInstance i) throws ThinklabException {
+
+		super.initialize(i);
 		
 		// read in scale attributes and pass to CM
-		IValue min = getObservationInstance().get(MINVALUE_PROPERTY);
-		IValue max = getObservationInstance().get(MAXVALUE_PROPERTY);
-		IValue isi = getObservationInstance().get(ISINTEGER_PROPERTY);
-		IValue iss = getObservationInstance().get(ISSCALE_PROPERTY);
+		IValue min = i.get(MINVALUE_PROPERTY);
+		IValue max = i.get(MAXVALUE_PROPERTY);
+		IValue isi = i.get(ISINTEGER_PROPERTY);
+		IValue iss = i.get(ISSCALE_PROPERTY);
 
 		if (min != null)
 			minV = min.asNumber().asDouble();
@@ -383,9 +398,11 @@ public class Ranking extends Observation implements IConceptualizable {
 			integer = BooleanValue.parseBoolean(isi.toString());
 		if (iss != null)
 			isScale = BooleanValue.parseBoolean(iss.toString());
+	}
 
-		return new RankingModel(minV, maxV, integer, min != null, max != null, isScale);
-
+	@Override
+	public IConceptualModel createMissingConceptualModel() throws ThinklabException {
+		return new RankingModel();
 	}
 
 	@Override
