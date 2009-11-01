@@ -240,7 +240,7 @@ public class Model extends DefaultAbstractModel {
 	 */
 	public void defModel(IModel model) {
 		
-		System.out.println("setting unconditional " + model);
+		// System.out.println("setting unconditional " + model);
 		if (models == null) {
 			models = new ArrayList<IModel>();
 		}

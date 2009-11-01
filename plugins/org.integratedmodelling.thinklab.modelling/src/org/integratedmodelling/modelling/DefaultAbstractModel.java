@@ -67,7 +67,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	@Override
 	public void applyClause(String keyword, Object argument) throws ThinklabException {
 		
-		System.out.println(this + "processing clause " + keyword + " -> " + argument);
+		// System.out.println(this + "processing clause " + keyword + " -> " + argument);
 		
 		if (keyword.equals(":context")) {
 			

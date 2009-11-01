@@ -656,7 +656,6 @@ public class VMContextualizer<T> {
 		encode(makeInst(RETURN_I));
 	}
 
-
 	/*
 	 * store immediate value to register
 	 */
