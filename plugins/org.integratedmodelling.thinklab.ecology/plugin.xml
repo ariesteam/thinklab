@@ -41,6 +41,9 @@
 		<parameter id="url" value="nlcd.owl"/>
 		<parameter id="concept-space" value="nlcd" />
 	</extension>
-
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="infrastructure">
+		<parameter id="url" value="infrastructure.owl"/>
+		<parameter id="concept-space" value="infrastructure"/>
+	</extension>
 	
 </plugin>
