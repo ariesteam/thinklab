@@ -95,6 +95,7 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String RANKING = "measurement:Ranking";
 	public static final String CATEGORIZATION = "observation:Categorization";
 	public static final String IDENTIFICATION = "observation:Identification";
+	public static final String CLASSIFICATION = "observation:Classification";
 	public static final String INDIRECT_OBSERVATION = "observation:IndirectObservation";
 	public static final String EXCEL_CSV_DATASOURCE = "source:ExcelCSVDataSource";
 	public static final String MEASUREMENT = "measurement:Measurement";
@@ -122,6 +123,7 @@ public class CoreScience extends ThinklabPlugin {
 	
 	static final public String GENERIC_OBSERVABLE = "representation:GenericObservable";
 	static final public String GENERIC_QUANTIFIABLE = "representation:GenericQuantifiable";
+
 
 
 	public static CoreScience get() {

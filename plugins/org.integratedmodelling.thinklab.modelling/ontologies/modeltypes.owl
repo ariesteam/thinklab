@@ -107,6 +107,14 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/modelling/modeltypes.owl#DynamicClassification -->
+
+    <owl:Class rdf:about="#DynamicClassification">
+        <rdfs:subClassOf rdf:resource="&observation;Classification"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/modelling/modeltypes.owl#DynamicMeasurement -->
 
     <owl:Class rdf:about="#DynamicMeasurement">
@@ -115,7 +123,9 @@
             >A commodity class to simplify definition of a measurement with dynamic code.</rdfs:comment>
     </owl:Class>
     
-    <!-- http://www.integratedmodelling.org/ks/modelling/modeltypes.owl#DynamicMeasurement -->
+
+
+    <!-- http://www.integratedmodelling.org/ks/modelling/modeltypes.owl#DynamicRanking -->
 
     <owl:Class rdf:about="#DynamicRanking">
         <rdfs:subClassOf rdf:resource="&measurement;Ranking"/>
@@ -123,6 +133,7 @@
             >A commodity class to simplify definition of a ranking with dynamic code.</rdfs:comment>
     </owl:Class>
     
+
 
     <!-- http://www.integratedmodelling.org/ks/modelling/modeltypes.owl#ModeledClassification -->
 
@@ -137,6 +148,12 @@
     <!-- http://www.integratedmodelling.org/ks/science/measurement.owl#Measurement -->
 
     <owl:Class rdf:about="&measurement;Measurement"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/measurement.owl#Ranking -->
+
+    <owl:Class rdf:about="&measurement;Ranking"/>
     
 
 

@@ -316,7 +316,7 @@ public class ClojureInterpreter implements Interpreter {
 		/*
 		 * FIXME remove
 		 */
-		System.out.println("EXECUTED: [" + namespace + "] " + code);
+		// System.out.println("EXECUTED: [" + namespace + "] " + code);
 		
 		// TODO Auto-generated method stub
 		return ret;

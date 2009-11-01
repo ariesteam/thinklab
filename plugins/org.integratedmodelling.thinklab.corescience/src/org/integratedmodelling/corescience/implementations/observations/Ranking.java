@@ -95,12 +95,6 @@ public class Ranking extends Observation implements IConceptualizable {
 	 *
 	 */
 	public class RankingModel implements IConceptualModel, MediatingConceptualModel, ValidatingConceptualModel, ScalingConceptualModel {
-
-//
-//		boolean integer = false;
-//		boolean isScale = false;
-//		double min = 0.0;
-//		double max = 0.0;
 		
 		IDataSource<?> datasource = null;
 		Double inlineValue = null;
@@ -189,18 +183,6 @@ public class Ranking extends Observation implements IConceptualizable {
 			}
 			
 		}
-		
-//		public RankingModel(
-//				double minV, double maxV, boolean integer, 
-//				boolean leftBounded, boolean rightBounded,
-//				boolean isScale) {
-//			this.min = minV;
-//			this.max = maxV;
-//			this.integer = integer;
-//			this.leftBounded = leftBounded;
-//			this.rightBounded = rightBounded;
-//			this.isScale = isScale;
-//		}
 
 		protected boolean bounded() {
 			return leftBounded && rightBounded;
@@ -228,7 +210,6 @@ public class Ranking extends Observation implements IConceptualizable {
 			if (isScale && !bounded())
 				throw new ThinklabValidationException("scaled ranking must be bounded: provide minimum and maximum value");
 		}
-
 
 		/**
 		 * TODO move to the validator and pass it boundaries.
@@ -327,7 +308,6 @@ public class Ranking extends Observation implements IConceptualizable {
 		}
 	}
 	
-
 	public class RankingStateAccessor implements IStateAccessor {
 
 		private boolean isConstant = false;
@@ -378,7 +358,6 @@ public class Ranking extends Observation implements IConceptualizable {
 
 	}
 
-	
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 

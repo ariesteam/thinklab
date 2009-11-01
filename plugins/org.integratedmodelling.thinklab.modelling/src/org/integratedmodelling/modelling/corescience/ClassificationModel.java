@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
+import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
 import org.integratedmodelling.modelling.DefaultStatefulAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -27,7 +28,7 @@ import clojure.lang.Keyword;
  * @author Ferdinando
  *
  */
-public class ClassificationModel extends DefaultStatefulAbstractModel {
+public class ClassificationModel extends DefaultDynamicAbstractModel {
 
 	ArrayList<GeneralClassifier> classifiers = new ArrayList<GeneralClassifier>();	
 	ArrayList<IConcept> concepts = new ArrayList<IConcept>();
@@ -217,13 +218,20 @@ public class ClassificationModel extends DefaultStatefulAbstractModel {
 		if (state == null)
 			state = KnowledgeManager.get().getLeastGeneralCommonConcept(concepts);
 
+		if (state /* still */ == null)
+			state = observable;
+		
 		ArrayList<Object> arr = new ArrayList<Object>();
 		
-		arr.add("modeltypes:ModeledClassification");
+		arr.add(dynSpecs == null ? "modeltypes:ModeledClassification" : "modeltypes:DynamicClassification");
 		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(state)));
 		
 		if (id != null) {
 			arr.add(Polylist.list(CoreScience.HAS_FORMAL_NAME, id));			
+		}
+		
+		if (dynSpecs != null) {
+			arr.add(Polylist.list("modeltypes:hasStateFunction", dynSpecs));
 		}
 		
 		if (!isMediating())

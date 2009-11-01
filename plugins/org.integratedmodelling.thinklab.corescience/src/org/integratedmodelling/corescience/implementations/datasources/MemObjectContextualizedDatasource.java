@@ -44,7 +44,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabValueConversionExcepti
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Polylist;
 
 public class MemObjectContextualizedDatasource 
@@ -57,7 +56,7 @@ public class MemObjectContextualizedDatasource
 
 	public MemObjectContextualizedDatasource(IConcept type, int size) {
 		_type = type;
-		data = new IValue[size];
+		data = new Object[size];
 	}
 	
 	@Override
