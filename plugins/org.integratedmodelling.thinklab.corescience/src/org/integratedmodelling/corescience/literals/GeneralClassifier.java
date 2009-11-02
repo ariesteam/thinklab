@@ -5,6 +5,7 @@ import java.util.Vector;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.literals.AlgorithmValue;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
@@ -38,7 +39,7 @@ public class GeneralClassifier {
 		} else if (selector.equals("con:")) {
 			concept = KnowledgeManager.get().requireConcept(def);
 		} else if (selector.equals("mul:")) {
-			// TODO
+			parseMultiple(def);
 		} else if (selector.equals("str:")) {
 			string = def;
 		} else if (selector.equals("tru:")) {
@@ -46,6 +47,40 @@ public class GeneralClassifier {
 		}
 	}
 	
+	private void parseMultiple(String def) throws ThinklabException {
+		
+		/*
+		 * first character must be a square bracket; read up until matching closing bracket
+		 */
+		if (def.charAt(0) != '[') {
+			throw new ThinklabValidationException("syntax error in multiple classifier: classifiers must appear in square brackets");
+		}
+		
+		int level = 0;
+		int len = def.length();
+
+		StringBuffer buf = new StringBuffer(len);
+		for (int i = 0; i < len; i++) {
+			char c = def.charAt(i);
+			if (c == '[') {
+				if (level > 0) {
+					buf.append(c);
+				}
+				level++;
+			} else if (c == ']') {
+				level--;
+				if (level == 0) {
+					addClassifier(new GeneralClassifier(buf.toString()));
+					buf = new StringBuffer(len);
+				} else {
+					buf.append(c);
+				}
+			} else {
+				buf.append(c);
+			}
+		}
+	}
+
 	public boolean isUniversal() {
 		return catchAll;
 	}

@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceByte;
-import org.integratedmodelling.corescience.implementations.datasources.MemClassContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemFloatContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemIntegerContextualizedDatasource;
@@ -23,7 +21,6 @@ import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.utils.Ticker;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;

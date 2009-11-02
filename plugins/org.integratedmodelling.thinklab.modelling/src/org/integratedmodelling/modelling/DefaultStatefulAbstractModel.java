@@ -10,7 +10,7 @@ public abstract class DefaultStatefulAbstractModel extends DefaultAbstractModel 
 	@Override
 	public void applyClause(String keyword, Object argument) throws ThinklabException {
 		
-		System.out.println(this + "processing clause " + keyword + " -> " + argument);
+		// System.out.println(this + "processing clause " + keyword + " -> " + argument);
 		
 		if (keyword.equals(":state")) {
 

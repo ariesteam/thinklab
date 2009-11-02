@@ -125,7 +125,8 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		} else if (classifier instanceof IPersistentSet) {
 			
 			ISeq set = ((IPersistentSet) classifier).seq();
-			for (Object o = set.first(); o != null; ) {
+			while (set != null) {
+				Object o = set.first();
 				ret.addClassifier(getClassifier(o));
 				set = set.rest();
 			}
@@ -158,6 +159,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 			 * convert to string and see if it's a concept
 			 */
 			IConcept c = KnowledgeManager.get().retrieveConcept(classifier.toString());
+			
 			
 			if (c == null) {
 				throw new ThinklabValidationException(

@@ -142,7 +142,6 @@ public class Model extends DefaultAbstractModel {
 				}
 				
 				ModelResult contingentRes = ((DefaultAbstractModel)cmod).observeInternal(kbox, session, cp, extents, acceptEmpty);
-				
 				ret.addContingentResult(contingentRes);
 			}
 
@@ -205,6 +204,12 @@ public class Model extends DefaultAbstractModel {
 	
 	/*
 	 * Choose the appropriate model for the context. 
+	 * 
+	 * TODO this should return an ARRAY of models that apply to the situation. They should be
+	 * tried in sequence until one returns observations. This way we can use multiple 
+	 * alternative definitions, prioritizing them in order of declaration and/or using
+	 * the states of another observation. 
+	 * 
 	 * @param models2
 	 * @param context2
 	 * @param kbox

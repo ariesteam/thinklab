@@ -14,6 +14,7 @@ import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
+import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -62,6 +63,11 @@ public class ModeledClassification
 				if (p.getFirst().classify(o))
 					return p.getSecond();
 			}
+			
+			ModellingPlugin.get().logger().warn(
+					"value " + o + " does not classify as a valid " + getObservableClass() +
+					": datasource will have null values");
+			
 			return null;
 		}
 
@@ -96,6 +102,11 @@ public class ModeledClassification
 				if (p.getFirst().classify(o))
 					return p.getSecond();
 			}
+						
+			ModellingPlugin.get().logger().warn(
+					"value " + o + " does not classify as a valid " + getObservableClass() +
+					": datasource will have null values");
+
 			return null;
 		}
 
