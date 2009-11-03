@@ -69,6 +69,11 @@ public class RasterGrid extends Observation {
 	double latLB, lonLB, latUB, lonUB;
 	CoordinateReferenceSystem crs;
 	
+	@Override
+	public String toString() {
+		return ("raster-grid("  + getRows() + " x " + getColumns() +")");
+	}
+	
 	public void initialize(IInstance i) throws ThinklabException {
 
 		/*

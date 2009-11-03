@@ -318,4 +318,10 @@ public class BayesianTransformer
 		 */
 		return session.createObject(rdef);
 	}
+	
+	@Override
+	public String toString() {
+		return ("bayesian(" + getObservableClass() + "): " + bn.getName());
+	}
+
 }

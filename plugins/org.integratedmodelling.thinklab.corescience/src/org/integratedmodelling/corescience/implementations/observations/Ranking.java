@@ -89,6 +89,12 @@ public class Ranking extends Observation implements IConceptualizable {
 	boolean isScale = false;
 	boolean leftBounded = false;
 	boolean rightBounded = false;
+	
+	@Override
+	public String toString() {
+		return ("ranking(" + getObservableClass() + ")");
+	}
+	
 	/**
 	 * Conceptual model for a simple numeric ranking. 
 	 * @author Ferdinando Villa

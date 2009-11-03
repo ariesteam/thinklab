@@ -29,6 +29,12 @@ public class Measurement extends Observation implements IConceptualizable {
 	private IRandomValue randomValue = null;
 	
 	@Override
+	public String toString() {
+		return ("measurement(" + getObservableClass() + "): " + unitSpecs);
+	}
+
+	
+	@Override
 	protected IConceptualModel createMissingConceptualModel()
 			throws ThinklabException {
 		

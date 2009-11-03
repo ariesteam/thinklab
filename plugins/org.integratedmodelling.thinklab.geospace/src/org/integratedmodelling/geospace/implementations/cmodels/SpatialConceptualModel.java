@@ -103,7 +103,13 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 			common = new Envelope(ee.getMinX(), ee.getMaxX(), ee.getMinY(), ee.getMaxY());
 		}
 		
-
+		/*
+		 * TODO intersection may be empty
+		 */
+		if (common.isNull()) {
+			System.out.println("FUCK, INTERSECION IS NULL");
+		}
+		
 		/**
 		 * Here we send out to a virtual to create the appropriate areal extent with this envelope and CRS, 
 		 * adding whatever else we need to use it.

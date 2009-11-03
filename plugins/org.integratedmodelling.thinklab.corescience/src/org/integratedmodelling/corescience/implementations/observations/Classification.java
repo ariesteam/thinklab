@@ -81,6 +81,12 @@ public class Classification extends Observation implements IConceptualizable {
 	
 	protected IConcept cspace;
 	
+	@Override
+	public String toString() {
+		return ("classification(" + getObservableClass() + "): " + cspace);
+	}
+
+	
 	/**
 	 * Conceptual model for a simple numeric ranking. 
 	 * @author Ferdinando Villa

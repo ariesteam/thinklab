@@ -132,7 +132,9 @@ public class ArealLocation extends Observation implements IParseable, IGeolocate
 		return shape;
 	}
 
-	
-	
+	@Override
+	public String toString() {
+		return ("areal-location(" + shape.getBoundingBox()+")");
+	}
 	
 }

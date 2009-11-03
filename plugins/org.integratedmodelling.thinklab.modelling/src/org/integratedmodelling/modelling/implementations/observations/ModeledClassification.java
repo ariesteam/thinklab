@@ -42,8 +42,14 @@ public class ModeledClassification
 		new ArrayList<Pair<GeneralClassifier,IConcept>>();
 	
 	IConcept cSpace = null;
-
+	
 	private IDataSource<?> ds;
+
+	@Override
+	public String toString() {
+		return ("classification(" + getObservableClass() + "): " + cSpace);
+	}
+
 	
 	/**
 	 * TODO 

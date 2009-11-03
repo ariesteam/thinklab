@@ -78,6 +78,12 @@ import org.jscience.mathematics.number.Rational;
 @InstanceImplementation(concept="observation:Categorization")
 public class Categorization extends Observation implements IConceptualizable {
 
+	@Override
+	public String toString() {
+		return ("categorization(" + getObservableClass() + ")");
+	}
+
+	
 	/**
 	 * Conceptual model for a simple string tagging of state. 
 	 * @author Ferdinando Villa
