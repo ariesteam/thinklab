@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.corescience;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
+import org.integratedmodelling.modelling.DefaultDynamicAbstractModel.language;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -60,6 +61,10 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 					null),
 				(dynSpecs != null?
 					Polylist.list("modeltypes:hasStateFunction", dynSpecs) :
+					null),
+				(dynSpecs != null?
+					Polylist.list("modeltypes:hasExpressionLanguage", 	
+						this.lang.equals(language.CLOJURE) ? "clojure" : "mvel") :
 					null),
 				/*
 				 * TODO add scale attributes, possibly units

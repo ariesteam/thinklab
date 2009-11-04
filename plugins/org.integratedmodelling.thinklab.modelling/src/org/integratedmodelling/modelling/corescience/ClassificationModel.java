@@ -6,6 +6,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
 import org.integratedmodelling.modelling.DefaultStatefulAbstractModel;
+import org.integratedmodelling.modelling.DefaultDynamicAbstractModel.language;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -234,8 +235,10 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		
 		if (dynSpecs != null) {
 			arr.add(Polylist.list("modeltypes:hasStateFunction", dynSpecs));
+			arr.add(Polylist.list("modeltypes:hasExpressionLanguage", 
+					this.lang.equals(language.CLOJURE) ? "clojure" : "mvel"));
 		}
-		
+
 		if (!isMediating())
 			arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, this.observableSpecs));
 		

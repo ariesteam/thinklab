@@ -127,7 +127,7 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 	}
 	
 	public String toString() {
-		return "<" + xDivs + "," + yDivs + ">@" + envelope; 
+		return "grid-extent(" + xDivs + "," + yDivs + ": " + envelope + ": " + getCRS().getName() + ")"; 
 	}
 	
 	public IValue getFullExtentValue() {

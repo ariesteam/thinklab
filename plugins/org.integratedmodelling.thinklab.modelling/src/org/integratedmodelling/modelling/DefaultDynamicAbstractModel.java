@@ -14,12 +14,21 @@ import clojure.lang.ISeq;
 public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstractModel {
 
 	protected Object dynSpecs = null;
+	public enum language {
+		CLOJURE,
+		MVEL
+	};
+	protected language lang = null;
 	
 	@Override
 	public void applyClause(String keyword, Object argument) throws ThinklabException {
 		
 		if (keyword.equals(":state") && (argument instanceof ISeq)) {
 			this.dynSpecs = argument;
+			lang = language.CLOJURE;
+		} else if (keyword.equals(":state") && (argument instanceof String)) {
+			this.dynSpecs = argument;
+			lang = language.MVEL;
 		} else if (keyword.equals(":derivative")) {
 			
 			// TODO accept dynamic derivative specs

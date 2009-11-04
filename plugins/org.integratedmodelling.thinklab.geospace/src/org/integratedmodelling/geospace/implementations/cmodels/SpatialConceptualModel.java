@@ -66,10 +66,13 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 		CoordinateReferenceSystem crs1 = orextent.getCRS();
 		CoordinateReferenceSystem crs2 = otextent.getCRS();
 		
-		CoordinateReferenceSystem ccr = chooseCRS(crs1, crs2);;
+		CoordinateReferenceSystem ccr = chooseCRS(crs1, crs2);
 		
-		ReferencedEnvelope env1 = orextent.getNormalizedEnvelope();
-		ReferencedEnvelope env2 = otextent.getNormalizedEnvelope();
+		/*
+		 * use envelope as is, transformations will swap axes as required.
+		 */
+		ReferencedEnvelope env1 = orextent.getDefaultEnvelope();
+		ReferencedEnvelope env2 = otextent.getDefaultEnvelope();
 		
 		if (!(crs1.equals(crs2) && ccr.equals(crs1))) {
 		
@@ -79,7 +82,7 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 			
 			try {
 				env1 = env1.transform(ccr, true, 10);
-				env2 = env2.transform(ccr, true, 10);
+				env2 = env2.transform(ccr, true);
 				
 			} catch (Exception e) {
 				throw new ThinklabConceptualModelValidationException(e);

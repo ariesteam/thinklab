@@ -7,15 +7,18 @@ import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.modelling.data.adapters.ClojureAccessor;
+import org.integratedmodelling.modelling.data.adapters.MVELAccessor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 @InstanceImplementation(concept="modeltypes:DynamicMeasurement")
 public class DynamicMeasurement extends Measurement {
 
 	String code = null;
+	String lang = "clojure";
 	
 	public class DynamicMeasurementModel extends MeasurementModel {
 
@@ -30,7 +33,10 @@ public class DynamicMeasurement extends Measurement {
 		@Override
 		public IStateAccessor getStateAccessor(IConcept stateType,
 				IObservationContext context) {
-			return new ClojureAccessor(code, false);
+			if (lang.equals("clojure"))
+				return new ClojureAccessor(code, false);
+			else
+				return new MVELAccessor(code, false);
 		}
 
 		/* (non-Javadoc)
@@ -40,7 +46,10 @@ public class DynamicMeasurement extends Measurement {
 		public IStateAccessor getMediator(IConceptualModel oc,
 				IConcept stateType, IObservationContext context)
 				throws ThinklabException {
-			return new ClojureAccessor(code, true);
+			if (lang.equals("clojure"))
+				return new ClojureAccessor(code, true);
+			else
+				return new MVELAccessor(code, true);
 		}	
 		
 		
@@ -60,9 +69,12 @@ public class DynamicMeasurement extends Measurement {
 	 */
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
-		// TODO Auto-generated method stub
+		
 		super.initialize(i);
 		this.code = i.get("modeltypes:hasStateFunction").toString();
+		IValue lng = i.get("modeltypes:hasExpressionLanguage");
+		if (lng != null)
+			this.lang = lng.toString().toLowerCase();
 	}
 
 }

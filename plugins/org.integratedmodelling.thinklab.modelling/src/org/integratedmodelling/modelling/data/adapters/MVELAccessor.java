@@ -1,35 +1,33 @@
 package org.integratedmodelling.modelling.data.adapters;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.integratedmodelling.clojure.ClojureInterpreter;
 import org.integratedmodelling.corescience.Obs;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Pair;
+import org.mvel2.MVEL;
 
-public class ClojureAccessor implements IStateAccessor {
+public class MVELAccessor implements IStateAccessor {
 
-	String clojureCode = null;
+	String mvelCode = null;
 	int[] prmOrder = null;
 	Object[] parameters;
 	HashMap<IConcept, String> obsToName = new HashMap<IConcept, String>();
 	ArrayList<Pair<String,Integer>> parmList = new ArrayList<Pair<String,Integer>>();
 	boolean isMediator;
 	String namespace = NameGenerator.newName("clj");
+	private Serializable bytecode;
 	
-	public ClojureAccessor(String code, boolean isMediator) {
-		
-		/*
-		 * TODO compile a proxy and eval once, then use that
-		 */
-		clojureCode = code;
-		
+	public MVELAccessor(String code, boolean isMediator) {
+		mvelCode = code;
+		this.bytecode = MVEL.compileExpression(mvelCode);
 		this.isMediator = isMediator;
 	}
 
@@ -44,8 +42,8 @@ public class ClojureAccessor implements IStateAccessor {
 		}
 		
 		try {
-			return new ClojureInterpreter().evalRaw(clojureCode, namespace, parms);
-		} catch (ThinklabException e) {
+			return MVEL.executeExpression(this.bytecode, parms);
+		} catch (Exception e) {
 			throw new ThinklabRuntimeException(e);
 		}
 	}

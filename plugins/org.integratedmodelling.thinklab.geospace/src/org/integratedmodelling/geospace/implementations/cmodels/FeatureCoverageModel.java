@@ -42,7 +42,6 @@ import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.extents.ShapeExtent;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;

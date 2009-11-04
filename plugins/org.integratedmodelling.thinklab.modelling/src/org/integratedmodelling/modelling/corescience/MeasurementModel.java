@@ -32,6 +32,10 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 				(dynSpecs != null?
 					Polylist.list("modeltypes:hasStateFunction", dynSpecs) :
 					null),
+				(dynSpecs != null?
+					Polylist.list("modeltypes:hasExpressionLanguage", 
+							this.lang.equals(language.CLOJURE) ? "clojure" : "mvel") :
+					null),
 				unitSpecs.contains(" ") ?
 						Polylist.list("measurement:value", unitSpecs) :
 						Polylist.list("measurement:unit", unitSpecs),
@@ -65,7 +69,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public IModel getConfigurableClone() {
-		// TODO Auto-generated method stub
+
 		MeasurementModel ret = new MeasurementModel();
 		ret.copy(this);
 		ret.unitSpecs = unitSpecs;

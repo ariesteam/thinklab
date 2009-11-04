@@ -9,11 +9,13 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 @InstanceImplementation(concept="modeltypes:DynamicClassification")
 public class DynamicClassification extends Classification {
 
 	String code = null;
+	String lang = "clojure";
 	
 	public class DynamicClassificationModel extends ClassificationModel {
 
@@ -42,6 +44,9 @@ public class DynamicClassification extends Classification {
 	public void initialize(IInstance i) throws ThinklabException {
 		super.initialize(i);
 		this.code = i.get("modeltypes:hasStateFunction").toString();
+		IValue lng = i.get("modeltypes:hasExpressionLanguage");
+		if (lng != null)
+			this.lang = lng.toString().toLowerCase();
 	}
 
 }

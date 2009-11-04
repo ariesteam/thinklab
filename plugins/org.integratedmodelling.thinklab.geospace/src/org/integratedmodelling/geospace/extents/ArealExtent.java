@@ -90,6 +90,29 @@ public abstract class ArealExtent implements IExtent {
 		
 		return ret;
 	}
+	
+	/**
+	 * Get the envelope with the same axis order of the passed CRS.
+	 * @return
+	 */
+	public ReferencedEnvelope getDefaultEnvelope(CoordinateReferenceSystem ocr) {
+		
+		ReferencedEnvelope ret = getDefaultEnvelope();
+		
+		AxisDirection myOrder = crs.getCoordinateSystem().getAxis(0).getDirection();
+		AxisDirection otOrder = ocr.getCoordinateSystem().getAxis(0).getDirection();
+		
+		if (!otOrder.equals(myOrder)) {
+			/*
+			 * swap x/y to obtain the right envelope according to the CRS
+			 */
+			ret = new ReferencedEnvelope(
+					ret.getMinY(), ret.getMaxY(),
+					ret.getMinX(), ret.getMaxX(), crs);
+		} 
+		
+		return ret;
+	}
 
 	public double getNorth() {
 		return envelope.getMaxY();
@@ -115,4 +138,9 @@ public abstract class ArealExtent implements IExtent {
 		return envelope.getHeight();
 	}
 
+	@Override
+	public String toString() {
+		return "areal-extent(" + envelope + "," + crs.getName() + ")";
+	}
+	
 }
