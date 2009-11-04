@@ -481,7 +481,6 @@ public class VMCompiler extends Compiler {
 		boolean storeState = 
 			(cm != null) && cm.getStateType() != null && isStored(o.getObservableClass());
 		
-		
 		/*
 		 * if we depend on an aggregated state upstream, compile in a check for activation and
 		 * insert a jump if deactivated, to be resolved later.
@@ -514,7 +513,6 @@ public class VMCompiler extends Compiler {
 			if (odesc.aggregatorId != -1)
 				odesc.needsContextStates = true;
 		}
-
 
 		if ( (odesc.stateStored = (storeState && !isExtent && !o.isMediated()))) {
 
