@@ -611,7 +611,11 @@ public class VMCompiler extends Compiler {
 				xind++;	
 			}
 			if (!hasAll) {
-				odesc.activeDims = activeDims;
+				// 
+				// FIXME will croak with an array out of bounds when interpreting bytecode; plus, it should not happen when
+				// contexts are inherited, but only when common contexts have different multiplicity
+
+				// odesc.activeDims = activeDims;
 			}
 		
 		}

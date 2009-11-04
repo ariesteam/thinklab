@@ -69,6 +69,11 @@ public class ObservationContext implements IObservationContext {
 	int[] dimensionalities = null;
 	boolean _initialized = false;
 	
+	@Override
+	public String toString() {
+		return "observation-context(" + extents + ")";
+	}
+	
 	public class TopologyIterator implements Iterator<IObservationContext> {
 
 		Ticker ticker = new Ticker();
@@ -292,11 +297,9 @@ public class ObservationContext implements IObservationContext {
 		
 	}
 
-
 	public int size() {
 		return extents.size();
 	}
-
 
 	public int[] getDimensionSizes() {
 		return dimensionalities;
@@ -331,6 +334,14 @@ public class ObservationContext implements IObservationContext {
 			if (extent != null)
 				ret.extents.put(c.toString(), extent);
 		}
+		
+		/* fv nov 09: add those I don't have - TODO check */
+//		for (IConcept c : ctx.getDimensions()) {
+//			IExtent extent = getExtent(c);
+//			if (extent != null)
+//				ret.extents.put(c.toString(), extent);
+//		}
+
 		
 		ret.initialize();
 		
