@@ -516,6 +516,7 @@ public class VMCompiler extends Compiler {
 
 		if ( (odesc.stateStored = (storeState && !isExtent && !o.isMediated()))) {
 
+			// FIXME not right - unless own context considers overall
 			int size = ownContext.getMultiplicity();
 			odesc.stateId = contextualizer.registerStateStorage(cm, o.getObservableClass(), size);
 		}
@@ -612,8 +613,7 @@ public class VMCompiler extends Compiler {
 				
 				// TLC-46: Wrong generation of context skipping in observation contextualization compiler
 				// http://ecoinformatics.uvm.edu/jira/browse/TLC-46
-				// FIXME will croak with an array out of bounds when interpreting bytecode; plus, it should not happen when
-				// contexts are inherited, but only when common contexts have different multiplicity
+				// FIXME will croak with an array out of bounds when interpreting bytecode
 				odesc.activeDims = activeDims;
 			}
 		

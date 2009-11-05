@@ -1,6 +1,7 @@
 package org.integratedmodelling.modelling.implementations.observations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -170,6 +171,14 @@ public class BayesianTransformer
 		int size = context.getMultiplicity();
 
 		/*
+		 * get an index of all node names from the network, to be used later
+		 */
+		HashSet<String> nodeIDs = new HashSet<String>();
+		for (String s : bn.getAllNodeIds()) {
+			nodeIDs.add(s);
+		}
+		
+		/*
 		 * see what states we want to retain as RandomClassifications. If no 
 		 * specification has been made, log a warning.
 		 */
@@ -221,21 +230,25 @@ public class BayesianTransformer
 		i = 0;
 		
 		/*
-		 * TODO not all states retained are going to be part of the network. smap will contain
+		 * not all states retained are going to be part of the network. smap will contain
 		 * more states than necessary, and they must not be added to the evidence array.
 		 */
-		Evidence[] evidence = new Evidence[smap.size()];
+		ArrayList<Evidence> evdnc = new ArrayList<Evidence>();
 		
 		for (IConcept ec : smap.keySet()) {
+			if (!nodeIDs.contains(ec.getLocalName()))
+				continue;
 			IContextualizedState cs = smap.get(ec);
 			if (! (cs instanceof ICategoryData))
 				throw new ThinklabModelException(
 						"bayesian(" + getObservableClass() + "): dependent for " +
 						ec + 
 						" is not a classification");
-			evidence[i++] = new Evidence(bn.getNode(ec.getLocalName()), (ICategoryData)cs);
+			evdnc.add(new Evidence(bn.getNode(ec.getLocalName()), (ICategoryData)cs));
 		}		
-		
+
+		Evidence[] evidence = evdnc.toArray(new Evidence[evdnc.size()]);
+
 		/*
 		 * you never know
 		 */

@@ -110,7 +110,7 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 		 * TODO intersection may be empty
 		 */
 		if (common.isNull()) {
-			System.out.println("FUCK, INTERSECION IS NULL");
+			System.out.println("FUCK, INTERSECTION IS NULL");
 		}
 		
 		/**

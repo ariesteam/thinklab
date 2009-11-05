@@ -47,6 +47,7 @@ import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.AxisDirection;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
@@ -82,7 +83,10 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 				int xDivs, 
 				int yDivs) {
 		
-		super(cm, crs, new Envelope(x1,x2,y1,y2));
+		super(cm, crs,
+				crs.getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH) ?
+						new Envelope(y1,y2,x1,x2) :
+						new Envelope(x1,x2,y1,y2));
 		
 		this.xOrigin = x1;
 		this.yOrigin = y1;
