@@ -609,11 +609,12 @@ public class VMCompiler extends Compiler {
 				xind++;	
 			}
 			if (!hasAll) {
-				// 
+				
+				// TLC-46: Wrong generation of context skipping in observation contextualization compiler
+				// http://ecoinformatics.uvm.edu/jira/browse/TLC-46
 				// FIXME will croak with an array out of bounds when interpreting bytecode; plus, it should not happen when
 				// contexts are inherited, but only when common contexts have different multiplicity
-
-				// odesc.activeDims = activeDims;
+				odesc.activeDims = activeDims;
 			}
 		
 		}

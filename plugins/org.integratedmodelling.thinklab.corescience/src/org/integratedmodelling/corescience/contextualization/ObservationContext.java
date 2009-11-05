@@ -71,7 +71,10 @@ public class ObservationContext implements IObservationContext {
 	
 	@Override
 	public String toString() {
-		return "observation-context(" + extents + ")";
+		return 
+			"observation-context(" + extents + "): " + 
+			observation.getObservationClass().getLocalName() + 
+			"(" + observation.getObservableClass() + ")";
 	}
 	
 	public class TopologyIterator implements Iterator<IObservationContext> {
@@ -336,15 +339,14 @@ public class ObservationContext implements IObservationContext {
 		}
 		
 		/* fv nov 09: add those I don't have - TODO check */
-//		for (IConcept c : ctx.getDimensions()) {
-//			IExtent extent = getExtent(c);
-//			if (extent != null)
-//				ret.extents.put(c.toString(), extent);
-//		}
-
+		for (IConcept c : ctx.getDimensions()) {
+			IExtent extent = getExtent(c);
+			if (extent == null)
+				ret.extents.put(c.toString(), ctx.getExtent(c));
+		}
 		
 		ret.initialize();
-		
+
 		return ret;
 	}
 

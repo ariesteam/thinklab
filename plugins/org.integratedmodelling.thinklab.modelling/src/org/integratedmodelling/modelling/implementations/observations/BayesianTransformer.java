@@ -37,7 +37,8 @@ import org.integratedmodelling.utils.Polylist;
 import smile.Network;
 
 /**
- * Support for the modelling/bayesian form.
+ * Support for the modelling/bayesian form. 
+ * TODO this only works with SMILE/Genie. Must be riskwiz-compatible, too.
  * 
  * @author Ferdinando
  */
@@ -218,12 +219,18 @@ public class BayesianTransformer
 			Evidence(int f, ICategoryData d) { field = f; data = d; }
 		}
 		i = 0;
+		
+		/*
+		 * TODO not all states retained are going to be part of the network. smap will contain
+		 * more states than necessary, and they must not be added to the evidence array.
+		 */
 		Evidence[] evidence = new Evidence[smap.size()];
+		
 		for (IConcept ec : smap.keySet()) {
 			IContextualizedState cs = smap.get(ec);
 			if (! (cs instanceof ICategoryData))
 				throw new ThinklabModelException(
-						"bayesian transformer: dependent for " +
+						"bayesian(" + getObservableClass() + "): dependent for " +
 						ec + 
 						" is not a classification");
 			evidence[i++] = new Evidence(bn.getNode(ec.getLocalName()), (ICategoryData)cs);
