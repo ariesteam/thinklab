@@ -198,25 +198,12 @@ public class ModeledClassification
 		
 		ArrayList<Object> arr = new ArrayList<Object>();
 		
-		/*
-		 * FIXME
-		 * TODO
-		 * TLC-42: ModeledClassification should conceptualize to observation:Classification
-		 * http://ecoinformatics.uvm.edu/jira/browse/TLC-42
-		 * ------------------------------------------------------------------------------
-		 */
-		arr.add("modeltypes:ModeledClassification");
+		arr.add("observation:Classification");
 		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(cSpace)));
 		arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, Polylist.list(cSpace)));
 
 		if (getFormalName() != null) {
 			arr.add(Polylist.list(CoreScience.HAS_FORMAL_NAME, getFormalName()));			
-		}
-		
-		for (int i = 0; i < classifiers.size(); i++) {
-			arr.add(Polylist.list(
-						"modeltypes:hasClassifier", 
-						classifiers.get(i).getSecond() + "->" + classifiers.get(i).getFirst()));
 		}
 		return Polylist.PolylistFromArrayList(arr);
 	}
