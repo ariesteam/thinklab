@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
-import org.integratedmodelling.modelling.DefaultStatefulAbstractModel;
-import org.integratedmodelling.modelling.DefaultDynamicAbstractModel.language;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

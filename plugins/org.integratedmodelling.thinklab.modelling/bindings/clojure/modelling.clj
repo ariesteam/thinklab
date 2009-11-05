@@ -17,7 +17,7 @@
 	"Get the single instance of the model manager from the modelling plugin and register the passed model
 	 with it."
 	[model name]
-	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerModel model name)))
+	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerModel model (str *ns* "/" name))))
 	
 (defn- get-configurable-model
 	"Return a model clone that we can safely configure. Essentially a copy on write pattern, called

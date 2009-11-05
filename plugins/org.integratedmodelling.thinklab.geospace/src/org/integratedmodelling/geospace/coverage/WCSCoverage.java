@@ -165,7 +165,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		  try {
 			  this.crs = CRS.decode(srs);
 			} catch (Exception e) {
-				throw new ThinklabValidationException(e);
+				Geospace.get().logger().error(layerName + ": " + e.getMessage());
 			};
 
 

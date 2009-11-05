@@ -2,7 +2,6 @@ package org.integratedmodelling.modelling.corescience;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
-import org.integratedmodelling.modelling.DefaultDynamicAbstractModel.language;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -16,7 +15,6 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 	Object unitSpecs = null;
 	
 	public void setUnits(Object unitSpecs) {
-		System.out.println("units: " + unitSpecs);
 		this.unitSpecs = unitSpecs;
 	}
 	
