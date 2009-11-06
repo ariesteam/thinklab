@@ -129,8 +129,7 @@ public class RasterGrid extends Observation {
 		return new RegularRasterModel(
 				xRO, xRM, yRO, yRM, latLB, latUB, lonLB, lonUB, crs);
 	}
-	
-	
+		
 	public int getRows() {
 		
 		try {
@@ -140,7 +139,6 @@ public class RasterGrid extends Observation {
 		}
 	}
 
-	
 	public int getColumns() {
 		
 		try {
