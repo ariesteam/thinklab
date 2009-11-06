@@ -249,16 +249,18 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
 
+		boolean swap = getCRS().getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH);
+		
 		return Polylist.list(
 				Geospace.RASTER_GRID,
 				Polylist.list(Geospace.X_RANGE_OFFSET, ""+getXMinCell()),
 				Polylist.list(Geospace.X_RANGE_MAX, ""+getXMaxCell()),
 				Polylist.list(Geospace.Y_RANGE_OFFSET, ""+getYMinCell()),
 				Polylist.list(Geospace.Y_RANGE_MAX, ""+getYMaxCell()),
-				Polylist.list(Geospace.LAT_LOWER_BOUND, ""+getSouth()),
-				Polylist.list(Geospace.LON_LOWER_BOUND, ""+getWest()),
-				Polylist.list(Geospace.LAT_UPPER_BOUND, ""+getNorth()),
-				Polylist.list(Geospace.LON_UPPER_BOUND, ""+getEast()),
+				Polylist.list(Geospace.LAT_LOWER_BOUND, "" + (swap ? getWest() : getSouth())),
+				Polylist.list(Geospace.LON_LOWER_BOUND, "" + (swap ? getSouth() : getWest())),
+				Polylist.list(Geospace.LAT_UPPER_BOUND, "" + (swap ? getEast() : getNorth())),
+				Polylist.list(Geospace.LON_UPPER_BOUND, "" + (swap ? getNorth() : getEast())),
 				Polylist.list(Geospace.CRS_CODE, 
 						Geospace.getCRSIdentifier(getCRS(), false)));
 	}
