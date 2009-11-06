@@ -95,7 +95,7 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 		setCRS(crs);
 	
 		extent = new GridExtent(this, crs,
-				lonLowerBound, latLowerBound, lonUpperBound, latUpperBound, 
+				latLowerBound, lonLowerBound, latUpperBound, lonUpperBound, 
 				xRangeMax - xRangeOffset, yRangeMax - yRangeOffset);
 		
 	}

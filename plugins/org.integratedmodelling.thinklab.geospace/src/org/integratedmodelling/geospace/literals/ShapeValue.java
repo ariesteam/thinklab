@@ -52,6 +52,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.AxisDirection;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -340,11 +341,24 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
 
 
 	/**
-	 * Get the referenced bounding box of the shape.
+	 * Get the referenced bounding box of the shape using the normalized axis order.
 	 * @return
 	 */
 	public ReferencedEnvelope getEnvelope() {
 		return new ReferencedEnvelope(shape.getEnvelopeInternal(), crs);
+	}
+
+	
+	/**
+	 * Get the referenced bounding box of the shape using the axis order requested by the crs.
+	 * @return
+	 */
+	public ReferencedEnvelope getDefaultEnvelope() {
+		ReferencedEnvelope ret = new ReferencedEnvelope(shape.getEnvelopeInternal(), crs);
+		if (crs.getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH)) {
+			ret = new ReferencedEnvelope(ret.getMinY(),ret.getMaxY(), ret.getMinX(), ret.getMaxX(), getCRS());
+		}
+		return ret;
 	}
 
 	public CoordinateReferenceSystem getCRS() {
