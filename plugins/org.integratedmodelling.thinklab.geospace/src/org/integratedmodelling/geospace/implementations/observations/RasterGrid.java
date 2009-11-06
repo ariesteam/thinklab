@@ -33,7 +33,6 @@
 package org.integratedmodelling.geospace.implementations.observations;
 
 import java.util.Hashtable;
-import java.util.Properties;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.CoreScience;
