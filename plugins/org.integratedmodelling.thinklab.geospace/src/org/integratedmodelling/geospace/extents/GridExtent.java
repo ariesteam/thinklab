@@ -83,11 +83,7 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 				int xDivs, 
 				int yDivs) {
 		
-		super(cm, crs,
-				crs.getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH) ?
-						new Envelope(y1,y2,x1,x2) :
-						new Envelope(x1,x2,y1,y2));
-		
+		super(cm, crs, x1, y1, x2, y2);
 		this.xOrigin = x1;
 		this.yOrigin = y1;
 
@@ -95,11 +91,9 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 	}
 
 	public GridExtent(SubdividedCoverageConceptualModel cm, GridExtent gridExtent) {
-		super(cm, gridExtent.getCRS(), gridExtent.getNormalizedEnvelope());
-		
+		super(cm, gridExtent.getCRS(), gridExtent.getWest(), gridExtent.getSouth(), gridExtent.getEast(), gridExtent.getNorth());
 		this.xOrigin = gridExtent.getEast();
 		this.yOrigin = gridExtent.getSouth();
-		
 		this.setResolution(gridExtent.getXCells(), gridExtent.getYCells());
 	}
 
@@ -249,18 +243,16 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
 
-		boolean swap = getCRS().getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH);
-		
 		return Polylist.list(
 				Geospace.RASTER_GRID,
-				Polylist.list(Geospace.X_RANGE_OFFSET, ""+getXMinCell()),
-				Polylist.list(Geospace.X_RANGE_MAX, ""+getXMaxCell()),
-				Polylist.list(Geospace.Y_RANGE_OFFSET, ""+getYMinCell()),
-				Polylist.list(Geospace.Y_RANGE_MAX, ""+getYMaxCell()),
-				Polylist.list(Geospace.LAT_LOWER_BOUND, "" + (swap ? getWest() : getSouth())),
-				Polylist.list(Geospace.LON_LOWER_BOUND, "" + (swap ? getSouth() : getWest())),
-				Polylist.list(Geospace.LAT_UPPER_BOUND, "" + (swap ? getEast() : getNorth())),
-				Polylist.list(Geospace.LON_UPPER_BOUND, "" + (swap ? getNorth() : getEast())),
+				Polylist.list(Geospace.X_RANGE_OFFSET, "" + getXMinCell()),
+				Polylist.list(Geospace.X_RANGE_MAX, "" + getXMaxCell()),
+				Polylist.list(Geospace.Y_RANGE_OFFSET, "" + getYMinCell()),
+				Polylist.list(Geospace.Y_RANGE_MAX, "" + getYMaxCell()),
+				Polylist.list(Geospace.LAT_LOWER_BOUND, "" + getSouth()),
+				Polylist.list(Geospace.LON_LOWER_BOUND, "" + getWest()),
+				Polylist.list(Geospace.LAT_UPPER_BOUND, "" + getNorth()),
+				Polylist.list(Geospace.LON_UPPER_BOUND, "" + getEast()),
 				Polylist.list(Geospace.CRS_CODE, 
 						Geospace.getCRSIdentifier(getCRS(), false)));
 	}

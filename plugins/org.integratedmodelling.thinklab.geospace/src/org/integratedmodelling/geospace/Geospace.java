@@ -34,6 +34,7 @@ package org.integratedmodelling.geospace;
 
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -43,6 +44,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.AxisDirection;
 import org.w3c.dom.Node;
 
 public class Geospace extends ThinklabPlugin  {
@@ -295,6 +297,29 @@ public class Geospace extends ThinklabPlugin  {
 
 	public IConcept GridClassifier() {
 		return gridClassifierType;
+	}
+
+	/**
+	 * Ensure that the passed envelope is east-west on X axis, assuming it is representing
+	 * the axis order defined by the passed crs.
+	 * @param envelope
+	 * @param ccr
+	 * @return
+	 */
+	public static ReferencedEnvelope normalizeEnvelope(
+			ReferencedEnvelope envelope, CoordinateReferenceSystem ccr) {
+
+		ReferencedEnvelope ret = envelope;
+		if (ccr != null && ccr.getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH)) {
+			/*
+			 * swap x/y to obtain the right envelope according to the CRS
+			 */
+			ret = new ReferencedEnvelope(
+					envelope.getMinY(), envelope.getMaxY(),
+					envelope.getMinX(), envelope.getMaxX(), ccr);
+		} 
+		
+		return ret;
 	}
 
 }

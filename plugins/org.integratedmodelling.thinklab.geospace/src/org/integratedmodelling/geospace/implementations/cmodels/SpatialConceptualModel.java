@@ -69,20 +69,27 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 		CoordinateReferenceSystem ccr = chooseCRS(crs1, crs2);
 		
 		/*
-		 * use envelope as is, transformations will swap axes as required.
+		 * 
 		 */
-		ReferencedEnvelope env1 = orextent.getDefaultEnvelope();
-		ReferencedEnvelope env2 = otextent.getDefaultEnvelope();
+		ReferencedEnvelope env1 = orextent.getNormalizedEnvelope();
+		ReferencedEnvelope env2 = otextent.getNormalizedEnvelope();
 		
 		if (!(crs1.equals(crs2) && ccr.equals(crs1))) {
 		
 			/*
-			 * make sure we're talking the same numbers
+			 * transformations will swap axes as required so we want the
+			 * envelopes with the CRS's axis order
 			 */
+			env1 = orextent.getDefaultEnvelope();
+			env2 = otextent.getDefaultEnvelope();
 			
 			try {
-				env1 = env1.transform(ccr, true, 10);
-				env2 = env2.transform(ccr, true);
+				/*
+				 * transformations will return axes swapped to what CRS defines, and we 
+				 * want them normalized back to east-west on x before we use them
+				 */
+				env1 = Geospace.normalizeEnvelope(env1.transform(ccr, true, 10), ccr);
+				env2 = Geospace.normalizeEnvelope(env2.transform(ccr, true, 10), ccr);
 				
 			} catch (Exception e) {
 				throw new ThinklabConceptualModelValidationException(e);
@@ -90,7 +97,8 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 		}
 		
 		/* 
-		 * set a new envelope to the intersection or union of the original ones after reprojecting them to
+		 * At this point the two envelopes are in the same CRS and with east-west on the X axis.
+		 * Set a new envelope to the intersection or union of the original ones after reprojecting them to
 		 * the common crs. 
 		 */
 		Envelope common = env2;
@@ -107,7 +115,8 @@ public abstract class SpatialConceptualModel implements IConceptualModel, Extent
 		}
 		
 		/*
-		 * TODO intersection may be empty
+		 * TODO intersection may be empty - this should be checked in createMergedExtent instead
+		 * of cursing here.
 		 */
 		if (common.isNull()) {
 			System.out.println("FUCK, INTERSECTION IS NULL");

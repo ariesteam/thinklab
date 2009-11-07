@@ -39,8 +39,6 @@ import org.integratedmodelling.geospace.implementations.cmodels.SpatialConceptua
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 
-import com.vividsolutions.jts.geom.Envelope;
-
 public abstract class ArealExtent implements IExtent {
 
 	SpatialConceptualModel cm = null;
@@ -49,10 +47,10 @@ public abstract class ArealExtent implements IExtent {
 	ReferencedEnvelope envelope = null;
 	private CoordinateReferenceSystem crs;
 	
-	public ArealExtent(SpatialConceptualModel cm, CoordinateReferenceSystem crs, Envelope envelope) {
+	public ArealExtent(SpatialConceptualModel cm, CoordinateReferenceSystem crs, double minx, double miny, double maxx, double maxy) {
 		this.cm = cm;
 		this.crs = crs;
-		this.envelope = new ReferencedEnvelope(envelope, crs);
+		this.envelope = new ReferencedEnvelope(minx, maxx, miny, maxy, crs);
 	}
 	
 	public CoordinateReferenceSystem getCRS() {

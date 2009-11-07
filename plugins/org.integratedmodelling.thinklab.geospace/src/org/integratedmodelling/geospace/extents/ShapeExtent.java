@@ -59,18 +59,18 @@ public class ShapeExtent extends ArealExtent {
 	private String featureURL;
 	
 	public ShapeExtent(Envelope envelope, CoordinateReferenceSystem crs, SpatialConceptualModel cm) {
-		super(cm, crs, envelope);
-	}
-
-	public ShapeExtent(FeatureCollection<?,?> features, String sourceURL, CoordinateReferenceSystem crs, SpatialConceptualModel cm) {
-		super(cm, crs, features.getBounds());
-		this.features = features;
-		this.featureURL = sourceURL;
+		super(cm, crs, envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY());
 	}
 	
-	public ShapeExtent(Geometry shape, CoordinateReferenceSystem crs, SpatialConceptualModel cm) {
-		super(cm, crs, shape.getEnvelope().getEnvelopeInternal());
+	public ShapeExtent(Geometry shape, Envelope envelope, CoordinateReferenceSystem crs, SpatialConceptualModel cm) {
+		super(cm, crs, envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY());
 		this.shape = shape;
+	}
+
+	public ShapeExtent(FeatureCollection<?,?> features, String sourceURL, Envelope envelope, CoordinateReferenceSystem crs, SpatialConceptualModel cm) {
+		super(cm, crs, envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY());
+		this.features = features;
+		this.featureURL = sourceURL;
 	}
 
 	public IValue getFullExtentValue() {

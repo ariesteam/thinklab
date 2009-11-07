@@ -68,7 +68,7 @@ public class ArealLocationConceptualModel extends SpatialConceptualModel {
 	}
 
 	public IExtent getExtent() throws ThinklabException {
-		return new ShapeExtent(shape, getCRS(), this);
+		return new ShapeExtent(shape, shape.getEnvelopeInternal(), getCRS(), this);
 	}
 
 	public IExtentMediator getExtentMediator(IExtent extent)
@@ -84,11 +84,13 @@ public class ArealLocationConceptualModel extends SpatialConceptualModel {
 		/*
 		 * FIXME move this to mergeRemainingExtentParameters
 		 */
-		
-		return 
+		Geometry s =
 			connector.equals(LogicalConnector.UNION) ?
-				new ShapeExtent(((ShapeExtent)original).getShape().union(((ShapeExtent)other).getShape()), getCRS(), this):
-				new ShapeExtent(((ShapeExtent)original).getShape().intersection(((ShapeExtent)other).getShape()), getCRS(), this);
+					((ShapeExtent)original).getShape().union(((ShapeExtent)other).getShape()) :
+					((ShapeExtent)original).getShape().intersection(((ShapeExtent)other).getShape());
+		Envelope env = s.getEnvelopeInternal();	
+		
+		return new ShapeExtent(s, env, getCRS(), this);
 	}
 
 	public IValueAggregator<?> getAggregator(IObservationContext ownContext,
