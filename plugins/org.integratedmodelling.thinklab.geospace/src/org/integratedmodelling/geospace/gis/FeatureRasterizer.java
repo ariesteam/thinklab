@@ -545,7 +545,6 @@ public class FeatureRasterizer {
                     "' ATTRIBUTE VALUE OF '"+feature.getAttribute(attributeName).toString()+"'");	        
             return;	        
         }
-
         int rgbVal = floatBitsToInt(value);
         graphics.setColor(new Color(rgbVal, true));
 

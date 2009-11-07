@@ -19,6 +19,7 @@ public class GeneralClassifier {
 	AlgorithmValue code = null;
 	String string = null;
 	private boolean catchAll = false;
+	private boolean isNil = false; // a classifier specifically meant to catch nulls 
 	
 	public GeneralClassifier(String s) throws ThinklabException {
 		parse(s);
@@ -44,6 +45,8 @@ public class GeneralClassifier {
 			string = def;
 		} else if (selector.equals("tru:")) {
 			catchAll = true;
+		} else if (selector.equals("nil:")) {
+			isNil = true;
 		}
 	}
 	
@@ -90,6 +93,9 @@ public class GeneralClassifier {
 		if (catchAll) {
 			return true;
 		}
+
+		if (o == null)
+			return isNil;
 		
 		if (number != null) {
 			
@@ -189,8 +195,11 @@ public class GeneralClassifier {
 			ret = "con:" + concept;
 		} else if (string != null) {
 			ret = "str:" + string;
-		} else if (catchAll)
+		} else if (catchAll) {
 			ret = "tru:true";
+		} else if (isNil) {
+			ret = "nil:true";
+		}
 		return ret;
 	}
 
