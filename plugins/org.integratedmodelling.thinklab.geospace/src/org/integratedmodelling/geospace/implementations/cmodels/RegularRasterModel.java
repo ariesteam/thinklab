@@ -33,6 +33,7 @@
 
 package org.integratedmodelling.geospace.implementations.cmodels;
 
+import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
@@ -148,6 +149,26 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 			ArealExtent otextent, CoordinateReferenceSystem ccr,
 			Envelope common, boolean isConstraint) throws ThinklabException {
 
+
+		if (common.isNull()) {
+			throw new ThinklabContextualizationException(
+					"intersection of extents " + orextent + " with " + otextent + " is null; contextualization aborted");
+		}
+		
+		/*
+		 * for now, raster always wins
+		 */
+		if (otextent instanceof GridExtent && !(orextent instanceof GridExtent)) {
+			return makeRasterExtent((GridExtent)otextent, orextent, ccr, common, isConstraint);
+		}
+
+		if (orextent instanceof GridExtent && !(otextent instanceof GridExtent)) {
+			return makeRasterExtent((GridExtent)orextent, otextent, ccr, common, isConstraint);
+		}
+
+		/*
+		 * if we get here, we must be merging two rasters
+		 */
 		if ( !(orextent instanceof GridExtent && otextent instanceof GridExtent)) {
 			throw new ThinklabUnimplementedFeatureException("RasterModel: cannot yet merge extents of different types");
 		}
@@ -213,6 +234,21 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 		
 		
 		return nwext;
+	}
+
+	private ArealExtent makeRasterExtent(GridExtent grid, ArealExtent otextent, CoordinateReferenceSystem ccr,
+			Envelope env, boolean isConstraint) throws ThinklabException {
+
+		/*
+		 *  TODO adjust the extent as necessary to make the grid extent reflect the coordinate system and area
+		 */
+		GridExtent ret = 
+			new GridExtent(
+					this, ccr, 
+					env.getMinX(), env.getMinY(), env.getMaxX(), env.getMaxY(), 
+					grid.getXCells(), grid.getYCells());
+		
+		return ret;
 	}
 
 	public int getColumns() {

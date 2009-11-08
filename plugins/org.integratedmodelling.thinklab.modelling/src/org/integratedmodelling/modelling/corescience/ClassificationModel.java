@@ -65,7 +65,11 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		 *  List    (executable code, run after setting self to state)
 		 *  Set     (set of values to choose from: final match is an OR on the contents)
 		 */
-		if (classifier instanceof Integer || classifier instanceof Double) {
+		if (classifier == null) {
+			
+			ret.setNil();
+			
+		} else if (classifier instanceof Integer || classifier instanceof Double) {
 			
 			ret.setNumber(classifier);
 			

@@ -108,10 +108,11 @@ public class ModeledClassification
 				if (p.getFirst().classify(o))
 					return p.getSecond();
 			}
-						
-			ModellingPlugin.get().logger().warn(
-					"value " + o + " does not classify as a valid " + getObservableClass() +
-					": datasource will have null values");
+
+//          this is actually OK - those are nodata and can be caught with a nil classifier						
+//			ModellingPlugin.get().logger().warn(
+//					"value " + o + " does not classify as a valid " + getObservableClass() +
+//					": datasource will have null values");
 
 			return null;
 		}

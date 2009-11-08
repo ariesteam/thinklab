@@ -1,7 +1,6 @@
 package org.integratedmodelling.modelling.implementations.observations;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -36,6 +35,7 @@ import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
 import smile.Network;
+import smile.SMILEException;
 
 /**
  * Support for the modelling/bayesian form. 
@@ -224,8 +224,8 @@ public class BayesianTransformer
 		 * appropriately; use evidence state ID for speed.
 		 */
 		class Evidence { 
-			int field; ICategoryData data; 
-			Evidence(int f, ICategoryData d) { field = f; data = d; }
+			int field; ICategoryData data; String nodename;
+			Evidence(int f, ICategoryData d, String n) { field = f; data = d; nodename = n; }
 		}
 		i = 0;
 		
@@ -244,7 +244,7 @@ public class BayesianTransformer
 						"bayesian(" + getObservableClass() + "): dependent for " +
 						ec + 
 						" is not a classification");
-			evdnc.add(new Evidence(bn.getNode(ec.getLocalName()), (ICategoryData)cs));
+			evdnc.add(new Evidence(bn.getNode(ec.getLocalName()), (ICategoryData)cs, ec.getLocalName()));
 		}		
 
 		Evidence[] evidence = evdnc.toArray(new Evidence[evdnc.size()]);
@@ -265,21 +265,36 @@ public class BayesianTransformer
 		for (int state = 0; state < size; state++) {
 			
 			/*
+			 * FIXME or better FIXIT - removing node evidence when there is a null 
+			 * causes an exception (SMILE error -2), so we must do this OR understand why.
+			 */ 
+			bn.clearAllEvidence();
+			
+			/*
 			 * submit evidence - we set the same values at each cycle, so we don't need to
-			 * clear all previous evidence unless we have a null.
+			 * clear all previous evidence unless we have a null/nodata.
 			 * 
 			 * TODO this should be memoized. Still, doing so may require quite a bit of memory and
 			 * setup time, so we should compare results before adopting it as default.
 			 * 
 			 */
 			for (int e = 0; e < evidence.length; e++) {
-				IConcept ev = evidence[e].data.getCategory(state);
-				if (ev == null)
-					bn.clearEvidence(evidence[e].field);
-				else 
-					bn.setEvidence(
-						evidence[e].field, 
-						ev.getLocalName());
+				try {
+					IConcept ev = evidence[e].data.getCategory(state);
+					if (ev == null) {
+						// FIXME
+						// TODO see comment above - this causes a SMILE error -2 when called
+						// with an existing, valid node name or id. 
+						//bn.clearEvidence(evidence[e].field);
+					} else {
+						bn.setEvidence(
+								evidence[e].field, 
+								ev.getLocalName());
+					}
+				} catch (Exception ex) {
+					ModellingPlugin.get().logger().error("exception " + ex + " while setting " + evidence[e].nodename);
+					// throw new ThinklabValidationException(ex);
+				}
 			}
 			
 			/*

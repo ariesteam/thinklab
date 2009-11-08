@@ -10,6 +10,11 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.literals.AlgorithmValue;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
 
+/**
+ * A powerful classifier of objects meant to be defined from a Clojure classification model.
+ * Can be serialized to an ugly string so that observations can be built easily, but it is
+ * not meant to be used outside of a model context.
+ */
 public class GeneralClassifier {
 
 	Vector<GeneralClassifier> classifiers = null;
@@ -208,7 +213,11 @@ public class GeneralClassifier {
 	}
 
 	public void setString(String classifier) {
-		string = classifier;
+		this.string = classifier;
+	}
+
+	public void setNil() {
+		this.isNil = true;
 	}
 	
 }
