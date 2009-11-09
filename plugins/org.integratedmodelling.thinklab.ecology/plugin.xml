@@ -3,7 +3,7 @@
 <plugin id="org.integratedmodelling.thinklab.ecology" version="0.8.0" class="org.integratedmodelling.ecology.Ecology">
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
-<!--		<import plugin-id="org.integratedmodelling.thinklab.corescience"/> -->
+		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
 		<import plugin-id="org.integratedmodelling.thinklab.dolce"/>
 	</requires>	
 	<runtime>

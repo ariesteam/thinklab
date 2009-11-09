@@ -57,10 +57,12 @@ public class WFSCoverageDataSource extends VectorCoverageDataSource {
 			p.put(CoverageFactory.WFS_SERVICE_PROPERTY, server.toString());
 		p.put(CoverageFactory.COVERAGE_ID_PROPERTY, covId);
 		IValue attr = i.get("geospace:hasValueAttribute");
-		if (attr != null) {
+		if (attr != null)
 			p.put(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, attr.toString());
-		}
-
+		attr = i.get("geospace:hasValueType");
+		if (attr != null)
+			p.put(CoverageFactory.VALUE_TYPE_PROPERTY, attr.toString());
+		
 		URL url;
 		try {
 			url = new URL(

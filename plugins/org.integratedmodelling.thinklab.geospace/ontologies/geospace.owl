@@ -325,6 +325,17 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasValueType -->
+
+    <owl:DatatypeProperty rdf:about="#hasValueType">
+        <rdfs:comment
+            >Names the concept that the attribute should rasterize to. Intended as a hint to the rasterizer when the attributes in the source coverage are not properly mapped to types.</rdfs:comment>
+        <rdfs:domain rdf:resource="#ExternalVectorCoverageDataSource"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasVarianceRatio -->
 
     <owl:DatatypeProperty rdf:about="#hasVarianceRatio">
@@ -701,14 +712,14 @@
         <rdfs:subClassOf rdf:resource="&observation;ExtentObservation"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&observation;hasObservable"/>
-                <owl:allValuesFrom rdf:resource="#SpatialRecord"/>
+                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
+                <owl:someValuesFrom rdf:resource="#SpatialRecord"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
-                <owl:someValuesFrom rdf:resource="#SpatialRecord"/>
+                <owl:onProperty rdf:resource="&observation;hasObservable"/>
+                <owl:allValuesFrom rdf:resource="#SpatialRecord"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:comment rdf:datatype="&xsd;string"

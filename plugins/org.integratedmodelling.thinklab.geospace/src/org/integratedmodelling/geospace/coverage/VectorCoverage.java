@@ -63,10 +63,12 @@ import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
 import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.opengis.feature.simple.SimpleFeature;
@@ -87,6 +89,7 @@ public class VectorCoverage implements ICoverage {
 	private String layerName = null;
 	private String valueField = null;
 	private String sourceUrl = null;
+	private IConcept valueType = null;
 	
 	/*
 	 * if this is > -1, we have an independent attribute table associated with the feature collection. 
@@ -131,6 +134,7 @@ public class VectorCoverage implements ICoverage {
 			FeatureCollection<SimpleFeatureType, SimpleFeature> features,
 			CoordinateReferenceSystem crs, 
 			String valueField, 
+			String valueType, // concept - may be null
 			ReferencedEnvelope envelope,
 			FeatureSource<SimpleFeatureType, SimpleFeature> source, 
 			boolean validate) throws ThinklabException {
@@ -139,6 +143,7 @@ public class VectorCoverage implements ICoverage {
 		this.crs = crs;
 		this.valueField = valueField;
 		this.source = source;
+		this.valueType = valueType == null ? null : KnowledgeManager.get().requireConcept(valueType);;
 
 		if (validate)
 			validateFeatures();
@@ -174,11 +179,13 @@ public class VectorCoverage implements ICoverage {
 			String linkField,
 			String linkTargetField,
 			String valueField,
+			String valueType, // concept - may be null
 			boolean validate) throws ThinklabException {
 		
 		this.features = features;
 		this.crs = crs;
 		this.valueField = linkField;
+		this.valueType = valueType == null ? null : KnowledgeManager.get().requireConcept(valueType);
 		this.attributeHandle = attributes.index(linkTargetField, valueField);
 		
 		if (validate)
@@ -371,7 +378,7 @@ public class VectorCoverage implements ICoverage {
 	 * @throws ThinklabException
 	 */
 	public ICoverage convertToRaster(GridExtent arealExtent) throws ThinklabException {
-		return ThinklabRasterizer.rasterize(this, valueField, Float.NaN, arealExtent);
+		return ThinklabRasterizer.rasterize(this, valueField, Float.NaN, arealExtent, valueType);
 	}
 
 	public void show() {

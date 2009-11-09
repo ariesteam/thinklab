@@ -35,7 +35,9 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.feature.AttributeTable;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -225,13 +227,13 @@ public class FeatureRasterizer {
 		
 	}
 
-	public GridCoverage2D rasterize(String name, FeatureCollection<SimpleFeatureType, SimpleFeature> fc, String attributeName, ReferencedEnvelope env) throws FeatureRasterizerException {
+	public GridCoverage2D rasterize(String name, FeatureCollection<SimpleFeatureType, SimpleFeature> fc, String attributeName, IConcept valueType, ReferencedEnvelope env) throws FeatureRasterizerException {
     	
     	if (raster == null) {
     	
     		WritableRaster raster = 
     			RasterFactory.createBandedRaster(
-    				getRasterType(), 
+    				getRasterType(valueType), 
 					this.width, 
 					this.height, 
 					1, 
@@ -273,11 +275,25 @@ public class FeatureRasterizer {
     	return coverage;
     }
     
-    private int getRasterType() {
+    private int getRasterType(IConcept valueType) {
 
     	int ret = DataBuffer.TYPE_FLOAT;
     	
-    	if (attributeDescriptor != null) {
+    	if (valueType != null) {
+    		
+    		if ( !(valueType.is(KnowledgeManager.Number()))) {
+    			/*
+    			 * default to classification, use short integers for parsimony
+    			 */
+    			ret = DataBuffer.TYPE_SHORT;
+    			if (classification == null) {
+    				classification = new HashMap<String, Integer>();
+    			}
+    			/* force nodata to 0 */
+    			noDataValue = 0.0;
+    		}
+    		
+    	} else if (attributeDescriptor != null) {
     		
     		if ( !(attributeDescriptor.getType() instanceof NumericAttributeType)) {
     			/*
@@ -295,13 +311,13 @@ public class FeatureRasterizer {
     	return ret;
 	}
 
-	public GridCoverage2D rasterize(String name, FeatureIterator<SimpleFeature> fc, String attributeName, ReferencedEnvelope env, ReferencedEnvelope normEnv) throws FeatureRasterizerException {
+	public GridCoverage2D rasterize(String name, FeatureIterator<SimpleFeature> fc, String attributeName, IConcept valueType, ReferencedEnvelope env, ReferencedEnvelope normEnv) throws FeatureRasterizerException {
     	
     	if (raster == null) {
     	
     		WritableRaster raster = 
     			RasterFactory.createBandedRaster(
-    				getRasterType(), 
+    				getRasterType(valueType), 
 					this.width, 
 					this.height, 
 					1, 
@@ -330,7 +346,7 @@ public class FeatureRasterizer {
     				normEnv.getWidth(), 
     				normEnv.getHeight());
 			 
-		rasterize(fc, box, attributeName);
+		rasterize(fc, box, attributeName, valueType);
 
 		GridCoverage2D coverage = 
 			rasterFactory.create(name, raster, env);
@@ -417,14 +433,14 @@ public class FeatureRasterizer {
      * @param  attributeName                  Name of attribute from feature collection to provide as the cell value.
      * @exception  FeatureRasterizerException  An error when rasterizing the data
      */
-    public void rasterize(FeatureIterator<SimpleFeature> fc, java.awt.geom.Rectangle2D.Double bounds, String attributeName)
+    public void rasterize(FeatureIterator<SimpleFeature> fc, java.awt.geom.Rectangle2D.Double bounds, String attributeName, IConcept valueType)
     	throws FeatureRasterizerException {
     	
         this.attributeName = attributeName;
         
         // Check if we need to change the underlying raster
         if (resetRaster) {
-            raster = RasterFactory.createBandedRaster(getRasterType(),
+            raster = RasterFactory.createBandedRaster(getRasterType(valueType),
                     width, height, 1, null);
 
             bimage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

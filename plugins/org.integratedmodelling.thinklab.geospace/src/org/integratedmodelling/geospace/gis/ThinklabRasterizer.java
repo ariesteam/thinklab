@@ -8,6 +8,7 @@ import org.integratedmodelling.geospace.exceptions.ThinklabRasterizationExceptio
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.gis.FeatureRasterizer.FeatureRasterizerException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.opengis.feature.simple.SimpleFeature;
 
 public class ThinklabRasterizer {
@@ -21,7 +22,7 @@ public class ThinklabRasterizer {
 	 * @param extent
 	 * @return
 	 */
-	public static RasterCoverage rasterize(VectorCoverage vCoverage, String valueId, float noData, GridExtent extent)  throws ThinklabException  {
+	public static RasterCoverage rasterize(VectorCoverage vCoverage, String valueId, float noData, GridExtent extent, IConcept valueType)  throws ThinklabException  {
 		
 		if (extent.getCRS() != null)
 			vCoverage = (VectorCoverage)vCoverage.requireMatch(extent, false);
@@ -43,6 +44,7 @@ public class ThinklabRasterizer {
 						"_raster",
 					iterator, 
 					valueId,
+					valueType,
 					extent.getDefaultEnvelope(),
 					extent.getNormalizedEnvelope());
 			
