@@ -14,6 +14,12 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 
 	Object unitSpecs = null;
 	
+	@Override
+	public String toString() {
+		return ("ranking(" + getObservable() + ")");
+	}
+
+	
 	public void setUnits(Object unitSpecs) {
 		this.unitSpecs = unitSpecs;
 	}

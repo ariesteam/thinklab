@@ -37,6 +37,10 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	 * @see org.integratedmodelling.modelling.DefaultStatefulAbstractModel#copy(org.integratedmodelling.modelling.DefaultStatefulAbstractModel)
 	 */
 	
+	@Override
+	public String toString() {
+		return ("classification(" + getObservable() + ")");
+	}
 
 	@Override
 	public void validateMediatedModel(IModel model) throws ThinklabValidationException {

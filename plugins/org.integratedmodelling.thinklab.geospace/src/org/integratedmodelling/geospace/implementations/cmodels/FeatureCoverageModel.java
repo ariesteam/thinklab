@@ -116,7 +116,7 @@ public class FeatureCoverageModel extends SubdividedCoverageConceptualModel {
 			GridExtent gext = new GridExtent(this, ((GridExtent)otextent));
 			ret = gext;
 			
-		} else if (((ShapeExtent)orextent).hasDifferentFeatures((ShapeExtent)otextent)) {
+		} else if (orextent instanceof ShapeExtent && ((ShapeExtent)orextent).hasDifferentFeatures((ShapeExtent)otextent)) {
 			
 			// we can't really handle this as a vector operation yet. 
 			// Will determine a polygonal overlay at some point. For now we just turn to raster, but

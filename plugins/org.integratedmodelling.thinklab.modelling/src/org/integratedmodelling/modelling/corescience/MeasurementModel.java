@@ -14,6 +14,11 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 
 	String unitSpecs = null;
 	
+	@Override
+	public String toString() {
+		return ("measurement(" + getObservable() + "," + unitSpecs + ")");
+	}
+	
 	public void setUnits(Object unitSpecs) {
 		this.unitSpecs = unitSpecs.toString();
 	}

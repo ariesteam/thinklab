@@ -20,6 +20,11 @@ import org.integratedmodelling.utils.Polylist;
 public class ObservationModel extends DefaultAbstractModel {
 
 	@Override
+	public String toString() {
+		return ("identification(" + getObservable() + ")");
+	}
+
+	@Override
 	protected void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
 		

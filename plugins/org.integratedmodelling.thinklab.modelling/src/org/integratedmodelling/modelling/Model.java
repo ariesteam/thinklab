@@ -266,7 +266,13 @@ public class Model extends DefaultAbstractModel {
 	
 	@Override
 	public String toString() {
-		return "[" + getObservable() + "->" + getCompatibleObservationType(null)+"]";
+		// add the different possible incarnations of the model after the closed parenthesis
+		String mdesc = "{";
+		for (IModel m : models) {
+			mdesc += (mdesc.length() == 1 ? "" : ",") + m ;
+		}
+		mdesc += "}";
+		return "model(" + getObservable() +") " + mdesc;
 	}
 
 

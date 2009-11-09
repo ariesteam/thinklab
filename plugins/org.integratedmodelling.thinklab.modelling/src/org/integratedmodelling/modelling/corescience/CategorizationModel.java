@@ -12,6 +12,12 @@ import org.integratedmodelling.utils.Polylist;
 
 public class CategorizationModel extends DefaultDynamicAbstractModel {
 
+	@Override
+	public String toString() {
+		return ("categorization(" + getObservable() + ")");
+	}
+
+	
 	public void setCategories(Object categories) {
 		System.out.println("categories: " + categories);
 		// TODO do something
