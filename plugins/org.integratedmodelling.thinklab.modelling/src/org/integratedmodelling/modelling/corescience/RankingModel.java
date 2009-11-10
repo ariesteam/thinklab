@@ -19,7 +19,6 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 		return ("ranking(" + getObservable() + ")");
 	}
 
-	
 	public void setUnits(Object unitSpecs) {
 		this.unitSpecs = unitSpecs;
 	}

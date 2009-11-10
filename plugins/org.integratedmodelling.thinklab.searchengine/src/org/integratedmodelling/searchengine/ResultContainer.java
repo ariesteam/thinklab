@@ -32,6 +32,7 @@
  **/
 package org.integratedmodelling.searchengine;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -46,6 +47,7 @@ import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 
 
@@ -101,6 +103,19 @@ public class ResultContainer implements IQueryResult {
 		return offset;
 	}
 
+	static String spaces(String name, String right, int max) {
+		int nsp = max - name.length() - right.length();
+		if (nsp <= 0)
+			return " ";
+		return MiscUtilities.createWhiteSpace(nsp, 0);
+	}
+	
+	public void printResult(int n, PrintStream out) {
+		String id = n + ". " + results.get(n).get("id");
+		String score = "(score: " + scores.get(n) + ")";
+		out.println(id + spaces(id, score, 80) + score);
+		// TODO print more
+	}
 
 	public float getResultScore(int n) {
 		return scores.get(n);

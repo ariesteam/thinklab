@@ -32,6 +32,8 @@ public class Reindex implements ICommandHandler {
 				o.getConceptSpace();
 		}
 		
+		System.out.println("onts: " + ontprop);
+		
 		engine.clear();
 		engine.setOntologies(ontprop);
 		engine.initialize();

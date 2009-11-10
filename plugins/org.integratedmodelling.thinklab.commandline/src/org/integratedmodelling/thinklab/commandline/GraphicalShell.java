@@ -71,8 +71,8 @@ public class GraphicalShell {
 	
 	JConsole console = null;
 	
-	Font inputFont = new Font("SansSerif", Font.BOLD, 12);
-	Font outputFont = new Font("SansSerif", Font.PLAIN, 12);
+	Font inputFont = new Font("Courier", Font.BOLD, 12);
+	Font outputFont = new Font("Courier", Font.PLAIN, 12);
 
 	public class ConsoleUserModel implements IUserModel {
 

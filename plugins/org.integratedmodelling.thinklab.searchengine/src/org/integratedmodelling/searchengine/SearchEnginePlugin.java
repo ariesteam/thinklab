@@ -245,6 +245,7 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 		}
 		
 		return null;
-	}	
+	}
+
 
 }
