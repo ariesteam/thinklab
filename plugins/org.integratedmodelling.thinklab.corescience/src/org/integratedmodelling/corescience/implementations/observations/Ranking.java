@@ -32,7 +32,9 @@
  **/
 package org.integratedmodelling.corescience.implementations.observations;
 
+
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.implementations.observations.RankingSetRemapper.RankingSetRemappingModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
 import org.integratedmodelling.corescience.interfaces.cmodel.IStateValidator;
@@ -57,6 +59,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.utils.Polylist;
 import org.jscience.mathematics.number.Rational;
+
 
 /**
  * A ranking is the simplest of quantifications, defining the observable through
@@ -278,11 +281,18 @@ public class Ranking extends Observation implements IConceptualizable {
 			
 			RankingMediator ret = null;
 			
-			if (!(conceptualModel instanceof RankingModel)) {
-				throw new ThinklabValidationException("can't mediate between " + this.getClass() +
-					" and " + conceptualModel.getClass());
+			if (!((conceptualModel instanceof RankingModel) ||
+					  (conceptualModel instanceof RankingSetRemappingModel))) {
+					
+					throw new ThinklabValidationException("can't mediate between " + this.getClass() +
+						" and " + conceptualModel.getClass());
+				}
+				
+			// nothing to do if so
+			if (conceptualModel instanceof RankingSetRemappingModel) {
+				return new RankingMediator();
 			}
-		
+				
 			if ((isScale && !isScale) || 
 					(!isScale && isScale))
 				throw new ThinklabValidationException("scale ranking can't be mediated with non-scale");

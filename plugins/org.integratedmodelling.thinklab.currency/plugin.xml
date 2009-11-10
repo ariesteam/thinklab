@@ -13,6 +13,7 @@
 		</library>
 		<!-- make currency data available -->
 		<library type="resources" path="data/" id="data" />
+		<library type="resources" path="ontologies/" id="ontologies" />
 	</runtime>
 
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="cconvert">
@@ -22,6 +23,12 @@
 		<parameter id="argument-names" value="amount,currency1,date1,currency2,date2"/>
 		<parameter id="argument-types" value="thinklab-core:LongFloatingPoint,thinklab-core:Text,time:DateTimeValue,thinklab-core:Text,time:DateTimeValue"/>
 		<parameter id="argument-descriptions" value="amount to convert,source currency,date of source value,destination currency,date of destination value"/>
+	</extension>
+	
+	<!-- ontologies -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="economics">
+		<parameter id="url" value="economics.owl"/>
+		<parameter id="concept-space" value="economics" />
 	</extension>
 
 </plugin>
