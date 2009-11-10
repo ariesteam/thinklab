@@ -90,6 +90,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.java.plugin.Plugin;
 
 //}}}
 
@@ -1533,17 +1535,30 @@ loop:		for(;;)
 	}
 	
 	/**
-	 * Resolve a passed string into an existing file name, or 
-	 * @param msource
-	 * @return
+	 * Resolve a passed string into an existing file name
+	 * @param msource a file name, URL, or string containing a plugin identifier and a resource
+	 * 		  separated by :: - in the latter case, we lookup the resource in the named plugin's
+	 *        classpath
+	 * @return A local file containing the resource
 	 * @throws ThinklabResourceNotFoundException
 	 */
 	public static File resolveUrlToFile(String msource) 
-		throws ThinklabResourceNotFoundException {
+		throws ThinklabException {
 		
 		File ret = null;
 		
-		if (msource.startsWith("http:") || msource.startsWith("file:")) {
+		if (msource.contains("::")) {
+			
+			/* plugin classpath: resolve plugin and get resource */
+			int x = msource.indexOf("::");
+			String plug = msource.substring(0, x);
+			String reso = msource.substring(x+2);
+			
+			ThinklabPlugin plugin = Thinklab.resolvePlugin(plug, true);
+			URL rurl = plugin.getResourceURL(reso);
+			ret = CopyURL.getFileForURL(rurl);
+		
+		} else if (msource.startsWith("http:") || msource.startsWith("file:")) {
 			try {
 				ret = CopyURL.getFileForURL(new URL(msource));
 			} catch (Exception e) {

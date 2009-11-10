@@ -167,7 +167,7 @@ public class GraphicalShell {
 			console.setStyle(inputFont);
 			
 			input = readLine(session.getInputStream());
-
+			
 			console.setStyle(outputFont);
 			
 			if ("exit".equals(input)) {
@@ -185,6 +185,9 @@ public class GraphicalShell {
 					IValue result = CommandManager.get().submitCommand(cmd, session);
                     if (result != null)
                         console.println(result.toString());
+                    
+                    console.getOut().flush();
+                    
 				} catch (Exception e) {
 					e.printStackTrace();
 					console.println(">>> error: " + e.getMessage() + " <<<");
