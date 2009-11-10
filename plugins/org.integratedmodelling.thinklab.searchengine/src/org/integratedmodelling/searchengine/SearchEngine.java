@@ -215,6 +215,7 @@ public final class SearchEngine implements IQueriable {
     				properties.getProperty(
     						SearchEnginePlugin.SEARCHENGINE_INDEX_INDIVIDUALS_PROPERTY,
     						"false"));
+    	
     	this.indexPath   = 
     		properties.getProperty(
     				SearchEnginePlugin.SEARCHENGINE_INDEX_PATH_PROPERTY,
@@ -346,7 +347,7 @@ public final class SearchEngine implements IQueriable {
     	
     	try {
     		
-			index.close();
+			// index.close();
     	
 			File ipath = new File(indexPath);
     	 

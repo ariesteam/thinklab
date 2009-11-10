@@ -37,4 +37,21 @@
 		</parameter-def>
 	</extension-point>
 	
+	<!-- get a nice search engine so we can use it right away. A reindex will
+	     index all ontologies currently loaded. -->
+	<extension plugin-id="org.integratedmodelling.thinklab.searchengine" point-id="search-engine" id="thinklab-knowledge-index">
+		<parameter id="id" value="thinkcap-knowledge-index"/>
+		<parameter id="ontology" value="thinklab-core"/>
+		<parameter id="index">
+			<parameter id="type" value="text"/>
+			<parameter id="property" value="rdfs:label"/>
+			<parameter id="weight" value="4.0"/>
+		</parameter>
+		<parameter id="index">
+			<parameter id="type" value="text"/>
+			<parameter id="property" value="rdfs:comment"/>
+			<parameter id="weight" value="1.0"/>
+		</parameter>
+	</extension>	
+	
 </plugin>

@@ -39,7 +39,6 @@ import java.util.Properties;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
@@ -50,6 +49,7 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 	static final String PLUGIN_ID = "org.integratedmodelling.thinklab.searchengine";
 	
 	ArrayList<SearchEngine> engines = new ArrayList<SearchEngine>();
+	SearchEngine defaultSearchEngine = null;
 	
 	/**
 	 * Set to a true value to enable indexing of individuals contained in
@@ -187,6 +187,20 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 		return engine;
 	}
 	
+	public SearchEngine getDefaultSearchEngine() throws ThinklabException {
+		
+		if (defaultSearchEngine == null) {
+			
+			Properties p = new Properties();
+			p.setProperty(SearchEnginePlugin.SEARCHENGINE_INDEX_UNCOMMENTED_PROPERTY, "true");
+			defaultSearchEngine = new SearchEngine("thinkab-knowledge-index", p);
+			defaultSearchEngine.addIndexField("rdfs:label", "text", 4.0);
+			defaultSearchEngine.addIndexField("rdfs:comment", "text", 1.0);
+		}
+		
+		return defaultSearchEngine;
+	}
+	
 	/**
 	 * Load the search engines specified in the passed plugin and set them in the
 	 * engine repository. Must be called explicitly by plugins declaring search engines;
@@ -199,6 +213,7 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 	public List<SearchEngine> loadSearchEngines(String pluginId) throws ThinklabException {
 
 		ArrayList<SearchEngine> ret = new ArrayList<SearchEngine>();
+	
 		
 		/*
 		 * find all search engines declared by plugins. At this point we should have
