@@ -5,7 +5,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 
 @SuppressWarnings("unchecked")
 public interface IContextualizedState extends IDataSource, IConceptualizable {
-
+		
 	public void addValue(Object o);
 
 	/**

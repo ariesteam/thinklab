@@ -103,7 +103,7 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 		}
 
 		@Override
-		public IContextualizedState createContextualizedStorage(int size)
+		public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 				throws ThinklabException {
 			// not required, we create POD.
 			return null;

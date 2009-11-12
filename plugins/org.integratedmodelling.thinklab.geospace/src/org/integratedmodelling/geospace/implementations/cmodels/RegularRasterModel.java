@@ -40,6 +40,7 @@ import org.integratedmodelling.corescience.interfaces.context.IObservationContex
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.extents.ArealExtent;
@@ -281,7 +282,7 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 	}
 
 	@Override
-	public IContextualizedState createContextualizedStorage(int size)
+	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 			throws ThinklabException {
 		throw new ThinklabUnimplementedFeatureException("storage of extents states not implemented");
 	}

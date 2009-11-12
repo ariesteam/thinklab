@@ -115,7 +115,7 @@ public class Classification extends Observation implements IConceptualizable {
 		}
 
 		@Override
-		public IContextualizedState createContextualizedStorage(int size)
+		public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 				throws ThinklabException {
 			return new ClassData(cspace, size);
 		}

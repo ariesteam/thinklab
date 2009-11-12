@@ -149,7 +149,7 @@ public class InstantConceptualModel implements ExtentConceptualModel {
 	}
 
 	@Override
-	public IContextualizedState createContextualizedStorage(int size)
+	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 			throws ThinklabException {
 		throw new ThinklabUnimplementedFeatureException("storage of extents states not implemented");
 	}

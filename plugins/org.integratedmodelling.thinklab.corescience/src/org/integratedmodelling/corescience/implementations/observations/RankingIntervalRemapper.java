@@ -99,7 +99,7 @@ public class RankingIntervalRemapper extends Observation implements IConceptuali
 		}
 
 		@Override
-		public IContextualizedState createContextualizedStorage(int size)
+		public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 				throws ThinklabException {
 			return null;
 		}

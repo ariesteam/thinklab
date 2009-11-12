@@ -518,7 +518,7 @@ public class VMCompiler extends Compiler {
 
 			// FIXME not right - unless own context considers overall
 			int size = ownContext.getMultiplicity();
-			odesc.stateId = contextualizer.registerStateStorage(cm, o.getObservableClass(), size);
+			odesc.stateId = contextualizer.registerStateStorage(o, cm, o.getObservableClass(), size);
 		}
 		
 		/* store them all here, we notify our register to them at the end when we have one */

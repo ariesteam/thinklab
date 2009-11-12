@@ -49,7 +49,7 @@ public class RandomValuedRanking extends Observation implements IConceptualModel
 	}
 
 	@Override
-	public IContextualizedState createContextualizedStorage(int size)
+	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 			throws ThinklabException {
 		// TODO distributions
 		return null;

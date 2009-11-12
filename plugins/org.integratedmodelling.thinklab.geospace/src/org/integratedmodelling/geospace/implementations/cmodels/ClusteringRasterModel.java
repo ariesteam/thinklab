@@ -226,7 +226,7 @@ public class ClusteringRasterModel implements IConceptualModel, TransformingConc
 	}
 
 	@Override
-	public IContextualizedState createContextualizedStorage(int size)
+	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 			throws ThinklabException {
 		throw new ThinklabUnimplementedFeatureException("storage of clustered states not implemented");
 	}

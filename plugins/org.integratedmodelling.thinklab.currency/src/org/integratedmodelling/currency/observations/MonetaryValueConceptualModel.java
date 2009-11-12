@@ -32,6 +32,7 @@
  **/
 package org.integratedmodelling.currency.observations;
 
+import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IStateValidator;
 import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
@@ -106,9 +107,8 @@ public class MonetaryValueConceptualModel implements IConceptualModel, Validatin
 	}
 
 	@Override
-	public IContextualizedState createContextualizedStorage(int size)
+	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 			throws ThinklabException {
-		// fine as is, we return POD.
-		return null;
+		return new MemDoubleContextualizedDatasource(observation.getObservableClass(), size);
 	}
 }

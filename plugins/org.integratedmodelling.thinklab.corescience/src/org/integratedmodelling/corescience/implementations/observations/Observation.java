@@ -727,4 +727,5 @@ public class Observation implements IObservation, IInstanceImplementation {
 	public String getFormalName() {
 		return formalName;
 	}
+
 }

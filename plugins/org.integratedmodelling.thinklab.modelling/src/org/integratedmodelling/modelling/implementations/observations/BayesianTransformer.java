@@ -144,7 +144,7 @@ public class BayesianTransformer
 	}
 
 	@Override
-	public IContextualizedState createContextualizedStorage(int size)
+	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 			throws ThinklabException {
 		// we contextualize this as an identification, so no storage is needed. 
 		return null;
@@ -215,6 +215,10 @@ public class BayesianTransformer
 					pstates[j] = var.getConceptSpace() + ":" + pstates[j];
 				pcstates[j] = KnowledgeManager.get().requireConcept(pstates[j]);
 			}
+ 			
+ 			/*
+ 			 * TODO add metadata to ds. These come from the classifications per 
+ 			 */
 			st.data = new CategoricalDistributionDatasource(var, size, pcstates);
 			pstorage[i++] = st;
 		}

@@ -18,6 +18,7 @@ import org.integratedmodelling.corescience.interfaces.context.IObservationContex
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.utils.Ticker;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -359,20 +360,29 @@ public class VMContextualizer<T> {
 		return _accregs++;
 	}
 
-	public int registerStateStorage(IConceptualModel cm, IConcept observable, int size) {
+	public int registerStateStorage(IObservation o, IConceptualModel cm, IConcept observable, int size) {
+
 		_observed.add(observable);
+		IContextualizedState dds = null;
 		if (cm.getStateType().is(KnowledgeManager.Number())) {
-			encode(makeInst(ASTOR_I, _storegs));
-			encode(size);
+			// let's build all DSs at compile time so we have a chance to encode metadata
+			// ASTOR is currently unused
+			//			encode(makeInst(ASTOR_I, _storegs));
+			//			encode(size);
+			dds = makeState(_stackType, size);
+			
 		} else {
+			
 			try {
-				_datasources.add(cm.createContextualizedStorage(size));
+				dds = cm.createContextualizedStorage(o, size);				
 			} catch (ThinklabException e) {
 				throw new ThinklabRuntimeException(e);
 			}
-			encode(makeInst(MKSTOR_I, _storegs, _cstords++));
-			
 		}
+		
+		_datasources.add(dds);
+		encode(makeInst(MKSTOR_I, _storegs, _cstords++));
+			
 		return _storegs++;
 	}
 

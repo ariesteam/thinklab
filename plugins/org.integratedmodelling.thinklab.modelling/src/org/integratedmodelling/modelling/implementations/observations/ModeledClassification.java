@@ -217,8 +217,13 @@ public class ModeledClassification
 	}
 
 	@Override
-	public IContextualizedState createContextualizedStorage(int size)
+	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 			throws ThinklabException {
+		
+		/*
+		 * TODO Metadata
+		 */
+		
 		return new ClassData(cSpace, size);
 	}
 }

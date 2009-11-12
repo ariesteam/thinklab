@@ -153,7 +153,7 @@ public class ClassificationModel implements IConceptualModel, ValidatingConceptu
 	}
 
 	@Override
-	public IContextualizedState createContextualizedStorage(int size)
+	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 			throws ThinklabException {
 		return new IndexedContextualizedDatasourceByte<IConcept>(cSpace, size);
 	}

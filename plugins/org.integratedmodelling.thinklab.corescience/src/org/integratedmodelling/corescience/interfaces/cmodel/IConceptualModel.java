@@ -107,11 +107,13 @@ public interface IConceptualModel {
 	 * Create a customized datasource to hold the results of contextualization. Only called if
 	 * the state type is not a number. Should raise an exception in case of problem, never return
 	 * null or bull.
+	 * @param observation the observation that owns this CM, in case we didn't store it and we need
+	 * 		  it to create metadata.
+	 * @param size 
 	 * 
-	 * @param size
 	 * @return
 	 */
-	public abstract IContextualizedState createContextualizedStorage(int size) 
+	public abstract IContextualizedState createContextualizedStorage(IObservation observation, int size) 
 		throws ThinklabException;
 
 

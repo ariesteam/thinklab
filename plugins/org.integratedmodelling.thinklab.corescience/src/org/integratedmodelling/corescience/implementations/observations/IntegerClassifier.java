@@ -161,7 +161,7 @@ public class IntegerClassifier extends Observation implements IConceptualModel, 
 	}
 
 	@Override
-	public IContextualizedState createContextualizedStorage(int size)
+	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 			throws ThinklabException {
 		return new IndexedContextualizedDatasourceByte<IConcept>(observationSpace, size);
 	}

@@ -51,7 +51,7 @@ public class ProbabilisticClassification extends Observation implements IConcept
 	}
 
 	@Override
-	public IContextualizedState createContextualizedStorage(int size)
+	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 			throws ThinklabException {
 		// TODO make some nice probabilistic DS that encodes distributions.
 		return null;

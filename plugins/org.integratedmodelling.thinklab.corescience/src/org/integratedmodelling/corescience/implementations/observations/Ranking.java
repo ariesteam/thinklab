@@ -34,6 +34,7 @@ package org.integratedmodelling.corescience.implementations.observations;
 
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.observations.RankingSetRemapper.RankingSetRemappingModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
@@ -268,10 +269,9 @@ public class Ranking extends Observation implements IConceptualizable {
 		}
 
 		@Override
-		public IContextualizedState createContextualizedStorage(int size)
+		public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 				throws ThinklabException {
-			// fine as is, we create POD.
-			return null;
+			return new MemDoubleContextualizedDatasource(observation.getObservableClass(), size);
 		}
 
 		@Override

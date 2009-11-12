@@ -132,11 +132,13 @@ public class NetCDFArchive {
 			spdims.add(lonDim);
 
 			/* add latitude and longitude as variables */
-			ncfile.addVariable("latitude", DataType.DOUBLE, new Dimension[]{latDim});
-			ncfile.addVariableAttribute("latitude", "units", "degrees_north");
+			ncfile.addVariable("lat", DataType.FLOAT, new Dimension[]{latDim});
+			ncfile.addVariableAttribute("lat", "units", "degrees_north");
+			ncfile.addVariableAttribute("lat", "long_name", "latitude");
 			/* add latitude and longitude as variables */
-			ncfile.addVariable("longitude", DataType.DOUBLE, new Dimension[]{lonDim});
-			ncfile.addVariableAttribute("longitude", "units", "degrees_east");
+			ncfile.addVariable("lon", DataType.FLOAT, new Dimension[]{lonDim});
+			ncfile.addVariableAttribute("lon", "units", "degrees_east");
+			ncfile.addVariableAttribute("lon", "long_name", "longitude");
 		}
 		
 		for (IConcept obs : variables.keySet()) {
@@ -145,13 +147,13 @@ public class NetCDFArchive {
 			
 			if (spdims.size() == 2) {
 				// we have space only
-				String varname = obs.getLocalName();
-				ncfile.addVariable(varname, DataType.DOUBLE, new Dimension[]{latDim,lonDim});
+				String varname = getVarname(obs);
+				ncfile.addVariable(varname, DataType.FLOAT, new Dimension[]{latDim,lonDim});
 				// TODO if var is a measurement, add units attribute - this is a stupid stub
 				if (varname.equals("Altitude")) {
-//					ncfile.addVariableAttribute("Altitude", "units", "meters");
-//					ncfile.addVariableAttribute("Altitude", "positive", "up");
-//					ncfile.addVariableAttribute("Altitude", "axis", "z");
+					ncfile.addVariableAttribute("Altitude", "units", "meters");
+//					ncfile.addVariableAttribute("altitude", "positive", "up");
+//					ncfile.addVariableAttribute("altitude", "_CoordinateAxisType", "Height");
 				}
 			}
 		}
@@ -161,7 +163,7 @@ public class NetCDFArchive {
 			// TODO implement the rest
 			
 			if (spdims.size() == 2) {
-				ncfile.addVariable(var, DataType.DOUBLE, new Dimension[]{latDim,lonDim});
+				ncfile.addVariable(var, DataType.FLOAT, new Dimension[]{latDim,lonDim});
 			}
 		}
 		/*
@@ -185,18 +187,18 @@ public class NetCDFArchive {
 			ArrayDouble alat = new ArrayDouble.D1(latDim.getLength());
 			Index ind1 = alat.getIndex();
 			for (int i = 0; i < latDim.getLength(); i++) {
-				alat.setDouble(ind1.set(i), ext.getSouth() + ext.getNSResolution() * i);
+				alat.setFloat(ind1.set(i), (float)(ext.getSouth() + ext.getNSResolution() * i));
 			}
 			
 			ArrayDouble alon = new ArrayDouble.D1(lonDim.getLength());
 			Index ind2 = alon.getIndex();
 			for (int i = 0; i < lonDim.getLength(); i++) {
-				alon.setDouble(ind2.set(i), ext.getWest() + ext.getEWResolution() * i);
+				alon.setFloat(ind2.set(i), (float)(ext.getWest() + ext.getEWResolution() * i));
 			}
 			
 			try {
-				ncfile.write("latitude", alat);
-				ncfile.write("longitude", alon);
+				ncfile.write("lat", alat);
+				ncfile.write("lon", alon);
 			} catch (Exception e) {
 				throw new ThinklabIOException(e);
 			}
@@ -205,12 +207,11 @@ public class NetCDFArchive {
 		
 		for (IConcept obs : variables.keySet()) {
 			
-			// TODO implement the rest
-			
+			// TODO implement the rest			
 			if (spdims.size() == 2) {
 				
 				// we have space only
-				String varname = obs.getLocalName();
+				String varname = getVarname(obs);
 			
 				ArrayDouble data = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
 				Index ind = data.getIndex();
@@ -218,10 +219,10 @@ public class NetCDFArchive {
 				int i = 0;
 				for (int lat = 0; lat < latDim.getLength(); lat++) {
 					for (int lon = 0; lon < lonDim.getLength(); lon++) {
-						data.setDouble(ind.set(lat,lon), dd[i++]);
+						data.setFloat(ind.set(lat,lon), (float)dd[i++]);
 					}	
 				}
-				
+
 				try {
 					ncfile.write(varname, data);
 				} catch (Exception e) {
@@ -240,7 +241,7 @@ public class NetCDFArchive {
 				int i = 0;
 				for (int lat = 0; lat < latDim.getLength(); lat++) {
 					for (int lon = 0; lon < lonDim.getLength(); lon++) {
-						data.setDouble(ind.set(lat,lon), dd[i++]);
+						data.setFloat(ind.set(lat,lon), (float)dd[i++]);
 					}	
 				}
 				
@@ -257,6 +258,18 @@ public class NetCDFArchive {
 		} catch (IOException e) {
 			throw new ThinklabIOException(e);
 		}
+	}
+
+	/*
+	 * just recognize some concepts that have special meaning for the netcdf CF convention
+	 */
+	private String getVarname(IConcept obs) {
+		
+		String ret = obs.getLocalName();
+		if (obs.is("geophysics:Altitude")) {
+			ret = "Altitude";
+		}
+		return ret;
 	}
 
 	/**
