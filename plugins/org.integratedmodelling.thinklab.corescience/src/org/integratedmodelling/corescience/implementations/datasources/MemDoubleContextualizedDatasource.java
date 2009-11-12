@@ -119,7 +119,7 @@ public class MemDoubleContextualizedDatasource
 	}
 	
 	public String toString() {
-		return "[" + _type + ": " + Arrays.toString(data) + "]";
+		return "[" + _type + ": " /*+ Arrays.toString(data)*/ + "]";
 	}
 
 	@Override

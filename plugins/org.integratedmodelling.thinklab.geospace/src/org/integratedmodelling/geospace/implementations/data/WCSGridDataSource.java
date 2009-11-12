@@ -51,9 +51,13 @@ public class WCSGridDataSource extends RegularRasterGridDataSource {
 		IValue server = i.get("geospace:hasServiceUrl");
 		if (server != null)
 			p.put(WCSCoverage.WCS_SERVICE_PROPERTY, server.toString());
+		IValue format = i.get("geospace:hasImageFormat");
+		if (format != null)
+			p.put(WCSCoverage.WCS_FORMAT_PROPERTY, format.toString());
 		
 		this.coverage = 
 			new WCSCoverage(i.get("geospace:hasCoverageId").toString(), p);
+		
 	}
 
 }

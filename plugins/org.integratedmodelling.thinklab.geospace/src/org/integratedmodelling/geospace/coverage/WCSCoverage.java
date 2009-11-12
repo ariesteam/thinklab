@@ -43,7 +43,6 @@ import javax.media.jai.iterator.RandomIterFactory;
 import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.factory.Hints;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -64,8 +63,11 @@ import org.w3c.dom.Node;
 public class WCSCoverage extends AbstractRasterCoverage {
 
 	public static final String WCS_SERVICE_PROPERTY = "wcs.service.url";
+	public static final String WCS_FORMAT_PROPERTY = "wcs.service.format";
 	
 	String wcsService = "http://127.0.0.1:8080/geoserver/wcs";
+	String wcsFormat = "geotiff";
+	
 	String description = null;
 	// read from kvp in coverage keywords
 	Properties properties = new Properties();
@@ -80,10 +82,14 @@ public class WCSCoverage extends AbstractRasterCoverage {
 	 */
 	public WCSCoverage(String coverageID, Properties properties) throws ThinklabException {
 
-		if (properties != null)
+		if (properties != null) {
 			wcsService = 
 				properties.getProperty(WCS_SERVICE_PROPERTY, "http://127.0.0.1:8080/geoserver/wcs");
-
+			wcsFormat =
+				properties.getProperty(WCS_FORMAT_PROPERTY, wcsFormat);
+		}
+				
+			
 		layerName = coverageID;
 		
 		XMLDocument desc = new XMLDocument(buildDescribeUrl(coverageID));
@@ -162,6 +168,11 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		  sx2 = Integer.parseInt(z[0]);
 		  sy2 = Integer.parseInt(z[1]);
 		  
+		  /*
+		   * TODO process available formats and extract default or validate given
+		   */
+
+		  
 		  try {
 			  this.crs = CRS.decode(srs);
 			} catch (Exception e) {
@@ -224,7 +235,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		} catch (MalformedURLException e) {
 			throw new ThinklabInternalErrorException(e);
 		}
-		
+				
 		return url;
 	}
 	
@@ -253,14 +264,17 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			extent.getXCells() +
 			"&height=" +
 			extent.getYCells() +
-			"&format=geotiff";
+			"&format=" +
+			wcsFormat;
 		
 		try {
 			url = new URL(s);
 		} catch (MalformedURLException e) {
 			throw new ThinklabInternalErrorException(e);
 		}
-		
+
+		// System.out.println("WCS URL: " + url);
+
 		return url;
 	}
 

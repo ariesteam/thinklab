@@ -18,7 +18,10 @@ public class MeasurementStateMediator implements IStateAccessor {
 	public MeasurementStateMediator(UnitValue unitFrom, UnitValue unitTo) {
 		this.uFrom = unitFrom;
 		this.uTo = unitTo;
-		this.converter = uFrom.getUnit().getConverterTo(uTo.getUnit());
+		this.converter = 
+			uFrom.equals(uTo) ? 
+				null :
+				uFrom.getUnit().getConverterTo(uTo.getUnit());
 	}
 	
 	@Override
@@ -35,7 +38,7 @@ public class MeasurementStateMediator implements IStateAccessor {
 
 	@Override
 	public Object getValue(Object[] registers) {
-		return converter.convert((Double)registers[reg]);
+		return converter == null ? registers[reg] : converter.convert((Double)registers[reg]);
 	}
 
 	@Override

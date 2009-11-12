@@ -15,6 +15,7 @@ import org.integratedmodelling.geospace.implementations.cmodels.RegularRasterMod
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.time.implementations.observations.RegularTemporalGrid;
@@ -55,8 +56,14 @@ public class NetCDFArchive {
 		
 		IObservation o = Obs.getObservation(obs);
 		
+		IObservation spc = Obs.findObservation(o, Geospace.get().SubdividedSpaceObservable());
+		
+		if (spc == null || !(spc instanceof RasterGrid))
+			throw new ThinklabUnimplementedFeatureException(
+					"only raster grid data are supported in NetCDF exporter for now");
+
 		//time  = (RasterGrid) Obs.findObservation(o, TimePlugin.GridObservable());
-		space = (RasterGrid) Obs.findObservation(o, Geospace.get().RasterGridObservable());
+		space = (RasterGrid)spc; 
 		variables = Obs.getStateMap(o);
 	}
 	
@@ -142,9 +149,9 @@ public class NetCDFArchive {
 				ncfile.addVariable(varname, DataType.DOUBLE, new Dimension[]{latDim,lonDim});
 				// TODO if var is a measurement, add units attribute - this is a stupid stub
 				if (varname.equals("Altitude")) {
-					ncfile.addVariableAttribute("Altitude", "units", "meters");
-					ncfile.addVariableAttribute("Altitude", "positive", "up");
-					ncfile.addVariableAttribute("Altitude", "axis", "z");
+//					ncfile.addVariableAttribute("Altitude", "units", "meters");
+//					ncfile.addVariableAttribute("Altitude", "positive", "up");
+//					ncfile.addVariableAttribute("Altitude", "axis", "z");
 				}
 			}
 		}
@@ -184,7 +191,7 @@ public class NetCDFArchive {
 			ArrayDouble alon = new ArrayDouble.D1(lonDim.getLength());
 			Index ind2 = alon.getIndex();
 			for (int i = 0; i < lonDim.getLength(); i++) {
-				alon.setDouble(ind2.set(i), ext.getEast() + ext.getEWResolution() * i);
+				alon.setDouble(ind2.set(i), ext.getWest() + ext.getEWResolution() * i);
 			}
 			
 			try {
