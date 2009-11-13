@@ -32,7 +32,7 @@ public class ModelCommand implements ICommandHandler {
 		
 		String concept = command.getArgumentAsString("concept");
 		String kb = command.getArgumentAsString("kbox");
-
+		
 		IKBox kbox = null;
 		if (kb != null && !kb.equals("_NONE_"))
 			kbox = KBoxManager.get().requireGlobalKBox(kb);

@@ -484,12 +484,22 @@ public class Constraint implements IQuery {
 	}
 
 	public void parse(String query) throws ThinklabValidationException {
-
 		try {
 			createFromList(Polylist.parse(query));
 		} catch (Exception e) {
 			throw new ThinklabValidationException(e);
 		}
+	}
+
+	public static Constraint parseConstraint(String query) throws ThinklabValidationException {
+
+		Constraint ret = new Constraint();
+		try {
+			ret.createFromList(Polylist.parse(query));
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		}
+		return ret;
 	}
 
 	public boolean isEmpty() {

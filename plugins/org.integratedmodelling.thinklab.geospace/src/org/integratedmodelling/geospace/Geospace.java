@@ -32,10 +32,15 @@
  **/
 package org.integratedmodelling.geospace;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.integratedmodelling.geospace.interfaces.IGazetteer;
+import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
@@ -48,7 +53,7 @@ import org.opengis.referencing.cs.AxisDirection;
 import org.w3c.dom.Node;
 
 public class Geospace extends ThinklabPlugin  {
-
+	
 	private IConcept shapeType;
 	private IConcept pointType;
 	private IConcept lineStringType;
@@ -93,7 +98,7 @@ public class Geospace extends ThinklabPlugin  {
 	public static final String GRID_CLASSIFIER = "geospace:GridClassifier";
 	public static final String CLASSIFIED_GRID = "geospace:ClassifiedGrid";
 	public static final String GRID_CLASSIFICATION_MODEL = "geospace:GridClassification";
-	
+		
 	// the projection to use if we need meters
 	public static final String EPSG_PROJECTION_METERS = "EPSG:3005";
 
@@ -103,6 +108,12 @@ public class Geospace extends ThinklabPlugin  {
 	 */
 	CoordinateReferenceSystem preferredCRS = null;
 	CoordinateReferenceSystem metersCRS = null;
+	
+	/*
+	 * we maintain a collection of gazetteers that plugins can install. The lookupFeature() function
+	 * will search all of them.
+	 */
+	ArrayList<IGazetteer> gazetteers = new ArrayList<IGazetteer>();
 	
 	public static Geospace get() {
 		return (Geospace) getPlugin(PLUGIN_ID);
@@ -322,4 +333,44 @@ public class Geospace extends ThinklabPlugin  {
 		return ret;
 	}
 
+	/**
+	 * Add a gazetteer to the collection.
+	 * @param g
+	 */
+	public void addGazetteer(IGazetteer g) {
+		gazetteers.add(g);
+	}
+	
+	/**
+	 * Lookup a feature name through all existing gazetteers. If stopWhenFound is true, return
+	 * after the first lookup that succeeds.
+	 * 
+	 * @param name
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public Collection<ShapeValue> lookupFeature(String name, boolean stopWhenFound) 
+		throws ThinklabException {
+		
+		ArrayList<ShapeValue> ret = new ArrayList<ShapeValue>();
+		
+		for (IGazetteer g : gazetteers) {
+			g.resolve(name, ret, null);
+			if (stopWhenFound && ret.size() > 0)
+				break;
+		}
+		return ret;
+	}
+
+	public Collection<String> listKnownFeatures() {
+
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		for (IGazetteer g : gazetteers) {
+			g.getKnownNames(ret);
+		}
+
+		return ret;
+	}
+	
 }

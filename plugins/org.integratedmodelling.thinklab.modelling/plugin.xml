@@ -10,6 +10,7 @@
 		<import plugin-id="org.integratedmodelling.thinklab.time"/>
 		<import plugin-id="org.integratedmodelling.thinklab.dynamicmodelling"/>
 		<import plugin-id="org.integratedmodelling.thinklab.rules"/>
+		<import plugin-id="org.integratedmodelling.thinklab.idv"/>
 	</requires>
 
 	<runtime>
