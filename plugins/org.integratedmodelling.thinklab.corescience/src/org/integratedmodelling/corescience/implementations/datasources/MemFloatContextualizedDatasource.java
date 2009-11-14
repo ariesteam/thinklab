@@ -54,6 +54,8 @@ public class MemFloatContextualizedDatasource
 	private IConcept _type;
 	private float[] data = null;
 	private int idx = 0;
+	
+	Properties metadata = new Properties();
 
 	public MemFloatContextualizedDatasource(IConcept type, int size) {
 		_type = type;
@@ -104,7 +106,7 @@ public class MemFloatContextualizedDatasource
 	}
 	
 	public String toString() {
-		return "[" + _type + ": " + Arrays.toString(data) + "]";
+		return "MF[" + _type + ": " /*+ Arrays.toString(data)*/ + "]";
 	}
 
 	@Override
@@ -117,5 +119,16 @@ public class MemFloatContextualizedDatasource
 		// TODO try to convert if values are numbers
 		throw new ThinklabValueConversionException("can't convert float into double");
 	}
+	
+	@Override
+	public void setMetadata(String id, Object o) {
+		metadata.put(id, o);
+	}
+	
+	@Override
+	public Object getMetadata(String id) {
+		return metadata.get(id);
+	}
+
 
 }

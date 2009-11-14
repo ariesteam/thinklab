@@ -135,7 +135,7 @@ public class CopyURL {
 
     public static File getFileForURL(URL url) throws ThinklabIOException {
     	if (url.toString().startsWith("file:")) {
-    		return new File(url.getFile());
+    		return new File(UrlEscape.unescapeurl(url.getFile()));
     	} else {
     		File temp;
 			try {

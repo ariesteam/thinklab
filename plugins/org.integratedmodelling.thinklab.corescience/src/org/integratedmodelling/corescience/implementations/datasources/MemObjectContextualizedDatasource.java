@@ -33,6 +33,7 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
 import java.util.Arrays;
+import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
@@ -53,6 +54,8 @@ public class MemObjectContextualizedDatasource
 	private IConcept _type;
 	private Object[] data = null;
 	private int idx = 0;
+	
+	Properties metadata = new Properties();
 
 	public MemObjectContextualizedDatasource(IConcept type, int size) {
 		_type = type;
@@ -103,7 +106,7 @@ public class MemObjectContextualizedDatasource
 	}
 	
 	public String toString() {
-		return "[" + _type + ": " + Arrays.toString(data) + "]";
+		return "MO[" + _type + ": " /*+ Arrays.toString(data)*/ + "]";
 	}
 	
 	@Override
@@ -115,6 +118,16 @@ public class MemObjectContextualizedDatasource
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
 		// TODO try to convert if values are numbers
 		throw new ThinklabValueConversionException("can't convert IValue into double");
+	}
+	
+	@Override
+	public void setMetadata(String id, Object o) {
+		metadata.put(id, o);
+	}
+	
+	@Override
+	public Object getMetadata(String id) {
+		return metadata.get(id);
 	}
 
 

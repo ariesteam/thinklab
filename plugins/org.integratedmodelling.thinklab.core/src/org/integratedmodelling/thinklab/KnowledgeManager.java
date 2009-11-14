@@ -63,16 +63,13 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.applications.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
 import org.integratedmodelling.thinklab.session.SingleSessionManager;
@@ -130,6 +127,9 @@ public class KnowledgeManager implements IKnowledgeProvider {
     private IConcept booleanType;
     private IConcept longType;
     private IConcept doubleType;
+    private IConcept ordinalRankingType;
+    private IConcept booleanRankingType;
+    private IConcept ordinalRangeMappingType;
     private IConcept literalType;
 
     private IProperty classificationProperty;
@@ -153,7 +153,10 @@ public class KnowledgeManager implements IKnowledgeProvider {
     private SemanticType additionalRestrictionsPropertyID;
 	private SemanticType abstractPropertyID;
 	private SemanticType importedPropertyID;
-	
+	private SemanticType ordinalRankingTypeID;
+	private SemanticType booleanRankingTypeID;
+	private SemanticType ordinalRangeMappingTypeID;
+
 	protected IKnowledgeRepository knowledgeRepository;
 	protected ISessionManager  sessionManager = null;
 
@@ -219,7 +222,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	private Hashtable<String, String> xsdMappings = new Hashtable<String, String>();
 	private Hashtable<String, Class<?>> instanceImplementationClasses = new Hashtable<String, Class<?>>();
 	private Hashtable<String, Class<?>> literalImplementationClasses = new Hashtable<String, Class<?>>();
-	
+
 	public KnowledgeManager(IKnowledgeRepository kr, ISessionManager ki) {
 
         /* set KM */
@@ -481,6 +484,16 @@ public class KnowledgeManager implements IKnowledgeProvider {
 				new SemanticType(p.getProperty("type.class.operator",   "thinklab-core:Operation"));
 			rootTypeID = 
 				new SemanticType(p.getProperty("type.class.thing",       "owl:Thing"));
+			ordinalRankingTypeID = 
+				new SemanticType(p.getProperty("type.class.ordinal-ranking",    
+						"thinklab-core:OrdinalRanking"));
+			booleanRankingTypeID = 
+				new SemanticType(p.getProperty("type.class.boolean-ranking",    
+						"thinklab-core:BooleanRanking"));
+			ordinalRangeMappingTypeID = 
+				new SemanticType(p.getProperty("type.class.ordered-range-mapping",
+						"thinklab-core:OrderedRangeMapping"));
+
 
 			reifiedLiteralPropertyID = 
 				new SemanticType(p.getProperty("type.property.reified-literal",
@@ -525,13 +538,16 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	    /* retrieve actual concepts from semantic types */
 	    try {
 			integerType  = requireConcept(integerTypeID);
-			floatType    = requireConcept(floatTypeID);	
+			floatType    = requireConcept(floatTypeID);
 			textType     = requireConcept(textTypeID);
             longType     = requireConcept(longTypeID);
             doubleType   = requireConcept(doubleTypeID);
             numberType   = requireConcept(numberTypeID);
             booleanType  = requireConcept(booleanTypeID);
             literalType  = requireConcept(literalTypeID);
+            booleanRankingType  = requireConcept(booleanRankingTypeID);
+            ordinalRankingType  = requireConcept(ordinalRankingTypeID);
+            ordinalRangeMappingType  = requireConcept(ordinalRangeMappingTypeID);
             operatorType  = requireConcept(operatorTypeID);
             
             classificationProperty = requireProperty(classificationPropertyID);
@@ -1353,6 +1369,19 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		if (!typesInitialized)
 			initializeThinklabTypes();
 		return importedProperty;
+	}
+
+	public static IConcept BooleanRanking() {
+		return KM.booleanRankingType;
+	}
+	
+	public static IConcept OrdinalRanking() {
+		return KM.ordinalRankingType;
+	}
+
+	public static IConcept OrderedRangeMapping() {
+		// TODO Auto-generated method stub
+		return KM.ordinalRangeMappingType;
 	}
 
 }

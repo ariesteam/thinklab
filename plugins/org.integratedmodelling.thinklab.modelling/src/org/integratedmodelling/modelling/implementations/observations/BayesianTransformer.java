@@ -103,7 +103,8 @@ public class BayesianTransformer
 				
 			} catch (Exception e) {
 				throw new ThinklabValidationException(
-						"bayesian transformer: problem reading network from " + url);
+						"bayesian transformer: reading " + url +
+						": " + e.getMessage());
 			}
 			
 			/*

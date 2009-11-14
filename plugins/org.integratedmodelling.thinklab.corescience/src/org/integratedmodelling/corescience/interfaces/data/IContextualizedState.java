@@ -25,4 +25,25 @@ public interface IContextualizedState extends IDataSource, IConceptualizable {
 	 * @return
 	 */
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException;
+
+	/**
+	 * States are visualized and stored so they carry metadata to aid the
+	 * process. Metadata should be set by the createContextualizedStorage
+	 * method in the corresponding conceptual model. A catalog of metadata
+	 * ID is in org.integratedmodelling.corescience.metadata.Metadata and its
+	 * plugin-specific derivatives.
+	 * 
+	 * @param id
+	 * @param o
+	 */
+	public void setMetadata(String id, Object o);
+
+	/**
+	 * Just get the metadata. A property object interface should suffice.
+	 * @param id
+	 * @return
+	 */
+	public Object getMetadata(String id);
+	
+	
 }

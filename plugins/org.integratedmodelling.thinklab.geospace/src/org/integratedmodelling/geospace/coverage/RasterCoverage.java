@@ -142,7 +142,7 @@ public class RasterCoverage extends AbstractRasterCoverage {
 //						extent.getEnvelope(), new InterpolationNearest());
 
 		
-		this.coverage.show();
+		// this.coverage.show();
 		
 	}
 
@@ -198,7 +198,7 @@ public class RasterCoverage extends AbstractRasterCoverage {
 				coverage.getEnvelope2D().getMinY(),
 				coverage.getEnvelope2D().getMaxY(), crs);
 
-		coverage.show();
+		// coverage.show();
 	}
 
 	@Override
@@ -218,7 +218,7 @@ public class RasterCoverage extends AbstractRasterCoverage {
 
 	public ICoverage requireMatch(ArealExtent extent, boolean allowClassChange) throws ThinklabException {
 		
-		System.out.println("Coverage " + getLayerName() + " requested to match " + extent);
+		// System.out.println("Coverage " + getLayerName() + " requested to match " + extent);
 		
 		if (! (extent instanceof GridExtent)) {
 			throw new ThinklabUnimplementedFeatureException("cannot yet match a raster coverage to a non-raster extent");

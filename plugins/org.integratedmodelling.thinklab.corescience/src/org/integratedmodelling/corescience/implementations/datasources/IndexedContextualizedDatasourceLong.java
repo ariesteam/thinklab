@@ -2,6 +2,7 @@ package org.integratedmodelling.corescience.implementations.datasources;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
@@ -38,6 +39,8 @@ public class IndexedContextualizedDatasourceLong<T>
 	private long max = 1L;
 	private int idx = 0;
 	
+	Properties metadata = new Properties();
+
 	HashMap<T, Long> map = new HashMap<T, Long>();
 	HashMap<Long, T> inverseMap = new HashMap<Long, T>();
 
@@ -99,7 +102,7 @@ public class IndexedContextualizedDatasourceLong<T>
 	}
 	
 	public String toString() {
-		return "[" + _type + " {" + map + "}: " + Arrays.toString(data) + "]";
+		return "ICDL[" + _type + " {" + map + "}: " /*+ Arrays.toString(data)*/ + "]";
 	}
 
 	@Override
@@ -110,6 +113,17 @@ public class IndexedContextualizedDatasourceLong<T>
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
 		throw new ThinklabValueConversionException("can't convert concepts into doubles");
+	}
+
+	
+	@Override
+	public void setMetadata(String id, Object o) {
+		metadata.put(id, o);
+	}
+	
+	@Override
+	public Object getMetadata(String id) {
+		return metadata.get(id);
 	}
 
 }

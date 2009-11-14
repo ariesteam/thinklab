@@ -9,10 +9,12 @@ import org.integratedmodelling.corescience.Obs;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.implementations.cmodels.RegularRasterModel;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
+import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
@@ -149,6 +151,11 @@ public class NetCDFArchive {
 				// we have space only
 				String varname = getVarname(obs);
 				ncfile.addVariable(varname, DataType.FLOAT, new Dimension[]{latDim,lonDim});
+
+				// add uncertainty if any
+				if (variables.get(obs) instanceof CategoricalDistributionDatasource)
+					ncfile.addVariable(varname+"U", DataType.FLOAT, new Dimension[]{latDim,lonDim});
+				
 				// TODO if var is a measurement, add units attribute - this is a stupid stub
 				if (varname.equals("Altitude")) {
 					ncfile.addVariableAttribute("Altitude", "units", "meters");
@@ -202,7 +209,6 @@ public class NetCDFArchive {
 			} catch (Exception e) {
 				throw new ThinklabIOException(e);
 			}
-			
 		}
 		
 		for (IConcept obs : variables.keySet()) {
@@ -216,15 +222,26 @@ public class NetCDFArchive {
 				ArrayDouble data = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
 				Index ind = data.getIndex();
 				double[] dd = variables.get(obs).getDataAsDoubles();
+				double[] uu = (double[]) variables.get(obs).getMetadata(Metadata.UNCERTAINTY);
+				ArrayDouble unce = null;
+				if (uu != null)
+					unce = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
+
 				int i = 0;
 				for (int lat = 0; lat < latDim.getLength(); lat++) {
 					for (int lon = 0; lon < lonDim.getLength(); lon++) {
-						data.setFloat(ind.set(lat,lon), (float)dd[i++]);
+						Index index = ind.set(lat,lon);
+						data.setFloat(index, (float)dd[i]);
+						if (uu != null)
+							unce.setFloat(index, (float)uu[i]);
+						i++;
 					}	
 				}
-
+				
 				try {
 					ncfile.write(varname, data);
+					if (uu != null)
+						ncfile.write(varname+"U", unce);
 				} catch (Exception e) {
 					throw new ThinklabIOException(e);
 				}

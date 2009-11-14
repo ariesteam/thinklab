@@ -33,6 +33,7 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
 import java.util.Arrays;
+import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
@@ -53,6 +54,8 @@ public class MemLongContextualizedDatasource
 	private IConcept _type;
 	private long[] data = null;
 	private int idx = 0;
+	
+	Properties metadata = new Properties();
 
 	public MemLongContextualizedDatasource(IConcept type, int size) {
 		_type = type;
@@ -103,7 +106,7 @@ public class MemLongContextualizedDatasource
 	}
 	
 	public String toString() {
-		return "[" + _type + ": " + Arrays.toString(data) + "]";
+		return "ML[" + _type + ": " /*+ Arrays.toString(data)*/ + "]";
 	}
 	
 	@Override
@@ -118,4 +121,14 @@ public class MemLongContextualizedDatasource
 	}
 
 	
+	@Override
+	public void setMetadata(String id, Object o) {
+		metadata.put(id, o);
+	}
+	
+	@Override
+	public Object getMetadata(String id) {
+		return metadata.get(id);
+	}
+
 }

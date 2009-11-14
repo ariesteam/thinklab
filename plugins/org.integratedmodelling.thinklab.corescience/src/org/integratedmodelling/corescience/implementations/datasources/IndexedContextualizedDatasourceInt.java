@@ -2,6 +2,7 @@ package org.integratedmodelling.corescience.implementations.datasources;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
@@ -33,11 +34,13 @@ public class IndexedContextualizedDatasourceInt<T>
  	implements IContextualizedState, IInstanceImplementation, IConceptualizable {
 
 	private static final long serialVersionUID = -6567783706189229920L;
-	IConcept _type;
+	protected IConcept _type;
 	protected int[] data = null;
 	private int max = 1;
 	private int idx = 0;
 	
+	Properties metadata = new Properties();
+
 	protected HashMap<T, Integer> map = new HashMap<T, Integer>();
 	protected HashMap<Integer, T> inverseMap = new HashMap<Integer, T>();
 
@@ -99,7 +102,7 @@ public class IndexedContextualizedDatasourceInt<T>
 	}
 	
 	public String toString() {
-		return "[" + _type + " {" + map + "}: " + Arrays.toString(data) + "]";
+		return "ICDI[" + _type + " {" + map + "}: " /*+ Arrays.toString(data)*/ + "]";
 	}
 
 	@Override
@@ -110,6 +113,17 @@ public class IndexedContextualizedDatasourceInt<T>
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
 		throw new ThinklabValueConversionException("can't convert concepts into doubles");
+	}
+
+	
+	@Override
+	public void setMetadata(String id, Object o) {
+		metadata.put(id, o);
+	}
+	
+	@Override
+	public Object getMetadata(String id) {
+		return metadata.get(id);
 	}
 
 }

@@ -54,6 +54,8 @@ public class MemIntegerContextualizedDatasource
 	private IConcept _type;
 	private int[] data = null;
 	private int idx = 0;
+	
+	Properties metadata = new Properties();
 
 	public MemIntegerContextualizedDatasource(IConcept type, int size) {
 		_type = type;
@@ -108,7 +110,7 @@ public class MemIntegerContextualizedDatasource
 	}
 	
 	public String toString() {
-		return "[" + _type + ": " + Arrays.toString(data) + "]";
+		return "MI[" + _type + ": " /*+ Arrays.toString(data)*/ + "]";
 	}
 	
 	@Override
@@ -120,6 +122,16 @@ public class MemIntegerContextualizedDatasource
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
 		// TODO try to convert if values are numbers
 		throw new ThinklabValueConversionException("can't convert int into double");
+	}
+	
+	@Override
+	public void setMetadata(String id, Object o) {
+		metadata.put(id, o);
+	}
+	
+	@Override
+	public Object getMetadata(String id) {
+		return metadata.get(id);
 	}
 
 	
