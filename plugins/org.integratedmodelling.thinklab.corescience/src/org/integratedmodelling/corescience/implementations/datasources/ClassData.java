@@ -3,10 +3,23 @@ package org.integratedmodelling.corescience.implementations.datasources;
 import java.util.Collection;
 
 import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
+import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 public class ClassData extends IndexedContextualizedDatasourceByte<IConcept> implements
 		ICategoryData {
+
+	@Override
+	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
+		/* 
+		 * see if classes have an ordinal relationship and define mapping
+		 * accordingly.
+		 */
+		double[] ret = new double[this.data.length];
+		
+		
+		return ret;
+	}
 
 	public ClassData(IConcept type, int size) {
 		super(type, size);

@@ -36,7 +36,6 @@ package org.integratedmodelling.thinklab.command;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -238,7 +237,7 @@ public class Command {
     }
     
     public boolean hasOption(String optName) {
-        return getOptionAsString(optName) != null;
+        return opts.containsKey(optName);
     }
     
     public String getName() {

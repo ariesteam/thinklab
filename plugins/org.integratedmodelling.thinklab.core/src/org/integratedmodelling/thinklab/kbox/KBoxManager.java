@@ -273,6 +273,10 @@ public class KBoxManager implements IKBox {
 		installDefaultKboxes();
 	}
 	
+	public void installKbox(String uri, IKBox kbox) {
+		kBoxes.put(uri, kbox);
+	}
+	
 	/*
 	 * Called by the plugin registry
 	 */
