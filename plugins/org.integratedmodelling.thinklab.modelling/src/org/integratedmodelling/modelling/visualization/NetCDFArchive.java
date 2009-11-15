@@ -173,6 +173,7 @@ public class NetCDFArchive {
 				ncfile.addVariable(var, DataType.FLOAT, new Dimension[]{latDim,lonDim});
 			}
 		}
+		
 		/*
 		 * create the file before we add variables
 		 */

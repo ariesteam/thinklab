@@ -60,17 +60,22 @@ public class CategoricalDistributionDatasource extends
 		IConcept c = valueMappings[0];
 		double   v = probabilities[0];
 		double   sh = 0;
+		int nst = 0;
 		
 		for (int i = 0; i < probabilities.length; i++) {
 			if (probabilities[i] > v) {
 				v = probabilities[i];
 				c = valueMappings[i];
 			}
-			if (probabilities[i] > 0.0)
+			if (probabilities[i] > 0.0) {
 				sh += 
 					probabilities[i] *
 					Math.log(probabilities[i]);
+				nst++;
+			}
 		}
+		
+		sh = (sh/Math.log((double)nst)) * -1.0;
 		
 		return new Pair<IConcept, Double>(c,sh);
 	}

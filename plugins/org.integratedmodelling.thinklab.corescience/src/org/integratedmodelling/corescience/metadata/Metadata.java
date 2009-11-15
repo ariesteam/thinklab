@@ -32,10 +32,12 @@ public class Metadata {
 			"^Low[A-Z].*",
 			"^Medium[A-Z].*",
 			"^Moderate[A-Z].*",
+			"^Partial[A-Z].*",
 			"^ModeratelyHigh[A-Z].*",
 			"^MediumHigh[A-Z].*",
 			"^High[A-Z].*",
 			"^High[A-Z].*",
+			"^Full[A-Z].*",
 			"^VeryHigh[A-Z].*",
 			"^ExtremelyHigh[A-Z].*"
 	};
