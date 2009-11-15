@@ -17,6 +17,9 @@ import org.integratedmodelling.utils.Pair;
 public class Metadata {
 
 	public static final String UNCERTAINTY = "uncertainty";
+	public static final String UNITS = "units";
+	public static final String LEGEND = "legend";
+	public static final String RANGES = "ranges";
 	
 	/*
 	 * these are recognized as ordinal prefixes. In order for an order
@@ -28,18 +31,25 @@ public class Metadata {
 			"^No[A-Z].*",
 			"^Not[A-Z].*",
 			"^ExtremelyLow[A-Z].*",
+			"^ExtremelySmall[A-Z].*",
 			"^VeryLow[A-Z].*",
+			"^VerySmall[A-Z].*",
 			"^Low[A-Z].*",
+			"^Small[A-Z].*",
 			"^Medium[A-Z].*",
 			"^Moderate[A-Z].*",
 			"^Partial[A-Z].*",
 			"^ModeratelyHigh[A-Z].*",
 			"^MediumHigh[A-Z].*",
+			"^ModeratelyLarge[A-Z].*",
+			"^MediumLarge[A-Z].*",
 			"^High[A-Z].*",
-			"^High[A-Z].*",
+			"^Large[A-Z].*",
 			"^Full[A-Z].*",
 			"^VeryHigh[A-Z].*",
-			"^ExtremelyHigh[A-Z].*"
+			"^VeryLarge[A-Z].*",
+			"^ExtremelyHigh[A-Z].*",
+			"^ExtremelyLarge[A-Z].*"
 	};
 	
 	/*
@@ -48,7 +58,7 @@ public class Metadata {
 	static String[] booleanNarrative = {
 		"^No[A-Z].*",
 		"^Not[A-Z].*",
-		".*Absent.*",
+		".*Absent.*",      
 		".*NotPresent.*"
 	};
 
@@ -64,6 +74,7 @@ public class Metadata {
 
 		ArrayList<Pair<IConcept, Integer>> lexicalRank =
 			new ArrayList<Pair<IConcept,Integer>>();
+		boolean gotNo = false;
 		
 		/*
 		 * if presence-absence, map the "No*" or "notpresent" to 0 and 
@@ -76,6 +87,7 @@ public class Metadata {
 				for (String rx : booleanNarrative) {
 					if (c.getLocalName().matches(rx)) {
 						lexicalRank.add(new Pair<IConcept,Integer>(c,i));
+						gotNo = true;
 						break;
 					}
 					i++;
@@ -123,7 +135,10 @@ public class Metadata {
 		 * ranking is a "no" ranking, otherwise at 1.
 		 */
 		HashMap<IConcept, Integer> ret = new HashMap<IConcept, Integer>();
-		int i = lexicalRank.get(0).getFirst().getLocalName().startsWith("No") ? 0 : 1;
+		int i = 
+			(gotNo ||
+			 lexicalRank.get(0).getFirst().getLocalName().startsWith("No")) ? 
+					0 : 1;
 		for (Pair<IConcept, Integer> p : lexicalRank) {
 			ret.put(p.getFirst(), i++);
 		}
