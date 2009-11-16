@@ -48,6 +48,7 @@ test  - runs some tests
 		<ant dir="plugins/org.integratedmodelling.thinklab.opal" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.sql" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.authentication" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.idv" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.commandline" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.riskwiz" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.clojure" target="${target}" />
@@ -66,7 +67,6 @@ test  - runs some tests
 		<ant dir="plugins/org.integratedmodelling.thinklab.thinkscape" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.workflow" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.tclj" target="${target}" />
-		<ant dir="plugins/org.integratedmodelling.thinklab.idv" target="${target}" />
 	</target>
 
 	<target name="build" depends="-init" description="Builds entire project">
