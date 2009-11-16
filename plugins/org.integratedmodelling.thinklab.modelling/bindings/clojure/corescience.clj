@@ -114,3 +114,42 @@
  	        	(modelling/j-make-bayesian)] 
  	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
  	   model#))
+ 	   
+
+;; -------------------------------------------------------------------------------------------------------
+;; inquiry, extraction etc
+;; -------------------------------------------------------------------------------------------------------
+
+(defn probabilistic?
+	"True if the given datasource is a discrete distribution. If so, uncertainty info can be
+	extracted using get-uncertainty"
+	[datasource]
+	(instance? org.integratedmodelling.modelling.data.CategoricalDistributionDatasource datasource))
+	
+(defn get-uncertainty
+	"Return uncertainty information from a datasource as an array of doubles."
+	[datasource]
+	(.getMetadata datasource "uncertainty"))
+	
+(defn get-data
+	"Return numbers from a datasource as an array of doubles."
+	[datasource]
+	(.getDataAsDoubles datasource))
+	
+(defn get-probabilities
+	"Return probabilities for the given context state: returns an array of doubles with probabilities 
+	for each state returned by get-possible-states"
+	[datasource n]
+	(.getProbabilities datasource n))
+
+(defn get-possible-states
+	"Returns an array of concepts that index the probabilites returned by get-probabilities"
+	[datasource]
+	(.getStates datasource))
+	
+(defn get-probability
+	"Return the probability for the state represented by the passed concept at context state n"
+	[datasource concept n]
+	(.getProbability datasource n concept))
+
+

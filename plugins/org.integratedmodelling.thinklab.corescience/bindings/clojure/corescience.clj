@@ -51,9 +51,9 @@
      (.. observation (getImplementation) (getObservableClass)))
 
 (defn get-state
-     ""
+     "Synonim of get-data-source, should be used on contextualized observations."
      [observation]
-     (.. observation (getImplementation) (getDataSource) (getDataAsDoubles)))
+     (.. observation (getImplementation) (getDataSource)))
 
 (defn get-extent
 	"Retrieve and return the extent that observes the given concept (e.g. space) or nil. Note:
@@ -132,12 +132,7 @@
 (defn get-conceptual-model 
 	"Return the conceptual model for the passed observation."
 	[observation]
-	())
-	
-(defn get-datasource 
-	"Return the conceptual model for the passed observation."
-	[observation]
-	())
+	())	
 	
 (defn get-units
 	"Returns the conceptual model for the passed observation, making sure it is a measurement."
