@@ -258,6 +258,15 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasNodataValue -->
+
+    <owl:DatatypeProperty rdf:about="#hasNodataValue">
+        <rdfs:domain rdf:resource="&observation;DataSource"/>
+        <rdfs:range rdf:resource="&xsd;float"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasSeparationRatio -->
 
     <owl:DatatypeProperty rdf:about="#hasSeparationRatio">
@@ -723,14 +732,14 @@
         <rdfs:subClassOf rdf:resource="&observation;ExtentObservation"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
-                <owl:someValuesFrom rdf:resource="#SpatialRecord"/>
+                <owl:onProperty rdf:resource="&observation;hasObservable"/>
+                <owl:allValuesFrom rdf:resource="#SpatialRecord"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&observation;hasObservable"/>
-                <owl:allValuesFrom rdf:resource="#SpatialRecord"/>
+                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
+                <owl:someValuesFrom rdf:resource="#SpatialRecord"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:comment rdf:datatype="&xsd;string"
