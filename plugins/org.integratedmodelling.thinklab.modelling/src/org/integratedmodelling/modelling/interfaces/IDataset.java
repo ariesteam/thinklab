@@ -39,5 +39,9 @@ public interface IDataset {
 
 	public abstract String makeHistogramPlot(
 			IConcept observable, String fileOrNull, int x, int y, int ... flags);
+	
+	public abstract void dump(IConcept concept);
+	
+	public abstract void dumpAll();
 
 }

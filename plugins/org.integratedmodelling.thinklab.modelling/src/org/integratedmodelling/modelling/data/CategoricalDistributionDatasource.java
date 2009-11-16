@@ -133,13 +133,13 @@ public class CategoricalDistributionDatasource extends
 	
 
 	public String toString() {
-		return 
-			"[" + 
+		return  
+			"CDD[" +
 			Arrays.toString(valueMappings) +
 			" {" + 
-			inverseMap + 
+			inverseMap /* + 
 			" } -> " +
-			Arrays.toString(data) + 
+			Arrays.toString(data) + */ +
 			"]";
 	}
 	

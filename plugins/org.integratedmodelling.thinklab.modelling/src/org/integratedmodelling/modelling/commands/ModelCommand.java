@@ -14,6 +14,7 @@ import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModelManager;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.visualization.NetCDFArchive;
+import org.integratedmodelling.modelling.visualization.ObservationListing;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -38,11 +39,11 @@ import org.integratedmodelling.utils.Polylist;
 		optionalArgumentDefaultValues="_NONE_",
 		optionalArgumentDescriptions="id of a spatial feature to define the spatial context",
 		optionalArgumentTypes="thinklab-core:Text",
-		optionLongNames="kbox,visualize,outfile,resolution",
-		optionNames="k,v,o,r",
-		optionArgumentLabels="all kboxes,,none,256",
-		optionTypes="thinklab-core:Text,owl:Nothing,thinklab-core:Text,thinklab-core:Integer",
-		optionDescriptions="kbox,visualize after modeling,NetCDF file to export results to,max linear resolution for raster grid",
+		optionLongNames="kbox,visualize,dump,outfile,resolution",
+		optionNames="k,v,d,o,r",
+		optionArgumentLabels="all kboxes,,,none,256",
+		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer",
+		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid",
 		returnType="observation:Observation")
 public class ModelCommand implements ICommandHandler {
 
@@ -126,6 +127,11 @@ public class ModelCommand implements ICommandHandler {
 				if (command.hasOption("visualize")) {
 					IDV.visualize(outfile);
 				}
+			}
+			
+			if (command.hasOption("dump")) {
+				ObservationListing lister = new ObservationListing(result);
+				lister.dump(session.getOutputStream());
 			}
 
 			ret = new ObjectReferenceValue(result);
