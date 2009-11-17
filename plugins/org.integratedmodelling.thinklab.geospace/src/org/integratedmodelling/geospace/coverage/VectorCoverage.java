@@ -455,6 +455,10 @@ public class VectorCoverage implements ICoverage {
 		return source.getSchema().getDescriptor(valueId);
 	}
 
-
+	@Override
+	public Double getNodataValue() {
+		// TODO see what applies here. For now no support for nodata values.
+		return null;
+	}
 
 }

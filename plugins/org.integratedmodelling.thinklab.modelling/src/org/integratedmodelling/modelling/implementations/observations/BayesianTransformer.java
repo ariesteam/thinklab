@@ -347,6 +347,11 @@ public class BayesianTransformer
 			rdef = ObservationFactory.addDependency(rdef, ddef);
 		}
 
+		/*
+		 * TODO we may or may not want to add all the original dependencies (evidence). That
+		 * will bring in a lot of stuff. Should be linked to a context parameter in the session?
+		 */
+		
 		// TODO remove
 		System.out.println(
 				"\n >>>>>>>>>>>>>>>>>>>>>>>>> \n" + 

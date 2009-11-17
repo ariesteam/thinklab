@@ -52,6 +52,11 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 		return boundingBox;
 	}
 	
+	@Override
+	public Double getNodataValue() {
+		return this.noData == null ? null : this.noData[0];
+	}
+	
 	public void writeImage(File outfile, String format) throws ThinklabIOException {
 		
         try {

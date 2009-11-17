@@ -54,6 +54,9 @@ public class WCSGridDataSource extends RegularRasterGridDataSource {
 		IValue format = i.get("geospace:hasImageFormat");
 		if (format != null)
 			p.put(WCSCoverage.WCS_FORMAT_PROPERTY, format.toString());
+		IValue nodata = i.get("geospace:hasNodataValue");
+		if (nodata != null)
+			p.put(WCSCoverage.WCS_NODATA_PROPERTY, nodata.toString());
 		
 		this.coverage = 
 			new WCSCoverage(i.get("geospace:hasCoverageId").toString(), p);

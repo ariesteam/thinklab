@@ -64,6 +64,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 
 	public static final String WCS_SERVICE_PROPERTY = "wcs.service.url";
 	public static final String WCS_FORMAT_PROPERTY = "wcs.service.format";
+	public static final String WCS_NODATA_PROPERTY = "wcs.service.nodata";
 	
 	String wcsService = "http://127.0.0.1:8080/geoserver/wcs";
 	String wcsFormat = "geotiff";
@@ -87,6 +88,10 @@ public class WCSCoverage extends AbstractRasterCoverage {
 				properties.getProperty(WCS_SERVICE_PROPERTY, "http://127.0.0.1:8080/geoserver/wcs");
 			wcsFormat =
 				properties.getProperty(WCS_FORMAT_PROPERTY, wcsFormat);
+			if (properties.containsKey(WCS_NODATA_PROPERTY)) {
+				this.noData = new double[1];
+				this.noData[0] = Double.parseDouble(properties.getProperty(WCS_NODATA_PROPERTY));
+			}
 		}
 				
 			

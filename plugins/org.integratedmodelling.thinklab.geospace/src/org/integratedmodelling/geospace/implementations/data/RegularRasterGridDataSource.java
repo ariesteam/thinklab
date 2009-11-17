@@ -168,7 +168,12 @@ public class RegularRasterGridDataSource
 		 * TODO reinterpret through classification lookup table if any is provided
 		 */
 		try {
-			return coverage.getSubdivisionValue(index, dataCM, gridExtent);
+			Object ret = coverage.getSubdivisionValue(index, dataCM, gridExtent);
+			Double nd = coverage.getNodataValue();
+			if (nd != null && ((Double)ret).equals(nd)) {
+				ret = Double.NaN;
+			}
+			return ret;
 		} catch (ThinklabValidationException e) {
 			throw new ThinklabRuntimeException(e);
 		}

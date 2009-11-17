@@ -78,4 +78,11 @@ public interface ICoverage {
 	 */
 	void loadData() throws ThinklabException;
 
+	/**
+	 * This should return null if a nodata value is not specified or makes no sense, and a valid
+	 * double if specified (either by the original source or by a datasource).
+	 * @return
+	 */
+	public Double getNodataValue();
+
 }
