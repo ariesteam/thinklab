@@ -34,6 +34,7 @@ package org.integratedmodelling.geospace;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
@@ -48,8 +49,10 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
+import org.opengis.referencing.cs.CoordinateSystem;
 import org.w3c.dom.Node;
 
 public class Geospace extends ThinklabPlugin  {
@@ -190,8 +193,13 @@ public class Geospace extends ThinklabPlugin  {
 		
 		if (crs != null) {
 			try {
+//				Set<ReferenceIdentifier> ziocan = crs.getIdentifiers();
+//				CoordinateSystem zuppa = crs.getCoordinateSystem();
+//				ReferenceIdentifier pezzo = crs.getName();
+				// FIXME for some reason this returns BS on ima/linux. EPSG:4326 becomes CRS:84 which breaks everything.
 				return CRS.lookupIdentifier(crs, true);
 			} catch (FactoryException e) {
+				Set<ReferenceIdentifier> ziocan = crs.getIdentifiers();
 				// FIXME when this thing works, just throw the exception
 				return crs.getIdentifiers().iterator().next().toString();
 				// throw new ThinklabValidationException(e);
