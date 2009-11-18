@@ -18,6 +18,7 @@ import org.integratedmodelling.modelling.visualization.ObservationListing;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
@@ -75,6 +76,12 @@ public class ModelCommand implements ICommandHandler {
 			if (roi != null)
 				where = 
 					session.createObject(RasterGrid.createRasterGrid(roi, res));
+			else 
+				throw new ThinklabResourceNotFoundException(
+						"region name " + 
+						command.getArgumentAsString("context") +
+						" cannot be resolved");
+			
 		}
 		
 		IQueryResult r = model.observe(kbox, session, where);
