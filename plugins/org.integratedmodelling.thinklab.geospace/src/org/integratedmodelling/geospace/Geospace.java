@@ -45,6 +45,7 @@ import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
@@ -103,7 +104,8 @@ public class Geospace extends ThinklabPlugin  {
 	public static final String GRID_CLASSIFICATION_MODEL = "geospace:GridClassification";
 		
 	// the projection to use if we need meters
-	public static final String EPSG_PROJECTION_METERS = "EPSG:3005";
+	public static final String EPSG_PROJECTION_METERS =  "EPSG:3005";
+	public static final String EPSG_PROJECTION_DEFAULT = "EPSG:4326";
 
 	/*
 	 * if not null, we have a preferred crs in the properties, and we solve
@@ -117,6 +119,7 @@ public class Geospace extends ThinklabPlugin  {
 	 * will search all of them.
 	 */
 	ArrayList<IGazetteer> gazetteers = new ArrayList<IGazetteer>();
+	private CoordinateReferenceSystem defaultCRS = null;
 	
 	public static Geospace get() {
 		return (Geospace) getPlugin(PLUGIN_ID);
@@ -160,6 +163,7 @@ public class Geospace extends ThinklabPlugin  {
 		 */
 		try {
 			metersCRS = CRS.decode(EPSG_PROJECTION_METERS);
+			defaultCRS = CRS.decode(EPSG_PROJECTION_DEFAULT);
 		} catch (Exception e) {
 			throw new ThinklabPluginException(e);
 		}
@@ -189,20 +193,13 @@ public class Geospace extends ThinklabPlugin  {
 	 * @return
 	 * @throws ThinklabPluginException 
 	 */
-	public static String getCRSIdentifier(CoordinateReferenceSystem crs, boolean useDefault) throws ThinklabPluginException {
+	public static String getCRSIdentifier(CoordinateReferenceSystem crs, boolean useDefault) throws ThinklabException {
 		
 		if (crs != null) {
 			try {
-//				Set<ReferenceIdentifier> ziocan = crs.getIdentifiers();
-//				CoordinateSystem zuppa = crs.getCoordinateSystem();
-//				ReferenceIdentifier pezzo = crs.getName();
-				// FIXME for some reason this returns BS on ima/linux. EPSG:4326 becomes CRS:84 which breaks everything.
 				return CRS.lookupIdentifier(crs, true);
 			} catch (FactoryException e) {
-				Set<ReferenceIdentifier> ziocan = crs.getIdentifiers();
-				// FIXME when this thing works, just throw the exception
-				return crs.getIdentifiers().iterator().next().toString();
-				// throw new ThinklabValidationException(e);
+				throw new ThinklabValidationException(e);
 			}
 		}
 		
@@ -347,6 +344,10 @@ public class Geospace extends ThinklabPlugin  {
 	 */
 	public void addGazetteer(IGazetteer g) {
 		gazetteers.add(g);
+	}
+	
+	public CoordinateReferenceSystem getDefaultCRS() {
+		return defaultCRS ;
 	}
 	
 	/**

@@ -3,6 +3,7 @@ package org.integratedmodelling.geospace.gazetteers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
@@ -54,6 +55,24 @@ public class SimpleGazetteer implements IGazetteer {
 		if (sh != null)
 			ret.add(sh);
 		return ret;
+	}
+
+	@Override
+	public void addLocation(String id, ShapeValue shape,
+			Map<String, Object> metadata) throws ThinklabException {
+		
+		// just ignore any metadata, but do add it, even if we're read only, who cares
+		locations.put(id, shape);
+	}
+
+	@Override
+	public void importLocations(String url) throws ThinklabException {
+		// do nothing, we're read only
+	}
+
+	@Override
+	public boolean isReadOnly() {
+		return true;
 	}
 
 }

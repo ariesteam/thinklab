@@ -1,6 +1,7 @@
 package org.integratedmodelling.geospace.interfaces;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Properties;
 
 import org.integratedmodelling.geospace.literals.ShapeValue;
@@ -30,4 +31,21 @@ public interface IGazetteer {
 	 */
 	public abstract Collection<String> getKnownNames(Collection<String> container);
 	
+	/**
+	 * Return true if the server can import new locations.
+	 * @return
+	 */
+	public abstract boolean isReadOnly();
+	
+	/**
+	 * Import locations from a url. Won't be called if isReadOnly returns true.
+	 */
+	public abstract void importLocations(String url) throws ThinklabException;
+
+	/**
+	 * Add locations directly. Won't be called if isReadOnly returns true.
+	 */
+	public abstract void addLocation(String id, ShapeValue shape, Map<String,Object> metadata) 
+		throws ThinklabException;
+
 }

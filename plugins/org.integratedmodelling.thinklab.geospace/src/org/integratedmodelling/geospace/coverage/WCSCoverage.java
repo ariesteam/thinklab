@@ -369,7 +369,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 	 * @param out
 	 * @throws ThinklabPluginException 
 	 */
-	public void addOpalDescriptor(XMLDocument doc, Node root) throws ThinklabPluginException {
+	public void addOpalDescriptor(XMLDocument doc, Node root) throws ThinklabException {
 		
 		String obsClass =
 			properties.getProperty("observation-class", "observation:Ranking");
