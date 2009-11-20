@@ -278,7 +278,19 @@
 		<parameter id="url" value="geofeatures.owl"/>
 		<parameter id="concept-space" value="geofeatures" />
 	</extension>
-
+	
+	<extension-point  id="gazetteer">
+		<!-- id of the gazetteer -->
+		<parameter-def id="id" />
+		<!-- java class of the gazetteer implementation -->
+		<parameter-def id="class" />
+		<!-- each parameter qualified by name and string value -->
+		<parameter-def id="property" type="null" multiplicity="any" >
+			<parameter-def id="name" />
+			<parameter-def id="value" />
+		</parameter-def>
+	</extension-point>
+	
 	<!-- kbox handler for coverages -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="kbox-handler" id="shapefile-kbox-handler">
 		<parameter id="class" value="org.integratedmodelling.geospace.GeospaceKboxHandler"/>
@@ -327,15 +339,6 @@
 		<parameter id="option-types" value="thinklab-core:Text,thinklab-core:Text,thinklab-core:LongFloatingPoint"/>
 		<parameter id="option-descriptions" value="attribute name,output file (GeoTiff),no data value (default NaN)"/>
 	</extension>
-
-<!--	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="vectorize">
-		<parameter id="class" value="org.integratedmodelling.corescience.commands.Olist"/>
-		<parameter id="command-name" value="olist"/>
-		<parameter id="command-description" value="list the structure and state of an observation"/>
-		<parameter id="argument-names" value="observation"/>
-		<parameter id="argument-types" value="thinklab-core:Text"/>
-		<parameter id="argument-descriptions" value="ID of the observation instance to inspect"/>
-	</extension> -->
 
 	<!-- bindings -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding" id="clj">
