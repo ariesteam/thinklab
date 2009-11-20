@@ -347,7 +347,6 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		return this;
 	}
 
-
 	private void setExtent(GridExtent e) {
 
 		  this.xCellSize = e.getEWResolution();

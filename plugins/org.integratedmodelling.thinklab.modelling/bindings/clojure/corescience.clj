@@ -106,6 +106,14 @@
  	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
  	   model#))
 
+(defmacro probability
+	"TODO stub for a model that generates probabiities."
+	[observable & states]
+	`(let [model# 
+ 	        	(modelling/j-make-observation)] 
+ 	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	   model#))
+
 (defmacro bayesian
 	"Create a bayesian model. The observable can only be a semantic object. For now the only way to
 	 define it is through the :import clause; bayesian network specifications are admitted but ignored."

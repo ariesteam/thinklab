@@ -348,9 +348,13 @@ public class BayesianTransformer
 		}
 
 		/*
-		 * TODO we may or may not want to add all the original dependencies (evidence). That
+		 * we may or may not want to add all the original dependencies (evidence). That
 		 * will bring in a lot of stuff. Should be linked to a context parameter in the session?
 		 */
+		for (IConcept ec : smap.keySet()) {
+			IObservation oo = Obs.findObservation(orig, ec);
+			rdef = ObservationFactory.addDependency(rdef, oo.getObservationInstance());
+		}
 		
 		// TODO remove
 		System.out.println(
