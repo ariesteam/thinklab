@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.corescience;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.modelling.DefaultAbstractModel;
+import org.integratedmodelling.modelling.DefaultDynamicAbstractModel.language;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -49,9 +50,17 @@ public class ObservationModel extends DefaultAbstractModel {
 
 	@Override
 	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException {
-		return Polylist.list(
-				CoreScience.Observation(),
-				Polylist.list(CoreScience.HAS_OBSERVABLE, observableSpecs));
+		
+		Polylist def = Polylist.listNotNull(
+				CoreScience.OBSERVATION,
+				(id != null ? 
+					Polylist.list(CoreScience.HAS_FORMAL_NAME, id) :
+					null),
+				Polylist.list(
+					CoreScience.HAS_OBSERVABLE,
+					Polylist.list(getObservable())));
+
+		return def;
 	}
 
 	@Override

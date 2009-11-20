@@ -99,6 +99,7 @@ public class Geospace extends ThinklabPlugin  {
 	public static final String HAS_TARGET_LINK_ATTRIBUTE = "geospace:hasTargetLinkAttribute";
 	public static final String HAS_ATTRIBUTE_URL = "geospace:hasAttributeUrl";
 	public static final String RASTER_GRID = "geospace:RasterGrid";
+	public static final String AREAL_LOCATION = "geospace:RasterGrid";
 	public static final String GRID_CLASSIFIER = "geospace:GridClassifier";
 	public static final String CLASSIFIED_GRID = "geospace:ClassifiedGrid";
 	public static final String GRID_CLASSIFICATION_MODEL = "geospace:GridClassification";

@@ -385,7 +385,8 @@ public class ObservationContext implements IObservationContext {
 			   FIXME make sure the isConstraint parameter is necessary and if so, correct.
 			   */
 			IExtent merged = cm.mergeExtents(ext, cm.getExtent(), connector, false);
-			extents.put(dimension.toString(), merged);
+			if (merged != null)
+				extents.put(dimension.toString(), merged);
 		}		
 
 	}

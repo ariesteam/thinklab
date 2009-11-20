@@ -105,6 +105,9 @@ public class ModelCommand implements ICommandHandler {
 		if (r.getTotalResultCount() > 0) {
 			
 			Polylist lr = r.getResultAsList(0, null);
+			
+			session.getOutputStream().println(Polylist.prettyPrint(lr));
+			
 			IInstance res = session.createObject(lr);
 
 			IInstance result = Compiler.contextualize((IObservation) res

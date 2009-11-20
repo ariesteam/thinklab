@@ -21,6 +21,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.utils.LogicalConnector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
@@ -92,7 +93,7 @@ public abstract class Compiler implements IContextualizationCompiler {
 	 * @throws ThinklabException
 	 */
 	public static IInstance contextualize(IObservation observation, ISession session, 
-			Collection<IContextualizationListener> listeners, IObservationContext ctx) 
+			Collection<IContextualizationListener> listeners, IObservationContext constraining) 
 		throws ThinklabException {
 		
 		IContextualizationCompiler compiler = null;
@@ -103,6 +104,11 @@ public abstract class Compiler implements IContextualizationCompiler {
 		IObservationContext context = 
 //			((Observation)observation).computeOverallContext(compiler, session, ctx, listeners);
 			((Observation)observation).getOverallContext(compiler, session, listeners);
+		
+		// if we're being constrained, merge in the constraining context
+		if (constraining != null)
+			((ObservationContext)context).mergeExtents(
+					(ObservationContext) constraining, LogicalConnector.INTERSECTION, true);
 		
 		if (compiler.getTransformedObservation() != null) 
 			return compiler.getTransformedObservation();

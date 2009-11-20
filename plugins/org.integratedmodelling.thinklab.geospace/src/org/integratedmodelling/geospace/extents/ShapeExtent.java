@@ -34,10 +34,13 @@ package org.integratedmodelling.geospace.extents;
 
 import org.geotools.feature.FeatureCollection;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.cmodels.SpatialConceptualModel;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.utils.Polylist;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -50,7 +53,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author Ferdinando
  *
  */
-public class ShapeExtent extends ArealExtent {
+public class ShapeExtent extends ArealExtent /* implements IConceptualizable */ {
 
 	// we either have one shape or a feature collection. If we see space as a collection of features, the
 	// shape should be the convex hull of all features, but we don't compute it unless necessary.
@@ -124,5 +127,20 @@ public class ShapeExtent extends ArealExtent {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+//	@Override
+//	public Polylist conceptualize() throws ThinklabException {
+//
+//		// TODO this is wrong syntax for an ArealLocation
+//		return Polylist.list(
+//				Geospace.AREAL_LOCATION,
+//				Polylist.list(Geospace.LAT_LOWER_BOUND, "" + getSouth()),
+//				Polylist.list(Geospace.LON_LOWER_BOUND, "" + getWest()),
+//				Polylist.list(Geospace.LAT_UPPER_BOUND, "" + getNorth()),
+//				Polylist.list(Geospace.LON_UPPER_BOUND, "" + getEast()),
+//				Polylist.list(Geospace.CRS_CODE, 
+//						Geospace.getCRSIdentifier(getCRS(), false)));
+//		
+//	}
 
 }

@@ -421,7 +421,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 			throws ThinklabException {
 
 		ObservationContext ret = getCommonObservationContext_(compiler,
-				session, new HashSet<Observation>(), listeners);
+				session, new HashSet<Observation>(), listeners, null);
 
 		return ret;
 	}
@@ -429,17 +429,29 @@ public class Observation implements IObservation, IInstanceImplementation {
 	private ObservationContext getCommonObservationContext_(
 			IContextualizationCompiler compiler, ISession session,
 			HashSet<Observation> inserted, 
-			Collection<IContextualizationListener> listeners) throws ThinklabException {
+			Collection<IContextualizationListener> listeners,
+			ObservationContext toplevel) throws ThinklabException {
 
 		if (inserted.contains(this))
 			return null;
 
 		ObservationContext ret = new ObservationContext(this);
+		if (toplevel == null) {
+			toplevel = new ObservationContext(this);
+		}
+		
+		/* compute the top level context as we go, to constrain transformers that need to
+		 * be contextualized independently. */
+		for (IObservation ext : getExtentDependencies()) {
+			toplevel.mergeExtent(ext, LogicalConnector.INTERSECTION);
+		}
 
 		if (getConceptualModel() instanceof TransformingConceptualModel && !this.beingTransformed) {
 
 			this.beingTransformed = true;
-
+			// TODO we must ensure that we pass all extents from the top-level context here, otherwise
+			// the transformer won't see the constraints
+			ret.mergeExtents(toplevel, LogicalConnector.INTERSECTION, true);
 			IInstance inst = Compiler.contextualize(this, session, listeners, ret);
 			IInstance trs = 
 				((TransformingConceptualModel) getConceptualModel())
@@ -478,7 +490,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 			/* contextualize obs */
 			ObservationContext oc = (ObservationContext) (((Observation) dependency)
-					.getOverallContext(compiler, session, listeners));
+					.getCommonObservationContext_(compiler, session, inserted, listeners, toplevel));
 
 			/* notify dependency */
 			if (oc != null) {
@@ -497,7 +509,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 			/* contextualize obs */
 			ObservationContext oc = (ObservationContext) (((Observation) dependency)
-					.getOverallContext(compiler, session, listeners));
+					.getCommonObservationContext_(compiler, session, inserted, listeners, toplevel));
 
 			/* notify dependency */
 			if (oc != null) {
