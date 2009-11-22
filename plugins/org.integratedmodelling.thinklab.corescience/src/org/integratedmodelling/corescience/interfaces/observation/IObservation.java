@@ -211,4 +211,15 @@ public interface IObservation {
 	 */
 	public abstract String getFormalName();
 	
+	/**
+	 * Return true if the passed observation has been contextualized in the given context.
+	 * If so, we have already computed states for this context and compilation can be
+	 * skipped. Must ensure that the context matches in all its dimensions.
+	 * 
+	 * @param context
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public abstract boolean isContextualized(IObservationContext context) throws ThinklabException;
+	
 }

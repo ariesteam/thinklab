@@ -43,6 +43,7 @@ import org.integratedmodelling.corescience.contextualization.ObservationContext;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextValidationException;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
 import org.integratedmodelling.corescience.interfaces.cmodel.TransformingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
@@ -745,6 +746,26 @@ public class Observation implements IObservation, IInstanceImplementation {
 	@Override
 	public String getFormalName() {
 		return formalName;
+	}
+
+	@Override
+	public boolean isContextualized(IObservationContext context) throws ThinklabException {
+
+		if (dataSource != null && !(dataSource instanceof IContextualizedState)) 
+			return false;
+		
+
+		for (IObservation obs : getExtentDependencies()) {
+			IExtent ext = context.getExtent(obs.getObservableClass());
+			if (ext != null && !ext.equals(((ExtentConceptualModel)obs.getConceptualModel()).getExtent()))
+				return false;
+		}
+		
+		for (IObservation obs : getNonExtentDependencies()) {
+			if (!obs.isContextualized(context))
+				return false;
+		}
+		return false;
 	}
 
 }
