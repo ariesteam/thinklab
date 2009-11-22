@@ -197,6 +197,10 @@ public class ObservationContext implements IObservationContext {
 	public Collection<IConcept> getDimensions() {
 		return order;
 	}
+	
+	public IObservation getObservation() {
+		return observation;
+	}
 
 	public IConcept getDimension(IConcept concept) throws ThinklabException {
 		

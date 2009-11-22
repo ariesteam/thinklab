@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.integratedmodelling.corescience.Obs;
+import org.integratedmodelling.corescience.contextualization.Compiler.MediatedDependencyEdge;
+import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
@@ -43,7 +46,7 @@ public class VMCompiler extends Compiler {
 	 * interface yet, so useless until we figure out general parameters.
 	 */
 	boolean _validate = true;
-	IInstance transformedObservation = null;
+	HashMap<IConcept,IInstance> transformedObservations = new HashMap<IConcept, IInstance>();
 	
 	class ObsDesc {
 		int accessorId = -1;
@@ -173,6 +176,8 @@ public class VMCompiler extends Compiler {
 							obs.getConceptualModel().getStateType() :
 							stackType.getLeastGeneralCommonConcept(obs.getConceptualModel().getStateType());
 			}
+			// remove
+			Set<MediatedDependencyEdge> ponga = dependencies.outgoingEdgesOf(obs);
 			
 			/*
 			 * if we have no outgoing edges, we can work on the next dependencies independently;
@@ -641,14 +646,32 @@ public class VMCompiler extends Compiler {
 
 
 	@Override
-	public IInstance getTransformedObservation() {
-		return transformedObservation;
+	public IInstance getTransformedObservation(IConcept observable) {
+		return transformedObservations.get(observable);
 	}
 
 
 	@Override
-	public void setTransformedObservation(IInstance instance) {
-		transformedObservation = instance;
+	public void setTransformedObservation(IConcept observable, IInstance instance) {
+		transformedObservations.put(observable,instance);
+		try {
+			notifyAllDependencies(Obs.getObservation(instance));
+		} catch (ThinklabException e) {
+		}
+	}
+
+	/*
+	 * notify all dependencies of passed obs recursively. Normally done while computing
+	 * observation context, this one only called if the instance is the result of
+	 * transformation.
+	 */
+	public void notifyAllDependencies(IObservation instance) {
+		
+		for (IObservation d : instance.getDependencies()) {
+			addObservation(d);
+			addObservationDependency(d, instance);
+			notifyAllDependencies(d);
+		}
 	}
 
 

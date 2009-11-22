@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.Pair;
@@ -20,6 +21,11 @@ public class Metadata {
 	public static final String UNITS = "units";
 	public static final String LEGEND = "legend";
 	public static final String RANGES = "ranges";
+	public static final String BOOLEAN = "boolean";
+	public static final String RANKING = "ranking";
+	public static final String HASZERO = "haszero";
+	public static final String TRUECASE = "truecase";
+	
 	
 	/*
 	 * these are recognized as ordinal prefixes. In order for an order
@@ -71,10 +77,26 @@ public class Metadata {
 	 * @return
 	 */
 	static public HashMap<IConcept, Integer> rankConcepts(IConcept type) {
+		return rankConcepts(type, null);
+	}
+	
 
+	/**
+	 * Produce the lexical ranking of the concept passed and add metadata to the datasource
+	 *
+	 * @param type
+	 * @param datasource
+	 * @return
+	 */
+	public static HashMap<IConcept, Integer> rankConcepts(IConcept type, IContextualizedState datasource) {
 		ArrayList<Pair<IConcept, Integer>> lexicalRank =
 			new ArrayList<Pair<IConcept,Integer>>();
+		
 		boolean gotNo = false;
+		boolean isBoolean = false;
+		boolean isInterval = false;
+		boolean isRanking = false; 
+		IConcept truecase = null;
 		
 		/*
 		 * if presence-absence, map the "No*" or "notpresent" to 0 and 
@@ -93,13 +115,21 @@ public class Metadata {
 					i++;
 				}
 				// wasn't a no, insert as a higher value.
-				if (i == booleanNarrative.length)
+				if (i == booleanNarrative.length) {
 					lexicalRank.add(new Pair<IConcept,Integer>(c,i+1));
+					truecase = c;
+				}
+				
+				isBoolean = true;
+				
 			}
 		} else if (
 				type.is(KnowledgeManager.OrdinalRanking()) ||
 				type.is(KnowledgeManager.OrderedRangeMapping())
 				) {
+			
+			isRanking = true;
+			
 			for (IConcept c : type.getChildren()) {
 				int i = 0;
 				for (String rx : orderNarrative) {
@@ -146,16 +176,17 @@ public class Metadata {
 		// TODO remove
 		System.out.println("ranked concepts: " + ret);
 		
-		return ret;
-	}
-	
-	static public HashMap<Integer, Double> createOrderMapping(
-			IConcept type,
-			HashMap<IConcept, Integer> map) {
-		// TODO analyze concepts, if any are found create the
-		// order mapping.
+		if (datasource != null) {
+
+			datasource.setMetadata(RANKING, ret);
+			datasource.setMetadata(HASZERO, new Boolean(gotNo));
+			datasource.setMetadata(BOOLEAN, new Boolean(isBoolean));
+			if (truecase != null) {
+				datasource.setMetadata(TRUECASE, truecase);
+			}
+		}
 		
-		return null;
+		return ret;
 	}
 
 

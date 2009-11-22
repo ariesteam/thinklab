@@ -109,11 +109,11 @@ public interface IContextualizationCompiler {
 	 * just a setter/getter - we need a way to inform the observation that the obs comes from a transformer, so no further
 	 * compilation is necessary.
 	 */
-	public void setTransformedObservation(IInstance instance);
+	public void setTransformedObservation(IConcept observable, IInstance instance);
 
 	/*
 	 * just set/get. Ugly, I know.
 	 */
-	public IInstance getTransformedObservation();
+	public IInstance getTransformedObservation(IConcept observable);
 	
 }

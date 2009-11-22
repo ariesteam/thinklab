@@ -110,8 +110,8 @@ public abstract class Compiler implements IContextualizationCompiler {
 			((ObservationContext)context).mergeExtents(
 					(ObservationContext) constraining, LogicalConnector.INTERSECTION, true);
 		
-		if (compiler.getTransformedObservation() != null) 
-			return compiler.getTransformedObservation();
+		if (compiler.getTransformedObservation(observation.getObservableClass()) != null) 
+			return compiler.getTransformedObservation(observation.getObservableClass());
 		
 		/* compute and communicate individual merged contexts for each observation */
 		HashSet<IConcept> oobs = new HashSet<IConcept>();
@@ -119,10 +119,10 @@ public abstract class Compiler implements IContextualizationCompiler {
 		for (IObservation obs : compiler.getObservations()) {
 			if (!obs.isMediator() && !(obs.getConceptualModel() instanceof ExtentConceptualModel)) {
 
-				if (oobs.contains(obs.getObservableClass()))
-					throw new ThinklabContextualizationException(
-						"observable classes must be unique in an observation structure: " +
-						obs.getObservableClass());		
+//				if (oobs.contains(obs.getObservableClass()))
+//					throw new ThinklabContextualizationException(
+//						"observable classes must be unique in an observation structure: " +
+//						obs.getObservableClass());	
 				
 				oobs.add(obs.getObservableClass());
 				compiler.notifyContext(

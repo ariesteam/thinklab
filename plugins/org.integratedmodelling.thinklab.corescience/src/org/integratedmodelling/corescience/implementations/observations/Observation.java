@@ -464,10 +464,15 @@ public class Observation implements IObservation, IInstanceImplementation {
 			}
 			
 			compiler.addObservation(obs);
+			
+			/*
+			 * TODO all dependencies should also be notified
+			 */
+			
 			this.beingTransformed = false;
-			compiler.setTransformedObservation(trs);
+			compiler.setTransformedObservation(getObservableClass(), trs);
 
-			ret = (ObservationContext) obs.getObservationContext();
+			return (ObservationContext) obs.getObservationContext();
 		}
 
 		/*
@@ -492,9 +497,11 @@ public class Observation implements IObservation, IInstanceImplementation {
 			ObservationContext oc = (ObservationContext) (((Observation) dependency)
 					.getCommonObservationContext_(compiler, session, inserted, listeners, toplevel));
 
-			/* notify dependency */
+			/* notify dependency. If the dependency was a transformer, the context is that of
+			 * another observation, so take the observation from the context to make sure it's
+			 * the transformed one. */
 			if (oc != null) {
-				compiler.addObservationDependency(this, dependency);
+				compiler.addObservationDependency(this, oc.getObservation());
 
 				/* merge extents appropriately */
 				ret.mergeExtents(oc, LogicalConnector.INTERSECTION, false);
@@ -586,7 +593,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 			
 			compiler.addObservation(obs);
 			this.beingTransformed = false;
-			compiler.setTransformedObservation(trs);
+			compiler.setTransformedObservation(getObservableClass(), trs);
 			
 			/*
 			 * swap context with the new one.
