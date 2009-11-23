@@ -15,14 +15,14 @@
 
 <rdf:RDF xmlns="http://www.integratedmodelling.org/ks/science/observation.owl#"
      xml:base="http://www.integratedmodelling.org/ks/science/observation.owl"
-     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
-     xmlns:observation="http://www.integratedmodelling.org/ks/science/observation.owl#"
-     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:dc="http://purl.org/dc/elements/1.1/"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:observation="http://www.integratedmodelling.org/ks/science/observation.owl#"
+     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-     xmlns:thinklab-core="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#"
-     xmlns:owl="http://www.w3.org/2002/07/owl#">
+     xmlns:thinklab-core="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#">
     <owl:Ontology rdf:about="">
         <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl"/>
     </owl:Ontology>
@@ -57,8 +57,8 @@
     <owl:ObjectProperty rdf:about="#dependsOn">
         <rdfs:comment rdf:datatype="&xsd;string"
             >(A dependsOn B) is the statement that in order to make observation A, observation B must be made first. It represents the most general case of a dependency, which does not necessarily require the dependent observation to be in the same context of the others.</rdfs:comment>
-        <rdfs:domain rdf:resource="#Observation"/>
         <rdfs:range rdf:resource="#Observation"/>
+        <rdfs:domain rdf:resource="#Observation"/>
     </owl:ObjectProperty>
     
 
@@ -70,6 +70,17 @@
             >Used to state the types that another observable depends on.A ModeledObservable states the schema of its dependencies when observed.</rdfs:comment>
         <rdfs:domain rdf:resource="#ModeledObservable"/>
         <rdfs:subPropertyOf rdf:resource="&thinklab-core;ClassificationProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#derivedFrom -->
+
+    <owl:ObjectProperty rdf:about="#derivedFrom">
+        <rdfs:comment
+            >Allows to link to auxliiary observations that are not part of the context. Typically used to store information pertaining to the context of an observation that was transformed to produce the current one, and are not needed in this context but are wanted for provenance analysis.</rdfs:comment>
+        <rdfs:domain rdf:resource="#Observation"/>
+        <rdfs:range rdf:resource="#Observation"/>
     </owl:ObjectProperty>
     
 
@@ -163,8 +174,8 @@
     <owl:ObjectProperty rdf:about="#hasObservationContext">
         <rdfs:comment rdf:datatype="&xsd;string"
             >Defines observations that provide the context for this one. Philosophically it should be a mandatory property as no observation can be made without context except &quot;universal properties&quot;, such as Plank&#39;s constant. Yet, instances of Observation don&#39;t require philosophical consistency, but merely state chosen properties of an observation made. It is a dependency as observing the context is required in order to observe the observable.</rdfs:comment>
-        <rdfs:range rdf:resource="#Observation"/>
         <rdfs:domain rdf:resource="#Observation"/>
+        <rdfs:range rdf:resource="#Observation"/>
         <rdfs:subPropertyOf rdf:resource="#dependsOn"/>
     </owl:ObjectProperty>
     
@@ -180,6 +191,16 @@
         <rdfs:comment rdf:datatype="&xsd;string"
             >This property is used to identify contextual relationships that imply distribution of a measurement on a physical extent (such as area of a space for a spatial density). It is used to reconstruct relationships between the conceptual models of an observation and its context, allowing to redistribute quantities over extents or reconstruct the extensive quantity from an intensive property and its extent.</rdfs:comment>
         <rdfs:subPropertyOf rdf:resource="#hasObservationContext"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasSameContextAntecedent -->
+
+    <owl:ObjectProperty rdf:about="#hasSameContextAntecedent">
+        <rdfs:comment
+            >Links to an observation that is in the provenance chain of the main one and is guaranteed to share the same context with it. This makes it possible to store it along with the main dependencies  in a uniform context dataset.</rdfs:comment>
+        <rdfs:subPropertyOf rdf:resource="#derivedFrom"/>
     </owl:ObjectProperty>
     
 
@@ -212,8 +233,8 @@
     <owl:ObjectProperty rdf:about="#isContingentTo">
         <rdfs:comment rdf:datatype="&xsd;string"
             >The statement (A isContingentTo B) states that making observation A causes observation B to be made. Along with dependsOn and its subproperties, it&#39;s the main building block of observation structures.</rdfs:comment>
-        <rdfs:range rdf:resource="#Observation"/>
         <rdfs:domain rdf:resource="#Observation"/>
+        <rdfs:range rdf:resource="#Observation"/>
     </owl:ObjectProperty>
     
 
@@ -312,6 +333,16 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Categorization -->
+
+    <owl:Class rdf:about="#Categorization">
+        <rdfs:subClassOf rdf:resource="#IndirectObservation"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >Categorizes value with an arbitrary string assumed consistent i.e. same tag means same value but with no other formal value.</rdfs:comment>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ClassMapping -->
 
     <owl:Class rdf:about="#ClassMapping">
@@ -352,15 +383,6 @@
             >An observation made by mapping an abstract type to the context.</rdfs:comment>
     </owl:Class>
     
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Categorization -->
-
-    <owl:Class rdf:about="#Categorization">
-        <rdfs:subClassOf rdf:resource="#IndirectObservation"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >Categorizes value with an arbitrary string assumed consistent i.e. same tag means same value but with no other formal value.</rdfs:comment>
-    </owl:Class>
 
 
     <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ClassificationSpace -->
@@ -571,9 +593,9 @@ An Identification can also identify merelogical relationships of an observable t
 
     <owl:Class rdf:about="#Mapping">
         <rdfs:subClassOf rdf:resource="&thinklab-core;LiteralValued"/>
+        <thinklab-core:AbstractClass>true</thinklab-core:AbstractClass>
         <rdfs:comment
             >Superclass for types whose instances specify mapping of observable states to other observable states.</rdfs:comment>
-        <thinklab-core:AbstractClass>true</thinklab-core:AbstractClass>
     </owl:Class>
     
 
@@ -675,5 +697,5 @@ An Identification can also identify merelogical relationships of an observable t
 
 
 
-<!-- Generated by the OWL API (version 2.2.1.962) http://owlapi.sourceforge.net -->
+<!-- Generated by the OWL API (version 2.2.1.1042) http://owlapi.sourceforge.net -->
 

@@ -85,6 +85,8 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String HAS_TARGET_CLASS = "observation:targetClass";
 	public static final String HAS_INTERVAL = "observation:hasInterval";
 	public static final String HAS_FORMAL_NAME = "observation:hasFormalName";
+	public static final String HAS_SAME_CONTEXT_ANTECEDENT = "observation:hasSameContextAntecedent";
+	public static final String DERIVED_FROM = "observation:derivedFrom";
 
 
 	// concepts

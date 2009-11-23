@@ -36,35 +36,11 @@ public class Obs {
 		
 	}
 	
-	/**
-	 * Return true if all observations that have a datasource have one that
-	 * implements IContextualizedState
-	 * 
-	 * @param observation
-	 * @return
-	 * @throws ThinklabException 
-	 */
-	public static boolean isContextualized(IObservation observation) throws ThinklabException {
-		
-		if (observation.getDataSource() != null &&
-				!(observation.getDataSource() instanceof IContextualizedState)) {
-			return false;
-		}
-		for (IObservation o : observation.getDependencies()) {
-			if (!isContextualized(o))
-				return false;
-		}
-		for (IObservation o : observation.getContingencies()) {
-			if (!isContextualized(o))
-				return false;
-		}
 
-		return true;
-	}
-	
 	/**
 	 * Return all the observable concepts along the observation structure that have
-	 * a state. Throws an exception if that state is not contextualized.
+	 * a state. Throws an exception if that state is not contextualized. Will also return any observation
+	 * in the provenance chain that shares the same context with the others.
 	 * 
 	 * @param observation
 	 * @return
@@ -94,6 +70,9 @@ public class Obs {
 			collectStates(o, ret);
 		}
 		for (IObservation o : observation.getDependencies()) {
+			collectStates(o, ret);
+		}
+		for (IObservation o : observation.getSameExtentAntecedents()) {
 			collectStates(o, ret);
 		}
 	}

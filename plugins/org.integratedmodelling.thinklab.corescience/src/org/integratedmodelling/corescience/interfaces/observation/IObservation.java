@@ -221,5 +221,30 @@ public interface IObservation {
 	 * @throws ThinklabException 
 	 */
 	public abstract boolean isContextualized(IObservationContext context) throws ThinklabException;
+
+	/**
+	 * Get all observations in the provenance chain of this observation that are guaranteed to
+	 * share the same context as us. These are added explicitly by implementations (typically of
+	 * transformer observations) as there is no automated provenance tracking for now.
+	 * 
+	 * @return
+	 */
+	public abstract IObservation[]  getSameExtentAntecedents();
+	
+	/**
+	 * Get all observations in the provenance chain of this observation. No guarantee is made about
+	 * the conformance of extents. These are added explicitly by implementations (typically of
+	 * transformer observations) as there is no automated provenance tracking for now.
+	 * 
+	 * @return
+	 */
+	public abstract IObservation[]  getAntecedents();
+
+	/**
+	 * True if this observation is the result of a transformation.
+	 * 
+	 * @return
+	 */
+	public abstract boolean isTransformed();
 	
 }

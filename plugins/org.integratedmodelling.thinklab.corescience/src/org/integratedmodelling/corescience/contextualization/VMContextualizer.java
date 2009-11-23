@@ -57,6 +57,8 @@ public class VMContextualizer<T> {
 	public ArrayList<IConcept> _observed = new ArrayList<IConcept>();
 	public ArrayList<IContextualizedState> _datasources = new ArrayList<IContextualizedState>();
 	
+	HashMap<IConcept, IContextualizedState> tstates = new HashMap<IConcept, IContextualizedState>();
+	
 	public static class ContextRegister {
 		int multiplicity = 1;
 		boolean changed = true;
@@ -262,6 +264,11 @@ public class VMContextualizer<T> {
 		for (int i = 0; i < _observed.size(); i++) {
 			ret.put(_observed.get(i), states[i]);
 		}
+		
+		/*
+		 * add states from transformed obs that we have not compiled ourselves.
+		 */
+		ret.putAll((Map<? extends IConcept, ? extends IDataSource<?>>) tstates);
 		
 		return ret;
 	}
@@ -676,6 +683,11 @@ public class VMContextualizer<T> {
 
 	public int encodeContextJump(int zi) {
 		return encode(makeInst(IFCHNG_I, zi, 0));
+	}
+
+	public void addTransformedStates(
+			HashMap<IConcept, IContextualizedState> tstates) {
+		this.tstates.putAll(tstates);
 	}
 
 	

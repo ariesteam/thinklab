@@ -379,6 +379,31 @@ public class ObservationFactory {
 				Polylist.list(CoreScience.HAS_EXTENT, extent));
 	}
 	
+
+	/**
+	 * Add an aux observation in same context for provenance recording. 
+	 * 
+	 * @param observation
+	 * @param extent
+	 * @return
+	 */
+	public static Polylist addSameContextObservation(Polylist observation, Polylist obs) {
+		return observation.appendElement(
+				Polylist.list(CoreScience.HAS_SAME_CONTEXT_ANTECEDENT, obs));
+	}
+	
+	/**
+	 * Add an aux observation in same context for provenance recording. 
+	 * 
+	 * @param observation
+	 * @param extent
+	 * @return
+	 */
+	public static Polylist addSameContextObservation(Polylist observation, IInstance obs) {
+		return observation.appendElement(
+				Polylist.list(CoreScience.HAS_SAME_CONTEXT_ANTECEDENT, obs));
+	}
+
 	/**
 	 * 
 	 * @param obs
@@ -417,5 +442,7 @@ public class ObservationFactory {
 		return (RasterGrid)((Observation)obs).getExtent(Geospace.get().SpaceObservable());
 	}
 
+	
+	
 	
 }

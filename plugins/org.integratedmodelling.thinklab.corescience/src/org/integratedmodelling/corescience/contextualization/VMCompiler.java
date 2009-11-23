@@ -19,6 +19,7 @@ import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptua
 import org.integratedmodelling.corescience.interfaces.context.IContextualizer;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.ComputedDataSource;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
@@ -153,9 +154,11 @@ public class VMCompiler extends Compiler {
 		/*
 		 * the returned contextualizer is simply a concurrent executor of a contextualizer per
 		 * each disjoint dependency subgraph. It is passed the observation structure and the
-		 * final context so it can reconstruct it appropriately.
+		 * final context so it can reconstruct it appropriately. We use the constructor that uses
+		 * the dependency graph because transformed observations need to be used in place of the
+		 * original ones.
 		 */
-		ObservationStructure structure = new ObservationStructure(observation);
+		ObservationStructure structure = new ObservationStructure(observation, dependencies, context);
 		ConcurrentContextualizer ret = new ConcurrentContextualizer(structure);
 
 		while (ord.hasNext()) {
@@ -192,8 +195,10 @@ public class VMCompiler extends Compiler {
 				VMContextualizer<?> ctxer = 
 					createThreadContextualizer(order, stackType, context, structure);
 				
-				if (ctxer != null)
+				if (ctxer != null) {
+					ctxer.addTransformedStates(tstates);
 					ret.addContextualizer(ctxer);
+				}
 				
 				order.clear();
 				stackType = null;
@@ -644,19 +649,20 @@ public class VMCompiler extends Compiler {
 		contexts.put(observable, context);
 	}
 
-
 	@Override
 	public IInstance getTransformedObservation(IConcept observable) {
 		return transformedObservations.get(observable);
 	}
 
-
 	@Override
 	public void setTransformedObservation(IConcept observable, IInstance instance) {
+		
 		transformedObservations.put(observable,instance);
+
 		try {
 			notifyAllDependencies(Obs.getObservation(instance));
 		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
 		}
 	}
 
@@ -665,7 +671,7 @@ public class VMCompiler extends Compiler {
 	 * observation context, this one only called if the instance is the result of
 	 * transformation.
 	 */
-	public void notifyAllDependencies(IObservation instance) {
+	public void notifyAllDependencies(IObservation instance) throws ThinklabException {
 		
 		for (IObservation d : instance.getDependencies()) {
 			addObservation(d);

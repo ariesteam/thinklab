@@ -97,11 +97,23 @@ public class Observation implements IObservation, IInstanceImplementation {
 	protected IObservation[] dependencies = new IObservation[0];
 	protected IObservation[] extentDependencies = new IObservation[0];
 	protected IObservation[] nonExtentDependencies = new IObservation[0];
+	protected IObservation[] sameExtentAntecedents = new IObservation[0];
+	protected IObservation[] antecedents = new IObservation[0];
 	protected IObservation mediatedObservation = null;
 	protected IObservation mediatorObservation = null;
 	private boolean beingTransformed = false;
 	
-
+	/*
+	 * this is to record the fact that this observation has been transformed. The result of 
+	 * this is that if we are a dependency of another, the dependency corresponding to us
+	 * in the compiler will be a different observation that can be assumed contextualized.
+	 */
+	protected boolean wasTransformed = false;
+	/*
+	 * this records that the current observation is the result of a transformation.
+	 */
+	protected boolean isTransformed = false;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -214,6 +226,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 		ArrayList<IObservation> con = new ArrayList<IObservation>();
 		ArrayList<IObservation> ext = new ArrayList<IObservation>();
 		ArrayList<IObservation> nxt = new ArrayList<IObservation>();
+		ArrayList<IObservation> sea = new ArrayList<IObservation>();
+		ArrayList<IObservation> ant = new ArrayList<IObservation>();
 
 		IValue fn = i.get(CoreScience.HAS_FORMAL_NAME);
 		if (fn != null)
@@ -259,6 +273,16 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 					con.add((IObservation) r.getValue().asObjectReference()
 							.getObject().getImplementation());
+					
+				} else if (r.getProperty().is(CoreScience.DERIVED_FROM)) {
+					
+					ant.add((IObservation) r.getValue().asObjectReference()
+							.getObject().getImplementation());
+					
+					if (r.getProperty().is(CoreScience.HAS_SAME_CONTEXT_ANTECEDENT)) {
+						sea.add((IObservation) r.getValue().asObjectReference()
+								.getObject().getImplementation());
+					}
 				}
 			}
 		}
@@ -450,15 +474,20 @@ public class Observation implements IObservation, IInstanceImplementation {
 		if (getConceptualModel() instanceof TransformingConceptualModel && !this.beingTransformed) {
 
 			this.beingTransformed = true;
-			// TODO we must ensure that we pass all extents from the top-level context here, otherwise
+			
+			// ensure that we pass all extents from the top-level context here, otherwise
 			// the transformer won't see the constraints
 			ret.mergeExtents(toplevel, LogicalConnector.INTERSECTION, true);
+			
 			IInstance inst = Compiler.contextualize(this, session, listeners, ret);
 			IInstance trs = 
 				((TransformingConceptualModel) getConceptualModel())
 					.transformObservation(inst, session);
 			Observation obs = extractObservationFromInstance(trs);
 
+			this.wasTransformed = true;
+			obs.isTransformed = true;
+			
 			if (listeners != null) {
 				for (IContextualizationListener l : listeners)
 					l.onObservationTransformed(this, obs);
@@ -466,13 +495,11 @@ public class Observation implements IObservation, IInstanceImplementation {
 			
 			compiler.addObservation(obs);
 			
-			/*
-			 * TODO all dependencies should also be notified
-			 */
-			
 			this.beingTransformed = false;
-			compiler.setTransformedObservation(getObservableClass(), trs);
 
+			// this also notifies the new dependencies and provenance data
+			compiler.setTransformedObservation(getObservableClass(), trs);
+			
 			return (ObservationContext) obs.getObservationContext();
 		}
 
@@ -498,9 +525,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 			ObservationContext oc = (ObservationContext) (((Observation) dependency)
 					.getCommonObservationContext_(compiler, session, inserted, listeners, toplevel));
 
-			/* notify dependency. If the dependency was a transformer, the context is that of
-			 * another observation, so take the observation from the context to make sure it's
-			 * the transformed one. */
+			/* notify dependency */
 			if (oc != null) {
 				compiler.addObservationDependency(this, oc.getObservation());
 
@@ -750,11 +775,10 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 	@Override
 	public boolean isContextualized(IObservationContext context) throws ThinklabException {
-
+		
 		if (dataSource != null && !(dataSource instanceof IContextualizedState)) 
 			return false;
 		
-
 		for (IObservation obs : getExtentDependencies()) {
 			IExtent ext = context.getExtent(obs.getObservableClass());
 			if (ext != null && !ext.equals(((ExtentConceptualModel)obs.getConceptualModel()).getExtent()))
@@ -766,6 +790,21 @@ public class Observation implements IObservation, IInstanceImplementation {
 				return false;
 		}
 		return false;
+	}
+
+	@Override
+	public IObservation[] getAntecedents() {
+		return antecedents;
+	}
+
+	@Override
+	public IObservation[] getSameExtentAntecedents() {
+		return sameExtentAntecedents;
+	}
+
+	@Override
+	public boolean isTransformed() {
+		return isTransformed;
 	}
 
 }

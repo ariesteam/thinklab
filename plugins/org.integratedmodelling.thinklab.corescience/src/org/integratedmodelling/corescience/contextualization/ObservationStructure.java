@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.contextualization.Compiler.MediatedDependencyEdge;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.TransformingConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
@@ -177,6 +178,30 @@ public class ObservationStructure {
 			return ret;
 		}
 		
+		private ObservationContents makeDesc(IObservation o, DefaultDirectedGraph<IObservation, MediatedDependencyEdge> deps) 
+			throws ThinklabException {
+			
+			ObservationContents ret = new ObservationContents(o);			
+			structure.addVertex(ret);
+
+			if (!o.isMediator()) {
+				for (MediatedDependencyEdge edge : deps.outgoingEdgesOf(o)) {
+					IObservation dep = edge.getTargetObservation();
+					if (! (dep.getConceptualModel() instanceof ExtentConceptualModel)) {
+						ObservationContents newdesc = makeDesc(dep, deps);
+						structure.addVertex(newdesc);
+						structure.addEdge(ret, newdesc);
+					}
+				}
+			}
+			
+			/*
+			 * store for later
+			 */
+			contents.put(o.getObservableClass(), ret);
+			
+			return ret;
+		}
 		/**
 		 * Builds a structure for the passed observable. Extents and mediated observations are not
 		 * stored. Extents can be created for individual observables using setContext().
@@ -190,6 +215,33 @@ public class ObservationStructure {
 			root = makeDesc(obs);
 		}
 		
+		/**
+		 * build structure from observation and its dependencies
+		 * @param observation
+		 * @param context
+		 * @throws ThinklabException
+		 */
+		public ObservationStructure(IObservation observation,
+				IObservationContext context) throws ThinklabException {
+			this(observation);
+			setOverallContext(context);
+		}
+
+		/**
+		 * build structure from observation, taking dependencies from the passed tree
+		 * @param root
+		 * @param dependencies
+		 * @param context
+		 * @throws ThinklabException
+		 */
+		public ObservationStructure(
+				IObservation root,
+				DefaultDirectedGraph<IObservation, MediatedDependencyEdge> dependencies,
+				IObservationContext context) throws ThinklabException {
+			this.root = makeDesc(root, dependencies);
+			setOverallContext(context);
+		}
+
 		/**
 		 * Define the observation context for the given observable. All extents in the context
 		 * must be conceptualizable.
@@ -205,9 +257,10 @@ public class ObservationStructure {
 			ObservationContents desc = contents.get(observable);
 			
 			if (desc == null)
-				throw new ThinklabResourceNotFoundException(
-						"observation structure: can't set context of non-existent observation of " +
-						observable);
+				return;
+//				throw new ThinklabResourceNotFoundException(
+//						"observation structure: can't set context of non-existent observation of " +
+//						observable);
 			
 			for (IConcept dimension : context.getDimensions()) {
 				
@@ -219,6 +272,13 @@ public class ObservationStructure {
 					structure.addEdge(desc, cd);
 				}	
 			}
+		}
+		
+		/*
+		 * set the overall context
+		 */
+		public void setOverallContext(IObservationContext context) throws ThinklabException {
+			setContext(getRootObservable(), context);
 		}
 		
 		/**

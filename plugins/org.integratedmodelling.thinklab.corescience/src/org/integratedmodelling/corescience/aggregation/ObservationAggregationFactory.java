@@ -50,7 +50,7 @@ import org.integratedmodelling.thinklab.interfaces.query.IConformance;
  */
 public class ObservationAggregationFactory extends AggregationFactory {
 
-	public ObservationAggregationFactory(IDataSource datasource, IConformance conformance) {
+	public ObservationAggregationFactory(IDataSource<?> datasource, IConformance conformance) {
 		super(conformance);
 		// TODO Auto-generated constructor stub
 	}

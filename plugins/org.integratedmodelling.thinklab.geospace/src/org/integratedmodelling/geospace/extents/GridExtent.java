@@ -47,7 +47,6 @@ import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.AxisDirection;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
@@ -61,6 +60,26 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  *
  */
 public class GridExtent extends ArealExtent implements IConceptualizable {
+
+	@Override
+	public boolean equals(Object obj) {
+
+		if (obj instanceof GridExtent) {
+			
+			GridExtent ge = (GridExtent) obj;
+			
+			/*
+			 * TODO compare activation layers if we ever get to implement them.
+			 */
+			
+			return 
+				xDivs == ge.xDivs &&
+				yDivs == ge.yDivs &&
+				envelope.equals(ge.envelope);
+		} 
+		
+		return false;
+	}
 
 	GeometryFactory gFactory = null;
 	int xDivs = 0;

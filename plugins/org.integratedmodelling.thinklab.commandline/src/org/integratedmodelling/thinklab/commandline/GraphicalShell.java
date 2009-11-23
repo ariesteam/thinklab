@@ -189,7 +189,7 @@ public class GraphicalShell {
                     console.getOut().flush();
                     
 				} catch (Exception e) {
-					e.printStackTrace(session.getOutputStream());
+					e.printStackTrace();
 					console.println(">>> error: " + e.getMessage() + " <<<");
 				}
 			}

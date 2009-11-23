@@ -9,9 +9,10 @@ package org.integratedmodelling.corescience.expr;
  * 
  * examples:
  * 
- * 	self//biomass@time(prev)
- *  context/space
- *  self//elevation@space(nw)
+ * 	//biomass@time(prev) -> find the biomass formal name in the obs tree (any level) and take its value at
+ *                          the previous extent of time. 
+ *  space                -> take the current spatial extent in the main observation, null if no space context
+ *  //elevation@space(nw)-> find the elevation formal name and take its value at the northwest grid cell
  *  
  */
 public class ContextExpression {

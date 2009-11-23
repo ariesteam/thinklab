@@ -1,9 +1,12 @@
 package org.integratedmodelling.corescience.contextualization;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.Obs;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
@@ -13,11 +16,13 @@ import org.integratedmodelling.corescience.interfaces.context.IContextualizer;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.ComputedDataSource;
 import org.integratedmodelling.corescience.interfaces.data.DimensionalDataSource;
+import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.ResamplingDataSource;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -34,13 +39,26 @@ import org.jgrapht.graph.DefaultEdge;
  */
 public abstract class Compiler implements IContextualizationCompiler {
 
-	
+	HashMap<IConcept,IContextualizedState> tstates = new HashMap<IConcept, IContextualizedState>();
+
 	DefaultDirectedGraph<IObservation, MediatedDependencyEdge> dependencies = 
 		new DefaultDirectedGraph<IObservation, MediatedDependencyEdge>(MediatedDependencyEdge.class);
 	
 	@Override
 	public void addObservation(IObservation observation) {		
 		dependencies.addVertex(observation);
+		/*
+		 * if this is the result of a transformation, the compiler should become the owner
+		 * of its computed states, which are not the same as in the original observation. Also,
+		 * any new dependencies should be notified to the structure array.
+		 */
+		if (observation.isTransformed()) {
+			try {
+				addTransformedStates(Obs.getStateMap(observation));
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
 	}
 
 	@Override
@@ -49,6 +67,11 @@ public abstract class Compiler implements IContextualizationCompiler {
 		dependencies.addVertex(source);
 		dependencies.addVertex(destination);
 		dependencies.addEdge(source, destination);
+	}
+
+	private void addTransformedStates(
+			Map<IConcept, IContextualizedState> stateMap) {
+		tstates.putAll(stateMap);
 	}
 
 	/*
@@ -103,6 +126,9 @@ public abstract class Compiler implements IContextualizationCompiler {
 		
 		IObservationContext context = 
 //			((Observation)observation).computeOverallContext(compiler, session, ctx, listeners);
+			/*
+			 * this will invoke transformers, each on a new instance of the appropriate compiler
+			 */
 			((Observation)observation).getOverallContext(compiler, session, listeners);
 		
 		// if we're being constrained, merge in the constraining context
@@ -110,8 +136,23 @@ public abstract class Compiler implements IContextualizationCompiler {
 			((ObservationContext)context).mergeExtents(
 					(ObservationContext) constraining, LogicalConnector.INTERSECTION, true);
 		
-		if (compiler.getTransformedObservation(observation.getObservableClass()) != null) 
+		/*
+		 * return the transformed self if we have compiled a transformer. This should not need
+		 * to be indexed by observable, as each transformer is compiled by its own compiler so
+		 * there is only one, but this stays to avoid pain in case we change that. Note that
+		 * the observation upstairs from us will now have a different dependency in it than
+		 * the compiled one.
+		 */
+		if (compiler.getTransformedObservation(observation.getObservableClass()) != null)
 			return compiler.getTransformedObservation(observation.getObservableClass());
+		
+		
+		/*
+		 * if we are already contextualized in this context, just return the instance we got.
+		 */
+		if (observation.isContextualized(context)) {
+			return observation.getObservationInstance();
+		}
 		
 		/* compute and communicate individual merged contexts for each observation */
 		HashSet<IConcept> oobs = new HashSet<IConcept>();

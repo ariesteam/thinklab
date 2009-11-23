@@ -348,19 +348,19 @@ public class BayesianTransformer
 		}
 
 		/*
-		 * we may or may not want to add all the original dependencies (evidence). That
+		 * all evidence has the same context so keep it as provenance info. That
 		 * will bring in a lot of stuff. Should be linked to a context parameter in the session?
 		 */
 		for (IConcept ec : smap.keySet()) {
 			IObservation oo = Obs.findObservation(orig, ec);
-			rdef = ObservationFactory.addDependency(rdef, oo.getObservationInstance());
+			rdef = ObservationFactory.addSameContextObservation(rdef, oo.getObservationInstance());
 		}
 		
-		// TODO remove
-		System.out.println(
-				"\n >>>>>>>>>>>>>>>>>>>>>>>>> \n" + 
-				Polylist.prettyPrint(rdef) + 
-				"\n <<<<<<<<<<<<<<<<<<<<<<<<< \n");
+//		// TODO remove
+//		System.out.println(
+//				"\n >>>>>>>>>>>>>>>>>>>>>>>>> \n" + 
+//				Polylist.prettyPrint(rdef) + 
+//				"\n <<<<<<<<<<<<<<<<<<<<<<<<< \n");
 		
 		/*
 		 * go for it

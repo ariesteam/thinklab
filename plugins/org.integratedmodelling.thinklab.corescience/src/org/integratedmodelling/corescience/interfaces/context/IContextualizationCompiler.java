@@ -69,8 +69,9 @@ public interface IContextualizationCompiler {
 	 * Notify that destination observation depends on source observation.
 	 * @param destination
 	 * @param source
+	 * @throws ThinklabException 
 	 */
-	public abstract void addObservationDependency(IObservation destination, IObservation source);
+	public abstract void addObservationDependency(IObservation destination, IObservation source) throws ThinklabException;
 	
 	/**
 	 * During context generation, each observation gets its own context that depends on the 
