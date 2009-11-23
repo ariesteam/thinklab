@@ -143,7 +143,13 @@ public class VMContextualizer<T> {
 	public Map<IConcept, IDataSource<?>> run() throws ThinklabValidationException {
 				
 		int sp = 0;
-				
+		HashMap<IConcept, IDataSource<?>> ret = new HashMap<IConcept, IDataSource<?>>();
+
+		if (_code.size() == 0) {
+			ret.putAll((Map<? extends IConcept, ? extends IDataSource<?>>) tstates);
+			return ret;
+		}
+		
 		/* create registers */
 		boolean[] active = new boolean[_actregs];
 		
@@ -260,7 +266,6 @@ public class VMContextualizer<T> {
 		/* 
 		 * reconstruct state map
 		 */
-		HashMap<IConcept, IDataSource<?>> ret = new HashMap<IConcept, IDataSource<?>>();
 		for (int i = 0; i < _observed.size(); i++) {
 			ret.put(_observed.get(i), states[i]);
 		}
@@ -442,6 +447,9 @@ public class VMContextualizer<T> {
 	}
 	
 	public void dump(PrintStream printStream) {
+		
+		if (_code.size() == 0) 
+			return;
 		
 		if (contextRegister.length > 0) {
 			int i = 0;

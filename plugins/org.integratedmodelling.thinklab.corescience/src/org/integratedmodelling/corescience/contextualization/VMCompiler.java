@@ -159,6 +159,9 @@ public class VMCompiler extends Compiler {
 		 * original ones.
 		 */
 		ObservationStructure structure = new ObservationStructure(observation, dependencies, context);
+		
+		structure.dump();
+		
 		ConcurrentContextualizer ret = new ConcurrentContextualizer(structure);
 
 		while (ord.hasNext()) {
@@ -220,7 +223,7 @@ public class VMCompiler extends Compiler {
 		 * null. Logics is in later but exceptions are thrown before then. 
 		 */
 		if (stackType == null)
-			return null;
+			return noCode();
 		
 		/**
 		 *  if this becomes true later, we want observations to build their 
@@ -275,8 +278,9 @@ public class VMCompiler extends Compiler {
 				anyAccessors = true;	
 		}
 		
-		if (!anyAccessors)
-			return null;
+		if (!anyAccessors) {
+			return noCode();
+		}
 		
 		/*
 		 * resolve the deactivations
@@ -426,6 +430,17 @@ public class VMCompiler extends Compiler {
 		ret.encodeReturn();
 		
 		return ret;
+	}
+
+	private VMContextualizer<?> noCode() {
+
+		VMContextualizer<?> cc = null;
+		if (tstates.size() > 0) {
+			/* just communicate any existing states */
+			cc = new VMContextualizer<Float>(null);
+			cc.addTransformedStates(tstates);
+		}
+		return cc;
 	}
 
 	private ObsDesc buildObsDesc(IObservation o,
@@ -656,29 +671,10 @@ public class VMCompiler extends Compiler {
 
 	@Override
 	public void setTransformedObservation(IConcept observable, IInstance instance) {
-		
 		transformedObservations.put(observable,instance);
-
-		try {
-			notifyAllDependencies(Obs.getObservation(instance));
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
 	}
 
-	/*
-	 * notify all dependencies of passed obs recursively. Normally done while computing
-	 * observation context, this one only called if the instance is the result of
-	 * transformation.
-	 */
-	public void notifyAllDependencies(IObservation instance) throws ThinklabException {
-		
-		for (IObservation d : instance.getDependencies()) {
-			addObservation(d);
-			addObservationDependency(d, instance);
-			notifyAllDependencies(d);
-		}
-	}
+
 
 
 }

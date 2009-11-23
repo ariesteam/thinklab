@@ -45,16 +45,19 @@ public abstract class Compiler implements IContextualizationCompiler {
 		new DefaultDirectedGraph<IObservation, MediatedDependencyEdge>(MediatedDependencyEdge.class);
 	
 	@Override
-	public void addObservation(IObservation observation) {		
+	public void addObservation(IObservation observation) {	
+		
 		dependencies.addVertex(observation);
+		
 		/*
 		 * if this is the result of a transformation, the compiler should become the owner
 		 * of its computed states, which are not the same as in the original observation. Also,
-		 * any new dependencies should be notified to the structure array.
+		 * any new dependencies should be notified to the structure graph.
 		 */
 		if (observation.isTransformed()) {
 			try {
-				addTransformedStates(Obs.getStateMap(observation));
+//				addTransformedStates(Obs.getStateMap(observation));
+				addAllDependencies(observation);
 			} catch (ThinklabException e) {
 				throw new ThinklabRuntimeException(e);
 			}
@@ -63,12 +66,23 @@ public abstract class Compiler implements IContextualizationCompiler {
 
 	@Override
 	public void addObservationDependency(IObservation destination, IObservation source) {
-		
 		dependencies.addVertex(source);
 		dependencies.addVertex(destination);
 		dependencies.addEdge(source, destination);
 	}
 
+	/*
+	 * notify all dependencies of passed obs recursively. Normally done while computing
+	 * observation context, this one only called if the instance is the result of
+	 * transformation.
+	 */
+	public void addAllDependencies(IObservation obs) throws ThinklabException {
+		
+		for (IObservation d : obs.getDependencies()) {
+			addObservationDependency(d, obs);
+			addAllDependencies(d);
+		}
+	}
 	private void addTransformedStates(
 			Map<IConcept, IContextualizedState> stateMap) {
 		tstates.putAll(stateMap);

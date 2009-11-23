@@ -97,6 +97,10 @@ public class ObservationStructure {
 					stream.println("observable descr: " + observableDesc);
 				}
 			}
+			
+			public String toString() {
+				return observationType + "(" + observable + ")";
+			}
 
 			
 			
@@ -293,12 +297,12 @@ public class ObservationStructure {
 			
 			Polylist l = buildObservationList(root, data);
 
-			// TODO remove
-			System.out.println(
-					"\n ------------------------ \n" + 
-					Polylist.prettyPrint(l) + 
-					"\n ------------------------ \n");
-			
+//			// TODO remove
+//			System.out.println(
+//					"\n ------------------------ \n" + 
+//					Polylist.prettyPrint(l) + 
+//					"\n ------------------------ \n");
+//			
 			return session.createObject(l);
 		}
 		
@@ -332,5 +336,21 @@ public class ObservationStructure {
 
 		public IConcept getRootObservable() {
 			return root.observable;
+		}
+
+		public void dump() {
+			// TODO Auto-generated method stub
+			dumpNode(root, 0);
+		}
+
+		private void dumpNode(ObservationContents r, int n) {
+			
+			for (int i = 0; i < n; i++)
+				System.out.print('*');
+			System.out.println(r);
+			for (DependencyEdge edge : structure.incomingEdgesOf(r)) {
+				dumpNode(edge.getSourceObservation(), n+2);
+			}
+			
 		}
 }
