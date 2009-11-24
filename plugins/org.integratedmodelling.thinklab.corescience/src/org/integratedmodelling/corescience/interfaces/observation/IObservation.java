@@ -246,5 +246,6 @@ public interface IObservation {
 	 * @return
 	 */
 	public abstract boolean isTransformed();
+
 	
 }

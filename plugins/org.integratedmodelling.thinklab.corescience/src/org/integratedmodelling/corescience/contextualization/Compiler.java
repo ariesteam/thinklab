@@ -56,7 +56,6 @@ public abstract class Compiler implements IContextualizationCompiler {
 		 */
 		if (observation.isTransformed()) {
 			try {
-//				addTransformedStates(Obs.getStateMap(observation));
 				addAllDependencies(observation);
 			} catch (ThinklabException e) {
 				throw new ThinklabRuntimeException(e);
@@ -65,28 +64,40 @@ public abstract class Compiler implements IContextualizationCompiler {
 	}
 
 	@Override
-	public void addObservationDependency(IObservation destination, IObservation source) {
+	public MediatedDependencyEdge addObservationDependency(IObservation destination, IObservation source) {
+		
 		dependencies.addVertex(source);
 		dependencies.addVertex(destination);
-		dependencies.addEdge(source, destination);
+		return dependencies.addEdge(source, destination);
 	}
 
 	/*
 	 * notify all dependencies of passed obs recursively. Normally done while computing
 	 * observation context, this one only called if the instance is the result of
 	 * transformation.
+	 * 
+	 * NOTE: to be used only in transformed observations. Will set the isTransformed flag
+	 * into all dependencies, which will cause the compiler to not generate contextualization
+	 * code for it and to just encode storage of the original datasource in the result observation.
+	 * How that will work in a complex transformation tree needs attention.
 	 */
 	public void addAllDependencies(IObservation obs) throws ThinklabException {
+		
+		((Observation)obs).setTransformed(true);
 		
 		for (IObservation d : obs.getDependencies()) {
 			addObservationDependency(obs, d);
 			addAllDependencies(d);
 		}
+		// we may want to make this conditional
+		for (IObservation d : obs.getSameExtentAntecedents()) {
+			MediatedDependencyEdge edge = addObservationDependency(obs, d);
+			if (edge != null)
+				edge.setAntecedent(true);
+			addAllDependencies(d);
+		}
 	}
-	private void addTransformedStates(
-			Map<IConcept, IContextualizedState> stateMap) {
-		tstates.putAll(stateMap);
-	}
+
 
 	/*
 	 * the dependency edge holds all details of the necessary mediation or aggregation.
@@ -94,11 +105,19 @@ public abstract class Compiler implements IContextualizationCompiler {
 	public static class MediatedDependencyEdge extends DefaultEdge {
 
 		private static final long serialVersionUID = 5926757404834780955L;
+
+		// if true, this edge does not express a dependency but a provenance relationship. The target 
+		// observation is guaranteed to share the same context (i.e. must come from a observation.getSameContextAntecedent() call).
+		boolean isAntecedent = false;
 		
 		public IObservation getSourceObservation() {
 			return (IObservation)getSource();
 		}
 		
+		public void setAntecedent(boolean b) {
+			isAntecedent = b;
+		}
+
 		public IObservation getTargetObservation() {
 			return (IObservation)getTarget();
 		}

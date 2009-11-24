@@ -145,8 +145,15 @@ public class VMContextualizer<T> {
 		int sp = 0;
 		HashMap<IConcept, IDataSource<?>> ret = new HashMap<IConcept, IDataSource<?>>();
 
+		/*
+		 * we always want these. putAll not an option if compiler settings are strict, so
+		 * do the silly loop.
+		 */
+		for (IConcept c : tstates.keySet()) {
+			ret.put(c, tstates.get(c));
+		}
+		
 		if (_code.size() == 0) {
-			ret.putAll((Map<? extends IConcept, ? extends IDataSource<?>>) tstates);
 			return ret;
 		}
 		
@@ -269,12 +276,7 @@ public class VMContextualizer<T> {
 		for (int i = 0; i < _observed.size(); i++) {
 			ret.put(_observed.get(i), states[i]);
 		}
-		
-		/*
-		 * add states from transformed obs that we have not compiled ourselves.
-		 */
-		ret.putAll((Map<? extends IConcept, ? extends IDataSource<?>>) tstates);
-		
+				
 		return ret;
 	}
 
@@ -448,10 +450,7 @@ public class VMContextualizer<T> {
 	
 	public void dump(PrintStream printStream) {
 		
-		if (_code.size() == 0) 
-			return;
-		
-		if (contextRegister.length > 0) {
+		if (contextRegister != null && contextRegister.length > 0) {
 			int i = 0;
 			for (ContextRegister cr : contextRegister) {
 				printStream.println(
@@ -562,6 +561,13 @@ public class VMContextualizer<T> {
 						ins & 0x0000ffff);
 				break;
 			}
+		}
+
+		int nn = 0;
+		for (IConcept c : tstates.keySet()) {
+			if (nn == 0)
+				printStream.println("Transformed datasources:");
+			printStream.println(nn++ + ". " + c + ": " + tstates.get(c));
 		}
 	}
 
@@ -696,6 +702,10 @@ public class VMContextualizer<T> {
 	public void addTransformedStates(
 			HashMap<IConcept, IContextualizedState> tstates) {
 		this.tstates.putAll(tstates);
+	}
+
+	public void addTransformedState(IConcept observableClass, IContextualizedState datasource) {
+		this.tstates.put(observableClass, datasource);
 	}
 
 	

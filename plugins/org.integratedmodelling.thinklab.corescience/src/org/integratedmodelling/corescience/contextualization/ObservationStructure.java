@@ -139,6 +139,7 @@ public class ObservationStructure {
 		public static class DependencyEdge extends DefaultEdge {
 
 			private static final long serialVersionUID = 5926757404834780955L;
+			boolean isAntecedent = false;
 			
 			public ObservationContents getSourceObservation() {
 				return (ObservationContents)getSource();
@@ -193,7 +194,7 @@ public class ObservationStructure {
 					if (! (dep.getConceptualModel() instanceof ExtentConceptualModel)) {
 						ObservationContents newdesc = makeDesc(dep, deps);
 						structure.addVertex(newdesc);
-						structure.addEdge(ret, newdesc);
+						structure.addEdge(ret, newdesc).isAntecedent = edge.isAntecedent;
 					}
 				}
 			}
@@ -314,7 +315,10 @@ public class ObservationStructure {
 				adl.add(
 					Polylist.list(
 							(de.getTargetObservation().isExtent ? 
-									CoreScience.HAS_EXTENT : CoreScience.DEPENDS_ON),
+									CoreScience.HAS_EXTENT : 
+									(de.isAntecedent ? 
+											CoreScience.HAS_SAME_CONTEXT_ANTECEDENT : 
+											CoreScience.DEPENDS_ON)),
 							buildObservationList(de.getTargetObservation(), data)));
 			}
 			

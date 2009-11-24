@@ -299,6 +299,12 @@ public class Observation implements IObservation, IInstanceImplementation {
 		if (nxt.size() > 0)
 			nonExtentDependencies = nxt.toArray(nonExtentDependencies);
 
+		if (sea.size() > 0)
+			sameExtentAntecedents = sea.toArray(sameExtentAntecedents);
+		
+		if (ant.size() > 0)
+			antecedents = ant.toArray(antecedents);
+		
 		conceptualModel = getConceptualModel();
 
 		/*
@@ -808,6 +814,10 @@ public class Observation implements IObservation, IInstanceImplementation {
 	@Override
 	public boolean isTransformed() {
 		return isTransformed;
+	}
+
+	public void setTransformed(boolean b) {
+		isTransformed = b;
 	}
 
 }

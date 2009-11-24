@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.integratedmodelling.corescience.Obs;
-import org.integratedmodelling.corescience.contextualization.Compiler.MediatedDependencyEdge;
-import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
@@ -63,9 +60,9 @@ public class VMCompiler extends Compiler {
 		boolean needsContextStates = false;
 		boolean[] activeDims;
 		IDataSource<?> datasource = null;
+		boolean contextualized = false;
 	}
-	
-	
+
 	/**
 	 * Extent mediators are created to match our own context with the overall one.
 	 * We create an array of as many mediators as we have extents in the overall context, in the
@@ -218,12 +215,6 @@ public class VMCompiler extends Compiler {
 			ObservationStructure structure)
 		throws ThinklabException {
 
-		/*
-		 * TODO if we have only one thing and we don't want its state, cut it off and return
-		 * null. Logics is in later but exceptions are thrown before then. 
-		 */
-		if (stackType == null)
-			return noCode();
 		
 		/**
 		 *  if this becomes true later, we want observations to build their 
@@ -237,7 +228,9 @@ public class VMCompiler extends Compiler {
 		/*
 		 * create a contextualizer appropriately for the stack type
 		 */
-		if (stackType.is(KnowledgeManager.Number())) {
+		if (stackType == null) {
+			ret = createNoOpContextualizer();
+		} else if (stackType.is(KnowledgeManager.Number())) {
 			ret = new VMContextualizer<Float>(stackType);
 			stateType = KnowledgeManager.Float();
 		} else if (KnowledgeManager.Thing().equals(stackType) || 
@@ -278,10 +271,6 @@ public class VMCompiler extends Compiler {
 				anyAccessors = true;	
 		}
 		
-		if (!anyAccessors) {
-			return noCode();
-		}
-		
 		/*
 		 * resolve the deactivations
 		 */
@@ -305,6 +294,11 @@ public class VMCompiler extends Compiler {
 			IObservation o = order.get(i);
 			ObsDesc odesc = accessors.get(o);
 			
+			if (odesc.contextualized) {
+				ret.addTransformedState(o.getObservableClass(), (IContextualizedState) odesc.datasource);
+				continue;
+			}
+			
 			if (odesc.initialValueId != -1 && odesc.register != -1) {				
 				ret.encodeRegImmediate(odesc.register, odesc.initialValueId);
 			}
@@ -324,7 +318,7 @@ public class VMCompiler extends Compiler {
 			IObservation o = order.get(i);
 			ObsDesc odesc = accessors.get(o);
 						
-			if (!odesc.needed || odesc.accessorId < 0)
+			if (!odesc.needed || odesc.accessorId < 0 || odesc.contextualized)
 				continue;
 			
 			anythingNeeded = true;
@@ -432,14 +426,9 @@ public class VMCompiler extends Compiler {
 		return ret;
 	}
 
-	private VMContextualizer<?> noCode() {
-
-		VMContextualizer<?> cc = null;
-		if (tstates.size() > 0) {
-			/* just communicate any existing states */
-			cc = new VMContextualizer<Float>(null);
-			cc.addTransformedStates(tstates);
-		}
+	private VMContextualizer<?> createNoOpContextualizer() {
+		// TODO check if we need more
+		VMContextualizer<?> cc = new VMContextualizer<Float>(null);
 		return cc;
 	}
 
@@ -455,12 +444,19 @@ public class VMCompiler extends Compiler {
 			return accessors.get(o);
 		
 		ObsDesc odesc = new ObsDesc();
-
+		
 		IConceptualModel cm = o.getConceptualModel();
 		IDataSource<?> ds = o.getDataSource();
 		IObservationContext ownContext = contexts.get(o.getObservableClass());
 		
 		odesc.datasource = ds;
+		if (o.isTransformed() && odesc.datasource != null && odesc.datasource instanceof IContextualizedState) {
+			// FIXME we just assume this for the time being; the datasource will be 
+			// automatically inserted and no code generated.
+			odesc.contextualized = true;
+			accessors.put(o, odesc);
+			return odesc;
+		}
 		
 		/* perform datasource/cm handshaking. */
 		if (ds != null) {

@@ -34,6 +34,7 @@ package org.integratedmodelling.corescience.interfaces.context;
 
 import java.util.Collection;
 
+import org.integratedmodelling.corescience.contextualization.Compiler.MediatedDependencyEdge;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -69,9 +70,11 @@ public interface IContextualizationCompiler {
 	 * Notify that destination observation depends on source observation.
 	 * @param destination
 	 * @param source
+	 * @return something - implementations may need to return the dependency edge to do things on it. If nothing is needed,
+	 *         just return null.
 	 * @throws ThinklabException 
 	 */
-	public abstract void addObservationDependency(IObservation destination, IObservation source) throws ThinklabException;
+	public abstract Object addObservationDependency(IObservation destination, IObservation source) throws ThinklabException;
 	
 	/**
 	 * During context generation, each observation gets its own context that depends on the 

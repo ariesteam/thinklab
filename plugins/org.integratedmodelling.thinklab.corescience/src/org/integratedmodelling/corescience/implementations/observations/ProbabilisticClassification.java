@@ -1,5 +1,8 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
+import java.util.ArrayList;
+
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
@@ -19,7 +22,7 @@ public class ProbabilisticClassification extends Observation implements IConcept
 	@Override
 	public IStateAccessor getStateAccessor(IConcept stateType,
 			IObservationContext context) {
-		// TODO Auto-generated method stub
+		// TODO these won't work unless already contextualized
 		return null;
 	}
 
@@ -46,8 +49,16 @@ public class ProbabilisticClassification extends Observation implements IConcept
 
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		ArrayList<Object> arr = new ArrayList<Object>();
+		
+		arr.add("observation:ProbabilisticClassification");
+		arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, Polylist.list(getObservableClass())));
+
+		if (getFormalName() != null) {
+			arr.add(Polylist.list(CoreScience.HAS_FORMAL_NAME, getFormalName()));			
+		}
+		return Polylist.PolylistFromArrayList(arr);
 	}
 
 	@Override
