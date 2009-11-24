@@ -29,7 +29,7 @@ public class ConcurrentContextualizer implements IContextualizer {
 			this.ctx = ctx;
 			this.session = session;
 			
-			ctx.dump(session.getOutputStream());
+			ctx.dump(System.out);
 		}
 		
 		@Override

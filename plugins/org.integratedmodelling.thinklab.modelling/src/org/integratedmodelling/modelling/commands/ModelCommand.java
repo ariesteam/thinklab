@@ -87,29 +87,19 @@ public class ModelCommand implements ICommandHandler {
 		IQueryResult r = model.observe(kbox, session, where);
 				
 		if (session.getOutputStream() != null) {
-			
 			session.getOutputStream().println(
-					"query returned " + r.getTotalResultCount() + " results");
-		
-
+					r.getTotalResultCount() + " possible model(s) found");
 		}
 		
-		IQueryResult obs = model.observe(kbox, session, where);
-				
-		if (session.getOutputStream() != null)
-			session.getOutputStream().println(
-					"\tQuery returned " + obs.getTotalResultCount() + " results");
-
 		IValue ret = null;
 		
 		if (r.getTotalResultCount() > 0) {
 			
 			Polylist lr = r.getResultAsList(0, null);
 			
-			session.getOutputStream().println(Polylist.prettyPrint(lr));
+			// session.getOutputStream().println(Polylist.prettyPrint(lr));
 			
 			IInstance res = session.createObject(lr);
-
 			IInstance result = Compiler.contextualize((IObservation) res
 					.getImplementation(), session);
 
