@@ -14,7 +14,6 @@ import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -189,8 +188,8 @@ public class ObservationStructure {
 			structure.addVertex(ret);
 
 			if (!o.isMediator()) {
-				for (MediatedDependencyEdge edge : deps.outgoingEdgesOf(o)) {
-					IObservation dep = edge.getTargetObservation();
+				for (MediatedDependencyEdge edge : deps.incomingEdgesOf(o)) {
+					IObservation dep = edge.getSourceObservation();
 					if (! (dep.getConceptualModel() instanceof ExtentConceptualModel)) {
 						ObservationContents newdesc = makeDesc(dep, deps);
 						structure.addVertex(newdesc);
@@ -297,12 +296,12 @@ public class ObservationStructure {
 			
 			Polylist l = buildObservationList(root, data);
 
-//			// TODO remove
-//			System.out.println(
-//					"\n ------------------------ \n" + 
-//					Polylist.prettyPrint(l) + 
-//					"\n ------------------------ \n");
-//			
+			// TODO remove
+			System.out.println(
+					"\n ------------------------ \n" + 
+					Polylist.prettyPrint(l) + 
+					"\n ------------------------ \n");
+			
 			return session.createObject(l);
 		}
 		
@@ -339,17 +338,16 @@ public class ObservationStructure {
 		}
 
 		public void dump() {
-			// TODO Auto-generated method stub
 			dumpNode(root, 0);
 		}
 
 		private void dumpNode(ObservationContents r, int n) {
 			
 			for (int i = 0; i < n; i++)
-				System.out.print('*');
+				System.out.print('-');
 			System.out.println(r);
-			for (DependencyEdge edge : structure.incomingEdgesOf(r)) {
-				dumpNode(edge.getSourceObservation(), n+2);
+			for (DependencyEdge edge : structure.outgoingEdgesOf(r)) {
+				dumpNode(edge.getTargetObservation(), n+2);
 			}
 			
 		}

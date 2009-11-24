@@ -79,7 +79,7 @@ public abstract class Compiler implements IContextualizationCompiler {
 	public void addAllDependencies(IObservation obs) throws ThinklabException {
 		
 		for (IObservation d : obs.getDependencies()) {
-			addObservationDependency(d, obs);
+			addObservationDependency(obs, d);
 			addAllDependencies(d);
 		}
 	}
