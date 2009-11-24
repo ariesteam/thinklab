@@ -32,7 +32,6 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import java.util.Arrays;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
@@ -131,5 +130,9 @@ public class MemValueContextualizedDatasource
 		return metadata.get(id);
 	}
 
+	@Override
+	public int getTotalSize() {
+		return data.length;
+	}
 
 }

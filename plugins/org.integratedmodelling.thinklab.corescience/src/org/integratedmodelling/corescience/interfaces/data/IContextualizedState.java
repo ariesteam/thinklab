@@ -44,6 +44,12 @@ public interface IContextualizedState extends IDataSource, IConceptualizable {
 	 * @return
 	 */
 	public Object getMetadata(String id);
+
+	/**
+	 * Return the total number of states.
+	 * @return
+	 */
+	public int getTotalSize();
 	
 	
 }

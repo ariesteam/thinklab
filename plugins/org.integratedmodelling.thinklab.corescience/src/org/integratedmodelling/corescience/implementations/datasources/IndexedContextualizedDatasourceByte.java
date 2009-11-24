@@ -1,6 +1,5 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -123,6 +122,11 @@ public class IndexedContextualizedDatasourceByte<T>
 	@Override
 	public Object getMetadata(String id) {
 		return metadata.get(id);
+	}
+
+	@Override
+	public int getTotalSize() {
+		return data.length;
 	}
 
 }

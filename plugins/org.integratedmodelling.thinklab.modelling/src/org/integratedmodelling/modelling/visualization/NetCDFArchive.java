@@ -14,6 +14,7 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.implementations.cmodels.RegularRasterModel;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
+import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -213,6 +214,14 @@ public class NetCDFArchive {
 		}
 		
 		for (IConcept obs : variables.keySet()) {
+			
+			if (variables.get(obs).getTotalSize() != space.getColumns() * space.getRows()) {
+				ModellingPlugin.get().logger().error(
+						"state of " + obs + " has " + variables.get(obs).getTotalSize() + 
+						" multiplicity when context expects " + (space.getColumns() * space.getRows()) + 
+						": results not stored");
+				continue;
+			}
 			
 			// TODO implement the rest			
 			if (spdims.size() == 2) {

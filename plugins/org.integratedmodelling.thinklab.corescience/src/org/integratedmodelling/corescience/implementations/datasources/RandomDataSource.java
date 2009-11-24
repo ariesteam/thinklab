@@ -32,8 +32,6 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import java.util.Properties;
-
 import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.IDataSource;

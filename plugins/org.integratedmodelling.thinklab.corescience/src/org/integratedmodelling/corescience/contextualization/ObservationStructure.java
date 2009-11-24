@@ -297,12 +297,12 @@ public class ObservationStructure {
 			
 			Polylist l = buildObservationList(root, data);
 
-			// TODO remove
-			System.out.println(
-					"\n ------------------------ \n" + 
-					Polylist.prettyPrint(l) + 
-					"\n ------------------------ \n");
-			
+//			// TODO remove
+//			System.out.println(
+//					"\n ------------------------ \n" + 
+//					Polylist.prettyPrint(l) + 
+//					"\n ------------------------ \n");
+		
 			return session.createObject(l);
 		}
 		
