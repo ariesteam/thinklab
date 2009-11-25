@@ -34,7 +34,7 @@ package org.integratedmodelling.geospace;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
+import java.util.Properties;
 
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
@@ -49,11 +49,11 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.java.plugin.PluginLifecycleException;
+import org.java.plugin.registry.Extension;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.cs.CoordinateSystem;
 import org.w3c.dom.Node;
 
 public class Geospace extends ThinklabPlugin  {
@@ -382,5 +382,66 @@ public class Geospace extends ThinklabPlugin  {
 
 		return ret;
 	}
+	
+
+	/**
+	 * Get your engine here, passing the necessary configuration properties. 
+	 * 
+	 * @param subject
+	 * @param properties
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public IGazetteer createGazetteer(Extension ext, Properties properties) throws ThinklabException {
+		
+		String id = getParameter(ext, "id");
+		
+		/*
+		 * find the declaring plugin so we can find data and files in its classpath
+		 */
+		ThinklabPlugin resourceFinder = null;
+		try {
+			resourceFinder =
+				(ThinklabPlugin)getManager().getPlugin(ext.getDeclaringPluginDescriptor().getId());
+		} catch (PluginLifecycleException e) {
+			throw new ThinklabValidationException("can't determine the plugin that created the engine "+ id);
+		}
+		
+		log.info("creating gazetteer " + id);
+
+		String ontolo = getParameter(ext, "class");
+		Properties p = new Properties();
+		p.putAll(properties);
+		
+		for (Extension.Parameter aext : ext.getParameters("property")) {
+						
+			String name = aext.getSubParameter("name").valueAsString();
+			String value = aext.getSubParameter("value").valueAsString();
+			p.setProperty(name, value);
+			
+		}
+
+		IGazetteer ret = (IGazetteer) getHandlerInstance(ext, "class");
+		ret.initialize(properties);
+		
+		return ret;
+	}
+	
+	
+	/**
+	 * Load the gazetteers specified in the passed plugin and set them in the
+	 * engine repository. Must be called explicitly by plugins declaring gazetteers.
+	 * 
+	 * @param pluginId
+	 * @throws ThinklabException
+	 */
+	public void loadGazetteers(String pluginId) throws ThinklabException {	
+
+		for (Extension ext : getPluginExtensions(pluginId, PLUGIN_ID, "gazetteer")) {
+			addGazetteer(createGazetteer(ext, getProperties()));
+		}
+
+	}
+	
 	
 }

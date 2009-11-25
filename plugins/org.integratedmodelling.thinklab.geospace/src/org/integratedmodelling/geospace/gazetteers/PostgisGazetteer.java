@@ -1,6 +1,7 @@
 package org.integratedmodelling.geospace.gazetteers;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.integratedmodelling.sql.postgres.PostgreSQLServer;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.opengis.feature.simple.SimpleFeature;
 
@@ -33,6 +35,10 @@ public class PostgisGazetteer implements IGazetteer {
 			"SELECT AddGeometryColumn('', 'locations', 'shape', 4326, 'MULTIPOLYGON', 2);"
 			// TODO add metadata table as ugly id/key/value container
 	};
+	
+	public PostgisGazetteer() {
+		// do nothing, expect initialize()
+	}
 	
 	public PostgisGazetteer(URI uri, Properties properties) throws ThinklabStorageException {
 		
@@ -138,6 +144,24 @@ public class PostgisGazetteer implements IGazetteer {
 
 	public static void main(String[] s) {
 		
+	}
+
+	@Override
+	public void initialize(Properties properties) throws ThinklabException {
+		
+		try {
+			_server = new PostgreSQLServer(
+					new URI(properties.getProperty("uri")), properties);
+		} catch (URISyntaxException e) {
+			throw new ThinklabValidationException(e);
+		}
+		_properties = properties;
+		
+		if (!_server.haveTable("locations")) {
+			for (String s : createStatements) {
+				_server.execute(s);
+			}
+		}
 	}
 	
 }

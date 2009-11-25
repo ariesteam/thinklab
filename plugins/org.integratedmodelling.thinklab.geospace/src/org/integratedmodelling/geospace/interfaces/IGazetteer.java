@@ -48,4 +48,13 @@ public interface IGazetteer {
 	public abstract void addLocation(String id, ShapeValue shape, Map<String,Object> metadata) 
 		throws ThinklabException;
 
+	/**
+	 * Gazetteers must have an empty constructor and must be fully initialized
+	 * using this function. If they don't they can not be declared in plugin.xml.
+	 * 
+	 * @param properties
+	 * @throws ThinklabException 
+	 */
+	public abstract void initialize(Properties properties) throws ThinklabException;
+
 }

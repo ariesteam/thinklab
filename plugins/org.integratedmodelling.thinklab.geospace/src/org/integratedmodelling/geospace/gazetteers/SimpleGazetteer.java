@@ -9,7 +9,6 @@ import java.util.Properties;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.MiscUtilities;
 
 /**
@@ -24,16 +23,12 @@ public class SimpleGazetteer implements IGazetteer {
 	
 	HashMap<String, ShapeValue> locations = new HashMap<String, ShapeValue>();
 	
-	public SimpleGazetteer(Properties properties) throws ThinklabValidationException {
-		
-		for (Object p : properties.keySet()) {	
-			String prop = p.toString();
-			if (prop.startsWith(ENTRY_PROPERTY_PREFIX)) {
-				String loc = MiscUtilities.getFileExtension(prop);
-				ShapeValue shape = new ShapeValue(properties.getProperty(prop));
-				locations.put(loc, shape);
-			}
-		}
+	public SimpleGazetteer() {
+		// expect initialize()
+	}
+	
+	public SimpleGazetteer(Properties properties) throws ThinklabException {
+		initialize(properties);
 	}
 	
 	@Override
@@ -73,6 +68,19 @@ public class SimpleGazetteer implements IGazetteer {
 	@Override
 	public boolean isReadOnly() {
 		return true;
+	}
+
+	@Override
+	public void initialize(Properties properties) throws ThinklabException {
+		
+		for (Object p : properties.keySet()) {	
+			String prop = p.toString();
+			if (prop.startsWith(ENTRY_PROPERTY_PREFIX)) {
+				String loc = MiscUtilities.getFileExtension(prop);
+				ShapeValue shape = new ShapeValue(properties.getProperty(prop));
+				locations.put(loc, shape);
+			}
+		}
 	}
 
 }
