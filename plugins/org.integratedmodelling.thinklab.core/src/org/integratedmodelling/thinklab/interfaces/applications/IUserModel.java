@@ -30,4 +30,10 @@ public interface IUserModel {
 	 * @return
 	 */
 	public abstract PrintStream getOutputStream();
+	
+	/*
+	 * initialize, passing the session that this user works in
+	 */
+	public abstract void initialize(ISession session);
+	
 }

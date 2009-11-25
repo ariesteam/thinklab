@@ -14,7 +14,9 @@ public class IndexedCategoricalDistribution {
 	}
 
 	public IndexedCategoricalDistribution(double[] data) {
-		this.data = data;
+		this.data = new double[data.length];
+		for (int i = 0; i < data.length; i++)
+			this.data[i] = data[i];
 	}
 	
 	@Override

@@ -85,6 +85,12 @@ public class GraphicalShell {
 		public PrintStream getOutputStream() {
 			return console.getOut();
 		}
+
+		@Override
+		public void initialize(ISession session) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	
 	public class ConsoleSession extends Session {
@@ -175,6 +181,7 @@ public class GraphicalShell {
 				System.exit(0);
 				break;
 			} else if (!("".equals(input.trim())) && /* WTF? */!input.equals(";")) {
+				
 				try {
 					
 					Command cmd = CommandParser.parse(input);

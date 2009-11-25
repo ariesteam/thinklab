@@ -218,7 +218,8 @@ public class BayesianTransformer
 			}
  			
  			/*
- 			 * TODO add metadata to ds. These come from the classifications per 
+ 			 * TODO add metadata to ds. These come from the classifications: must know if 
+ 			 * we're discretizing a continuous distribution or not. 
  			 */
 			st.data = new CategoricalDistributionDatasource(var, size, pcstates);
 			pstorage[i++] = st;

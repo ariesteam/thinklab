@@ -219,5 +219,13 @@ public class GeneralClassifier {
 	public void setNil() {
 		this.isNil = true;
 	}
+
+	public boolean isInterval() {
+		return interval != null;
+	}
+
+	public IntervalValue getInterval() {
+		return interval;
+	}
 	
 }

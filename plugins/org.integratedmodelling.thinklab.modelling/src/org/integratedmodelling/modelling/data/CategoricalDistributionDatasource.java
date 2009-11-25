@@ -6,6 +6,8 @@ import java.util.HashMap;
 import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceInt;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.random.IndexedCategoricalDistribution;
+import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.Pair;
@@ -22,10 +24,16 @@ public class CategoricalDistributionDatasource extends
 		IndexedContextualizedDatasourceInt<IndexedCategoricalDistribution> {
 
 	IConcept[] valueMappings = null;
+	int[] sortedIndexes = null;
+	double[] shuttle = null;
 	
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
 
+		/*
+		 * FIXME this should be harmless but not necessary, as the ranking is now 
+		 * done in the constructor.
+		 */
 		HashMap<IConcept, Integer> ranks = Metadata.rankConcepts(_type, this);		
 		double[] ret = new double[this.data.length];
 		double[] unc = new double[this.data.length];
@@ -71,6 +79,10 @@ public class CategoricalDistributionDatasource extends
 		double   sh = 0;
 		int nst = 0;
 		
+		/*
+		 * compute Shannon's entropy along with the rest
+		 * FIXME decide what to use for uncertainty
+		 */
 		for (int i = 0; i < probabilities.length; i++) {
 			if (probabilities[i] > v) {
 				v = probabilities[i];
@@ -89,10 +101,29 @@ public class CategoricalDistributionDatasource extends
 		return new Pair<IConcept, Double>(c,sh);
 	}
 
-
-	public CategoricalDistributionDatasource(IConcept type, int size, IConcept[] valueMappings) {
+	public CategoricalDistributionDatasource(IConcept type, int size, IConcept[] valueMappings) throws ThinklabValidationException {
+		
 		super(type, size);
-		this.valueMappings = valueMappings;
+		this.sortedIndexes = new int[valueMappings.length];
+		this.valueMappings = new IConcept[valueMappings.length];
+		this.shuttle = new double[valueMappings.length];
+		
+		/*
+		 * remap the values to ranks and determine how to rewire the input
+		 */
+		HashMap<IConcept, Integer> ranks = Metadata.rankConcepts(_type, this);
+		int offset = ((Boolean)getMetadata(Metadata.HASZERO)) ? 0 : 1;
+		if (ranks.size() != valueMappings.length) {
+			throw new ThinklabValidationException(
+					"probabilistic discretization of type " + type + " differs from its logical definition");
+		}
+		
+		for (int i = 0; i < valueMappings.length; i++) {
+			int n = ranks.get(valueMappings[i]) - offset;
+			this.sortedIndexes[i] = n;
+			this.valueMappings[n] = valueMappings[i];
+		}
+		
 	}
 
 	/* (non-Javadoc)
@@ -100,7 +131,31 @@ public class CategoricalDistributionDatasource extends
 	 */
 	@Override
 	public void addValue(Object o) {
-		super.addValue(new IndexedCategoricalDistribution((double[])o));
+		/*
+		 * reorder values according to sorted order before inserting the distribution
+		 */
+		double[] ps = (double[])o;
+		for (int i = 0; i < ps.length; i++) {
+			shuttle[this.sortedIndexes[i]] = ps[i];
+		}
+		super.addValue(new IndexedCategoricalDistribution(shuttle));
+	}
+	
+	
+	/**
+	 * If the distribution encoded in the states is the discretization of a continuous distribution,
+	 * return the breakpoints of each numeric class. If either end is open, start and/or end the
+	 * returned array with a NaN.
+	 * 
+	 * @return
+	 * @throws ThinklabInappropriateOperationException if the distribution is not continuous or
+	 * 	       there are gaps in the classes.
+	 */
+	public double[] getDistributionBreakpoints() throws ThinklabInappropriateOperationException {
+	
+		double[] ret = null;
+		
+		return ret;
 	}
 
 	/**

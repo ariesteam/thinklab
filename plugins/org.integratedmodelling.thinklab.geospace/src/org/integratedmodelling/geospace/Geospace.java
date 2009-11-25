@@ -34,6 +34,7 @@ package org.integratedmodelling.geospace;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Properties;
 
 import org.geotools.factory.GeoTools;
@@ -45,6 +46,7 @@ import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -119,7 +121,7 @@ public class Geospace extends ThinklabPlugin  {
 	 * we maintain a collection of gazetteers that plugins can install. The lookupFeature() function
 	 * will search all of them.
 	 */
-	ArrayList<IGazetteer> gazetteers = new ArrayList<IGazetteer>();
+	HashMap<String, IGazetteer> gazetteers = new HashMap<String, IGazetteer>();
 	private CoordinateReferenceSystem defaultCRS = null;
 	
 	public static Geospace get() {
@@ -343,8 +345,8 @@ public class Geospace extends ThinklabPlugin  {
 	 * Add a gazetteer to the collection.
 	 * @param g
 	 */
-	public void addGazetteer(IGazetteer g) {
-		gazetteers.add(g);
+	public void addGazetteer(String id, IGazetteer g) {
+		gazetteers.put(id,g);
 	}
 	
 	public CoordinateReferenceSystem getDefaultCRS() {
@@ -364,7 +366,7 @@ public class Geospace extends ThinklabPlugin  {
 		
 		ArrayList<ShapeValue> ret = new ArrayList<ShapeValue>();
 		
-		for (IGazetteer g : gazetteers) {
+		for (IGazetteer g : gazetteers.values()) {
 			g.resolve(name, ret, null);
 			if (stopWhenFound && ret.size() > 0)
 				break;
@@ -376,14 +378,13 @@ public class Geospace extends ThinklabPlugin  {
 
 		ArrayList<String> ret = new ArrayList<String>();
 		
-		for (IGazetteer g : gazetteers) {
+		for (IGazetteer g : gazetteers.values()) {
 			g.getKnownNames(ret);
 		}
 
 		return ret;
 	}
 	
-
 	/**
 	 * Get your engine here, passing the necessary configuration properties. 
 	 * 
@@ -392,39 +393,34 @@ public class Geospace extends ThinklabPlugin  {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public IGazetteer createGazetteer(Extension ext, Properties properties) throws ThinklabException {
+	public void createGazetteer(Extension ext, Properties properties) throws ThinklabException {
 		
 		String id = getParameter(ext, "id");
 		
-		/*
-		 * find the declaring plugin so we can find data and files in its classpath
-		 */
-		ThinklabPlugin resourceFinder = null;
-		try {
-			resourceFinder =
-				(ThinklabPlugin)getManager().getPlugin(ext.getDeclaringPluginDescriptor().getId());
-		} catch (PluginLifecycleException e) {
-			throw new ThinklabValidationException("can't determine the plugin that created the engine "+ id);
-		}
+//		/*
+//		 * find the declaring plugin so we can find data and files in its classpath
+//		 */
+//		ThinklabPlugin resourceFinder = null;
+//		try {
+//			resourceFinder =
+//				(ThinklabPlugin)getManager().getPlugin(ext.getDeclaringPluginDescriptor().getId());
+//		} catch (PluginLifecycleException e) {
+//			throw new ThinklabValidationException("can't determine the plugin that created the engine "+ id);
+//		}
 		
-		log.info("creating gazetteer " + id);
-
-		String ontolo = getParameter(ext, "class");
 		Properties p = new Properties();
 		p.putAll(properties);
 		
 		for (Extension.Parameter aext : ext.getParameters("property")) {
-						
 			String name = aext.getSubParameter("name").valueAsString();
 			String value = aext.getSubParameter("value").valueAsString();
 			p.setProperty(name, value);
-			
 		}
 
+		log.info("creating gazetteer " + id);
 		IGazetteer ret = (IGazetteer) getHandlerInstance(ext, "class");
 		ret.initialize(properties);
-		
-		return ret;
+		gazetteers.put(id, ret);
 	}
 	
 	
@@ -438,9 +434,22 @@ public class Geospace extends ThinklabPlugin  {
 	public void loadGazetteers(String pluginId) throws ThinklabException {	
 
 		for (Extension ext : getPluginExtensions(pluginId, PLUGIN_ID, "gazetteer")) {
-			addGazetteer(createGazetteer(ext, getProperties()));
+			createGazetteer(ext, getProperties());
 		}
+	}
 
+	/**
+	 * Find a specific gazetteer by name
+	 * 
+	 * @param id
+	 * @return
+	 * @throws ThinklabResourceNotFoundException
+	 */
+	public IGazetteer requireGazetteer(String id) throws ThinklabResourceNotFoundException {
+		IGazetteer ret = gazetteers.get(id);
+		if (ret == null)
+			throw new ThinklabResourceNotFoundException("gazetteer " + id + " is not registered");
+		return ret;
 	}
 	
 	

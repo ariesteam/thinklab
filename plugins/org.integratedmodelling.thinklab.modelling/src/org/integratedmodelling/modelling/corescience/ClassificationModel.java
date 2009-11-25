@@ -1,6 +1,10 @@
 package org.integratedmodelling.modelling.corescience;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
@@ -14,6 +18,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
+import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.IPersistentSet;
@@ -193,8 +198,72 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		classifiers.add(cl);
 		concepts.add(c);
 	}
-	
 
+	/**
+	 * This one checks if all classifiers are the discretization of a continuous distribution. 
+	 * If so, it ranks them in order and returns an array of breakpoints that define the 
+	 * continuous distribution they represent. If the classifiers are not like that, it 
+	 * returns null.
+	 *  
+	 *  This does not touch or rank the concepts. If the concepts have a ranking (such as the
+	 *  lexicographic ranking found in Metadata.rankConcepts() it is the user's responsibility
+	 *  that the concepts and the ranges make sense together.
+	 *  
+	 * @return
+	 */
+	public static double[] computeDistributionBreakpoints(Collection<GeneralClassifier> cls) {
+	
+		double[] ret = null;
+		
+		ArrayList<Pair<Double, Double>> ranges = new ArrayList<Pair<Double,Double>>();
+
+		for (GeneralClassifier c : cls) {
+			if (!c.isInterval())
+				return null;
+			IntervalValue iv = c.getInterval();
+			double d1 = iv.isLeftBounded() ? iv.getMinimumValue() : Double.NEGATIVE_INFINITY;
+			double d2 = iv.isRightBounded() ? iv.getMaximumValue() : Double.POSITIVE_INFINITY;
+			ranges.add(new Pair<Double,Double>(d1, d2));
+		}
+		
+		/*
+		 * sort ranges 
+		 * TODO check that it behaves as expected with infinities
+		 */
+		Collections.sort(ranges, new Comparator <Pair<Double, Double>>() {
+
+			@Override
+			public int compare(Pair<Double, Double> o1, Pair<Double, Double> o2) {
+		
+				if (Double.compare(o1.getFirst(), o2.getFirst()) == 0 &&
+					Double.compare(o1.getSecond(), o2.getSecond()) == 0)
+					return 0;
+				
+				return Double.compare(o1.getSecond(), o2.getFirst()) >= 0 ? 1 : -1;
+			}
+		});
+		
+		/*
+		 * build vector from sorted array
+		 */
+		ret = new double[ranges.size() + 1];
+		int i = 0; double last = 0.0;
+		ret[i++] = ranges.get(0).getFirst();
+		last = ranges.get(0).getSecond();
+		for (int n = 1; n < ranges.size(); n++) {
+		
+			Pair<Double,Double> pd = ranges.get(n);
+			if (Double.compare(pd.getFirst(), last) != 0)
+				return null;
+			ret[i++] = pd.getFirst();
+			last = pd.getSecond();
+			if (n == ranges.size() -1)
+				ret[i++] = last;
+		}
+				
+		return ret;
+	}
+	
 	@Override
 	public IConcept getCompatibleObservationType(ISession session) {
 		
@@ -229,6 +298,10 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 
 		if (state /* still */ == null)
 			state = observable;
+		
+		double[] breakpoints = computeDistributionBreakpoints(classifiers);
+		
+		System.out.println("BREAKPOINTS = " + Arrays.toString(breakpoints));
 		
 		ArrayList<Object> arr = new ArrayList<Object>();
 		
