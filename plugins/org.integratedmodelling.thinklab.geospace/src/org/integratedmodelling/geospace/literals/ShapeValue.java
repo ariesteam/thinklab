@@ -123,7 +123,13 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
     	setConceptWithoutValidation(null);
     }
     
-    public static Geometry makeCell(double x1, double y1, double x2, double y2) {
+    public ShapeValue(String s, CoordinateReferenceSystem crs) throws ThinklabValidationException {
+    	parseLiteral(s);
+    	this.crs = crs;
+    	setConceptWithoutValidation(Geospace.get().Shape());
+	}
+
+	public static Geometry makeCell(double x1, double y1, double x2, double y2) {
 
     	/**
     	 * FIXME
