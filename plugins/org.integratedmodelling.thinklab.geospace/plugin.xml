@@ -257,9 +257,7 @@
 		<library type="code" id="sextante-vegetationIndices" path="lib/sextante_vegetationIndices-0.3.jar"/>
 		<library type="code" id="sextante-wps" path="lib/sextante_wps-0.3.jar"/>
 		<library type="code" id="sextante" path="lib/sextante-0.3.jar"/>
-
 	</runtime>
-
 
 	<!-- ontologies -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="geospace">
@@ -279,12 +277,19 @@
 		<parameter id="concept-space" value="geofeatures" />
 	</extension>
 	
+	<!-- declare a gazetteer -->
 	<extension-point  id="gazetteer">
 		<!-- id of the gazetteer -->
 		<parameter-def id="id" />
 		<!-- java class of the gazetteer implementation -->
 		<parameter-def id="class" />
-		<!-- each parameter qualified by name and string value -->
+		<!-- property file is expected to be in the user config dir of the
+			declaring plugin. Use this for sensitive info such as passwords. If
+			the property file is declared and not found, the gazetteer is not
+			created. -->
+		<parameter-def id="property-file" />
+		<!-- properties can also be specified online, qualified by name and 
+		     string value. This part is good for immutable properties -->
 		<parameter-def id="property" type="null" multiplicity="any" >
 			<parameter-def id="name" />
 			<parameter-def id="value" />

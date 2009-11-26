@@ -32,6 +32,10 @@
  **/
 package org.integratedmodelling.geospace;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,6 +49,7 @@ import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -397,20 +402,47 @@ public class Geospace extends ThinklabPlugin  {
 		
 		String id = getParameter(ext, "id");
 		
-//		/*
-//		 * find the declaring plugin so we can find data and files in its classpath
-//		 */
-//		ThinklabPlugin resourceFinder = null;
-//		try {
-//			resourceFinder =
-//				(ThinklabPlugin)getManager().getPlugin(ext.getDeclaringPluginDescriptor().getId());
-//		} catch (PluginLifecycleException e) {
-//			throw new ThinklabValidationException("can't determine the plugin that created the engine "+ id);
-//		}
+		/*
+		 * find the declaring plugin so we can find data and files in its classpath
+		 */
+		ThinklabPlugin resourceFinder = null;
+		try {
+			resourceFinder =
+				(ThinklabPlugin)getManager().getPlugin(ext.getDeclaringPluginDescriptor().getId());
+		} catch (PluginLifecycleException e) {
+			throw new ThinklabValidationException("can't determine the plugin that created the gazetteer "+ id);
+		}
 		
 		Properties p = new Properties();
 		p.putAll(properties);
 		
+		/*
+		 * may point to a property file in the config dir
+		 */
+		String pfile = getParameter(ext, "property-file");
+		if (pfile != null) {
+			File f = new File(resourceFinder.getConfigPath() + "/" + pfile);
+			if (!f.exists()) {
+				
+				/*
+				 * exit silently, just print a warning
+				 */
+				logger().warn("gazetteer " + id + " cannot find the property file " +
+						pfile + "; initialization aborted");
+				return;
+			}
+			Properties pp = new Properties();
+			try {
+				pp.load(new FileInputStream(f));
+			} catch (Exception e) {
+				throw new ThinklabIOException(e);
+			}
+			p.putAll(pp);
+		}
+		
+		/*
+		 * can also specify properties inline
+		 */
 		for (Extension.Parameter aext : ext.getParameters("property")) {
 			String name = aext.getSubParameter("name").valueAsString();
 			String value = aext.getSubParameter("value").valueAsString();
@@ -419,7 +451,7 @@ public class Geospace extends ThinklabPlugin  {
 
 		log.info("creating gazetteer " + id);
 		IGazetteer ret = (IGazetteer) getHandlerInstance(ext, "class");
-		ret.initialize(properties);
+		ret.initialize(p);
 		gazetteers.put(id, ret);
 	}
 	

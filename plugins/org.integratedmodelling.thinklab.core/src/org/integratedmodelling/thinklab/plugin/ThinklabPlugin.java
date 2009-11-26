@@ -1078,4 +1078,8 @@ public abstract class ThinklabPlugin extends Plugin
 	public Version getVersion() {
 		return getDescriptor().getVersion();
 	}
+
+	public File getConfigPath() {
+		return confFolder;
+	}
 }
