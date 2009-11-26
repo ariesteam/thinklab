@@ -126,6 +126,10 @@ public class Session implements ISession {
 		withMetadataExtractor = metadataExtractor;
 	}
 	
+	public void setUserModel(IUserModel model) {
+		userModel = model;
+	}
+	
 	/**
 	 * Used internally to find concepts: can see the internal concepts in the session as well
 	 * as the KM public ones.

@@ -112,35 +112,9 @@ public class Geospace extends ThinklabPlugin  {
 	public static final String GRID_CLASSIFICATION_MODEL = "geospace:GridClassification";
 		
 	// the projection to use if we need meters
-	public static final String EPSG_PROJECTION_METERS =  "EPSG:3005";
+	public static final String EPSG_PROJECTION_METERS  = "EPSG:3005";
 	public static final String EPSG_PROJECTION_DEFAULT = "EPSG:4326";
-	
-	// FIXME (FIXIT) - this should just load EPSG:3785 but geotools chokes on it, because of
-	// the projection being set to Mercator_1SP_Google. Should work eventually...
-	// TODO check if 3857 works instead
-	public static final String GOOGLE_PROJECTION = "PROJCS[\"Google Mercator\",\r\n" + 
-			"    GEOGCS[\"WGS 84\",\r\n" + 
-			"        DATUM[\"World Geodetic System 1984\",\r\n" + 
-			"            SPHEROID[\"WGS 84\",6378137.0,298.257223563,\r\n" + 
-			"                AUTHORITY[\"EPSG\",\"7030\"]],\r\n" + 
-			"            AUTHORITY[\"EPSG\",\"6326\"]],\r\n" + 
-			"        PRIMEM[\"Greenwich\",0.0,\r\n" + 
-			"            AUTHORITY[\"EPSG\",\"8901\"]],\r\n" + 
-			"        UNIT[\"degree\",0.017453292519943295],\r\n" + 
-			"        AXIS[\"Geodetic latitude\",NORTH],\r\n" + 
-			"        AXIS[\"Geodetic longitude\",EAST],\r\n" + 
-			"        AUTHORITY[\"EPSG\",\"4326\"]],\r\n" + 
-			"    PROJECTION[\"Mercator_1SP\"],\r\n" + 
-			"    PARAMETER[\"semi_minor\",6378137.0],\r\n" + 
-			"    PARAMETER[\"latitude_of_origin\",0.0],\r\n" + 
-			"    PARAMETER[\"central_meridian\",0.0],\r\n" + 
-			"    PARAMETER[\"scale_factor\",1.0],\r\n" + 
-			"    PARAMETER[\"false_easting\",0.0],\r\n" + 
-			"    PARAMETER[\"false_northing\",0.0],\r\n" + 
-			"    UNIT[\"m\",1.0],\r\n" + 
-			"    AXIS[\"Easting\",EAST],\r\n" + 
-			"    AXIS[\"Northing\",NORTH],\r\n" + 
-			"    AUTHORITY[\"EPSG\",\"900913\"]]";	
+	public static final String EPSG_PROJECTION_GOOGLE  = "EPSG:3857";	
 
 	/*
 	 * if not null, we have a preferred crs in the properties, and we solve
@@ -198,14 +172,15 @@ public class Geospace extends ThinklabPlugin  {
 			
 			metersCRS = CRS.decode(EPSG_PROJECTION_METERS);
 			defaultCRS = CRS.decode(EPSG_PROJECTION_DEFAULT);
-			googleCRS = CRS.parseWKT(GOOGLE_PROJECTION);
+			googleCRS = CRS.decode(EPSG_PROJECTION_GOOGLE);
+//			googleCRS = CRS.parseWKT(GOOGLE_PROJECTION);
 
 		} catch (Exception e) {
 			throw new ThinklabPluginException(e);
 		} 
 		
 		/*
-		 * create preferred CRS if one is specified. Highly adviceable to set one if hybrid data
+		 * create preferred CRS if one is specified. Highly advisable to set one if hybrid data
 		 * are used.
 		 */
 		if (getProperties().containsKey(PREFERRED_CRS_PROPERTY)) {
@@ -222,7 +197,7 @@ public class Geospace extends ThinklabPlugin  {
 	}
 	
 	public CoordinateReferenceSystem getGoogleCRS() {
-		return preferredCRS;
+		return googleCRS;
 	}
 	
 	/**
