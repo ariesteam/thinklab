@@ -78,8 +78,12 @@
 			<export prefix="*"/>
 		</library>
 		<library type="code" id="gt2-directory" path="lib/gt-directory-2.6.0.jar"/>
-		<library type="code" id="gt2-epsg-hsql" path="lib/gt-epsg-hsql-2.6.0.jar"/>
-		<!-- <library type="code" id="gt2-epsg-wkt" path="lib/gt-epsg-wkt-2.6.0.jar"/> -->
+		<library type="code" id="gt2-epsg-hsql" path="lib/gt-epsg-hsql-2.6.0.jar">
+			<export prefix="*"/>
+		</library>
+		<library type="code" id="gt2-epsg-wkt" path="lib/gt-epsg-extension-2.6.0.jar">
+			<export prefix="*"/>
+		</library>
 		<library type="code" id="gt2-feature-pregeneralized" path="lib/gt-feature-pregeneralized-2.6.0.jar">
 			<export prefix="*"/>
 		</library>

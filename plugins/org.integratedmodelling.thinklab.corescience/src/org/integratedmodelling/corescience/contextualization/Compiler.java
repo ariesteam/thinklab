@@ -193,6 +193,7 @@ public abstract class Compiler implements IContextualizationCompiler {
 		for (IObservation obs : compiler.getObservations()) {
 			if (!obs.isMediator() && !(obs.getConceptualModel() instanceof ExtentConceptualModel)) {
 
+				// TODO put it back?
 //				if (oobs.contains(obs.getObservableClass()))
 //					throw new ThinklabContextualizationException(
 //						"observable classes must be unique in an observation structure: " +
@@ -205,9 +206,21 @@ public abstract class Compiler implements IContextualizationCompiler {
 			}
 		}
 		
+		/*
+		 * go for it
+		 */
 		IContextualizer contextualizer = compiler.compile(observation, context);
+		IInstance ret = contextualizer.run(session);
 		
-		return contextualizer.run(session);
+		/*
+		 * call any listeners
+		 */
+		if (listeners != null) {
+			for (IContextualizationListener l : listeners)
+				l.onObservationTransformed(observation, Obs.getObservation(ret));
+		}
+		
+		return ret;
 	}
 	
 	protected boolean performHandshake(

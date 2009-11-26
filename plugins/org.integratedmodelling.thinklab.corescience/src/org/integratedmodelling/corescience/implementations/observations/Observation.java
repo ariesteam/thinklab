@@ -441,10 +441,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 		return ret;
 	}
-	
-//////////////////////////////////////////////////////////////////////////////////////////
-// METHOD 1 - switch to getOverallContext in Compiler.contextualize() to enable
-//////////////////////////////////////////////////////////////////////////////////////////
 
 	public IObservationContext getOverallContext(
 			IContextualizationCompiler compiler, ISession session,
@@ -493,11 +489,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 			this.wasTransformed = true;
 			obs.isTransformed = true;
-			
-			if (listeners != null) {
-				for (IContextualizationListener l : listeners)
-					l.onObservationTransformed(this, obs);
-			}
 			
 			compiler.addObservation(obs);
 			
@@ -567,103 +558,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 		return ret;
 	}
-	
-//////////////////////////////////////////////////////////////////////////////////////////
-// METHOD 2 - switch to computeOverallContext in Compiler.contextualize() to enable
-//////////////////////////////////////////////////////////////////////////////////////////
-	
-	public IObservationContext computeOverallContext(
-			IContextualizationCompiler compiler,
-			ISession session,
-			IObservationContext context,
-			Collection<IContextualizationListener> listeners) throws ThinklabException {
-		
-		if (context == null)
-			context = new ObservationContext(this);
-		
-		computeOverallContext(
-					(ObservationContext) context, 
-					compiler, 
-					session,  
-					new HashSet<Observation>(), 
-					listeners);
-		
-		((ObservationContext)context).initialize();
-
-		return context;
-	}
-
-	private IObservationContext computeOverallContext(
-			ObservationContext context,
-			IContextualizationCompiler compiler, 
-			ISession session,
-			HashSet<Observation> inserted, 
-			Collection<IContextualizationListener> listeners) throws ThinklabException {
-		
-		/*
-		 * TODO - check: necessary? Plus, at most the check should concern the observable and be done
-		 * on the context itself.
-		 */
-		if (inserted.contains(this))
-			return null;
-
-		/*
-		 * If a transformer, transform and return transformed context; else initialize from
-		 * extents and merge context across dependencies.
-		 */
-		if (getConceptualModel() instanceof TransformingConceptualModel && !this.beingTransformed) {
-
-			this.beingTransformed = true;
-
-			IInstance inst = Compiler.contextualize(this, session, listeners, context);
-			IInstance trs = 
-				((TransformingConceptualModel) getConceptualModel())
-					.transformObservation(inst, session);
-			Observation obs = extractObservationFromInstance(trs);
-
-			if (listeners != null) {
-				for (IContextualizationListener l : listeners)
-					l.onObservationTransformed(this, obs);
-			}
-			
-			compiler.addObservation(obs);
-			this.beingTransformed = false;
-			compiler.setTransformedObservation(getObservableClass(), trs);
-			
-			/*
-			 * swap context with the new one.
-			 */
-			context = (ObservationContext) obs.getObservationContext();
-			
-		} else {
-			
-			/*
-			 * 1. merge all extents
-			 */
-			for (IObservation extent : getExtentDependencies()) {
-				compiler.addObservationDependency(this, extent);
-				context.mergeExtent(extent, LogicalConnector.INTERSECTION);
-			}
-
-			/*
-			 * 2. recurse over dependencies
-			 */
-			for (IObservation dependency : getNonExtentDependencies()) {
-				context = (ObservationContext) ((Observation)dependency)
-						.computeOverallContext(context, compiler, session, inserted, listeners);
-				compiler.addObservationDependency(this, dependency);
-			}
-			
-			compiler.addObservation(this);
-		}
-		
-		
-		return context;
-	}
-	
-//////////////////////////////////////////////////////////////////////////////////////////
-// END contextualization methods
-//////////////////////////////////////////////////////////////////////////////////////////
 	
 	public IConcept getObservationClass() {
 		return observation.getDirectType();

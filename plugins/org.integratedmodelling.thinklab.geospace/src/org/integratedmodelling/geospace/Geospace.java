@@ -114,13 +114,22 @@ public class Geospace extends ThinklabPlugin  {
 	// the projection to use if we need meters
 	public static final String EPSG_PROJECTION_METERS =  "EPSG:3005";
 	public static final String EPSG_PROJECTION_DEFAULT = "EPSG:4326";
-
+	public static final String GOOGLE_PROJECTION = "PROJCS[\"WGS84 / Simple Mercator\", GEOGCS[\"WGS 84\",\r\n" + 
+			"     DATUM[\"WGS_1984\", SPHEROID[\"WGS_1984\", 6378137.0, 298.257223563]], \r\n" + 
+			"     PRIMEM[\"Greenwich\", 0.0], UNIT[\"degree\", 0.017453292519943295], \r\n" + 
+			"     AXIS[\"Longitude\", EAST], AXIS[\"Latitude\", NORTH]],\r\n" + 
+			"     PROJECTION[\"Mercator_1SP_Google\"], \r\n" + 
+			"     PARAMETER[\"latitude_of_origin\", 0.0], PARAMETER[\"central_meridian\", 0.0], \r\n" + 
+			"     PARAMETER[\"scale_factor\", 1.0], PARAMETER[\"false_easting\", 0.0], \r\n" + 
+			"     PARAMETER[\"false_northing\", 0.0], UNIT[\"m\", 1.0], AXIS[\"x\", EAST],\r\n" + 
+			"     AXIS[\"y\", NORTH], AUTHORITY[\"EPSG\",\"900913\"]]";
 	/*
 	 * if not null, we have a preferred crs in the properties, and we solve
 	 * all conflicts by translating to it. 
 	 */
 	CoordinateReferenceSystem preferredCRS = null;
 	CoordinateReferenceSystem metersCRS = null;
+	CoordinateReferenceSystem googleCRS = null;
 	
 	/*
 	 * we maintain a collection of gazetteers that plugins can install. The lookupFeature() function
@@ -169,11 +178,20 @@ public class Geospace extends ThinklabPlugin  {
 		/*
 		 * load the CRS for meter conversions
 		 */
+		ClassLoader clsl = null;
 		try {
+			
+			// SPI be damned
+			clsl = swapClassloader();			
+				
 			metersCRS = CRS.decode(EPSG_PROJECTION_METERS);
 			defaultCRS = CRS.decode(EPSG_PROJECTION_DEFAULT);
+			// googleCRS = CRS.parseWKT(GOOGLE_PROJECTION);
+
 		} catch (Exception e) {
 			throw new ThinklabPluginException(e);
+		} finally {
+			resetClassLoader(clsl);
 		}
 		
 		/*
