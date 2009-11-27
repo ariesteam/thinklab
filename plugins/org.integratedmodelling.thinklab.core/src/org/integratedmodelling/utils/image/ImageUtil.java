@@ -97,8 +97,6 @@ public class ImageUtil {
 	public static BufferedImage createImage(int[] pixels, int rowWidth,
 			int imgw, int imgh, ColorMap cmap) {
 		
-		 
-
 		MemoryImageSource source = new MemoryImageSource(rowWidth,
 				pixels.length / rowWidth, cmap.getColorModel(), pixels, 0,
 				rowWidth);
@@ -106,8 +104,7 @@ public class ImageUtil {
 		return toBufferedImage(tk.createImage(source), imgw, imgh);
 	}
 	
-	 
-
+	
 	public static BufferedImage createImage(int[][] pixels, int imgw,
 			int imgh, ColorMap cmap, boolean upsideDown) {
 		int rowWidth = pixels[0].length;

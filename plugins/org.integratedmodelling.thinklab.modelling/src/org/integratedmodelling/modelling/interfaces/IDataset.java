@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.interfaces;
 import java.util.Collection;
 
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 /**
@@ -32,7 +33,7 @@ public interface IDataset {
 			IConcept observable, String fileOrNull, int x, int y, int ... flags);
 	
 	public abstract String makeSurfacePlot(
-			IConcept observable, String fileOrNull, int x, int y, int ... flags);
+			IConcept observable, String fileOrNull, int x, int y, int ... flags) throws ThinklabException;
 
 	public abstract String makeTimeSeriesPlot(
 			IConcept observable, String fileOrNull, int x, int y, int ... flags);
