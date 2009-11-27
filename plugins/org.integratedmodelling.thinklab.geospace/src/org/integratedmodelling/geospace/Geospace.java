@@ -59,6 +59,7 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 import org.w3c.dom.Node;
@@ -122,7 +123,8 @@ public class Geospace extends ThinklabPlugin  {
 	 */
 	CoordinateReferenceSystem preferredCRS = null;
 	CoordinateReferenceSystem metersCRS = null;
-	CoordinateReferenceSystem googleCRS = null;
+	CoordinateReferenceSystem googleCRS = null;	
+	CoordinateReferenceSystem geoCRSstraight = null;
 	
 	/*
 	 * we maintain a collection of gazetteers that plugins can install. The lookupFeature() function
@@ -173,8 +175,10 @@ public class Geospace extends ThinklabPlugin  {
 			metersCRS = CRS.decode(EPSG_PROJECTION_METERS);
 			defaultCRS = CRS.decode(EPSG_PROJECTION_DEFAULT);
 			googleCRS = CRS.decode(EPSG_PROJECTION_GOOGLE);
-//			googleCRS = CRS.parseWKT(GOOGLE_PROJECTION);
-
+			
+			CRSAuthorityFactory factory = CRS.getAuthorityFactory(true);
+			geoCRSstraight = factory.createCoordinateReferenceSystem("EPSG:4326");
+			
 		} catch (Exception e) {
 			throw new ThinklabPluginException(e);
 		} 
@@ -198,6 +202,16 @@ public class Geospace extends ThinklabPlugin  {
 	
 	public CoordinateReferenceSystem getGoogleCRS() {
 		return googleCRS;
+	}
+	
+	/**
+	 * Return a lat/lon CRS that is guaranteed to transform data to coordinates that have longitude on
+	 * the X axis.
+	 *  
+	 * @return
+	 */
+	public CoordinateReferenceSystem getStraightGeoCRS() {
+		return geoCRSstraight;
 	}
 	
 	/**
