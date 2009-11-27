@@ -468,6 +468,9 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
 		if (crs == null)
 			throw new ThinklabValidationException("shape: cannot compute area of shape without CRS");
 		
+		if (ocrs.equals(this.crs))
+			return this;
+		
 		Geometry g = null;
 		try {
 			 g = JTS.transform(shape, CRS.findMathTransform(crs, ocrs));
