@@ -67,6 +67,7 @@ public class RasterGrid extends Observation {
 	int xRO, xRM, yRO, yRM;
 	double latLB, lonLB, latUB, lonUB;
 	CoordinateReferenceSystem crs;
+	private String crsId = null;
 	
 	@Override
 	public String toString() {
@@ -85,7 +86,6 @@ public class RasterGrid extends Observation {
 //					Geospace.get().absoluteRasterGridInstance());
 					Geospace.get().absoluteSpatialCoverageInstance());
 		
-		String crsId = null;
 				
 		// read requested parameters from properties
 		for (IRelationship r : i.getRelationships()) {
@@ -115,7 +115,7 @@ public class RasterGrid extends Observation {
 			}
 		}
 
-		if (crsId != null)
+		if (crsId != null) 
 			crs = SubdividedCoverageConceptualModel.getCRSFromID(crsId);
 		
 		super.initialize(i);
@@ -228,5 +228,25 @@ public class RasterGrid extends Observation {
 		}
 		
 		return ret;
+	}
+
+	public double getTop() {
+		return latUB;
+	}
+
+	public double getRight() {
+		return lonUB;
+	}
+
+	public double getLeft() {
+		return lonLB;
+	}
+
+	public double getBottom() {
+		return latLB;
+	}
+
+	public String getCRSId() {
+		return crsId;
 	}
 }

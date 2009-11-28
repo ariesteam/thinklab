@@ -39,7 +39,18 @@ public class ThinklabResourceNotFoundException extends ThinklabException {
 
 	public ThinklabResourceNotFoundException(String resourceName) {
 		super("resource not found: " + resourceName);
-		// TODO Auto-generated constructor stub
+	}
+
+	public ThinklabResourceNotFoundException() {
+		super();
+	}
+
+	public ThinklabResourceNotFoundException(String arg0, Throwable arg1) {
+		super(arg0, arg1);
+	}
+
+	public ThinklabResourceNotFoundException(Throwable arg0) {
+		super(arg0);
 	}
 
 
