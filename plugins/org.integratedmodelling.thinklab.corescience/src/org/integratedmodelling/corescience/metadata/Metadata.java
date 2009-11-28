@@ -179,7 +179,8 @@ public class Metadata {
 		if (datasource != null) {
 
 			datasource.setMetadata(RANKING, ret);
-			datasource.setMetadata(HASZERO, new Boolean(gotNo));
+			datasource.setMetadata(HASZERO, 
+					new Boolean(gotNo || lexicalRank.get(0).getFirst().getLocalName().startsWith("No")));
 			datasource.setMetadata(BOOLEAN, new Boolean(isBoolean));
 			if (truecase != null) {
 				datasource.setMetadata(TRUECASE, truecase);
