@@ -98,7 +98,6 @@ public abstract class Compiler implements IContextualizationCompiler {
 		}
 	}
 
-
 	/*
 	 * the dependency edge holds all details of the necessary mediation or aggregation.
 	 */
@@ -136,7 +135,6 @@ public abstract class Compiler implements IContextualizationCompiler {
 		throws ThinklabException {
 		return contextualize(observation, session, null, null);
 	}
-
 
 	/**
 	 * The main contextualization driver. Use this one on an observation to produce its contextualized 
@@ -176,8 +174,17 @@ public abstract class Compiler implements IContextualizationCompiler {
 		 * the observation upstairs from us will now have a different dependency in it than
 		 * the compiled one.
 		 */
-		if (compiler.getTransformedObservation(observation.getObservableClass()) != null)
-			return compiler.getTransformedObservation(observation.getObservableClass());
+		if (compiler.getTransformedObservation(observation.getObservableClass()) != null) {
+
+			IInstance ret = compiler.getTransformedObservation(observation.getObservableClass());
+
+			if (listeners != null) {
+				for (IContextualizationListener l : listeners)
+					l.onContextualization(Obs.getObservation(ret));
+			}
+
+			return ret;
+		}
 		
 		
 		/*
@@ -217,7 +224,7 @@ public abstract class Compiler implements IContextualizationCompiler {
 		 */
 		if (listeners != null) {
 			for (IContextualizationListener l : listeners)
-				l.onObservationTransformed(observation, Obs.getObservation(ret));
+				l.onContextualization(Obs.getObservation(ret));
 		}
 		
 		return ret;

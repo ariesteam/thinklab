@@ -124,7 +124,8 @@ public class FileBasedDataset implements IDataset {
 		ColorMap cmap = new ColorMap(16, new Color[] { Color.WHITE, Color.BLUE,
 				Color.RED });
 		
-		ImageUtil.createImageFile(idata, space.getColumns(), x, y, cmap, fileOrNull);
+		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
+				space.getColumns(), x, y, cmap, fileOrNull);
 		
 		return fileOrNull;
 	}

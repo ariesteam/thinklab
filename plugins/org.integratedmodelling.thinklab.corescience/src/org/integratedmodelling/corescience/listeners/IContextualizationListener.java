@@ -16,5 +16,5 @@ import org.integratedmodelling.corescience.interfaces.observation.IObservation;
  */
 public interface IContextualizationListener {
 
-	public abstract void onObservationTransformed(IObservation source, IObservation destination);
+	public abstract void onContextualization(IObservation obs);
 }
