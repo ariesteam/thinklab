@@ -160,4 +160,9 @@
 	[datasource concept n]
 	(.getProbability datasource n concept))
 
-
+(defn get-dist-breakpoints
+	"Return an array of doubles describing the continuous probability distribution encoded in the
+	discretized categories in the passed probabilistic datasource. Throws an exception if the 
+	datasource is not encoding a continuous distribution."
+	[datasource]
+	(.getDistributionBreakpoints datasource))
