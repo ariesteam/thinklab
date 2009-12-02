@@ -1,6 +1,11 @@
 package org.integratedmodelling.modelling.implementations.observations;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -35,7 +40,6 @@ import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
 import smile.Network;
-import smile.SMILEException;
 
 /**
  * Support for the modelling/bayesian form. 
@@ -166,6 +170,21 @@ public class BayesianTransformer
 	public IInstance transformObservation(IInstance inst, ISession session)
 			throws ThinklabException {
 		
+		// TODO set to false asap
+		boolean debug = true;
+		HashMap<String, Integer> keyset = debug ? new HashMap<String, Integer>() : null;
+		HashMap<String, String> resset = debug ? new HashMap<String, String>() : null;
+		PrintWriter out = null;
+		if (debug) {
+			try {
+				out =  new PrintWriter(new FileOutputStream("debug.txt", true));
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			out.println(" >>>>>> " + getObservableClass() + "<<<<<<<\n");
+		}
+		
 		IObservation orig = Obs.getObservation(inst);
 		IObservationContext context = orig.getObservationContext();
 		Map<IConcept, IContextualizedState> smap = Obs.getStateMap(orig);
@@ -260,6 +279,7 @@ public class BayesianTransformer
 		 */
 		bn.clearAllEvidence();
 		
+		
 		/*
 		 * run network, setting state. 
 		 * 
@@ -269,6 +289,8 @@ public class BayesianTransformer
 		 * http://ecoinformatics.uvm.edu/jira/browse/TLC-44
 		 */
 		for (int state = 0; state < size; state++) {
+			
+			String ekey = debug ? "" : null;
 			
 			/*
 			 * FIXME or better FIXIT - removing node evidence when there is a null 
@@ -296,6 +318,9 @@ public class BayesianTransformer
 						bn.setEvidence(
 								evidence[e].field, 
 								ev.getLocalName());
+						if (ekey != null) {
+							ekey += evidence[e].nodename + "=" + ev.getLocalName() + ", ";
+						}
 					}
 				} catch (Exception ex) {
 					ModellingPlugin.get().logger().error("exception " + ex + " while setting " + evidence[e].nodename);
@@ -307,14 +332,40 @@ public class BayesianTransformer
 			 * run inference
 			 */
 			bn.updateBeliefs();
+						
+			if (ekey != null) {
+				if (keyset.containsKey(ekey)) {
+					keyset.put(ekey, keyset.get(ekey) + 1);
+					ekey = null;
+				} else {
+					keyset.put(ekey, 1);
+				}
+			}
 			
 			/*
 			 * set states of all desired outcomes
 			 */
+			String rrs = "";
 			for (int s = 0; s < pstorage.length; s++) {
 				pstorage[s].data.addValue(bn.getNodeValue(pstorage[s].field));
+				if (ekey != null) {
+					rrs += 
+						pstorage[s].observable.getLocalName() + "=" + Arrays.toString(bn.getNodeValue(pstorage[s].field)) + 
+						(s == (pstorage.length -1) ? "" : ", ");
+				}
 			}
 			
+			if (ekey != null) {
+				resset.put(ekey, rrs);
+			}
+			
+		}
+		
+		// debug output
+		if (out != null) {
+			for (String k: keyset.keySet())
+				out.println("[" + keyset.get(k) + "] " + k + " -> " + resset.get(k));
+			out.close();
 		}
 		
 		/*
