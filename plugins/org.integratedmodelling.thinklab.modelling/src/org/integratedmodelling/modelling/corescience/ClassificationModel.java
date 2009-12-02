@@ -322,7 +322,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		double[] breakpoints = computeDistributionBreakpoints(classifiers);		
 		if (breakpoints != null) {
 			arr.add(Polylist.list(
-					"modelTypes:encodesContinuousDistribution",
+					"modeltypes:encodesContinuousDistribution",
 					MiscUtilities.printVector(breakpoints)));
 		}
 		
