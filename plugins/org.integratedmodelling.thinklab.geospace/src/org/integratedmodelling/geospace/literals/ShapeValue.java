@@ -129,6 +129,22 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
     	setConceptWithoutValidation(Geospace.get().Shape());
 	}
 
+    /* create a polygon from the passed envelope */ 
+	public ShapeValue(ReferencedEnvelope e) {
+		
+    	GeometryFactory gFactory = new GeometryFactory();
+		Coordinate[] pts = { 						
+				new Coordinate(e.getMinX(),e.getMinY()),
+				new Coordinate(e.getMaxX(),e.getMinY()),
+				new Coordinate(e.getMaxX(),e.getMaxY()),
+				new Coordinate(e.getMinX(),e.getMaxY()),
+				new Coordinate(e.getMinX(),e.getMinY())
+				};
+		
+		shape = gFactory.createPolygon(gFactory.createLinearRing(pts), null);
+		crs = e.getCoordinateReferenceSystem();
+	}
+
 	public static Geometry makeCell(double x1, double y1, double x2, double y2) {
 
     	/**

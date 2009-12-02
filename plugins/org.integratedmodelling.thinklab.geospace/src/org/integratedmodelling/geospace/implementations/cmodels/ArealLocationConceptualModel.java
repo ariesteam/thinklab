@@ -88,6 +88,16 @@ public class ArealLocationConceptualModel extends SpatialConceptualModel {
 			connector.equals(LogicalConnector.UNION) ?
 					((ShapeExtent)original).getShape().union(((ShapeExtent)other).getShape()) :
 					((ShapeExtent)original).getShape().intersection(((ShapeExtent)other).getShape());
+
+					
+		/*
+		 * FIXME check: if the "other" extent is constraining and we are using this for a 
+		 * vectorized field (which should be the case but must check) then use it unmodified IF
+		 * the intersection isn't empty.			
+		 */
+		if (!s.isEmpty() && constrainExtent) {
+			s = ((ShapeExtent)other).getShape();
+		}
 		Envelope env = s.getEnvelopeInternal();	
 		
 		return new ShapeExtent(s, env, getCRS(), this);

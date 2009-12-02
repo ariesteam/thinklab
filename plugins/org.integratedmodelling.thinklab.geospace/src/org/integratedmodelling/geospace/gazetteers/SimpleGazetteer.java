@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -77,7 +78,8 @@ public class SimpleGazetteer implements IGazetteer {
 			String prop = p.toString();
 			if (prop.startsWith(ENTRY_PROPERTY_PREFIX)) {
 				String loc = MiscUtilities.getFileExtension(prop);
-				ShapeValue shape = new ShapeValue(properties.getProperty(prop));
+				ShapeValue shape = 
+					new ShapeValue(properties.getProperty(prop), Geospace.get().getStraightGeoCRS());
 				locations.put(loc, shape);
 			}
 		}

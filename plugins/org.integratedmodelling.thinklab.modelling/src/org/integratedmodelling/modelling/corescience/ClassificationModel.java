@@ -9,6 +9,7 @@ import java.util.Comparator;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
+import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -18,6 +19,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
@@ -221,14 +223,13 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 			if (!c.isInterval())
 				return null;
 			IntervalValue iv = c.getInterval();
-			double d1 = iv.isLeftBounded() ? iv.getMinimumValue() : Double.NEGATIVE_INFINITY;
-			double d2 = iv.isRightBounded() ? iv.getMaximumValue() : Double.POSITIVE_INFINITY;
+			double d1 = iv.isLeftInfinite() ?  Double.NEGATIVE_INFINITY : iv.getMinimumValue();
+			double d2 = iv.isRightInfinite() ? Double.POSITIVE_INFINITY : iv.getMaximumValue();
 			ranges.add(new Pair<Double,Double>(d1, d2));
 		}
 		
 		/*
-		 * sort ranges 
-		 * TODO check that it behaves as expected with infinities
+		 * sort ranges so that they appear in ascending order
 		 */
 		Collections.sort(ranges, new Comparator <Pair<Double, Double>>() {
 
@@ -239,7 +240,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 					Double.compare(o1.getSecond(), o2.getSecond()) == 0)
 					return 0;
 				
-				return Double.compare(o1.getSecond(), o2.getFirst()) >= 0 ? 1 : -1;
+				return o2.getFirst() >= o1.getSecond() ?  -1 : 1;
 			}
 		});
 		
@@ -253,8 +254,12 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		for (int n = 1; n < ranges.size(); n++) {
 		
 			Pair<Double,Double> pd = ranges.get(n);
-			if (Double.compare(pd.getFirst(), last) != 0)
+			if (Double.compare(pd.getFirst(), last) != 0) {
+				// FIXME this should be debug output at most, it could be perfectly OK, but it's an easy
+				// error to make.
+				ModellingPlugin.get().logger().warn("disjoint intervals on " + pd.getFirst() + " and " + last);
 				return null;
+			}
 			ret[i++] = pd.getFirst();
 			last = pd.getSecond();
 			if (n == ranges.size() -1)
@@ -298,11 +303,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 
 		if (state /* still */ == null)
 			state = observable;
-		
-		double[] breakpoints = computeDistributionBreakpoints(classifiers);
-		
-		System.out.println("BREAKPOINTS = " + Arrays.toString(breakpoints));
-		
+				
 		ArrayList<Object> arr = new ArrayList<Object>();
 		
 		arr.add(dynSpecs == null ? "modeltypes:ModeledClassification" : "modeltypes:DynamicClassification");
@@ -318,6 +319,13 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 					this.lang.equals(language.CLOJURE) ? "clojure" : "mvel"));
 		}
 
+		double[] breakpoints = computeDistributionBreakpoints(classifiers);		
+		if (breakpoints != null) {
+			arr.add(Polylist.list(
+					"modelTypes:encodesContinuousDistribution",
+					MiscUtilities.printVector(breakpoints)));
+		}
+		
 		if (!isMediating())
 			arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, this.observableSpecs));
 		

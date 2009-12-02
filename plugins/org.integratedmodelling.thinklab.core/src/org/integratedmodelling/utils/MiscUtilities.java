@@ -1754,7 +1754,27 @@ loop:		for(;;)
 		
 		return ret;
 	}
+	
+	public static String printVector(double[] data) {
+		String ret = "";
+		for (double d: data) {
+			ret += (ret.equals("") ? "" : " ") + d;
+		}
+		return ret;
+	}
 
+	public static double[] parseDoubleVector(String data) {
+
+		String[] ss  = data.split("\\s+");
+		double[] ret = new double[ss.length];
+		int i = 0;
+		for (String s: ss) {
+			ret[i++] = Double.parseDouble(s);
+		}
+		return ret;
+	}
+
+	
 //	//{{{ getPathStart()
 //	private static int getPathStart(String path)
 //	{

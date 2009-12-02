@@ -174,11 +174,26 @@ public class IntervalValue extends ParsedLiteralValue {
 		
 	}
 	
+	public boolean isRightInfinite() {
+		return isUpperUndefined;
+	}
 
+	public boolean isLeftInfinite() {
+		return isLowerUndefined;
+	}
+
+	/**
+	 * true if the upper boundary is closed, i.e. includes the limit
+	 * @return
+	 */
 	public boolean isRightBounded() {
 		return !isUpperOpen;
 	}
 
+	/**
+	 * true if the lower boundary is closed, i.e. includes the limit
+	 * @return
+	 */
 	public boolean isLeftBounded() {
 		return !isLowerOpen;
 	}
