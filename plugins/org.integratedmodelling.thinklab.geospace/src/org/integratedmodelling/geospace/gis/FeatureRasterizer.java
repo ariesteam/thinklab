@@ -566,12 +566,21 @@ public class FeatureRasterizer {
 
         // Extract polygon and rasterize!
         Geometry geometry = (Geometry) feature.getDefaultGeometry();
+                
         if (geometry.intersects(extentGeometry)) {
+        	
+            if (geometry.getClass().equals(MultiPolygon.class) || geometry.getClass().equals(Polygon.class)) {
 
-            if (geometry.getClass().equals(MultiPolygon.class)) {
-                MultiPolygon mp = (MultiPolygon)geometry;
-                for (int n=0; n<mp.getNumGeometries(); n++) {
-                    drawGeometry(mp.getGeometryN(n));
+                for (int i = 0; i < geometry.getNumGeometries(); i++) {
+                	Polygon poly = (Polygon) geometry.getGeometryN(i);
+                	LinearRing lr = geoFactory.createLinearRing(poly.getExteriorRing().getCoordinates());
+            		Polygon part = geoFactory.createPolygon(lr, null);
+                	drawGeometry(part);
+                	for (int j = 0; j < poly.getNumInteriorRing(); j++) {
+                		lr = geoFactory.createLinearRing(poly.getInteriorRingN(j).getCoordinates());
+                		part = geoFactory.createPolygon(lr, null);
+        				drawGeometry(part);
+        			}
                 }
             }
             else if (geometry.getClass().equals(MultiLineString.class)) {
@@ -838,6 +847,10 @@ public class FeatureRasterizer {
     public String toString() {
         return "FEATURE RASTERIZER: WIDTH="+width+" , HEIGHT="+height+" , NODATA="+noDataValue;
     }
+
+	public void swapAxes(boolean b) {
+		this.swapAxis = b;
+	}
     
 }
 

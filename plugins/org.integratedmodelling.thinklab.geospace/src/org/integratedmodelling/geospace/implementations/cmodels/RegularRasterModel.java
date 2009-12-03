@@ -179,7 +179,7 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 		
 		/* we'll fix the resolution later  */
 		GridExtent nwext = 
-			new GridExtent(this, ccr, common.getMinX(), common.getMinY(), common.getMaxX(), common.getMaxY(), 1, 1);
+					new GridExtent(this, ccr, common.getMinX(), common.getMinY(), common.getMaxX(), common.getMaxY(), 1, 1);
 
 		// this is the constrained resolution; we recompute it below if we are free to choose
 		int xc = otext.getXCells();
@@ -217,8 +217,8 @@ public class RegularRasterModel extends SubdividedCoverageConceptualModel {
 			// System.out.println("cells are " + cor + " and " + cot + "; chosen " + cell + " because areas are " + aor + " and " + aot);
 		
 			/* recompute the number of cells in the new extent */
-			xc = (int)Math.floor(nwext.getNormalizedEnvelope().getWidth()/cell.getWidth());
-			yc = (int)Math.floor(nwext.getNormalizedEnvelope().getHeight()/cell.getHeight());
+			xc = (int)Math.ceil(nwext.getNormalizedEnvelope().getWidth()/cell.getWidth());
+			yc = (int)Math.ceil(nwext.getNormalizedEnvelope().getHeight()/cell.getHeight());
 
 			errx = nwext.getNormalizedEnvelope().getWidth() - (cell.getWidth() * xc);
 			erry = nwext.getNormalizedEnvelope().getHeight() - (cell.getHeight() * yc);

@@ -504,6 +504,15 @@ public class Geospace extends ThinklabPlugin  {
 			throw new ThinklabResourceNotFoundException("gazetteer " + id + " is not registered");
 		return ret;
 	}
+
+	/**
+	 * Returns true if the passed reference system assumes the X axis to be longitude (east-west).
+	 * @param ccr
+	 * @return
+	 */
+	public static boolean isLongitudeX(CoordinateReferenceSystem ccr) {
+		return !ccr.getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH);
+	}
 	
 	
 }

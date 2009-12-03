@@ -115,10 +115,30 @@ public class FileBasedDataset implements IDataset {
 		double[] data = state.getDataAsDoubles();
 		int len = data.length;
 		int[] idata = new int[len];
-		
-		for (int i = 0; i < len; i++)
-			// TODO obviously this is not right
+		double min = data[0];
+		double max = data[0];
+
+		for (int i = 0; i < len; i++) {
 			idata[i] = (int)data[i];
+		}
+//		for (int i = 0; i < len; i++) {
+//			if (data[i] > max) max = data[i];
+//			if (data[i] < min) min = data[i];
+//		}
+//		
+//		System.out.println("min = " + min + " max = " + max);
+//		int imin = 0, imax = 0;
+//		for (int i = 0; i < len; i++) {
+//			idata[i] = (int)(((data[i]-min)/(max-min))*256.0);
+//			if (i == 0) {
+//				imin = idata[0];
+//				imax = idata[0];
+//			} else {
+//				if (idata[i] > imax) imax = idata[i];
+//				if (idata[i] < imin) imin = idata[i];
+//			}
+//		}
+//		System.out.println("imin = " + imin + " imax = " + imax);
 		
 		// TODO talk about wrong
 		ColorMap cmap = new ColorMap(16, new Color[] { Color.WHITE, Color.BLUE,
