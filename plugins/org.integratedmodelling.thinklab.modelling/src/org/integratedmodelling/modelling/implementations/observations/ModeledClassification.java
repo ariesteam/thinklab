@@ -14,6 +14,7 @@ import org.integratedmodelling.corescience.interfaces.data.IDataSource;
 import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -24,6 +25,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
@@ -42,7 +44,7 @@ public class ModeledClassification
 		new ArrayList<Pair<GeneralClassifier,IConcept>>();
 	
 	IConcept cSpace = null;
-	
+	double[] continuousDistribution = null;
 	private IDataSource<?> ds;
 
 	@Override
@@ -109,11 +111,8 @@ public class ModeledClassification
 					return p.getSecond();
 			}
 
-//          this is actually OK - those are nodata and can be caught with a nil classifier						
-//			ModellingPlugin.get().logger().warn(
-//					"value " + o + " does not classify as a valid " + getObservableClass() +
-//					": datasource will have null values");
-
+			// this is actually OK - 
+			// null means "no data"; it can be caught using with a nil classifier						
 			return null;
 		}
 
@@ -180,6 +179,10 @@ public class ModeledClassification
 		if (def != null)
 			cSpace = def.getConcept();
 
+		def = i.get("modeltypes:encodesContinuousDistribution");
+		if (def != null)
+			continuousDistribution = MiscUtilities.parseDoubleVector(def.toString());
+		
 		ds = getDataSource();
 	}
 	
@@ -220,10 +223,16 @@ public class ModeledClassification
 	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
 			throws ThinklabException {
 		
+		IContextualizedState ret = new ClassData(cSpace, size);
+
 		/*
-		 * TODO Metadata
+		 * TODO other metadata
 		 */
+		if (continuousDistribution != null)
+			ret.setMetadata(
+					Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS, 
+					continuousDistribution); 
 		
-		return new ClassData(cSpace, size);
+		return ret;
 	}
 }
