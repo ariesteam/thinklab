@@ -167,4 +167,10 @@
 	discretized categories in the passed probabilistic datasource. Throws an exception if the 
 	datasource is not encoding a continuous distribution."
 	[datasource]
-	(.getDistributionBreakpoints datasource))
+	(.getMetadata datasource "continuous_dist_breakpoints"))
+	
+(defn encodes-continuous-distribution? 
+	"True if the given datasource is the discrete encoding of a continuous probability distribution, 
+ 	 meaning that get-dist-breakpoints will not throw an exception when called."
+	[datasource]
+	(nil? (.getMetadata datasource "continuous_dist_breakpoints")))

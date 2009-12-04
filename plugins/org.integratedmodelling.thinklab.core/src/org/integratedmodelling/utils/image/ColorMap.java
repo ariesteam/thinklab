@@ -92,8 +92,93 @@ public class ColorMap {
 		}
 		
 		return new ColorMap(8, greys);
-		
 	}
+
+	/**
+	 * Make N green levels 
+	 * @param levels
+	 * @return
+	 */
+	public static ColorMap greenscale(int levels) {
+
+		/*
+		 * grey colormap, to be changed later
+		 */
+		Color[] greens = new Color[levels];
+		
+		int incr = 256/levels;		
+		for (int i = 0; i < levels; i++) {			
+			int level = i * incr;
+			greens[i] = new Color(0, level, 0);
+		}
+		
+		return new ColorMap(8, greens);
+	}
+
+	/**
+	 * Make N red levels 
+	 * @param levels
+	 * @return
+	 */
+	public static ColorMap redscale(int levels) {
+
+		/*
+		 * grey colormap, to be changed later
+		 */
+		Color[] reds = new Color[levels];
+		
+		int incr = 256/levels;		
+		for (int i = 0; i < levels; i++) {			
+			int level = i * incr;
+			reds[i] = new Color(level, 0, 0);
+		}
+		
+		return new ColorMap(8, reds);
+	}
+
+	/**
+	 * Make N yellow levels 
+	 * @param levels
+	 * @return
+	 */
+	public static ColorMap yellowscale(int levels) {
+
+		/*
+		 * grey colormap, to be changed later
+		 */
+		Color[] yellows = new Color[levels];
+		
+		int incr = 256/levels;		
+		for (int i = 0; i < levels; i++) {			
+			int level = i * incr;
+			yellows[i] = new Color(level, level, 0);
+		}
+		
+		return new ColorMap(8, yellows);
+	}
+
+	
+	/**
+	 * Make N blue levels 
+	 * @param levels
+	 * @return
+	 */
+	public static ColorMap bluescale(int levels) {
+
+		/*
+		 * grey colormap, to be changed later
+		 */
+		Color[] blues = new Color[levels];
+		
+		int incr = 256/levels;		
+		for (int i = 0; i < levels; i++) {			
+			int level = i * incr;
+			blues[i] = new Color(0, 0, level);
+		}
+		
+		return new ColorMap(8, blues);
+	}
+
 	
 	public void createColorModel(int bits, Color[] colors) {
 		int size = colors.length;
