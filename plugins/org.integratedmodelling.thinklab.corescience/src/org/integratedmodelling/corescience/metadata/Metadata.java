@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
-import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
