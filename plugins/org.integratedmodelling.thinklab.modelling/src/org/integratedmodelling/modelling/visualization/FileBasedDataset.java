@@ -1,6 +1,5 @@
 package org.integratedmodelling.modelling.visualization;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -29,6 +28,46 @@ public class FileBasedDataset implements IDataset {
 	private Map<IConcept, IContextualizedState> states;
 	private RasterGrid space;
 
+	// colormap identifiers
+	public static final int GREYS = 0;
+	public static final int GREENS = 1;
+	public static final int REDS = 2;
+	public static final int BLUES = 3;
+	public static final int YELLOWS = 4;
+	public static final int RAINBOW_CONTINUOUS = 5;
+	public static final int RAINBOW_DISCRETE = 6;
+	
+	public static ColorMap getColormap(int colormap, int levels) {
+		ColorMap ret = null;
+
+		switch (colormap) {
+		case GREYS:
+			ret = ColorMap.greyscale(levels);
+			break;
+		case GREENS:
+			ret = ColorMap.greenscale(levels);
+			break;
+		case REDS:
+			ret = ColorMap.redscale(levels);
+			break;
+		case BLUES:
+			ret = ColorMap.bluescale(levels);
+			break;
+		case YELLOWS:
+			ret = ColorMap.yellowscale(levels);
+			break;
+		case RAINBOW_CONTINUOUS:
+			ret = ColorMap.rainbow(levels);
+			break;
+		case RAINBOW_DISCRETE:
+			// TODO
+			ret = ColorMap.rainbow(levels);
+			break;
+		}
+		
+		return ret;
+	}
+	
 	public FileBasedDataset(IObservation obs) throws ThinklabException {
 
 		this.states = Obs.getStateMap(obs);
@@ -121,28 +160,29 @@ public class FileBasedDataset implements IDataset {
 		for (int i = 0; i < len; i++) {
 			idata[i] = (int)data[i];
 		}
-//		for (int i = 0; i < len; i++) {
-//			if (data[i] > max) max = data[i];
-//			if (data[i] < min) min = data[i];
-//		}
-//		
-//		System.out.println("min = " + min + " max = " + max);
-//		int imin = 0, imax = 0;
-//		for (int i = 0; i < len; i++) {
-//			idata[i] = (int)(((data[i]-min)/(max-min))*256.0);
-//			if (i == 0) {
-//				imin = idata[0];
-//				imax = idata[0];
-//			} else {
-//				if (idata[i] > imax) imax = idata[i];
-//				if (idata[i] < imin) imin = idata[i];
-//			}
-//		}
-//		System.out.println("imin = " + imin + " imax = " + imax);
+		for (int i = 0; i < len; i++) {
+			if (data[i] > max) max = data[i];
+			if (data[i] < min) min = data[i];
+		}
+
+		int imin = 0, imax = 0;
+		for (int i = 0; i < len; i++) {
+			idata[i] = (int)(((data[i]-min)/(max-min))*256.0);
+			if (i == 0) {
+				imin = idata[0];
+				imax = idata[0];
+			} else {
+				if (idata[i] > imax) imax = idata[i];
+				if (idata[i] < imin) imin = idata[i];
+			}
+		}
 		
-		// TODO talk about wrong
-		ColorMap cmap = new ColorMap(16, new Color[] { Color.WHITE, Color.BLUE,
-				Color.RED });
+		if ((imax - imin) <= 0)
+			// nothing to show
+			return null;
+		
+		// TODO select colormap using IDs or pass one
+		ColorMap cmap = ColorMap.rainbow(imax-imin);
 		
 		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
 				space.getColumns(), x, y, cmap, fileOrNull);
