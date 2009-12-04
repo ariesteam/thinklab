@@ -88,8 +88,10 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		
 		BayesianModel ret = new BayesianModel();
 		ret.copy(this);
-
-		// TODO the rest
+		ret.algorithm = this.algorithm;
+		ret.keepers = this.keepers;
+		ret.nodeModels = this.nodeModels;
+		ret.source = this.source;
 		return ret;
 	}
 

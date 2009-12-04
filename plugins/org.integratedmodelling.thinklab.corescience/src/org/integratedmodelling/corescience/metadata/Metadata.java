@@ -10,6 +10,7 @@ import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
 import org.integratedmodelling.utils.Pair;
@@ -205,11 +206,15 @@ public class Metadata {
 	 *  
 	 * This does not touch or rank the concepts. If the concepts have a ranking (such as the
 	 * lexicographic ranking found in Metadata.rankConcepts() it is the user's responsibility
-	 * that the concepts and the ranges make sense together.
+	 * that the concepts and the ranges make sense together. We do, however, enforce that continuous
+	 * ranges are propertly defined if the observable is the discretization of a continuous range.
 	 *  
 	 * @return
+	 * @throws ThinklabValidationException if the observable is a continuous range mapping but
+	 * 		   the classification has disjoint intervals.
 	 */
-	public static double[] computeDistributionBreakpoints(Collection<GeneralClassifier> cls) {
+	public static double[] computeDistributionBreakpoints(
+			IConcept observable, Collection<GeneralClassifier> cls) throws ThinklabValidationException {
 	
 		double[] ret = null;
 		
@@ -250,11 +255,14 @@ public class Metadata {
 		for (int n = 1; n < ranges.size(); n++) {
 		
 			Pair<Double,Double> pd = ranges.get(n);
-			if (Double.compare(pd.getFirst(), last) != 0) {
-				// FIXME this should be debug output at most, it could be perfectly OK, but it's an easy
-				// error to make.
-				ModellingPlugin.get().logger().warn("disjoint intervals on " + pd.getFirst() + " and " + last);
-				return null;
+			/*
+			 * we don't allow ordered range mappings to have disjoint intervals
+			 */
+			if (observable.is(KnowledgeManager.OrderedRangeMapping()) && 
+				Double.compare(pd.getFirst(), last) != 0) {
+				throw new ThinklabValidationException(
+						"disjoint intervals for ordered range mapping of " +
+						observable + ": " + pd.getFirst() + " -- " + last);
 			}
 			ret[i++] = pd.getFirst();
 			last = pd.getSecond();

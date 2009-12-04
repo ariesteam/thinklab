@@ -246,7 +246,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 					this.lang.equals(language.CLOJURE) ? "clojure" : "mvel"));
 		}
 
-		double[] breakpoints = Metadata.computeDistributionBreakpoints(classifiers);		
+		double[] breakpoints = Metadata.computeDistributionBreakpoints(observable, classifiers);		
 		if (breakpoints != null) {
 			arr.add(Polylist.list(
 					"modeltypes:encodesContinuousDistribution",

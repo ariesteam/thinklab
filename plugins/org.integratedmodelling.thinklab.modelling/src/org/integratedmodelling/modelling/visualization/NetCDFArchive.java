@@ -228,11 +228,12 @@ public class NetCDFArchive {
 				
 				// we have space only
 				String varname = getVarname(obs);
-			
+				IContextualizedState state = variables.get(obs);
+				
 				ArrayDouble data = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
 				Index ind = data.getIndex();
-				double[] dd = variables.get(obs).getDataAsDoubles();
-				double[] uu = (double[]) variables.get(obs).getMetadata(Metadata.UNCERTAINTY);
+				double[] dd = state.getDataAsDoubles();
+				double[] uu = (double[]) state.getMetadata(Metadata.UNCERTAINTY);
 				ArrayDouble unce = null;
 				if (uu != null)
 					unce = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
@@ -247,11 +248,10 @@ public class NetCDFArchive {
 						i++;
 					}	
 				}
-				
 				try {
 					ncfile.write(varname, data);
 					if (uu != null)
-						ncfile.write(varname+"U", unce);
+						ncfile.write(varname+"Uncertainty", unce);
 				} catch (Exception e) {
 					throw new ThinklabIOException(e);
 				}

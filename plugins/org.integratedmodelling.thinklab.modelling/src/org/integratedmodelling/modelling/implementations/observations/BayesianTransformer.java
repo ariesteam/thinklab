@@ -142,10 +142,8 @@ public class BayesianTransformer
 		 * store any prototypes
 		 */
 		for (IRelationship r : i.getRelationships(HAS_PROTOTYPE_MODEL)) {
-			IInstance inst = r.getValue().asObjectReference().getObject();
-			modelPrototypes.put(
-					inst.getDirectType(),
-					Obs.getObservation(inst));
+			IObservation prot = Obs.getObservation(r.getValue().asObjectReference().getObject());
+			modelPrototypes.put(prot.getObservableClass(), prot);
 		}
 		
 		IValue def = i.get(CoreScience.HAS_CONCEPTUAL_SPACE);
@@ -418,6 +416,11 @@ public class BayesianTransformer
 							CoreScience.HAS_DATASOURCE, 
 							pstorage[s].data.conceptualize()));
 			} else {
+		
+				/*
+				 * TODO ensure that metadata are communicated to the DS when created even if
+				 * the DS is already set as we do here.
+				 */
 				ddef = proto.getObservationInstance().toList(null);
 				ddef = 
 					ObservationFactory.addDatasource(

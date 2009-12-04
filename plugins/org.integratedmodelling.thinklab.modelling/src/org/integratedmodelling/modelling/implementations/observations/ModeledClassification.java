@@ -178,12 +178,17 @@ public class ModeledClassification
 		IValue def = i.get(CoreScience.HAS_CONCEPTUAL_SPACE);
 		if (def != null)
 			cSpace = def.getConcept();
+		
+		ds = getDataSource();
 
 		def = i.get("modeltypes:encodesContinuousDistribution");
 		if (def != null)
 			continuousDistribution = MiscUtilities.parseDoubleVector(def.toString());
-		
-		ds = getDataSource();
+
+		if (continuousDistribution != null && ds != null && (ds instanceof IContextualizedState))
+			((IContextualizedState)ds).setMetadata(
+					Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS, 
+					continuousDistribution); 
 	}
 	
 	@Override
