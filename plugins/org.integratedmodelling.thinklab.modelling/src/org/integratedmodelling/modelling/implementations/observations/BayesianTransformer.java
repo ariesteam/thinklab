@@ -56,7 +56,14 @@ public class BayesianTransformer
 	public static final String RETAINS_STATES = "modeltypes:retainsState";
 	public static final String HAS_NETWORK_SOURCE = "modeltypes:hasBayesianNetworkSource";
 	public static final String HAS_BAYESIAN_ALGORITHM = "modeltypes:hasBayesianAlgorithm";
-
+	public static final String HAS_PROTOTYPE_MODEL = "modeltypes:hasPrototypeModel";
+	
+	// if these were passed, we use them to build the dependent states that
+	// we compute with the BN. Otherwise they're just "stock" probabilistic 
+	// classifications.
+	public HashMap<IConcept, IObservation> modelPrototypes = 
+		new HashMap<IConcept, IObservation>();
+	
 	ArrayList<Pair<GeneralClassifier, IConcept>> classifiers = 
 		new ArrayList<Pair<GeneralClassifier,IConcept>>();
 	
@@ -131,6 +138,16 @@ public class BayesianTransformer
 					"bayesian transformer: network URL not specified and inline specs unimplemented");
 		}
 		
+		/*
+		 * store any prototypes
+		 */
+		for (IRelationship r : i.getRelationships(HAS_PROTOTYPE_MODEL)) {
+			IInstance inst = r.getValue().asObjectReference().getObject();
+			modelPrototypes.put(
+					inst.getDirectType(),
+					Obs.getObservation(inst));
+		}
+		
 		IValue def = i.get(CoreScience.HAS_CONCEPTUAL_SPACE);
 		if (def != null)
 			cSpace = def.getConcept();
@@ -171,7 +188,7 @@ public class BayesianTransformer
 			throws ThinklabException {
 		
 		// TODO set to false asap
-		boolean debug = true;
+		boolean debug = false;
 		HashMap<String, Integer> keyset = debug ? new HashMap<String, Integer>() : null;
 		HashMap<String, String> resset = debug ? new HashMap<String, String>() : null;
 		PrintWriter out = null;
@@ -388,13 +405,24 @@ public class BayesianTransformer
 		 */
 		for (int s = 0; s < pstorage.length; s++) {
 			
-			Polylist ddef = Polylist.list(
+			IConcept obsv = pstorage[s].observable;
+			IObservation proto = modelPrototypes.get(obsv);
+			Polylist ddef = null;
+			
+			if (proto == null) {
+				ddef = Polylist.list(
 					CoreScience.PROBABILISTIC_CLASSIFICATION,
 					Polylist.list(
-							CoreScience.HAS_OBSERVABLE, Polylist.list(pstorage[s].observable)),
+							CoreScience.HAS_OBSERVABLE, Polylist.list(obsv)),
 					Polylist.list(
 							CoreScience.HAS_DATASOURCE, 
 							pstorage[s].data.conceptualize()));
+			} else {
+				ddef = proto.getObservationInstance().toList(null);
+				ddef = 
+					ObservationFactory.addDatasource(
+							ddef, pstorage[s].data.conceptualize());
+			}
 			
 			rdef = ObservationFactory.addDependency(rdef, ddef);
 		}

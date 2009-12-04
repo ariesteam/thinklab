@@ -121,6 +121,8 @@
 	`(let [model# 
  	        	(modelling/j-make-bayesian)] 
  	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	   (doseq [inmodel# '~specs]
+		 	   (.addNodeModel model# (eval inmodel#)))
  	   model#))
  	   
 

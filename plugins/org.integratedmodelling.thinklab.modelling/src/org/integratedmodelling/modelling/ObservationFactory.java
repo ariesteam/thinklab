@@ -442,6 +442,17 @@ public class ObservationFactory {
 		return (RasterGrid)((Observation)obs).getExtent(Geospace.get().SpaceObservable());
 	}
 
+	/**
+	 * 
+	 * @param observation
+	 * @param ds
+	 * @return
+	 */
+	public static Polylist addDatasource(Polylist observation, Polylist ds) {
+		return observation.appendElement(
+				Polylist.list(CoreScience.HAS_DATASOURCE, ds));
+	}
+
 	
 	
 	
