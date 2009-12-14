@@ -97,9 +97,13 @@ public class ModelCommand implements ICommandHandler {
 		if (r.getTotalResultCount() > 0) {
 			
 			Polylist lr = r.getResultAsList(0, null);
-			
-			// session.getOutputStream().println(Polylist.prettyPrint(lr));
-			
+
+			if (command.hasOption("dump")) {
+				session.getOutputStream().println("--- RESULT OBSERVATION BEFORE CONTEXTUALIZATION ---");
+				session.getOutputStream().println(Polylist.prettyPrint(lr));
+				session.getOutputStream().println("--- RESULT OBSERVATION ENDS HERE ---");
+			}
+	
 			IInstance res = session.createObject(lr);
 			IInstance result = new ObservationFactory().contextualize(res, session);
 

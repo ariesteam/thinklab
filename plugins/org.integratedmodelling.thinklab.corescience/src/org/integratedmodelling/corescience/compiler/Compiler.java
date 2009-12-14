@@ -194,9 +194,10 @@ public class Compiler {
 	private Observation insertDependencies(ObservationContext context) {
 		
 		Observation ret = (Observation) context.getObservation();
-		contexts.put(ret.getObservableClass(), context);
 
+		contexts.put(ret.getObservableClass(), context);
 		addObservation(ret);
+
 		for (ObservationContext dep : context.getDependentContexts()) {
 			addObservationDependency(ret, insertDependencies(dep));
 		}
@@ -451,14 +452,21 @@ public class Compiler {
 //						o.getDependencies(), stateType);
 //		}
 		
+		boolean isMed = o.isMediator();
+		boolean shouldbe = o instanceof MediatingObservation;
+		
+		
+		
 		/*
 		 * the accessor is a mediator if we are mediating
 		 */
-		IStateAccessor accessor = 
-				((o.isMediator() && o instanceof MediatingObservation) ? 
-					((MediatingObservation)o).
-						getMediator((IndirectObservation) o.getMediatedObservation()) :
-					(o instanceof IndirectObservation ? ((IndirectObservation)o).getAccessor() : null));
+		IStateAccessor accessor = null;
+		
+		if (o.isMediator() && (o instanceof MediatingObservation)) {
+			accessor = ((MediatingObservation)o).getMediator((IndirectObservation) o.getMediatedObservation());
+		} else if (o instanceof IndirectObservation) {
+			accessor = ((IndirectObservation)o).getAccessor();
+		}
 		
 		if (accessor != null) {
 

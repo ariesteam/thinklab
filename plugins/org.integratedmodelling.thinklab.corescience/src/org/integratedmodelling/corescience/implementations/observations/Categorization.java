@@ -38,6 +38,7 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
+import org.integratedmodelling.corescience.interfaces.internal.MediatingObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
@@ -63,7 +64,7 @@ import org.integratedmodelling.utils.Polylist;
  *
  */
 @InstanceImplementation(concept="observation:Categorization")
-public class Categorization extends Observation implements IndirectObservation {
+public class Categorization extends Observation implements MediatingObservation {
 
 	private boolean isConstant = false;
 	private String value = null;
@@ -75,7 +76,7 @@ public class Categorization extends Observation implements IndirectObservation {
 
 	public class CategorizationAccessor implements IStateAccessor {
 
-		private int index = 0;
+		protected int index = 0;
 
 		@Override
 		public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
@@ -108,8 +109,17 @@ public class Categorization extends Observation implements IndirectObservation {
 		public String toString() {
 			return "[CategorizationAccessor]";
 		}
-
 	}
+	
+	public class CategorizationMediator extends CategorizationAccessor {
+
+		@Override
+		public Object getValue(Object[] registers) {
+			return registers[index];
+		}
+		
+	}
+
 
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
@@ -136,6 +146,12 @@ public class Categorization extends Observation implements IndirectObservation {
 	@Override
 	public IConcept getStateType() {
 		return KnowledgeManager.Text();
+	}
+
+	@Override
+	public IStateAccessor getMediator(IndirectObservation observation)
+			throws ThinklabException {
+		return new CategorizationMediator();
 	}
 
 }

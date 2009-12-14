@@ -22,4 +22,9 @@ public class Rasterize implements IDatasourceTransformation {
 		return this.extent;
 	}
 	
+	@Override
+	public String toString() {
+		return "rasterize to " + extent;
+	}
+	
 }

@@ -1,5 +1,6 @@
 package org.integratedmodelling.corescience.interfaces;
 
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Collection;
 
@@ -84,6 +85,6 @@ public interface IObservationContext {
 	 * Produce a listing of the contextualization strategy
 	 * @param out
 	 */
-	public void dump(PrintWriter out);
+	public void dump(PrintStream out);
 
 }

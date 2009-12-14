@@ -22,4 +22,9 @@ public class Resample implements IDatasourceTransformation {
 		return this.extent;
 	}
 	
+	@Override
+	public String toString() {
+		return "resample to " + extent;
+	}
+
 }

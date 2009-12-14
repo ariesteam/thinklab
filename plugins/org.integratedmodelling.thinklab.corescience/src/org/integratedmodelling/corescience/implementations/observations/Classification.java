@@ -38,6 +38,7 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
+import org.integratedmodelling.corescience.interfaces.internal.MediatingObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
@@ -65,7 +66,7 @@ import org.integratedmodelling.utils.Polylist;
  *
  */
 @InstanceImplementation(concept="observation:Classification")
-public class Classification extends Observation implements IndirectObservation {
+public class Classification extends Observation implements MediatingObservation {
 	
 	protected IConcept cspace;
 	
@@ -76,7 +77,7 @@ public class Classification extends Observation implements IndirectObservation {
 
 	public class ClassificationAccessor implements IStateAccessor {
 
-		private int index = 0;
+		protected int index = 0;
 		
 		@Override
 		public Object getValue(Object[] registers) {
@@ -112,6 +113,15 @@ public class Classification extends Observation implements IndirectObservation {
 			// TODO Auto-generated method stub
 			
 		}
+	}
+	
+	public class ClassificationMediator extends ClassificationAccessor {
+
+		@Override
+		public Object getValue(Object[] registers) {
+			return registers[index];
+		}
+		
 	}
 
 	@Override
@@ -149,6 +159,12 @@ public class Classification extends Observation implements IndirectObservation {
 	@Override
 	public IState createState(int size) throws ThinklabException {
 		return new ClassData(cspace, size);
+	}
+
+	@Override
+	public IStateAccessor getMediator(IndirectObservation observation)
+			throws ThinklabException {
+		return new ClassificationMediator();
 	}
 
 }

@@ -1,13 +1,15 @@
 package org.integratedmodelling.corescience.context;
 
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.integratedmodelling.corescience.compiler.Contextualizer;
+import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.compiler.Compiler;
+import org.integratedmodelling.corescience.compiler.Contextualizer;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IExtent;
@@ -18,14 +20,13 @@ import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransf
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
-import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 
 public class ObservationContext implements IObservationContext {
@@ -200,13 +201,35 @@ public class ObservationContext implements IObservationContext {
 	}
 
 	@Override
-	public void dump(PrintWriter out) {
-		// TODO list extents 
-		// TODO list processing
-		// TODO list transformations
-
+	public void dump(PrintStream printStream) {
+		dumpNode(this, printStream, 0, true);
 	}
 
+	private static void dumpNode(ObservationContext ctx,
+			PrintStream out, int i, boolean followtrans) {
+
+		String s = MiscUtilities.createWhiteSpace(i, 0);
+
+		if (followtrans && (ctx.observation instanceof TransformingObservation)) {
+			dumpNode(ctx.originalContext, out, i, false);
+			out.println(s + ">>> Transform to <<< ");
+		}
+		
+		for (ObservationContext dep : ctx.dependents) {
+			dumpNode(dep, out, i+0, true);
+		}
+		
+		out.println(s + ctx.observation + ":");
+
+		for (IConcept c : ctx.order) {
+			out.println(s + "@" + ctx.extents.get(c));
+		}
+
+		for (IDatasourceTransformation t : ctx.transformations) {
+			out.println(s + t);
+		}
+	}
+		
 	@Override
 	public IConcept getDimension(IConcept concept) throws ThinklabException {
 
@@ -309,6 +332,11 @@ public class ObservationContext implements IObservationContext {
 			obs = ObservationFactory.getObservation(
 					((TransformingObservation)obs).transform(inst, session, originalContext));
 
+			/*
+			 * set a possibly transformed observation into our slot
+			 */
+			this.observation = obs;
+
 			// must reset the dependencies and get those of the transformed obs. No 
 			// need to merge the contexts, as we have previously done that and the 
 			// transformer should generate contextualized observations.
@@ -319,10 +347,6 @@ public class ObservationContext implements IObservationContext {
 			}
 		}
 
-		/*
-		 * set a possibly transformed observation into our slot
-		 */
-		this.observation = obs;
 	}
 	
 	@Override
