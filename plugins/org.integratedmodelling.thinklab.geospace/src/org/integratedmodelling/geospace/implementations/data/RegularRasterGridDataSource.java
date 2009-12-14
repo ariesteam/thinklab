@@ -165,7 +165,7 @@ public class RegularRasterGridDataSource implements IDataSource<Object>, IInstan
 	public IDataSource<?> transform(IDatasourceTransformation transformation)
 			throws ThinklabException {
 		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override

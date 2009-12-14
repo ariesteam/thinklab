@@ -129,10 +129,10 @@ public class MemValueContextualizedDatasource
 	}
 
 	@Override
-	public IDataSource transform(IDatasourceTransformation transformation)
+	public IDataSource<?> transform(IDatasourceTransformation transformation)
 			throws ThinklabException {
 		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override

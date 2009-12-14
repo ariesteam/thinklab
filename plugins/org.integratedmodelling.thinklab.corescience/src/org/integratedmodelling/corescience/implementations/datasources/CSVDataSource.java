@@ -250,7 +250,7 @@ public class CSVDataSource implements IDataSource<Object>, IInstanceImplementati
 	public IDataSource<?> transform(IDatasourceTransformation transformation)
 			throws ThinklabException {
 		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 
