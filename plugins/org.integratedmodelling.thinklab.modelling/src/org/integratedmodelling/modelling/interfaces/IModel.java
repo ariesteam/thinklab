@@ -12,8 +12,6 @@ import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
-
 /**
  * The most high-level notion in Thinklab. Essentially a query that returns 
  * observations of a concept given a kbox and a session. It is nothing but a set

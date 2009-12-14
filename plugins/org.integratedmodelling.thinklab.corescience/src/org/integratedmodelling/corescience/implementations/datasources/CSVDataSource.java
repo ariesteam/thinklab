@@ -40,12 +40,10 @@ import java.util.Collection;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabInconsistentDataSourceException;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueTransformationFilter;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.data.IDataFilter;
-import org.integratedmodelling.corescience.interfaces.data.IDataSource;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IDataSource;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -86,7 +84,7 @@ public class CSVDataSource implements IDataSource<Object>, IInstanceImplementati
 
 	String url = null;
 	boolean isExcel = false;
-	ArrayList<org.integratedmodelling.corescience.interfaces.data.IDataFilter> filters = new ArrayList<org.integratedmodelling.corescience.interfaces.data.IDataFilter>();
+	ArrayList<ColumnFilter> filters = new ArrayList<ColumnFilter>();
 	ArrayList<String> data = new ArrayList<String>();
 	int nrows = -1;
 	int ncols = -1;
@@ -115,8 +113,8 @@ public class CSVDataSource implements IDataSource<Object>, IInstanceImplementati
 				theFilter = r.getValue().asObjectReference().getObject().getImplementation();
 			}
 			
-			if (theFilter != null && theFilter instanceof IDataFilter)
-				filters.add((IDataFilter)theFilter);
+			if (theFilter != null)
+				filters.add((ColumnFilter) theFilter);
 			
 		}
 		
@@ -124,24 +122,15 @@ public class CSVDataSource implements IDataSource<Object>, IInstanceImplementati
 		initialize(url, filters);
 	}
 
-	public void validate(IInstance i) throws ThinklabValidationException {
 
-		/* read all mappings, prepare symbol table */
-		
-		/* read in all transformations and compile expressions */
-		
-		/* prepare transformation chains to attach to each symbol */
-		
-	}
-
-	public void initialize(String url, Collection<IDataFilter> filters) throws ThinklabInconsistentDataSourceException, ThinklabIOException {
+	public void initialize(String url, Collection<ColumnFilter> filters) throws ThinklabInconsistentDataSourceException, ThinklabIOException {
 		
 		ColumnFilter cfilter = null;
 		
 		/*
 		 * Start with the column filter, if any. We silently ignore multiple ones.
 		 */
-		for (IDataFilter f : filters) {
+		for (ColumnFilter f : filters) {
 			if (f instanceof ColumnFilter) {
 				cfilter = (ColumnFilter) f;
 				break;
@@ -232,32 +221,13 @@ public class CSVDataSource implements IDataSource<Object>, IInstanceImplementati
 		 * reliable sequence unless we use messy RDF lists. Which at this time we
 		 * don't. So cascading transformations is unreliable.
 		 */
-		for (IDataFilter f : filters) {
-
-			if (f instanceof IValueTransformationFilter) {
-				ret = ((IValueTransformationFilter)f).transform(ret);
-			}
+		for (ColumnFilter f : filters) {
+			ret = f.transform(ret);
 		}
 		
 		return ret;
 	}
 
-
-	public boolean handshake(IObservation observation, IConceptualModel cm, IObservationContext observationContext, IObservationContext overallContext) throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		
-		/* ensure mappings are understood and we have appropriate info to resolve contexts */
-		
-		/* attach any transformation chain to each exposed mapping */
-		
-		/* check dimensionality and extents; if we need to interpolate or extrapolate, check
-		 * conceptual model for appropriate methods. Should use virtuals here and have a nice
-		 * general way of understanding and negotiating context differences and the associated
-		 * uncertainties.
-		 */
-		
-		return false;
-	}
 
 	public IConcept getValueType() {
 		// FIXME this should return a configured type
@@ -276,4 +246,33 @@ public class CSVDataSource implements IDataSource<Object>, IInstanceImplementati
 		return null;
 	}
 
+	@Override
+	public IDataSource<?> transform(IDatasourceTransformation transformation)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void validate(IInstance i) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void postProcess(IObservationContext context)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void preProcess(IObservationContext context)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
 }

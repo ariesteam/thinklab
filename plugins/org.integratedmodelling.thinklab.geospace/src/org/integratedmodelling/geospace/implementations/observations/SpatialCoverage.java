@@ -32,12 +32,14 @@
  **/
 package org.integratedmodelling.geospace.implementations.observations;
 
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.implementations.cmodels.FeatureCoverageModel;
-import org.integratedmodelling.geospace.implementations.cmodels.SubdividedCoverageConceptualModel;
+import org.integratedmodelling.geospace.extents.ShapeExtent;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -50,10 +52,11 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * @author Ferdinando Villa
  */
 @InstanceImplementation(concept="geospace:ArealFeatureSet")
-public class SpatialCoverage extends Observation {
+public class SpatialCoverage extends Observation implements Topology {
 
 	double latLB, lonLB, latUB, lonUB;
 	CoordinateReferenceSystem crs;
+	private ShapeExtent extent;
 	
 	public void initialize(IInstance i) throws ThinklabException {
 
@@ -87,16 +90,25 @@ public class SpatialCoverage extends Observation {
 		}
 
 		if (crsId != null)
-			crs = SubdividedCoverageConceptualModel.getCRSFromID(crsId);
+			crs = Geospace.getCRSFromID(crsId);
 		
 		super.initialize(i);
 
+		this.extent = new ShapeExtent(this.getBoundary(), crs);
 	}
 	
+	ReferencedEnvelope getBoundary() {
+		return new ReferencedEnvelope(lonLB, lonUB, latLB, latUB, crs);
+	}
+
 	@Override
-	public IConceptualModel createMissingConceptualModel()
-			throws ThinklabException {
-		
-		return new FeatureCoverageModel(latLB, latUB, lonLB, lonUB, crs);
+	public Restriction getConstraint(String operator) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IExtent getExtent() throws ThinklabException {
+		return extent;
 	}
 }

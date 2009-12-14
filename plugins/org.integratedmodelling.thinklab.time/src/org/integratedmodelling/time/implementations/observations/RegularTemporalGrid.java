@@ -34,13 +34,15 @@ package org.integratedmodelling.time.implementations.observations;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.time.TimePlugin;
-import org.integratedmodelling.time.implementations.cmodels.TemporalGridConceptualModel;
+import org.integratedmodelling.time.extents.RegularTimeGridExtent;
 import org.integratedmodelling.time.literals.DurationValue;
 import org.integratedmodelling.time.literals.TimeValue;
 import org.integratedmodelling.utils.Polylist;
@@ -50,12 +52,13 @@ import org.integratedmodelling.utils.Polylist;
  *
  */
 @InstanceImplementation(concept="time:RegularTemporalGrid")
-public class RegularTemporalGrid extends Observation implements IConceptualizable {
+public class RegularTemporalGrid extends Observation implements Topology {
 
 	TimeValue start = null;
 	TimeValue end = null;
 	DurationValue step = null;
-
+	
+	RegularTimeGridExtent extent = null;
 
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
@@ -74,12 +77,9 @@ public class RegularTemporalGrid extends Observation implements IConceptualizabl
 		}
 		
 		super.initialize(i);
-	}
-
-	@Override
-	public IConceptualModel createMissingConceptualModel() throws ThinklabException {
-		// TODO Auto-generated method stub
-		return new TemporalGridConceptualModel(start, end, step);
+		
+		this.extent = new RegularTimeGridExtent(
+				start.getTimeData(), end.getTimeData(), step.getMilliseconds());
 	}
 
 	@Override
@@ -90,6 +90,17 @@ public class RegularTemporalGrid extends Observation implements IConceptualizabl
 				Polylist.list(TimePlugin.STARTS_AT_PROPERTY_ID, start.toString()),
 				Polylist.list(TimePlugin.ENDS_AT_PROPERTY_ID, end.toString()),
 				Polylist.list(TimePlugin.STEP_SIZE_PROPERTY_ID, step));
+	}
+
+	@Override
+	public Restriction getConstraint(String operator) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IExtent getExtent() throws ThinklabException {
+		return extent;
 	}
 
 }

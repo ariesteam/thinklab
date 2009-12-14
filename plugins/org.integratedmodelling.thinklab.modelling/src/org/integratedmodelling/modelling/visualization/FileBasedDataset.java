@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
-import org.integratedmodelling.corescience.Obs;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.ObservationFactory;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.modelling.interfaces.IDataset;
@@ -25,7 +25,7 @@ import org.integratedmodelling.utils.image.ImageUtil;
  */
 public class FileBasedDataset implements IDataset {
 
-	private Map<IConcept, IContextualizedState> states;
+	private Map<IConcept, IState> states;
 	private RasterGrid space;
 
 	// colormap identifiers
@@ -70,8 +70,8 @@ public class FileBasedDataset implements IDataset {
 	
 	public FileBasedDataset(IObservation obs) throws ThinklabException {
 
-		this.states = Obs.getStateMap(obs);
-		IObservation spc = Obs.findObservation(obs, Geospace.get().SubdividedSpaceObservable());		
+		this.states = ObservationFactory.getStateMap(obs);
+		IObservation spc = ObservationFactory.findObservation(obs, Geospace.get().SubdividedSpaceObservable());		
 		if (spc == null || !(spc instanceof RasterGrid))
 			throw new ThinklabUnimplementedFeatureException(
 					"only raster grid data are supported in NetCDF exporter for now");
@@ -98,7 +98,7 @@ public class FileBasedDataset implements IDataset {
 	}
 
 	@Override
-	public IContextualizedState getState(IConcept observable) {
+	public IState getState(IConcept observable) {
 		return states.get(observable);
 	}
 
@@ -141,7 +141,7 @@ public class FileBasedDataset implements IDataset {
 	public String makeSurfacePlot(IConcept observable, String fileOrNull,
 			int x, int y, int... flags) throws ThinklabException {
 		
-		IContextualizedState state = states.get(observable);
+		IState state = states.get(observable);
 
 		if (fileOrNull == null) {
 			try {

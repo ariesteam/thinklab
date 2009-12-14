@@ -33,6 +33,7 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 
 /**
@@ -43,7 +44,7 @@ import org.integratedmodelling.thinklab.literals.TextValue;
  * @author UVM Affiliate
  *
  */
-public class ColumnFilter extends TextValue implements org.integratedmodelling.corescience.interfaces.data.IDataFilter {
+public class ColumnFilter extends TextValue {
 
 	String columns[] = null;
 	
@@ -82,5 +83,10 @@ public class ColumnFilter extends TextValue implements org.integratedmodelling.c
 	
 	public int columnNumber(int i) {
 		return Integer.decode(columns[i]);
+	}
+
+	public IValue transform(IValue ret) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

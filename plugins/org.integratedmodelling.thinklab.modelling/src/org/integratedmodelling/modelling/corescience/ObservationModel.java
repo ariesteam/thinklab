@@ -26,7 +26,7 @@ public class ObservationModel extends DefaultAbstractModel {
 	}
 
 	@Override
-	protected void validateMediatedModel(IModel model)
+	public void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
 		
 		/*

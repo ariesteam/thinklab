@@ -1,82 +1,26 @@
-/**
- * Observation.java
- * ----------------------------------------------------------------------------------
- * 
- * Copyright (C) 2008 www.integratedmodelling.org
- * Created: Jan 17, 2008
- *
- * ----------------------------------------------------------------------------------
- * This file is part of ThinklabCoreSciencePlugin.
- * 
- * ThinklabCoreSciencePlugin is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- * 
- * ThinklabCoreSciencePlugin is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with the software; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * 
- * ----------------------------------------------------------------------------------
- * 
- * @copyright 2008 www.integratedmodelling.org
- * @author    Ferdinando Villa (fvilla@uvm.edu)
- * @date      Jan 17, 2008
- * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
- * @link      http://www.integratedmodelling.org
- **/
 package org.integratedmodelling.corescience.implementations.observations;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.Obs;
-import org.integratedmodelling.corescience.contextualization.Compiler;
-import org.integratedmodelling.corescience.contextualization.ObservationContext;
-import org.integratedmodelling.corescience.exceptions.ThinklabContextValidationException;
-import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
-import org.integratedmodelling.corescience.interfaces.cmodel.TransformingConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
-import org.integratedmodelling.corescience.interfaces.data.IDataSource;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
-import org.integratedmodelling.corescience.listeners.IContextualizationListener;
-import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.corescience.interfaces.IDataSource;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.utils.LogicalConnector;
+import org.integratedmodelling.utils.Polylist;
 
-/**
- * Base implementation for an Observation instance. Initializes the observation
- * and its context, defers operations to subclasses. Gives API access to data,
- * contexts, observable and conceptual model.
- * 
- * Most importantly, it provides the contextualization functionalities that
- * allow context compilation to work. So unless you don't plan to contextualize,
- * don't even dream of not deriving your IObservation from this one.
- * 
- * @author Ferdinando Villa
- */
 @InstanceImplementation(concept = "observation:Observation")
 public class Observation implements IObservation, IInstanceImplementation {
-
+	
 	private String formalName = null;
 	
 	/*
@@ -86,46 +30,32 @@ public class Observation implements IObservation, IInstanceImplementation {
 	 * their own DS and CM.
 	 */
 	private IValue dataSourceHolder = null;
-	private IValue conceptualModelHolder = null;
 
-	protected IDataSource<?> dataSource = null;
-	protected IConceptualModel conceptualModel = null;
+	private IDataSource<?> dataSource = null;
 	protected IInstance observable = null;
 	protected IInstance observation = null;
 	protected IInstance dataSourceValue = null;
-	protected IObservation[] contingencies = new IObservation[0];
 	protected IObservation[] dependencies = new IObservation[0];
-	protected IObservation[] extentDependencies = new IObservation[0];
+	protected Topology[] extentDependencies = new Topology[0];
 	protected IObservation[] nonExtentDependencies = new IObservation[0];
 	protected IObservation[] sameExtentAntecedents = new IObservation[0];
 	protected IObservation[] antecedents = new IObservation[0];
 	protected IObservation mediatedObservation = null;
 	protected IObservation mediatorObservation = null;
-	private boolean beingTransformed = false;
+//	private boolean beingTransformed = false;
+//	private boolean isTransformed = false;
 	
-	/*
-	 * this is to record the fact that this observation has been transformed. The result of 
-	 * this is that if we are a dependency of another, the dependency corresponding to us
-	 * in the compiler will be a different observation that can be assumed contextualized.
-	 */
-	protected boolean wasTransformed = false;
-	/*
-	 * this records that the current observation is the result of a transformation.
-	 */
-	protected boolean isTransformed = false;
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.integratedmodelling.ima.corescience.IObservation#getDataSource()
-	 */
-	public IDataSource<?> getDataSource() throws ThinklabException {
+	public IDataSource<?> getDataSource()  {
 
 		if (dataSource == null && dataSourceHolder != null) {
 
 			if (dataSourceHolder.isObjectReference())
-				dataSource = (IDataSource<?>) dataSourceHolder
-						.asObjectReference().getObject().getImplementation();
+				try {
+					dataSource = (IDataSource<?>) dataSourceHolder
+							.asObjectReference().getObject().getImplementation();
+				} catch (ThinklabException e) {
+					throw new ThinklabRuntimeException(e);
+				}
 			else
 				dataSource = (IDataSource<?>) dataSourceHolder;
 		}
@@ -137,84 +67,51 @@ public class Observation implements IObservation, IInstanceImplementation {
 		return mediatedObservation;
 	}
 
-	public IConceptualModel getConceptualModel() throws ThinklabException {
-
-		if (conceptualModel == null && conceptualModelHolder != null) {
-
-			if (conceptualModelHolder.isObjectReference())
-				conceptualModel = (IConceptualModel) conceptualModelHolder
-						.asObjectReference().getObject().getImplementation();
-			else
-				conceptualModel = (IConceptualModel) conceptualModelHolder;
-		}
-
-		return conceptualModel;
+	@Override
+	public IObservation[] getDependencies() {
+		return nonExtentDependencies;
 	}
 
-	/**
-	 * Create an appropriate conceptual model if it is missing. This one is not
-	 * relevant to observations whose CM is defined in OWL. Those whose CM can
-	 * be implicit, like any observation created through a literal or shortened
-	 * form, should implement this one unless the observation class itself is
-	 * also the CM, which is handled correctly.
-	 * 
-	 * @return a new conceptual model value for the observation.
-	 * @throws ThinklabException
-	 *             if anything goes wrong
-	 */
-	protected IConceptualModel createMissingConceptualModel()
-			throws ThinklabException {
-		
-		if (this instanceof IConceptualModel)
-			return (IConceptualModel) this;
-		
-		return null;
+	@Override
+	public Topology[] getTopologies() {
+		return extentDependencies;
 	}
 
-	/**
-	 * Create an appropriate datasource if it is missing. Can be used to
-	 * simplify definition of observation where the datasource is obvious.
-	 * 
-	 * @return a new conceptual model value for the observation.
-	 * @throws ThinklabException
-	 *             if anything goes wrong
-	 * @Override
-	 */
-	protected IDataSource<?> createMissingDatasource() throws ThinklabException {
-		return null;
+	@Override
+	public IInstance getObservable() {
+		return observable;
 	}
 
-	public void validate(IInstance i) throws ThinklabException {
-
-		/*
-		 * if we had no conceptual model, have the derived observation create an
-		 * appropriate one.
-		 */
-		if (conceptualModel == null)
-			conceptualModel = createMissingConceptualModel();
-
-		/*
-		 * we allow a null CM, which should be limited to identifications.
-		 */
-		if (conceptualModel != null)
-			conceptualModel.validate(this);
-
-		/*
-		 * if we had no datasource, have the derived obs create one if
-		 * appropriate.
-		 */
-		if (dataSource == null)
-			dataSource = createMissingDatasource();
-
+	public IConcept getObservationClass() {
+		return observation.getDirectType();
 	}
 
-	/**
-	 * collect observable, datasource, conceptual model, and all contingencies
-	 * and dependencies; classify dependencies into extent and non-extent. After
-	 * this is done, validate() will be called and the virtuals
-	 * createMissingConceptualModel() and createMissingDatasource() will be
-	 * called in sequence if no CM or DS are provided.
-	 */
+	public IInstance getObservationInstance() {
+		return observation;
+	}
+	
+	public String toString() {
+		return "[" + this.observation.getDirectType() + ": "
+				+ this.observable.getLocalName() + " ("
+				+ this.observable.getType() + ")]";
+	}
+
+	@Override
+	public IObservation getMediatorObservation() {
+		return mediatorObservation;
+	}
+
+	@Override
+	public boolean isMediated() {
+		return mediatorObservation != null;
+	}
+
+	@Override
+	public boolean isMediator() {
+		return mediatedObservation != null;
+	}
+
+	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 
 		/*
@@ -223,7 +120,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 		observation = i;
 
 		ArrayList<IObservation> dep = new ArrayList<IObservation>();
-		ArrayList<IObservation> con = new ArrayList<IObservation>();
 		ArrayList<IObservation> ext = new ArrayList<IObservation>();
 		ArrayList<IObservation> nxt = new ArrayList<IObservation>();
 		ArrayList<IObservation> sea = new ArrayList<IObservation>();
@@ -247,9 +143,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 				} else if (dataSourceHolder == null
 						&& r.getProperty().is(CoreScience.HAS_DATASOURCE)) {
 					dataSourceHolder = r.getValue();
-				} else if (conceptualModelHolder == null
-						&& r.getProperty().is(CoreScience.HAS_CONCEPTUAL_MODEL)) {
-					conceptualModelHolder = r.getValue();
 				} else if (r.getProperty().is(CoreScience.DEPENDS_ON)) {
 
 					dep.add((IObservation) r.getValue().asObjectReference()
@@ -269,11 +162,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 								.getImplementation();
 					}
 
-				} else if (r.getProperty().is(CoreScience.HAS_CONTINGENCY)) {
-
-					con.add((IObservation) r.getValue().asObjectReference()
-							.getObject().getImplementation());
-					
 				} else if (r.getProperty().is(CoreScience.DERIVED_FROM)) {
 					
 					ant.add((IObservation) r.getValue().asObjectReference()
@@ -286,9 +174,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 				}
 			}
 		}
-
-		if (con.size() > 0)
-			contingencies = con.toArray(contingencies);
 
 		if (dep.size() > 0)
 			dependencies = dep.toArray(dependencies);
@@ -305,8 +190,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 		if (ant.size() > 0)
 			antecedents = ant.toArray(antecedents);
 		
-		conceptualModel = getConceptualModel();
-
 		/*
 		 * if we are mediating something and we have our own observable, we must
 		 * be punished. This may be questionable in general, but that's our
@@ -338,380 +221,81 @@ public class Observation implements IObservation, IInstanceImplementation {
 		if (mediatedObservation != null) {
 			((Observation) mediatedObservation).mediatorObservation = this;
 		}
+
 	}
 
-	public IConcept getObservableClass() {
-		return observable.getType();
-	}
-
-	public IInstance getObservable() {
-		return observable;
-	}
-
-	public IObservation[] getContingencies() {
-		return contingencies;
-	}
-
-	/**
-	 * Get all the dependencies, extents and not
-	 */
-	public IObservation[] getDependencies() {
-		return dependencies;
-	}
-
-	/**
-	 * Get the extents only
-	 * 
-	 * @return
-	 */
-	public IObservation[] getExtentDependencies() {
-		return extentDependencies;
-	}
-
-	/**
-	 * Get all the dependencies that are not extents
-	 * 
-	 * @return
-	 */
-	public IObservation[] getNonExtentDependencies() {
-		return nonExtentDependencies;
-	}
-
-	/**
-	 * Get the extent observation that observes the passed observable
-	 * 
-	 * @param extentObservable
-	 * @return
-	 */
-	public IObservation getExtent(IConcept extentObservable) {
-
-		IObservation ret = null;
-		for (IObservation ext : getExtentDependencies()) {
-
-			if (ext.getObservableClass().is(extentObservable)) {
-				ret = ext;
-				break;
-			}
-		}
-
-		return ret;
-	}
-
-	/*
-	 * Utility method to retrieve whatever implementation we have for a related
-	 * object. The IValue returned could be an ObjectReferenceValue if the
-	 * "thing" has been represented as an object, in which case we may need the
-	 * implementation of THAT. In most cases the value will be the
-	 * implementation.
-	 * 
-	 * Uses the transitive closure of the property.
-	 */
-	static public IValue getRelatedImplementation(IInstance i, String property)
-			throws ThinklabException {
-
-		Collection<IRelationship> rels = i.getRelationshipsTransitive(property);
-		return rels.iterator().hasNext() ? rels.iterator().next().getValue()
-				: null;
-	}
-
-	/**
-	 * TODO we should have contingencies merged in here, but then it becomes
-	 * much more complex to merge in extent CMs and it may be impossible if
-	 * they're not representation-compatible along contingencies, which may 
-	 * well happen. If we throw an exception in that case, we cut out a lot
-	 * of useful possibilities, so we should have a "lenient" way of merging
-	 * that isn't used in contextualization but returns the full extents for
-	 * all dimensions.
-	 */
-	public IObservationContext getObservationContext() throws ThinklabException {
-
-		ObservationContext ret = new ObservationContext(this);
-
-		for (IObservation oo : getDependencies()) {
-
-			/* merge extents appropriately */
-			if (((Observation) oo).conceptualModel instanceof ExtentConceptualModel)
-				ret.mergeExtent(oo, LogicalConnector.INTERSECTION);
-			else {
-				/* FIXME should notify dependency, too? */
-			}
-		}
-
-		ret.initialize();
-
-		return ret;
-	}
-
-	public IObservationContext getOverallContext(
-			IContextualizationCompiler compiler, ISession session,
-			Collection<IContextualizationListener> listeners)
-			throws ThinklabException {
-
-		ObservationContext ret = getCommonObservationContext_(compiler,
-				session, new HashSet<Observation>(), listeners, null);
-
-		return ret;
-	}
-	
-	private ObservationContext getCommonObservationContext_(
-			IContextualizationCompiler compiler, ISession session,
-			HashSet<Observation> inserted, 
-			Collection<IContextualizationListener> listeners,
-			ObservationContext toplevel) throws ThinklabException {
-
-		if (inserted.contains(this))
-			return null;
-
-		ObservationContext ret = new ObservationContext(this);
-		if (toplevel == null) {
-			toplevel = new ObservationContext(this);
-		}
+	@Override
+	public void validate(IInstance i) throws ThinklabException {
 		
-		/* compute the top level context as we go, to constrain transformers that need to
-		 * be contextualized independently. */
-		for (IObservation ext : getExtentDependencies()) {
-			toplevel.mergeExtent(ext, LogicalConnector.INTERSECTION);
-		}
-
-		if (getConceptualModel() instanceof TransformingConceptualModel && !this.beingTransformed) {
-
-			this.beingTransformed = true;
-			
-			// ensure that we pass all extents from the top-level context here, otherwise
-			// the transformer won't see the constraints
-			ret.mergeExtents(toplevel, LogicalConnector.INTERSECTION, true);
-			
-			IInstance inst = Compiler.contextualize(this, session, listeners, ret);
-			IInstance trs = 
-				((TransformingConceptualModel) getConceptualModel())
-					.transformObservation(inst, session);
-			Observation obs = extractObservationFromInstance(trs);
-
-			this.wasTransformed = true;
-			obs.isTransformed = true;
-			
-			compiler.addObservation(obs);
-			
-			this.beingTransformed = false;
-
-			// this also notifies the new dependencies and provenance data
-			compiler.setTransformedObservation(getObservableClass(), trs);
-			
-			return (ObservationContext) obs.getObservationContext();
-		}
-
 		/*
-		 * first thing, make sure that the compiler knows it must calculate us,
-		 * or we won't be able to set dependencies later.
+		 * if we had no datasource, have the derived obs create one if
+		 * appropriate.
 		 */
-		compiler.addObservation(this);
-
-		/* if I am an extent, set context from it. */
-		if (conceptualModel instanceof ExtentConceptualModel) {
-			ret.mergeExtent(this, /*getContextDimension(this),*/
-					LogicalConnector.INTERSECTION/*, true */);
-		}
-
-		/*
-		 * AND the merged extent of the contingencies that are not extents with
-		 * the extents of the dependencies
-		 */
-		for (IObservation dependency : getNonExtentDependencies()) {
-
-			/* contextualize obs */
-			ObservationContext oc = (ObservationContext) (((Observation) dependency)
-					.getCommonObservationContext_(compiler, session, inserted, listeners, toplevel));
-
-			/* notify dependency */
-			if (oc != null) {
-				
-				// if transformed, this sets the appropriate obs in the dep chain.
-				compiler.addObservation(oc.getObservation());
-				compiler.addObservationDependency(this, oc.getObservation());
-
-				/* merge extents appropriately */
-				ret.mergeExtents(oc, LogicalConnector.INTERSECTION, false);
-			}
-		}
-
-		/*
-		 * Constrain all existing extents with any extents we may have with the
-		 * extents of the dependencies
-		 */
-		for (IObservation dependency : getExtentDependencies()) {
-
-			/* contextualize obs */
-			ObservationContext oc = (ObservationContext) (((Observation) dependency)
-					.getCommonObservationContext_(compiler, session, inserted, listeners, toplevel));
-
-			/* notify dependency */
-			if (oc != null) {
-				compiler.addObservationDependency(this, dependency);
-
-				/* merge extents appropriately */
-				ret.mergeExtents(oc, LogicalConnector.INTERSECTION, true);
-			}
-		}
-
-		// initialize this context
-		ret.initialize();
-
-		return ret;
+		if (dataSource == null)
+			dataSource = createMissingDatasource();
+		
 	}
 	
-	public IConcept getObservationClass() {
-		return observation.getDirectType();
-	}
-
-	public IInstance getObservationInstance() {
-		return observation;
-	}
-
-	private static Observation extractObservationFromInstance(IInstance object)
-			throws ThinklabException {
-
-		IInstanceImplementation oo = object.getImplementation();
-
-		if (oo == null || !(oo instanceof Observation))
-			throw new ThinklabContextValidationException(
-					"observation in context of " + object + " is not valid");
-
-		return (Observation) oo;
-	}
-
-	/**
-	 * Determine the context dimension for this observation. Done by determining
-	 * the most general common observable.
-	 * 
-	 * FIXME very much unverified
-	 * 
-	 * @param obs
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public static IConcept getContextDimension(IObservation obs)
-			throws ThinklabException {
-
-		IConcept ctg = obs.getObservableClass();
-		IConcept obo = KnowledgeManager.Thing();
-
-		do {
-			ctg = ctg.getLeastGeneralCommonConcept(obo);
-		} while (!ctg.equals(obo) && ctg.isAbstract());
-
-		if (ctg.equals(obo))
-			/* no non-abstract observation classes; it's independent */
-			return obs.getObservableClass();
-
-		return ctg;
-	}
-	
-	public String toString() {
-		return "[" + this.observation.getDirectType() + ": "
-				+ this.observable.getLocalName() + " ("
-				+ this.observable.getType() + ")]";
-	}
-
-	@Override
-	public IObservation getMediatorObservation() {
-		return mediatorObservation;
-	}
-
-	@Override
-	public boolean isMediated() {
-		return mediatorObservation != null;
-	}
-
-	@Override
-	public boolean isMediator() {
-		return mediatedObservation != null;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-
-		return (obj instanceof Observation) ? observation
-				.equals(((Observation) obj).observation) : false;
-	}
-
-	@Override
-	public int hashCode() {
-		return observation.hashCode();
-	}
-
-	@Override
-	public IObservation getObservation(IConcept observable) {
-		return Obs.findObservation(this, observable);
-	}
-
-	@Override
-	public IContextualizedState getState(IConcept observable)
-			throws ThinklabException {
-
-		IObservation o = getObservation(observable);
-		if (o != null && o.getDataSource() != null
-				&& o.getDataSource() instanceof IContextualizedState)
-			return (IContextualizedState) o.getDataSource();
+	protected IDataSource<?> createMissingDatasource() throws ThinklabException {
 		return null;
 	}
-
+	
 	@Override
-	public void addContingency(IInstance cont) throws ThinklabException {
+	public Polylist conceptualize() throws ThinklabException {
 
-		this.observation.addObjectRelationship(
-				CoreScience.HAS_CONTINGENCY, cont);
-		
-		IObservation[] oc = new IObservation[contingencies.length+1];
-		int i = 0;
-		for (IObservation o : contingencies)
-			oc[i++] = o;
-		oc[i] = Obs.getObservation(cont);
-		
-		contingencies = oc;
-		
+		return Polylist.list(
+				CoreScience.OBSERVATION,
+				Polylist.list(CoreScience.HAS_OBSERVABLE,
+						(getObservable() instanceof IConceptualizable) ? 
+								((IConceptualizable)getObservable()).conceptualize() :
+								getObservable().toList(null)));
 	}
 
 	@Override
-	public String getFormalName() {
-		return formalName;
-	}
-
-	@Override
-	public boolean isContextualized(IObservationContext context) throws ThinklabException {
-		
-		if (dataSource != null && !(dataSource instanceof IContextualizedState)) 
-			return false;
-		
-		for (IObservation obs : getExtentDependencies()) {
-			IExtent ext = context.getExtent(obs.getObservableClass());
-			if (ext != null && !ext.equals(((ExtentConceptualModel)obs.getConceptualModel()).getExtent()))
-				return false;
-		}
-		
-		for (IObservation obs : getNonExtentDependencies()) {
-			if (!obs.isContextualized(context))
-				return false;
-		}
-		return false;
+	public IConcept getObservableClass() {
+		return observable.getDirectType();
 	}
 
 	@Override
 	public IObservation[] getAntecedents() {
-		return antecedents;
-	}
-
-	@Override
-	public IObservation[] getSameExtentAntecedents() {
 		return sameExtentAntecedents;
 	}
 
-	@Override
-	public boolean isTransformed() {
-		return isTransformed;
+	public String getFormalName() {
+		return formalName;
+	}
+	
+//	// only the context can touch these
+//    public boolean isTransformed() {
+//    	return isTransformed;
+//    }
+//    public void setTransformed(boolean b) {
+//    	isTransformed = b;
+//    }
+	
+	public void setDatasource(IDataSource<?> ds) {
+		this.dataSource = ds;
 	}
 
-	public void setTransformed(boolean b) {
-		isTransformed = b;
-	}
-
+    public IObservation getExtent(IConcept extentObservable) {
+            IObservation ret = null;
+            for (IObservation ext : extentDependencies) {
+            	if (ext.getObservableClass().is(extentObservable)) {
+            		ret = ext;
+            		break;
+                 }
+            }
+            return ret;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+            return (obj instanceof Observation) ? observation
+                            .equals(((Observation) obj).observation) : false;
+    }
+    
+    @Override
+    public int hashCode() {
+            return observation.hashCode();
+    }
 }

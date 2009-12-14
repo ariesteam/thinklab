@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IContextOptional;
 import org.integratedmodelling.modelling.interfaces.IModel;
@@ -163,7 +163,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	 */
 	public Constraint generateObservableQuery(
 			IntelligentMap<IConformance> conformancePolicies,
-			ISession session, ArrayList<IObservation> extents) throws ThinklabException {
+			ISession session, ArrayList<Topology> extents) throws ThinklabException {
 
 		Constraint c = new Constraint(this.getCompatibleObservationType(session));
 		
@@ -179,10 +179,8 @@ public abstract class DefaultAbstractModel implements IModel {
 		if (extents.size() > 0) {
 			
 			ArrayList<Restriction> er = new ArrayList<Restriction>();
-			for (IObservation o : extents) {
-				Restriction r =
-					((ExtentConceptualModel)(o.getConceptualModel())).
-						getConstraint("contains");
+			for (Topology o : extents) {
+				Restriction r = o.getConstraint("contains");
 				if (r != null)
 					er.add(r);
 			}
@@ -207,7 +205,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	public IQueryResult observe(IKBox kbox, ISession session, Object ... params) throws ThinklabException {
 		
 		IntelligentMap<IConformance> conformances = null;
-		ArrayList<IObservation> extents = new ArrayList<IObservation>();
+		ArrayList<Topology> extents = new ArrayList<Topology>();
 		
 		if (params != null)
 			for (Object o : params) {
@@ -216,8 +214,8 @@ public abstract class DefaultAbstractModel implements IModel {
 				} else if (o instanceof IInstance) {
 					// put away all the extents we passed
 					IObservation obs = ObservationFactory.getObservation((IInstance)o);
-					if (obs.getConceptualModel() instanceof ExtentConceptualModel) {
-						extents.add(obs);
+					if (obs instanceof Topology) {
+						extents.add((Topology) obs);
 					}
 				}
 			}
@@ -227,9 +225,9 @@ public abstract class DefaultAbstractModel implements IModel {
 		/*
 		 * add all extent specifications to the root observation
 		 */
-		for (IObservation obs : extents) {
+		for (Topology obs : extents) {
 			
-			IExtent ext = ((ExtentConceptualModel)(obs.getConceptualModel())).getExtent();
+			IExtent ext = obs.getExtent();
 			if (ext instanceof IConceptualizable) {
 				ret.addExtentObservation(((IConceptualizable)ext).conceptualize());
 			}
@@ -243,7 +241,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	 */
 	public ModelResult observeInternal(
 				IKBox kbox, ISession session, 
-				IntelligentMap<IConformance> cp, ArrayList<IObservation> extents,
+				IntelligentMap<IConformance> cp, ArrayList<Topology> extents,
 				boolean acceptEmpty) throws ThinklabException {
 		
 		ModelResult ret = new ModelResult(this, kbox, session);

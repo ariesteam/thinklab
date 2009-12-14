@@ -66,7 +66,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 	}
 	
 	@Override
-	protected void validateMediatedModel(IModel model)
+	public void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
 	}
 

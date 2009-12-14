@@ -32,14 +32,13 @@
  **/
 package org.integratedmodelling.time.extents;
 
-import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
+import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.time.TimePlugin;
-import org.integratedmodelling.time.implementations.cmodels.TemporalGridConceptualModel;
 import org.integratedmodelling.time.literals.PeriodValue;
 import org.integratedmodelling.utils.Polylist;
 import org.joda.time.DateTime;
@@ -61,9 +60,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  * @author Ferdinando Villa
  *
  */
-public class RegularTimeGridExtent implements IExtent, IConceptualizable {
-
-	TemporalGridConceptualModel cModel = null;
+public class RegularTimeGridExtent implements IExtent {
 	
 	/* we represent time as a nice linestring with all Y coordinates = 0, so we can use intersections and unions
 	 * appropriately.
@@ -73,6 +70,9 @@ public class RegularTimeGridExtent implements IExtent, IConceptualizable {
 	
 	// just to avoid creating one every time we need it, although arguably Java optimizers know better than that.
 	Coordinate[] c = new Coordinate[2];
+	private DateTime start;
+	private DateTime end;
+	private long step;
 	
 	// geometry factory used for all calculations; we use fixed 0-decimal precision, so that we deal
 	// with whole milliseconds.
@@ -102,12 +102,10 @@ public class RegularTimeGridExtent implements IExtent, IConceptualizable {
 	}
 	
 	
-	public RegularTimeGridExtent(TemporalGridConceptualModel cm) {
-		cModel = cm;
-	}
-	
-	public RegularTimeGridExtent(TemporalGridConceptualModel cm, DateTime start, DateTime end, long step) throws ThinklabValidationException {
-		cModel = cm;
+	public RegularTimeGridExtent(DateTime start, DateTime end, long step) throws ThinklabValidationException {
+		this.start = start;
+		this.end = end;
+		this.step = step;
 		c[0] = new Coordinate(start.getMillis(), 0);
 		c[1] = new Coordinate(end.getMillis(), 0);
 		granuleSize = step;
@@ -115,17 +113,23 @@ public class RegularTimeGridExtent implements IExtent, IConceptualizable {
 		validateGrid();
 	}
 
-	public RegularTimeGridExtent(TemporalGridConceptualModel cm, DateTime start, long startoffset, long length, long step) throws ThinklabValidationException {
-		cModel = cm;
-		c[0] = new Coordinate(start.getMillis() + startoffset, 0);
-		c[1] = new Coordinate(start.getMillis() + startoffset + length, 0);
-		granuleSize = step;
-		extent = geometryFactory.createLineString(c);
-		validateGrid();
-	}
+//	public RegularTimeGridExtent(DateTime start, long startoffset, long length, long step) throws ThinklabValidationException {
+//		this.start = start;
+//		this.end = end;
+//		this.step = step;
+//		c[0] = new Coordinate(start.getMillis() + startoffset, 0);
+//		c[1] = new Coordinate(start.getMillis() + startoffset + length, 0);
+//		granuleSize = step;
+//		extent = geometryFactory.createLineString(c);
+//		validateGrid();
+//	}
 
-	public RegularTimeGridExtent(TemporalGridConceptualModel cm, LineString gg, long step) throws ThinklabValidationException {
-		cModel = cm;
+	public RegularTimeGridExtent(LineString gg, long step) throws ThinklabValidationException {
+
+		// TODO compute start and end from grid
+		this.start = start;
+		this.end = end;
+		this.step = step;
 		extent = gg;
 		granuleSize = step;
 		validateGrid();
@@ -152,10 +156,6 @@ public class RegularTimeGridExtent implements IExtent, IConceptualizable {
 		return (int)((long)(extent.getEndPoint().getX() - extent.getStartPoint().getX())/granuleSize);
 	}
 
-	public ExtentConceptualModel getConceptualModel() {
-		return cModel;
-	}
-
 	public RegularTimeGridExtent intersection(RegularTimeGridExtent oth) throws ThinklabException {
 		
 		Geometry gg = extent.intersection(oth.extent);
@@ -165,7 +165,7 @@ public class RegularTimeGridExtent implements IExtent, IConceptualizable {
 					"intersection of temporal grid extents generates unsupported extent: " +
 					gg);
 		
-		return new RegularTimeGridExtent(cModel, (LineString)gg, granuleSize);
+		return new RegularTimeGridExtent((LineString)gg, granuleSize);
 	}
 	
 	public RegularTimeGridExtent union(RegularTimeGridExtent oth) throws ThinklabException {
@@ -177,7 +177,7 @@ public class RegularTimeGridExtent implements IExtent, IConceptualizable {
 					"union of temporal grid extents generates unsupported extent: " +
 					gg);
 		
-		return new RegularTimeGridExtent(cModel, (LineString)gg, granuleSize);
+		return new RegularTimeGridExtent((LineString)gg, granuleSize);
 	}
 	
 	public String toString() {
@@ -207,9 +207,9 @@ public class RegularTimeGridExtent implements IExtent, IConceptualizable {
 	
 		return Polylist.list(
 				TimePlugin.TEMPORALGRID_TYPE_ID,
-				Polylist.list(TimePlugin.STARTS_AT_PROPERTY_ID, cModel.getStart().toString()),
-				Polylist.list(TimePlugin.ENDS_AT_PROPERTY_ID, cModel.getEnd().toString()),
-				Polylist.list(TimePlugin.STEP_SIZE_PROPERTY_ID, cModel.getStep() + " ms"));
+				Polylist.list(TimePlugin.STARTS_AT_PROPERTY_ID, start.toString()),
+				Polylist.list(TimePlugin.ENDS_AT_PROPERTY_ID, end.toString()),
+				Polylist.list(TimePlugin.STEP_SIZE_PROPERTY_ID, step + " ms"));
 	}
 
 
@@ -217,5 +217,27 @@ public class RegularTimeGridExtent implements IExtent, IConceptualizable {
 	public IExtent getExtent(int granule) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public IDatasourceTransformation getDatasourceTransformation(
+			IConcept mainObservable, IExtent extent) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public IExtent merge(IExtent extent) throws ThinklabException {
+		
+		/*
+		 * TODO implement clipping with time intervals
+		 */
+		if (! (extent instanceof RegularTimeGridExtent)) {
+			throw new ThinklabValidationException("time grids can only be merged with other time grids");
+		}
+		return this.intersection((RegularTimeGridExtent) extent);
+		
 	}
 }

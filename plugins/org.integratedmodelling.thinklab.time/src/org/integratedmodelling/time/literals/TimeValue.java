@@ -32,9 +32,6 @@
  **/
 package org.integratedmodelling.time.literals;
 
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
@@ -247,16 +244,6 @@ public class TimeValue extends ParsedLiteralValue {
 			return precision.compareTo(v.precision) > 0 ? v : this;
 		}
 		return null;
-	}
-
-	public IValue getValue(int[] idx, IObservationContextState context, IConcept concept) throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public boolean handshake(IConceptualModel cm, IObservationContext observationContext, IObservationContext overallContext) throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	public int getMonth() {

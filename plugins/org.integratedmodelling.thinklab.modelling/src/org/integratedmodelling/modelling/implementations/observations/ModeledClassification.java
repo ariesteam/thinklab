@@ -3,16 +3,14 @@ package org.integratedmodelling.modelling.implementations.observations;
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.Obs;
 import org.integratedmodelling.corescience.implementations.datasources.ClassData;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
-import org.integratedmodelling.corescience.interfaces.data.IDataSource;
-import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
+import org.integratedmodelling.corescience.interfaces.internal.MediatingObservation;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.ModellingPlugin;
@@ -38,21 +36,19 @@ import org.integratedmodelling.utils.Polylist;
 @InstanceImplementation(concept="modeltypes:ModeledClassification")
 public class ModeledClassification 
 	extends Observation 
-	implements IConceptualModel, MediatingConceptualModel, IConceptualizable {
+	implements MediatingObservation {
 	
 	ArrayList<Pair<GeneralClassifier, IConcept>> classifiers = 
 		new ArrayList<Pair<GeneralClassifier,IConcept>>();
 	
 	IConcept cSpace = null;
 	double[] continuousDistribution = null;
-	private IDataSource<?> ds;
 
 	@Override
 	public String toString() {
 		return ("classification(" + getObservableClass() + "): " + cSpace);
 	}
 
-	
 	/**
 	 * TODO 
 	 * FIXME
@@ -66,7 +62,7 @@ public class ModeledClassification
 		
 		@Override
 		public Object getValue(Object[] registers) {
-			Object o = ds.getValue(index++, registers);
+			Object o = getDataSource().getValue(index++, registers);
 			for (Pair<GeneralClassifier, IConcept> p : classifiers) {
 				if (p.getFirst().classify(o))
 					return p.getSecond();
@@ -85,14 +81,16 @@ public class ModeledClassification
 		}
 
 		@Override
-		public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
+		public boolean notifyDependencyObservable(IObservation o,
+				IConcept observable, String formalName)
 				throws ThinklabException {
-			return !Obs.isExtent(o);
+			return !(o instanceof Topology);
 		}
 
 		@Override
-		public void notifyDependencyRegister(IObservation observation, IConcept observable,
-				int register, IConcept stateType) throws ThinklabException {	
+		public void notifyDependencyRegister(IObservation observation,
+				IConcept observable, int register, IConcept stateType)
+				throws ThinklabException {
 		}
 	}
 	
@@ -141,8 +139,7 @@ public class ModeledClassification
 
 	
 	@Override
-	public IStateAccessor getStateAccessor(IConcept stateType,
-			IObservationContext context) {
+	public IStateAccessor getAccessor() {
 		return new ClassificationAccessor();
 	}
 
@@ -178,29 +175,17 @@ public class ModeledClassification
 		IValue def = i.get(CoreScience.HAS_CONCEPTUAL_SPACE);
 		if (def != null)
 			cSpace = def.getConcept();
-		
-		ds = getDataSource();
 
 		def = i.get("modeltypes:encodesContinuousDistribution");
 		if (def != null)
 			continuousDistribution = MiscUtilities.parseDoubleVector(def.toString());
 
-		if (continuousDistribution != null && ds != null && (ds instanceof IContextualizedState))
-			((IContextualizedState)ds).setMetadata(
+		if (continuousDistribution != null && getDataSource() != null && (getDataSource() instanceof IState))
+			((IState)getDataSource()).setMetadata(
 					Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS, 
 					continuousDistribution); 
 	}
-	
-	@Override
-	public void handshake(IDataSource<?> dataSource,
-			IObservationContext observationContext,
-			IObservationContext overallContext) throws ThinklabException {
-	}
 
-	@Override
-	public void validate(IObservation observation)
-			throws ThinklabValidationException {
-	}
 
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
@@ -218,17 +203,9 @@ public class ModeledClassification
 	}
 
 	@Override
-	public IStateAccessor getMediator(IConceptualModel conceptualModel,
-			IConcept stateType, IObservationContext context)
-			throws ThinklabException {
-		return new ClassificationMediator();
-	}
-
-	@Override
-	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
-			throws ThinklabException {
+	public IState createState(int size) throws ThinklabException {
 		
-		IContextualizedState ret = new ClassData(cSpace, size);
+		IState ret = new ClassData(cSpace, size);
 
 		/*
 		 * TODO other metadata
@@ -239,5 +216,11 @@ public class ModeledClassification
 					continuousDistribution); 
 		
 		return ret;
+	}
+
+	@Override
+	public IStateAccessor getMediator(IndirectObservation observation)
+			throws ThinklabException {
+		return new ClassificationMediator();
 	}
 }

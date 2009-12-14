@@ -35,6 +35,10 @@ package org.integratedmodelling.utils.image;
 
 import java.awt.Color;
 import java.awt.image.IndexColorModel;
+import java.io.File;
+import java.io.IOException;
+
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 
 /**
  * this is a wrapper around IndexColorModel, just for convenience
@@ -44,6 +48,7 @@ import java.awt.image.IndexColorModel;
 public class ColorMap {
 	
 	IndexColorModel model;
+	int levels;
 
 	/**
 	 * 
@@ -51,6 +56,7 @@ public class ColorMap {
 	public ColorMap(int bits, int[] indexes, Color[] colors, Color missingIndexColor) {
 		
 		int maxIndex=0;
+		levels = colors.length;
 		for (int i = 0; i < indexes.length; i++) {
 			if(indexes[i]>maxIndex){
 				maxIndex=indexes[i];
@@ -66,10 +72,11 @@ public class ColorMap {
 			colorArray[indexes[i]]=colors[i];
 		}
 		
-		createColorModel(  bits,   colorArray);
+		createColorModel(bits, colorArray);
 	}
 	
 	public ColorMap(int bits, Color[] colors) {
+		levels = colors.length;
 		createColorModel(  bits,   colors);
 	}
 	
@@ -84,7 +91,6 @@ public class ColorMap {
 		 * grey colormap, to be changed later
 		 */
 		Color[] greys = new Color[levels];
-		
 		int incr = 256/levels;		
 		for (int i = 0; i < levels; i++) {			
 			int level = i * incr;
@@ -94,6 +100,29 @@ public class ColorMap {
 		return new ColorMap(8, greys);
 	}
 
+	public File getColorbar(int h, File fileOrNull) throws ThinklabIOException {
+		
+		if (fileOrNull == null)
+			try {
+				fileOrNull = File.createTempFile("cbar", ".png");
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+		
+		int[][] cdata = new int[256][h];
+		int incr = 256/levels;
+		for (int i = 0; i < 256; i += incr) {
+			int col = i * incr;
+			for (int y = 0; y < h; y++) 
+				for (int x = i; x < i+incr; x++)
+					cdata[x][y] = col;		
+		}
+			
+		ImageUtil.createImageFile(cdata, 265, h, this, fileOrNull.toString(), false);
+		
+		return fileOrNull;
+	}
+	
 	/**
 	 * Make N green levels 
 	 * @param levels
@@ -285,4 +314,13 @@ public class ColorMap {
 		return new ColorMap(8, cols);
     }
 	 
+    
+    public static void main(String args[]) {
+    	try {
+			greyscale(256).getColorbar(16, new File("cbar.png"));
+		} catch (ThinklabIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 }

@@ -36,24 +36,22 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
-import org.integratedmodelling.corescience.Obs;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IDataSource;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.CoverageFactory;
 import org.integratedmodelling.geospace.coverage.ICoverage;
-import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.extents.ShapeExtent;
-import org.integratedmodelling.geospace.implementations.cmodels.SubdividedCoverageConceptualModel;
+import org.integratedmodelling.geospace.transformations.Rasterize;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.utils.URLUtils;
 
@@ -62,81 +60,79 @@ import org.integratedmodelling.utils.URLUtils;
  * @author Ferdinando
  *
  */
-public class VectorCoverageDataSource extends CoverageDataSource<Object> {
+public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceImplementation {
 
-	/**
-	 * The conceptual model that defines the data we need to return, saved at handshaking
-	 */
-	private   IConceptualModel dataCM = null;
+
 	protected ICoverage coverage = null;
 
 	/* same here - these are overall extents that we need to conform to */
 	private GridExtent gridExtent;
 	private ShapeExtent shapeExtent;
 	
-	public boolean handshake(IObservation observation, 
-			IConceptualModel cm,
-			IObservationContext observationContext,
-			IObservationContext overallContext)
-			throws ThinklabException {
-		
-		dataCM = cm;
-		
-		IExtent extent = overallContext.getExtent(Geospace.get().SubdividedSpaceObservable());
-
-		/*
-		 * See what we have to deal with overall. 
-		 */
-		if (extent instanceof GridExtent) {
-			gridExtent = (GridExtent)extent;			
-		} else {
-			this.shapeExtent = (ShapeExtent)extent;			
-			// communicate the features to the extent, so that we can compute multiplicity and overall shape
-			this.shapeExtent.setFeatures(((VectorCoverage)coverage).getFeatures(), coverage.getSourceUrl());
-		}
-		
-		/*
-		 * if raster, we may need to adjust the coverage to the extent for CRS, bounding box, and resolution.
-		 */
-		if (gridExtent != null) {
-			
-			/*
-			 * this will rasterize our vector coverage. If it's a raster, we should then fall back to
-			 * raster methods when data are accessed. For the way this is defined, the coverage class
-			 * should automatically take care of that.
-			 */
-			coverage = coverage.requireMatch(gridExtent, true);
-
-			/*
-			 * ask for the main extent's activation layer (creating an inactive
-			 * default if not there) and AND our active areas with it.
-			 */
-			defineActivationLayer(
-					gridExtent.requireActivationLayer(true), gridExtent);
-			
-			/*
-			 * if we have rasterized the vector, the spatial extent of the specific obs 
-			 * must now become the passed gridExtent. Get the spatial CM of the root obs and
-			 * inject the grid extent.
-			 */
-			IObservation ospat = 
-				Obs.findObservation(observation, Geospace.get().SpaceObservable());
-			
-			if (ospat != null) { // which should always be the case, given that WE are spatial...
-				IConceptualModel scm = ospat.getConceptualModel();
-				if (scm instanceof SubdividedCoverageConceptualModel) {
-					((SubdividedCoverageConceptualModel)scm).overrideExtent(gridExtent);
-				}
-			}
-		}
-		
-		// if we get to handshaking, we need to load the data
-		coverage.loadData();
-		
-		// whatever happens, we can definitely use indexes here, so return true.
-		return true;
-	}
+//	public boolean handshake(IObservation observation, 
+//			IConceptualModel cm,
+//			IObservationContext observationContext,
+//			IObservationContext overallContext)
+//			throws ThinklabException {
+//		
+//		dataCM = cm;
+//		
+//		IExtent extent = overallContext.getExtent(Geospace.get().SubdividedSpaceObservable());
+//
+//		/*
+//		 * See what we have to deal with overall. 
+//		 */
+//		if (extent instanceof GridExtent) {
+//			gridExtent = (GridExtent)extent;			
+//		} else {
+//			this.shapeExtent = (ShapeExtent)extent;			
+//			// communicate the features to the extent, so that we can compute multiplicity and overall shape
+//			this.shapeExtent.setFeatures(((VectorCoverage)coverage).getFeatures(), coverage.getSourceUrl());
+//		}
+//		
+//		/*
+//		 * if raster, we may need to adjust the coverage to the extent for CRS, bounding box, and resolution.
+//		 */
+//		if (gridExtent != null) {
+//			
+//			/*
+//			 * this will rasterize our vector coverage. If it's a raster, we should then fall back to
+//			 * raster methods when data are accessed. For the way this is defined, the coverage class
+//			 * should automatically take care of that.
+//			 */
+//			coverage = coverage.requireMatch(gridExtent, true);
+//
+//			/*
+//			 * ask for the main extent's activation layer (creating an inactive
+//			 * default if not there) and AND our active areas with it.
+//			 */
+//			defineActivationLayer(
+//					gridExtent.requireActivationLayer(true), gridExtent);
+//			
+//			/*
+//			 * if we have rasterized the vector, the spatial extent of the specific obs 
+//			 * must now become the passed gridExtent. Get the spatial CM of the root obs and
+//			 * inject the grid extent.
+//			 */
+//			IObservation ospat = 
+//				Obs.findObservation(observation, Geospace.get().SpaceObservable());
+//			
+//			if (ospat != null) { // which should always be the case, given that WE are spatial...
+//				IConceptualModel scm = ospat.getConceptualModel();
+//				if (scm instanceof SubdividedCoverageConceptualModel) {
+//					((SubdividedCoverageConceptualModel)scm).overrideExtent(gridExtent);
+//				}
+//			}
+//		}
+//		
+//		// if we get to handshaking, we need to load the data
+//		coverage.loadData();
+//		
+//		// whatever happens, we can definitely use indexes here, so return true.
+//		return true;
+//	}
 	
+	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 
 		// these are compulsory
@@ -200,6 +196,7 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 		return null;
 	}
 
+	@Override
 	public void validate(IInstance i) throws ThinklabException {
 
 		if (coverage != null) {
@@ -216,7 +213,6 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 		try {
 			return coverage.getSubdivisionValue(
 					index, 
-					dataCM, 
 					gridExtent == null ? shapeExtent : gridExtent);
 		} catch (ThinklabValidationException e) {
 			throw new ThinklabRuntimeException(e);
@@ -227,6 +223,40 @@ public class VectorCoverageDataSource extends CoverageDataSource<Object> {
 	public IConcept getValueType() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public IDataSource<?> transform(IDatasourceTransformation transformation)
+			throws ThinklabException {
+		
+		IDataSource<?> ret = this;
+		
+		if (transformation instanceof Rasterize) {
+			gridExtent = ((Rasterize)transformation).getExtent();
+			gridExtent.requireActivationLayer(true);
+			coverage = coverage.requireMatch(gridExtent, true);
+			coverage.loadData();
+			ret = new RegularRasterGridDataSource(coverage, gridExtent);
+		} else {
+			throw new ThinklabValidationException(
+					"vector datasource: don't know how to deal with " + transformation);
+		}
+		
+		return ret;
+	}
+
+	@Override
+	public void postProcess(IObservationContext context)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void preProcess(IObservationContext context)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

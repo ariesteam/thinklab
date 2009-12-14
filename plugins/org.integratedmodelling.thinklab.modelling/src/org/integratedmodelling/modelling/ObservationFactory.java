@@ -32,9 +32,13 @@
  **/
 package org.integratedmodelling.modelling;
 
+import java.util.ArrayList;
+
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.literals.ShapeValue;
@@ -42,13 +46,14 @@ import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
-public class ObservationFactory {
+public class ObservationFactory extends org.integratedmodelling.corescience.ObservationFactory {
 
 	/**
 	 * Return a constraint to select an observation of the passed observable
@@ -410,7 +415,7 @@ public class ObservationFactory {
 	 * @return
 	 */
 	public static boolean isSpatiallyDistributed(IObservation obs) {
-		return ((Observation)obs).getExtent(Geospace.get().SpaceObservable()) != null;
+		return obs.getExtent(Geospace.get().SpaceObservable()) != null;
 	}
 
 	/**
@@ -419,7 +424,7 @@ public class ObservationFactory {
 	 * @return
 	 */
 	public static IObservation getSpatialExtent(IObservation obs) {
-		return ((Observation)obs).getExtent(Geospace.get().SpaceObservable());
+		return obs.getExtent(Geospace.get().SpaceObservable());
 	}
 
 	/**
@@ -429,8 +434,8 @@ public class ObservationFactory {
 	 */
 	public static boolean isRaster(IObservation obs) {
 		return 
-			((Observation)obs).getExtent(Geospace.get().SpaceObservable()) != null &&
-			((Observation)obs).getExtent(Geospace.get().SpaceObservable()) instanceof RasterGrid;
+			obs.getExtent(Geospace.get().SpaceObservable()) != null &&
+			obs.getExtent(Geospace.get().SpaceObservable()) instanceof RasterGrid;
 	}
 
 	/**
@@ -439,7 +444,7 @@ public class ObservationFactory {
 	 * @return
 	 */
 	public static RasterGrid getRasterGrid(IObservation obs) {
-		return (RasterGrid)((Observation)obs).getExtent(Geospace.get().SpaceObservable());
+		return (RasterGrid)obs.getExtent(Geospace.get().SpaceObservable());
 	}
 
 	/**
@@ -452,6 +457,7 @@ public class ObservationFactory {
 		return observation.appendElement(
 				Polylist.list(CoreScience.HAS_DATASOURCE, ds));
 	}
+
 
 	
 	

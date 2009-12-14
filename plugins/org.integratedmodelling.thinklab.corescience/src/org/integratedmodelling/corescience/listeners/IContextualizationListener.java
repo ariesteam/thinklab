@@ -1,6 +1,6 @@
 package org.integratedmodelling.corescience.listeners;
 
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservation;
 
 /**
  * An array of contextualization listeners can be passed to Compiler.contextualize() to be notified

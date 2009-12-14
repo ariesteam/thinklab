@@ -10,16 +10,12 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.Obs;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.TransformingConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
-import org.integratedmodelling.corescience.interfaces.data.IDataSource;
-import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
@@ -50,7 +46,7 @@ import smile.Network;
 @InstanceImplementation(concept="modeltypes:BayesianTransformer")
 public class BayesianTransformer 
 	extends Observation 
-	implements IConceptualModel, TransformingConceptualModel {
+	implements  TransformingObservation {
 	
 	// relevant properties from ontology
 	public static final String RETAINS_STATES = "modeltypes:retainsState";
@@ -71,18 +67,6 @@ public class BayesianTransformer
 	
 	IConcept cSpace = null;
 	private Network bn = null;
-	
-	@Override
-	public IStateAccessor getStateAccessor(IConcept stateType,
-			IObservationContext context) {
-		// we contextualize as an identification, so no accessor is required.
-		return null;
-	}
-
-	@Override
-	public IConcept getStateType() {
-		return cSpace;
-	}
 
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
@@ -142,7 +126,7 @@ public class BayesianTransformer
 		 * store any prototypes
 		 */
 		for (IRelationship r : i.getRelationships(HAS_PROTOTYPE_MODEL)) {
-			IObservation prot = Obs.getObservation(r.getValue().asObjectReference().getObject());
+			IObservation prot = ObservationFactory.getObservation(r.getValue().asObjectReference().getObject());
 			modelPrototypes.put(prot.getObservableClass(), prot);
 		}
 		
@@ -153,38 +137,9 @@ public class BayesianTransformer
 	}
 	
 	@Override
-	public void handshake(IDataSource<?> dataSource,
-			IObservationContext observationContext,
-			IObservationContext overallContext) throws ThinklabException {
-	}
+	public IInstance transform(IInstance sourceObs, ISession session, IObservationContext context) 
+		throws ThinklabException {
 
-	@Override
-	public void validate(IObservation observation)
-			throws ThinklabValidationException {
-	}
-
-	@Override
-	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
-			throws ThinklabException {
-		// we contextualize this as an identification, so no storage is needed. 
-		return null;
-	}
-
-	@Override
-	public Polylist getTransformedConceptualModel() {
-		// this should be OK, we just transform to an identification.
-		return null;
-	}
-
-	@Override
-	public IConcept getTransformedObservationClass() {
-		return CoreScience.Observation();
-	}
-
-	@Override
-	public IInstance transformObservation(IInstance inst, ISession session)
-			throws ThinklabException {
-		
 		// TODO set to false asap
 		boolean debug = false;
 		HashMap<String, Integer> keyset = debug ? new HashMap<String, Integer>() : null;
@@ -200,9 +155,8 @@ public class BayesianTransformer
 			out.println(" >>>>>> " + getObservableClass() + "<<<<<<<\n");
 		}
 		
-		IObservation orig = Obs.getObservation(inst);
-		IObservationContext context = orig.getObservationContext();
-		Map<IConcept, IContextualizedState> smap = Obs.getStateMap(orig);
+		IObservation orig = ObservationFactory.getObservation(sourceObs);
+		Map<IConcept, IState> smap = ObservationFactory.getStateMap(orig);
 		int size = context.getMultiplicity();
 
 		/*
@@ -278,7 +232,7 @@ public class BayesianTransformer
 		for (IConcept ec : smap.keySet()) {
 			if (!nodeIDs.contains(ec.getLocalName()))
 				continue;
-			IContextualizedState cs = smap.get(ec);
+			IState cs = smap.get(ec);
 			if (! (cs instanceof ICategoryData))
 				throw new ThinklabModelException(
 						"bayesian(" + getObservableClass() + "): dependent for " +
@@ -395,7 +349,7 @@ public class BayesianTransformer
 		 * make new extents to match previous
 		 */
 		for (IConcept ext : context.getDimensions()) {
-			rdef = ObservationFactory.addExtent(rdef, context.conceptualizeExtent(ext));
+			rdef = ObservationFactory.addExtent(rdef, context.getExtent(ext).conceptualize());
 		}
 		
 		/*
@@ -435,7 +389,7 @@ public class BayesianTransformer
 		 * will bring in a lot of stuff. Should be linked to a context parameter in the session?
 		 */
 		for (IConcept ec : smap.keySet()) {
-			IObservation oo = Obs.findObservation(orig, ec);
+			IObservation oo = ObservationFactory.findObservation(orig, ec);
 			rdef = ObservationFactory.addSameContextObservation(rdef, oo.getObservationInstance());
 		}
 		
@@ -455,5 +409,20 @@ public class BayesianTransformer
 	public String toString() {
 		return ("bayesian(" + getObservableClass() + "): " + bn.getName());
 	}
+
+
+	@Override
+	public IObservationContext getTransformedContext(IObservationContext context)
+			throws ThinklabException {
+		// we don't change the context at all, fortunately
+		return context;
+	}
+
+	@Override
+	public IConcept getTransformedObservationClass() {
+		return CoreScience.Observation();
+	}
+
+
 
 }

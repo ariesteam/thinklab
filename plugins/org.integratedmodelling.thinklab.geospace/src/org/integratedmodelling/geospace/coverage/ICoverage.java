@@ -2,7 +2,6 @@ package org.integratedmodelling.geospace.coverage;
 
 import java.io.File;
 
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -31,7 +30,7 @@ public interface ICoverage {
 	 * @throws ThinklabValidationException 
 	 * @throws ThinklabException 
 	 */
-	public abstract Object getSubdivisionValue(int subdivisionOrder, IConceptualModel conceptualModel, ArealExtent extent) throws ThinklabValidationException;
+	public abstract Object getSubdivisionValue(int subdivisionOrder, ArealExtent extent) throws ThinklabValidationException;
 	
 	public abstract String getSourceUrl();
 

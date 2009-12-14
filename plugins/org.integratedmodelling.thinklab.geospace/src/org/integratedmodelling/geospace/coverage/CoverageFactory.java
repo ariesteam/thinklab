@@ -27,7 +27,6 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
-import org.integratedmodelling.geospace.implementations.cmodels.RegularRasterModel;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -476,8 +475,7 @@ public class CoverageFactory {
 	
 	public static ICoverage makeCoverage(RasterGrid extent, Map<Collection<Integer>,Double> data) throws ThinklabException {
 		
-		GridExtent ext =
-			(GridExtent) ((RegularRasterModel)(extent.getConceptualModel())).getExtent();
+		GridExtent ext = (GridExtent)extent.getExtent();
 		
 		double[] dataset = new double[ext.getYCells() * ext.getXCells()];
 		

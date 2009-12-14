@@ -3,13 +3,11 @@ package org.integratedmodelling.corescience.implementations.observations;
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.implementations.cmodels.SimpleEmbeddedConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
-import org.integratedmodelling.corescience.interfaces.data.IDataSource;
-import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.literals.MappedIntSet;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -24,11 +22,10 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Polylist;
 
 @InstanceImplementation(concept=CoreScience.RANKING_SET_REMAPPER)
-public class RankingSetRemapper extends Observation implements IConceptualizable {
+public class RankingSetRemapper extends Observation implements IndirectObservation {
 	
 	private ArrayList<MappedIntSet> mappings = new ArrayList<MappedIntSet>();
 	private Double defValue = null;
-	private IDataSource<?> ds = null;
 	
 	public class RankingSetRemappingAccessor implements IStateAccessor {
 
@@ -40,7 +37,7 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 			int mval = 0; 
 			Double ret = defValue;
 			
-			Object o = ds.getValue(index++, registers);
+			Object o = getDataSource().getValue(index++, registers);
 			if (o instanceof Double)
 				mval = (int)(double)(Double)o;
 			else if (o instanceof Integer)
@@ -76,46 +73,28 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 		}
 
 		@Override
-		public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
-				throws ThinklabValidationException {
+		public boolean notifyDependencyObservable(IObservation o,
+				IConcept observable, String formalName)
+				throws ThinklabException {
 			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
-		public void notifyDependencyRegister(IObservation observation, IConcept observable,
-				int register, IConcept stateType) throws ThinklabException {
-		}
-
-	}
-	public class RankingSetRemappingModel extends SimpleEmbeddedConceptualModel {
-
-		@Override
-		public IStateAccessor getStateAccessor(IConcept stateType,
-				IObservationContext context) {
-			return new RankingSetRemappingAccessor();
-		}
-
-		@Override
-		public IConcept getStateType() {
-			/* FIXME this should be an integer, no time to deal with the consequences right now */
-			return KnowledgeManager.Double();
-		}
-
-		@Override
-		public IContextualizedState createContextualizedStorage(IObservation observation, int size)
+		public void notifyDependencyRegister(IObservation observation,
+				IConcept observable, int register, IConcept stateType)
 				throws ThinklabException {
-			// not required, we create POD.
-			return null;
+			// TODO Auto-generated method stub
+			
 		}
-		
-		
+
+
 	}
-	
+
 	@Override
-	protected IConceptualModel createMissingConceptualModel()
-			throws ThinklabException {
-		return new RankingSetRemappingModel();
+	public IConcept getStateType() {
+		/* FIXME this should be an integer, no time to deal with the consequences right now */
+		return KnowledgeManager.Double();
 	}
 
 	@Override
@@ -130,8 +109,7 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 		IValue def = i.get("measurement:hasDefaultValue");
 		if (def != null)
 			defValue = Double.parseDouble(def.toString());
-		
-		ds = getDataSource();
+
 	}
 
 	@Override
@@ -151,6 +129,19 @@ public class RankingSetRemapper extends Observation implements IConceptualizable
 		
 		return Polylist.PolylistFromArrayList(arr);
 		
+	}
+
+
+	@Override
+	public IState createState(int size) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return new MemDoubleContextualizedDatasource(getObservableClass(), size);
+	}
+
+
+	@Override
+	public IStateAccessor getAccessor() {
+		return new RankingSetRemappingAccessor();
 	}
 
 }

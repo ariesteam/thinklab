@@ -34,30 +34,18 @@ package org.integratedmodelling.corescience.implementations.observations;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.datasources.ClassData;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
-import org.integratedmodelling.corescience.interfaces.cmodel.IStateValidator;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
-import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.ScalingConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
-import org.integratedmodelling.corescience.interfaces.data.IDataSource;
-import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.utils.Polylist;
-import org.jscience.mathematics.number.Rational;
 
 /**
  * A ranking is the simplest of quantifications, defining the observable through
@@ -76,8 +64,8 @@ import org.jscience.mathematics.number.Rational;
  * @author Ferdinando Villa
  *
  */
-@InstanceImplementation(concept="measurement:Ranking")
-public class Classification extends Observation implements IConceptualizable {
+@InstanceImplementation(concept="observation:Classification")
+public class Classification extends Observation implements IndirectObservation {
 	
 	protected IConcept cspace;
 	
@@ -86,75 +74,17 @@ public class Classification extends Observation implements IConceptualizable {
 		return ("classification(" + getObservableClass() + "): " + cspace);
 	}
 
-	
-	/**
-	 * Conceptual model for a simple numeric ranking. 
-	 * @author Ferdinando Villa
-	 *
-	 */
-	public class ClassificationModel implements IConceptualModel {
-		
-		IDataSource<?> datasource = null;
-		
-		public IConcept getStateType() {
-			return cspace;
-		}
-
-
-		@Override
-		public IStateAccessor getStateAccessor(IConcept stateType, IObservationContext context) {
-			return new ClassificationStateAccessor(datasource);
-		}
-
-		@Override
-		public void handshake(IDataSource<?> dataSource,
-				IObservationContext observationContext,
-				IObservationContext overallContext) throws ThinklabException {
-			
-			this.datasource = dataSource;
-		}
-
-		@Override
-		public IContextualizedState createContextualizedStorage(IObservation observation, int size)
-				throws ThinklabException {
-			return new ClassData(cspace, size);
-		}
-
-		@Override
-		public void validate(IObservation observation)
-				throws ThinklabValidationException {
-			// TODO Auto-generated method stub
-		}
-	}
-	
-	public class ClassificationStateAccessor implements IStateAccessor {
+	public class ClassificationAccessor implements IStateAccessor {
 
 		private int index = 0;
-		private IDataSource<?> ds = null;
 		
-		public ClassificationStateAccessor(IDataSource<?> src) {
-			this.ds = src;
-		}
-		
-		@Override
-		public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
-				throws ThinklabException {
-			return false;
-		}
-
-		@Override
-		public void notifyDependencyRegister(IObservation observation, IConcept observable,
-				int register, IConcept stateType) throws ThinklabException {
-			// won't be called
-		}
-
 		@Override
 		public Object getValue(Object[] registers) {
 			return getNextValue(registers);
 		}
 
 		private Object getNextValue(Object[] registers) {
-			return ds.getValue(index++, registers);
+			return getDataSource().getValue(index++, registers);
 		}
 
 		@Override
@@ -165,6 +95,22 @@ public class Classification extends Observation implements IConceptualizable {
 		@Override
 		public String toString() {
 			return "[ClassificationAccessor]";
+		}
+
+		@Override
+		public boolean notifyDependencyObservable(IObservation o,
+				IConcept observable, String formalName)
+				throws ThinklabException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void notifyDependencyRegister(IObservation observation,
+				IConcept observable, int register, IConcept stateType)
+				throws ThinklabException {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 
@@ -179,11 +125,6 @@ public class Classification extends Observation implements IConceptualizable {
 	}
 
 	@Override
-	public IConceptualModel createMissingConceptualModel() throws ThinklabException {
-		return new ClassificationModel();
-	}
-
-	@Override
 	public Polylist conceptualize() throws ThinklabException {
 
 		return Polylist.list(
@@ -193,6 +134,21 @@ public class Classification extends Observation implements IConceptualizable {
 								((IConceptualizable)getObservable()).conceptualize() :
 								getObservable().toList(null)),
 						Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, cspace.toString()));
+	}
+
+	@Override
+	public IStateAccessor getAccessor() {
+		return new ClassificationAccessor();
+	}
+
+	@Override
+	public IConcept getStateType() {
+		return cspace;
+	}
+
+	@Override
+	public IState createState(int size) throws ThinklabException {
+		return new ClassData(cspace, size);
 	}
 
 }

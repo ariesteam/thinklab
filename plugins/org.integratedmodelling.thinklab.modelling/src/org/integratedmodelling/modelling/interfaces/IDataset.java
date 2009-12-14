@@ -2,7 +2,7 @@ package org.integratedmodelling.modelling.interfaces;
 
 import java.util.Collection;
 
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
@@ -27,7 +27,7 @@ public interface IDataset {
 	
 	public abstract Collection<IConcept> getStatefulObservables();
 	
-	public abstract IContextualizedState getState(IConcept observable);
+	public abstract IState getState(IConcept observable);
 	
 	public abstract String makeContourPlot(
 			IConcept observable, String fileOrNull, int x, int y, int ... flags);

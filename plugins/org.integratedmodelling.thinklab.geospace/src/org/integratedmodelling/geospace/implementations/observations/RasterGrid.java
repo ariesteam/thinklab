@@ -37,14 +37,14 @@ import java.util.Hashtable;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.implementations.cmodels.RegularRasterModel;
-import org.integratedmodelling.geospace.implementations.cmodels.SubdividedCoverageConceptualModel;
+import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
@@ -62,12 +62,13 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * @author Ferdinando Villa
  */
 @InstanceImplementation(concept="geospace:RasterGrid")
-public class RasterGrid extends Observation {
+public class RasterGrid extends Observation implements Topology {
 
 	int xRO, xRM, yRO, yRM;
 	double latLB, lonLB, latUB, lonUB;
 	CoordinateReferenceSystem crs;
 	private String crsId = null;
+	private GridExtent extent;
 	
 	@Override
 	public String toString() {
@@ -116,38 +117,21 @@ public class RasterGrid extends Observation {
 		}
 
 		if (crsId != null) 
-			crs = SubdividedCoverageConceptualModel.getCRSFromID(crsId);
+			crs = Geospace.getCRSFromID(crsId);
 		
 		super.initialize(i);
-
+		
+		this.extent = new GridExtent(crs,lonLB, latLB, lonUB, latUB, xRM - xRO, yRM - yRO);
 	}
 	
-	@Override
-	public IConceptualModel createMissingConceptualModel()
-			throws ThinklabException {
 		
-		return new RegularRasterModel(
-				xRO, xRM, yRO, yRM, latLB, latUB, lonLB, lonUB, crs);
-	}
-		
-	public int getRows() {
-		
-		try {
-			return ((RegularRasterModel)getConceptualModel()).getRows();
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
-	}
-
 	public int getColumns() {
-		
-		try {
-			return ((RegularRasterModel)getConceptualModel()).getColumns();
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
+		return xRM - xRO;
 	}
 
+	public int getRows() {
+		return yRM - yRO;
+	}
 	/**
 	 * Determine the width and height (in cells) of the bounding box for the passed
 	 * shape when we want the max linear resolution to be the passed one and the
@@ -248,5 +232,15 @@ public class RasterGrid extends Observation {
 
 	public String getCRSId() {
 		return crsId;
+	}
+
+	@Override
+	public Restriction getConstraint(String operator) throws ThinklabException {
+		return new Restriction("boundingbox", operator, extent.getFullExtentValue().toString());
+	}
+
+	@Override
+	public IExtent getExtent() throws ThinklabException {
+		return extent;
 	}
 }

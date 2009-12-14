@@ -57,7 +57,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.renderer.shape.ShapefileRenderer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
@@ -327,8 +326,7 @@ public class VectorCoverage implements ICoverage {
 		return sourceUrl;
 	}
 
-	public IValue getSubdivisionValue(int subdivisionOrder,
-			IConceptualModel conceptualModel, ArealExtent extent)
+	public IValue getSubdivisionValue(int subdivisionOrder, ArealExtent extent)
 			throws ThinklabValidationException {
 		// TODO Auto-generated method stub
 		return null;

@@ -35,10 +35,10 @@ package org.integratedmodelling.corescience.implementations.datasources;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IDataSource;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -48,7 +48,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Polylist;
 
 public class MemValueContextualizedDatasource 
- 	implements IContextualizedState, IInstanceImplementation {
+ 	implements IState, IInstanceImplementation {
 
 	private static final long serialVersionUID = -6567783706189229920L;
 	private IConcept _type;
@@ -75,13 +75,6 @@ public class MemValueContextualizedDatasource
 	@Override
 	public IConcept getValueType() {
 		return _type;
-	}
-
-	@Override
-	public boolean handshake(IObservation observation, IConceptualModel cm,
-			IObservationContext observationContext,
-			IObservationContext overallContext) throws ThinklabException {
-		return false;
 	}
 
 	@Override
@@ -133,6 +126,27 @@ public class MemValueContextualizedDatasource
 	@Override
 	public int getTotalSize() {
 		return data.length;
+	}
+
+	@Override
+	public IDataSource transform(IDatasourceTransformation transformation)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void postProcess(IObservationContext context)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void preProcess(IObservationContext context)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

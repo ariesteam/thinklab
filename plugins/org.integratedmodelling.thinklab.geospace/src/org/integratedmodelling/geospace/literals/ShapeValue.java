@@ -35,10 +35,6 @@ package org.integratedmodelling.geospace.literals;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.data.IDataSource;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -75,7 +71,7 @@ import com.vividsolutions.jts.io.WKTWriter;
  *
  */
 @LiteralImplementation(concept="geospace:SpatialRecord")
-public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeValue> {
+public class ShapeValue extends ParsedLiteralValue {
 
 	Geometry shape = null;
 	PrecisionModel precisionModel = null;
@@ -390,28 +386,6 @@ public class ShapeValue extends ParsedLiteralValue implements IDataSource<ShapeV
 	@Override
 	public Object demote() {
 		return shape;
-	}
-
-	@Override
-	public ShapeValue getValue(int index, Object[] parameters) {
-		return this;
-	}
-
-	@Override
-	public IConcept getValueType() {
-		return concept;
-	}
-
-	@Override
-	public boolean handshake(IObservation observation, IConceptualModel cm,
-			IObservationContext observationContext,
-			IObservationContext overallContext) throws ThinklabException {
-		return false;
-	}
-
-	@Override
-	public ShapeValue getInitialValue() {
-		return null;
 	}
 
 	public ShapeValue union(ShapeValue region) throws ThinklabException {

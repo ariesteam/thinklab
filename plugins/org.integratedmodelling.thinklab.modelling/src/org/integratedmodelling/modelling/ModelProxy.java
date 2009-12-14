@@ -2,7 +2,8 @@ package org.integratedmodelling.modelling;
 
 import java.util.ArrayList;
 
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.IntelligentMap;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -66,7 +67,7 @@ public class ModelProxy extends DefaultAbstractModel {
 
 	@Override
 	public ModelResult observeInternal(IKBox kbox, ISession session,
-			IntelligentMap<IConformance> cp, ArrayList<IObservation> extents,
+			IntelligentMap<IConformance> cp, ArrayList<Topology> extents,
 			boolean acceptEmpty)
 			throws ThinklabException {
 		return model.observeInternal(kbox, session, cp, extents, acceptEmpty);

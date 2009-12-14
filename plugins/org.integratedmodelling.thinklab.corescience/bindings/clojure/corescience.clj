@@ -10,7 +10,7 @@
 (defn contextualize
 	"Create the states in an observation tree. Returns the IObservation from the result of contextualization."
 	 [observation]
-	 (.. (org.integratedmodelling.corescience.contextualization.Compiler 
+	 (.. (org.integratedmodelling.corescience.ObservationFactory 
 	 				(contextualize observation (tl/get-session))) (getImplementation)))
 
 (defn harmonized-intersection 
@@ -87,14 +87,14 @@
 	"True if the passed observation is a measurement."
 	[observation]
 	(instance? 
-        org.integratedmodelling.corescience.implementations.cmodels.MeasurementModel 
-        (get-conceptual-model observation)))	
+        org.integratedmodelling.corescience.implementations.observations.Measurement
+        observation))	
 	
 (defn classification?
 	"True if the passed observation is a classification."
 	[observation]
 	(instance? 
-        org.integratedmodelling.corescience.implementations.cmodels.ClassificationModel 
+        org.integratedmodelling.corescience.implementations.observations.Classification
         (get-conceptual-model observation)))	
 	
 (defn identification?

@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -94,7 +94,7 @@ public class Metadata {
 	 * @param datasource
 	 * @return
 	 */
-	public static HashMap<IConcept, Integer> rankConcepts(IConcept type, IContextualizedState datasource) {
+	public static HashMap<IConcept, Integer> rankConcepts(IConcept type, IState datasource) {
 		ArrayList<Pair<IConcept, Integer>> lexicalRank =
 			new ArrayList<Pair<IConcept,Integer>>();
 		

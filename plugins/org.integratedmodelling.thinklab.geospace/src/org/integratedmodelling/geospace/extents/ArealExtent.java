@@ -33,32 +33,29 @@
 package org.integratedmodelling.geospace.extents;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
-import org.integratedmodelling.geospace.implementations.cmodels.SpatialConceptualModel;
+import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.geospace.Geospace;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 
+import com.vividsolutions.jts.geom.Envelope;
+
 public abstract class ArealExtent implements IExtent {
 
-	SpatialConceptualModel cm = null;
 	// the envelope in here is always east-west on the X axis. getDefaultEnvelope() can be used to retrieve
 	// the envelope that will work with the CRS. 
 	ReferencedEnvelope envelope = null;
-	private CoordinateReferenceSystem crs;
+	CoordinateReferenceSystem crs;
 	
-	public ArealExtent(SpatialConceptualModel cm, CoordinateReferenceSystem crs, double minx, double miny, double maxx, double maxy) {
-		this.cm = cm;
+	public ArealExtent(CoordinateReferenceSystem crs, double minx, double miny, double maxx, double maxy) {
 		this.crs = crs;
 		this.envelope = new ReferencedEnvelope(minx, maxx, miny, maxy, crs);
 	}
 	
 	public CoordinateReferenceSystem getCRS() {
 		return crs;
-	}
-	
-	public ExtentConceptualModel getConceptualModel() {
-		return cm;
 	}
 
 	/**
@@ -140,5 +137,82 @@ public abstract class ArealExtent implements IExtent {
 	public String toString() {
 		return "areal-extent(" + envelope + "," + crs.getName() + ")";
 	}
+
+	@Override
+	public IExtent merge(IExtent extent) throws ThinklabException {
+
+		if (! (extent instanceof ArealExtent))
+			throw new ThinklabValidationException(
+					"areal extent " + this + " cannot be merged with non-areal extent " + extent);
+		
+		ArealExtent orextent = this;
+		ArealExtent otextent = (ArealExtent)extent;
+		
+		CoordinateReferenceSystem crs1 = orextent.getCRS();
+		CoordinateReferenceSystem crs2 = otextent.getCRS();
+		
+		CoordinateReferenceSystem ccr = Geospace.chooseCRS(crs1, crs2);
+		ReferencedEnvelope env1 = orextent.getNormalizedEnvelope();
+		ReferencedEnvelope env2 = otextent.getNormalizedEnvelope();
+		
+		if (!(crs1.equals(crs2) && ccr.equals(crs1))) {
+		
+			/*
+			 * transformations will swap axes as required so we want the
+			 * envelopes with the CRS's axis order
+			 */
+			env1 = orextent.getDefaultEnvelope();
+			env2 = otextent.getDefaultEnvelope();
+			
+			try {
+				/*
+				 * transformations will return axes swapped to what CRS defines, and we 
+				 * want them normalized back to east-west on x before we use them
+				 */
+				env1 = Geospace.normalizeEnvelope(env1.transform(ccr, true, 10), ccr);
+				env2 = Geospace.normalizeEnvelope(env2.transform(ccr, true, 10), ccr);
+				
+			} catch (Exception e) {
+				throw new ThinklabValidationException(e);
+			}
+		}
+		
+		/* 
+		 * At this point the two envelopes are in the same CRS and with east-west on the X axis.
+		 * Set a new envelope to the intersection of the original ones after reprojecting them to
+		 * the common crs. 
+		 */
+		Envelope common = env1.intersection(env2); 
+		
+		/*
+		 * TODO intersection may be empty - this should be checked in createMergedExtent instead
+		 * of cursing here.
+		 */
+		if (common.isNull()) {
+			return null;
+		}
+		
+		/**
+		 * send out to a virtual to create the appropriate areal extent with this envelope and CRS, 
+		 * adding whatever else we need to use it.
+		 */
+		return createMergedExtent(orextent, otextent, ccr, common);
+	}
+
+	/**
+	 * Does the actual work of merging with the extent, after merge() has ensured that the extents
+	 * are spatial and have a common intersection and crs.
+	 * 
+	 * @param orextent
+	 * @param otextent
+	 * @param ccr
+	 * @param common
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	protected abstract IExtent createMergedExtent(
+			ArealExtent orextent, ArealExtent otextent,
+			CoordinateReferenceSystem ccr, Envelope common) throws ThinklabException;
+
 	
 }

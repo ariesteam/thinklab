@@ -3,11 +3,10 @@ package org.integratedmodelling.modelling.visualization;
 import java.io.PrintStream;
 import java.util.Map;
 
-import org.integratedmodelling.corescience.Obs;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
-import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.modelling.ObservationFactory;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -16,12 +15,12 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 public class ObservationListing {
 
 	private IObservation observation = null;
-	private Map<IConcept, IContextualizedState> states = null;
+	private Map<IConcept, IState> states = null;
 	private boolean verbose;
 
 	public ObservationListing(IInstance observation) throws ThinklabException {
-		this.observation = Obs.getObservation(observation);
-		this.states = Obs.getStateMap(this.observation);
+		this.observation = ObservationFactory.getObservation(observation);
+		this.states = ObservationFactory.getStateMap(this.observation);
 	}
 	
 	public void setVerbose(boolean verbose) {
@@ -40,7 +39,7 @@ public class ObservationListing {
 		
 		for (IConcept c : states.keySet()) {
 			
-			IContextualizedState state = states.get(c);
+			IState state = states.get(c);
 			
 			/*
 			 * 
@@ -63,7 +62,7 @@ public class ObservationListing {
 		
 	}
 
-	private void listHistogram(IContextualizedState state, PrintStream out) throws ThinklabValueConversionException {
+	private void listHistogram(IState state, PrintStream out) throws ThinklabValueConversionException {
 		
 		double[] data = state.getDataAsDoubles();
 		double min = data[0]; double max = data[0];

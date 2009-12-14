@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.integratedmodelling.corescience.Obs;
+import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
-import org.integratedmodelling.geospace.implementations.cmodels.RegularRasterModel;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
@@ -41,9 +40,9 @@ public class NetCDFArchive {
 
 	RasterGrid space         = null;
 	RegularTemporalGrid time = null;
-	Map<IConcept,IContextualizedState> variables;
-	Map<String,IContextualizedState> auxVariables = 
-		new Hashtable<String, IContextualizedState>();
+	Map<IConcept,IState> variables;
+	Map<String,IState> auxVariables = 
+		new Hashtable<String, IState>();
 	
 	/*
 	 * container for variables to write
@@ -57,9 +56,9 @@ public class NetCDFArchive {
 	 */
 	public void setObservation(IInstance obs) throws ThinklabException {
 		
-		IObservation o = Obs.getObservation(obs);
+		IObservation o = ObservationFactory.getObservation(obs);
 		
-		IObservation spc = Obs.findObservation(o, Geospace.get().SubdividedSpaceObservable());
+		IObservation spc = ObservationFactory.findObservation(o, Geospace.get().SubdividedSpaceObservable());
 		
 		if (spc == null || !(spc instanceof RasterGrid))
 			throw new ThinklabUnimplementedFeatureException(
@@ -67,7 +66,7 @@ public class NetCDFArchive {
 
 		//time  = (RasterGrid) Obs.findObservation(o, TimePlugin.GridObservable());
 		space = (RasterGrid)spc; 
-		variables = Obs.getStateMap(o);
+		variables = ObservationFactory.getStateMap(o);
 	}
 	
 	public void setSpaceGrid(RasterGrid grid) {
@@ -85,7 +84,7 @@ public class NetCDFArchive {
 	 */
 	public void addRasterVariable(String concept,  double[] data) {
 		
-		IContextualizedState st = 
+		IState st = 
 			new MemDoubleContextualizedDatasource(null, data);
 		
 		auxVariables.put(concept, st);
@@ -93,7 +92,7 @@ public class NetCDFArchive {
 	
 	public void addRasterVariable(String concept,  double[][] data) {
 		
-		IContextualizedState st = 
+		IState st = 
 			new MemDoubleContextualizedDatasource(null, data);
 		
 		auxVariables.put(concept, st);
@@ -127,7 +126,7 @@ public class NetCDFArchive {
 		
 		if (space != null) {
 			
-			ext = (GridExtent) ((RegularRasterModel)(space.getConceptualModel())).getExtent();
+			ext = (GridExtent)space.getExtent();
 			
 			latDim = ncfile.addDimension("lat", ext.getYCells());
 			lonDim = ncfile.addDimension("lon", ext.getXCells());
@@ -228,7 +227,7 @@ public class NetCDFArchive {
 				
 				// we have space only
 				String varname = getVarname(obs);
-				IContextualizedState state = variables.get(obs);
+				IState state = variables.get(obs);
 				
 				ArrayDouble data = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
 				Index ind = data.getIndex();
@@ -304,8 +303,8 @@ public class NetCDFArchive {
 	 * called, and all states must conform to the topology of the "master" obs.
 	 */
 	public void addObservation(IInstance obs) throws ThinklabException {
-		IObservation o = Obs.getObservation(obs);
-		space = (RasterGrid) Obs.findObservation(o, Geospace.get().RasterGridObservable());
-		variables.putAll(Obs.getStateMap(o));
+		IObservation o = ObservationFactory.getObservation(obs);
+		space = (RasterGrid) ObservationFactory.findObservation(o, Geospace.get().RasterGridObservable());
+		variables.putAll(ObservationFactory.getStateMap(o));
 	}
 }

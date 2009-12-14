@@ -13,7 +13,6 @@ import org.geotools.coverage.grid.GridCoverageFactory;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.geometry.DirectPosition2D;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
@@ -115,7 +114,7 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	 * Return the value at the given subdivision, either a double or whatever string our value maps to
 	 * if we're classifying.
 	 */
-	public Object getSubdivisionValue(int subdivisionOrder, IConceptualModel conceptualModel, ArealExtent extent) throws ThinklabValidationException {
+	public Object getSubdivisionValue(int subdivisionOrder, ArealExtent extent) throws ThinklabValidationException {
 		
 		/* determine which active x,y we should retrieve for this order. Must flip rows to make it match the original image. */
 		Pair<Integer, Integer> xy = ((GridExtent)extent).getActivationLayer().getCell(subdivisionOrder);

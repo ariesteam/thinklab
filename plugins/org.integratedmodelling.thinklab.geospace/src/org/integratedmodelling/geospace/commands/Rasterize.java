@@ -71,7 +71,7 @@ public class Rasterize implements ICommandHandler {
 		// todo remove or condition to an option
 		vCoverage.show();
 
-		GridExtent extent = new GridExtent(null, vCoverage
+		GridExtent extent = new GridExtent(vCoverage
 				.getCoordinateReferenceSystem(), vCoverage.getLonLowerBound(),
 				vCoverage.getLatLowerBound(), vCoverage.getLonUpperBound(),
 				vCoverage.getLatUpperBound(), xCells, yCells);

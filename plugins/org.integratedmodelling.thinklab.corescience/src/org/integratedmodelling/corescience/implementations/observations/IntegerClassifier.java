@@ -5,12 +5,10 @@ import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceByte;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
-import org.integratedmodelling.corescience.interfaces.data.IDataSource;
-import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
@@ -33,7 +31,7 @@ import org.integratedmodelling.utils.Polylist;
  * @author Ferdinando
  *
  */
-public class IntegerClassifier extends Observation implements IConceptualModel, IConceptualizable {
+public class IntegerClassifier extends Observation implements IndirectObservation {
 
 	IConcept observationSpace = null;
 	HashMap<Integer,IConcept> valueMap = null;
@@ -45,13 +43,9 @@ public class IntegerClassifier extends Observation implements IConceptualModel, 
 		
 		@Override
 		public Object getValue(Object[] registers) {
-
-			try {
-				Integer idx = (Integer)getDataSource().getValue(index++, registers);
-				return valueMap.get(idx);
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
-			}
+			
+			Integer idx = (Integer)getDataSource().getValue(index++, registers);
+			return valueMap.get(idx);
 		}
 
 		@Override
@@ -60,23 +54,23 @@ public class IntegerClassifier extends Observation implements IConceptualModel, 
 		}
 
 		@Override
-		public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
-				throws ThinklabValidationException {
+		public boolean notifyDependencyObservable(IObservation o,
+				IConcept observable, String formalName)
+				throws ThinklabException {
+			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
-		public void notifyDependencyRegister(IObservation observation, IConcept observable,
-				int register, IConcept stateType) throws ThinklabException {			
+		public void notifyDependencyRegister(IObservation observation,
+				IConcept observable, int register, IConcept stateType)
+				throws ThinklabException {
+			// TODO Auto-generated method stub
+			
 		}
+
 	}
 	
-	@Override
-	public IStateAccessor getStateAccessor(IConcept stateType,
-			IObservationContext context) {
-		return new ClassificationAccessor();
-	}
-
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 
@@ -119,24 +113,6 @@ public class IntegerClassifier extends Observation implements IConceptualModel, 
 	}
 
 	@Override
-	public void handshake(IDataSource<?> dataSource,
-			IObservationContext observationContext,
-			IObservationContext overallContext) throws ThinklabException {
-		
-		/*
-		 * should be a provider of integers
-		 */
-		if (!dataSource.getValueType().is(KnowledgeManager.Integer()))
-			throw new ThinklabValidationException(
-					"an integer classifier can only work with an integer datasource");
-	}
-
-	@Override
-	public void validate(IObservation observation)
-			throws ThinklabValidationException {		
-	}
-
-	@Override
 	public Polylist conceptualize() throws ThinklabException {
 		
 		ArrayList<Object> arr = new ArrayList<Object>();
@@ -161,9 +137,13 @@ public class IntegerClassifier extends Observation implements IConceptualModel, 
 	}
 
 	@Override
-	public IContextualizedState createContextualizedStorage(IObservation observation, int size)
-			throws ThinklabException {
+	public IState createState(int size) throws ThinklabException {
 		return new IndexedContextualizedDatasourceByte<IConcept>(observationSpace, size);
+	}
+
+	@Override
+	public IStateAccessor getAccessor() {
+		return new ClassificationAccessor();
 	}
 
 }

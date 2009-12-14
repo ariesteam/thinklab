@@ -34,7 +34,6 @@ package org.integratedmodelling.corescience.literals;
 
 import javax.measure.Measure;
 
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
@@ -58,7 +57,7 @@ import org.jscience.physics.amount.Amount;
  *
  * @author Ferdinando Villa
  */
-public class MeasurementValue extends ParsedLiteralValue implements IObservationValue {
+public class MeasurementValue extends ParsedLiteralValue {
 
     public double value;
     
@@ -205,11 +204,6 @@ public class MeasurementValue extends ParsedLiteralValue implements IObservation
     public String toString() {
     	return measure.toString();
     }
-
-	public IObservation getObservation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Object demote() {

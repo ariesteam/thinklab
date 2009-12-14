@@ -24,7 +24,7 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 	}
 	
 	@Override
-	protected void validateMediatedModel(IModel model)
+	public void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
 		// a ranking can mediate another ranking or a measurement
 		if (! ((model instanceof MeasurementModel) || (model instanceof RankingModel))) {

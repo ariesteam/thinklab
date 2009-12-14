@@ -3,13 +3,12 @@ package org.integratedmodelling.corescience.implementations.observations;
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.implementations.cmodels.SimpleEmbeddedConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
-import org.integratedmodelling.corescience.interfaces.data.IDataSource;
-import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
+import org.integratedmodelling.corescience.interfaces.IDataSource;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.literals.MappedDoubleInterval;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -24,7 +23,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Polylist;
 
 @InstanceImplementation(concept=CoreScience.RANKING_INTERVAL_REMAPPER)
-public class RankingIntervalRemapper extends Observation implements IConceptualizable {
+public class RankingIntervalRemapper extends Observation implements IndirectObservation {
 	
 	private ArrayList<MappedDoubleInterval> mappings = new ArrayList<MappedDoubleInterval>();
 	private Double defValue = null;
@@ -74,43 +73,24 @@ public class RankingIntervalRemapper extends Observation implements IConceptuali
 		}
 
 		@Override
-		public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
-				throws ThinklabValidationException {
+		public boolean notifyDependencyObservable(IObservation o,
+				IConcept observable, String formalName)
+				throws ThinklabException {
+			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
-		public void notifyDependencyRegister(IObservation observation, IConcept observable,
-				int register, IConcept stateType) throws ThinklabException {
-		}
-
-	}
-	public class RankingIntervalRemappingModel extends SimpleEmbeddedConceptualModel {
-		
-		@Override
-		public IStateAccessor getStateAccessor(IConcept stateType,
-				IObservationContext context) {
-			return new RankingIntervalRemappingAccessor();
-		}
-
-		@Override
-		public IConcept getStateType() {
-			return KnowledgeManager.Double();
-		}
-
-		@Override
-		public IContextualizedState createContextualizedStorage(IObservation observation, int size)
+		public void notifyDependencyRegister(IObservation observation,
+				IConcept observable, int register, IConcept stateType)
 				throws ThinklabException {
-			return null;
+			// TODO Auto-generated method stub
+			
 		}
+
+
 	}
 	
-	@Override
-	protected IConceptualModel createMissingConceptualModel()
-			throws ThinklabException {
-		return new RankingIntervalRemappingModel();
-	}
-
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 		
@@ -123,8 +103,6 @@ public class RankingIntervalRemapper extends Observation implements IConceptuali
 		IValue def = i.get("measurement:hasDefaultValue");
 		if (def != null)
 			defValue = Double.parseDouble(def.toString());
-		
-		ds = getDataSource();
 	}
 
 	@Override
@@ -144,6 +122,21 @@ public class RankingIntervalRemapper extends Observation implements IConceptuali
 		
 		return Polylist.PolylistFromArrayList(arr);
 		
+	}
+
+	@Override
+	public IState createState(int size) throws ThinklabException {
+		return new MemDoubleContextualizedDatasource(getObservableClass(), size);
+	}
+
+	@Override
+	public IStateAccessor getAccessor() {
+		return new RankingIntervalRemappingAccessor();
+	}
+
+	@Override
+	public IConcept getStateType() {
+		return KnowledgeManager.Double();
 	}
 
 }

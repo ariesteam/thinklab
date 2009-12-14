@@ -1,7 +1,6 @@
 package org.integratedmodelling.corescience.literals;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.discretization.Discretizer;
 import org.integratedmodelling.corescience.interfaces.literals.IRandomValue;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
@@ -36,10 +35,6 @@ public class DiscreteDistributionValue extends ParsedLiteralValue implements IRa
 	private DiscreteDistribution distribution = null;
 	
 	public DiscreteDistributionValue(Distributions distribution, double ... parameters) {
-		
-	}
-	
-	public DiscreteDistributionValue(ContinuousDistributionValue cval, Discretizer discretizer) {
 		
 	}
 	

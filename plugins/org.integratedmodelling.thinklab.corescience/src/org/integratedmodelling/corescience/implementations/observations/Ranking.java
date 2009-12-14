@@ -35,20 +35,11 @@ package org.integratedmodelling.corescience.implementations.observations;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
-import org.integratedmodelling.corescience.implementations.observations.RankingSetRemapper.RankingSetRemappingModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IExtentMediator;
-import org.integratedmodelling.corescience.interfaces.cmodel.IStateValidator;
-import org.integratedmodelling.corescience.interfaces.cmodel.IValueAggregator;
-import org.integratedmodelling.corescience.interfaces.cmodel.MediatingConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.ScalingConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.ValidatingConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContextState;
-import org.integratedmodelling.corescience.interfaces.data.IContextualizedState;
-import org.integratedmodelling.corescience.interfaces.data.IDataSource;
-import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
+import org.integratedmodelling.corescience.interfaces.internal.MediatingObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -59,7 +50,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.utils.Polylist;
-import org.jscience.mathematics.number.Rational;
 
 
 /**
@@ -80,7 +70,7 @@ import org.jscience.mathematics.number.Rational;
  *
  */
 @InstanceImplementation(concept="measurement:Ranking")
-public class Ranking extends Observation implements IConceptualizable {
+public class Ranking extends Observation implements MediatingObservation {
 
 	private static final String MINVALUE_PROPERTY = "measurement:minValue";
 	private static final String MAXVALUE_PROPERTY = "measurement:maxValue";
@@ -93,252 +83,90 @@ public class Ranking extends Observation implements IConceptualizable {
 	boolean isScale = false;
 	boolean leftBounded = false;
 	boolean rightBounded = false;
-	
+
+	private boolean isConstant = false;
+	private double value = 0.0;
+
 	@Override
 	public String toString() {
 		return ("ranking(" + getObservableClass() + ")");
 	}
 	
-	/**
-	 * Conceptual model for a simple numeric ranking. 
-	 * @author Ferdinando Villa
-	 *
-	 */
-	public class RankingModel implements IConceptualModel, MediatingConceptualModel, ValidatingConceptualModel, ScalingConceptualModel {
+	public class RankingMediator implements IStateAccessor {
+
+		private int reg;
+		private double conversion = 1.0;
+		private double offset = 0.0;
+		private boolean integer = false;
+		private boolean noConv = true;
 		
-		IDataSource<?> datasource = null;
-		Double inlineValue = null;
-		
-		/**  
-		 * simple aggregator for ranks, considered as a quality measure and therefore treated
-		 * like an intensive property.
-		 */ 
-		public class RankingAggregator implements IValueAggregator<Double> {
+		public RankingMediator() {
+			// this one won't mediate much
+		}
 
-			double val = 0.0;
-			boolean isnew = true;
+		public RankingMediator(IndirectObservation o) throws ThinklabValidationException {
 
-			public void addValue(Double value, IObservationContextState contextState) throws ThinklabException {
-
-				val = isnew ? value : (val + value)/2;
-				isnew = false;
-			}
-
-			public Double aggregateAndReset() throws ThinklabException {
-				
-				double ret = val;
-				val = 0.0;
-				return ret;
-			}
-
-			@Override
-			public Double partition(Double originalValue, Rational ratio) {
-				// TODO Auto-generated method stub
-				return null;
-			}
+			if (! (o instanceof Ranking))
+				throw new ThinklabValidationException("a ranking can only mediate another ranking");
 			
+			double ownMin = minV;
+			double ownMax = maxV;
+			double othMin = ((Ranking)o).minV;
+			double othMax = ((Ranking)o).maxV;
+			
+			this.conversion = (ownMax - ownMin)/(othMax - othMin);
+			this.offset = ownMin;
 		}
 		
-		public class RankingMediator implements IStateAccessor {
-
-			private int reg;
-			private double conversion = 1.0;
-			private double offset = 0.0;
-			private boolean integer = false;
-			private boolean noConv = true;
-
-			public RankingMediator(double ownMin, double ownMax, boolean integer, double othMin, double othMax) {
-				this.conversion = (ownMax - ownMin)/(othMax - othMin);
-				this.offset = ownMin;
-				this.integer = integer;
-			}
-			
-			public RankingMediator() {
-			}
-
-			@Override
-			public Object getValue(Object[] registers) {
-				return noConv? registers[reg] : convert((Double)(registers[reg]));
-			}
-
-			private double convert(double d) {
-			
-				double ret = d*conversion;
-				ret += offset;
-			
-				if (integer)
-					ret = Math.rint(ret);
-				return ret;
-			}
-			
-
-			@Override
-			public boolean isConstant() {
-				return false;
-			}
-
-			@Override
-			public boolean notifyDependencyObservable(IObservation o,
-					IConcept observable, String formalName)
-					throws ThinklabException {
-				return true;
-			}
-
-			@Override
-			public void notifyDependencyRegister(IObservation observation,
-					IConcept observable, int register, IConcept stateType)
-					throws ThinklabException {
-				// TODO Auto-generated method stub
-				this.reg = register;
-			}
-			
-		}
-
-		protected boolean bounded() {
-			return leftBounded && rightBounded;
-		}
-
-		protected double getMin() {
-			return minV;
-		}
-		
-		protected double getMax() {
-			return maxV;
-		}
-
-		protected boolean isInteger() {
-			return integer;
-		}
-		
-		public IConcept getStateType() {
-			return KnowledgeManager.Double();
-		}
-
-		public void validate(IObservation observation)
-				throws ThinklabValidationException {
-		
-			if (isScale && !bounded())
-				throw new ThinklabValidationException("scaled ranking must be bounded: provide minimum and maximum value");
-		}
-
-		/**
-		 * TODO move to the validator and pass it boundaries.
-		 * 
-		 * @param val
-		 * @throws ThinklabValidationException
-		 */
-		private void checkBoundaries(double val) throws ThinklabValidationException {
-
-			// TODO need a smart way to define IDs for observations, conceptual models etc so we can
-			// generate appropriate error messages.
-			if ((leftBounded && val < minV) || rightBounded && (val > maxV))
-				throw new ThinklabValidationException("value " + val + " out of boundaries");
-			if (integer && Double.compare(val - Math.floor(val), 0.0) != 0)
-				throw new ThinklabValidationException("value " + val + " is not an integer as requested");
-		}
-
 		@Override
-		public IStateAccessor getStateAccessor(IConcept stateType, IObservationContext context) {
-
-			if (inlineValue != null)
-				return new RankingStateAccessor(inlineValue);
-			else if (datasource != null) 
-				return new RankingStateAccessor(datasource);
-			
-			return null;
+		public Object getValue(Object[] registers) {
+			return noConv? registers[reg] : convert((Double)(registers[reg]));
 		}
 
-		@Override
-		public IStateValidator getValidator(IConcept valueType) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void handshake(IDataSource<?> dataSource,
-				IObservationContext observationContext,
-				IObservationContext overallContext) throws ThinklabException {
-			
-			this.datasource = dataSource;
-		}
-
-		@Override
-		public IValueAggregator<?> getAggregator(IObservationContext ownContext,
-				IObservationContext overallContext, IExtentMediator[] mediators) {
-			return new RankingAggregator();
-		}
-
-		@Override
-		public IContextualizedState createContextualizedStorage(IObservation observation, int size)
-				throws ThinklabException {
-			return new MemDoubleContextualizedDatasource(observation.getObservableClass(), size);
-		}
-
-		@Override
-		public IStateAccessor getMediator(IConceptualModel conceptualModel,
-				IConcept stateType, IObservationContext context)
-				throws ThinklabException {
-			
-			RankingMediator ret = null;
-			
-			if (!((conceptualModel instanceof RankingModel) ||
-					  (conceptualModel instanceof RankingSetRemappingModel))) {
-					
-					throw new ThinklabValidationException("can't mediate between " + this.getClass() +
-						" and " + conceptualModel.getClass());
-				}
-				
-			// nothing to do if so
-			if (conceptualModel instanceof RankingSetRemappingModel) {
-				return new RankingMediator();
-			}
-				
-			if ((isScale && !isScale) || 
-					(!isScale && isScale))
-				throw new ThinklabValidationException("scale ranking can't be mediated with non-scale");
-
+		private double convert(double d) {
 		
-			/**
-			 * if rankings aren't fully bounded left and right, we just pass them along, and the
-			 * conformance of the observable is our guarantee of compatibility. CM validation will
-			 * catch values out of bounds.
-			 */
-			if (!bounded() || !((RankingModel)conceptualModel).bounded()) {
-				return new RankingMediator();
-			}
+			double ret = d*conversion;
+			ret += offset;
 		
-			/*
-			 * we only need to mediate ranking models that are different.
-			 */
-			if (minV != ((RankingModel)conceptualModel).getMin() || 
-					maxV != ((RankingModel)conceptualModel).getMax() ||
-					integer != ((RankingModel)conceptualModel).isInteger()) {
-			
-				ret = new RankingMediator(
-						minV, maxV, integer,
-						((RankingModel)conceptualModel).getMin(),
-						((RankingModel)conceptualModel).getMax());
-			}
-			
+			if (integer)
+				ret = Math.rint(ret);
 			return ret;
 		}
-	}
-	
-	public class RankingStateAccessor implements IStateAccessor {
+		
 
-		private boolean isConstant = false;
-		private double value = 0.0;
-		private int index = 0;
-		private IDataSource<?> ds = null;
+		@Override
+		public boolean isConstant() {
+			return isConstant;
+		}
 
-		public RankingStateAccessor(double value) {
-			this.isConstant = true;
-			this.value = value;
+		@Override
+		public boolean notifyDependencyObservable(IObservation o,
+				IConcept observable, String formalName)
+				throws ThinklabException {
+			return true;
+		}
+
+		@Override
+		public void notifyDependencyRegister(IObservation observation,
+				IConcept observable, int register, IConcept stateType)
+				throws ThinklabException {
+			this.reg = register;
 		}
 		
-		public RankingStateAccessor(IDataSource<?> src) {
-			this.ds = src;
-		}
+	}
+
+	@Override
+	public IConcept getStateType() {
+		return KnowledgeManager.Double();
+	}
+	
+	private boolean bounded() {
+		return leftBounded && rightBounded;
+	}	
+	
+	public class RankingStateAccessor implements IStateAccessor {
+		
+		private int index = 0;
 		
 		@Override
 		public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
@@ -359,7 +187,7 @@ public class Ranking extends Observation implements IConceptualizable {
 		}
 
 		private Object getNextValue(Object[] registers) {
-			return ds.getValue(index++, registers);
+			return getDataSource().getValue(index++, registers);
 		}
 
 		@Override
@@ -372,6 +200,29 @@ public class Ranking extends Observation implements IConceptualizable {
 			return "[RankingAccessor]";
 		}
 
+	}
+	
+	
+//	/**
+//	 * TODO move to the validator and pass it boundaries.
+//	 * 
+//	 * @param val
+//	 * @throws ThinklabValidationException
+//	 */
+//	private void checkBoundaries(double val) throws ThinklabValidationException {
+//
+//		// TODO need a smart way to define IDs for observations, conceptual models etc so we can
+//		// generate appropriate error messages.
+//		if ((leftBounded && val < minV) || rightBounded && (val > maxV))
+//			throw new ThinklabValidationException("value " + val + " out of boundaries");
+//		if (integer && Double.compare(val - Math.floor(val), 0.0) != 0)
+//			throw new ThinklabValidationException("value " + val + " is not an integer as requested");
+//	}
+//
+
+	@Override
+	public IState createState(int size) throws ThinklabException {
+		return new MemDoubleContextualizedDatasource(getObservableClass(), size);
 	}
 
 	@Override
@@ -395,10 +246,6 @@ public class Ranking extends Observation implements IConceptualizable {
 			isScale = BooleanValue.parseBoolean(iss.toString());
 	}
 
-	@Override
-	public IConceptualModel createMissingConceptualModel() throws ThinklabException {
-		return new RankingModel();
-	}
 
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
@@ -413,6 +260,51 @@ public class Ranking extends Observation implements IConceptualizable {
 						Polylist.list(MAXVALUE_PROPERTY, maxV+""),
 						Polylist.list(ISINTEGER_PROPERTY, integer ? "true" : "false"),
 						Polylist.list(ISSCALE_PROPERTY, isScale ? "true" : "false"));
+	}
+
+
+	@Override
+	public IStateAccessor getMediator(IndirectObservation observation)
+			throws ThinklabException {
+
+		RankingMediator ret = null;
+		
+		if ( !(observation instanceof Ranking)) {
+				throw new ThinklabValidationException("can't mediate between " + this.getClass() +
+					" and " + observation.getClass());
+		}	
+
+		Ranking other = (Ranking)observation;
+			
+			
+		if ((isScale && !other.isScale) || 
+				(!isScale && other.isScale))
+			throw new ThinklabValidationException("scale ranking can't be mediated with non-scale");
+
+	
+		/**
+		 * if rankings aren't fully bounded left and right, we just pass them along, and the
+		 * conformance of the observable is our guarantee of compatibility. CM validation will
+		 * catch values out of bounds.
+		 */
+		if (!bounded() || !other.bounded()) {
+			return new RankingMediator();
+		}
+	
+		/*
+		 * we only need to mediate ranking models that are different.
+		 */
+		if (minV != other.minV || maxV != other.maxV || integer != other.integer) {
+			ret = new RankingMediator(other);
+		}
+		
+		return ret;
+	}
+
+
+	@Override
+	public IStateAccessor getAccessor() {
+		return new RankingStateAccessor();
 	}
 
 }

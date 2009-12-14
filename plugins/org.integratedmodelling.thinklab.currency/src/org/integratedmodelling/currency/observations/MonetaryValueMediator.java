@@ -33,8 +33,8 @@
 package org.integratedmodelling.currency.observations;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabInexactConversionException;
-import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.currency.CurrencyPlugin;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -70,17 +70,19 @@ public class MonetaryValueMediator implements IStateAccessor {
 	}
 
 	@Override
-	public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
-			throws ThinklabException {
+	public boolean notifyDependencyObservable(IObservation o,
+			IConcept observable, String formalName) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public void notifyDependencyRegister(IObservation observation, IConcept observable,
-			int register, IConcept stateType) throws ThinklabException {
+	public void notifyDependencyRegister(IObservation observation,
+			IConcept observable, int register, IConcept stateType)
+			throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

@@ -34,13 +34,17 @@ package org.integratedmodelling.geospace.extents;
 
 import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
+import org.integratedmodelling.geospace.transformations.Resample;
+import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
+import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
-import org.integratedmodelling.geospace.implementations.cmodels.SubdividedCoverageConceptualModel;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Pair;
@@ -60,6 +64,48 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  *
  */
 public class GridExtent extends ArealExtent implements IConceptualizable {
+
+	GeometryFactory gFactory = null;
+	int xDivs = 0;
+	int yDivs = 0;
+	double cellLength = 0.0;
+	double cellHeight = 0.0;
+	double xOrigin = 0.0;
+	double yOrigin = 0.0;
+	RasterActivationLayer activationLayer = null;
+	
+	Geometry boundary = null;
+
+	public GridExtent(
+				CoordinateReferenceSystem crs, 
+				double x1, // lonLowerBound
+				double y1, // latLowerBound
+				double x2, // lonUpperBound
+				double y2, // latUpperBound
+				int xDivs, 
+				int yDivs) {
+		
+		super(crs, x1, y1, x2, y2);
+		this.xOrigin = x1;
+		this.yOrigin = y1;
+
+		setResolution(xDivs, yDivs);
+	}
+
+	public GridExtent(GridExtent gridExtent) {
+		super(gridExtent.getCRS(), gridExtent.getWest(), gridExtent.getSouth(), gridExtent.getEast(), gridExtent.getNorth());
+		this.xOrigin = gridExtent.getEast();
+		this.yOrigin = gridExtent.getSouth();
+		this.setResolution(gridExtent.getXCells(), gridExtent.getYCells());
+	}
+
+	public void setResolution(int xDivs, int yDivs) {
+
+		this.xDivs = xDivs;
+		this.yDivs = yDivs;
+		cellLength = getNormalizedEnvelope().getWidth() / xDivs;
+		cellHeight = getNormalizedEnvelope().getHeight() / yDivs;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -81,49 +127,6 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 		return false;
 	}
 
-	GeometryFactory gFactory = null;
-	int xDivs = 0;
-	int yDivs = 0;
-	double cellLength = 0.0;
-	double cellHeight = 0.0;
-	double xOrigin = 0.0;
-	double yOrigin = 0.0;
-	RasterActivationLayer activationLayer = null;
-	
-	Geometry boundary = null;
-
-	public GridExtent(
-				SubdividedCoverageConceptualModel cm, 
-				CoordinateReferenceSystem crs, 
-				double x1, // lonLowerBound
-				double y1, // latLowerBound
-				double x2, // lonUpperBound
-				double y2, // latUpperBound
-				int xDivs, 
-				int yDivs) {
-		
-		super(cm, crs, x1, y1, x2, y2);
-		this.xOrigin = x1;
-		this.yOrigin = y1;
-
-		setResolution(xDivs, yDivs);
-	}
-
-	public GridExtent(SubdividedCoverageConceptualModel cm, GridExtent gridExtent) {
-		super(cm, gridExtent.getCRS(), gridExtent.getWest(), gridExtent.getSouth(), gridExtent.getEast(), gridExtent.getNorth());
-		this.xOrigin = gridExtent.getEast();
-		this.yOrigin = gridExtent.getSouth();
-		this.setResolution(gridExtent.getXCells(), gridExtent.getYCells());
-	}
-
-	public void setResolution(int xDivs, int yDivs) {
-
-		this.xDivs = xDivs;
-		this.yDivs = yDivs;
-		cellLength = getNormalizedEnvelope().getWidth() / xDivs;
-		cellHeight = getNormalizedEnvelope().getHeight() / yDivs;
-	}
-	
 	/**
 	 * return the envelope of the cell at x,y, irrespective of the activation layer
 	 */
@@ -276,10 +279,128 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 						Geospace.getCRSIdentifier(getCRS(), false)));
 	}
 
+
+	@Override
+	protected IExtent createMergedExtent(
+			ArealExtent orextent, ArealExtent otextent,
+			CoordinateReferenceSystem ccr, Envelope common) throws ThinklabException {
+
+		if (common.isNull()) {
+			throw new ThinklabContextualizationException(
+					"intersection of extents " + orextent + " with " + otextent + " is null; contextualization aborted");
+		}
+		
+		/*
+		 * for now, raster always wins
+		 */
+		if (otextent instanceof GridExtent && !(orextent instanceof GridExtent)) {
+			return makeRasterExtent((GridExtent)otextent, orextent, ccr, common);
+		}
+
+		if (orextent instanceof GridExtent && !(otextent instanceof GridExtent)) {
+			return makeRasterExtent((GridExtent)orextent, otextent, ccr, common);
+		}
+
+		/*
+		 * if we get here, we must be merging two rasters
+		 */
+		if ( !(orextent instanceof GridExtent && otextent instanceof GridExtent)) {
+			throw new ThinklabUnimplementedFeatureException("RasterModel: cannot yet merge extents of different types");
+		}
+
+		GridExtent orext = (GridExtent)orextent;
+		GridExtent otext = (GridExtent)otextent;
+		
+		/* we'll fix the resolution later  */
+		GridExtent nwext = 
+				new GridExtent(ccr, 
+						common.getMinX(), common.getMinY(), common.getMaxX(), common.getMaxY(), 
+						1, 1);
+
+		// this is the constrained resolution; we recompute it below if we are free to choose
+		int xc = otext.getXCells();
+		int yc = otext.getYCells();
+		
+		// phase errors in both directions due to choosing resolutions that do not
+		// match exactly. This is computed but not used right now. We could set what to 
+		// do with it as a property: e.g., log a warning or even raise an exception if nonzero.
+		double errx = 0.0;
+		double erry = 0.0;
+		
+		/* choose the smallest of the reprojected cells unless we're constrained to accept otextent */
+		Envelope cor = null;
+		Envelope cot = null; 
+		
+		try {
+			
+			cor = orext.getCellEnvelope(0, 0).transform(ccr, true, 10);
+			cot = otext.getCellEnvelope(0, 0).transform(ccr, true, 10);
+				
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		}
+		
+		double aor = cor.getHeight() * cor.getWidth();
+		double aot = cot.getHeight() * cot.getWidth();
+			
+		/*
+		 * We take the finest res
+		 */
+		Envelope cell = aor < aot ? cor : cot;
+	
+		// System.out.println("cells are " + cor + " and " + cot + "; chosen " + cell + " because areas are " + aor + " and " + aot);
+		
+		/* recompute the number of cells in the new extent */
+		xc = (int)Math.round(nwext.getNormalizedEnvelope().getWidth()/cell.getWidth());
+		yc = (int)Math.round(nwext.getNormalizedEnvelope().getHeight()/cell.getHeight());
+		
+		errx = nwext.getNormalizedEnvelope().getWidth() - (cell.getWidth() * xc);
+		erry = nwext.getNormalizedEnvelope().getHeight() - (cell.getHeight() * yc);
+		
+		// System.out.println("new cell size is " + xc + "," + yc);
+		
+		// TODO use the error, make sure it's not larger than too much
+		// System.out.println("errors are " + errx + "," + erry);
+		
+		nwext.setResolution(xc, yc);
+		
+		System.out.println("extent is now " + nwext);
+		
+		
+		return nwext;
+	}
+
+	@Override
+	public IDatasourceTransformation getDatasourceTransformation(
+			IConcept mainObservable, IExtent extent) throws ThinklabValidationException {
+
+		if (extent instanceof GridExtent) {
+			return new Resample((GridExtent) extent);
+		}
+		
+		throw new ThinklabValidationException(
+				"grid extent: don't know how to transform to match " + extent);
+
+	}
+
 	@Override
 	public IExtent getExtent(int granule) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	private ArealExtent makeRasterExtent(GridExtent grid, ArealExtent otextent, CoordinateReferenceSystem ccr,
+			Envelope env) throws ThinklabException {
+
+		/*
+		 *  TODO adjust the extent as necessary to make the grid extent reflect the coordinate system and area
+		 */
+		GridExtent ret = 
+			new GridExtent(ccr, 
+					env.getMinX(), env.getMinY(), env.getMaxX(), env.getMaxY(), 
+					grid.getXCells(), grid.getYCells());
+		
+		return ret;
 	}
 
 }

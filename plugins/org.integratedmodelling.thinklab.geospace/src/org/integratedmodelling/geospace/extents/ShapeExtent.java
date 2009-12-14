@@ -33,12 +33,13 @@
 package org.integratedmodelling.geospace.extents;
 
 import org.geotools.feature.FeatureCollection;
-import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
-import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.implementations.cmodels.SpatialConceptualModel;
+import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.geospace.transformations.Rasterize;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Polylist;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -53,7 +54,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author Ferdinando
  *
  */
-public class ShapeExtent extends ArealExtent /* implements IConceptualizable */ {
+public class ShapeExtent extends ArealExtent {
 
 	// we either have one shape or a feature collection. If we see space as a collection of features, the
 	// shape should be the convex hull of all features, but we don't compute it unless necessary.
@@ -61,17 +62,17 @@ public class ShapeExtent extends ArealExtent /* implements IConceptualizable */ 
 	FeatureCollection<?,?> features = null;
 	private String featureURL;
 	
-	public ShapeExtent(Envelope envelope, CoordinateReferenceSystem crs, SpatialConceptualModel cm) {
-		super(cm, crs, envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY());
+	public ShapeExtent(Envelope envelope, CoordinateReferenceSystem crs) {
+		super(crs, envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY());
 	}
 	
-	public ShapeExtent(Geometry shape, Envelope envelope, CoordinateReferenceSystem crs, SpatialConceptualModel cm) {
-		super(cm, crs, envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY());
+	public ShapeExtent(Geometry shape, Envelope envelope, CoordinateReferenceSystem crs) {
+		super(crs, envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY());
 		this.shape = shape;
 	}
 
-	public ShapeExtent(FeatureCollection<?,?> features, String sourceURL, Envelope envelope, CoordinateReferenceSystem crs, SpatialConceptualModel cm) {
-		super(cm, crs, envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY());
+	public ShapeExtent(FeatureCollection<?,?> features, String sourceURL, Envelope envelope, CoordinateReferenceSystem crs) {
+		super(crs, envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY());
 		this.features = features;
 		this.featureURL = sourceURL;
 	}
@@ -118,6 +119,63 @@ public class ShapeExtent extends ArealExtent /* implements IConceptualizable */ 
 			ret = true;
 		} else {
 			ret = !(this.featureURL.equals(otextent.featureURL));
+		}
+		return ret;
+	}
+
+
+	@Override
+	public Polylist conceptualize() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected IExtent createMergedExtent(
+			ArealExtent orextent, ArealExtent otextent,
+			CoordinateReferenceSystem ccr, Envelope common) {
+
+		// TODO everything needs thorough checking
+		ArealExtent ret = null;
+		
+		// if any is a GridExtent, or if we have two different feature collections, we need
+		// to move this to a GridExtent.
+		if (otextent instanceof GridExtent) {
+
+			// raster wins
+			GridExtent gext = new GridExtent((GridExtent)otextent);
+			ret = gext;
+			
+		} else if (orextent instanceof ShapeExtent && ((ShapeExtent)orextent).hasDifferentFeatures((ShapeExtent)otextent)) {
+			
+			// we can't really handle this as a vector operation yet. 
+			// Will determine a polygonal overlay at some point. For now we just turn to raster, but
+			// we need a smart guess for the resolution.
+			
+		} else {
+			
+			// should check that they're exactly the same, or again rasterize
+			Geometry s =
+				((ShapeExtent)orextent).getShape().intersection(((ShapeExtent)otextent).getShape());
+			Envelope env = s.getEnvelopeInternal();	
+			ret = new ShapeExtent(s, env, getCRS());
+			
+		}
+
+		return ret;
+		
+	}
+
+	@Override
+	public IDatasourceTransformation getDatasourceTransformation(
+			IConcept mainObservable, IExtent extent) throws ThinklabException {
+		
+		IDatasourceTransformation ret = null;
+		
+		if (extent instanceof GridExtent) {
+			ret = new Rasterize((GridExtent) extent);
+		} else {
+			throw new ThinklabValidationException("shape extent: cannot transform to extent " + extent);
 		}
 		return ret;
 	}

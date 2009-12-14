@@ -36,12 +36,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.data.IDataSource;
-import org.integratedmodelling.corescience.interfaces.data.ResamplingDataSource;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IDataSource;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.CoverageFactory;
 import org.integratedmodelling.geospace.coverage.ICoverage;
@@ -53,60 +50,28 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.utils.URLUtils;
 
 @InstanceImplementation(concept="geospace:ExternalRasterDataSource")
-public class RegularRasterGridDataSource 
-	extends CoverageDataSource<Object> implements ResamplingDataSource {
+public class RegularRasterGridDataSource implements IDataSource<Object>, IInstanceImplementation {
 
-	/**
-	 * The conceptual model that defines the data we need to return, saved at handshaking
-	 */
-	private IConceptualModel dataCM = null;
-	
 	protected ICoverage coverage = null;
 
 	/* same here - these are overall extents that we need to conform to */
 	private GridExtent gridExtent;
 	
-	public boolean handshake(IObservation observation, IConceptualModel cm,
-			IObservationContext observationContext,
-			IObservationContext overallContext)
-			throws ThinklabException {
-		
-		dataCM = cm;
-		
-		IExtent extent = overallContext.getExtent(Geospace.get().SubdividedSpaceObservable());
-
-		if (extent instanceof GridExtent)
-			gridExtent = (GridExtent) extent;
-		
-
-		/*
-		 * If raster, we may need to adjust the coverage to the extent for CRS, bounding box, and resolution.
-		 * This will also convert a vector coverage to raster. 
-		 */
-		if (gridExtent != null) {
-			
-			coverage = coverage.requireMatch(gridExtent, true);
-
-			/*
-			 * ask for the main extent's activation layer (creating an inactive
-			 * default if not there) and AND our active areas with it.
-			 */
-			defineActivationLayer(
-					gridExtent.requireActivationLayer(true), gridExtent);
-		}
-		
-		// if we get to handshaking, we need to load the data
-		coverage.loadData();
-		
-		// whatever happens, we can definitely use indexes here, so return false.
-		return false;
+	public RegularRasterGridDataSource() {
 	}
 	
+	public RegularRasterGridDataSource(ICoverage coverage,
+			GridExtent gridExtent) {
+		this.coverage = coverage;
+		this.gridExtent = gridExtent;
+	}
 
+	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 
 		String sourceURL = null;
@@ -148,6 +113,7 @@ public class RegularRasterGridDataSource
 		
 	}
 
+	@Override
 	public void validate(IInstance i) throws ThinklabException {
 
 		if (coverage != null) {
@@ -168,7 +134,7 @@ public class RegularRasterGridDataSource
 		 * TODO reinterpret through classification lookup table if any is provided
 		 */
 		try {
-			Object ret = coverage.getSubdivisionValue(index, dataCM, gridExtent);
+			Object ret = coverage.getSubdivisionValue(index, gridExtent);
 			Double nd = coverage.getNodataValue();
 			if (nd != null && ((Double)ret).equals(nd)) {
 				ret = Double.NaN;
@@ -179,6 +145,9 @@ public class RegularRasterGridDataSource
 		}
 	}
 
+	protected void setGridExtent(GridExtent extent) {
+		this.gridExtent = extent;
+	}
 
 	@Override
 	public IConcept getValueType() {
@@ -186,37 +155,31 @@ public class RegularRasterGridDataSource
 		return null;
 	}
 
-
-	@Override
-	public IDataSource<?> resample() throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void notifyContextDimension(IConcept dimension, IExtent totalExtent,
-			int multiplicity) throws ThinklabValidationException {
-		
-		if (!dimension.is(Geospace.get().SpaceObservable()))
-			throw new ThinklabValidationException("raster grid cannot deal with extents of " + 
-				dimension);
-		
-	}
-
-
-	@Override
-	public IDataSource<?> validateDimensionality()
-			throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 	@Override
 	public Object getInitialValue() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public IDataSource<?> transform(IDatasourceTransformation transformation)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void postProcess(IObservationContext context)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void preProcess(IObservationContext context)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 
 

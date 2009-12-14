@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.IntelligentMap;
@@ -117,7 +118,7 @@ public class Model extends DefaultAbstractModel {
 	
 	
 	@Override
-	public ModelResult observeInternal(IKBox kbox, ISession session, IntelligentMap<IConformance> cp, ArrayList<IObservation> extents, boolean acceptEmpty)  throws ThinklabException {
+	public ModelResult observeInternal(IKBox kbox, ISession session, IntelligentMap<IConformance> cp, ArrayList<Topology> extents, boolean acceptEmpty)  throws ThinklabException {
 	
 		ModelResult ret = null;
 		ArrayList<Polylist> cmodels = new ArrayList<Polylist>();

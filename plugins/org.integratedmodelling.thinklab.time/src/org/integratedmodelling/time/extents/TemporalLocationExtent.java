@@ -32,11 +32,14 @@
  **/
 package org.integratedmodelling.time.extents;
 
-import org.integratedmodelling.corescience.interfaces.cmodel.ExtentConceptualModel;
-import org.integratedmodelling.corescience.interfaces.cmodel.IExtent;
+import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
+import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.time.implementations.cmodels.InstantConceptualModel;
 import org.integratedmodelling.time.literals.TimeValue;
+import org.integratedmodelling.utils.Polylist;
 
 /**
  * Extent class for a single temporal location.
@@ -45,11 +48,9 @@ import org.integratedmodelling.time.literals.TimeValue;
  */
 public class TemporalLocationExtent implements IExtent {
 
-	InstantConceptualModel cModel = null;
 	TimeValue value;
 	
-	public TemporalLocationExtent(InstantConceptualModel cm, TimeValue value) {
-		cModel = cm;
+	public TemporalLocationExtent(TimeValue value) {
 		this.value = value;
 	}
 	
@@ -65,10 +66,6 @@ public class TemporalLocationExtent implements IExtent {
 		return 1;
 	}
 
-	public ExtentConceptualModel getConceptualModel() {
-		return cModel;
-	}
-
 	public TimeValue getTimeValue() {
 		return value;
 	}
@@ -78,7 +75,45 @@ public class TemporalLocationExtent implements IExtent {
 	}
 
 	@Override
-	public IExtent getExtent(int granule) {
-		return this;
+	public IDatasourceTransformation getDatasourceTransformation(
+			IConcept mainObservable, IExtent extent) {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+	@Override
+	public IExtent getExtent(int granule) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IExtent merge(IExtent extent) throws ThinklabException {
+		
+		if (! (extent instanceof TemporalLocationExtent)) {
+			throw new ThinklabContextualizationException("temporal extents are incompatible: heterogeneous time models used in observations");
+		}
+		
+		TimeValue v1 = getTimeValue();
+		TimeValue v2 = ((TemporalLocationExtent)extent).getTimeValue();
+		TimeValue max = null;
+		
+		if (v1.isIdentical(v2)) {
+			max = v1;
+		} else if (v1.comparable(v2) || v2.comparable(v1)){
+			max = v1.mostPrecise(v2);
+		}
+		
+		if (max == null)
+			throw new ThinklabContextualizationException("temporal extents " + v1 + " and " + v2 + " are incompatible");
+	
+		return new TemporalLocationExtent(max);
+	}
+
+	@Override
+	public Polylist conceptualize() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

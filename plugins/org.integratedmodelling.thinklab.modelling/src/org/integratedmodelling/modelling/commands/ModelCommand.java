@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.integratedmodelling.corescience.contextualization.Compiler;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.compiler.Compiler;
+import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.literals.ShapeValue;
@@ -13,6 +13,7 @@ import org.integratedmodelling.idv.IDV;
 import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModelManager;
 import org.integratedmodelling.modelling.ModellingPlugin;
+import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.visualization.NetCDFArchive;
 import org.integratedmodelling.modelling.visualization.ObservationListing;
 import org.integratedmodelling.thinklab.command.Command;
@@ -100,8 +101,7 @@ public class ModelCommand implements ICommandHandler {
 			// session.getOutputStream().println(Polylist.prettyPrint(lr));
 			
 			IInstance res = session.createObject(lr);
-			IInstance result = Compiler.contextualize((IObservation) res
-					.getImplementation(), session);
+			IInstance result = new ObservationFactory().contextualize(res, session);
 
 			if (command.hasOption("visualize") || command.hasOption("outfile")) {
 				/*

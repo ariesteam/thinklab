@@ -4,9 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.integratedmodelling.corescience.Obs;
-import org.integratedmodelling.corescience.interfaces.data.IStateAccessor;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -53,20 +54,24 @@ public class MVELAccessor implements IStateAccessor {
 		return false;
 	}
 
+
 	@Override
-	public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
-			throws ThinklabException {
-		if (!Obs.isExtent(o))
+	public boolean notifyDependencyObservable(IObservation o,
+			IConcept observable, String formalName) throws ThinklabException {
+		// TODO Auto-generated method stub
+		if (!(o instanceof Topology))
 			obsToName.put(observable, formalName);
 		return true;
 	}
 
 	@Override
-	public void notifyDependencyRegister(IObservation observation, IConcept observable,
-			int register, IConcept stateType) throws ThinklabException {
-		if (!Obs.isExtent(observation))
+	public void notifyDependencyRegister(IObservation observation,
+			IConcept observable, int register, IConcept stateType)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		if (!(observation instanceof Topology))
 			parmList.add(new Pair<String, Integer>(obsToName.get(observable), register));
+		
 	}
-	
 	
 }

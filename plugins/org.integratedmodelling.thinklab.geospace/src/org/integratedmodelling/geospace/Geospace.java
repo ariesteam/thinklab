@@ -56,6 +56,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.utils.image.ColorMap;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
 import org.opengis.referencing.FactoryException;
@@ -171,6 +172,8 @@ public class Geospace extends ThinklabPlugin  {
 		}
 
 		try {
+			
+			ColorMap.rainbow(256).getColorbar(16, new File("cbar.png"));
 			
 			metersCRS = CRS.decode(EPSG_PROJECTION_METERS);
 			defaultCRS = CRS.decode(EPSG_PROJECTION_DEFAULT);
@@ -513,6 +516,49 @@ public class Geospace extends ThinklabPlugin  {
 	public static boolean isLongitudeX(CoordinateReferenceSystem ccr) {
 		return !ccr.getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH);
 	}
+
+	/**
+	 * This method decides the CRS to use when they differ in merged extents.
+	 * TODO at the moment it just returns the preferred CRS in the plugin, so
+	 * even equal CRS get transformed.
+	 * 
+	 * @param crs1
+	 * @param crs2
+	 * @return
+	 */
+	public static CoordinateReferenceSystem chooseCRS(
+			CoordinateReferenceSystem crs1, CoordinateReferenceSystem crs2) {
+
+		CoordinateReferenceSystem ret = Geospace.get().getPreferredCRS();
+		
+		if (ret == null) {
+			ret = crs1;
+			Geospace.get().setPreferredCRS(ret);
+		}
+		
+		return ret;
+
+	}
 	
+	/**
+	 * Works around geotools bugs and gives us a nice thinklab exception if necessary.
+	 * 
+	 * @param crsId
+	 * @return
+	 * @throws ThinklabValidationException
+	 */
+    public static CoordinateReferenceSystem getCRSFromID(String crsId) throws ThinklabValidationException {
+        
+        CoordinateReferenceSystem ret = null;
+        
+        try {
+                ret = CRS.decode(crsId);
+        } catch (Exception e) {
+                throw new ThinklabValidationException(e);
+        }
+        
+        return ret;
+        
+}
 	
 }

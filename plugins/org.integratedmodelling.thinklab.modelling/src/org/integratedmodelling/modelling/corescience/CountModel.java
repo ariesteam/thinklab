@@ -12,7 +12,7 @@ import org.integratedmodelling.utils.Polylist;
 public class CountModel extends DefaultDynamicAbstractModel {
 
 	@Override
-	protected void validateMediatedModel(IModel model)
+	public void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
 		// TODO Auto-generated method stub
 		

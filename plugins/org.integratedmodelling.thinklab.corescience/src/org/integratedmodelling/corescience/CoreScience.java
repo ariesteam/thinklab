@@ -32,10 +32,6 @@
  **/
 package org.integratedmodelling.corescience;
 
-import java.util.HashMap;
-
-import org.integratedmodelling.corescience.interfaces.context.IContextualizationCompiler;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -48,11 +44,6 @@ public class CoreScience extends ThinklabPlugin {
 
 	private final static String PLUGIN_ID = "org.integratedmodelling.thinklab.corescience";
 	
-	/**
-	 * TODO fix this, we need to build a new one per request
-	 */
-	private HashMap<String, String> compilerClasses = new HashMap<String,String>();
-
 	private IConcept NumericRankingSpace;
 	private IConcept DiscreteNumericRankingSpace;
 	private IConcept MeasurementSpace;
@@ -151,9 +142,6 @@ public class CoreScience extends ThinklabPlugin {
 			throw new ThinklabPluginException(e);
 		}
 		
-		registerCompiler(
-				"default", 
-				"org.integratedmodelling.corescience.contextualization.VMCompiler");
 	}
 
 	/* (non-Javadoc)
@@ -161,53 +149,6 @@ public class CoreScience extends ThinklabPlugin {
 	 */
 	@Override
 	public void unload() throws ThinklabPluginException {
-	}
-
-	/**
-	 * TODO define as extension
-	 * @see registerModelLoader
-	 */
-	public IContextualizationCompiler getContextualizationCompiler(String id, IObservation obs) throws ThinklabPluginException {
-		
-		IContextualizationCompiler ret = null;
-		String cclass = null;
-		
-		if (id != null) {
-			cclass = compilerClasses.get(id);			
-		} else if (obs != null){
-			for (String s : compilerClasses.values()) {
-				
-				IContextualizationCompiler cc;
-				try {
-					cc = (IContextualizationCompiler) Class.forName(s, true, getClassLoader()).newInstance();
-				} catch (Exception e) {
-					throw new ThinklabPluginException(
-							"corescience: cannot create compiler for class " + s);
-				}
-				if (cc.canCompile(obs)) {
-					ret = cc;
-					break;
-				}
-			}
-		}
-		if (ret == null && cclass != null)
-			try {
-				ret =
-					(IContextualizationCompiler) Class.forName(cclass, true, getClassLoader()).newInstance();
-			} catch (Exception e) {
-				throw new ThinklabPluginException("corescience: cannot create compiler for class " + cclass);
-			}
-		return ret;
-	}
-	
-	/**
-	 * Register a constructor for a new model loader.
-	 * 
-	 * @param id
-	 * @param constructor
-	 */
-	public void registerCompiler(String id, String compilerClass) {
-		compilerClasses.put(id, compilerClass);
 	}
 
 	public static IConcept RankingModel() {

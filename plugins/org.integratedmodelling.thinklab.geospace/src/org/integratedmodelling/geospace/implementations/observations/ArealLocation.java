@@ -33,11 +33,13 @@
 package org.integratedmodelling.geospace.implementations.observations;
 
 import org.integratedmodelling.corescience.implementations.observations.Observation;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.implementations.cmodels.ArealLocationConceptualModel;
+import org.integratedmodelling.geospace.extents.ShapeExtent;
 import org.integratedmodelling.geospace.interfaces.IGeolocatedObject;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
@@ -53,7 +55,7 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  */
 @InstanceImplementation(concept="geospace:ArealLocation")
-public class ArealLocation extends Observation implements IParseable, IGeolocatedObject {
+public class ArealLocation extends Observation implements Topology, IParseable, IGeolocatedObject {
 
 	ShapeValue boundingBox = null;
 	ShapeValue shape = null;
@@ -98,19 +100,6 @@ public class ArealLocation extends Observation implements IParseable, IGeolocate
 		super.validate(i);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.corescience.observation.Observation#createMissingConceptualModel()
-	 */
-	@Override
-	public IConceptualModel createMissingConceptualModel()
-			throws ThinklabException {
-		
-		if (this.shape == null)
-			this.shape = (ShapeValue)getDataSource();
-		
-		return new ArealLocationConceptualModel(shape);
-	}
-
 	@Override
 	public void parseSpecifications(IInstance inst, String literal) throws ThinklabValidationException {
 		observation = inst;
@@ -135,6 +124,17 @@ public class ArealLocation extends Observation implements IParseable, IGeolocate
 	@Override
 	public String toString() {
 		return ("areal-location(" + shape.getBoundingBox()+")");
+	}
+
+	@Override
+	public Restriction getConstraint(String operator) throws ThinklabException {
+		return new Restriction("boundingbox", operator, getExtent().getFullExtentValue().toString());
+	}
+
+	@Override
+	public IExtent getExtent() throws ThinklabException {
+		return new ShapeExtent(shape.getGeometry(), 
+				shape.getGeometry().getEnvelopeInternal(), shape.getCRS());
 	}
 	
 }

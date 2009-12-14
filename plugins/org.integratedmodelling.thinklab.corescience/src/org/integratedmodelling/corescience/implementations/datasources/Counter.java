@@ -32,10 +32,11 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
-import org.integratedmodelling.corescience.interfaces.context.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.data.IDataSource;
-import org.integratedmodelling.corescience.interfaces.observation.IObservation;
+import org.integratedmodelling.corescience.interfaces.IDataSource;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+
+
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -65,11 +66,24 @@ public class Counter implements IDataSource<Integer> {
 	}
 
 	@Override
-	public boolean handshake(IObservation observation, IConceptualModel cm,
-			IObservationContext observationContext,
-			IObservationContext overallContext) throws ThinklabException {
+	public IDataSource<?> transform(IDatasourceTransformation transformation)
+			throws ThinklabException {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
+	}
+
+	@Override
+	public void postProcess(IObservationContext context)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void preProcess(IObservationContext context)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

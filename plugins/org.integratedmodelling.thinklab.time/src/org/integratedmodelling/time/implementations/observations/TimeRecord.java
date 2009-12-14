@@ -33,9 +33,10 @@
 package org.integratedmodelling.time.implementations.observations;
 
 import org.integratedmodelling.corescience.implementations.observations.Observation;
-import org.integratedmodelling.corescience.interfaces.cmodel.IConceptualModel;
+import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.time.implementations.cmodels.InstantConceptualModel;
 import org.integratedmodelling.time.literals.TimeValue;
 
 /**
@@ -45,16 +46,22 @@ import org.integratedmodelling.time.literals.TimeValue;
  * @author Ferdinando Villa
  *
  */
-public class TimeRecord extends Observation {
+public class TimeRecord extends Observation implements Topology {
 
 	TimeValue value = null;
-	
+
 	@Override
-	public IConceptualModel createMissingConceptualModel() throws ThinklabException {
-		
-		return new InstantConceptualModel(value = (TimeValue) getDataSource());
+	public Restriction getConstraint(String operator) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
+	@Override
+	public IExtent getExtent() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	
 
 }
