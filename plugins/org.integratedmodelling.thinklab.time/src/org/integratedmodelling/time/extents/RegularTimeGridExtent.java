@@ -240,4 +240,11 @@ public class RegularTimeGridExtent implements IExtent {
 		return this.intersection((RegularTimeGridExtent) extent);
 		
 	}
+
+
+	@Override
+	public IExtent constrain(IExtent extent) throws ThinklabException {
+		// TODO IMPLEMENT CORRECTLY
+		return merge(extent);
+	}
 }

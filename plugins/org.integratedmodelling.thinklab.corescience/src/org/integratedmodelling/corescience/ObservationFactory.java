@@ -1,6 +1,5 @@
 package org.integratedmodelling.corescience;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,6 +8,7 @@ import java.util.Map;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -20,6 +20,8 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementa
 public class ObservationFactory {
 
 	/**
+	 * Run a contextualization in its "natural" context - i.e., the merge of the contexts of each observation in 
+	 * the passed observation structure.
 	 * 
 	 * @param observation
 	 * @param session
@@ -28,10 +30,40 @@ public class ObservationFactory {
 	 */
 	public IInstance contextualize(IInstance observation, ISession session) throws ThinklabException {
 		ObservationContext ctx = new ObservationContext(getObservation(observation), null);
-		ctx.dump(session.getOutputStream());
 		return ctx.run(session, null);
 	}
 	
+	/**
+	 * Run a contextualization in the natural context constrained by the passed topologies.
+	 * 
+	 * @param observation
+	 * @param session
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public IInstance contextualize(IInstance observation, ISession session, Topology ... context) throws ThinklabException {
+		
+		ObservationContext constraint = new ObservationContext(context);
+		ObservationContext ctx = new ObservationContext(getObservation(observation), constraint);
+		return ctx.run(session, null);
+	}
+	
+	/**
+	 * Run a contextualization in the natural context constrained by the passed topologies.
+	 * 
+	 * @param observation
+	 * @param session
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public IInstance contextualize(IInstance observation, ISession session, 
+			ArrayList<IContextualizationListener> listeners, 
+			Topology ... context) throws ThinklabException {
+		
+		ObservationContext constraint = new ObservationContext(context);
+		ObservationContext ctx = new ObservationContext(getObservation(observation), constraint);
+		return ctx.run(session, listeners);
+	}
 
 	public IInstance contextualize(IInstance observation, ISession session,
 			ArrayList<IContextualizationListener> lis) throws ThinklabException {
@@ -109,6 +141,25 @@ public class ObservationFactory {
 
 		for (IObservation o : obs.getDependencies()) {
 			ret = findObservation(o, co);
+			if (ret != null)
+				return ret;
+		}
+		
+		return null;
+	}
+
+	public static IObservation findTopology(IObservation obs, IConcept co) {
+
+		IObservation ret = null;
+		
+		for (IObservation o : obs.getTopologies()) {
+			if (o.getObservable().is(co)) {
+				return o;
+			}
+		}
+
+		for (IObservation o : obs.getDependencies()) {
+			ret = findTopology(o, co);
 			if (ret != null)
 				return ret;
 		}

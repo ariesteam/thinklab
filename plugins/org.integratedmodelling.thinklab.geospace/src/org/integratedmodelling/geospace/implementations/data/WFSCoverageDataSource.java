@@ -78,5 +78,7 @@ public class WFSCoverageDataSource extends VectorCoverageDataSource {
 		
 		this.coverage = 
 			CoverageFactory.requireCoverage(url, p);
+		this.coverage.setName(covId);
+		
 	}
 }

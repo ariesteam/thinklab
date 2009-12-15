@@ -228,5 +228,11 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 			throw new ThinklabIOException(e);
 		}
 	}
+	
+	@Override
+	public void setName(String covId) {
+		layerName = covId;
+	}
+
 
 }

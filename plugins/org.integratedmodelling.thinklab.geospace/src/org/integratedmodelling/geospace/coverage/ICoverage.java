@@ -84,4 +84,9 @@ public interface ICoverage {
 	 */
 	public Double getNodataValue();
 
+	/**
+	 * 
+	 */
+	public abstract void setName(String covId);
+
 }

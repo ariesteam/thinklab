@@ -222,16 +222,16 @@ public abstract class DefaultAbstractModel implements IModel {
 
 		ModelResult ret = observeInternal(kbox, session, conformances, extents, false);
 		
-		/*
-		 * add all extent specifications to the root observation
-		 */
-		for (Topology obs : extents) {
-			
-			IExtent ext = obs.getExtent();
-			if (ext instanceof IConceptualizable) {
-				ret.addExtentObservation(((IConceptualizable)ext).conceptualize());
-			}
-		}
+//		/*
+//		 * add all extent specifications to the root observation
+//		 */
+//		for (Topology obs : extents) {
+//			
+//			IExtent ext = obs.getExtent();
+//			if (ext instanceof IConceptualizable) {
+//				ret.addExtentObservation(((IConceptualizable)ext).conceptualize());
+//			}
+//		}
 		
 		return ret;
 	}

@@ -68,7 +68,7 @@ public class WCSGridDataSource extends RegularRasterGridDataSource {
 		
 		this.coverage = 
 			new WCSCoverage(i.get("geospace:hasCoverageId").toString(), p);
-		
+
 	}
 	
 	@Override

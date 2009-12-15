@@ -94,7 +94,6 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			}
 		}
 				
-			
 		layerName = coverageID;
 		
 		XMLDocument desc = new XMLDocument(buildDescribeUrl(coverageID));

@@ -58,7 +58,7 @@ public class NetCDFArchive {
 		
 		IObservation o = ObservationFactory.getObservation(obs);
 		
-		IObservation spc = ObservationFactory.findObservation(o, Geospace.get().SubdividedSpaceObservable());
+		IObservation spc = ObservationFactory.findTopology(o, Geospace.get().SubdividedSpaceObservable());
 		
 		if (spc == null || !(spc instanceof RasterGrid))
 			throw new ThinklabUnimplementedFeatureException(
@@ -154,7 +154,7 @@ public class NetCDFArchive {
 
 				// add uncertainty if any
 				if (variables.get(obs) instanceof CategoricalDistributionDatasource)
-					ncfile.addVariable(varname+"U", DataType.FLOAT, new Dimension[]{latDim,lonDim});
+					ncfile.addVariable(varname+"Uncertainty", DataType.FLOAT, new Dimension[]{latDim,lonDim});
 				
 				// TODO if var is a measurement, add units attribute - this is a stupid stub
 				if (varname.equals("Altitude")) {

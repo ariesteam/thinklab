@@ -353,7 +353,7 @@ public class VectorCoverage implements ICoverage {
 				 * WOW - we want a raster - rasterize it 
 				 * TODO implement some sort of caching mechanism
 				 */
-				System.out.println("rasterizing vector coverage over " + arealExtent + " ...");
+				System.out.println("rasterizing vector coverage " + layerName + " over " + arealExtent + " ...");
 				ret = convertToRaster((GridExtent) arealExtent);
 
 		}  else {
@@ -457,6 +457,11 @@ public class VectorCoverage implements ICoverage {
 	public Double getNodataValue() {
 		// TODO see what applies here. For now no support for nodata values.
 		return null;
+	}
+
+	@Override
+	public void setName(String covId) {
+		layerName = covId;
 	}
 
 }

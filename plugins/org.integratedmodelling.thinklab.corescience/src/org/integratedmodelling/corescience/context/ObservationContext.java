@@ -62,24 +62,32 @@ public class ObservationContext implements IObservationContext {
 	private ObservationContext(ObservationContext observationContext) {
 		copy(observationContext);
 	}
+	
+	public ObservationContext(IObservation o) throws ThinklabException {
+		this(o, null, null);
+	}
 
+	public ObservationContext(IObservation o, ObservationContext constraint) throws ThinklabException {
+		this(o, null, constraint);
+	}
+	
 	/**
 	 * Compute the context of the passed observation. If required, constrain it to match the
 	 * passed context.
 	 * 
 	 * @param o an observation
-	 * @param constraint another "upper level" contexts, or null
+	 * @param upper another "upper level" contexts, or null
 	 * @throws ThinklabException
 	 */
-	public ObservationContext(IObservation o, ObservationContext constraint) throws ThinklabException {
+	private ObservationContext(IObservation o, ObservationContext upper, ObservationContext constraining) throws ThinklabException {
 		
 		this.observation = o;
-		
+
 		/*
-		 * start with the constraining extents if any
+		 * start with the upstream extents
 		 */
-		if (constraint != null)
-			extents.putAll(constraint.extents);
+		if (upper != null)
+			extents.putAll(upper.extents);
 		
 		/*
 		 * put in anything that our observation has
@@ -87,24 +95,52 @@ public class ObservationContext implements IObservationContext {
 		for (Topology extent : observation.getTopologies()) {
 			mergeExtent((Topology) extent);
 		}
-
+		
+		if (constraining != null) {
+			constrainExtents(constraining);
+		}
+		
 		/*
 		 * merge with dependent contexts, constrained by ours
 		 */
 		for (IObservation dep : observation.getDependencies()) {
 			
-			ObservationContext depctx = new ObservationContext(dep, this);
+			ObservationContext depctx = new ObservationContext(dep, upper, constraining);
 			dependents.add(depctx);
-			
 			// merge in any further restriction coming from downstream
 			mergeExtents(depctx);
 		}
 
 		/*
+		 * TODO handle empty context - if we have become empty, we should return here.
+		 */
+				
+		/*
 		 * compute multiplicities and extent order
 		 */
 		initialize();
 
+		
+	}
+	
+	/**
+	 * Build a context from an array of topologies.
+	 * 
+	 * @param context
+	 * @throws ThinklabException
+	 */
+	public ObservationContext(Topology[] context) throws ThinklabException {
+		for (Topology t : context)
+			mergeExtent(t);
+		initialize();
+	}
+
+	public void computeTransformations() throws ThinklabException {
+		
+		for (ObservationContext dep : dependents) {
+			dep.computeTransformations();
+		}
+		
 		/*
 		 * if we have a datasource, determine the necessary transformations to 
 		 * move from our own extent to whatever was defined in the context.
@@ -129,7 +165,26 @@ public class ObservationContext implements IObservationContext {
 			switchTo(((TransformingObservation)observation).getTransformedContext(this));
 		}
 	
+
 	}
+	
+	private void constrainExtents(ObservationContext ctx) throws ThinklabException {
+		
+		for (IConcept c : extents.keySet()) {
+			
+			IExtent myExtent  = extents.get(c);
+			IExtent itsExtent = ctx.getExtent(c);
+			
+			if (itsExtent != null) {
+
+				// constrain ours with its
+				IExtent merged = myExtent.constrain(itsExtent);
+				extents.put(c, merged);
+			}		
+		}
+	}
+
+
 	
 	/*
 	 * create a new context with our extents and dependents and set it into 
@@ -354,6 +409,7 @@ public class ObservationContext implements IObservationContext {
 			Collection<IContextualizationListener> listeners)
 			throws ThinklabException {
 		
+		computeTransformations();
 		processTransformations(session, listeners);
 		Contextualizer contextualizer = new Compiler().compile(this);		
 		return contextualizer.run(session);

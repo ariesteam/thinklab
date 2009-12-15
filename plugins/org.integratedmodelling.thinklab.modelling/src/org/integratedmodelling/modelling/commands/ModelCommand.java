@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import org.integratedmodelling.corescience.compiler.Compiler;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.literals.ShapeValue;
@@ -105,7 +106,10 @@ public class ModelCommand implements ICommandHandler {
 			}
 	
 			IInstance res = session.createObject(lr);
-			IInstance result = new ObservationFactory().contextualize(res, session);
+			IInstance result = 
+				new ObservationFactory().contextualize(
+						res, session, 
+						(Topology)ObservationFactory.getObservation(where));
 
 			if (command.hasOption("visualize") || command.hasOption("outfile")) {
 				/*

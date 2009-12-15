@@ -133,7 +133,8 @@ public class ShapeExtent extends ArealExtent {
 	@Override
 	protected IExtent createMergedExtent(
 			ArealExtent orextent, ArealExtent otextent,
-			CoordinateReferenceSystem ccr, Envelope common) {
+			CoordinateReferenceSystem ccr, Envelope common,
+			 Envelope orenvnorm, Envelope otenvnorm) {
 
 		// TODO everything needs thorough checking
 		ArealExtent ret = null;
@@ -164,6 +165,15 @@ public class ShapeExtent extends ArealExtent {
 
 		return ret;
 		
+	}
+
+	@Override
+	protected IExtent createConstrainedExtent(
+			ArealExtent orextent, ArealExtent otextent,
+			CoordinateReferenceSystem ccr, Envelope common,
+			 Envelope orenvnorm, Envelope otenvnorm) {
+
+		return createMergedExtent(orextent, otextent, ccr, common, orenvnorm, otenvnorm);
 	}
 
 	@Override

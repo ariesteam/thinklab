@@ -234,7 +234,7 @@ public class RasterCoverage extends AbstractRasterCoverage {
 		 * This constructor clones our metadata into a new coverage and
 		 * resamples our coverage into another that reflects our extent. 
 		 */
-		RasterCoverage ret =new RasterCoverage(this, cext);
+		RasterCoverage ret = new RasterCoverage(this, cext);
 		ret.setClassMappings(classMappings);
 		return ret;
 	}

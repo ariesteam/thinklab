@@ -138,8 +138,7 @@ public abstract class ArealExtent implements IExtent {
 		return "areal-extent(" + envelope + "," + crs.getName() + ")";
 	}
 
-	@Override
-	public IExtent merge(IExtent extent) throws ThinklabException {
+	Object[] computeCommonExtent(IExtent extent) throws ThinklabException {
 
 		if (! (extent instanceof ArealExtent))
 			throw new ThinklabValidationException(
@@ -183,6 +182,21 @@ public abstract class ArealExtent implements IExtent {
 		 * the common crs. 
 		 */
 		Envelope common = env1.intersection(env2); 
+		return new Object[] {orextent, otextent, ccr, common, env1, env2};
+		
+	}
+	
+	@Override
+	public IExtent merge(IExtent extent) throws ThinklabException {
+
+		Object[] cc = computeCommonExtent(extent);
+		
+		ArealExtent orextent = (ArealExtent) cc[0];
+		ArealExtent otextent = (ArealExtent) cc[1];
+		CoordinateReferenceSystem ccr = (CoordinateReferenceSystem) cc[2];
+		Envelope common = (Envelope) cc[3];
+		Envelope orenvnorm = (Envelope) cc[4];
+		Envelope otenvnorm = (Envelope) cc[5];
 		
 		/*
 		 * TODO intersection may be empty - this should be checked in createMergedExtent instead
@@ -196,7 +210,34 @@ public abstract class ArealExtent implements IExtent {
 		 * send out to a virtual to create the appropriate areal extent with this envelope and CRS, 
 		 * adding whatever else we need to use it.
 		 */
-		return createMergedExtent(orextent, otextent, ccr, common);
+		return createMergedExtent(orextent, otextent, ccr, common, orenvnorm, otenvnorm);
+	}
+	
+	@Override
+	public IExtent constrain(IExtent extent) throws ThinklabException {
+
+		Object[] cc = computeCommonExtent(extent);
+		
+		ArealExtent orextent = (ArealExtent) cc[0];
+		ArealExtent otextent = (ArealExtent) cc[1];
+		CoordinateReferenceSystem ccr = (CoordinateReferenceSystem) cc[2];
+		Envelope common = (Envelope) cc[3];
+		Envelope orenvnorm = (Envelope) cc[4];
+		Envelope otenvnorm = (Envelope) cc[5];
+		
+		/*
+		 * TODO intersection may be empty - this should be checked in createMergedExtent instead
+		 * of cursing here.
+		 */
+		if (common.isNull()) {
+			return null;
+		}
+		
+		/**
+		 * send out to a virtual to create the appropriate areal extent with this envelope and CRS, 
+		 * adding whatever else we need to use it.
+		 */
+		return createConstrainedExtent(orextent, otextent, ccr, common, orenvnorm, otenvnorm);
 	}
 
 	/**
@@ -207,12 +248,31 @@ public abstract class ArealExtent implements IExtent {
 	 * @param otextent
 	 * @param ccr
 	 * @param common
+	 * @param otenvnorm 
+	 * @param orenvnorm 
 	 * @return
 	 * @throws ThinklabException 
 	 */
 	protected abstract IExtent createMergedExtent(
 			ArealExtent orextent, ArealExtent otextent,
-			CoordinateReferenceSystem ccr, Envelope common) throws ThinklabException;
+			CoordinateReferenceSystem ccr, Envelope common, Envelope orenvnorm, Envelope otenvnorm) throws ThinklabException;
 
+	/**
+	 * Does the actual work of merging with the extent, ensuring that the grain of the
+	 * extent is the same as that of the constraining extent. Called after merge() has ensured 
+	 * that the extents are spatial and have a common intersection and crs.
+	 * 
+	 * @param orextent
+	 * @param otextent
+	 * @param ccr
+	 * @param common
+	 * @param otenvnorm 
+	 * @param orenvnorm 
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	protected abstract IExtent createConstrainedExtent(
+			ArealExtent orextent, ArealExtent otextent,
+			CoordinateReferenceSystem ccr, Envelope common, Envelope orenvnorm, Envelope otenvnorm) throws ThinklabException;
 	
 }

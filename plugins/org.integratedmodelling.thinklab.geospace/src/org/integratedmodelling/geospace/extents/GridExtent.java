@@ -34,18 +34,16 @@ package org.integratedmodelling.geospace.extents;
 
 import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.integratedmodelling.geospace.transformations.Resample;
-import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.geospace.transformations.Resample;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
@@ -63,7 +61,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * @author Ferdinando
  *
  */
-public class GridExtent extends ArealExtent implements IConceptualizable {
+public class GridExtent extends ArealExtent {
 
 	GeometryFactory gFactory = null;
 	int xDivs = 0;
@@ -283,13 +281,9 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 	@Override
 	protected IExtent createMergedExtent(
 			ArealExtent orextent, ArealExtent otextent,
-			CoordinateReferenceSystem ccr, Envelope common) throws ThinklabException {
+			CoordinateReferenceSystem ccr, Envelope common,
+			 Envelope orenvnorm, Envelope otenvnorm) throws ThinklabException {
 
-		if (common.isNull()) { // REMOVE, USELESS
-			throw new ThinklabContextualizationException(
-					"intersection of extents " + orextent + " with " + otextent + " is null; contextualization aborted");
-		}
-		
 		/*
 		 * for now, raster always wins
 		 */
@@ -401,6 +395,52 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 					grid.getXCells(), grid.getYCells());
 		
 		return ret;
+	}
+
+	@Override
+	protected IExtent createConstrainedExtent(ArealExtent orextent,
+			ArealExtent otextent, CoordinateReferenceSystem ccr, Envelope common,
+			Envelope orenvnorm, Envelope otenvnorm)
+			throws ThinklabException {
+
+		/*
+		 * for now, raster always wins
+		 */
+		if (otextent instanceof GridExtent && !(orextent instanceof GridExtent)) {
+			return makeRasterExtent((GridExtent)otextent, orextent, ccr, common);
+		}
+
+		if (orextent instanceof GridExtent && !(otextent instanceof GridExtent)) {
+			return makeRasterExtent((GridExtent)orextent, otextent, ccr, common);
+		}
+
+		/*
+		 * if we get here, we must be merging two rasters
+		 */
+		if ( !(orextent instanceof GridExtent && otextent instanceof GridExtent)) {
+			throw new ThinklabUnimplementedFeatureException("RasterModel: cannot yet merge extents of different types");
+		}
+
+		GridExtent otext = (GridExtent)otextent;
+		
+		double xRatio = common.getWidth()/otenvnorm.getWidth();
+		double yRatio = common.getHeight()/otenvnorm.getHeight();
+
+		/* recompute the number of cells in the new extent */
+		int xc = (int)Math.round(otext.getXCells()*xRatio);
+		int yc = (int)Math.round(otext.getYCells()*yRatio);
+		
+		/* we'll fix the resolution later  */
+		GridExtent nwext = 
+				new GridExtent(ccr, 
+						common.getMinX(), common.getMinY(), common.getMaxX(), common.getMaxY(), 
+						xc, yc);
+				
+		System.out.println("constrained extent is now " + nwext);
+		
+		
+		return nwext;
+
 	}
 
 }

@@ -116,4 +116,10 @@ public class TemporalLocationExtent implements IExtent {
 		return null;
 	}
 
+	@Override
+	public IExtent constrain(IExtent extent) throws ThinklabException {
+		// we don't have a grain, so this should be OK
+		return merge(extent);
+	}
+
 }

@@ -90,6 +90,18 @@ public abstract interface IExtent extends IConceptualizable {
 	public IExtent merge(IExtent extent) throws ThinklabException;
 
 	/**
+	 * Return a copy of our extent constrained by the passed one. Constraining is also an 
+	 * intersection but the grain in the final extent should become the same as the 
+	 * constraining extent's.
+	 * 
+	 * @param extent
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public IExtent constrain(IExtent extent) throws ThinklabException;
+
+	
+	/**
 	 * Return the transformation, if any, that will be necessary to operate on a 
 	 * datasource that conforms to us so that it matches the passed extent.
 	 * 
@@ -101,6 +113,7 @@ public abstract interface IExtent extends IConceptualizable {
 	 */
 	public IDatasourceTransformation getDatasourceTransformation(
 			IConcept mainObservable, IExtent extent) throws ThinklabException;
+
 
 
 }
