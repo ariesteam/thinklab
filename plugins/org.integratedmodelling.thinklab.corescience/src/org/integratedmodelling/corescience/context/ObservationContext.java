@@ -119,27 +119,6 @@ public class ObservationContext implements IObservationContext {
 		 * compute multiplicities and extent order
 		 */
 		initialize();
-
-		
-	}
-	
-	/**
-	 * Build a context from an array of topologies.
-	 * 
-	 * @param context
-	 * @throws ThinklabException
-	 */
-	public ObservationContext(Topology[] context) throws ThinklabException {
-		for (Topology t : context)
-			mergeExtent(t);
-		initialize();
-	}
-
-	public void computeTransformations() throws ThinklabException {
-		
-		for (ObservationContext dep : dependents) {
-			dep.computeTransformations();
-		}
 		
 		/*
 		 * if we have a datasource, determine the necessary transformations to 
@@ -166,6 +145,19 @@ public class ObservationContext implements IObservationContext {
 		}
 	
 
+		
+	}
+	
+	/**
+	 * Build a context from an array of topologies.
+	 * 
+	 * @param context
+	 * @throws ThinklabException
+	 */
+	public ObservationContext(Topology[] context) throws ThinklabException {
+		for (Topology t : context)
+			mergeExtent(t);
+		initialize();
 	}
 	
 	private void constrainExtents(ObservationContext ctx) throws ThinklabException {
@@ -184,8 +176,6 @@ public class ObservationContext implements IObservationContext {
 		}
 	}
 
-
-	
 	/*
 	 * create a new context with our extents and dependents and set it into 
 	 * originalContext; set our contents to the transformed context
@@ -409,7 +399,6 @@ public class ObservationContext implements IObservationContext {
 			Collection<IContextualizationListener> listeners)
 			throws ThinklabException {
 		
-		computeTransformations();
 		processTransformations(session, listeners);
 		Contextualizer contextualizer = new Compiler().compile(this);		
 		return contextualizer.run(session);
