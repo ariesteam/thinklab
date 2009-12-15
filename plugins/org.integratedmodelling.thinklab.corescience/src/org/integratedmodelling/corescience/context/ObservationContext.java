@@ -406,6 +406,9 @@ public class ObservationContext implements IObservationContext {
 			Map<IConcept, IDataSource<?>> states) throws ThinklabException {
 		
 		Polylist l = buildObservationList(states);
+		
+		System.out.println(Polylist.prettyPrint(l));
+		
 		return session.createObject(l);
 	}
 
@@ -426,18 +429,6 @@ public class ObservationContext implements IObservationContext {
 						observation.getObservable().toList(null)));
 		}		
 		
-		for (IExtent ext : extents.values()) {
-			adl.add(
-				Polylist.list(CoreScience.HAS_EXTENT,
-				ext.conceptualize()));
-		}
-		
-		for (ObservationContext dep : dependents) {
-			adl.add(
-					Polylist.list(CoreScience.DEPENDS_ON,
-					dep.buildObservationList(states)));
-		}
-		
 		/* 
 		 * add datasource 
 		 * FIXME we should actually index observable INSTANCES, not 
@@ -450,6 +441,21 @@ public class ObservationContext implements IObservationContext {
 					CoreScience.HAS_DATASOURCE,
 					((IState)ds).conceptualize()));
 		}	
+
+		for (IExtent ext : extents.values()) {
+			adl.add(
+				Polylist.list(CoreScience.HAS_EXTENT,
+				ext.conceptualize()));
+		}
+		
+		if (!observation.isMediator()) {
+			for (ObservationContext dep : dependents) {
+				adl.add(
+					Polylist.list(CoreScience.DEPENDS_ON,
+					dep.buildObservationList(states)));
+			}
+		}
+		
 					
 		return Polylist.PolylistFromArrayList(adl);
 					

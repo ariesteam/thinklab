@@ -142,7 +142,7 @@ public class ShapeExtent extends ArealExtent {
 		// to move this to a GridExtent.
 		if (otextent instanceof GridExtent) {
 
-			// raster wins
+			// raster wins TODO should use the common envelope for the grid extent.
 			GridExtent gext = new GridExtent((GridExtent)otextent);
 			ret = gext;
 			

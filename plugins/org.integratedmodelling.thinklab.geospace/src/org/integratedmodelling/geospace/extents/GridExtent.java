@@ -285,7 +285,7 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 			ArealExtent orextent, ArealExtent otextent,
 			CoordinateReferenceSystem ccr, Envelope common) throws ThinklabException {
 
-		if (common.isNull()) {
+		if (common.isNull()) { // REMOVE, USELESS
 			throw new ThinklabContextualizationException(
 					"intersection of extents " + orextent + " with " + otextent + " is null; contextualization aborted");
 		}
