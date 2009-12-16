@@ -10,6 +10,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.compiler.Compiler;
 import org.integratedmodelling.corescience.compiler.Contextualizer;
+import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IExtent;
@@ -46,6 +47,7 @@ public class ObservationContext implements IObservationContext {
 	// this stores the context of the original untransformed instance when the 
 	// observation is a transformer, so it can be passed to transform()
 	private ObservationContext originalContext;
+	private boolean isNull;
 
 	@Override
 	public String toString() {
@@ -96,10 +98,16 @@ public class ObservationContext implements IObservationContext {
 			mergeExtent((Topology) extent);
 		}
 		
+		if (this.isNull)
+			return;
+		
 		if (constraining != null) {
 			constrainExtents(constraining);
 		}
-		
+
+		if (this.isNull)
+			return;
+
 		/*
 		 * merge with dependent contexts, constrained by ours
 		 */
@@ -109,6 +117,9 @@ public class ObservationContext implements IObservationContext {
 			dependents.add(depctx);
 			// merge in any further restriction coming from downstream
 			mergeExtents(depctx);
+
+			if (this.isNull)
+				return;
 		}
 
 		/*
@@ -171,7 +182,12 @@ public class ObservationContext implements IObservationContext {
 
 				// constrain ours with its
 				IExtent merged = myExtent.constrain(itsExtent);
-				extents.put(c, merged);
+				if (merged == null) {
+					this.isNull = true;
+					break;
+				} else {
+					extents.put(c, merged);
+				}
 			}		
 		}
 	}
@@ -197,6 +213,8 @@ public class ObservationContext implements IObservationContext {
 		this.order = ctx.order;
 		this.totalSize = ctx.totalSize;
 		this.transformations = ctx.transformations;
+		this.isNull = ctx.isNull;
+		
 		if (!_initialized) {
 			initialize();
 		}
@@ -219,7 +237,12 @@ public class ObservationContext implements IObservationContext {
 				/* ask CM to modify the current extent record in order to represent the
 				   new one as well. */
 				IExtent merged = itsExtent.merge(myExtent);
-				extents.put(c, merged);
+				if (merged == null) {
+					this.isNull = true;
+					break;
+				} else {
+					extents.put(c, merged);
+				}
 			}		
 		}
 	}
@@ -227,7 +250,6 @@ public class ObservationContext implements IObservationContext {
 	private void mergeExtent(Topology extobs) throws ThinklabException {
 
 		IConcept dimension = extobs.getObservableClass();
-		
 		IExtent myExtent  = extents.get(dimension);
 		IExtent itsExtent = extobs.getExtent();
 		
@@ -241,7 +263,11 @@ public class ObservationContext implements IObservationContext {
 			/* ask CM to modify the current extent record in order to represent the
 			   new one as well. */
 			IExtent merged = itsExtent.merge(myExtent);
-			extents.put(dimension, merged);
+			if (merged == null) {
+				this.isNull = true;
+			} else {
+				extents.put(dimension, merged);
+			}
 		}		
 	}
 
@@ -416,6 +442,9 @@ public class ObservationContext implements IObservationContext {
 			Collection<IContextualizationListener> listeners)
 			throws ThinklabException {
 		
+		if (isNull)
+			throw new ThinklabContextualizationException("an empty observation context cannot be run");
+		
 		processTransformations(session, listeners);
 		Contextualizer contextualizer = new Compiler().compile(this);		
 		IInstance ret = contextualizer.run(session);
@@ -432,7 +461,7 @@ public class ObservationContext implements IObservationContext {
 	
 	private void initialize()  {
 		
-		if (_initialized)
+		if (_initialized || isNull)
 			return;
 		
 		sort();
@@ -533,5 +562,10 @@ public class ObservationContext implements IObservationContext {
 
 	public Collection<ObservationContext> getDependentContexts() {
 		return dependents;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return isNull;
 	}
 }

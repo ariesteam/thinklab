@@ -1,7 +1,6 @@
 package org.integratedmodelling.corescience.interfaces;
 
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.Collection;
 
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
@@ -80,6 +79,14 @@ public interface IObservationContext {
 	public IInstance run(
 			ISession session, 
 			Collection<IContextualizationListener> listeners) throws ThinklabException;
+	
+	/**
+	 * Return true if the context is the empty set, i.e. the intersection of all topologies is
+	 * empty. Should be checked before doing anything with the context.
+	 * 
+	 * @return
+	 */
+	public boolean isEmpty();
 	
 	/**
 	 * Produce a listing of the contextualization strategy
