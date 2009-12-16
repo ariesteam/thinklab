@@ -2,11 +2,16 @@ package org.integratedmodelling.modelling.commands;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
-import org.integratedmodelling.corescience.compiler.Compiler;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.literals.ShapeValue;
@@ -21,9 +26,11 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
@@ -50,6 +57,44 @@ import org.integratedmodelling.utils.Polylist;
 		returnType="observation:Observation")
 public class ModelCommand implements ICommandHandler {
 
+	IObservationContext ctx = null;
+	HashMap<IConcept, IState> states = new HashMap<IConcept, IState>();
+	
+	class Listener implements IContextualizationListener {
+
+		@Override
+		public void onContextualization(IObservation original,
+				IObservation obs, ObservationContext context) {
+			ctx = context;
+			try {
+				states.putAll(ObservationFactory.getStateMap(obs));
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+
+		@Override
+		public void postTransformation(IObservation original, IObservation obs,
+				ObservationContext context) {
+			try {
+				states.putAll(ObservationFactory.getStateMap(obs));
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+
+		@Override
+		public void preTransformation(IObservation original, IObservation obs,
+				ObservationContext context) {
+			try {
+				states.putAll(ObservationFactory.getStateMap(obs));
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+		
+	}
+	
 	@Override
 	public IValue execute(Command command, ISession session)
 			throws ThinklabException {
@@ -105,13 +150,21 @@ public class ModelCommand implements ICommandHandler {
 				session.getOutputStream().println("--- RESULT OBSERVATION ENDS HERE ---");
 			}
 	
+			ArrayList<IContextualizationListener> listeners = 
+					new ArrayList<IContextualizationListener>();
+			if (command.hasOption("visualize") || command.hasOption("outfile")) {
+				listeners.add(new Listener());
+			}
+			
 			IInstance res = session.createObject(lr);
 			IInstance result = 
 				new ObservationFactory().contextualize(
-						res, session, 
+						res, session, listeners,
 						(Topology)ObservationFactory.getObservation(where));
 
-			if (command.hasOption("visualize") || command.hasOption("outfile")) {
+			// check if a listener has set ctx, which means we're visualizing
+			if (this.ctx != null) {
+				
 				/*
 				 * save to netcdf
 				 */
@@ -125,7 +178,7 @@ public class ModelCommand implements ICommandHandler {
 				}
 
 				NetCDFArchive out = new NetCDFArchive();
-				out.setObservation(result);
+				out.setStates(this.states, this.ctx);
 				out.write(outfile);
 				ModellingPlugin.get().logger()
 						.info(

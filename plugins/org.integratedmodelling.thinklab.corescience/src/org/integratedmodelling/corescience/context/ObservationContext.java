@@ -374,9 +374,26 @@ public class ObservationContext implements IObservationContext {
 
 			Contextualizer contextualizer = new Compiler().compile(originalContext);
 			IInstance inst =  contextualizer.run(session);
+			
+			if (listeners != null) {
+				for (IContextualizationListener l : listeners) {
+					l.preTransformation(
+							observation, 
+							ObservationFactory.getObservation(inst), 
+							originalContext);
+				}
+			}
+			
 			obs = ObservationFactory.getObservation(
 					((TransformingObservation)obs).transform(inst, session, originalContext));
 
+			if (listeners != null) {
+				for (IContextualizationListener l : listeners) {
+					l.postTransformation(
+							observation, obs, this);
+				}
+			}
+			
 			/*
 			 * set a possibly transformed observation into our slot
 			 */
@@ -401,7 +418,15 @@ public class ObservationContext implements IObservationContext {
 		
 		processTransformations(session, listeners);
 		Contextualizer contextualizer = new Compiler().compile(this);		
-		return contextualizer.run(session);
+		IInstance ret = contextualizer.run(session);
+	
+		if (listeners != null) {
+			for (IContextualizationListener l : listeners)
+				l.onContextualization(
+						observation, ObservationFactory.getObservation(ret), this);
+		}
+		
+		return ret;
 	
 	}
 	

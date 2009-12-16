@@ -7,7 +7,9 @@ import java.util.Map;
 
 import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
+import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.Geospace;
@@ -38,7 +40,7 @@ import ucar.nc2.NetcdfFileWriteable;
  */
 public class NetCDFArchive {
 
-	RasterGrid space         = null;
+	GridExtent space         = null;
 	RegularTemporalGrid time = null;
 	Map<IConcept,IState> variables;
 	Map<String,IState> auxVariables = 
@@ -65,8 +67,27 @@ public class NetCDFArchive {
 					"only raster grid data are supported in NetCDF exporter for now");
 
 		//time  = (RasterGrid) Obs.findObservation(o, TimePlugin.GridObservable());
-		space = (RasterGrid)spc; 
+		space = (GridExtent) ((RasterGrid)spc).getExtent(); 
 		variables = ObservationFactory.getStateMap(o);
+	}
+	
+	/**
+	 * Alternative to SetObservation, just pass a context and a map of
+	 * states.
+	 * @param obs
+	 * @throws ThinklabException
+	 */
+	public void setStates(Map<IConcept, IState> states, IObservationContext context) throws ThinklabException {
+		
+		IExtent spc = context.getExtent(Geospace.get().SubdividedSpaceObservable());
+		
+		if (spc == null || !(spc instanceof GridExtent))
+			throw new ThinklabUnimplementedFeatureException(
+					"only raster grid data are supported in NetCDF exporter for now");
+
+		//time  = (RasterGrid) Obs.findObservation(o, TimePlugin.GridObservable());
+		space = (GridExtent)spc; 
+		variables = states;
 	}
 	
 	public void setSpaceGrid(RasterGrid grid) {
@@ -103,7 +124,6 @@ public class NetCDFArchive {
 		Dimension latDim = null;
 		Dimension lonDim = null;
 		Dimension timDim = null;
-		GridExtent ext   = null;
 
 		ArrayList<Dimension> spdims = new ArrayList<Dimension>();
 		
@@ -126,10 +146,8 @@ public class NetCDFArchive {
 		
 		if (space != null) {
 			
-			ext = (GridExtent)space.getExtent();
-			
-			latDim = ncfile.addDimension("lat", ext.getYCells());
-			lonDim = ncfile.addDimension("lon", ext.getXCells());
+			latDim = ncfile.addDimension("lat", space.getYCells());
+			lonDim = ncfile.addDimension("lon", space.getXCells());
 			spdims.add(latDim);
 			spdims.add(lonDim);
 
@@ -168,7 +186,6 @@ public class NetCDFArchive {
 		for (String var : auxVariables.keySet()) {
 			
 			// TODO implement the rest
-			
 			if (spdims.size() == 2) {
 				ncfile.addVariable(var, DataType.FLOAT, new Dimension[]{latDim,lonDim});
 			}
@@ -195,13 +212,13 @@ public class NetCDFArchive {
 			ArrayDouble alat = new ArrayDouble.D1(latDim.getLength());
 			Index ind1 = alat.getIndex();
 			for (int i = 0; i < latDim.getLength(); i++) {
-				alat.setFloat(ind1.set(i), (float)(ext.getSouth() + ext.getNSResolution() * i));
+				alat.setFloat(ind1.set(i), (float)(space.getSouth() + space.getNSResolution() * i));
 			}
 			
 			ArrayDouble alon = new ArrayDouble.D1(lonDim.getLength());
 			Index ind2 = alon.getIndex();
 			for (int i = 0; i < lonDim.getLength(); i++) {
-				alon.setFloat(ind2.set(i), (float)(ext.getWest() + ext.getEWResolution() * i));
+				alon.setFloat(ind2.set(i), (float)(space.getWest() + space.getEWResolution() * i));
 			}
 			
 			try {
@@ -214,10 +231,10 @@ public class NetCDFArchive {
 		
 		for (IConcept obs : variables.keySet()) {
 			
-			if (variables.get(obs).getTotalSize() != space.getColumns() * space.getRows()) {
+			if (variables.get(obs).getTotalSize() != space.getXCells() * space.getYCells()) {
 				ModellingPlugin.get().logger().error(
 						"state of " + obs + " has " + variables.get(obs).getTotalSize() + 
-						" multiplicity when context expects " + (space.getColumns() * space.getRows()) + 
+						" multiplicity when context expects " + (space.getXCells() * space.getYCells()) + 
 						": results not stored");
 				continue;
 			}
@@ -304,7 +321,10 @@ public class NetCDFArchive {
 	 */
 	public void addObservation(IInstance obs) throws ThinklabException {
 		IObservation o = ObservationFactory.getObservation(obs);
-		space = (RasterGrid) ObservationFactory.findObservation(o, Geospace.get().RasterGridObservable());
+		space =
+			(GridExtent) ((RasterGrid)
+					ObservationFactory.findObservation(
+							o, Geospace.get().RasterGridObservable())).getExtent();
 		variables.putAll(ObservationFactory.getStateMap(o));
 	}
 }

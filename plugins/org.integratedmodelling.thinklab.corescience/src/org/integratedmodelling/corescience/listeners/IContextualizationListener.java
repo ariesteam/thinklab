@@ -1,5 +1,6 @@
 package org.integratedmodelling.corescience.listeners;
 
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 
 /**
@@ -16,5 +17,40 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
  */
 public interface IContextualizationListener {
 
-	public abstract void onContextualization(IObservation obs);
+	/**
+	 * Called after an observation has been contextualized. The contextualized obs
+	 * is the second parameter; the first is the original one that produced it, and
+	 * the third is the context of contextualization.
+	 * 
+	 * @param obs
+	 * @param iObservation
+	 * @param observationContext
+	 */
+	public abstract void onContextualization(
+			IObservation original, IObservation obs, ObservationContext context);
+
+	/**
+	 * Called before a TransformerObservation is transformed. The contextualized obs
+	 * (the one passed to transform()) is the second parameter; the first is the original one that produced it, and
+	 * the third is the context of contextualization (pre-transformation, i.e. the original
+	 * context set in the source obsevation).
+	 * 
+	 * @param obs
+	 * @param iObservation
+	 * @param observationContext
+	 */
+	public abstract void postTransformation(IObservation original,
+			IObservation obs, ObservationContext context);
+
+	/**
+	 * Called after a TransformerObservation is transformed. The transformed obs
+	 * (the result of transform()) is the second parameter; the first is the original one that produced it, and
+	 * the third is the context of the transformed observation.
+	 * 
+	 * @param obs
+	 * @param iObservation
+	 * @param observationContext
+	 */
+	public abstract void preTransformation(IObservation original,
+			IObservation obs, ObservationContext context);
 }
