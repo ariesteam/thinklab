@@ -149,7 +149,7 @@ public class GridExtent extends ArealExtent {
 	}
 	
 	public IValue getFullExtentValue() {
-		return new ShapeValue(getBoundary());
+		return new ShapeValue(getBoundary(), crs);
 	}
 
 	public IValue getState(int granule) throws ThinklabException {

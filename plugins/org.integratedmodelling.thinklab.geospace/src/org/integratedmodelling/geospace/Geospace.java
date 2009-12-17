@@ -34,8 +34,6 @@ package org.integratedmodelling.geospace;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -173,7 +171,7 @@ public class Geospace extends ThinklabPlugin  {
 
 		try {
 			
-			ColorMap.rainbow(256).getColorbar(16, new File("cbar.png"));
+			// ColorMap.rainbow(256).getColorbar(16, new File("cbar.png"));
 			
 			metersCRS = CRS.decode(EPSG_PROJECTION_METERS);
 			defaultCRS = CRS.decode(EPSG_PROJECTION_DEFAULT);

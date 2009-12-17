@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
@@ -20,7 +19,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;

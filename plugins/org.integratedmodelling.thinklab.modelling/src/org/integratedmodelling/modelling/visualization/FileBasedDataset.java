@@ -71,10 +71,11 @@ public class FileBasedDataset implements IDataset {
 	public FileBasedDataset(IObservation obs) throws ThinklabException {
 
 		this.states = ObservationFactory.getStateMap(obs);
-		IObservation spc = ObservationFactory.findObservation(obs, Geospace.get().SubdividedSpaceObservable());		
+
+		IObservation spc = ObservationFactory.findTopology(obs, Geospace.get().SubdividedSpaceObservable());		
 		if (spc == null || !(spc instanceof RasterGrid))
 			throw new ThinklabUnimplementedFeatureException(
-					"only raster grid data are supported in NetCDF exporter for now");
+					"only raster grid data are supported in file exporter for now");
 
 		//time  = (RasterGrid) Obs.findObservation(o, TimePlugin.GridObservable());
 		this.space = (RasterGrid)spc; 

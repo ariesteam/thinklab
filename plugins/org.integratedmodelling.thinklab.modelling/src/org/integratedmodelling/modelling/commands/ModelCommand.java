@@ -17,7 +17,7 @@ import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.idv.IDV;
 import org.integratedmodelling.modelling.Model;
-import org.integratedmodelling.modelling.ModelManager;
+import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.visualization.NetCDFArchive;
@@ -105,7 +105,7 @@ public class ModelCommand implements ICommandHandler {
 		if (command.hasOption("kbox"))
 			kbox = KBoxManager.get().requireGlobalKBox(command.getOptionAsString("kbox"));
 		
-		Model model = ModelManager.get().requireModel(concept);
+		Model model = ModelFactory.get().requireModel(concept);
 		
 		IInstance where = null;
 		

@@ -50,7 +50,6 @@
 		<parameter id="concept-space" value="modeltypes" /> 
 	</extension>
 	
-	
 	<!-- bindings -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding" id="clj">
 		<parameter id="language" value="clojure"/>

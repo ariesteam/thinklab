@@ -34,9 +34,7 @@ package org.integratedmodelling.time.literals;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;

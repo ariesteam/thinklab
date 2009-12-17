@@ -8,7 +8,7 @@ public class ModellingPlugin extends ThinklabPlugin {
 
 	public static String PLUGIN_ID = "org.integratedmodelling.thinklab.modelling";
 	
-	private ModelManager manager = null;
+	private ModelFactory manager = null;
 	
 	public static ModellingPlugin get() {
 		return (ModellingPlugin) getPlugin(PLUGIN_ID);
@@ -16,14 +16,14 @@ public class ModellingPlugin extends ThinklabPlugin {
 	
 	@Override
 	protected void load(KnowledgeManager km) throws ThinklabException {
-		manager = new ModelManager();
+		manager = new ModelFactory();
 	}
 
 	@Override
 	protected void unload() throws ThinklabException {
 	}
 
-	public ModelManager getModelManager() {
+	public ModelFactory getModelManager() {
 		return manager;
 	}
 
