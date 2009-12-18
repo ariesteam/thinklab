@@ -50,6 +50,11 @@ public class ColorMap {
 	IndexColorModel model;
 	int levels;
 
+	private ColorMap(IndexColorModel cmodel, int levels) {
+		this.model = cmodel;
+		this.levels = levels;
+	}
+	
 	/**
 	 * 
 	 */
@@ -77,7 +82,29 @@ public class ColorMap {
 	
 	public ColorMap(int bits, Color[] colors) {
 		levels = colors.length;
-		createColorModel(  bits,   colors);
+		createColorModel(bits, colors);
+	}
+	
+	/**
+	 * Return a black mask where the index determines transparency, from opaque (0)
+	 * to fully transparent (max levels).
+	 * 
+	 * @param levels
+	 * @return
+	 */
+	public static ColorMap alphamask(int levels) {
+		
+		byte[] r = new byte[levels];
+		byte[] g = new byte[levels];
+		byte[] b = new byte[levels];		 
+		byte[] a = new byte[levels];
+		
+		for (int i = 0; i < levels; i++) {
+			r[i]= g[i] = b[i] = 0;
+			a[i] = (byte)(levels - (256/levels)*i);
+		}
+			 
+		return new ColorMap(new IndexColorModel(8,levels,r,g,b,a), levels);
 	}
 	
 	/**

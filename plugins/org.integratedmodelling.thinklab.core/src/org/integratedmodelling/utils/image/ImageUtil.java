@@ -57,14 +57,6 @@ import javax.imageio.ImageIO;
  */
 public class ImageUtil {
 
-	/**
-	 * 
-	 */
-	public ImageUtil() {
-		// TODO Auto-generated constructor stub
-	}
-
-	// The API starts here
 	// imgw and imgh are parameters of generated image
 	// pixels and rowWidth are parameters of the input data
 	public static void createImageFile(int[] pixels, int rowWidth, int imgw,

@@ -179,9 +179,6 @@ public class Metadata {
 			ret.put(p.getFirst(), i++);
 		}
 		
-		// TODO remove
-		System.out.println("ranked concepts: " + ret);
-		
 		if (datasource != null) {
 
 			datasource.setMetadata(RANKING, ret);

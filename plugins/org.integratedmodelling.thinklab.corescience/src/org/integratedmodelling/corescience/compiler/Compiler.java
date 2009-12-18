@@ -1,7 +1,6 @@
 package org.integratedmodelling.corescience.compiler;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -92,13 +91,6 @@ public class Compiler {
 			return (IObservation)getTarget();
 		}
 	}
-
-//	public void addMediatedDependency(IObservation destination, IObservation source) {
-//	
-//		// TODO this should change now
-//		throw new ThinklabRuntimeException("internal: addMediatedDependency needs to be reimplemented");
-//	}
-
 	
 	private void checkTopology() throws ThinklabCircularDependencyException {
 
@@ -106,15 +98,11 @@ public class Compiler {
 			new CycleDetector<IObservation, MediatedDependencyEdge>(dependencies);
 		
 		if (cycleDetector.detectCycles()) {
-			
-			/*
-			 * TODO (minor): list involved observations in message.
-			 */
+
 			Set<IObservation> problemObs = cycleDetector.findCycles();
 			throw new ThinklabCircularDependencyException(
-					"observation has circular dependencies");
+					"observation has circular dependencies in " + problemObs);
 		}
-
 	}
 
 	public Contextualizer compile(ObservationContext context) throws ThinklabException {
@@ -443,20 +431,7 @@ public class Compiler {
 			accessors.put(o, odesc);
 			return odesc;
 		}
-		
-		/* perform datasource/cm handshaking. */
-//		if (ds != null) {
-//			
-//			odesc.needsContextStates = 
-//				performHandshake(o, ds, context, ownContext, 
-//						o.getDependencies(), stateType);
-//		}
-		
-		boolean isMed = o.isMediator();
-		boolean shouldbe = o instanceof MediatingObservation;
-		
-		
-		
+
 		/*
 		 * the accessor is a mediator if we are mediating
 		 */
@@ -500,18 +475,9 @@ public class Compiler {
 		 * insert a jump if deactivated, to be resolved later.
 		 */
 		boolean isExtent = o instanceof Topology;
-		
-		/*
-		 * notify context if any; this will raise a ruckus if the extents are not conceptualizable	
-		 */
-		if (!isExtent && !o.isMediated()) {
-//			structure.setContext(o.getObservableClass(), ownContext);
-		}
-		
 
 		if ( (odesc.stateStored = (storeState && !isExtent && !o.isMediated()))) {
 
-			// FIXME not right - unless own context considers overall
 			int size = ownContext.getMultiplicity();
 			odesc.stateId = 
 				contextualizer.registerStateStorage((IndirectObservation) o, o.getObservableClass(), size);
@@ -633,31 +599,9 @@ public class Compiler {
 	public void notifyContext(IConcept observable, IObservationContext context) {
 		contexts.put(observable, context);
 	}
-
-//	public IInstance getTransformedObservation(IConcept observable) {
-//		return transformedObservations.get(observable);
-//	}
-
-//	public void setTransformedObservation(IConcept observable, IInstance instance) {
-//		transformedObservations.put(observable,instance);
-//	}
-
-	public void addObservation(Observation observation) {	
-		
+	
+	public void addObservation(Observation observation) {			
 		dependencies.addVertex(observation);
-//		
-//		/*
-//		 * if this is the result of a transformation, the compiler should become the owner
-//		 * of its computed states, which are not the same as in the original observation. Also,
-//		 * any new dependencies should be notified to the structure graph.
-//		 */
-//		if (observation.isTransformed()) {
-//			try {
-//				addAllDependencies(observation);
-//			} catch (ThinklabException e) {
-//				throw new ThinklabRuntimeException(e);
-//			}
-//		}
 	}
 
 	public MediatedDependencyEdge addObservationDependency(IObservation destination, IObservation source) {
@@ -665,146 +609,6 @@ public class Compiler {
 		dependencies.addVertex(source);
 		dependencies.addVertex(destination);
 		return dependencies.addEdge(source, destination);
-	}
-
-	/*
-	 * notify all dependencies of passed obs recursively. Normally done while computing
-	 * observation context, this one only called if the instance is the result of
-	 * transformation.
-	 * 
-	 * NOTE: to be used only in transformed observations. Will set the isTransformed flag
-	 * into all dependencies, which will cause the compiler to not generate contextualization
-	 * code for it and to just encode storage of the original datasource in the result observation.
-	 * How that will work in a complex transformation tree needs attention.
-	 */
-//	public void addAllDependencies(IObservation obs) throws ThinklabException {
-//		
-//		((Observation)obs).setTransformed(true);
-//		
-//		for (IObservation d : obs.getDependencies()) {
-//			addObservationDependency(obs, d);
-//			addAllDependencies(d);
-//		}
-//		// we may want to make this conditional
-//		for (IObservation d : obs.getAntecedents()) {
-//			MediatedDependencyEdge edge = addObservationDependency(obs, d);
-//			if (edge != null)
-//				edge.setAntecedent(true);
-//			addAllDependencies(d);
-//		}
-//	}
-
-//	
-//	/**
-//	 * The main contextualization driver. Use this one on an observation to produce its contextualized 
-//	 * realization.
-//	 * 
-//	 * @param observation
-//	 * @param session
-//	 * @return
-//	 * @throws ThinklabException
-//	 */
-//	public static IInstance contextualize(IObservation observation, ISession session) 
-//		throws ThinklabException {
-//		return contextualize(observation, session, null, null);
-//	}
-//
-//	/**
-//	 * The main contextualization driver. Use this one on an observation to produce its contextualized 
-//	 * realization. This version takes a collection of listeners as a parameter, in case we want to
-//	 * monitor what happens with transformers.
-//	 * 
-//	 * @param observation
-//	 * @param session
-//	 * @return
-//	 * @throws ThinklabException
-//	 */
-//	public static IInstance contextualize(IObservation observation, ISession session, 
-//			Collection<IContextualizationListener> listeners, IObservationContext constraining) 
-//		throws ThinklabException {
-//		
-//		IContextualizationCompiler compiler = null;
-//		if ((compiler = CoreScience.get().getContextualizationCompiler(null, observation)) == null)
-//			throw new ThinklabContextualizationException(
-//					"cannot find a compiler to contextualize " + observation);
-//		
-//		IObservationContext context = 
-////			((Observation)observation).computeOverallContext(compiler, session, ctx, listeners);
-//			/*
-//			 * this will invoke transformers, each on a new instance of the appropriate compiler
-//			 */
-//			((Observation)observation).getOverallContext(compiler, session, listeners);
-//		
-//		// if we're being constrained, merge in the constraining context
-//		if (constraining != null)
-//			((ObservationContext)context).mergeExtents(
-//					(ObservationContext) constraining, LogicalConnector.INTERSECTION, true);
-//		
-//		/*
-//		 * return the transformed self if we have compiled a transformer. This should not need
-//		 * to be indexed by observable, as each transformer is compiled by its own compiler so
-//		 * there is only one, but this stays to avoid pain in case we change that. Note that
-//		 * the observation upstairs from us will now have a different dependency in it than
-//		 * the compiled one.
-//		 */
-//		if (compiler.getTransformedObservation(observation.getObservableClass()) != null) {
-//
-//			IInstance ret = compiler.getTransformedObservation(observation.getObservableClass());
-//
-//			if (listeners != null) {
-//				for (IContextualizationListener l : listeners)
-//					l.onContextualization(Obs.getObservation(ret));
-//			}
-//
-//			return ret;
-//		}
-//		
-//		
-//		/*
-//		 * if we are already contextualized in this context, just return the instance we got.
-//		 */
-//		if (observation.isContextualized(context)) {
-//			return observation.getObservationInstance();
-//		}
-//		
-//		/* compute and communicate individual merged contexts for each observation */
-//		HashSet<IConcept> oobs = new HashSet<IConcept>();
-//		
-//		for (IObservation obs : compiler.getObservations()) {
-//			if (!obs.isMediator() && !(obs.getConceptualModel() instanceof ExtentConceptualModel)) {
-//
-//				// TODO put it back?
-////				if (oobs.contains(obs.getObservableClass()))
-////					throw new ThinklabContextualizationException(
-////						"observable classes must be unique in an observation structure: " +
-////						obs.getObservableClass());	
-//				
-//				oobs.add(obs.getObservableClass());
-//				compiler.notifyContext(
-//						obs.getObservableClass(),
-//						obs.getObservationContext().remapExtents(context));
-//			}
-//		}
-//		
-//		/*
-//		 * go for it
-//		 */
-//		IContextualizer contextualizer = compiler.compile(observation, context);
-//		IInstance ret = contextualizer.run(session);
-//		
-//		/*
-//		 * call any listeners
-//		 */
-//		if (listeners != null) {
-//			for (IContextualizationListener l : listeners)
-//				l.onContextualization(Obs.getObservation(ret));
-//		}
-//		
-//		return ret;
-//	}
-	
-	public Collection<IObservation> getObservations() {
-		return dependencies.vertexSet();
 	}
 
 }

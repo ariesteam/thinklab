@@ -87,11 +87,9 @@ public class Contextualizer  {
 	private IInstance mergeResults(RunContext[] runs, ISession session) throws ThinklabException {
 	
 		Map<IConcept, IDataSource<?>> allStates = new HashMap<IConcept, IDataSource<?>>();
-		
 		for (RunContext run : runs) {
 			allStates.putAll(run.getResult());
 		}
-		
 		return structure.buildObservation(session, allStates);
 	}
 

@@ -388,10 +388,10 @@ public class BayesianTransformer
 		 * all evidence has the same context so keep it as provenance info. That
 		 * will bring in a lot of stuff. Should be linked to a context parameter in the session?
 		 */
-		for (IConcept ec : smap.keySet()) {
-			IObservation oo = ObservationFactory.findObservation(orig, ec);
-			rdef = ObservationFactory.addSameContextObservation(rdef, oo.getObservationInstance());
-		}
+//		for (IConcept ec : smap.keySet()) {
+//			IObservation oo = ObservationFactory.findObservation(orig, ec);
+//			rdef = ObservationFactory.addSameContextObservation(rdef, oo.getObservationInstance());
+//		}
 		
 //		// TODO remove
 //		System.out.println(

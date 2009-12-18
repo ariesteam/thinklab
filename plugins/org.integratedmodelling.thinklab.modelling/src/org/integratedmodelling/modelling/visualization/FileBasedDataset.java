@@ -8,6 +8,7 @@ import java.util.Map;
 import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.modelling.interfaces.IDataset;
@@ -29,43 +30,46 @@ public class FileBasedDataset implements IDataset {
 	private RasterGrid space;
 
 	// colormap identifiers
-	public static final int GREYS = 0;
-	public static final int GREENS = 1;
-	public static final int REDS = 2;
-	public static final int BLUES = 3;
-	public static final int YELLOWS = 4;
-	public static final int RAINBOW_CONTINUOUS = 5;
-	public static final int RAINBOW_DISCRETE = 6;
+	public static final int GREY = 0;
+	public static final int GREEN = 1;
+	public static final int RED = 2;
+	public static final int BLUE= 3;
+	public static final int YELLOW = 4;
+	public static final int RAINBOW = 5;
+
 	
-	public static ColorMap getColormap(int colormap, int levels) {
+	public static ColorMap getColormap(int color, int levels) {
 		ColorMap ret = null;
 
-		switch (colormap) {
-		case GREYS:
+		switch (color) {
+		case GREY:
 			ret = ColorMap.greyscale(levels);
 			break;
-		case GREENS:
+		case GREEN:
 			ret = ColorMap.greenscale(levels);
 			break;
-		case REDS:
+		case RED:
 			ret = ColorMap.redscale(levels);
 			break;
-		case BLUES:
+		case BLUE:
 			ret = ColorMap.bluescale(levels);
 			break;
-		case YELLOWS:
+		case YELLOW:
 			ret = ColorMap.yellowscale(levels);
 			break;
-		case RAINBOW_CONTINUOUS:
-			ret = ColorMap.rainbow(levels);
-			break;
-		case RAINBOW_DISCRETE:
-			// TODO
+		case RAINBOW:
 			ret = ColorMap.rainbow(levels);
 			break;
 		}
 		
 		return ret;
+	}
+	
+	/*
+	 * default to greys
+	 */
+	public int getColorForConcept(IConcept observable) {
+		return GREY;
 	}
 	
 	public FileBasedDataset(IObservation obs) throws ThinklabException {
@@ -79,6 +83,27 @@ public class FileBasedDataset implements IDataset {
 
 		//time  = (RasterGrid) Obs.findObservation(o, TimePlugin.GridObservable());
 		this.space = (RasterGrid)spc; 
+	}
+	
+	@Override
+	public ColorMap chooseColormap(
+			IConcept observable, double actualMin, double actualMax,
+			int minIndex, int maxIndex) {
+		
+		IState state = getState(observable);
+		
+		if (state.getMetadata(Metadata.RANKING) != null) {
+			
+			// ordered rankings
+			return getColormap(getColorForConcept(observable), maxIndex - minIndex);
+			
+		} else if (state.getMetadata(Metadata.BOOLEAN) != null && 
+				   state.getMetadata(Metadata.UNCERTAINTY) != null) {
+			// probability of true - should normalize to 0
+			return ColorMap.greyscale(256);
+		}
+		
+		return ColorMap.rainbow(maxIndex - minIndex);
 	}
 	
 	@Override
@@ -139,8 +164,10 @@ public class FileBasedDataset implements IDataset {
 	}
 
 	@Override
-	public String makeSurfacePlot(IConcept observable, String fileOrNull,
-			int x, int y, int... flags) throws ThinklabException {
+	public String makeSurfacePlot(IConcept observable, 
+			String fileOrNull,
+			int x, int y, 
+			int... flags) throws ThinklabException {
 		
 		IState state = states.get(observable);
 
@@ -178,13 +205,12 @@ public class FileBasedDataset implements IDataset {
 			}
 		}
 		
+		
 		if ((imax - imin) <= 0)
 			// nothing to show
 			return null;
-		
-		// TODO select colormap using IDs or pass one
-		ColorMap cmap = ColorMap.rainbow(imax-imin);
-		
+
+		ColorMap cmap = chooseColormap(observable,min, max, imin, imax);
 		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
 				space.getColumns(), x, y, cmap, fileOrNull);
 		
@@ -194,6 +220,13 @@ public class FileBasedDataset implements IDataset {
 	@Override
 	public String makeTimeSeriesPlot(IConcept observable, String fileOrNull,
 			int x, int y, int... flags) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String makeUncertaintyMask(IConcept observable, String fileOrNull,
+			int x, int y, int... flags) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

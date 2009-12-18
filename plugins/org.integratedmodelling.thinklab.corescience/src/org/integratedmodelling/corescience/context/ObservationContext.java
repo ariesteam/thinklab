@@ -176,7 +176,7 @@ public class ObservationContext implements IObservationContext {
 		for (IConcept c : extents.keySet()) {
 			
 			IExtent myExtent  = extents.get(c);
-			IExtent itsExtent = ctx.getExtent(c);
+			IExtent itsExtent = ctx.extents.get(c);
 			
 			if (itsExtent != null) {
 
@@ -225,7 +225,7 @@ public class ObservationContext implements IObservationContext {
 		for (IConcept c : depctx.extents.keySet()) {
 			
 			IExtent myExtent  = extents.get(c);
-			IExtent itsExtent = depctx.getExtent(c);
+			IExtent itsExtent = depctx.extents.get(c);
 			
 			if (myExtent == null) {
 				
