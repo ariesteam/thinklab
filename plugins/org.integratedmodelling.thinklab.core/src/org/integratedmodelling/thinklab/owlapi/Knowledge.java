@@ -308,7 +308,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	public boolean is(String semanticType) {
 		try {
 			return is(new SemanticType(semanticType));
-		} catch (ThinklabException e) {
+		} catch (ThinklabRuntimeException e) {
 			return false;
 		}
 

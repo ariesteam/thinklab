@@ -55,6 +55,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeE
 import org.integratedmodelling.thinklab.exception.ThinklabMissingResourceException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
@@ -531,7 +532,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 			xsdMappings.put(XSDVocabulary.STRING.toString(),  textTypeID.toString());
 			xsdMappings.put(XSDVocabulary.BOOLEAN.toString(), booleanTypeID.toString());
 			
-		} catch (ThinklabMalformedSemanticTypeException e1) {
+		} catch (ThinklabRuntimeException e1) {
 			throw new ThinklabValidationException("configuration error: " + e1.getMessage());
 		}
 
@@ -968,14 +969,14 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#retrieveProperty(java.lang.String)
 	 */
-	public IProperty retrieveProperty(String prop) throws ThinklabMalformedSemanticTypeException {
+	public IProperty retrieveProperty(String prop) {
 		return retrieveProperty(new SemanticType(prop));
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#retrieveConcept(java.lang.String)
 	 */
-	public IConcept retrieveConcept(String prop) throws ThinklabMalformedSemanticTypeException {
+	public IConcept retrieveConcept(String prop) {
 		return retrieveConcept(new SemanticType(prop));
 	}
 

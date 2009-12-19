@@ -36,6 +36,7 @@ package org.integratedmodelling.thinklab;
 import java.io.Serializable;
 
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
@@ -123,8 +124,12 @@ public final class SemanticType implements Serializable{
 	 * @param s
 	 * @throws ThinklabMalformedSemanticTypeException
 	 */
-	public SemanticType(String s) throws ThinklabMalformedSemanticTypeException {
-		assign(s);
+	public SemanticType(String s) {
+		try {
+			assign(s);
+		} catch (ThinklabMalformedSemanticTypeException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 	/**
@@ -159,7 +164,7 @@ public final class SemanticType implements Serializable{
         boolean ret = true;
         try {
             new SemanticType(t);
-        } catch (ThinklabMalformedSemanticTypeException e) {
+        } catch (ThinklabRuntimeException e) {
             ret = false;
         }
         return ret;

@@ -40,6 +40,7 @@ import org.integratedmodelling.opal.OPALValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.utils.Pair;
@@ -102,7 +103,7 @@ public class OPALProfile {
         	
         	try {
                 ret = KnowledgeManager.get().retrieveProperty(s);
-            } catch (ThinklabException e) {
+            } catch (ThinklabRuntimeException e) {
                 // no KM, no property, that's it
             	return null;
             }
@@ -125,7 +126,7 @@ public class OPALProfile {
         	            try {
         	            	ret = KnowledgeManager.get().retrieveProperty(s);
         	                break;
-        	            } catch (ThinklabException e) {
+        	            } catch (ThinklabRuntimeException e) {
         	                // no KM, no property, that's it
         	            }
         			}
