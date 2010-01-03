@@ -116,15 +116,21 @@ public class WCSCoverage extends AbstractRasterCoverage {
 
 		  String[] dimSpecs = new String[2];
 
+		  // desc.dump(System.out);
+		  
 		  // TODO the only check we make is that the first <name> node (depth-first) 
 		  // is the layer name we requested.
-		  Node n = desc.findNode("name");
+		  /* on second thought, why lookup the name when this is the response to a describeCoverage
+		   * for that same name. Particularly considering that the name may or may not have the
+		   * namespace in it.
+		   */
+//		  Node n = desc.findNode("name");
+//
+//		  if (n == null || !XMLDocument.getNodeValue(n).trim().equals(layerName))
+//			  throw new ThinklabResourceNotFoundException(
+//					  "coverage " + layerName + " not found on WCS service");
 
-		  if (n == null || !XMLDocument.getNodeValue(n).trim().equals(layerName))
-			  throw new ThinklabResourceNotFoundException(
-					  "coverage " + layerName + " not found on WCS service");
-
-		  n = desc.findNode("gml:Envelope");
+		  Node n = desc.findNode("gml:Envelope");
 		  
 		  String srs = XMLDocument.getAttributeValue(n, "srsName").trim();
 		  
@@ -137,7 +143,6 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			  if (child.getNodeName().equals("gml:pos"))
 				dimSpecs[i++] = XMLDocument.getNodeValue(child);
 		  }
-		  
 		  
 		  /*
 		   * process dims
@@ -156,9 +161,9 @@ public class WCSCoverage extends AbstractRasterCoverage {
 				 
 			  next = child.getNextSibling(); 
 			  if (child.getNodeName().equals("gml:low"))
-				dimSpecs[0] = XMLDocument.getNodeValue(child);
+				dimSpecs[0] = XMLDocument.getNodeValue(child).trim();
 			  else if (child.getNodeName().equals("gml:high"))
-				dimSpecs[1] = XMLDocument.getNodeValue(child);
+				dimSpecs[1] = XMLDocument.getNodeValue(child).trim();
 		  }
 		  
 		  /*
@@ -176,7 +181,6 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		   * TODO process available formats and extract default or validate given
 		   */
 
-		  
 		  try {
 			  this.crs = CRS.decode(srs);
 			} catch (Exception e) {
@@ -191,7 +195,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			  next = (Node)n.getFirstChild();
 			  while ((child = next) != null) {
 				  next = child.getNextSibling(); 
-				  if (child.getNodeName().equals("SingleValue")) {
+				  if (child.getNodeName().equals("singleValue")) {
 					  this.noData = new double[1];
 					  this.noData[0] = 
 						  Double.parseDouble(XMLDocument.getNodeValue(child).toString());
@@ -208,11 +212,14 @@ public class WCSCoverage extends AbstractRasterCoverage {
 				 
 			  next = child.getNextSibling(); 
 			  if (child.getNodeName().equals("keyword")) {
-				String kw = XMLDocument.getNodeValue(child);
-				if (kw.contains("=")) {
-					String[] kvp = kw.split("=");
-					if (kvp.length == 2)
-						properties.put(kvp[0], kvp[1]);
+				String kw = XMLDocument.getNodeValue(child).trim();
+				String[] zoz = kw.split("\\ ");
+				for (String kz : zoz) {
+					if (kz.contains("=")) {
+						String[] kvp = kz.split("=");
+						if (kvp.length == 2)
+							properties.put(kvp[0], kvp[1]);
+					}
 				}
 			  }
 		  }

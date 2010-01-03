@@ -445,4 +445,29 @@ public class XMLDocument {
 			throw new ThinklabIOException(e);
 		}
 	}
+	
+	/**
+	 * What this does should be obvious. How it does it is quite far from that.
+	 * 
+	 * FIXME by now I just hard-coded options such as pretty printing. Of course we
+	 * want to pass or set them.
+	 * 
+	 * @param outfile
+	 * @throws ThinklabIOException
+	 */
+	public void dump(OutputStream outputStream) throws ThinklabIOException {
+
+		Transformer transformer;
+		try {
+			transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			StreamResult result = new StreamResult(new StringWriter());
+			DOMSource source = new DOMSource(dom);
+			transformer.transform(source, result);
+			String xmlString = result.getWriter().toString();
+			outputStream.write(xmlString.getBytes());
+		} catch (Exception e) {
+			throw new ThinklabIOException(e);
+		}
+	}
 }

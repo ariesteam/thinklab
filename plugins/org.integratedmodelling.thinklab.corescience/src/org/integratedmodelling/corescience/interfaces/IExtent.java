@@ -115,5 +115,13 @@ public abstract interface IExtent extends IConceptualizable {
 			IConcept mainObservable, IExtent extent) throws ThinklabException;
 
 
+	/**
+	 * Create a string signature that has no spaces, represents the extent accurately,
+	 * and is the same for extents that are equal. Used to cache data across runs and
+	 * within runs of the same model.
+	 * 
+	 * @return
+	 */
+	public abstract String getSignature();
 
 }

@@ -2,10 +2,12 @@ package org.integratedmodelling.modelling;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IContextOptional;
@@ -23,6 +25,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.kbox.ListQueryResult;
 import org.integratedmodelling.utils.Polylist;
 
 public abstract class DefaultAbstractModel implements IModel {
@@ -218,20 +221,8 @@ public abstract class DefaultAbstractModel implements IModel {
 				}
 			}
 
-		ModelResult ret = observeInternal(kbox, session, conformances, extents, false);
+		return observeInternal(kbox, session, conformances, extents, false);
 		
-//		/*
-//		 * add all extent specifications to the root observation
-//		 */
-//		for (Topology obs : extents) {
-//			
-//			IExtent ext = obs.getExtent();
-//			if (ext instanceof IConceptualizable) {
-//				ret.addExtentObservation(((IConceptualizable)ext).conceptualize());
-//			}
-//		}
-		
-		return ret;
 	}
 	
 	/*
@@ -287,12 +278,29 @@ public abstract class DefaultAbstractModel implements IModel {
 		 */
 		if (mediated == null && dependents.size() == 0) {
 
-			if (kbox == null) {
+			ObservationCache cache = ModellingPlugin.get().getCache();
+			
+			if (kbox == null && cache == null) {
 				if (acceptEmpty)
 					return null;
 				else 
 					throw new ThinklabModelException(
 						"model: cannot observe " + observable + ": no kbox given");
+			}
+			
+			if (cache != null) {
+				
+				/*
+				 * build context from extent array
+				 */
+				IObservationContext ctx = ObservationFactory.buildContext(extents);
+				
+				/*
+				 * lookup in cache, if existing, return it
+				 */
+				Polylist res = cache.getObservation(observable, ctx);
+				if (res != null)
+					return new ModelResult(res);
 			}
 			
 			IQueryResult rs = kbox.query(generateObservableQuery(cp, session, extents));

@@ -41,6 +41,7 @@ import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.geospace.transformations.Resample;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -441,6 +442,17 @@ public class GridExtent extends ArealExtent {
 		
 		return nwext;
 
+	}
+
+	@Override
+	public String getSignature() {
+		// TODO Auto-generated method stub
+		try {
+			return "grid," + getWest() + "," + getSouth() + "," + getEast() + "," + getNorth() + "," +
+				   getXCells() + "," + getYCells() + Geospace.getCRSIdentifier(getCRS(), false);
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 }

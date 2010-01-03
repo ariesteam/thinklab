@@ -32,8 +32,12 @@
  **/
 package org.integratedmodelling.modelling;
 
+import java.util.ArrayList;
+
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.literals.ShapeValue;
@@ -451,9 +455,15 @@ public class ObservationFactory extends org.integratedmodelling.corescience.Obse
 		return observation.appendElement(
 				Polylist.list(CoreScience.HAS_DATASOURCE, ds));
 	}
-
-
 	
-	
+	/**
+	 * 
+	 * @param extents
+	 * @return
+	 */
+	public static IObservationContext buildContext(ArrayList<Topology> extents) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

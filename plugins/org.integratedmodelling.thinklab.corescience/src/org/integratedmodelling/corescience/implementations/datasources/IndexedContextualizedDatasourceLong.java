@@ -1,5 +1,6 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
+import java.io.BufferedReader;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -9,6 +10,7 @@ import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
@@ -143,5 +145,11 @@ public class IndexedContextualizedDatasourceLong<T>
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void readFromStream(BufferedReader fop)  throws ThinklabUnimplementedFeatureException {
+		throw new ThinklabUnimplementedFeatureException("porcodio, implementami");
+	}
+
 
 }

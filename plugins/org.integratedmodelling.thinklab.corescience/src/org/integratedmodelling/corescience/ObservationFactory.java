@@ -1,6 +1,5 @@
 package org.integratedmodelling.corescience;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +56,7 @@ public class ObservationFactory {
 	 * @throws ThinklabException
 	 */
 	public IInstance contextualize(IInstance observation, ISession session, 
-			ArrayList<IContextualizationListener> listeners, 
+			Collection<IContextualizationListener> listeners, 
 			Topology ... context) throws ThinklabException {
 		
 		ObservationContext constraint = new ObservationContext(context);
@@ -66,7 +65,7 @@ public class ObservationFactory {
 	}
 
 	public IInstance contextualize(IInstance observation, ISession session,
-			ArrayList<IContextualizationListener> lis) throws ThinklabException {
+			Collection<IContextualizationListener> lis) throws ThinklabException {
 		ObservationContext ctx = new ObservationContext(getObservation(observation), null);
 		ctx.dump(session.getOutputStream());
 		return ctx.run(session, lis);

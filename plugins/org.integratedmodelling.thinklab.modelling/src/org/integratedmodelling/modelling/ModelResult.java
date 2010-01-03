@@ -3,7 +3,6 @@ package org.integratedmodelling.modelling;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
@@ -38,6 +37,12 @@ public class ModelResult implements IQueryResult  {
 	IModel _model = null;
 	
 	/*
+	 * we may have been generated from a single list representing a cached result;
+	 * in that case we only have one result
+	 */
+	Polylist cached = null;
+	
+	/*
 	 * querying each dependent must have returned another query result, each a dimension in
 	 * our final result options.
 	 */
@@ -67,9 +72,17 @@ public class ModelResult implements IQueryResult  {
 		_session = session;
 	}
 
+	/**
+	 * Create a result from one know lists
+	 * @param generateObservableQuery
+	 * @param res
+	 */
+	public ModelResult(Polylist list) {
+		cached = list;
+	}
+
 	@Override
 	public IValue getBestResult(ISession session) throws ThinklabException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -93,6 +106,10 @@ public class ModelResult implements IQueryResult  {
 	public Polylist getResultAsList(int n, HashMap<String, String> references)
 			throws ThinklabException {
 
+		if (cached != null) {
+			return cached;
+		}
+		
 		int[] ofs = null;
 		if (ticker != null) {
 			ofs = ticker.getElementIndexes(n);
@@ -128,7 +145,10 @@ public class ModelResult implements IQueryResult  {
 
 	@Override
 	public int getResultCount() {
-		return ticker == null ? 1 : (int) ticker.getMultiplicity();
+		return 
+			cached != null ? 
+				1 :
+				(ticker == null ? 1 : (int) ticker.getMultiplicity());
 	}
 
 	@Override
@@ -166,6 +186,9 @@ public class ModelResult implements IQueryResult  {
 
 	public void initialize() {
 
+		if (cached != null)
+			return;
+		
 		// initialize the ticker in this (root) node and give all nodes their dimension ID.
 		if (_mediated != null) {
 			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);

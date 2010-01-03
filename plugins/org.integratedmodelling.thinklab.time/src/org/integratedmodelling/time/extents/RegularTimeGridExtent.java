@@ -247,4 +247,11 @@ public class RegularTimeGridExtent implements IExtent {
 		// TODO IMPLEMENT CORRECTLY
 		return merge(extent);
 	}
+
+
+	@Override
+	public String getSignature() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

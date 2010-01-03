@@ -131,7 +131,15 @@ public class ModelCommand implements ICommandHandler {
 			
 		}
 		
-		IQueryResult r = model.observe(kbox, session, where);
+		ArrayList<IContextualizationListener> listeners = 
+			new ArrayList<IContextualizationListener>();
+		if (command.hasOption("visualize") || command.hasOption("outfile")) {
+			listeners.add(new Listener());
+		}
+	
+		IQueryResult r = ModelFactory.get().run(model, kbox, session, (Topology)ObservationFactory.getObservation(where));
+		
+//		IQueryResult r = model.observe(kbox, session, where);
 				
 		if (session.getOutputStream() != null) {
 			session.getOutputStream().println(
@@ -142,25 +150,11 @@ public class ModelCommand implements ICommandHandler {
 		
 		if (r.getTotalResultCount() > 0) {
 			
-			Polylist lr = r.getResultAsList(0, null);
-
-			if (command.hasOption("dump")) {
-				session.getOutputStream().println("--- RESULT OBSERVATION BEFORE CONTEXTUALIZATION ---");
-				session.getOutputStream().println(Polylist.prettyPrint(lr));
-				session.getOutputStream().println("--- RESULT OBSERVATION ENDS HERE ---");
-			}
-	
-			ArrayList<IContextualizationListener> listeners = 
-					new ArrayList<IContextualizationListener>();
-			if (command.hasOption("visualize") || command.hasOption("outfile")) {
-				listeners.add(new Listener());
-			}
-			
-			IInstance res = session.createObject(lr);
-			IInstance result = 
-				new ObservationFactory().contextualize(
-						res, session, listeners,
-						(Topology)ObservationFactory.getObservation(where));
+			IInstance result = r.getResult(0, session).asObjectReference().getObject();
+//			IInstance result = 
+//				new ObservationFactory().contextualize(
+//						res, session, listeners,
+//						(Topology)ObservationFactory.getObservation(where));
 
 			// check if a listener has set ctx, which means we're visualizing
 			if (this.ctx != null) {

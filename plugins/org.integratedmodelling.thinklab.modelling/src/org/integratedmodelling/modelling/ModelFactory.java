@@ -1,10 +1,13 @@
 package org.integratedmodelling.modelling;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
@@ -14,10 +17,15 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
+import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.time.literals.TemporalExtentValue;
+import org.integratedmodelling.utils.Polylist;
 
 /**
  * A singleton (access from ModellingPlugin) that catalogs models and provides search functions for models
@@ -30,6 +38,117 @@ public class ModelFactory {
 
 	public Hashtable<IConcept, Model> models = new Hashtable<IConcept, Model>();
 	public Hashtable<String, Model> modelsById = new Hashtable<String, Model>();
+	
+	class ContextualizingModelResult implements IQueryResult {
+
+		IQueryResult mres = null;
+		Collection<IContextualizationListener> listeners = null;
+		Topology[] extents;
+		
+		public ContextualizingModelResult(IQueryResult r,
+				Collection<IContextualizationListener> listeners, Topology[] extents2) {
+			this.mres = r;
+			this.listeners = listeners;
+			this.extents = extents2;
+		}
+
+		@Override
+		public IValue getBestResult(ISession session) throws ThinklabException {
+			return mres.getBestResult(session);
+		}
+
+		@Override
+		public IQueriable getQueriable() {
+			return mres.getQueriable();
+		}
+
+		@Override
+		public IQuery getQuery() {
+			return mres.getQuery();
+		}
+
+		@Override
+		public IValue getResult(int n, ISession session)
+				throws ThinklabException {
+			IInstance res = session.createObject(getResultAsList(n, null));
+			IInstance result = 
+				new ObservationFactory().contextualize(
+						res, session, listeners, extents);
+			return new ObjectReferenceValue(result);
+		}
+
+		@Override
+		public Polylist getResultAsList(int n,
+				HashMap<String, String> references) throws ThinklabException {
+
+			return mres.getResultAsList(n, references);
+		}
+
+		@Override
+		public int getResultCount() {
+			return mres.getResultCount();
+		}
+
+		@Override
+		public IValue getResultField(int n, String schemaField)
+				throws ThinklabException {
+			return mres.getResultField(n, schemaField);
+		}
+
+		@Override
+		public int getResultOffset() {
+			return mres.getResultOffset();
+		}
+
+		@Override
+		public float getResultScore(int n) {
+			return mres.getResultScore(n);
+		}
+
+		@Override
+		public int getTotalResultCount() {
+			return mres.getTotalResultCount();
+		}
+
+		@Override
+		public void moveTo(int currentItem, int itemsPerPage)
+				throws ThinklabException {
+			mres.moveTo(currentItem, itemsPerPage);
+		}
+
+		@Override
+		public float setResultScore(int n, float score) {
+			return mres.setResultScore(n, score);
+		}
+		
+	}
+	
+	class Listener implements IContextualizationListener {
+
+		@Override
+		public void onContextualization(IObservation original,
+				IObservation obs, ObservationContext context) {
+			ModellingPlugin.get().getCache().addObservation(obs, context);
+			for (IObservation o : obs.getDependencies())
+				ModellingPlugin.get().getCache().addObservation(o, context);
+		}
+
+		@Override
+		public void postTransformation(IObservation original, IObservation obs,
+				ObservationContext context) {
+			ModellingPlugin.get().getCache().addObservation(obs, context);
+			for (IObservation o : obs.getDependencies())
+				ModellingPlugin.get().getCache().addObservation(o, context);
+		}
+
+		@Override
+		public void preTransformation(IObservation original, IObservation obs,
+				ObservationContext context) {
+			ModellingPlugin.get().getCache().addObservation(obs, context);
+			for (IObservation o : obs.getDependencies())
+				ModellingPlugin.get().getCache().addObservation(o, context);
+		}
+	}
 	
 	public static ModelFactory get() {
 		return ModellingPlugin.get().getModelManager();
@@ -151,4 +270,32 @@ public class ModelFactory {
 		return null;
 	}
 
+	/**
+	 * Return a lazy collection of computed result observations for the passed model. Just
+	 * take the first one if you want one. This is the simplest way to "run" a model:
+	 * 
+	 * 
+	 * Will honor the observation cache if any is configured in the modelling plugin. 
+	 * 
+	 * @param model
+	 * @param kbox
+	 * @param extents
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public IQueryResult run(Model model, IKBox kbox, ISession session, Topology ... extents) throws ThinklabException {
+		return run(model, kbox, session, null, extents);
+	}
+	
+	public IQueryResult run(Model model, IKBox kbox,  ISession session, Collection<IContextualizationListener> listeners, Topology ... extents) throws ThinklabException {
+
+		if (listeners == null && ModellingPlugin.get().getCache() != null) {
+			listeners = new ArrayList<IContextualizationListener>();
+		}
+		if (ModellingPlugin.get().getCache() != null)	
+			listeners.add(new Listener());
+		
+		IQueryResult r = model.observe(kbox, session, (Object[]) extents);
+		return new ContextualizingModelResult(r, listeners, extents);
+	}
 }

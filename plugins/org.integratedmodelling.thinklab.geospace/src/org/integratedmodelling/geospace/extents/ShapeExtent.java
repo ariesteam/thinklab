@@ -35,9 +35,11 @@ package org.integratedmodelling.geospace.extents;
 import org.geotools.feature.FeatureCollection;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.geospace.transformations.Rasterize;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -194,6 +196,18 @@ public class ShapeExtent extends ArealExtent {
 	public IExtent getExtent(int granule) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getSignature() {
+		try {
+			return 
+				Geospace.getCRSIdentifier(crs, false) +
+				"," +
+				new ShapeValue(shape,crs).getWKB();
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 //	@Override

@@ -122,4 +122,10 @@ public class TemporalLocationExtent implements IExtent {
 		return merge(extent);
 	}
 
+	@Override
+	public String getSignature() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

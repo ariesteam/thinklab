@@ -62,6 +62,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBReader;
+import com.vividsolutions.jts.io.WKBWriter;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 
@@ -469,5 +470,9 @@ public class ShapeValue extends ParsedLiteralValue {
 		}
 		
 		return new ShapeValue(g, ocrs);
+	}
+
+	public String getWKB() {
+		return new String(new WKBWriter().write(shape));
 	}
 }
