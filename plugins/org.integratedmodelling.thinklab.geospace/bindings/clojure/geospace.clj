@@ -93,3 +93,20 @@
 	"Build and show a coverage from a passed spatial extent, data vector, and x/y size info"
 	[extent data]
 	(org.integratedmodelling.geospace.coverage.CoverageFactory/makeCoverage extent data))
+
+(defn get-topology-from-name
+		"Return a grid topology (observations of space) from a name that
+		matches a location in a gazetteer. Name can be a string, a symbol or anything whose string value
+		is found in the global gazetteer."
+		[name resolution] 
+		(let [
+			cshapes (.. org.integratedmodelling.geospace.Geospace (get) (lookupFeature (str name) true))
+			retval (make-array org.integratedmodelling.corescience.interfaces.internal.Topology 1)]
+			(if 
+				(> (.size cshapes) 0) 
+				(let [inst (.getImplementation 
+											(tl/create-object
+												(org.integratedmodelling.geospace.implementations.observations.RasterGrid/createRasterGrid
+												(.get cshapes 0) resolution)))]
+								(aset retval 0 inst)
+								retval))))

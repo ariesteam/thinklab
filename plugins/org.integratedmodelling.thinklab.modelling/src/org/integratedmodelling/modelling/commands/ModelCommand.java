@@ -92,7 +92,6 @@ public class ModelCommand implements ICommandHandler {
 				throw new ThinklabRuntimeException(e);
 			}
 		}
-		
 	}
 	
 	@Override

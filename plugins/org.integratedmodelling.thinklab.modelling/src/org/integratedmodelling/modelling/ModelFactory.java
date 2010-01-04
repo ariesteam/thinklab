@@ -274,7 +274,6 @@ public class ModelFactory {
 	 * Return a lazy collection of computed result observations for the passed model. Just
 	 * take the first one if you want one. This is the simplest way to "run" a model:
 	 * 
-	 * 
 	 * Will honor the observation cache if any is configured in the modelling plugin. 
 	 * 
 	 * @param model

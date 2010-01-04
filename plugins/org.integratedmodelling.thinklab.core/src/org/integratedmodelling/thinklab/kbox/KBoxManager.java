@@ -259,11 +259,8 @@ public class KBoxManager implements IKBox {
 	}
 	
 	/**
-	 * Get the only instance of the plugin registry.
+	 * Get the only instance of the kbox manager.
 	 * 
-	 * @return the plugin registry
-	 * @throws ThinklabNoKMException
-	 *             if no knowledge manager was initialized.
 	 */
 	static public KBoxManager get() throws ThinklabNoKMException {
 		return KnowledgeManager.get().getKBoxManager();

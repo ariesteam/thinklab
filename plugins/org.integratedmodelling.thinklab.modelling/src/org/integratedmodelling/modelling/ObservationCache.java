@@ -1,11 +1,9 @@
 package org.integratedmodelling.modelling;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -15,54 +13,58 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 
 public class ObservationCache {
 
 	File cachePath = null;
 	private File indexFile = null;
-	private HashMap<String, File> index = new HashMap<String, File>();
+	private HashMap<String, IState> dynamicCache = new HashMap<String, IState>();
+	private HashMap<String, File> persistentCache = null;
 	
 	private String getSignature(IConcept obs, IObservationContext context) {
 		String sig = obs.toString();
-		for (IConcept e : context.getDimensions())
-			sig += "," + context.getExtent(e).getSignature();
+		if (context != null)
+			for (IConcept e : context.getDimensions())
+				sig += "," + context.getExtent(e).getSignature();
 		return sig;
 	}
 	
-	public ObservationCache(File scratchPath) throws ThinklabException {
-		cachePath = new File(scratchPath + File.separator + "cache");
-		cachePath.mkdir();
+	public ObservationCache(File scratchPath, boolean isPersistent) throws ThinklabException {
 		
-		/*
-		 * read index file if not there
-		 */
-		this.indexFile  = new File(cachePath + File.separator + "cache.idx");
+		if (isPersistent) {
 		
-		if (indexFile.exists()) {
-			try {
-				BufferedReader fop = new BufferedReader(
-						new InputStreamReader(
-								new FileInputStream(indexFile)));
+			persistentCache = new HashMap<String, File>();
+			cachePath = new File(scratchPath + File.separator + "cache");
+			cachePath.mkdir();
+		
+			/*
+			 * read index file if not there
+			 */
+			this.indexFile  = new File(cachePath + File.separator + "cache.idx");
+		
+			if (indexFile.exists()) {
+				try {
+					BufferedReader fop = new BufferedReader(
+							new InputStreamReader(
+									new FileInputStream(indexFile)));
 				
-				String line = null;
-				while ((line = fop.readLine()) != null) {
-					String[] zz = line.split("\\ ");
-					index.put(zz[0], new File(cachePath + File.separator + zz[1]));
+					String line = null;
+					while ((line = fop.readLine()) != null) {
+						String[] zz = line.split("\\ ");
+						persistentCache.put(zz[0], new File(cachePath + File.separator + zz[1]));
+					}
+				
+				} catch (Exception e) {
+					throw new ThinklabIOException(e);
 				}
-				
-			} catch (Exception e) {
-				throw new ThinklabIOException(e);
 			}
 		}
 	}
@@ -70,13 +72,21 @@ public class ObservationCache {
 	public Polylist getObservation(IConcept observable, IObservationContext context) throws ThinklabException {
 		
 		String sig = getSignature(observable, context);
-		File f = index.get(sig);
+		IState s = dynamicCache.get(sig); 
 		
-		/*
-		 * TODO if found, reconstruct observation
-		 */
-		if (f != null) {
-			return createObservation(f);
+		if (s != null) {
+			return createObservation(observable, s);
+		}
+		
+		if (persistentCache != null) {
+			File f = persistentCache.get(sig);
+		
+			/*
+			 * TODO if found, reconstruct observation
+			 */
+			if (f != null) {
+				return createObservation(f);
+			}
 		}
 		
 		return null;
@@ -141,16 +151,32 @@ public class ObservationCache {
 		
 		return ret;
 	}
+	
+	public Polylist createObservation(IConcept observable, IState state) throws ThinklabException {
 
-	public void addObservation(IObservation obs, IObservationContext context) {
+		// FIXME it's creating a stupid observation - must check that this workss
+		return Polylist.list(
+				CoreScience.OBSERVATION,
+				Polylist.list(CoreScience.HAS_OBSERVABLE, 
+						Polylist.list(observable)),
+				Polylist.list(CoreScience.HAS_DATASOURCE, 
+						state.conceptualize()));
+	}
+
+	public synchronized void addObservation(IObservation obs, IObservationContext context) {
 
 		String sig = getSignature(obs.getObservableClass(), context);
+		
+		if (dynamicCache.containsKey(sig))
+			return;
+		
+		dynamicCache.put(sig, (IState) obs.getDataSource());
 		
 		/*
 		 * TODO add signature to properties and ensure we have a file to hold
 		 * the obs contents
 		 */
-		if (index.containsKey(sig))
+		if (persistentCache == null || persistentCache.containsKey(sig))
 			return;
 		
 		/*
@@ -169,7 +195,11 @@ public class ObservationCache {
 		}
 		
 		
-		index.put(sig, ff);
+		persistentCache.put(sig, ff);
 	}
 
+	public void resetDynamicCache() {
+		dynamicCache.clear();
+	}
+	
 }

@@ -94,13 +94,14 @@
  		`(def ~model-name (modelling/register-model (eval '(modelling/model ~observable ~@body)) (str '~model-name))))
        
 (defn run 
-	"Build an observation from the passed model. If the model has unresolved dependencies
-	pass a kbox to resolve them. If two kboxes are passed, the first is used to resolve the
-	contingencies (context) and the second is used for the dependencies. If a topology is
-	passed, the context's topology will be set to it."
-	[model & params]
-	(.run model (tl/get-session) params))
-	       
-; (modelling/model 'thinklab-core:Number (modelling/measurement 'thinklab-core:Number "km"))
-; (modelling/defmodel zio 'thinklab-core:Number [] (modelling/measurement 'thinklab-core:Number "km") :as zorro)
-  
+	"Build, contextualize and return the first matching observation for the passed model. Unresolved dependencies
+	will be looked up in the kbox of kboxes (the KBoxManager). The next parameter should resolve to a shape in a 
+	known gazetteer. The last is the max linear resolution for the grid extent desired."
+	[model-id extent-id resolution]
+	(let [model   (.. org.integratedmodelling.modelling.ModelFactory (get) (requireModel (str model-id)))
+			  extent  (geospace/get-topology-from-name extent-id resolution)
+		    kbox    (org.integratedmodelling.thinklab.kbox.KBoxManager/get)
+		    qresult (.. org.integratedmodelling.modelling.ModelFactory (get) (run model kbox (tl/get-session) extent))]
+		(if (> (.getTotalResultCount qresult) 0) 
+				   (.getImplementation (.getObject (.getResult qresult 0 (tl/get-session)))))))
+		    

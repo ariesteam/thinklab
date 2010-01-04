@@ -116,6 +116,12 @@
 	 (concat (. (get-session true) (loadObjects (str resource)))))
 	([resource session]
 	(concat (. session (loadObjects (str resource))))))
+
+(defn create-object 
+	"Create an instance in the current session from its list definition. Expects a polylist - TODO
+	 check the argument and convert if necessary."
+	 [polylist]
+	 (.createObject (get-session true) polylist))
 	
 (defn is? 
 	"Returns true if a concept or an instance is subsumed by another concept"

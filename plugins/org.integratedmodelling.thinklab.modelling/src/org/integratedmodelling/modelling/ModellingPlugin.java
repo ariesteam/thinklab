@@ -4,8 +4,6 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
-import com.sun.jdi.BooleanValue;
-
 public class ModellingPlugin extends ThinklabPlugin {
 
 	private static final String USE_CACHE_PROPERTY = "modelling.use.cache";
@@ -21,11 +19,14 @@ public class ModellingPlugin extends ThinklabPlugin {
 	
 	@Override
 	protected void load(KnowledgeManager km) throws ThinklabException {
+
+		boolean persistent = false;
 		manager = new ModelFactory();
 		if (getProperties().contains(USE_CACHE_PROPERTY) &&
 			Boolean.parseBoolean(getProperties().getProperty(USE_CACHE_PROPERTY))) {
-			cache = new ObservationCache(getScratchPath());
+			persistent = true;
 		}
+		cache = new ObservationCache(getScratchPath(), persistent);
 	}
 
 	@Override

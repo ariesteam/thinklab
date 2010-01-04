@@ -164,6 +164,10 @@
 	[observation concept]
 	false)
 
+(defn get-state-map
+	[observation] 
+	(org.integratedmodelling.corescience.ObservationFactory/getStateMap observation))
+
 ;; ================================================================================================
 ;; utils
 ;; ================================================================================================

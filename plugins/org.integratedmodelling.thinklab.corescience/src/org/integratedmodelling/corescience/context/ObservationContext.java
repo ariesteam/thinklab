@@ -443,7 +443,7 @@ public class ObservationContext implements IObservationContext {
 			throws ThinklabException {
 		
 		if (isNull)
-			throw new ThinklabContextualizationException("an empty observation context cannot be run");
+			throw new ThinklabContextualizationException("the intersection of the dependent contexts is empty: an empty observation context cannot be run");
 		
 		processTransformations(session, listeners);
 		Contextualizer contextualizer = new Compiler().compile(this);		
