@@ -136,7 +136,8 @@ public class ModelCommand implements ICommandHandler {
 			listeners.add(new Listener());
 		}
 	
-		IQueryResult r = ModelFactory.get().run(model, kbox, session, (Topology)ObservationFactory.getObservation(where));
+		IQueryResult r = ModelFactory.get().run(model, kbox, session, listeners, 
+				(Topology)ObservationFactory.getObservation(where));
 		
 //		IQueryResult r = model.observe(kbox, session, where);
 				

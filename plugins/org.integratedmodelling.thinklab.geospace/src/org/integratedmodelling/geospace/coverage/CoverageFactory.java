@@ -36,7 +36,6 @@ import org.integratedmodelling.utils.MiscUtilities;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-
 /**
  * This one should wrap all the geotools methods that work on either raster or vector coverages. By vector coverage 
  * we mean a polygon map where different polygons represent different states of the same observation, and polygons do
@@ -210,7 +209,7 @@ public class CoverageFactory {
 		String wfsService = 
 			properties.getProperty(WFS_SERVICE_PROPERTY);
 		Integer wfsTimeout = 
-			Integer.parseInt(properties.getProperty(WFS_TIMEOUT_PROPERTY, "10000"));
+			Integer.parseInt(properties.getProperty(WFS_TIMEOUT_PROPERTY, "100000"));
 		Integer wfsBufsize = 
 			Integer.parseInt(properties.getProperty(WFS_BUFFER_SIZE_PROPERTY, "512"));
 		

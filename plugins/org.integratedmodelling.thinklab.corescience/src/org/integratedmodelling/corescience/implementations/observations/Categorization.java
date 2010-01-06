@@ -114,10 +114,27 @@ public class Categorization extends Observation implements MediatingObservation 
 	public class CategorizationMediator extends CategorizationAccessor {
 
 		@Override
+		public boolean notifyDependencyObservable(IObservation o, IConcept observable, String formalName)
+				throws ThinklabException {
+			return true;
+		}
+		
+		@Override
 		public Object getValue(Object[] registers) {
 			return registers[index];
 		}
 		
+		@Override
+		public String toString() {
+			return "[CategorizationMediator]";
+		}
+		
+		@Override
+		public void notifyDependencyRegister(IObservation observation, IConcept observable,
+				int register, IConcept stateType) throws ThinklabException {
+			index = register;
+		}
+
 	}
 
 

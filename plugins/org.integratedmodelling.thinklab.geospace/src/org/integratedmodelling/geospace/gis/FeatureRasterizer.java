@@ -608,6 +608,10 @@ public class FeatureRasterizer {
 			ret = classification.size() + 1;
 			classification.put(string,ret);
 		}
+		
+//		if (ret != 0) 
+//			System.out.println("inserting a " + ret);
+		
 		return (float)ret;
 	}
 

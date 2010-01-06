@@ -123,6 +123,7 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 		   return itera.getSampleDouble(xy.getFirst(), getYCells() - xy.getSecond() - 1, 0);
 
 		int index = itera.getSample(xy.getFirst(), getYCells() - xy.getSecond() - 1, 0);
+		
 		return 
 			index == 0 ?
 				null : // the "nodata" of categories
