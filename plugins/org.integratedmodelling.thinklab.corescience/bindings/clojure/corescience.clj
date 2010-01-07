@@ -7,6 +7,13 @@
 
 (ns corescience)
 
+(defn- get-obs
+	""
+	[observation]
+	(if (instance? org.integratedmodelling.thinklab.interfaces.knowledge.IInstance observation)
+				(.getImplementation observation)
+				observation))
+
 (defn contextualize
 	"Create the states in an observation tree. Returns the IObservation from the result of contextualization."
 	 [observation]
@@ -43,33 +50,38 @@
 	"Retrieve and return all the extents IObservations that the passed observation depends on. Note:
      this returns instance implementations (IObservation), not instances."	
 	[observation]
-	(.. observation (getImplementation) (getExtentDependencies)))
+	(.. (get-obs observation) (getExtentDependencies)))
 
 (defn get-observable-class
      ""
      [observation]
-     (.. observation (getImplementation) (getObservableClass)))
+     (.. (get-obs observation) (getObservableClass)))
 
+(defn find-observation
+	"Return the observation of the specified observable in the passed observation tree"
+	[observation concept]
+	(org.integratedmodelling.corescience.ObservationFactory/findObservation (get-obs observation) (tl/conc concept)))
+	
 (defn get-state
      "Synonim of get-data-source, should be used on contextualized observations."
      [observation]
-     (.. observation (getImplementation) (getDataSource)))
+     (.. (get-obs observation)(getDataSource)))
 
 (defn get-extent
 	"Retrieve and return the extent that observes the given concept (e.g. space) or nil. Note:
      this returns Java implementations of instances (IObservation), not IInstances."
 	[observation concept]
-	(.. observation (getImplementation) (getExtent concept)))
+	(.. (get-obs observation) (getExtent concept)))
 
 (defn get-conceptual-model
    "Retrieve the conceptual model of the passed observation"
    [observation]
-	(.. observation (getImplementation) (getConceptualModel)))
+	(.. (get-obs observation) (getConceptualModel)))
 
 (defn get-data-source
    "Retrieve the data source of the passed observation, or nil"
    [observation]
-	(.. observation (getImplementation) (getDataSource)))
+	(.. (get-obs observation) (getDataSource)))
 
 (defn extensive?
 	"True if the passed observation is a measurement and its observable is an extensive physical property.
@@ -88,7 +100,7 @@
 	[observation]
 	(instance? 
         org.integratedmodelling.corescience.implementations.observations.Measurement
-        observation))	
+        (get-obs observation)))	
 	
 (defn classification?
 	"True if the passed observation is a classification."
@@ -117,12 +129,6 @@
 	"True if the passed observation is a quantification (can have numeric states)."
 	[observation]
 	false)
-	
-(defn get-states
-	"Return a map that associates each observations' name to its state array. Contextualize if
-	 necessary."
-	[observation] 
-	())
 
 (defn get-numeric-states
 	"Return a map like get-states, but only for those observations that are measurements."
@@ -166,7 +172,7 @@
 
 (defn get-state-map
 	[observation] 
-	(org.integratedmodelling.corescience.ObservationFactory/getStateMap observation))
+	(org.integratedmodelling.corescience.ObservationFactory/getStateMap (get-obs observation)))
 
 ;; ================================================================================================
 ;; utils
