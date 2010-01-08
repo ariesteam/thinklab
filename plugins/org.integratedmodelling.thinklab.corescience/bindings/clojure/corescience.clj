@@ -63,9 +63,11 @@
 	(org.integratedmodelling.corescience.ObservationFactory/findObservation (get-obs observation) (tl/conc concept)))
 	
 (defn find-state
-	"Return the observation of the specified observable in the passed observation tree"
+	"Return the state of the observation of the specified observable if it can be found in the passed
+	observation tree, or nil"
 	[observation concept]
-	(.. (find-observation observation concept) (getDataSource)))
+	(let [o (find-observation observation concept)]
+		(if (not (nil? o)) (get-state o))))
 			
 (defn get-state
      "Synonim of get-data-source, should be used on contextualized observations."

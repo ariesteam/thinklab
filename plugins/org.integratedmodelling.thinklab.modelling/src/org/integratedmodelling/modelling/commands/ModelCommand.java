@@ -151,10 +151,6 @@ public class ModelCommand implements ICommandHandler {
 		if (r.getTotalResultCount() > 0) {
 			
 			IInstance result = r.getResult(0, session).asObjectReference().getObject();
-//			IInstance result = 
-//				new ObservationFactory().contextualize(
-//						res, session, listeners,
-//						(Topology)ObservationFactory.getObservation(where));
 
 			// check if a listener has set ctx, which means we're visualizing
 			if (this.ctx != null) {
