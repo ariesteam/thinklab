@@ -62,6 +62,11 @@
 	[observation concept]
 	(org.integratedmodelling.corescience.ObservationFactory/findObservation (get-obs observation) (tl/conc concept)))
 	
+(defn get-state
+     "Synonim of get-data-source, should be used on contextualized observations."
+     [observation]
+     (.. (get-obs observation)(getDataSource)))
+
 (defn find-state
 	"Return the state of the observation of the specified observable if it can be found in the passed
 	observation tree, or nil"
@@ -69,11 +74,6 @@
 	(let [o (find-observation observation concept)]
 		(if (not (nil? o)) (get-state o))))
 			
-(defn get-state
-     "Synonim of get-data-source, should be used on contextualized observations."
-     [observation]
-     (.. (get-obs observation)(getDataSource)))
-
 (defn get-extent
 	"Retrieve and return the extent that observes the given concept (e.g. space) or nil. Note:
      this returns Java implementations of instances (IObservation), not IInstances."
