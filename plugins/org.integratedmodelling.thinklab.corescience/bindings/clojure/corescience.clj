@@ -62,6 +62,11 @@
 	[observation concept]
 	(org.integratedmodelling.corescience.ObservationFactory/findObservation (get-obs observation) (tl/conc concept)))
 	
+(defn find-state
+	"Return the observation of the specified observable in the passed observation tree"
+	[observation concept]
+	(.. (find-observation observation concept) (getDatasource)))
+			
 (defn get-state
      "Synonim of get-data-source, should be used on contextualized observations."
      [observation]
