@@ -65,7 +65,7 @@
 (defn find-state
 	"Return the observation of the specified observable in the passed observation tree"
 	[observation concept]
-	(.. (find-observation observation concept) (getDatasource)))
+	(.. (find-observation observation concept) (getDataSource)))
 			
 (defn get-state
      "Synonim of get-data-source, should be used on contextualized observations."
