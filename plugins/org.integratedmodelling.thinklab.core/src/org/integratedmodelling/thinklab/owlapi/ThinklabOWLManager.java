@@ -33,6 +33,7 @@
  **/
 package org.integratedmodelling.thinklab.owlapi;
 
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -129,6 +130,8 @@ public class ThinklabOWLManager {
 	// same for cached thinklab constraints
 	private HashMap<String, Constraint> thinklabConstraints = 
 		new HashMap<String, Constraint>();
+	private HashMap<String, HashMap<String, Object>> reflectedFields =
+		new HashMap<String, HashMap<String,Object>>();
 	
 	static ThinklabOWLManager owlManager;
 
@@ -355,9 +358,14 @@ public class ThinklabOWLManager {
 				 */
 				addImpl(instance.getURI(), ret);
 
-			if (ret != null)
-				ret.initialize(instance);
+			if (ret != null) {
 
+				/*
+				 * see if we have any fields to be set through reflection
+				 */
+				addReflectedFields(instance.getURI(), ret);
+				ret.initialize(instance);
+			}
 
 		} else {
 		
@@ -372,6 +380,24 @@ public class ThinklabOWLManager {
 		return ret;
 	}
 	
+	private void addReflectedFields(String uri, IInstanceImplementation ret) throws ThinklabException {
+
+		HashMap<String, Object> oo = this.reflectedFields.get(uri);
+		if (oo != null) {
+			Class<?> cls = ret.getClass();
+			for (String field : oo.keySet()) {
+				try {
+					Field f = cls.getDeclaredField(field);
+					f.set(ret, oo.get(field));
+				} catch (Exception e) {
+					throw new ThinklabValidationException(e);
+				}
+			}
+			this.reflectedFields.remove(uri);
+		}
+	}
+
+
 	public void setInstanceImplementation(Instance instance, IInstanceImplementation impl) {
 
 		if (instance instanceof VolatileInstance) {
@@ -597,6 +623,16 @@ public class ThinklabOWLManager {
 					setInstanceImplementation((Instance) inst, impl);	
 					((IParseable)impl).parseSpecifications(inst, l.second().toString());
 					((Instance)inst)._initialized = true;
+					return;
+				} else if (o1.toString().startsWith(":")) {
+					
+					/*
+					 * set field from linked object into implementation using reflection.
+					 * This obviously can't be used unless we build the instance in the
+					 * same thread where we created the description.
+					 */
+					String fieldName = o1.toString().substring(1);
+					addReflectedField(inst.getURI(), fieldName, l.second());
 					return;
 				}
 				
@@ -928,6 +964,17 @@ public class ThinklabOWLManager {
 		}
 	}
 	
+
+	private void addReflectedField(String uri, String field, Object second) {
+		
+		HashMap<String,Object> oo = reflectedFields.get(uri);
+		if (oo == null) {
+			oo = new HashMap<String, Object>();
+		}
+		oo.put(field, second);
+		this.reflectedFields .put(uri, oo);
+	}
+
 
 	/**
 	 * TODO
