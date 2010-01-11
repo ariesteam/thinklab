@@ -83,7 +83,7 @@ public class UnitValue extends Value implements IUnitValue {
 	@Override
 	public void setConceptWithValidation(IConcept concept) throws ThinklabValidationException {
 
-		boolean ok = concept.is(CoreScience.get().MeasurementModel());		
+		boolean ok = concept.is(CoreScience.MeasurementModel());		
 		
 		if (ok)
 			super.setConceptWithoutValidation(concept);

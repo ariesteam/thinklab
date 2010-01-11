@@ -388,6 +388,7 @@ public class ThinklabOWLManager {
 			for (String field : oo.keySet()) {
 				try {
 					Field f = cls.getDeclaredField(field);
+            		f.setAccessible(true);
 					f.set(ret, oo.get(field));
 				} catch (Exception e) {
 					throw new ThinklabValidationException(e);

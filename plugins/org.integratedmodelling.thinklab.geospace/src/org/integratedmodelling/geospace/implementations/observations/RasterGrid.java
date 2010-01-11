@@ -34,6 +34,11 @@ package org.integratedmodelling.geospace.implementations.observations;
 
 import java.util.Hashtable;
 
+import javax.measure.Measure;
+import javax.measure.converter.UnitConverter;
+import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
+
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
@@ -155,6 +160,48 @@ public class RasterGrid extends Observation implements Topology {
 		}
 		
 		return new Pair<Integer, Integer>(x,y);
+	}
+	
+	/**
+	 * Compute the x,y resolution for a grid encompassing the given shape and approximating
+	 * a linear X resolution as passed in the string, which represents a length with units
+	 * such as 100m or 1km.
+	 * 
+	 * @param shape
+	 * @param linearResolution
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public Pair<Integer, Integer> getSubdivisions(ShapeValue shape, String linearResolution) throws ThinklabException {
+		
+		int x = 0, y = 0;
+		
+		int idx = 0;
+		for (idx = 0; idx < linearResolution.length(); idx++)
+			if (Character.isLetter(linearResolution.charAt(idx)))
+				break;
+		
+		String val = linearResolution.substring(0,idx).trim();
+		String uni = linearResolution.substring(idx).trim();
+		
+		Unit<?> unit = Unit.valueOf(uni);
+		UnitConverter converter = unit.getConverterTo(SI.METER);
+		double value = Double.parseDouble(val);
+		
+		double meters = converter.convert(value);
+		shape = shape.convertToMeters();
+		
+		ReferencedEnvelope env = shape.getEnvelope();
+		
+		if (env.getWidth() > env.getHeight()) {
+			x = (int)((env.getMaxX() - env.getMinX())/meters);
+			y = (int)(x * (env.getHeight()/env.getWidth()));
+		} else {
+			y = (int)((env.getMaxY() - env.getMinY())/meters);
+			x = (int)(y * (env.getWidth()/env.getHeight()));			
+		}
+				
+		return new Pair<Integer, Integer>(x, y);
 	}
 	
 	/**

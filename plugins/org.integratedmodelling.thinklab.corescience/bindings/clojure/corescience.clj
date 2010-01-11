@@ -19,26 +19,12 @@
 	 [observation]
 	 (.. (org.integratedmodelling.corescience.ObservationFactory 
 	 				(contextualize observation (tl/get-session))) (getImplementation)))
-
-(defn harmonized-intersection 
-	"Create a master observation that is contingent to all those in the passed list, and 
-	 contextualize it so that its context reflects the union of all contexts. Return a 
-	 list containing the new observation and a list of the contextualized observations."
-	[o-list]
-	nil)
-
-(defn harmonized-union 
-	"Create a master observation that is dependent on all those in the passed list, and 
-	 contextualize it so that its context reflects the intersection of all contexts. Return a 
-	 list containing the new observation and a list of the contextualized observations."
-	[o-list]
-	nil)
 	
 (defn get-dependencies
 	"Retrieve and return all the observations that the passed one depends upon (there can be no
      observation unless the dependencies are also observed)."
 	[observation]
-	(tl/get-property-values observation "observation:dependsOn"))
+	(.. (get-obs observation) (getDependencies)))
 	
 (defn get-contingencies
 	"Retrieve and return all the observations that the passed one is contingent to (the act of
@@ -198,3 +184,4 @@
                           (assoc state-map
                              (get-observable-class obs)
                              (get-state obs)))))))
+                             

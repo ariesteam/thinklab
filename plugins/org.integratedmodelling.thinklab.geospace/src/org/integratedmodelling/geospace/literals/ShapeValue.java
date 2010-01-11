@@ -475,4 +475,8 @@ public class ShapeValue extends ParsedLiteralValue {
 	public String getWKB() {
 		return new String(new WKBWriter().write(shape));
 	}
+
+	public ShapeValue convertToMeters() throws ThinklabException {
+		return transform(Geospace.get().getMetersCRS());
+	}
 }
