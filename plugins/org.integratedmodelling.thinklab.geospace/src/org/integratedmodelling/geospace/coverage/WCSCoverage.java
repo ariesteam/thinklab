@@ -343,7 +343,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			this.coverage = (GridCoverage2D)reader.read(null);	
 			
 		} catch (IOException e) {
-			throw new ThinklabIOException(e);
+			throw new ThinklabIOException(layerName + ": " + e.getMessage());
 		} finally {
 			Geospace.get().resetClassLoader(clsl);
 		}
