@@ -41,12 +41,14 @@ import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.utils.Polylist;
 
 public class MemValueContextualizedDatasource 
@@ -81,7 +83,11 @@ public class MemValueContextualizedDatasource
 
 	@Override
 	public void addValue(Object o) {
-		data[idx++] = ((IValue)o);
+		try {
+			data[idx++] = Value.getValueForObject(o);
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 	@Override
@@ -111,8 +117,15 @@ public class MemValueContextualizedDatasource
 
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
-		// TODO try to convert if values are numbers
-		throw new ThinklabValueConversionException("can't convert IValue into double");
+
+		if (!data[0].isNumber())
+			throw new ThinklabValueConversionException("can't convert IValue into double");
+		
+		double[] ret = new double[data.length];
+		for (int i = 0; i < data.length; i++) {
+			ret[i] = data[i].asNumber().asDouble();
+		}
+		return ret;
 	}
 	
 	@Override
