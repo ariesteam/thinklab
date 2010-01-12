@@ -130,6 +130,13 @@
 ;; inquiry, extraction etc
 ;; -------------------------------------------------------------------------------------------------------
 
+(defn binary? 
+	"Returns true if the datasource encodes a binary distribution that represents a yes/no situation for
+	 a classified observation. If this returns true, (get-data) will return the probability of the true
+	 case."
+	[datasource]
+	(not (nil? (.getMetadata datasource "truecase"))))
+
 (defn probabilistic?
 	"True if the given datasource is a discrete distribution. If so, uncertainty info can be
 	extracted using get-uncertainty"
