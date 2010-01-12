@@ -173,4 +173,4 @@
 	"True if the given datasource is the discrete encoding of a continuous probability distribution, 
  	 meaning that get-dist-breakpoints will not throw an exception when called."
 	[datasource]
-	(nil? (.getMetadata datasource "continuous_dist_breakpoints")))
+	(not (nil? (.getMetadata datasource "continuous_dist_breakpoints"))))
