@@ -276,7 +276,6 @@ public class Ranking extends Observation implements MediatingObservation {
 
 		Ranking other = (Ranking)observation;
 			
-			
 		if ((isScale && !other.isScale) || 
 				(!isScale && other.isScale))
 			throw new ThinklabValidationException("scale ranking can't be mediated with non-scale");

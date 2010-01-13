@@ -12,17 +12,15 @@ import org.integratedmodelling.corescience.literals.MappedIntSet;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Polylist;
 
 @InstanceImplementation(concept=CoreScience.RANKING_SET_REMAPPER)
-public class RankingSetRemapper extends Observation implements IndirectObservation {
+public class RankingSetRemapper extends Ranking implements IndirectObservation {
 	
 	private ArrayList<MappedIntSet> mappings = new ArrayList<MappedIntSet>();
 	private Double defValue = null;
