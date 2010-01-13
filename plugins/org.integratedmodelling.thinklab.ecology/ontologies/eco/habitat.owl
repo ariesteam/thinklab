@@ -689,6 +689,22 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SoilCNRatio -->
+
+    <owl:Class rdf:about="#SoilCNRatio">
+        <rdfs:subClassOf rdf:resource="#SoilQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SoilPh -->
+
+    <owl:Class rdf:about="#SoilPh">
+        <rdfs:subClassOf rdf:resource="#SoilQuality"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SoilQuality -->
 
     <owl:Class rdf:about="#SoilQuality">
@@ -749,6 +765,14 @@
 
     <owl:Class rdf:about="#SubstrateQuality">
         <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SummerHighWinterLow -->
+
+    <owl:Class rdf:about="#SummerHighWinterLow">
+        <rdfs:subClassOf rdf:resource="#AtmosphericTemperature"/>
     </owl:Class>
     
 

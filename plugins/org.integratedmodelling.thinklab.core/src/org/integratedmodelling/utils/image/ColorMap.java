@@ -100,7 +100,7 @@ public class ColorMap {
 		byte[] a = new byte[levels];
 		
 		for (int i = 0; i < levels; i++) {
-			r[i]= g[i] = b[i] = 0;
+			r[i] = (byte) 255; g[i] = b[i] = 0;
 			a[i] = (byte)(levels - (256/levels)*i);
 		}
 			 

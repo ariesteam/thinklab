@@ -232,7 +232,7 @@ public class FileBasedDataset implements IDataset {
 		
 		return fileOrNull;
 	}
-
+	
 	@Override
 	public String makeTimeSeriesPlot(IConcept observable, String fileOrNull,
 			int x, int y, int... flags) {
@@ -243,8 +243,52 @@ public class FileBasedDataset implements IDataset {
 	@Override
 	public String makeUncertaintyMask(IConcept observable, String fileOrNull,
 			int x, int y, int... flags) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		IState state = states.get(observable);
+		double[] data = (double[]) state.getMetadata(Metadata.UNCERTAINTY);
+		
+		if (data == null)
+			return null;
+
+		if (fileOrNull == null) {
+			try {
+				fileOrNull = File.createTempFile("img", ".png").toString();
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+		
+		int len = data.length;
+		int[] idata = new int[len];
+		
+		int imin = 0, imax = 0;
+		for (int i = 0; i < len; i++) {
+			
+			if (Double.isNaN(data[i]))
+				idata[i] = 0;
+			else {
+				idata[i] = (int)(data[i]*255.0);
+			}
+			
+			if (i == 0) {
+				imin = idata[0];
+				imax = idata[0];
+			} else {
+				if (idata[i] > imax) imax = idata[i];
+				if (idata[i] < imin) imin = idata[i];
+			}
+		}
+		
+		System.out.println(observable + ": uncertainty img [" + imin + " " + imax + "]");
+		
+		if ((imax - imin) <= 0)
+			// nothing to show
+			return null;
+
+		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
+				space.getColumns(), x, y, ColorMap.alphamask(255), fileOrNull);
+
+		return fileOrNull;
 	}
 
 }
