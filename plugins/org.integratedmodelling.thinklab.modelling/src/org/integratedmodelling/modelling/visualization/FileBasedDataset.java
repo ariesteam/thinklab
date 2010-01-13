@@ -95,15 +95,15 @@ public class FileBasedDataset implements IDataset {
 		if (state.getMetadata(Metadata.RANKING) != null) {
 			
 			// ordered rankings
-			return getColormap(getColorForConcept(observable), maxIndex - minIndex);
+			return getColormap(getColorForConcept(observable), maxIndex - minIndex + 1);
 			
 		} else if (state.getMetadata(Metadata.BOOLEAN) != null && 
 				   state.getMetadata(Metadata.UNCERTAINTY) != null) {
 			// probability of true - should normalize to 0
-			return ColorMap.greyscale(256);
+			return ColorMap.greyscale(maxIndex - minIndex + 1);
 		}
 		
-		return ColorMap.rainbow(maxIndex - minIndex);
+		return ColorMap.rainbow(maxIndex - minIndex + 1);
 	}
 	
 	@Override
@@ -182,20 +182,35 @@ public class FileBasedDataset implements IDataset {
 		double[] data = state.getDataAsDoubles();
 		int len = data.length;
 		int[] idata = new int[len];
-		double min = data[0];
-		double max = data[0];
+		double min = Double.isNaN(data[0]) ? 0 : data[0];
+		double max = min;
 
+//		for (int i = 0; i < len; i++) {
+//			idata[i] = Double.isNaN(data[i]) ? 0 : (int)data[i];
+//		}
+		
 		for (int i = 0; i < len; i++) {
-			idata[i] = (int)data[i];
-		}
-		for (int i = 0; i < len; i++) {
-			if (data[i] > max) max = data[i];
-			if (data[i] < min) min = data[i];
+			if (!Double.isNaN(data[i])) {
+				if (data[i] > max) max = data[i];
+				if (data[i] < min) min = data[i];
+			}
 		}
 
+		if (Double.isNaN(min)) min = 0;
+		if (Double.isNaN(max)) max = 0;
+		
+		if (max - min <= 0.0) 
+			return null;
+		
 		int imin = 0, imax = 0;
 		for (int i = 0; i < len; i++) {
-			idata[i] = (int)(((data[i]-min)/(max-min))*256.0);
+			
+			if (Double.isNaN(data[i]))
+				idata[i] = 0;
+			else {
+				idata[i] = (int)(((data[i]-min)/(max-min))*255.0);
+			}
+			
 			if (i == 0) {
 				imin = idata[0];
 				imax = idata[0];
@@ -205,12 +220,13 @@ public class FileBasedDataset implements IDataset {
 			}
 		}
 		
+		System.out.println(observable + ": data [" + min + " " + max + "] img [" + imin + " " + imax + "]");
 		
 		if ((imax - imin) <= 0)
 			// nothing to show
 			return null;
 
-		ColorMap cmap = chooseColormap(observable,min, max, imin, imax);
+		ColorMap cmap = chooseColormap(observable, min, max, imin, imax);
 		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
 				space.getColumns(), x, y, cmap, fileOrNull);
 		

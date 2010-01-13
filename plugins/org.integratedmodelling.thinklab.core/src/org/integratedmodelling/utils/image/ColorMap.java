@@ -104,7 +104,7 @@ public class ColorMap {
 			a[i] = (byte)(levels - (256/levels)*i);
 		}
 			 
-		return new ColorMap(new IndexColorModel(8,levels,r,g,b,a), levels);
+		return new ColorMap(new IndexColorModel(8,levels,r,g,b,0), levels);
 	}
 	
 	/**
@@ -247,7 +247,7 @@ public class ColorMap {
 			b[i]=(byte)colors[i].getBlue();
 		}
 		 
-		 model = new IndexColorModel(bits, size,r,g,b);
+		 model = new IndexColorModel(bits, size,r,g,b, 0);
 	}
 	
 	
