@@ -185,22 +185,34 @@ public class FileBasedDataset implements IDataset {
 		double min = Double.isNaN(data[0]) ? 0 : data[0];
 		double max = min;
 
-//		for (int i = 0; i < len; i++) {
-//			idata[i] = Double.isNaN(data[i]) ? 0 : (int)data[i];
+//		double[] distribution = (double[]) state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
+//		
+//		/*
+//		 * if we have a distribution, compute min/max from it
+//		 */
+//		if (distribution != null) {
+//		
+//			min = distribution[0];
+//			max = distribution[distribution.length - 1];
+//			
+//		} 
+//		
+//		/*
+//		 * use data range if there's no distribution or the bounds are infinite
+//		 */
+//		if (distribution == null || Double.isInfinite(min) || Double.isInfinite(max)) {
+		
+			for (int i = 0; i < len; i++) {
+				if (!Double.isNaN(data[i])) {
+					if (data[i] > max) max = data[i];
+					if (data[i] < min) min = data[i];
+				}
+			}
 //		}
 		
-		for (int i = 0; i < len; i++) {
-			if (!Double.isNaN(data[i])) {
-				if (data[i] > max) max = data[i];
-				if (data[i] < min) min = data[i];
-			}
-		}
-
-		if (Double.isNaN(min)) min = 0;
-		if (Double.isNaN(max)) max = 0;
-		
-		if (max - min <= 0.0) 
-			return null;
+		// TODO uncomment this if we don't want non-variant maps visualized
+//		if (max - min <= 0.0) 
+//			return null;
 		
 		int imin = 0, imax = 0;
 		for (int i = 0; i < len; i++) {
@@ -222,9 +234,9 @@ public class FileBasedDataset implements IDataset {
 		
 		System.out.println(observable + ": data [" + min + " " + max + "] img [" + imin + " " + imax + "]");
 		
-		if ((imax - imin) <= 0)
-			// nothing to show
-			return null;
+//		if ((imax - imin) <= 0)
+//			// nothing to show
+//			return null;
 
 		ColorMap cmap = chooseColormap(observable, min, max, imin, imax);
 		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
@@ -265,9 +277,9 @@ public class FileBasedDataset implements IDataset {
 		for (int i = 0; i < len; i++) {
 			
 			if (Double.isNaN(data[i]))
-				idata[i] = 0;
+				idata[i] = 255;
 			else {
-				idata[i] = (int)(data[i]*255.0);
+				idata[i] = (int)((data[i])*255.0);
 			}
 			
 			if (i == 0) {

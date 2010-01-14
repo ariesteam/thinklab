@@ -235,6 +235,15 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Evapotranspiration -->
+
+    <owl:Class rdf:about="#Evapotranspiration">
+        <rdfs:subClassOf rdf:resource="#EcosystemQuality"/>
+        <rdfs:subClassOf rdf:resource="&representation;Length"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#EventRelatedQuality -->
 
     <owl:Class rdf:about="#EventRelatedQuality">
@@ -247,6 +256,14 @@
 
     <owl:Class rdf:about="#Factory">
         <rdfs:subClassOf rdf:resource="#IndustrialActivityLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#FireFrequency -->
+
+    <owl:Class rdf:about="#FireFrequency">
+        <rdfs:subClassOf rdf:resource="#FireRegime"/>
     </owl:Class>
     
 
@@ -341,6 +358,14 @@
 
     <owl:Class rdf:about="#HabitativeLand">
         <rdfs:subClassOf rdf:resource="#ManagedLandNotForProduction"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HardwoodSoftwoodRatio -->
+
+    <owl:Class rdf:about="#HardwoodSoftwoodRatio">
+        <rdfs:subClassOf rdf:resource="#CommunityQuality"/>
     </owl:Class>
     
 
