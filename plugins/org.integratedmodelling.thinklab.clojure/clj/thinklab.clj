@@ -48,7 +48,7 @@
 	(do (.. 
 			(. Thinklab (get)) 
 			  (getManager) 
-			  (activatePlugin pname))) 
+			  (activatePlugin (str pname)))) 
 		(load-bindings pname))
 		
 		
@@ -78,7 +78,6 @@
 		stype
 		(.. KnowledgeManager (get) (retrieveConcept (str stype)))))
 
-	
 (defn prop
 	"Returns the concept named by the passed semantic type string."
 	[stype]
