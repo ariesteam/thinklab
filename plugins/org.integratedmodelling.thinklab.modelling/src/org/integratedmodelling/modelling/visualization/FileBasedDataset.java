@@ -258,6 +258,7 @@ public class FileBasedDataset implements IDataset {
 		
 		IState state = states.get(observable);
 		double[] data = (double[]) state.getMetadata(Metadata.UNCERTAINTY);
+		double[] odat = state.getDataAsDoubles();
 		
 		if (data == null)
 			return null;
@@ -276,10 +277,10 @@ public class FileBasedDataset implements IDataset {
 		int imin = 0, imax = 0;
 		for (int i = 0; i < len; i++) {
 			
-			if (Double.isNaN(data[i]))
+			if (Double.isNaN(data[i]) || Double.isNaN(odat[i]))
 				idata[i] = 255;
 			else {
-				idata[i] = (int)((data[i])*255.0);
+				idata[i] = 255 - (int)((data[i])*255.0);
 			}
 			
 			if (i == 0) {
