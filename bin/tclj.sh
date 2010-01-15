@@ -8,6 +8,7 @@ case "`uname`" in
 esac
 
 PRG="$0"
+CWD=`pwd`
 
 if [ -z "$THINKLAB_HOME" ] ; then
 	THINKLAB_HOME=`dirname "$PRG"`/..
@@ -46,7 +47,7 @@ if [ -z "$THINKLAB_INST" ] ; then
   THINKLAB_INST=$THINKLAB_HOME
 fi
 
-THINKLAB_CMD="$JAVACMD $THINKLAB_OPTS -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH  -Djpf.boot.config=$THINKLAB_HOME/tclj.properties -Dthinklab.plugins=$THINKLAB_PLUGINS -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_HOME/lib/endorsed -jar $THINKLAB_HOME/lib/im-boot.jar org.java.plugin.boot.Boot"
+THINKLAB_CMD="$JAVACMD $THINKLAB_OPTS -Djpf.boot.config=$THINKLAB_HOME/tclj.properties -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH -Dthinklab.plugins=$THINKLAB_PLUGINS -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_HOME/lib/endorsed -jar $THINKLAB_HOME/lib/im-boot.jar org.java.plugin.boot.Boot"
 
 #echo JAVA_HOME $JAVA_HOME
 #echo JAVACMD $JAVACMD
@@ -58,6 +59,8 @@ THINKLAB_CMD="$JAVACMD $THINKLAB_OPTS -Dthinklab.library.path=$THINKLAB_LIBRARY_
 #echo THINKLAB_CMD $THINKLAB_CMD
 #echo PWD $PWD
 
+cd $THINKLAB_HOME
+
 if [ "$1" = "start" ] ; then
   cd $THINKLAB_INST
   mkdir -p $THINKLAB_INST/var/log
@@ -65,3 +68,5 @@ if [ "$1" = "start" ] ; then
 else
   exec $THINKLAB_CMD $@ $THINKLAB_ARGS
 fi
+
+cd $CWD

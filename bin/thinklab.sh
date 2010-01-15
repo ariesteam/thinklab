@@ -8,6 +8,7 @@ case "`uname`" in
 esac
 
 PRG="$0"
+CWD=`pwd`
 
 if [ -z "$THINKLAB_HOME" ] ; then
 	THINKLAB_HOME=`dirname "$PRG"`/..
@@ -58,6 +59,8 @@ THINKLAB_CMD="$JAVACMD $THINKLAB_OPTS -Djpf.boot.config=$THINKLAB_HOME/boot.prop
 #echo THINKLAB_CMD $THINKLAB_CMD
 #echo PWD $PWD
 
+cd $THINKLAB_HOME
+
 if [ "$1" = "start" ] ; then
   cd $THINKLAB_INST
   mkdir -p $THINKLAB_INST/var/log
@@ -65,3 +68,5 @@ if [ "$1" = "start" ] ; then
 else
   exec $THINKLAB_CMD $@ $THINKLAB_ARGS
 fi
+
+cd $CWD
