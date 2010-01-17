@@ -49,7 +49,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
  * @author Ferdinando Villa
  *
  */
-public abstract interface IExtent extends IConceptualizable {
+public abstract interface IExtent extends IConceptualizable, ITopologicallyComparable {
 
 	/**
 	 * Return the total number of granules in this extent.

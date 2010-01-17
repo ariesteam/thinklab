@@ -53,7 +53,7 @@ public class MemDoubleContextualizedDatasource
 
 	private static final long serialVersionUID = -6567783706189229920L;
 	private IConcept _type;
-	private double[] data = null;
+	protected double[] data = null;
 	private int idx = 0;
 	
 	Properties metadata = new Properties();

@@ -33,6 +33,7 @@
 package org.integratedmodelling.time.extents;
 
 import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.ITopologicallyComparable;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -253,5 +254,29 @@ public class RegularTimeGridExtent implements IExtent {
 	public String getSignature() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public boolean contains(ITopologicallyComparable o)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean intersects(ITopologicallyComparable o)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean overlaps(ITopologicallyComparable o)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

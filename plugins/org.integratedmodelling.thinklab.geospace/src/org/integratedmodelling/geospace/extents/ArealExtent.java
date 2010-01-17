@@ -34,6 +34,7 @@ package org.integratedmodelling.geospace.extents;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.ITopologicallyComparable;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -43,6 +44,27 @@ import org.opengis.referencing.cs.AxisDirection;
 import com.vividsolutions.jts.geom.Envelope;
 
 public abstract class ArealExtent implements IExtent {
+
+	@Override
+	public boolean contains(ITopologicallyComparable o)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean intersects(ITopologicallyComparable o)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean overlaps(ITopologicallyComparable o)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	// the envelope in here is always east-west on the X axis. getDefaultEnvelope() can be used to retrieve
 	// the envelope that will work with the CRS. 

@@ -27,6 +27,7 @@ public class Metadata {
 	public static final String RANGES = "ranges";
 	public static final String BOOLEAN = "boolean";
 	public static final String RANKING = "ranking";
+	public static final String CONTINUOUS = "continuous";
 	public static final String HASZERO = "haszero";
 	public static final String TRUECASE = "truecase";
 	public static final String CONTINUOS_DISTRIBUTION_BREAKPOINTS = 

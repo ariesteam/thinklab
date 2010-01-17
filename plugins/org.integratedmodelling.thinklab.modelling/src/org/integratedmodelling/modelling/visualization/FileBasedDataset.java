@@ -92,7 +92,8 @@ public class FileBasedDataset implements IDataset {
 		
 		IState state = getState(observable);
 		
-		if (state.getMetadata(Metadata.RANKING) != null) {
+		if (state.getMetadata(Metadata.RANKING) != null ||
+			state.getMetadata(Metadata.CONTINUOUS) != null) {
 			
 			// ordered rankings
 			return getColormap(getColorForConcept(observable), maxIndex - minIndex + 1);

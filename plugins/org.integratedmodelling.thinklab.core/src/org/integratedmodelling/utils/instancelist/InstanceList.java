@@ -72,6 +72,10 @@ public class InstanceList {
 		return ss.length == 2 ? ss[1] : NameGenerator.newName("inst");
 	}
 
+	public Polylist asList() {
+		return Polylist.PolylistFromArray(array);
+	}
+	
 	public IConcept getDirectType() throws ThinklabException {
 		String s = array[0].toString();
 		String[] ss = s.split("#");		
@@ -198,6 +202,17 @@ public class InstanceList {
 			ret = KnowledgeManager.get().requireConcept(o.toString());
 		}
 		
+		return ret;
+	}
+
+	public Collection<RelationshipList> getRelationships(String property) throws ThinklabException {
+
+		ArrayList<RelationshipList> ret = new ArrayList<RelationshipList>();
+		
+		for (RelationshipList rel : getRelationships()) {
+			if (rel.property.is(property))
+				ret.add(rel);
+		}
 		return ret;
 	}
 
