@@ -279,9 +279,9 @@ public class FileBasedDataset implements IDataset {
 		for (int i = 0; i < len; i++) {
 			
 			if (Double.isNaN(data[i]) || Double.isNaN(odat[i]))
-				idata[i] = 255;
+				idata[i] = 0;
 			else {
-				idata[i] = 255 - (int)((data[i])*255.0);
+				idata[i] = (int)((1 - data[i])*255.0);
 			}
 			
 			if (i == 0) {
@@ -300,7 +300,7 @@ public class FileBasedDataset implements IDataset {
 			return null;
 
 		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
-				space.getColumns(), x, y, ColorMap.alphamask(255), fileOrNull);
+				space.getColumns(), x, y, ColorMap.alphamask(256), fileOrNull);
 
 		return fileOrNull;
 	}

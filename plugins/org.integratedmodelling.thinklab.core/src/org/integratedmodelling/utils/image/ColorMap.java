@@ -100,11 +100,13 @@ public class ColorMap {
 		byte[] a = new byte[levels];
 		
 		for (int i = 0; i < levels; i++) {
-			r[i] = (byte) 255; g[i] = b[i] = 0;
-			a[i] = (byte)(levels - (256/levels)*i);
+			// ugly fuchsia
+			r[i] = (byte) 244; g[i] = 0; b[i] = (byte)161;
+			a[i] = (byte)((256/levels)*i);
 		}
+		
 			 
-		return new ColorMap(new IndexColorModel(8,levels,r,g,b,0), levels);
+		return new ColorMap(new IndexColorModel(8,levels,r,g,b,a), levels);
 	}
 	
 	/**
