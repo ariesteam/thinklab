@@ -43,11 +43,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Stack;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnknownResourceException;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
@@ -90,6 +92,7 @@ public class Session implements ISession {
 	 */
 	HashMap<String, IKBox> vKboxes = new HashMap<String, IKBox>();
 	
+	HashMap<String, Stack<Object>> vars = new HashMap<String, Stack<Object>>();
 	
 	Properties properties = new Properties();
 	
@@ -497,6 +500,32 @@ public class Session implements ISession {
 	@Override
 	public IConcept createConcept(Polylist list) throws ThinklabException {
 		return ontology.createConcept(list);
+	}
+
+	@Override
+	public Object getVariable(String varname) {
+		Stack<Object> s = vars.get(varname);
+		if (s != null && s.size() > 0)
+			return s.peek();
+		return null;
+	}
+
+	@Override
+	public Object popVariable(String varname) throws ThinklabInappropriateOperationException {
+		Stack<Object> s = vars.get(varname);
+		if (s == null || s.size() < 1)
+			throw new ThinklabInappropriateOperationException("session: can't pop non-existing variable " + varname);
+		return s.pop();
+	}
+
+	@Override
+	public void pushVariable(String varname, Object value) {
+		Stack<Object> s = vars.get(varname);
+		if (s == null) {
+			s = new Stack<Object>();
+			vars.put(varname, s);
+		}
+		s.push(value);
 	}
 
 }

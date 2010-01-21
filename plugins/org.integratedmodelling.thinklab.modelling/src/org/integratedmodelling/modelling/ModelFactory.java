@@ -36,6 +36,10 @@ import org.integratedmodelling.utils.Polylist;
  */
 public class ModelFactory {
 
+	// var ID for auxiliary cache information to differentiate signatures of same context
+	private static final String AUX_VARIABLE_DESC = "session.aux.model";
+	
+	public static final IObservation observation = null;
 	public Hashtable<IConcept, Model> models = new Hashtable<IConcept, Model>();
 	public Hashtable<String, Model> modelsById = new Hashtable<String, Model>();
 	
@@ -125,28 +129,39 @@ public class ModelFactory {
 	
 	class Listener implements IContextualizationListener {
 
+		ISession session;
+		
+		Listener(ISession session) {
+			this.session = session;
+		}
+		
+		private void scan(IObservation observation, ObservationContext context) {
+			if (observation.getDependencies().length == 0 ||
+				observation.getDataSource() != null) {
+				ModellingPlugin.get().getCache().addObservation(
+						observation, context, session.getVariable(AUX_VARIABLE_DESC).toString());
+			} else {
+				for (IObservation d : observation.getDependencies())
+					scan(d, context);
+			}
+		}
+		
 		@Override
 		public void onContextualization(IObservation original,
 				IObservation obs, ObservationContext context) {
-			ModellingPlugin.get().getCache().addObservation(obs, context);
-			for (IObservation o : obs.getDependencies())
-				ModellingPlugin.get().getCache().addObservation(o, context);
+			scan(obs,context);
 		}
 
 		@Override
 		public void postTransformation(IObservation original, IObservation obs,
 				ObservationContext context) {
-			ModellingPlugin.get().getCache().addObservation(obs, context);
-			for (IObservation o : obs.getDependencies())
-				ModellingPlugin.get().getCache().addObservation(o, context);
+			scan(obs,context);
 		}
 
 		@Override
 		public void preTransformation(IObservation original, IObservation obs,
 				ObservationContext context) {
-			ModellingPlugin.get().getCache().addObservation(obs, context);
-			for (IObservation o : obs.getDependencies())
-				ModellingPlugin.get().getCache().addObservation(o, context);
+			scan(obs,context);
 		}
 	}
 	
@@ -292,7 +307,7 @@ public class ModelFactory {
 			listeners = new ArrayList<IContextualizationListener>();
 		}
 		if (ModellingPlugin.get().getCache() != null)	
-			listeners.add(new Listener());
+			listeners.add(new Listener(session));
 		
 		IQueryResult r = model.observe(kbox, session, (Object[]) extents);
 		return new ContextualizingModelResult(r, listeners, extents);

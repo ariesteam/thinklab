@@ -44,6 +44,7 @@ import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -64,6 +65,9 @@ import org.integratedmodelling.utils.Polylist;
  * 
  */
 public interface ISession {
+	
+	// standard variable names
+	public static final String DEBUG = "session.debug";
 	
 	/**
 	 * Each session has a unique ID assigned by the Knowledge manager. 
@@ -92,45 +96,6 @@ public interface ISession {
 	 */
 	public abstract void addListener(IThinklabSessionListener listener) throws ThinklabException;
 	
-	
-	/**
-	 * Sessions must be capable of storing and retrieving named objects that only exist at
-	 * run time. They are added to an existing session using this one.
-	 * 
-	 * FIXME why not use properties?
-	 * 
-	 * @param id
-	 * @param object
-	 * @deprecated use properties
-	 */
-	public abstract void registerUserData(String id, Object object);
-	
-	/**
-	 * Retrieve previously registered named object.
-	 * 
-	 * FIXME use properties?
-	 * 
-	 * @param id the object name
-	 * @return the named object, or null if not found.
-	 * @deprecated use properties
-	 */
-	public abstract Object retrieveUserData(String id);
-
-	/**
-	 * @param id the object name
-	 * @return the object
-	 * @deprecated use properties
-	 * @throws ThinklabResourceNotFoundException if named object was not registered
-	 */
-	public abstract Object requireUserData(String id) throws ThinklabResourceNotFoundException;
-
-	/**
-	 * Clear named object from session. Do nothing if not there.
-	 * @deprecated use properties or don't use at all
-	 * @param id the object name.
-	 */
-	public abstract void clearUserData(String id);
-	
     /**
      * <p>Write all current contents of ontology on passed ontology file.</p>
      * <p><b>NOTE:</b> this will remove all non-validated instances, rendering all relative objects meaningless and their use
@@ -140,26 +105,6 @@ public interface ISession {
      */
     public abstract void write(String file) throws ThinklabException;
     
-	/**
-	 * Publish the session to a permanent concept space in the shared knowledge base with the name specified. If the
-	 * name exists, throw an exception.
-	 * @param name a name for the new concept space to be created.
-	 * @throws ThinklabDuplicateNameException
-	 * @throws ThinklabException 
-	 * @deprecated use write
-	 */
-	public abstract void makePermanent(String name) throws ThinklabException;
-	
-	/**
-	 * Publish the session to a permanent concept space in the shared knowledge base. Automatically assign
-	 * a unique name and return it.
-     * <p><b>NOTE:</b> this will remove all non-validated instances, rendering all relative objects meaningless and their use
-     * dangerous. This may change.</p>
-	 * @return the concept space name. It will be ugly.
-	 * @throws ThinklabException if anything goes wrong
-	 * @deprecated use write
-	 */
-	public abstract String makePermanent() throws ThinklabException;
 	
 	/**
 	 * Sessions must be capable of creating temporary concepts from a list specification. These
@@ -206,43 +151,7 @@ public interface ISession {
 	 * 	 * FIXME must return a garbage collected instance, if we ever manage to implement it.
 	 */
 	public abstract IInstance createObject(SemanticType concept) throws ThinklabException;
-	
-	/**
-	 * Create object of passed type with given name. Object is all yours to define. The object must be validated
-	 * using validate() before it can be used.	 
-	 * @param name a name for the object. Must be unique.
-	 * @param concept the semantic type of the object
-	 * @return a new unvalidated IInstance
-	 * @throws ThinklabException  if anything wrong.
-	 * @deprecated too many of these, use the one with the concept
-	 */
-	public abstract IInstance createObject(String name, String concept) throws ThinklabException;
-	
-	/**
-	 * Create object of passed type. Object is all yours to define. The object must be validated
-	 * using validate() before it can be used.
-	 * @param name  a name for the object. Must be unique.
-	 * @param concept the actual semantic type of the object's parent concept
-	 * @return a new unvalidated IInstance
-	 * @throws ThinklabException  if anything wrong.
-	 * @deprecated too many of these, use the one with the concept
-	 */
-	public abstract IInstance createObject(String name, SemanticType concept) throws ThinklabException;
-	
-	/**
-	 * Load named object from a kbox and return the session object that corresponds to it. Supposed to
-	 * cache objects and use reference caching as appropriate.
-	 * 
-	 * @param kboxURI the URI of the object, including the full kbox identifier.
-	 * @return a new IInstance created in the session from the kbox content.
-	 * @throws ThinklabException 
-	 * 
-	 * FIXME must return a garbage collected instance, if we ever manage to implement it. Forget about
-	 * caching, that should be implemented externally.
-	 * @deprecated only "retrieveObject" should be used, understanding the URI.
-	 */
-	public abstract IInstance importObject(String kboxURI) throws ThinklabException;
-	
+
 	/**
 	 * Create object from list definition. Can be used to copy instances from a session to another or from the
 	 * KB. Careful with nested instances though. Instance shoud be completely defined by list, so it is
@@ -280,33 +189,14 @@ public interface ISession {
 	 */
 	public abstract Collection<IInstance> loadObjects(URL url) throws ThinklabException;
 
-	/**
-	 * Read in objects from the given URL or file. What can be read depends on the implementation, but it should
-	 * support OWL and OPAL at least.
-	 * @param source something to read from - either a URL or a local file.
-	 * @return a collection of the main-level IInstances (those that are defined in the 
-	 *         main level, i.e. are not "linked" to others).
-	 * @throws ThinklabException if anything goes wrong
-	 * @deprecated too many of these
-	 */
-	public abstract Collection<IInstance> loadObjects(String source) throws ThinklabException;
-	
+
 	/**
 	 * Delete the named object.
 	 * @param name name of object
 	 * @throws ThinklabException 
 	 */
 	public abstract void deleteObject(String name) throws ThinklabException;
-	
-	/**
-	 * List all objects in collection.
-	 * @return a collection of instances.
-	 * @throws ThinklabException 
-	 * @deprecated we should keep no objects, just create on demand, destroy when out of
-	 * scope.
-	 */
-	public abstract Collection<IInstance> listObjects() throws ThinklabException;
-	
+
 	/**
 	 * Retrieve the named object or null if no such object exists in session.
 	 * @param name an object name. Note: this is just a name, not a semantic type.
@@ -389,5 +279,27 @@ public interface ISession {
 	 * get the output stream if the user model defines one, otherwise return null.
 	 */
 	public PrintStream getOutputStream();
+	
+	/**
+	 * 
+	 * @param varname
+	 * @param value
+	 */
+	public abstract void pushVariable(String varname, Object value);
+	
+	/**
+	 * 
+	 * @param varname
+	 * @return
+	 * @throws ThinklabInappropriateOperationException 
+	 */
+	public abstract Object popVariable(String varname) throws ThinklabInappropriateOperationException;
+	
+	/**
+	 * 
+	 * @param varname
+	 * @return
+	 */
+	public abstract Object getVariable(String varname);
 
 }

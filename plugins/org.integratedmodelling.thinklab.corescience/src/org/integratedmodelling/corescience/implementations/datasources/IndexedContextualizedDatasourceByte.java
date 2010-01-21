@@ -1,6 +1,6 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -144,12 +144,6 @@ public class IndexedContextualizedDatasourceByte<T>
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void readFromStream(BufferedReader fop) throws ThinklabException {	
-		throw new ThinklabUnimplementedFeatureException("porcodio, implementami");
-	}
-
 
 
 

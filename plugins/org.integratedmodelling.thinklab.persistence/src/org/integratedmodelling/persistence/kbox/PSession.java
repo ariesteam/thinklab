@@ -257,5 +257,23 @@ public class PSession implements ISession {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Object getVariable(String varname) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object popVariable(String varname) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void pushVariable(String varname, Object value) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

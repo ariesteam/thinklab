@@ -73,7 +73,8 @@ public class Load implements ICommandHandler {
 			}
 
 		} else {
-			objs = session.loadObjects(toload);
+			// FIXME
+			// objs = session.loadObjects(toload);
 		}
 
 		// TODO move these functionalities to kimport; implement the virtual

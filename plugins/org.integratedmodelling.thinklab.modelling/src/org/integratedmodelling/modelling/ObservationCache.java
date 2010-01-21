@@ -1,25 +1,25 @@
 package org.integratedmodelling.modelling;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.PersistenceManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
+import org.integratedmodelling.utils.InputSerializer;
+import org.integratedmodelling.utils.MalformedListException;
+import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.OutputSerializer;
 import org.integratedmodelling.utils.Polylist;
 
 public class ObservationCache {
@@ -28,20 +28,28 @@ public class ObservationCache {
 	private File indexFile = null;
 	private HashMap<String, IState> dynamicCache = new HashMap<String, IState>();
 	private HashMap<String, File> persistentCache = null;
+	private HashMap<String, String> classIndex = null;
+	private HashMap<String, Polylist> observableIndex = null;
 	
-	private String getSignature(IConcept obs, IObservationContext context) {
+	private String getSignature(IConcept obs, IObservationContext context, String aux) {
 		String sig = obs.toString();
 		if (context != null)
 			for (IConcept e : context.getDimensions())
 				sig += "," + context.getExtent(e).getSignature();
+		
+		if (aux != null)
+			sig += "_" + aux;
+		
 		return sig;
 	}
 	
 	public ObservationCache(File scratchPath, boolean isPersistent) throws ThinklabException {
 		
 		if (isPersistent) {
-		
+					
 			persistentCache = new HashMap<String, File>();
+			classIndex  = new HashMap<String, String>();
+			observableIndex = new HashMap<String, Polylist>();
 			cachePath = new File(scratchPath + File.separator + "cache");
 			cachePath.mkdir();
 		
@@ -51,27 +59,50 @@ public class ObservationCache {
 			this.indexFile  = new File(cachePath + File.separator + "cache.idx");
 		
 			if (indexFile.exists()) {
-				try {
-					BufferedReader fop = new BufferedReader(
-							new InputStreamReader(
-									new FileInputStream(indexFile)));
+
+				InputSerializer inp = new InputSerializer(indexFile);
 				
-					String line = null;
-					while ((line = fop.readLine()) != null) {
-						String[] zz = line.split("\\ ");
-						persistentCache.put(zz[0], new File(cachePath + File.separator + zz[1]));
+				int n = inp.readInteger();
+				for (int i = 0; i < n; i++) {
+					String sig = inp.readString();
+					Polylist obs = null;
+					try {
+						obs = Polylist.parse(inp.readString());
+					} catch (MalformedListException e) {
+						throw new ThinklabRuntimeException(e);
 					}
-				
-				} catch (Exception e) {
-					throw new ThinklabIOException(e);
+					String clazz = inp.readString();
+					String file  = inp.readString();
+					
+					persistentCache.put(sig, new File(cachePath + File.separator + file));
+					classIndex.put(sig, clazz);
+					observableIndex.put(sig, obs);
 				}
+				
+				inp.close();
+				
 			}
+			
 		}
 	}
 	
-	public Polylist getObservation(IConcept observable, IObservationContext context) throws ThinklabException {
+	private void updateCache() throws ThinklabIOException {
+
+		OutputSerializer out = new OutputSerializer(this.indexFile);
+		int n = persistentCache.size();
+		out.writeInteger(n);
+		for (String sig : persistentCache.keySet()) {
+			out.writeString(sig);
+			out.writeString(observableIndex.get(sig).toString());
+			out.writeString(classIndex.get(sig));
+			out.writeString(MiscUtilities.getFileName(persistentCache.get(sig).toString()));
+		}
+		out.close();
+	}
+	
+	public Polylist getObservation(IConcept observable, IObservationContext context, String aux) throws ThinklabException {
 		
-		String sig = getSignature(observable, context);
+		String sig = getSignature(observable, context, aux);
 		IState s = dynamicCache.get(sig); 
 		
 		if (s != null) {
@@ -79,76 +110,37 @@ public class ObservationCache {
 		}
 		
 		if (persistentCache != null) {
+			
 			File f = persistentCache.get(sig);
-		
-			/*
-			 * TODO if found, reconstruct observation
-			 */
+
 			if (f != null) {
-				return createObservation(f);
+				ModellingPlugin.get().logger().info("reading observation from cache: " + sig);
+				return createObservation(classIndex.get(sig), observableIndex.get(sig), f);
 			}
 		}
 		
 		return null;
 	}
 
-	private Polylist createObservation(File f) throws ThinklabException {
+	private Polylist createObservation(String clazz, Polylist observable, File f) throws ThinklabException {
 		
-		IConcept observableClass = null;
-		IConcept observationClass = null;
-		Class<?> stateClass = null;
-		IState state = null;
-		Polylist ret = null;
+		IPersistentObject state = 
+			PersistenceManager.get().createPersistentObject(clazz);
 		
 		try {
-			
-			BufferedReader fop = new BufferedReader(
-					new InputStreamReader(
-							new FileInputStream(indexFile)));
-			
-			observableClass = 
-				KnowledgeManager.get().requireConcept(fop.readLine().trim()); 
-			observationClass = 
-				KnowledgeManager.get().requireConcept(fop.readLine().trim()); 
-			stateClass =
-				Class.forName(fop.readLine().trim()); 
-			
-			/*
-			 * create state and have it read itself from the open stream
-			 * FIXME won't work, the class won't be found.
-			 */
-			ThinklabPlugin plug = ModellingPlugin.getPluginFor(stateClass);
-			ClassLoader clsl = null;
-			
-			try {
-				clsl = plug.swapClassloader();		
-				state = (IState) stateClass.newInstance();
-				state.readFromStream(fop);
-				
-			} catch (Exception e) {
-				throw new ThinklabInternalErrorException(e);
-			} finally {
-				plug.resetClassLoader(clsl);
-			}
-			
-			fop.close();
-
-			ret = Polylist.list(
-					observationClass,
-					Polylist.list(CoreScience.HAS_OBSERVABLE, 
-							Polylist.list(observableClass)),
-					Polylist.list(CoreScience.HAS_DATASOURCE, 
-							state.conceptualize()));
-				
-
+			state.deserialize(new FileInputStream(f));
 		} catch (FileNotFoundException e) {
 			throw new ThinklabIOException(e);
-		} catch (IOException e) {
-			throw new ThinklabIOException(e);
-		} catch (ClassNotFoundException e) {
-			throw new ThinklabInternalErrorException(e);
 		}
 		
+		Polylist ret = Polylist.list(
+					CoreScience.OBSERVATION,
+					Polylist.list(CoreScience.HAS_OBSERVABLE, 
+							observable),
+					Polylist.list(CoreScience.HAS_DATASOURCE, 
+							((IState)state).conceptualize()));
+				
+			
 		return ret;
 	}
 	
@@ -163,9 +155,9 @@ public class ObservationCache {
 						state.conceptualize()));
 	}
 
-	public synchronized void addObservation(IObservation obs, IObservationContext context) {
+	public synchronized void addObservation(IObservation obs, IObservationContext context, String aux)  {
 
-		String sig = getSignature(obs.getObservableClass(), context);
+		String sig = getSignature(obs.getObservableClass(), context, aux);
 		
 		if (dynamicCache.containsKey(sig))
 			return;
@@ -179,25 +171,31 @@ public class ObservationCache {
 		if (persistentCache == null || persistentCache.containsKey(sig))
 			return;
 		
+		if ( !(obs.getDataSource() instanceof IPersistentObject)) 
+			return;
+		
 		/*
 		 * TODO add state and other necessary info to persistent cache
 		 */
 		File ff = null;
 		 
 		try {
-			ff = File.createTempFile("ch", ".obs", cachePath);
-			PrintWriter writer = new PrintWriter(ff);
-			writer.println(obs.getObservableClass()+"");
-			writer.println(obs.getObservableClass()+"");
-			writer.println(obs.getObservableClass()+"");
-		} catch (IOException e) {
+			
+			ModellingPlugin.get().logger().info("adding state to persistent cache: " + sig);
+			
+			ff = File.createTempFile("chs", ".obs", cachePath);
+			FileOutputStream fop = new FileOutputStream(ff);
+			((IPersistentObject)obs.getDataSource()).serialize(fop);
+			fop.close();
+			persistentCache.put(sig, ff);
+			classIndex.put(sig, obs.getDataSource().getClass().getCanonicalName());
+			observableIndex.put(sig, obs.getObservable().toList(null));
+			updateCache();
+		} catch (Exception e) {
 			throw new ThinklabRuntimeException(e);
 		}
-		
-		
-		persistentCache.put(sig, ff);
 	}
-
+	
 	public void resetDynamicCache() {
 		dynamicCache.clear();
 	}

@@ -1,6 +1,6 @@
 package org.integratedmodelling.corescience.interfaces;
 
-import java.io.BufferedReader;
+import java.io.File;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
@@ -54,13 +54,5 @@ public interface IState extends IDataSource, IConceptualizable {
 	 */
 	public int getTotalSize();
 
-	/**
-	 * States must be capable of being created with an empty constructor and read 
-	 * themselves from an open reader.
-	 * 
-	 * @param fop
-	 */
-	public void readFromStream(BufferedReader fop) throws ThinklabException;
-	
 	
 }

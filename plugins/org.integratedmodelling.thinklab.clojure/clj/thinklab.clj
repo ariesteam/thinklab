@@ -174,7 +174,19 @@
 	 [concept]
 	 (. (conc concept) (getDefinition)))
 	 
-	 
-;; these just return types that are hidden
-	 
-;(defn 
+;; --------------------------------------------------------------------------------
+;; command interface
+;; --------------------------------------------------------------------------------
+
+;; run a command
+;(defmacro cmd 
+;	"Run a thinklab command passing the arguments"
+;	[command & params]
+;	`())
+
+;; create a command	
+;(defmacro define-command
+;	""
+;	[command-name & arguments] 
+;	`())
+	

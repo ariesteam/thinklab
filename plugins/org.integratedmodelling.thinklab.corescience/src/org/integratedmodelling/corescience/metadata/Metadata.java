@@ -1,18 +1,28 @@
 package org.integratedmodelling.corescience.metadata;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Properties;
+import java.util.Map.Entry;
 
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
+import org.integratedmodelling.utils.InputSerializer;
+import org.integratedmodelling.utils.OutputSerializer;
 import org.integratedmodelling.utils.Pair;
+
+import au.id.jericho.lib.html.OutputSegment;
 
 /**
  * Just a holder of metadata ID strings.
@@ -267,6 +277,133 @@ public class Metadata {
 				ret[i++] = last;
 		}
 				
+		return ret;
+	}
+
+
+	public static void serializeMetadata(Properties metadata, OutputStream fop) throws ThinklabException {
+
+		class MetadataSerializer extends OutputSerializer {
+			
+			class RankingWriter implements ObjectWriter {
+
+				@Override
+				public void writeObject(Object o) throws ThinklabIOException {
+					if (o == null) {
+						writeInteger(0);
+						return;
+					}
+					HashMap<IConcept,Integer> r = (HashMap<IConcept, Integer>) o;
+					writeInteger(r.size());
+					for (Entry<IConcept, Integer> ek : r.entrySet()) {
+						writeString(ek.getKey().toString());
+						writeInteger(ek.getValue());
+					}
+				}
+			}
+			MetadataSerializer(OutputStream out) {
+				super(out);
+			}
+			
+			void writeRankings(Object o) throws ThinklabException {
+				writeObject(o, new RankingWriter());
+			}
+		}
+		
+		MetadataSerializer out = new MetadataSerializer(fop);
+
+		// UNCERTAINTY (double[])
+		// UNITS (string)
+		// BOOLEAN (boolean)
+		// HASZERO (boolean)
+		// TRUECASE (concept)
+		// RANKING (hasmap<concept, integer>)
+
+		out.writeDoubles((double[]) metadata.get(UNCERTAINTY));
+		out.writeString(metadata.getProperty(UNITS));
+		out.writeInteger(
+				metadata.get(BOOLEAN) == null ? 
+						-1 : 
+						((Boolean)(metadata.get(BOOLEAN)) ? 1 : 0));
+		out.writeInteger(
+				metadata.get(HASZERO) == null ? 
+						-1 : 
+						((Boolean)(metadata.get(HASZERO)) ? 1 : 0));
+		out.writeInteger(
+				metadata.get(CONTINUOUS) == null ? 
+						-1 : 
+						((Boolean)(metadata.get(CONTINUOUS)) ? 1 : 0));
+		out.writeString(metadata.getProperty(TRUECASE));
+		out.writeRankings(metadata.get(RANKING));
+	}
+
+
+	public static Properties deserializeMetadata(InputStream fop) throws ThinklabException {
+
+		class MetadataDeserializer extends InputSerializer {
+			
+			class RankingReader implements ObjectReader {
+
+				@Override
+				public HashMap<IConcept,Integer> readObject() throws ThinklabException {
+
+					int size = readInteger();
+					if (size == 0)
+						return null;
+					
+					HashMap<IConcept,Integer> ret = new HashMap<IConcept, Integer>();
+
+					for (int i = 0; i < size; i++) {
+						String conc = readString();
+						int val = readInteger();
+						ret.put(KnowledgeManager.get().requireConcept(conc), val);
+					}
+					
+					return ret;
+				}
+			}
+			MetadataDeserializer(InputStream in) {
+				super(in);
+			}
+			
+			HashMap<IConcept,Integer> readRankings() throws ThinklabException {
+				return (HashMap<IConcept, Integer>) readObject(new RankingReader());
+			}
+		}
+		
+		Properties ret = new Properties();
+		MetadataDeserializer in = new MetadataDeserializer(fop);
+		
+		// UNCERTAINTY (double[])
+		// UNITS (string)
+		// BOOLEAN (boolean)
+		// HASZERO (boolean)
+		// TRUECASE (concept)
+		// RANKING (hasmap<concept, integer>)
+		
+		double[] unc = in.readDoubles();
+		if (unc != null)
+			ret.put(UNCERTAINTY, unc);
+		String units = in.readString();
+		if (units != null)
+			ret.put(UNITS, units);
+		
+		int bool = in.readInteger();
+		if (bool >= 0)
+			ret.put(BOOLEAN, bool == 0 ? Boolean.FALSE : Boolean.TRUE);
+		bool = in.readInteger();
+		if (bool >= 0)
+			ret.put(HASZERO, bool == 0 ? Boolean.FALSE : Boolean.TRUE);
+		bool = in.readInteger();
+		if (bool >= 0)
+			ret.put(CONTINUOUS, bool == 0 ? Boolean.FALSE : Boolean.TRUE);
+		units = in.readString();
+		if (units != null)
+			ret.put(TRUECASE, KnowledgeManager.get().requireConcept(units));
+		HashMap<IConcept, Integer> rank = in.readRankings();
+		if (rank != null)
+			ret.put(RANKING, rank);
+			
 		return ret;
 	}
 

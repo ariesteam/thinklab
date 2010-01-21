@@ -74,7 +74,8 @@ public class ResultContainer implements IQueryResult {
 	private IInstance getObjectFromDocument(Document doc, ISession session) throws ThinklabException {
 		
 		String id = doc.get("id");
-		return session.importObject(id);
+		// FIXME don't know what this should be doing
+		return /* session.importObject(id) */null;
 	}
 	
 	public IQueriable getQueriable() {

@@ -63,9 +63,9 @@ public abstract class ThinklabBehavior {
 		return id;
 	}
 	
-	static public ThinklabBehavior getBehavior(String id, ISession session) {
-		return (ThinklabBehavior) session.retrieveUserData(id);
-	}
+//	static public ThinklabBehavior getBehavior(String id, ISession session) {
+//		return (ThinklabBehavior) session.retrieveUserData(id);
+//	}
 	
 //	static public ThinklabBehavior createBehavior(String bClass, ISession session) throws ThinklabException {
 //		
@@ -96,7 +96,7 @@ public abstract class ThinklabBehavior {
 		id = NameGenerator.newName("tk_behavior");
 		
 		/* register into session */
-		session.registerUserData(id, this);
+		//session.registerUserData(id, this);
 	
 	}
 	

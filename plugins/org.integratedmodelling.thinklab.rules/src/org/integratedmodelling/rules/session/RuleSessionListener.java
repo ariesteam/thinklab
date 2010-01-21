@@ -21,9 +21,9 @@ public class RuleSessionListener implements IThinklabSessionListener {
 	public void sessionCreated(ISession session) throws ThinklabException {
 		
 		if (RulePlugin.get().isUsingJess() || RulePlugin.get().isUsingDrools()) {
-			session.registerUserData(
-					RulePlugin.ENGINE_USERDATA_ID, 
-					RulePlugin.get().createRuleEngine());
+//			session.registerUserData(
+//					RulePlugin.ENGINE_USERDATA_ID, 
+//					RulePlugin.get().createRuleEngine());
 		}
 
 	}

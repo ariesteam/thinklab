@@ -37,7 +37,6 @@ import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
-import org.integratedmodelling.utils.Polylist;
 
 @ThinklabCommand(
 		name="model",

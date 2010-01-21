@@ -88,7 +88,8 @@ public class KExport implements ICommandHandler {
 		if (toload.startsWith("#")) {
 			objs.add(session.requireObject(toload.substring(1)));
 		} else if (toload.contains("#")) {
-			objs.add(session.importObject(toload));
+			// FIXME
+			// objs.add(session.importObject(toload));
 		} else {
 
 			IKBox kbox = session.retrieveKBox(toload);

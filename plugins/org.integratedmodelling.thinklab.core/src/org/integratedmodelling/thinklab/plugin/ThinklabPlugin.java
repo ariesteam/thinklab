@@ -33,29 +33,6 @@
  **/
 package org.integratedmodelling.thinklab.plugin;
 
-/*
- * Plugin.java - Abstract class all plugins must implement
- *
- * Copyright (C) 1999, 2003 Slava Pestov
- * Adapted 2006 Ferdinando Villa
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- * Copyright (C) 2006, 2007 The Ecoinformatics Collaboratory, UVM
- */
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -73,6 +50,7 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.PersistenceManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.application.ApplicationDescriptor;
 import org.integratedmodelling.thinklab.application.ApplicationManager;
@@ -89,12 +67,14 @@ import org.integratedmodelling.thinklab.extensions.KBoxHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
+import org.integratedmodelling.thinklab.interfaces.annotations.PersistentObject;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
@@ -227,6 +207,7 @@ public abstract class ThinklabPlugin extends Plugin
 		loadCommandHandlers();
 		loadCommands();
 		loadInstanceImplementationConstructors();
+		loadPersistentClasses();
 		loadSessionListeners();
 		loadKboxes();
 		loadApplications();
@@ -237,7 +218,7 @@ public abstract class ThinklabPlugin extends Plugin
 
 		loadExtensions();
 		
-		for (IPluginLifecycleListener lis : KnowledgeManager.get().getPluginListeners()) {
+		for (IPluginLifecycleListener lis : KnowledgeManager.getPluginListeners()) {
 			lis.onPluginLoaded(this);
 		}
 	}
@@ -307,7 +288,6 @@ public abstract class ThinklabPlugin extends Plugin
 		for (Class<?> cls : MiscUtilities.findSubclasses(ITask.class, taskPackage, getClassLoader())) {
 			intp.defineTask(cls, getClassLoader());
 		}
-		
 	}
 	
 	public ClassLoader swapClassloader() {
@@ -328,8 +308,8 @@ public abstract class ThinklabPlugin extends Plugin
 			String url = getParameter(ext, "url");
 			String id = getParameter(ext, "id");
 			String schema  = getParameter(ext, "schema");
-			// TODO modernize handling of metadata
-			String mschema = getParameter(ext, "metadata-schema");
+//			// TODO modernize handling of metadata
+//			String mschema = getParameter(ext, "metadata-schema");
 			
 			File pfile = new File(
 					getScratchPath() + File.separator + id + ".kbox");
@@ -577,6 +557,36 @@ public abstract class ThinklabPlugin extends Plugin
 				logger().info("registering class " + cls + " as implementation for instances of type " + concept);				
 				KnowledgeManager.get().registerInstanceImplementationClass(concept, cls);
 			}
+		}
+	}
+	
+	protected void loadPersistentClasses() throws ThinklabPluginException {
+		
+		String ipack = this.getClass().getPackage().getName() + ".implementations";
+		
+		for (Class<?> cls : MiscUtilities.findSubclasses(IPersistentObject.class, ipack, getClassLoader())) {	
+			
+			String ext = null;
+
+			/*
+			 * lookup annotation, ensure we can use the class
+			 */
+			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+				continue;
+			
+			/*
+			 * lookup implemented concept
+			 */
+			for (Annotation annotation : cls.getAnnotations()) {
+				if (annotation instanceof PersistentObject) {
+					ext = ((PersistentObject)annotation).extension();
+					if (ext.equals("__NOEXT__"))
+						ext = null;
+					break;
+				}
+			}
+
+			PersistenceManager.get().registerSerializableClass(cls, ext);
 		}
 	}
 

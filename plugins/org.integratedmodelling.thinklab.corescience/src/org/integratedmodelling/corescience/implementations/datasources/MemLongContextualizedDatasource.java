@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
@@ -150,11 +150,4 @@ public class MemLongContextualizedDatasource
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void readFromStream(BufferedReader fop) throws ThinklabUnimplementedFeatureException {
-		throw new ThinklabUnimplementedFeatureException("porcodio, implementami");
-	}
-
-
 }

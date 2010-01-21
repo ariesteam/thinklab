@@ -198,12 +198,13 @@ public class List implements ICommandHandler {
 			session.getOutputStream().println("Listing session contents: \n");
 			int c = 0;
 
-			for (IInstance i : session.listObjects()) {
-
-				session.getOutputStream().println("\t" + i.getLocalName() + ": "
-						+ i.getDirectType());
-				c++;
-			}
+			// FIXME
+//			for (IInstance i : session.listObjects()) {
+//
+//				session.getOutputStream().println("\t" + i.getLocalName() + ": "
+//						+ i.getDirectType());
+//				c++;
+//			}
 
 			session.getOutputStream().println(c + " objects");
 			return null;

@@ -32,7 +32,8 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
@@ -40,16 +41,22 @@ import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.interfaces.annotations.PersistentObject;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
+import org.integratedmodelling.utils.InputSerializer;
+import org.integratedmodelling.utils.OutputSerializer;
 import org.integratedmodelling.utils.Polylist;
 
+@PersistentObject(extension="dst")
 public class MemDoubleContextualizedDatasource 
- 	implements IState, IInstanceImplementation {
+ 	implements IState, IInstanceImplementation, IPersistentObject {
 
 	private static final long serialVersionUID = -6567783706189229920L;
 	private IConcept _type;
@@ -58,6 +65,10 @@ public class MemDoubleContextualizedDatasource
 	
 	Properties metadata = new Properties();
 
+	public MemDoubleContextualizedDatasource() {
+		// only to be used by the serializer
+	}
+	
 	public MemDoubleContextualizedDatasource(IConcept type, double[] data) {
 		_type = type;
 		this.data = data;
@@ -167,9 +178,20 @@ public class MemDoubleContextualizedDatasource
 	}
 
 	@Override
-	public void readFromStream(BufferedReader fop)  throws ThinklabUnimplementedFeatureException {
-		throw new ThinklabUnimplementedFeatureException("porcodio, implementami");
+	public void deserialize(InputStream fop) throws ThinklabException {
+		InputSerializer in = new InputSerializer(fop);
+		_type = KnowledgeManager.get().requireConcept(in.readString());
+		data = in.readDoubles();
+		metadata = Metadata.deserializeMetadata(fop);
 	}
 
+	@Override
+	public void serialize(OutputStream fop) throws ThinklabException {
+		
+		OutputSerializer out = new OutputSerializer(fop);
+		out.writeString(_type.toString());
+		out.writeDoubles(data);
+		Metadata.serializeMetadata(metadata, fop);
+	}
 
 }

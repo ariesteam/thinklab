@@ -22,7 +22,7 @@ public class ModellingPlugin extends ThinklabPlugin {
 
 		boolean persistent = false;
 		manager = new ModelFactory();
-		if (getProperties().contains(USE_CACHE_PROPERTY) &&
+		if (getProperties().containsKey(USE_CACHE_PROPERTY) &&
 			Boolean.parseBoolean(getProperties().getProperty(USE_CACHE_PROPERTY))) {
 			persistent = true;
 		}
