@@ -139,7 +139,7 @@ public class ModelFactory {
 			if (observation.getDependencies().length == 0 ||
 				observation.getDataSource() != null) {
 				ModellingPlugin.get().getCache().addObservation(
-						observation, context, session.getVariable(AUX_VARIABLE_DESC).toString());
+						observation, context, (String)session.getVariable(AUX_VARIABLE_DESC));
 			} else {
 				for (IObservation d : observation.getDependencies())
 					scan(d, context);
