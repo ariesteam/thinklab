@@ -164,19 +164,12 @@ public class ObservationCache {
 		
 		dynamicCache.put(sig, (IState) obs.getDataSource());
 		
-		/*
-		 * TODO add signature to properties and ensure we have a file to hold
-		 * the obs contents
-		 */
 		if (persistentCache == null || persistentCache.containsKey(sig))
 			return;
 		
 		if ( !(obs.getDataSource() instanceof IPersistentObject)) 
 			return;
 		
-		/*
-		 * TODO add state and other necessary info to persistent cache
-		 */
 		File ff = null;
 		 
 		try {
@@ -198,6 +191,17 @@ public class ObservationCache {
 	
 	public void resetDynamicCache() {
 		dynamicCache.clear();
+	}
+
+	public void clear() {
+		
+		for (File f : cachePath.listFiles()) {
+			f.delete();
+		}
+		persistentCache.clear();
+		observableIndex.clear();
+		classIndex.clear();
+		resetDynamicCache();
 	}
 	
 }

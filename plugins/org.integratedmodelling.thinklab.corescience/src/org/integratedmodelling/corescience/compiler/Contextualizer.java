@@ -29,7 +29,8 @@ public class Contextualizer  {
 			this.ctx = ctx;
 			this.session = session;
 			
-			ctx.dump(System.out);
+			if (this.session.getVariable(ISession.DEBUG) != null)
+				ctx.dump(System.out);
 		}
 		
 		@Override

@@ -33,8 +33,11 @@
  **/
 package org.integratedmodelling.thinklab.shell;
 
+import org.integratedmodelling.thinklab.commandline.CommandLine;
 import org.integratedmodelling.thinklab.commandline.GraphicalShell;
+import org.integratedmodelling.thinklab.commandline.Shell;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.java.plugin.boot.Application;
 import org.java.plugin.boot.ApplicationPlugin;
 import org.java.plugin.util.ExtendedProperties;
@@ -46,6 +49,7 @@ import org.java.plugin.util.ExtendedProperties;
 public class ShellApplication extends ApplicationPlugin implements Application {
 
     public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.shell";
+	private static final String GRAPHICAL_SHELL_PROPERTY = "commandline.graphical.shell";
 	
 	public ISession session;
 	
@@ -70,7 +74,16 @@ public class ShellApplication extends ApplicationPlugin implements Application {
 	@Override
 	public void startApplication() throws Exception {
 		
-		GraphicalShell shell = new GraphicalShell();
-		shell.startConsole();
+		boolean isGraphical = 
+			BooleanValue.parseBoolean(
+					CommandLine.get().getProperties().getProperty(
+							GRAPHICAL_SHELL_PROPERTY, "true"));
+		if (isGraphical) {			
+			GraphicalShell shell = new GraphicalShell();
+			shell.startConsole();
+		} else {
+			Shell shell = new Shell();
+			shell.startConsole();
+		}
 	}
 }

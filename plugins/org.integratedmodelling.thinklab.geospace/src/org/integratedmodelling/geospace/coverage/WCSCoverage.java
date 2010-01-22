@@ -117,18 +117,6 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		  String[] dimSpecs = new String[2];
 
 		  // desc.dump(System.out);
-		  
-		  // TODO the only check we make is that the first <name> node (depth-first) 
-		  // is the layer name we requested.
-		  /* on second thought, why lookup the name when this is the response to a describeCoverage
-		   * for that same name. Particularly considering that the name may or may not have the
-		   * namespace in it.
-		   */
-//		  Node n = desc.findNode("name");
-//
-//		  if (n == null || !XMLDocument.getNodeValue(n).trim().equals(layerName))
-//			  throw new ThinklabResourceNotFoundException(
-//					  "coverage " + layerName + " not found on WCS service");
 
 		  Node n = desc.findNode("gml:Envelope");
 		  
@@ -180,7 +168,6 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		  /*
 		   * TODO process available formats and extract default or validate given
 		   */
-
 		  try {
 			  this.crs = CRS.decode(srs);
 			} catch (Exception e) {

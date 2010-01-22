@@ -43,7 +43,66 @@ public class Metadata {
 	public static final String CONTINUOS_DISTRIBUTION_BREAKPOINTS = 
 			"continuous_dist_breakpoints";
 	
+	public static class MetadataSerializer extends OutputSerializer {
+			
+			class RankingWriter implements ObjectWriter {
+
+				@Override
+				public void writeObject(Object o) throws ThinklabIOException {
+					if (o == null) {
+						writeInteger(0);
+						return;
+					}
+					HashMap<IConcept,Integer> r = (HashMap<IConcept, Integer>) o;
+					writeInteger(r.size());
+					for (Entry<IConcept, Integer> ek : r.entrySet()) {
+						writeString(ek.getKey() == null ? null : ek.getKey().toString());
+						writeInteger(ek.getValue());
+					}
+				}
+			}
+			
+			public MetadataSerializer(OutputStream out) {
+				super(out);
+			}
+			
+			public void writeRankings(Object o) throws ThinklabException {
+				writeObject(o, new RankingWriter());
+			}
+		}
 	
+	public static class MetadataDeserializer extends InputSerializer {
+		
+		class RankingReader implements ObjectReader {
+
+			@Override
+			public HashMap<IConcept,Integer> readObject() throws ThinklabException {
+
+				int size = readInteger();
+				if (size == 0)
+					return null;
+				
+				HashMap<IConcept,Integer> ret = new HashMap<IConcept, Integer>();
+
+				for (int i = 0; i < size; i++) {
+					String conc = readString();
+					int val = readInteger();
+					ret.put(conc == null ? null : KnowledgeManager.get().requireConcept(conc), val);
+				}
+				
+				return ret;
+			}
+		}
+		
+		public MetadataDeserializer(InputStream in) {
+			super(in);
+		}
+		
+		public HashMap<IConcept,Integer> readRankings() throws ThinklabException {
+			return (HashMap<IConcept, Integer>) readObject(new RankingReader());
+		}
+	}
+	 
 	/*
 	 * these are recognized as ordinal prefixes. In order for an order
 	 * to be recognized, all concepts must be children of 
@@ -283,32 +342,7 @@ public class Metadata {
 
 	public static void serializeMetadata(Properties metadata, OutputStream fop) throws ThinklabException {
 
-		class MetadataSerializer extends OutputSerializer {
-			
-			class RankingWriter implements ObjectWriter {
 
-				@Override
-				public void writeObject(Object o) throws ThinklabIOException {
-					if (o == null) {
-						writeInteger(0);
-						return;
-					}
-					HashMap<IConcept,Integer> r = (HashMap<IConcept, Integer>) o;
-					writeInteger(r.size());
-					for (Entry<IConcept, Integer> ek : r.entrySet()) {
-						writeString(ek.getKey().toString());
-						writeInteger(ek.getValue());
-					}
-				}
-			}
-			MetadataSerializer(OutputStream out) {
-				super(out);
-			}
-			
-			void writeRankings(Object o) throws ThinklabException {
-				writeObject(o, new RankingWriter());
-			}
-		}
 		
 		MetadataSerializer out = new MetadataSerializer(fop);
 
@@ -340,36 +374,6 @@ public class Metadata {
 
 	public static Properties deserializeMetadata(InputStream fop) throws ThinklabException {
 
-		class MetadataDeserializer extends InputSerializer {
-			
-			class RankingReader implements ObjectReader {
-
-				@Override
-				public HashMap<IConcept,Integer> readObject() throws ThinklabException {
-
-					int size = readInteger();
-					if (size == 0)
-						return null;
-					
-					HashMap<IConcept,Integer> ret = new HashMap<IConcept, Integer>();
-
-					for (int i = 0; i < size; i++) {
-						String conc = readString();
-						int val = readInteger();
-						ret.put(KnowledgeManager.get().requireConcept(conc), val);
-					}
-					
-					return ret;
-				}
-			}
-			MetadataDeserializer(InputStream in) {
-				super(in);
-			}
-			
-			HashMap<IConcept,Integer> readRankings() throws ThinklabException {
-				return (HashMap<IConcept, Integer>) readObject(new RankingReader());
-			}
-		}
 		
 		Properties ret = new Properties();
 		MetadataDeserializer in = new MetadataDeserializer(fop);

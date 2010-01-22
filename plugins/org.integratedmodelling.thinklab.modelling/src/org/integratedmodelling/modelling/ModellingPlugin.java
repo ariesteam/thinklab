@@ -11,6 +11,8 @@ public class ModellingPlugin extends ThinklabPlugin {
 	public static String PLUGIN_ID = "org.integratedmodelling.thinklab.modelling";
 	
 	private ModelFactory manager = null;
+	
+	// TODO move cache to ModelFactory
 	private ObservationCache cache = null;
 	
 	public static ModellingPlugin get() {
@@ -37,6 +39,7 @@ public class ModellingPlugin extends ThinklabPlugin {
 		return manager;
 	}
 	
+	// TODO move cache to ModelFactory
 	public ObservationCache getCache() {
 		return cache;
 	}

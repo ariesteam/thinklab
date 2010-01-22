@@ -298,7 +298,8 @@ public abstract class DefaultAbstractModel implements IModel {
 				/*
 				 * lookup in cache, if existing, return it
 				 */
-				Polylist res = cache.getObservation(observable, ctx, null);
+				Polylist res = cache.getObservation(observable, ctx, 
+						(String)session.getVariable(ModelFactory.AUX_VARIABLE_DESC));
 				if (res != null)
 					return new ModelResult(res);
 			}

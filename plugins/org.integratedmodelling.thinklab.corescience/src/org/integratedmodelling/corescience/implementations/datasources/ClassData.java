@@ -1,15 +1,20 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
 
-public class ClassData extends IndexedContextualizedDatasourceByte<IConcept> implements
-		ICategoryData {
+public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> implements
+		ICategoryData, IPersistentObject {
 	
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
@@ -62,6 +67,29 @@ public class ClassData extends IndexedContextualizedDatasourceByte<IConcept> imp
 
 	public String toString() {
 		return "CD[" + _type + " {" + map + "}: " /*+ Arrays.toString(data)*/ + "]";
+	}
+
+	@Override
+	public void deserialize(InputStream fop) throws ThinklabException {
+		
+		Metadata.MetadataDeserializer in = new Metadata.MetadataDeserializer(fop);
+		_type = KnowledgeManager.get().requireConcept(in.readString());
+		map = in.readRankings();
+		// just reconstruct this one
+		for (IConcept c : map.keySet())
+			inverseMap.put(map.get(c), c);
+		data = in.readIntegers();
+		metadata = Metadata.deserializeMetadata(fop);
+	}
+
+	@Override
+	public void serialize(OutputStream fop) throws ThinklabException {
+		
+		Metadata.MetadataSerializer out = new Metadata.MetadataSerializer(fop);
+		out.writeString(_type.toString());
+		out.writeRankings(map);
+		out.writeIntegers(data);
+		Metadata.serializeMetadata(metadata, fop);
 	}
 
 }

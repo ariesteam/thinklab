@@ -6,6 +6,7 @@ import java.util.Hashtable;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.geospace.Geospace;
@@ -36,8 +37,10 @@ import org.integratedmodelling.utils.Polylist;
  */
 public class ModelFactory {
 
-	// var ID for auxiliary cache information to differentiate signatures of same context
-	private static final String AUX_VARIABLE_DESC = "session.aux.model";
+	// var ID for auxiliary cache information to differentiate signatures of same context;
+	// should not be necessary if context included "conceptual" dimensions but it is for now
+	// to implement scenarios
+	public static final String AUX_VARIABLE_DESC = "session.aux.model";
 	
 	public static final IObservation observation = null;
 	public Hashtable<IConcept, Model> models = new Hashtable<IConcept, Model>();
@@ -124,7 +127,6 @@ public class ModelFactory {
 		public float setResultScore(int n, float score) {
 			return mres.setResultScore(n, score);
 		}
-		
 	}
 	
 	class Listener implements IContextualizationListener {
@@ -136,10 +138,14 @@ public class ModelFactory {
 		}
 		
 		private void scan(IObservation observation, ObservationContext context) {
-			if (observation.getDependencies().length == 0 ||
-				observation.getDataSource() != null) {
+			
+			if (observation.getDependencies().length == 0 &&
+				observation.getDataSource() != null &&
+				observation.getDataSource() instanceof IState) {
 				ModellingPlugin.get().getCache().addObservation(
 						observation, context, (String)session.getVariable(AUX_VARIABLE_DESC));
+			} else if (observation.isMediator()) {
+				scan(observation.getMediatedObservation(), context);
 			} else {
 				for (IObservation d : observation.getDependencies())
 					scan(d, context);
@@ -149,24 +155,33 @@ public class ModelFactory {
 		@Override
 		public void onContextualization(IObservation original,
 				IObservation obs, ObservationContext context) {
+			scan(original,context);
 			scan(obs,context);
 		}
 
 		@Override
 		public void postTransformation(IObservation original, IObservation obs,
 				ObservationContext context) {
+			scan(original,context);
 			scan(obs,context);
 		}
 
 		@Override
 		public void preTransformation(IObservation original, IObservation obs,
 				ObservationContext context) {
+			scan(original,context);
 			scan(obs,context);
 		}
 	}
 	
 	public static ModelFactory get() {
 		return ModellingPlugin.get().getModelManager();
+	}
+	
+	public void clearCache() {
+		ObservationCache cache = ModellingPlugin.get().getCache();
+		if (cache != null) 
+			cache.clear();
 	}
 	
 	/*

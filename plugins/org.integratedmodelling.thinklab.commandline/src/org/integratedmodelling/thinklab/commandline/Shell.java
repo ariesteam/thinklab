@@ -33,17 +33,20 @@
  **/
 package org.integratedmodelling.thinklab.commandline;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+
+import jline.ConsoleReader;
+import jline.Terminal;
 
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.owlapi.Session;
 
 /**
  * A simple command-line driven interface. Just attach to a session, startConsole() and type 'help'.
@@ -52,43 +55,53 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 public class Shell {
 	
 	public ISession session;
+	ConsoleReader console = null;
 	
 	public Shell(ISession session) {
 		this.session = session;
 	}
 	
-	public static void printStatusMessage() {
+	public Shell() {
+		try {
+			this.session = new Session();
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+	}
+	
+	public void printStatusMessage() throws IOException {
 		
-		System.out.println("ThinkLab shell 0.1alpha");
-		System.out.println("System path: " + LocalConfiguration.getSystemPath());
-		System.out.println("Data path: " + LocalConfiguration.getDataPath());					
-		System.out.println();
-		System.out.println("Enter \'help\' for a list of commands; \'exit\' quits");
-		System.out.println();
+		console.printString("ThinkLab shell 0.1alpha\n");
+		console.printString("System path: " + LocalConfiguration.getSystemPath() + "\n");
+		console.printString("Data path: " + LocalConfiguration.getDataPath() + "\n");					
+		console.printString("\n");
+		console.printString("Enter \'help\' for a list of commands; \'exit\' quits\n");
+		console.printString("\n");
 	}
 
 	public void startConsole() throws Exception {
 		
+		Terminal.setupTerminal();
+		this.console = new ConsoleReader();
+		
 		/* greet user */
 		printStatusMessage();
 		
-		BufferedReader in = new BufferedReader(new InputStreamReader(session.getInputStream()));
 		String input = "";
 		
 		/* define commands from user input */
 		while(true) {
 			
-			session.getOutputStream().print("> ");
-			try {
-				input = in.readLine();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			input = console.readLine("> ");
+		
+			if (input == null)
+				continue;
 			
 			if ("exit".equals(input)) {
-				session.getOutputStream().println("shell terminated");
+				console.printString("shell terminated\n");
 				break;
 			} else if (!("".equals(input))) {
+				
 				try {
 					
 					Command cmd = CommandParser.parse(input);
@@ -98,10 +111,10 @@ public class Shell {
 					
 					IValue result = CommandManager.get().submitCommand(cmd, session);
                     if (result != null)
-                    	session.getOutputStream().println(result.toString());
+                    	console.printString(result.toString() + "\n");
 				} catch (ThinklabException e) {
 					e.printStackTrace();
-					session.getOutputStream().println(" error: " + e.getMessage());
+					console.printString(" error: " + e.getMessage() + "\n");
 				}
 			}
 		}

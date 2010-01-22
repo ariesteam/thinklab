@@ -284,6 +284,7 @@ public class Compiler {
 		
 		if (deactivatable.size() > 0)
 			ret.encodeActivateAll();
+		
 		/*
 		 * Second pass: compile contextualization sequence. No register- function 
 		 * or allocations should be called from now on: the rest of the bytecode is

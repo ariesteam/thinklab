@@ -395,5 +395,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/ncIdv.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/simpleidv.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/visad.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/jline-0.9.94.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

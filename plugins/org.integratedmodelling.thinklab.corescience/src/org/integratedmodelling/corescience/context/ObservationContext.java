@@ -506,7 +506,8 @@ public class ObservationContext implements IObservationContext {
 		
 		Polylist l = buildObservationList(states);
 		
-		System.out.println(Polylist.prettyPrint(l));
+		if (session.getVariable(ISession.DEBUG) != null)
+			System.out.println(Polylist.prettyPrint(l));
 		
 		return session.createObject(l);
 	}

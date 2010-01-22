@@ -48,11 +48,11 @@ import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 		optionalArgumentDefaultValues="_NONE_",
 		optionalArgumentDescriptions="id of a spatial feature to define the spatial context",
 		optionalArgumentTypes="thinklab-core:Text",
-		optionLongNames="kbox,visualize,dump,outfile,resolution",
-		optionNames="k,v,d,o,r",
-		optionArgumentLabels="all kboxes,,,none,256",
-		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer",
-		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid",
+		optionArgumentLabels="all kboxes,,,none,256, ",
+		optionLongNames="kbox,visualize,dump,outfile,resolution,clear",
+		optionNames="k,v,d,o,r,c",
+		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing",
+		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing",
 		returnType="observation:Observation")
 public class ModelCommand implements ICommandHandler {
 
@@ -135,11 +135,13 @@ public class ModelCommand implements ICommandHandler {
 			listeners.add(new Listener());
 		}
 	
+		if (command.hasOption("clear")) {
+			ModelFactory.get().clearCache();
+		}
+		
 		IQueryResult r = ModelFactory.get().run(model, kbox, session, listeners, 
 				(Topology)ObservationFactory.getObservation(where));
 		
-//		IQueryResult r = model.observe(kbox, session, where);
-				
 		if (session.getOutputStream() != null) {
 			session.getOutputStream().println(
 					r.getTotalResultCount() + " possible model(s) found");

@@ -55,6 +55,9 @@
 		<library type="code" id="jgrapht"  path="lib/jgrapht.jar">
 			<export prefix="*" />
 		</library>
+		<library type="code" id="jline"  path="lib/jline-0.9.94.jar">
+			<export prefix="*" />
+		</library>
 		<library type="code" id="jopt-simple"  path="lib/jopt-simple-2.4-beta2.jar"/>
 		<library type="code" id="junit"  path="lib/junit.jar">
 			<export prefix="*" />
