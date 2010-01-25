@@ -97,6 +97,7 @@ public class VectorCoverage implements ICoverage {
 	 */
 	int attributeHandle = -1;
 	private FeatureSource<SimpleFeatureType, SimpleFeature> source;
+	private String valueDefault;
 
 	
 	public VectorCoverage(URL url, String valueField, boolean validate) throws ThinklabException {
@@ -134,6 +135,7 @@ public class VectorCoverage implements ICoverage {
 			CoordinateReferenceSystem crs, 
 			String valueField, 
 			String valueType, // concept - may be null
+			String valueDefault, // if the attribute is empty or null, use this instead - may be null
 			ReferencedEnvelope envelope,
 			FeatureSource<SimpleFeatureType, SimpleFeature> source, 
 			boolean validate) throws ThinklabException {
@@ -142,7 +144,8 @@ public class VectorCoverage implements ICoverage {
 		this.crs = crs;
 		this.valueField = valueField;
 		this.source = source;
-		this.valueType = valueType == null ? null : KnowledgeManager.get().requireConcept(valueType);;
+		this.valueType = valueType == null ? null : KnowledgeManager.get().requireConcept(valueType);
+		this.valueDefault = valueDefault;
 
 		if (validate)
 			validateFeatures();
@@ -179,12 +182,14 @@ public class VectorCoverage implements ICoverage {
 			String linkTargetField,
 			String valueField,
 			String valueType, // concept - may be null
+			String valueDefault, // if attribute is null or empty, use this - may be null
 			boolean validate) throws ThinklabException {
 		
 		this.features = features;
 		this.crs = crs;
 		this.valueField = linkField;
 		this.valueType = valueType == null ? null : KnowledgeManager.get().requireConcept(valueType);
+		this.valueDefault = valueDefault;
 		this.attributeHandle = attributes.index(linkTargetField, valueField);
 		
 		if (validate)
@@ -376,7 +381,7 @@ public class VectorCoverage implements ICoverage {
 	 * @throws ThinklabException
 	 */
 	public ICoverage convertToRaster(GridExtent arealExtent) throws ThinklabException {
-		return ThinklabRasterizer.rasterize(this, valueField, Float.NaN, arealExtent, valueType);
+		return ThinklabRasterizer.rasterize(this, valueField, Float.NaN, arealExtent, valueType, valueDefault);
 	}
 
 	public void show() {

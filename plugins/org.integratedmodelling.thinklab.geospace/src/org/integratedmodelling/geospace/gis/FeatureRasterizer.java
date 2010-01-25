@@ -120,6 +120,7 @@ public class FeatureRasterizer {
 	 * the resulting coverage.
 	 */
 	private HashMap<String, Integer> classification = null;
+	private String valueDefault;
 	
     /**
      *Constructor for the FeatureRasterizer object
@@ -311,7 +312,8 @@ public class FeatureRasterizer {
     	return ret;
 	}
 
-	public GridCoverage2D rasterize(String name, FeatureIterator<SimpleFeature> fc, String attributeName, IConcept valueType, ReferencedEnvelope env, ReferencedEnvelope normEnv) throws FeatureRasterizerException {
+	public GridCoverage2D rasterize(String name, FeatureIterator<SimpleFeature> fc, String attributeName, IConcept valueType, 
+			String valueDefault, ReferencedEnvelope env, ReferencedEnvelope normEnv) throws FeatureRasterizerException {
     	
     	if (raster == null) {
     	
@@ -346,7 +348,7 @@ public class FeatureRasterizer {
     				normEnv.getWidth(), 
     				normEnv.getHeight());
 			 
-		rasterize(fc, box, attributeName, valueType);
+		rasterize(fc, box, attributeName, valueType, valueDefault);
 
 		GridCoverage2D coverage = 
 			rasterFactory.create(name, raster, env);
@@ -433,10 +435,12 @@ public class FeatureRasterizer {
      * @param  attributeName                  Name of attribute from feature collection to provide as the cell value.
      * @exception  FeatureRasterizerException  An error when rasterizing the data
      */
-    public void rasterize(FeatureIterator<SimpleFeature> fc, java.awt.geom.Rectangle2D.Double bounds, String attributeName, IConcept valueType)
+    public void rasterize(FeatureIterator<SimpleFeature> fc, java.awt.geom.Rectangle2D.Double bounds, 
+    		String attributeName, IConcept valueType, String valueDefault)
     	throws FeatureRasterizerException {
     	
         this.attributeName = attributeName;
+        this.valueDefault = valueDefault;
         
         // Check if we need to change the underlying raster
         if (resetRaster) {
@@ -529,9 +533,15 @@ public class FeatureRasterizer {
         	if (this.attributeTable == null) {
         		
         		if (attributeName != null) {
+        			
         			Object attr = feature.getAttribute(attributeName);
-        			if (attr == null)
-        				return;
+        			if (attr == null) {
+        				if (this.valueDefault != null) {
+        					attr = this.valueDefault;
+        				} else {
+        					return;
+        				}
+        			}
         			
         			/*
         			 * TODO string values may need to be turned into classifications and the final

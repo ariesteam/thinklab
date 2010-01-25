@@ -59,6 +59,7 @@ public class CoverageFactory {
 	// these are used as property keys to influence the way coverages are read from vector files.
 	public static final String VALUE_ATTRIBUTE_PROPERTY = "geospace.internal.value-attribute";
 	public static final String VALUE_TYPE_PROPERTY = "geospace.internal.value-type";
+	public static final String VALUE_DEFAULT_PROPERTY = "geospace.internal.value-default";
 	public static final String SOURCE_LINK_ATTRIBUTE_PROPERTY = "geospace.internal.source-link-attribute";
 	public static final String TARGET_LINK_ATTRIBUTE_PROPERTY = "geospace.internal.target-link-attribute";
 	public static final String ATTRIBUTE_URL_PROPERTY = "geospace.internal.attribute-url";
@@ -215,6 +216,7 @@ public class CoverageFactory {
 		
 		String valAttr = properties.getProperty(VALUE_ATTRIBUTE_PROPERTY);
 		String valType = properties.getProperty(VALUE_TYPE_PROPERTY);
+		String valDef = properties.getProperty(VALUE_DEFAULT_PROPERTY);
 		String covId = properties.getProperty(COVERAGE_ID_PROPERTY);
 		
 		Map<Object,Object> connectionParameters = new HashMap<Object,Object>();
@@ -240,7 +242,7 @@ public class CoverageFactory {
 			coverage = new VectorCoverage(
 					features, 
 					features.getSchema().getCoordinateReferenceSystem(), 
-					valAttr, valType,
+					valAttr, valType, valDef,
 					source.getBounds(),
 					source, false);
 			
@@ -287,6 +289,7 @@ public class CoverageFactory {
 
 		String valAttr = properties.getProperty(VALUE_ATTRIBUTE_PROPERTY);
 		String valType = properties.getProperty(VALUE_TYPE_PROPERTY);
+		String valDef = properties.getProperty(VALUE_DEFAULT_PROPERTY);
 		String srcAttr = properties.getProperty(SOURCE_LINK_ATTRIBUTE_PROPERTY);
 		String lnkAttr = properties.getProperty(TARGET_LINK_ATTRIBUTE_PROPERTY);
 		String dataURL = properties.getProperty(ATTRIBUTE_URL_PROPERTY);
@@ -307,6 +310,7 @@ public class CoverageFactory {
 							lnkAttr, 
 							valAttr, 
 							valType,
+							valDef,
 							false);
 				
 			} catch (MalformedURLException e) {
@@ -317,7 +321,7 @@ public class CoverageFactory {
 			coverage = new VectorCoverage(
 					fc, 
 					fc.getSchema().getCoordinateReferenceSystem(), 
-					valAttr, valType,
+					valAttr, valType, valDef, 
 					envelope,
 					fc1, false);
 		}

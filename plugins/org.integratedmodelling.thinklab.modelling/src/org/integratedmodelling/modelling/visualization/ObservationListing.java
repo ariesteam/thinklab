@@ -53,6 +53,8 @@ public class ObservationListing {
 				// TODO
 			}
 			
+			out.println("ds: " + state);
+			
 			/*
 			 * compute histogram
 			 */

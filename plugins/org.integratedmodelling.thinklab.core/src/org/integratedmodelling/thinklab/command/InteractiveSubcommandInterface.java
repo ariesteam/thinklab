@@ -50,11 +50,18 @@ public abstract class InteractiveSubcommandInterface implements ICommandHandler 
 	 */
 	protected String ask(String prompt) throws ThinklabIOException {
 		out.print(prompt == null? (id + "> ") : prompt);
+		String ret = null;
 		try {
-			return in.readLine();
+			ret = in.readLine();
 		} catch (IOException e) {
 			throw new ThinklabIOException(e);
 		}
+		
+		/*
+		 * the stupid console returns a ; for any empty command, which is weird - this should be
+		 * removed and the console should be fixed.
+		 */
+		return ret == null ? null : ((ret.trim().isEmpty() || ret.equals(";")) ? null : ret.trim());
 	}
 	
 	/**

@@ -23,7 +23,8 @@ public class ThinklabRasterizer {
 	 * @param extent
 	 * @return
 	 */
-	public static RasterCoverage rasterize(VectorCoverage vCoverage, String valueId, float noData, GridExtent extent, IConcept valueType)  throws ThinklabException  {
+	public static RasterCoverage rasterize(VectorCoverage vCoverage, String valueId, float noData, 
+			GridExtent extent, IConcept valueType, String valueDefault)  throws ThinklabException  {
 		
 		if (extent.getCRS() != null)
 			vCoverage = (VectorCoverage)vCoverage.requireMatch(extent, false);
@@ -50,6 +51,7 @@ public class ThinklabRasterizer {
 					iterator, 
 					valueId,
 					valueType,
+					valueDefault,
 					extent.getDefaultEnvelope(),
 					extent.getNormalizedEnvelope());
 			
