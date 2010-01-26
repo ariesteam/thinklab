@@ -109,7 +109,14 @@ public class MemObjectContextualizedDatasource
 
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
-		// TODO try to convert if values are numbers
+	
+		if (data[0] instanceof Number) {
+			double[] ret = new double[data.length];
+			for (int i = 0; i < data.length; i++) {
+				ret[i] = ((Number)data[i]).doubleValue();
+			}
+			return ret;
+		}
 		throw new ThinklabValueConversionException("can't convert IValue into double");
 	}
 	

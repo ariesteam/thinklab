@@ -778,6 +778,14 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#StormLikelihood -->
+
+    <owl:Class rdf:about="#StormLikelihood">
+        <rdfs:subClassOf rdf:resource="#EventRelatedQuality"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Stream -->
 
     <owl:Class rdf:about="#Stream">
@@ -846,6 +854,14 @@
 
     <owl:Class rdf:about="#TreeLand">
         <rdfs:subClassOf rdf:resource="#VegetationType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#TropicalStormProbability -->
+
+    <owl:Class rdf:about="#TropicalStormProbability">
+        <rdfs:subClassOf rdf:resource="#StormLikelihood"/>
     </owl:Class>
     
 
