@@ -35,6 +35,7 @@ package org.integratedmodelling.thinklab.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
@@ -414,19 +415,38 @@ public abstract class ThinklabPlugin extends Plugin
     	   URL sprop = getResourceURL(configFile);
     	   if (sprop != null)
     		   CopyURL.copy(sprop, pfile);
-    	   
        } 
        
        if (pfile.exists()) {
     	   try {
     		propertySource = pfile;
-			properties.load(new FileInputStream(pfile));
+    		FileInputStream inp = new FileInputStream(pfile);
+			properties.load(inp);
+			inp.close();
 			logger().info("plugin properties loaded from " + pfile);
 		} catch (Exception e) {
 			throw new ThinklabIOException(e);
 		}
        }
-		
+       
+       /*
+        * load all other properties files directly from plugin load dir
+        */
+       File cdir = new File(getLoadDirectory() + File.separator + "config");
+       if (cdir.exists() && cdir.isDirectory())
+		for (File f : cdir.listFiles()) {
+			if (f.toString().endsWith(".properties") &&
+			    !(f.toString().endsWith(getPluginBaseName() + ".properties"))) {
+				try {
+					logger().info("reading additional properties from " + f);
+					FileInputStream inp = new FileInputStream(f);
+					properties.load(inp);
+					inp.close();
+				} catch (Exception e) {
+					throw new ThinklabIOException(e);
+				}
+			}
+		}
 	}
 
 	public void writeConfiguration() throws ThinklabIOException {

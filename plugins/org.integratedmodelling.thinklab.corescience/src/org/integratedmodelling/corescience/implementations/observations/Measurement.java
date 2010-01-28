@@ -12,6 +12,7 @@ import org.integratedmodelling.corescience.interfaces.internal.IndirectObservati
 import org.integratedmodelling.corescience.interfaces.internal.MediatingObservation;
 import org.integratedmodelling.corescience.interfaces.literals.IRandomValue;
 import org.integratedmodelling.corescience.literals.DistributionValue;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -225,7 +226,9 @@ public class Measurement extends Observation implements MediatingObservation {
 
 	@Override
 	public IState createState(int size) throws ThinklabException {
-		return new MemDoubleContextualizedDatasource(getObservableClass(), size);
+		IState ret = new MemDoubleContextualizedDatasource(getObservableClass(), size);
+		ret.setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
+		return ret;
 	}
 
 }

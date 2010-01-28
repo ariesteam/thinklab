@@ -40,6 +40,7 @@ import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.interfaces.internal.MediatingObservation;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -222,7 +223,10 @@ public class Ranking extends Observation implements MediatingObservation {
 
 	@Override
 	public IState createState(int size) throws ThinklabException {
-		return new MemDoubleContextualizedDatasource(getObservableClass(), size);
+		IState ret = new MemDoubleContextualizedDatasource(getObservableClass(), size);
+		ret.setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
+		// TODO add min-max etc
+		return ret;
 	}
 
 	@Override

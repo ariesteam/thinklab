@@ -173,11 +173,7 @@ public class ShapeValue extends ParsedLiteralValue {
 			int n = s.indexOf(' ');
 			String escode = s.substring(0, n);
 			s = s.substring(n+1);
-			try {
-				crs = CRS.decode(escode);
-			} catch (Exception e) {
-				throw new ThinklabValidationException(e);
-			}
+			crs = Geospace.getCRSFromID(escode);
 		}
 		
     	try {

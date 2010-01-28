@@ -34,6 +34,8 @@ package org.integratedmodelling.geospace;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,7 +44,11 @@ import java.util.Properties;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.metadata.iso.citation.Citations;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.ReferencingFactoryFinder;
+import org.geotools.referencing.factory.PropertyAuthorityFactory;
+import org.geotools.referencing.factory.ReferencingFactoryContainer;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -57,6 +63,7 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.image.ColorMap;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
+import org.opengis.metadata.citation.Citation;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -114,8 +121,15 @@ public class Geospace extends ThinklabPlugin  {
 	// the projection to use if we need meters
 	public static final String EPSG_PROJECTION_METERS  = "EPSG:3005";
 	public static final String EPSG_PROJECTION_DEFAULT = "EPSG:4326";
-	public static final String EPSG_PROJECTION_GOOGLE  = "EPSG:3857";	
+	public static final String EPSG_PROJECTION_GOOGLE  = "EPSG:3857";
+	
+	// property to add new CRS by hand in property file 
+	public static final String CUSTOM_CRS_PROPERTY = "geospace.crs.";	
 
+	// projections not in the main repository inserted through properties
+	static HashMap<String, CoordinateReferenceSystem> localCRS = 
+		new HashMap<String, CoordinateReferenceSystem>();
+	
 	/*
 	 * if not null, we have a preferred crs in the properties, and we solve
 	 * all conflicts by translating to it. 
@@ -134,6 +148,28 @@ public class Geospace extends ThinklabPlugin  {
 	
 	public static Geospace get() {
 		return (Geospace) getPlugin(PLUGIN_ID);
+	}
+	
+	void registerAdditionalCRS() throws ThinklabException {
+		
+		URL epsg = getResourceURL("epsg.properties");
+		
+		if (epsg != null) {
+			Hints hints = 
+				new Hints(Hints.CRS_AUTHORITY_FACTORY, PropertyAuthorityFactory.class);
+			ReferencingFactoryContainer referencingFactoryContainer = 
+				ReferencingFactoryContainer.instance(hints);
+			PropertyAuthorityFactory factory;
+			try {
+				factory = new PropertyAuthorityFactory(
+				                referencingFactoryContainer,
+				                Citations.fromName("EPSG"),
+				                epsg);
+				ReferencingFactoryFinder.addAuthorityFactory(factory);
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}      
+		}
 	}
 	
 	@Override
@@ -172,7 +208,8 @@ public class Geospace extends ThinklabPlugin  {
 		try {
 			
 			// ColorMap.rainbow(256).getColorbar(16, new File("cbar.png"));
-			
+			registerAdditionalCRS();
+
 			metersCRS = CRS.decode(EPSG_PROJECTION_METERS);
 			defaultCRS = CRS.decode(EPSG_PROJECTION_DEFAULT);
 			googleCRS = CRS.decode(EPSG_PROJECTION_GOOGLE);
@@ -184,14 +221,32 @@ public class Geospace extends ThinklabPlugin  {
 			throw new ThinklabPluginException(e);
 		} 
 		
+		
+//		/*
+//		 * load all local CRS - all EPSG by default.
+//		 */
+//		for (Object s : getProperties().keySet()) {
+//			if (s.toString().startsWith(CUSTOM_CRS_PROPERTY)) {
+//				String[] z = s.toString().split("\\.");
+//				String id = "EPSG:" + z[z.length -1];
+//				String wkt = getProperties().getProperty(s.toString());
+//				try {
+//					CoordinateReferenceSystem rs = CRS.parseWKT(wkt);
+//					localCRS.put(id, rs);
+//				} catch (Exception e) {
+//					throw new ThinklabPluginException(e);
+//				}
+//			}
+//		}
+		
 		/*
 		 * create preferred CRS if one is specified. Highly advisable to set one if hybrid data
 		 * are used.
 		 */
-		if (getProperties().containsKey(PREFERRED_CRS_PROPERTY)) {
+		if (getProperties().containsKey(PREFERRED_CRS_PROPERTY)) {	
 			try {
-				preferredCRS = CRS.decode(getProperties().getProperty(PREFERRED_CRS_PROPERTY));
-			} catch (Exception e) {
+				preferredCRS = getCRSFromID(getProperties().getProperty(PREFERRED_CRS_PROPERTY));
+			} catch (ThinklabValidationException e) {
 				throw new ThinklabPluginException(e);
 			}
 		}
@@ -547,12 +602,14 @@ public class Geospace extends ThinklabPlugin  {
 	 */
     public static CoordinateReferenceSystem getCRSFromID(String crsId) throws ThinklabValidationException {
         
-        CoordinateReferenceSystem ret = null;
+        CoordinateReferenceSystem ret = localCRS.get(crsId);
         
-        try {
-                ret = CRS.decode(crsId);
-        } catch (Exception e) {
+        if (ret == null) {
+        	try {
+        		ret = CRS.decode(crsId);
+        	} catch (Exception e) {
                 throw new ThinklabValidationException(e);
+        	}
         }
         
         return ret;

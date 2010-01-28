@@ -112,17 +112,21 @@ public class CategoricalDistributionDatasource extends
 		 * remap the values to ranks and determine how to rewire the input
 		 */
 		HashMap<IConcept, Integer> ranks = Metadata.rankConcepts(_type, this);
-		int offset = ((Boolean)getMetadata(Metadata.HASZERO)) ? 0 : 1;
-		if (ranks.size() != valueMappings.length) {
+		int offset = 0; 
+		if (getMetadata(Metadata.HASZERO) != null)
+			offset = ((Boolean)getMetadata(Metadata.HASZERO)) ? 0 : 1;
+		
+		if (ranks != null && ranks.size() != valueMappings.length) {
 			throw new ThinklabValidationException(
 					"probabilistic discretization of type " + type + " differs from its logical definition");
 		}
 		
-		for (int i = 0; i < valueMappings.length; i++) {
-			int n = ranks.get(valueMappings[i]) - offset;
-			this.sortedIndexes[i] = n;
-			this.valueMappings[n] = valueMappings[i];
-		}
+		if (ranks != null)
+			for (int i = 0; i < valueMappings.length; i++) {
+				int n = ranks.get(valueMappings[i]) - offset;
+				this.sortedIndexes[i] = n;
+				this.valueMappings[n] = valueMappings[i];
+			}
 		
 	}
 
