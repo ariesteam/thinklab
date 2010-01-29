@@ -201,14 +201,14 @@ public class Session implements ISession {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.ima.core.ISession#createObject(java.lang.String, org.integratedmodelling.ima.core.IConcept)
 	 */
-	public IInstance createObject(String name, IConcept parent) throws ThinklabException {
+	public  IInstance createObject(String name, IConcept parent) throws ThinklabException {
 		return ontology.createInstance(name, parent);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.ima.core.ISession#createObject(java.lang.String, org.integratedmodelling.utils.Polylist)
 	 */
-	public IInstance createObject(String name, Polylist definition) throws ThinklabException {
+	public  IInstance createObject(String name, Polylist definition) throws ThinklabException {
 	    return ontology.createInstance(name, definition);
     }
         
@@ -346,19 +346,19 @@ public class Session implements ISession {
         }        
     }
 
-	public IInstance createObject(String concept) throws ThinklabException {
+	public  IInstance createObject(String concept) throws ThinklabException {
 		return createObject(ontology.getUniqueObjectName("jis"), getConcept(concept));
 	}
 
-	public IInstance createObject(SemanticType concept) throws ThinklabException {
+	public  IInstance createObject(SemanticType concept) throws ThinklabException {
 		return createObject(ontology.getUniqueObjectName("jis"), getConcept(concept.toString()));
 	}
 
-	public IInstance createObject(String name, String concept) throws ThinklabException {
+	public  IInstance createObject(String name, String concept) throws ThinklabException {
 		return createObject(name, getConcept(concept));
 	}
 
-	public IInstance createObject(String name, SemanticType concept) throws ThinklabException {
+	public  IInstance createObject(String name, SemanticType concept) throws ThinklabException {
 		return createObject(name, getConcept(concept.toString()));
 	}
 
@@ -371,7 +371,7 @@ public class Session implements ISession {
 		return null;
 	}
 
-	public IInstance createObject(Polylist polylist) throws ThinklabException {
+	public  IInstance createObject(Polylist polylist) throws ThinklabException {
 
 		IInstance ret = ontology.createInstance(polylist);
 
@@ -386,7 +386,7 @@ public class Session implements ISession {
 		return ret;
 	}
 
-    public IInstance createObject(IInstance ii) throws ThinklabException {
+    public  IInstance createObject(IInstance ii) throws ThinklabException {
         return createObject(ii.toList(null));
     }
 
@@ -498,7 +498,7 @@ public class Session implements ISession {
 	}
 
 	@Override
-	public IConcept createConcept(Polylist list) throws ThinklabException {
+	public  IConcept createConcept(Polylist list) throws ThinklabException {
 		return ontology.createConcept(list);
 	}
 
