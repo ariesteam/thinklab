@@ -35,6 +35,7 @@ package org.integratedmodelling.geospace.literals;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.integratedmodelling.corescience.interfaces.ITopologicallyComparable;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -72,7 +73,7 @@ import com.vividsolutions.jts.io.WKTWriter;
  *
  */
 @LiteralImplementation(concept="geospace:SpatialRecord")
-public class ShapeValue extends ParsedLiteralValue {
+public class ShapeValue extends ParsedLiteralValue implements ITopologicallyComparable {
 
 	Geometry shape = null;
 	PrecisionModel precisionModel = null;
@@ -474,5 +475,37 @@ public class ShapeValue extends ParsedLiteralValue {
 
 	public ShapeValue convertToMeters() throws ThinklabException {
 		return transform(Geospace.get().getMetersCRS());
+	}
+
+	@Override
+	public boolean contains(ITopologicallyComparable o)
+			throws ThinklabException {
+
+		if (! (o instanceof ShapeValue))
+			throw new ThinklabValidationException(
+					"shapes can only be topologically compared with other shapes");
+		
+		return shape.contains(((ShapeValue)o).transform(crs).shape);
+	}
+
+	@Override
+	public boolean intersects(ITopologicallyComparable o)
+			throws ThinklabException {
+
+		if (! (o instanceof ShapeValue))
+			throw new ThinklabValidationException(
+					"shapes can only be topologically compared with other shapes");
+		return shape.intersects(((ShapeValue)o).transform(crs).shape);
+	}
+
+	@Override
+	public boolean overlaps(ITopologicallyComparable o)
+			throws ThinklabException {
+
+		if (! (o instanceof ShapeValue))
+			throw new ThinklabValidationException(
+					"shapes can only be topologically compared with other shapes");
+
+		return shape.overlaps(((ShapeValue)o).transform(crs).shape);
 	}
 }

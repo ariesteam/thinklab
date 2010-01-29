@@ -40,7 +40,6 @@ import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.geospace.transformations.Rasterize;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Polylist;
@@ -154,6 +153,8 @@ public class ShapeExtent extends ArealExtent {
 			// we can't really handle this as a vector operation yet. 
 			// Will determine a polygonal overlay at some point. For now we just turn to raster, but
 			// we need a smart guess for the resolution.
+			// should check that they're exactly the same, or again rasterize
+
 			
 		} else {
 			
@@ -186,8 +187,13 @@ public class ShapeExtent extends ArealExtent {
 		
 		if (extent instanceof GridExtent) {
 			ret = new Rasterize((GridExtent) extent);
-		} else {
-			throw new ThinklabValidationException("shape extent: cannot transform to extent " + extent);
+		} else if (extent instanceof ShapeExtent) {
+//			Geometry s =
+//				((ShapeExtent)extent).getShape().intersection(this.getShape());
+//			Envelope env = s.getEnvelopeInternal();	
+//			ret = new ShapeExtent(s, env, getCRS());
+			
+			//throw new ThinklabValidationException("shape extent: cannot transform to extent " + extent);
 		}
 		return ret;
 	}

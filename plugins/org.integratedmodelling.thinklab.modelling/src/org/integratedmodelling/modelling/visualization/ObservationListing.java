@@ -52,9 +52,7 @@ public class ObservationListing {
 			if (verbose) {
 				// TODO
 			}
-			
-			out.println("ds: " + state);
-			
+						
 			/*
 			 * compute histogram
 			 */
@@ -67,15 +65,21 @@ public class ObservationListing {
 	private void listHistogram(IState state, PrintStream out) throws ThinklabValueConversionException {
 		
 		double[] data = state.getDataAsDoubles();
-		double min = data[0]; double max = data[0];
+		Double min = null; Double max = null;
+
 		int nans = 0;
 		for (int i = 0; i < data.length; i++) {
 			
 			if (Double.isNaN(data[i]))
 				nans++;
-			else {				
-				if (data[i] > max) max = data[i];
-				if (data[i] < min) min = data[i];
+			else {
+				if (max == null) {
+					max = data[i];
+					min = data[i];
+				} else {
+					if (data[i] > max) max = data[i];
+					if (data[i] < min) min = data[i];
+				}
 			}
 		}
 		
