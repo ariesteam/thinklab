@@ -22,8 +22,6 @@ import org.integratedmodelling.utils.InputSerializer;
 import org.integratedmodelling.utils.OutputSerializer;
 import org.integratedmodelling.utils.Pair;
 
-import au.id.jericho.lib.html.OutputSegment;
-
 /**
  * Just a holder of metadata ID strings.
  * @author Ferdinando Villa
