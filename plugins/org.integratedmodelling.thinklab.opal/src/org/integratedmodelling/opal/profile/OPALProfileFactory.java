@@ -41,7 +41,7 @@ import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.utils.NameGenerator;
-import org.integratedmodelling.utils.XMLDocument;
+import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
 
 public class OPALProfileFactory {

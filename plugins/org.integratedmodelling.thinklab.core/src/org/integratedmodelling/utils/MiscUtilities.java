@@ -83,6 +83,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.UUID;
 import java.util.Vector;
 
 import org.integratedmodelling.thinklab.Thinklab;
@@ -1773,6 +1774,68 @@ loop:		for(;;)
 		}
 		return ret;
 	}
+
+	/** 
+	 * Create a new temporary directory. Use something like 
+	 * {@link #recursiveDelete(File)} to clean this directory up since it isn't 
+	 * deleted automatically 
+	 * @return  the new directory 
+	 * @throws IOException if there is an error creating the temporary directory 
+	 */ 
+	public static File createTempDir() throws ThinklabIOException 
+	{ 
+	    final File sysTempDir = new File(System.getProperty("java.io.tmpdir")); 
+	    File newTempDir; 
+	    final int maxAttempts = 9; 
+	    int attemptCount = 0; 
+	    do 
+	    { 
+	        attemptCount++; 
+	        if(attemptCount > maxAttempts) 
+	        { 
+	            throw new ThinklabIOException( 
+	                    "Failed to create a unique temporary directory after " + 
+	                    maxAttempts + " attempts."); 
+	        } 
+	        String dirName = UUID.randomUUID().toString(); 
+	        newTempDir = new File(sysTempDir, dirName); 
+	    } while(newTempDir.exists()); 
+	 
+	    if(newTempDir.mkdirs()) 
+	    { 
+	        return newTempDir; 
+	    } 
+	    else 
+	    { 
+	        throw new ThinklabIOException( 
+	                "Failed to create temp dir named " + 
+	                newTempDir.getAbsolutePath()); 
+	    } 
+	} 
+	 
+	/** 
+	 * Recursively delete file or directory 
+	 * @param fileOrDir 
+	 *          the file or dir to delete 
+	 * @return 
+	 *          true iff all files are successfully deleted 
+	 */ 
+	public static boolean recursiveDelete(File fileOrDir) 
+	{ 
+	    if(fileOrDir.isDirectory()) 
+	    { 
+	        // recursively delete contents 
+	        for(File innerFile: fileOrDir.listFiles()) 
+	        { 
+	            if(!recursiveDelete(innerFile)) 
+	            { 
+	                return false; 
+	            } 
+	        } 
+	    } 
+	 
+	    return fileOrDir.delete(); 
+	} 
 
 	
 //	//{{{ getPathStart()

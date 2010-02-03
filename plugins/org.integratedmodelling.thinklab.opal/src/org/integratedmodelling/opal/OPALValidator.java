@@ -54,7 +54,7 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.KeyValueMap;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
-import org.integratedmodelling.utils.XMLDocument;
+import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;

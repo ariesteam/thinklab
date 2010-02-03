@@ -32,9 +32,12 @@ public interface IPersistentObject {
 	
 	/**
 	 * Persistent objects must be capable of being created with an empty constructor and read 
-	 * themselves from an open reader. Use InputSerializer to make that easy.
+	 * themselves from an open reader. Use InputSerializer to make that easy. The function
+	 * returns a persistent object to give implementations the opportunity to use a different
+	 * (e.g. existing) object instead: whatever uses this function should redefine its
+	 * target using the return value, which may or may not be the object it's called on.
 	 * 
 	 * @param fop
 	 */
-	public void deserialize(InputStream fop) throws ThinklabException;
+	public IPersistentObject deserialize(InputStream fop) throws ThinklabException;
 }

@@ -38,9 +38,9 @@ import org.integratedmodelling.opal.profile.OPALProfile;
 import org.integratedmodelling.opal.profile.OPALProfileFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.utils.Polylist;
-import org.integratedmodelling.utils.XMLDocument;
 import org.integratedmodelling.utils.instancelist.InstanceList;
 import org.integratedmodelling.utils.instancelist.RelationshipList;
+import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
 
 /**

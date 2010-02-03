@@ -42,7 +42,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.XMLDocument;
+import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
 
 /**

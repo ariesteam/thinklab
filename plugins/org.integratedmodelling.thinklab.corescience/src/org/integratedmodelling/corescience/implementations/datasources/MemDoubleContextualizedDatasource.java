@@ -179,11 +179,12 @@ public class MemDoubleContextualizedDatasource
 	}
 
 	@Override
-	public void deserialize(InputStream fop) throws ThinklabException {
+	public IPersistentObject deserialize(InputStream fop) throws ThinklabException {
 		InputSerializer in = new InputSerializer(fop);
 		_type = KnowledgeManager.get().requireConcept(in.readString());
 		data = in.readDoubles();
 		metadata = Metadata.deserializeMetadata(fop);
+		return this;
 	}
 
 	@Override

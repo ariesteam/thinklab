@@ -73,7 +73,7 @@ import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.Quantifier;
 import org.integratedmodelling.utils.Triple;
-import org.integratedmodelling.utils.XMLDocument;
+import org.integratedmodelling.utils.xml.XMLDocument;
 import org.mvel2.MVEL;
 import org.w3c.dom.Node;
 

@@ -37,7 +37,7 @@ import java.net.URL;
 import org.integratedmodelling.opal.utils.OPALListWriter;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.utils.Polylist;
-import org.integratedmodelling.utils.XMLDocument;
+import org.integratedmodelling.utils.xml.XMLDocument;
 
 public class InstanceShapefileExporter extends InstanceShapefileHandler {
 

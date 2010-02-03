@@ -128,7 +128,7 @@ public class ObservationCache {
 			PersistenceManager.get().createPersistentObject(clazz);
 		
 		try {
-			state.deserialize(new FileInputStream(f));
+			state = state.deserialize(new FileInputStream(f));
 		} catch (FileNotFoundException e) {
 			throw new ThinklabIOException(e);
 		}

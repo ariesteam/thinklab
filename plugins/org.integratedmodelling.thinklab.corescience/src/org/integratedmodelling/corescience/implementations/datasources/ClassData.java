@@ -70,7 +70,7 @@ public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> impl
 	}
 
 	@Override
-	public void deserialize(InputStream fop) throws ThinklabException {
+	public IPersistentObject deserialize(InputStream fop) throws ThinklabException {
 		
 		Metadata.MetadataDeserializer in = new Metadata.MetadataDeserializer(fop);
 		_type = KnowledgeManager.get().requireConcept(in.readString());
@@ -80,6 +80,7 @@ public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> impl
 			inverseMap.put(map.get(c), c);
 		data = in.readIntegers();
 		metadata = Metadata.deserializeMetadata(fop);
+		return this;
 	}
 
 	@Override

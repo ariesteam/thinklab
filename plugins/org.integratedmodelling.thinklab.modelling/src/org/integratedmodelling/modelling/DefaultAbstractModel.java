@@ -32,6 +32,7 @@ public abstract class DefaultAbstractModel implements IModel {
 
 	protected IModel mediated = null;
 	private ArrayList<IModel> dependents = new ArrayList<IModel>();
+	private ArrayList<IModel> observed   = new ArrayList<IModel>();
 
 	protected IConcept observable = null;
 	protected Polylist observableSpecs = null;
@@ -77,7 +78,14 @@ public abstract class DefaultAbstractModel implements IModel {
 				addDependentModel((IModel) o);
 			}
 			
-		} else if (keyword.equals(":as")) {
+		} else if (keyword.equals(":context")) {
+			
+			Collection<?> c = (Collection<?>) argument;
+			for (Object o : c) {
+				addObservedModel((IModel) o);
+			}
+			
+		}else if (keyword.equals(":as")) {
 			
 			setLocalId(argument.toString());
 			
@@ -95,6 +103,10 @@ public abstract class DefaultAbstractModel implements IModel {
 	 */
 	public void addDependentModel(IModel model) {
 		dependents.add(model);
+	}
+
+	public void addObservedModel(IModel model) {
+		observed.add(model);
 	}
 
 	/**
@@ -223,6 +235,12 @@ public abstract class DefaultAbstractModel implements IModel {
 
 		return observeInternal(kbox, session, conformances, extents, false);
 		
+	}
+
+	@Override
+	public Model train(IKBox kbox, ISession session, Object ... params) throws ThinklabException {
+		// TODO!
+		return null;
 	}
 	
 	/*

@@ -39,6 +39,7 @@ import java.util.Hashtable;
 
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.utils.xml.XMLDocument;
 
 /**
  * Base generic class for a cache of "stuff" based on the filesystem, which can save the status of

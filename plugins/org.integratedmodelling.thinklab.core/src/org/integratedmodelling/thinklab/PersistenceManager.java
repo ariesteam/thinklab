@@ -71,6 +71,7 @@ public class PersistenceManager {
 		if (cls == null)
 			throw new ThinklabResourceNotFoundException(
 					"PersistenceManager: extension in " + file + " is not linked to any persistent class");
+
 		IPersistentObject ret = null;
 		
 		try {
@@ -80,8 +81,6 @@ public class PersistenceManager {
 		}
 		
 		InputStream inp = MiscUtilities.getInputStreamForResource(file);
-		ret.deserialize(inp);
-		
-		return ret;
+		return ret.deserialize(inp);
 	}
 }

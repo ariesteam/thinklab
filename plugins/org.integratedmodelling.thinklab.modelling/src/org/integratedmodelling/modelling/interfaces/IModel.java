@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.interfaces;
 
 import java.util.ArrayList;
 
+import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModelResult;
 import org.integratedmodelling.thinklab.IntelligentMap;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -108,6 +109,19 @@ public interface IModel extends IConceptualizable {
 	 * @throws ThinklabException
 	 */
 	public IQueryResult observe(IKBox kbox, ISession session, Object ... arguments) throws ThinklabException;
+
+	/**
+	 * Train the model to match any specified output observation (in the :observed
+	 * clause, if any). Not all models may be trainable. Returns a new trained model
+	 * that has learned to reproduce the models observed on the passed kbox.
+	 * 
+	 * @param kbox
+	 * @param session
+	 * @param params
+	 * @return
+	 * @throws ThinklabException
+	 */
+	IModel train(IKBox kbox, ISession session, Object[] params) throws ThinklabException;
 
 	
 }

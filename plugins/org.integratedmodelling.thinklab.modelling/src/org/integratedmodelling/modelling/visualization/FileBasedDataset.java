@@ -305,4 +305,8 @@ public class FileBasedDataset implements IDataset {
 		return fileOrNull;
 	}
 
+	public RasterGrid getGrid() {
+		return space;
+	}
+
 }

@@ -31,7 +31,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.utils;
+package org.integratedmodelling.utils.xml;
 
 import java.io.File;
 import java.io.FileInputStream;

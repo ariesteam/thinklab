@@ -55,6 +55,8 @@
 				(.applyClause model ":derivative" (tl/listp (second clause)))
 				(= (first clause) :context)
 				(.applyClause model ":context" (map configure-model (tl/group-with-keywords (second clause))))
+				(= (first clause) :observed)
+				(.applyClause model ":observed" (map configure-model (tl/group-with-keywords (second clause))))
 				:otherwise
 				(.applyClause model (str (first clause)) (second clause))))
 
