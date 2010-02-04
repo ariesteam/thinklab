@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
@@ -39,15 +41,18 @@ import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
 import org.integratedmodelling.utils.Polylist;
 
 public class MemObjectContextualizedDatasource 
- 	implements IState, IInstanceImplementation {
+ 	implements IState, IInstanceImplementation, IPersistentObject {
 
 	private static final long serialVersionUID = -6567783706189229920L;
 	private IConcept _type;
@@ -154,6 +159,33 @@ public class MemObjectContextualizedDatasource
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public IPersistentObject deserialize(InputStream fop)
+			throws ThinklabException {
+		throw new ThinklabInternalErrorException(
+				"deserialize: object states should not be recreated as such at this stage.");
+	}
+
+	
+	@Override
+	public boolean serialize(OutputStream fop) throws ThinklabException {
+
+		IConcept c = KnowledgeManager.getConceptForObject(data[0]);
+		if (c == null)
+			return false;
+		
+		boolean ret = false;
+		/*
+		 * TODO serialize as the appropriate state for the type; set ret to
+		 * true.
+		 */
+		if (c.is(KnowledgeManager.Double())) {
+			
+		}
+		
+		return ret;
 	}
 
 }

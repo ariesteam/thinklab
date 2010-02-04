@@ -174,11 +174,16 @@ public class ObservationCache {
 		 
 		try {
 			
-			ModellingPlugin.get().logger().info("adding state to persistent cache: " + sig);
-			
 			ff = File.createTempFile("chs", ".obs", cachePath);
 			FileOutputStream fop = new FileOutputStream(ff);
-			((IPersistentObject)obs.getDataSource()).serialize(fop);
+			if (!((IPersistentObject)obs.getDataSource()).serialize(fop)) {
+				fop.close();
+				ff.delete();
+				return;
+			}
+
+			ModellingPlugin.get().logger().info("added state to persistent cache: " + sig);
+			
 			fop.close();
 			persistentCache.put(sig, ff);
 			classIndex.put(sig, obs.getDataSource().getClass().getCanonicalName());

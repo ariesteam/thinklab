@@ -84,13 +84,14 @@ public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> impl
 	}
 
 	@Override
-	public void serialize(OutputStream fop) throws ThinklabException {
+	public boolean serialize(OutputStream fop) throws ThinklabException {
 		
 		Metadata.MetadataSerializer out = new Metadata.MetadataSerializer(fop);
 		out.writeString(_type.toString());
 		out.writeRankings(map);
 		out.writeIntegers(data);
 		Metadata.serializeMetadata(metadata, fop);
+		return true;
 	}
 
 }

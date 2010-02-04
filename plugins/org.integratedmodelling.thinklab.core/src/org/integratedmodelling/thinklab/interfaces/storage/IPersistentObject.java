@@ -25,10 +25,13 @@ public interface IPersistentObject {
 	/**
 	 * Persistent objects must be capable of writing themselves to a stream. Use OutputSerializer to
 	 * make that easy.
+	 * @returns true if serialization went OK, false if the object could not be
+	 * 	serialized because of design. Should throw an exception if there were
+	 * 	I/O errors. Implementations should always check the return value.
 	 * 
 	 * @param fop
 	 */
-	public void serialize(OutputStream fop) throws ThinklabException;
+	public boolean serialize(OutputStream fop) throws ThinklabException;
 	
 	/**
 	 * Persistent objects must be capable of being created with an empty constructor and read 

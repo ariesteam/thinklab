@@ -1385,4 +1385,31 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		return KM.ordinalRangeMappingType;
 	}
 
+	/**
+	 * Return the literal concept that represents the POD type of the
+	 * object passed. Anything non-POD will return null.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static IConcept getConceptForObject(Object value) {
+
+		IConcept ret = null;
+
+        if (value instanceof Integer) {
+            ret = KnowledgeManager.Integer();
+        } else if (value instanceof Float) {
+            ret = KnowledgeManager.Float();
+        } else if (value instanceof Double) {
+            ret = KnowledgeManager.Double();
+        } else if (value instanceof Long) {
+            ret = KnowledgeManager.Long();            
+        } else if (value instanceof String) {
+            ret = KnowledgeManager.Text();
+        } else if (value instanceof Boolean) {
+            ret = KnowledgeManager.Boolean();
+        } 
+    
+        return ret;
+	}
 }

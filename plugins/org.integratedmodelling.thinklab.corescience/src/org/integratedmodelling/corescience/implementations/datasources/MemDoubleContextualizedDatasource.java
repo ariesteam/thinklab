@@ -188,12 +188,13 @@ public class MemDoubleContextualizedDatasource
 	}
 
 	@Override
-	public void serialize(OutputStream fop) throws ThinklabException {
+	public boolean serialize(OutputStream fop) throws ThinklabException {
 		
 		OutputSerializer out = new OutputSerializer(fop);
 		out.writeString(_type.toString());
 		out.writeDoubles(data);
 		Metadata.serializeMetadata(metadata, fop);
+		return true;
 	}
 
 }
