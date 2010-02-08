@@ -138,7 +138,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 		OWLOntology ontology = FileKnowledgeRepository.KR.manager
 				.getOntology(ontoURI);
 		OWLDataFactory df = FileKnowledgeRepository.df;
-		OWLAnnotation commentAnno = df.getCommentAnnotation(desc, language);
+		OWLAnnotation<?> commentAnno = df.getCommentAnnotation(desc, language);
 		OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, commentAnno);
 		// Add the axiom to the ontology
 		try {
@@ -174,7 +174,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 				.getOntology(ontoURI);
 		OWLDataFactory df = FileKnowledgeRepository.df;
 
-		OWLAnnotation labelAnno = df.getOWLLabelAnnotation(desc, language);
+		OWLAnnotation<?> labelAnno = df.getOWLLabelAnnotation(desc, language);
 		OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, labelAnno);
 		// Add the axiom to the ontology
 		try {
@@ -235,7 +235,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 		OWLOntology ontology = FileKnowledgeRepository.KR.manager
 				.getOntology(ontoURI);
 		if (ontology != null) {
-			for (OWLAnnotation annotation : entity.getAnnotations(ontology,
+			for (OWLAnnotation<?> annotation : entity.getAnnotations(ontology,
 					property)) {
 				if (annotation.isAnnotationByConstant()) {
 					OWLConstant val = annotation.getAnnotationValueAsConstant();

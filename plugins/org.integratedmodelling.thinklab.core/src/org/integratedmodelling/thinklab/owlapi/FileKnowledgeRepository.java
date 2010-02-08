@@ -463,7 +463,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 
 	}
 	
-	protected IKnowledge resolveURI(URI uri) {
+	protected synchronized IKnowledge resolveURI(URI uri) {
 		IKnowledge result = null;
 		Iterator<IOntology> ontos = retrieveAllOntologies().iterator();	 
 		while(result==null && ontos.hasNext()){

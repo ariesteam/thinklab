@@ -41,16 +41,21 @@ import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.interfaces.annotations.PersistentObject;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
+import org.integratedmodelling.utils.InputSerializer;
+import org.integratedmodelling.utils.OutputSerializer;
 import org.integratedmodelling.utils.Polylist;
 
+@PersistentObject()
 public class MemObjectContextualizedDatasource 
  	implements IState, IInstanceImplementation, IPersistentObject {
 
@@ -164,10 +169,21 @@ public class MemObjectContextualizedDatasource
 	@Override
 	public IPersistentObject deserialize(InputStream fop)
 			throws ThinklabException {
+		
+		InputSerializer in = new InputSerializer(fop);
+		String ty = in.readString();
+		
+		if (ty.equals("d")) {
+			MemDoubleContextualizedDatasource ds = 
+				new MemDoubleContextualizedDatasource();
+			return ds.deserialize(fop);
+		}
+		
 		throw new ThinklabInternalErrorException(
-				"deserialize: object states should not be recreated as such at this stage.");
+				"deserialize: cannot recreate datasource of type " +
+				ty + 
+				" from object source: object states should not be recreated as such at this stage.");
 	}
-
 	
 	@Override
 	public boolean serialize(OutputStream fop) throws ThinklabException {
@@ -177,12 +193,23 @@ public class MemObjectContextualizedDatasource
 			return false;
 		
 		boolean ret = false;
+
 		/*
-		 * TODO serialize as the appropriate state for the type; set ret to
+		 * serialize as the appropriate state for the type; set ret to
 		 * true.
 		 */
 		if (c.is(KnowledgeManager.Double())) {
-			
+			OutputSerializer out = new OutputSerializer(fop);
+			out.writeString("d");
+			// ACHTUNG after this, it must be in sync with MemDoubleCState.deserialize()
+			out.writeString(_type.toString());
+			out.writeInteger(data == null ? 0 : data.length);
+			if (data != null)
+				for (int i = 0; i < data.length; i++)
+					out.writeDouble((Double)(data[i]));
+
+			Metadata.serializeMetadata(metadata, fop);
+			ret = true;
 		}
 		
 		return ret;
