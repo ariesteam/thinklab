@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -77,7 +78,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	private File repositoryDirectory = null;
 	private File backupDirectory;
 	private File tempDirectory;
-	protected HashMap<String, IOntology> ontologies = new HashMap<String, IOntology>();
+	protected Hashtable<String, IOntology> ontologies = new Hashtable<String, IOntology>();
 	protected Registry registry;
 	
 	protected OWLClassReasoner classReasoner;
@@ -229,8 +230,10 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 				OWLOntology ontology = manager.createOntology(logicalURI);
 				name = registry.registerURI(name, logicalURI);
 				Ontology onto = new Ontology(ontology, this);
-				ontologies.put(name, onto);
-				registry.updateRegistry(manager, ontology);
+				onto.isSystem = false;
+				// FIXME check -- 
+				// ontologies.put(name, onto);
+				// registry.updateRegistry(manager, ontology);
 				onto.initialize(name);
 				return onto;
 			} catch (OWLOntologyCreationException e) {
@@ -366,7 +369,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	public Collection<IOntology> retrieveAllOntologies() {
 		return ontologies.values();
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -463,15 +466,23 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 
 	}
 	
+//	protected synchronized IKnowledge resolveURI(URI uri) {
+//		IKnowledge result = null;
+//		Iterator<IOntology> ontos = retrieveAllOntologies().iterator();	 
+//		while(result==null && ontos.hasNext()){
+//			IOntology ont = ontos.next();
+//			if( ont instanceof Ontology){
+//				result = ((Ontology) ont).resolveURI(uri);
+//			}
+//		}
+//		return result;
+//	}
+	
 	protected synchronized IKnowledge resolveURI(URI uri) {
 		IKnowledge result = null;
-		Iterator<IOntology> ontos = retrieveAllOntologies().iterator();	 
-		while(result==null && ontos.hasNext()){
-			IOntology ont = ontos.next();
-			if( ont instanceof Ontology){
-				result = ((Ontology) ont).resolveURI(uri);
-			}
-		}
+		for (IOntology o : ontologies.values())
+			if ( (result = ((Ontology)o).resolveURI(uri)) != null)
+				break;
 		return result;
 	}
 

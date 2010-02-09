@@ -98,6 +98,10 @@ public class Ontology implements IOntology {
 	private Map<SemanticType,IInstance> instances;
 	private String cs;
 	private boolean storeInstances = true;
+	
+	// set to false if the ontology is a temporary knowledge RAM for the system - e.g. 
+	// sessions.
+	boolean isSystem = true;
 
 	class ReferenceRecord {
 		public IInstance target;

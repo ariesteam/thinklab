@@ -21,7 +21,6 @@ package org.integratedmodelling.thinklab.owlapi;
 import java.net.URI;
 
 import org.integratedmodelling.thinklab.SemanticType;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
@@ -50,6 +49,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 
 	protected OWLEntity entity;
 	protected URI ontoURI;
+	protected String name;
 	OWLType type;
 
 	private static String DEF_LANG = "en";
@@ -57,6 +57,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	public Knowledge(OWLEntity entity, OWLType type) {
 		this.entity = entity;
 		this.type = type;
+		this.name = entity.toString();
 		ontoURI = Registry.get().getOntoURI(entity.getURI());
 	}
 
@@ -83,11 +84,13 @@ public abstract class Knowledge implements IKnowledge, IResource {
 
 	/*
 	 * (non-Javadoc)
+	 * FV modified to store the name as it turns out OWLAPI is not thread safe (ugh). Don't
+	 * know what else I'll need to do to address that.
 	 * 
 	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledge#getLocalName()
 	 */
 	public String getLocalName() {
-		return entity.toString();
+		return name;
 	}
 
 	/*
