@@ -15,6 +15,7 @@ import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.ConceptVisitor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -46,7 +47,6 @@ public class ModelFactory {
 	public static final String AUX_VARIABLE_DESC = "session.aux.model";
 
 	public static final IObservation observation = null;
-	public Hashtable<IConcept, Model> models = new Hashtable<IConcept, Model>();
 	public Hashtable<String, Model> modelsById = new Hashtable<String, Model>();
 
 	class ContextualizingModelResult implements IQueryResult {
@@ -191,51 +191,18 @@ public class ModelFactory {
 	/*
 	 * called by the defmodel macro.
 	 */
-	public Model registerModel(Model model, String name) {
-
-		IConcept obs = model.getObservable();
-		if (models.containsKey(obs))
-			ModellingPlugin
-					.get()
-					.logger()
-					.warn(
-							"model for observable "
-									+ obs
-									+ " has been defined already: previous definition overridden");
-
-		models.put(obs, model);
+	public Model registerModel(Model model, String name) throws ThinklabException {
+		
+		if (modelsById.containsKey(name))
+			throw new ThinklabDuplicateNameException(
+					"model manager: a model named " + name + " has already been registered");
 		modelsById.put(name, model);
 		ModellingPlugin.get().logger().info("model " + model + " registered");
 		return model;
 	}
 
 	public Model retrieveModel(String s) throws ThinklabException {
-
-		if (s.contains(":")) {
-
-			IConcept concept = KnowledgeManager.get().requireConcept(s);
-
-			class Matcher implements ConceptVisitor.ConceptMatcher {
-
-				Hashtable<IConcept, Model> coll;
-				Model ret = null;
-
-				public Matcher(Hashtable<IConcept, Model> c) {
-					coll = c;
-				}
-
-				public boolean match(IConcept c) {
-					ret = coll.get(c);
-					return (ret != null);
-				}
-			}
-			Matcher matcher = new Matcher(models);
-			IConcept cms = ConceptVisitor.findMatchUpwards(matcher, concept);
-			return cms == null ? null : matcher.ret;
-		}
-
 		return modelsById.get(s);
-
 	}
 
 	public Model requireModel(String s) throws ThinklabException {
@@ -343,5 +310,30 @@ public class ModelFactory {
 
 		IQueryResult r = model.observe(kbox, session, (Object[]) extents);
 		return new ContextualizingModelResult(r, listeners, extents);
+	}
+	
+	
+	/**
+	 * Enqueue a model to run in the modeling queue as resources become available. The max
+	 * number of models to run simultaneously defaults at 1 and is controlled by the 
+	 * thinklab.modelling.concurrentmodels property. Currently, because of OWLAPI
+	 * thread safety issues, it's not very smart to set it higher than 1.
+	 * 
+	 * @param model
+	 * @param kbox
+	 * @param session
+	 * @param listeners
+	 * @param extents
+	 * @return
+	 */
+	public boolean enqueue(Model model, IKBox kbox, ISession session,
+			Collection<IContextualizationListener> listeners,
+			Topology... extents) {
+		
+		boolean ret = false;
+		
+		
+		
+		return ret;
 	}
 }
