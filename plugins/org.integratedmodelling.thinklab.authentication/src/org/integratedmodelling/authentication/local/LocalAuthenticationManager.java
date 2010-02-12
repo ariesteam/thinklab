@@ -32,6 +32,10 @@
  **/
 package org.integratedmodelling.authentication.local;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Properties;
 
@@ -43,8 +47,12 @@ import org.integratedmodelling.authentication.exceptions.ThinklabInvalidUserExce
 import org.integratedmodelling.sql.QueryResult;
 import org.integratedmodelling.sql.SQLPlugin;
 import org.integratedmodelling.sql.SQLServer;
+import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
+import org.integratedmodelling.utils.xml.XMLDocument;
+import org.w3c.dom.Node;
 
 /**
  * Simple database-backed authentication manager. It's entirely unsafe as it does not require
@@ -127,7 +135,6 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 		return getUserProperties(user).getProperty(property, defaultValue);
 	}
 
-
 	public synchronized void saveUserProperties(String user)  throws ThinklabException {
 		
 		Properties op = getUserProperties(user);
@@ -156,20 +163,18 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 	}
 
 
-	public void initialize() throws ThinklabException {
+	public void initialize(Properties properties) throws ThinklabException {
 		
 		String db = 
-			AuthenticationPlugin.get().getProperties().getProperty(
+			properties.getProperty(
 					"authentication.local.database", 
 					"hsqlfile://sa@localhost/auth");
 		
-		AuthenticationPlugin.get().logger().info("autentication database is " + db);
-
 		/*
 		 * An encryption key should REALLY be set into properties.
 		 */
 		String ek = 
-			AuthenticationPlugin.get().getProperties().getProperty(
+			properties.getProperty(
 					"authentication.local.encryption.key");
 		
 		if (ek == null || ek.trim().equals("")) {
@@ -183,7 +188,7 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 		 * the db using sql properties.
 		 */
 		database = 
-			SQLPlugin.get().createSQLServer(db, AuthenticationPlugin.get().getProperties());
+			SQLPlugin.get().createSQLServer(db, properties);
 
 		encryptionManager = 
 			new EncryptionManager(
@@ -193,6 +198,53 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 		/* create db if necessary */
 		if (!database.haveTable("tluser")) {
 			database.submit(dbInit);
+		}
+		
+		/*
+		 * look for a users.xml file in the config directory and load it if 
+		 * there.
+		 */
+		File userfile = new File(
+				LocalConfiguration.getUserConfigDirectory(AuthenticationPlugin.PLUGIN_ID) +
+				File.separator + 
+				"users.xml");
+		
+		if (userfile.exists()) {
+			loadUsers(userfile);
+		}
+		
+	}
+
+
+	private void loadUsers(File userfile) throws ThinklabException {
+
+		XMLDocument xml = new XMLDocument(userfile);
+		
+		for (XMLDocument.NodeIterator it = xml.iterator(); it.hasNext(); ) {
+			Node node = it.next();
+			if (node.getNodeName().equals("user")) {
+				String uname = XMLDocument.getAttributeValue(node, "name");
+				
+				if (!haveUser(uname)) {
+					
+					String upass = XMLDocument.getAttributeValue(node, "password");
+					createUser(uname,upass);
+					setUserProperty(uname, "creation-date", new Date().toString());
+
+					for (XMLDocument.NodeIterator ct = xml.iterator(node); ct.hasNext(); ) {
+						Node at = ct.next();
+						
+						if (at.getNodeType() != Node.ELEMENT_NODE) 
+							continue;
+						
+						String atid = at.getNodeName();
+						String atva = XMLDocument.getNodeValue(at);
+						setUserProperty(uname, atid, atva);
+					}	
+					
+					saveUserProperties(uname);
+				}
+			}
 		}
 	}
 
@@ -247,6 +299,29 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 				user +
 				"'");
 		
+	}
+
+
+	@Override
+	public void deleteUser(String user) throws ThinklabException {
+
+		/* delete any properties for user */
+		database.execute("DELETE FROM tlprops WHERE username = '" + user + "'");
+		/* delete  user */
+		database.execute("DELETE FROM tluser WHERE username = '" + user + "'");
+
+		userProperties.remove(user);
+	}
+
+
+	@Override
+	public Collection<String> listUsers() throws ThinklabException {
+
+		ArrayList<String> ret = new ArrayList<String>();
+		QueryResult qr  = database.query("SELECT username, userpass FROM tluser;");
+		for (int i = 0; i < qr.nRows(); i++)
+			ret.add(qr.get(i,0));
+		return ret;
 	}
 
 }

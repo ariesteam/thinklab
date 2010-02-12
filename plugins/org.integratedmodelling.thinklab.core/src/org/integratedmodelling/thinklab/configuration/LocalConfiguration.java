@@ -187,6 +187,16 @@ public class LocalConfiguration {
 		return userConfigPath;
 	}
 	
+	public static File getUserConfigDirectory(String plugId)  {
+		
+		return new File(
+				getDataPath() + 
+				File.separator + 
+				plugId + 
+				File.separator + 
+				"/config");
+	}
+	
 	public static URL getResource(String ID) throws ThinklabIOException{
 		URL url;
 		try {

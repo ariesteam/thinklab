@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.authentication;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -55,7 +57,7 @@ import org.w3c.dom.Node;
  */
 public class AuthenticationPlugin extends ThinklabPlugin implements IThinklabAuthenticationManager {
 
-	private final static String PLUGIN_ID = "org.integratedmodelling.thinklab.authentication";
+	public final static String PLUGIN_ID = "org.integratedmodelling.thinklab.authentication";
 
 	/**
 	 * Provided as a convenience for wherever a username property is needed to 
@@ -75,23 +77,23 @@ public class AuthenticationPlugin extends ThinklabPlugin implements IThinklabAut
 	@Override
 	public void load(KnowledgeManager km) throws ThinklabException {
 		
-//			new Login().install(km);
-//			new AddUser().install(km);
-		
+		requirePlugin("org.integratedmodelling.thinklab.core");
+		requirePlugin("org.integratedmodelling.thinklab.sql");
+
 		/* create the auth manager specified in plugin properties, if any */
 		String authClass = getProperties().getProperty("authentication.manager.class");
 		
 		if (authClass != null && !authClass.equals("")) {
 
 			try {
-				Class cl = Class.forName(authClass);
+				Class<?> cl = Class.forName(authClass);
 				if (cl != null) {
 					authManager = (IThinklabAuthenticationManager) cl.newInstance();
 				}
 			} catch (Exception e) {
 				throw new ThinklabPluginException(e);
 			}
-			authManager.initialize();
+			authManager.initialize(getProperties());
 		}
 	}
 
@@ -176,7 +178,6 @@ public class AuthenticationPlugin extends ThinklabPlugin implements IThinklabAut
 		return authManager.haveUser(user);
 	}
 
-
 	public void setUserPassword(String user, String password)
 			throws ThinklabException {
 		
@@ -195,13 +196,29 @@ public class AuthenticationPlugin extends ThinklabPlugin implements IThinklabAut
 	@Override
 	protected void unload() throws ThinklabException {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void initialize(Properties properties) throws ThinklabException {
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void initialize() throws ThinklabException {
-		// TODO Auto-generated method stub
-		
+	public void deleteUser(String user) throws ThinklabException {
+
+		if (authManager == null) {
+			throw new ThinklabPluginException("no authentication scheme selected: can't set user password");
+		}
+		authManager.deleteUser(user);
+	}
+
+	@Override
+	public Collection<String> listUsers() throws ThinklabException {
+		if (authManager == null) {
+			return new ArrayList<String>();
+		}
+		return authManager.listUsers();
 	}
 
 }

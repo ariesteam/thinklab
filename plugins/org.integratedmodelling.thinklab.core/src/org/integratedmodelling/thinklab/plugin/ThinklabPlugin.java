@@ -67,11 +67,13 @@ import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.extensions.KBoxHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.PersistentObject;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
+import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
@@ -206,6 +208,7 @@ public abstract class ThinklabPlugin extends Plugin
 		loadKnowledgeLoaders();
 		loadLanguageInterpreters();
 		loadCommandHandlers();
+		loadListingProviders();
 		loadCommands();
 		loadInstanceImplementationConstructors();
 		loadPersistentClasses();
@@ -768,6 +771,37 @@ public abstract class ThinklabPlugin extends Plugin
 					
 					try {
 						CommandManager.get().registerCommand(declaration, (ICommandHandler) cls.newInstance());
+					} catch (Exception e) {
+						throw new ThinklabValidationException(e);
+					}
+					
+					break;
+				}
+			}
+		}
+
+	}
+
+
+	protected void loadListingProviders() throws ThinklabException {
+		
+		String ipack = this.getClass().getPackage().getName() + ".commands";
+		
+		for (Class<?> cls : MiscUtilities.findSubclasses(IListingProvider.class, ipack, getClassLoader())) {	
+			
+			/*
+			 * lookup annotation, ensure we can use the class
+			 */
+			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+				continue;
+			
+			for (Annotation annotation : cls.getAnnotations()) {
+				if (annotation instanceof ListingProvider) {
+					
+					String name = ((ListingProvider)annotation).label();
+					String sname = ((ListingProvider)annotation).itemlabel();
+					try {
+						CommandManager.get().registerListingProvider(name, sname, (IListingProvider) cls.newInstance());
 					} catch (Exception e) {
 						throw new ThinklabValidationException(e);
 					}

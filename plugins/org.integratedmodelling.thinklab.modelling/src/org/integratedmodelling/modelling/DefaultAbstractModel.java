@@ -230,6 +230,8 @@ public abstract class DefaultAbstractModel implements IModel {
 					if (obs instanceof Topology) {
 						extents.add((Topology) obs);
 					}
+				} else if (o instanceof Topology) {
+					extents.add((Topology) o);
 				}
 			}
 

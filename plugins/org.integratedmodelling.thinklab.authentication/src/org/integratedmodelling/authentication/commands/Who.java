@@ -1,5 +1,5 @@
 /**
- * IThinklabAuthenticationManager.java
+ * AddUser.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,45 +30,32 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.authentication;
+package org.integratedmodelling.authentication.commands;
 
-import java.util.Collection;
 import java.util.Properties;
 
+import org.integratedmodelling.authentication.AuthenticationPlugin;
+import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
-/**
- * Simply manages identification, authentication and storage/retrieval of user properties.
- * 
- * TODO document
- * TODO add methods to remove users and properties
- * 
- * @author Ferdinando Villa
- *
- */
-public interface IThinklabAuthenticationManager {
-	
-	public abstract void initialize(Properties properties) throws ThinklabException;
+@ThinklabCommand(
+		name="who",
+		description="show current user")
+public class Who implements ICommandHandler {
 
-	public abstract boolean authenticateUser(String username, String password, Properties userProperties)  throws ThinklabException;
-	
-	public abstract Properties getUserProperties(String username)  throws ThinklabException;
-	
-	public abstract String getUserProperty(String user, String property, String defaultValue) throws ThinklabException;
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 
-	public abstract void setUserProperty(String user, String property, String value) throws ThinklabException;
-	
-	public abstract void saveUserProperties(String user) throws ThinklabException;
-	
-	public abstract boolean haveUser(String user);
-	
-	public abstract void createUser(String user, String password) throws ThinklabException;
+		Properties p = session.getProperties();
+		String user = p.getProperty(AuthenticationPlugin.USERID_PROPERTY);
+		session.getOutputStream().println(user == null ? 
+				"no user logged in" :			
+				user);
+		
+		return null;
+	}
 
-	public abstract void deleteUser(String user) throws ThinklabException;
-
-	public abstract void setUserPassword(String user, String password) throws ThinklabException;
-	
-	public abstract Collection<String> listUsers() throws ThinklabException;
 }
-
-

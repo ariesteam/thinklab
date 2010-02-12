@@ -13,13 +13,10 @@ import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.ConceptVisitor;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
@@ -33,6 +30,11 @@ import org.integratedmodelling.utils.Polylist;
 /**
  * A singleton (access from ModellingPlugin) that catalogs models and provides
  * search functions for models of specific observable concepts.
+ * 
+ * Contains a scheduler that allows executing a number of models simultaneously - 
+ * just use enqueue() instead of run - using the thinklab.modelling.concurrentmodels
+ * property to define how many models can run at once. Because OWLAPI is not 
+ * thread safe, this should for now remain at the default value of 1.
  * 
  * @author Ferdinando Villa
  * 
@@ -143,6 +145,7 @@ public class ModelFactory {
 		private void scan(IObservation observation, ObservationContext context) {
 
 			if (observation.getDependencies().length == 0
+					&& !(observation.isMediator()) 
 					&& observation.getDataSource() != null
 					&& observation.getDataSource() instanceof IState) {
 				ModellingPlugin.get().getCache().addObservation(observation,

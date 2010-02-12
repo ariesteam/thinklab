@@ -67,10 +67,10 @@
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.List"/>
 		<parameter id="command-name" value="list"/>
 		<parameter id="command-description" value="list resources and their contents"/>
-		<parameter id="optional-argument-names" value="subject"/>
-		<parameter id="optional-argument-types" value="thinklab-core:Text"/>
-		<parameter id="optional-argument-descriptions" value="what to list"/>
-		<parameter id="optional-argument-default-values" value="__NONE__"/>
+		<parameter id="optional-argument-names" value="subject,item"/>
+		<parameter id="optional-argument-types" value="thinklab-core:Text,thinklab-core:Text"/>
+		<parameter id="optional-argument-descriptions" value="what to list,specific item to describe"/>
+		<parameter id="optional-argument-default-values" value="__NONE__,__NONE__"/>
 		<parameter id="option-names" value="l"/>
 		<parameter id="option-long-names" value="lf"/>
 		<parameter id="option-types" value="thinklab-core:Text"/>

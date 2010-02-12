@@ -36,11 +36,13 @@ package org.integratedmodelling.thinklab.commandline.commands;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.command.Command;
+import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.commandline.CommandLine;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnknownResourceException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
+import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
@@ -187,6 +189,10 @@ public class List implements ICommandHandler {
 	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		String subject = command.getArgumentAsString("subject");
+		String item = null;
+		
+		if (!command.getArgumentAsString("item").equals("__NONE__"))
+			item = command.getArgumentAsString("item");
 
 		listmode mode = listmode.LIST;
 
@@ -197,19 +203,39 @@ public class List implements ICommandHandler {
 
 			session.getOutputStream().println("Listing session contents: \n");
 			int c = 0;
-
-			// FIXME
-//			for (IInstance i : session.listObjects()) {
-//
-//				session.getOutputStream().println("\t" + i.getLocalName() + ": "
-//						+ i.getDirectType());
-//				c++;
-//			}
-
 			session.getOutputStream().println(c + " objects");
 			return null;
 		}
 
+		/*
+		 * check if we're invoking one of the installed listing providers	
+		 */
+		IListingProvider prov = 
+			item == null ?
+				CommandManager.get().getListingProvider(subject) :
+				CommandManager.get().getItemListingProvider(subject);
+		
+		if (prov != null) {
+			
+			if (item == null) {
+				int n = 0;
+				for (String o : prov.getListing()) {
+					session.getOutputStream().println("  " + o);
+					n++;
+				}
+				session.getOutputStream().println(n + " " + subject);
+				
+			} else {
+				prov.listItem(item, session.getOutputStream());
+			}
+			
+			return null;
+		}
+			
+				
+		/*
+		 * default topics
+		 */
 		if ("ontologies".equals(subject)) {
 
 			for (IOntology o : KnowledgeManager.get().getKnowledgeRepository()

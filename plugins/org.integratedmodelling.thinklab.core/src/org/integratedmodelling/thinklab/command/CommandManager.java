@@ -10,9 +10,14 @@ import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
+import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 public class CommandManager {
+	
+	HashMap<String, IListingProvider> listingProviders = new HashMap<String, IListingProvider>();
+	HashMap<String, IListingProvider> itemListingProviders = new HashMap<String, IListingProvider>();
+	
 	/**
 	 * command declarations are kept in a hash, indexed by command ID
 	 */
@@ -45,6 +50,20 @@ public class CommandManager {
 		actions.put(command.ID, action);
 	}
 
+	public void registerListingProvider(String label, String itemlabel, IListingProvider provider) {
+		listingProviders.put(label, provider);
+		if (!itemlabel.equals(""))
+			itemListingProviders.put(itemlabel, provider);
+	}
+	
+	public IListingProvider getListingProvider(String label) {
+		return listingProviders.get(label);
+	}
+	
+	public IListingProvider getItemListingProvider(String label) {
+		return itemListingProviders.get(label);
+	}
+	
 	public CommandDeclaration getDeclarationForCommand(String tok) {
 		return commands.get(tok);
 	}

@@ -42,8 +42,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 	protected IObservation[] antecedents = new IObservation[0];
 	protected IObservation mediatedObservation = null;
 	protected IObservation mediatorObservation = null;
-//	private boolean beingTransformed = false;
-//	private boolean isTransformed = false;
 	
 	public IDataSource<?> getDataSource()  {
 
@@ -264,14 +262,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 	public String getFormalName() {
 		return formalName;
 	}
-	
-//	// only the context can touch these
-//    public boolean isTransformed() {
-//    	return isTransformed;
-//    }
-//    public void setTransformed(boolean b) {
-//    	isTransformed = b;
-//    }
 	
 	public void setDatasource(IDataSource<?> ds) {
 		this.dataSource = ds;

@@ -1,5 +1,5 @@
 /**
- * IThinklabAuthenticationManager.java
+ * AddUser.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,45 +30,38 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.authentication;
+package org.integratedmodelling.authentication.commands;
 
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Properties;
 
+import org.integratedmodelling.authentication.AuthenticationPlugin;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
+import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 
-/**
- * Simply manages identification, authentication and storage/retrieval of user properties.
- * 
- * TODO document
- * TODO add methods to remove users and properties
- * 
- * @author Ferdinando Villa
- *
- */
-public interface IThinklabAuthenticationManager {
-	
-	public abstract void initialize(Properties properties) throws ThinklabException;
+@ListingProvider(label="users", itemlabel="user")
+public class UserLister implements IListingProvider {
 
-	public abstract boolean authenticateUser(String username, String password, Properties userProperties)  throws ThinklabException;
-	
-	public abstract Properties getUserProperties(String username)  throws ThinklabException;
-	
-	public abstract String getUserProperty(String user, String property, String defaultValue) throws ThinklabException;
+	@Override
+	public Collection<String> getListing() throws ThinklabException {
+		return AuthenticationPlugin.get().listUsers();
+	}
 
-	public abstract void setUserProperty(String user, String property, String value) throws ThinklabException;
-	
-	public abstract void saveUserProperties(String user) throws ThinklabException;
-	
-	public abstract boolean haveUser(String user);
-	
-	public abstract void createUser(String user, String password) throws ThinklabException;
+	@Override
+	public void listItem(String username, PrintStream out) throws ThinklabException {
 
-	public abstract void deleteUser(String user) throws ThinklabException;
+		if (AuthenticationPlugin.get().haveUser(username)) {
+			Properties props = AuthenticationPlugin.get().getUserProperties(username);
+			out.println("properties for user " + username + ":");
+			for (Object s : props.keySet()) {
+				out.println("  " + s + " = " + props.getProperty(s.toString()));				
+			}
+		} else {
+			out.println("user " + username + " does not exist");			
+		}
 
-	public abstract void setUserPassword(String user, String password) throws ThinklabException;
-	
-	public abstract Collection<String> listUsers() throws ThinklabException;
+	}
+
 }
-
-

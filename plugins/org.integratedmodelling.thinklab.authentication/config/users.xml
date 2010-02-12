@@ -1,0 +1,9 @@
+<!-- sample users.xml file for the local authentication plugin. Just stick it in the config 
+	directory. Users that exist in the database will not be modified. -->
+<users>
+	<user name="admin" password="thinklab">
+		<!-- any property name and value are fine -->
+		<name>Thinklab administrator</name>
+		<age>41</age>
+	</user>
+</users>

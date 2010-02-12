@@ -1,18 +1,13 @@
 package org.integratedmodelling.modelling.interfaces;
 
-import java.util.ArrayList;
-
-import org.integratedmodelling.modelling.Model;
-import org.integratedmodelling.modelling.ModelResult;
-import org.integratedmodelling.thinklab.IntelligentMap;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
-import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
+
 /**
  * The most high-level notion in Thinklab. Essentially a query that returns 
  * observations of a concept given a kbox and a session. It is nothing but a set
