@@ -27,7 +27,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException {
 
 		/*
-		 * TODO choose observation class according to derivative, probability etc.
+		 * choose observation class according to derivative, probability etc.
 		 */
 		Polylist def = Polylist.listNotNull(
 				(dynSpecs == null ? CoreScience.MEASUREMENT : "modeltypes:DynamicMeasurement"),
@@ -85,6 +85,12 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 	public Polylist conceptualize() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	protected void validateSemantics(ISession session) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 
 

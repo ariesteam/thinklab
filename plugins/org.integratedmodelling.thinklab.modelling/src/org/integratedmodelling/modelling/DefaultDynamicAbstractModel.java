@@ -40,4 +40,9 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 		} else super.applyClause(keyword, argument);
 	}
 	
+	@Override
+	public boolean isResolved() {
+		return super.isResolved() || this.dynSpecs != null;
+	}
+	
 }

@@ -2,7 +2,6 @@ package org.integratedmodelling.modelling;
 
 import java.util.ArrayList;
 
-import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.IntelligentMap;
@@ -76,5 +75,15 @@ public class ModelProxy extends DefaultAbstractModel {
 	@Override
 	public String toString() {
 		return model.toString() + " (proxied)";
+	}
+
+	@Override
+	protected void validateSemantics(ISession session) throws ThinklabException {
+		model.validateSemantics(session);
+	}
+	
+	@Override
+	public void validateConcepts(ISession session) throws ThinklabException {
+		model.validateConcepts(session);
 	}
 }

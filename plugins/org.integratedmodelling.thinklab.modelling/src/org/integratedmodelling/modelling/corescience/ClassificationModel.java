@@ -33,6 +33,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 
 	ArrayList<GeneralClassifier> classifiers = new ArrayList<GeneralClassifier>();	
 	ArrayList<IConcept> concepts = new ArrayList<IConcept>();
+	ArrayList<String> conceptIds = new ArrayList<String>();
 	IConcept state = null;
 
 	/* (non-Javadoc)
@@ -187,13 +188,8 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	public void addClassifier(Object classifier, Object concept) throws ThinklabException {
 
 		GeneralClassifier cl = getClassifier(classifier);
-		IConcept c = 
-			concept instanceof IConcept ? 
-					(IConcept)concept : 
-						KnowledgeManager.get().requireConcept(concept.toString());
-					
 		classifiers.add(cl);
-		concepts.add(c);
+		conceptIds.add(concept.toString());
 	}
 
 	@Override
@@ -218,6 +214,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		ret.copy(this);
 		// we can share these
 		ret.classifiers = this.classifiers;
+		ret.conceptIds = this.conceptIds;
 		ret.concepts = this.concepts;
 		return ret;
 	}
@@ -269,6 +266,15 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	public Polylist conceptualize() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	protected void validateSemantics(ISession session) throws ThinklabException {
+
+		for (String s : conceptIds) {
+			IConcept c = annotateConcept(s, session, observable);
+			concepts.add(c);
+		}
 	}
 
 }

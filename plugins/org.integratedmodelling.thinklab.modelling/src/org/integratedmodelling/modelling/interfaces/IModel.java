@@ -116,7 +116,7 @@ public interface IModel extends IConceptualizable {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	IModel train(IKBox kbox, ISession session, Object[] params) throws ThinklabException;
+	IModel train(IKBox kbox, ISession session, Object ... params) throws ThinklabException;
 
 	
 }

@@ -87,4 +87,10 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 		return null;
 	}
 
+	@Override
+	protected void validateSemantics(ISession session) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

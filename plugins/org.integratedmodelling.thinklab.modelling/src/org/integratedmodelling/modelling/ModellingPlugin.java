@@ -8,6 +8,11 @@ public class ModellingPlugin extends ThinklabPlugin {
 
 	private static final String USE_CACHE_PROPERTY = "modelling.use.cache";
 
+	// this is set externally in a session to mean that we are annotating 
+	// models, so concepts should be created for them when undefined instead
+	// of complaining.
+	public static final String ANNOTATION_UNDERWAY = "annotation.underway";
+
 	public static String PLUGIN_ID = "org.integratedmodelling.thinklab.modelling";
 	
 	private ModelFactory manager = null;

@@ -2,7 +2,6 @@ package org.integratedmodelling.modelling.corescience;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.modelling.DefaultAbstractModel;
-import org.integratedmodelling.modelling.DefaultDynamicAbstractModel.language;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -21,8 +20,15 @@ import org.integratedmodelling.utils.Polylist;
 public class ObservationModel extends DefaultAbstractModel {
 
 	@Override
+	public void setObservable(Object observableOrModel)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		super.setObservable(observableOrModel);
+	}
+
+	@Override
 	public String toString() {
-		return ("identification(" + getObservable() + ")");
+		return ("identification(" + observableId + ")");
 	}
 
 	@Override
@@ -67,6 +73,12 @@ public class ObservationModel extends DefaultAbstractModel {
 	public Polylist conceptualize() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	protected void validateSemantics(ISession session) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

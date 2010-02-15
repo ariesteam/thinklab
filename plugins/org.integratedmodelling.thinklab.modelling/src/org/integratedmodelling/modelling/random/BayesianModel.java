@@ -2,33 +2,34 @@ package org.integratedmodelling.modelling.random;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.HashSet;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.modelling.DefaultStatefulAbstractModel;
+import org.integratedmodelling.modelling.DefaultAbstractModel;
+import org.integratedmodelling.modelling.Model;
+import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.corescience.ClassificationModel;
 import org.integratedmodelling.modelling.implementations.observations.BayesianTransformer;
 import org.integratedmodelling.modelling.interfaces.IContextOptional;
 import org.integratedmodelling.modelling.interfaces.IModel;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 
-public class BayesianModel extends DefaultStatefulAbstractModel implements IContextOptional {
+import smile.Network;
+
+public class BayesianModel extends DefaultAbstractModel implements IContextOptional {
 
 	String source = null;
 	String algorithm = null;
+	ArrayList<String> keeperIds = new ArrayList<String>();
 	ArrayList<IConcept> keepers = new ArrayList<IConcept>();
-	
-	/*
-	 * models representing each node. They may be there or not, if they
-	 * are the result observation will contextualize the nodes as specified.
-	 */
-	HashMap<IConcept,IModel> nodeModels = new HashMap<IConcept, IModel>();
 	
 	@Override
 	public void applyClause(String keyword, Object argument)
@@ -42,27 +43,24 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			
 			Collection<?> p = (Collection<?>) argument;
 			for (Object c : p)
-				keepers.add(KnowledgeManager.get().requireConcept(c.toString()));
+				keeperIds.add(c.toString());
 
 		} else super.applyClause(keyword, argument);
 			
 	}
 
-	/**
-	 * define the model for a specific node.
-	 * @param model
-	 * @throws ThinklabException
-	 */
-	public void addNodeModel(IModel model) throws ThinklabException {
+	@Override
+	public void addObservedModel(IModel model) {
 		
-		if (! (model instanceof ClassificationModel)) {
-			throw new ThinklabValidationException(
-					"bayesian node " + model.getObservable() + 
+		if (! (((Model)model).getDefinition() instanceof ClassificationModel)) {
+			throw new ThinklabRuntimeException(
+					"bayesian node " + model.getId() + 
 					" should be a classification");
 		}
-		nodeModels.put(model.getObservable(), model);
+
 		// anything that is specifically modeled becomes a keeper automatically
-		keepers.add(model.getObservable());
+		keeperIds.add(((DefaultAbstractModel)model).getObservableId());
+		super.addObservedModel(model);
 	}
 	
 	@Override
@@ -70,12 +68,6 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			throws ThinklabValidationException {
 	}
 
-	@Override
-	protected Object validateState(Object state)
-			throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public IConcept getCompatibleObservationType(ISession session) {
@@ -89,8 +81,8 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		BayesianModel ret = new BayesianModel();
 		ret.copy(this);
 		ret.algorithm = this.algorithm;
+		ret.keeperIds = this.keeperIds;
 		ret.keepers = this.keepers;
-		ret.nodeModels = this.nodeModels;
 		ret.source = this.source;
 		return ret;
 	}
@@ -121,12 +113,12 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		 * communicate how to model specific nodes that had their
 		 * model specified by passing a prototype observation
 		 */
-		for (IConcept c : nodeModels.keySet()) {
+		for (IModel c : observed) {
 			arr.add(Polylist.list(
 					BayesianTransformer.HAS_PROTOTYPE_MODEL,
-					nodeModels.get(c).buildDefinition(kbox, session)));
+					((Model)c).getDefinition().buildDefinition(kbox, session)));
 		}
-		
+
 		return Polylist.PolylistFromArrayList(arr);
 	}
 
@@ -134,6 +126,54 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 	public Polylist conceptualize() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	protected void validateSemantics(ISession session) throws ThinklabException {
+		
+		for (String s : keeperIds) {
+			keepers.add(annotateConcept(s,session, null));
+		}
+		
+		/*
+		 * This is fairly expensive so we only do it when annotating.
+		 */
+		if (session.getVariable(ModellingPlugin.ANNOTATION_UNDERWAY) != null) {
+
+			/**
+			 * if in annotation mode and loading a BN from a source,
+			 * we should annotate the BN contents in the observable's 
+			 * ontology (which also validates the source).
+			 */
+			Network bn = new Network();
+			HashSet<String> stt = new HashSet<String>();
+			
+			try {
+				bn.readFile(MiscUtilities.resolveUrlToFile(source).toString());
+			} catch (Exception e) {
+				throw new ThinklabIOException(e);
+			}
+		
+			String cspace = observable.getConceptSpace();
+			for (String s : bn.getAllNodeIds()) {
+				annotateConcept(cspace+":"+s, session, null);
+				for (String os : bn.getOutcomeIds(s)) {
+					if (stt.contains(os))
+						throw new ThinklabValidationException(
+								"you did it - state ID " + os + 
+								" is duplicated. Please use the node ID in "+ 
+								"all outcome: e.g. " + os + s +
+								" and avoid generic outcome IDs like High, Low");
+					
+					annotateConcept(cspace+":"+os, session, cspace+":"+s);	
+					stt.add(os);
+				}
+			}
+		}
+		
+		/**
+		 * TODO validate any states defined inline (later)
+		 */
 	}
 
 }

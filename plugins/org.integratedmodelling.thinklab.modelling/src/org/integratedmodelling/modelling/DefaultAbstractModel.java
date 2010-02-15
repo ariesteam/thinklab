@@ -2,13 +2,13 @@ package org.integratedmodelling.modelling;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.modelling.annotation.ModelAnnotation;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IContextOptional;
 import org.integratedmodelling.modelling.interfaces.IModel;
@@ -25,45 +25,88 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.kbox.ListQueryResult;
 import org.integratedmodelling.utils.Polylist;
 
 public abstract class DefaultAbstractModel implements IModel {
 
 	protected IModel mediated = null;
 	private ArrayList<IModel> dependents = new ArrayList<IModel>();
-	private ArrayList<IModel> observed   = new ArrayList<IModel>();
+	protected ArrayList<IModel> observed   = new ArrayList<IModel>();
 
 	protected IConcept observable = null;
+	protected String observableId = null;
+	
 	protected Polylist observableSpecs = null;
 	protected Object state = null;
 	protected String id = null;
 	private Polylist whenClause = null;
 	private LinkedList<Polylist> transformerQueue = new LinkedList<Polylist>();
 	protected boolean mediatesExternal;
+	private boolean _validated = false;
 	
 	protected boolean isMediating() {
 		return mediated != null || mediatesExternal;
+	}
+	
+	public String getObservableId() {
+		return observableId;
+	}
+	
+	/**
+	 * This one is invoked oncr before any use is made of the model, and is supposed
+	 * to validate all concepts used in the model's definition. In order to allow
+	 * facilitated and automated annotation, no model should perform concept
+	 * validation at declaration; all validation should be done within this
+	 * function.
+	 * 
+	 * Validation of concepts should be done using annotateConcept() so that
+	 * annotation mode will be enabled.
+	 * 
+	 * @param session TODO
+	 * 
+	 * @throws ThinklabException
+	 */
+	protected abstract void validateSemantics(ISession session) throws ThinklabException;
+	
+	protected IConcept annotateConcept(String conceptId, ISession session, Object potentialParent) throws ThinklabValidationException {
+		
+		IConcept c = KnowledgeManager.get().retrieveConcept(conceptId);
+		if (c == null) {
+			
+			ModelAnnotation an =
+				(ModelAnnotation) session.getVariable(ModellingPlugin.ANNOTATION_UNDERWAY);
+			if (an != null) {
+				an.addConcept(
+						conceptId, 
+						potentialParent == null ? null : potentialParent.toString());
+			} else {
+				throw new ThinklabValidationException(
+						"model: concept " +
+						conceptId +
+						" is undefined: please annotate this model or load knowledge");
+			}
+		}
+		return c;
 	}
 	
 	public void setObservable(Object observableOrModel) throws ThinklabException {
 		
 		if (observableOrModel instanceof IModel) {
 			this.mediated = (IModel) observableOrModel;
-			this.observable = ((IModel)observableOrModel).getObservable();
+			this.observableId = ((DefaultAbstractModel)observableOrModel).observableId;
 			this.observableSpecs = ((DefaultAbstractModel)observableOrModel).observableSpecs;
 		} else if (observableOrModel instanceof IConcept) {
 			this.observable = (IConcept) observableOrModel;
 			this.observableSpecs = Polylist.list(this.observable);
+			this.observableId = this.observable.toString();
 		} else if (observableOrModel instanceof Polylist) {
 			this.observableSpecs = (Polylist)observableOrModel;
-			this.observable = KnowledgeManager.get().requireConcept(this.observableSpecs.first().toString());
+			this.observableId = this.observableSpecs.first().toString();
 		} else {
-			this.observable = KnowledgeManager.get().requireConcept(observableOrModel.toString());
-			this.observableSpecs = Polylist.list(this.observable);
+			this.observableId = observableOrModel.toString();
 		}
 		
-		id = observable.toString().replace(':','_');
+		id = observableId.toString().replace(':','_');
 	}
 	
 	@Override
@@ -78,14 +121,14 @@ public abstract class DefaultAbstractModel implements IModel {
 				addDependentModel((IModel) o);
 			}
 			
-		} else if (keyword.equals(":context")) {
+		} else if (keyword.equals(":observed")) {
 			
 			Collection<?> c = (Collection<?>) argument;
 			for (Object o : c) {
 				addObservedModel((IModel) o);
 			}
 			
-		}else if (keyword.equals(":as")) {
+		} else if (keyword.equals(":as")) {
 			
 			setLocalId(argument.toString());
 			
@@ -160,6 +203,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		mediated = model.mediated;
 		observable = model.observable;
 		observableSpecs = model.observableSpecs;
+		observableId = model.observableId;
 	}
 	
 	/**
@@ -217,6 +261,8 @@ public abstract class DefaultAbstractModel implements IModel {
 	@Override
 	public IQueryResult observe(IKBox kbox, ISession session, Object ... params) throws ThinklabException {
 		
+		validateConcepts(session);
+		
 		IntelligentMap<IConformance> conformances = null;
 		ArrayList<Topology> extents = new ArrayList<Topology>();
 		
@@ -239,9 +285,68 @@ public abstract class DefaultAbstractModel implements IModel {
 		
 	}
 
+	/**
+	 * This will be called once before any observation is made, or it can be
+	 * called from the outside API to ensure that all concepts are valid. 
+	 * 
+	 * @param session
+	 * @throws ThinklabException
+	 */
+	public void validateConcepts(ISession session) throws ThinklabException {
+		
+		if (!_validated) {
+			
+			/*
+			 * resolve all concepts for the observable
+			 */
+			if (this.observable == null)
+				this.observable = 
+					annotateConcept(observableId, session, null);
+		
+			if (this.observableSpecs == null)
+				this.observableSpecs = Polylist.list(this.observable);
+
+			/*
+			 * notify annotation if we are unresolved, so we can find data
+			 * in this phase.
+			 */
+			if (!isResolved() && (this instanceof DefaultStatefulAbstractModel)) {
+				ModelAnnotation an =
+					(ModelAnnotation) session.getVariable(ModellingPlugin.ANNOTATION_UNDERWAY);
+				if (an != null) {
+					an.addUnresolvedState(
+							this.observableId, 
+							this.getCompatibleObservationType(session),
+							observable == null ?
+									null : 
+									generateObservableQuery(null,session,new ArrayList<Topology>()));
+				}
+			}
+			
+			validateSemantics(session);
+			
+			/*
+			 * validate mediated
+			 */
+			if (mediated != null)
+				((DefaultAbstractModel)mediated).validateConcepts(session);
+			
+			/*
+			 * validate dependents and observed
+			 */
+			for (IModel m : dependents)
+				((DefaultAbstractModel)m).validateConcepts(session);
+
+			for (IModel m : observed)
+				((DefaultAbstractModel)m).validateConcepts(session);
+
+			_validated = true;
+		}
+	}
+
 	@Override
 	public Model train(IKBox kbox, ISession session, Object ... params) throws ThinklabException {
-		// TODO!
+		// TODO! Needs to observe everything (including the observed) and invoke a virtual
 		return null;
 	}
 	

@@ -33,6 +33,7 @@
 package org.integratedmodelling.dynamicmodelling.annotation;
 
 import java.io.File;
+import java.io.PrintStream;
 
 import org.integratedmodelling.dynamicmodelling.model.Flow;
 import org.integratedmodelling.dynamicmodelling.model.Model;
@@ -149,5 +150,10 @@ public class ModelAnnotation {
 	public Polylist getDefaultContextStatementForModel(Model model) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void dump(PrintStream outputStream) {
+		// TODO Auto-generated method stub
+		
 	}
 }

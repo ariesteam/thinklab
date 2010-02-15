@@ -77,4 +77,10 @@ public class CategorizationModel extends DefaultDynamicAbstractModel {
 		return null;
 	}
 
+
+	@Override
+	protected void validateSemantics(ISession session) throws ThinklabException {
+		// nothing to do	
+	}
+
 }

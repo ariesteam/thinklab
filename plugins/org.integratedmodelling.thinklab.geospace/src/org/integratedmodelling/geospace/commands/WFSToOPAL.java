@@ -62,7 +62,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Node;
 
 /**
- * Turn a WCS capabilities document into an OPAL file for editing.
+ * Turn a WFS capabilities document into an OPAL file for editing.
  * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  */

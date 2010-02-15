@@ -66,6 +66,7 @@ import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBoxCapabilities;
+import org.integratedmodelling.thinklab.interfaces.storage.IKnowledgeImporter;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
@@ -228,6 +229,11 @@ public class KBoxManager implements IKBox {
 		
 	}
 	
+	/*
+	 * knowledge importer classes harvested by plugins
+	 */
+	HashMap<String, Class<?>> importers = new HashMap<String, Class<?>>();
+	
     /*
      * a registry of plugins that handle KBox creation.
      */
@@ -255,7 +261,6 @@ public class KBoxManager implements IKBox {
 		metadataTypes.put(IQueryResult.LABEL_FIELD_NAME, KnowledgeManager.get().getTextType());
 		metadataTypes.put(IQueryResult.DESCRIPTION_FIELD_NAME, KnowledgeManager.get().getTextType());
 		metadataTypes.put(IQueryResult.CLASS_FIELD_NAME, KnowledgeManager.get().getTextType());
-		
 	}
 	
 	/**
@@ -272,6 +277,19 @@ public class KBoxManager implements IKBox {
 	
 	public void installKbox(String uri, IKBox kbox) {
 		kBoxes.put(uri, kbox);
+	}
+	
+	public IKnowledgeImporter getKnowledgeImporter(String format) throws ThinklabException {
+		
+		IKnowledgeImporter ret = null;
+		Class<?> cls = importers.get(format);
+		if (cls != null)
+			try {
+				ret = (IKnowledgeImporter) cls.newInstance();
+			} catch (Exception e) {
+				throw new ThinklabValidationException(e);
+			}
+		return ret;
 	}
 	
 	/*
@@ -766,6 +784,10 @@ public class KBoxManager implements IKBox {
 		}
 		
 		return ret;
+	}
+
+	public void registerImporterClass(String fmt, Class<?> cls) {
+		importers.put(fmt, cls);
 	}
 	
 }

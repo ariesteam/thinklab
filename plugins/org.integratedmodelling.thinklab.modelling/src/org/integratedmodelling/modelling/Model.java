@@ -7,11 +7,14 @@ import java.util.Iterator;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.modelling.corescience.ClassificationModel;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.IntelligentMap;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -69,7 +72,9 @@ public class Model extends DefaultAbstractModel {
 		IObservation contingencyModel = null;
 		
 		/*
-		 * pass null if no contingency model exists
+		 * pass null if no contingency model exists. This equates to 
+		 * :when :observable - the contingency model is determined by
+		 * the intersection of the contexts.
 		 */
 		public ContingencyIterator(IObservation contingencyModel) {
 		}
@@ -111,7 +116,15 @@ public class Model extends DefaultAbstractModel {
 		
 		/*
 		 * TODO build the contingency model. For now this only passes a null, resulting
-		 * in one contingency state.
+		 * in one contingency state. 
+		 * 
+		 * The contingency model must accomodate zero or one models and each
+		 * model is conditioned to it. If no :when clause exists, the implicit
+		 * contingency clause is :when :observable - meaning, this is the model
+		 * to use when it is possible to use it. The order of declaration counts
+		 * as priority order to decide which model is used first to cover the
+		 * context.
+		 * 
 		 */
 		contingencyModelBuilt = true;
 	}
@@ -132,6 +145,15 @@ public class Model extends DefaultAbstractModel {
 			for (ContingencyIterator it = getContingencyIterator(session, kbox); it.hasNext(); ) {
 
 				Contingency cn = it.next();
+				
+				/*
+				 * TODO this will return an array of models, which may need to be
+				 * observed in sequence and combined as unconditional
+				 * contingencies when >1 is observable.
+				 * 
+				 * It should be like saying :when :observable - the default
+				 * contingency clause.
+				 */
 				IModel cmod = chooseModel(models, cn, kbox);
 				if (cmod == null) {
 					throw new ThinklabModelException(
@@ -241,8 +263,9 @@ public class Model extends DefaultAbstractModel {
 	
 	/**
 	 * Can be called once or more; models are passed after being configured with their
-	 * clauses. If more than one model get here, they must be "disjoint" i.e. have mutually
-	 * exclusive :when clauses with only one possible "default" one without.
+	 * clauses. They may have :when clauses to condition them to a particular context
+	 * state, or have the implicit :when :observable clause which makes them apply
+	 * as default in order of declaration, until the context is covered.
 	 */
 	public void defModel(IModel model) {
 		
@@ -283,7 +306,6 @@ public class Model extends DefaultAbstractModel {
 				"internal error: a Model should only be configured through a proxy");
 	}
 
-
 	@Override
 	public IModel getConfigurableClone() {
 		/*
@@ -302,6 +324,34 @@ public class Model extends DefaultAbstractModel {
 	public Polylist conceptualize() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	protected void validateSemantics(ISession session) throws ThinklabException {
+
+		// validate all contingent and contingency models
+		if (context != null)
+			for (IModel m : context) {
+				((DefaultAbstractModel)m).validateConcepts(session);
+			}
+		
+		if (models != null)
+			for (IModel m : models) {
+				((DefaultAbstractModel)m).validateConcepts(session);
+			}
+	}
+
+	/**
+	 * Return the definition of this model, assuming it is only one model, and throw an
+	 * exception if the definition has contingencies.
+	 * @return
+	 */
+	public IModel getDefinition() {
+		
+		if (models.size() != 1)
+			throw new ThinklabRuntimeException("model: getDefinition called on a model with contingencies");
+
+		return models.get(0);
 	}
 
 }

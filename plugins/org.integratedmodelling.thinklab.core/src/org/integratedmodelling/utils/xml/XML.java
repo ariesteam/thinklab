@@ -8,6 +8,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.Pair;
+import org.integratedmodelling.utils.Polylist;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -15,7 +16,8 @@ import org.w3c.dom.Node;
 
 
 /**
- * Make XML encoding as fun as possible using a functional style.
+ * Make XML encoding as fun as possible using a functional style. Also automatically
+ * converts (suitable) polylists to XML nodes.
  * 
  * Example:
  * 
@@ -37,6 +39,7 @@ public class XML {
 		String text = null;
 		ArrayList<Pair<String, String>> attrs = null;
 		ArrayList<Collection<?>> collections = null;
+		ArrayList<Polylist> lists = null;
 		
 		public void attr(String s, String v) {
 			if (attrs == null)
@@ -98,16 +101,24 @@ public class XML {
 				for (Collection<?> c : collections) {
 					for (Iterator<?> it = ((Collection<?>)c).iterator(); it.hasNext(); ) {
 						Object o = it.next();
-						if (!(o instanceof XmlNode)) {
+						if (o instanceof XmlNode) {
+							self.appendChild(((XmlNode)o).create(self, doc));
+						} else if (o instanceof Polylist) {
+							self.appendChild(((Polylist)o).createXmlNode().create(self, doc));
+						} else {
 							throw new ThinklabValidationException(
-								"XML.node: collections must be of XmlNode");	
+								"XML.node: collections must be of XmlNode or Polylist");	
 						}
-						self.appendChild(((XmlNode)o).create(self, doc));
 					}
 				}
 
 			for (Object o : this.children) {
-				self.appendChild(((XmlNode)o).create(self, doc));
+				if (o instanceof XmlNode)	
+					self.appendChild(((XmlNode)o).create(self, doc));
+			}
+			
+			for (Polylist p : this.lists) {
+					self.appendChild(p.createXmlNode().create(self, doc));					
 			}
 		}
 	}
@@ -169,6 +180,8 @@ public class XML {
 		for (Object o : objects) {
 			if (o instanceof XmlNode) {
 				ret.add((XmlNode)o);
+			} if (o instanceof Polylist) {
+				ret.lists.add((Polylist)o);
 			} else if (o instanceof String) {
 				if (ret.text != null)
 					throw new ThinklabValidationException(

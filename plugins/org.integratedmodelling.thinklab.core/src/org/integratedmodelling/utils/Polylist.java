@@ -46,6 +46,11 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.utils.xml.XML;
+import org.integratedmodelling.utils.xml.XMLDocument;
+import org.integratedmodelling.utils.xml.XML.XmlNode;
+
 /**   
  <pre>
  Polylist is the basic unit for constructing an open linked list of Objects.
@@ -1113,6 +1118,27 @@ public class Polylist {
 		ArrayList<Object> ls = toArrayList();
 		ls.add(o);
 		return Polylist.PolylistFromArrayList(ls);
+	}
+	
+	public XML.XmlNode createXmlNode() {
+		XmlNode n = new XmlNode(first().toString());
+		for (Object o : rest().array()) {
+			if (o instanceof Polylist)
+				n.add(((Polylist)o).createXmlNode());
+			else 
+				n.text(o.toString());
+		}
+		return n;
+	}
+	
+	/**
+	 * Return a nice XML document that can be written to file or shown.
+	 * 
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public XMLDocument asXml() throws ThinklabException {
+		return XML.document(createXmlNode());
 	}
 
 } // class Polylist

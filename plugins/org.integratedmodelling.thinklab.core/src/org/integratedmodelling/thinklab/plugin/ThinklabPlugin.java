@@ -77,6 +77,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.interfaces.storage.IKnowledgeImporter;
 import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
@@ -852,14 +853,28 @@ public abstract class ThinklabPlugin extends Plugin
 
 	protected void loadKnowledgeImporters() {
 	
-		for (Extension ext : getOwnThinklabExtensions("knowledge-importer")) {
-
-			String url = ext.getParameter("url").valueAsString();
-			String csp = ext.getParameter("concept-space").valueAsString();
-			
-			// TODO
-		}
+		String ipack = this.getClass().getPackage().getName() + ".importers";
 		
+		for (Class<?> cls : MiscUtilities.findSubclasses(IKnowledgeImporter.class, ipack, getClassLoader())) {	
+			
+			/*
+			 * lookup annotation, ensure we can use the class
+			 */
+			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+				continue;
+			
+			for (Annotation annotation : cls.getAnnotations()) {
+				if (annotation instanceof org.integratedmodelling.thinklab.interfaces.annotations.KnowledgeLoader) {
+					
+					String fmt = 
+						((org.integratedmodelling.thinklab.interfaces.annotations.KnowledgeLoader)annotation).format();
+						KBoxManager.get().registerImporterClass(fmt, cls);
+					
+					break;
+				}
+			}
+		}
+
 	}
 	
 	protected String getParameter(Extension ext, String field) {
