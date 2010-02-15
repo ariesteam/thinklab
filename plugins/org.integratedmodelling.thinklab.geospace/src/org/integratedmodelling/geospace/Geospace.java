@@ -60,10 +60,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.integratedmodelling.utils.image.ColorMap;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
-import org.opengis.metadata.citation.Citation;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -206,8 +204,6 @@ public class Geospace extends ThinklabPlugin  {
 		}
 
 		try {
-			
-			// ColorMap.rainbow(256).getColorbar(16, new File("cbar.png"));
 			registerAdditionalCRS();
 
 			metersCRS = CRS.decode(EPSG_PROJECTION_METERS);
@@ -220,24 +216,6 @@ public class Geospace extends ThinklabPlugin  {
 		} catch (Exception e) {
 			throw new ThinklabPluginException(e);
 		} 
-		
-		
-//		/*
-//		 * load all local CRS - all EPSG by default.
-//		 */
-//		for (Object s : getProperties().keySet()) {
-//			if (s.toString().startsWith(CUSTOM_CRS_PROPERTY)) {
-//				String[] z = s.toString().split("\\.");
-//				String id = "EPSG:" + z[z.length -1];
-//				String wkt = getProperties().getProperty(s.toString());
-//				try {
-//					CoordinateReferenceSystem rs = CRS.parseWKT(wkt);
-//					localCRS.put(id, rs);
-//				} catch (Exception e) {
-//					throw new ThinklabPluginException(e);
-//				}
-//			}
-//		}
 		
 		/*
 		 * create preferred CRS if one is specified. Highly advisable to set one if hybrid data

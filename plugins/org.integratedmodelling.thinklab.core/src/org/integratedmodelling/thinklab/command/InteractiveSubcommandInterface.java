@@ -90,6 +90,8 @@ public abstract class InteractiveSubcommandInterface implements ICommandHandler 
 		IValue ret = null;
 		do {
 			cm = prompt();
+			if (cm == null)
+				continue;
 			if (cm.equals("exit")) {
 				break;
 			}

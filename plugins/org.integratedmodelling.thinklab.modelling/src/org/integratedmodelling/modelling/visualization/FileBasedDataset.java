@@ -36,7 +36,6 @@ public class FileBasedDataset implements IDataset {
 	public static final int BLUE= 3;
 	public static final int YELLOW = 4;
 	public static final int RAINBOW = 5;
-
 	
 	public static ColorMap getColormap(int color, int levels) {
 		ColorMap ret = null;
@@ -58,7 +57,7 @@ public class FileBasedDataset implements IDataset {
 			ret = ColorMap.yellowscale(levels);
 			break;
 		case RAINBOW:
-			ret = ColorMap.rainbow(levels);
+			ret = ColorMap.jet(levels);
 			break;
 		}
 		
@@ -104,7 +103,7 @@ public class FileBasedDataset implements IDataset {
 			return ColorMap.greyscale(maxIndex - minIndex + 1);
 		}
 		
-		return ColorMap.rainbow(maxIndex - minIndex + 1);
+		return ColorMap.jet(maxIndex - minIndex + 1);
 	}
 	
 	@Override

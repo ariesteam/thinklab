@@ -18,6 +18,10 @@ import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
+import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -183,10 +187,16 @@ public abstract class DefaultAbstractModel implements IModel {
 	}
 	
 	protected abstract void validateMediatedModel(IModel model) throws ThinklabValidationException;
-	
 
 	@Override
 	public IConcept getObservable() {
+		if (observable == null) {
+			try {
+				observable = KnowledgeManager.get().requireConcept(observableId);
+			} catch (Exception e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
 		return observable;
 	}
 	
