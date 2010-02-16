@@ -35,6 +35,7 @@ package org.integratedmodelling.authentication.local;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
 import java.security.spec.KeySpec;
 
 import javax.crypto.Cipher;
@@ -43,6 +44,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.integratedmodelling.authentication.exceptions.ThinklabEncryptionException;
 
@@ -54,6 +56,7 @@ public class EncryptionManager {
 	public static final String DESEDE_ENCRYPTION_SCHEME = "DESede";
 
 	public static final String DES_ENCRYPTION_SCHEME = "DES";
+	public static final String AES_ENCRYPTION_SCHEME = "AES";
 
 	public static final String DEFAULT_ENCRYPTION_KEY = 
 		"m'illumino \n d'immenso";
@@ -67,7 +70,7 @@ public class EncryptionManager {
 	private static final String UNICODE_FORMAT = "UTF8";
 
 	public EncryptionManager() throws ThinklabEncryptionException {
-		this(DES_ENCRYPTION_SCHEME, DEFAULT_ENCRYPTION_KEY);
+		this(AES_ENCRYPTION_SCHEME, DEFAULT_ENCRYPTION_KEY);
 	}
 	
 	public EncryptionManager(String encryptionScheme)
@@ -78,6 +81,8 @@ public class EncryptionManager {
 	public EncryptionManager(String encryptionScheme, String encryptionKey)
 			throws ThinklabEncryptionException {
 
+		Security.addProvider(new com.sun.crypto.provider.SunJCE());
+		
 		if (encryptionKey == null)
 			throw new IllegalArgumentException("encryption key was null");
 		if (encryptionKey.trim().length() < 24)
@@ -92,8 +97,11 @@ public class EncryptionManager {
 			} else if (encryptionScheme.equals(DES_ENCRYPTION_SCHEME)) {
 				keySpec = new DESKeySpec(keyAsBytes);
 			} else {
-				throw new IllegalArgumentException(
-						"Encryption scheme not supported: " + encryptionScheme);
+
+				keySpec = new SecretKeySpec(keyAsBytes, encryptionKey);
+
+//				throw new IllegalArgumentException(
+//						"Encryption scheme not supported: " + encryptionScheme);
 			}
 
 			keyFactory = SecretKeyFactory.getInstance(encryptionScheme);

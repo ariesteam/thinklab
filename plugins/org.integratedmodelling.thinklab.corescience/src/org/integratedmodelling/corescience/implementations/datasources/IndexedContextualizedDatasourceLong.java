@@ -145,4 +145,10 @@ public class IndexedContextualizedDatasourceLong<T>
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public Object getMetadata() {
+		return metadata;
+	}
+
 }

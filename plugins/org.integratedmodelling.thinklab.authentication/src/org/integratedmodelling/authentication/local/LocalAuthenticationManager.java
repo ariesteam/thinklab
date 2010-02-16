@@ -192,7 +192,7 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 
 		encryptionManager = 
 			new EncryptionManager(
-					EncryptionManager.DESEDE_ENCRYPTION_SCHEME,
+					EncryptionManager.AES_ENCRYPTION_SCHEME,
 					ek);
 
 		/* create db if necessary */

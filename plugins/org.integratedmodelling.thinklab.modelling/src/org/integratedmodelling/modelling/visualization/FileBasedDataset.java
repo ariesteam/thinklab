@@ -233,6 +233,7 @@ public class FileBasedDataset implements IDataset {
 		}
 		
 		System.out.println(observable + ": data [" + min + " " + max + "] img [" + imin + " " + imax + "]");
+		System.out.println("metadata: " + state.getMetadata());
 		
 //		if ((imax - imin) <= 0)
 //			// nothing to show

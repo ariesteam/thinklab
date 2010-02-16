@@ -154,4 +154,10 @@ public class MemIntegerContextualizedDatasource
 		
 	}
 
+	@Override
+	public Object getMetadata() {
+		return metadata;
+	}
+
+	
 }

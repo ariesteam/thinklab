@@ -150,5 +150,11 @@ public class MemClassContextualizedDatasource
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public Object getMetadata() {
+		return metadata;
+	}
+
 
 }

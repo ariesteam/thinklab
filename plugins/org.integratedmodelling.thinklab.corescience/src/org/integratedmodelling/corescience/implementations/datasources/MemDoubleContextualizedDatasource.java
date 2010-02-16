@@ -197,4 +197,10 @@ public class MemDoubleContextualizedDatasource
 		return true;
 	}
 
+	@Override
+	public Object getMetadata() {
+		return metadata;
+	}
+
+	
 }

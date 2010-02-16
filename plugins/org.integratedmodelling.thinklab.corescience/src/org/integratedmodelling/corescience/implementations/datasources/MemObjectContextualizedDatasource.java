@@ -215,4 +215,10 @@ public class MemObjectContextualizedDatasource
 		return ret;
 	}
 
+	@Override
+	public Object getMetadata() {
+		return metadata;
+	}
+
+	
 }

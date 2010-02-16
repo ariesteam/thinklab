@@ -143,6 +143,10 @@ public class IndexedContextualizedDatasourceByte<T>
 		
 	}
 
+	@Override
+	public Object getMetadata() {
+		return metadata;
+	}
 
 
 }

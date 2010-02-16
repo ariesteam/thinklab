@@ -56,6 +56,87 @@ public class ColorMap {
 		this.levels = levels;
 	}
 	
+	private static class CmDesc {
+		String id;
+		int transp;
+		boolean isZeroTransparent;
+		int nlevels;
+		int[] parameters = null;
+	}
+	
+	static CmDesc parseMapDef(String s) {
+		
+		CmDesc ret = new CmDesc();
+		
+		// find part in parentheses
+		
+		
+		return ret;
+	}
+	
+	/**
+	 * Parse a description string of the form mapname(parms) and return the corresponding map or 
+	 * null.
+	 * 
+	 * Map definitions understood so far:
+	 * 
+	 * greyscale(n)      // n-level greyscale (black to white)
+	 * greenscale(n)      // n-level greenscale (black to green)
+	 * redscale(n)      // n-level greenscale (black to red)
+	 * bluescale(n)      // n-level greenscale (black to blue)
+	 * gradient(r1, g1, b1, r2, g2, b2, [r3, g3, b3, ....,] n)  // gradient from rgb to rgb color(s), n levels
+	 * jet(n)  // the classic evil color ramp from blue to red, n levels
+	 * BrBG(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels) 
+	 * PiYG(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * PRGn(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * PuOr(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * RdBu(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * RdGy(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * RdYlBu(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * RdYlGn(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Spectral(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Accent(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Dark2(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Paired(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Pastel1(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Pastel2(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Set1(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Set2(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Set3(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Blues(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * BuGn(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * BuPu(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * GnBu(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Greens(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Greys(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Oranges(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * OrRd(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * PuBuPuBuGn(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * PuRd(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Purples(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * RdPu(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * Reds(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * YlGn(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * YlGnBu(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * YlOrBr(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * YlOrRd(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+	 * 
+	 * Appending a _z to the name (e.g. bluescale_z(12)) will force the zero color to be transparent.
+	 * Appending a number (e.g. bluescale_50(12)) will force n% transparency to the whole map.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public static ColorMap getColormap(String id) {
+
+		ColorMap ret = null;
+		CmDesc def = parseMapDef(id);
+		
+		
+		
+		return ret;
+	}
+	
 	/**
      * Creates an array of Color objects for use as a gradient, using a linear 
      * interpolation between the two specified colors.
