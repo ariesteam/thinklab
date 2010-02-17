@@ -54,17 +54,21 @@ public class ConceptVisitor<T> {
     private void allMatchesDownwards(Collection<T> coll, Map<String, T> where, ConceptMatcher matcher, IConcept start) {
         T obj = matcher.match(start) ? where.get(start.getSemanticType().toString()) : null;
         if (obj != null)
-            coll.add(obj);
-        for (IConcept c : start.getChildren())
-            allMatchesDownwards(coll, where, matcher, c);
+            coll.add(obj); 
+        synchronized (start) {
+        	for (IConcept c : start.getChildren())
+        		allMatchesDownwards(coll, where, matcher, c);
+        }
     }
 
     private void allMatchesUpwards(Collection<T> coll, Map<String, T> where, ConceptMatcher matcher, IConcept start) {
         T obj = matcher.match(start) ? where.get(start.getSemanticType().toString()) : null;
         if (obj != null)
             coll.add(obj);
-        for (IConcept c : start.getParents())
-            allMatchesUpwards(coll, where, matcher, c);
+        synchronized (start) {
+        	for (IConcept c : start.getParents())
+        		allMatchesUpwards(coll, where, matcher, c);
+        }
     }
 
     
@@ -77,14 +81,17 @@ public class ConceptVisitor<T> {
      */
     static public IConcept findMatchUpwards(ConceptMatcher matcher, IConcept start) {
         
-        IConcept ret = matcher.match(start) ? start : null;
+    	IConcept ret = null;
+    	synchronized (start) {
+    		
+    		ret = matcher.match(start) ? start : null;
         
-        if (ret == null) {
-            for (IConcept c : start.getParents())
-                if ((ret = findMatchUpwards(matcher, c)) != null)
-                    break;
-        }   
-        
+    		if (ret == null) {
+    			for (IConcept c : start.getParents())
+    				if ((ret = findMatchUpwards(matcher, c)) != null)
+    					break;
+    		}   
+    	}
         return ret;
     }
 
@@ -97,13 +104,17 @@ public class ConceptVisitor<T> {
      */
     static public IConcept findMatchDownwards(ConceptMatcher matcher, IConcept start) {
         
-        IConcept ret = matcher.match(start) ? start : null;
+    	IConcept ret = null;
+    	synchronized (start) {
+    		
+    		ret = matcher.match(start) ? start : null;
         
-        if (ret == null) {
-            for (IConcept c : start.getChildren())
-                if ((ret = findMatchDownwards(matcher, c)) != null)
-                    break;
-        }   
+    		if (ret == null) {
+    			for (IConcept c : start.getChildren())
+    				if ((ret = findMatchDownwards(matcher, c)) != null)
+    					break;
+    		} 
+    	}
         
         return ret;
     }
@@ -117,6 +128,7 @@ public class ConceptVisitor<T> {
      *         return the first match found.
      */
     public T findInMapUpwards(Map<String, T> where, IConcept start) {
+    	
         T ret = where.get(start.getSemanticType().toString());
         
         if (ret == null) {
@@ -136,6 +148,7 @@ public class ConceptVisitor<T> {
      *         return the first match found.
      */
     public T findInMapDownwards(Map<String, T> where, IConcept start) {
+    	
         T ret = where.get(start.getSemanticType().toString());
         
         if (ret == null) {

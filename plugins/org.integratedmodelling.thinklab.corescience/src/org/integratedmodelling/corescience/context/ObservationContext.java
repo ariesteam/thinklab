@@ -306,12 +306,14 @@ public class ObservationContext implements IObservationContext {
 
 		IConcept ret = null;
 		for (IConcept c : order) {
-			if (c.is(concept)) {
-				if (ret != null)
-					throw new ThinklabValidationException(
+			synchronized (c) {
+				if (c.is(concept)) {
+					if (ret != null)
+						throw new ThinklabValidationException(
 							"ambiguous request: context contains more than one dimension of type " +
 							concept);
-				ret = c;
+					ret = c;
+				}
 			}
 		}
 		

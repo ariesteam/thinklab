@@ -134,8 +134,10 @@ public class ObservationFactory {
 		
 		IObservation ret = null;
 		
-		if (obs.getObservable().is(co)) {
-			return obs;
+		synchronized (obs) {
+			if (obs.getObservable().is(co)) {
+				return obs;
+			}
 		}
 
 		for (IObservation o : obs.getDependencies()) {
@@ -151,9 +153,11 @@ public class ObservationFactory {
 
 		IObservation ret = null;
 		
-		for (IObservation o : obs.getTopologies()) {
-			if (o.getObservable().is(co)) {
-				return o;
+			for (IObservation o : obs.getTopologies()) {
+				synchronized (o) {
+					if (o.getObservable().is(co)) {
+						return o;
+					}
 			}
 		}
 

@@ -205,25 +205,28 @@ public class Compiler {
 		/*
 		 * create a contextualizer appropriately for the stack type
 		 */
-		if (stackType == null) {
-			ret = createNoOpContextualizer();
-		} else if (stackType.is(KnowledgeManager.Number())) {
-			ret = new VMContextualizer<Float>(stackType);
-			stateType = KnowledgeManager.Float();
-		} else if (KnowledgeManager.Thing().equals(stackType) || 
-				stackType.is(KnowledgeManager.LiteralValue())) {
-			ret = new VMContextualizer<IValue>(stackType);
-			stateType = KnowledgeManager.LiteralValue();
-		} else {
-			
-			/*
-			 * we should be using a mapping to abstract classifications
-			 * 
-			 * TODO analyze the stack type; make it Object if not any of the 
-			 * above, and ensure that observations build their own datasources.
-			 */
-			ret = new VMContextualizer<IConcept>(stackType);
-			stateType = stackType;
+		synchronized (stackType) {
+			if (stackType == null) {
+				ret = createNoOpContextualizer();
+			} else if (stackType.is(KnowledgeManager.Number())) {
+				ret = new VMContextualizer<Float>(stackType);
+				stateType = KnowledgeManager.Float();
+			} else if (KnowledgeManager.Thing().equals(stackType)
+					|| stackType.is(KnowledgeManager.LiteralValue())) {
+				ret = new VMContextualizer<IValue>(stackType);
+				stateType = KnowledgeManager.LiteralValue();
+			} else {
+
+				/*
+				 * we should be using a mapping to abstract classifications
+				 * 
+				 * TODO analyze the stack type; make it Object if not any of the
+				 * above, and ensure that observations build their own
+				 * datasources.
+				 */
+				ret = new VMContextualizer<IConcept>(stackType);
+				stateType = stackType;
+			}
 		}
 		
 		/*
