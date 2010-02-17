@@ -37,7 +37,9 @@ import java.awt.Color;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 
@@ -58,22 +60,103 @@ public class ColorMap {
 	
 	private static class CmDesc {
 		String id;
-		int transp;
-		boolean isZeroTransparent;
-		int nlevels;
+		int transp = 0;
+		boolean isZeroTransparent = false;
+		int nlevels = -1;
 		int[] parameters = null;
 	}
 	
 	static CmDesc parseMapDef(String s) {
 		
 		CmDesc ret = new CmDesc();
+		s = s.replaceAll("\\(", " ");
+		s = s.replaceAll("\\)", "");
+		s = s.replaceAll(",", " ");
+
+		String[] ss = s.split("\\s+");
 		
-		// find part in parentheses
+		if (ss[0].contains("_")) {
+			int wu = ss[0].indexOf('_');
+			ss[0] = ss[0].substring(0, wu);
+			String tp = ss[0].substring(wu+1);
+			if (Character.isDigit(tp.charAt(0))) {
+				ret.transp = Integer.parseInt(tp);
+			} else if (tp.equals("z")) {
+				ret.isZeroTransparent = true;
+			}
+		}
 		
+		ret.id = ss[0];
+		if (ss.length > 1) {
+			int nnums = ss.length - 1;
+			if ((nnums % 3) == 1) {
+				ret.nlevels = Integer.parseInt(ss[ss.length - 1]);
+				nnums --;
+			}
+			if (nnums > 0) {
+				ret.parameters = new int[nnums];
+				for (int i = 0; i < nnums; i++) {
+					ret.parameters[i] = Integer.parseInt(ss[i+1]);
+				}
+			}
+		}
 		
 		return ret;
 	}
 	
+	static ArrayList<String> paletteNames = null;
+	static {	
+		
+		 String[] pNames = {
+			 "greyscale", // n-level greyscale (black to white)
+			 "greenscale", // n-level greenscale (black to green)
+			 "redscale", // n-level greenscale (black to red)
+			 "bluescale", // n-level greenscale (black to blue)
+			 "gradient", // gradient from rgb to rgb color(s), n levels
+			 "jet", // the classic evil color ramp from blue to red, n levels
+			 "BrBG", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels) 
+			 "PiYG", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "PRGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "PuOr", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "RdBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "RdGy", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "RdYlBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "RdYlGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Spectral", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Accent", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Dark2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Paired", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Pastel1", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Pastel2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Set1", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Set2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Set3", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Blues", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "BuGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "BuPu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "GnBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Greens", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Greys", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Oranges", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "OrRd", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "PuBuPuBuGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "PuRd", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Purples", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "RdPu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Reds", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "YlGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "YlGnBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "YlOrBr", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "YlOrRd" // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+		 };
+
+		 paletteNames = new ArrayList<String>(pNames.length);
+		 for (String pn : pNames) 
+			 paletteNames.add(pn);
+		 Collections.sort(paletteNames);
+	 }
+	 
+	 
 	/**
 	 * Parse a description string of the form mapname(parms) and return the corresponding map or 
 	 * null.
@@ -84,6 +167,7 @@ public class ColorMap {
 	 * greenscale(n)      // n-level greenscale (black to green)
 	 * redscale(n)      // n-level greenscale (black to red)
 	 * bluescale(n)      // n-level greenscale (black to blue)
+	 * yellowscale(n)    // n-level black to yellow
 	 * gradient(r1, g1, b1, r2, g2, b2, [r3, g3, b3, ....,] n)  // gradient from rgb to rgb color(s), n levels
 	 * jet(n)  // the classic evil color ramp from blue to red, n levels
 	 * BrBG(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels) 
@@ -123,15 +207,111 @@ public class ColorMap {
 	 * 
 	 * Appending a _z to the name (e.g. bluescale_z(12)) will force the zero color to be transparent.
 	 * Appending a number (e.g. bluescale_50(12)) will force n% transparency to the whole map.
+	 * Omitting the number of levels will let the API choose it.
+	 * 
+	 * The levels parameter is ignored unless the colormap does not specify the number of levels.
 	 * 
 	 * @param id
 	 * @return
 	 */
-	public static ColorMap getColormap(String id) {
+	public static ColorMap getColormap(String id, int levels) {
 
 		ColorMap ret = null;
-		CmDesc def = parseMapDef(id);
 		
+		CmDesc def = parseMapDef(id);
+
+		if (def.nlevels >= 0)
+			levels = def.nlevels;
+
+		/**
+		 * FIXME this is painful, but using binary search or a hash and numeric IDs is very error
+		 * prone. Let's see how this changes the overall picture.
+		 */
+		if (def.id.equals("Accent")) { 
+			ret = makeColormap(ColorBrewer.getAccent(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Blues")) { 
+			ret = makeColormap(ColorBrewer.getBlues(levels), def.transp, def.isZeroTransparent);			
+		} else if (def.id.equals("BrBG")) { 
+			ret = makeColormap(ColorBrewer.getBrBG(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("BuGn")) { 
+			ret = makeColormap(ColorBrewer.getBuGn(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("BuPu")) { 
+			ret = makeColormap(ColorBrewer.getBuPu(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Dark2")) { 
+			ret = makeColormap(ColorBrewer.getDark2(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("GnBu")) { 
+			ret = makeColormap(ColorBrewer.getGnBu(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Greens")) { 
+			ret = makeColormap(ColorBrewer.getGreens(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Greys")) { 
+			ret = makeColormap(ColorBrewer.getGreys(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("OrRd")) { 
+			ret = makeColormap(ColorBrewer.getOrRd(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Oranges")) { 
+			ret = makeColormap(ColorBrewer.getOranges(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("PRGn")) { 
+			ret = makeColormap(ColorBrewer.getPRGn(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Paired")) { 
+			ret = makeColormap(ColorBrewer.getPaired(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Pastel1")) { 
+			ret = makeColormap(ColorBrewer.getPastel1(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Pastel2")) { 
+			ret = makeColormap(ColorBrewer.getPastel2(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("PiYG")) { 
+			ret = makeColormap(ColorBrewer.getPiYG(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("PuBu")) { 
+			ret = makeColormap(ColorBrewer.getPuBu(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("PuBuGn")) {
+			ret = makeColormap(ColorBrewer.getPuBuGn(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("PuOr")) { 
+			ret = makeColormap(ColorBrewer.getPuOr(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("PuRd")) { 
+			ret = makeColormap(ColorBrewer.getPuRd(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Purples")) { 
+			ret = makeColormap(ColorBrewer.getPurples(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("RdBu")) { 
+			ret = makeColormap(ColorBrewer.getRdBu(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("RdGy")) { 
+			ret = makeColormap(ColorBrewer.getRdGy(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("RdPu")) { 
+			ret = makeColormap(ColorBrewer.getRdPu(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("RdYlBu")) { 
+			ret = makeColormap(ColorBrewer.getRdYlBu(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("RdYlGn")) { 
+			ret = makeColormap(ColorBrewer.getRdYlGn(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Reds")) { 
+			ret = makeColormap(ColorBrewer.getReds(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Set1")) { 
+			ret = makeColormap(ColorBrewer.getSet1(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Set2")) { 
+			ret = makeColormap(ColorBrewer.getSet2(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Set3")) { 
+			ret = makeColormap(ColorBrewer.getSet3(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("Spectral")) { 
+			ret = makeColormap(ColorBrewer.getSpectral(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("YlGn")) { 
+			ret = makeColormap(ColorBrewer.getYlGn(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("YlGnBu")) { 
+			ret = makeColormap(ColorBrewer.getYlGnBu(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("YlOrBr")) { 
+			ret = makeColormap(ColorBrewer.getYlOrBr(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("YlOrRd")) { 
+			ret = makeColormap(ColorBrewer.getYlOrRd(levels), def.transp, def.isZeroTransparent);
+		} else if (def.id.equals("bluescale")) { 
+			ret = makeColormap(ColorBrewer.getBlueScale(levels), def.transp, def.isZeroTransparent);			
+		} else if (def.id.equals("gradient")) { 
+			ret = makeColormap(ColorBrewer.getGradient(levels, def.parameters), def.transp, def.isZeroTransparent);						
+		} else if (def.id.equals("greenscale")) { 
+			ret = makeColormap(ColorBrewer.getGreenScale(levels), def.transp, def.isZeroTransparent);			
+		} else if (def.id.equals("greyscale")) { 
+			ret = makeColormap(ColorBrewer.getGreyScale(levels), def.transp, def.isZeroTransparent);			
+		} else if (def.id.equals("jet")) { 
+			ret = makeColormap(ColorBrewer.getJetScale(levels), def.transp, def.isZeroTransparent);			
+		} else if (def.id.equals("redscale")) { 
+			ret = makeColormap(ColorBrewer.getRedScale(levels), def.transp, def.isZeroTransparent);			
+		} else if (def.id.equals("yellowscale")) { 
+			ret = makeColormap(ColorBrewer.getYellowScale(levels), def.transp, def.isZeroTransparent);			
+		} 
 		
 		
 		return ret;
@@ -214,6 +394,7 @@ public class ColorMap {
 
         return gradient;
     }
+    
 
 	
 	/**
@@ -270,6 +451,35 @@ public class ColorMap {
 			 
 		return new ColorMap(new IndexColorModel(8,levels,r,g,b,a), levels);
 	}
+
+	public static ColorMap makeColormap(byte[][] def, int transparency, boolean zeroIsTransparent) {
+		
+		byte[] r = def[0];
+		byte[] g = def[1];
+		byte[] b = def[2];
+		
+		return makeColormap(r, g, b, transparency, zeroIsTransparent);
+	}
+	
+	public static ColorMap makeColormap(byte[] r, byte[] g, byte[] b, int transparency, boolean zeroIsTransparent) {
+
+		int levels = r.length;
+		
+		IndexColorModel cm = null;
+		if (zeroIsTransparent) {
+			 cm = new IndexColorModel(8, levels, r, g, b, 0);			
+		} else if (transparency > 0) {
+			byte[] t = new byte[r.length];
+			byte tr = (byte)(int)((256.0*(transparency/100.0)));
+			for (int i = 0; i < r.length; i++)
+				t[i] = tr;
+			 cm = new IndexColorModel(8, levels, r, g, b, t);			
+		} else {
+			 cm = new IndexColorModel(8, levels, r, g, b);						
+		}
+		
+		return new ColorMap(cm, levels);
+	}
 	
 	public static ColorMap jet(int n) {
 
@@ -316,6 +526,7 @@ public class ColorMap {
 	}
 
 	
+
 	/**
 	 * Make N grey levels 
 	 * @param levels

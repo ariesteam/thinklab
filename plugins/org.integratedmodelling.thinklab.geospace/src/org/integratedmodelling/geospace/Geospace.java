@@ -60,6 +60,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.utils.image.ColorMap;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
 import org.opengis.referencing.FactoryException;
@@ -172,6 +173,8 @@ public class Geospace extends ThinklabPlugin  {
 	
 	@Override
 	public void load(KnowledgeManager km) throws ThinklabPluginException {
+		
+		ColorMap.getColormap("zorba(12, 33, 23, 7)", 2);
 		
 		try {
 			

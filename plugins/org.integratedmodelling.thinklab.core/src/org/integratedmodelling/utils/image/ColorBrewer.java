@@ -1,5 +1,8 @@
 package org.integratedmodelling.utils.image;
 
+import java.awt.Color;
+import java.util.Arrays;
+
 /**
  * Return RGB data for all the ColorBrewer maps. Not fun to write or even port from R.
  * To be used along with colorbrewer.org to see how they look like.
@@ -10,15 +13,141 @@ package org.integratedmodelling.utils.image;
  */
 public class ColorBrewer {
 
-	public static int[][] rgb(int[] ... rgbs) {
+	
+	public static byte[][] getGradient(int levels, int[] rgbs) {
+		
+		byte[] r = new byte[levels];
+		byte[] g = new byte[levels];
+		byte[] b = new byte[levels];
+
+		Color[] cols = new Color[rgbs.length/3];
+		for (int i = 0; i < cols.length; i ++) {
+			cols[i] = new Color(rgbs[i*3], rgbs[(i*3)+1], rgbs[(i*3)+2]);
+		}
+		
+		Color[] gr = ColorMap.createMultiGradient(cols, levels);
+		
+		for (int i = 0; i < levels; i++) {
+			r[i] = (byte)gr[i].getRed();
+			r[i] = (byte)gr[i].getGreen();
+			r[i] = (byte)gr[i].getBlue();
+		}
+		
+		return new byte[][] {r, g, b}; 
+	}
+	public static byte[][] getGreyScale(int levels) {
+		
+		byte[] r = new byte[levels];
+		byte[] g = new byte[levels];
+		byte[] b = new byte[levels];
+
+		int incr = 256/levels;		
+		for (int i = 0; i < levels; i++) {			
+			int level = i * incr;
+			r[i] = g[i] = b[i] = (byte)level;
+		}
+		
+		return new byte[][] {r, g, b}; 
+	}
+
+	public static byte[][] getRedScale(int levels) {
+		
+		byte[] r = new byte[levels];
+		byte[] g = new byte[levels];
+		byte[] b = new byte[levels];
+
+		int incr = 256/levels;		
+		for (int i = 0; i < levels; i++) {			
+			int level = i * incr;
+			r[i] = (byte)level;
+		}
+		
+		return new byte[][] {r, g, b}; 
+	}
+
+	public static byte[][] getGreenScale(int levels) {
+		
+		byte[] r = new byte[levels];
+		byte[] g = new byte[levels];
+		byte[] b = new byte[levels];
+
+		int incr = 256/levels;		
+		for (int i = 0; i < levels; i++) {			
+			int level = i * incr;
+			g[i] = (byte)level;
+		}
+		
+		return new byte[][] {r, g, b}; 
+	}
+
+	public static byte[][] getBlueScale(int levels) {
+		
+		byte[] r = new byte[levels];
+		byte[] g = new byte[levels];
+		byte[] b = new byte[levels];
+
+		int incr = 256/levels;		
+		for (int i = 0; i < levels; i++) {			
+			int level = i * incr;
+			b[i] = (byte)level;
+		}
+		
+		return new byte[][] {r, g, b}; 
+	}
+	
+	public static byte[][] getYellowScale(int levels) {
+		
+		byte[] r = new byte[levels];
+		byte[] g = new byte[levels];
+		byte[] b = new byte[levels];
+
+		int incr = 256/levels;		
+		for (int i = 0; i < levels; i++) {			
+			int level = i * incr;
+			r[i] = g[i] = (byte)level;
+		}
+		
+		return new byte[][] {r, g, b}; 
+	}
+
+	public static byte[][] getJetScale(int n) {
+
+		byte r[] = new byte[n];
+		byte g[] = new byte[n];
+		byte b[] = new byte[n];
+
+		int maxval = 255;
+		Arrays.fill(g, 0, n / 8, (byte) 0);
+		for (int x = 0; x < n / 4; x++)
+			g[x + n / 8] = (byte) (maxval * x * 4 / n);
+		Arrays.fill(g, n * 3 / 8, n * 5 / 8, (byte) maxval);
+		for (int x = 0; x < n / 4; x++)
+			g[x + n * 5 / 8] = (byte) (maxval - (maxval * x * 4 / n));
+		Arrays.fill(g, n * 7 / 8, n, (byte) 0);
+
+		for (int x = 0; x < g.length; x++)
+			b[x] = g[(x + n / 4) % g.length];
+		Arrays.fill(b, n * 7 / 8, n, (byte) 0);
+		Arrays.fill(g, 0, n / 8, (byte) 0);
+		for (int x = n / 8; x < g.length; x++)
+			r[x] = g[(x + n * 6 / 8) % g.length];
+
+		return new byte[][] { r, g, b };
+	}
+
+	
+	static byte[][] rgb(byte[] ... rgbs) {
 		return rgbs;
 	}
 	
-	public static int[] c(int ... vals) {
-		return vals;
+	static byte[] c(int ... vals) {
+		byte[] ret = new byte[vals.length];
+		for (int i = 0; i < vals.length; i++) 
+			ret[i] = (byte)vals[i];
+		return ret;
 	}
 	
-	public static int[][] getAccent(int n) {
+	public static byte[][] getAccent(int n) {
 
 		switch (n) {
 		case 3: 
@@ -49,7 +178,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getBlues(int n) {
+	public static byte[][] getBlues(int n) {
 		switch (n) {
 		case 2:
 			return 
@@ -92,7 +221,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getBrBG(int n) {
+	public static byte[][] getBrBG(int n) {
 		
 		switch (n) {
 		case 2:
@@ -146,7 +275,7 @@ public class ColorBrewer {
 		}
 		return null;
 	}
-	public static int[][] getBuGn(int n) {
+	public static byte[][] getBuGn(int n) {
 		
 		switch (n) {
 		case 2:
@@ -191,7 +320,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getBuPu(int n) {
+	public static byte[][] getBuPu(int n) {
 		
 		switch (n) {
 		case 3:
@@ -233,7 +362,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getDark2(int n) {
+	public static byte[][] getDark2(int n) {
 		
 		switch (n) {
 		case 3:
@@ -271,7 +400,7 @@ public class ColorBrewer {
 	}
 	
 	
-	public static int[][] getGnBu(int n) {
+	public static byte[][] getGnBu(int n) {
 		
 		switch (n) {
 		case 3:
@@ -313,7 +442,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getGreens(int n) {
+	public static byte[][] getGreens(int n) {
 		
 		switch (n) {
 		case 3:
@@ -353,7 +482,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getGreys(int n) {
+	public static byte[][] getGreys(int n) {
 		
 		switch (n) {
 		case 3:
@@ -395,7 +524,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getOranges(int n) {
+	public static byte[][] getOranges(int n) {
 		
 		switch (n) {
 		case 3:
@@ -437,7 +566,7 @@ public class ColorBrewer {
 		return null;
 	}
 
-	public static int[][] getOrRd(int n) {
+	public static byte[][] getOrRd(int n) {
 		
 		switch (n) {
 		case 3:
@@ -479,7 +608,7 @@ public class ColorBrewer {
 		return null;
 	}
 
-	public static int[][] getPaired(int n) {
+	public static byte[][] getPaired(int n) {
 		
 		switch (n) {
 		case 3:
@@ -536,7 +665,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getPastel1(int n) {
+	public static byte[][] getPastel1(int n) {
 		
 		switch (n) {
 		case 3:
@@ -578,7 +707,7 @@ public class ColorBrewer {
 		return null;
 	}
 
-	public static int[][] getPastel2(int n) {
+	public static byte[][] getPastel2(int n) {
 		
 		switch (n) {
 		case 3:
@@ -615,7 +744,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getPiYG(int n) {
+	public static byte[][] getPiYG(int n) {
 		
 		switch (n) {
 		case 3:
@@ -667,7 +796,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getPRGn(int n) {
+	public static byte[][] getPRGn(int n) {
 		
 		switch (n) {
 		case 3:
@@ -719,7 +848,7 @@ public class ColorBrewer {
 		return null;
 	}
 			        
-	public static int[][] getPuBu(int n) {
+	public static byte[][] getPuBu(int n) {
 		
 		switch (n) {
 		case 3:
@@ -762,7 +891,7 @@ public class ColorBrewer {
 	}
 			        
 			        
-	public static int[][] getPuBuGn(int n) {
+	public static byte[][] getPuBuGn(int n) {
 		
 		switch (n) {
 		case 3:
@@ -804,7 +933,7 @@ public class ColorBrewer {
 		return null;
 	}
 			        
-	public static int[][] getPuOr(int n) {
+	public static byte[][] getPuOr(int n) {
 		
 		switch (n) {
 		case 3:
@@ -856,7 +985,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getPuRd(int n) {
+	public static byte[][] getPuRd(int n) {
 		
 		switch (n) {
 		case 3:
@@ -898,7 +1027,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getPurples(int n) {
+	public static byte[][] getPurples(int n) {
 		
 		switch (n) {
 		case 3:	
@@ -940,7 +1069,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getRdBu(int n) {
+	public static byte[][] getRdBu(int n) {
 		
 		switch (n) {
 		case 3:
@@ -992,7 +1121,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getRdGy(int n) {
+	public static byte[][] getRdGy(int n) {
 		
 		switch (n) {
 		case 3:
@@ -1044,7 +1173,7 @@ public class ColorBrewer {
 		return null;
 	}
 		
-	public static int[][] getRdPu(int n) {
+	public static byte[][] getRdPu(int n) {
 		
 		switch (n) {
 		case 3:
@@ -1086,7 +1215,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getReds(int n) {
+	public static byte[][] getReds(int n) {
 		
 		switch (n) {
 		case 3:
@@ -1128,7 +1257,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getRdYlBu(int n) {
+	public static byte[][] getRdYlBu(int n) {
 		
 		switch (n) {
 		case 3:
@@ -1180,7 +1309,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getRdYlGn(int n) {
+	public static byte[][] getRdYlGn(int n) {
 		
 		switch (n) {
 		case 3:
@@ -1232,7 +1361,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getSet1(int n) {
+	public static byte[][] getSet1(int n) {
 		
 		switch (n) {
 		case 3:
@@ -1274,7 +1403,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getSet2(int n) {
+	public static byte[][] getSet2(int n) {
 		
 		switch (n) {
 		case 3:
@@ -1311,7 +1440,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getSet3(int n) {
+	public static byte[][] getSet3(int n) {
 		
 		switch (n) {
 		case 3:
@@ -1368,7 +1497,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getSpectral(int n) {
+	public static byte[][] getSpectral(int n) {
 		
 		switch (n) {
 		case 3:
@@ -1420,7 +1549,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getYlGn(int n) {
+	public static byte[][] getYlGn(int n) {
 		
 		switch (n) {
 		case 3:
@@ -1462,7 +1591,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getYlGnBu(int n) {
+	public static byte[][] getYlGnBu(int n) {
 		
 		switch (n) {
 		case 3:
@@ -1504,7 +1633,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getYlOrBr(int n) {
+	public static byte[][] getYlOrBr(int n) {
 		
 		switch (n) {
 		case 3:
@@ -1546,7 +1675,7 @@ public class ColorBrewer {
 		return null;
 	}
 	
-	public static int[][] getYlOrRd(int n) {
+	public static byte[][] getYlOrRd(int n) {
 		
 		switch (n) {
 		case 3:
