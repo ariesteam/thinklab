@@ -16,6 +16,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
 import org.integratedmodelling.utils.InputSerializer;
@@ -41,6 +42,7 @@ public class Metadata {
 	public static final String TRUECASE = "truecase";
 	public static final String CONTINUOS_DISTRIBUTION_BREAKPOINTS = 
 			"continuous_dist_breakpoints";
+	public static final String ACTUAL_DATA_RANGE = "actual_data_range";
 	
 	public static class MetadataSerializer extends OutputSerializer {
 			
@@ -215,7 +217,7 @@ public class Metadata {
 					i++;
 				}
 			}
-		}
+		} 
 		
 		if (lexicalRank.size() == 0)
 			return null;
@@ -342,7 +344,6 @@ public class Metadata {
 	public static void serializeMetadata(Properties metadata, OutputStream fop) throws ThinklabException {
 
 
-		
 		MetadataSerializer out = new MetadataSerializer(fop);
 
 		// UNCERTAINTY (double[])
@@ -408,6 +409,87 @@ public class Metadata {
 			ret.put(RANKING, rank);
 			
 		return ret;
+	}
+	
+	/**
+	 * Remap double data from a datasource into integers that can be used to create an image. 
+	 * Set metadata so that the image can be annotated appropriately. Int values will not be more
+	 * than 255.
+	 * 
+	 * Metadata fields that may be set are:
+	 * 
+	 * 	DATA_TYPE   -> {"DISCRETE_RANKS", "CONTINUOUS", "CATEGORIES", "BOOLEAN_RANKING", "BOOLEAN_PROBABILITY"}
+	 *  ACTUAL_DATA_RANGE  -> [min, max] (doubles)
+	 *  ACTUAL_IMAGE_RANGE -> [min, max] (integers)
+	 *  DISPLAY_RANGE -> [min, max] 
+	 *  DISPLAY_CATEGORIES -> {category strings} (not there if continuous or boolean prob)
+	 *  DISPLAY_LEVELS -> Integer (0 - 256)
+	 *    
+	 * @return integer data or null if there's no chance to remap.
+	 * @throws ThinklabValueConversionException 
+	 */
+	public int[] getImageData(IState state) throws ThinklabValueConversionException {
+				
+		double[] data = state.getDataAsDoubles();
+		int len = data.length;
+		int[] idata = new int[len];
+
+		/*
+		 * compute actual min/max
+		 */
+		double min = Double.isNaN(data[0]) ? 0 : data[0];
+		double max = min;
+		
+		for (int i = 0; i < len; i++) {
+			if (!Double.isNaN(data[i])) {
+				if (data[i] > max) max = data[i];
+				if (data[i] < min) min = data[i];
+			}
+		}
+		state.setMetadata(ACTUAL_DATA_RANGE, new double[]{min,max});
+		
+		/*
+		 * compute the display data range in actual values from the semantics
+		 */
+		
+		
+		int imin = 0, imax = 0;
+		for (int i = 0; i < len; i++) {
+			
+			if (Double.isNaN(data[i]))
+				idata[i] = 0;
+			else {
+				idata[i] = (int)(((data[i]-min)/(max-min))*255.0);
+			}
+			
+			if (i == 0) {
+				imin = idata[0];
+				imax = idata[0];
+			} else {
+				if (idata[i] > imax) imax = idata[i];
+				if (idata[i] < imin) imin = idata[i];
+			}
+		}
+
+		/*
+		 * 
+		 */
+		
+		double[] distribution = (double[]) state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
+		
+		/*
+		 * if we have a distribution, compute expected min/max from it
+		 */
+		double expmin = min;
+		double expmax = max;
+		if (distribution != null) {
+			expmin = distribution[0];
+			expmax = distribution[distribution.length - 1];
+		} 
+
+		
+		
+		return idata;
 	}
 
 

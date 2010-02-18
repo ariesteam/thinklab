@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling;
 
+import org.integratedmodelling.modelling.visualization.VisualizationFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
@@ -34,6 +35,11 @@ public class ModellingPlugin extends ThinklabPlugin {
 			persistent = true;
 		}
 		cache = new ObservationCache(getScratchPath(), persistent);
+		
+		/*
+		 * add whatever defaults we have in the colormap chooser
+		 */
+		VisualizationFactory.get().loadColormapDefinitions(getProperties());
 	}
 
 	@Override

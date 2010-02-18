@@ -37,40 +37,6 @@ public class FileBasedDataset implements IDataset {
 	public static final int YELLOW = 4;
 	public static final int RAINBOW = 5;
 	
-	public static ColorMap getColormap(int color, int levels) {
-		ColorMap ret = null;
-
-		switch (color) {
-		case GREY:
-			ret = ColorMap.greyscale(levels);
-			break;
-		case GREEN:
-			ret = ColorMap.greenscale(levels);
-			break;
-		case RED:
-			ret = ColorMap.redscale(levels);
-			break;
-		case BLUE:
-			ret = ColorMap.bluescale(levels);
-			break;
-		case YELLOW:
-			ret = ColorMap.yellowscale(levels);
-			break;
-		case RAINBOW:
-			ret = ColorMap.jet(levels);
-			break;
-		}
-		
-		return ret;
-	}
-	
-	/*
-	 * default to greys
-	 */
-	public int getColorForConcept(IConcept observable) {
-		return GREY;
-	}
-	
 	public FileBasedDataset(IObservation obs) throws ThinklabException {
 
 		this.states = ObservationFactory.getStateMap(obs);
@@ -87,23 +53,37 @@ public class FileBasedDataset implements IDataset {
 	@Override
 	public ColorMap chooseColormap(
 			IConcept observable, double actualMin, double actualMax,
-			int minIndex, int maxIndex) {
+			int minIndex, int maxIndex) throws ThinklabException {
 		
 		IState state = getState(observable);
 		
-		if (state.getMetadata(Metadata.RANKING) != null ||
-			state.getMetadata(Metadata.CONTINUOUS) != null) {
+		// FIXME NUMBER OF LEVELS SHOULD BE DECIDED FROM METADATA UNLESS THERE IS NO FIXED SCALE
+		int nlevels = maxIndex - minIndex + 1;
+
+		ColorMap ret = VisualizationFactory.get().getColormap(observable, nlevels);
+
+		if (ret == null) {
+
+			ret = ColorMap.jet(nlevels);
 			
-			// ordered rankings
-			return getColormap(getColorForConcept(observable), maxIndex - minIndex + 1);
+			if (state.getMetadata(Metadata.RANKING) != null ||
+					state.getMetadata(Metadata.CONTINUOUS) != null) {
+
+				// ordered rankings
+				
+				
+			} else if (state.getMetadata(Metadata.BOOLEAN) != null && 
+					state.getMetadata(Metadata.UNCERTAINTY) != null) {
+				
+					// probability of true - should normalize to 0
+					ret = ColorMap.greyscale(nlevels);
+					
+			} else {
 			
-		} else if (state.getMetadata(Metadata.BOOLEAN) != null && 
-				   state.getMetadata(Metadata.UNCERTAINTY) != null) {
-			// probability of true - should normalize to 0
-			return ColorMap.greyscale(maxIndex - minIndex + 1);
+			}
 		}
 		
-		return ColorMap.jet(maxIndex - minIndex + 1);
+		return ret;
 	}
 	
 	@Override

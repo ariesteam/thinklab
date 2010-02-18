@@ -72,8 +72,9 @@ public interface IDataset {
 	 * @param minIndex the integer index that the min state was converted to
 	 * @param maxIndex the integer index that the max state was converted to
 	 * @return
+	 * @throws ThinklabException 
 	 */
 	public abstract ColorMap chooseColormap(IConcept observable, double actualMin,
-			double actualMax, int minIndex, int maxIndex);
+			double actualMax, int minIndex, int maxIndex) throws ThinklabException;
 
 }

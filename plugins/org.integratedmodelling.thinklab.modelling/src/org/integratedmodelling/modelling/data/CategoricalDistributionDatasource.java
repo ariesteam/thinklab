@@ -71,6 +71,11 @@ public class CategoricalDistributionDatasource extends
 	}
 
 
+	/**
+	 * TODO should return the mean, not the most likely class, except if requested.
+	 * @param probabilities
+	 * @return
+	 */
 	private Pair<IConcept, Double> getDistributionParameters(
 			double[] probabilities) {
 	

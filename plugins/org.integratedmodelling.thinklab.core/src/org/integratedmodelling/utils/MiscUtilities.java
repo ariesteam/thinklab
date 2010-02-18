@@ -1756,6 +1756,14 @@ loop:		for(;;)
 		return ret;
 	}
 	
+	public static String printVector(int[] data) {
+		String ret = "";
+		for (int d: data) {
+			ret += (ret.equals("") ? "" : " ") + d;
+		}
+		return ret;
+	}
+
 	public static String printVector(double[] data) {
 		String ret = "";
 		for (double d: data) {
@@ -1763,6 +1771,30 @@ loop:		for(;;)
 		}
 		return ret;
 	}
+
+	public static int[] parseIntVector(String data) {
+
+		String[] ss  = data.split("\\s+");
+		int[] ret = new int[ss.length];
+		int i = 0;
+		for (String s: ss) {
+			ret[i++] = Integer.parseInt(s);
+		}
+		return ret;
+	}
+
+	public static int[] parseIntVector(String data, int startAt) {
+
+		String[] ss  = data.split("\\s+");
+		int len = ss.length - startAt;
+		int[] ret = new int[len];
+		int n = 0;
+		for (int i = startAt; i < ss.length; i++) {
+			ret[n++] = Integer.parseInt(ss[i]);
+		}
+		return ret;
+	}
+
 
 	public static double[] parseDoubleVector(String data) {
 
@@ -1775,6 +1807,19 @@ loop:		for(;;)
 		return ret;
 	}
 
+	public static double[] parseDoubleVector(String data, int startAt) {
+
+		String[] ss  = data.split("\\s+");
+		int len = ss.length - startAt;
+		double[] ret = new double[len];
+		int n = 0;
+		for (int i = startAt; i < ss.length; i++) {
+			ret[n++] = Double.parseDouble(ss[i]);
+		}
+		return ret;
+	}
+
+	
 	/** 
 	 * Create a new temporary directory. Use something like 
 	 * {@link #recursiveDelete(File)} to clean this directory up since it isn't 

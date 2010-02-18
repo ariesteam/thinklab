@@ -1,10 +1,12 @@
-package org.integratedmodelling.thinklab;
+package org.integratedmodelling.thinklab.interfaces.knowledge.datastructures;
 
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
+import org.integratedmodelling.thinklab.ConceptVisitor;
+import org.integratedmodelling.thinklab.ConceptVisitor.ConceptMatcher;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 /**
