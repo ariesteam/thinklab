@@ -37,9 +37,7 @@ import java.awt.Color;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 
@@ -74,10 +72,11 @@ public class ColorMap {
 		s = s.replaceAll(",", " ");
 
 		String[] ss = s.split("\\s+");
+		String sz = ss[0];
 		
-		if (ss[0].contains("_")) {
-			int wu = ss[0].indexOf('_');
-			ss[0] = ss[0].substring(0, wu);
+		if (sz.contains("_")) {
+			int wu = sz.indexOf("_");
+			sz = sz.substring(0, wu);
 			String tp = ss[0].substring(wu+1);
 			if (Character.isDigit(tp.charAt(0))) {
 				ret.transp = Integer.parseInt(tp);
@@ -86,7 +85,7 @@ public class ColorMap {
 			}
 		}
 		
-		ret.id = ss[0];
+		ret.id = sz;
 		if (ss.length > 1) {
 			int nnums = ss.length - 1;
 			if ((nnums % 3) == 1) {
@@ -104,57 +103,57 @@ public class ColorMap {
 		return ret;
 	}
 	
-	static ArrayList<String> paletteNames = null;
-	static {	
-		
-		 String[] pNames = {
-			 "greyscale", // n-level greyscale (black to white)
-			 "greenscale", // n-level greenscale (black to green)
-			 "redscale", // n-level greenscale (black to red)
-			 "bluescale", // n-level greenscale (black to blue)
-			 "gradient", // gradient from rgb to rgb color(s), n levels
-			 "jet", // the classic evil color ramp from blue to red, n levels
-			 "BrBG", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels) 
-			 "PiYG", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "PRGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "PuOr", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "RdBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "RdGy", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "RdYlBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "RdYlGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Spectral", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Accent", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Dark2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Paired", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Pastel1", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Pastel2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Set1", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Set2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Set3", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Blues", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "BuGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "BuPu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "GnBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Greens", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Greys", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Oranges", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "OrRd", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "PuBuPuBuGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "PuRd", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Purples", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "RdPu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "Reds", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "YlGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "YlGnBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "YlOrBr", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-			 "YlOrRd" // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-		 };
-
-		 paletteNames = new ArrayList<String>(pNames.length);
-		 for (String pn : pNames) 
-			 paletteNames.add(pn);
-		 Collections.sort(paletteNames);
-	 }
+//	static ArrayList<String> paletteNames = null;
+//	static {	
+//		
+//		 String[] pNames = {
+//			 "greyscale", // n-level greyscale (black to white)
+//			 "greenscale", // n-level greenscale (black to green)
+//			 "redscale", // n-level greenscale (black to red)
+//			 "bluescale", // n-level greenscale (black to blue)
+//			 "gradient", // gradient from rgb to rgb color(s), n levels
+//			 "jet", // the classic evil color ramp from blue to red, n levels
+//			 "BrBG", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels) 
+//			 "PiYG", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "PRGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "PuOr", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "RdBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "RdGy", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "RdYlBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "RdYlGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Spectral", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Accent", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Dark2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Paired", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Pastel1", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Pastel2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Set1", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Set2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Set3", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Blues", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "BuGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "BuPu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "GnBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Greens", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Greys", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Oranges", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "OrRd", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "PuBuPuBuGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "PuRd", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Purples", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "RdPu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "Reds", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "YlGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "YlGnBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "YlOrBr", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//			 "YlOrRd" // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+//		 };
+//
+//		 paletteNames = new ArrayList<String>(pNames.length);
+//		 for (String pn : pNames) 
+//			 paletteNames.add(pn);
+//		 Collections.sort(paletteNames);
+//	 }
 	 
 	 
 	/**
@@ -169,7 +168,7 @@ public class ColorMap {
 	 * bluescale(n)      // n-level greenscale (black to blue)
 	 * yellowscale(n)    // n-level black to yellow
 	 * gradient(r1, g1, b1, r2, g2, b2, [r3, g3, b3, ....,] n)  // gradient from rgb to rgb color(s), n levels
-	 * jet(n)  // the classic evil color ramp from blue to red, n levels
+	 * rainbow(n)  // the classic evil color ramp from blue to red, n levels
 	 * BrBG(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels) 
 	 * PiYG(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
 	 * PRGn(n) // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
@@ -305,7 +304,7 @@ public class ColorMap {
 			ret = makeColormap(ColorBrewer.getGreenScale(levels), def.transp, def.isZeroTransparent);			
 		} else if (def.id.equals("greyscale")) { 
 			ret = makeColormap(ColorBrewer.getGreyScale(levels), def.transp, def.isZeroTransparent);			
-		} else if (def.id.equals("jet")) { 
+		} else if (def.id.equals("rainbow")) { 
 			ret = makeColormap(ColorBrewer.getJetScale(levels), def.transp, def.isZeroTransparent);			
 		} else if (def.id.equals("redscale")) { 
 			ret = makeColormap(ColorBrewer.getRedScale(levels), def.transp, def.isZeroTransparent);			
@@ -454,6 +453,9 @@ public class ColorMap {
 
 	public static ColorMap makeColormap(byte[][] def, int transparency, boolean zeroIsTransparent) {
 		
+		if (def == null || def[0] == null)
+			return null;
+		
 		byte[] r = def[0];
 		byte[] g = def[1];
 		byte[] b = def[2];
@@ -549,6 +551,8 @@ public class ColorMap {
 
 	public File getColorbar(int h, File fileOrNull) throws ThinklabIOException {
 		
+		int len = (256/levels) * levels;
+		
 		if (fileOrNull == null)
 			try {
 				fileOrNull = File.createTempFile("cbar", ".png");
@@ -556,14 +560,13 @@ public class ColorMap {
 				throw new ThinklabIOException(e);
 			}
 		
-		int[][] cdata = new int[h][256];
-		int incr = 256/levels;
-			for (int y = 0; y < h; y++) {
-				for (int i = 0; i < 256; i += incr) {
-					int col = i * incr;
-					for (int x = i; x < i+incr; x++)
-						cdata[y][x] = col;
-				}
+		int[][] cdata = new int[h][len];
+		int incr = len/levels;
+		for (int y = 0; y < h; y++) {
+			for (int i = 0; i < levels; i ++) {
+				for (int x = (i*incr); x < ((i+1)*incr); x++)
+					cdata[y][x] = i;
+			}
 		}
 			
 		ImageUtil.createImageFile(cdata, 256, h, this, fileOrNull.toString(), false);

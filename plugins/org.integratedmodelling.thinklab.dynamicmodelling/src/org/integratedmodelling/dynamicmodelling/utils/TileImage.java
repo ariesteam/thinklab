@@ -34,6 +34,8 @@ package org.integratedmodelling.dynamicmodelling.utils;
 
 import java.awt.Color;
 
+import org.integratedmodelling.utils.image.Picture;
+
 /**
  * Simple code from the web - may be used eventually to tile large graphs and show them with
  * GSV.js.

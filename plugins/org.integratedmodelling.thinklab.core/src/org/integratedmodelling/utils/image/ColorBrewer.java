@@ -29,12 +29,13 @@ public class ColorBrewer {
 		
 		for (int i = 0; i < levels; i++) {
 			r[i] = (byte)gr[i].getRed();
-			r[i] = (byte)gr[i].getGreen();
-			r[i] = (byte)gr[i].getBlue();
+			g[i] = (byte)gr[i].getGreen();
+			b[i] = (byte)gr[i].getBlue();
 		}
 		
 		return new byte[][] {r, g, b}; 
 	}
+	
 	public static byte[][] getGreyScale(int levels) {
 		
 		byte[] r = new byte[levels];
