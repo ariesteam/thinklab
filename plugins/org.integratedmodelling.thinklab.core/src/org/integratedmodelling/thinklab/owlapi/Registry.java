@@ -20,6 +20,7 @@ package org.integratedmodelling.thinklab.owlapi;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Hashtable;
 
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
@@ -39,8 +40,8 @@ import org.semanticweb.owl.model.OWLOntologyManager;
 public class Registry {
 	private static Registry registry = null;
 	
-	private HashMap<URI, String> uri2cs = new HashMap<URI, String>();
-	private HashMap<String, URI> cs2uri = new HashMap<String, URI>();
+	private Hashtable<URI, String> uri2cs = new Hashtable<URI, String>();
+	private Hashtable<String, URI> cs2uri = new Hashtable<String, URI>();
 	private int counter =1;
 
 	private Registry(){

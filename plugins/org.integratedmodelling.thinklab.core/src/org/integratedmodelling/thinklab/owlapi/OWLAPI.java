@@ -191,16 +191,18 @@ public class OWLAPI {
 		
 		String ret = null;
 		
-		// Get the annotations on the class that have a URI corresponding to rdfs:label
-		for (OWLAnnotation<?> annotation : k.entity.getAnnotations(k.getOntology(), annotationURI)) {
-			if (annotation.isAnnotationByConstant()) {
-				OWLConstant val = annotation.getAnnotationValueAsConstant();
-				if (!val.isTyped()) {
-					// The value isn't a typed constant, so we can safely obtain it
-					// as an OWLUntypedConstant
-					if (language == null || val.asOWLUntypedConstant().hasLang(language)) {
-						ret = val.getLiteral();
-						break;
+		synchronized (k.entity) {
+			// Get the annotations on the class that have a URI corresponding to rdfs:label
+			for (OWLAnnotation<?> annotation : k.entity.getAnnotations(k.getOntology(), annotationURI)) {
+				if (annotation.isAnnotationByConstant()) {
+					OWLConstant val = annotation.getAnnotationValueAsConstant();
+					if (!val.isTyped()) {
+						// The value isn't a typed constant, so we can safely obtain it
+						// as an OWLUntypedConstant
+						if (language == null || val.asOWLUntypedConstant().hasLang(language)) {
+							ret = val.getLiteral();
+							break;
+						}
 					}
 				}
 			}
@@ -212,17 +214,18 @@ public class OWLAPI {
 	 * Return all data properties that are the object of a domain axiom for the
 	 * passed class in the passed ontology. 
 	 */
-	public static Set<OWLDataProperty> getClassDataProperties(OWLOntology ontology,
-			OWLClass c) throws OWLException {
-		
-		Set<OWLDataProperty> classProps = new HashSet<OWLDataProperty>();
+	public static Set<OWLDataProperty> getClassDataProperties(
+			OWLOntology ontology, OWLClass c) throws OWLException {
 
-		for (OWLDataProperty prop : ontology.getReferencedDataProperties()) {
-			if (!prop.getDomains(ontology).isEmpty()) {
-				for (OWLDescription od : prop.getDomains(ontology)) {
-					if (od != null && od instanceof OWLClass) {
-						if (((OWLClass) od).getURI().equals(c.getURI())) {
-							classProps.add(prop);
+		Set<OWLDataProperty> classProps = new HashSet<OWLDataProperty>();
+		synchronized (ontology) {
+			for (OWLDataProperty prop : ontology.getReferencedDataProperties()) {
+				if (!prop.getDomains(ontology).isEmpty()) {
+					for (OWLDescription od : prop.getDomains(ontology)) {
+						if (od != null && od instanceof OWLClass) {
+							if (((OWLClass) od).getURI().equals(c.getURI())) {
+								classProps.add(prop);
+							}
 						}
 					}
 				}
@@ -235,17 +238,19 @@ public class OWLAPI {
 	 * Return all object properties that are the object of a domain axiom for the
 	 * passed class in the passed ontology. 
 	 */
-	public static Set<OWLObjectProperty> getClassObjectProperties(OWLOntology ontology,
-			OWLClass c) throws OWLException {
-		
-		Set<OWLObjectProperty> classProps = new HashSet<OWLObjectProperty>();
+	public static Set<OWLObjectProperty> getClassObjectProperties(
+			OWLOntology ontology, OWLClass c) throws OWLException {
 
-		for (OWLObjectProperty prop : ontology.getReferencedObjectProperties()) {
-			if (!prop.getDomains(ontology).isEmpty()) {
-				for (OWLDescription od : prop.getDomains(ontology)) {
-					if (od != null && od instanceof OWLClass) {
-						if (((OWLClass) od).getURI().equals(c.getURI())) {
-							classProps.add(prop);
+		Set<OWLObjectProperty> classProps = new HashSet<OWLObjectProperty>();
+		synchronized (ontology) {
+			for (OWLObjectProperty prop : ontology
+					.getReferencedObjectProperties()) {
+				if (!prop.getDomains(ontology).isEmpty()) {
+					for (OWLDescription od : prop.getDomains(ontology)) {
+						if (od != null && od instanceof OWLClass) {
+							if (((OWLClass) od).getURI().equals(c.getURI())) {
+								classProps.add(prop);
+							}
 						}
 					}
 				}
@@ -253,7 +258,7 @@ public class OWLAPI {
 		}
 		return classProps;
 	}
-	
+
 	public static void setOWLObjectPropertyValue(OWLOntology ont, OWLIndividual ind, OWLProperty prop, OWLIndividual value) {
   
 		OWLObjectPropertyAssertionAxiom assertion = 

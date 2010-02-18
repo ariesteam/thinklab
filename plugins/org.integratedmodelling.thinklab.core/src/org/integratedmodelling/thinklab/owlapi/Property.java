@@ -85,43 +85,46 @@ public class Property extends Knowledge implements IProperty {
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getAllParents()
 	 */
 	public Collection<IProperty> getAllParents() {
-		
-		Set<IProperty> ret = new HashSet<IProperty>();
-		
-		if (FileKnowledgeRepository.KR.propertyReasoner != null) {
-			
-			try {
-				if (entity.isOWLObjectProperty()) {
-					Set<Set<OWLObjectProperty>> parents = FileKnowledgeRepository.KR.propertyReasoner
-						.getAncestorProperties(entity.asOWLObjectProperty());
-					Set<OWLObjectProperty> subClses = OWLReasonerAdapter
-						.flattenSetOfSets(parents);
-					for (OWLObjectProperty cls : subClses) {
-						ret.add(new Property(cls));
-					}
-				} else if (entity.isOWLDataProperty()) {
-					Set<Set<OWLDataProperty>> parents = FileKnowledgeRepository.KR.propertyReasoner
-						.getAncestorProperties(entity.asOWLDataProperty());
-					Set<OWLDataProperty> subClses = OWLReasonerAdapter
-						.flattenSetOfSets(parents);
-					for (OWLDataProperty cls : subClses) {
-						ret.add(new Property(cls));
-					}
-				}
-				return ret;
-				
-			} catch (OWLException e) {
-				// just continue to dumb method
-			}
 
-		} else {
-			
-			for (IProperty c : getParents()) {
-				ret.add(c);
-				ret.addAll(c.getAllParents());
+		Set<IProperty> ret = new HashSet<IProperty>();
+
+		synchronized (entity) {
+			if (FileKnowledgeRepository.KR.propertyReasoner != null) {
+
+				try {
+					if (entity.isOWLObjectProperty()) {
+						Set<Set<OWLObjectProperty>> parents = FileKnowledgeRepository.KR.propertyReasoner
+								.getAncestorProperties(entity
+										.asOWLObjectProperty());
+						Set<OWLObjectProperty> subClses = OWLReasonerAdapter
+								.flattenSetOfSets(parents);
+						for (OWLObjectProperty cls : subClses) {
+							ret.add(new Property(cls));
+						}
+					} else if (entity.isOWLDataProperty()) {
+						Set<Set<OWLDataProperty>> parents = FileKnowledgeRepository.KR.propertyReasoner
+								.getAncestorProperties(entity
+										.asOWLDataProperty());
+						Set<OWLDataProperty> subClses = OWLReasonerAdapter
+								.flattenSetOfSets(parents);
+						for (OWLDataProperty cls : subClses) {
+							ret.add(new Property(cls));
+						}
+					}
+					return ret;
+
+				} catch (OWLException e) {
+					// just continue to dumb method
+				}
+
+			} else {
+
+				for (IProperty c : getParents()) {
+					ret.add(c);
+					ret.addAll(c.getAllParents());
+				}
 			}
 		}
-		
 		return ret;
 	}
 
@@ -136,16 +139,20 @@ public class Property extends Knowledge implements IProperty {
 		
 		if (entity.isOWLDataProperty()) {
 			for (OWLOntology o : onts)  {
-				for (OWLDataPropertyExpression p : 
+				synchronized (this.entity) {
+					for (OWLDataPropertyExpression p : 
 						entity.asOWLDataProperty().getSubProperties(o)) {
-					ret.add(new Property(p));
+						ret.add(new Property(p));
+					}
 				}
 			}
 		} else if (entity.isOWLObjectProperty()) {
 			for (OWLOntology o : onts)  {
-				for (OWLObjectPropertyExpression p : 
-						entity.asOWLObjectProperty().getSubProperties(o)) {
-					ret.add(new Property(p));
+				synchronized (this.entity) {
+					for (OWLObjectPropertyExpression p : 
+							entity.asOWLObjectProperty().getSubProperties(o)) {
+						ret.add(new Property(p));
+					}
 				}
 			}
 		}
@@ -159,15 +166,17 @@ public class Property extends Knowledge implements IProperty {
 	public Collection<IConcept> getDomain() {
 
 		Set<IConcept> ret = new HashSet<IConcept>();
-		if (entity.isOWLDataProperty()) {
-			for (OWLDescription c : entity.asOWLDataProperty().getDomains(
-					FileKnowledgeRepository.get().manager.getOntologies())) {
-				ret.add(new Concept(c.asOWLClass()));
-			}
-		} else if (entity.isOWLObjectProperty()) {
-			for (OWLDescription c : entity.asOWLObjectProperty().getDomains(
-					FileKnowledgeRepository.get().manager.getOntologies())) {
-				ret.add(new Concept(c.asOWLClass()));
+		synchronized (this.entity) {
+			if (entity.isOWLDataProperty()) {
+				for (OWLDescription c : entity.asOWLDataProperty().getDomains(
+						FileKnowledgeRepository.get().manager.getOntologies())) {
+					ret.add(new Concept(c.asOWLClass()));
+				}
+			} else if (entity.isOWLObjectProperty()) {
+				for (OWLDescription c : entity.asOWLObjectProperty().getDomains(
+						FileKnowledgeRepository.get().manager.getOntologies())) {
+					ret.add(new Concept(c.asOWLClass()));
+				}
 			}
 		}
 		return ret;
@@ -180,19 +189,21 @@ public class Property extends Knowledge implements IProperty {
 
 		Property ret = null;
 		
-		if (entity.isOWLObjectProperty()) {
+		synchronized (this.entity) {
+			if (entity.isOWLObjectProperty()) {
 			
-			Set<OWLObjectPropertyExpression> dio = 
-				entity.asOWLObjectProperty().getInverses(getOntology());
+				Set<OWLObjectPropertyExpression> dio = 
+					entity.asOWLObjectProperty().getInverses(getOntology());
 			
-			if (dio.size() > 1) 
-				Thinklab.get().logger().error(
-						"taking the inverse of property " + 
-						this + 
-						", which has multiple inverses");
+				if (dio.size() > 1) 
+					Thinklab.get().logger().error(
+							"taking the inverse of property " + 
+							this	 + 
+							", which has multiple inverses");
 			
-			if (dio.size() > 0) {
-				ret = new Property(dio.iterator().next());
+				if (dio.size() > 0) {
+					ret = new Property(dio.iterator().next());
+				}
 			}
 		}
 		return ret;
@@ -224,19 +235,20 @@ public class Property extends Knowledge implements IProperty {
 		/*
 		 * TODO use reasoner as appropriate
 		 */
-		
-		if (entity.isOWLDataProperty()) {
-			for (OWLOntology o : onts)  {
-				for (OWLDataPropertyExpression p : 
+		synchronized (this.entity) {
+			if (entity.isOWLDataProperty()) {
+				for (OWLOntology o : onts)  {
+					for (OWLDataPropertyExpression p : 
 						entity.asOWLDataProperty().getSuperProperties(o)) {
-					ret.add(new Property(p));
+						ret.add(new Property(p));
+					}
 				}
-			}
-		} else if (entity.isOWLObjectProperty()) {
-			for (OWLOntology o : onts)  {
-				for (OWLObjectPropertyExpression p : 
+			} else if (entity.isOWLObjectProperty()) {
+				for (OWLOntology o : onts)  {
+					for (OWLObjectPropertyExpression p : 
 						entity.asOWLObjectProperty().getSuperProperties(o)) {
-					ret.add(new Property(p));
+						ret.add(new Property(p));
+					}
 				}
 			}
 		}
@@ -248,34 +260,38 @@ public class Property extends Knowledge implements IProperty {
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#getRange()
 	 */
 	public Collection<IConcept> getRange() {
-		
-		Set<IConcept> ret = new HashSet<IConcept>();
-		if (entity.isOWLDataProperty()) {
-			
-			for (OWLDataRange c : entity.asOWLDataProperty().getRanges(
-					FileKnowledgeRepository.get().manager.getOntologies())) {
 
-				if (c.isDataType()) {
-					OWLDataType dtype = (OWLDataType) c;
-					String tltype = KnowledgeManager.get().getXSDMapping(dtype.getURI().toString());
-					if (tltype != null) {
-						try {
-							ret.add(KnowledgeManager.get().requireConcept(tltype));
-						} catch (Exception e) {
-							// just don't add it
+		Set<IConcept> ret = new HashSet<IConcept>();
+		synchronized (this.entity) {
+			if (entity.isOWLDataProperty()) {
+
+				for (OWLDataRange c : entity.asOWLDataProperty().getRanges(
+						FileKnowledgeRepository.get().manager.getOntologies())) {
+
+					if (c.isDataType()) {
+						OWLDataType dtype = (OWLDataType) c;
+						String tltype = KnowledgeManager.get().getXSDMapping(
+								dtype.getURI().toString());
+						if (tltype != null) {
+							try {
+								ret.add(KnowledgeManager.get().requireConcept(
+										tltype));
+							} catch (Exception e) {
+								// just don't add it
+							}
 						}
 					}
 				}
-			}
-		} else if (entity.isOWLObjectProperty()) {
-			for (OWLDescription c : entity.asOWLObjectProperty().getRanges(
-					FileKnowledgeRepository.get().manager.getOntologies())) {
-				if (!c.isAnonymous())
-					ret.add(new Concept(c.asOWLClass()));
+			} else if (entity.isOWLObjectProperty()) {
+				for (OWLDescription c : entity.asOWLObjectProperty().getRanges(
+						FileKnowledgeRepository.get().manager.getOntologies())) {
+					if (!c.isAnonymous())
+						ret.add(new Concept(c.asOWLClass()));
+				}
 			}
 		}
 		return ret;
-		
+
 	}
 
 	/* (non-Javadoc)

@@ -75,7 +75,9 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	 * @see org.integratedmodelling.thinklab.interfaces.IResource#getURI()
 	 */
 	public String getURI() {
-		return entity.getURI().toString();
+		synchronized (entity) {
+			return entity.getURI().toString();
+		}
 	}
 
 	public String toString() {
@@ -112,20 +114,21 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	}
 
 	public void addAnnotation(OWLProperty prop, String annotation) {
-		
+	
 		OWLOntology ontology = getOntology();
-		OWLDataFactory df = FileKnowledgeRepository.df;
-		OWLConstant cns = df.getOWLTypedConstant(annotation);
-		OWLAnnotation<?> anno = df.getOWLConstantAnnotation(prop.getURI(), cns);
-		OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, anno);
-		// Add the axiom to the ontology
-		try {
-			FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
+		synchronized (ontology) {
+			OWLDataFactory df = FileKnowledgeRepository.df;
+			OWLConstant cns = df.getOWLTypedConstant(annotation);
+			OWLAnnotation<?> anno = df.getOWLConstantAnnotation(prop.getURI(), cns);
+			OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, anno);
+			// Add the axiom to the ontology
+			try {
+				FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
 					ontology, ax));
-		} catch (OWLOntologyChangeException e) {
-			throw new ThinklabRuntimeException(e);
+			} catch (OWLOntologyChangeException e) {
+				throw new ThinklabRuntimeException(e);
+			}
 		}
-
 	}
 
 	
@@ -140,15 +143,17 @@ public abstract class Knowledge implements IKnowledge, IResource {
 		// concept or some "active" one?
 		OWLOntology ontology = FileKnowledgeRepository.KR.manager
 				.getOntology(ontoURI);
-		OWLDataFactory df = FileKnowledgeRepository.df;
-		OWLAnnotation<?> commentAnno = df.getCommentAnnotation(desc, language);
-		OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, commentAnno);
-		// Add the axiom to the ontology
-		try {
-			FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
+		synchronized (ontology) {
+			OWLDataFactory df = FileKnowledgeRepository.df;
+			OWLAnnotation<?> commentAnno = df.getCommentAnnotation(desc, language);
+			OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, commentAnno);
+			// Add the axiom to the ontology
+			try {
+				FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
 					ontology, ax));
-		} catch (OWLOntologyChangeException e) {
-			throw new ThinklabRuntimeException(e);
+			} catch (OWLOntologyChangeException e) {
+				throw new ThinklabRuntimeException(e);
+			}
 		}
 
 	}
@@ -161,7 +166,6 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	 */
 	public void addLabel(String desc) {
 		addLabel(desc, DEF_LANG);
-
 	}
 
 	/*
@@ -175,18 +179,19 @@ public abstract class Knowledge implements IKnowledge, IResource {
 		// concept or some "active" one?
 		OWLOntology ontology = FileKnowledgeRepository.KR.manager
 				.getOntology(ontoURI);
-		OWLDataFactory df = FileKnowledgeRepository.df;
+		synchronized (ontology) {
+			OWLDataFactory df = FileKnowledgeRepository.df;
 
-		OWLAnnotation<?> labelAnno = df.getOWLLabelAnnotation(desc, language);
-		OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, labelAnno);
-		// Add the axiom to the ontology
-		try {
-			FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
+			OWLAnnotation<?> labelAnno = df.getOWLLabelAnnotation(desc, language);
+			OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, labelAnno);
+			// Add the axiom to the ontology
+			try {
+				FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
 					ontology, ax));
-		} catch (OWLOntologyChangeException e) {
-			throw new ThinklabRuntimeException(e);
+			} catch (OWLOntologyChangeException e) {
+				throw new ThinklabRuntimeException(e);
+			}
 		}
-
 	}
 
 	/*
@@ -195,7 +200,9 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	 * @see org.integratedmodelling.thinklab.interfaces.IResource#getConceptSpace()
 	 */
 	public String getConceptSpace() {
-		return Registry.get().getConceptSpace(entity.getURI());
+		synchronized (this.entity) {
+			return Registry.get().getConceptSpace(entity.getURI());
+		}
 	}
 
 	/*
@@ -238,18 +245,20 @@ public abstract class Knowledge implements IKnowledge, IResource {
 		OWLOntology ontology = FileKnowledgeRepository.KR.manager
 				.getOntology(ontoURI);
 		if (ontology != null) {
-			for (OWLAnnotation<?> annotation : entity.getAnnotations(ontology,
-					property)) {
-				if (annotation.isAnnotationByConstant()) {
-					OWLConstant val = annotation.getAnnotationValueAsConstant();
-					if (languageCode.equals("")) {
-						return val.getLiteral();
-					} else {
-						if (!val.isTyped())
-							if (val.asOWLUntypedConstant()
-									.hasLang(languageCode)) {
-								return val.getLiteral();
-							}
+			synchronized (ontology) {
+				for (OWLAnnotation<?> annotation : entity.getAnnotations(ontology,
+						property)) {
+					if (annotation.isAnnotationByConstant()) {
+						OWLConstant val = annotation.getAnnotationValueAsConstant();
+						if (languageCode.equals("")) {
+							return val.getLiteral();
+						} else {
+							if (!val.isTyped())
+								if (val.asOWLUntypedConstant()
+										.hasLang(languageCode)) {
+									return val.getLiteral();
+								}	
+						}
 					}
 				}
 			}
@@ -331,56 +340,6 @@ public abstract class Knowledge implements IKnowledge, IResource {
 			return false;
 		}
 	}
-
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledge#equals(org.integratedmodelling.thinklab.SemanticType)
-//	 */
-//	public boolean equals(SemanticType st) {
-//		try {
-//			return equals(Registry.get().getURI(st));
-//		} catch (ThinklabMalformedSemanticTypeException e) {
-//			return false;
-//		}
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see org.integratedmodelling.thinklab.interfaces.IResource#equals(java.lang.String)
-//	 */
-//	public boolean equals(String semanticType) {
-//		try {
-//			return equals(new SemanticType(semanticType));
-//		} catch (ThinklabMalformedSemanticTypeException e) {
-//			return false;
-//		}
-//	}
-
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see org.integratedmodelling.thinklab.interfaces.IResource#equals(org.integratedmodelling.thinklab.interfaces.IResource)
-//	 */
-//	public boolean equals(IResource r) {
-//		return equals(URI.create(r.getURI()));
-//	}
-//
-//	public boolean equals(IKnowledge ik) {
-//		return equals(URI.create(ik.getURI()));
-//	}
-
-//	/**
-//	 * Equals returns true only is the two resources are identical i.e have the
-//	 * same URI To be used in Collections
-//	 * 
-//	 * @param uri
-//	 * @return
-//	 */
-//	public boolean equals(URI uri) {
-//		return this.entity.getURI().equals(uri);
-//	}
 
 	/**
 	 * The is method investigates the subsumption hierarchy. If a reasoner is

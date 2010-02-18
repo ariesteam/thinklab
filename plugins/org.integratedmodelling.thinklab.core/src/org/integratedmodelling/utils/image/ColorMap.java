@@ -37,7 +37,9 @@ import java.awt.Color;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 
@@ -103,57 +105,60 @@ public class ColorMap {
 		return ret;
 	}
 	
-//	static ArrayList<String> paletteNames = null;
-//	static {	
-//		
-//		 String[] pNames = {
-//			 "greyscale", // n-level greyscale (black to white)
-//			 "greenscale", // n-level greenscale (black to green)
-//			 "redscale", // n-level greenscale (black to red)
-//			 "bluescale", // n-level greenscale (black to blue)
-//			 "gradient", // gradient from rgb to rgb color(s), n levels
-//			 "jet", // the classic evil color ramp from blue to red, n levels
-//			 "BrBG", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels) 
-//			 "PiYG", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "PRGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "PuOr", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "RdBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "RdGy", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "RdYlBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "RdYlGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Spectral", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Accent", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Dark2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Paired", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Pastel1", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Pastel2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Set1", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Set2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Set3", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Blues", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "BuGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "BuPu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "GnBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Greens", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Greys", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Oranges", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "OrRd", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "PuBuPuBuGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "PuRd", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Purples", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "RdPu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "Reds", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "YlGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "YlGnBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "YlOrBr", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//			 "YlOrRd" // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
-//		 };
-//
-//		 paletteNames = new ArrayList<String>(pNames.length);
-//		 for (String pn : pNames) 
-//			 paletteNames.add(pn);
-//		 Collections.sort(paletteNames);
-//	 }
+	/*
+	 * This stuff is only used for listing at the moment.
+	 */
+	static public ArrayList<String> paletteNames = null;
+	static {	
+		
+		 String[] pNames = {
+			 "greyscale", // n-level greyscale (black to white)
+			 "greenscale", // n-level greenscale (black to green)
+			 "redscale", // n-level greenscale (black to red)
+			 "bluescale", // n-level greenscale (black to blue)
+			 "gradient", // gradient from rgb to rgb color(s), n levels
+			 "rainbow", // the classic evil color ramp from blue to red, n levels
+			 "BrBG", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels) 
+			 "PiYG", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "PRGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "PuOr", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "RdBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "RdGy", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "RdYlBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "RdYlGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Spectral", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Accent", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Dark2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Paired", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Pastel1", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Pastel2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Set1", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Set2", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Set3", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Blues", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "BuGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "BuPu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "GnBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Greens", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Greys", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Oranges", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "OrRd", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "PuBuPuBuGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "PuRd", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Purples", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "RdPu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "Reds", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "YlGn", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "YlGnBu", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "YlOrBr", // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+			 "YlOrRd" // corresponding ColorBrewer map (see colorbrewer2.org for admitted levels)
+		 };
+
+		 paletteNames = new ArrayList<String>(pNames.length);
+		 for (String pn : pNames) 
+			 paletteNames.add(pn);
+		 Collections.sort(paletteNames);
+	 }
 	 
 	 
 	/**

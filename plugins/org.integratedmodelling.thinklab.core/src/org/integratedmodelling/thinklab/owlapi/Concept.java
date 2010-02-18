@@ -157,15 +157,17 @@ public class Concept extends Knowledge implements IConcept {
 	public Collection<IConcept> getParents() {
 		
 		Set<IConcept> concepts = new HashSet<IConcept>();
-		Set<OWLDescription> set = ((OWLClass) this.entity)
+		synchronized (this.entity) {
+			Set<OWLDescription> set = ((OWLClass) this.entity)
 				.getSuperClasses(FileKnowledgeRepository.KR.manager
 						.getOntologies());
 		
-		for (OWLDescription s : set) {
-			if (!(s.isAnonymous() || s.isOWLNothing()))
-				concepts.add(new Concept(s.asOWLClass()));
+			for (OWLDescription s : set) {
+				if (!(s.isAnonymous() || s.isOWLNothing()))
+					concepts.add(new Concept(s.asOWLClass()));
+			}
 		}
-		
+
 		// OWLAPI doesn't do this - only add owl:Thing if this is its direct subclass, i.e. has no 
 		// parents in OWLAPI.
 		if (concepts.isEmpty() && !FileKnowledgeRepository.KR.getRootConceptType().equals(this))
@@ -202,8 +204,7 @@ public class Concept extends Knowledge implements IConcept {
 
 		} else {
 			
-			for (IConcept c : getParents()) {
-				
+			for (IConcept c : getParents()) {				
 				concepts.add(c);
 				concepts.addAll(c.getAllParents());
  				
@@ -224,17 +225,19 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public Collection<IConcept> getChildren() {
 		Set<IConcept> concepts = new HashSet<IConcept>();
-		Set<OWLDescription> set = ((OWLClass) this.entity)
+		synchronized (this.entity) {
+			Set<OWLDescription> set = ((OWLClass) this.entity)
 				.getSubClasses(FileKnowledgeRepository.KR.manager
 						.getOntologies());
-		for (OWLDescription s : set) {
-			if (!(s.isAnonymous() || s.isOWLNothing() || s.isOWLThing()))
-				concepts.add(new Concept(s.asOWLClass()));
-		}
-		if (set.isEmpty() && ((OWLClass) entity).isOWLThing()) {
-			for (IOntology onto : FileKnowledgeRepository.KR.ontologies
+			for (OWLDescription s : set) {
+				if (!(s.isAnonymous() || s.isOWLNothing() || s.isOWLThing()))
+					concepts.add(new Concept(s.asOWLClass()));
+			}
+			if (set.isEmpty() && ((OWLClass) entity).isOWLThing()) {
+				for (IOntology onto : FileKnowledgeRepository.KR.ontologies
 					.values()) {
-				concepts.addAll(onto.getConcepts());
+					concepts.addAll(onto.getConcepts());
+				}
 			}
 		}
 		return concepts;
@@ -264,16 +267,17 @@ public class Concept extends Knowledge implements IConcept {
 				.getOntologies();
 		Set<IProperty> properties = new HashSet<IProperty>();
 		for (OWLOntology ontology : ontologies) {
-			for ( OWLAnnotationAxiom<?> op : ontology.getAnnotationAxioms()) {
-				if(op.getSubject().equals(this.entity)){
-					OWLAnnotation<?> ann = op.getAnnotation();
-					if(ann.isAnnotationByConstant()){
-//					TODO	
-					} else {
-//					TODO
+			synchronized (ontology) {
+				for ( OWLAnnotationAxiom<?> op : ontology.getAnnotationAxioms()) {
+					if(op.getSubject().equals(this.entity)){
+						OWLAnnotation<?> ann = op.getAnnotation();
+						if(ann.isAnnotationByConstant()){
+							//					TODO	
+						} else {
+							//					TODO
+						}
 					}
 				}
-				
 			}
 		}
 		return properties;
@@ -288,8 +292,12 @@ public class Concept extends Knowledge implements IConcept {
 		
 		Collection<IProperty> props = getDirectProperties();
 		ArrayList<Collection<IProperty>> psets = new ArrayList<Collection<IProperty>>();
-		for(IProperty prop: props) 
-			psets.add(prop.getChildren());
+		
+		for (IProperty prop: props) 
+			synchronized (prop) {
+				psets.add(prop.getChildren());
+			}
+		
 		for (Collection<IProperty> pp : psets) 
 			props.addAll(pp);
 		
@@ -308,16 +316,18 @@ public class Concept extends Knowledge implements IConcept {
 		
 		Set<IProperty> properties = new HashSet<IProperty>();
 		for (OWLOntology ontology : ontologies) {
-			for (OWLObjectProperty op : ontology
-					.getReferencedObjectProperties()) {
-				Set<OWLDescription> rang = op.getDomains(ontologies);
-				if (rang.contains(entity))
-					properties.add(new Property(op));
-			}
-			for (OWLDataProperty op : ontology.getReferencedDataProperties()) {
-				Set<OWLDescription> rang = (op.getDomains(ontologies));
-				if (rang.contains(entity))
-					properties.add(new Property(op));
+			synchronized (ontology) {
+				for (OWLObjectProperty op : ontology
+						.getReferencedObjectProperties()) {
+					Set<OWLDescription> rang = op.getDomains(ontologies);
+					if (rang.contains(entity))
+						properties.add(new Property(op));
+				}
+				for (OWLDataProperty op : ontology.getReferencedDataProperties()) {
+					Set<OWLDescription> rang = (op.getDomains(ontologies));
+					if (rang.contains(entity))
+						properties.add(new Property(op));
+				}
 			}
 		}
 		return properties;
@@ -346,8 +356,10 @@ public class Concept extends Knowledge implements IConcept {
  		
 		
 		Set<OWLOntology> ontologies = FileKnowledgeRepository.KR.manager.getOntologies();
-		for (OWLIndividual ind : this.entity.asOWLClass().getIndividuals(ontologies)) {
-			ret.add(new Instance(ind));
+		synchronized (this.entity) {
+			for (OWLIndividual ind : this.entity.asOWLClass().getIndividuals(ontologies)) {
+				ret.add(new Instance(ind));
+			}
 		}
 		
 		return ret;
@@ -658,59 +670,6 @@ public class Concept extends Knowledge implements IConcept {
 		
 	}
 
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject#get(java.lang.String)
-//	 */
-//	public IValue get(String property) throws ThinklabException {
-//		// TODO this must catch valueOf restrictions on the property on
-//		// this concept or the ancestors.
-//		return null;
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject#getNumberOfRelationships(java.lang.String)
-//	 */
-//	public int getNumberOfRelationships(String property)
-//			throws ThinklabException {
-//		return getRelationships().size();
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject#getRelationships()
-//	 */
-//	public Collection<IRelationship> getRelationships()
-//			throws ThinklabException {
-//		ArrayList<IRelationship> ret = new ArrayList<IRelationship>();
-//		return ret;
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject#getRelationships(java.lang.String)
-//	 */
-//	public Collection<IRelationship> getRelationships(String property)
-//			throws ThinklabException {
-//		ArrayList<IRelationship> ret = new ArrayList<IRelationship>();
-//		return ret;
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject#getRelationshipsTransitive(java.lang.String)
-//	 */
-//	public Collection<IRelationship> getRelationshipsTransitive(String property)
-//			throws ThinklabException {
-//		ArrayList<IRelationship> ret = new ArrayList<IRelationship>();
-//		return ret;
-//	}
 
 	/*
 	 * (non-Javadoc)

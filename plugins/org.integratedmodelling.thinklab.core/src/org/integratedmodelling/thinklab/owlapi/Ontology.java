@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
@@ -132,9 +133,9 @@ public class Ontology implements IOntology {
 		
 		this.ont = onto;
 		this.kr = kr;
-		this.concepts = new HashMap<SemanticType, IConcept>();
-		this.properties = new HashMap<SemanticType, IProperty>();
-		this.instances = new HashMap<SemanticType, IInstance>();
+		this.concepts = new Hashtable<SemanticType, IConcept>();
+		this.properties = new Hashtable<SemanticType, IProperty>();
+		this.instances = new Hashtable<SemanticType, IInstance>();
 	}
 	
 	/**

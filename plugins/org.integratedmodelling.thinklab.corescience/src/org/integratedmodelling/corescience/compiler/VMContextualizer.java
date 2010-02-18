@@ -316,35 +316,33 @@ public class VMContextualizer<T> {
 	 * @return
 	 */
 	protected IState makeState(IConcept stateType, int size) {
-		
+
 		IState ret = null;
-		synchronized (stateType) {
-			if (stateType.is(KnowledgeManager.Integer()))
-				ret = new MemIntegerContextualizedDatasource(stateType, size);
-			else if (stateType.is(KnowledgeManager.Long()))
-				ret = new MemLongContextualizedDatasource(stateType, size);
-			else if (stateType.is(KnowledgeManager.Float()))
-				ret = new MemFloatContextualizedDatasource(stateType, size);
-			// catch all mixed numbers into doubles - may want to use floats
-			// instead
-			else if (stateType.is(KnowledgeManager.Double())
-					|| stateType.is(KnowledgeManager.Number()))
-				ret = new MemDoubleContextualizedDatasource(stateType, size);
-			else if (stateType.is(KnowledgeManager.LiteralValue()))
-				ret = new MemValueContextualizedDatasource(stateType, size);
-			else if (stateType.equals(KnowledgeManager.Thing()))
-				// we have a mixed situation with no common types, can only use
-				// an object
-				ret = new MemObjectContextualizedDatasource(stateType, size);
-			else {
-				/*
-				 * if we get here, we have failed to ask the CMs what datasource
-				 * they want.
-				 */
-				throw new ThinklabRuntimeException(
-						"internal error: datasource creation for custom concept "
-								+ stateType + "not properly set up");
-			}
+		if (stateType.is(KnowledgeManager.Integer()))
+			ret = new MemIntegerContextualizedDatasource(stateType, size);
+		else if (stateType.is(KnowledgeManager.Long()))
+			ret = new MemLongContextualizedDatasource(stateType, size);
+		else if (stateType.is(KnowledgeManager.Float()))
+			ret = new MemFloatContextualizedDatasource(stateType, size);
+		// catch all mixed numbers into doubles - may want to use floats
+		// instead
+		else if (stateType.is(KnowledgeManager.Double())
+				|| stateType.is(KnowledgeManager.Number()))
+			ret = new MemDoubleContextualizedDatasource(stateType, size);
+		else if (stateType.is(KnowledgeManager.LiteralValue()))
+			ret = new MemValueContextualizedDatasource(stateType, size);
+		else if (stateType.equals(KnowledgeManager.Thing()))
+			// we have a mixed situation with no common types, can only use
+			// an object
+			ret = new MemObjectContextualizedDatasource(stateType, size);
+		else {
+			/*
+			 * if we get here, we have failed to ask the CMs what datasource
+			 * they want.
+			 */
+			throw new ThinklabRuntimeException(
+					"internal error: datasource creation for custom concept "
+							+ stateType + "not properly set up");
 		}
 		return ret;
 	}
