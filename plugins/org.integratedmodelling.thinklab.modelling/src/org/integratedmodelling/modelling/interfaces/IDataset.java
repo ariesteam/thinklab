@@ -67,14 +67,10 @@ public interface IDataset {
 	 * The number of colors/levels to show can be computed as (maxIndex-minIndex)
 	 * 
 	 * @param observable
-	 * @param actualMin the minimum actual numeric state encountered
-	 * @param actualMax the maximum actual numeric state encountered
-	 * @param minIndex the integer index that the min state was converted to
-	 * @param maxIndex the integer index that the max state was converted to
+	 * @param nlevels the number of levels to be represented
 	 * @return
 	 * @throws ThinklabException 
 	 */
-	public abstract ColorMap chooseColormap(IConcept observable, double actualMin,
-			double actualMax, int minIndex, int maxIndex) throws ThinklabException;
+	public abstract ColorMap chooseColormap(IConcept observable, int nlevels, boolean isCategorical) throws ThinklabException;
 
 }

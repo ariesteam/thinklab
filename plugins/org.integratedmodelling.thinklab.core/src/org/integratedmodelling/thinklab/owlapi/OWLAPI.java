@@ -79,9 +79,11 @@ public class OWLAPI {
 
             	processedClasses.add(desc);
                 for(OWLOntology ont : onts) {
-                    for(OWLSubClassAxiom ax : ont.getSubClassAxiomsForLHS(desc)) {
-                        ax.getSuperClass().accept(this);
-                    }
+                	synchronized(ont) {
+                		for(OWLSubClassAxiom ax : ont.getSubClassAxiomsForLHS(desc)) {
+                			ax.getSuperClass().accept(this);
+                		}
+                	}
                 }
             }
         }
@@ -170,11 +172,14 @@ public class OWLAPI {
     	
     	 RestrictionVisitor restrictionVisitor = new RestrictionVisitor(target);
 
-         for(OWLSubClassAxiom ax : clazz.getOntology().getSubClassAxiomsForLHS(clazz.entity.asOWLClass())) {
- 
-        	 OWLDescription superCls = ax.getSuperClass();
-             superCls.accept(restrictionVisitor);
-         }
+    	 OWLOntology ont = clazz.getOntology();
+    	 
+    	 synchronized (ont) {
+    		 for(OWLSubClassAxiom ax : ont.getSubClassAxiomsForLHS(clazz.entity.asOWLClass())) {
+    			 OWLDescription superCls = ax.getSuperClass();
+    			 superCls.accept(restrictionVisitor);
+    		 }
+    	 }
          
          return restrictionVisitor.restrictions;
     }
@@ -259,7 +264,7 @@ public class OWLAPI {
 		return classProps;
 	}
 
-	public static void setOWLObjectPropertyValue(OWLOntology ont, OWLIndividual ind, OWLProperty prop, OWLIndividual value) {
+	public static synchronized void setOWLObjectPropertyValue(OWLOntology ont, OWLIndividual ind, OWLProperty prop, OWLIndividual value) {
   
 		OWLObjectPropertyAssertionAxiom assertion = 
 			FileKnowledgeRepository.df.getOWLObjectPropertyAssertionAxiom(
@@ -276,7 +281,7 @@ public class OWLAPI {
 
 	}
 
-	public static void setOWLDataPropertyValue(OWLOntology ont, OWLIndividual ind, OWLProperty prop, OWLConstant value) {
+	public static synchronized void setOWLDataPropertyValue(OWLOntology ont, OWLIndividual ind, OWLProperty prop, OWLConstant value) {
 		
 		OWLDataPropertyAssertionAxiom assertion = 
 			FileKnowledgeRepository.df.getOWLDataPropertyAssertionAxiom(

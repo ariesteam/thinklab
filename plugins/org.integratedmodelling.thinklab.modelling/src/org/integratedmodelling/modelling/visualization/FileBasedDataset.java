@@ -51,20 +51,16 @@ public class FileBasedDataset implements IDataset {
 	}
 	
 	@Override
-	public ColorMap chooseColormap(
-			IConcept observable, double actualMin, double actualMax,
-			int minIndex, int maxIndex) throws ThinklabException {
+	public ColorMap chooseColormap(IConcept observable, int nlevels, boolean isCategorical) throws ThinklabException {
 		
 		IState state = getState(observable);
-		
-		// FIXME NUMBER OF LEVELS SHOULD BE DECIDED FROM METADATA UNLESS THERE IS NO FIXED SCALE
-		int nlevels = maxIndex - minIndex + 1;
-
 		ColorMap ret = VisualizationFactory.get().getColormap(observable, nlevels);
 
 		if (ret == null) {
 
-			ret = ColorMap.jet(nlevels);
+			ret = (isCategorical && nlevels < 10) ? 
+					ColorMap.getColormap("Set1()", nlevels) : 
+					ColorMap.jet(nlevels);
 			
 			if (state.getMetadata(Metadata.RANKING) != null ||
 					state.getMetadata(Metadata.CONTINUOUS) != null) {
@@ -159,67 +155,19 @@ public class FileBasedDataset implements IDataset {
 			}
 		}
 		
-		double[] data = state.getDataAsDoubles();
-		int len = data.length;
-		int[] idata = new int[len];
-		double min = Double.isNaN(data[0]) ? 0 : data[0];
-		double max = min;
+		
+		int[] idata = Metadata.getImageData(state);
+		
+		int nlevels = (Integer)state.getMetadata(Metadata.IMAGE_LEVELS);
+		int[] iarange = (int[])state.getMetadata(Metadata.ACTUAL_IMAGE_RANGE);
+		double[] dtrange = (double[])state.getMetadata(Metadata.THEORETICAL_IMAGE_RANGE);
+		double[] darange = (double[])state.getMetadata(Metadata.ACTUAL_DATA_RANGE);
+		String[] categories = (String[])state.getMetadata(Metadata.CATEGORIES);
 
-//		double[] distribution = (double[]) state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
-//		
-//		/*
-//		 * if we have a distribution, compute min/max from it
-//		 */
-//		if (distribution != null) {
-//		
-//			min = distribution[0];
-//			max = distribution[distribution.length - 1];
-//			
-//		} 
-//		
-//		/*
-//		 * use data range if there's no distribution or the bounds are infinite
-//		 */
-//		if (distribution == null || Double.isInfinite(min) || Double.isInfinite(max)) {
-		
-			for (int i = 0; i < len; i++) {
-				if (!Double.isNaN(data[i])) {
-					if (data[i] > max) max = data[i];
-					if (data[i] < min) min = data[i];
-				}
-			}
-//		}
-		
-		// TODO uncomment this if we don't want non-variant maps visualized
-//		if (max - min <= 0.0) 
-//			return null;
-		
-		int imin = 0, imax = 0;
-		for (int i = 0; i < len; i++) {
-			
-			if (Double.isNaN(data[i]))
-				idata[i] = 0;
-			else {
-				idata[i] = (int)(((data[i]-min)/(max-min))*255.0);
-			}
-			
-			if (i == 0) {
-				imin = idata[0];
-				imax = idata[0];
-			} else {
-				if (idata[i] > imax) imax = idata[i];
-				if (idata[i] < imin) imin = idata[i];
-			}
-		}
-		
-		System.out.println(observable + ": data [" + min + " " + max + "] img [" + imin + " " + imax + "]");
 		System.out.println("metadata: " + state.getMetadata());
-		
-//		if ((imax - imin) <= 0)
-//			// nothing to show
-//			return null;
+		System.out.println(observable + ": img [" + iarange[0] + " " + iarange[1] + "] data [" + darange[0] + " " + darange[1] + "]");
 
-		ColorMap cmap = chooseColormap(observable, min, max, imin, imax);
+		ColorMap cmap = chooseColormap(observable, nlevels, categories == null);
 		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
 				space.getColumns(), x, y, cmap, fileOrNull);
 		

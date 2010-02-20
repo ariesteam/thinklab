@@ -43,6 +43,22 @@ public class Metadata {
 	public static final String CONTINUOS_DISTRIBUTION_BREAKPOINTS = 
 			"continuous_dist_breakpoints";
 	public static final String ACTUAL_DATA_RANGE = "actual_data_range";
+	public static final String ACTUAL_IMAGE_RANGE = "actual_image_range";
+
+	/**
+	 * The theoretical (allowed) data range, either from the distribution breakpoints, from original
+	 * metadata (not implemented yet) or from the actual data range if none is specified. Should be
+	 * used to define the legend.
+	 */
+	public static final String THEORETICAL_DATA_RANGE = "theoretical_data_range";
+	public static final String THEORETICAL_IMAGE_RANGE = "theoretical_image_range";
+	public static final String IMAGE_LEVELS = "image_levels";
+	
+	/**
+	 * array of string names of all concepts the data MAY represent. If it's there, the categorical
+	 * information does not encode rankings of any kind - boolean, range or or ordinal.
+	 */
+	public static final String CATEGORIES = "categories";
 	
 	public static class MetadataSerializer extends OutputSerializer {
 			
@@ -113,6 +129,7 @@ public class Metadata {
 	static String[] orderNarrative = {
 			"^No[A-Z].*",
 			"^Not[A-Z].*",
+			"^Minimal[A-Z].*",
 			"^ExtremelyLow[A-Z].*",
 			"^ExtremelySmall[A-Z].*",
 			"^VeryLow[A-Z].*",
@@ -131,6 +148,7 @@ public class Metadata {
 			"^Full[A-Z].*",
 			"^VeryHigh[A-Z].*",
 			"^VeryLarge[A-Z].*",
+			"^Extreme[A-Z].*",
 			"^ExtremelyHigh[A-Z].*",
 			"^ExtremelyLarge[A-Z].*"
 	};
@@ -160,7 +178,7 @@ public class Metadata {
 
 	/**
 	 * Produce the lexical ranking of the concept passed and add metadata to the datasource
-	 *
+	 * 
 	 * @param type
 	 * @param datasource
 	 * @return
@@ -217,7 +235,21 @@ public class Metadata {
 					i++;
 				}
 			}
-		} 
+		} else {
+			
+			/*
+			 * no ranking, we still have subclasses to remember and assign numbers to.
+			 */
+			if (datasource != null) {
+				Collection<IConcept> ch = type.getChildren();
+				String[] cnames = new String[ch.size()];
+				int i = 0;
+				for (IConcept c : type.getChildren()) {
+					cnames[i++] = c.toString();
+				}
+				datasource.setMetadata(CATEGORIES, cnames);
+			}
+		}
 		
 		if (lexicalRank.size() == 0)
 			return null;
@@ -428,30 +460,64 @@ public class Metadata {
 	 * @return integer data or null if there's no chance to remap.
 	 * @throws ThinklabValueConversionException 
 	 */
-	public int[] getImageData(IState state) throws ThinklabValueConversionException {
+	public static int[] getImageData(IState state) throws ThinklabValueConversionException {
 				
 		double[] data = state.getDataAsDoubles();
 		int len = data.length;
 		int[] idata = new int[len];
-
+		boolean hasNaNs = false;
+		
 		/*
 		 * compute actual min/max
 		 */
-		double min = Double.isNaN(data[0]) ? 0 : data[0];
+		double min = (hasNaNs = Double.isNaN(data[0])) ? 0 : data[0];
 		double max = min;
 		
 		for (int i = 0; i < len; i++) {
 			if (!Double.isNaN(data[i])) {
 				if (data[i] > max) max = data[i];
 				if (data[i] < min) min = data[i];
+			} else {
+				hasNaNs = true;
 			}
 		}
 		state.setMetadata(ACTUAL_DATA_RANGE, new double[]{min,max});
 		
+		int nlevels = 254;
+		/*
+		 * see if we have categories and redefine from there.
+		 */
+		HashMap<IConcept, Integer> ranking = (HashMap<IConcept, Integer>) state.getMetadata(RANKING);
+		String[] categories = (String[]) state.getMetadata(CATEGORIES);
+		Boolean hasZero = (Boolean) state.getMetadata(HASZERO);
+		
+		boolean isCategorical = ranking != null || categories != null;
+		
+		if (isCategorical) {
+			nlevels = 
+				ranking == null ? categories.length : ranking.size();
+		}
+		
+		if (isCategorical && hasNaNs && !hasZero) {
+			// add the zero level
+			nlevels ++;
+		}
+		
 		/*
 		 * compute the display data range in actual values from the semantics
 		 */
+		double expmin = min;
+		double expmax = max;
 		
+		double[] distribution = (double[]) state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
+		if (distribution != null) {
+			if (!Double.isInfinite(distribution[0]))
+				expmin = distribution[0];
+			if (!Double.isInfinite(distribution[distribution.length - 1]))
+				expmax = distribution[distribution.length - 1];
+		}
+
+		state.setMetadata(THEORETICAL_DATA_RANGE, new double[]{expmin, expmax});
 		
 		int imin = 0, imax = 0;
 		for (int i = 0; i < len; i++) {
@@ -459,7 +525,7 @@ public class Metadata {
 			if (Double.isNaN(data[i]))
 				idata[i] = 0;
 			else {
-				idata[i] = (int)(((data[i]-min)/(max-min))*255.0);
+				idata[i] = (int)(((data[i]-expmin)/(expmax-expmin))*nlevels);
 			}
 			
 			if (i == 0) {
@@ -470,25 +536,11 @@ public class Metadata {
 				if (idata[i] < imin) imin = idata[i];
 			}
 		}
+		
+		state.setMetadata(IMAGE_LEVELS, nlevels);
+		state.setMetadata(ACTUAL_IMAGE_RANGE, new int[]{imin, imax});
+		
 
-		/*
-		 * 
-		 */
-		
-		double[] distribution = (double[]) state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
-		
-		/*
-		 * if we have a distribution, compute expected min/max from it
-		 */
-		double expmin = min;
-		double expmax = max;
-		if (distribution != null) {
-			expmin = distribution[0];
-			expmax = distribution[distribution.length - 1];
-		} 
-
-		
-		
 		return idata;
 	}
 
