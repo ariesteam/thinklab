@@ -2,12 +2,12 @@ package org.integratedmodelling.utils.collections;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Stack;
-
+import java.util.LinkedList;
 
 /**
  * A normal Java Map, but with Set behavior (objects can be in no more than once) and iterates its keys like
- * a Stack, plus a method to move existing objects to the top. Basically a golem collection.
+ * a Stack (straight or in reverse), plus a method to move existing objects to the top. 
+ * Basically a golem collection for special purposes.
  * 
  * @author Ferdinando Villa
  *
@@ -17,7 +17,32 @@ public class StackMap<K,T> {
 
 	private static final long serialVersionUID = 1988080719023977747L;
 	private HashMap<K,T> _map = new HashMap<K,T>();
-	private Stack<K>     _stk = new Stack<K>();
+	private LinkedList<K>     _stk = new LinkedList<K>();
+	
+	public class ValueIterator implements Iterator<T> {
+
+		Iterator<K> _it = null;
+		
+		public ValueIterator(Iterator<K> iterator) {
+			_it = iterator;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return _it.hasNext();
+		}
+
+		@Override
+		public T next() {
+			return _map.get(_it.next());
+		}
+
+		@Override
+		public void remove() {
+			// don't
+		}
+		
+	}
 	
 	public synchronized T pop() {
 		K key = _stk.pop();
@@ -73,4 +98,13 @@ public class StackMap<K,T> {
 	public T top() {
 		return _map.get(_stk.peek());
 	}
+
+	public Iterator<T> valueIterator() {
+		return new ValueIterator(_stk.iterator());
+	}
+	
+	public Iterator<T> reverseValueIterator() {
+		return new ValueIterator(_stk.descendingIterator());
+	}
+
 }
