@@ -59,6 +59,7 @@ public class Metadata {
 	 * information does not encode rankings of any kind - boolean, range or or ordinal.
 	 */
 	public static final String CATEGORIES = "categories";
+	public static final String COLORMAP = "colormap";
 	
 	public static class MetadataSerializer extends OutputSerializer {
 			
@@ -525,7 +526,7 @@ public class Metadata {
 			if (Double.isNaN(data[i]))
 				idata[i] = 0;
 			else {
-				idata[i] = (int)(((data[i]-expmin)/(expmax-expmin))*nlevels);
+				idata[i] = (int)(((data[i]-expmin)/(expmax-expmin))*(nlevels-1));
 			}
 			
 			if (i == 0) {
@@ -540,7 +541,6 @@ public class Metadata {
 		state.setMetadata(IMAGE_LEVELS, nlevels);
 		state.setMetadata(ACTUAL_IMAGE_RANGE, new int[]{imin, imax});
 		
-
 		return idata;
 	}
 

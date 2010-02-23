@@ -36,8 +36,16 @@ public class VisualizationFactory {
 		colormapChooser.load(properties);
 	}
 	
+
 	public ColorMap getColormap(IConcept c, int levels) throws ThinklabException {
 		return colormapChooser.get(c, levels);
+	}
+	
+	public ColorMap getColormap(IConcept c, int levels, ColorMap def) throws ThinklabException {
+		ColorMap ret = getColormap(c, levels);
+		if (ret == null)
+			ret = def;
+		return ret;
 	}
 	
 	public String makeSurfacePlot(IConcept observable, IState state, 
@@ -64,9 +72,11 @@ public class VisualizationFactory {
 		System.out.println("metadata: " + state.getMetadata());
 		System.out.println(observable + ": img [" + iarange[0] + " " + iarange[1] + "] data [" + darange[0] + " " + darange[1] + "]");
 
-		ColorMap cmap = getColormap(observable, nlevels);
+		ColorMap cmap = getColormap(observable, nlevels, categories == null ? ColorMap.jet(nlevels) : ColorMap.random(nlevels));
 		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
 				space.getColumns(), x, y, cmap, fileOrNull);
+
+		state.setMetadata(Metadata.COLORMAP, cmap);
 		
 		return fileOrNull;
 	}

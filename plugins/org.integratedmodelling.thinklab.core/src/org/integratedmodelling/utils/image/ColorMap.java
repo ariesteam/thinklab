@@ -322,6 +322,17 @@ public class ColorMap {
 	}
 	
 	/**
+	 * This is all but random, it just ensures visible transitions. NOTE: only works with 3-9 few levels, otherwise
+	 * it returns null without warning.
+	 * 
+	 * @param nlevels
+	 * @return
+	 */
+	public static ColorMap random(int nlevels) {
+		return makeColormap(ColorBrewer.getSet1(nlevels), 0, true);
+	}
+	
+	/**
      * Creates an array of Color objects for use as a gradient, using a linear 
      * interpolation between the two specified colors.
      * @param one Color used for the bottom of the gradient
