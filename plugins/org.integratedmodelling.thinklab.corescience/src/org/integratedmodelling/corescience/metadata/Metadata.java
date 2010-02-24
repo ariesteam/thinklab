@@ -245,7 +245,7 @@ public class Metadata {
 				Collection<IConcept> ch = type.getChildren();
 				String[] cnames = new String[ch.size()];
 				int i = 0;
-				for (IConcept c : type.getChildren()) {
+				for (IConcept c : ch) {
 					cnames[i++] = c.toString();
 				}
 				datasource.setMetadata(CATEGORIES, cnames);
@@ -402,6 +402,8 @@ public class Metadata {
 						((Boolean)(metadata.get(CONTINUOUS)) ? 1 : 0));
 		out.writeString(metadata.getProperty(TRUECASE));
 		out.writeRankings(metadata.get(RANKING));
+		
+		// TODO new stuff missing
 	}
 
 
@@ -499,11 +501,6 @@ public class Metadata {
 				ranking == null ? categories.length : ranking.size();
 		}
 		
-		if (isCategorical && hasNaNs && !hasZero) {
-			// add the zero level
-			nlevels ++;
-		}
-		
 		/*
 		 * compute the display data range in actual values from the semantics
 		 */
@@ -512,12 +509,15 @@ public class Metadata {
 		
 		double[] distribution = (double[]) state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
 		if (distribution != null) {
-			if (!Double.isInfinite(distribution[0]))
-				expmin = distribution[0];
-			if (!Double.isInfinite(distribution[distribution.length - 1]))
-				expmax = distribution[distribution.length - 1];
+			expmin = 0;
+			expmax = nlevels = distribution.length-1;
 		}
 
+		if (isCategorical && hasNaNs && !hasZero) {
+			// add the zero level
+			nlevels ++;
+		}
+		
 		state.setMetadata(THEORETICAL_DATA_RANGE, new double[]{expmin, expmax});
 		
 		int imin = 0, imax = 0;
