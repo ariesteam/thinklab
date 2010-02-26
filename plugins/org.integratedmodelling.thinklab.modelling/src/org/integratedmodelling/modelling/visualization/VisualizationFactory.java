@@ -9,12 +9,13 @@ import org.integratedmodelling.corescience.implementations.datasources.ClassData
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
+import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
+import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.image.ColorMap;
 import org.integratedmodelling.utils.image.ColormapChooser;
@@ -42,7 +43,6 @@ public class VisualizationFactory {
 		colormapChooser.load(properties);
 	}
 	
-
 	public ColorMap getColormap(IConcept c, int levels) throws ThinklabException {
 		return colormapChooser.get(c, levels);
 	}
@@ -84,8 +84,7 @@ public class VisualizationFactory {
 					"cannot determine color table for " + 
 					observable + 
 					"; please add colormap entry");
-		}
-					
+		}				
 		return ret;
 	}
 	
@@ -190,6 +189,8 @@ public class VisualizationFactory {
 		}
 
 		double[] darange = (double[])state.getMetadata(Metadata.ACTUAL_DATA_RANGE);
+		double[] breakpoints = (double[])state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
+		
 		HashMap<IConcept, Integer> ranking = 
 			(HashMap<IConcept, Integer>) state.getMetadata(Metadata.RANKING);
 
@@ -203,18 +204,51 @@ public class VisualizationFactory {
 		for (int i = (cmap.hasTransparentZero() ? 1 : 0); i < cmap.getColorCount(); i++) {
 			String desc = "";
 			if (ranking != null){
+
+				// can't be that many
+				IConcept c = null;
+				for (IConcept k : ranking.keySet()) {
+					if (ranking.get(k) == i) {
+						c = k;
+						break;
+					}
+				}
+				if (c != null) {
+					VisualConcept vc = TypeManager.get().getVisualConcept(c);
+					desc = vc.getLabel();
+					if (breakpoints != null) {
+						desc += getRangeDescription(breakpoints, i - (cmap.hasTransparentZero() ? 1 : 0));
+					}
+				}
+				
 				// TODO rankings with data ranges if any
 			} else if (state instanceof ClassData) {
-				IConcept c = ((ClassData)state).getCategory(i);
+				IConcept c = ((ClassData)state).getMappingForIndex(i);
 				if (c != null) {
-					desc = c.getLabel();
-					if (desc == null || desc.equals(""))
-						desc = CamelCase.toUpperCase(c.toString(), ' ');
+					VisualConcept vc = TypeManager.get().getVisualConcept(c);
+					desc = vc.getLabel();
 				} 
 			}
 			descs[n++] = desc;
 		}
 		
 		return new Pair<File[], String[]>(imgs, descs);
+	}
+
+	private String getRangeDescription(double[] breakpoints, int i) {
+
+		// breakpoints should have lenght = MaxI+1
+		double min = breakpoints[i];
+		double max = breakpoints[i+1];
+		String ret = "";
+		
+		if (Double.isInfinite(min)) {
+			ret = " (< " + max + ")";
+		}  else if (Double.isInfinite(max)) {
+			ret = " (> " + min + ")";
+		} else {
+			ret = " (" + min + " - " + max + ")";
+		}
+		return ret;
 	}
 }

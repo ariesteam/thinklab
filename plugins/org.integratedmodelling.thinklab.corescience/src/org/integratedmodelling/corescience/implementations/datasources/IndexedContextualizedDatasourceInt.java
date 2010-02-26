@@ -79,6 +79,10 @@ public class IndexedContextualizedDatasourceInt<T>
 		return i;
 	}
 
+	public T getMappingForIndex(int index) {
+		return inverseMap.get(new Integer(index));
+	}
+	
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
 
