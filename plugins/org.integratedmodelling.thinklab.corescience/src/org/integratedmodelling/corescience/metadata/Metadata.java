@@ -493,8 +493,9 @@ public class Metadata {
 		HashMap<IConcept, Integer> ranking = (HashMap<IConcept, Integer>) state.getMetadata(RANKING);
 		String[] categories = (String[]) state.getMetadata(CATEGORIES);
 		Boolean hasZero = (Boolean) state.getMetadata(HASZERO);
+		if (hasZero == null) hasZero = false;
 		
-		boolean isCategorical = ranking != null || categories != null;
+		boolean isCategorical = (ranking != null || categories != null);
 		
 		if (isCategorical) {
 			nlevels = 

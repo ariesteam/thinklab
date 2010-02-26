@@ -20,7 +20,7 @@ public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> impl
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
 		
 		double[] ret = new double[this.data.length];
-		HashMap<IConcept, Integer> ranks = Metadata.rankConcepts(_type);
+		HashMap<IConcept, Integer> ranks = Metadata.rankConcepts(_type, this);
 		
 		for (int i = 0; i < this.data.length; i++) {
 			

@@ -42,6 +42,8 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.utils.MiscUtilities;
+import org.joda.time.field.ZeroIsMaxDateTimeField;
 
 /**
  * this is a wrapper around IndexColorModel, just for convenience
@@ -52,10 +54,12 @@ public class ColorMap {
 	
 	IndexColorModel model;
 	int levels;
+	boolean hasTransparentZero;
 
-	private ColorMap(IndexColorModel cmodel, int levels) {
+	private ColorMap(IndexColorModel cmodel, int levels, boolean zeroTransp) {
 		this.model = cmodel;
 		this.levels = levels;
+		this.hasTransparentZero = zeroTransp;
 	}
 	
 	private static class CmDesc {
@@ -464,7 +468,7 @@ public class ColorMap {
 		}
 		
 			 
-		return new ColorMap(new IndexColorModel(8,levels,r,g,b,a), levels);
+		return new ColorMap(new IndexColorModel(8,levels,r,g,b,a), levels, false);
 	}
 
 	public static ColorMap makeColormap(byte[][] def, int transparency, boolean zeroIsTransparent) {
@@ -496,7 +500,7 @@ public class ColorMap {
 			 cm = new IndexColorModel(8, levels, r, g, b);						
 		}
 		
-		return new ColorMap(cm, levels);
+		return new ColorMap(cm, levels, zeroIsTransparent);
 	}
 	
 	public static ColorMap jet(int n) {
@@ -565,9 +569,63 @@ public class ColorMap {
 		return new ColorMap(8, greys);
 	}
 
+	/**
+	 * Get a set of images, one per each color, of given height and width. We don't make an image
+	 * for the zero if it's transparent.
+	 * 
+	 * @param h
+	 * @param l
+	 * @param fileBaseName full path to a base file name. The actual file names will have _n appended
+	 * 	to them, e.g. xx/abc.png -> xx/abc_1.png, with n being the index of each color.
+	 * 
+	 * @return
+	 */
+	public File[] getColorLegend(int h, int w, String fileBaseName) {
+
+		int dlevels = levels; 
+		int ofs = 0;
+		if (hasTransparentZero) {
+			dlevels --;
+			ofs = 1;
+		}
+		
+		File[] ret = new File[dlevels];
+		String ext = MiscUtilities.getFileExtension(fileBaseName);
+		String bas = MiscUtilities.getFileBasePath(fileBaseName);
+		int n = 0;
+		for (int i = ofs; i < levels; i++) {
+			
+			String fn = bas + "_" + i + "." + ext;
+			int[][] cdata = new int[h][w];
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++)
+					cdata[y][x] = i;
+			}
+			ImageUtil.createImageFile(cdata, w, h, this, fn, false);
+			ret[n++] = new File(fn);
+		}
+		return ret;
+	}
+	
+	/**
+	 * Get a colorbar image of length 256px and given height. If the zero is transparent we don't
+	 * add it to the image.
+	 * 
+	 * @param h
+	 * @param fileOrNull
+	 * @return
+	 * @throws ThinklabIOException
+	 */
 	public File getColorbar(int h, File fileOrNull) throws ThinklabIOException {
 		
-		int len = (256/levels) * levels;
+		int dlevels = levels; 
+		int ofs = 0;
+		if (hasTransparentZero) {
+			dlevels --;
+			ofs = 1;
+		}
+		
+		int len = (256/dlevels) * dlevels;
 		
 		if (fileOrNull == null)
 			try {
@@ -579,9 +637,9 @@ public class ColorMap {
 		int[][] cdata = new int[h][len];
 		int incr = len/levels;
 		for (int y = 0; y < h; y++) {
-			for (int i = 0; i < levels; i ++) {
+			for (int i = 0; i < dlevels; i ++) {
 				for (int x = (i*incr); x < ((i+1)*incr); x++)
-					cdata[y][x] = i;
+					cdata[y][x] = (i+ofs);
 			}
 		}
 			
@@ -694,12 +752,19 @@ public class ColorMap {
 		return model;
 	}
     
-    public static void main(String args[]) {
-    	try {
-			greyscale(256).getColorbar(16, new File("cbar.png"));
-		} catch (ThinklabIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
+
+	public int getVisibleColorCount() {
+		int ret = levels;
+		if (hasTransparentZero)
+			ret --;
+		return ret;
+	}
+	
+	public int getColorCount() {
+		return levels;
+	}
+
+	public boolean hasTransparentZero() {
+		return hasTransparentZero;
+	}
 }

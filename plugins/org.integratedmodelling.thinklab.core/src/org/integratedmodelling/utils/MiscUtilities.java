@@ -234,6 +234,41 @@ public class MiscUtilities{
 	}
 	
 	/**
+	 * Return file path without extension if any.
+	 * @param s
+	 * @return
+	 */
+	public static String getFileBasePath(String s) {
+
+		String ret = s;
+		
+		int sl = s.lastIndexOf(".");
+		if (sl > 0)
+			ret = s.substring(0,sl);
+			
+		return ret;
+	}
+	
+	/**
+	 * Return file path without extension if any.
+	 * @param s
+	 * @return
+	 */
+	public static String getFilePath(String s) {
+
+		String ret = s;
+		
+		int sl = s.lastIndexOf("/");
+		if (sl < 0)
+			sl = s.lastIndexOf(File.separator);
+		if (sl > 0)
+			ret = s.substring(0,sl);
+			
+		return ret;
+	}
+	
+	
+	/**
 	 * Return file name with no path or extension
 	 * @param ss
 	 * @return
