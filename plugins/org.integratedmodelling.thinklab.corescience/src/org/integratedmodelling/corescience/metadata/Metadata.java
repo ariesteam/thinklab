@@ -44,6 +44,8 @@ public class Metadata {
 			"continuous_dist_breakpoints";
 	public static final String ACTUAL_DATA_RANGE = "actual_data_range";
 	public static final String ACTUAL_IMAGE_RANGE = "actual_image_range";
+	public static final String HAS_NODATA_VALUES = "has_nodata_values";
+	public static final String HAS_DATA_VALUES = "has_data_values";
 
 	/**
 	 * The theoretical (allowed) data range, either from the distribution breakpoints, from original
@@ -53,6 +55,12 @@ public class Metadata {
 	public static final String THEORETICAL_DATA_RANGE = "theoretical_data_range";
 	public static final String THEORETICAL_IMAGE_RANGE = "theoretical_image_range";
 	public static final String IMAGE_LEVELS = "image_levels";
+	public static final String DATA_TYPE = "data_type";
+	
+	private static final int ORDINAL_RANKING = 1;
+	private static final int CONTINUOUS_RANGE_MAPPING = 2;
+	private static final int BOOLEAN_RANKING = 3;
+	private static final int UNORDERED_CLASSIFICATION = 4;
 	
 	/**
 	 * array of string names of all concepts the data MAY represent. If it's there, the categorical
@@ -60,6 +68,109 @@ public class Metadata {
 	 */
 	public static final String CATEGORIES = "categories";
 	public static final String COLORMAP = "colormap";
+	
+	public static boolean isOrdinalRanking(IState state) {
+		Integer dataType = (Integer)state.getMetadata(DATA_TYPE);
+		return dataType == null ? false : dataType == ORDINAL_RANKING;
+	}
+
+	public static boolean isContinuousRangeMapping(IState state) {
+		Integer dataType = (Integer)state.getMetadata(DATA_TYPE);
+		return dataType == null ? false : dataType == CONTINUOUS_RANGE_MAPPING;
+	}
+
+	public static boolean isBooleanRanking(IState state) {
+		Integer dataType = (Integer)state.getMetadata(DATA_TYPE);
+		return dataType == null ? false : dataType == BOOLEAN_RANKING;
+	}
+
+	public static boolean isUnorderedClassification(IState state) {
+		Integer dataType = (Integer)state.getMetadata(DATA_TYPE);
+		return dataType == null ? false : dataType == UNORDERED_CLASSIFICATION;
+	}
+	
+	public static boolean isContinuous(IState state) {
+		Boolean ret = (Boolean)state.getMetadata(CONTINUOUS);
+		return (ret != null) && ret;
+	}
+
+	public static boolean hasNoDataValues(IState state) {
+		if (state.getMetadata(HAS_NODATA_VALUES) == null)
+			analyzeData(state);
+		return (Boolean)state.getMetadata(HAS_NODATA_VALUES);
+	}
+	
+	public static boolean hasDataValues(IState state) {
+		if (state.getMetadata(HAS_NODATA_VALUES) == null)
+			analyzeData(state);
+		return (Boolean)state.getMetadata(HAS_NODATA_VALUES);
+	}
+	
+	public static double[] getDataRange(IState state) {
+		if (state.getMetadata(HAS_NODATA_VALUES) == null)
+			analyzeData(state);
+		return (double[])state.getMetadata(ACTUAL_DATA_RANGE);
+	}
+	
+	public static HashMap<IConcept, Integer> getClassMappings(IState state) {
+		return (HashMap<IConcept, Integer>)state.getMetadata(RANKING);
+	}
+	
+	private static void analyzeData(IState state){
+		
+		double[] data = null;
+		boolean nodata = true;
+		
+		try {
+			data = state.getDataAsDoubles();
+		} catch (ThinklabValueConversionException e) {
+		}
+		
+		boolean hasNaNs = false;
+		boolean isReal = false;
+
+		if (data != null) {
+
+			int len = data.length;
+		
+			/*
+			 * compute actual min/max
+			 */
+			Double min = null;
+			Double max = null;
+		
+			for (int i = 0; i < len; i++) {
+				if (!Double.isNaN(data[i])) {
+					
+					if (min == null) {
+						min = data[i];
+					} else {
+						if (data[i] < min) min = data[i];
+					}
+					if (max == null) {
+						max = data[i];
+					} else {
+						if (data[i] > max) max = data[i];
+					}
+				
+					if (!isReal && (data[i] - Math.rint(data[i]) != 0))
+						isReal = true;
+				
+				} else {
+					hasNaNs = true;
+				}
+			}
+		
+			if (min != null && max != null)	
+				state.setMetadata(ACTUAL_DATA_RANGE, new double[]{min,max});
+			state.setMetadata(BOOLEAN, new Boolean((min == 0 && max == 1 && isReal)));
+			nodata = (min != null || max != null);
+		}
+		
+		state.setMetadata(HAS_NODATA_VALUES, new Boolean(hasNaNs));
+		state.setMetadata(HAS_DATA_VALUES, new Boolean(nodata));
+		
+	}
 	
 	public static class MetadataSerializer extends OutputSerializer {
 			
@@ -200,6 +311,10 @@ public class Metadata {
 		 */
 		if (type.is(KnowledgeManager.BooleanRanking())) {
 
+			if (datasource != null) {
+				datasource.setMetadata(DATA_TYPE, new Integer(BOOLEAN_RANKING));
+			}
+			
 			for (IConcept c : type.getChildren()) {
 				int i = 0;
 				for (String rx : booleanNarrative) {
@@ -210,6 +325,7 @@ public class Metadata {
 					}
 					i++;
 				}
+				
 				// wasn't a no, insert as a higher value.
 				if (i == booleanNarrative.length) {
 					lexicalRank.add(new Pair<IConcept,Integer>(c,i+1));
@@ -223,6 +339,14 @@ public class Metadata {
 				type.is(KnowledgeManager.OrdinalRanking()) ||
 				type.is(KnowledgeManager.OrderedRangeMapping())
 				) {
+			
+			if (datasource != null) {
+				datasource.setMetadata(DATA_TYPE, 
+						type.is(KnowledgeManager.OrdinalRanking()) ?
+								new Integer(ORDINAL_RANKING) :
+								new Integer(CONTINUOUS_RANGE_MAPPING));
+			}
+			
 			
 			isRanking = true;
 			
@@ -241,15 +365,20 @@ public class Metadata {
 			/*
 			 * no ranking, we still have subclasses to remember and assign numbers to.
 			 */
-			if (datasource != null) {
-				Collection<IConcept> ch = type.getChildren();
-				String[] cnames = new String[ch.size()];
-				int i = 0;
-				for (IConcept c : ch) {
-					cnames[i++] = c.toString();
-				}
-				datasource.setMetadata(CATEGORIES, cnames);
+			Collection<IConcept> ch = type.getChildren();
+			String[] cnames = new String[ch.size()];
+			int i = 0;
+			HashMap<IConcept, Integer> ret = new HashMap<IConcept, Integer>();
+			for (IConcept c : ch) {
+				cnames[i++] = c.toString();
+				ret.put(c,i);
 			}
+			if (datasource != null) {
+				datasource.setMetadata(RANKING, ret);
+				datasource.setMetadata(CATEGORIES, cnames);
+				datasource.setMetadata(DATA_TYPE, new Integer(UNORDERED_CLASSIFICATION));
+			}
+			return ret;
 		}
 		
 		if (lexicalRank.size() == 0)
@@ -495,7 +624,7 @@ public class Metadata {
 		Boolean hasZero = (Boolean) state.getMetadata(HASZERO);
 		if (hasZero == null) hasZero = false;
 		
-		boolean isCategorical = (ranking != null || categories != null);
+		boolean isCategorical = (ranking != null);
 		
 		if (isCategorical) {
 			nlevels = 

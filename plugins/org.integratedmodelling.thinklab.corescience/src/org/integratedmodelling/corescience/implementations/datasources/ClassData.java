@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
 import org.integratedmodelling.corescience.metadata.Metadata;
@@ -38,7 +39,22 @@ public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> impl
 	}
 
 	public ClassData(IConcept type, int size) {
+		
 		super(type, size);
+		
+		/*
+		 * remap the values to ranks and determine how to rewire the input
+		 */
+		HashMap<IConcept, Integer> ranks = Metadata.rankConcepts(_type, this);
+		
+		if (ranks != null) {
+			// preload indexes so that we use these rankings and we have the whole
+			// set of classes even if the data do not contain all of them
+			for (Map.Entry<IConcept, Integer> e : ranks.entrySet()) {
+				this.map.put(e.getKey(), e.getValue());
+				this.inverseMap.put(e.getValue(), e.getKey());
+			}
+		}
 	}
 
 	@Override
