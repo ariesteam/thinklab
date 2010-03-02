@@ -597,23 +597,8 @@ public class Metadata {
 		double[] data = state.getDataAsDoubles();
 		int len = data.length;
 		int[] idata = new int[len];
-		boolean hasNaNs = false;
 		
-		/*
-		 * compute actual min/max
-		 */
-		double min = (hasNaNs = Double.isNaN(data[0])) ? 0 : data[0];
-		double max = min;
-		
-		for (int i = 0; i < len; i++) {
-			if (!Double.isNaN(data[i])) {
-				if (data[i] > max) max = data[i];
-				if (data[i] < min) min = data[i];
-			} else {
-				hasNaNs = true;
-			}
-		}
-		state.setMetadata(ACTUAL_DATA_RANGE, new double[]{min,max});
+		double[] dataRange = Metadata.getDataRange(state);
 		
 		int nlevels = 254;
 		/*
@@ -621,31 +606,31 @@ public class Metadata {
 		 */
 		HashMap<IConcept, Integer> ranking = (HashMap<IConcept, Integer>) state.getMetadata(RANKING);
 		String[] categories = (String[]) state.getMetadata(CATEGORIES);
-		Boolean hasZero = (Boolean) state.getMetadata(HASZERO);
-		if (hasZero == null) hasZero = false;
-		
-		boolean isCategorical = (ranking != null);
-		
-		if (isCategorical) {
-			nlevels = 
-				ranking == null ? categories.length : ranking.size();
+		Boolean hasZeroRanking = (Boolean) state.getMetadata(HASZERO);
+		if (hasZeroRanking == null) hasZeroRanking = false;
+				
+		if (ranking != null) {
+			
+			nlevels =  ranking.size();
+			
+			/*
+			 * if the ranks do not include a zero ranking and we have 
+			 */
+			if (Metadata.hasNoDataValues(state) && !hasZeroRanking)
+				nlevels ++;
 		}
 		
 		/*
 		 * compute the display data range in actual values from the semantics
+		 * TODO we should use the theoretical one, which may or may not be available
 		 */
-		double expmin = min;
-		double expmax = max;
+		double expmin = dataRange[0];
+		double expmax = dataRange[1];
 		
 		double[] distribution = (double[]) state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
 		if (distribution != null) {
 			expmin = 0;
 			expmax = nlevels = distribution.length-1;
-		}
-
-		if (isCategorical && hasNaNs && !hasZero) {
-			// add the zero level
-			nlevels ++;
 		}
 		
 		state.setMetadata(THEORETICAL_DATA_RANGE, new double[]{expmin, expmax});

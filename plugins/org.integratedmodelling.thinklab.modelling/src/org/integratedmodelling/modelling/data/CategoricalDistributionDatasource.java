@@ -7,6 +7,7 @@ import org.integratedmodelling.corescience.implementations.datasources.IndexedCo
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.random.IndexedCategoricalDistribution;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -26,15 +27,11 @@ public class CategoricalDistributionDatasource extends
 	IConcept[] valueMappings = null;
 	int[] sortedIndexes = null;
 	double[] shuttle = null;
+	HashMap<IConcept, Integer> ranks = null;
 	
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
 
-		/*
-		 * FIXME this should be harmless but not necessary, as the ranking is now 
-		 * done in the constructor.
-		 */
-		HashMap<IConcept, Integer> ranks = Metadata.rankConcepts(_type, this);		
 		double[] ret = new double[this.data.length];
 		double[] unc = new double[this.data.length];
 		IConcept truecase = (IConcept) getMetadata(Metadata.TRUECASE);
@@ -116,22 +113,26 @@ public class CategoricalDistributionDatasource extends
 		/*
 		 * remap the values to ranks and determine how to rewire the input
 		 */
-		HashMap<IConcept, Integer> ranks = Metadata.rankConcepts(_type, this);
+		this.ranks = Metadata.rankConcepts(_type, this);
 		int offset = 0; 
 		if (getMetadata(Metadata.HASZERO) != null)
 			offset = ((Boolean)getMetadata(Metadata.HASZERO)) ? 0 : 1;
 		
+		if (ranks == null)
+			throw new ThinklabRuntimeException(
+					"internal: probabilistic datasource: cannot determine classification from type " + 
+					_type);
+
 		if (ranks != null && ranks.size() != valueMappings.length) {
 			throw new ThinklabValidationException(
 					"probabilistic discretization of type " + type + " differs from its logical definition");
 		}
-		
-		if (ranks != null)
-			for (int i = 0; i < valueMappings.length; i++) {
-				int n = ranks.get(valueMappings[i]) - offset;
-				this.sortedIndexes[i] = n;
-				this.valueMappings[n] = valueMappings[i];
-			}
+			
+		for (int i = 0; i < valueMappings.length; i++) {
+			int n = ranks.get(valueMappings[i]) - offset;
+			this.sortedIndexes[i] = n;
+			this.valueMappings[n] = valueMappings[i];
+		}
 		
 	}
 

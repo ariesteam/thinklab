@@ -10,6 +10,7 @@ import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
@@ -17,11 +18,12 @@ import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
 public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> implements
 		ICategoryData, IPersistentObject {
 	
+	HashMap<IConcept, Integer> ranks = null;
+	
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
 		
 		double[] ret = new double[this.data.length];
-		HashMap<IConcept, Integer> ranks = Metadata.rankConcepts(_type, this);
 		
 		for (int i = 0; i < this.data.length; i++) {
 			
@@ -45,15 +47,17 @@ public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> impl
 		/*
 		 * remap the values to ranks and determine how to rewire the input
 		 */
-		HashMap<IConcept, Integer> ranks = Metadata.rankConcepts(_type, this);
+		this.ranks = Metadata.rankConcepts(_type, this);
 		
-		if (ranks != null) {
-			// preload indexes so that we use these rankings and we have the whole
-			// set of classes even if the data do not contain all of them
-			for (Map.Entry<IConcept, Integer> e : ranks.entrySet()) {
-				this.map.put(e.getKey(), e.getValue());
-				this.inverseMap.put(e.getValue(), e.getKey());
-			}
+		if (ranks == null) {
+			throw new ThinklabRuntimeException("internal: classdata: cannot determine classification from type " + _type);
+		}
+		
+		// preload indexes so that we use these rankings and we have the whole
+		// set of classes even if the data do not contain all of them
+		for (Map.Entry<IConcept, Integer> e : ranks.entrySet()) {
+			this.map.put(e.getKey(), e.getValue());
+			this.inverseMap.put(e.getValue(), e.getKey());
 		}
 	}
 
