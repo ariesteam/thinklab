@@ -43,7 +43,7 @@ public class Cmap implements ICommandHandler {
 				VisualizationFactory.get().getColormap(
 						KnowledgeManager.get().requireConcept(cmdef), levels);
 		} else {
-			cmap = ColorMap.getColormap(cmdef, -1);
+			cmap = ColorMap.getColormap(cmdef, -1, null);
 		}
 		
 		if (cmap == null) {

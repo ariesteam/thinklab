@@ -59,7 +59,7 @@ public class FileBasedDataset implements IDataset {
 		if (ret == null) {
 
 			ret = (isCategorical && nlevels < 10) ? 
-					ColorMap.getColormap("Set1()", nlevels) : 
+					ColorMap.getColormap("Set1()", nlevels, null) : 
 					ColorMap.jet(nlevels);
 			
 			if (state.getMetadata(Metadata.RANKING) != null ||

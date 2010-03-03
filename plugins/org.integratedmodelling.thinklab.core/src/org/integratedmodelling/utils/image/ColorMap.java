@@ -222,7 +222,7 @@ public class ColorMap {
 	 * @param id
 	 * @return
 	 */
-	public static ColorMap getColormap(String id, int levels) {
+	public static ColorMap getColormap(String id, int levels, Boolean forceZeroTransp) {
 
 		ColorMap ret = null;
 		
@@ -231,6 +231,8 @@ public class ColorMap {
 		if (def.nlevels >= 0)
 			levels = def.nlevels;
 
+		boolean isz = forceZeroTransp == null ? def.isZeroTransparent : forceZeroTransp;
+		
 		/**
 		 * FIXME this is painful, but using binary search or a hash and numeric IDs is very error
 		 * prone. Let's see how this changes the overall picture.
@@ -238,87 +240,87 @@ public class ColorMap {
 		if (def.id.equals("Accent")) { 
 			ret = makeColormap(ColorBrewer.getAccent(levels), def.transp, def.isZeroTransparent);
 		} else if (def.id.equals("Blues")) { 
-			ret = makeColormap(ColorBrewer.getBlues(levels), def.transp, def.isZeroTransparent);			
+			ret = makeColormap(ColorBrewer.getBlues(levels), def.transp, isz);			
 		} else if (def.id.equals("BrBG")) { 
-			ret = makeColormap(ColorBrewer.getBrBG(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getBrBG(levels), def.transp, isz);
 		} else if (def.id.equals("BuGn")) { 
-			ret = makeColormap(ColorBrewer.getBuGn(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getBuGn(levels), def.transp, isz);
 		} else if (def.id.equals("BuPu")) { 
-			ret = makeColormap(ColorBrewer.getBuPu(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getBuPu(levels), def.transp, isz);
 		} else if (def.id.equals("Dark2")) { 
-			ret = makeColormap(ColorBrewer.getDark2(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getDark2(levels), def.transp, isz);
 		} else if (def.id.equals("GnBu")) { 
-			ret = makeColormap(ColorBrewer.getGnBu(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getGnBu(levels), def.transp, isz);
 		} else if (def.id.equals("Greens")) { 
-			ret = makeColormap(ColorBrewer.getGreens(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getGreens(levels), def.transp, isz);
 		} else if (def.id.equals("Greys")) { 
-			ret = makeColormap(ColorBrewer.getGreys(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getGreys(levels), def.transp, isz);
 		} else if (def.id.equals("OrRd")) { 
-			ret = makeColormap(ColorBrewer.getOrRd(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getOrRd(levels), def.transp, isz);
 		} else if (def.id.equals("Oranges")) { 
-			ret = makeColormap(ColorBrewer.getOranges(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getOranges(levels), def.transp, isz);
 		} else if (def.id.equals("PRGn")) { 
-			ret = makeColormap(ColorBrewer.getPRGn(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getPRGn(levels), def.transp, isz);
 		} else if (def.id.equals("Paired")) { 
-			ret = makeColormap(ColorBrewer.getPaired(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getPaired(levels), def.transp, isz);
 		} else if (def.id.equals("Pastel1")) { 
-			ret = makeColormap(ColorBrewer.getPastel1(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getPastel1(levels), def.transp, isz);
 		} else if (def.id.equals("Pastel2")) { 
-			ret = makeColormap(ColorBrewer.getPastel2(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getPastel2(levels), def.transp, isz);
 		} else if (def.id.equals("PiYG")) { 
-			ret = makeColormap(ColorBrewer.getPiYG(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getPiYG(levels), def.transp, isz);
 		} else if (def.id.equals("PuBu")) { 
-			ret = makeColormap(ColorBrewer.getPuBu(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getPuBu(levels), def.transp, isz);
 		} else if (def.id.equals("PuBuGn")) {
-			ret = makeColormap(ColorBrewer.getPuBuGn(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getPuBuGn(levels), def.transp, isz);
 		} else if (def.id.equals("PuOr")) { 
-			ret = makeColormap(ColorBrewer.getPuOr(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getPuOr(levels), def.transp, isz);
 		} else if (def.id.equals("PuRd")) { 
-			ret = makeColormap(ColorBrewer.getPuRd(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getPuRd(levels), def.transp, isz);
 		} else if (def.id.equals("Purples")) { 
-			ret = makeColormap(ColorBrewer.getPurples(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getPurples(levels), def.transp, isz);
 		} else if (def.id.equals("RdBu")) { 
-			ret = makeColormap(ColorBrewer.getRdBu(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getRdBu(levels), def.transp, isz);
 		} else if (def.id.equals("RdGy")) { 
-			ret = makeColormap(ColorBrewer.getRdGy(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getRdGy(levels), def.transp, isz);
 		} else if (def.id.equals("RdPu")) { 
-			ret = makeColormap(ColorBrewer.getRdPu(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getRdPu(levels), def.transp, isz);
 		} else if (def.id.equals("RdYlBu")) { 
-			ret = makeColormap(ColorBrewer.getRdYlBu(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getRdYlBu(levels), def.transp, isz);
 		} else if (def.id.equals("RdYlGn")) { 
-			ret = makeColormap(ColorBrewer.getRdYlGn(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getRdYlGn(levels), def.transp, isz);
 		} else if (def.id.equals("Reds")) { 
-			ret = makeColormap(ColorBrewer.getReds(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getReds(levels), def.transp, isz);
 		} else if (def.id.equals("Set1")) { 
-			ret = makeColormap(ColorBrewer.getSet1(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getSet1(levels), def.transp, isz);
 		} else if (def.id.equals("Set2")) { 
-			ret = makeColormap(ColorBrewer.getSet2(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getSet2(levels), def.transp, isz);
 		} else if (def.id.equals("Set3")) { 
-			ret = makeColormap(ColorBrewer.getSet3(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getSet3(levels), def.transp, isz);
 		} else if (def.id.equals("Spectral")) { 
-			ret = makeColormap(ColorBrewer.getSpectral(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getSpectral(levels), def.transp, isz);
 		} else if (def.id.equals("YlGn")) { 
-			ret = makeColormap(ColorBrewer.getYlGn(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getYlGn(levels), def.transp, isz);
 		} else if (def.id.equals("YlGnBu")) { 
-			ret = makeColormap(ColorBrewer.getYlGnBu(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getYlGnBu(levels), def.transp, isz);
 		} else if (def.id.equals("YlOrBr")) { 
-			ret = makeColormap(ColorBrewer.getYlOrBr(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getYlOrBr(levels), def.transp, isz);
 		} else if (def.id.equals("YlOrRd")) { 
-			ret = makeColormap(ColorBrewer.getYlOrRd(levels), def.transp, def.isZeroTransparent);
+			ret = makeColormap(ColorBrewer.getYlOrRd(levels), def.transp, isz);
 		} else if (def.id.equals("bluescale")) { 
-			ret = makeColormap(ColorBrewer.getBlueScale(levels), def.transp, def.isZeroTransparent);			
+			ret = makeColormap(ColorBrewer.getBlueScale(levels), def.transp, isz);			
 		} else if (def.id.equals("gradient")) { 
-			ret = makeColormap(ColorBrewer.getGradient(levels, def.parameters), def.transp, def.isZeroTransparent);						
+			ret = makeColormap(ColorBrewer.getGradient(levels, def.parameters), def.transp, isz);						
 		} else if (def.id.equals("greenscale")) { 
-			ret = makeColormap(ColorBrewer.getGreenScale(levels), def.transp, def.isZeroTransparent);			
+			ret = makeColormap(ColorBrewer.getGreenScale(levels), def.transp, isz);			
 		} else if (def.id.equals("greyscale")) { 
-			ret = makeColormap(ColorBrewer.getGreyScale(levels), def.transp, def.isZeroTransparent);			
+			ret = makeColormap(ColorBrewer.getGreyScale(levels), def.transp, isz);			
 		} else if (def.id.equals("rainbow")) { 
-			ret = makeColormap(ColorBrewer.getJetScale(levels), def.transp, def.isZeroTransparent);			
+			ret = makeColormap(ColorBrewer.getJetScale(levels), def.transp, isz);			
 		} else if (def.id.equals("redscale")) { 
-			ret = makeColormap(ColorBrewer.getRedScale(levels), def.transp, def.isZeroTransparent);			
+			ret = makeColormap(ColorBrewer.getRedScale(levels), def.transp, isz);			
 		} else if (def.id.equals("yellowscale")) { 
-			ret = makeColormap(ColorBrewer.getYellowScale(levels), def.transp, def.isZeroTransparent);			
+			ret = makeColormap(ColorBrewer.getYellowScale(levels), def.transp, isz);			
 		} 
 		
 		

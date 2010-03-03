@@ -7,11 +7,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
+import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -22,6 +24,7 @@ import org.integratedmodelling.thinklab.literals.IntervalValue;
 import org.integratedmodelling.utils.InputSerializer;
 import org.integratedmodelling.utils.OutputSerializer;
 import org.integratedmodelling.utils.Pair;
+import org.integratedmodelling.utils.Triple;
 
 /**
  * Just a holder of metadata ID strings.
@@ -93,6 +96,12 @@ public class Metadata {
 		Boolean ret = (Boolean)state.getMetadata(CONTINUOUS);
 		return (ret != null) && ret;
 	}
+	
+	public static boolean hasZeroCategory(IState state) {
+		Boolean ret = (Boolean)state.getMetadata(HASZERO);
+		return (ret != null) && ret;
+	}
+	
 
 	public static boolean hasNoDataValues(IState state) {
 		if (state.getMetadata(HAS_NODATA_VALUES) == null)
@@ -426,6 +435,27 @@ public class Metadata {
 		return ret;
 	}
 
+	/**
+	 * Use this ranking for the concepts, but ensure that the lexicographical info are in.
+	 * 
+	 * @param rnk
+	 * @param datasource
+	 * @return
+	 */
+	public static HashMap<IConcept, Integer> rankConcepts(IConcept type, IConcept[] rnk,
+			IState datasource) {
+		
+		rankConcepts(type, datasource);
+		/*
+		 * recompute ranks as requested and substitute
+		 */
+		int start = Metadata.hasZeroCategory(datasource) ? 0 : 1;
+		HashMap<IConcept, Integer> ret = new HashMap<IConcept, Integer>();
+		for (IConcept r : rnk)
+			ret.put(r, new Integer(start++));
+		datasource.setMetadata(RANKING, ret);
+		return ret;
+	}
 
 	/**
 	 * This one checks if all classifiers are the discretization of a continuous distribution. 
@@ -438,33 +468,43 @@ public class Metadata {
 	 * that the concepts and the ranges make sense together. We do, however, enforce that continuous
 	 * ranges are propertly defined if the observable is the discretization of a continuous range.
 	 *  
-	 * @return
+	 * @return null if we don't encode a continuous discretization; otherwise a pair containing
+	 * 	the breakpoints as a double[] (n+1) and a vector of concepts in the order defined by
+	 * 	the intervals (size n). If the concept list was not passed, the concept array will be
+	 * 	filled with nulls.
+	 * 
 	 * @throws ThinklabValidationException if the observable is a continuous range mapping but
 	 * 		   the classification has disjoint intervals.
 	 */
-	public static double[] computeDistributionBreakpoints(
-			IConcept observable, Collection<GeneralClassifier> cls) throws ThinklabValidationException {
+	public static Pair<double[], IConcept[]> computeDistributionBreakpoints(
+			IConcept observable, Collection<GeneralClassifier> cls, List<IConcept> classes) 
+		throws ThinklabValidationException {
 	
+		if (cls.size() < 1)
+			return null;
+		
 		double[] ret = null;
 		
-		ArrayList<Pair<Double, Double>> ranges = new ArrayList<Pair<Double,Double>>();
+		ArrayList<Triple<Double, Double, IConcept>> ranges = new ArrayList<Triple<Double,Double, IConcept>>();
 	
+		int i = 0;
 		for (GeneralClassifier c : cls) {
 			if (!c.isInterval())
 				return null;
 			IntervalValue iv = c.getInterval();
+			IConcept concept = classes == null ? null : classes.get(i++);
 			double d1 = iv.isLeftInfinite() ?  Double.NEGATIVE_INFINITY : iv.getMinimumValue();
 			double d2 = iv.isRightInfinite() ? Double.POSITIVE_INFINITY : iv.getMaximumValue();
-			ranges.add(new Pair<Double,Double>(d1, d2));
+			ranges.add(new Triple<Double,Double,IConcept>(d1, d2, concept));
 		}
 		
 		/*
 		 * sort ranges so that they appear in ascending order
 		 */
-		Collections.sort(ranges, new Comparator <Pair<Double, Double>>() {
+		Collections.sort(ranges, new Comparator <Triple<Double, Double,IConcept>>() {
 	
 			@Override
-			public int compare(Pair<Double, Double> o1, Pair<Double, Double> o2) {
+			public int compare(Triple<Double, Double,IConcept> o1, Triple<Double, Double,IConcept> o2) {
 		
 				if (Double.compare(o1.getFirst(), o2.getFirst()) == 0 &&
 					Double.compare(o1.getSecond(), o2.getSecond()) == 0)
@@ -475,15 +515,22 @@ public class Metadata {
 		});
 		
 		/*
+		 * sorted vector of concepts
+		 */
+		IConcept[] cret = new IConcept[ranges.size()];
+		for (int jc = 0; jc < ranges.size(); jc++)
+			cret[jc] = ranges.get(jc).getThird();
+		
+		/*
 		 * build vector from sorted array
 		 */
 		ret = new double[ranges.size() + 1];
-		int i = 0; double last = 0.0;
+		i = 0; double last = 0.0;
 		ret[i++] = ranges.get(0).getFirst();
 		last = ranges.get(0).getSecond();
 		for (int n = 1; n < ranges.size(); n++) {
 		
-			Pair<Double,Double> pd = ranges.get(n);
+			Triple<Double,Double,IConcept> pd = ranges.get(n);
 			/*
 			 * we don't allow ordered range mappings to have disjoint intervals
 			 */
@@ -499,9 +546,8 @@ public class Metadata {
 				ret[i++] = last;
 		}
 				
-		return ret;
+		return new Pair<double[],IConcept[]>(ret,cret);
 	}
-
 
 	public static void serializeMetadata(Properties metadata, OutputStream fop) throws ThinklabException {
 
@@ -605,7 +651,6 @@ public class Metadata {
 		 * see if we have categories and redefine from there.
 		 */
 		HashMap<IConcept, Integer> ranking = (HashMap<IConcept, Integer>) state.getMetadata(RANKING);
-		String[] categories = (String[]) state.getMetadata(CATEGORIES);
 		Boolean hasZeroRanking = (Boolean) state.getMetadata(HASZERO);
 		if (hasZeroRanking == null) hasZeroRanking = false;
 				
@@ -616,7 +661,7 @@ public class Metadata {
 			/*
 			 * if the ranks do not include a zero ranking and we have 
 			 */
-			if (Metadata.hasNoDataValues(state) && !hasZeroRanking)
+			if (Metadata.hasNoDataValues(state) /*&& !*/ || hasZeroRanking)
 				nlevels ++;
 		}
 		
@@ -630,7 +675,7 @@ public class Metadata {
 		double[] distribution = (double[]) state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
 		if (distribution != null) {
 			expmin = 0;
-			expmax = nlevels = distribution.length-1;
+			expmax = distribution.length-1;
 		}
 		
 		state.setMetadata(THEORETICAL_DATA_RANGE, new double[]{expmin, expmax});
@@ -641,7 +686,9 @@ public class Metadata {
 			if (Double.isNaN(data[i]))
 				idata[i] = 0;
 			else {
-				idata[i] = (int)(((data[i]-expmin)/(expmax-expmin))*(nlevels-1));
+				idata[i] = ranking != null ?
+						(int)data[i] : 
+						(int)(((data[i]-expmin)/(expmax-expmin))*(nlevels-1));
 			}
 			
 			if (i == 0) {
@@ -658,6 +705,8 @@ public class Metadata {
 		
 		return idata;
 	}
+
+
 
 
 }

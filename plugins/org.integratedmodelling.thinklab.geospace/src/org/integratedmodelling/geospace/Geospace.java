@@ -174,8 +174,6 @@ public class Geospace extends ThinklabPlugin  {
 	@Override
 	public void load(KnowledgeManager km) throws ThinklabPluginException {
 		
-		ColorMap.getColormap("zorba(12, 33, 23, 7)", 2);
-		
 		try {
 			
 			/*

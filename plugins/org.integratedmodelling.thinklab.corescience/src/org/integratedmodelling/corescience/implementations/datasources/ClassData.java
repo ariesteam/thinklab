@@ -2,18 +2,22 @@ package org.integratedmodelling.corescience.implementations.datasources;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
+import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
+import org.integratedmodelling.utils.Pair;
 
 public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> implements
 		ICategoryData, IPersistentObject {
@@ -40,15 +44,40 @@ public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> impl
 		return ret;
 	}
 
-	public ClassData(IConcept type, int size) {
+	public ClassData(IConcept type, int size, ArrayList<Pair<GeneralClassifier, IConcept>> classifiers) throws ThinklabValidationException {
 		
 		super(type, size);
 		
-		/*
-		 * remap the values to ranks and determine how to rewire the input
-		 */
-		this.ranks = Metadata.rankConcepts(_type, this);
+		IConcept[] rnk = null;
+
+		if (classifiers != null) {
+			/*
+			 * remap the values to ranks and determine how to rewire the input
+			 * if necessary, use classifiers instead of lexicographic order to
+			 * infer the appropriate concept order
+			 */
+			ArrayList<GeneralClassifier> cls = new ArrayList<GeneralClassifier>();
+			ArrayList<IConcept> con = new ArrayList<IConcept>();
+			for (Pair<GeneralClassifier, IConcept> op : classifiers) {
+				cls.add(op.getFirst());
+				con.add(op.getSecond());
+			}
+
+			Pair<double[], IConcept[]> pd = Metadata
+					.computeDistributionBreakpoints(type, cls, con);
+			if (pd != null) {
+				if (pd.getSecond()[0] != null) {
+					rnk = pd.getSecond();
+				}
+			}
+		}
 		
+		if (rnk == null) {	
+			this.ranks = Metadata.rankConcepts(_type, this);
+		} else {
+			this.ranks = Metadata.rankConcepts(_type, rnk, this);
+		}
+
 		if (ranks == null) {
 			throw new ThinklabRuntimeException("internal: classdata: cannot determine classification from type " + _type);
 		}

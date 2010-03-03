@@ -205,7 +205,7 @@ public class ModeledClassification
 	@Override
 	public IState createState(int size) throws ThinklabException {
 		
-		IState ret = new ClassData(cSpace, size);
+		IState ret = new ClassData(cSpace, size, classifiers);
 
 		/*
 		 * TODO other metadata

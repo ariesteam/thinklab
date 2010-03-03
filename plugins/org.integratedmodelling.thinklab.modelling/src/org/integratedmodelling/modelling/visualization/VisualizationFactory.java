@@ -70,11 +70,11 @@ public class VisualizationFactory {
 		ColorMap ret = null;
 		
 		if ((isBoolean != null && isBoolean) || nlevels < 3) {
-			ret = ColorMap.getColormap("Blues_z()", nlevels);	
+			ret = ColorMap.getColormap("Blues()", nlevels, true);	
 		} else {
 			ret = categories == null ? 
 				(nlevels < 10 ? 
-					ColorMap.getColormap("YlOrRd()", nlevels) : 
+					ColorMap.getColormap("YlOrRd()", nlevels, Metadata.hasZeroCategory(state) || Metadata.hasNoDataValues(state)) : 
 					ColorMap.jet(nlevels)) : // default for ordinal data
 				ColorMap.random(nlevels); // default for categorical data
 		}
@@ -102,12 +102,8 @@ public class VisualizationFactory {
 		}
 		
 		int[] idata = Metadata.getImageData(state);
-		
 		int nlevels = (Integer)state.getMetadata(Metadata.IMAGE_LEVELS);
-		int[] iarange = (int[])state.getMetadata(Metadata.ACTUAL_IMAGE_RANGE);
-		double[] dtrange = (double[])state.getMetadata(Metadata.THEORETICAL_IMAGE_RANGE);
-		double[] darange = (double[])state.getMetadata(Metadata.ACTUAL_DATA_RANGE);
-
+		
 		ColorMap cmap = getColormap(observable, nlevels, getDefaultColormap(observable, state, nlevels));
 
 		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 

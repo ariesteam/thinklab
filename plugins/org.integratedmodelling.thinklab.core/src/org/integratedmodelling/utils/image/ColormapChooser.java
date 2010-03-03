@@ -24,6 +24,7 @@ public class ColormapChooser extends ConfigurableIntelligentMap<ColorMap> {
 		}
 		
 		int levels = (Integer)parameters[0];
+		Boolean isz = parameters.length > 1 ? (Boolean)parameters[1] : null;
 		
 		ColorMap ret = null;
 		String[] pdefs = pvalue.split(","); 
@@ -40,7 +41,7 @@ public class ColormapChooser extends ConfigurableIntelligentMap<ColorMap> {
 			}
 			cname += ")";
 			
-			ret = ColorMap.getColormap(cname, levels);
+			ret = ColorMap.getColormap(cname, levels, isz);
 			if (ret != null)
 				break;
 		}

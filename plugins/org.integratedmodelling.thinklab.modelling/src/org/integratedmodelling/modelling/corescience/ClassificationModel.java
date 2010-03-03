@@ -16,6 +16,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.IPersistentSet;
@@ -243,8 +244,11 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 					this.lang.equals(language.CLOJURE) ? "clojure" : "mvel"));
 		}
 
-		double[] breakpoints = 
-			Metadata.computeDistributionBreakpoints(observable, classifiers);		
+		double[] breakpoints = null;
+		Pair<double[], IConcept[]> pd = Metadata.computeDistributionBreakpoints(observable, classifiers, null);		
+		if (pd != null)
+			breakpoints = pd.getFirst();
+		
 		if (breakpoints != null) {
 			arr.add(Polylist.list(
 					"modeltypes:encodesContinuousDistribution",

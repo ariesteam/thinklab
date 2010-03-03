@@ -1,9 +1,11 @@
 package org.integratedmodelling.modelling.data;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceInt;
+import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.random.IndexedCategoricalDistribution;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
@@ -103,7 +105,7 @@ public class CategoricalDistributionDatasource extends
 		return new Pair<IConcept, Double>(c,sh);
 	}
 
-	public CategoricalDistributionDatasource(IConcept type, int size, IConcept[] valueMappings) throws ThinklabValidationException {
+	public CategoricalDistributionDatasource(IConcept type, int size, IConcept[] valueMappings, ArrayList<Pair<GeneralClassifier, IConcept>> classifiers) throws ThinklabValidationException {
 		
 		super(type, size);
 		this.sortedIndexes = new int[valueMappings.length];
@@ -112,8 +114,30 @@ public class CategoricalDistributionDatasource extends
 		
 		/*
 		 * remap the values to ranks and determine how to rewire the input
+		 * if necessary, use classifiers instead of lexicographic order to infer the 
+		 * appropriate concept order
 		 */
-		this.ranks = Metadata.rankConcepts(_type, this);
+		ArrayList<GeneralClassifier> cls = new ArrayList<GeneralClassifier>();
+		ArrayList<IConcept> con = new ArrayList<IConcept>();
+		for (Pair<GeneralClassifier, IConcept> op: classifiers) {
+			cls.add(op.getFirst());
+			con.add(op.getSecond());
+		}
+
+		IConcept[] rnk = null;
+		Pair<double[], IConcept[]> pd = 
+			Metadata.computeDistributionBreakpoints(type, cls, con);		
+		if (pd != null) {
+			if (pd.getSecond()[0] != null) {
+				rnk = pd.getSecond();
+			}
+		}
+			
+		if (rnk == null) {	
+			this.ranks = Metadata.rankConcepts(_type, this);
+		} else {
+			this.ranks = Metadata.rankConcepts(_type, rnk, this);
+		}
 		int offset = 0; 
 		if (getMetadata(Metadata.HASZERO) != null)
 			offset = ((Boolean)getMetadata(Metadata.HASZERO)) ? 0 : 1;

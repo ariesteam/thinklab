@@ -158,7 +158,7 @@ public class Classification extends Observation implements MediatingObservation 
 
 	@Override
 	public IState createState(int size) throws ThinklabException {
-		return new ClassData(cspace, size);
+		return new ClassData(cspace, size, null);
 	}
 
 	@Override
