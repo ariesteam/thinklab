@@ -659,9 +659,10 @@ public class Metadata {
 			nlevels =  ranking.size();
 			
 			/*
-			 * if the ranks do not include a zero ranking and we have 
+			 * if the ranks do not include a zero ranking and we have no data, we need 
+			 * one more level for the zero.
 			 */
-			if (Metadata.hasNoDataValues(state) /*&& !*/ || hasZeroRanking)
+			if (Metadata.hasNoDataValues(state) && !hasZeroRanking)
 				nlevels ++;
 		}
 		

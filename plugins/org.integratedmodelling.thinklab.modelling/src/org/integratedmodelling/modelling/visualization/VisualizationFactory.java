@@ -43,12 +43,12 @@ public class VisualizationFactory {
 		colormapChooser.load(properties);
 	}
 	
-	public ColorMap getColormap(IConcept c, int levels) throws ThinklabException {
+	public ColorMap getColormap(IConcept c, int levels, boolean forceZero) throws ThinklabException {
 		return colormapChooser.get(c, levels);
 	}
 	
-	public ColorMap getColormap(IConcept c, int levels, ColorMap def) throws ThinklabException {
-		ColorMap ret = getColormap(c, levels);
+	public ColorMap getColormap(IConcept c, int levels, boolean forceZero, ColorMap def) throws ThinklabException {
+		ColorMap ret = getColormap(c, levels, forceZero);
 		if (ret == null)
 			ret = def;
 		return ret;
@@ -104,7 +104,10 @@ public class VisualizationFactory {
 		int[] idata = Metadata.getImageData(state);
 		int nlevels = (Integer)state.getMetadata(Metadata.IMAGE_LEVELS);
 		
-		ColorMap cmap = getColormap(observable, nlevels, getDefaultColormap(observable, state, nlevels));
+		ColorMap cmap =
+			getColormap(observable, nlevels, 
+				Metadata.hasZeroCategory(state) || Metadata.hasNoDataValues(state), 
+				getDefaultColormap(observable, state, nlevels));
 
 		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
 				space.getColumns(), x, y, cmap, fileOrNull);
@@ -183,12 +186,8 @@ public class VisualizationFactory {
 		if (cmap == null) {
 			throw new ThinklabValidationException("internal: getLegend called on a state without colormap");
 		}
-
-		double[] darange = (double[])state.getMetadata(Metadata.ACTUAL_DATA_RANGE);
 		double[] breakpoints = (double[])state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
-		
-		HashMap<IConcept, Integer> ranking = 
-			(HashMap<IConcept, Integer>) state.getMetadata(Metadata.RANKING);
+		HashMap<IConcept, Integer> ranking = Metadata.getClassMappings(state);
 
 		int nlevels = cmap.getVisibleColorCount();
 		int w = totalLength/nlevels;
@@ -216,15 +215,7 @@ public class VisualizationFactory {
 						desc += getRangeDescription(breakpoints, i - (cmap.hasTransparentZero() ? 1 : 0));
 					}
 				}
-				
-				// TODO rankings with data ranges if any
-			} else if (state instanceof ClassData) {
-				IConcept c = ((ClassData)state).getMappingForIndex(i);
-				if (c != null) {
-					VisualConcept vc = TypeManager.get().getVisualConcept(c);
-					desc = vc.getLabel();
-				} 
-			}
+			} 
 			descs[n++] = desc;
 		}
 		

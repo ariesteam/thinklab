@@ -41,7 +41,7 @@ public class Cmap implements ICommandHandler {
 				throw new ThinklabValidationException("must specify number of levels > 0");
 			cmap =
 				VisualizationFactory.get().getColormap(
-						KnowledgeManager.get().requireConcept(cmdef), levels);
+						KnowledgeManager.get().requireConcept(cmdef), levels, false);
 		} else {
 			cmap = ColorMap.getColormap(cmdef, -1, null);
 		}

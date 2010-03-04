@@ -54,7 +54,7 @@ public class FileBasedDataset implements IDataset {
 	public ColorMap chooseColormap(IConcept observable, int nlevels, boolean isCategorical) throws ThinklabException {
 		
 		IState state = getState(observable);
-		ColorMap ret = VisualizationFactory.get().getColormap(observable, nlevels);
+		ColorMap ret = VisualizationFactory.get().getColormap(observable, nlevels, false);
 
 		if (ret == null) {
 
