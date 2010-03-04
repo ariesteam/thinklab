@@ -10,12 +10,10 @@ import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.FolderZiper;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.xml.XML;
-import org.integratedmodelling.utils.xml.XMLDocument;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
 
 //<?xml version="1.0" encoding="UTF-8"?>
 //<kml xmlns="http://earth.google.com/kml/2.0">
@@ -35,10 +33,21 @@ import org.opengis.referencing.operation.TransformException;
 
 public class KMLExporter  {
 	
-	private FileBasedDataset dset;
+	private FileBasedDataset dset = null;
 
+	class Layer {
+		IConcept observable;
+		String imagefile;
+		double north, south, east, west;
+	}
+	
+	ArrayList<Layer> layers = new ArrayList<Layer>();
+	
 	public KMLExporter(FileBasedDataset dset) throws ThinklabException {
 		this.dset = dset;
+	}
+	
+	public KMLExporter()  {
 	}
 		
 	/**
@@ -48,7 +57,68 @@ public class KMLExporter  {
 	 * @throws ThinklabException
 	 */
 	public void export(File file) throws ThinklabException {
-		export(dset.getStatefulObservables(), file);
+		if (dset != null)
+			export(dset.getStatefulObservables(), file);
+		else if (layers.size() > 0) 
+			exportLayers(file);
+	}
+	
+	public void addLayer(IConcept observable, String imageFile, double north, double south, double east, double west) {
+
+		Layer l = new Layer();
+		l.observable = observable;
+		l.imagefile = imageFile;
+		l.east = east;
+		l.north = north;
+		l.south = south;
+		l.west = west;
+		layers.add(l);
+	}
+
+	private void exportLayers(File file) throws ThinklabException {
+		// TODO Auto-generated method stub
+
+		File tempdir = MiscUtilities.createTempDir();
+		
+		String xmlFile = 
+			tempdir + 
+			File.separator + 
+			MiscUtilities.getFileBaseName(file.toString()) + ".kml";
+		
+		
+		ArrayList<XML.XmlNode> nodes = new ArrayList<XML.XmlNode>();
+		
+		for (Layer layer : layers) {
+					
+			/*
+			 * copy image file in temp directory
+			 */			
+			String fname = MiscUtilities.getFileName(layer.imagefile);
+			File f = new File(tempdir + File.separator + fname);
+			CopyURL.copy(new File(layer.imagefile), f);
+			
+			nodes.add(
+				XML.node(
+					"GroundOverlay", 
+					XML.node("name", layer.observable.getLocalName()),
+					XML.node("Icon",
+						XML.node("href", fname)),
+					XML.node("LatLonBox",
+						XML.node("north", layer.north+""),
+						XML.node("south", layer.south+""),
+						XML.node("east", layer.east+""),
+						XML.node("west", layer.west+""))).attr("id", layer.observable.getLocalName()));
+		}
+		
+		XML.document("xmlns=http://earth.google.com/kml/2.0",
+					XML.node("kml", XML.node("Document", XML.node("name", "ARIES results"), nodes))).
+				writeToFile(new File(xmlFile));
+		
+		// zip the whole thing into the passed file, check extension is .kmz
+		file = new File(MiscUtilities.changeExtension(file.toString(), "kmz"));
+		FolderZiper.zipSubFolders(tempdir.toString(), file.toString());
+		MiscUtilities.deleteDirectory(tempdir);
+
 	}
 
 	/**

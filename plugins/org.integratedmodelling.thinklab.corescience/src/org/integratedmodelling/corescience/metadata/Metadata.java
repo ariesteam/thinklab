@@ -170,9 +170,10 @@ public class Metadata {
 				}
 			}
 		
-			if (min != null && max != null)	
+			if (min != null && max != null)	{
 				state.setMetadata(ACTUAL_DATA_RANGE, new double[]{min,max});
-			state.setMetadata(BOOLEAN, new Boolean((min == 0 && max == 1 && isReal)));
+				state.setMetadata(BOOLEAN, new Boolean((min == 0 && max == 1 && isReal)));
+			}
 			nodata = (min != null || max != null);
 		}
 		
@@ -670,8 +671,8 @@ public class Metadata {
 		 * compute the display data range in actual values from the semantics
 		 * TODO we should use the theoretical one, which may or may not be available
 		 */
-		double expmin = dataRange[0];
-		double expmax = dataRange[1];
+		double expmin = dataRange == null ? 0.0 : dataRange[0];
+		double expmax = dataRange == null ? 0.0 : dataRange[1];
 		
 		double[] distribution = (double[]) state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
 		if (distribution != null) {

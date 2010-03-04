@@ -137,7 +137,8 @@ public class FolderZiper {
 			int len;
 			try {
 				FileInputStream in = new FileInputStream(srcFile);
-				zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
+//				zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
+				zip.putNextEntry(new ZipEntry(MiscUtilities.getFileName(srcFile)));
 				while ((len = in.read(buf)) > 0) {
 					zip.write(buf, 0, len);
 				}

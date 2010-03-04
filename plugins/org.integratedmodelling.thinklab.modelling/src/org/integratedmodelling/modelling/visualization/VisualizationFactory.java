@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.integratedmodelling.corescience.implementations.datasources.ClassData;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
@@ -186,6 +185,12 @@ public class VisualizationFactory {
 		if (cmap == null) {
 			throw new ThinklabValidationException("internal: getLegend called on a state without colormap");
 		}
+		
+		if (Metadata.isContinuous(state)) {
+			// for now - we should make one segment and describe the whole range in the text
+			return null;
+		}
+		
 		double[] breakpoints = (double[])state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
 		HashMap<IConcept, Integer> ranking = Metadata.getClassMappings(state);
 

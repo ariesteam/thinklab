@@ -1,6 +1,5 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -10,7 +9,6 @@ import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
@@ -71,6 +69,8 @@ public class IndexedContextualizedDatasourceInt<T>
 	}
 
 	private int getIndex(T o) {
+		if (o == null)
+			return 0;
 		Integer i = (Integer) map.get(o);
 		if (i == null) {
 			map.put(o, (i = new Integer(max++)));

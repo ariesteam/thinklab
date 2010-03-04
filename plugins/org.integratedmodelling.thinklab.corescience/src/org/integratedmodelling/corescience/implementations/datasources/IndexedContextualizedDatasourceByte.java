@@ -69,6 +69,8 @@ public class IndexedContextualizedDatasourceByte<T>
 	}
 
 	private byte getIndex(T o) {
+		if (o == null)
+			return 0;
 		Integer i = (Integer) map.get(o);
 		if (i == null) {
 			map.put(o, (i = new Integer(max++)));

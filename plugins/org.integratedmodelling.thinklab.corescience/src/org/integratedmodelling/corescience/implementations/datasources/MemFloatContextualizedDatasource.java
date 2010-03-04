@@ -32,7 +32,6 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import java.io.File;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
@@ -40,8 +39,8 @@ import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -61,6 +60,7 @@ public class MemFloatContextualizedDatasource
 	public MemFloatContextualizedDatasource(IConcept type, int size) {
 		_type = type;
 		data = new float[size];
+		setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
 	}
 	
 	@Override

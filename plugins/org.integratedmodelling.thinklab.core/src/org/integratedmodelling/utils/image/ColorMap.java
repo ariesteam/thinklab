@@ -43,7 +43,6 @@ import java.util.Collections;
 
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.joda.time.field.ZeroIsMaxDateTimeField;
 
 /**
  * this is a wrapper around IndexColorModel, just for convenience

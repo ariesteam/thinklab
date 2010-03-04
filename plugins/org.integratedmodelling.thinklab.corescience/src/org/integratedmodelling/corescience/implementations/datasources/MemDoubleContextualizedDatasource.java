@@ -72,6 +72,7 @@ public class MemDoubleContextualizedDatasource
 	public MemDoubleContextualizedDatasource(IConcept type, double[] data) {
 		_type = type;
 		this.data = data;
+		setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
 	}
 	
 	public MemDoubleContextualizedDatasource(IConcept type, double[][] d) {

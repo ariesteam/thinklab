@@ -41,10 +41,11 @@ public class XML {
 		ArrayList<Collection<?>> collections = null;
 		ArrayList<Polylist> lists = null;
 		
-		public void attr(String s, String v) {
+		public XmlNode attr(String s, String v) {
 			if (attrs == null)
 				attrs = new ArrayList<Pair<String,String>>();
 			attrs.add(new Pair<String,String>(s,v));
+			return this;
 		}
 		
 		public void text(String text) {
@@ -81,9 +82,10 @@ public class XML {
 					}
 			}
 			
-			for (Object o : this.children) {
-				ret.appendChild(((XmlNode)o).create(ret, doc));
-			}
+			if (this.children != null)
+				for (Object o : this.children) {
+					ret.appendChild(((XmlNode)o).create(ret, doc));
+				}
 			
 			return ret;
 		}
@@ -112,14 +114,16 @@ public class XML {
 					}
 				}
 
-			for (Object o : this.children) {
-				if (o instanceof XmlNode)	
-					self.appendChild(((XmlNode)o).create(self, doc));
-			}
+			if (this.children != null)
+				for (Object o : this.children) {
+					if (o instanceof XmlNode)	
+						self.appendChild(((XmlNode)o).create(self, doc));
+				}
 			
-			for (Polylist p : this.lists) {
+			if (this.lists != null)
+				for (Polylist p : this.lists) {
 					self.appendChild(p.createXmlNode().create(self, doc));					
-			}
+				}
 		}
 	}
 	
@@ -137,7 +141,7 @@ public class XML {
 				if (namespaces == null)
 					namespaces = new ArrayList<String>();
 				
-				namespaces.add((String)o);
+				//namespaces.add((String)o);
 				
 			} else if (o instanceof XmlNode) {
 			 
@@ -163,7 +167,7 @@ public class XML {
 				String[] nss = ns.split("=");
 				if (nss.length != 2)
 					throw new ThinklabValidationException(
-						"XML.document: bad namespace specification: must be name=uri");	
+						"XML.document: bad namespace specification: must be name=uri: " + ns);	
 				doc.addNamespace(nss[0], nss[1]);
 			}
 		}
@@ -177,10 +181,13 @@ public class XML {
 		
 		XmlNode ret = new XmlNode(tag);
 		
+		if (objects == null)
+			return ret;
+		
 		for (Object o : objects) {
 			if (o instanceof XmlNode) {
 				ret.add((XmlNode)o);
-			} if (o instanceof Polylist) {
+			} else if (o instanceof Polylist) {
 				ret.lists.add((Polylist)o);
 			} else if (o instanceof String) {
 				if (ret.text != null)
@@ -191,9 +198,9 @@ public class XML {
 				if (ret.collections == null)
 					ret.collections = new ArrayList<Collection<?>>();
 				ret.collections.add((Collection<?>)o);
-			} else {
+			} else if (o != null) {
 				throw new ThinklabValidationException(
-						"XML.node: only admitted content is one text string or other XmlNodes");
+						"XML.node: only admitted content is one text string or other XmlNodes: " + o);
 			}
 		}
 		

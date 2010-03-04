@@ -71,6 +71,8 @@ public class IndexedContextualizedDatasourceLong<T>
 	}
 
 	private long getIndex(T o) {
+		if (o == null)
+			return 0;
 		Long i = (Long) map.get(o);
 		if (i == null) {
 			map.put(o, (i = new Long(max++)));
