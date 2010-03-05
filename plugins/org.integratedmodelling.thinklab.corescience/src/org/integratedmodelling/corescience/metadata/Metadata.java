@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
-import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;

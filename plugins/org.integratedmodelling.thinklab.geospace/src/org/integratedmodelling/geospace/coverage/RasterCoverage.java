@@ -48,6 +48,8 @@ public class RasterCoverage extends AbstractRasterCoverage {
 		 */
 		
 		RasterActivationLayer act = extent.requireActivationLayer(true);
+		int xc = extent.getXCells();
+		int yc = extent.getYCells();
 		
 		if (data instanceof int[]) {
 			for (int i = 0; i < act.totalActiveCells(); i++) {
