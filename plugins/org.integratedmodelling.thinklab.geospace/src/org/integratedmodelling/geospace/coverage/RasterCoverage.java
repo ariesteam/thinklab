@@ -45,36 +45,28 @@ public class RasterCoverage extends AbstractRasterCoverage {
 		
 		/*
 		 * TODO raster should be pre-filled with a chosen nodata value
-		 */
-		
+		 * TODO use activation layer
+		 */		
 		RasterActivationLayer act = extent.requireActivationLayer(true);
 		int xc = extent.getXCells();
 		int yc = extent.getYCells();
 		
 		if (data instanceof int[]) {
 			for (int i = 0; i < act.totalActiveCells(); i++) {
-				Pair<Integer, Integer> xy = act.getCell(i);			
 				float d = (float) ((int[])data)[i];
-				// FIXME check that y-swapping is correct everywhere
-				raster.setSample(xy.getFirst(), extent.getYCells() - xy.getSecond() - 1, 0, d);
+				raster.setSample(i % xc, yc - (i / xc) - 1 - 1, 0, d);
 			}
 		} else if (data instanceof long[]) {
 			for (int i = 0; i < act.totalActiveCells(); i++) {
-				Pair<Integer, Integer> xy = act.getCell(i);			
-				// FIXME check that y-swapping is correct everywhere
-				raster.setSample(xy.getFirst(), extent.getYCells() - xy.getSecond() - 1, 0, (float) ((long[])data)[i]);
+				raster.setSample(i % xc, yc - (i / xc) - 1, 0, (float) ((long[])data)[i]);
 			}
 		}  else if (data instanceof float[]) {
 			for (int i = 0; i < act.totalActiveCells(); i++) {
-				Pair<Integer, Integer> xy = act.getCell(i);			
-				// FIXME check that y-swapping is correct everywhere
-				raster.setSample(xy.getFirst(), extent.getYCells() - xy.getSecond() - 1, 0, ((float[])data)[i]);
+				raster.setSample(i % xc, yc - (i / xc) - 1, 0, ((float[])data)[i]);
 			}
 		}  else if (data instanceof double[]) {
 			for (int i = 0; i < act.totalActiveCells(); i++) {
-				Pair<Integer, Integer> xy = act.getCell(i);			
-				// FIXME check that y-swapping is correct everywhere
-				raster.setSample(xy.getFirst(), extent.getYCells() - xy.getSecond() - 1, 0, (float)((double[])data)[i]);
+				raster.setSample(i % xc, yc - (i / xc) - 1, 0, (float)((double[])data)[i]);
 			}
 		} else {
 			throw new ThinklabValidationException("cannot create a raster coverage from a " + data.getClass());

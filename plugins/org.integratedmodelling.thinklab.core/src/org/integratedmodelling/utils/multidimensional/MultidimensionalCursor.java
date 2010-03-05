@@ -123,7 +123,6 @@ public class MultidimensionalCursor {
     		}
     		ret[0] = rest;
     	} else {
-    	
     		for (int i = 0; i < dimensions-1; i++) {
     			ret[i] = offset/strides.get(i);
     			rest -= ret[i]*strides.get(i);
@@ -133,7 +132,7 @@ public class MultidimensionalCursor {
     	
     	return ret;
     }
-    
+   
     /**
      * 
      * @param indices
