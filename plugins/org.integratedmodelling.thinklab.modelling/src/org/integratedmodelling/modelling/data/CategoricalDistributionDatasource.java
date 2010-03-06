@@ -33,7 +33,8 @@ public class CategoricalDistributionDatasource extends
 	
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
-
+		
+		boolean contp = false; 
 		double[] ret = new double[this.data.length];
 		double[] unc = new double[this.data.length];
 		IConcept truecase = (IConcept) getMetadata(Metadata.TRUECASE);
@@ -46,17 +47,17 @@ public class CategoricalDistributionDatasource extends
 			IConcept c = val.getFirst();
 			if (c == null) {
 				ret[i] = Double.NaN;
-				unc[i] = 1.0;
+				unc[i] = Double.NaN;
 			} else if (ranks == null) {
 				ret[i] = (double)data[i];
 				unc[i] = val.getSecond();
 			} else if (truecase != null) {
-				
 				/*
 				 * default value for boolean is p(true)
 				 */
 				ret[i] = getProbability(i, truecase);
 				unc[i] = val.getSecond();
+				contp = true;
 				
 			} else {
 				ret[i] = (double)ranks.get(c);
@@ -65,7 +66,10 @@ public class CategoricalDistributionDatasource extends
 		}
 		
 		setMetadata(Metadata.UNCERTAINTY, unc);
-		
+		if (contp) {
+			setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
+			setMetadata(Metadata.THEORETICAL_DATA_RANGE, new double[]{0.0, 1.0});
+		}
 		return ret;
 	}
 
