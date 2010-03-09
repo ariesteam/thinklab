@@ -73,7 +73,6 @@ public class TaskScheduler {
 				}	
 			}
 		}
-		
 	}
 	
 	ConcurrentLinkedQueue<Task> _queue = new ConcurrentLinkedQueue<Task>();
