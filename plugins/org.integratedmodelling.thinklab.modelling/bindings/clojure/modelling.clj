@@ -13,11 +13,24 @@
 	[]
 	(new org.integratedmodelling.modelling.Model))
 	
+(defn j-make-scenario
+	"Make a new instance of Model and return it. We need this because the class won't be visible when
+	the macro is expanded at runtime."
+	[]
+	(new org.integratedmodelling.modelling.Scenario))
+		
 (defn register-model
 	"Get the single instance of the model manager from the modelling plugin and register the passed model
 	 with it."
 	[model name]
 	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerModel model (str *ns* "/" name))))
+	
+(defn register-scenario
+	"Get the single instance of the model manager from the modelling plugin and register the passed model
+	 with it."
+	[model name]
+	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerScenario model (str *ns* "/" name))))
+		
 	
 (defn- get-configurable-model
 	"Return a model clone that we can safely configure. Essentially a copy on write pattern, called
@@ -80,11 +93,36 @@
  	      	     
  	     ; process the contingency model - as many models as we like, will build an id from all
  	     (doseq [mdef# (tl/group-with-keywords contingency-model#)]
-         	(.addContingency model# (configure-model mdef#))) 
+         	(.addContingency model# (configure-model mdef#) (meta contingency-model#))) 
          	    	  	
-        ; process the model definitions - one or more models, must be conditional if > 1
+        ; process the model definitions - one or more models
        (doseq [mdef# (tl/group-with-keywords definition#)]
-          (.defModel model# (configure-model mdef#)))
+          (.defModel model# (configure-model mdef#) (meta definition#)))
+          
+       model#))
+       
+(defmacro scenario 
+	"Return a new model for the given observable, defined using the given contingency 
+	 structure and conditional specifications, or the given unconditional model if no 
+	 contingency structure is supplied."
+	[observable & body]
+	 `(let [desc#  
+	 					(if (string? (first '~body)) (first '~body))
+	 				;; TODO unnecessary, remove
+	 			  contingency-model# 
+	        	(if (vector? (first (drop (if (nil? desc#) 0 1) '~body)))
+	        		(first (drop (if (nil? desc#) 0 1) '~body)))
+ 	        definition# 
+ 	        	(drop (tl/count-not-nil (list desc# contingency-model#)) '~body)
+ 	        model# 
+ 	        	(modelling/j-make-scenario)]
+ 	        	
+ 	     (.setObservable  model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	     (.setDescription model# desc#)
+ 	      	     
+        ; process the model definitions - one or more models
+       (doseq [mdef# (tl/group-with-keywords definition#)]
+          (.addModel model# (configure-model mdef#) (meta definition#)))
           
        model#))
        
@@ -95,6 +133,13 @@
 		[model-name observable & body]
  		`(def ~model-name (modelling/register-model (eval '(modelling/model ~observable ~@body)) (str '~model-name))))
        
+(defmacro defscenario
+	 "Define a model for the given observable, using the given contingency 
+	  structure and conditional specifications, or the given unconditional model if no 
+	  contingency structure is supplied."
+		[model-name observable & body]
+ 		`(def ~model-name (modelling/register-scenario (eval '(modelling/scenario ~observable ~@body)) (str '~model-name))))
+                   
 (defn run 
 	"Build, contextualize and return the first matching observation for the passed model. Unresolved dependencies
 	will be looked up in the kbox of kboxes (the KBoxManager). The next parameter should resolve to a shape in a 

@@ -50,6 +50,7 @@ public class ModelFactory {
 
 	public static final IObservation observation = null;
 	public Hashtable<String, Model> modelsById = new Hashtable<String, Model>();
+	public Hashtable<String, Scenario> scenariosById = new Hashtable<String, Scenario>();
 
 	class ContextualizingModelResult implements IQueryResult {
 
@@ -204,6 +205,16 @@ public class ModelFactory {
 		return model;
 	}
 
+	/*
+	 * called by the defscenario macro.
+	 */
+	public Scenario registerScenario(Scenario model, String name) throws ThinklabException {
+		
+		scenariosById.put(model.id, model);
+		ModellingPlugin.get().logger().info("scenario " + model + " registered");
+		return model;
+	}
+	
 	public Model retrieveModel(String s) throws ThinklabException {
 		return modelsById.get(s);
 	}
@@ -282,6 +293,25 @@ public class ModelFactory {
 		return null;
 	}
 
+	/**
+	 * Get all scenarios that apply to the passed model.
+	 * 
+	 * @param model
+	 * @return
+	 */
+	public Collection<Scenario> getApplicableScenarios(Model model) {
+		
+		ArrayList<Scenario> ret = new ArrayList<Scenario>();
+		
+		for (Scenario s : scenariosById.values()) {
+			if (model.getObservable().is(s.getObservable())) {
+				ret.add(s);
+			}
+		}
+		
+		return ret;
+	}
+	
 	/**
 	 * Return a lazy collection of computed result observations for the passed
 	 * model. Just take the first one if you want one. This is the simplest way

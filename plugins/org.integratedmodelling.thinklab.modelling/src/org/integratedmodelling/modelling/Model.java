@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
@@ -249,12 +250,11 @@ public class Model extends DefaultAbstractModel {
 		return null;
 	}
 
-
 	public void setDescription(String s) {
 		description = s;
 	}
 
-	public void addContingency(IModel m) {
+	public void addContingency(IModel m, Map<?,?> metadata) {
 		
 		if (context == null)
 			context = new ArrayList<IModel>();
@@ -267,11 +267,16 @@ public class Model extends DefaultAbstractModel {
 	 * state, or have the implicit :when :observable clause which makes them apply
 	 * as default in order of declaration, until the context is covered.
 	 */
-	public void defModel(IModel model) {
+	public void defModel(IModel model, Map<?,?> metadata) {
 		
 		// System.out.println("setting unconditional " + model);
 		if (models == null) {
 			models = new ArrayList<IModel>();
+		}
+		
+		if (metadata != null) {
+			// TODO use it
+			System.out.println("\nMETADATA! " + metadata + "\n");
 		}
 		
 		models.add(model);
@@ -353,5 +358,41 @@ public class Model extends DefaultAbstractModel {
 
 		return models.get(0);
 	}
+	
+	/**
+	 * 
+	 * @param scenario
+	 * @return
+	 */
+	public Model applyScenario(Scenario scenario) {
+		
+		/*
+		 * 1. determine common observables
+		 */
+		
+		/*
+		 * 2. build an identification with just the relevant
+		 * observations
+		 */
+		
+		/*
+		 * 3. contextualize to model's context
+		 */
+		
+		/*
+		 * 4. build a new model with computed datasources
+		 */
+		
+		return null;
+	}
 
+	/**
+	 * Return a scenario with all the observables that were declared
+	 * editable in the defmodel form.
+	 * 
+	 * @return
+	 */
+	public Scenario getDefaultScenario() {
+		return null;
+	}
 }
