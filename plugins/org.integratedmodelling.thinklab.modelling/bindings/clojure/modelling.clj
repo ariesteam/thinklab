@@ -122,7 +122,7 @@
  	      	     
         ; process the model definitions - one or more models
        (doseq [mdef# (tl/group-with-keywords definition#)]
-          (.addModel model# (configure-model mdef#) (meta definition#)))
+          (.addModel model# (configure-model mdef#) (meta definition#) nil))
           
        model#))
        

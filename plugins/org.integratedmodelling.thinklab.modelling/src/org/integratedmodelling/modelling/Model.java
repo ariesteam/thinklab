@@ -390,14 +390,20 @@ public class Model extends DefaultAbstractModel {
 	 * Return a scenario with all the observables that were declared
 	 * editable in the defmodel form.
 	 * 
-	 * @return
+	 * @return 
 	 */
 	public Scenario getDefaultScenario() {
 		
 		Scenario ret = new Scenario();
-
-		// TODO
-		
+		collectEditableModels(this, ret);
 		return ret;
+	}
+
+	private void collectEditableModels(DefaultAbstractModel model, Scenario ret) {
+		if (this.editable != null) {
+			ret.addModel(this, null, this.editable);
+		}
+		for (IModel m : dependents)
+			collectEditableModels((DefaultAbstractModel)m, ret);
 	}
 }

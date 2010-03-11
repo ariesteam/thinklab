@@ -31,7 +31,7 @@ import org.integratedmodelling.utils.Polylist;
 public abstract class DefaultAbstractModel implements IModel {
 
 	protected IModel mediated = null;
-	private ArrayList<IModel> dependents = new ArrayList<IModel>();
+	protected ArrayList<IModel> dependents = new ArrayList<IModel>();
 	protected ArrayList<IModel> observed   = new ArrayList<IModel>();
 
 	protected IConcept observable = null;
@@ -48,7 +48,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * be non-null and they will specify how we can be edited (e.g. a range of
 	 * values for a state, or simply "true" for any edit).
 	 */
-	private Object editable = null;  
+	protected Object editable = null;  
 	
 	protected boolean isMediating() {
 		return mediated != null || mediatesExternal;

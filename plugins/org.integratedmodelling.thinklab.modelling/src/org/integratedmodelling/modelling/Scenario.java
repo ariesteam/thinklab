@@ -17,6 +17,7 @@ import org.integratedmodelling.modelling.interfaces.IModel;
 public class Scenario extends ObservationModel {
 
 	ArrayList<IModel> models = new ArrayList<IModel>();
+	ArrayList<Object> editableData = new ArrayList<Object>();
 	private String description;
 	
 	public void setDescription(String s) {
@@ -27,13 +28,14 @@ public class Scenario extends ObservationModel {
 		id = s;
 	}
 	
-	public void addModel(IModel model, Map<?,?> metadata) {
+	public void addModel(IModel model, Map<?,?> metadata, Object editableDesc) {
 
 		if (metadata != null) {
 			// TODO use it
 			System.out.println("\nMETADATA! " + metadata + "\n");
 		}
 		models.add(model);
+		editableData.add(editableDesc);
 	}
 	
 	public String getDescription() {
