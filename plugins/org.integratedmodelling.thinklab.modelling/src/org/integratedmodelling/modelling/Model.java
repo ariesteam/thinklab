@@ -393,6 +393,11 @@ public class Model extends DefaultAbstractModel {
 	 * @return
 	 */
 	public Scenario getDefaultScenario() {
-		return null;
+		
+		Scenario ret = new Scenario();
+
+		// TODO
+		
+		return ret;
 	}
 }
