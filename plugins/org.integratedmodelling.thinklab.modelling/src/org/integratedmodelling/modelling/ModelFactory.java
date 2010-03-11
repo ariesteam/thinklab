@@ -210,6 +210,7 @@ public class ModelFactory {
 	 */
 	public Scenario registerScenario(Scenario model, String name) throws ThinklabException {
 		
+		model.setId(name);
 		scenariosById.put(model.id, model);
 		ModellingPlugin.get().logger().info("scenario " + model + " registered");
 		return model;

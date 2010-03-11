@@ -23,6 +23,10 @@ public class Scenario extends ObservationModel {
 		description = s;
 	}
 	
+	public void setId(String s) {
+		id = s;
+	}
+	
 	public void addModel(IModel model, Map<?,?> metadata) {
 
 		if (metadata != null) {
@@ -30,6 +34,10 @@ public class Scenario extends ObservationModel {
 			System.out.println("\nMETADATA! " + metadata + "\n");
 		}
 		models.add(model);
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 	
 	/**

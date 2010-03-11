@@ -17,9 +17,6 @@ import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -47,6 +44,11 @@ public abstract class DefaultAbstractModel implements IModel {
 	private LinkedList<Polylist> transformerQueue = new LinkedList<Polylist>();
 	protected boolean mediatesExternal;
 	private boolean _validated = false;
+	/* if scenarios can be applied to this model, the content of editable will
+	 * be non-null and they will specify how we can be edited (e.g. a range of
+	 * values for a state, or simply "true" for any edit).
+	 */
+	private Object editable = null;  
 	
 	protected boolean isMediating() {
 		return mediated != null || mediatesExternal;
@@ -139,7 +141,10 @@ public abstract class DefaultAbstractModel implements IModel {
 		} else if (keyword.equals(":when")) {
 			
 			whenClause = (Polylist) argument;
-		} 
+		} else if (keyword.equals(":editable")) {
+		
+			editable = argument;
+		}
 	}
 	
 	/**
@@ -214,6 +219,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		observable = model.observable;
 		observableSpecs = model.observableSpecs;
 		observableId = model.observableId;
+		editable = model.editable;
 	}
 	
 	/**
