@@ -44,7 +44,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 	protected IObservation mediatedObservation = null;
 	protected IObservation mediatorObservation = null;
 
-	private HashMap<String, Object> metadata = new HashMap<String, Object>();
+	// public so that getField can find it
+	public HashMap<String, Object> metadata = new HashMap<String, Object>();
 	
 	public IDataSource<?> getDataSource()  {
 

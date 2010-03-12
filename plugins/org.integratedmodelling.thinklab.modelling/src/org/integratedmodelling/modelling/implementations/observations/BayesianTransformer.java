@@ -60,6 +60,10 @@ public class BayesianTransformer
 	public HashMap<IConcept, IObservation> modelPrototypes = 
 		new HashMap<IConcept, IObservation>();
 	
+	// save metadata from prototypes
+	public HashMap<IConcept, HashMap<String,Object>> modelMetadata = 
+		new HashMap<IConcept, HashMap<String,Object>>();
+	
 	ArrayList<Pair<GeneralClassifier, IConcept>> classifiers = 
 		new ArrayList<Pair<GeneralClassifier,IConcept>>();
 	
@@ -80,7 +84,6 @@ public class BayesianTransformer
 			
 			/*
 			 * read in the network
-			 * TODO support URLs and relative file paths - see thinklab resolution
 			 */
 			this.bn = new Network();
 			
@@ -128,6 +131,7 @@ public class BayesianTransformer
 		for (IRelationship r : i.getRelationships(HAS_PROTOTYPE_MODEL)) {
 			IObservation prot = ObservationFactory.getObservation(r.getValue().asObjectReference().getObject());
 			modelPrototypes.put(prot.getObservableClass(), prot);
+			modelMetadata.put(prot.getObservableClass(), ((Observation)prot).metadata);
 		}
 		
 		IValue def = i.get(CoreScience.HAS_CONCEPTUAL_SPACE);
@@ -210,6 +214,7 @@ public class BayesianTransformer
  			 * we're discretizing a continuous distribution or not. 
  			 */
 			st.data = new CategoricalDistributionDatasource(var, size, pcstates, classifiers);
+			st.data.addAllMetadata(modelMetadata.get(st.observable));
 			pstorage[i++] = st;
 		}
 		

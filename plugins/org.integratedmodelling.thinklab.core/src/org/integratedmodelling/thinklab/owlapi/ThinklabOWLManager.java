@@ -387,7 +387,7 @@ public class ThinklabOWLManager {
 			Class<?> cls = ret.getClass();
 			for (String field : oo.keySet()) {
 				try {
-					Field f = cls.getDeclaredField(field);
+					Field f = cls.getField(field);
             		f.setAccessible(true);
 					f.set(ret, oo.get(field));
 				} catch (Exception e) {

@@ -244,5 +244,11 @@ public class CategoricalDistributionDatasource extends
 			Arrays.toString(data) + */ +
 			"]";
 	}
+
+
+	public void addAllMetadata(HashMap<String, Object> hashMap) {
+		if (hashMap != null)
+			getMetadata().putAll(hashMap);
+	}
 	
 }

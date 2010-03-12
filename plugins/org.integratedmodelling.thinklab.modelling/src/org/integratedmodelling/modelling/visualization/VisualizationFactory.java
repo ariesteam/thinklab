@@ -181,6 +181,9 @@ public class VisualizationFactory {
 	public Pair<File[], String[]> getLegend(IState state, int totalLength, int height, String fileBaseName) throws ThinklabException {
 		
 		ColorMap cmap = (ColorMap) state.getMetadata(Metadata.COLORMAP);
+		String units  = (String) state.getMetadata(Metadata.UNITS);
+		if (units == null)
+			units = "";
 		
 		if (cmap == null) {
 			throw new ThinklabValidationException("internal: getLegend called on a state without colormap");
@@ -217,7 +220,8 @@ public class VisualizationFactory {
 					VisualConcept vc = TypeManager.get().getVisualConcept(c);
 					desc = vc.getLabel();
 					if (breakpoints != null) {
-						desc += getRangeDescription(breakpoints, i - (cmap.hasTransparentZero() ? 1 : 0));
+						desc += 
+							getRangeDescription(breakpoints, i - (cmap.hasTransparentZero() ? 1 : 0), units);
 					}
 				}
 			} 
@@ -227,19 +231,22 @@ public class VisualizationFactory {
 		return new Pair<File[], String[]>(imgs, descs);
 	}
 
-	private String getRangeDescription(double[] breakpoints, int i) {
+	private String getRangeDescription(double[] breakpoints, int i, String units) {
 
 		// breakpoints should have lenght = MaxI+1
 		double min = breakpoints[i];
 		double max = breakpoints[i+1];
+		if (!units.equals(""))
+			units = " " + units;
+		
 		String ret = "";
 		
 		if (Double.isInfinite(min)) {
-			ret = " (< " + max + ")";
+			ret = " (< " + max + units + ")";
 		}  else if (Double.isInfinite(max)) {
-			ret = " (> " + min + ")";
+			ret = " (> " + min + units + ")";
 		} else {
-			ret = " (" + min + " - " + max + ")";
+			ret = " (" + min + " - " + max + units + ")";
 		}
 		return ret;
 	}

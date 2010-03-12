@@ -59,6 +59,9 @@ public class CategorizationModel extends DefaultDynamicAbstractModel {
 				(id != null ? 
 					Polylist.list(CoreScience.HAS_FORMAL_NAME, id) :
 					null),
+				(metadata != null ? 
+						Polylist.list(":metadata", metadata) :
+						null),
 				/*
 				 * TODO add scale attributes, possibly units
 				 */

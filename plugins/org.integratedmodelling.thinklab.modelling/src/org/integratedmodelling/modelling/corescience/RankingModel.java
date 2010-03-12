@@ -69,8 +69,11 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 					Polylist.list("modeltypes:hasExpressionLanguage", 	
 						this.lang.equals(language.CLOJURE) ? "clojure" : "mvel") :
 					null),
+				(metadata != null ? 
+					Polylist.list(":metadata", metadata) :
+						null),
 				/*
-				 * TODO add scale attributes, possibly units
+				 * TODO add scale attributes
 				 */
 				(isMediating() ? 
 						null :

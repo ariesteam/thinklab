@@ -32,7 +32,6 @@
 	[]
 	(new org.integratedmodelling.modelling.corescience.CategorizationModel))
 
-
 (defn j-make-bayesian
 	"Make a new instance of Model and return it."
 	[]
@@ -48,7 +47,7 @@
  	   					(eval ~observable)))
 		 (doseq [classifier# (partition 2 '~specs)]
 		 	   (if  (and  (keyword? (first classifier#)) (not (= :otherwise (first classifier#)))) 
-		 	   		  (.setMetadata model# (str keyword) (eval (second classifier#))) 
+		 	   		  (.setMetadata model# (str (first classifier#)) (eval (second classifier#))) 
 		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (eval (second classifier#)))))
  	   model#))
 
@@ -64,7 +63,7 @@
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 
-		 	   		  (.setMetadata model# (str keyword) (eval (second classifier#))))))
+		 	   		  (.setMetadata model# (str (first classifier#)) (eval (second classifier#))))))
  	    model#))
 	
 (defmacro ranking
@@ -79,7 +78,7 @@
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 
-		 	   		  (.setMetadata model# (str keyword) (eval (second classifier#))))))
+		 	   		  (.setMetadata model# (str (first classifier#)) (eval (second classifier#))))))
  	   model#))
 	
 (defmacro categorization
@@ -107,7 +106,7 @@
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 
-		 	   		  (.setMetadata model# (str keyword) (eval (second classifier#))))))
+		 	   		  (.setMetadata model# (str (first classifier#)) (eval (second classifier#))))))
  	    model#))
 	
 (defmacro identification
@@ -119,7 +118,7 @@
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 
-		 	   		  (.setMetadata model# (str keyword) (eval (second classifier#))))))
+		 	   		  (.setMetadata model# (str (first classifier#)) (eval (second classifier#))))))
  	   model#))
 
 (defmacro bayesian
@@ -132,7 +131,7 @@
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 
-		 	   		  (.setMetadata model# (str keyword) (eval (second classifier#))))))
+		 	   		  (.setMetadata model# (str (first classifier#)) (eval (second classifier#))))))
  	   model#))
  	   
 ;; -------------------------------------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 package org.integratedmodelling.modelling.corescience;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -21,6 +22,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 	
 	public void setUnits(Object unitSpecs) {
 		this.unitSpecs = unitSpecs.toString();
+		this.metadata.put(Metadata.UNITS, this.unitSpecs);
 	}
 	
 	@Override
@@ -33,6 +35,9 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 				(dynSpecs == null ? CoreScience.MEASUREMENT : "modeltypes:DynamicMeasurement"),
 				(id != null ? 
 					Polylist.list(CoreScience.HAS_FORMAL_NAME, id) :
+					null),
+				(metadata != null ? 
+					Polylist.list(":metadata", metadata) :
 					null),
 				(dynSpecs != null?
 					Polylist.list("modeltypes:hasStateFunction", dynSpecs) :

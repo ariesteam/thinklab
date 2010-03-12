@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
@@ -68,7 +69,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	}
 
 	public void setMetadata(String kw, Object value) {
-		metadata.put(kw, value);
+		metadata.put(kw.startsWith(":") ? kw.substring(1) : kw, value);
 	}
 	
 	/**
@@ -352,8 +353,26 @@ public abstract class DefaultAbstractModel implements IModel {
 			/*
 			 * validate mediated
 			 */
-			if (mediated != null)
+			if (mediated != null) {
+				
 				((DefaultAbstractModel)mediated).validateConcepts(session);
+				
+				/*
+				 * TODO
+				 * FIXME
+				 * shouldn't we call validateMediated() at this point? Nothing
+				 * seems to be calling it anymore.
+				 */
+				
+				/*
+				 * copy any metadata we don't have already
+				 */
+				for (Entry<String, Object> e : ((DefaultAbstractModel)mediated).metadata.entrySet()) {
+					if (!metadata.containsKey(e.getKey())) {
+						metadata.put(e.getKey(), e.getValue());
+					}
+				}
+			}
 			
 			/*
 			 * validate dependents and observed
