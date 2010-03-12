@@ -29,11 +29,7 @@ public class Scenario extends ObservationModel {
 	}
 	
 	public void addModel(IModel model, Map<?,?> metadata, Object editableDesc) {
-
-		if (metadata != null) {
-			// TODO use it
-			System.out.println("\nMETADATA! " + metadata + "\n");
-		}
+		
 		models.add(model);
 		editableData.add(editableDesc);
 	}
@@ -49,7 +45,21 @@ public class Scenario extends ObservationModel {
 	 * @param scenario
 	 */
 	public void merge(Scenario scenario) {
-		// TODO
+
+		for (IModel m : scenario.models) {
+			int i = 0;
+			for (IModel om : models) {
+				if (m.getObservable().is(om.getObservable())) {
+					models.set(i, m);
+					break;
+				}
+				i++;
+			}
+			if (i== models.size()) {
+				models.add(m);
+				editableData.add(((Model)m).editable);
+			}
+		}
 	}
 
 }
