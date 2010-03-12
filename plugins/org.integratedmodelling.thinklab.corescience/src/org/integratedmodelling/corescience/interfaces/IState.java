@@ -1,9 +1,5 @@
 package org.integratedmodelling.corescience.interfaces;
 
-import java.io.File;
-import java.util.Map;
-
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 
@@ -54,12 +50,6 @@ public interface IState extends IDataSource, IConceptualizable {
 	 * @return
 	 */
 	public int getTotalSize();
-
-	/**
-	 * Get the whole set of metadata, whatever they are.
-	 * @return
-	 */
-	public Object getMetadata();
 
 	
 }

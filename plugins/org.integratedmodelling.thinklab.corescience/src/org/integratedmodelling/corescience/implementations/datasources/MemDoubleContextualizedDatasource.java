@@ -34,6 +34,7 @@ package org.integratedmodelling.corescience.implementations.datasources;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
@@ -62,8 +63,7 @@ public class MemDoubleContextualizedDatasource
 	private IConcept _type;
 	protected double[] data = null;
 	private int idx = 0;
-	
-	Properties metadata = new Properties();
+	HashMap<String,Object> metadata = new HashMap<String,Object>();
 
 	public MemDoubleContextualizedDatasource() {
 		// only to be used by the serializer
@@ -198,10 +198,10 @@ public class MemDoubleContextualizedDatasource
 		return true;
 	}
 
+
 	@Override
-	public Object getMetadata() {
+	public HashMap<String, Object> getMetadata() {
 		return metadata;
 	}
 
-	
 }

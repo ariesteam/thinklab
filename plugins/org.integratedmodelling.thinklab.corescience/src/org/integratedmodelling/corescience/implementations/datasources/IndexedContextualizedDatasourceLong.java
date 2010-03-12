@@ -40,7 +40,7 @@ public class IndexedContextualizedDatasourceLong<T>
 	private long max = 1L;
 	private int idx = 0;
 	
-	Properties metadata = new Properties();
+	HashMap<String,Object> metadata = new HashMap<String,Object>();
 
 	HashMap<T, Long> map = new HashMap<T, Long>();
 	HashMap<Long, T> inverseMap = new HashMap<Long, T>();
@@ -149,8 +149,7 @@ public class IndexedContextualizedDatasourceLong<T>
 	}
 	
 	@Override
-	public Object getMetadata() {
+	public HashMap<String, Object> getMetadata() {
 		return metadata;
 	}
-
 }

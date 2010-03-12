@@ -271,7 +271,7 @@ public class ObservationFactory extends org.integratedmodelling.corescience.Obse
 	public static Polylist addDependency(Polylist observation, Polylist dependent) {
 		
 		return observation.appendElement(
-				Polylist.list(CoreScience.DEPENDS_ON, dependent));	
+				Polylist.list(CoreScience.DEPENDS_ON, dependent));
 	}
 	
 	/**
@@ -284,6 +284,18 @@ public class ObservationFactory extends org.integratedmodelling.corescience.Obse
 		
 		return observation.appendElement(
 				Polylist.list(CoreScience.DEPENDS_ON, dependent));
+	}
+	
+	/**
+	 * 
+	 * @param observation
+	 * @param dependent
+	 * @return
+	 */
+	public static Polylist addReflectedField(Polylist observation, String field, Object value) {
+		
+		return observation.appendElement(
+				Polylist.list(":" + field, value));
 	}
 	
 	/**

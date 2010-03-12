@@ -33,6 +33,7 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
@@ -55,8 +56,7 @@ public class MemLongContextualizedDatasource
 	private IConcept _type;
 	private long[] data = null;
 	private int idx = 0;
-	
-	Properties metadata = new Properties();
+	HashMap<String,Object> metadata = new HashMap<String,Object>();
 
 	public MemLongContextualizedDatasource(IConcept type, int size) {
 		_type = type;
@@ -152,8 +152,7 @@ public class MemLongContextualizedDatasource
 	}
 	
 	@Override
-	public Object getMetadata() {
+	public HashMap<String, Object> getMetadata() {
 		return metadata;
 	}
-
 }

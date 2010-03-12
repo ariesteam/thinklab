@@ -32,6 +32,7 @@
  **/
 package org.integratedmodelling.agents.agents;
 
+import java.util.HashMap;
 import java.util.Properties;
 
 import jade.core.Agent;
@@ -73,5 +74,11 @@ public class ThinklabAgent extends Agent implements IInstanceImplementation {
 	public void validate(IInstance i) throws ThinklabValidationException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public HashMap<String, Object> getMetadata() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

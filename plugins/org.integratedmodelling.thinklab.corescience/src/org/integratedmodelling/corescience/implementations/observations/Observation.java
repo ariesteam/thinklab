@@ -1,6 +1,7 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
@@ -42,6 +43,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 	protected IObservation[] antecedents = new IObservation[0];
 	protected IObservation mediatedObservation = null;
 	protected IObservation mediatorObservation = null;
+
+	private HashMap<String, Object> metadata = new HashMap<String, Object>();
 	
 	public IDataSource<?> getDataSource()  {
 
@@ -288,4 +291,9 @@ public class Observation implements IObservation, IInstanceImplementation {
     public int hashCode() {
             return observation.hashCode();
     }
+
+	@Override
+	public HashMap<String, Object> getMetadata() {
+		return this.metadata ;
+	}
 }

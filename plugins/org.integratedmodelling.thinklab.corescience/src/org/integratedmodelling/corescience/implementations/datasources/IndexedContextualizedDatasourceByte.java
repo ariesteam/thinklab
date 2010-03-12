@@ -38,7 +38,7 @@ public class IndexedContextualizedDatasourceByte<T>
 	private byte max = 1;
 	private int idx = 0;
 	
-	Properties metadata = new Properties();
+	HashMap<String,Object> metadata = new HashMap<String,Object>();
 	
 	HashMap<T, Integer> map = new HashMap<T, Integer>();
 	HashMap<Integer, T> inverseMap = new HashMap<Integer, T>();
@@ -146,9 +146,10 @@ public class IndexedContextualizedDatasourceByte<T>
 	}
 
 	@Override
-	public Object getMetadata() {
+	public HashMap<String, Object> getMetadata() {
 		return metadata;
 	}
+
 
 
 }

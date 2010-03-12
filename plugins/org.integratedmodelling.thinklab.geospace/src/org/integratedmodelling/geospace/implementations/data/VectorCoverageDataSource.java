@@ -34,6 +34,7 @@ package org.integratedmodelling.geospace.implementations.data;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.interfaces.IDataSource;
@@ -68,69 +69,6 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 	/* same here - these are overall extents that we need to conform to */
 	private GridExtent gridExtent;
 	private ShapeExtent shapeExtent;
-	
-//	public boolean handshake(IObservation observation, 
-//			IConceptualModel cm,
-//			IObservationContext observationContext,
-//			IObservationContext overallContext)
-//			throws ThinklabException {
-//		
-//		dataCM = cm;
-//		
-//		IExtent extent = overallContext.getExtent(Geospace.get().SubdividedSpaceObservable());
-//
-//		/*
-//		 * See what we have to deal with overall. 
-//		 */
-//		if (extent instanceof GridExtent) {
-//			gridExtent = (GridExtent)extent;			
-//		} else {
-//			this.shapeExtent = (ShapeExtent)extent;			
-//			// communicate the features to the extent, so that we can compute multiplicity and overall shape
-//			this.shapeExtent.setFeatures(((VectorCoverage)coverage).getFeatures(), coverage.getSourceUrl());
-//		}
-//		
-//		/*
-//		 * if raster, we may need to adjust the coverage to the extent for CRS, bounding box, and resolution.
-//		 */
-//		if (gridExtent != null) {
-//			
-//			/*
-//			 * this will rasterize our vector coverage. If it's a raster, we should then fall back to
-//			 * raster methods when data are accessed. For the way this is defined, the coverage class
-//			 * should automatically take care of that.
-//			 */
-//			coverage = coverage.requireMatch(gridExtent, true);
-//
-//			/*
-//			 * ask for the main extent's activation layer (creating an inactive
-//			 * default if not there) and AND our active areas with it.
-//			 */
-//			defineActivationLayer(
-//					gridExtent.requireActivationLayer(true), gridExtent);
-//			
-//			/*
-//			 * if we have rasterized the vector, the spatial extent of the specific obs 
-//			 * must now become the passed gridExtent. Get the spatial CM of the root obs and
-//			 * inject the grid extent.
-//			 */
-//			IObservation ospat = 
-//				Obs.findObservation(observation, Geospace.get().SpaceObservable());
-//			
-//			if (ospat != null) { // which should always be the case, given that WE are spatial...
-//				IConceptualModel scm = ospat.getConceptualModel();
-//				if (scm instanceof SubdividedCoverageConceptualModel) {
-//					((SubdividedCoverageConceptualModel)scm).overrideExtent(gridExtent);
-//				}
-//			}
-//		}
-//		
-//		// if we get to handshaking, we need to load the data
-//		coverage.loadData();
-//		
-//		// whatever happens, we can definitely use indexes here, so return true.
-//		return true;
-//	}
 	
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
@@ -257,6 +195,12 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public HashMap<String, Object> getMetadata() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

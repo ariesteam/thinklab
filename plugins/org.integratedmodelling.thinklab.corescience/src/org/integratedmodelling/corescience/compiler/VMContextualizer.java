@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemFloatContextualizedDatasource;
@@ -23,6 +24,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 
@@ -379,7 +381,17 @@ public class VMContextualizer<T> {
 		} else {
 			
 			try {
-				dds = o.createState(size);				
+				dds = o.createState(size);	
+				
+				/*
+				 * transfer any metadata coming from model specs to state
+				 */
+				if (o instanceof IInstanceImplementation && ((IInstanceImplementation)o).getMetadata() != null) {
+					for (Entry<String, Object> e : ((IInstanceImplementation)o).getMetadata().entrySet()) {
+						dds.setMetadata(e.getKey(), e.getValue());
+					}
+				}
+				
 			} catch (ThinklabException e) {
 				throw new ThinklabRuntimeException(e);
 			}

@@ -47,31 +47,39 @@
  	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
  	   					(eval ~observable)))
 		 (doseq [classifier# (partition 2 '~specs)]
-		 	   (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (eval (second classifier#))))
+		 	   (if  (and  (keyword? (first classifier#)) (not (= :otherwise (first classifier#)))) 
+		 	   		  (.setMetadata model# (str keyword) (eval (second classifier#))) 
+		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (eval (second classifier#)))))
  	   model#))
 
 (defmacro enumeration
 	""
-	[observable & units]
+	[observable & body]
 	`(let [model# 
  	        	(modelling/j-make-count)] 
  	   (.setObservable model# 
 	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
  	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
  	   					(eval ~observable))) 	
- 	   (if (not (nil? '~units)) (.setUnits model# (first '~units)))    
+ 	   (if (not (nil? '~body)) 
+				(doseq [classifier# (partition 2 '~body)]
+		 	   	(if  (keyword? (first classifier#)) 
+		 	   		  (.setMetadata model# (str keyword) (eval (second classifier#))))))
  	    model#))
 	
 (defmacro ranking
 	""
-	[observable & units]
+	[observable & body]
 	`(let [model# 
  	        	(modelling/j-make-ranking)] 
  	   (.setObservable model# 
 	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
  	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
  	   					(eval ~observable)))
- 	   (if (not (nil? '~units)) (.setUnits model# (first '~units))) 
+ 	   (if (not (nil? '~body)) 
+				(doseq [classifier# (partition 2 '~body)]
+		 	   	(if  (keyword? (first classifier#)) 
+		 	   		  (.setMetadata model# (str keyword) (eval (second classifier#))))))
  	   model#))
 	
 (defmacro categorization
@@ -88,42 +96,45 @@
 	
 (defmacro measurement
 	"Create a measurement model. The observable can be another measurement model or a semantic object."
-	[observable units]
+	[observable units & body]
 	`(let [model# 
  	        	(modelling/j-make-measurement)] 
  	   (.setObservable model# 
 	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
  	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
  	   					(eval ~observable)))
- 	    (.setUnits model# ~units) 	  
+ 	   (.setUnits model# ~units)
+ 	   (if (not (nil? '~body)) 
+				(doseq [classifier# (partition 2 '~body)]
+		 	   	(if  (keyword? (first classifier#)) 
+		 	   		  (.setMetadata model# (str keyword) (eval (second classifier#))))))
  	    model#))
 	
 (defmacro identification
 	"Create an identification model. The observable can only be a semantic object."
-	[observable]
+	[observable & body]
 	`(let [model# 
  	        	(modelling/j-make-observation)] 
  	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
- 	   model#))
-
-(defmacro probability
-	"TODO stub for a model that generates probabiities."
-	[observable & states]
-	`(let [model# 
- 	        	(modelling/j-make-observation)] 
- 	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	   (if (not (nil? '~body)) 
+				(doseq [classifier# (partition 2 '~body)]
+		 	   	(if  (keyword? (first classifier#)) 
+		 	   		  (.setMetadata model# (str keyword) (eval (second classifier#))))))
  	   model#))
 
 (defmacro bayesian
 	"Create a bayesian model. The observable can only be a semantic object. For now the only way to
 	 define it is through the :import clause; bayesian network specifications are admitted but ignored."
-	[observable & specs]
+	[observable & body]
 	`(let [model# 
  	        	(modelling/j-make-bayesian)] 
  	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	   (if (not (nil? '~body)) 
+				(doseq [classifier# (partition 2 '~body)]
+		 	   	(if  (keyword? (first classifier#)) 
+		 	   		  (.setMetadata model# (str keyword) (eval (second classifier#))))))
  	   model#))
  	   
-
 ;; -------------------------------------------------------------------------------------------------------
 ;; inquiry, extraction etc
 ;; -------------------------------------------------------------------------------------------------------

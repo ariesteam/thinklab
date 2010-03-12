@@ -33,6 +33,8 @@
  **/
 package org.integratedmodelling.thinklab.interfaces.knowledge;
 
+import java.util.HashMap;
+
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 
@@ -44,6 +46,14 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
  * @see org.integratedmodelling.thinklab.interfaces.knowledge.OntoBean for automatically wiring properties to class fields.
  */
 public interface IInstanceImplementation {
+	
+	/**
+	 * Instance implementation may have metadata, which are returned here. Any use of this
+	 * must be prepared to get a null as a result. 
+	 * 
+	 * @return
+	 */
+	public HashMap<String, Object> getMetadata();
 	
 	/**
 	 * Called just after creation, passing the OWL counterpart. 

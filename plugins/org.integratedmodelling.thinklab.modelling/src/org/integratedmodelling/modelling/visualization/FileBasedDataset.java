@@ -16,6 +16,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.utils.image.ColorMap;
 import org.integratedmodelling.utils.image.ImageUtil;
 
@@ -164,7 +165,10 @@ public class FileBasedDataset implements IDataset {
 		double[] darange = (double[])state.getMetadata(Metadata.ACTUAL_DATA_RANGE);
 		String[] categories = (String[])state.getMetadata(Metadata.CATEGORIES);
 
-		System.out.println("metadata: " + state.getMetadata());
+		if (state instanceof IInstanceImplementation)
+		System.out.println("metadata: " +
+				((IInstanceImplementation)state).getMetadata());
+		
 		System.out.println(observable + ": img [" + iarange[0] + " " + iarange[1] + "] data [" + darange[0] + " " + darange[1] + "]");
 
 		ColorMap cmap = chooseColormap(observable, nlevels, categories == null);

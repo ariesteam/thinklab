@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.exceptions.ThinklabInconsistentDataSourceException;
@@ -89,6 +90,8 @@ public class CSVDataSource implements IDataSource<Object>, IInstanceImplementati
 	int nrows = -1;
 	int ncols = -1;
 		
+	HashMap<String,Object> metadata = new HashMap<String,Object>();
+
 	public void initialize(IInstance i) throws ThinklabException {
 		
 		// FIXME use class tree
@@ -274,5 +277,10 @@ public class CSVDataSource implements IDataSource<Object>, IInstanceImplementati
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public HashMap<String, Object> getMetadata() {
+		return metadata;
 	}
 }

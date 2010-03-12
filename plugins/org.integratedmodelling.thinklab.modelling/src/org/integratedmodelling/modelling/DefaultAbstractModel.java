@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.integratedmodelling.corescience.CoreScience;
@@ -44,6 +45,14 @@ public abstract class DefaultAbstractModel implements IModel {
 	private LinkedList<Polylist> transformerQueue = new LinkedList<Polylist>();
 	protected boolean mediatesExternal;
 	private boolean _validated = false;
+	
+	/*
+	 * Any clause not intercepted by applyClause becomes metadata, which is communicated
+	 * to the observation created. 
+	 */
+	protected HashMap<String, Object> metadata = new HashMap<String, Object>();
+	
+	
 	/* if scenarios can be applied to this model, the content of editable will
 	 * be non-null and they will specify how we can be edited (e.g. a range of
 	 * values for a state, or simply "true" for any edit).
@@ -56,6 +65,10 @@ public abstract class DefaultAbstractModel implements IModel {
 	
 	public String getObservableId() {
 		return observableId;
+	}
+
+	public void setMetadata(String kw, Object value) {
+		metadata.put(kw, value);
 	}
 	
 	/**
@@ -121,29 +134,23 @@ public abstract class DefaultAbstractModel implements IModel {
 		// System.out.println(this + "processing clause " + keyword + " -> " + argument);
 		
 		if (keyword.equals(":context")) {
-			
 			Collection<?> c = (Collection<?>) argument;
 			for (Object o : c) {
 				addDependentModel((IModel) o);
 			}
-			
 		} else if (keyword.equals(":observed")) {
-			
 			Collection<?> c = (Collection<?>) argument;
 			for (Object o : c) {
 				addObservedModel((IModel) o);
 			}
-			
 		} else if (keyword.equals(":as")) {
-			
 			setLocalId(argument.toString());
-			
 		} else if (keyword.equals(":when")) {
-			
 			whenClause = (Polylist) argument;
 		} else if (keyword.equals(":editable")) {
-		
 			editable = argument;
+		} else {
+			metadata.put(keyword.substring(1), argument);
 		}
 	}
 	
@@ -220,6 +227,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		observableSpecs = model.observableSpecs;
 		observableId = model.observableId;
 		editable = model.editable;
+		metadata = model.metadata;
 	}
 	
 	/**

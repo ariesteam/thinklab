@@ -196,12 +196,19 @@ public class Model extends DefaultAbstractModel {
 			
 			for (Polylist cont : cmodels) 
 				ret = ObservationFactory.addContingency(ret, cont);
+			
+			/*
+			 * pass metadata along to observation
+			 */
+			ret = ObservationFactory.addReflectedField(ret, "metadata", metadata);
+			
 		}
 		
 		return ret;
 		
 	}
 
+	
 	/**
 	 * Build a model using our specifications, the passed context to resolve any :when clauses,
 	 * and the given kbox.

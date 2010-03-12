@@ -1,5 +1,7 @@
 package org.integratedmodelling.thinklab.implementations.operators;
 
+import java.util.HashMap;
+
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -77,6 +79,11 @@ public abstract class Operator implements IOperator {
 
 	@Override
 	public void validate(IInstance i) throws ThinklabException {
+	}
+
+	@Override
+	public HashMap<String, Object> getMetadata() {
+		return null;
 	}
 	
 }

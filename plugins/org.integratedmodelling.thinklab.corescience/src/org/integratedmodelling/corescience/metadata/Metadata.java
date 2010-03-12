@@ -549,7 +549,7 @@ public class Metadata {
 		return new Pair<double[],IConcept[]>(ret,cret);
 	}
 
-	public static void serializeMetadata(Properties metadata, OutputStream fop) throws ThinklabException {
+	public static void serializeMetadata(HashMap<String,Object> metadata, OutputStream fop) throws ThinklabException {
 
 
 		MetadataSerializer out = new MetadataSerializer(fop);
@@ -562,7 +562,7 @@ public class Metadata {
 		// RANKING (hasmap<concept, integer>)
 
 		out.writeDoubles((double[]) metadata.get(UNCERTAINTY));
-		out.writeString(metadata.getProperty(UNITS));
+		out.writeString((String) metadata.get(UNITS));
 		out.writeInteger(
 				metadata.get(BOOLEAN) == null ? 
 						-1 : 
@@ -575,17 +575,17 @@ public class Metadata {
 				metadata.get(CONTINUOUS) == null ? 
 						-1 : 
 						((Boolean)(metadata.get(CONTINUOUS)) ? 1 : 0));
-		out.writeString(metadata.getProperty(TRUECASE));
+		out.writeString((String) metadata.get(TRUECASE));
 		out.writeRankings(metadata.get(RANKING));
 		
 		// TODO new stuff missing
 	}
 
 
-	public static Properties deserializeMetadata(InputStream fop) throws ThinklabException {
+	public static HashMap<String,Object> deserializeMetadata(InputStream fop) throws ThinklabException {
 
 		
-		Properties ret = new Properties();
+		HashMap<String,Object> ret = new HashMap<String,Object>();
 		MetadataDeserializer in = new MetadataDeserializer(fop);
 		
 		// UNCERTAINTY (double[])

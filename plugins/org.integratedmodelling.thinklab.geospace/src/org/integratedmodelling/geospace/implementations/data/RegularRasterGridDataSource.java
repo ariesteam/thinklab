@@ -34,6 +34,7 @@ package org.integratedmodelling.geospace.implementations.data;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.interfaces.IDataSource;
@@ -180,6 +181,12 @@ public class RegularRasterGridDataSource implements IDataSource<Object>, IInstan
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public HashMap<String, Object> getMetadata() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

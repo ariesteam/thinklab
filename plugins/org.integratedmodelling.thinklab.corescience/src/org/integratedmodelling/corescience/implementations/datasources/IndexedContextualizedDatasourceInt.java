@@ -37,8 +37,7 @@ public class IndexedContextualizedDatasourceInt<T>
 	protected int[] data = null;
 	private int max = 1;
 	private int idx = 0;
-	
-	Properties metadata = new Properties();
+	HashMap<String,Object> metadata = new HashMap<String,Object>();
 
 	protected HashMap<T, Integer> map = new HashMap<T, Integer>();
 	protected HashMap<Integer, T> inverseMap = new HashMap<Integer, T>();
@@ -148,12 +147,11 @@ public class IndexedContextualizedDatasourceInt<T>
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		
-	}
-	
+	}	
+
 	@Override
-	public Object getMetadata() {
+	public HashMap<String, Object> getMetadata() {
 		return metadata;
 	}
-
 
 }
