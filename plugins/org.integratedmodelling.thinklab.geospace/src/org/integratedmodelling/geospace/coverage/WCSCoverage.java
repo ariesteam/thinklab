@@ -212,7 +212,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		  }
 		  
 		  this.xCellSize = (x2 - x1)/(sx2 - sx1);
-		  this.xCellSize = (y2 - y1)/(sy2 - sy1);
+		  this.yCellSize = (y2 - y1)/(sy2 - sy1);
 			
 		  this.boundingBox = new ReferencedEnvelope(x1, x2, y1, y2, crs);
 
@@ -242,6 +242,17 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		URL url = null;
 		String rcrs = Geospace.getCRSIdentifier(extent.getCRS(), false);
 		
+		int xc = extent.getXCells();
+		int yc = extent.getYCells();
+		
+		if (extent.getXCells() == 0 && extent.getYCells() == 0) {
+			xc = (int) ((extent.getEast() - extent.getWest())/this.xCellSize);
+			yc = (int) ((extent.getNorth() - extent.getSouth())/this.yCellSize);
+			
+			System.out.println("computed raster size is " + xc + " x " + yc);
+			extent.setResolution(xc, yc);
+		}
+		
 		String s = 
 			wcsService + 
 			"?service=WCS&version=1.0.0&request=GetCoverage&coverage=" +
@@ -259,9 +270,9 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			"&responseCRS=" +
 			rcrs +
 			"&width=" +
-			extent.getXCells() +
+			xc +
 			"&height=" +
-			extent.getYCells() +
+			yc +
 			"&format=" +
 			wcsFormat;
 		

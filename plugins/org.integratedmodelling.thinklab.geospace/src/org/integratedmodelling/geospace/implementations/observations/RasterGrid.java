@@ -34,7 +34,6 @@ package org.integratedmodelling.geospace.implementations.observations;
 
 import java.util.Hashtable;
 
-import javax.measure.Measure;
 import javax.measure.converter.UnitConverter;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
@@ -205,16 +204,56 @@ public class RasterGrid extends Observation implements Topology {
 	}
 	
 	/**
+	 * Create a raster grid for the given shape using the native resolution specified
+	 * in the passed grid.
+	 * 
+	 * @param shape
+	 * @param original
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static Polylist createRasterGrid(ShapeValue shape, RasterGrid original) throws ThinklabException {
+		
+		double xsize = (original.getRight() - original.getLeft())/original.getColumns();
+		double ysize = (original.getTop() - original.getBottom())/original.getRows();
+		
+		ReferencedEnvelope env = shape.transform(original.crs).getEnvelope();
+		
+		int xc = (int) (env.getWidth()/xsize);
+		int yc = (int) (env.getHeight()/ysize);
+		
+		return createRasterGrid(shape, xc, yc);
+	}
+	
+	/**
 	 * Create the rastergrid definition that will define the envelope of the passed
 	 * shape, with the passed max resolution as the resolution of the longest
 	 * dimension and the other dimension defined in order to keep the cells square.
-	 * Maximum raster res will be <= maxLinearResolution^2.
+	 * Maximum raster res will be <= maxLinearResolution^2. If resolution is 0,
+	 * the grid will have 0 size, meaning that the native resolution of the data
+	 * will be used.
+	 * 
 	 * @param shape
 	 * @param maxLinearResolution
 	 * @return
 	 * @throws ThinklabException
 	 */
 	public static Polylist createRasterGrid(ShapeValue shape, int maxLinearResolution) throws ThinklabException {
+
+		/*
+		 * calculate aspect ratio and define resolution from it
+		 */
+		Pair<Integer, Integer> xy = 
+					getRasterBoxDimensions(shape, maxLinearResolution);
+		
+		return createRasterGrid(shape, xy.getFirst(), xy.getSecond());
+	}
+
+	/**
+	 * Create the rastergrid definition that will define the envelope of the passed
+	 * shape
+	 */
+	public static Polylist createRasterGrid(ShapeValue shape, int xcells, int ycells) throws ThinklabException {
 
 		Polylist ret = null;
 		
@@ -236,16 +275,12 @@ public class RasterGrid extends Observation implements Topology {
 		
 		Hashtable<String, Object> sym = new Hashtable<String, Object>();
 
-		/*
-		 * calculate aspect ratio and define resolution from it
-		 */
-		Pair<Integer, Integer> xy = getRasterBoxDimensions(shape, maxLinearResolution);
 		ReferencedEnvelope env = shape.getEnvelope();
 
 		sym.put("xRangeOffset", 0);
-		sym.put("xRangeMax", xy.getFirst());
+		sym.put("xRangeMax", xcells);
 		sym.put("yRangeOffset", 0);
-		sym.put("yRangeMax", xy.getSecond());
+		sym.put("yRangeMax", ycells);
 		sym.put("crsCode", Geospace.getCRSIdentifier(shape.getCRS(), true));
 		sym.put("latLowerBound", env.getMinY());
 		sym.put("lonLowerBound", env.getMinX());

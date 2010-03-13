@@ -139,16 +139,95 @@
 	  contingency structure is supplied."
 		[model-name observable & body]
  		`(def ~model-name (modelling/register-scenario (eval '(modelling/scenario ~observable ~@body)) (str '~model-name))))
-                   
-(defn run 
+   
+(defn get-topology-in-location 
+	"Return the spatial topology of the first observation found in the given location that
+	matches the passed observable"
+	[observable location] 
+	(let [
+			  extent  (geospace/get-topology-from-name location 256)
+		    observ  (org.integratedmodelling.modelling.ObservationFactory/findObservation 
+		    						(tl/conc observable) 
+		    						(tl/get-session) 
+		    						extent) 
+		    nexten  (geospace/get-spatial-extent observ) 
+			]
+		nexten))
+
+(defn get-native-topology-in-location 
+	"Return the spatial topology of the first observation found in the given location that
+	matches the passed observable, using the given locations envelope and the native
+	resolution of the observation."
+	[observable location] 
+	(let [
+			  shape   (geospace/get-shape-from-name location)
+			  extent  (geospace/get-topology-from-shape shape 256)
+		    observ  (org.integratedmodelling.modelling.ObservationFactory/findObservation 
+		    						(tl/conc observable) 
+		    						(tl/get-session) 
+		    						extent) 
+		    nexten  (geospace/get-spatial-extent observ)
+		    result  (geospace/get-matching-native-grid shape nexten) 
+			]
+		(.getImplementation (tl/create-object result))))     
+
+(defn get-native-topology-at-shape 
+	"Return the spatial topology of the first observation found in the given location that
+	matches the passed observable, using the given locations envelope and the native
+	resolution of the observation."
+	[observable shape] 
+	(let [
+			  extent  (geospace/get-topology-from-shape shape 256)
+		    observ  (org.integratedmodelling.modelling.ObservationFactory/findObservation 
+		    						(tl/conc observable) 
+		    						(tl/get-session) 
+		    						extent) 
+		    nexten  (geospace/get-spatial-extent observ)
+		    result  (geospace/get-matching-native-grid shape nexten) 
+			]
+		(.getImplementation (tl/create-object result))))     
+
+
+(defn run-at-shape 
 	"Build, contextualize and return the first matching observation for the passed model. Unresolved dependencies
 	will be looked up in the kbox of kboxes (the KBoxManager). The next parameter should resolve to a shape in a 
-	known gazetteer. The last is the max linear resolution for the grid extent desired."
-	[model-id extent-id resolution]
+	known gazetteer. The last, if provided, is the max linear resolution for the grid extent desired. If not
+	provided, the resolution will be the native resolution of the first observation found for the model
+	observable."
+	([model-id shape]
+	(let [model   (.. org.integratedmodelling.modelling.ModelFactory (get) (requireModel (str model-id)))
+			  extent  (get-native-topology-at-shape (.getObservable model) shape)
+		    kbox    (org.integratedmodelling.thinklab.kbox.KBoxManager/get)
+		    qresult (.. org.integratedmodelling.modelling.ModelFactory (get) (run model kbox (tl/get-session) (geospace/topology-array extent)))]
+		(if (> (.getTotalResultCount qresult) 0) 
+				   (.getImplementation (.getObject (.getResult qresult 0 (tl/get-session)))))))
+	([model-id shape resolution]
+	(let [model   (.. org.integratedmodelling.modelling.ModelFactory (get) (requireModel (str model-id)))
+			  extent  (geospace/get-topology-from-shape shape resolution)
+		    kbox    (org.integratedmodelling.thinklab.kbox.KBoxManager/get)
+		    qresult (.. org.integratedmodelling.modelling.ModelFactory (get) (run model kbox (tl/get-session) extent))]
+		(if (> (.getTotalResultCount qresult) 0) 
+				   (.getImplementation (.getObject (.getResult qresult 0 (tl/get-session))))))))
+		    
+		              
+(defn run-at-location 
+	"Build, contextualize and return the first matching observation for the passed model. Unresolved dependencies
+	will be looked up in the kbox of kboxes (the KBoxManager). The next parameter should resolve to a shape in a 
+	known gazetteer. The last, if provided, is the max linear resolution for the grid extent desired. If not
+	provided, the resolution will be the native resolution of the first observation found for the model
+	observable."
+	([model-id extent-id]
+	(let [model   (.. org.integratedmodelling.modelling.ModelFactory (get) (requireModel (str model-id)))
+			  extent  (get-native-topology-in-location (.getObservable model) extent-id)
+		    kbox    (org.integratedmodelling.thinklab.kbox.KBoxManager/get)
+		    qresult (.. org.integratedmodelling.modelling.ModelFactory (get) (run model kbox (tl/get-session) (geospace/topology-array extent)))]
+		(if (> (.getTotalResultCount qresult) 0) 
+				   (.getImplementation (.getObject (.getResult qresult 0 (tl/get-session)))))))
+	([model-id extent-id resolution]
 	(let [model   (.. org.integratedmodelling.modelling.ModelFactory (get) (requireModel (str model-id)))
 			  extent  (geospace/get-topology-from-name extent-id resolution)
 		    kbox    (org.integratedmodelling.thinklab.kbox.KBoxManager/get)
 		    qresult (.. org.integratedmodelling.modelling.ModelFactory (get) (run model kbox (tl/get-session) extent))]
 		(if (> (.getTotalResultCount qresult) 0) 
-				   (.getImplementation (.getObject (.getResult qresult 0 (tl/get-session)))))))
+				   (.getImplementation (.getObject (.getResult qresult 0 (tl/get-session))))))))
 		    

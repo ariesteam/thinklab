@@ -36,7 +36,8 @@
 	"Return the IObservation that defines the spatial extent for the passed observation, or nil
 	if non-spatial"
 	[observation]	
-	(corescience/get-extent observation (.. org.integratedmodelling.geospace.Geospace (get) (SpaceObservable))))
+	(if (not (nil? observation)) 
+		(corescience/get-extent observation (.. org.integratedmodelling.geospace.Geospace (get) (SpaceObservable)))))
 	
 (defn get-centroid 
 	"Return a ShapeValue with the centroid of the spatial extent of the passed observation, or 
@@ -94,6 +95,38 @@
 	[extent data]
 	(org.integratedmodelling.geospace.coverage.CoverageFactory/makeCoverage extent data))
 
+(defn get-shape-from-name
+		"Return a grid topology (observations of space) from a name that
+		matches a location in a gazetteer. Name can be a string, a symbol or anything whose string value
+		is found in the global gazetteer."
+		[name] 
+		(let [
+			cshapes (.. org.integratedmodelling.geospace.Geospace (get) (lookupFeature (str name) true))
+			]
+		(if (> (.size cshapes) 0) 
+				(.get cshapes 0)))) 
+
+(defn get-shape
+	"Return the full extent shape from a grid." 
+	[rastergrid]
+	(.. rastergrid (getExtent) (getFullExtentValue))) 
+	 
+
+(defn get-matching-native-grid
+		"Return a grid topology (observations of space) from a name that
+		matches a location in a gazetteer. Name can be a string, a symbol or anything whose string value
+		is found in the global gazetteer."
+		[shape rastergrid] 
+	(org.integratedmodelling.geospace.implementations.observations.RasterGrid/createRasterGrid shape rastergrid)) 
+
+(defn topology-array
+	[topology]
+	(let [
+		retval (make-array org.integratedmodelling.corescience.interfaces.internal.Topology 1)
+		]
+	(aset retval 0 topology)
+	 retval)) 
+
 (defn get-topology-from-name
 		"Return a grid topology (observations of space) from a name that
 		matches a location in a gazetteer. Name can be a string, a symbol or anything whose string value
@@ -110,3 +143,14 @@
 												(.get cshapes 0) resolution)))]
 								(aset retval 0 inst)
 								retval))))
+								
+(defn get-topology-from-shape
+		"Return a grid topology (observations of space) from a shape and a linear resolution."
+		[shape resolution] 
+		(let [
+			retval (make-array org.integratedmodelling.corescience.interfaces.internal.Topology 1)
+			inst (.getImplementation 
+							(tl/create-object
+								 (org.integratedmodelling.geospace.implementations.observations.RasterGrid/createRasterGrid
+										shape resolution)))]
+				(topology-array inst)))

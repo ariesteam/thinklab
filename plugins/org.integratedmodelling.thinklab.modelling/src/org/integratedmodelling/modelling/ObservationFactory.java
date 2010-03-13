@@ -45,10 +45,14 @@ import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.Polylist;
 
 public class ObservationFactory extends org.integratedmodelling.corescience.ObservationFactory {
@@ -67,6 +71,45 @@ public class ObservationFactory extends org.integratedmodelling.corescience.Obse
 			new Constraint(CoreScience.OBSERVATION)
 				.restrict(new Restriction(
 						CoreScience.HAS_OBSERVABLE, new Constraint(what)));
+	}
+
+	public static IObservation findObservation(IConcept observable, ISession session, Topology ... extents)
+		throws ThinklabException {
+	
+		IObservation ret = null;
+		Constraint c = queryObservation(observable, extents);
+		IQueryResult qret = KBoxManager.get().query(c);	
+		if (qret.getTotalResultCount() > 0) {
+			ret = getObservation(qret.getResult(0, session).asObjectReference().getObject());
+		}
+		return ret;
+	}
+	
+	public static Constraint queryObservation(IConcept observable, Topology ... extents) throws ThinklabException {
+
+		Constraint c = new Constraint(CoreScience.Observation());
+		
+		c = c.restrict(
+				new Restriction(CoreScience.HAS_OBSERVABLE, new Constraint(observable)));
+
+		if (extents.length > 0) {
+			
+			ArrayList<Restriction> er = new ArrayList<Restriction>();
+			for (Topology o : extents) {
+				Restriction r = o.getConstraint("contains");
+				if (r != null)
+					er.add(r);
+			}
+			
+			if (er.size() > 0) {
+				c = c.restrict(
+						er.size() == 1 ? 
+							er.get(0) : 
+							Restriction.AND(er.toArray(new Restriction[er.size()])));
+			}
+		}
+		
+		return c;
 	}
 	
 	/**

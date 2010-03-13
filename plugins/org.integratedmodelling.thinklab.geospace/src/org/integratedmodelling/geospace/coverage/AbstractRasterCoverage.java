@@ -235,5 +235,4 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 		layerName = covId;
 	}
 
-
 }
