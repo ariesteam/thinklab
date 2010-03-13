@@ -58,16 +58,18 @@
 	(.getResourceURL (. Thinklab (resolvePlugin (str plugin-name) true)) resource-path))
 
 (defn conc
-	"A passed concept is returned unmodified. A list is taken to be a concept definition and passed
+	"A passed concept (or nil) is returned unmodified. A list is taken to be a concept definition and passed
 	to a session to create the return value. If the passed object is not a concept, its string
 	value is taken to be a semantic type and the correspondent concept is returned. If no concept
 	exists for that object, an exception is thrown."
 	[stype]
-	(if (instance? org.integratedmodelling.thinklab.interfaces.knowledge.IConcept stype)
-		stype
-		(if (list? stype)
-			(.createConcept (tl/get-session) (tl/listp stype)) 
-			(.. KnowledgeManager (get) (requireConcept (str stype))))))
+	(if (nil? stype) 
+		nil
+		(if (instance? org.integratedmodelling.thinklab.interfaces.knowledge.IConcept stype)
+			stype
+			(if (list? stype)
+				(.createConcept (tl/get-session) (tl/listp stype)) 
+				(.. KnowledgeManager (get) (requireConcept (str stype)))))))
 
 (defn find-concept
 	"A passed concept is returned unmodified. If the passed object is not a concept, its string

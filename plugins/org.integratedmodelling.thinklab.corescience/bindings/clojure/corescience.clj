@@ -165,7 +165,9 @@
 
 (defn get-state-map
 	[observation] 
-	(org.integratedmodelling.corescience.ObservationFactory/getStateMap (get-obs observation)))
+	(if (nil? observation)
+		{}
+	 (org.integratedmodelling.corescience.ObservationFactory/getStateMap (get-obs observation))))
 
 ;; ================================================================================================
 ;; utils
