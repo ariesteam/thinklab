@@ -171,7 +171,7 @@ public class NetCDFArchive {
 				ncfile.addVariable(varname, DataType.FLOAT, new Dimension[]{latDim,lonDim});
 
 				// add uncertainty if any
-				if (variables.get(obs) instanceof CategoricalDistributionDatasource)
+				if (variables.get(obs).getMetadata(Metadata.UNCERTAINTY) != null)
 					ncfile.addVariable(varname+"Uncertainty", DataType.FLOAT, new Dimension[]{latDim,lonDim});
 				
 				// TODO if var is a measurement, add units attribute - this is a stupid stub
