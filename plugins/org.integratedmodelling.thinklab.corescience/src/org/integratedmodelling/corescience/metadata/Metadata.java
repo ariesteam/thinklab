@@ -574,7 +574,8 @@ public class Metadata {
 				metadata.get(CONTINUOUS) == null ? 
 						-1 : 
 						((Boolean)(metadata.get(CONTINUOUS)) ? 1 : 0));
-		out.writeString((String) metadata.get(TRUECASE));
+		IConcept truecase = (IConcept) metadata.get(TRUECASE);
+		out.writeString(truecase == null ? null : truecase.toString());
 		out.writeRankings(metadata.get(RANKING));
 		
 		// TODO new stuff missing
