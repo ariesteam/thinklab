@@ -650,11 +650,14 @@ public class Metadata {
 		/*
 		 * see if we have categories and redefine from there.
 		 */
-		HashMap<IConcept, Integer> ranking = (HashMap<IConcept, Integer>) state.getMetadata(RANKING);
+		HashMap<IConcept, Integer> ranking = 
+			(HashMap<IConcept, Integer>) state.getMetadata(RANKING);
 		Boolean hasZeroRanking = (Boolean) state.getMetadata(HASZERO);
 		if (hasZeroRanking == null) hasZeroRanking = false;
+		Boolean continuous = (Boolean) state.getMetadata(CONTINUOUS);
+		if (continuous == null) continuous = false;
 				
-		if (ranking != null) {
+		if (ranking != null && !continuous) {
 			
 			nlevels =  ranking.size();
 			
