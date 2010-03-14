@@ -645,7 +645,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	 * @return The one and only knowledge manager for this application.
 	 * @exception throws an informative exception if KM does not exist or has not been initialized.
 	 */
-	public static KnowledgeManager get() throws ThinklabNoKMException {
+	public static KnowledgeManager get() {
 		
 		if (KM == null)
 		   throw new ThinklabNoKMException();
@@ -683,7 +683,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
     /* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#requireConcept(java.lang.String)
 	 */
-    public IConcept requireConcept(String id) throws ThinklabMalformedSemanticTypeException, ThinklabResourceNotFoundException {
+    public IConcept requireConcept(String id) throws ThinklabException {
         SemanticType st = new SemanticType(id);
         return requireConcept(st);
     }
@@ -691,7 +691,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
     /* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#requireProperty(java.lang.String)
 	 */
-    public IProperty requireProperty(String id) throws ThinklabMalformedSemanticTypeException, ThinklabResourceNotFoundException {
+    public IProperty requireProperty(String id) throws ThinklabException {
  
     	SemanticType st = new SemanticType(id);
         return requireProperty(st);
@@ -700,7 +700,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
     /* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#requireInstance(java.lang.String)
 	 */
-    public IInstance requireInstance(String id) throws ThinklabMalformedSemanticTypeException, ThinklabResourceNotFoundException {
+    public IInstance requireInstance(String id) throws ThinklabException {
         SemanticType st = new SemanticType(id);
         IInstance ret = knowledgeRepository.requireOntology(st.getConceptSpace()).getInstance(st.getLocalName());
         if (ret == null) {

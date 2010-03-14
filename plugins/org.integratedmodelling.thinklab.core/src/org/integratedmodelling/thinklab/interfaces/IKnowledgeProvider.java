@@ -85,10 +85,10 @@ public interface IKnowledgeProvider {
 	 * @return the concept.
 	 * @throws ThinklabMalformedSemanticTypeException if semantic type is malformed
 	 * @throws ThinklabResourceNotFoundException if concept not found.
+	 * @throws ThinklabException 
 	 */
 	public abstract IConcept requireConcept(String id)
-			throws ThinklabMalformedSemanticTypeException,
-			ThinklabResourceNotFoundException;
+			throws ThinklabException;
 
 	/**
 	 * Return property from string representing semantic type. Property must exist.
@@ -98,8 +98,7 @@ public interface IKnowledgeProvider {
 	 * @throws ThinklabResourceNotFoundException if property not found
 	 */
 	public abstract IProperty requireProperty(String id)
-			throws ThinklabMalformedSemanticTypeException,
-			ThinklabResourceNotFoundException;
+			throws ThinklabException;
 
 	/**
 	 * Return instance from string representing semantic type. Instance must exist.
@@ -109,8 +108,7 @@ public interface IKnowledgeProvider {
 	 * @throws ThinklabResourceNotFoundException if instance not found
 	 */
 	public abstract IInstance requireInstance(String id)
-			throws ThinklabMalformedSemanticTypeException,
-			ThinklabResourceNotFoundException;
+			throws ThinklabException;
 
 	public abstract IConcept getConceptFromURI(String uri);
 
