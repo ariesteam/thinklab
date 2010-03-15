@@ -200,8 +200,10 @@ public class ModelFactory {
 		if (modelsById.containsKey(name))
 			throw new ThinklabDuplicateNameException(
 					"model manager: a model named " + name + " has already been registered");
+		
 		modelsById.put(name, model);
-		ModellingPlugin.get().logger().info("model " + model + " registered");
+		model.setName(name);
+		ModellingPlugin.get().logger().info("model " + model + " registered as " + name);
 		return model;
 	}
 
@@ -210,7 +212,9 @@ public class ModelFactory {
 	 */
 	public Scenario registerScenario(Scenario model, String name) throws ThinklabException {
 		
+		// FIXME same ID and name
 		model.setId(name);
+		model.setName(name);
 		scenariosById.put(model.id, model);
 		ModellingPlugin.get().logger().info("scenario " + model + " registered");
 		return model;

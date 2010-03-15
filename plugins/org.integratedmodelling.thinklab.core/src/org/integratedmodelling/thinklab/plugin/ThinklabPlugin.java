@@ -66,6 +66,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.extensions.KBoxHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
+import org.integratedmodelling.thinklab.interfaces.annotations.DataTransformation;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
@@ -83,6 +84,8 @@ import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.owlapi.Session;
+import org.integratedmodelling.thinklab.transformations.ITransformation;
+import org.integratedmodelling.thinklab.transformations.TransformationFactory;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -169,8 +172,6 @@ public abstract class ThinklabPlugin extends Plugin
 		try {
 			ret = KnowledgeManager.get().getPluginManager().getPlugin(id);
 		} catch (Exception e) {
-			// TODO shouldn't really happen, but...
-			
 		}
 		return ret;
 	}
@@ -186,6 +187,7 @@ public abstract class ThinklabPlugin extends Plugin
 	protected void unloadExtensions() throws Exception {
 		
 	}
+	
 	protected String getPluginBaseName() {
 		String[] sp = getDescriptor().getId().split("\\.");
 		return sp[sp.length - 1];
@@ -210,13 +212,13 @@ public abstract class ThinklabPlugin extends Plugin
 		loadLanguageInterpreters();
 		loadCommandHandlers();
 		loadListingProviders();
+		loadTransformations();
 		loadCommands();
 		loadInstanceImplementationConstructors();
 		loadPersistentClasses();
 		loadSessionListeners();
 		loadKboxes();
 		loadApplications();
-
 		loadLanguageBindings();
 		
 		load(KnowledgeManager.get());
@@ -814,7 +816,35 @@ public abstract class ThinklabPlugin extends Plugin
 
 	}
 
-	
+	protected void loadTransformations() throws ThinklabException {
+		
+		String ipack = this.getClass().getPackage().getName() + ".transformations";
+		
+		for (Class<?> cls : MiscUtilities.findSubclasses(ITransformation.class, ipack, getClassLoader())) {	
+			
+			/*
+			 * lookup annotation, ensure we can use the class
+			 */
+			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+				continue;
+			
+			for (Annotation annotation : cls.getAnnotations()) {
+				if (annotation instanceof DataTransformation) {
+					
+					String name = ((DataTransformation)annotation).id();
+					try {
+						TransformationFactory.get().registerTransformation(name, (ITransformation)cls.newInstance());
+					} catch (Exception e) {
+						throw new ThinklabValidationException(e);
+					}
+					
+					break;
+				}
+			}
+		}
+
+	}
+
 	protected void loadSessionListeners() throws ThinklabException {
 		
 		for (Extension ext : getOwnThinklabExtensions("session-listener")) {

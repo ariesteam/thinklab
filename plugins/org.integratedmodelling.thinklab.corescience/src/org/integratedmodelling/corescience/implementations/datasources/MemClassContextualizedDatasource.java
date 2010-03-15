@@ -155,4 +155,10 @@ public class MemClassContextualizedDatasource
 		return metadata;
 	}
 
+	@Override
+	public IConcept getObservableClass() {
+		return _type;
+	}
+
+
 }

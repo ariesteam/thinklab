@@ -643,7 +643,7 @@ public class Metadata {
 		double[] data = state.getDataAsDoubles();
 		int len = data.length;
 		int[] idata = new int[len];
-		
+				
 		double[] dataRange = Metadata.getDataRange(state);
 		
 		int nlevels = 254;
@@ -690,7 +690,7 @@ public class Metadata {
 			if (Double.isNaN(data[i]))
 				idata[i] = 0;
 			else {
-				idata[i] = ranking != null ?
+				idata[i] = (ranking != null && !continuous) ?
 						(int)data[i] : 
 						(int)(((data[i]-expmin)/(expmax-expmin))*(nlevels-1));
 			}

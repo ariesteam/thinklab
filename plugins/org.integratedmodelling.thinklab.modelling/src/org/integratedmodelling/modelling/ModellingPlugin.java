@@ -40,6 +40,7 @@ public class ModellingPlugin extends ThinklabPlugin {
 		 * add whatever defaults we have in the colormap chooser
 		 */
 		VisualizationFactory.get().loadColormapDefinitions(getProperties());
+		
 	}
 
 	@Override

@@ -154,6 +154,11 @@ public class MemIntegerContextualizedDatasource
 		
 	}
 
+	@Override
+	public IConcept getObservableClass() {
+		return _type;
+	}
+
 
 	@Override
 	public HashMap<String, Object> getMetadata() {

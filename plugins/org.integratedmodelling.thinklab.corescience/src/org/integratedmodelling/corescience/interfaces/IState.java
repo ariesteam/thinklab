@@ -1,6 +1,7 @@
 package org.integratedmodelling.corescience.interfaces;
 
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 
 @SuppressWarnings("unchecked")
@@ -50,6 +51,12 @@ public interface IState extends IDataSource, IConceptualizable {
 	 * @return
 	 */
 	public int getTotalSize();
+
+	/**
+	 * Return the class of what our contents observe.
+	 * @return
+	 */
+	public IConcept getObservableClass();
 
 	
 }

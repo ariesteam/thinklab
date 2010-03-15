@@ -38,6 +38,9 @@ public abstract class DefaultAbstractModel implements IModel {
 
 	protected IConcept observable = null;
 	protected String observableId = null;
+
+	// this is the defmodel <name>, complete with namespace (slash-separated)
+	protected String name = null; 
 	
 	protected Polylist observableSpecs = null;
 	protected Object state = null;
@@ -70,6 +73,10 @@ public abstract class DefaultAbstractModel implements IModel {
 
 	public void setMetadata(String kw, Object value) {
 		metadata.put(kw.startsWith(":") ? kw.substring(1) : kw, value);
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	/**
@@ -229,6 +236,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		observableId = model.observableId;
 		editable = model.editable;
 		metadata = model.metadata;
+		name = model.name;
 	}
 	
 	/**

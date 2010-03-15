@@ -155,4 +155,11 @@ public class MemFloatContextualizedDatasource
 	public HashMap<String, Object> getMetadata() {
 		return metadata;
 	}
+	
+	@Override
+	public IConcept getObservableClass() {
+		return _type;
+	}
+
+
 }

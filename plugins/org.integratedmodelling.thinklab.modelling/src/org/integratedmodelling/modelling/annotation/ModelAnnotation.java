@@ -14,7 +14,6 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
 
 public class ModelAnnotation {
 

@@ -154,4 +154,10 @@ public class IndexedContextualizedDatasourceInt<T>
 		return metadata;
 	}
 
+	@Override
+	public IConcept getObservableClass() {
+		return _type;
+	}
+
+
 }

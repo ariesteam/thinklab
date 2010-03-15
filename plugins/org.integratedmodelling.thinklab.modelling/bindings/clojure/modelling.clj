@@ -77,7 +77,7 @@
 	"Return a new model for the given observable, defined using the given contingency 
 	 structure and conditional specifications, or the given unconditional model if no 
 	 contingency structure is supplied."
-	[observable & body]
+	[model-name observable & body]
 	 `(let [desc#  
 	 					(if (string? (first '~body)) (first '~body))
 	        contingency-model# 
@@ -88,6 +88,7 @@
  	        model# 
  	        	(modelling/j-make-model)]
  	        	
+ 	     (.setName model# ~model-name)
  	     (.setObservable  model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
  	     (.setDescription model# desc#)
  	      	     
@@ -116,7 +117,7 @@
  	        	(drop (tl/count-not-nil (list desc# contingency-model#)) '~body)
  	        model# 
  	        	(modelling/j-make-scenario)]
- 	        	
+ 	      
  	     (.setObservable  model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
  	     (.setDescription model# desc#)
  	      	     
@@ -131,7 +132,7 @@
 	  structure and conditional specifications, or the given unconditional model if no 
 	  contingency structure is supplied."
 		[model-name observable & body]
- 		`(def ~model-name (modelling/register-model (eval '(modelling/model ~observable ~@body)) (str '~model-name))))
+ 		`(def ~model-name (modelling/register-model (eval '(modelling/model (str '~model-name) ~observable ~@body)) (str '~model-name))))
        
 (defmacro defscenario
 	 "Define a model for the given observable, using the given contingency 

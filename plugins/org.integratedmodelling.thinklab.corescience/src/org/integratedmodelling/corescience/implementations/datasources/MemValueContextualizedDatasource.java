@@ -169,4 +169,11 @@ public class MemValueContextualizedDatasource
 	public HashMap<String, Object> getMetadata() {
 		return metadata;
 	}
+	
+	@Override
+	public IConcept getObservableClass() {
+		return _type;
+	}
+
+
 }

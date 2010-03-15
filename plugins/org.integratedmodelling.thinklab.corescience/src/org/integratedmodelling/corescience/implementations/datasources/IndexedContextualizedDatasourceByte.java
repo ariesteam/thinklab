@@ -150,6 +150,11 @@ public class IndexedContextualizedDatasourceByte<T>
 		return metadata;
 	}
 
+	@Override
+	public IConcept getObservableClass() {
+		return _type;
+	}
+
 
 
 }
