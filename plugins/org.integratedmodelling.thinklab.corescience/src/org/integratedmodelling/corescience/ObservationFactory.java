@@ -104,6 +104,10 @@ public class ObservationFactory {
 		return ret;
 	}
 
+	public static Map<IConcept, IState> getStateMap(IInstance observation) throws ThinklabException {
+		return getStateMap(getObservation(observation));
+	}
+
 	private static void collectStates(IObservation observation,
 			HashMap<IConcept, IState> ret) throws ThinklabException {
 		

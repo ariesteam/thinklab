@@ -70,6 +70,10 @@ public class Metadata {
 	public static final String CATEGORIES = "categories";
 	public static final String COLORMAP = "colormap";
 	
+	// double[] arrays containing the extremes of the likely range for the data, if applicable.
+	public static final String RANGE_MIN = "range_min";
+	public static final String RANGE_MAX = "range_max";
+	
 	public static boolean isOrdinalRanking(IState state) {
 		Integer dataType = (Integer)state.getMetadata(DATA_TYPE);
 		return dataType == null ? false : dataType == ORDINAL_RANKING;

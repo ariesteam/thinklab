@@ -33,7 +33,9 @@
 package org.integratedmodelling.geospace.extents;
 
 import org.geotools.coverage.grid.GeneralGridEnvelope;
+import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.geospace.Geospace;
@@ -50,7 +52,9 @@ import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -73,6 +77,9 @@ public class GridExtent extends ArealExtent {
 	double yOrigin = 0.0;
 	RasterActivationLayer activationLayer = null;
 	
+	private double cellHeightMeters;
+	private double cellWidthMeters;
+	private double cellAreaMeters = -1.0;
 	Geometry boundary = null;
 
 	public GridExtent(
@@ -124,6 +131,45 @@ public class GridExtent extends ArealExtent {
 		} 
 		
 		return false;
+	}
+	
+
+	private void checkMeters() {
+
+		if (cellAreaMeters < -0.1) {
+			
+			try {
+				MathTransform transf = CRS.findMathTransform(crs, Geospace.get().getMetersCRS());
+			
+				Coordinate p1 = JTS.transform(
+					new Coordinate(getWest(), getSouth()), null, transf);
+				Coordinate p2 = JTS.transform(
+						new Coordinate(getEast(), getNorth()), null, transf);
+
+				this.cellWidthMeters = (p2.x - p1.x) / getXCells();
+				this.cellHeightMeters = (p2.y - p1.y) / getYCells();
+				this.cellAreaMeters = this.cellWidthMeters * this.cellHeightMeters;
+
+			} catch (Exception e) {
+				throw new ThinklabRuntimeException(e);
+			}
+			
+		}
+	}
+
+	public double getCellWidthMeters() {
+		checkMeters();
+		return this.cellWidthMeters;
+	}
+	
+	public double getCellHeightMeters() {
+		checkMeters();
+		return this.cellHeightMeters;
+	}
+
+	public double getCellAreaMeters() {
+		checkMeters();
+		return this.cellAreaMeters ;
 	}
 
 	/**

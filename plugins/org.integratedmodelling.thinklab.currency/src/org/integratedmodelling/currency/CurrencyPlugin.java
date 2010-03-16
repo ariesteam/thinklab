@@ -32,7 +32,6 @@
  **/
 package org.integratedmodelling.currency;
 
-import java.io.File;
 import java.net.URL;
 
 import org.integratedmodelling.currency.cpi.CpiConversionFactory;
@@ -49,6 +48,7 @@ public class CurrencyPlugin extends ThinklabPlugin  {
 	URL exchangeDataURL = null;
 	
 	static final public String ID = "org.integratedmodelling.thinklab.currency";
+	public static final Object MONETARY_VALUE_OBSERVATION = "currency:MonetaryValuation";
 	
 	public CpiConversionFactory getConverter() {
 		return convFactory;

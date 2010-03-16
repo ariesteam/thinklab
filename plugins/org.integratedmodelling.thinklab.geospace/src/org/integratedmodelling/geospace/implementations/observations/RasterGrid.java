@@ -73,6 +73,7 @@ public class RasterGrid extends Observation implements Topology {
 	CoordinateReferenceSystem crs;
 	private String crsId = null;
 	private GridExtent extent;
+
 	
 	@Override
 	public String toString() {
@@ -248,6 +249,7 @@ public class RasterGrid extends Observation implements Topology {
 		
 		return createRasterGrid(shape, xy.getFirst(), xy.getSecond());
 	}
+
 
 	/**
 	 * Create the rastergrid definition that will define the envelope of the passed
