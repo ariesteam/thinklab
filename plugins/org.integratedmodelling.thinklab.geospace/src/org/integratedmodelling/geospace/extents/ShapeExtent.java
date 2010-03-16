@@ -33,6 +33,7 @@
 package org.integratedmodelling.geospace.extents;
 
 import org.geotools.feature.FeatureCollection;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.geospace.Geospace;
@@ -63,8 +64,10 @@ public class ShapeExtent extends ArealExtent {
 	FeatureCollection<?,?> features = null;
 	private String featureURL;
 	
-	public ShapeExtent(Envelope envelope, CoordinateReferenceSystem crs) {
+	public ShapeExtent(ReferencedEnvelope envelope, CoordinateReferenceSystem crs) {
 		super(crs, envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY());
+		// our overall shape is the bounding box
+		this.shape = new ShapeValue(envelope).getGeometry();
 	}
 	
 	public ShapeExtent(Geometry shape, Envelope envelope, CoordinateReferenceSystem crs) {
@@ -72,10 +75,12 @@ public class ShapeExtent extends ArealExtent {
 		this.shape = shape;
 	}
 
-	public ShapeExtent(FeatureCollection<?,?> features, String sourceURL, Envelope envelope, CoordinateReferenceSystem crs) {
+	public ShapeExtent(FeatureCollection<?,?> features, String sourceURL, ReferencedEnvelope envelope, CoordinateReferenceSystem crs) {
 		super(crs, envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY());
 		this.features = features;
 		this.featureURL = sourceURL;
+		// our overall shape is the bounding box
+		this.shape = new ShapeValue(envelope).getGeometry();
 	}
 
 	public IValue getFullExtentValue() {
