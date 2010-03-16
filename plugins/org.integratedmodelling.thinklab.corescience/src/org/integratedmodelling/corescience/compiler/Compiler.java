@@ -175,7 +175,8 @@ public class Compiler {
 	}
 
 	private void learnStructure(ObservationContext context) {
-		insertDependencies(context);
+		if (context != null)
+			insertDependencies(context);
 	}
 
 
