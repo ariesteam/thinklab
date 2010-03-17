@@ -48,7 +48,8 @@ public class CurrencyPlugin extends ThinklabPlugin  {
 	URL exchangeDataURL = null;
 	
 	static final public String ID = "org.integratedmodelling.thinklab.currency";
-	public static final Object MONETARY_VALUE_OBSERVATION = "currency:MonetaryValuation";
+	public static final String MONETARY_VALUE_OBSERVATION = "currency:MonetaryValuation";
+	public static final String MONETARY_VALUE_OBSERVABLE = "currency:MonetaryValue";
 	
 	public CpiConversionFactory getConverter() {
 		return convFactory;

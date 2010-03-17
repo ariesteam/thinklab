@@ -12,7 +12,6 @@ import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.Pair;
@@ -79,10 +78,15 @@ public class VisualizationFactory {
 		}
 		
 		if (ret == null) {
-			throw new ThinklabResourceNotFoundException(
-					"cannot determine color table for " + 
-					observable + 
-					"; please add colormap entry");
+			
+			/*
+			 * TODO ripristinate
+			 */
+			ret = ColorMap.jet(nlevels);
+//			throw new ThinklabResourceNotFoundException(
+//					"cannot determine color table for " + 
+//					observable + 
+//					"; please add colormap entry");
 		}				
 		return ret;
 	}
@@ -249,5 +253,21 @@ public class VisualizationFactory {
 			ret = " (" + min + " - " + max + units + ")";
 		}
 		return ret;
+	}
+
+	public static String getRangeDescription(IState state) {
+		
+		String ret = "";
+		
+		double[] adr = (double[]) state.getMetadata(Metadata.ACTUAL_DATA_RANGE);
+		String units = (String) state.getMetadata(Metadata.UNITS);
+		
+		if (adr != null) {
+			ret = adr[0] + " to " + adr[1];
+			if (units != null)
+				ret += " " + units;
+		}
+		return ret;
+		
 	}
 }

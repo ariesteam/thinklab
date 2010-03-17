@@ -193,7 +193,6 @@ public class Compiler {
 		return ret;
 	}
 
-
 	private VMContextualizer<?> createThreadContextualizer(
 			ArrayList<IObservation> order, 
 			IConcept stackType, 
