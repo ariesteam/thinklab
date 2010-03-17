@@ -270,4 +270,27 @@ public class VisualizationFactory {
 		return ret;
 		
 	}
+
+	public static String getAggregatedDescription(IState state) {
+		
+		String ret = "";
+		
+		Double max = (Double)state.getMetadata(Metadata.AGGREGATED_MAX);
+		Double min = (Double)state.getMetadata(Metadata.AGGREGATED_MIN);
+		Double tot = (Double)state.getMetadata(Metadata.AGGREGATED_TOTAL);
+		String units = (String) state.getMetadata(Metadata.UNITS);
+		
+		if (tot != null)
+			ret += "Aggregated total: " + tot;
+
+		if (min != null && max != null) {
+			ret += (ret.equals("") ? "" : " ") + "Range min: " + min + " max: " + max;
+		}
+		
+		if (!ret.equals("") && units != null)
+			ret += " " + units;
+		
+		return ret.equals("") ? null : ret;
+		
+	}
 }

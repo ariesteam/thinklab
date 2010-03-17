@@ -73,6 +73,9 @@ public class Metadata {
 	// double[] arrays containing the extremes of the likely range for the data, if applicable.
 	public static final String RANGE_MIN = "range_min";
 	public static final String RANGE_MAX = "range_max";
+	public static final String AGGREGATED_MIN = "aggregated_min";
+	public static final String AGGREGATED_MAX = "aggregated_max";
+	public static final String AGGREGATED_TOTAL = "aggregated_total";
 	
 	public static boolean isOrdinalRanking(IState state) {
 		Integer dataType = (Integer)state.getMetadata(DATA_TYPE);

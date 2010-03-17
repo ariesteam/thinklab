@@ -146,9 +146,9 @@ public class GridExtent extends ArealExtent {
 				Coordinate p2 = JTS.transform(
 						new Coordinate(getEast(), getNorth()), null, transf);
 
-				this.cellWidthMeters = (p2.x - p1.x) / getXCells();
-				this.cellHeightMeters = (p2.y - p1.y) / getYCells();
-				this.cellAreaMeters = this.cellWidthMeters * this.cellHeightMeters;
+				this.cellWidthMeters  = Math.abs((p2.x - p1.x) / getXCells());
+				this.cellHeightMeters = Math.abs((p2.y - p1.y) / getYCells());
+				this.cellAreaMeters   = this.cellWidthMeters * this.cellHeightMeters;
 
 			} catch (Exception e) {
 				throw new ThinklabRuntimeException(e);
