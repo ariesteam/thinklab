@@ -2,11 +2,13 @@ package org.integratedmodelling.modelling.visualization;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.currency.CurrencyPlugin;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
@@ -275,16 +277,22 @@ public class VisualizationFactory {
 		
 		String ret = "";
 		
+		NumberFormat nf = NumberFormat.getInstance();
+		if (state.getObservableClass().is(CurrencyPlugin.MONETARY_VALUE_OBSERVABLE)) {
+			nf = NumberFormat.getCurrencyInstance();
+		}
+		
 		Double max = (Double)state.getMetadata(Metadata.AGGREGATED_MAX);
 		Double min = (Double)state.getMetadata(Metadata.AGGREGATED_MIN);
 		Double tot = (Double)state.getMetadata(Metadata.AGGREGATED_TOTAL);
 		String units = (String) state.getMetadata(Metadata.UNITS);
 		
 		if (tot != null)
-			ret += "Aggregated total: " + tot;
+			ret += nf.format(tot);
 
 		if (min != null && max != null) {
-			ret += (ret.equals("") ? "" : " ") + "Range min: " + min + " max: " + max;
+			ret += (ret.equals("") ? "" : " ") + 
+				"[" + nf.format(min) + " - " + nf.format(max) + "]";
 		}
 		
 		if (!ret.equals("") && units != null)

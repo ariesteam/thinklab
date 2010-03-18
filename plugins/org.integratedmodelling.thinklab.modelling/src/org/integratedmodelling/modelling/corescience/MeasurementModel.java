@@ -23,6 +23,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 	public void setUnits(Object unitSpecs) {
 		this.unitSpecs = unitSpecs.toString();
 		this.metadata.put(Metadata.UNITS, this.unitSpecs);
+		this.metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 	}
 	
 	@Override

@@ -37,6 +37,10 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	ArrayList<String> conceptIds = new ArrayList<String>();
 	IConcept state = null;
 
+	public ClassificationModel() {
+		this.metadata.put(Metadata.CONTINUOUS, Boolean.FALSE);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.modelling.DefaultStatefulAbstractModel#copy(org.integratedmodelling.modelling.DefaultStatefulAbstractModel)
 	 */

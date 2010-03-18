@@ -1,6 +1,7 @@
 package org.integratedmodelling.modelling.corescience;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -13,6 +14,10 @@ import org.integratedmodelling.utils.Polylist;
 public class RankingModel extends DefaultDynamicAbstractModel {
 
 	Object unitSpecs = null;
+	
+	public RankingModel() {
+		this.metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
+	}
 	
 	@Override
 	public String toString() {
