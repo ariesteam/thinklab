@@ -22,7 +22,6 @@ public class TaskScheduler {
 	
 	volatile private boolean _stopped = true;
 	
-	
 	public abstract static class Task extends Thread {
 		public abstract boolean finished();
 	}
