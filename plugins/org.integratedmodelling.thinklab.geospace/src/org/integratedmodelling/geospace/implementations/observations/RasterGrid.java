@@ -327,4 +327,16 @@ public class RasterGrid extends Observation implements Topology {
 	public IExtent getExtent() throws ThinklabException {
 		return extent;
 	}
+
+	public Pair<Integer, Integer> getXYCoordinates(int index) {
+		int xx = index % getColumns();
+		int yy = getRows() - (index / getColumns()) - 1 - 1;
+		return new Pair<Integer,Integer>(xx, yy);
+	}
+
+	public int getIndex(int x, int y) {
+		return (x * getColumns()) + y;
+	}
+	
+	
 }

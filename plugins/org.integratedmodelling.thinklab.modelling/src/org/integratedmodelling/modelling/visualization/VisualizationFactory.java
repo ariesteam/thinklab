@@ -10,16 +10,22 @@ import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.currency.CurrencyPlugin;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
+import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.image.ColorMap;
 import org.integratedmodelling.utils.image.ColormapChooser;
 import org.integratedmodelling.utils.image.ImageUtil;
+
+import com.panayotis.gnuplot.GNUPlotException;
+import com.panayotis.gnuplot.JavaPlot;
+import com.panayotis.iodebug.Debug;
 
 /**
  * Will become a central access point for all visualization operations. For now has just what I need
@@ -31,6 +37,8 @@ import org.integratedmodelling.utils.image.ImageUtil;
 public class VisualizationFactory {
 
 	static public final String COLORMAP_PROPERTY_PREFIX = "thinklab.colormap";
+	static public final String GNUPLOT_PATH_PROPERTY = "thinklab.modelling.gnuplot";
+	
 	
 	static VisualizationFactory _this = new VisualizationFactory();
 	ColormapChooser colormapChooser = new ColormapChooser(COLORMAP_PROPERTY_PREFIX);
@@ -92,6 +100,90 @@ public class VisualizationFactory {
 		}				
 		return ret;
 	}
+
+	public String getDataAsText(IState state, RasterGrid space) throws ThinklabException {
+
+		String ret = null;
+			
+		double[] data = state.getDataAsDoubles();
+		
+		int x = space.getColumns();
+		int y = space.getRows();
+		
+		if (data != null) {
+			
+			for (int row = 0; row < y; row++) {
+				for (int col = 0; col < x; col++) {
+					ret += data[space.getIndex(row, col)] + " ";
+				}
+				ret += "\n";
+			}
+		}
+		
+		return ret;
+	}
+	
+	private JavaPlot getJavaplotInstance() throws ThinklabResourceNotFoundException {
+		
+		String gpath = ModellingPlugin.get().getProperties().getProperty(GNUPLOT_PATH_PROPERTY);
+		if (gpath == null)
+			throw new ThinklabResourceNotFoundException(
+					"modelling: path to gnuplot not defined in plugin properties");
+
+		JavaPlot ret = null;
+		try {
+			ret = new JavaPlot(gpath, true);
+		} catch (GNUPlotException e) {
+			throw new ThinklabResourceNotFoundException(e);
+		}
+		
+		return ret;
+	}
+
+	public String makeContourPlot(IConcept observable, IState state, 
+			String fileOrNull,
+			int x, int y, 
+			RasterGrid space) throws ThinklabException {
+
+		if (fileOrNull == null) {
+			try {
+				fileOrNull = File.createTempFile("img", ".png").toString();
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+		
+		double[] data = state.getDataAsDoubles();
+		
+		int cols = space.getColumns();
+		int rows = space.getRows();
+
+		double[][] plotdata = new double[cols][rows];
+		
+		if (data != null) {
+			
+			for (int row = 0; row < rows; row++) {
+				for (int col = 0; col < cols; col++) {
+					plotdata[col][row] = data[space.getIndex(row, col)];
+				}
+			}
+		}
+		
+		JavaPlot jplot = getJavaplotInstance();	
+		jplot.getParameters().set("terminal", "png transparent");
+		jplot.getParameters().set("datafile", "missing \"NaN\"");
+		jplot.getParameters().set("size", x + ", " + y);
+		jplot.getParameters().unset("surface");
+		jplot.getParameters().unset("border");
+		jplot.getParameters().set("contour");
+		jplot.addPlot(plotdata);
+		jplot.plot();
+		
+
+		
+		return fileOrNull;
+	}
+
 	
 	public String makeSurfacePlot(IConcept observable, IState state, 
 			String fileOrNull,

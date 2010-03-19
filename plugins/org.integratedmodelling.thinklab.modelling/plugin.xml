@@ -42,6 +42,7 @@
 		<library type="code" id="spring" path="lib/spring-2.5.jar"/>
 		<library type="code" id="stax-api" path="lib/stax-api-1.0.1.jar"/>
 		<library type="code" id="visad" path="lib/visad.jar"/>
+		<library type="code" id="gnuplot" path="lib/gnuplot.jar"/>
 		
 	</runtime>
 	
