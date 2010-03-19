@@ -650,7 +650,7 @@ public class Metadata {
 		double[] data = state.getDataAsDoubles();
 		int len = data.length;
 		int[] idata = new int[len];
-				
+		
 		double[] dataRange = Metadata.getDataRange(state);
 		
 		int nlevels = 254;
@@ -663,7 +663,9 @@ public class Metadata {
 		if (hasZeroRanking == null) hasZeroRanking = false;
 		Boolean continuous = (Boolean) state.getMetadata(CONTINUOUS);
 		if (continuous == null) continuous = false;
-				
+
+		int offset = (hasZeroRanking || Metadata.hasNoDataValues(state)) ? 0 : 1;		
+
 		if (ranking != null && !continuous) {
 			
 			nlevels =  ranking.size();
@@ -672,7 +674,7 @@ public class Metadata {
 			 * if the ranks do not include a zero ranking and we have no data, we need 
 			 * one more level for the zero.
 			 */
-			if (Metadata.hasNoDataValues(state) && !hasZeroRanking)
+			if ((Metadata.hasNoDataValues(state) && !hasZeroRanking)) 
 				nlevels ++;
 		}
 		
@@ -698,7 +700,7 @@ public class Metadata {
 				idata[i] = 0;
 			else {
 				idata[i] = (ranking != null && !continuous) ?
-						(int)data[i] : 
+						((int)data[i] - offset ): 
 						(int)(((data[i]-expmin)/(expmax-expmin))*(nlevels-1));
 			}
 			
