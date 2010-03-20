@@ -396,6 +396,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/simpleidv.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/visad.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/jline-0.9.94.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/gnuplot.jar" sourcepath="/Javaplot"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/gnuplot.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

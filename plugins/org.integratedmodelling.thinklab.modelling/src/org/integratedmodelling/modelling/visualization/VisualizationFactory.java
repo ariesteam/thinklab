@@ -25,7 +25,6 @@ import org.integratedmodelling.utils.image.ImageUtil;
 
 import com.panayotis.gnuplot.GNUPlotException;
 import com.panayotis.gnuplot.JavaPlot;
-import com.panayotis.iodebug.Debug;
 
 /**
  * Will become a central access point for all visualization operations. For now has just what I need
@@ -72,9 +71,10 @@ public class VisualizationFactory {
 	 */
 	public ColorMap getDefaultColormap(IConcept observable, IState state, int nlevels) throws ThinklabException {
 		
-		String[] categories = (String[])state.getMetadata(Metadata.CATEGORIES);
-		Boolean isBoolean   = (Boolean)state.getMetadata(Metadata.BOOLEAN);
-		
+		String[] categories  = (String[])state.getMetadata(Metadata.CATEGORIES);
+		Boolean isBoolean    = (Boolean)state.getMetadata(Metadata.BOOLEAN);
+		Boolean zeroIsNodata = (Boolean)state.getMetadata(Metadata.ZERO_IS_NODATA);
+
 		ColorMap ret = null;
 		
 		if ((isBoolean != null && isBoolean) || nlevels < 3) {
@@ -82,7 +82,7 @@ public class VisualizationFactory {
 		} else {
 			ret = categories == null ? 
 				(nlevels < 10 ? 
-					ColorMap.getColormap("YlOrRd()", nlevels, Metadata.hasZeroCategory(state) || Metadata.hasNoDataValues(state)) : 
+					ColorMap.getColormap("YlOrRd()", nlevels, zeroIsNodata) : 
 					ColorMap.jet(nlevels)) : // default for ordinal data
 				ColorMap.random(nlevels); // default for categorical data
 		}
@@ -103,7 +103,7 @@ public class VisualizationFactory {
 
 	public String getDataAsText(IState state, RasterGrid space) throws ThinklabException {
 
-		String ret = null;
+		StringBuffer ret = new StringBuffer(1024);
 			
 		double[] data = state.getDataAsDoubles();
 		
@@ -114,13 +114,13 @@ public class VisualizationFactory {
 			
 			for (int row = 0; row < y; row++) {
 				for (int col = 0; col < x; col++) {
-					ret += data[space.getIndex(row, col)] + " ";
+					ret.append(data[space.getIndex(row, col)] + " ");
 				}
-				ret += "\n";
+				ret.append("\n");
 			}
 		}
 		
-		return ret;
+		return ret.toString();
 	}
 	
 	private JavaPlot getJavaplotInstance() throws ThinklabResourceNotFoundException {
@@ -200,10 +200,10 @@ public class VisualizationFactory {
 		
 		int[] idata = Metadata.getImageData(state);
 		int nlevels = (Integer)state.getMetadata(Metadata.IMAGE_LEVELS);
-		
+		Boolean zeroIsNodata = (Boolean)state.getMetadata(Metadata.ZERO_IS_NODATA);
+
 		ColorMap cmap =
-			getColormap(observable, nlevels, 
-				Metadata.hasZeroCategory(state) || Metadata.hasNoDataValues(state), 
+			getColormap(observable, nlevels, zeroIsNodata, 
 				getDefaultColormap(observable, state, nlevels));
 
 		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
@@ -280,6 +280,8 @@ public class VisualizationFactory {
 		
 		ColorMap cmap = (ColorMap) state.getMetadata(Metadata.COLORMAP);
 		String units  = (String) state.getMetadata(Metadata.UNITS);
+		Integer offset = (Integer) state.getMetadata(Metadata.IMAGE_TO_CLASS_OFFSET);
+		
 		if (units == null)
 			units = "";
 		
@@ -309,7 +311,7 @@ public class VisualizationFactory {
 				// can't be that many
 				IConcept c = null;
 				for (IConcept k : ranking.keySet()) {
-					if (ranking.get(k) == i) {
+					if (ranking.get(k) == (i + offset)) {
 						c = k;
 						break;
 					}

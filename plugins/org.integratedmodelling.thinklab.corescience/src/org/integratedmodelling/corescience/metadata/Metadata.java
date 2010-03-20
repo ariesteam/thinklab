@@ -47,6 +47,7 @@ public class Metadata {
 	public static final String ACTUAL_IMAGE_RANGE = "actual_image_range";
 	public static final String HAS_NODATA_VALUES = "has_nodata_values";
 	public static final String HAS_DATA_VALUES = "has_data_values";
+	public static final String ZERO_IS_NODATA = "zero_is_nodata";
 
 	/**
 	 * The theoretical (allowed) data range, either from the distribution breakpoints, from original
@@ -76,6 +77,7 @@ public class Metadata {
 	public static final String AGGREGATED_MIN = "aggregated_min";
 	public static final String AGGREGATED_MAX = "aggregated_max";
 	public static final String AGGREGATED_TOTAL = "aggregated_total";
+	public static final String IMAGE_TO_CLASS_OFFSET = "image_to_class_offset";
 	
 	public static boolean isOrdinalRanking(IState state) {
 		Integer dataType = (Integer)state.getMetadata(DATA_TYPE);
@@ -106,7 +108,6 @@ public class Metadata {
 		Boolean ret = (Boolean)state.getMetadata(HASZERO);
 		return (ret != null) && ret;
 	}
-	
 
 	public static boolean hasNoDataValues(IState state) {
 		if (state.getMetadata(HAS_NODATA_VALUES) == null)
@@ -653,7 +654,6 @@ public class Metadata {
 		
 		double[] dataRange = Metadata.getDataRange(state);
 		
-		int nlevels = 254;
 		/*
 		 * see if we have categories and redefine from there.
 		 */
@@ -664,26 +664,35 @@ public class Metadata {
 		Boolean continuous = (Boolean) state.getMetadata(CONTINUOUS);
 		if (continuous == null) continuous = false;
 
-		int offset = (hasZeroRanking || Metadata.hasNoDataValues(state)) ? 0 : 1;		
+		boolean needZeroInColormap = false;
+		
+		int offset = 0;
 
-		if (ranking != null && !continuous) {
-			
+		int nlevels = 255;
+		if (ranking != null && !continuous) {			
 			nlevels =  ranking.size();
-			
-			/*
-			 * if the ranks do not include a zero ranking and we have no data, we need 
-			 * one more level for the zero.
-			 */
 			if ((Metadata.hasNoDataValues(state) && !hasZeroRanking)) 
 				nlevels ++;
+			
+			if 	(!hasZeroRanking && !Metadata.hasNoDataValues(state)) {
+				// useful levels will start at 1, so subtract 1 to map to colormap properly
+				offset = 1;
+			} else {
+				needZeroInColormap = true;
+			}
 		}
+		
+		state.setMetadata(IMAGE_TO_CLASS_OFFSET, new Integer(offset));
 		
 		/*
 		 * compute the display data range in actual values from the semantics
-		 * TODO we should use the theoretical one, which may or may not be available
 		 */
-		double expmin = dataRange == null ? 0.0 : dataRange[0];
-		double expmax = dataRange == null ? 0.0 : dataRange[1];
+		double expmin = 
+			// TODO honor metadata-driven min
+			dataRange == null ? 0.0 : dataRange[0];
+		double expmax = 
+			// TODO honor metadata-driven max
+			dataRange == null ? 0.0 : dataRange[1];
 		
 		double[] distribution = (double[]) state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
 		if (distribution != null) {
@@ -714,6 +723,7 @@ public class Metadata {
 		}
 		
 		state.setMetadata(IMAGE_LEVELS, nlevels);
+		state.setMetadata(ZERO_IS_NODATA, new Boolean(needZeroInColormap));
 		state.setMetadata(ACTUAL_IMAGE_RANGE, new int[]{imin, imax});
 		
 		return idata;
