@@ -125,7 +125,7 @@ public class Constraint implements IQuery {
     }
 
 	public Restriction getMetadataRestrictions() {
-		return body.getMetadataRestrictions();
+		return body == null ? null : body.getMetadataRestrictions();
 	}
 	
 	/**
@@ -409,7 +409,7 @@ public class Constraint implements IQuery {
 	 * @return
 	 */
 	public Restriction getRestrictions() {
-		return body.getRestrictions();
+		return body == null ? null : body.getRestrictions();
 	}
 		
 	/**

@@ -1692,7 +1692,7 @@ public abstract class SQLThinklabServer {
 		
 		ArrayList<Object> alist = new ArrayList<Object>();
 
-		if (refs.get(databaseIDString + "#" + id) != null) {
+		if (refs != null && refs.get(databaseIDString + "#" + id) != null) {
 			/* just return the reference */
 			return Polylist.list("#" + id);
 		} 
@@ -1737,7 +1737,8 @@ public abstract class SQLThinklabServer {
 				       
 
 		/* memorize instance encountered for posterity */
-		refs.put(databaseIDString + "#" + id, "true");
+		if (refs != null)
+			refs.put(databaseIDString + "#" + id, "true");
 		
 		boolean isInstance = res.getBoolean(0,2);
 

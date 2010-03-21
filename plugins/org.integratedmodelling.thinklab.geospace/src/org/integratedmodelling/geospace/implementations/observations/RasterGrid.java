@@ -45,10 +45,12 @@ import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
+import org.integratedmodelling.geospace.interfaces.IGeolocatedObject;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
@@ -66,7 +68,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * @author Ferdinando Villa
  */
 @InstanceImplementation(concept="geospace:RasterGrid")
-public class RasterGrid extends Observation implements Topology {
+public class RasterGrid extends Observation implements Topology, IGeolocatedObject {
 
 	int xRO, xRM, yRO, yRM;
 	double latLB, lonLB, latUB, lonUB;
@@ -336,6 +338,36 @@ public class RasterGrid extends Observation implements Topology {
 
 	public int getIndex(int x, int y) {
 		return (x * getColumns()) + y;
+	}
+
+	@Override
+	public ShapeValue getBoundingBox() {
+		try {
+			return new ShapeValue(extent.getBoundary().getEnvelope(), crs).
+					transform(Geospace.get().getDefaultCRS());
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+	}
+
+	@Override
+	public ShapeValue getCentroid() {
+		try {
+			return new ShapeValue(extent.getBoundary().getCentroid(), crs).
+			transform(Geospace.get().getDefaultCRS());
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+	}
+
+	@Override
+	public ShapeValue getShape() {
+		try {	
+			return ((ShapeValue) extent.getFullExtentValue()).
+				transform(Geospace.get().getDefaultCRS());
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 	
 	

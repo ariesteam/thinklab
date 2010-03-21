@@ -131,9 +131,8 @@ public class NumberValue extends ParsedLiteralValue {
     		return asLong();
     	else if (concept.is(KnowledgeManager.FloatType()))
     		return asFloat();
-    	else if (concept.is(KnowledgeManager.DoubleType())) 
-    		return asDouble();
-    	return null;
+    	
+    	return asDouble();
     }
     
     public boolean isLong() {

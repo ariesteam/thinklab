@@ -7,7 +7,6 @@
 	<type-translation>
 		<type name="geospace:SpatialRecord">
 
-
 			<sql-literal-format use-plugin="no">
 				GeometryFromText('$$', $srid)
 			</sql-literal-format>

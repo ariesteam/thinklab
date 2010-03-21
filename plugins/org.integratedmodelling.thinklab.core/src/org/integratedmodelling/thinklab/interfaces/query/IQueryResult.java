@@ -54,10 +54,10 @@ import org.integratedmodelling.utils.Polylist;
  */
 public interface IQueryResult {
 
-	String ID_FIELD_NAME = null;
-	String CLASS_FIELD_NAME = null;
-	String LABEL_FIELD_NAME = null;
-	String DESCRIPTION_FIELD_NAME = null;
+	String ID_FIELD_NAME = "object_id";
+	String CLASS_FIELD_NAME = "type";
+	String LABEL_FIELD_NAME = "label";
+	String DESCRIPTION_FIELD_NAME = "description";
 
 	/**
 	 * Return the queriable object that was queried to produce us.

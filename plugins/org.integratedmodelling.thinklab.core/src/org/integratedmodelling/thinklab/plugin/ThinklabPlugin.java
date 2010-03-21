@@ -309,6 +309,26 @@ public abstract class ThinklabPlugin extends Plugin
 	
 	private void loadKboxes() throws ThinklabException {
 
+		/*
+		 * load .kbox files from data dir
+		 */
+		for (String s : this.getScratchPath().list()) {
+			
+			if (s.endsWith(".kbox")) {
+				// load from kbox properties 
+				File pfile = new File(this.getScratchPath() + File.separator + s);
+				try {
+					KBoxManager.get().requireGlobalKBox(pfile.toURI().toURL().toString());
+				} catch (Exception e) {
+					throw new ThinklabIOException(e);
+				}
+			}
+		}
+		
+		
+		/*
+		 * from plugins
+		 */
 		for (Extension ext : getOwnThinklabExtensions("kbox")) {
 			
 			String protocol = getParameter(ext, "protocol");

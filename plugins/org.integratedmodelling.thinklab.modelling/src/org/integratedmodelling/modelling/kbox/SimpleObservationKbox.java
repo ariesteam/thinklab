@@ -47,6 +47,7 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.modelling.ObservationFactory;
+import org.integratedmodelling.opal.OPALValidationException;
 import org.integratedmodelling.opal.OPALValidator;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
@@ -72,7 +73,7 @@ import org.integratedmodelling.utils.instancelist.RelationshipList;
  * A simple kbox implementation intended for a small number of observation. Will match
  * observables and extents using in-memory operations. The metadata fields "space" and
  * "time" will be used to match the corresponding extents. Initialized using a set of 
- * OPAL files in a given directory. NO OTHER FIELD will be matched.
+ * OPAL files explicitly loaded. NO OTHER FIELD will be matched.
  * 
  * @author Ferdinando Villa
  */
@@ -152,7 +153,6 @@ public class SimpleObservationKbox implements IKBox {
 				data.put(obs, dh);
 			}
 		}
-		
 	}
 	
 	Data data = new Data();
@@ -177,22 +177,26 @@ public class SimpleObservationKbox implements IKBox {
 					throw new ThinklabIOException(e);
 				}
 				
-				Collection<Polylist> obss =
-					new OPALValidator().validateToLists(url);
-
-				/*
-				 * TODO process list, extracting the observable concept and
-				 * the space/time extents
-				 */
-				
-				if (obss != null && obss.size() > 0)
-					data.process(obss);
+				addOPALResource(url);
 			}
 		}
 				
 		_initialized = true;
 	}
 	
+	public void addOPALResource(URL f) throws ThinklabException {
+		
+		Collection<Polylist> obss =
+			new OPALValidator().validateToLists(f);
+
+		/*
+		 * TODO process list, extracting the observable concept and
+		 * the space/time extents
+		 */
+		
+		if (obss != null && obss.size() > 0)
+			data.process(obss);
+	}
 	
 	public IKBoxCapabilities getKBoxCapabilities() {
 		// TODO Auto-generated method stub

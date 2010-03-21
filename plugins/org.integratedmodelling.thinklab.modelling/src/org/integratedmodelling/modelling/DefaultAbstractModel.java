@@ -270,7 +270,7 @@ public abstract class DefaultAbstractModel implements IModel {
 			
 			ArrayList<Restriction> er = new ArrayList<Restriction>();
 			for (Topology o : extents) {
-				Restriction r = o.getConstraint("contains");
+				Restriction r = o.getConstraint("intersects");
 				if (r != null)
 					er.add(r);
 			}

@@ -84,12 +84,6 @@ public class Instance extends Knowledge implements IInstance {
 
 		if (literal instanceof IValue) {
 
-			Instance toadd = 
-				ThinklabOWLManager.get().getExtendedLiteralInstance(
-						null, 
-						(IValue)literal,
-						KnowledgeManager.get().getKnowledgeRepository().requireOntology(getConceptSpace()));
-
 			if (((Property)p).entity.isOWLDataProperty()) {
 				OWLAPI.setOWLDataPropertyValue(
 						getOntology(),
@@ -99,6 +93,12 @@ public class Instance extends Knowledge implements IInstance {
 				
 			} else {
 				
+				Instance toadd = 
+					ThinklabOWLManager.get().getExtendedLiteralInstance(
+							null, 
+							(IValue)literal,
+							KnowledgeManager.get().getKnowledgeRepository().requireOntology(getConceptSpace()));
+
 				OWLAPI.setOWLObjectPropertyValue(
 						getOntology(),
 						entity.asOWLIndividual(),

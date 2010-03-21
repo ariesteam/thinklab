@@ -33,7 +33,7 @@
 		(.getObject inst#)))
 
 (defmacro kbox 
-	"Define a kbox and return it"
+	"Define a kbox and return it. According to passed keywords, the kbox can be persisted to an indicated plugin."
 	[id uri & body]
 	 `(let [kbox#   (modelling/j-make-kbox-handler)]
 			(.createKbox kbox# (str '~id) ~uri '~body)))

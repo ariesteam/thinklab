@@ -163,7 +163,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 
 	protected PluginManager pluginManager = null;
 	
-	protected KBoxManager kboxManager;
 	protected CommandManager commandManager;
 	
 	public static final String EXCLUDE_ONTOLOGY_PROPERTY = "thinklab.ontology.exclude";
@@ -601,13 +600,8 @@ public class KnowledgeManager implements IKnowledgeProvider {
 			}
 		}
 
-        /* create the kbox manager now that we have the type system set up */
-        kboxManager = new KBoxManager();
         commandManager = new CommandManager();
-        		
-		// open any kboxes installed in global properties
-		kboxManager.initialize();
-		
+        				
 		Thinklab.get().logger().info("knowledge manager initialized successfully");
 		
 	}
@@ -1306,11 +1300,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	public boolean isPropertyBlacklisted(String c) {
 		return propertyBlacklist.contains(c);
 	}
-
-	public KBoxManager getKBoxManager() {
-		return kboxManager;
-	}
-
+	
 	public CommandManager getCommandManager() {
 		return commandManager;
 	}

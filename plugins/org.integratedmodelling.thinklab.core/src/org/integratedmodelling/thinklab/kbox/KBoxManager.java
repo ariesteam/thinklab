@@ -85,6 +85,8 @@ public class KBoxManager implements IKBox {
 
 	private static final String METADATA_KBOX_PROPERTY = "kbox.metadata.schema";
 	
+	static KBoxManager _this = null;
+	
 	/**
 	 * a query result that presents a set of query results as a single cursor.
 	 * @author Ferdinando
@@ -229,6 +231,17 @@ public class KBoxManager implements IKBox {
 		
 	}
 	
+	/**
+	 * Get the only instance of the kbox manager.
+	 * 
+	 */
+	public static KBoxManager get() {
+		if (_this == null) {
+			_this = new KBoxManager();
+		}
+		return _this;
+	}
+	
 	/*
 	 * knowledge importer classes harvested by plugins
 	 */
@@ -254,25 +267,13 @@ public class KBoxManager implements IKBox {
 
 	HashMap<String, IConcept> metadataTypes = new HashMap<String, IConcept>();
 	
-	public KBoxManager() throws ThinklabException {
+	public KBoxManager() {
 		
 		/* add the default metadata fields */
-		metadataTypes.put(IQueryResult.ID_FIELD_NAME, KnowledgeManager.get().getTextType());
-		metadataTypes.put(IQueryResult.LABEL_FIELD_NAME, KnowledgeManager.get().getTextType());
-		metadataTypes.put(IQueryResult.DESCRIPTION_FIELD_NAME, KnowledgeManager.get().getTextType());
-		metadataTypes.put(IQueryResult.CLASS_FIELD_NAME, KnowledgeManager.get().getTextType());
-	}
-	
-	/**
-	 * Get the only instance of the kbox manager.
-	 * 
-	 */
-	static public KBoxManager get() throws ThinklabNoKMException {
-		return KnowledgeManager.get().getKBoxManager();
-	}
-	
-	public void initialize() throws ThinklabException {
-		installDefaultKboxes();
+		metadataTypes.put(IQueryResult.ID_FIELD_NAME, KnowledgeManager.Text());
+		metadataTypes.put(IQueryResult.LABEL_FIELD_NAME, KnowledgeManager.Text());
+		metadataTypes.put(IQueryResult.DESCRIPTION_FIELD_NAME, KnowledgeManager.Text());
+		metadataTypes.put(IQueryResult.CLASS_FIELD_NAME, KnowledgeManager.Text());
 	}
 	
 	public void installKbox(String uri, IKBox kbox) {
@@ -378,29 +379,6 @@ public class KBoxManager implements IKBox {
 		}
 		
 		return ret;
-	}
-	
-	/*
-	 *
-	 */
-	private void installDefaultKboxes() throws ThinklabException {
-		
-		String kboxes = LocalConfiguration.getProperties().getProperty("thinklab.kbox.list");
-		
-		if (kboxes != null && !kboxes.trim().equals("")) {
-			
-			String[] kboxx = kboxes.split(",");
-			
-			for (String kbox : kboxx) {
-				/* just retrieve it, initializing what needs to */
-				IKBox kb = retrieveGlobalKBox(kbox);
-				if (kb == null) {
-					Thinklab.get().logger().info("error: failed to open configured kbox " + kbox);
-				} else {
-					Thinklab.get().logger().info("successfully opened kbox " + kbox);
-				}
-			}
-		}
 	}
 	
 	

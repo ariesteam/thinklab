@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.data;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 import org.integratedmodelling.clojure.utils.OptionListIterator;
 import org.integratedmodelling.modelling.ModellingPlugin;
-import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
@@ -23,7 +24,10 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.Value;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 
 /**
@@ -99,7 +103,18 @@ public class KBoxHandler {
 				} else if (policy.equals(":recreate-always") && this.kbox != null) {
 					this.kbox.resetToEmpty();
 				}
-			} 
+			}  else if (kv.getFirst().equals("persist")) {
+
+				String plugin = Thinklab.resolvePluginName(kv.getSecond().toString(), true);
+				try {
+					ThinklabPlugin persistTo = (ThinklabPlugin) ModellingPlugin.get().getManager().getPlugin(plugin);
+					File dest = 
+						new File(persistTo.getScratchPath() + File.separator + MiscUtilities.getNameFromURL(this.kbox.getUri()) + ".kbox");
+					this.kbox.getProperties().store(new FileOutputStream(dest), null);
+				} catch (Exception e) {
+					throw new ThinklabValidationException(e);
+				}
+			}
 		}
 	}
 	
@@ -197,11 +212,16 @@ public class KBoxHandler {
 		String name = id.toString();
 		String uri  = ur.toString();
 
-		File   tmp  = null;
 		Writer out = null;
+		File kboxFile = null;
+		
 		try {
-			tmp = new File(ModellingPlugin.get().getScratchPath() + File.separator + name + ".kbox");
-			out = new BufferedWriter(new FileWriter(tmp));
+			
+			kboxFile = new File(ModellingPlugin.get().getScratchPath() + File.separator + "temp_kbox");
+			kboxFile.mkdir();
+			kboxFile = new File(kboxFile + File.separator + name + ".kbox");
+			
+			out = new BufferedWriter(new FileWriter(kboxFile));
 			out.write("kbox.uri=" + uri + "\n");
 			
 		} catch (IOException e) {
@@ -265,7 +285,7 @@ public class KBoxHandler {
 		}
 		
 		try {
-			ret = KnowledgeManager.get().getKBoxManager().requireGlobalKBox(tmp.toURI().toURL().toString());
+			ret = KBoxManager.get().requireGlobalKBox(kboxFile.toURI().toURL().toString());
 		} catch (Exception e) {
 			throw new ThinklabValidationException(e);
 		}

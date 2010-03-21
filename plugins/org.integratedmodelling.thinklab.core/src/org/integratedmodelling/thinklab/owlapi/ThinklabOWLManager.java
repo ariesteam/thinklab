@@ -1072,7 +1072,7 @@ public class ThinklabOWLManager {
 		}
 		
 		if (ret == null)
-			throw new ThinklabValidationException("internal: non-POD value being assigned to data property");
+			throw new ThinklabValidationException("internal: non-POD value being assigned to data property: " + value);
 		
 		return OWLAPI.getOWLConstant(ret);
 		

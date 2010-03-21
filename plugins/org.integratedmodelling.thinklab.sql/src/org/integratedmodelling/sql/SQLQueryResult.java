@@ -45,7 +45,6 @@ import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.utils.Polylist;
 
-
 public class SQLQueryResult implements IQueryResult {
 
 	SQLKBox kbox = null;
@@ -95,6 +94,9 @@ public class SQLQueryResult implements IQueryResult {
 			} catch (ThinklabException e) {
 				// ignore, it just means it's not there
 			}
+		} else if (qresult != null) {
+			
+			// ret = qresult.getValue(n, 0, null);
 		}
 			
 		return ret;
