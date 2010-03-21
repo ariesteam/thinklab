@@ -56,6 +56,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	 */
 	protected HashMap<String, Object> metadata = new HashMap<String, Object>();
 	
+	protected boolean isOptional = false;
 	
 	/* if scenarios can be applied to this model, the content of editable will
 	 * be non-null and they will specify how we can be edited (e.g. a range of
@@ -157,6 +158,10 @@ public abstract class DefaultAbstractModel implements IModel {
 			whenClause = (Polylist) argument;
 		} else if (keyword.equals(":editable")) {
 			editable = argument;
+		} else if (keyword.equals(":optional")) {
+			isOptional = (Boolean)argument;
+		} else if (keyword.equals(":required")) {
+			isOptional = !((Boolean)argument);
 		} else {
 			metadata.put(keyword.substring(1), argument);
 		}
@@ -237,6 +242,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		editable = model.editable;
 		metadata = model.metadata;
 		name = model.name;
+		isOptional = model.isOptional;
 	}
 	
 	/**
@@ -425,6 +431,10 @@ public abstract class DefaultAbstractModel implements IModel {
 			ModelResult res = ((DefaultAbstractModel)mediated).observeInternal(kbox, session, cp, extents, false);
 
 			if (res == null || res.getTotalResultCount() == 0) {
+				
+				if (isOptional)
+					return null;
+				
 				throw new ThinklabModelException(
 						"model: cannot observe " +
 						((DefaultAbstractModel)mediated).observable +
@@ -438,13 +448,13 @@ public abstract class DefaultAbstractModel implements IModel {
 		/*
 		 * query dependencies
 		 */
-		boolean optional = (this instanceof IContextOptional);
 		for (IModel dep : dependents) {
 			
 			ModelResult d = 
-				((DefaultAbstractModel)dep).observeInternal(kbox, session, cp, extents, optional);
+				((DefaultAbstractModel)dep).observeInternal(kbox, session, cp, extents, 
+						((DefaultAbstractModel)dep).isOptional);
 			
-			// can only return null if optional is true
+			// can only return null if optional is true for the dependent
 			if (d != null)
 				ret.addDependentResult(d);
 		}

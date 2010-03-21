@@ -107,7 +107,7 @@ public class SQLQueryResult implements IQueryResult {
 	}
 
 	public int getResultCount() {
-		return qresult.nRows();
+		return qresult == null ? 0 : qresult.nRows();
 	}
 
 	public int getResultOffset() {
