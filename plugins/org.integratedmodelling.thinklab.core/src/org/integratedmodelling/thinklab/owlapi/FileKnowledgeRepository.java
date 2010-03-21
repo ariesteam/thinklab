@@ -79,6 +79,8 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	private File backupDirectory;
 	private File tempDirectory;
 	protected Hashtable<String, IOntology> ontologies = new Hashtable<String, IOntology>();
+	protected Hashtable<String, IOntology> tempontologies = new Hashtable<String, IOntology>();
+	
 	protected Registry registry;
 	
 	protected OWLClassReasoner classReasoner;
@@ -231,6 +233,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 				name = registry.registerURI(name, logicalURI);
 				Ontology onto = new Ontology(ontology, this);
 				onto.isSystem = false;
+				tempontologies.put(name, onto);
 				// FIXME check -- 
 				// ontologies.put(name, onto);
 				// registry.updateRegistry(manager, ontology);
@@ -355,10 +358,17 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	 */
 	public IOntology requireOntology(String ontName)
 			throws ThinklabResourceNotFoundException {
-		if (!ontologies.containsKey(ontName))
+		
+		IOntology ret = null;
+		
+		if (ontologies.containsKey(ontName))
+			ret = ontologies.get(ontName);
+		if (ret == null)
+			ret = tempontologies.get(ontName);
+		if (ret == null)
 			throw new ThinklabResourceNotFoundException("Ontology " + ontName
 					+ " does not exist");
-		return ontologies.get(ontName);
+		return ret;
 	}
 
 	/*
@@ -376,7 +386,15 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository#retrieveOntology(java.lang.String)
 	 */
 	public IOntology retrieveOntology(String ontName) {
-		return ontologies.get(ontName);
+		
+		IOntology ret = null;
+		
+		if (ontologies.containsKey(ontName))
+			ret = ontologies.get(ontName);
+		if (ret == null)
+			ret = tempontologies.get(ontName);
+		
+		return ret;
 	}
 
 	/*

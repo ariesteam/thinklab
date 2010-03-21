@@ -193,7 +193,7 @@ public class Property extends Knowledge implements IProperty {
 			if (entity.isOWLObjectProperty()) {
 			
 				Set<OWLObjectPropertyExpression> dio = 
-					entity.asOWLObjectProperty().getInverses(getOntology());
+					entity.asOWLObjectProperty().getInverses(getOWLOntology());
 			
 				if (dio.size() > 1) 
 					Thinklab.get().logger().error(
@@ -326,8 +326,8 @@ public class Property extends Knowledge implements IProperty {
 	public boolean isFunctional() {
 
 		return entity.isOWLDataProperty() ?
-				entity.asOWLDataProperty().isFunctional(getOntology()) :
-				entity.asOWLObjectProperty().isFunctional(getOntology());
+				entity.asOWLDataProperty().isFunctional(getOWLOntology()) :
+				entity.asOWLObjectProperty().isFunctional(getOWLOntology());
 	}
 
 	/* (non-Javadoc)

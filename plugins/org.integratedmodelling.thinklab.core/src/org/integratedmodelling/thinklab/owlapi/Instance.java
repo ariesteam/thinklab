@@ -86,7 +86,7 @@ public class Instance extends Knowledge implements IInstance {
 
 			if (((Property)p).entity.isOWLDataProperty()) {
 				OWLAPI.setOWLDataPropertyValue(
-						getOntology(),
+						getOWLOntology(),
 						entity.asOWLIndividual(),
 						((Property)p).entity.asOWLDataProperty(), 
 						ThinklabOWLManager.get().translateIValueToDatatype((IValue)literal));
@@ -100,7 +100,7 @@ public class Instance extends Knowledge implements IInstance {
 							KnowledgeManager.get().getKnowledgeRepository().requireOntology(getConceptSpace()));
 
 				OWLAPI.setOWLObjectPropertyValue(
-						getOntology(),
+						getOWLOntology(),
 						entity.asOWLIndividual(),
 						((Property)p).entity.asOWLObjectProperty(), 
 						toadd.entity.asOWLIndividual());
@@ -109,7 +109,7 @@ public class Instance extends Knowledge implements IInstance {
 		} else {
 			
 			OWLAPI.setOWLDataPropertyValue(
-					getOntology(),
+					getOWLOntology(),
 					entity.asOWLIndividual(),
 					((Property)p).entity.asOWLDataProperty(), 
 					OWLAPI.getOWLConstant(literal));
@@ -125,7 +125,7 @@ public class Instance extends Knowledge implements IInstance {
 			throws ThinklabException {
 
 		OWLAPI.setOWLObjectPropertyValue(
-				getOntology(),
+				getOWLOntology(),
 				entity.asOWLIndividual(),
 				((Property)p).entity.asOWLObjectProperty(), 
 				((Instance)object).entity.asOWLIndividual());
@@ -159,7 +159,7 @@ public class Instance extends Knowledge implements IInstance {
 	public IConcept getDirectType() {
 		// cross fingers
 		return new Concept(
-			this.entity.asOWLIndividual().getTypes(this.getOntology()).iterator().next().asOWLClass());
+			this.entity.asOWLIndividual().getTypes(this.getOWLOntology()).iterator().next().asOWLClass());
 	}
 
 	/* (non-Javadoc)
@@ -280,7 +280,7 @@ public class Instance extends Knowledge implements IInstance {
 
 		return
 			ThinklabOWLManager.get().getNOfRelationships(
-					getOntology(),
+					getOWLOntology(),
 					entity.asOWLIndividual(),
 					((Property)p).entity);
 		
@@ -293,10 +293,10 @@ public class Instance extends Knowledge implements IInstance {
 			throws ThinklabException {
 		Set<IRelationship> ret = new HashSet<IRelationship>();
 
-		for (IProperty p : ThinklabOWLManager.get().getValuedProperties(getOntology(), entity.asOWLIndividual())) {
+		for (IProperty p : ThinklabOWLManager.get().getValuedProperties(getOWLOntology(), entity.asOWLIndividual())) {
 			Collection<IValue> rrel = 
 				ThinklabOWLManager.get().translateRelationship(
-						getOntology(),
+						getOWLOntology(),
 						entity.asOWLIndividual(), 
 						((Property)p).entity, null);
 
@@ -320,7 +320,7 @@ public class Instance extends Knowledge implements IInstance {
 
 		Collection<IValue> rrel = 
 			ThinklabOWLManager.get().translateRelationship(
-					getOntology(),
+					getOWLOntology(),
 					entity.asOWLIndividual(), 
 					((Property)p).entity, null);
 
@@ -345,7 +345,7 @@ public class Instance extends Knowledge implements IInstance {
 		for (IProperty prop : pp) {
 			Collection<IValue> rrel = 
 				ThinklabOWLManager.get().translateRelationship(
-						getOntology(),
+						getOWLOntology(),
 						entity.asOWLIndividual(), 
 						((Property)prop).entity, null);
 

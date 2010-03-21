@@ -71,7 +71,7 @@ public class ArealLocation extends Observation implements Topology, IParseable, 
 		/*
 		 * we set the observable
 		 */
-		this.observable = Geospace.get().absoluteArealLocationInstance();
+		this.observable = Geospace.get().absoluteArealLocationInstance(i.getOntology());
 		
 		/*
 		 * add properties with bounding box and centroid if they're not in the

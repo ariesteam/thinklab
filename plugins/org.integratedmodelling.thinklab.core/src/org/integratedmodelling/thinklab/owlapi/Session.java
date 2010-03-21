@@ -117,6 +117,10 @@ public class Session implements ISession {
 		}
 	}
 	
+	public IOntology getOntology() {
+		return ontology;
+	}
+	
 	/**
 	 * Called by reflection, not published in ISession interface. Users should not know this one.
 	 * When set, kboxes will receive a copy of each object created in the session.

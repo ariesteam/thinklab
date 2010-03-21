@@ -65,7 +65,7 @@ public class ArealLocationValidator {
 			
 			/* complete definition with observable. */
 			tobs.addObjectRelationship(CoreScience.HAS_OBSERVABLE, 
-					Geospace.get().absoluteArealLocationInstance());
+					Geospace.get().absoluteArealLocationInstance(ontology));
 			
 			/* make datasource out of time stamp and add to instance */
 			ShapeValue shape = new ShapeValue(literalValue);

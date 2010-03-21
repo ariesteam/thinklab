@@ -802,7 +802,10 @@ public class Ontology implements IOntology {
 		return ret;
 		
 	}
-	
-	
+
+	@Override
+	public IOntology getOntology() {
+		return this;
+	}
 
 }

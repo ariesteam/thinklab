@@ -22,8 +22,10 @@ import java.net.URI;
 
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IResource;
 import org.semanticweb.owl.model.AddAxiom;
 import org.semanticweb.owl.model.OWLAnnotation;
@@ -61,10 +63,18 @@ public abstract class Knowledge implements IKnowledge, IResource {
 		ontoURI = Registry.get().getOntoURI(entity.getURI());
 	}
 
-	public OWLOntology getOntology() {
+	public OWLOntology getOWLOntology() {
 		return FileKnowledgeRepository.KR.manager.getOntology(ontoURI);
 	}
 	
+	public IOntology getOntology() {
+		try {
+			return FileKnowledgeRepository.KR.requireOntology(getConceptSpace());
+		} catch (ThinklabResourceNotFoundException e) {
+			// it can only happen in very, very weird situations.
+			throw new ThinklabRuntimeException(e);
+		}
+	}
 	
 	public Ontology getThinklabOntology() {
 		return (Ontology) FileKnowledgeRepository.KR.retrieveOntology(getConceptSpace());
@@ -115,7 +125,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 
 	public void addAnnotation(OWLProperty prop, String annotation) {
 	
-		OWLOntology ontology = getOntology();
+		OWLOntology ontology = getOWLOntology();
 		synchronized (ontology) {
 			OWLDataFactory df = FileKnowledgeRepository.df;
 			OWLConstant cns = df.getOWLTypedConstant(annotation);

@@ -68,7 +68,7 @@ public class SpatialCoverage extends Observation implements Topology, IGeolocate
 		 */
 		i.addObjectRelationship(
 					CoreScience.HAS_OBSERVABLE, 
-					Geospace.get().absoluteSpatialCoverageInstance());
+					Geospace.get().absoluteSpatialCoverageInstance(i.getOntology()));
 		
 		String crsId = null;
 				
@@ -118,30 +118,24 @@ public class SpatialCoverage extends Observation implements Topology, IGeolocate
 	@Override
 	public ShapeValue getBoundingBox() {
 		try {
-			return new ShapeValue(extent.getShape().getEnvelope(), crs)
-					.transform(Geospace.get().getDefaultCRS());
-		} catch (ThinklabException e) {
+			 ReferencedEnvelope e = Geospace.normalizeEnvelope(
+					extent.getDefaultEnvelope().transform(
+							Geospace.get().getDefaultCRS(), true, 10), 
+							Geospace.get().getDefaultCRS());
+
+			return new ShapeValue(e);
+		} catch (Exception e) {
 			throw new ThinklabRuntimeException(e);
 		}
 	}
-
+	
 	@Override
 	public ShapeValue getCentroid() {
-		try {
-			return new ShapeValue(extent.getShape().getCentroid(), crs)
-					.transform(Geospace.get().getDefaultCRS());
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
+		return getBoundingBox().getCentroid();
 	}
 
 	@Override
 	public ShapeValue getShape() {
-		try {
-			return ((ShapeValue) extent.getFullExtentValue()).transform(
-					Geospace.get().getDefaultCRS());
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
+		return getBoundingBox();
 	}
 }

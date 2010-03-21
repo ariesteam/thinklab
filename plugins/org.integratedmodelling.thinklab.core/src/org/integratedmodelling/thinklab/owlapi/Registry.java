@@ -19,12 +19,10 @@
 package org.integratedmodelling.thinklab.owlapi;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLOntology;

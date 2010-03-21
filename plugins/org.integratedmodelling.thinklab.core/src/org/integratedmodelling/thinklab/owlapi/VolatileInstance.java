@@ -57,7 +57,7 @@ public class VolatileInstance extends  Instance {
         OWLEntityRemover remover = 
         	new OWLEntityRemover(
         			FileKnowledgeRepository.get().manager, 
-        			Collections.singleton(getOntology()));
+        			Collections.singleton(getOWLOntology()));
         entity.accept(remover);
         
         try {

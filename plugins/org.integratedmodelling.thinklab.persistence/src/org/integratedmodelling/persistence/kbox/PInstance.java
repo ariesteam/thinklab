@@ -76,6 +76,7 @@ import org.integratedmodelling.utils.Polylist;
  *
  */
 public class PInstance implements IInstance {
+	
 	private Class cls;
 	private Object obj;
 	private PersistentKBox kBox;
@@ -343,6 +344,11 @@ public class PInstance implements IInstance {
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	public IOntology getOntology() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

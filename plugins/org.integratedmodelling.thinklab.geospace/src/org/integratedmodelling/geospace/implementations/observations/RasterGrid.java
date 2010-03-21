@@ -92,7 +92,7 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 		i.addObjectRelationship(
 					CoreScience.HAS_OBSERVABLE, 
 //					Geospace.get().absoluteRasterGridInstance());
-					Geospace.get().absoluteSpatialCoverageInstance());
+					Geospace.get().absoluteSpatialCoverageInstance(i.getOntology()));
 		
 				
 		// read requested parameters from properties
@@ -343,32 +343,25 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 	@Override
 	public ShapeValue getBoundingBox() {
 		try {
-			return new ShapeValue(extent.getBoundary().getEnvelope(), crs).
-					transform(Geospace.get().getDefaultCRS());
-		} catch (ThinklabException e) {
+			 ReferencedEnvelope e = Geospace.normalizeEnvelope(
+					extent.getDefaultEnvelope().transform(
+							Geospace.get().getDefaultCRS(), true, 10), 
+							Geospace.get().getDefaultCRS());
+
+			return new ShapeValue(e);
+		} catch (Exception e) {
 			throw new ThinklabRuntimeException(e);
 		}
 	}
 
 	@Override
 	public ShapeValue getCentroid() {
-		try {
-			return new ShapeValue(extent.getBoundary().getCentroid(), crs).
-			transform(Geospace.get().getDefaultCRS());
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
+		return getBoundingBox().getCentroid();
 	}
 
 	@Override
 	public ShapeValue getShape() {
-		try {	
-			return ((ShapeValue) extent.getFullExtentValue()).
-				transform(Geospace.get().getDefaultCRS());
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
+		return getBoundingBox();
 	}
-	
 	
 }

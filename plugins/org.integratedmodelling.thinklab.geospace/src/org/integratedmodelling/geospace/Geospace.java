@@ -56,9 +56,13 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
+import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.image.ColorMap;
 import org.java.plugin.PluginLifecycleException;
@@ -303,12 +307,20 @@ public class Geospace extends ThinklabPlugin  {
 		return shapeType;
 	}
 
-	public IInstance absoluteArealLocationInstance() {
-		return areaLocationInstance;
+	public IInstance absoluteArealLocationInstance(IOntology session) {
+		try {
+			return areaLocationInstance.clone(session);
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 	
-	public IInstance absoluteRasterGridInstance() {
-		return rasterGridInstance;
+	public IInstance absoluteRasterGridInstance(IOntology session) {
+		try {
+		return rasterGridInstance.clone(session);
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 	public IConcept ArealLocation() {
@@ -364,8 +376,12 @@ public class Geospace extends ThinklabPlugin  {
 		preferredCRS = crs;
 	}
 
-	public IInstance absoluteSpatialCoverageInstance() {
-		return spatialCoverageInstance;
+	public IInstance absoluteSpatialCoverageInstance(IOntology session) {
+		try {
+			return spatialCoverageInstance.clone(session);
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 

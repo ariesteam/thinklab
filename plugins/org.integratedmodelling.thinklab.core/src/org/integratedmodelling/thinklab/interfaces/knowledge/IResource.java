@@ -110,14 +110,10 @@ public interface IResource {
 	 */
 	public abstract void addLabel(String desc, String language);
 
+	/**
+	 * Return the ontology this comes from.
+	 */
+	public abstract IOntology getOntology();
 	
-//	/**
-//	 * Check if resource's URI equals the passed string.
-//	 * @param s the URI.
-//	 * @return
-//	 */
-//	public boolean equals(String s);
-//	
-//	
-//	public boolean equals (IResource r);
+
 }

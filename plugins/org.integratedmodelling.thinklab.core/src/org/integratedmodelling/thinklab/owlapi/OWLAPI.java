@@ -168,11 +168,11 @@ public class OWLAPI {
     	Set<OWLOntology> target = 
     		checkModel ? 
     				FileKnowledgeRepository.get().manager.getOntologies() :
-    				Collections.singleton(clazz.getOntology());
+    				Collections.singleton(clazz.getOWLOntology());
     	
     	 RestrictionVisitor restrictionVisitor = new RestrictionVisitor(target);
 
-    	 OWLOntology ont = clazz.getOntology();
+    	 OWLOntology ont = clazz.getOWLOntology();
     	 
     	 synchronized (ont) {
     		 for(OWLSubClassAxiom ax : ont.getSubClassAxiomsForLHS(clazz.entity.asOWLClass())) {
@@ -198,7 +198,7 @@ public class OWLAPI {
 		
 		synchronized (k.entity) {
 			// Get the annotations on the class that have a URI corresponding to rdfs:label
-			for (OWLAnnotation<?> annotation : k.entity.getAnnotations(k.getOntology(), annotationURI)) {
+			for (OWLAnnotation<?> annotation : k.entity.getAnnotations(k.getOWLOntology(), annotationURI)) {
 				if (annotation.isAnnotationByConstant()) {
 					OWLConstant val = annotation.getAnnotationValueAsConstant();
 					if (!val.isTyped()) {
