@@ -22,6 +22,21 @@ public interface IGazetteer {
 		throws ThinklabException;
 	
 	/**
+	 * Lookup a name in the gazetteer using a textual search. This should be google-like in
+	 * behavior. If the gazetteer does not implement this behavior, don't throw an exception,
+	 * simply return an empty collection (or the passed container if not null).
+	 * 
+	 * @param name a string to lookup
+	 * @param container the collection to add shapes to. If null, should return a new collection.
+	 * @param options properties that can influence the behavior. Must accept a null for defaults.
+	 * @return a possibly empty collection of shapes. If container was not null, the result must
+	 * 		   contain the shapes in it.
+	 */
+	public abstract Collection<ShapeValue> findLocations(String name, Collection<ShapeValue> container)
+		throws ThinklabException;
+	
+	
+	/**
 	 * If the gazetteer manages a collection of known localities, return the names. This one should
 	 * just be a no-op if the list of known localities cannot be pre-determined, such as in most web
 	 * gazetteers.

@@ -574,8 +574,8 @@ public class Geospace extends ThinklabPlugin  {
 				}
 			}
 		}
-
 	}
+	
 	private IGazetteer readGazetteerFromDirectory(File gdir) throws ThinklabException {
 		
 		File props = new File(gdir + File.separator + "gazetteer.properties");
@@ -605,14 +605,10 @@ public class Geospace extends ThinklabPlugin  {
 			for (String ff : gdir.list()) {
 				if (ff.endsWith(".shp")) {
 
-					File shp = new File(gdir + File.separator + ff);
-					
-					long ms = new Date().getTime();
+					File shp = new File(gdir + File.separator + ff);					
 					File lck = new File(MiscUtilities.changeExtension(shp.toString(), "lck"));
-					if (lck.exists())
-						ms = lck.lastModified();
-					
-					if (ms > mtime) {
+
+					if (!lck.exists()) {
 
 						logger().info("adding gazetteer source " + ff);
 

@@ -228,8 +228,8 @@ public class VectorCoverage implements ICoverage {
 				String typeName = source.getSchema().getTypeName();
 				BBOX filter = ff.bbox(ff.property(geomName), envelope);
 				
-		    	System.out.println("upper: " + envelope.getUpperCorner());
-		    	System.out.println("lower: " + envelope.getLowerCorner());
+//		    	System.out.println("upper: " + envelope.getUpperCorner());
+//		    	System.out.println("lower: " + envelope.getLowerCorner());
 				
 		    	/*
 		    	 * attributes to put in the query
@@ -467,6 +467,18 @@ public class VectorCoverage implements ICoverage {
 	@Override
 	public void setName(String covId) {
 		layerName = covId;
+	}
+
+	public String[] getAttributeNames() {
+
+		String[] ret = new String[source.getSchema().getAttributeCount()];
+		int i = 0;
+		
+		for (AttributeDescriptor ad : source.getSchema().getAttributeDescriptors()) {
+			ret[i++] = ad.getLocalName();
+		}
+		
+		return ret;
 	}
 
 }

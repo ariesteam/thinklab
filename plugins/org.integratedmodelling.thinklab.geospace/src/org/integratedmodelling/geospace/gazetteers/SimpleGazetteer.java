@@ -85,4 +85,14 @@ public class SimpleGazetteer implements IGazetteer {
 		}
 	}
 
+	@Override
+	public Collection<ShapeValue> findLocations(String name,
+			Collection<ShapeValue> container) throws ThinklabException {
+		
+		ArrayList<ShapeValue> ret = new ArrayList<ShapeValue>();
+		if (container != null)
+			ret.addAll(container);
+		return ret;		
+	}
+
 }

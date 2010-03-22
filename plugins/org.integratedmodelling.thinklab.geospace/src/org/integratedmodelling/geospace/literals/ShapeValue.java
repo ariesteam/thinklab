@@ -66,6 +66,7 @@ import com.vividsolutions.jts.io.WKBReader;
 import com.vividsolutions.jts.io.WKBWriter;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
+import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 
 /**
  * TODO make geometry model configurable, static pointer.
@@ -348,6 +349,10 @@ public class ShapeValue extends ParsedLiteralValue implements ITopologicallyComp
 		return shape;
 	}
 	
+	public void simplify(double tolerance) {
+		shape = TopologyPreservingSimplifier.simplify(shape, tolerance);
+	}
+	
 	public int getSRID(int def) {
 		int ret = shape.getSRID();
 		if (ret <= 0)
@@ -460,6 +465,7 @@ public class ShapeValue extends ParsedLiteralValue implements ITopologicallyComp
 			return this;
 		
 		Geometry g = null;
+		
 		try {
 			 g = JTS.transform(shape, CRS.findMathTransform(crs, ocrs));
 		} catch (Exception e) {
