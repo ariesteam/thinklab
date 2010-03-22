@@ -31,8 +31,6 @@ public class PostgisGazetteer implements IGazetteer {
 	Properties _properties = null;
 	
 	String[] createStatements = {
-			"CREATE TABLE locations (id varchar(128) PRIMARY KEY);",
-			"SELECT AddGeometryColumn('', 'locations', 'shape', 4326, 'MULTIPOLYGON', 2);"
 			// TODO add metadata table as ugly id/key/value container
 	};
 	
@@ -46,6 +44,10 @@ public class PostgisGazetteer implements IGazetteer {
 		_properties = properties;
 		
 		if (!_server.haveTable("locations")) {
+			
+			_server.execute("CREATE TABLE locations (id varchar(128) PRIMARY KEY);");
+			_server.query("SELECT AddGeometryColumn('', 'locations', 'shape', 4326, 'MULTIPOLYGON', 2);");
+
 			for (String s : createStatements) {
 				_server.execute(s);
 			}
@@ -84,9 +86,9 @@ public class PostgisGazetteer implements IGazetteer {
 			Map<String, Object> metadata) throws ThinklabException {
 
 		/*
-		 * the gazetteer will contain WGS84 no matter what we feed it
+		 * the gazetteer will contain WGS84 no matter what we feed it. If no CRS, we assume it's that but who knows.
 		 */
-		if (!shape.getCRS().equals(Geospace.get().getDefaultCRS())) {
+		if (shape.getCRS() != null && !shape.getCRS().equals(Geospace.get().getDefaultCRS())) {
 			shape = shape.transform(Geospace.get().getDefaultCRS());
 		}
 		
@@ -99,6 +101,8 @@ public class PostgisGazetteer implements IGazetteer {
 			"',4326));";
 		
 		_server.execute(sql);
+		
+		Geospace.get().logger().info("added shape " + id + " to gazetteer");
 			
 	}
 
@@ -118,6 +122,7 @@ public class PostgisGazetteer implements IGazetteer {
 		try {
 			fi = ((VectorCoverage)coverage).getFeatureIterator(null, (String[]) null);
 			while (fi.hasNext()) {
+				
 				/*
 				 * 
 				 */
@@ -158,6 +163,10 @@ public class PostgisGazetteer implements IGazetteer {
 		_properties = properties;
 		
 		if (!_server.haveTable("locations")) {
+			
+			_server.execute("CREATE TABLE locations (id varchar(128) PRIMARY KEY);");
+			_server.query("SELECT AddGeometryColumn('', 'locations', 'shape', 4326, 'MULTIPOLYGON', 2);");
+
 			for (String s : createStatements) {
 				_server.execute(s);
 			}

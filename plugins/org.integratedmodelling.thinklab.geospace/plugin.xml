@@ -264,6 +264,9 @@
 		<library type="code" id="sextante-vegetationIndices" path="lib/sextante_vegetationIndices-0.3.jar"/>
 		<library type="code" id="sextante-wps" path="lib/sextante_wps-0.3.jar"/>
 		<library type="code" id="sextante" path="lib/sextante-0.3.jar"/>
+		<library type="code" id="commons-io" path="lib/commons-io-1.4.jar">
+			<export prefix="*"/>
+		</library>
 	</runtime>
 
 	<!-- ontologies -->

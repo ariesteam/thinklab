@@ -35,7 +35,6 @@ package org.integratedmodelling.thinklab.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;

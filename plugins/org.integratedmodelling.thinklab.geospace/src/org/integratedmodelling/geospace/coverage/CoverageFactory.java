@@ -247,6 +247,7 @@ public class CoverageFactory {
 					source, false);
 			
 			((VectorCoverage)coverage).setSourceUrl(url.toString());
+			
 			ret.add(coverage);
 			
 		} catch (IOException e) {
@@ -313,6 +314,8 @@ public class CoverageFactory {
 							valDef,
 							false);
 				
+				((VectorCoverage)coverage).setSourceUrl(url.toString());
+				
 			} catch (MalformedURLException e) {
 				throw new ThinklabIOException(e);
 			}
@@ -324,6 +327,7 @@ public class CoverageFactory {
 					valAttr, valType, valDef, 
 					envelope,
 					fc1, false);
+			((VectorCoverage)coverage).setSourceUrl(url.toString());
 		}
 		
 		if (coverage != null)

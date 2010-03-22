@@ -35,12 +35,15 @@ package org.integratedmodelling.geospace;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -49,6 +52,7 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.ReferencingFactoryFinder;
 import org.geotools.referencing.factory.PropertyAuthorityFactory;
 import org.geotools.referencing.factory.ReferencingFactoryContainer;
+import org.integratedmodelling.geospace.gazetteers.PostgisGazetteer;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -64,6 +68,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.image.ColorMap;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
@@ -530,16 +535,110 @@ public class Geospace extends ThinklabPlugin  {
 	
 	/**
 	 * Load the gazetteers specified in the passed plugin and set them in the
-	 * engine repository. Must be called explicitly by plugins declaring gazetteers.
+	 * engine repository. In addition, look in plugin data dir for subdirectories
+	 * of gazetters/. Any subdir in it is supposed to contain a gazetteer.properties
+	 * file that will be used to initialize a PostgisGazetteer, and (optionally) 
+	 * a set of shapefiles that will be loaded if their 
+	 * creation date is more recent than the date of last access to the 
+	 * gazetteer.
+	 *
+	 *  Must be called explicitly by plugins declaring gazetteers.
 	 * 
 	 * @param pluginId
 	 * @throws ThinklabException
+	 * @throws PluginLifecycleException 
 	 */
 	public void loadGazetteers(String pluginId) throws ThinklabException {	
 
 		for (Extension ext : getPluginExtensions(pluginId, PLUGIN_ID, "gazetteer")) {
 			createGazetteer(ext, getProperties());
 		}
+	}
+
+	
+	public void loadGazetteersFromDirectory(File dir) throws ThinklabException {
+
+		File pdir = new File(dir + File.separator + "gazetteers");
+		
+		if (!(pdir.exists() && pdir.isDirectory()))
+			return;
+		
+		String[] files = pdir.list();
+		
+		for (String file : files) {
+			File gdir = new File(pdir + File.separator + file);
+			if (gdir.isDirectory()) {
+				IGazetteer gaz = readGazetteerFromDirectory(gdir);
+				if (gaz != null) {
+					gazetteers.put(file, gaz);
+				}
+			}
+		}
+
+	}
+	private IGazetteer readGazetteerFromDirectory(File gdir) throws ThinklabException {
+		
+		File props = new File(gdir + File.separator + "gazetteer.properties");
+		IGazetteer ret = null;
+		
+		if (props.exists()) {
+			
+			Properties pp = new Properties();
+			try {
+				pp.load(new FileInputStream(props));
+			} catch (Exception e) {
+				throw new ThinklabIOException(e);
+			}
+			
+			logger().info("loading gazetteer from " + gdir);
+			
+			ret = new PostgisGazetteer();
+			ret.initialize(pp);
+			
+			long mtime = new Date().getTime();
+			File lock = new File(gdir + File.separator + ".last_access");
+			
+			if (lock.exists()) {
+				mtime = lock.lastModified();
+			}
+				
+			for (String ff : gdir.list()) {
+				if (ff.endsWith(".shp")) {
+
+					File shp = new File(gdir + File.separator + ff);
+					
+					long ms = new Date().getTime();
+					File lck = new File(MiscUtilities.changeExtension(shp.toString(), "lck"));
+					if (lck.exists())
+						ms = lck.lastModified();
+					
+					if (ms > mtime) {
+
+						logger().info("adding gazetteer source " + ff);
+
+						try {
+							ret.importLocations(shp.toURI().toURL().toString());
+						} catch (MalformedURLException e) {
+							throw new ThinklabValidationException(e);
+						}
+						
+						try {
+							FileUtils.touch(lck);
+						} catch (IOException e) {
+							throw new ThinklabIOException(e);
+						}
+					}
+				}
+			}
+			
+			try {
+				FileUtils.touch(lock);
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+		
+		return ret;
 	}
 
 	/**
