@@ -6,7 +6,7 @@
 		<import plugin-id="org.integratedmodelling.thinklab.opal"/>
 		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
 		<import plugin-id="org.integratedmodelling.thinklab.clojure"/>
-		<import plugin-id="org.integratedmodelling.thinklab.searchengine"/>
+		<import plugin-id="org.integratedmodelling.thinklab.searchengine" reverse-lookup="true"/>
 		<import plugin-id="org.integratedmodelling.thinklab.sql"/>
 	</requires>
 	<runtime>

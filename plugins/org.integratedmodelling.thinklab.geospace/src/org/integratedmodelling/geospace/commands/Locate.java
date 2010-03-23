@@ -2,7 +2,6 @@ package org.integratedmodelling.geospace.commands;
 
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
-import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
@@ -10,6 +9,7 @@ import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 
 @ThinklabCommand(
 		name="locate",
@@ -59,13 +59,31 @@ public class Locate implements ICommandHandler {
 		} else {
 			
 			String loc = command.getArgumentAsString("location");
-			int i = 0;
-			for (ShapeValue s : 
-					(gaz == null ? 
-						Geospace.get().lookupFeature(loc, false) : 
-						gaz.resolve(loc, null, null))) {
-				session.getOutputStream().println(i++ + ". " + s);
+			
+			IQueryResult result = 
+				(gaz == null ?
+					Geospace.get().lookupFeature(loc) :
+					gaz.query(gaz.parseQuery(loc)));		
+			
+
+			if (result.getResultCount() > 0) {
+
+				for (int i = 0; i < result.getResultCount(); i++) {
+
+					session.getOutputStream().println(
+							i +
+							".\t"
+							+ result.getResultField(i, "id")
+							+ "\t"
+							+ (int)(result.getResultScore(i)) + "%"
+							+ "\t"
+							+ result.getResultField(i, "label"));
+				}
+			} else {
+				session.getOutputStream().println("no results found");
 			}
+
+			
 		}
 	
 		return null;

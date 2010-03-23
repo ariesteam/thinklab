@@ -41,9 +41,11 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -152,6 +154,8 @@ public final class SearchEngine implements IQueriable {
 	}
 
 	private class Cache extends Hashtable<String, CacheEntry> {
+
+		private static final long serialVersionUID = -4175670090437253228L;
 
 		public CacheEntry getEntry(String id) {
 
@@ -384,8 +388,7 @@ public final class SearchEngine implements IQueriable {
     	readCache();
     	
        	/* index all configured ontologies */
-    	for (IOntology o : getOntologies()) {
-    		
+    	for (IOntology o : getOntologies()) {   		
     			SearchEnginePlugin.get().logger().info("search engine: " + id + ": indexing " + o);     			
     			indexModel(o);
     	}
@@ -642,6 +645,47 @@ public final class SearchEngine implements IQueriable {
 	}
 
 	/**
+	 * This can be used to index arbitrary content.
+	 * 
+	 * @param fields names of all fields that we want indexed. These must appear as keys in the values
+	 * 		  map.
+	 * @param values a map relating fields to their values for the record. Any field that is in the
+	 *        map but not in the fields array will be stored but not indexed.
+	 * @param weights double weights for all indexed fields. Must be same dimension of fields
+	 *        array or null. If null, no weight will be set.
+	 * @throws ThinklabException 
+	 */
+	public void submitRecord(String[] fields, Map<String, Object> values, double[] weights) throws ThinklabException {
+		
+		Document d = new Document();
+
+		for (int i = 0; i < fields.length; i++) {
+			
+			String val = values.get(fields[i]).toString();
+			if (val != null) {
+				Field field = new Field(fields[i], val, Field.Store.YES, Field.Index.TOKENIZED);
+				if (weights != null)
+					field.setBoost((float)weights[i]);
+				d.add(field);
+			}
+		}
+		
+		Arrays.sort(fields);
+		for (String k : values.keySet()) {
+			if (Arrays.binarySearch(fields, k) >= 0) 
+				continue;
+			d.add(new Field(k, values.get(k).toString(), Field.Store.NO, Field.Index.TOKENIZED));
+		}
+		
+		try {
+			index.addDocument(d);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			throw new ThinklabIOException(e);
+		}
+	}
+	
+	/**
 	 * @param i
 	 */
 	public Document submitIndividual(IKBox kbox, IInstance i) throws ThinklabException {
@@ -686,7 +730,7 @@ public final class SearchEngine implements IQueriable {
 					/* make field */
 					String value = r.getValue().toString();
 					Field field = new Field(r.getProperty().toString(), value, Field.Store.YES, Field.Index.TOKENIZED);
-					d.setBoost((float)f.weight);
+					field.setBoost((float)f.weight);
 					d.add(field);
 					
 				} if (f.indexType.equals("download")) {
@@ -823,6 +867,9 @@ public final class SearchEngine implements IQueriable {
 
 	public void addIndexField(String property, String itype, double weigh) {
 		
+		if (haveIndexField(property))
+			return;
+		
 		IndexField inf = new IndexField();
 		
 		inf.indexType = itype;
@@ -830,6 +877,14 @@ public final class SearchEngine implements IQueriable {
 		inf.property = property;
 		
 		indexedFields.add(inf);
+	}
+
+	public boolean haveIndexField(String property) {
+		for (IndexField f : indexedFields) {
+			if (f.property.equals(property))
+				return true;
+		}
+		return false;
 	}
 
 	public void setResourceFinder(ThinklabPlugin resourceFinder) {

@@ -14,6 +14,7 @@ import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
+import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.idv.IDV;
 import org.integratedmodelling.modelling.Model;
@@ -112,11 +113,11 @@ public class ModelCommand implements ICommandHandler {
 			int res = 
 				(int)command.getOptionAsDouble("resolution", 256.0);	
 			ShapeValue roi = null;
-			Collection<ShapeValue> shapes = 
+			IQueryResult result = 
 				Geospace.get().lookupFeature(
-						command.getArgumentAsString("context"), true);
-			if (shapes.size() > 0)
-				roi = shapes.iterator().next();
+						command.getArgumentAsString("context"));
+			if (result.getTotalResultCount() > 0)
+				roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
 				
 			if (roi != null)
 				where = 
@@ -126,7 +127,6 @@ public class ModelCommand implements ICommandHandler {
 						"region name " + 
 						command.getArgumentAsString("context") +
 						" cannot be resolved");
-			
 		}
 		
 		ArrayList<IContextualizationListener> listeners = 

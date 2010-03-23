@@ -2,6 +2,9 @@ package org.integratedmodelling.geospace.gazetteers;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,6 +22,8 @@ import org.integratedmodelling.geospace.coverage.ICoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.searchengine.QueryString;
+import org.integratedmodelling.searchengine.ResultContainer;
 import org.integratedmodelling.searchengine.SearchEngine;
 import org.integratedmodelling.searchengine.SearchEnginePlugin;
 import org.integratedmodelling.sql.QueryResult;
@@ -28,7 +33,15 @@ import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
+import org.integratedmodelling.thinklab.interfaces.query.IQuery;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
+import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.Path;
+import org.integratedmodelling.utils.Polylist;
 import org.mvel2.templates.TemplateRuntime;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -40,25 +53,126 @@ public class PostgisGazetteer implements IGazetteer {
 	private static final String SHAPE_ID_TEMPLATE = "thinklab.gazetteer.template.id";
 	private static final String CRS_PROPERTY = "thinklab.gazetteer.projection";
 	private static final String SIMPLIFY_PROPERTY = "thinklab.gazetteer.simplify";
+	private static final String FIELD_PROPERTY_PREFIX = "thinklab.gazetteer.field.";
+	private static final String INDEXED_FIELDS_PROPERTY = "thinklab.gazetteer.indexedfields";
 
 	SearchEngine searchEngine = null;
 	
 	PostgreSQLServer _server = null;
 	Properties _properties = null;
+	Properties _additionalProperties = new Properties();
+	File additionalPropertiesFile = null;
 	
 	String[] createStatements = {
 			// TODO add metadata table as ugly id/key/value container
 	};
 	
+	class GazetteerResult implements IQueryResult {
+
+		ResultContainer res = null;
+		
+		public GazetteerResult(ResultContainer res) {
+			this.res = res;
+		}
+
+		@Override
+		public IValue getBestResult(ISession session) throws ThinklabException {
+			return res.getBestResult(session);
+		}
+
+		@Override
+		public IQueriable getQueriable() {
+			return PostgisGazetteer.this;
+		}
+
+		@Override
+		public IQuery getQuery() {
+			return res.getQuery();
+		}
+
+		@Override
+		public IValue getResult(int n, ISession session)
+				throws ThinklabException {
+			return res.getResult(n, session);
+		}
+
+		@Override
+		public Polylist getResultAsList(int n,
+				HashMap<String, String> references) throws ThinklabException {
+			return res.getResultAsList(n, references);
+		}
+
+		@Override
+		public int getResultCount() {
+			return res.getResultCount();
+		}
+
+		@Override
+		public IValue getResultField(int n, String schemaField)
+				throws ThinklabException {
+			
+			if (schemaField.equals(IGazetteer.SHAPE_FIELD)) {
+				return resolve(res.getResultField(n, "id").toString(), null, null).iterator().next();
+			}	
+			return res.getResultField(n, schemaField);
+		}
+
+		@Override
+		public int getResultOffset() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public float getResultScore(int n) {
+			return res.getResultScore(n);
+		}
+
+		@Override
+		public int getTotalResultCount() {
+			return res.getTotalResultCount();
+		}
+
+		@Override
+		public void moveTo(int currentItem, int itemsPerPage)
+				throws ThinklabException {
+			res.moveTo(currentItem, itemsPerPage);
+		}
+
+		@Override
+		public float setResultScore(int n, float score) {
+			return res.setResultScore(n, score);
+		}
+		
+	}
+	
 	public PostgisGazetteer() {
 		// do nothing, expect initialize()
 	}
 	
-	public PostgisGazetteer(URI uri, Properties properties) throws ThinklabStorageException {
+	private void init(URI uri, Properties properties) throws ThinklabException {
 		
+		String id = MiscUtilities.getNameFromURL(uri.toString());
+
 		_server = new PostgreSQLServer(uri, properties);
 		_properties = properties;
 		
+		additionalPropertiesFile = 
+			new File(Geospace.get().getScratchPath() + 
+						File.separator + 
+						"gprops" +
+						File.separator +
+						id);
+		additionalPropertiesFile.mkdirs();
+		additionalPropertiesFile = new File(additionalPropertiesFile + File.separator + id + ".properties");
+						
+		if (additionalPropertiesFile.exists())
+			try {
+				_additionalProperties.load(new FileInputStream(additionalPropertiesFile));
+			} catch (Exception e) {
+				throw new ThinklabIOException(e);
+			}
+					
 		if (!_server.haveTable("locations")) {
 			
 			_server.execute("CREATE TABLE locations (id varchar(128) PRIMARY KEY);");
@@ -68,6 +182,25 @@ public class PostgisGazetteer implements IGazetteer {
 				_server.execute(s);
 			}
 		}
+		
+		searchEngine = SearchEnginePlugin.get().createSearchEngine(id, properties);	
+		searchEngine.addIndexField("id", "text", 1.0);
+		
+		/*
+		 *  find all indexed field names in properties and add to the engine.
+		 */
+		String ifl = _additionalProperties.getProperty(INDEXED_FIELDS_PROPERTY);
+						
+		if (ifl != null) {
+			String[] ps = ifl.split(",");
+			for (String f : ps) {
+				searchEngine.addIndexField(f, "text", 1.0);
+			}
+		}
+	}
+	
+	public PostgisGazetteer(URI uri, Properties properties) throws ThinklabException {
+		init(uri, properties);
 	}
 	
 	@Override
@@ -77,7 +210,7 @@ public class PostgisGazetteer implements IGazetteer {
 	}
 
 	@Override
-	public Collection<ShapeValue> resolve(String name,
+	public Collection<ShapeValue> resolve(String id,
 			Collection<ShapeValue> container, Properties options)
 			throws ThinklabException {
 		
@@ -86,7 +219,7 @@ public class PostgisGazetteer implements IGazetteer {
 		
 		String sql =  
 			"SELECT id, ST_AsText(shape) AS shape FROM locations WHERE id = '" + 
-			name + 
+			id + 
 			"';";
 		
 		QueryResult res = _server.query(sql);
@@ -111,7 +244,7 @@ public class PostgisGazetteer implements IGazetteer {
 		// generate and run appropriate insert statements
 		String sql =
 			"INSERT INTO locations (id, shape) VALUES ('" +
-			id +
+			Escape.forSQL(id) +
 			"', ST_GeomFromText('" +
 			shape.getGeometry().toText() + 
 			"',4326));";
@@ -137,7 +270,7 @@ public class PostgisGazetteer implements IGazetteer {
 		String fl = url;
 		try {
 			if (url.startsWith("file:"))
-				fl = new URL(url).getFile();
+				fl = Escape.fromURL(new URL(url).getFile());
 		} catch (MalformedURLException e1) {
 			throw new ThinklabValidationException(e1);
 		}
@@ -172,6 +305,7 @@ public class PostgisGazetteer implements IGazetteer {
 		
 		try {
 			fi = ((VectorCoverage)coverage).getFeatureIterator(null, attributes);
+			boolean first = true;
 			while (fi.hasNext()) {
 				
 				SimpleFeature f = fi.next();
@@ -186,7 +320,7 @@ public class PostgisGazetteer implements IGazetteer {
 		        
 		        /*
 		         * substitute fields; the worst that can happen is to use the 
-		         * native id of the shape, which usually is ugly and useless.s
+		         * native id of the shape, which usually is ugly and useless.
 		         */
 		        String idTemplate = fprop.getProperty(SHAPE_ID_TEMPLATE, "@{id}");
 		        HashMap<String,Object> fields = new HashMap<String, Object>();
@@ -198,17 +332,72 @@ public class PostgisGazetteer implements IGazetteer {
 				 * retrieve all attributes for the shape.
 				 */
 		        for (int i = 0; i < attributes.length; i++) {
+		        	/*
+		        	 * skip the monster geometry. 
+		        	 * FIXME this should use the "endorsed" name from the schema, although
+		        	 * it's always the_geom for now.
+		        	 */
+		        	if (fields.equals("the_geom"))
+		        		continue;
 		        	fields.put(attributes[i], f.getAttribute(attributes[i]));
 		        }
 		        
 		        String id = (String) TemplateRuntime.eval(idTemplate, fields);
 		        
 		        /*
-		         * TODO compute any other field defined in properties and do something with them. It
-		         * should be a Lucene index obviously.
+		         * compute any other field defined in properties and pass to the Lucene index.
 		         */
+		        ArrayList<String> sav = new ArrayList<String>();
 		        
-		        addLocation(id, shape, null);    
+		        for (Object p : fprop.keySet()) {
+		        	if (p.toString().startsWith(FIELD_PROPERTY_PREFIX)) {
+		        		String tmpl = fprop.getProperty(p.toString());
+		        		String fiel = Path.getLast(p.toString(), '.');
+		        		fields.put(fiel, (String) TemplateRuntime.eval(tmpl, fields));
+		        		sav.add(fiel);
+		        	}
+		        }
+		        
+		        addLocation(id, shape, fields);    
+		        		        
+				if (sav.size() > 0) {
+					
+					String[] saved = (String[]) sav.toArray(new String[sav.size()+1]);
+					saved[sav.size()] = "id";
+					/*
+					 * if first time, communicate indexed fields to gazetteer and
+					 * save them in properties for next time. Also add to search engine if
+					 * not there already.
+					 */
+					if (first) {
+						
+						boolean changed = false;
+						String pr = _additionalProperties.getProperty(INDEXED_FIELDS_PROPERTY, "");
+						for (String ss : saved) {
+							if (!searchEngine.haveIndexField(ss)) {
+								pr += 
+									(pr.isEmpty() ? "" : ",") + 
+									ss;
+								changed = true;
+							}
+							searchEngine.addIndexField(ss, "text", 1.0);
+						}
+						
+						if (changed) {
+							_additionalProperties.setProperty(INDEXED_FIELDS_PROPERTY, pr);
+							try {
+								_additionalProperties.store(
+										new FileOutputStream(this.additionalPropertiesFile), null);
+							} catch (Exception e) {
+								throw new ThinklabIOException(e);
+							}
+						}
+						
+						first = false;
+					}
+
+					searchEngine.submitRecord(saved, fields, null);
+				}
 			}
 		} finally {
 			fi.close();
@@ -221,41 +410,44 @@ public class PostgisGazetteer implements IGazetteer {
 		return false;
 	}
 
-	public static void main(String[] s) {
+	public void setPropertyFile(File propfile) {
 		
 	}
-
+	
 	@Override
 	public void initialize(Properties properties) throws ThinklabException {
 		
-		String uri = properties.getProperty("uri");
-		String id = MiscUtilities.getNameFromURL(uri);
-		
+		String u = properties.getProperty("uri");
+		URI uri;
 		try {
-			_server = new PostgreSQLServer(new URI(uri), properties);
+			uri = new URI(u);
 		} catch (URISyntaxException e) {
 			throw new ThinklabValidationException(e);
 		}
-		_properties = properties;
 		
-		if (!_server.haveTable("locations")) {
-			
-			_server.execute("CREATE TABLE locations (id varchar(128) PRIMARY KEY);");
-			_server.query("SELECT AddGeometryColumn('', 'locations', 'shape', 4326, 'MULTIPOLYGON', 2);");
-
-			for (String s : createStatements) {
-				_server.execute(s);
-			}
-			
-			searchEngine = SearchEnginePlugin.get().createSearchEngine(id, properties);
-		}
+		init(uri, properties);
 	}
 
 	@Override
-	public Collection<ShapeValue> findLocations(String name,
-			Collection<ShapeValue> container) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+	public IQuery parseQuery(String toEval) throws ThinklabException {
+		return new QueryString(toEval);
+	}
+
+	@Override
+	public IQueryResult query(IQuery q) throws ThinklabException {
+		return new GazetteerResult((ResultContainer) searchEngine.query(q));
+	}
+
+	@Override
+	public IQueryResult query(IQuery q, int offset, int maxResults)
+			throws ThinklabException {
+		return new GazetteerResult((ResultContainer) searchEngine.query(q, offset, maxResults));
+	}
+
+	@Override
+	public IQueryResult query(IQuery q, String[] metadata, int offset,
+			int maxResults) throws ThinklabException {
+		return new GazetteerResult((ResultContainer) searchEngine.query(q, metadata, offset, maxResults));
 	}
 	
 }

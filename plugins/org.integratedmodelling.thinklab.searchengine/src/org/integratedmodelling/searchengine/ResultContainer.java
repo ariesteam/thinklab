@@ -100,7 +100,6 @@ public class ResultContainer implements IQueryResult {
 	}
 
 	public int getResultOffset() {
-		// TODO Auto-generated method stub
 		return offset;
 	}
 
@@ -115,7 +114,6 @@ public class ResultContainer implements IQueryResult {
 		String id = n + ". " + results.get(n).get("id");
 		String score = "(score: " + scores.get(n) + ")";
 		out.println(id + spaces(id, score, 80) + score);
-		// TODO print more
 	}
 
 	public float getResultScore(int n) {

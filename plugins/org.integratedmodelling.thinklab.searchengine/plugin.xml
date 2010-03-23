@@ -37,7 +37,7 @@
 		</parameter-def>
 	</extension-point>
 	
-	<!-- get a nice search engine so we can use it right away. A reindex will
+	<!-- get a nice search engine so we can use it right away. A reindex command will
 	     index all ontologies currently loaded. -->
 	<extension plugin-id="org.integratedmodelling.thinklab.searchengine" point-id="search-engine" id="thinklab-knowledge-index">
 		<parameter id="id" value="thinkcap-knowledge-index"/>

@@ -21,8 +21,6 @@ public class LocationLister implements IListingProvider {
 	public void listItem(String item, PrintStream out) throws ThinklabException {
 		
 		int i = 0;
-		for (ShapeValue s :  Geospace.get().lookupFeature(item, false)) {
-			out.println(i++ + ". " + s);
-		}
+
 	}
 }

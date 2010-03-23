@@ -6,9 +6,25 @@ import java.util.Properties;
 
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
 
-public interface IGazetteer {
+/**
+ * A gazetteer is a queriable so it can be serched with whatever query its method parseQuery will
+ * return. The QueryResult returned from a query must have a "shape" field (SHAPE_FIELD in 
+ * constants) which returns the ShapeValue corresponding to the result. All other fields are
+ * implementation-dependent, but as a rule we should have "id" and "name" always, plus 
+ * "label" and "description" optionally.
+ * 
+ * The gazetteer can also be searched using resolve(), which will normally return one result
+ * searched by unique ID, although the implementation does not enforce that.
+ * 
+ * @author Ferdinando
+ *
+ */
+public interface IGazetteer extends IQueriable {
 
+	public static final String SHAPE_FIELD = "shape";
+	
 	/**
 	 * Lookup a name in the gazetteer.
 	 * 
@@ -20,21 +36,6 @@ public interface IGazetteer {
 	 */
 	public abstract Collection<ShapeValue> resolve(String name, Collection<ShapeValue> container, Properties options)
 		throws ThinklabException;
-	
-	/**
-	 * Lookup a name in the gazetteer using a textual search. This should be google-like in
-	 * behavior. If the gazetteer does not implement this behavior, don't throw an exception,
-	 * simply return an empty collection (or the passed container if not null).
-	 * 
-	 * @param name a string to lookup
-	 * @param container the collection to add shapes to. If null, should return a new collection.
-	 * @param options properties that can influence the behavior. Must accept a null for defaults.
-	 * @return a possibly empty collection of shapes. If container was not null, the result must
-	 * 		   contain the shapes in it.
-	 */
-	public abstract Collection<ShapeValue> findLocations(String name, Collection<ShapeValue> container)
-		throws ThinklabException;
-	
 	
 	/**
 	 * If the gazetteer manages a collection of known localities, return the names. This one should

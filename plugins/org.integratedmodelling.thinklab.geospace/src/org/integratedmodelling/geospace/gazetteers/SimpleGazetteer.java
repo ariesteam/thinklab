@@ -9,11 +9,30 @@ import java.util.Properties;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.searchengine.QueryString;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
+import org.integratedmodelling.thinklab.interfaces.query.IQuery;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
+import org.integratedmodelling.thinklab.literals.TextValue;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.Polylist;
 
 /**
- * The most trivial of gazetteers - configured through properties.
+ * The most trivial of gazetteers - configured through properties. Good to insert a few important
+ * polygons without the mess of database configuration. The shapes are kept in memory. Use 
+ * sparingly and sensibly.
+ * 
+ * Whatever is in the properties file that contains entries like
+ * 
+ * geospace.gazetteer.entry.myplace = EPSG:4326 POLYGON(.....
+ * 
+ * will define a "myplace" location. A query needs to match the location name exactly, will
+ * only return one result or zero, and will set the fields "id" and "label" to myplace and
+ * the shape field (IGazetteer.SHAPE_FIELD) to the polygon. The WKT is expected to be in 
+ * EPSG:4326 with the latitude along the X axis, no exceptions.
  * 
  * @author Ferdinando
  *
@@ -23,6 +42,89 @@ public class SimpleGazetteer implements IGazetteer {
 	public static final String ENTRY_PROPERTY_PREFIX = "geospace.gazetteer.entry.";
 	
 	HashMap<String, ShapeValue> locations = new HashMap<String, ShapeValue>();
+	
+	class SingleResult implements IQueryResult {
+
+		private String id;
+		private ShapeValue shape;
+		private float score = 1.0f;
+
+		SingleResult(String id, ShapeValue shape) {
+			this.id = id;
+			this.shape = shape;
+		}
+		
+		@Override
+		public IValue getBestResult(ISession session) throws ThinklabException {
+			return shape;
+		}
+
+		@Override
+		public IQueriable getQueriable() {
+			return SimpleGazetteer.this;
+		}
+
+		@Override
+		public IQuery getQuery() {
+			return new QueryString(id);
+		}
+
+		@Override
+		public IValue getResult(int n, ISession session)
+				throws ThinklabException {
+			return shape;
+		}
+
+		@Override
+		public Polylist getResultAsList(int n,
+				HashMap<String, String> references) throws ThinklabException {
+			return null;
+		}
+
+		@Override
+		public int getResultCount() {
+			return shape == null ? 0 : 1;
+		}
+
+		@Override
+		public IValue getResultField(int n, String schemaField)
+				throws ThinklabException {
+
+			if (schemaField.equals("id") || schemaField.equals("label"))
+				return new TextValue(id);
+			else if (schemaField.equals(IGazetteer.SHAPE_FIELD))
+				return shape;
+			return null;
+		}
+
+		@Override
+		public int getResultOffset() {
+			return 0;
+		}
+
+		@Override
+		public float getResultScore(int n) {
+			return score;
+		}
+
+		@Override
+		public int getTotalResultCount() {
+			return getResultCount();
+		}
+
+		@Override
+		public void moveTo(int currentItem, int itemsPerPage)
+				throws ThinklabException {
+		}
+
+		@Override
+		public float setResultScore(int n, float score) {
+			float sc = this.score;
+			this.score = score;
+			return sc;
+		}
+		
+	}
 	
 	public SimpleGazetteer() {
 		// expect initialize()
@@ -86,13 +188,27 @@ public class SimpleGazetteer implements IGazetteer {
 	}
 
 	@Override
-	public Collection<ShapeValue> findLocations(String name,
-			Collection<ShapeValue> container) throws ThinklabException {
-		
-		ArrayList<ShapeValue> ret = new ArrayList<ShapeValue>();
-		if (container != null)
-			ret.addAll(container);
-		return ret;		
+	public IQuery parseQuery(String toEval) throws ThinklabException {
+		return new QueryString(toEval);
 	}
+
+	@Override
+	public IQueryResult query(IQuery q) throws ThinklabException {
+		Collection<ShapeValue> res = resolve(q.asText(), null, null);
+		return new SingleResult(q.asText(), res.size() > 0 ? res.iterator().next() : null);
+	}
+
+	@Override
+	public IQueryResult query(IQuery q, int offset, int maxResults)
+			throws ThinklabException {
+		return query(q);
+	}
+
+	@Override
+	public IQueryResult query(IQuery q, String[] metadata, int offset,
+			int maxResults) throws ThinklabException {
+		return query(q);
+	}
+
 
 }

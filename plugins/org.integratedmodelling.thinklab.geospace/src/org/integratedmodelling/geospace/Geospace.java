@@ -55,6 +55,7 @@ import org.geotools.referencing.factory.ReferencingFactoryContainer;
 import org.integratedmodelling.geospace.gazetteers.PostgisGazetteer;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.searchengine.QueryString;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -66,6 +67,8 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
+import org.integratedmodelling.thinklab.kbox.MultipleQueryResult;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -443,16 +446,16 @@ public class Geospace extends ThinklabPlugin  {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public Collection<ShapeValue> lookupFeature(String name, boolean stopWhenFound) 
+	public IQueryResult lookupFeature(String name) 
 		throws ThinklabException {
 		
-		ArrayList<ShapeValue> ret = new ArrayList<ShapeValue>();
+		MultipleQueryResult ret =
+			new MultipleQueryResult(new QueryString(name));
 		
 		for (IGazetteer g : gazetteers.values()) {
-			g.resolve(name, ret, null);
-			if (stopWhenFound && ret.size() > 0)
-				break;
+			ret.add(g.query(g.parseQuery(name)));
 		}
+		
 		return ret;
 	}
 
@@ -684,7 +687,10 @@ public class Geospace extends ThinklabPlugin  {
 	}
 	
 	/**
-	 * Works around geotools bugs and gives us a nice thinklab exception if necessary.
+	 * Works around geotools bugs, supports the EPSG:STRAIGHT hack for when we need a code for
+	 * lat/lon corrected WGS84, and gives us a nice capturable thinklab exception if things go wrong.
+	 * 
+	 * Should be used throughout instead of CRS.decode().
 	 * 
 	 * @param crsId
 	 * @return
@@ -692,6 +698,9 @@ public class Geospace extends ThinklabPlugin  {
 	 */
     public static CoordinateReferenceSystem getCRSFromID(String crsId) throws ThinklabValidationException {
         
+    	if (crsId.equals("EPSG:STRAIGHT"))
+    		return get().geoCRSstraight;
+    	
         CoordinateReferenceSystem ret = localCRS.get(crsId);
         
         if (ret == null) {
@@ -704,6 +713,21 @@ public class Geospace extends ThinklabPlugin  {
         
         return ret;
         
-}
+    }
+
+    /**
+     * Return a shape from the first gazetteer that knows its ID.
+     * @param id
+     * @return
+     * @throws ThinklabException
+     */
+	public ShapeValue retrieveFeature(String id) throws ThinklabException {
+		for (IGazetteer g : gazetteers.values()) {
+			Collection<ShapeValue> shapes = g.resolve(id, null, null);
+			if (shapes.size() > 0)
+				return shapes.iterator().next();
+		}
+		return null;
+	}
 	
 }
