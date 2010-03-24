@@ -143,7 +143,6 @@ public class PostgisGazetteer implements IGazetteer {
 		public float setResultScore(int n, float score) {
 			return res.setResultScore(n, score);
 		}
-		
 	}
 	
 	public PostgisGazetteer() {
