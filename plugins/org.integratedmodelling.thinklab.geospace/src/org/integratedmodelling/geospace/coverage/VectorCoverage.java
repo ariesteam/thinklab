@@ -46,6 +46,8 @@ import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.collection.DelegateFeatureIterator;
+import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gui.swing.JMapPane;
 import org.geotools.map.DefaultMapContext;
@@ -73,6 +75,7 @@ import org.integratedmodelling.utils.MiscUtilities;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.spatial.BBOX;
 import org.opengis.geometry.BoundingBox;
@@ -89,6 +92,7 @@ public class VectorCoverage implements ICoverage {
 	private String valueField = null;
 	private String sourceUrl = null;
 	private IConcept valueType = null;
+	private String  filterExpression = null;
 	
 	/*
 	 * if this is > -1, we have an independent attribute table associated with the feature collection. 
@@ -138,6 +142,7 @@ public class VectorCoverage implements ICoverage {
 			String valueDefault, // if the attribute is empty or null, use this instead - may be null
 			ReferencedEnvelope envelope,
 			FeatureSource<SimpleFeatureType, SimpleFeature> source, 
+			String filterExpression, // CQL rule or null
 			boolean validate) throws ThinklabException {
 		
 		this.features = features;
@@ -146,7 +151,10 @@ public class VectorCoverage implements ICoverage {
 		this.source = source;
 		this.valueType = valueType == null ? null : KnowledgeManager.get().requireConcept(valueType);
 		this.valueDefault = valueDefault;
-
+		this.filterExpression = filterExpression;
+		
+		if (filterExpression != null)
+			throw new ThinklabUnimplementedFeatureException("TODO - implement filters in this constructor!");
 		if (validate)
 			validateFeatures();
 		
@@ -183,6 +191,7 @@ public class VectorCoverage implements ICoverage {
 			String valueField,
 			String valueType, // concept - may be null
 			String valueDefault, // if attribute is null or empty, use this - may be null
+			String filterExpression, // CQL rule or null
 			boolean validate) throws ThinklabException {
 		
 		this.features = features;
@@ -191,6 +200,7 @@ public class VectorCoverage implements ICoverage {
 		this.valueType = valueType == null ? null : KnowledgeManager.get().requireConcept(valueType);
 		this.valueDefault = valueDefault;
 		this.attributeHandle = attributes.index(linkTargetField, valueField);
+		this.filterExpression = filterExpression;
 		
 		if (validate)
 			validateFeatures();
@@ -226,7 +236,16 @@ public class VectorCoverage implements ICoverage {
 				FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 				String geomName = source.getSchema().getGeometryDescriptor().getLocalName();
 				String typeName = source.getSchema().getTypeName();
-				BBOX filter = ff.bbox(ff.property(geomName), envelope);
+				Filter filter = ff.bbox(ff.property(geomName), envelope);
+				
+				if (filterExpression != null) {
+					try {
+						Filter cql = CQL.toFilter(filterExpression);
+						filter = ff.and(filter, cql);
+					} catch (CQLException e) {
+						throw new ThinklabValidationException(e);
+					}
+				}
 				
 //		    	System.out.println("upper: " + envelope.getUpperCorner());
 //		    	System.out.println("lower: " + envelope.getLowerCorner());

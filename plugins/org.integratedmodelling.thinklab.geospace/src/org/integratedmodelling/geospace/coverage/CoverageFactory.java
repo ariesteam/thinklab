@@ -67,6 +67,7 @@ public class CoverageFactory {
 	public static final String WFS_TIMEOUT_PROPERTY = "wfs.service.timeout";
 	public static final String WFS_BUFFER_SIZE_PROPERTY = "wfs.service.buffersize";
 	public static final String COVERAGE_ID_PROPERTY = "wfs.coverage.id";
+	private static final String CQL_FILTER_PROPERTY = "geospace.feature.filter";
 	
 	static Hashtable<String, ICoverage> coverages = 
 		new Hashtable<String, ICoverage>();
@@ -218,6 +219,7 @@ public class CoverageFactory {
 		String valType = properties.getProperty(VALUE_TYPE_PROPERTY);
 		String valDef = properties.getProperty(VALUE_DEFAULT_PROPERTY);
 		String covId = properties.getProperty(COVERAGE_ID_PROPERTY);
+		String filter = properties.getProperty(CQL_FILTER_PROPERTY);
 		
 		Map<Object,Object> connectionParameters = new HashMap<Object,Object>();
 		connectionParameters.put(
@@ -244,7 +246,9 @@ public class CoverageFactory {
 					features.getSchema().getCoordinateReferenceSystem(), 
 					valAttr, valType, valDef,
 					source.getBounds(),
-					source, false);
+					source, 
+					filter,
+					false);
 			
 			((VectorCoverage)coverage).setSourceUrl(url.toString());
 			
@@ -294,6 +298,8 @@ public class CoverageFactory {
 		String srcAttr = properties.getProperty(SOURCE_LINK_ATTRIBUTE_PROPERTY);
 		String lnkAttr = properties.getProperty(TARGET_LINK_ATTRIBUTE_PROPERTY);
 		String dataURL = properties.getProperty(ATTRIBUTE_URL_PROPERTY);
+		String filter = properties.getProperty(CQL_FILTER_PROPERTY);
+
 		
 		if (dataURL != null) {
 
@@ -312,6 +318,7 @@ public class CoverageFactory {
 							valAttr, 
 							valType,
 							valDef,
+							filter,
 							false);
 				
 				((VectorCoverage)coverage).setSourceUrl(url.toString());
@@ -326,7 +333,7 @@ public class CoverageFactory {
 					fc.getSchema().getCoordinateReferenceSystem(), 
 					valAttr, valType, valDef, 
 					envelope,
-					fc1, false);
+					fc1, filter, false);
 			((VectorCoverage)coverage).setSourceUrl(url.toString());
 		}
 		

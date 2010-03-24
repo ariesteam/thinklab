@@ -15,6 +15,7 @@ import org.geotools.coverage.processing.Operations;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
+import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -47,7 +48,7 @@ public class RasterCoverage extends AbstractRasterCoverage {
 		 * TODO raster should be pre-filled with a chosen nodata value
 		 * TODO use activation layer
 		 */		
-		RasterActivationLayer act = extent.requireActivationLayer(true);
+		IGridMask act = extent.requireActivationLayer(true);
 		int xc = extent.getXCells();
 		int yc = extent.getYCells();
 		

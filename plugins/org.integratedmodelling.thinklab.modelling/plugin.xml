@@ -24,7 +24,8 @@
 		<!-- this is only so we can run clj -context modelling example.clj - may be removed --> 
 		<library type="resources" path="examples/" id="examples" />
 		
-		<!-- visualization and netcdf libs -->
+		<!-- modelling, visualization and netcdf libs -->
+		<library type="code" id="ascape" path="lib/Ascape_5.5.0.jar"/>
 		<library type="code" id="bufrTables" path="lib/bufrTables-1.5.jar"/>
 		<library type="code" id="commons-codec" path="lib/commons-codec-1.3.jar"/>
 		<library type="code" id="commons-httpclient" path="lib/commons-httpclient-3.1.jar"/>

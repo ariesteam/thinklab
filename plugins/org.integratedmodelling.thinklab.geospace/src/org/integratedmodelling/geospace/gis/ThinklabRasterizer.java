@@ -3,11 +3,14 @@ package org.integratedmodelling.geospace.gis;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.feature.FeatureIterator;
 import org.integratedmodelling.geospace.Geospace;
+import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.exceptions.ThinklabRasterizationException;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.gis.FeatureRasterizer.FeatureRasterizerException;
+import org.integratedmodelling.geospace.interfaces.IGridMask;
+import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.opengis.feature.simple.SimpleFeature;
@@ -75,5 +78,24 @@ public class ThinklabRasterizer {
 		return ret;
 	}
 	
+	public static IGridMask createMask(GridExtent grid) {
+		RasterActivationLayer ret = 
+			new RasterActivationLayer(grid.getXCells(), grid.getYCells(), false);
+		ret.setCRS(grid.getCRS());
+		return ret;
+	}
+	
+	public static IGridMask createMask(ShapeValue shape, GridExtent grid) throws ThinklabException {
+		RasterActivationLayer ret = (RasterActivationLayer) createMask(grid);
+		return addToMask(shape, ret);
+	}
+	
+	public static IGridMask addToMask(ShapeValue shape, IGridMask mask) throws ThinklabException {
+
+		shape = shape.transform(((RasterActivationLayer)mask).getCoordinateReferenceSystem());
+		
+		return mask;
+	}
+
 	
 }

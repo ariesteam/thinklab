@@ -40,6 +40,7 @@ import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
+import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.geospace.transformations.Resample;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -75,13 +76,12 @@ public class GridExtent extends ArealExtent {
 	double cellHeight = 0.0;
 	double xOrigin = 0.0;
 	double yOrigin = 0.0;
-	RasterActivationLayer activationLayer = null;
+	IGridMask activationLayer = null;
 	
 	private double cellHeightMeters;
 	private double cellWidthMeters;
 	private double cellAreaMeters = -1.0;
 	Geometry boundary = null;
-
 	public GridExtent(
 				CoordinateReferenceSystem crs, 
 				double x1, // lonLowerBound
@@ -264,7 +264,7 @@ public class GridExtent extends ArealExtent {
 		return new GeneralGridEnvelope( new int[] {0,0}, new int[] {xDivs, yDivs}, false);
 	}
 
-	public RasterActivationLayer getActivationLayer() throws ThinklabValidationException {
+	public IGridMask getActivationLayer() throws ThinklabValidationException {
 		
 		if (activationLayer == null) {
 			throw new ThinklabValidationException("no activation layer in grid extent");
@@ -274,7 +274,7 @@ public class GridExtent extends ArealExtent {
 	}
 	
 	
-	public RasterActivationLayer requireActivationLayer(boolean active) {
+	public IGridMask requireActivationLayer(boolean active) {
 		
 		if (activationLayer == null) {
 			activationLayer = new RasterActivationLayer(xDivs, yDivs, active);

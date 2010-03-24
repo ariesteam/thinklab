@@ -3,7 +3,6 @@ package org.integratedmodelling.geospace.transformations;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.geospace.extents.GridExtent;
 
-
 /**
  * Encodes the details of a resampling operation for a spatial grid.
  * Resampling can be one or more of subsetting, interpolating and warping. 

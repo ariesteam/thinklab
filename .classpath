@@ -397,5 +397,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/visad.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/jline-0.9.94.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/gnuplot.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/Ascape_5.5.0.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>
