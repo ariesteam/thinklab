@@ -46,6 +46,7 @@ test  - runs some tests
 		<mkdir dir="${build.home}/plugins" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.core" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.opal" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.searchengine" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.sql" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.authentication" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.idv" target="${target}" />
@@ -63,7 +64,6 @@ test  - runs some tests
 		<ant dir="plugins/org.integratedmodelling.thinklab.ecology" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.metadata" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.rules" target="${target}" />
-		<ant dir="plugins/org.integratedmodelling.thinklab.searchengine" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.thinkscape" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.workflow" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.tclj" target="${target}" />
