@@ -78,6 +78,7 @@ public class Metadata {
 	public static final String AGGREGATED_MAX = "aggregated_max";
 	public static final String AGGREGATED_TOTAL = "aggregated_total";
 	public static final String IMAGE_TO_CLASS_OFFSET = "image_to_class_offset";
+	public static final String DEFINING_MODEL = "defining_model"; // the model that generated this obs
 	
 	public static boolean isOrdinalRanking(IState state) {
 		Integer dataType = (Integer)state.getMetadata(DATA_TYPE);

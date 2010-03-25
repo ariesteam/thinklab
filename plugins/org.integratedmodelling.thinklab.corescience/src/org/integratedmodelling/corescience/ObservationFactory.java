@@ -14,7 +14,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
+import org.integratedmodelling.utils.Polylist;
 
 public class ObservationFactory {
 
@@ -69,16 +69,6 @@ public class ObservationFactory {
 		ObservationContext ctx = new ObservationContext(getObservation(observation), null);
 		ctx.dump(session.getOutputStream());
 		return ctx.run(session, lis);
-	}
-	
-	public static IObservation getObservation(IInstance inst) throws ThinklabException {
-		
-		IInstanceImplementation ret = inst.getImplementation();
-		
-		if (ret == null || !(ret instanceof IObservation))
-			throw new ThinklabValidationException("instance " + inst + " is not an observation");
-		
-		return (IObservation) ret;
 	}
 	
 	/**
@@ -169,5 +159,232 @@ public class ObservationFactory {
 		
 		return null;
 	}
+	
+	/**
+	 * Add a new instance of an observable. If null is passed, see if we can
+	 * define a meaningful observable automatically. 
+	 * 
+	 * @param observation
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist setObservable(Polylist observation, String observableClass) {
+		
+		return observation.appendElement(
+				Polylist.list(
+						CoreScience.HAS_OBSERVABLE, 
+						Polylist.list(observableClass)));
+	}
+	
+	/**
+	 * Return an identification of the given observable
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist createIdentification(String idType, String observableClass) {
+		
+		return Polylist.list(idType, 
+				Polylist.list(
+						CoreScience.HAS_OBSERVABLE,
+						Polylist.list(observableClass)));
+	}
+	
+	/**
+	 * Return an identification of the given type of the given observable
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist createIdentification(String idType, Polylist observable) {
+
+		return Polylist.list(idType, 
+				Polylist.list(
+						CoreScience.HAS_OBSERVABLE,
+						observable));
+	}
+
+	/**
+	 * Return an identification of the given observable
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist createIdentification(String observableClass) {
+		
+		return Polylist.list(CoreScience.IDENTIFICATION, 
+				Polylist.list(
+						CoreScience.HAS_OBSERVABLE,
+						Polylist.list(observableClass)));
+	}
+	
+	/**
+	 * Return an identification of the given observable
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist createIdentification(Polylist observable) {
+		
+		return Polylist.list(CoreScience.IDENTIFICATION, 
+				Polylist.list(
+						CoreScience.HAS_OBSERVABLE,
+						observable));
+	}
+
+	/**
+	 * 
+	 * @param observation
+	 * @param dependent
+	 * @return
+	 */
+	public static Polylist addDependency(Polylist observation, Polylist dependent) {
+		
+		return observation.appendElement(
+				Polylist.list(CoreScience.DEPENDS_ON, dependent));
+	}
+	
+	/**
+	 * 
+	 * @param observation
+	 * @param dependent
+	 * @return
+	 */
+	public static Polylist addDependency(Polylist observation, IInstance dependent) {
+		
+		return observation.appendElement(
+				Polylist.list(CoreScience.DEPENDS_ON, dependent));
+	}
+	
+	/**
+	 * 
+	 * @param observation
+	 * @param dependent
+	 * @return
+	 */
+	public static Polylist addReflectedField(Polylist observation, String field, Object value) {
+		
+		return observation.appendElement(
+				Polylist.list(":" + field, value));
+	}
+	
+	/**
+	 * 
+	 * @param observation
+	 * @param dependent
+	 * @return
+	 */
+	public static Polylist addContingency(Polylist observation, Polylist dependent) {
+		
+		return observation.appendElement(
+				Polylist.list(CoreScience.HAS_CONTINGENCY, dependent));
+	}
+	
+	/**
+	 * 
+	 * @param observation
+	 * @param dependent
+	 * @return
+	 */
+	public static Polylist addContingency(Polylist observation, IInstance dependent) {
+		
+		return observation.appendElement(
+				Polylist.list(CoreScience.HAS_CONTINGENCY, dependent));
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static Polylist createIdentification() {
+		
+		return Polylist.list(CoreScience.IDENTIFICATION);		
+	}
+
+	/**
+	 * Return the concept that this observation is observing.
+	 * @param data
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static IConcept getObservableClass(IInstance data) throws ThinklabException {
+		return ((IObservation)(data.getImplementation())).getObservableClass();
+	}
+
+	/**
+	 * Add the given observable definition to the given observation spec.
+	 * 
+	 * @param observation
+	 * @param observableSpecs
+	 * @return
+	 */
+	public static Polylist setObservable(Polylist observation, Polylist observableSpecs) {
+		return observation.appendElement(
+				Polylist.list(CoreScience.HAS_OBSERVABLE, observableSpecs));
+	}
+
+	/**
+	 * Add the given mediated definition
+	 * 
+	 * @param observation
+	 * @param mediated
+	 * @return
+	 */
+	public static Polylist addMediatedObservation(Polylist observation, Polylist mediated) {
+		return observation.appendElement(
+				Polylist.list(CoreScience.MEDIATES_OBSERVATION, mediated));
+	}
+
+	/**
+	 * Return the associated IObservation from an instance, making sure it's actually an observation.
+	 * 
+	 * @param o
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static IObservation getObservation(IInstance o) throws ThinklabException {
+		
+		Object iret = o.getImplementation();
+		
+		if (iret == null || !(iret instanceof IObservation))
+			throw new ThinklabValidationException("object " + o.getLocalName() + " is not an observation");
+		
+		return (IObservation)iret;
+	}
+
+	/**
+	 * Add an extent to the passed obs
+	 * 
+	 * @param observation
+	 * @param extent
+	 * @return
+	 */
+	public static Polylist addExtent(Polylist observation, Polylist extent) {
+		return observation.appendElement(
+				Polylist.list(CoreScience.HAS_EXTENT, extent));
+	}
+	
+
+	/**
+	 * Add an aux observation in same context for provenance recording. 
+	 * 
+	 * @param observation
+	 * @param extent
+	 * @return
+	 */
+	public static Polylist addSameContextObservation(Polylist observation, Polylist obs) {
+		return observation.appendElement(
+				Polylist.list(CoreScience.HAS_SAME_CONTEXT_ANTECEDENT, obs));
+	}
+	
+	/**
+	 * Add an aux observation in same context for provenance recording. 
+	 * 
+	 * @param observation
+	 * @param extent
+	 * @return
+	 */
+	public static Polylist addSameContextObservation(Polylist observation, IInstance obs) {
+		return observation.appendElement(
+				Polylist.list(CoreScience.HAS_SAME_CONTEXT_ANTECEDENT, obs));
+	}
+
+
 
 }

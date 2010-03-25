@@ -128,6 +128,8 @@ public class Geospace extends ThinklabPlugin  {
 	public static final String GRID_CLASSIFIER = "geospace:GridClassifier";
 	public static final String CLASSIFIED_GRID = "geospace:ClassifiedGrid";
 	public static final String GRID_CLASSIFICATION_MODEL = "geospace:GridClassification";
+	public static final Object HAS_FILTER_PROPERTY = "geospace:hasFilter";	
+
 		
 	// the projection to use if we need meters
 	public static final String EPSG_PROJECTION_METERS  = "EPSG:3005";
@@ -135,7 +137,7 @@ public class Geospace extends ThinklabPlugin  {
 	public static final String EPSG_PROJECTION_GOOGLE  = "EPSG:3857";
 	
 	// property to add new CRS by hand in property file 
-	public static final String CUSTOM_CRS_PROPERTY = "geospace.crs.";	
+	public static final String CUSTOM_CRS_PROPERTY = "geospace.crs.";
 
 	// projections not in the main repository inserted through properties
 	static HashMap<String, CoordinateReferenceSystem> localCRS = 

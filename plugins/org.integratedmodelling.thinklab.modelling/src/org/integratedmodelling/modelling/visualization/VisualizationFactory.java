@@ -169,6 +169,49 @@ public class VisualizationFactory {
 			}
 		}
 		
+		
+// ContourPlot has been deprecated, but you can create an XYPlot using an XYBlockRenderer (see the JavaDoc for details).
+// see XYBlockChartDemo1.java
+		//		  ContourDataset convertCplot()
+//		   {
+//		      // Converts the float [][] grid to 3 x Double[]
+//		      int size =  z.length;
+//		      Double [] oDoubleX = new Double[size*size];
+//		      Double [] oDoubleY = new Double[size*size];
+//		      Double [] oDoubleZ = new Double[size*size];
+//		      int index=0;
+//		      for (int i=0;i<=size-1;i++)
+//		      {
+//		         for (int j=0;j<=size-1;j++)
+//		         {
+//		            oDoubleX[index]=new Double(x_step*i);
+//		            oDoubleY[index]=new Double(y_step*j);
+//		            oDoubleZ[index]=new Double(z[i][j]);
+//		            index++;
+//		         }
+//		      }
+//		      // then sets up and returns ContourDataSet
+//		      ContourDataset cds = new DefaultContourDataset("Contouring", oDoubleX, oDoubleY, oDoubleZ);
+//		      return cds;
+//		   }
+		
+//		NumberAxis xAxis = new NumberAxis("Position QTL A (cM)");
+//		NumberAxis yAxis = new NumberAxis("Position QTL B (cM)");
+//		xAxis.setUpperMargin(0.0);
+//		yAxis.setUpperMargin(0.0);
+//		ColorBar zColorBar = new ColorBar("F");
+//		ContourPlot cplot = new ContourPlot(cp.convertCplot(), xAxis, yAxis, zColorBar);
+//
+//		final JFreeChart chart = new JFreeChart("Contour Plot", null, cplot, false);
+//		// then customise it a little...
+//		chart.setBackgroundPaint(new GradientPaint(0, 0, Color.white, 0, 1000, Color.black));
+//
+//		BufferedImage bImage = new BufferedImage(500,350,BufferedImage.TYPE_INT_RGB);
+//		Graphics2D g2D = bImage.createGraphics();
+//		Rectangle2D r2D = new Rectangle2D.Float(0,0,500,350);
+//
+//		chart.draw(g2D,r2D);
+		
 		JavaPlot jplot = getJavaplotInstance();	
 		jplot.getParameters().set("terminal", "png transparent");
 		jplot.getParameters().set("datafile", "missing \"NaN\"");

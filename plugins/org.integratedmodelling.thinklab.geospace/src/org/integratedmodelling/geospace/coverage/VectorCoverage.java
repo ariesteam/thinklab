@@ -62,6 +62,7 @@ import org.geotools.styling.StyleBuilder;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
+import org.integratedmodelling.geospace.extents.ShapeExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
 import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -379,6 +380,11 @@ public class VectorCoverage implements ICoverage {
 				 */
 				System.out.println("rasterizing vector coverage " + layerName + " over " + arealExtent + " ...");
 				ret = convertToRaster((GridExtent) arealExtent);
+				
+				/*
+				 * set the grid extent's lineage so that our rasterized objects can be reconstructed.
+				 */
+				((GridExtent)arealExtent).setAncestor(new ShapeExtent(arealExtent, this));
 
 		}  else {
 		

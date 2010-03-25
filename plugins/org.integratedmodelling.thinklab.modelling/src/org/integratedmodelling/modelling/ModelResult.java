@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
@@ -120,6 +121,19 @@ public class ModelResult implements IQueryResult  {
 		
 		Polylist ret = _model.buildDefinition(_kbox, _session);
 		
+		/*
+		 * add the model to the resulting observation
+		 */
+		HashMap<String,Object> metadata = ((DefaultAbstractModel)_model).metadata;
+		if (metadata == null) {
+			metadata = new HashMap<String, Object>();
+		}
+		
+		// TODO anything else by default?
+		metadata.put(Metadata.DEFINING_MODEL, _model);
+
+		ret = ObservationFactory.addReflectedField(ret, "metadata", metadata);
+
 		if (_mediated != null) {
 			
 			Polylist med = _mediated.getResultAsList(ofs[0], null);

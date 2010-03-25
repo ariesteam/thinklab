@@ -258,10 +258,6 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 					"modeltypes:encodesContinuousDistribution",
 					MiscUtilities.printVector(breakpoints)));
 		}
-
-		if (metadata != null) {
-			arr.add(Polylist.list(":metadata", metadata));
-		}
 		
 		if (!isMediating())
 			arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, this.observableSpecs));

@@ -17,6 +17,7 @@ import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
@@ -141,11 +142,12 @@ public class BayesianTransformer
 	}
 	
 	@Override
-	public IInstance transform(IInstance sourceObs, ISession session, IObservationContext context) 
+	public Polylist transform(IInstance sourceObs, ISession session, IObservationContext context) 
 		throws ThinklabException {
 
-		// TODO set to false asap
+		// set to false unless you really want it
 		boolean debug = false;
+		
 		HashMap<String, Integer> keyset = debug ? new HashMap<String, Integer>() : null;
 		HashMap<String, String> resset = debug ? new HashMap<String, String>() : null;
 		PrintWriter out = null;
@@ -160,6 +162,7 @@ public class BayesianTransformer
 		}
 		
 		IObservation orig = ObservationFactory.getObservation(sourceObs);
+		
 		Map<IConcept, IState> smap = ObservationFactory.getStateMap(orig);
 		int size = context.getMultiplicity();
 
@@ -215,6 +218,7 @@ public class BayesianTransformer
  			 */
 			st.data = new CategoricalDistributionDatasource(var, size, pcstates, classifiers);
 			st.data.addAllMetadata(modelMetadata.get(st.observable));
+			st.data.setMetadata(Metadata.DEFINING_MODEL, this);
 			pstorage[i++] = st;
 		}
 		
@@ -407,7 +411,7 @@ public class BayesianTransformer
 		/*
 		 * go for it
 		 */
-		return session.createObject(rdef);
+		return rdef;
 	}
 	
 	@Override

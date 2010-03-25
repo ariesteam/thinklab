@@ -74,7 +74,9 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 	double latLB, lonLB, latUB, lonUB;
 	CoordinateReferenceSystem crs;
 	private String crsId = null;
-	private GridExtent extent;
+	
+	// public so it can be set through reflection
+	public GridExtent extent;
 
 	
 	@Override
@@ -128,7 +130,11 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 		
 		super.initialize(i);
 		
-		this.extent = new GridExtent(crs,lonLB, latLB, lonUB, latUB, xRM - xRO, yRM - yRO);
+		// may have been put there through reflection if the grid comes from the conceptualization
+		// of a GridExtent. In such cases, it may hold the lineage of the grid in terms of 
+		// rasterized shapes and vector coverages.
+		if (extent == null) 
+			this.extent = new GridExtent(crs,lonLB, latLB, lonUB, latUB, xRM - xRO, yRM - yRO);
 	}
 	
 		

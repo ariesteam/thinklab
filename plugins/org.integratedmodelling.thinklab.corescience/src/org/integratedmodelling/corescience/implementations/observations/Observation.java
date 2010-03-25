@@ -297,4 +297,5 @@ public class Observation implements IObservation, IInstanceImplementation {
 	public HashMap<String, Object> getMetadata() {
 		return this.metadata ;
 	}
+	
 }

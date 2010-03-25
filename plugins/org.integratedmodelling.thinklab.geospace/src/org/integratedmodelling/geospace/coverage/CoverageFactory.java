@@ -67,7 +67,7 @@ public class CoverageFactory {
 	public static final String WFS_TIMEOUT_PROPERTY = "wfs.service.timeout";
 	public static final String WFS_BUFFER_SIZE_PROPERTY = "wfs.service.buffersize";
 	public static final String COVERAGE_ID_PROPERTY = "wfs.coverage.id";
-	private static final String CQL_FILTER_PROPERTY = "geospace.feature.filter";
+	public static final String CQL_FILTER_PROPERTY = "geospace.feature.filter";
 	
 	static Hashtable<String, ICoverage> coverages = 
 		new Hashtable<String, ICoverage>();

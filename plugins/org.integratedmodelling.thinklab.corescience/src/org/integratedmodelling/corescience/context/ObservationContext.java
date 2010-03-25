@@ -3,6 +3,7 @@ package org.integratedmodelling.corescience.context;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -410,8 +411,20 @@ public class ObservationContext implements IObservationContext {
 				}
 			}
 			
-			obs = ObservationFactory.getObservation(
-					((TransformingObservation)obs).transform(inst, session, originalContext));
+			Polylist tlist = ((TransformingObservation)obs).transform(inst, session, originalContext);
+			
+			/*
+			 * transfer metadata
+			 * TODO: anything else to put in transformed obs?
+			 */
+			HashMap<String, Object> metadata = 
+				((Observation)ObservationFactory.getObservation(inst)).getMetadata();
+			if (metadata != null) {
+				// which it should never be
+				tlist = ObservationFactory.addReflectedField(tlist, "metadata", metadata);
+			}
+			
+			obs = ObservationFactory.getObservation(session.createObject(tlist));
 
 			if (listeners != null) {
 				for (IContextualizationListener l : listeners) {

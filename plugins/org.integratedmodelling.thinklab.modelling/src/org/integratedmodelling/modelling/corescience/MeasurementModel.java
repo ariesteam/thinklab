@@ -37,9 +37,6 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 				(id != null ? 
 					Polylist.list(CoreScience.HAS_FORMAL_NAME, id) :
 					null),
-				(metadata != null ? 
-					Polylist.list(":metadata", metadata) :
-					null),
 				(dynSpecs != null?
 					Polylist.list("modeltypes:hasStateFunction", dynSpecs) :
 					null),

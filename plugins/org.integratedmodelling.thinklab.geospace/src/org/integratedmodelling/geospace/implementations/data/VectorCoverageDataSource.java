@@ -76,6 +76,7 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 		// these are compulsory
 		String sourceURL = null;
 		String valueAttr = null;
+		String filterExpression = null;
 
 		// these are only needed if we use an external attribute table
 		String dataURL = null;
@@ -99,6 +100,8 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 					valueAttr = r.getValue().toString();
 				} else if (r.getProperty().equals(Geospace.HAS_ATTRIBUTE_URL)) {
 					dataURL = r.getValue().toString();
+				} else if (r.getProperty().equals(Geospace.HAS_FILTER_PROPERTY)) {
+					filterExpression = r.getValue().toString();
 				}
 			}
 		}
@@ -121,13 +124,16 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 				p.setProperty(CoverageFactory.TARGET_LINK_ATTRIBUTE_PROPERTY, targetAttr);
 			}
 			
+			if (filterExpression != null) {
+				p.setProperty(CoverageFactory.CQL_FILTER_PROPERTY, filterExpression);
+			}
+			
 			this.coverage = 
 				CoverageFactory.requireCoverage(new URL(sourceURL), p);
 			
 		} catch (MalformedURLException e) {
 			throw new ThinklabIOException(e);
 		}
-		
 	}
 
 	public Object getInitialValue() {

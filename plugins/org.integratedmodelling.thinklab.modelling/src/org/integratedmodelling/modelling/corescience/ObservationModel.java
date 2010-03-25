@@ -62,9 +62,6 @@ public class ObservationModel extends DefaultAbstractModel {
 				(id != null ? 
 					Polylist.list(CoreScience.HAS_FORMAL_NAME, id) :
 					null),
-				(metadata != null ? 
-					Polylist.list(":metadata", metadata) :
-					null),
 				Polylist.list(
 					CoreScience.HAS_OBSERVABLE,
 					Polylist.list(getObservable())));
