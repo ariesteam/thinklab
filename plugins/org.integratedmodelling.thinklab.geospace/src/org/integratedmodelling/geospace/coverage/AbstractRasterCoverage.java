@@ -40,6 +40,10 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	protected RandomIter itera;
 	protected RenderedImage image = null;
 	
+	public GridCoverage2D getCoverage() {
+		return coverage;
+	}
+	
 	/* if this is not null, the raster encodes mappings to these values, with each raster value mapping
 	 * to classMappings[value - 1] and 0 representing no data.
 	 */
@@ -207,7 +211,7 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	 * @throws ThinklabException
 	 */
 	public ICoverage convertToVector(GridExtent arealExtent) throws ThinklabException {
-		return new ThinklabVectorizer().vectorize(this, arealExtent);
+		return ThinklabVectorizer.vectorize(this, arealExtent);
 	}
 
 	public CoordinateReferenceSystem getCoordinateReferenceSystem() {

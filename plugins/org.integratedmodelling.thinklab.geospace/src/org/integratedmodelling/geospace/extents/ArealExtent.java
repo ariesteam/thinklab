@@ -296,5 +296,26 @@ public abstract class ArealExtent implements IExtent {
 	protected abstract IExtent createConstrainedExtent(
 			ArealExtent orextent, ArealExtent otextent,
 			CoordinateReferenceSystem ccr, Envelope common, Envelope orenvnorm, Envelope otenvnorm) throws ThinklabException;
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof IExtent) {
+			return getSignature().equals(((IExtent)obj).getSignature());
+		}
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return getSignature().hashCode();
+	}
+	
+	
 	
 }

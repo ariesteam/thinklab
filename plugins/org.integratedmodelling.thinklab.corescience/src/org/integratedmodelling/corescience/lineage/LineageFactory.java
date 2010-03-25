@@ -1,5 +1,6 @@
 package org.integratedmodelling.corescience.lineage;
 
+import org.geotools.process.raster.RasterToVectorFactory;
 import org.integratedmodelling.corescience.interfaces.lineage.ILineageTraceable;
 import org.jgrapht.traverse.BreadthFirstIterator;
 
@@ -12,26 +13,25 @@ import org.jgrapht.traverse.BreadthFirstIterator;
  */
 public class LineageFactory {
 	
-	static LineageTree getLineage(Object o) {
+	public static LineageTree getLineage(Object o) {
 		
 		LineageTree ret = null;
 		if (o instanceof ILineageTraceable) {
 			ret = new LineageTree();
-			Object root = addLineage(ret, (ILineageTraceable) o);
-			ret.setRoot((ILineageTraceable)root);
+			ret.setRoot((ILineageTraceable)addLineage(ret, (ILineageTraceable) o));
 		}
 		return ret;
 	}
 
 	private static Object addLineage(LineageTree ret, Object o) {
 
-		Object v = ret.addVertex(o);
-		
+		ret.addVertex(o);
+				
 		if (o instanceof ILineageTraceable) {
 			for (Object d : ((ILineageTraceable)o).getAncestors())
-				ret.addEdge(v, addLineage(ret, d));
+				ret.addEdge(o, addLineage(ret, d));
 		}
-		return v;
+		return o;
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class LineageFactory {
 	 * @param clasz
 	 * @return
 	 */
-	static Object findAncestor(Object root, Class<?> clasz) {
+	public static Object findAncestor(Object root, Class<?> clasz) {
 		LineageTree tree = getLineage(root);
 		return tree.find(clasz);
 	}

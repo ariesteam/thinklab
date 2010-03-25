@@ -36,6 +36,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+
 import javax.swing.JFrame;
 
 import org.geotools.data.DefaultQuery;
@@ -78,7 +79,6 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.spatial.BBOX;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -209,6 +209,12 @@ public class VectorCoverage implements ICoverage {
 		computeEnvelope();
 	}
 	
+	public VectorCoverage(
+			FeatureCollection<SimpleFeatureType, SimpleFeature> features,
+			CoordinateReferenceSystem crs) throws ThinklabException {
+		this(features, crs, null, null, null, null, null, null, null, false);
+	}
+
 	/**
 	 * 
 	 * @param envelope

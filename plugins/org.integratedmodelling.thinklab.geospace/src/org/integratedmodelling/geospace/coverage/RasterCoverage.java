@@ -21,12 +21,10 @@ import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureEx
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Pair;
 
 public class RasterCoverage extends AbstractRasterCoverage {
 
 	static GridCoverageFactory rasterFactory = new GridCoverageFactory();
-
 	
 	/**
 	 * Produce a new raster coverage from a cell extent and a vector of values that follow the
