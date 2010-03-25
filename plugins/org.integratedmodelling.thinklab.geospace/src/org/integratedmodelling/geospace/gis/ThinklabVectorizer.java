@@ -13,7 +13,6 @@ import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
@@ -25,7 +24,6 @@ import org.opengis.feature.simple.SimpleFeatureType;
  *
  */
 public class ThinklabVectorizer  {
-
 	
 	public static VectorCoverage vectorize(AbstractRasterCoverage rCoverage, GridExtent extent)
 			throws ThinklabException {
