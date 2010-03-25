@@ -18,7 +18,6 @@
 	<classpathentry excluding="org/integratedmodelling/thinklab/impl/owlapi/" kind="src" output="plugins/org.integratedmodelling.thinklab.core/classes" path="plugins/org.integratedmodelling.thinklab.core/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.currency/classes" path="plugins/org.integratedmodelling.thinklab.currency/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.sql/classes" path="plugins/org.integratedmodelling.thinklab.sql/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.agents/classes" path="plugins/org.integratedmodelling.thinklab.agents/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.dynamicmodelling/classes" path="plugins/org.integratedmodelling.thinklab.dynamicmodelling/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.persistence/classes" path="plugins/org.integratedmodelling.thinklab.persistence/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.metadata/classes" path="plugins/org.integratedmodelling.thinklab.metadata/src"/>
