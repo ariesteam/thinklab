@@ -41,9 +41,6 @@
 	<classpathentry kind="lib" path="lib/jpf.jar" sourcepath="/JPF 1.5"/>
 	<classpathentry kind="lib" path="lib/jpf-tools.jar"/>
 	<classpathentry kind="lib" path="lib/jxp.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.agents/lib/iiop.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.agents/lib/jade.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.agents/lib/jadeTools.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/agg_V1622_classes.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/ant.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/ant-1.6.5.jar"/>

@@ -1,4 +1,4 @@
-package org.integratedmodelling.geospace.agents;
+package org.integratedmodelling.modelling.agents;
 
 import org.ascape.model.CellOccupant;
 
