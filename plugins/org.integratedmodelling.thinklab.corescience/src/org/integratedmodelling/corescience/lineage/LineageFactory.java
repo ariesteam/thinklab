@@ -1,8 +1,6 @@
 package org.integratedmodelling.corescience.lineage;
 
-import org.geotools.process.raster.RasterToVectorFactory;
 import org.integratedmodelling.corescience.interfaces.lineage.ILineageTraceable;
-import org.jgrapht.traverse.BreadthFirstIterator;
 
 
 /**

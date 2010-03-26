@@ -57,7 +57,6 @@ import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.geotools.renderer.shape.ShapefileRenderer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.integratedmodelling.geospace.Geospace;
@@ -422,29 +421,29 @@ public class VectorCoverage implements ICoverage {
 
 	public void show() {
 
-		JFrame frame = new JFrame(getLayerName());
-		
-        // create the style
-        StyleBuilder sb = new StyleBuilder();
-        Style simple = sb.createStyle(sb.createPolygonSymbolizer(
-                    Color.LIGHT_GRAY, Color.BLACK, 1));
-        
-        JMapPane mapPane = new JMapPane();
-        mapPane.setRenderer(new ShapefileRenderer());
-        
-        MapLayer layer = new DefaultMapLayer(features, simple);
-        layer.setTitle(getLayerName());
- 
-        MapContext context = new DefaultMapContext(crs == null ? DefaultGeographicCRS.WGS84 : crs);
-        context.addLayer(layer);
-        
-        mapPane.setContext(context);
-        mapPane.setMapArea(layer.getBounds());
-        
-        frame.setContentPane(mapPane);
-        frame.setLocationRelativeTo(null);
-        frame.setSize(640,480);
-        frame.setVisible(true);
+//		JFrame frame = new JFrame(getLayerName());
+//		
+//        // create the style
+//        StyleBuilder sb = new StyleBuilder();
+//        Style simple = sb.createStyle(sb.createPolygonSymbolizer(
+//                    Color.LIGHT_GRAY, Color.BLACK, 1));
+//        
+//        JMapPane mapPane = new JMapPane();
+//        mapPane.setRenderer(new ShapefileRenderer());
+//        
+//        MapLayer layer = new DefaultMapLayer(features, simple);
+//        layer.setTitle(getLayerName());
+// 
+//        MapContext context = new DefaultMapContext(crs == null ? DefaultGeographicCRS.WGS84 : crs);
+//        context.addLayer(layer);
+//        
+//        mapPane.setContext(context);
+//        mapPane.setMapArea(layer.getBounds());
+//        
+//        frame.setContentPane(mapPane);
+//        frame.setLocationRelativeTo(null);
+//        frame.setSize(640,480);
+//        frame.setVisible(true);
 	}
 
 	public void setSourceUrl(String s) {
