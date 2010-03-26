@@ -21,6 +21,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.image.ColorMap;
 import org.integratedmodelling.utils.image.ColormapChooser;
+import org.integratedmodelling.utils.image.ContourPlot;
 import org.integratedmodelling.utils.image.ImageUtil;
 
 import com.panayotis.gnuplot.GNUPlotException;
@@ -37,7 +38,6 @@ public class VisualizationFactory {
 
 	static public final String COLORMAP_PROPERTY_PREFIX = "thinklab.colormap";
 	static public final String GNUPLOT_PATH_PROPERTY = "thinklab.modelling.gnuplot";
-	
 	
 	static VisualizationFactory _this = new VisualizationFactory();
 	ColormapChooser colormapChooser = new ColormapChooser(COLORMAP_PROPERTY_PREFIX);
@@ -164,70 +164,20 @@ public class VisualizationFactory {
 			
 			for (int row = 0; row < rows; row++) {
 				for (int col = 0; col < cols; col++) {
-					plotdata[col][row] = data[space.getIndex(row, col)];
+					double d = data[space.getIndex(row, col)];
+					plotdata[col][row] = Double.isNaN(d) ? 0.0 : d;
 				}
 			}
 		}
-		
-		
-// ContourPlot has been deprecated, but you can create an XYPlot using an XYBlockRenderer (see the JavaDoc for details).
-// see XYBlockChartDemo1.java
-		//		  ContourDataset convertCplot()
-//		   {
-//		      // Converts the float [][] grid to 3 x Double[]
-//		      int size =  z.length;
-//		      Double [] oDoubleX = new Double[size*size];
-//		      Double [] oDoubleY = new Double[size*size];
-//		      Double [] oDoubleZ = new Double[size*size];
-//		      int index=0;
-//		      for (int i=0;i<=size-1;i++)
-//		      {
-//		         for (int j=0;j<=size-1;j++)
-//		         {
-//		            oDoubleX[index]=new Double(x_step*i);
-//		            oDoubleY[index]=new Double(y_step*j);
-//		            oDoubleZ[index]=new Double(z[i][j]);
-//		            index++;
-//		         }
-//		      }
-//		      // then sets up and returns ContourDataSet
-//		      ContourDataset cds = new DefaultContourDataset("Contouring", oDoubleX, oDoubleY, oDoubleZ);
-//		      return cds;
-//		   }
-		
-//		NumberAxis xAxis = new NumberAxis("Position QTL A (cM)");
-//		NumberAxis yAxis = new NumberAxis("Position QTL B (cM)");
-//		xAxis.setUpperMargin(0.0);
-//		yAxis.setUpperMargin(0.0);
-//		ColorBar zColorBar = new ColorBar("F");
-//		ContourPlot cplot = new ContourPlot(cp.convertCplot(), xAxis, yAxis, zColorBar);
-//
-//		final JFreeChart chart = new JFreeChart("Contour Plot", null, cplot, false);
-//		// then customise it a little...
-//		chart.setBackgroundPaint(new GradientPaint(0, 0, Color.white, 0, 1000, Color.black));
-//
-//		BufferedImage bImage = new BufferedImage(500,350,BufferedImage.TYPE_INT_RGB);
-//		Graphics2D g2D = bImage.createGraphics();
-//		Rectangle2D r2D = new Rectangle2D.Float(0,0,500,350);
-//
-//		chart.draw(g2D,r2D);
-		
-		JavaPlot jplot = getJavaplotInstance();	
-		jplot.getParameters().set("terminal", "png transparent");
-		jplot.getParameters().set("datafile", "missing \"NaN\"");
-		jplot.getParameters().set("size", x + ", " + y);
-		jplot.getParameters().unset("surface");
-		jplot.getParameters().unset("border");
-		jplot.getParameters().set("contour");
-		jplot.addPlot(plotdata);
-		jplot.plot();
-		
 
+		ContourPlot plot = ContourPlot.getPlot(cols, rows);
+		plot.setData(plotdata);
+		plot.paint();
+		plot.save(fileOrNull);
 		
 		return fileOrNull;
 	}
 
-	
 	public String makeSurfacePlot(IConcept observable, IState state, 
 			String fileOrNull,
 			int x, int y, 

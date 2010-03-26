@@ -1,17 +1,26 @@
-package org.integratedmodelling.utils.image.contours;
+package org.integratedmodelling.utils.image;
 
-import java.awt.*;
-import java.io.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
-//----------------------------------------------------------
-// "ContourPlot" is the most important class. It is a
-// user-interface component which parses the data, draws
-// the contour plot, and returns a string of results.
-//----------------------------------------------------------
-public class ContourPlot extends Canvas {
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+
+/**
+ * 
+ * Usage:
+ * 
+ * 	ContourPlot plot = new ContourPlot(width, height, cmap, gridX, gridY);
+	plot.setData(data);
+	plot.paint();
+	plot.save("file.png");
+ *
+ */
+public class ContourPlot extends BufferedImage {
 
 	private static final long serialVersionUID = -4321635336670844054L;
-	// Below, constant data members:
+
 	final static boolean	SHOW_NUMBERS	= true;
 	final static int	BLANK		= 32,
 				OPEN_SUITE	= (int)'{',
@@ -30,9 +39,9 @@ public class ContourPlot extends Canvas {
 	// the z values, the interpolation flag, the dimensions
 	// of the contour plot and the increments in the grid:
 	int		xSteps, ySteps;
-	float		z[][];
+	double		z[][];
 	boolean		logInterpolation = false;
-	Dimension	d;
+	Dimension	d = new Dimension();
 	double		deltaX, deltaY;
 
 	// Below, data members, most of which are adapted from
@@ -53,40 +62,38 @@ public class ContourPlot extends Canvas {
 	double	prevXY[]	= new double[2];
 	float	cv[]		= new float[ncv];
 	boolean	jump;
-
+	ColorMap cmap; 
+	
+	public static ContourPlot getPlot(int x, int y) {
+		ColorMap cmap = ColorMap.getColormap("rainbow", N_CONTOURS+1, true);
+		ContourPlot ret = new ContourPlot(x, y, cmap, x, y);
+		return ret;
+	}
+	
 	//-------------------------------------------------------
 	// A constructor method.
 	//-------------------------------------------------------
-	public ContourPlot(int x, int y) {
-		super();
+	private ContourPlot(int width, int height, ColorMap cmap, int x, int y) {
+		super(width, height, TYPE_BYTE_INDEXED, cmap.getColorModel());
+		this.cmap = cmap;
+		d.width = width;
+		d.height = height;
 		xSteps = x;
 		ySteps = y;
-		setForeground(Color.black);
-		setBackground(Color.white);
 	}
 
 	//-------------------------------------------------------
-	int sign(int a, int b) {
+	private int sign(int a, int b) {
 		a = Math.abs(a);
 		if (b < 0)	return -a;
 		else		return  a;
 	}
 
 	//-------------------------------------------------------
-	// "InvalidData" sets the first two components of the
-	// contour value array to equal values, thus preventing
-	// subsequent drawing of the contour plot.
-	//-------------------------------------------------------
-	void InvalidData() {
-		cv[0] = (float)0.0;
-		cv[1] = (float)0.0;
-	}
-
-	//-------------------------------------------------------
 	// "GetExtremes" scans the data in "z" in order
 	// to assign values to "zMin" and "zMax".
 	//-------------------------------------------------------
-	void GetExtremes() throws ParseMatrixException {
+	private void getExtremes() throws ThinklabValidationException {
 		int	i,j;
 		double	here;
 
@@ -100,10 +107,7 @@ public class ContourPlot extends Canvas {
 			}
 		}
 		if (zMin == zMax) {
-			InvalidData();
-			throw new ParseMatrixException(
-				ContourPlotApplet.errParse + EOL +
-				ContourPlotApplet.errEqual);
+			throw new ThinklabValidationException("invalid data in contour plot");
 		}
 		return;
 	}
@@ -113,13 +117,12 @@ public class ContourPlot extends Canvas {
 	// "zMax", either logarithmically or linearly, in order
 	// to assign contour values to the array "cv".
 	//-------------------------------------------------------
-	void AssignContourValues() throws ParseMatrixException {
+	private void assignContourValues() throws ThinklabValidationException {
 		int	i;
 		double	delta;
 
 		if ((logInterpolation) && (zMin <= 0.0)) {
-			InvalidData();
-			throw new ParseMatrixException(ContourPlotApplet.errLog);
+			throw new ThinklabValidationException("error assignign contour values");
 		}
 		if (logInterpolation) {
 			double	temp = Math.log(zMin);
@@ -134,24 +137,10 @@ public class ContourPlot extends Canvas {
 	}
 
 	//-------------------------------------------------------
-	// "GetContourValuesString" returns a list of the
-	// contour values for display in the results area.
-	//-------------------------------------------------------
-	String GetContourValuesString() {
-		String	s = new String();
-		int	i;
-
-		for (i = 0; i < ncv; i++) s = s + "[" + Integer.toString(i) + "] " +
-			Float.toString(cv[i]) + EOL;
-		return s;
-	}
-
-	//-------------------------------------------------------
 	// "SetMeasurements" determines the dimensions of
 	// the contour plot and the increments in the grid.
 	//-------------------------------------------------------
-	void SetMeasurements() {
-		d = getSize();
+	private void setMeasurements() {
 		d.width  = d.width  - 2*PLOT_MARGIN;
 		d.height = d.height - 2*PLOT_MARGIN;
 		deltaX = d.width  / (xSteps - 1.0);
@@ -162,7 +151,7 @@ public class ContourPlot extends Canvas {
 	// "DrawGrid" draws the rectangular grid of gray lines
 	// on top of which the contours will later be drawn.
 	//-------------------------------------------------------
-	void DrawGrid(Graphics g) {
+	private void drawGrid(Graphics g) {
 		int i,j,kx,ky;
 
 		// Interchange horizontal & vertical
@@ -190,14 +179,17 @@ public class ContourPlot extends Canvas {
 	// given the contour index, by interpolating linearly
 	// between "Color.blue" & "Color.red".
 	//-------------------------------------------------------
-	void SetColour(Graphics g) {
-		Color c = new Color(
-			((ncv-cntrIndex) * Color.blue.getRed()   +
-				cntrIndex * Color.red.getRed())/ncv,
-			((ncv-cntrIndex) * Color.blue.getGreen() +
-				cntrIndex * Color.red.getGreen())/ncv,
-			((ncv-cntrIndex) * Color.blue.getBlue()  +
-				cntrIndex * Color.red.getBlue())/ncv);
+	private void setColour(Graphics g) {
+		
+		Color c = cmap.getColor(ncv-cntrIndex+1);
+//		
+//		Color c = new Color(
+//			((ncv-cntrIndex) * Color.blue.getRed()   +
+//				cntrIndex * Color.red.getRed())/ncv,
+//			((ncv-cntrIndex) * Color.blue.getGreen() +
+//				cntrIndex * Color.red.getGreen())/ncv,
+//			((ncv-cntrIndex) * Color.blue.getBlue()  +
+//				cntrIndex * Color.red.getBlue())/ncv);
 
 		g.setColor(c);
 	}
@@ -219,12 +211,12 @@ public class ContourPlot extends Canvas {
 	// completing a contour ("iflag" == 4 or 5) the contour
 	// index is drawn adjacent to where the contour ends.
 	//-------------------------------------------------------
-	void DrawKernel(Graphics g) {
+	private void drawKernel(Graphics g) {
 		int	prevU,prevV,u,v;
 
 		if ((iflag == 1) || (iflag == 4) || (iflag == 5)) {
 			if (cntrIndex != prevIndex) { // Must change colour
-				SetColour(g);
+				setColour(g);
 				prevIndex = cntrIndex;
 			}
 			prevU = (int)((prevXY[0] - 1.0) * deltaX);
@@ -248,10 +240,7 @@ public class ContourPlot extends Canvas {
 		prevXY[1] = xy[1];
 	}
 
-	//-------------------------------------------------------
-	// "DetectBoundary"
-	//-------------------------------------------------------
-	void DetectBoundary() {
+	private void detectBoundary() {
 		ix = 1;
 		if (ij[1-elle] != 1) {
 			ii = ij[0] - i1[1-elle];
@@ -275,11 +264,7 @@ public class ContourPlot extends Canvas {
 		if (z[ij[0]][ij[1]] >= Z_MAX_MAX) ix = ix + 2;
 	}
 
-	//-------------------------------------------------------
-	// "Routine_label_020" corresponds to a block of code
-	// starting at label 20 in Synder's subroutine "GCONTR".
-	//-------------------------------------------------------
-	boolean Routine_label_020() {
+	private boolean routine_label_020() {
 		l2[0] =  ij[0];
 		l2[1] =  ij[1];
 		l2[2] = -ij[0];
@@ -298,17 +283,14 @@ public class ContourPlot extends Canvas {
 		return false;
 	}
 
-	//-------------------------------------------------------
-	// "Routine_label_050" corresponds to a block of code
-	// starting at label 50 in Synder's subroutine "GCONTR".
-	//-------------------------------------------------------
-	boolean Routine_label_050() {
+
+	private boolean routine_label_050() {
 		while (true) {
 			if (ij[elle] >= l1[elle]) {
 				if (++elle <= 1) continue;
 				elle = idir % 2;
 				ij[elle] = sign(ij[elle],l1[k-1]);
-				if (Routine_label_150()) return true;
+				if (routine_label_150()) return true;
 				continue;
 			}
 			ii = ij[0] + i1[elle];
@@ -317,7 +299,7 @@ public class ContourPlot extends Canvas {
 				if (++elle <= 1) continue;
 				elle = idir % 2;
 				ij[elle] = sign(ij[elle],l1[k-1]);
-				if (Routine_label_150()) return true;
+				if (routine_label_150()) return true;
 				continue;
 			}
 			break;
@@ -325,12 +307,8 @@ public class ContourPlot extends Canvas {
 		jump = false;
 		return false;
 	}
-
-	//-------------------------------------------------------
-	// "Routine_label_150" corresponds to a block of code
-	// starting at label 150 in Synder's subroutine "GCONTR".
-	//-------------------------------------------------------
-	boolean Routine_label_150() {
+	
+	private boolean routine_label_150() {
 		while (true) {
 			//------------------------------------------------
 			// Lines from z[ij[0]-1][ij[1]-1]
@@ -371,30 +349,25 @@ public class ContourPlot extends Canvas {
 			ibkey = 1;
 			ij[0] = icur;
 			ij[1] = jcur;
-			if (Routine_label_020()) continue;
+			if (routine_label_020()) continue;
 			return false;
 		}
 	}
 
-	//-------------------------------------------------------
-	// "Routine_label_200" corresponds to a block of code
-	// starting at label 200 in Synder's subroutine "GCONTR".
-	// It has return values 0, 1 or 2.
-	//-------------------------------------------------------
-	short Routine_label_200(Graphics g,  boolean workSpace[])
+	private short routine_label_200(Graphics g,  boolean workSpace[])
 	{
 		while (true) {
 			xy[elle] = 1.0*ij[elle] + intersect[iedge-1];
 			xy[1-elle] = 1.0*ij[1-elle];
 			workSpace[2*(xSteps*(ySteps*cntrIndex+ij[1]-1)
 				+ij[0]-1) + elle] = true;
-			DrawKernel(g);
+			drawKernel(g);
 			if (iflag >= 4) {
 				icur = ij[0];
 				jcur = ij[1];
 				return 1;
 			}
-			ContinueContour();
+			continueContour();
 			if (!workSpace[2*(xSteps*(ySteps*cntrIndex
 				+ij[1]-1)+ij[0]-1)+elle]) return 2;
 			iflag = 5;		// 5. Finish a closed contour
@@ -404,12 +377,7 @@ public class ContourPlot extends Canvas {
 		}
 	}
 
-	//-------------------------------------------------------
-	// "CrossedByContour" is true iff the current segment in
-	// the grid is crossed by one of the contour values and
-	// has not already been processed for that value.
-	//-------------------------------------------------------
-	boolean CrossedByContour(boolean workSpace[]) {
+	private boolean crossedByContour(boolean workSpace[]) {
 		ii = ij[0] + i1[elle];
 		jj = ij[1] + i1[1-elle];
 		z1 = z[ij[0]-1][ij[1]-1];
@@ -428,11 +396,7 @@ public class ContourPlot extends Canvas {
 		return false;
 	}
 
-	//-------------------------------------------------------
-	// "ContinueContour" continues tracing a contour. Edges
-	// are numbered clockwise, the bottom edge being # 1.
-	//-------------------------------------------------------
-	void ContinueContour() {
+	private void continueContour() {
 		short local_k;
 
 		ni = 1;
@@ -491,11 +455,7 @@ public class ContourPlot extends Canvas {
 		}
 	}
 
-	//-------------------------------------------------------
-	// "ContourPlotKernel" is the guts of this class and
-	// corresponds to Synder's subroutine "GCONTR".
-	//-------------------------------------------------------
-	void ContourPlotKernel(Graphics g,	boolean workSpace[])
+	private void contourPlotKernel(Graphics g,	boolean workSpace[])
 	{
 		short val_label_200;
 
@@ -510,32 +470,32 @@ public class ContourPlot extends Canvas {
 		cntrIndex = 0;
 		prevIndex = -1;
 		iflag = 6;
-		DrawKernel(g);
+		drawKernel(g);
 		icur = Math.max(1, Math.min((int)Math.floor(xy[0]), xSteps));
 		jcur = Math.max(1, Math.min((int)Math.floor(xy[1]), ySteps));
 		ibkey = 0;
 		ij[0] = icur;
 		ij[1] = jcur;
-		if (Routine_label_020() &&
-			 Routine_label_150()) return;
-		if (Routine_label_050()) return;
+		if (routine_label_020() &&
+			 routine_label_150()) return;
+		if (routine_label_050()) return;
 		while (true) {
-			DetectBoundary();
+			detectBoundary();
 			if (jump) {
 				if (ix != 0) iflag = 4; // Finish contour at boundary
 				iedge = ks + 2;
 				if (iedge > 4) iedge = iedge - 4;
 				intersect[iedge-1] = intersect[ks-1];
-				val_label_200 = Routine_label_200(g,workSpace);
+				val_label_200 = routine_label_200(g,workSpace);
 				if (val_label_200 == 1) {
-					if (Routine_label_020() && Routine_label_150()) return;
-					if (Routine_label_050()) return;
+					if (routine_label_020() && routine_label_150()) return;
+					if (routine_label_050()) return;
 					continue;
 				}
 				if (val_label_200 == 2) continue;
 				return;
 			}
-			if ((ix != 3) && (ix+ibkey != 0) && CrossedByContour(workSpace)) {
+			if ((ix != 3) && (ix+ibkey != 0) && crossedByContour(workSpace)) {
 				//
 				// An acceptable line segment has been found.
 				// Follow contour until it hits a
@@ -546,10 +506,10 @@ public class ContourPlot extends Canvas {
 				if (ix != 1) iedge = iedge + 2;
 				iflag = 2 + ibkey;
 				intersect[iedge-1] = (cval - z1) / (z2 - z1);
-				val_label_200 = Routine_label_200(g,workSpace);
+				val_label_200 = routine_label_200(g,workSpace);
 				if (val_label_200 == 1) {
-					if (Routine_label_020() && Routine_label_150()) return;
-					if (Routine_label_050()) return;
+					if (routine_label_020() && routine_label_150()) return;
+					if (routine_label_050()) return;
 					continue;
 				}
 				if (val_label_200 == 2) continue;
@@ -558,209 +518,38 @@ public class ContourPlot extends Canvas {
 			if (++elle > 1) {
 				elle = idir % 2;
 				ij[elle] = sign(ij[elle],l1[k-1]);
-				if (Routine_label_150()) return;
+				if (routine_label_150()) return;
 			}
-			if (Routine_label_050()) return;
+			if (routine_label_050()) return;
 		}
 	}
 
-	//-------------------------------------------------------
-	// "paint" overrides the superclass' "paint()" method.
-	// This method draws the grid and then the contours,
-	// provided that the first two contour values are not
-	// equal (which would indicate invalid data).
-	// The "workSpace" is used to remember which segments in
-	// the grid have been crossed by which contours.
-	//-------------------------------------------------------
-	public void paint(Graphics g)
+	public void paint()
 	{
+		Graphics g = getGraphics();
 		int workLength = 2 * xSteps * ySteps * ncv;
 		boolean	workSpace[]; // Allocate below if data valid
 
-		SetMeasurements();
-		DrawGrid(g);
+		setMeasurements();
+		drawGrid(g);
 		if (cv[0] != cv[1]) { // Valid data
 			workSpace = new boolean[workLength];
-			ContourPlotKernel(g, workSpace);
+			contourPlotKernel(g, workSpace);
 		}
 	}
 
-	//-------------------------------------------------------
-	// "ParseZedMatrix" parses the matrix of z values
-	// which it expects to find in the string "s".
-	//-------------------------------------------------------
-	public void ParseZedMatrix(String s)
-		throws ParseMatrixException, IOException
+	public void save(String file) {
+		ImageUtil.saveImage(this, file);
+	}
+	
+	public void setData(double[][] data) throws ThinklabValidationException
 	{
-		StringBufferInputStream i;
-		StreamTokenizer		t;
-
-		i = new StringBufferInputStream(s);
-		t = new StreamTokenizer(i);
-
-		z = null;  // Junk any existing matrix
-		EatCharacter(t,OPEN_SUITE);
-		do ParseRowVector(t);
-		while (t.nextToken() == BETWEEN_ARGS);
-		if (t.ttype != CLOSE_SUITE) {
-			InvalidData();
-			throw new ParseMatrixException(
-				ContourPlotApplet.errParse + EOL +
-				ContourPlotApplet.errExpect+(char)CLOSE_SUITE);
-		}
-		if (t.nextToken() != t.TT_EOF) {
-			InvalidData();
-			throw new ParseMatrixException(
-				ContourPlotApplet.errParse + EOL +
-				ContourPlotApplet.errEOF);
-		}
-		MakeMatrixRectangular();
-		GetExtremes();
+		z = data;
+		getExtremes();
 		if (zMax > Z_MAX_MAX) zMax = Z_MAX_MAX;
 		if (zMin < Z_MIN_MIN) zMin = Z_MIN_MIN;
-		AssignContourValues();
+		assignContourValues();
 	}
 
-	//-------------------------------------------------------
-	// "ParseRowVector" parses a row of data from the stream.
-	//-------------------------------------------------------
-	public void ParseRowVector(StreamTokenizer t)
-		throws ParseMatrixException, IOException
-	{	// Parse a row of float's and
-		// insert them in a new row of z[][]
-		if (z == null) z = new float[1][];
-		else AddRow();
-		EatCharacter(t,OPEN_SUITE);
-		do {
-			if (t.nextToken() == t.TT_NUMBER) {
-				int x = z.length - 1;
 
-				if (z[x] == null) {
-					z[x] = new float[1];
-					z[x][0] = (float)t.nval;
-				}
-				else AddColumn((float)t.nval);
-			}
-			else {
-				int x = z.length - 1;
-				int y = z[x].length - 1;
-
-				InvalidData();
-				throw new ParseMatrixException(
-					ContourPlotApplet.errParse + EOL +
-					ContourPlotApplet.errComp + " [" +
-					Integer.toString(x) + "," +
-					Integer.toString(y) + "]");
-			}
-		} while (t.nextToken() == BETWEEN_ARGS);
-		if (t.ttype != CLOSE_SUITE) {
-			InvalidData();
-			throw new ParseMatrixException(
-				ContourPlotApplet.errParse + EOL +
-				ContourPlotApplet.errExpect+(char)CLOSE_SUITE);
-		}
-	}
-
-	//-------------------------------------------------------
-	// "AddRow" appends a new empty row to the end of "z"
-	//-------------------------------------------------------
-	public void AddRow() throws ParseMatrixException {
-		int leng = z.length;
-		float temp[][];
-
-		if (leng >= ContourPlotApplet.MAX_X_STEPS)
-			throw new ParseMatrixException(
-				ContourPlotApplet.errParse + EOL +
-				ContourPlotApplet.errBounds);
-		temp = new float[leng+1][];
-		System.arraycopy(z, 0, temp, 0, leng);
-		z = temp;
-	}
-
-	//-------------------------------------------------------
-	// "AddColumn" appends "val" to end of last row in "z"
-	//-------------------------------------------------------
-	public void AddColumn(float val)
-		throws ParseMatrixException
-	{
-		int i = z.length - 1;
-		int leng = z[i].length;
-		float temp[];
-
-		if (leng >= ContourPlotApplet.MAX_Y_STEPS)
-			throw new ParseMatrixException(
-				ContourPlotApplet.errParse + EOL +
-				ContourPlotApplet.errBounds);
-		temp = new float[leng+1];
-		System.arraycopy(z[i], 0, temp, 0, leng);
-		temp[leng] = val;
-		z[i] = temp;
-	}
-
-	//-------------------------------------------------------
-	// "MakeMatrixRectangular" appends zero(s) to the end of
-	// any row of "z" which is shorter than the longest row.
-	//-------------------------------------------------------
-	public void MakeMatrixRectangular() {
-		int	i,y,leng;
-
-		xSteps = z.length;
-		ySteps = ContourPlotApplet.MIN_Y_STEPS;
-		for (i = 0; i < xSteps; i++) {
-			y = z[i].length;
-			if (ySteps < y) ySteps = y;
-		}
-
-		for (i = 0; i < xSteps; i++) {
-			leng = z[i].length;
-			if (leng < ySteps) {
-				float temp[] = new float[ySteps];
-
-				System.arraycopy(z[i], 0, temp, 0, leng);
-				while (leng < ySteps) temp[leng++] = 0;
-				z[i] = temp;
-			}
-		}
-	}
-
-	//-------------------------------------------------------
-	// "ReturnZedMatrix" returns a string containing the
-	// values in "z" for display in the results area.
-	//-------------------------------------------------------
-	public String ReturnZedMatrix() {
-		String	s,oneValue;
-		int		i,j;
-
-		s = new String(
-			ContourPlotApplet.infoStrX + xSteps + EOL +
-			ContourPlotApplet.infoStrY + ySteps + EOL);
-		for (i = 0; i < xSteps; i++) {
-			for (j = 0; j < ySteps; j++) {
-				oneValue = Double.toString(z[i][j]);
-				while (oneValue.length() < NUMBER_LENGTH)
-					oneValue = " " + oneValue;
-				s = s + oneValue;
-				if (j < ySteps-1) s = s + " ";
-			}
-			s = s + EOL;
-		}
-		return s;
-	}
-
-	//-------------------------------------------------------
-	// "EatCharacter" skips any BLANK's in the stream and
-	// expects the character "c", throwing an exception if
-	// the next non-BLANK character is not "c".
-	//-------------------------------------------------------
-	public void EatCharacter(StreamTokenizer t, int c)
-		throws ParseMatrixException, IOException
-	{
-		while (t.nextToken() == BLANK) ;
-		if (t.ttype != c) {
-			InvalidData();
-			throw new ParseMatrixException(
-				ContourPlotApplet.errParse + EOL +
-				ContourPlotApplet.errExpect + (char)c);
-		}
-	}
 }

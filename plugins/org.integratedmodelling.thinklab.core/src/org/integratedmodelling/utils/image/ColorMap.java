@@ -60,6 +60,13 @@ public class ColorMap {
 		this.levels = levels;
 		this.hasTransparentZero = zeroTransp;
 	}
+
+	Color getColor(int index) {
+		return new Color(
+				model.getRed(index), 
+				model.getGreen(index), 
+				model.getBlue(index));
+	}
 	
 	private static class CmDesc {
 		String id;

@@ -128,6 +128,9 @@
 		<library type="code" id="gt2-postgis" path="lib/gt-postgis-2.6.0.jar">
 			<export prefix="*" />
 		</library>
+		<library type="code" id="gt2-process" path="lib/gt-process-2.6.0.jar">
+			<export prefix="*"/>
+		</library>
 		<library type="code" id="gt2-property" path="lib/gt-property-2.6.0.jar">
 			<export prefix="*"/>
 		</library>
