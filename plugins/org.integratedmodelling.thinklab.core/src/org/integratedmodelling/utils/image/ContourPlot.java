@@ -8,32 +8,31 @@ import java.awt.image.BufferedImage;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 
 /**
+ * Contour line plot for gridded data. 
  * 
- * Usage:
+ * Simplest usage:
  * 
- * 	ContourPlot plot = new ContourPlot(width, height, cmap, gridX, gridY);
-	plot.setData(data);
-	plot.paint();
-	plot.save("file.png");
- *
+ *     int width = 400, height = 400;
+ *     double[][] data = ....;
+ *     ContourPlot.createPlot(width, height, data).save(filename);
+ *     
+ * The class is a BufferedImage so anything that can be done to an image can be done to
+ * the return value of createPlot(). Various createPlot functions allow control on colormap,
+ * grid lines, contour levels etc.
+ * 
  */
 public class ContourPlot extends BufferedImage {
 
 	private static final long serialVersionUID = -4321635336670844054L;
 
-	final static boolean	SHOW_NUMBERS	= true;
-	final static int	BLANK		= 32,
-				OPEN_SUITE	= (int)'{',
-				CLOSE_SUITE	= (int)'}',
-				BETWEEN_ARGS	= (int)',',
-				N_CONTOURS	= 10,
-				PLOT_MARGIN	= 0,
-				WEE_BIT		=  3,
-				NUMBER_LENGTH	=  3;
+	boolean SHOW_NUMBERS = false;
+	static int N_CONTOURS	= 10, // TODO must be local, except it's needed in the silly constructor
+		PLOT_MARGIN	= 0,
+		WEE_BIT		=  3,
+		NUMBER_LENGTH	=  3;
+	
 	final static double	Z_MAX_MAX	= 1.0E+10,
 				Z_MIN_MIN	= -Z_MAX_MAX;
-	final static String EOL	=
-		System.getProperty("line.separator");
 
 	// Below, data members which store the grid steps,
 	// the z values, the interpolation flag, the dimensions
@@ -63,16 +62,24 @@ public class ContourPlot extends BufferedImage {
 	float	cv[]		= new float[ncv];
 	boolean	jump;
 	ColorMap cmap; 
+
+	boolean drawGrid = false;
 	
-	public static ContourPlot getPlot(int x, int y) {
+	public static ContourPlot createPlot(int x, int y, double[][] data) throws ThinklabValidationException {
 		ColorMap cmap = ColorMap.getColormap("rainbow", N_CONTOURS+1, true);
-		ContourPlot ret = new ContourPlot(x, y, cmap, x, y);
+		ContourPlot ret = new ContourPlot(x, y, cmap, data.length, data[0].length);
+		ret.setData(data);
+		ret.paint();
+		return ret;
+	}
+
+	public static ContourPlot createPlot(int x, int y, double[][] data, ColorMap cmap) throws ThinklabValidationException {
+		ContourPlot ret = new ContourPlot(x, y, cmap, data.length, data[0].length);
+		ret.setData(data);
+		ret.paint();
 		return ret;
 	}
 	
-	//-------------------------------------------------------
-	// A constructor method.
-	//-------------------------------------------------------
 	private ContourPlot(int width, int height, ColorMap cmap, int x, int y) {
 		super(width, height, TYPE_BYTE_INDEXED, cmap.getColorModel());
 		this.cmap = cmap;
@@ -81,8 +88,7 @@ public class ContourPlot extends BufferedImage {
 		xSteps = x;
 		ySteps = y;
 	}
-
-	//-------------------------------------------------------
+	
 	private int sign(int a, int b) {
 		a = Math.abs(a);
 		if (b < 0)	return -a;
@@ -136,32 +142,24 @@ public class ContourPlot extends BufferedImage {
 		}
 	}
 
-	//-------------------------------------------------------
-	// "SetMeasurements" determines the dimensions of
-	// the contour plot and the increments in the grid.
-	//-------------------------------------------------------
 	private void setMeasurements() {
 		d.width  = d.width  - 2*PLOT_MARGIN;
 		d.height = d.height - 2*PLOT_MARGIN;
-		deltaX = d.width  / (xSteps - 1.0);
-		deltaY = d.height / (ySteps - 1.0);
+		deltaX = d.height  / (xSteps - 1.0);
+		deltaY = d.width / (ySteps - 1.0);
 	}
 
-	//-------------------------------------------------------
-	// "DrawGrid" draws the rectangular grid of gray lines
-	// on top of which the contours will later be drawn.
-	//-------------------------------------------------------
 	private void drawGrid(Graphics g) {
 		int i,j,kx,ky;
 
-		// Interchange horizontal & vertical
-		g.clearRect(0, 0, d.height+2*PLOT_MARGIN, d.width +2*PLOT_MARGIN);
-		g.setColor(Color.gray);
+		g.setColor(cmap.getColor(1));
+		g.fillRect(0, 0, d.width+2*PLOT_MARGIN, d.height +2*PLOT_MARGIN);
+		g.setColor(Color.white);
 		for (i = 0; i < xSteps; i++) {
 			kx = (int)((float)i * deltaX);
 			g.drawLine( PLOT_MARGIN,
 			PLOT_MARGIN+kx,
-			PLOT_MARGIN+d.height,
+			PLOT_MARGIN+d.width,
 			PLOT_MARGIN+kx);
 		}
 		for (j = 0; j < ySteps; j++) {
@@ -169,29 +167,13 @@ public class ContourPlot extends BufferedImage {
 			g.drawLine( PLOT_MARGIN+ky,
 			PLOT_MARGIN,
 			PLOT_MARGIN+ky,
-			PLOT_MARGIN+d.width);
+			PLOT_MARGIN+d.height);
 		}
 		g.setColor(Color.black);
 	}
 
-	//-------------------------------------------------------
-	// "SetColour" sets the colour of the graphics object,
-	// given the contour index, by interpolating linearly
-	// between "Color.blue" & "Color.red".
-	//-------------------------------------------------------
-	private void setColour(Graphics g) {
-		
-		Color c = cmap.getColor(ncv-cntrIndex+1);
-//		
-//		Color c = new Color(
-//			((ncv-cntrIndex) * Color.blue.getRed()   +
-//				cntrIndex * Color.red.getRed())/ncv,
-//			((ncv-cntrIndex) * Color.blue.getGreen() +
-//				cntrIndex * Color.red.getGreen())/ncv,
-//			((ncv-cntrIndex) * Color.blue.getBlue()  +
-//				cntrIndex * Color.red.getBlue())/ncv);
-
-		g.setColor(c);
+	private void setColour(Graphics g) {		
+		g.setColor(cmap.getColor(cntrIndex+1));
 	}
 
 	//-------------------------------------------------------
@@ -229,9 +211,9 @@ public class ContourPlot extends BufferedImage {
 				   PLOT_MARGIN+v, PLOT_MARGIN+u);
 			if ((SHOW_NUMBERS) && ((iflag==4) || (iflag==5))) {
 				if      (u == 0)	u = u - WEE_BIT;
-				else if	(u == d.width)  u = u + PLOT_MARGIN/2;
+				else if	(u == d.height)  u = u + PLOT_MARGIN/2;
 				else if	(v == 0)	v = v - PLOT_MARGIN/2;
-				else if	(v == d.height) v = v + WEE_BIT;
+				else if	(v == d.width) v = v + WEE_BIT;
 				g.drawString(Integer.toString(cntrIndex),
 					PLOT_MARGIN+v, PLOT_MARGIN+u);
 			}
@@ -531,7 +513,10 @@ public class ContourPlot extends BufferedImage {
 		boolean	workSpace[]; // Allocate below if data valid
 
 		setMeasurements();
-		drawGrid(g);
+		
+		if (drawGrid)
+			drawGrid(g);
+
 		if (cv[0] != cv[1]) { // Valid data
 			workSpace = new boolean[workLength];
 			contourPlotKernel(g, workSpace);
@@ -551,5 +536,31 @@ public class ContourPlot extends BufferedImage {
 		assignContourValues();
 	}
 
+	public static void test() {
+		
+		double[][] data = 
+		{{-0.44, -0.44, -0.44, -0.44, -0.44, -0.45, -0.48, -0.51, -0.52, -0.50, -0.49, -0.51, -0.55, -0.59, -0.60},
+		 {-0.45, -0.48, -0.50, -0.49, -0.47, -0.44, -0.44, -0.44, -0.41, -0.40, -0.43, -0.43, -0.47, -0.55, -0.59},
+		 {-0.52, -0.57, -0.60, -0.59, -0.56, -0.50, -0.44, -0.37, -0.33, -0.46, -0.56, -0.45, -0.36, -0.50, -0.58},
+		 {-0.59, -0.58, -0.53, -0.54, -0.59, -0.58, -0.47, -0.32, -0.33, -0.52, -0.35, -0.55, -0.47, -0.46, -0.57},
+		 {-0.58, -0.40, -0.20, -0.25, -0.47, -0.60, -0.51, -0.32, -0.35, -0.39,  0.23, -0.33, -0.55, -0.44, -0.56},
+		 {-0.52, -0.18,  0.14,  0.06, -0.31, -0.58, -0.54, -0.34, -0.33, -0.46, -0.10, -0.47, -0.53, -0.45, -0.56},
+		 {-0.52, -0.19,  0.12,  0.05, -0.32, -0.58, -0.55, -0.37, -0.28, -0.46, -0.55, -0.57, -0.45, -0.48, -0.58},
+		 {-0.58, -0.41, -0.23, -0.27, -0.49, -0.60, -0.53, -0.40, -0.31, -0.35, -0.43, -0.44, -0.45, -0.54, -0.59},
+		 {-0.59, -0.59, -0.54, -0.55, -0.60, -0.57, -0.49, -0.42, -0.40, -0.41, -0.43, -0.47, -0.53, -0.58, -0.60},
+		 {-0.52, -0.57, -0.59, -0.58, -0.55, -0.50, -0.44, -0.44, -0.48, -0.51, -0.53, -0.56, -0.58, -0.60, -0.60}};
+		
+		
+		ColorMap cmap = ColorMap.getColormap("rainbow", N_CONTOURS+1, true);
+		ContourPlot ret = new ContourPlot(500, 300, cmap, data.length, data[0].length);
+		try {
+			ret.setData(data);
+		} catch (ThinklabValidationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ret.paint();
+		ret.save("zio.png");
+	}
 
 }

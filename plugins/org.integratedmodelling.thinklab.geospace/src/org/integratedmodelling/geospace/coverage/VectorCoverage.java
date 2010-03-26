@@ -65,6 +65,7 @@ import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.extents.ShapeExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
+import org.integratedmodelling.geospace.feature.LazyShapeCollection;
 import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -135,6 +136,10 @@ public class VectorCoverage implements ICoverage {
 		// TODO
 	}
 
+	public LazyShapeCollection getShapes() throws ThinklabException {
+		return new LazyShapeCollection(getFeatureIterator(null, (String[]) null), crs);
+	}
+	
 	public VectorCoverage(
 			FeatureCollection<SimpleFeatureType, SimpleFeature> features,
 			CoordinateReferenceSystem crs, 
@@ -200,7 +205,7 @@ public class VectorCoverage implements ICoverage {
 		this.valueField = linkField;
 		this.valueType = valueType == null ? null : KnowledgeManager.get().requireConcept(valueType);
 		this.valueDefault = valueDefault;
-		this.attributeHandle = attributes.index(linkTargetField, valueField);
+		this.attributeHandle = attributes == null ? -1 : attributes.index(linkTargetField, valueField);
 		this.filterExpression = filterExpression;
 		
 		if (validate)
