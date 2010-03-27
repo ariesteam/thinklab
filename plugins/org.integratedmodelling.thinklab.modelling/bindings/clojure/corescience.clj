@@ -47,7 +47,7 @@
  	   					(eval ~observable)))
 		 (doseq [classifier# (partition 2 '~specs)]
 		 	   (if  (and  (keyword? (first classifier#)) (not (= :otherwise (first classifier#)))) 
-		 	   		  (.setMetadata model# (str (first classifier#)) (eval (second classifier#))) 
+		 	   		  (transform-model model# classifier#) 
 		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (eval (second classifier#)))))
  	   model#))
 
@@ -63,7 +63,7 @@
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 
-		 	   		  (.setMetadata model# (str (first classifier#)) (eval (second classifier#))))))
+		 	   		  (transform-model model# classifier#))))
  	    model#))
 	
 (defmacro ranking
@@ -78,9 +78,10 @@
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 
-		 	   		  (.setMetadata model# (str (first classifier#)) (eval (second classifier#))))))
+		 	   		  (transform-model model# classifier#))))
  	   model#))
 	
+;; TODO fix the transform-model thing
 (defmacro categorization
 	""
 	[observable & categories]
@@ -106,7 +107,7 @@
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 
-		 	   		  (.setMetadata model# (str (first classifier#)) (eval (second classifier#))))))
+		 	   		  (transform-model model# classifier#) )))
  	    model#))
 	
 (defmacro identification
@@ -118,7 +119,7 @@
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 
-		 	   		  (.setMetadata model# (str (first classifier#)) (eval (second classifier#))))))
+		 	   		  (transform-model model# classifier#))))
  	   model#))
 
 (defmacro bayesian
@@ -131,7 +132,7 @@
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 
-		 	   		  (.setMetadata model# (str (first classifier#)) (eval (second classifier#))))))
+		 	   		  (transform-model model# classifier#))))
  	   model#))
  	   
 ;; -------------------------------------------------------------------------------------------------------

@@ -13,6 +13,7 @@ import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.modelling.agents.ThinkAgent;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
@@ -51,6 +52,7 @@ public class ModelFactory {
 	public static final IObservation observation = null;
 	public Hashtable<String, Model> modelsById = new Hashtable<String, Model>();
 	public Hashtable<String, Scenario> scenariosById = new Hashtable<String, Scenario>();
+	public Hashtable<String, ThinkAgent> agentsById = new Hashtable<String, ThinkAgent>();
 
 	class ContextualizingModelResult implements IQueryResult {
 
@@ -220,6 +222,20 @@ public class ModelFactory {
 		return model;
 	}
 	
+	/*
+	 * called by the defagent macro. Creates a prototype agent that we will use to
+	 * cloned agents from.
+	 */
+	public ThinkAgent registerAgent(ThinkAgent model, String name) throws ThinklabException {
+		
+		// FIXME same ID and name
+		model.setId(name);
+		model.setName(name);
+		agentsById.put(model.getId(), model);
+		ModellingPlugin.get().logger().info("scenario " + model + " registered");
+		return model;
+	}
+	
 	public Model retrieveModel(String s) throws ThinklabException {
 		return modelsById.get(s);
 	}
@@ -350,28 +366,21 @@ public class ModelFactory {
 		return new ContextualizingModelResult(r, listeners, extents);
 	}
 	
-	
 	/**
-	 * Enqueue a model to run in the modeling queue as resources become available. The max
-	 * number of models to run simultaneously defaults at 1 and is controlled by the 
-	 * thinklab.modelling.concurrentmodels property. Currently, because of OWLAPI
-	 * thread safety issues, it's not very smart to set it higher than 1.
+	 * Clones a new agent of the passed type and places it in the context
+	 * identified by the topologies. The agent will use the passed session
+	 * to store its knowledge and observe the world in the passed kbox.
 	 * 
-	 * @param model
+	 * @param agentId
 	 * @param kbox
 	 * @param session
-	 * @param listeners
 	 * @param extents
 	 * @return
+	 * @throws ThinklabException
 	 */
-	public boolean enqueue(Model model, IKBox kbox, ISession session,
-			Collection<IContextualizationListener> listeners,
-			Topology... extents) {
-		
-		boolean ret = false;
-		
-		
-		
-		return ret;
+	public ThinkAgent placeAgent(String agentId, IKBox kbox, ISession session, 
+				Topology ... extents) throws ThinklabException {
+		return null;
 	}
+	
 }

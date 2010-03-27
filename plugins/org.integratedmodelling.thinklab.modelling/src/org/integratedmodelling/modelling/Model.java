@@ -241,8 +241,8 @@ public class Model extends DefaultAbstractModel {
 	private IModel chooseModel(ArrayList<IModel> models2, Contingency context2,
 			IKBox kbox) {
 		
-		if (models.size() == 1)
-			return models.get(0);
+		if (this.models.size() == 1)
+			return this.models.get(0);
 		
 		/* TODO RETE stuff goes here */
 		
@@ -250,14 +250,14 @@ public class Model extends DefaultAbstractModel {
 	}
 
 	public void setDescription(String s) {
-		description = s;
+		this.description = s;
 	}
 
 	public void addContingency(IModel m, Map<?,?> metadata) {
 		
-		if (context == null)
-			context = new ArrayList<IModel>();
-		context.add(m);
+		if (this.context == null)
+			this.context = new ArrayList<IModel>();
+		this.context.add(m);
 	}
 	
 	/**
@@ -269,8 +269,8 @@ public class Model extends DefaultAbstractModel {
 	public void defModel(IModel model, Map<?,?> metadata) {
 		
 		// System.out.println("setting unconditional " + model);
-		if (models == null) {
-			models = new ArrayList<IModel>();
+		if (this.models == null) {
+			this.models = new ArrayList<IModel>();
 		}
 		
 		if (metadata != null) {
@@ -278,7 +278,7 @@ public class Model extends DefaultAbstractModel {
 			System.out.println("\nMETADATA! " + metadata + "\n");
 		}
 		
-		models.add(model);
+		this.models.add(model);
 	}
 
 	@Override
@@ -302,13 +302,13 @@ public class Model extends DefaultAbstractModel {
 		mdesc += "}";
 		return "model(" + getObservable() +") " + mdesc;
 	}
-
-
-	@Override
-	public void applyClause(String keyword, Object argument) throws ThinklabException {
-		throw new ThinklabInternalErrorException(
-				"internal error: a Model should only be configured through a proxy");
-	}
+//
+//
+//	@Override
+//	public void applyClause(String keyword, Object argument) throws ThinklabException {
+//		throw new ThinklabInternalErrorException(
+//				"internal error: a Model should only be configured through a proxy");
+//	}
 
 	@Override
 	public IModel getConfigurableClone() {

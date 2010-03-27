@@ -18,6 +18,12 @@
 	the macro is expanded at runtime."
 	[]
 	(new org.integratedmodelling.modelling.Scenario))
+
+(defn j-make-agent
+	"Make a new instance of Model and return it. We need this because the class won't be visible when
+	the macro is expanded at runtime."
+	[]
+	(new org.integratedmodelling.modelling.agents.ThinkAgent))
 		
 (defn register-model
 	"Get the single instance of the model manager from the modelling plugin and register the passed model
@@ -30,8 +36,17 @@
 	 with it."
 	[model name]
 	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerScenario model (str *ns* "/" name))))
+
+(defn register-agent
+	"Get the single instance of the model manager from the modelling plugin and register the passed model
+	 with it."
+	[model name]
+	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerAgent model (str *ns* "/" name))))
 		
-	
+(defn kw-pair? 
+  [obj] 
+  (and (seq? obj) (= (count obj) 2) (keyword? (first obj))))	
+
 (defn- get-configurable-model
 	"Return a model clone that we can safely configure. Essentially a copy on write pattern, called
 	 only when there are non-empty clauses in a dependent model."
@@ -49,7 +64,7 @@
 		  	(transform-model model kws))
 	 		model))
 
-(defn- transform-model 
+(defn transform-model 
 	"Apply the passed clause to the passed model after transforming the argument according to 
 	 the keyword. A map would be much more elegant but won't work in the bi-recursive pattern.
 	 Just passes through anything that isn't handled - leave it to Java to validate the keyword."
@@ -91,19 +106,22 @@
  	        	(drop (tl/count-not-nil (list desc# contingency-model#)) '~body)
  	        model# 
  	        	(modelling/j-make-model)]
- 	        	
+ 	       
  	     (.setName model# ~model-name)
  	     (.setObservable  model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
  	     (.setDescription model# desc#)
- 	      	     
+
  	     ; process the contingency model - as many models as we like, will build an id from all
- 	     (doseq [mdef# (tl/group-with-keywords contingency-model#)]
-         	(.addContingency model# (configure-model mdef#) (meta contingency-model#))) 
-         	    	  	
-        ; process the model definitions - one or more models
-       (doseq [mdef# (tl/group-with-keywords definition#)]
-          (.defModel model# (configure-model mdef#) (meta definition#)))
-          
+ 	     (doseq [mdef# contingency-model#]
+         	(.addContingency model# mdef# (meta contingency-model#))) 
+        
+       
+        ; process the model definitions - one or more models and configuration keyword pairs
+       (doseq [mdef# (tl/group-keywords definition#)] 
+         (if (kw-pair? mdef#)
+           (transform-model model# mdef#) 
+           (.defModel model# (eval mdef#) (meta definition#))))  
+
        model#))
        
 (defmacro scenario 
@@ -125,12 +143,41 @@
  	     (.setObservable  model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
  	     (.setDescription model# desc#)
  	      	     
-        ; process the model definitions - one or more models
-       (doseq [mdef# (tl/group-with-keywords definition#)]
-          (.addModel model# (configure-model mdef#) (meta definition#) nil))
+        ; process the model definitions - one or more models or kw pairs
+       (doseq [mdef# (tl/group-keywords definition#)]
+          (if (kw-pair? mdef#)
+            (transform-model model# mdef#) 
+            (.addModel model# (eval mdef#) (meta definition#) nil)))
           
        model#))
        
+(defmacro tl-agent 
+	"Return a new model for the given observable, defined using the given contingency 
+	 structure and conditional specifications, or the given unconditional model if no 
+	 contingency structure is supplied."
+	[observable & body]
+	 `(let [desc#  
+	 					(if (string? (first '~body)) (first '~body))
+	 				;; TODO unnecessary, remove
+	 			  contingency-model# 
+	        	(if (vector? (first (drop (if (nil? desc#) 0 1) '~body)))
+	        		(first (drop (if (nil? desc#) 0 1) '~body)))
+ 	        definition# 
+ 	        	(drop (tl/count-not-nil (list desc# contingency-model#)) '~body)
+ 	        model# 
+ 	        	(modelling/j-make-agent)]
+ 	      
+ 	     (.setObservable  model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	     (.setDescription model# desc#)
+ 	      	     
+        ; process the model definitions - one or more models
+       (doseq [mdef# (tl/group-keywords definition#)]
+          (if (kw-pair? mdef#)
+            (transform-model model# mdef#)
+            (.addModel model# (eval mdef#) (meta definition#))))
+          
+       model#))
+
 (defmacro defmodel
 	 "Define a model for the given observable, using the given contingency 
 	  structure and conditional specifications, or the given unconditional model if no 
@@ -139,12 +186,16 @@
  		`(def ~model-name (modelling/register-model (eval '(modelling/model (str '~model-name) ~observable ~@body)) (str '~model-name))))
        
 (defmacro defscenario
-	 "Define a model for the given observable, using the given contingency 
-	  structure and conditional specifications, or the given unconditional model if no 
-	  contingency structure is supplied."
+	 "Define a scenario."
 		[model-name observable & body]
  		`(def ~model-name (modelling/register-scenario (eval '(modelling/scenario ~observable ~@body)) (str '~model-name))))
-   
+ 
+(defmacro defagent
+	 "Define an agent."
+		[model-name observable & body]
+ 		`(def ~model-name (modelling/register-agent (eval '(modelling/tl-agent ~observable ~@body)) (str '~model-name))))
+ 
+  
 (defn get-topology-in-location 
 	"Return the spatial topology of the first observation found in the given location that
 	matches the passed observable"

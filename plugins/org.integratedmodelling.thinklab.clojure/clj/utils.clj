@@ -23,19 +23,6 @@
              (rrest rem))
       [odds evens])))
       
-
-; better version below      
-;(defn assoc-map
-;  "Turns a seq into the map it wanted to be: (assoc-map '(:one 1 :two 2)) -> {:one 1, :two 2}."
-;  [aseq]
-;  (loop [aseq aseq
-;	 amap {}]
-;    (if (empty? aseq)
-;      amap
-;      (let [[key val] [(first aseq) (second aseq)]]
-;	(recur (rest (rest aseq))
-;	       (assoc amap key val))))))    
-
 (defn assoc-map 
   "Turns a seq into the map it wanted to be: (assoc-map '(:one 1 :two 2)) -> {:one 1, :two 2}."
   [aseq]
@@ -64,20 +51,34 @@
   [pred coll]
   [(take-pair-while pred coll) (drop-pair-while pred coll)])
 
+(defn group-if
+  "Group any consecutive pairs of items where (pred
+   element) returns true for the first element in the pair."
+  [pred coll]
+  (if (nil? coll) nil
+      (if (pred (first coll)) 
+        (cons  (list (first coll) (second coll)) (group-if pred (rest (rest coll)))) 
+        (cons  (first coll) (group-if pred (rest coll)))))) 
+
+(defn group-keywords
+  "Return a list where all keywords have been paired with the following element"
+  [coll]
+  (group-if keyword? coll)) 
+
 (defn group-while
   "Group together all the consecutive pairs of items where (pred
-   element) returns true for the first element in the pair."
+	   element) returns true for the first element in the pair."
   [pred coll]
   (when (seq coll)
     (let [[taken dropped] (split-pair-with pred coll)]
       (cond 
-      	(empty? dropped) (list taken)
-	    	(empty? taken)
-	    			(lazy-cat (list (first dropped))
-				    	(group-while pred (rest dropped)))
-	    	:otherwise 
-	    			(lazy-cat (list taken)
-							(group-while pred dropped))))))
+        (empty? dropped) (list taken)
+        (empty? taken)
+        (lazy-cat (list (first dropped))
+          (group-while pred (rest dropped)))
+        :otherwise 
+        (lazy-cat (list taken)
+          (group-while pred dropped))))))
 
 (defn group-with-following
   "Group pairs of items if their second element matches pred, else
