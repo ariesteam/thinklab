@@ -2,10 +2,10 @@ package org.integratedmodelling.geospace.coverage;
 
 import java.util.BitSet;
 
+import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.Pair;
-import org.integratedmodelling.utils.multidimensional.MultidimensionalCursor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
@@ -22,18 +22,17 @@ public class RasterActivationLayer extends BitSet implements IGridMask {
 
 	private static final long serialVersionUID = 2831346054544907423L;
 	private int active;
-	MultidimensionalCursor cursor = 
-		new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
 
 	// nothing for now
 	Object gaps = null;
 	private CoordinateReferenceSystem crs;
+	private GridExtent grid;
 	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.geospace.coverage.IGridMask#intersect(org.integratedmodelling.geospace.coverage.RasterActivationLayer)
 	 */
-	public void intersect(RasterActivationLayer other) throws ThinklabValidationException {
-		this.and(other);
+	public void intersect(IGridMask other) throws ThinklabValidationException {
+		this.and((RasterActivationLayer)other);
 		active = this.cardinality();
 	}
 
@@ -50,7 +49,7 @@ public class RasterActivationLayer extends BitSet implements IGridMask {
 	 */
 	public Pair<Integer, Integer> getCell(int index) {
 		
-		int[] xy = cursor.getElementIndexes(index);
+		int[] xy = grid.getXYCoordinates(index);
 		return new Pair<Integer, Integer>(xy[0], xy[1]);
 	}
 	
@@ -58,7 +57,7 @@ public class RasterActivationLayer extends BitSet implements IGridMask {
 	 * @see org.integratedmodelling.geospace.coverage.IGridMask#isActive(int, int)
 	 */
 	public boolean isActive(int x, int y) {
-		return get(cursor.getElementOffset(x,y));
+		return get(grid.getIndex(x,y));
 	}
 	
 	/* (non-Javadoc)
@@ -67,7 +66,7 @@ public class RasterActivationLayer extends BitSet implements IGridMask {
 	public void activate(int x, int y) {
 		if (!isActive(x,y))
 			active++;
-		set(x,y,true);
+		set(grid.getIndex(x,y),true);
 	}
 	
 	/* (non-Javadoc)
@@ -76,29 +75,27 @@ public class RasterActivationLayer extends BitSet implements IGridMask {
 	public void deactivate(int x, int y) {
 		if (isActive(x,y))
 			active--;
-		set(x,y,false);
+		set(grid.getIndex(x,y),false);
 	}
 	
-	public RasterActivationLayer(int x, int y) {
-		
+	public RasterActivationLayer(int x, int y, GridExtent grid) {
 		super(x*y);
-		cursor.defineDimensions(x,y);
-		active = cursor.getMultiplicity();
-		
+		active = grid.getTotalGranularity();
+		this.grid = grid;
 		// set all bits to true
 		and(this);
 	}
 
-	public RasterActivationLayer(int x, int y, boolean isActive) {
+	public RasterActivationLayer(int x, int y, boolean isActive, GridExtent grid) {
 		
 		super(x*y);
-		cursor.defineDimensions(x,y);
 		active = 0;
+		this.grid = grid;
 		
 		// set all bits to true
 		if (isActive) {
 			and(this);
-			active = cursor.getMultiplicity();
+			active = grid.getTotalGranularity();
 		} else {
 			xor(this);
 		}
@@ -121,15 +118,14 @@ public class RasterActivationLayer extends BitSet implements IGridMask {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.geospace.coverage.IGridMask#nextActiveCell(int, int)
 	 */
-	public Pair<Integer, Integer> nextActiveCell(int fromX, int fromY) {
+	public int[] nextActiveCell(int fromX, int fromY) {
 		
-		int ofs = nextSetBit(cursor.getElementOffset(fromX,fromY));
+		int ofs = nextSetBit(grid.getIndex(fromX,fromY));
 		
 		if (ofs == -1) 
 			return null;
 		
-		int[] xy = cursor.getElementIndexes(ofs);
-		return new Pair<Integer, Integer>(xy[0], xy[1]);
+		return grid.getXYCoordinates(ofs);
 	}
 
 	/* (non-Javadoc)
@@ -142,7 +138,7 @@ public class RasterActivationLayer extends BitSet implements IGridMask {
 		if (ofs == -1) 
 			return null;
 		
-		int[] xy = cursor.getElementIndexes(ofs);
+		int[] xy = grid.getXYCoordinates(ofs);
 		return new Pair<Integer, Integer>(xy[0], xy[1]);
 	}
 	
@@ -154,4 +150,14 @@ public class RasterActivationLayer extends BitSet implements IGridMask {
 		return this.crs;
 	}
 
+	@Override
+	public GridExtent getGrid() {
+		return this.grid;
+	}
+
+	@Override
+	public boolean isActive(int linearIndex) {
+		int[] xy = grid.getXYCoordinates(linearIndex);
+		return isActive(xy[0], xy[1]);
+	}
 }

@@ -141,6 +141,16 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		cellHeight = getNormalizedEnvelope().getHeight() / yDivs;
 	}
 
+	public int[] getXYCoordinates(int index) {
+		int xx = index % getXCells();
+		int yy = getYCells() - (index / getXCells()) - 1;
+		return new int[]{xx, yy};
+	}
+
+	public int getIndex(int x, int y) {
+		return (y * getXCells()) + x;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 
@@ -200,6 +210,31 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		return this.cellAreaMeters ;
 	}
 
+	/**
+	 * Return a box in standard AWT coordinates. Useful for some graphical ops and rasterization.
+	 * 
+	 * @return
+	 */
+	public java.awt.geom.Rectangle2D.Double getDefaultBox() {
+		
+		ReferencedEnvelope env = getDefaultEnvelope();
+		return new java.awt.geom.Rectangle2D.Double(
+				env.getMinX(),
+				env.getMinY(), 
+				env.getWidth(), 
+				env.getHeight());
+	}
+	
+	public java.awt.geom.Rectangle2D.Double getNormalizedBox() {
+		
+		ReferencedEnvelope env = getNormalizedEnvelope();
+		return new java.awt.geom.Rectangle2D.Double(
+				env.getMinX(),
+				env.getMinY(), 
+				env.getWidth(), 
+				env.getHeight());
+	}
+	
 	/**
 	 * return the envelope of the cell at x,y, irrespective of the activation layer
 	 */
@@ -305,7 +340,7 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	public IGridMask requireActivationLayer(boolean active) {
 		
 		if (activationLayer == null) {
-			activationLayer = new RasterActivationLayer(xDivs, yDivs, active);
+			activationLayer = new RasterActivationLayer(xDivs, yDivs, active, this);
 		}
 		
 		return activationLayer;

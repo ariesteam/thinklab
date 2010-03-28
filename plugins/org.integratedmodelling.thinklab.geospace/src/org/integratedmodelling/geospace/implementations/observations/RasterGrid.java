@@ -45,7 +45,9 @@ import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
+import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.geospace.interfaces.IGeolocatedObject;
+import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -77,6 +79,8 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 	
 	// public so it can be set through reflection
 	public GridExtent extent;
+	private IGridMask mask;
+	private ShapeValue shape;
 
 	
 	@Override
@@ -336,10 +340,10 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 		return extent;
 	}
 
-	public Pair<Integer, Integer> getXYCoordinates(int index) {
+	public int[] getXYCoordinates(int index) {
 		int xx = index % getColumns();
-		int yy = getRows() - (index / getColumns()) - 1 - 1;
-		return new Pair<Integer,Integer>(xx, yy);
+		int yy = getRows() - (index / getColumns()) - 1;
+		return new int[]{xx, yy};
 	}
 
 	public int getIndex(int x, int y) {
@@ -362,12 +366,21 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 
 	@Override
 	public ShapeValue getCentroid() {
-		return getBoundingBox().getCentroid();
+		return getShape().getCentroid();
 	}
 
 	@Override
 	public ShapeValue getShape() {
-		return getBoundingBox();
+		return shape == null ? getBoundingBox() : shape;
+	}
+
+	public void mask(ShapeValue roi) throws ThinklabException {
+		this.mask = ThinklabRasterizer.createMask(roi, extent);
+		this.shape = roi;
+	}
+	
+	public IGridMask getMask() {
+		return this.mask;
 	}
 	
 }

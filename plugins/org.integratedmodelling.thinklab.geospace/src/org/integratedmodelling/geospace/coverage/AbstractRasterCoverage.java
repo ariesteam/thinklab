@@ -114,19 +114,22 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 		return new DirectPosition2D(xx, yy);
 	}
 	
+	public double getDouble(int x, int y) {
+		 return itera.getSampleDouble(x, y, 0);
+	}
+	
 	/**
 	 * Return the value at the given subdivision, either a double or whatever string our value maps to
 	 * if we're classifying.
 	 */
 	public Object getSubdivisionValue(int subdivisionOrder, ArealExtent extent) throws ThinklabValidationException {
 		
-		/* determine which active x,y we should retrieve for this order. Must flip rows to make it match the original image. */
-		Pair<Integer, Integer> xy = ((GridExtent)extent).getActivationLayer().getCell(subdivisionOrder);
+		int[] xy = ((GridExtent)extent).getXYCoordinates(subdivisionOrder);
 		
 		if (classMappings == null)
-		   return itera.getSampleDouble(xy.getFirst(), getYCells() - xy.getSecond() - 1, 0);
+		   return itera.getSampleDouble(xy[0], xy[1], 0);
 
-		int index = itera.getSample(xy.getFirst(), getYCells() - xy.getSecond() - 1, 0);
+		int index = itera.getSample(xy[0], xy[1], 0);
 		
 		return 
 			index == 0 ?

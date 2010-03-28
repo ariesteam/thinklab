@@ -33,11 +33,13 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.type.NumericAttributeType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.Geospace;
+import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.utils.NameGenerator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -312,6 +314,62 @@ public class FeatureRasterizer {
     	return ret;
 	}
 
+    /**
+     * Rasterize a single shape. It is assumed that the grid and the shape agree with each
+     * other, and that the axes don't need swapping. FIXME: at the moment uses the normalized
+     * envelope, so there may be a problem if stuff comes in non-normalized projections.
+     * 
+     * @param shape
+     * @param grid
+     * @param value
+     * @return
+     * @throws FeatureRasterizerException
+     */
+	public GridCoverage2D rasterize(ShapeValue shape, GridExtent grid, int value) throws FeatureRasterizerException {
+    	
+    	if (raster == null) {
+    	
+    		WritableRaster raster = 
+    			RasterFactory.createBandedRaster(
+    				DataBuffer.TYPE_SHORT, 
+					this.width, 
+					this.height, 
+					1, 
+					null);
+		
+			setWritableRaster(raster);
+    	} 
+
+        clearRaster();
+        
+        setBounds(grid.getNormalizedBox());
+        this.value = (float)value;
+        checkReset(DataBuffer.TYPE_SHORT);
+        addShape(shape);
+        close();
+        
+		GridCoverage2D coverage = 
+			rasterFactory.create(NameGenerator.newName("mask"), raster, grid.getNormalizedEnvelope());
+		
+    	return coverage;
+    }
+    
+	
+	private void checkReset(int type) {
+
+		if (resetRaster) {
+            raster = RasterFactory.createBandedRaster(type,width, height, 1, null);
+
+            bimage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            bimage.setAccelerationPriority(1.0f);
+            graphics = bimage.createGraphics();
+            graphics.setPaintMode();
+            graphics.setComposite(AlphaComposite.Src);
+            resetRaster = false;
+        }
+	}
+	
+	
 	public GridCoverage2D rasterize(String name, FeatureIterator<SimpleFeature> fc, String attributeName, IConcept valueType, 
 			String valueDefault, ReferencedEnvelope env, ReferencedEnvelope normEnv) throws FeatureRasterizerException {
     	
@@ -367,18 +425,12 @@ public class FeatureRasterizer {
     public void rasterize(FeatureCollection<SimpleFeatureType, SimpleFeature> fc, String attributeName)
     throws FeatureRasterizerException {
 
-        // calculate variable resolution bounds that fit around feature collection
-
-        double edgeBuffer = 0.001;
+    	double edgeBuffer = 0.001;
         double x = fc.getBounds().getMinX() - edgeBuffer;
         double y = fc.getBounds().getMinY() - edgeBuffer;
         double width = fc.getBounds().getWidth() + edgeBuffer * 2;
         double height = fc.getBounds().getHeight() + edgeBuffer * 2;
         java.awt.geom.Rectangle2D.Double bounds = new java.awt.geom.Rectangle2D.Double(x, y, width, height);
-        
-        //System.out.println("BOUNDS: "+bounds);
-        //System.out.println("FCBNDS: "+fc.getBounds());
-        
         rasterize(fc, bounds, attributeName);
     }
 
@@ -395,22 +447,7 @@ public class FeatureRasterizer {
     	throws FeatureRasterizerException {
 
         this.attributeName = attributeName;
-        
-        // Check if we need to change the underlying raster
-        if (resetRaster) {
-            raster = RasterFactory.createBandedRaster(DataBuffer.TYPE_FLOAT,
-                    width, height, 1, null);
-
-            bimage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            bimage.setAccelerationPriority(1.0f);
-//          GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//          System.out.println("IMAGE ACCELERATED? "+bimage.getCapabilities(ge.getDefaultScreenDevice().getDefaultConfiguration()).isAccelerated());
-            graphics = bimage.createGraphics();
-            graphics.setPaintMode();
-            graphics.setComposite(AlphaComposite.Src);
-            resetRaster = false;
-        }
-        // initialize raster to NoData value
+        checkReset(DataBuffer.TYPE_FLOAT);
         clearRaster();
         setBounds(bounds);
         FeatureIterator<SimpleFeature> fci = fc.features();
@@ -441,20 +478,8 @@ public class FeatureRasterizer {
     	
         this.attributeName = attributeName;
         this.valueDefault = valueDefault;
-        
-        // Check if we need to change the underlying raster
-        if (resetRaster) {
-            raster = RasterFactory.createBandedRaster(getRasterType(valueType),
-                    width, height, 1, null);
 
-            bimage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            bimage.setAccelerationPriority(1.0f);
-//            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            graphics = bimage.createGraphics();
-            graphics.setPaintMode();
-            graphics.setComposite(AlphaComposite.Src);
-            resetRaster = false;
-        }
+        checkReset(getRasterType(valueType));
         
         if (attributeName == null) {
 			// no attribute means use 1.0 for presence of feature, 0 otherwise
@@ -490,16 +515,23 @@ public class FeatureRasterizer {
     public void addShape(ShapeValue shape) {
     	
         int rgbVal = floatBitsToInt(value);
-
         graphics.setColor(new Color(rgbVal, true));
-        Geometry geometry = (Geometry) shape.getGeometry();
-        
+        Geometry geometry = shape.getGeometry();
+                
         if (geometry.intersects(extentGeometry)) {
+        	
+            if (geometry.getClass().equals(MultiPolygon.class) || geometry.getClass().equals(Polygon.class)) {
 
-            if (geometry.getClass().equals(MultiPolygon.class)) {
-                MultiPolygon mp = (MultiPolygon)geometry;
-                for (int n=0; n<mp.getNumGeometries(); n++) {
-                    drawGeometry(mp.getGeometryN(n));
+                for (int i = 0; i < geometry.getNumGeometries(); i++) {
+                	Polygon poly = (Polygon) geometry.getGeometryN(i);
+                	LinearRing lr = geoFactory.createLinearRing(poly.getExteriorRing().getCoordinates());
+            		Polygon part = geoFactory.createPolygon(lr, null);
+                	drawGeometry(part);
+                	for (int j = 0; j < poly.getNumInteriorRing(); j++) {
+                		lr = geoFactory.createLinearRing(poly.getInteriorRingN(j).getCoordinates());
+                		part = geoFactory.createPolygon(lr, null);
+        				drawGeometry(part);
+        			}
                 }
             }
             else if (geometry.getClass().equals(MultiLineString.class)) {
@@ -518,6 +550,7 @@ public class FeatureRasterizer {
                 drawGeometry(geometry);
             }
         }
+
     }
     
     /**
@@ -571,6 +604,7 @@ public class FeatureRasterizer {
                     "' ATTRIBUTE VALUE OF '"+feature.getAttribute(attributeName).toString()+"'");	        
             return;	        
         }
+        
         int rgbVal = floatBitsToInt(value);
         graphics.setColor(new Color(rgbVal, true));
 
@@ -730,6 +764,7 @@ public class FeatureRasterizer {
      * @return    The bounds value
      */
     public void setBounds(java.awt.geom.Rectangle2D.Double bounds) {
+    	
         this.bounds = bounds;
 
         xInterval = bounds.width / (double) width;

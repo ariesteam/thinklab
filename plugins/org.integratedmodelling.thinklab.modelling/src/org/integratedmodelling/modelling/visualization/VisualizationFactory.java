@@ -10,6 +10,7 @@ import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.currency.CurrencyPlugin;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
+import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -166,7 +167,16 @@ public class VisualizationFactory {
 		int[] idata = Metadata.getImageData(state);
 		int nlevels = (Integer)state.getMetadata(Metadata.IMAGE_LEVELS);
 		Boolean zeroIsNodata = (Boolean)state.getMetadata(Metadata.ZERO_IS_NODATA);
-
+		
+		IGridMask mask = space.getMask();
+		if (mask != null) {
+			for (int i = 0; i < idata.length; i++) {			
+				int[] xy = space.getXYCoordinates(i);
+				if (!mask.isActive(xy[0], xy[1]))
+					idata[i] = 0;
+			}
+		}
+		
 		ColorMap cmap =
 			getColormap(observable, nlevels, zeroIsNodata, 
 				getDefaultColormap(observable, state, nlevels));

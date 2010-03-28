@@ -1,5 +1,10 @@
 package org.integratedmodelling.geospace.gis;
 
+import java.awt.image.RenderedImage;
+
+import javax.media.jai.iterator.RandomIter;
+import javax.media.jai.iterator.RandomIterFactory;
+
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.feature.FeatureIterator;
 import org.integratedmodelling.geospace.Geospace;
@@ -78,22 +83,50 @@ public class ThinklabRasterizer {
 		return ret;
 	}
 	
+	private static IGridMask rasterizeShape(ShapeValue shape, GridExtent grid, int value) throws ThinklabRasterizationException {
+		
+		RasterActivationLayer ret = (RasterActivationLayer) createMask(grid);
+		GridCoverage2D coverage = null;
+		FeatureRasterizer rasterizer = 
+			new FeatureRasterizer(grid.getYCells(), grid.getXCells(), 0.0f, null);
+		
+		try {						
+			coverage = rasterizer.rasterize(shape, grid, value);
+			
+		} catch (FeatureRasterizerException e) {
+			throw new ThinklabRasterizationException(e);
+		} 
+		
+		/*
+		 * turn coverage into mask
+		 */
+		RenderedImage image = coverage.getRenderedImage();
+		RandomIter itera = RandomIterFactory.create(image, null);
+
+		for (int i = 0; i < grid.getTotalGranularity(); i++) {
+			
+			int[] xy = grid.getXYCoordinates(i);
+			
+			if (itera.getSampleDouble(xy[0], xy[1], 0) > 0.0) {
+				ret.activate(xy[0], xy[1]);
+			}
+		}
+		return ret;
+	}
+	
 	public static IGridMask createMask(GridExtent grid) {
 		RasterActivationLayer ret = 
-			new RasterActivationLayer(grid.getXCells(), grid.getYCells(), false);
+			new RasterActivationLayer(grid.getXCells(), grid.getYCells(), false, grid);
 		ret.setCRS(grid.getCRS());
 		return ret;
 	}
 	
 	public static IGridMask createMask(ShapeValue shape, GridExtent grid) throws ThinklabException {
-		RasterActivationLayer ret = (RasterActivationLayer) createMask(grid);
-		return addToMask(shape, ret);
+		return rasterizeShape(shape, grid, 1);
 	}
 	
 	public static IGridMask addToMask(ShapeValue shape, IGridMask mask) throws ThinklabException {
-
-		shape = shape.transform(((RasterActivationLayer)mask).getCoordinateReferenceSystem());
-		
+		mask.or(rasterizeShape(shape, mask.getGrid(), 1));
 		return mask;
 	}
 

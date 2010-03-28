@@ -47,25 +47,27 @@ public class RasterCoverage extends AbstractRasterCoverage {
 		 * TODO use activation layer
 		 */		
 		IGridMask act = extent.requireActivationLayer(true);
-		int xc = extent.getXCells();
-		int yc = extent.getYCells();
 		
 		if (data instanceof int[]) {
 			for (int i = 0; i < act.totalActiveCells(); i++) {
 				float d = (float) ((int[])data)[i];
-				raster.setSample(i % xc, yc - (i / xc) - 1 - 1, 0, d);
+				int[] xy = extent.getXYCoordinates(i);
+				raster.setSample(xy[0], xy[1], 0, d);
 			}
 		} else if (data instanceof long[]) {
 			for (int i = 0; i < act.totalActiveCells(); i++) {
-				raster.setSample(i % xc, yc - (i / xc) - 1, 0, (float) ((long[])data)[i]);
+				int[] xy = extent.getXYCoordinates(i);
+				raster.setSample(xy[0], xy[1], 0, (float) ((long[])data)[i]);
 			}
 		}  else if (data instanceof float[]) {
 			for (int i = 0; i < act.totalActiveCells(); i++) {
-				raster.setSample(i % xc, yc - (i / xc) - 1, 0, ((float[])data)[i]);
+				int[] xy = extent.getXYCoordinates(i);
+				raster.setSample(xy[0], xy[1], 0, ((float[])data)[i]);
 			}
 		}  else if (data instanceof double[]) {
 			for (int i = 0; i < act.totalActiveCells(); i++) {
-				raster.setSample(i % xc, yc - (i / xc) - 1, 0, (float)((double[])data)[i]);
+				int[] xy = extent.getXYCoordinates(i);
+				raster.setSample(xy[0], xy[1], 0, (float)((double[])data)[i]);
 			}
 		} else {
 			throw new ThinklabValidationException("cannot create a raster coverage from a " + data.getClass());
