@@ -68,7 +68,7 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 					Polylist.list(CoreScience.HAS_FORMAL_NAME, id) :
 					null),
 				(dynSpecs != null?
-					Polylist.list("modeltypes:hasStateFunction", dynSpecs) :
+					Polylist.list(":code", dynSpecs) :
 					null),
 				(dynSpecs != null?
 					Polylist.list("modeltypes:hasExpressionLanguage", 	

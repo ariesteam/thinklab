@@ -8,7 +8,9 @@ import java.io.Serializable;
  */
 public class Criterion implements Serializable {
 
-    public Criterion(String code) {
+	private static final long serialVersionUID = 4052105659500943312L;
+	public Criterion(String code) {
+		
         setCode(code);
         setDescription("");
         setWeight(0.0);

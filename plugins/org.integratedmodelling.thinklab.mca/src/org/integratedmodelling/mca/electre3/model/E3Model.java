@@ -16,7 +16,6 @@ public class E3Model {
     public E3Model() {
         criteria = new LinkedList<Criterion>();
         alternatives = new LinkedList<Alternative>();
-
     }
 
     public void addAlternative(String name) {

@@ -57,7 +57,7 @@
   [pred coll]
   (if (nil? coll) nil
       (if (pred (first coll)) 
-        (cons  (list (first coll) (second coll)) (group-if pred (rest (rest coll)))) 
+        (cons  (list (first coll) (second coll)) (group-if pred (rrest coll))) 
         (cons  (first coll) (group-if pred (rest coll)))))) 
 
 (defn group-keywords

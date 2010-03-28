@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.ascape.model.CellOccupant;
-import org.integratedmodelling.modelling.DefaultAbstractModel;
+import org.ascape.model.Agent;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
+
+import clojure.lang.IFn;
 
 /**
  * A generic Thinklab agent occupies a cell of a Thinkspace, non-exclusively. The cell doesn't need to
@@ -19,18 +24,23 @@ import org.integratedmodelling.utils.Polylist;
  * of ThinkAgent implement different localities of observation on the existing topologies - space, time
  * or any conceptual dimension (e.g. different opinions...)
  * 
+ * ThinkAgent proxies an Ascape agent.
+ * 
  * @author Ferdinando
  *
  */
-public class ThinkAgent extends CellOccupant {
+public class ThinkAgent  {
 
+	Agent _agent;
+	
 	ArrayList<IModel> models = null;
 	protected IConcept observable = null;
 	protected String observableId = null;
 	protected String name = null; 
 	
+	IFn _update = null;
+	
 	protected Polylist observableSpecs = null;
-	private static final long serialVersionUID = 6817729294716016787L;
 	
 	/*
 	 * Any clause not intercepted by applyClause becomes metadata, which is communicated
@@ -39,20 +49,49 @@ public class ThinkAgent extends CellOccupant {
 	protected HashMap<String, Object> metadata = new HashMap<String, Object>();
 	private String description;
 
-	/* (non-Javadoc)
-	 * @see org.ascape.model.Cell#initialize()
+	private static final long serialVersionUID = -8666426017903754905L;
+
+	/**
+	 * This serves as the kbox for all agents in this world. It is updated whenever an agent modifies the
+	 * world or the context is changed.
 	 */
-	@Override
-	public void initialize() {
-		// TODO Auto-generated method stub
-		super.initialize();
+	private IObservation world; 
+	
+	/*
+	 * the model that generated our world, which we may re-run any time we need to observe it again.
+	 */
+	private IModel worldModel;
+	private Topology[] topologies;
+	private ISession session;
+	private IKBox kbox;
+	
+	public void initialize(IModel world, IKBox kbox, ISession session, Topology ... context) {
+		
+		this.kbox = kbox;
+		this.session = session;
+		this.topologies = context;
+		this.worldModel = world;
 	}
 
 	public void applyClause(String keyword, Object argument) throws ThinklabException {
 		
 		// System.out.println(this + "processing clause " + keyword + " -> " + argument);
 		
-		if (keyword.equals(":context")) {
+		if (keyword.equals(":update")) {
+			_update = (IFn) argument;
+		} else if (keyword.equals(":random-walk")) {
+			// TODO
+		} else if (keyword.equals(":movement")) {
+			// TODO
+		} else if (keyword.equals(":death")) {
+			// TODO
+		} else if (keyword.equals(":metabolism")) {
+			// TODO
+		} else if (keyword.equals(":random-move")) {
+			// TODO
+		} else if (keyword.equals(":play")) {
+			// TODO
+		} else if (keyword.equals(":initialize")) {
 			// TODO
 		} else {
 			metadata.put(keyword.substring(1), argument);

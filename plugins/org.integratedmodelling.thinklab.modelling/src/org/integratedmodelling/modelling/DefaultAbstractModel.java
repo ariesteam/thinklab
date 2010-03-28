@@ -10,6 +10,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.modelling.agents.ThinkAgent;
 import org.integratedmodelling.modelling.annotation.ModelAnnotation;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
@@ -48,6 +49,12 @@ public abstract class DefaultAbstractModel implements IModel {
 	private LinkedList<Polylist> transformerQueue = new LinkedList<Polylist>();
 	protected boolean mediatesExternal;
 	private boolean _validated = false;
+	
+	/*
+	 * if the model was declared entifiable, this is the agent type that will
+	 * incarnate the entities that can be produced from an observation of it.
+	 */
+	private String entityAgent = null;
 	
 	/*
 	 * Any clause not intercepted by applyClause becomes metadata, which is communicated
@@ -161,9 +168,27 @@ public abstract class DefaultAbstractModel implements IModel {
 			isOptional = (Boolean)argument;
 		} else if (keyword.equals(":required")) {
 			isOptional = !((Boolean)argument);
+		} else if (keyword.equals(":agent")) {
+			entityAgent = argument.toString();
 		} else {
 			metadata.put(keyword.substring(1), argument);
 		}
+	}
+	
+	public boolean isEntifiable() {
+		return entityAgent != null;
+	}
+	
+	
+	/**
+	 * If this model is entifiable, return the agent to clone to build entities based on a
+	 * a given state.
+	 *
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public ThinkAgent getEntityAgent() throws ThinklabException {
+		return ModelFactory.get().requireAgent(entityAgent);
 	}
 	
 	/**

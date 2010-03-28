@@ -85,10 +85,28 @@
 				(.applyClause model ":probability" (eval (second clause)))
 				(= (first clause) :derivative)
 				(.applyClause model ":derivative" (tl/listp (second clause)))
+				(= (first clause) :state)
+				(.applyClause model ":state" (eval (second clause)))
 				(= (first clause) :context)
 				(.applyClause model ":context" (map configure-model (tl/group-with-keywords (second clause))))
 				(= (first clause) :observed)
 				(.applyClause model ":observed" (map configure-model (tl/group-with-keywords (second clause))))
+				(= (first clause) :random-walk)
+				(.applyClause model ":random-walk" (eval (second clause)))
+				(= (first clause) :movement)
+				(.applyClause model ":movement" (eval (second clause)))
+				(= (first clause) :death)
+				(.applyClause model ":death" (eval (second clause)))
+				(= (first clause) :update)
+				(.applyClause model ":update" (eval (second clause)))
+				(= (first clause) :random-move)
+				(.applyClause model ":random-move" (eval (second clause)))
+				(= (first clause) :metabolism)
+				(.applyClause model ":metabolism" (eval (second clause)))
+				(= (first clause) :initialize)
+				(.applyClause model ":initialize" (eval (second clause)))
+				(= (first clause) :play)
+				(.applyClause model ":play" (eval (second clause)))
 				:otherwise
 				(.applyClause model (str (first clause)) (second clause))))
 
@@ -194,7 +212,6 @@
 	 "Define an agent."
 		[model-name observable & body]
  		`(def ~model-name (modelling/register-agent (eval '(modelling/tl-agent ~observable ~@body)) (str '~model-name))))
- 
   
 (defn get-topology-in-location 
 	"Return the spatial topology of the first observation found in the given location that
@@ -243,7 +260,6 @@
 			]
 		(.getImplementation (tl/create-object result))))     
 
-
 (defn run-at-shape 
 	"Build, contextualize and return the first matching observation for the passed model. Unresolved dependencies
 	will be looked up in the kbox of kboxes (the KBoxManager). The next parameter should resolve to a shape in a 
@@ -265,7 +281,6 @@
 		(if (> (.getTotalResultCount qresult) 0) 
 				   (.getImplementation (.getObject (.getResult qresult 0 (tl/get-session))))))))
 		    
-		              
 (defn run-at-location 
 	"Build, contextualize and return the first matching observation for the passed model. Unresolved dependencies
 	will be looked up in the kbox of kboxes (the KBoxManager). The next parameter should resolve to a shape in a 

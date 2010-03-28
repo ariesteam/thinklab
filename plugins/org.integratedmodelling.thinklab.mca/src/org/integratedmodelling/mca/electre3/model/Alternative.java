@@ -9,7 +9,9 @@ import java.util.Hashtable;
  */
 public class Alternative implements Serializable {
 
-    public Alternative(String name) {
+	private static final long serialVersionUID = 895818478737969333L;
+
+	public Alternative(String name) {
         setName(name);
         setDescription("");
         performances = new Hashtable<Criterion, Double>();

@@ -11,8 +11,9 @@ import org.integratedmodelling.mca.electre3.model.Criterion;
  * @author Edwin Boaz Soenaryo
  */
 public class StorageBox implements Serializable {
-
-    public StorageBox() {
+	
+	private static final long serialVersionUID = 3117826326217824360L;
+	public StorageBox() {
         alternatives = null;
         criteria = null;
     }

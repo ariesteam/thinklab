@@ -243,7 +243,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		}
 		
 		if (dynSpecs != null) {
-			arr.add(Polylist.list("modeltypes:hasStateFunction", dynSpecs));
+			arr.add(Polylist.list(":code", dynSpecs));
 			arr.add(Polylist.list("modeltypes:hasExpressionLanguage", 
 					this.lang.equals(language.CLOJURE) ? "clojure" : "mvel"));
 		}

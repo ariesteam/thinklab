@@ -6,7 +6,7 @@
 ;; ------------------------------------------------------------------------------------------
 (ns tl
    (:import 
-   		(org.integratedmodelling.clojure ClojureBridge)
+   		(org.integratedmodelling.clojure  Clojure)
    		(org.integratedmodelling.thinklab.kbox KBoxManager)
    		(org.integratedmodelling.thinklab.exception ThinklabValidationException)
     	(org.integratedmodelling.thinklab Thinklab KnowledgeManager)))
@@ -35,12 +35,12 @@
 (defn plist 
 	"Translates a polylist into a sequence for Thinklab->Clojure bridging of datastructures"
 	[polylist]
-	(. ClojureBridge (p2list polylist)))
+	(. Clojure (p2list polylist)))
 
 (defn listp 
 	"Translates a sequence into a polylist for Clojure->Thinklab bridging of datastructures"
 	[sequence]
-	(. ClojureBridge (list2p sequence)))
+	(. Clojure (list2p sequence)))
 	
 (defn require-plugin
 	"Ensures that the specified thinklab plugin is loaded, and load its bindings if any."
@@ -50,7 +50,6 @@
 			  (getManager) 
 			  (activatePlugin (str pname)))) 
 		(load-bindings pname))
-		
 		
 (defn get-plugin-resource
 	"Return an URL corresponding to the resource in the classpath of a passed plugin, or nil if absent."
@@ -96,9 +95,9 @@
 	"Return a list of the values of a relationship (or a map of all relationships to their values
 	 if the property is not specified) of an object. The values returned are stripped of semantics."
 	([object]
-		(. ClojureBridge (getRelationships object true)))
+		(. Clojure (getRelationships object true)))
 	([object property]
-		(. ClojureBridge (getPropertyValues object property))))
+		(. Clojure (getPropertyValues object property))))
 		
 (defn get-property-value 
 	"Return the value of the given property, or nil if not present. It is assumed that the

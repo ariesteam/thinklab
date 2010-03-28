@@ -20,5 +20,6 @@ public class MatrixModel {
     public double getValue(AAPair aa) {
         return values.get(aa);
     }
+    
     private Hashtable<AAPair, Double> values;
 }

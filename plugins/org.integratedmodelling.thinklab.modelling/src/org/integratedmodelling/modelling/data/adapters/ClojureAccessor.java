@@ -3,7 +3,6 @@ package org.integratedmodelling.modelling.data.adapters;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.integratedmodelling.clojure.ClojureInterpreter;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
@@ -13,39 +12,46 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Pair;
 
+import clojure.lang.IFn;
+import clojure.lang.Keyword;
+import clojure.lang.PersistentArrayMap;
+
 public class ClojureAccessor implements IStateAccessor {
 
-	String clojureCode = null;
+	IFn clojureCode = null;
 	int[] prmOrder = null;
 	Object[] parameters;
 	HashMap<IConcept, String> obsToName = new HashMap<IConcept, String>();
 	ArrayList<Pair<String,Integer>> parmList = new ArrayList<Pair<String,Integer>>();
 	boolean isMediator;
 	String namespace = NameGenerator.newName("clj");
+	ArrayList<Keyword> kwList = null;
 	
-	public ClojureAccessor(String code, boolean isMediator) {
-		
-		/*
-		 * TODO compile a proxy and eval once, then use that
-		 */
+	public ClojureAccessor(IFn code, boolean isMediator) {
 		clojureCode = code;
-		
 		this.isMediator = isMediator;
 	}
 
 	@Override
 	public Object getValue(Object[] registers) {
 		
-		HashMap<String, Object> parms = new HashMap<String, Object>();
+		PersistentArrayMap parms = new PersistentArrayMap(new Object[] {});
+		
+		if (kwList == null) {
+			kwList = new ArrayList<Keyword>();
+			for (int i = 0; i < parmList.size(); i++)
+				kwList.add(Keyword.intern(null, parmList.get(i).getFirst()));
+		}
 		
 		for (int i = 0; i < parmList.size(); i++) {
-			parms.put(parmList.get(i).getFirst(),
-					registers[parmList.get(i).getSecond()]);
+			parms = (PersistentArrayMap) parms.assoc(
+						kwList.get(i),
+						registers[parmList.get(i).getSecond()]);
 		}
 		
 		try {
-			return new ClojureInterpreter().evalRaw(clojureCode, namespace, parms);
-		} catch (ThinklabException e) {
+			return clojureCode.invoke(parms);
+		} catch (Exception e) {
 			throw new ThinklabRuntimeException(e);
 		}
 	}
@@ -72,7 +78,6 @@ public class ClojureAccessor implements IStateAccessor {
 		// TODO Auto-generated method stub
 		if (!(observation instanceof Topology))
 			parmList.add(new Pair<String, Integer>(obsToName.get(observable), register));
-		
 	}
 	
 	

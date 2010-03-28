@@ -12,14 +12,8 @@ public abstract class DefaultStatefulAbstractModel extends DefaultAbstractModel 
 		
 		// System.out.println(this + "processing clause " + keyword + " -> " + argument);
 		
-		if (keyword.equals(":state")) {
-
-			/**
-			 * TODO this only validates ATOMIC states; this one should recognize computed 
-			 * states, vectors, sets as well, and call validateState repeatedly as necessary.
-			 */
+		if (keyword.equals(":value")) {
 			state = validateState(state);			
-
 		} else super.applyClause(keyword, argument);
 	}
 		

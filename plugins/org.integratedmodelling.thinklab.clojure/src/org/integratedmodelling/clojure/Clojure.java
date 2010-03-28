@@ -21,8 +21,9 @@ import clojure.lang.RT;
  * @author Ferdinando
  *
  */
-public class ClojureBridge {
+public class Clojure {
 	
+
 	private static Polylist list2pInternal(ISeq list, Polylist plist) {
 	
 		if (plist == null)

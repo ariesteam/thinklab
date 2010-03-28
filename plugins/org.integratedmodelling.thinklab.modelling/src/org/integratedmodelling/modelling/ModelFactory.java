@@ -230,7 +230,6 @@ public class ModelFactory {
 		
 		// FIXME same ID and name
 		model.setId(name);
-		model.setName(name);
 		agentsById.put(model.getId(), model);
 		ModellingPlugin.get().logger().info("scenario " + model + " registered");
 		return model;
@@ -381,6 +380,19 @@ public class ModelFactory {
 	public ThinkAgent placeAgent(String agentId, IKBox kbox, ISession session, 
 				Topology ... extents) throws ThinklabException {
 		return null;
+	}
+
+	public ThinkAgent retrieveAgent(String entityAgent) {
+		return entityAgent == null ? null : agentsById.get(entityAgent);
+	}	
+
+	public ThinkAgent requireAgent(String s) throws ThinklabException {
+
+		ThinkAgent ret = retrieveAgent(s);
+		if (ret == null)
+			throw new ThinklabResourceNotFoundException("no agent found for "
+					+ s);
+		return ret;
 	}
 	
 }

@@ -236,6 +236,9 @@ public class ClojureInterpreter implements Interpreter {
 
 	public Object evalRaw(Object code, String namespace, HashMap<String, Object> args) throws ThinklabException {
 		
+		if (namespace == null)
+			namespace = "user";
+		
 		InputStream inp = null;
 		try {
 			if (code instanceof URL) {
@@ -260,7 +263,8 @@ public class ClojureInterpreter implements Interpreter {
 		final Var stare = RT.var("clojure.core", "*e");
 		final Var sess  = RT.var("tl", "*session*");
 
-		final Namespace CUSTOM_NS = Namespace.findOrCreate(newGlobalSymbol(namespace));		
+		final Namespace CUSTOM_NS = 
+				Namespace.findOrCreate(newGlobalSymbol(namespace));		
 
 		Object ret = null;
 		

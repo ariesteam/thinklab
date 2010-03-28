@@ -14,48 +14,47 @@ import org.integratedmodelling.utils.Polylist;
 public class MeasurementModel extends DefaultDynamicAbstractModel {
 
 	String unitSpecs = null;
-	
+
 	@Override
 	public String toString() {
 		return ("measurement(" + getObservable() + "," + unitSpecs + ")");
 	}
-	
+
 	public void setUnits(Object unitSpecs) {
 		this.unitSpecs = unitSpecs.toString();
 		this.metadata.put(Metadata.UNITS, this.unitSpecs);
 		this.metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 	}
-	
-	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException {
 
+	@Override
+	public Polylist buildDefinition(IKBox kbox, ISession session)
+			throws ThinklabException {
+		
 		/*
 		 * choose observation class according to derivative, probability etc.
 		 */
 		Polylist def = Polylist.listNotNull(
-				(dynSpecs == null ? CoreScience.MEASUREMENT : "modeltypes:DynamicMeasurement"),
-				(id != null ? 
-					Polylist.list(CoreScience.HAS_FORMAL_NAME, id) :
-					null),
-				(dynSpecs != null?
-					Polylist.list("modeltypes:hasStateFunction", dynSpecs) :
-					null),
-				(dynSpecs != null?
-					Polylist.list("modeltypes:hasExpressionLanguage", 
-							this.lang.equals(language.CLOJURE) ? "clojure" : "mvel") :
-					null),
-				unitSpecs.contains(" ") ?
-						Polylist.list("measurement:value", unitSpecs) :
-						Polylist.list("measurement:unit", unitSpecs),
-				(isMediating() ? 
+				(dynSpecs == null ? CoreScience.MEASUREMENT
+						: "modeltypes:DynamicMeasurement"),
+				(id != null ? Polylist.list(CoreScience.HAS_FORMAL_NAME, id)
+						: null), 
+				(dynSpecs != null ? 
+					Polylist.list(":code", dynSpecs) : null),
+				(dynSpecs != null ? 
+					Polylist.list(
+						"modeltypes:hasExpressionLanguage", 
+						this.lang.equals(language.CLOJURE) ? "clojure" : "mvel")
+						: null), 
+				unitSpecs.contains(" ") ? Polylist.list(
+						"measurement:value", unitSpecs) : Polylist.list(
+						"measurement:unit", unitSpecs), 
+				(isMediating() ?
 						null :
-						Polylist.list(
-								CoreScience.HAS_OBSERVABLE,
+						Polylist.list(CoreScience.HAS_OBSERVABLE,
 								Polylist.list(getObservable()))));
-		
+
 		return def;
 	}
-
 
 	@Override
 	public IConcept getCompatibleObservationType(ISession session) {
@@ -63,16 +62,19 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 	}
 
 	@Override
-	public void validateMediatedModel(IModel model) throws ThinklabValidationException {
-		if (! (model instanceof MeasurementModel)) {
-			throw new ThinklabValidationException("measurement models can only mediate other measurements");
+	public void validateMediatedModel(IModel model)
+			throws ThinklabValidationException {
+		if (!(model instanceof MeasurementModel)) {
+			throw new ThinklabValidationException(
+					"measurement models can only mediate other measurements");
 		}
 	}
 
 	@Override
 	protected Object validateState(Object state)
 			throws ThinklabValidationException {
-		return state instanceof Double ? state : Double.parseDouble(state.toString());
+		return state instanceof Double ? state : Double.parseDouble(state
+				.toString());
 	}
 
 	@Override
@@ -93,9 +95,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 	@Override
 	protected void validateSemantics(ISession session) throws ThinklabException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-
-	
 }

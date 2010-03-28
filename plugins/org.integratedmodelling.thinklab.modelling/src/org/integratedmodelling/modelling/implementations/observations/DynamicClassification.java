@@ -8,10 +8,12 @@ import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplement
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
+import clojure.lang.IFn;
+
 @InstanceImplementation(concept="modeltypes:DynamicClassification")
 public class DynamicClassification extends Classification {
 
-	String code = null;
+	public IFn code = null;
 	String lang = "clojure";
 	
 	@Override
@@ -25,7 +27,6 @@ public class DynamicClassification extends Classification {
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 		super.initialize(i);
-		this.code = i.get("modeltypes:hasStateFunction").toString();
 		IValue lng = i.get("modeltypes:hasExpressionLanguage");
 		if (lng != null)
 			this.lang = lng.toString().toLowerCase();

@@ -10,18 +10,20 @@ import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplement
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
+import clojure.lang.IFn;
+
 @InstanceImplementation(concept="modeltypes:DynamicRanking")
 public class DynamicRanking extends Ranking {
 
-	String code = null;
+	public Object code = null;
 	String lang = "clojure";
 	
 	@Override
 	public IStateAccessor getAccessor() {
 		if (lang.equals("clojure"))
-			return new ClojureAccessor(code, false);
+			return new ClojureAccessor((IFn)code, false);
 		else
-			return new MVELAccessor(code, false);
+			return new MVELAccessor((String)code, false);
 	}
 
 
@@ -29,9 +31,9 @@ public class DynamicRanking extends Ranking {
 	public IStateAccessor getMediator(IndirectObservation observation)
 			throws ThinklabException {
 		if (lang.equals("clojure"))
-			return new ClojureAccessor(code, true);
+			return new ClojureAccessor((IFn)code, true);
 		else
-			return new MVELAccessor(code, true);
+			return new MVELAccessor((String)code, true);
 	}
 
 
@@ -41,7 +43,12 @@ public class DynamicRanking extends Ranking {
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 		super.initialize(i);
-		this.code = i.get("modeltypes:hasStateFunction").toString();
+
+		IValue cd = i.get("modeltypes:hasStateFunction");
+		if (cd != null) {
+			this.code = cd.toString();
+			this.lang = "MVEL";
+		}
 		IValue lng = i.get("modeltypes:hasExpressionLanguage");
 		if (lng != null)
 			this.lang = lng.toString().toLowerCase();
