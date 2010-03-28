@@ -29,6 +29,7 @@ import org.w3c.dom.Node;
  *      )).write("file.xml");
  * 
  * @author Ferdinando Villa
+ * @see HTML for an HTML-specialized version.
  */
 public class XML {
 	
@@ -40,6 +41,9 @@ public class XML {
 		ArrayList<Pair<String, String>> attrs = null;
 		ArrayList<Collection<?>> collections = null;
 		ArrayList<Polylist> lists = null;
+		
+		protected XmlNode() {
+		}
 		
 		public XmlNode attr(String s, String v) {
 			if (attrs == null)
@@ -190,6 +194,39 @@ public class XML {
 			} else if (o instanceof Polylist) {
 				ret.lists.add((Polylist)o);
 			} else if (o instanceof String) {
+				if (ret.text == null)
+					ret.text = (String)o;
+				else 
+					ret.text += " " + (String)o;
+			} else if (o instanceof Collection<?>) {
+				if (ret.collections == null)
+					ret.collections = new ArrayList<Collection<?>>();
+				ret.collections.add((Collection<?>)o);
+			} else if (o != null) {
+				throw new ThinklabValidationException(
+						"XML.node: only admitted content is text strings, lists, collections or other XmlNodes: " + o);
+			}
+		}
+		
+		return ret;
+	}
+	
+	/*
+	 * used only to implement derived classes such as HTML or GeoRSS
+	 */
+	protected static XmlNode node(XmlNode ret, String tag, Object ... objects) throws ThinklabException {
+				
+		ret.tag = tag;
+		
+		if (objects == null)
+			return ret;
+		
+		for (Object o : objects) {
+			if (o instanceof XmlNode) {
+				ret.add((XmlNode)o);
+			} else if (o instanceof Polylist) {
+				ret.lists.add((Polylist)o);
+			} else if (o instanceof String) {
 				if (ret.text != null)
 					throw new ThinklabValidationException(
 					"XML.node: only one content string admitted");
@@ -206,6 +243,4 @@ public class XML {
 		
 		return ret;
 	}
-	
-
 }

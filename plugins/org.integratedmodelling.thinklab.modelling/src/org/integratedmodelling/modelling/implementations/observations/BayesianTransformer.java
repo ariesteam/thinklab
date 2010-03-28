@@ -218,7 +218,6 @@ public class BayesianTransformer
  			 */
 			st.data = new CategoricalDistributionDatasource(var, size, pcstates, classifiers);
 			st.data.addAllMetadata(modelMetadata.get(st.observable));
-			st.data.setMetadata(Metadata.DEFINING_MODEL, this);
 			pstorage[i++] = st;
 		}
 		
