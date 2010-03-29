@@ -101,6 +101,15 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 		this.coverage  = vectorCoverage;
 	}
 	
+	public ShapeExtent(ShapeValue shape) {
+		super(shape.getCRS(), 
+			  shape.getEnvelope().getMinX(), 
+			  shape.getEnvelope().getMinY(), 
+			  shape.getEnvelope().getMaxX(), 
+			  shape.getEnvelope().getMaxY());
+		this.shape = shape.getGeometry();
+	}
+
 	public IValue getFullExtentValue() {
 		return new ShapeValue(shape, getCRS());
 	}

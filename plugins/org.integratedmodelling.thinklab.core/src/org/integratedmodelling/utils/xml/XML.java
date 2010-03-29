@@ -14,7 +14,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-
 /**
  * Make XML encoding as fun as possible using a functional style. Also automatically
  * converts (suitable) polylists to XML nodes.

@@ -179,16 +179,8 @@ public abstract class DefaultAbstractModel implements IModel {
 		return entityAgent != null;
 	}
 	
-	
-	/**
-	 * If this model is entifiable, return the agent to clone to build entities based on a
-	 * a given state.
-	 *
-	 * @return
-	 * @throws ThinklabException 
-	 */
-	public ThinkAgent getEntityAgent() throws ThinklabException {
-		return ModelFactory.get().requireAgent(entityAgent);
+	public String getEntityType() {
+		return entityAgent;
 	}
 	
 	/**

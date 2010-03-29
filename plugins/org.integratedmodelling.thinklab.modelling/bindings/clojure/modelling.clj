@@ -22,8 +22,10 @@
 (defn j-make-agent
 	"Make a new instance of Model and return it. We need this because the class won't be visible when
 	the macro is expanded at runtime."
-	[]
-	(new org.integratedmodelling.modelling.agents.ThinkAgent))
+;; TODO the agent concept should select the class, using an annotation
+;; or something.
+	[concept]
+	(new org.integratedmodelling.modelling.agents.ThinkGeolocatedAgent))
 		
 (defn register-model
 	"Get the single instance of the model manager from the modelling plugin and register the passed model
@@ -183,7 +185,8 @@
  	        definition# 
  	        	(drop (tl/count-not-nil (list desc# contingency-model#)) '~body)
  	        model# 
- 	        	(modelling/j-make-agent)]
+            ;; TODO pass the observable class so the proper agent can be created
+ 	        	(modelling/j-make-agent nil)]
  	      
  	     (.setObservable  model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
  	     (.setDescription model# desc#)

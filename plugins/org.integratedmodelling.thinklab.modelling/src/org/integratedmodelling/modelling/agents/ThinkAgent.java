@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.ascape.model.Agent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
@@ -29,7 +31,7 @@ import clojure.lang.IFn;
  * @author Ferdinando
  *
  */
-public class ThinkAgent  {
+public class ThinkAgent  extends DefaultMutableTreeNode {
 
 	Agent _agent;
 	
@@ -60,10 +62,29 @@ public class ThinkAgent  {
 	/*
 	 * the model that generated our world, which we may re-run any time we need to observe it again.
 	 */
-	private IModel worldModel;
-	private Topology[] topologies;
-	private ISession session;
-	private IKBox kbox;
+	IModel worldModel;
+	Topology[] topologies;
+	ISession session;
+	IKBox kbox;
+	
+	protected void copy(ThinkAgent agent) {
+		worldModel = agent.worldModel;
+		kbox = agent.kbox;
+		session = agent.session;
+		description = agent.description;
+		_update = agent._update;
+		models = agent.models;
+		observable = agent.observable;
+		observableId = agent.observableId;
+		name = agent.name;
+	}
+	
+	@Override
+	public Object clone() {
+		ThinkAgent ret = new ThinkAgent();
+		ret.copy(this);
+		return ret;
+	}
 	
 	public void initialize(IModel world, IKBox kbox, ISession session, Topology ... context) {
 		

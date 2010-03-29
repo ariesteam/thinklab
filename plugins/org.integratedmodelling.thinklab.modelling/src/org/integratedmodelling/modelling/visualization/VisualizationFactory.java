@@ -131,13 +131,15 @@ public class VisualizationFactory {
 		int rows = space.getRows();
 
 		double[][] plotdata = new double[rows][cols];
+		IGridMask mask = space.getMask();
 		
 		if (data != null) {
 			
 			for (int row = 0; row < rows; row++) {
 				for (int col = 0; col < cols; col++) {
 					double d = data[space.getIndex(row, col)];
-					plotdata[rows-row-1][col] = Double.isNaN(d) ? 0.0 : d;
+					boolean active = mask == null || mask.isActive(space.getIndex(row, col));
+					plotdata[rows-row-1][col] = (!active || Double.isNaN(d)) ? 0.0 : d;
 				}
 			}
 		}

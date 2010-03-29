@@ -382,17 +382,13 @@ public class ModelFactory {
 		return null;
 	}
 
-	public ThinkAgent retrieveAgent(String entityAgent) {
-		return entityAgent == null ? null : agentsById.get(entityAgent);
-	}	
+	public ThinkAgent createAgent(String agentId) throws ThinklabException {
 
-	public ThinkAgent requireAgent(String s) throws ThinklabException {
-
-		ThinkAgent ret = retrieveAgent(s);
+		ThinkAgent ret = agentsById.get(agentId);
 		if (ret == null)
 			throw new ThinklabResourceNotFoundException("no agent found for "
-					+ s);
-		return ret;
+					+ agentId);
+		return (ThinkAgent) ret.clone();
 	}
 	
 }
