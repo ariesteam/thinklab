@@ -9,6 +9,9 @@
 
 (tl/load-bindings 'corescience)
 
+;; the main space observable, used to retrieve extents from observations, is bound to geospace/*space*
+(def *space* (tl/conc 'geospace:SpaceObservable))
+
 (defn get-boundary
 	"Returns a space areal observation with the boundary of the given observation, or the convex hull
 	 of a list of observations."

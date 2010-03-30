@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.integratedmodelling.mca.ahp.AHP;
+import org.integratedmodelling.mca.electre3.model.E3Model;
 import org.integratedmodelling.mca.evamix.Evamix;
-import org.integratedmodelling.mca.evamix.Evamix.Results;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+
+import com.hp.hpl.jena.assembler.Mode;
 
 /**
  * Driver class to run a whole MCA analysis from definition to results. It makes using 
@@ -143,6 +145,14 @@ public class MCA {
 			alt.values = new double[criteria.size()];
 		
 		alt.values[crit] = value;
+	}
+	
+	public void runElectre3() throws ThinklabException {
+		
+		
+		E3Model model = new E3Model();
+		
+		
 	}
 	
 	public Evamix.Results runEvamix() throws ThinklabException {
