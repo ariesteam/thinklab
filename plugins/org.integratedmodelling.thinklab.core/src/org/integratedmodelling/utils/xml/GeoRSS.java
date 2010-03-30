@@ -24,16 +24,37 @@ public class GeoRSS extends XML {
 				attr("xmlns:georss", "http://www.georss.org/georss");
 	}
 	
-	public static GeoRSSNode div(Object ... objects) throws ThinklabException {
-		return (GeoRSSNode) node(new GeoRSSNode(), "div", objects);
+	public static GeoRSSNode RDF(Object ... objects) throws ThinklabException {
+		return (GeoRSSNode) 
+			node(new GeoRSSNode(), "rdf:RDF", objects).
+			    attr("xmlns:rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#").
+				attr("xmlns", "http://purl.org/rss/1.0/").
+				attr("xmlns:dc", "http://purl.org/dc/elements/1.1/").
+				attr("xmlns:georss", "http://www.georss.org/georss");
+	}
+	
+	public static GeoRSSNode items(Object ... objects) throws ThinklabException {
+		return (GeoRSSNode) node(new GeoRSSNode(), "items", objects);
+	}
+	
+	public static GeoRSSNode description(Object ... objects) throws ThinklabException {
+		return (GeoRSSNode) node(new GeoRSSNode(), "description", objects);
 	}
 	
 	public static GeoRSSNode id(Object ... objects) throws ThinklabException {
 		return (GeoRSSNode) node(new GeoRSSNode(), "id", objects);
 	}
+
+	public static GeoRSSNode item(Object ... objects) throws ThinklabException {
+		return (GeoRSSNode) node(new GeoRSSNode(), "item", objects);
+	}
 	
 	public static GeoRSSNode email(Object ... objects) throws ThinklabException {
 		return (GeoRSSNode) node(new GeoRSSNode(), "email", objects);
+	}
+	
+	public static GeoRSSNode channel(Object ... objects) throws ThinklabException {
+		return (GeoRSSNode) node(new GeoRSSNode(), "channel", objects);
 	}
 	
 	public static GeoRSSNode name(Object ... objects) throws ThinklabException {
@@ -42,6 +63,14 @@ public class GeoRSS extends XML {
 	
 	public static GeoRSSNode author(Object ... objects) throws ThinklabException {
 		return (GeoRSSNode) node(new GeoRSSNode(), "author", objects);
+	}
+	
+	public static GeoRSSNode creator(Object ... objects) throws ThinklabException {
+		return (GeoRSSNode) node(new GeoRSSNode(), "dc:creator", objects);
+	}
+	
+	public static GeoRSSNode date(Object ... objects) throws ThinklabException {
+		return (GeoRSSNode) node(new GeoRSSNode(), "dc:date", objects);
 	}
 	
 	public static GeoRSSNode updated(Object ... objects) throws ThinklabException {

@@ -36,10 +36,8 @@ public class XML {
 
 		private static final long serialVersionUID = -3750169814447901831L;
 		String tag = null;
-		String text = null;
 		ArrayList<Pair<String, String>> attrs = null;
-		ArrayList<Collection<?>> collections = null;
-		ArrayList<Polylist> lists = null;
+		ArrayList<Object> contents = new ArrayList<Object>();
 		
 		protected XmlNode() {
 		}
@@ -52,7 +50,7 @@ public class XML {
 		}
 		
 		public void text(String text) {
-			this.text = text;
+			contents.add(text);
 		}
 		
 		public XmlNode(String tag) {
@@ -70,25 +68,24 @@ public class XML {
 					((Element)ret).setAttributeNode(attr);					
 				}
 		
-			if (text != null) 
-				ret.setTextContent(text);
-			
-			if (collections != null)
-				for (Collection<?> c : collections) {
-					for (Iterator<?> it = ((Collection<?>)c).iterator(); it.hasNext(); ) {
-						Object o = it.next();
-						if (!(o instanceof XmlNode)) {
+			for (Object o : contents) {
+
+				if (o instanceof String) {
+					String text = (String)o;
+					ret.setTextContent(text);
+				} else if (o instanceof Collection<?>) {
+					for (Iterator<?> it = ((Collection<?>)o).iterator(); it.hasNext(); ) {
+						Object no = it.next();
+						if (!(no instanceof XmlNode)) {
 							throw new ThinklabValidationException(
 								"XML.node: collections must be of XmlNode");	
 						}
-						ret.appendChild(((XmlNode)o).create(ret, doc));
+						ret.appendChild(((XmlNode)no).create(ret, doc));
 					}
-			}
-			
-			if (this.children != null)
-				for (Object o : this.children) {
+				} else if (o instanceof XmlNode) {
 					ret.appendChild(((XmlNode)o).create(ret, doc));
 				}
+			}
 			
 			return ret;
 		}
@@ -102,31 +99,29 @@ public class XML {
 					((Element)self).setAttributeNode(attr);					
 				}
 			
-			if (collections != null)
-				for (Collection<?> c : collections) {
-					for (Iterator<?> it = ((Collection<?>)c).iterator(); it.hasNext(); ) {
-						Object o = it.next();
-						if (o instanceof XmlNode) {
-							self.appendChild(((XmlNode)o).create(self, doc));
-						} else if (o instanceof Polylist) {
-							self.appendChild(((Polylist)o).createXmlNode().create(self, doc));
+			for (Object o : contents) {
+
+				if (o instanceof String) {
+					String text = (String)o;
+					self.setTextContent(text);
+				} else if (o instanceof Collection<?>) {
+					for (Iterator<?> it = ((Collection<?>)o).iterator(); it.hasNext(); ) {
+						Object no = it.next();
+						if (no instanceof XmlNode) {
+							self.appendChild(((XmlNode)no).create(self, doc));
+						} else if (no instanceof Polylist) {
+							self.appendChild(((Polylist)no).createXmlNode().create(self, doc));
 						} else {
 							throw new ThinklabValidationException(
 								"XML.node: collections must be of XmlNode or Polylist");	
 						}
 					}
+				} else if (o instanceof XmlNode) {
+					self.appendChild(((XmlNode)o).create(self, doc));
+				} else if (o instanceof Polylist) {
+					self.appendChild(((Polylist)o).createXmlNode().create(self, doc));					
 				}
-
-			if (this.children != null)
-				for (Object o : this.children) {
-					if (o instanceof XmlNode)	
-						self.appendChild(((XmlNode)o).create(self, doc));
-				}
-			
-			if (this.lists != null)
-				for (Polylist p : this.lists) {
-					self.appendChild(p.createXmlNode().create(self, doc));					
-				}
+			}			
 		}
 	}
 	
@@ -188,23 +183,7 @@ public class XML {
 			return ret;
 		
 		for (Object o : objects) {
-			if (o instanceof XmlNode) {
-				ret.add((XmlNode)o);
-			} else if (o instanceof Polylist) {
-				ret.lists.add((Polylist)o);
-			} else if (o instanceof String) {
-				if (ret.text == null)
-					ret.text = (String)o;
-				else 
-					ret.text += " " + (String)o;
-			} else if (o instanceof Collection<?>) {
-				if (ret.collections == null)
-					ret.collections = new ArrayList<Collection<?>>();
-				ret.collections.add((Collection<?>)o);
-			} else if (o != null) {
-				throw new ThinklabValidationException(
-						"XML.node: only admitted content is text strings, lists, collections or other XmlNodes: " + o);
-			}
+			ret.contents.add(o);
 		}
 		
 		return ret;
@@ -219,27 +198,11 @@ public class XML {
 		
 		if (objects == null)
 			return ret;
-		
+
 		for (Object o : objects) {
-			if (o instanceof XmlNode) {
-				ret.add((XmlNode)o);
-			} else if (o instanceof Polylist) {
-				ret.lists.add((Polylist)o);
-			} else if (o instanceof String) {
-				if (ret.text != null)
-					throw new ThinklabValidationException(
-					"XML.node: only one content string admitted");
-				ret.text = (String)o;
-			} else if (o instanceof Collection<?>) {
-				if (ret.collections == null)
-					ret.collections = new ArrayList<Collection<?>>();
-				ret.collections.add((Collection<?>)o);
-			} else if (o != null) {
-				throw new ThinklabValidationException(
-						"XML.node: only admitted content is one text string or other XmlNodes: " + o);
-			}
+			ret.contents.add(o);
 		}
-		
+				
 		return ret;
 	}
 }
