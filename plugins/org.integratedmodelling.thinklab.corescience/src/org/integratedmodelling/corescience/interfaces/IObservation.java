@@ -52,6 +52,15 @@ public interface IObservation extends IConceptualizable {
 	public abstract IObservation[] getDependencies();
 
 	/**
+	 * Return a collection of all observations that may contribute to define the 
+	 * states of this one, accumulating states over the union of their extents.
+	 * 
+	 * @return
+	 */
+	public abstract IObservation[] getContingencies();
+
+	
+	/**
 	 * Return a collection of all extent observation that this one depends on.
 	 * 
 	 * @return
@@ -97,12 +106,6 @@ public interface IObservation extends IConceptualizable {
 	 */
 	public abstract boolean isMediator();
 
-	/**
-	 * Antecedents in the provenance chain that are compatible with our overall extents. 
-	 * 
-	 * @return
-	 */
-	public abstract IObservation[] getAntecedents();
 
 	/**
 	 * Return the extent observation for the passed concept if we have it, or null.

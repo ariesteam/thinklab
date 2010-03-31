@@ -37,10 +37,9 @@ public class Observation implements IObservation, IInstanceImplementation {
 	protected IInstance observation = null;
 	protected IInstance dataSourceValue = null;
 	protected IObservation[] dependencies = new IObservation[0];
+	protected IObservation[] contingencies = new IObservation[0];
 	protected Topology[] extentDependencies = new Topology[0];
 	protected IObservation[] nonExtentDependencies = new IObservation[0];
-	protected IObservation[] sameExtentAntecedents = new IObservation[0];
-	protected IObservation[] antecedents = new IObservation[0];
 	protected IObservation mediatedObservation = null;
 	protected IObservation mediatorObservation = null;
 
@@ -122,10 +121,9 @@ public class Observation implements IObservation, IInstanceImplementation {
 		observation = i;
 
 		ArrayList<IObservation> dep = new ArrayList<IObservation>();
+		ArrayList<IObservation> con = new ArrayList<IObservation>();
 		ArrayList<IObservation> ext = new ArrayList<IObservation>();
 		ArrayList<IObservation> nxt = new ArrayList<IObservation>();
-		ArrayList<IObservation> sea = new ArrayList<IObservation>();
-		ArrayList<IObservation> ant = new ArrayList<IObservation>();
 
 		IValue fn = i.get(CoreScience.HAS_FORMAL_NAME);
 		if (fn != null)
@@ -145,6 +143,11 @@ public class Observation implements IObservation, IInstanceImplementation {
 				} else if (dataSourceHolder == null
 						&& r.getProperty().is(CoreScience.HAS_DATASOURCE)) {
 					dataSourceHolder = r.getValue();
+				} else if (r.getProperty().is(CoreScience.CONTINGENT_TO)) {
+
+					con.add((IObservation) r.getValue().asObjectReference()
+							.getObject().getImplementation());
+					
 				} else if (r.getProperty().is(CoreScience.DEPENDS_ON)) {
 
 					dep.add((IObservation) r.getValue().asObjectReference()
@@ -164,33 +167,21 @@ public class Observation implements IObservation, IInstanceImplementation {
 								.getImplementation();
 					}
 
-				} else if (r.getProperty().is(CoreScience.DERIVED_FROM)) {
-					
-					ant.add((IObservation) r.getValue().asObjectReference()
-							.getObject().getImplementation());
-					
-					if (r.getProperty().is(CoreScience.HAS_SAME_CONTEXT_ANTECEDENT)) {
-						sea.add((IObservation) r.getValue().asObjectReference()
-								.getObject().getImplementation());
-					}
-				}
+				} 
 			}
 		}
 
 		if (dep.size() > 0)
 			dependencies = dep.toArray(dependencies);
+		
+		if (con.size() > 0)
+			contingencies = dep.toArray(contingencies);
 
 		if (ext.size() > 0)
 			extentDependencies = ext.toArray(extentDependencies);
 
 		if (nxt.size() > 0)
 			nonExtentDependencies = nxt.toArray(nonExtentDependencies);
-
-		if (sea.size() > 0)
-			sameExtentAntecedents = sea.toArray(sameExtentAntecedents);
-		
-		if (ant.size() > 0)
-			antecedents = ant.toArray(antecedents);
 		
 		/*
 		 * if we are mediating something and we have our own observable, we must
@@ -258,11 +249,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 		return observable.getDirectType();
 	}
 
-	@Override
-	public IObservation[] getAntecedents() {
-		return sameExtentAntecedents;
-	}
-
 	public String getFormalName() {
 		return formalName;
 	}
@@ -296,6 +282,11 @@ public class Observation implements IObservation, IInstanceImplementation {
 	@Override
 	public HashMap<String, Object> getMetadata() {
 		return this.metadata ;
+	}
+
+	@Override
+	public IObservation[] getContingencies() {
+		return contingencies;
 	}
 	
 }

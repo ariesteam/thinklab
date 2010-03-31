@@ -107,9 +107,6 @@ public class ObservationFactory {
 		for (IObservation o : observation.getDependencies()) {
 			collectStates(o, ret);
 		}
-		for (IObservation o : observation.getAntecedents()) {
-			collectStates(o, ret);
-		}
 	}
 
 	/**

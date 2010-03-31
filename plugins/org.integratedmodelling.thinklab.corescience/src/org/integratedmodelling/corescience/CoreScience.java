@@ -35,6 +35,7 @@ package org.integratedmodelling.corescience;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 /**
@@ -114,7 +115,7 @@ public class CoreScience extends ThinklabPlugin {
 	static final public String GENERIC_OBSERVABLE = "representation:GenericObservable";
 	static final public String GENERIC_QUANTIFIABLE = "representation:GenericQuantifiable";
 
-
+	public static final String CONTINGENT_TO = "observation:isContingentTo";
 
 	public static CoreScience get() {
 		return (CoreScience) getPlugin(PLUGIN_ID );

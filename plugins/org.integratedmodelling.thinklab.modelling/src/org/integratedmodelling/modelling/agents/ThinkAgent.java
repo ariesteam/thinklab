@@ -40,9 +40,13 @@ public class ThinkAgent  extends DefaultMutableTreeNode {
 	protected String observableId = null;
 	protected String name = null; 
 	
-	IFn _update = null;
 	
 	protected Polylist observableSpecs = null;
+	
+	/*
+	 * our behavior is a map of named closures which will get this as their single parameter
+	 */
+	protected HashMap<String, IFn> rules = new HashMap<String, IFn>();
 	
 	/*
 	 * Any clause not intercepted by applyClause becomes metadata, which is communicated
@@ -72,7 +76,7 @@ public class ThinkAgent  extends DefaultMutableTreeNode {
 		kbox = agent.kbox;
 		session = agent.session;
 		description = agent.description;
-		_update = agent._update;
+		rules = agent.rules;
 		models = agent.models;
 		observable = agent.observable;
 		observableId = agent.observableId;
@@ -96,29 +100,18 @@ public class ThinkAgent  extends DefaultMutableTreeNode {
 
 	public void applyClause(String keyword, Object argument) throws ThinklabException {
 		
-		// System.out.println(this + "processing clause " + keyword + " -> " + argument);
-		
-		if (keyword.equals(":update")) {
-			_update = (IFn) argument;
-		} else if (keyword.equals(":random-walk")) {
-			// TODO
-		} else if (keyword.equals(":movement")) {
-			// TODO
-		} else if (keyword.equals(":death")) {
-			// TODO
-		} else if (keyword.equals(":metabolism")) {
-			// TODO
-		} else if (keyword.equals(":random-move")) {
-			// TODO
-		} else if (keyword.equals(":play")) {
-			// TODO
-		} else if (keyword.equals(":initialize")) {
-			// TODO
+		if (argument instanceof IFn) {
+			String ruleId = keyword.substring(1);
+			addRule(ruleId, (IFn)argument);
 		} else {
 			metadata.put(keyword.substring(1), argument);
 		}
 	}
 	
+	private void addRule(String ruleId, IFn closure) {
+		rules.put(ruleId, closure);
+	}
+
 	public void setDescription(String s) {
 		this.description = s;
 	}
