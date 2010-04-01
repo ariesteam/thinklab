@@ -6,6 +6,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
@@ -125,7 +126,7 @@ public class RankingIntervalRemapper extends Observation implements IndirectObse
 	}
 
 	@Override
-	public IState createState(int size) throws ThinklabException {
+	public IState createState(int size, IObservationContext context) throws ThinklabException {
 		return new MemDoubleContextualizedDatasource(getObservableClass(), size);
 	}
 

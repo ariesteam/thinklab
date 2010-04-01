@@ -6,6 +6,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.datasources.ClassData;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
@@ -201,7 +202,7 @@ public class ModeledClassification
 	}
 
 	@Override
-	public IState createState(int size) throws ThinklabException {
+	public IState createState(int size, IObservationContext context) throws ThinklabException {
 		
 		IState ret = new ClassData(cSpace, size, classifiers);
 

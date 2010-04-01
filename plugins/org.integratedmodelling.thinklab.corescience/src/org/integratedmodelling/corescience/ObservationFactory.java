@@ -187,6 +187,39 @@ public class ObservationFactory {
 	}
 	
 	/**
+	 * Return a ranking of the given observable with the given value
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist createRanking(String observableClass, double value) {
+		
+		return Polylist.list(
+					CoreScience.RANKING, 
+					Polylist.list(
+						CoreScience.HAS_OBSERVABLE,
+						Polylist.list(observableClass)),
+					Polylist.list(CoreScience.HAS_VALUE,
+						value+""));
+	}
+	
+	/**
+	 * Return a measurement of the given observable with the given value and units
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist createMeasurement(String observableClass, double value, String unit) {
+		
+		return Polylist.list(
+					CoreScience.MEASUREMENT, 
+					Polylist.list(
+						CoreScience.HAS_OBSERVABLE,
+						Polylist.list(observableClass)),
+					Polylist.list(CoreScience.HAS_VALUE, value+""),
+					Polylist.list(CoreScience.HAS_UNIT, unit));
+	}
+	
+	
+	/**
 	 * Return an identification of the given type of the given observable
 	 * @param observableClass
 	 * @return

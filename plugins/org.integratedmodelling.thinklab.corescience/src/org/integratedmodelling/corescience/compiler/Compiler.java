@@ -482,7 +482,11 @@ public class Compiler {
 
 			int size = ownContext.getMultiplicity();
 			odesc.stateId = 
-				contextualizer.registerStateStorage((IndirectObservation) o, o.getObservableClass(), size);
+				contextualizer.registerStateStorage(
+						(IndirectObservation) o, 
+						o.getObservableClass(), 
+						size,
+						ownContext);
 		}
 		
 		/* store them all here, we notify our register to them at the end when we have one */

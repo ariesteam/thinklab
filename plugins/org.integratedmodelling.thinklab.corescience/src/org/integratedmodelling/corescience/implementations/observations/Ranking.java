@@ -36,6 +36,7 @@ package org.integratedmodelling.corescience.implementations.observations;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
@@ -222,7 +223,7 @@ public class Ranking extends Observation implements MediatingObservation {
 //
 
 	@Override
-	public IState createState(int size) throws ThinklabException {
+	public IState createState(int size, IObservationContext context) throws ThinklabException {
 		IState ret = new MemDoubleContextualizedDatasource(getObservableClass(), size);
 		ret.setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
 		// TODO add min-max etc
@@ -239,6 +240,7 @@ public class Ranking extends Observation implements MediatingObservation {
 		IValue max = i.get(MAXVALUE_PROPERTY);
 		IValue isi = i.get(ISINTEGER_PROPERTY);
 		IValue iss = i.get(ISSCALE_PROPERTY);
+		IValue iva = i.get(CoreScience.HAS_VALUE);
 
 		if (min != null)
 			minV = min.asNumber().asDouble();
@@ -248,6 +250,11 @@ public class Ranking extends Observation implements MediatingObservation {
 			integer = BooleanValue.parseBoolean(isi.toString());
 		if (iss != null)
 			isScale = BooleanValue.parseBoolean(iss.toString());
+
+		if (iva != null) {
+			value = Double.parseDouble(iva.toString());
+		}
+	
 	}
 
 

@@ -367,11 +367,14 @@ public class VMContextualizer<T> {
 		return _accregs++;
 	}
 
-	public int registerStateStorage(IndirectObservation o, IConcept observable, int size) {
+	public int registerStateStorage(IndirectObservation o, IConcept observable, int size, 
+				IObservationContext ownContext) {
 
 		_observed.add(observable);
 		IState dds = null;
-		if (o.getStateType().is(KnowledgeManager.Number())) {
+/*
+ * 		if (o.getStateType().is(KnowledgeManager.Number())) {
+ 
 			// let's build all DSs at compile time so we have a chance to encode metadata
 			// ASTOR is currently unused
 			//			encode(makeInst(ASTOR_I, _storegs));
@@ -379,9 +382,9 @@ public class VMContextualizer<T> {
 			dds = makeState(_stackType, size);
 			
 		} else {
-			
+*/			
 			try {
-				dds = o.createState(size);	
+				dds = o.createState(size, ownContext);	
 				
 				/*
 				 * transfer any metadata coming from model specs to state
@@ -395,7 +398,7 @@ public class VMContextualizer<T> {
 			} catch (ThinklabException e) {
 				throw new ThinklabRuntimeException(e);
 			}
-		}
+		/*}*/
 		
 		_datasources.add(dds);
 		encode(makeInst(MKSTOR_I, _storegs, _cstords++));

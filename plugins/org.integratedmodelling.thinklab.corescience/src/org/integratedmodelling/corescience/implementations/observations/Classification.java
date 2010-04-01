@@ -35,6 +35,7 @@ package org.integratedmodelling.corescience.implementations.observations;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.datasources.ClassData;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
@@ -157,7 +158,7 @@ public class Classification extends Observation implements MediatingObservation 
 	}
 
 	@Override
-	public IState createState(int size) throws ThinklabException {
+	public IState createState(int size, IObservationContext context) throws ThinklabException {
 		return new ClassData(cspace, size, null);
 	}
 

@@ -1,6 +1,7 @@
 package org.integratedmodelling.corescience.interfaces.internal;
 
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -30,9 +31,11 @@ public interface IndirectObservation extends IObservation {
 	 * when they are contextualized.
 	 * 
 	 * @param size
+	 * @param ownContext  the context that the state will represent. Its multiplicity equals the
+	 *        passed size.
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public abstract IState createState(int size) throws ThinklabException;
+	public abstract IState createState(int size, IObservationContext context) throws ThinklabException;
 	
 }

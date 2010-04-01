@@ -275,5 +275,11 @@ public class PSession implements ISession {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getSessionWorkspace() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

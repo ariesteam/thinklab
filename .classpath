@@ -34,7 +34,7 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/javolution.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/jep-2.4.1.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/jscience.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/jung-1.7.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/jung-1.7.6.jar" sourcepath="C:/Users/Ferdinando/.m2/repository/jung/jung/1.7.6/jung-1.7.6-sources.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/ostermillerutils_1_06_00.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/jpf.jar" sourcepath="/JPF 1.5"/>

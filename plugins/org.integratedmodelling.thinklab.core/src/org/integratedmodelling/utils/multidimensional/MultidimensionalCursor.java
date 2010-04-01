@@ -80,6 +80,16 @@ public class MultidimensionalCursor {
     	dimensions = 0;
     	storageOrderType = order;
     }
+    
+    public MultidimensionalCursor(MultidimensionalCursor cursor) {
+    	multiplicity = cursor.multiplicity;
+    	dimensions = cursor.dimensions;
+    	storageOrderType = cursor.storageOrderType;
+    	extents = cursor.extents;
+    	storageOrder = cursor.storageOrder;
+    	ordering = cursor.ordering;
+    	strides = cursor.strides;
+    }
 
     public void reset() {
     	multiplicity = 0;
@@ -141,8 +151,8 @@ public class MultidimensionalCursor {
     public int getElementOffset(int ... indices)
     {
     	int offset = 0;
-    	for (int n = 0; n != dimensions; ++n)
-    		offset += indices[n]* strides.get(n);
+    	for (int n = 0; n < dimensions; ++n)
+    		offset += indices[n] * strides.get(n);
     	return offset;
     }
 
@@ -197,6 +207,15 @@ public class MultidimensionalCursor {
     	return dimensions;
     }
 
+    public int[] getExtents() {
+    	int[] ret = new int[extents.size()];
+    	int i = 0;
+    	for (int ex : extents) {
+    		ret [i++] = ex;
+    	}
+    	return ret;
+    }
+    
     /**
      * 
      * @return

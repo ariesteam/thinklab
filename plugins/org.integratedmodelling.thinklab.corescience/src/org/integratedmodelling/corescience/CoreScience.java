@@ -58,6 +58,7 @@ public class CoreScience extends ThinklabPlugin {
 	
 	// properties
 	public static final String DEPENDS_ON = "observation:dependsOn";
+	public static final String HAS_VALUE = "observation:value";
 	public static final String HAS_DATASOURCE = "observation:hasDataSource";
 	public static final String HAS_CONTINGENCY = "observation:isContingentTo";
 	public static final String HAS_CONTEXT ="observation:hasObservationContext";

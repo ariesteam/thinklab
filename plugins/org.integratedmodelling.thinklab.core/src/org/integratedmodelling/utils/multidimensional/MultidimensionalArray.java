@@ -42,6 +42,23 @@ public class MultidimensionalArray<T> {
 	private ArrayList<T> storage = new ArrayList<T>();
 	MultidimensionalCursor cursor;
 	
+	/**
+	 * Aggregators are supplied to the multidimensional iterator when a dimension must be collapsed
+	 * to size 1.
+	 * 
+	 * @author Ferdinando
+	 *
+	 * @param <T>
+	 */
+	public interface Aggregator<T> {
+		
+		public abstract void reset();
+		
+		public abstract void add(T value);
+		
+		public abstract T getAggregatedValue();
+	}
+	
 	public class MultidimensionalIterator implements Iterator<T> {
 
 		int step;
@@ -117,6 +134,38 @@ public class MultidimensionalArray<T> {
 
 	public void set(int i, T value) {
 		storage.add(i, value);
+	}
+	
+	/**
+	 * Create a new array where the indicated dimension has been collapsed to size 1 and
+	 * its values have been aggregated using the supplied aggregator.
+	 * 
+	 * @param dimensionIndex
+	 * @param aggregator
+	 * @return
+	 */
+	public MultidimensionalArray<T> collapse(int dimensionIndex, Aggregator<T> aggregator) {
+		
+		int[] dims = cursor.getExtents();
+		dims[dimensionIndex] = 1;
+		
+		MultidimensionalArray<T> ret = new MultidimensionalArray<T>(dims);
+		
+		for (int i = 0; i < ret.size(); i++) {
+
+			aggregator.reset();
+			
+			/*
+			 * each value substituted by the aggregation of the other's data along the collapsed dimension
+			 */
+			for (Iterator<T> it = this.iterator(dimensionIndex, this.cursor.getElementIndexes(i));
+				it.hasNext(); )
+				aggregator.add(it.next());
+			
+			ret.set(i, aggregator.getAggregatedValue());
+		}
+		
+		return ret;
 	}
 
 	

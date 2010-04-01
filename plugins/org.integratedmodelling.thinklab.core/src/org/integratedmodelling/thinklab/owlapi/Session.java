@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
+import java.util.UUID;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
@@ -78,6 +79,8 @@ import org.integratedmodelling.utils.Polylist;
 public class Session implements ISession {
 
 	IOntology ontology;
+	
+	String workspace = null;
 	
 	private IKBox withKbox = null;
 	private IMetadataExtractor withMetadataExtractor = null;
@@ -530,6 +533,15 @@ public class Session implements ISession {
 			vars.put(varname, s);
 		}
 		s.push(value);
+	}
+
+	@Override
+	public String getSessionWorkspace() {
+
+		if (workspace == null) {
+			workspace = UUID.randomUUID().toString();
+		}
+		return workspace;
 	}
 
 }

@@ -80,6 +80,9 @@ public class Metadata {
 	public static final String IMAGE_TO_CLASS_OFFSET = "image_to_class_offset";
 	public static final String DEFINING_MODEL = "defining_model"; // the model that generated this obs
 	
+	// see Measurement for the meaning, only set in corescience if the state comes from a measurement 
+	public static final String PHYSICAL_NATURE = "physical_nature"; 
+	
 	public static boolean isOrdinalRanking(IState state) {
 		Integer dataType = (Integer)state.getMetadata(DATA_TYPE);
 		return dataType == null ? false : dataType == ORDINAL_RANKING;

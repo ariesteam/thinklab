@@ -6,6 +6,7 @@ import javax.measure.unit.Unit;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
@@ -42,7 +43,7 @@ public class Measurement extends Observation implements MediatingObservation {
     
 	private boolean isConstant = false;
 	
-	public enum PhysicalNature {
+	public static enum PhysicalNature {
 		EXTENSIVE,
 		INTENSIVE
 	}
@@ -138,7 +139,7 @@ public class Measurement extends Observation implements MediatingObservation {
 	public void initialize(IInstance i) throws ThinklabException {
 
 		// lookup defs - either unit and value or textual definition of both
-		IValue v = i.get("observation:value");
+		IValue v = i.get(CoreScience.HAS_VALUE);
 		
 		if (v != null) {
 			
@@ -225,9 +226,10 @@ public class Measurement extends Observation implements MediatingObservation {
 	}
 
 	@Override
-	public IState createState(int size) throws ThinklabException {
+	public IState createState(int size, IObservationContext context) throws ThinklabException {
 		IState ret = new MemDoubleContextualizedDatasource(getObservableClass(), size);
 		ret.setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
+		ret.setMetadata(Metadata.PHYSICAL_NATURE, physicalNature);
 		return ret;
 	}
 

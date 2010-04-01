@@ -58,7 +58,7 @@ public class ClojureInterpreter implements Interpreter {
 			throws ThinklabException {
 		
 		return Value.getValueForObject(
-				evalRaw(code, session == null ? "user" : session.getSessionID(), args));
+				evalRaw(code, session == null ? "user" : session.getSessionWorkspace(), args));
 	}
 	
 	private synchronized void addRTClasspath(URL[] urls) throws ThinklabInternalErrorException {
@@ -231,7 +231,7 @@ public class ClojureInterpreter implements Interpreter {
 
 	@Override
 	public IValue eval(Object code) throws ThinklabException {   
-    	return evalInNamespace(code, session == null ? "user" : session.getSessionID());    	
+    	return evalInNamespace(code, session == null ? "user" : session.getSessionWorkspace());    	
 	}
 
 	public Object evalRaw(Object code, String namespace, HashMap<String, Object> args) throws ThinklabException {

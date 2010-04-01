@@ -3,6 +3,7 @@ package org.integratedmodelling.corescience.implementations.observations;
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
@@ -47,7 +48,7 @@ public class ProbabilisticClassification extends Observation implements Indirect
 	}
 
 	@Override
-	public IState createState(int size) throws ThinklabException {
+	public IState createState(int size, IObservationContext context) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

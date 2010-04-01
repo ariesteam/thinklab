@@ -302,4 +302,12 @@ public interface ISession {
 	 */
 	public abstract Object getVariable(String varname);
 
+	/**
+	 * Return a unique directory name for the session's workspace, in case applications request it. The directory 
+	 * should be a simple identifier.
+	 * 
+	 * @return
+	 */
+	public abstract String getSessionWorkspace();
+
 }
