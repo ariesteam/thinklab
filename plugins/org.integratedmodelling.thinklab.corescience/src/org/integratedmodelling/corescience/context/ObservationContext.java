@@ -67,13 +67,9 @@ public class ObservationContext implements IObservationContext {
 	}
 	
 	public ObservationContext(IObservation o) throws ThinklabException {
-		this(o, null, null);
+		this(o, null);
 	}
 
-	public ObservationContext(IObservation o, ObservationContext constraint) throws ThinklabException {
-		this(o, null, constraint);
-	}
-	
 	/**
 	 * Compute the context of the passed observation. If required, constrain it to match the
 	 * passed context.
@@ -82,16 +78,10 @@ public class ObservationContext implements IObservationContext {
 	 * @param upper another "upper level" contexts, or null
 	 * @throws ThinklabException
 	 */
-	private ObservationContext(IObservation o, ObservationContext upper, ObservationContext constraining) throws ThinklabException {
+	public ObservationContext(IObservation o, ObservationContext constraining) throws ThinklabException {
 		
 		this.observation = o;
 
-		/*
-		 * start with the upstream extents
-		 */
-		if (upper != null)
-			extents.putAll(upper.extents);
-		
 		/*
 		 * put in anything that our observation has
 		 */
@@ -114,7 +104,7 @@ public class ObservationContext implements IObservationContext {
 		 */
 		for (IObservation dep : observation.getDependencies()) {
 			
-			ObservationContext depctx = new ObservationContext(dep, upper, constraining);
+			ObservationContext depctx = new ObservationContext(dep, constraining);
 			dependents.add(depctx);
 			// merge in any further restriction coming from downstream
 			mergeExtents(depctx);
@@ -155,8 +145,6 @@ public class ObservationContext implements IObservationContext {
 		if (observation instanceof TransformingObservation) {
 			switchTo(((TransformingObservation)observation).getTransformedContext(this));
 		}
-	
-
 		
 	}
 	
