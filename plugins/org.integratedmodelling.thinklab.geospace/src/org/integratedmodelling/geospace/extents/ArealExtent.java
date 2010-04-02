@@ -209,7 +209,7 @@ public abstract class ArealExtent implements IExtent {
 	}
 	
 	@Override
-	public IExtent merge(IExtent extent) throws ThinklabException {
+	public IExtent and(IExtent extent) throws ThinklabException {
 
 		Object[] cc = computeCommonExtent(extent);
 		

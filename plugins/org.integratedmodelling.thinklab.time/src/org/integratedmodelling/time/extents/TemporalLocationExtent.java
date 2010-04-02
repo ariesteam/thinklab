@@ -89,7 +89,7 @@ public class TemporalLocationExtent implements IExtent {
 	}
 
 	@Override
-	public IExtent merge(IExtent extent) throws ThinklabException {
+	public IExtent and(IExtent extent) throws ThinklabException {
 		
 		if (! (extent instanceof TemporalLocationExtent)) {
 			throw new ThinklabContextualizationException("temporal extents are incompatible: heterogeneous time models used in observations");
@@ -120,7 +120,7 @@ public class TemporalLocationExtent implements IExtent {
 	@Override
 	public IExtent constrain(IExtent extent) throws ThinklabException {
 		// we don't have a grain, so this should be OK
-		return merge(extent);
+		return and(extent);
 	}
 
 	@Override
@@ -148,6 +148,12 @@ public class TemporalLocationExtent implements IExtent {
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public IExtent or(IExtent myExtent) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

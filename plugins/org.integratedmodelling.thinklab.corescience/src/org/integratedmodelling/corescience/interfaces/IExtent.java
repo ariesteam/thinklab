@@ -87,8 +87,17 @@ public abstract interface IExtent extends IConceptualizable, ITopologicallyCompa
 	 * Merging is always an intersection operation - return the largest common extent with 
 	 * the finest common grain.
 	 */
-	public IExtent merge(IExtent extent) throws ThinklabException;
+	public IExtent and(IExtent extent) throws ThinklabException;
 
+	/**
+	 * Add the passed extent so that the end result represents both. 
+	 * 
+	 * @param myExtent
+	 * @return
+	 */
+	public IExtent or(IExtent myExtent);
+	
+	
 	/**
 	 * Return a copy of our extent constrained by the passed one. Constraining is also an 
 	 * intersection but the grain in the final extent should become the same as the 
@@ -123,5 +132,7 @@ public abstract interface IExtent extends IConceptualizable, ITopologicallyCompa
 	 * @return
 	 */
 	public abstract String getSignature();
+
+
 
 }

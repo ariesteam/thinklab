@@ -230,7 +230,7 @@ public class RegularTimeGridExtent implements IExtent {
 
 
 	@Override
-	public IExtent merge(IExtent extent) throws ThinklabException {
+	public IExtent and(IExtent extent) throws ThinklabException {
 		
 		/*
 		 * TODO implement clipping with time intervals
@@ -246,7 +246,7 @@ public class RegularTimeGridExtent implements IExtent {
 	@Override
 	public IExtent constrain(IExtent extent) throws ThinklabException {
 		// TODO IMPLEMENT CORRECTLY
-		return merge(extent);
+		return and(extent);
 	}
 
 
@@ -278,5 +278,12 @@ public class RegularTimeGridExtent implements IExtent {
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+
+	@Override
+	public IExtent or(IExtent myExtent) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

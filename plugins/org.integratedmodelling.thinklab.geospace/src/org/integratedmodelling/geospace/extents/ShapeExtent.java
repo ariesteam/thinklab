@@ -273,6 +273,12 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 		return ret;
 	}
 
+	@Override
+	public IExtent or(IExtent myExtent) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 //	@Override
 //	public Polylist conceptualize() throws ThinklabException {
 //

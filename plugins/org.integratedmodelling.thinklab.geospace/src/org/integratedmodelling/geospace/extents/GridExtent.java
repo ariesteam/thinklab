@@ -563,4 +563,10 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		this.ancestor = extent;
 	}
 
+	@Override
+	public IExtent or(IExtent myExtent) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

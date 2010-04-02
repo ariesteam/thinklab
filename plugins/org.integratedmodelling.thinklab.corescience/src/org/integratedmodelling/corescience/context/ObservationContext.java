@@ -42,6 +42,8 @@ public class ObservationContext implements IObservationContext {
 		
 	ArrayList<ObservationContext> dependents = 
 		new ArrayList<ObservationContext>();
+	ArrayList<ObservationContext> contingents = 
+		new ArrayList<ObservationContext>();
 	ArrayList<IDatasourceTransformation> transformations = 
 		new ArrayList<IDatasourceTransformation>();
 	
@@ -67,7 +69,70 @@ public class ObservationContext implements IObservationContext {
 	}
 	
 	public ObservationContext(IObservation o) throws ThinklabException {
+		// TODO this should simply NOT pass a null context, but produce an overall unconstrained ctx.
 		this(o, null);
+	}
+
+	// TODO to match the constrained constructor
+	private void set(IObservation o, ObservationContext constraint) throws ThinklabException {
+		
+		if (constraint == null) {
+			constraint = getUnconstrainedContext();
+		}
+	
+		
+		Collection<ObservationContext> dependents = collectDependencies(o, constraint);
+		Collection<ObservationContext> contingent = collectContingencies(o, constraint);
+		
+		if (dependents != null) {
+			mergeDependencies(dependents);
+		}
+		
+		if (contingent != null) {
+			mergeContingencies(contingent);
+		}
+
+		initialize();
+		
+	}
+	
+	private ObservationContext getUnconstrainedContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private void mergeContingencies(Collection<ObservationContext> contingent) {
+
+
+	}
+
+	private void mergeDependencies(Collection<ObservationContext> dependents2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private Collection<ObservationContext> collectContingencies(IObservation o, ObservationContext ctx) 
+		throws ThinklabException {
+		
+		for (IObservation dep : o.getContingencies()) {
+			
+			ObservationContext depctx = new ObservationContext(dep, ctx);
+			contingents.add(depctx);
+			// merge in any further restriction coming from downstream
+			addExtents(depctx);
+
+			if (this.isNull)
+				return null;
+		}
+		/*
+		 * for each context
+		 */
+		return null;
+	}
+
+	private Collection<ObservationContext> collectDependencies(IObservation o, ObservationContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
@@ -98,6 +163,23 @@ public class ObservationContext implements IObservationContext {
 		if (this.isNull)
 			return;
 
+		
+		/*
+		 * unite any contingent contexts
+		 */
+		for (IObservation dep : observation.getContingencies()) {
+			
+			ObservationContext depctx = new ObservationContext(dep, constraining);
+			contingents.add(depctx);
+			// merge in any further restriction coming from downstream
+			addExtents(depctx);
+
+			if (this.isNull)
+				return;
+		}
+
+		
+		
 		/*
 		 * merge with dependent contexts, constrained by ours
 		 */
@@ -112,10 +194,6 @@ public class ObservationContext implements IObservationContext {
 				return;
 		}
 
-		/*
-		 * TODO handle empty context - if we have become empty, we should return here.
-		 */
-				
 		/*
 		 * compute multiplicities and extent order
 		 */
@@ -208,6 +286,13 @@ public class ObservationContext implements IObservationContext {
 		}
 	}
 
+	
+	/**
+	 * AND any dependent context with the one we represent.
+	 * 
+	 * @param depctx
+	 * @throws ThinklabException
+	 */
 	private void mergeExtents(ObservationContext depctx) throws ThinklabException {
 		
 		for (IConcept c : depctx.extents.keySet()) {
@@ -224,7 +309,7 @@ public class ObservationContext implements IObservationContext {
 
 				/* ask CM to modify the current extent record in order to represent the
 				   new one as well. */
-				IExtent merged = itsExtent.merge(myExtent);
+				IExtent merged = itsExtent.and(myExtent);
 				if (merged == null) {
 					this.isNull = true;
 					break;
@@ -235,6 +320,39 @@ public class ObservationContext implements IObservationContext {
 		}
 	}
 
+	/**
+	 * Called to OR any contingent context with the one we represent.
+	 * 
+	 * @param depctx
+	 * @throws ThinklabException
+	 */
+	private void addExtents(ObservationContext depctx) throws ThinklabException {
+		
+		for (IConcept c : depctx.extents.keySet()) {
+			
+			IExtent myExtent  = extents.get(c);
+			IExtent itsExtent = depctx.extents.get(c);
+			
+			if (myExtent == null) {
+				
+				/* just add the extent */
+				extents.put(c, itsExtent);
+			
+			} else {
+
+				/* ask CM to modify the current extent record in order to represent the
+				   new one as well. */
+				IExtent merged = itsExtent.or(myExtent);
+				if (merged == null) {
+					this.isNull = true;
+					break;
+				} else {
+					extents.put(c, merged);
+				}
+			}		
+		}
+	}
+	
 	private void mergeExtent(Topology extobs) throws ThinklabException {
 
 		IConcept dimension = extobs.getObservableClass();
@@ -250,7 +368,7 @@ public class ObservationContext implements IObservationContext {
 
 			/* ask CM to modify the current extent record in order to represent the
 			   new one as well. */
-			IExtent merged = itsExtent.merge(myExtent);
+			IExtent merged = itsExtent.and(myExtent);
 			if (merged == null) {
 				this.isNull = true;
 			} else {
