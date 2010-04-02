@@ -316,6 +316,4 @@ public abstract class ArealExtent implements IExtent {
 		return getSignature().hashCode();
 	}
 	
-	
-	
 }

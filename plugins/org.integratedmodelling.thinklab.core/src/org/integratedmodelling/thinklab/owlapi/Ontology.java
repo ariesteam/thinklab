@@ -37,7 +37,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
@@ -61,6 +60,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.utils.LogicalConnector;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Pair;
+import org.integratedmodelling.utils.Path;
 import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.Triple;
 import org.semanticweb.owl.io.OWLXMLOntologyFormat;
@@ -295,8 +295,7 @@ public class Ontology implements IOntology {
 			label = ID;
 			
 			do {
-				// FIXME this makes the string longer and longer
-				ID = ID + "_" + cnt++;
+				ID = Path.getLeading(ID, '_') + "_" + cnt++;
 			} while (getInstance(ID) != null);
 		}
 

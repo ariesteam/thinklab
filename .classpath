@@ -200,7 +200,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/spring-2.5.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/visad.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JAI"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/smile.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-mappane-2.5-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/h2-1.1.104.jar"/>

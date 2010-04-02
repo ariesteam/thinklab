@@ -75,7 +75,6 @@ public class ObservationContext implements IObservationContext {
 	 * passed context.
 	 * 
 	 * @param o an observation
-	 * @param upper another "upper level" contexts, or null
 	 * @throws ThinklabException
 	 */
 	public ObservationContext(IObservation o, ObservationContext constraining) throws ThinklabException {
