@@ -416,5 +416,19 @@ public class ObservationFactory {
 	}
 
 
+	/**
+	 * Return a contingency handler for the given observable
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist createMerger(Polylist observable) {
+		
+		return Polylist.list(CoreScience.MERGER_OBSERVATION, 
+				Polylist.list(
+						CoreScience.HAS_OBSERVABLE,
+						observable));
+	}
+	
+
 
 }

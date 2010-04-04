@@ -6,8 +6,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -44,72 +46,10 @@ public class Model extends DefaultAbstractModel {
 	Collection<String> contextIds = null;
 	String description = null;
 	IObservation contingencyModel = null;
-	
-	/**
-	 * Stores state and variable info related to the specific contingency for which we're building
-	 * a model. Each state of the contingency model corresponds to one of these, returned by the
-	 * contingency iterator. Just a stub class for now.
-	 * 
-	 * @author Ferdinando
-	 *
-	 */
-	public class Contingency {
-		
-	}
-		
-	/**
-	 * Iterates the states of the contingency observation - which may be simply the 
-	 * identification of the model if no contingency model is seen across the hierarchy.
-	 * 
-	 * @author Ferdinando
-	 *
-	 */
-	public class ContingencyIterator implements Iterator<Contingency> {
 
-		int cState = 0;
-		int nStates = 1;
-		IObservation contingencyModel = null;
-		
-		/*
-		 * pass null if no contingency model exists. This equates to 
-		 * :when :observable - the contingency model is determined by
-		 * the intersection of the contexts.
-		 */
-		public ContingencyIterator(IObservation contingencyModel) {
-		}
-		
-		@Override
-		public boolean hasNext() {
-			return cState < nStates;
-		}
-
-		@Override
-		public Contingency next() {
-			cState ++;
-			return null;
-		}
-
-		@Override
-		public void remove() {
-		}
-	}
-	
-	IConcept observable = null;
-	Polylist observableSpecs = null;
 	Object state = null;
 	private boolean contingencyModelBuilt;
-	
-	/*
-	 * This iterates over the states of the contingency model. Each Contingency contains the 
-	 * values of the context variables for each state.
-	 */
-	protected ContingencyIterator getContingencyIterator(ISession session, IKBox kbox) {
 
-		if (!contingencyModelBuilt) {
-			buildContingencyModel(kbox, session);
-		}
-		return new ContingencyIterator(contingencyModel);
-	}
 	
 	private void buildContingencyModel(IKBox kbox, ISession session) {
 		
@@ -132,123 +72,59 @@ public class Model extends DefaultAbstractModel {
 	@Override
 	public ModelResult observeInternal(IKBox kbox, ISession session, IntelligentMap<IConformance> cp, ArrayList<Topology> extents, boolean acceptEmpty)  throws ThinklabException {
 	
-		ModelResult ret = null;
-		ArrayList<Polylist> cmodels = new ArrayList<Polylist>();
+		ModelResult ret = new ModelResult(this, kbox, session);
+		SwitchLayer<IModel> switchLayer = null;
+
+		ObservationContext exts = 
+			(extents == null || extents.size() == 0) ?
+				null :
+				new ObservationContext(extents.toArray(new Topology[extents.size()]));
 		
-		if (models.size() == 1)
-			ret = ((DefaultAbstractModel)(models.get(0))).observeInternal(kbox, session, cp, extents, acceptEmpty);
-		else {
-
-			ret = new ModelResult(this, kbox, session);
+		if (exts != null)
+			switchLayer = new SwitchLayer<IModel>(exts);
 			
-			for (ContingencyIterator it = getContingencyIterator(session, kbox); it.hasNext(); ) {
+		/*
+		 * TODO if there is a context model, observe it now in the same context - even if we have only one model
+		 */
+		int ctidx = 0;
+		for (IModel m : models) {
+			
+			/*
+			 * TODO the switch layer stuff can only known when extents are known for all subobservations, so it must be moved into
+			 * ModelResult.
+			 * if no more models are needed to fully cover extent, proceed.
+			 */
+			if (switchLayer != null && switchLayer.isCovered())
+				break;
+			
+			/*
+			 * TODO
+			 * if model has a where clause and we have a context model, we must compute the where clause across its context
+			 * and activate appropriately; if no state is activated, don't observe it.
+			 *
+			 * if model doesn't have a where clause, activate its full coverage into the switch layer, which can vary according
+			 * to its 
+			 */
 
-				Contingency cn = it.next();
-				
-				/*
-				 * TODO this will return an array of models, which may need to be
-				 * observed in sequence and combined as unconditional
-				 * contingencies when >1 is observable.
-				 * 
-				 * It should be like saying :when :observable - the default
-				 * contingency clause.
-				 */
-				IModel cmod = chooseModel(models, cn, kbox);
-				if (cmod == null) {
-					throw new ThinklabModelException(
-							"cannot choose a model formulation for " +
-							observable +
-							" in context " +
-							cn +
-							": no matching submodel");
-				}
-				
-				ModelResult contingentRes = ((DefaultAbstractModel)cmod).observeInternal(kbox, session, cp, extents, acceptEmpty);
-				ret.addContingentResult(contingentRes);
+			ModelResult mr = ((DefaultAbstractModel)m).observeInternal(kbox, session, cp, extents, acceptEmpty);
+
+			if (mr != null) {
+				ret.addContingentResult(mr);
+				ctidx ++;
 			}
 
 		}
 		
-		return ret;
-		
-	}
-
-	
-	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session)  throws ThinklabException {
-	
-		Polylist ret = null;
-		ArrayList<Polylist> cmodels = new ArrayList<Polylist>();
-		
-		for (ContingencyIterator it = getContingencyIterator(session, kbox); it.hasNext(); ) {
-			
-			Contingency contingency = it.next();
-			cmodels.add(buildDefinition(contingency, kbox, session));
-		}
-		
-		if (cmodels.size() == 1)
-			ret = cmodels.get(0);
-		else {
-			ret = Polylist.list(getCompatibleObservationType(session));
-			ret = ObservationFactory.setObservable(ret, observableSpecs);
-			
-			for (Polylist cont : cmodels) 
-				ret = ObservationFactory.addContingency(ret, cont);
-		}
-		
-		return ret;
-		
-	}
-
-	
-	/**
-	 * Build a model using our specifications, the passed context to resolve any :when clauses,
-	 * and the given kbox.
-	 * 
-	 * @param context
-	 * @return
-	 */
-	private Polylist buildDefinition(Contingency context, IKBox kbox, ISession session) throws ThinklabException {
-		
 		/*
-		 * if there's only one model, that's what we return
+		 * TODO if we have a switch layer, add it to model result
 		 */
-		IModel model = chooseModel(models, context, kbox);
-		if (model == null) {
-			throw new ThinklabModelException(
-					"cannot choose a model formulation for " +
-					observable +
-					" in context " +
-					context +
-					": no matching submodel");
-		}
-		return model.buildDefinition(kbox, session);
+		if (switchLayer != null)
+			ret.setSwitchLayer(switchLayer);
+		
+		
+		return ret;
+		
 	}
-	
-	/*
-	 * Choose the appropriate model for the context. 
-	 * 
-	 * TODO this should return an ARRAY of models that apply to the situation. They should be
-	 * tried in sequence until one returns observations. This way we can use multiple 
-	 * alternative definitions, prioritizing them in order of declaration and/or using
-	 * the states of another observation. 
-	 * 
-	 * @param models2
-	 * @param context2
-	 * @param kbox
-	 * @return
-	 */
-	private IModel chooseModel(ArrayList<IModel> models2, Contingency context2,
-			IKBox kbox) {
-		
-		if (this.models.size() == 1)
-			return this.models.get(0);
-		
-		/* TODO RETE stuff goes here */
-		
-		return null;
-	}
-
 	public void setDescription(String s) {
 		this.description = s;
 	}
@@ -268,14 +144,8 @@ public class Model extends DefaultAbstractModel {
 	 */
 	public void defModel(IModel model, Map<?,?> metadata) {
 		
-		// System.out.println("setting unconditional " + model);
 		if (this.models == null) {
 			this.models = new ArrayList<IModel>();
-		}
-		
-		if (metadata != null) {
-			// TODO use it
-			System.out.println("\nMETADATA! " + metadata + "\n");
 		}
 		
 		this.models.add(model);
@@ -302,13 +172,7 @@ public class Model extends DefaultAbstractModel {
 		mdesc += "}";
 		return "model(" + getObservable() +") " + mdesc;
 	}
-//
-//
-//	@Override
-//	public void applyClause(String keyword, Object argument) throws ThinklabException {
-//		throw new ThinklabInternalErrorException(
-//				"internal error: a Model should only be configured through a proxy");
-//	}
+
 
 	@Override
 	public IModel getConfigurableClone() {
@@ -404,5 +268,13 @@ public class Model extends DefaultAbstractModel {
 		}
 		for (IModel m : dependents)
 			collectEditableModels((DefaultAbstractModel)m, ret);
+	}
+
+
+	@Override
+	public Polylist buildDefinition(IKBox kbox, ISession session)
+			throws ThinklabException {
+		// WON'T GET CALLED UNLESS I SCREWED UP
+		throw new ThinklabInternalErrorException("SHIT! BUILDDEFINITION CALLED ON MODEL!");
 	}
 }

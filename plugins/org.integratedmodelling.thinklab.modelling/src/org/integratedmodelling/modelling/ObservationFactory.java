@@ -294,5 +294,4 @@ public class ObservationFactory extends org.integratedmodelling.corescience.Obse
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
 }

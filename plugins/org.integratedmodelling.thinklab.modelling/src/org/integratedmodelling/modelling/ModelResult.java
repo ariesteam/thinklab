@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
@@ -49,6 +50,13 @@ public class ModelResult implements IQueryResult  {
 	 */
 	ArrayList<IQueryResult> _dependents = new ArrayList<IQueryResult>();
 	
+	
+	/*
+	 * querying each dependent must have returned another query result, each a dimension in
+	 * our final result options.
+	 */
+	ArrayList<IQueryResult> _contingents = new ArrayList<IQueryResult>();
+	
 	/*
 	 * extent specifications we may need to add
 	 */
@@ -66,6 +74,11 @@ public class ModelResult implements IQueryResult  {
 	 * The ticker tells us what results are retrieved
 	 */
 	MultidimensionalCursor ticker = null;
+
+	/*
+	 * the Model may give us one of these.
+	 */
+	private SwitchLayer<?> switchLayer = null;
 		
 	public ModelResult(IModel model, IKBox kbox, ISession session) {
 		_model = model;
@@ -119,7 +132,38 @@ public class ModelResult implements IQueryResult  {
 			ofs[0] = n;
 		}
 		
-		Polylist ret = _model.buildDefinition(_kbox, _session);
+		
+		Polylist ret = null;
+		
+		if (_model instanceof Model) {
+		
+			/*
+			 * get the observable and do the rest; a Model's definition depends on the context, so we
+			 * can't ask the model to provide it. 
+			 * 
+			 * CHECK CONTINGENCIES AND SWITCH LAYER; IF 1 CONTINGENCY, JUST BUILD THAT, ELSE BUILD AN
+			 * OBSERVATION MERGER WITH ALL CONTINGENCIES.
+			 */
+			if (_contingents.size() == 1) {
+
+				ret = _contingents.get(0).getResultAsList(ofs[0], references);
+
+			} else if (_contingents.size() > 1) {
+				
+				ret = ObservationFactory.createMerger(((DefaultAbstractModel)_model).observableSpecs);
+				
+				for (int i = 0; i < _contingents.size(); i++) {
+					Polylist dep = _contingents.get(i).getResultAsList(ofs[i], null);
+					ret = ObservationFactory.addContingency(ret, dep);
+				}
+				
+				if (switchLayer != null)
+					ret = ObservationFactory.addReflectedField(ret, "switchLayer", this.switchLayer);
+			}
+			
+		} else {
+			 ret = _model.buildDefinition(_kbox, _session);
+		}
 		
 		/*
 		 * add the model to the resulting observation
@@ -145,7 +189,7 @@ public class ModelResult implements IQueryResult  {
 				Polylist dep = _dependents.get(i).getResultAsList(ofs[i], null);
 				ret = ObservationFactory.addDependency(ret, dep);
 			}
-		}
+		} 
 		
 		/*
 		 * if we had any extents added, add them too
@@ -225,13 +269,16 @@ public class ModelResult implements IQueryResult  {
 		_dependents.add(res);
 	}
 
-	public void addContingentResult(ModelResult contingentRes) {
-		// TODO figure out how to manage the multiplicity
-		throw new ThinklabRuntimeException("unimplemented addContingentResult called on ModelResult");
+	public void addContingentResult(ModelResult res) {
+		_contingents.add(res);	
 	}
 
 	public void addExtentObservation(Polylist list) {
 		_extents.add(list);
+	}
+
+	public void setSwitchLayer(SwitchLayer<?> switchLayer) {
+		this.switchLayer = switchLayer;
 	}
 
 
