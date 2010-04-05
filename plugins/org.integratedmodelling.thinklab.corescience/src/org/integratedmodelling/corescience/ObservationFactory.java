@@ -28,7 +28,7 @@ public class ObservationFactory {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public IInstance contextualize(IInstance observation, ISession session) throws ThinklabException {
+	public static IInstance contextualize(IInstance observation, ISession session) throws ThinklabException {
 		ObservationContext ctx = new ObservationContext(getObservation(observation), null);
 		return ctx.run(session, null);
 	}
@@ -41,7 +41,7 @@ public class ObservationFactory {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public IInstance contextualize(IInstance observation, ISession session, Topology ... context) throws ThinklabException {
+	public static IInstance contextualize(IInstance observation, ISession session, Topology ... context) throws ThinklabException {
 		
 		ObservationContext constraint = new ObservationContext(context);
 		ObservationContext ctx = new ObservationContext(getObservation(observation), constraint);
@@ -56,7 +56,7 @@ public class ObservationFactory {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public IInstance contextualize(IInstance observation, ISession session, 
+	public static IInstance contextualize(IInstance observation, ISession session, 
 			Collection<IContextualizationListener> listeners, 
 			Topology ... context) throws ThinklabException {
 		

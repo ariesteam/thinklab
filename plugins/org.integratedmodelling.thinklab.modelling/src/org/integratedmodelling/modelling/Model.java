@@ -56,11 +56,8 @@ public class Model extends DefaultAbstractModel {
 	
 		ModelResult ret = new ModelResult(this, kbox, session);
 
-		
 		/*
-		 * FIXME - the context model is only QUERIED here, result passed to ModelResult along with topologies. If
-		 * obs built, model result is recomputed.
-		 * 
+		 * if we have a context model, query it and pass it along. 
 		 */
 		Model cm = buildContingencyModel();
 		if (cm != null) {

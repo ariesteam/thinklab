@@ -13,6 +13,7 @@ import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModellingPlugin;
@@ -36,9 +37,8 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 
 	// reflected 
 	public SwitchLayer<IState> switchLayer = null;
-	public Model contextModel = null;
-	public ObservationContext contextExt = null;
-	public Map<String, IState> contextStateMap = null;
+	public ArrayList<Topology> contextExt = null;
+	public IObservation        contextObs = null;
 
 	public ArrayList<IFn> conditionals = null;
 	ContextMapper[] contextMappers = null;
@@ -116,57 +116,6 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 					/* new ContextMapper(contextExt, FUCK) */ null;
 		}
 	}
-	
-// TODO this stuff goes in the datasource accessor
-//	if (switchLayer != null) {
-//
-//		int modelId = 0;
-//
-//		for (int i = 0; i < _contingents.size(); i++) {
-//
-//			if (switchLayer.isCovered())
-//				break;
-//
-//			modelId++;
-//
-//			// TODO initialize with the global ctx = to and the
-//			// contingent model's one = from
-//			ContextMapper cmap = null;
-//			boolean wasActive = false;
-//			
-//			IFn where = _conditionals.get(i);
-//			for (int st = 0; st < switchLayer.size(); st++) {
-//
-//				boolean active = cmap.isCovered(st);
-//
-//				if (active && where != null && contextStateMap != null) {
-//					
-//					/*
-//					 * get the state map for context i and eval the
-//					 * closure
-//					 */
-//					Map<?, ?> state = cmap.getLocalState(
-//							contextStateMap, st);
-//					try {
-//						active = (Boolean) where.invoke(state);
-//					} catch (Exception e) {
-//						throw new ThinklabValidationException(e);
-//					}
-//					
-//					if (!wasActive && active)
-//						wasActive = true;
-//					
-//				}
-//
-//				if (active) {
-//					switchLayer.set(st, modelId);
-//				}
-//			}
-//			
-//			if (wasActive)
-//				chosen.add(_contingents.get(i));
-//		}
-//	}
 
 	@Override
 	public IState createState(int size, IObservationContext context)
@@ -215,6 +164,7 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 		 * registers are notified.
 		 */
 		this.idxMap = new int[dependencies.length];
+		this.contextMappers = new ContextMapper[dependencies.length];
 		
 		/*
 		 * if we have a context model, run it 

@@ -2,16 +2,14 @@ package org.integratedmodelling.modelling;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-import org.integratedmodelling.corescience.context.ObservationContext;
-import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
@@ -89,8 +87,8 @@ public class ModelResult implements IQueryResult  {
 
 	// from computing the context model
 	private IQueryResult contextModel = null;
-	private ArrayList<Topology>[]   contextExt = null;
-		
+	private ArrayList<Topology> contextExt = null;
+
 	public ModelResult(IModel model, IKBox kbox, ISession session) {
 		_model = model;
 		_kbox = kbox;
@@ -171,11 +169,15 @@ public class ModelResult implements IQueryResult  {
 			if (contextModel != null) {
 				
 				/*
-				 * TODO compute context model, taking result at ofs[_dependents.size()]
-				 * SHIT non ho la session
+				 * compute context model and pass it to merging observation
 				 */
-				// IInstance cobs = contextModel.getResult(ofs[_dependents.size()], session);
-				ret = ObservationFactory.addReflectedField(ret, "contextModel", contextModel);
+				IInstance cobs = contextModel.getResult(ofs[_dependents.size()], _session).
+					asObjectReference().getObject();
+				IInstance result = ObservationFactory.
+					contextualize(cobs, _session, contextExt.toArray(new Topology[contextExt.size()]));
+				
+				ret = ObservationFactory.addReflectedField(ret, "contextObs", 
+						ObservationFactory.getObservation(result));
 				ret = ObservationFactory.addReflectedField(ret, "contextExt", contextExt);
 			}
 					
@@ -312,7 +314,7 @@ public class ModelResult implements IQueryResult  {
 	 * communicate that this result will have to build its contingencies using this
 	 * context model and states, and define the switchlayer for the observation merger.
 	 */
-	public void setContextModel(IQueryResult cm, ArrayList<Topology> ... exts) {
+	public void setContextModel(IQueryResult cm, ArrayList<Topology> exts) {
 		this.contextModel = cm;
 		this.contextExt = exts;
 	}
