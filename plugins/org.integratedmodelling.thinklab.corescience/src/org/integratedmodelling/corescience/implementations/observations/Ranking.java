@@ -34,6 +34,7 @@ package org.integratedmodelling.corescience.implementations.observations;
 
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
@@ -224,7 +225,8 @@ public class Ranking extends Observation implements MediatingObservation {
 
 	@Override
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
-		IState ret = new MemDoubleContextualizedDatasource(getObservableClass(), size);
+		IState ret = new MemDoubleContextualizedDatasource(
+				getObservableClass(), size, (ObservationContext)context);
 		ret.setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
 		// TODO add min-max etc
 		return ret;

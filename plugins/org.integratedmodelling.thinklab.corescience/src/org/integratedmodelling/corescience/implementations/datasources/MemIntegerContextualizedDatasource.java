@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -57,10 +58,12 @@ public class MemIntegerContextualizedDatasource
 	private int[] data = null;
 	private int idx = 0;
 	HashMap<String,Object> metadata = new HashMap<String,Object>();
+	private ObservationContext context;
 
-	public MemIntegerContextualizedDatasource(IConcept type, int size) {
+	public MemIntegerContextualizedDatasource(IConcept type, int size, ObservationContext context) {
 		_type = type;
 		data = new int[size];
+		this.context = context;
 	}
 	
 	public int[] getIntData() {
@@ -163,5 +166,10 @@ public class MemIntegerContextualizedDatasource
 	@Override
 	public HashMap<String, Object> getMetadata() {
 		return metadata;
+	}
+
+	@Override
+	public ObservationContext getObservationContext() {
+		return this.context;
 	}	
 }

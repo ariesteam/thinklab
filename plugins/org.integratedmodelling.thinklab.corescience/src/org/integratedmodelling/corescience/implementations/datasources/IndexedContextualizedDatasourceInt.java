@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -41,10 +42,12 @@ public class IndexedContextualizedDatasourceInt<T>
 
 	protected HashMap<T, Integer> map = new HashMap<T, Integer>();
 	protected HashMap<Integer, T> inverseMap = new HashMap<Integer, T>();
+	private ObservationContext context;
 
-	public IndexedContextualizedDatasourceInt(IConcept type, int size) {
+	public IndexedContextualizedDatasourceInt(IConcept type, int size, ObservationContext context) {
 		_type = type;
 		data = new int[size];
+		this.context = context;
 	}
 	
 	@Override
@@ -157,6 +160,11 @@ public class IndexedContextualizedDatasourceInt<T>
 	@Override
 	public IConcept getObservableClass() {
 		return _type;
+	}
+
+	@Override
+	public ObservationContext getObservationContext() {
+		return this.context;
 	}
 
 

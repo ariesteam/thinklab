@@ -3,6 +3,7 @@ package org.integratedmodelling.corescience.implementations.datasources;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -36,15 +37,17 @@ public class IndexedContextualizedDatasourceByte<T>
 	byte[] data = null;
 	private byte max = 1;
 	private int idx = 0;
+	private ObservationContext context = null;
 	
 	HashMap<String,Object> metadata = new HashMap<String,Object>();
 	
 	HashMap<T, Integer> map = new HashMap<T, Integer>();
 	HashMap<Integer, T> inverseMap = new HashMap<Integer, T>();
 
-	public IndexedContextualizedDatasourceByte(IConcept type, int size) {
+	public IndexedContextualizedDatasourceByte(IConcept type, int size, ObservationContext ctx) {
 		_type = type;
 		data = new byte[size];
+		this.context = ctx;
 	}
 		
 	@Override
@@ -152,6 +155,11 @@ public class IndexedContextualizedDatasourceByte<T>
 	@Override
 	public IConcept getObservableClass() {
 		return _type;
+	}
+
+	@Override
+	public ObservationContext getObservationContext() {
+		return context;
 	}
 
 

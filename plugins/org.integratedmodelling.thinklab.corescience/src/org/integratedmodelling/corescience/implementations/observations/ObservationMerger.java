@@ -1,6 +1,7 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.SwitchableState;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -27,7 +28,7 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 	@Override
 	public IState createState(int size, IObservationContext context)
 			throws ThinklabException {
-		return new SwitchableState(switchLayer);
+		return new SwitchableState(switchLayer, (ObservationContext)context);
 	}
 
 	@Override

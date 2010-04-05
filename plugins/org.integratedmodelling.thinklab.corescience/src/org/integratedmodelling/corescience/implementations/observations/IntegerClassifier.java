@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceByte;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
@@ -139,7 +140,8 @@ public class IntegerClassifier extends Observation implements IndirectObservatio
 
 	@Override
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
-		return new IndexedContextualizedDatasourceByte<IConcept>(observationSpace, size);
+		return new IndexedContextualizedDatasourceByte<IConcept>(observationSpace, size, 
+				(ObservationContext)context);
 	}
 
 	@Override

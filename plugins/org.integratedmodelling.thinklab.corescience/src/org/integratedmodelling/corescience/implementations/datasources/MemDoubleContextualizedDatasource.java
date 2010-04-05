@@ -37,6 +37,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -63,7 +64,8 @@ public class MemDoubleContextualizedDatasource
 	protected double[] data = null;
 	private int idx = 0;
 	HashMap<String,Object> metadata = new HashMap<String,Object>();
-
+	private ObservationContext context;
+	
 	public MemDoubleContextualizedDatasource() {
 		// only to be used by the serializer
 	}
@@ -72,14 +74,16 @@ public class MemDoubleContextualizedDatasource
 		return _type;
 	}
 	
-	public MemDoubleContextualizedDatasource(IConcept type, double[] data) {
+	public MemDoubleContextualizedDatasource(IConcept type, double[] data, ObservationContext context) {
 		_type = type;
 		this.data = data;
 		setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
+		this.context = context;
 	}
 	
-	public MemDoubleContextualizedDatasource(IConcept type, double[][] d) {
+	public MemDoubleContextualizedDatasource(IConcept type, double[][] d, ObservationContext context) {
 		_type = type;
+		this.context = context;
 		this.data = new double[d.length*d[0].length];
 		int k = 0;
 		for (int i = 0; i < d.length; i++) {
@@ -89,9 +93,10 @@ public class MemDoubleContextualizedDatasource
 		}
 	}
 	
-	public MemDoubleContextualizedDatasource(IConcept type, int size) {
+	public MemDoubleContextualizedDatasource(IConcept type, int size, ObservationContext context) {
 		_type = type;
 		data = new double[size];
+		this.context = context;
 	}
 	
 	@Override
@@ -210,6 +215,11 @@ public class MemDoubleContextualizedDatasource
 	@Override
 	public IConcept getObservableClass() {
 		return _type;
+	}
+
+	@Override
+	public ObservationContext getObservationContext() {
+		return this.context;
 	}
 
 

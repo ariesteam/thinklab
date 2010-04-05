@@ -2,18 +2,18 @@ package org.integratedmodelling.modelling;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ContextMapper;
 import org.integratedmodelling.corescience.context.ObservationContext;
-import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
-import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
+import org.integratedmodelling.modelling.corescience.ObservationModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -22,6 +22,8 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.Inte
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
+
+import clojure.lang.IFn;
 
 /**
  * The "default" model class reflects the defmodel form, and has
@@ -45,85 +47,78 @@ public class Model extends DefaultAbstractModel {
 	Collection<IModel> context = null;
 	Collection<String> contextIds = null;
 	String description = null;
-	IObservation contingencyModel = null;
 
 	Object state = null;
-	private boolean contingencyModelBuilt;
-
-	
-	private void buildContingencyModel(IKBox kbox, ISession session) {
-		
-		/*
-		 * TODO build the contingency model. For now this only passes a null, resulting
-		 * in one contingency state. 
-		 * 
-		 * The contingency model must accomodate zero or one models and each
-		 * model is conditioned to it. If no :when clause exists, the implicit
-		 * contingency clause is :when :observable - meaning, this is the model
-		 * to use when it is possible to use it. The order of declaration counts
-		 * as priority order to decide which model is used first to cover the
-		 * context.
-		 * 
-		 */
-		contingencyModelBuilt = true;
-	}
-	
 	
 	@Override
 	public ModelResult observeInternal(IKBox kbox, ISession session, IntelligentMap<IConformance> cp, ArrayList<Topology> extents, boolean acceptEmpty)  throws ThinklabException {
 	
 		ModelResult ret = new ModelResult(this, kbox, session);
-		SwitchLayer<IModel> switchLayer = null;
 
 		ObservationContext exts = 
 			(extents == null || extents.size() == 0) ?
 				null :
 				new ObservationContext(extents.toArray(new Topology[extents.size()]));
 		
-		if (exts != null)
-			switchLayer = new SwitchLayer<IModel>(exts);
-			
 		/*
-		 * TODO if there is a context model, observe it now in the same context - even if we have only one model
+		 * TODO all this goes in the observation, we only need to pass the model
+		 * result for the context model.
+		 * 
+		 * if there is a context model, observe it now in the same context - even if we have only one model
 		 */
-		int ctidx = 0;
-		for (IModel m : models) {
-			
-			/*
-			 * TODO the switch layer stuff can only known when extents are known for all subobservations, so it must be moved into
-			 * ModelResult.
-			 * if no more models are needed to fully cover extent, proceed.
-			 */
-			if (switchLayer != null && switchLayer.isCovered())
-				break;
-			
-			/*
-			 * TODO
-			 * if model has a where clause and we have a context model, we must compute the where clause across its context
-			 * and activate appropriately; if no state is activated, don't observe it.
-			 *
-			 * if model doesn't have a where clause, activate its full coverage into the switch layer, which can vary according
-			 * to its 
-			 */
-
-			ModelResult mr = ((DefaultAbstractModel)m).observeInternal(kbox, session, cp, extents, acceptEmpty);
-
-			if (mr != null) {
-				ret.addContingentResult(mr);
-				ctidx ++;
-			}
-
+		Map<?,?> statemap = null;
+		Model cm = buildContingencyModel();
+		if (cm != null) {
+			statemap = ModelFactory.get().eval(cm, kbox, session, extents.toArray(new Topology[extents.size()]));
 		}
 		
-		/*
-		 * TODO if we have a switch layer, add it to model result
-		 */
-		if (switchLayer != null)
-			ret.setSwitchLayer(switchLayer);
+		if (statemap != null)
+			ret.setContextModel(cm, statemap, new SwitchLayer<IModel>(exts));
+		
+		int totres = 0;
+		
+		for (IModel m : models) {
+						
+			ModelResult mr = ((DefaultAbstractModel)m).observeInternal(kbox, session, cp, extents, acceptEmpty);
+
+			if (mr != null && mr.getTotalResultCount() > 0) {
+				ret.addContingentResult(m, mr);
+				totres += mr.getTotalResultCount();
+			}
+		}
+		
+		if (totres == 0) {
+			throw new ThinklabResourceNotFoundException(
+					"cannot observe " +
+					observableId +
+					" for any of " + 
+					models.size() + 
+					" contingencies of model " +
+					id);	
+		}
 		
 		
 		return ret;
 		
+	}
+	private Model buildContingencyModel() throws ThinklabException {
+
+		Model ret = null;
+
+		if (context != null) {
+
+			DefaultAbstractModel mod = new ObservationModel();
+			mod.setObservable(CoreScience.GENERIC_OBSERVABLE);
+			for (IModel m : context) {
+				mod.addDependentModel(m);
+			}
+			
+			ret = new Model();
+			ret.setObservable(CoreScience.GENERIC_OBSERVABLE);
+			ret.defModel(mod, null);
+		}
+		
+		return ret;
 	}
 	public void setDescription(String s) {
 		this.description = s;

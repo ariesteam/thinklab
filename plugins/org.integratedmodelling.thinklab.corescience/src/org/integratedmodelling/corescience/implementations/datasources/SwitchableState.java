@@ -1,5 +1,6 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -13,7 +14,10 @@ import org.integratedmodelling.utils.Polylist;
 public class SwitchableState implements IState {
 	
 	
-	public SwitchableState(SwitchLayer<IState> switchLayer) {
+	private ObservationContext context;
+
+	public SwitchableState(SwitchLayer<IState> switchLayer, ObservationContext context) {
+		this.context = context;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -92,7 +96,7 @@ public class SwitchableState implements IState {
 	}
 
 	@Override
-	public IDataSource transform(IDatasourceTransformation transformation)
+	public IDataSource<?> transform(IDatasourceTransformation transformation)
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
@@ -102,6 +106,11 @@ public class SwitchableState implements IState {
 	public Polylist conceptualize() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public ObservationContext getObservationContext() {
+		return this.context;
 	}
 
 }

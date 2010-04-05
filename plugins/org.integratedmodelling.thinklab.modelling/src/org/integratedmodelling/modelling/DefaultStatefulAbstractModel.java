@@ -5,15 +5,13 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 
 public abstract class DefaultStatefulAbstractModel extends DefaultAbstractModel {
 
-	protected Object state = null;
-
 	@Override
 	public void applyClause(String keyword, Object argument) throws ThinklabException {
 		
 		// System.out.println(this + "processing clause " + keyword + " -> " + argument);
 		
 		if (keyword.equals(":value")) {
-			state = validateState(state);			
+			state = validateState(argument);			
 		} else super.applyClause(keyword, argument);
 	}
 		

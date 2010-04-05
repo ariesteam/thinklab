@@ -4,20 +4,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.modelling.agents.ThinkAgent;
+import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
@@ -27,6 +31,9 @@ import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.time.literals.TemporalExtentValue;
 import org.integratedmodelling.utils.Polylist;
+
+import clojure.lang.Keyword;
+import clojure.lang.PersistentArrayMap;
 
 /**
  * A singleton (access from ModellingPlugin) that catalogs models and provides
@@ -364,6 +371,48 @@ public class ModelFactory {
 		IQueryResult r = model.observe(kbox, session, (Object[]) extents);
 		return new ContextualizingModelResult(r, listeners, extents);
 	}
+	
+	/**
+	 * Query a model in the identified contexts, take the first result observation if any, and build
+	 * a clojure-compatible map of name->state that uses Clojure keywords for the states (using 
+	 * the ID name of the computing model if any was passed in an :as clause, or the local name
+	 * of the observable concept if not). If no models were computed, an empty map is returned.
+	 * 
+	 * @param model
+	 * @param kbox
+	 * @param session
+	 * @param extents
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public Map<?,?> eval(Model model, IKBox kbox, ISession session,
+			Topology... extents) throws ThinklabException {
+
+		PersistentArrayMap ret = new PersistentArrayMap(new Object[]{});
+		IQueryResult res = run(model, kbox, session, null, extents);
+		
+		if (res.getResultCount() > 0) {
+			
+			 Map<IConcept, IState> states = 
+				 ObservationFactory.getStateMap(res.getResult(0, session).asObjectReference().getObject());
+			 
+			 for (IState state : states.values()) {
+				 
+				DefaultAbstractModel mod = (DefaultAbstractModel) state.getMetadata(Metadata.DEFINING_MODEL);
+				String name = 
+					 (mod == null || (mod.getId() == null)) ? 
+						state.getObservableClass().getLocalName() : 
+						mod.getId();
+ 				Keyword kw = Keyword.intern(null, name);
+ 				ret = (PersistentArrayMap) ret.assoc(kw, state);
+			 }
+		}
+		
+		return ret;
+
+	
+	}
+	
 	
 	/**
 	 * Clones a new agent of the passed type and places it in the context

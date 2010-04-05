@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.metadata.Metadata;
@@ -44,9 +45,10 @@ public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> impl
 		return ret;
 	}
 
-	public ClassData(IConcept type, int size, ArrayList<Pair<GeneralClassifier, IConcept>> classifiers) throws ThinklabValidationException {
+	public ClassData(IConcept type, int size, ArrayList<Pair<GeneralClassifier, IConcept>> classifiers,
+				ObservationContext context) throws ThinklabValidationException {
 		
-		super(type, size);
+		super(type, size, context);
 		
 		IConcept[] rnk = null;
 

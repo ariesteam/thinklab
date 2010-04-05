@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceInt;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.metadata.Metadata;
@@ -109,9 +110,11 @@ public class CategoricalDistributionDatasource extends
 		return new Pair<IConcept, Double>(c,sh);
 	}
 
-	public CategoricalDistributionDatasource(IConcept type, int size, IConcept[] valueMappings, ArrayList<Pair<GeneralClassifier, IConcept>> classifiers) throws ThinklabValidationException {
+	public CategoricalDistributionDatasource(
+			IConcept type, int size, IConcept[] valueMappings, ArrayList<Pair<GeneralClassifier, 
+			IConcept>> classifiers, ObservationContext context) throws ThinklabValidationException {
 		
-		super(type, size);
+		super(type, size, context);
 		this.sortedIndexes = new int[valueMappings.length];
 		this.valueMappings = new IConcept[valueMappings.length];
 		this.shuttle = new double[valueMappings.length];

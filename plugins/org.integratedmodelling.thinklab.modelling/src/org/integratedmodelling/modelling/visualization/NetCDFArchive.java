@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.ObservationFactory;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
@@ -45,6 +46,7 @@ public class NetCDFArchive {
 	Map<IConcept,IState> variables;
 	Map<String,IState> auxVariables = 
 		new Hashtable<String, IState>();
+	ObservationContext context = null;
 	
 	/*
 	 * container for variables to write
@@ -59,7 +61,7 @@ public class NetCDFArchive {
 	public void setObservation(IInstance obs) throws ThinklabException {
 		
 		IObservation o = ObservationFactory.getObservation(obs);
-		
+		this.context = new ObservationContext(o);
 		IObservation spc = ObservationFactory.findTopology(o, Geospace.get().SubdividedSpaceObservable());
 		
 		if (spc == null || !(spc instanceof RasterGrid))
@@ -106,7 +108,7 @@ public class NetCDFArchive {
 	public void addRasterVariable(String concept,  double[] data) {
 		
 		IState st = 
-			new MemDoubleContextualizedDatasource(null, data);
+			new MemDoubleContextualizedDatasource(null, data, context);
 		
 		auxVariables.put(concept, st);
 	}
@@ -114,7 +116,7 @@ public class NetCDFArchive {
 	public void addRasterVariable(String concept,  double[][] data) {
 		
 		IState st = 
-			new MemDoubleContextualizedDatasource(null, data);
+			new MemDoubleContextualizedDatasource(null, data, context);
 		
 		auxVariables.put(concept, st);
 	}

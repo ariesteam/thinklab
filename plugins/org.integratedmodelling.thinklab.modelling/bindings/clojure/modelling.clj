@@ -72,7 +72,7 @@
 	 Just passes through anything that isn't handled - leave it to Java to validate the keyword."
 	[model clause]
 	(cond (= (first clause) :when)
-				(.applyClause model ":when" (tl/listp (second clause)))
+				(.applyClause model ":when" (eval (second clause)))
 				(= (first clause) :as)
 				(.applyClause model ":as" (str (second clause)))
 				(= (first clause) :optional)
@@ -93,18 +93,8 @@
 				(.applyClause model ":context" (map configure-model (tl/group-with-keywords (second clause))))
 				(= (first clause) :observed)
 				(.applyClause model ":observed" (map configure-model (tl/group-with-keywords (second clause))))
-				(= (first clause) :random-walk)
-				(.applyClause model ":random-walk" (eval (second clause)))
-				(= (first clause) :movement)
-				(.applyClause model ":movement" (eval (second clause)))
-				(= (first clause) :death)
-				(.applyClause model ":death" (eval (second clause)))
 				(= (first clause) :update)
 				(.applyClause model ":update" (eval (second clause)))
-				(= (first clause) :random-move)
-				(.applyClause model ":random-move" (eval (second clause)))
-				(= (first clause) :metabolism)
-				(.applyClause model ":metabolism" (eval (second clause)))
 				(= (first clause) :initialize)
 				(.applyClause model ":initialize" (eval (second clause)))
 				(= (first clause) :play)
@@ -131,9 +121,12 @@
  	     (.setObservable  model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
  	     (.setDescription model# desc#)
 
- 	     ; process the contingency model - as many models as we like, will build an id from all
- 	     (doseq [mdef# contingency-model#]
-         	(.addContingency model# mdef# (meta contingency-model#))) 
+ 	     ; process the contingency model - should be one model with possible qualifying clauses
+; 	     (doseq [mdef# contingency-model#]
+;         	(.addContingency model# mdef# (meta contingency-model#))) 
+; keep the kw grouping for now
+         (doseq [mdef# (tl/group-with-keywords contingency-model#)]
+            (.addContingency model# (configure-model mdef#) (meta contingency-model#))) 
         
        
         ; process the model definitions - one or more models and configuration keyword pairs

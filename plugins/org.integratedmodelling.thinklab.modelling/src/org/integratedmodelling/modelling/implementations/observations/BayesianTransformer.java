@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
@@ -216,7 +217,8 @@ public class BayesianTransformer
  			 * TODO add metadata to ds. These come from the classifications: must know if 
  			 * we're discretizing a continuous distribution or not. 
  			 */
-			st.data = new CategoricalDistributionDatasource(var, size, pcstates, classifiers);
+			st.data = new CategoricalDistributionDatasource(var, size, pcstates, classifiers, 
+					(ObservationContext) context);
 			st.data.addAllMetadata(modelMetadata.get(st.observable));
 			pstorage[i++] = st;
 		}

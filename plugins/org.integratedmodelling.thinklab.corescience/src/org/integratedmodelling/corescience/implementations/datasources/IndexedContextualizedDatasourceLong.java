@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -39,15 +40,17 @@ public class IndexedContextualizedDatasourceLong<T>
 	long[] data = null;
 	private long max = 1L;
 	private int idx = 0;
+	private ObservationContext context;
 	
 	HashMap<String,Object> metadata = new HashMap<String,Object>();
 
 	HashMap<T, Long> map = new HashMap<T, Long>();
 	HashMap<Long, T> inverseMap = new HashMap<Long, T>();
 
-	public IndexedContextualizedDatasourceLong(IConcept type, int size) {
+	public IndexedContextualizedDatasourceLong(IConcept type, int size, ObservationContext context) {
 		_type = type;
 		data = new long[size];
+		this.context = context;
 	}
 	
 	@Override
@@ -156,6 +159,11 @@ public class IndexedContextualizedDatasourceLong<T>
 	@Override
 	public IConcept getObservableClass() {
 		return _type;
+	}
+
+	@Override
+	public ObservationContext getObservationContext() {
+		return this.context;
 	}
 
 

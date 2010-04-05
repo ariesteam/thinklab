@@ -1,5 +1,6 @@
 package org.integratedmodelling.corescience.interfaces;
 
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
@@ -59,4 +60,9 @@ public interface IState extends IDataSource, IConceptualizable {
 	public IConcept getObservableClass();
 
 	
+	/**
+	 * Contexts are passed to IObservation.createState(), and the state must be able to
+	 * return the context it represents.
+	 */
+	public abstract ObservationContext getObservationContext();
 }

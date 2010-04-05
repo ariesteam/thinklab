@@ -2,12 +2,15 @@ package org.integratedmodelling.modelling;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.integratedmodelling.corescience.context.ContextMapper;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
@@ -17,6 +20,8 @@ import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.multidimensional.MultidimensionalCursor;
+
+import clojure.lang.IFn;
 
 /**
  * The query() operation on a IModel produces one of these objects, which acts as a lazy generator of result
@@ -56,6 +61,13 @@ public class ModelResult implements IQueryResult  {
 	 * our final result options.
 	 */
 	ArrayList<IQueryResult> _contingents = new ArrayList<IQueryResult>();
+		
+	/*
+	 * the conditional closures corresponding to each contingent model, taken
+	 * from :when statements (null if none is defined)
+	 */
+	ArrayList<IFn> _conditionals = new ArrayList<IFn>();
+
 	
 	/*
 	 * extent specifications we may need to add
@@ -79,6 +91,9 @@ public class ModelResult implements IQueryResult  {
 	 * the Model may give us one of these.
 	 */
 	private SwitchLayer<?> switchLayer = null;
+
+	private Model contextModel;
+	private Map<?, ?> contextStateMap;
 		
 	public ModelResult(IModel model, IKBox kbox, ISession session) {
 		_model = model;
@@ -134,31 +149,95 @@ public class ModelResult implements IQueryResult  {
 		
 		
 		Polylist ret = null;
+		ArrayList<IQueryResult> chosen = new ArrayList<IQueryResult>();
 		
 		if (_model instanceof Model) {
 		
+			if (switchLayer != null) {
+
+				int modelId = 0;
+
+				for (int i = 0; i < _contingents.size(); i++) {
+
+					if (switchLayer.isCovered())
+						break;
+
+					modelId++;
+
+					// TODO initialize with the global ctx = to and the
+					// contingent model's one = from
+					ContextMapper cmap = null;
+					boolean wasActive = false;
+					
+					IFn where = _conditionals.get(i);
+					for (int st = 0; st < switchLayer.size(); st++) {
+
+						boolean active = cmap.isCovered(st);
+
+						if (active && where != null && contextStateMap != null) {
+							
+							/*
+							 * get the state map for context i and eval the
+							 * closure
+							 */
+							Map<?, ?> state = cmap.getLocalState(
+									contextStateMap, st);
+							try {
+								active = (Boolean) where.invoke(state);
+							} catch (Exception e) {
+								throw new ThinklabValidationException(e);
+							}
+							
+							if (!wasActive && active)
+								wasActive = true;
+							
+						}
+
+						if (active) {
+							switchLayer.set(st, modelId);
+						}
+					}
+					
+					if (wasActive)
+						chosen.add(_contingents.get(i));
+				}
+			}
+
+			
 			/*
-			 * get the observable and do the rest; a Model's definition depends on the context, so we
-			 * can't ask the model to provide it. 
-			 * 
 			 * CHECK CONTINGENCIES AND SWITCH LAYER; IF 1 CONTINGENCY, JUST BUILD THAT, ELSE BUILD AN
 			 * OBSERVATION MERGER WITH ALL CONTINGENCIES.
+			 * 
+			 * TODO ALL THIS GOES IN THE DATASOURCE - JUST BUILD THE OBS AND
+			 * CONTEXTUALIZE IT.  WILL HAVE TO HANDLE CONTINGENCIES IN COMPILER.
 			 */
-			if (_contingents.size() == 1) {
+			if (chosen.size() == 1) {
+				
+				ret = chosen.get(0).getResultAsList(ofs[0], references);
 
-				ret = _contingents.get(0).getResultAsList(ofs[0], references);
-
-			} else if (_contingents.size() > 1) {
+				/*
+				 * TODO the switchlayer should mask the extent if not null.
+				 */
+				
+			} else if (chosen.size() > 1) {
 				
 				ret = ObservationFactory.createMerger(((DefaultAbstractModel)_model).observableSpecs);
 				
-				for (int i = 0; i < _contingents.size(); i++) {
-					Polylist dep = _contingents.get(i).getResultAsList(ofs[i], null);
+				// TODO we must pass them as an array, so that we can reconstruct the order in the
+				// switchlayer. Also we must pass only those that 
+				for (int i = 0; i < chosen.size(); i++) {
+					Polylist dep = chosen.get(i).getResultAsList(ofs[i], null);
 					ret = ObservationFactory.addContingency(ret, dep);
 				}
 				
 				if (switchLayer != null)
 					ret = ObservationFactory.addReflectedField(ret, "switchLayer", this.switchLayer);
+			} else {
+				
+				/*
+				 * TODO decide what to do with the empty result that can only be decided after
+				 * the query has returned a result.
+				 */
 			}
 			
 		} else {
@@ -252,6 +331,11 @@ public class ModelResult implements IQueryResult  {
 			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
 			ticker.defineDimensions(_mediated.getTotalResultCount());
 		} else if (_dependents.size() > 0) {
+			
+			/* 
+			 * TODO add dimensions for the context model and contingencies
+			 */
+			
 			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
 			int[] dims = new int[_dependents.size()];
 			int i = 0;
@@ -269,15 +353,22 @@ public class ModelResult implements IQueryResult  {
 		_dependents.add(res);
 	}
 
-	public void addContingentResult(ModelResult res) {
-		_contingents.add(res);	
+	public void addContingentResult(IModel m, ModelResult res) {
+		_contingents.add(res);
+		_conditionals.add(((DefaultAbstractModel)m).whenClause);
 	}
 
 	public void addExtentObservation(Polylist list) {
 		_extents.add(list);
 	}
 
-	public void setSwitchLayer(SwitchLayer<?> switchLayer) {
+	/*
+	 * communicate that this result will have to build its contingencies using this
+	 * context model and states, and define the switchlayer for the observation merger.
+	 */
+	public void setContextModel(Model cm, Map<?, ?> statemap, SwitchLayer<IModel> switchLayer) {
+		this.contextModel = cm;
+		this.contextStateMap = statemap;
 		this.switchLayer = switchLayer;
 	}
 

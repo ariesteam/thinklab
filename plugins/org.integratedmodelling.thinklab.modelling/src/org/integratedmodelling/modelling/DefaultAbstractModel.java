@@ -29,6 +29,8 @@ import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.Polylist;
 
+import clojure.lang.IFn;
+
 public abstract class DefaultAbstractModel implements IModel {
 
 	protected IModel mediated = null;
@@ -44,7 +46,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	protected Polylist observableSpecs = null;
 	protected Object state = null;
 	protected String id = null;
-	private Polylist whenClause = null;
+	protected IFn whenClause = null;
 	private LinkedList<Polylist> transformerQueue = new LinkedList<Polylist>();
 	protected boolean mediatesExternal;
 	private boolean _validated = false;
@@ -160,7 +162,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		} else if (keyword.equals(":as")) {
 			setLocalId(argument.toString());
 		} else if (keyword.equals(":when")) {
-			whenClause = (Polylist) argument;
+			whenClause = (IFn) argument;
 		} else if (keyword.equals(":editable")) {
 			editable = argument;
 		} else if (keyword.equals(":optional")) {

@@ -3,6 +3,7 @@ package org.integratedmodelling.corescience.implementations.observations;
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
@@ -133,8 +134,8 @@ public class RankingSetRemapper extends Ranking implements IndirectObservation {
 
 	@Override
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return new MemDoubleContextualizedDatasource(getObservableClass(), size);
+		return new MemDoubleContextualizedDatasource(
+				getObservableClass(), size, (ObservationContext)context);
 	}
 
 

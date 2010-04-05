@@ -40,7 +40,7 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 	@Override
 	protected Object validateState(Object state)
 			throws ThinklabValidationException {
-		return state instanceof Double ? state : Double.parseDouble(state.toString());
+		return state instanceof Number ? state : Double.parseDouble(state.toString());
 	}
 
 	@Override

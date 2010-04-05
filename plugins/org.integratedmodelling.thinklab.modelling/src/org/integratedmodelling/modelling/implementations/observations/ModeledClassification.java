@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.implementations.observations;
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.ClassData;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IObservation;
@@ -204,7 +205,7 @@ public class ModeledClassification
 	@Override
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
 		
-		IState ret = new ClassData(cSpace, size, classifiers);
+		IState ret = new ClassData(cSpace, size, classifiers, (ObservationContext)context);
 
 		/*
 		 * TODO other metadata
