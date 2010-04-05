@@ -7,6 +7,7 @@ import java.util.Map;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ContextMapper;
 import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.modelling.corescience.ObservationModel;
@@ -55,25 +56,23 @@ public class Model extends DefaultAbstractModel {
 	
 		ModelResult ret = new ModelResult(this, kbox, session);
 
-		ObservationContext exts = 
-			(extents == null || extents.size() == 0) ?
-				null :
-				new ObservationContext(extents.toArray(new Topology[extents.size()]));
 		
 		/*
-		 * TODO all this goes in the observation, we only need to pass the model
-		 * result for the context model.
+		 * FIXME - the context model is only QUERIED here, result passed to ModelResult along with topologies. If
+		 * obs built, model result is recomputed.
 		 * 
-		 * if there is a context model, observe it now in the same context - even if we have only one model
 		 */
-		Map<?,?> statemap = null;
 		Model cm = buildContingencyModel();
 		if (cm != null) {
-			statemap = ModelFactory.get().eval(cm, kbox, session, extents.toArray(new Topology[extents.size()]));
+			Map<String,IState> statemap = 
+				ModelFactory.get().eval(cm, kbox, session, extents.toArray(new Topology[extents.size()]));
+			ObservationContext exts = 
+				(extents == null || extents.size() == 0) ?
+					null :
+					new ObservationContext(extents.toArray(new Topology[extents.size()]));
+			ret.setContextModel(cm, statemap, exts);
 		}
 		
-		if (statemap != null)
-			ret.setContextModel(cm, statemap, new SwitchLayer<IModel>(exts));
 		
 		int totres = 0;
 		

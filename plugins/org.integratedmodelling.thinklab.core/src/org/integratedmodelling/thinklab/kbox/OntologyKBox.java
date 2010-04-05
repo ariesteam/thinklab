@@ -87,7 +87,7 @@ public class OntologyKBox implements IKBox {
 	public void initialize(String protocol, String datasourceURI, Properties properties) throws ThinklabException {
 
 		storage = 				
-			KnowledgeManager.get().getKnowledgeRepository().createTemporaryOntology(NameGenerator.newName("JST"));
+			KnowledgeManager.get().getKnowledgeRepository().createTemporaryOntology(NameGenerator.newName("okb"));
 
 		URL url;
 		try {

@@ -118,8 +118,6 @@ public class CoreScience extends ThinklabPlugin {
 
 	public static final String CONTINGENT_TO = "observation:isContingentTo";
 
-	public static final String MERGER_OBSERVATION = "observation:MergerObservation";
-
 	public static CoreScience get() {
 		return (CoreScience) getPlugin(PLUGIN_ID );
 	}

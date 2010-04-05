@@ -171,7 +171,6 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		return false;
 	}
 	
-
 	private void checkMeters() {
 
 		if (cellAreaMeters < -0.1) {
@@ -335,7 +334,6 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		
 		return activationLayer;
 	}
-	
 	
 	public IGridMask requireActivationLayer(boolean active) {
 		

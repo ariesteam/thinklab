@@ -106,7 +106,7 @@ public class Session implements ISession {
 	public Session() throws ThinklabException {
 		
 		/* create the new Ontology with a temp name */
-		ontology = KnowledgeManager.get().getKnowledgeRepository().createTemporaryOntology(NameGenerator.newName("JS"));
+		ontology = KnowledgeManager.get().getKnowledgeRepository().createTemporaryOntology(NameGenerator.newName("ses"));
 		/* we want to be able to reload stuff fresh and give it different names if so */
 		ontology.allowDuplicateInstanceIDs();
 		userModel = createUserModel();

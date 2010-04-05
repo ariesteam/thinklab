@@ -9,6 +9,7 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
+import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -423,7 +424,7 @@ public class ObservationFactory {
 	 */
 	public static Polylist createMerger(Polylist observable) {
 		
-		return Polylist.list(CoreScience.MERGER_OBSERVATION, 
+		return Polylist.list(ModellingPlugin.MERGER_OBSERVATION, 
 				Polylist.list(
 						CoreScience.HAS_OBSERVABLE,
 						observable));

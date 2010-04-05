@@ -42,9 +42,10 @@ public class Observation implements IObservation, IInstanceImplementation {
 	protected IObservation[] nonExtentDependencies = new IObservation[0];
 	protected IObservation mediatedObservation = null;
 	protected IObservation mediatorObservation = null;
-
+	
 	// public so that getField can find it
 	public HashMap<String, Object> metadata = new HashMap<String, Object>();
+	public Integer contingencyOrder = 0; // used to sort contingencies if this is in a merger obs
 	
 	public IDataSource<?> getDataSource()  {
 

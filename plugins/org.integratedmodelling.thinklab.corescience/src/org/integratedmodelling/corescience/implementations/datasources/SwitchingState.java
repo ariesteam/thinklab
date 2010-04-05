@@ -11,12 +11,11 @@ import org.integratedmodelling.thinklab.exception.ThinklabValueConversionExcepti
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.Polylist;
 
-public class SwitchableState implements IState {
-	
+public class SwitchingState implements IState {
 	
 	private ObservationContext context;
 
-	public SwitchableState(SwitchLayer<IState> switchLayer, ObservationContext context) {
+	public SwitchingState(SwitchLayer<IState> switchLayer, ObservationContext context) {
 		this.context = context;
 		// TODO Auto-generated constructor stub
 	}

@@ -294,4 +294,15 @@ public class ObservationFactory extends org.integratedmodelling.corescience.Obse
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/**
+	 * 
+	 * @param observation
+	 * @param id
+	 * @return
+	 */
+	public static Polylist addFormalName(Polylist observation, String id) {
+		return observation.appendElement(
+				Polylist.list(CoreScience.HAS_FORMAL_NAME, id));
+	}
 }

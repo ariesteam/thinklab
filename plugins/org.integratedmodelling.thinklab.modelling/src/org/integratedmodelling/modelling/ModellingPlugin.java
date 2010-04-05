@@ -20,6 +20,8 @@ public class ModellingPlugin extends ThinklabPlugin {
 	
 	// TODO move cache to ModelFactory
 	private ObservationCache cache = null;
+
+	public static final String MERGER_OBSERVATION = "modeltypes:MergerObservation";
 	
 	public static ModellingPlugin get() {
 		return (ModellingPlugin) getPlugin(PLUGIN_ID);

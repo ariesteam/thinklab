@@ -374,9 +374,9 @@ public class ModelFactory {
 	
 	/**
 	 * Query a model in the identified contexts, take the first result observation if any, and build
-	 * a clojure-compatible map of name->state that uses Clojure keywords for the states (using 
-	 * the ID name of the computing model if any was passed in an :as clause, or the local name
-	 * of the observable concept if not). If no models were computed, an empty map is returned.
+	 * a name->state that uses the ID name of the computing model if any was passed in an :as clause, 
+	 * or the local name of the observable concept if not. If no models were computed, an empty map 
+	 * is returned.
 	 * 
 	 * @param model
 	 * @param kbox
@@ -385,10 +385,10 @@ public class ModelFactory {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public Map<?,?> eval(Model model, IKBox kbox, ISession session,
+	public Map<String, IState> eval(Model model, IKBox kbox, ISession session,
 			Topology... extents) throws ThinklabException {
 
-		PersistentArrayMap ret = new PersistentArrayMap(new Object[]{});
+		Map<String,IState> ret = new HashMap<String, IState>();
 		IQueryResult res = run(model, kbox, session, null, extents);
 		
 		if (res.getResultCount() > 0) {
@@ -403,8 +403,7 @@ public class ModelFactory {
 					 (mod == null || (mod.getId() == null)) ? 
 						state.getObservableClass().getLocalName() : 
 						mod.getId();
- 				Keyword kw = Keyword.intern(null, name);
- 				ret = (PersistentArrayMap) ret.assoc(kw, state);
+ 				ret.put(name, state);
 			 }
 		}
 		

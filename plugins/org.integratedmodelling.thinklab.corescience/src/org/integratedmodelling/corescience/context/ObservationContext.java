@@ -73,68 +73,6 @@ public class ObservationContext implements IObservationContext {
 		this(o, null);
 	}
 
-	// TODO to match the constrained constructor
-	private void set(IObservation o, ObservationContext constraint) throws ThinklabException {
-		
-		if (constraint == null) {
-			constraint = getUnconstrainedContext();
-		}
-	
-		
-		Collection<ObservationContext> dependents = collectDependencies(o, constraint);
-		Collection<ObservationContext> contingent = collectContingencies(o, constraint);
-		
-		if (dependents != null) {
-			mergeDependencies(dependents);
-		}
-		
-		if (contingent != null) {
-			mergeContingencies(contingent);
-		}
-
-		initialize();
-		
-	}
-	
-	private ObservationContext getUnconstrainedContext() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private void mergeContingencies(Collection<ObservationContext> contingent) {
-
-
-	}
-
-	private void mergeDependencies(Collection<ObservationContext> dependents2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private Collection<ObservationContext> collectContingencies(IObservation o, ObservationContext ctx) 
-		throws ThinklabException {
-		
-		for (IObservation dep : o.getContingencies()) {
-			
-			ObservationContext depctx = new ObservationContext(dep, ctx);
-			contingents.add(depctx);
-			// merge in any further restriction coming from downstream
-			addExtents(depctx);
-
-			if (this.isNull)
-				return null;
-		}
-		/*
-		 * for each context
-		 */
-		return null;
-	}
-
-	private Collection<ObservationContext> collectDependencies(IObservation o, ObservationContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/**
 	 * Compute the context of the passed observation. If required, constrain it to match the
 	 * passed context.
@@ -165,20 +103,19 @@ public class ObservationContext implements IObservationContext {
 
 		
 		/*
-		 * unite any contingent contexts
+		 * contingent contexts will be constrained so partial overlap is allowed
 		 */
 		for (IObservation dep : observation.getContingencies()) {
 			
 			ObservationContext depctx = new ObservationContext(dep, constraining);
 			contingents.add(depctx);
 			// merge in any further restriction coming from downstream
-			addExtents(depctx);
+			mergeExtents(depctx);
 
 			if (this.isNull)
 				return;
 		}
 
-		
 		
 		/*
 		 * merge with dependent contexts, constrained by ours
@@ -310,39 +247,6 @@ public class ObservationContext implements IObservationContext {
 				/* ask CM to modify the current extent record in order to represent the
 				   new one as well. */
 				IExtent merged = itsExtent.and(myExtent);
-				if (merged == null) {
-					this.isNull = true;
-					break;
-				} else {
-					extents.put(c, merged);
-				}
-			}		
-		}
-	}
-
-	/**
-	 * Called to OR any contingent context with the one we represent.
-	 * 
-	 * @param depctx
-	 * @throws ThinklabException
-	 */
-	private void addExtents(ObservationContext depctx) throws ThinklabException {
-		
-		for (IConcept c : depctx.extents.keySet()) {
-			
-			IExtent myExtent  = extents.get(c);
-			IExtent itsExtent = depctx.extents.get(c);
-			
-			if (myExtent == null) {
-				
-				/* just add the extent */
-				extents.put(c, itsExtent);
-			
-			} else {
-
-				/* ask CM to modify the current extent record in order to represent the
-				   new one as well. */
-				IExtent merged = itsExtent.or(myExtent);
 				if (merged == null) {
 					this.isNull = true;
 					break;
