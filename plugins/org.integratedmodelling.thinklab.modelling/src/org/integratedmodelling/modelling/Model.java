@@ -64,18 +64,14 @@ public class Model extends DefaultAbstractModel {
 		 */
 		Model cm = buildContingencyModel();
 		if (cm != null) {
-			Map<String,IState> statemap = 
-				ModelFactory.get().eval(cm, kbox, session, extents.toArray(new Topology[extents.size()]));
-			ObservationContext exts = 
-				(extents == null || extents.size() == 0) ?
-					null :
-					new ObservationContext(extents.toArray(new Topology[extents.size()]));
-			ret.setContextModel(cm, statemap, exts);
+
+			ModelResult mr = ((DefaultAbstractModel)cm).observeInternal(kbox, session, cp, extents, acceptEmpty);
+			if (mr != null && mr.getTotalResultCount() > 0) {
+				ret.setContextModel(mr, extents);
+			}
 		}
 		
-		
 		int totres = 0;
-		
 		for (IModel m : models) {
 						
 			ModelResult mr = ((DefaultAbstractModel)m).observeInternal(kbox, session, cp, extents, acceptEmpty);

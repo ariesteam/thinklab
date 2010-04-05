@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -87,9 +88,8 @@ public class ModelResult implements IQueryResult  {
 	MultidimensionalCursor ticker = null;
 
 	// from computing the context model
-	private Model contextModel = null;
-	private ObservationContext contextExt = null;
-	private Map<String, IState> contextStateMap = null;
+	private IQueryResult contextModel = null;
+	private ArrayList<Topology>[]   contextExt = null;
 		
 	public ModelResult(IModel model, IKBox kbox, ISession session) {
 		_model = model;
@@ -155,7 +155,8 @@ public class ModelResult implements IQueryResult  {
 			ret = ObservationFactory.createMerger(((DefaultAbstractModel)_model).observableSpecs);
 			
 			for (int i = 0; i < _contingents.size(); i++) {
-				Polylist dep = _contingents.get(i).getResultAsList(ofs[i], null);
+				Polylist dep = _contingents.get(i).getResultAsList(
+						ofs[_dependents.size() + (contextModel == null ? 0 : 1) + i], null);
 				dep = ObservationFactory.addReflectedField(dep, "contingencyOrder", new Integer(i));
 				ret = ObservationFactory.addDependency(ret, dep);
 			}
@@ -168,9 +169,14 @@ public class ModelResult implements IQueryResult  {
 			}
 			
 			if (contextModel != null) {
+				
+				/*
+				 * TODO compute context model, taking result at ofs[_dependents.size()]
+				 * SHIT non ho la session
+				 */
+				// IInstance cobs = contextModel.getResult(ofs[_dependents.size()], session);
 				ret = ObservationFactory.addReflectedField(ret, "contextModel", contextModel);
 				ret = ObservationFactory.addReflectedField(ret, "contextExt", contextExt);
-				ret = ObservationFactory.addReflectedField(ret, "contextStateMap", contextStateMap);
 			}
 					
 		} else {
@@ -272,11 +278,14 @@ public class ModelResult implements IQueryResult  {
 			/* 
 			 * TODO add dimensions for the context model and contingencies
 			 */
-			
 			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
-			int[] dims = new int[_dependents.size()];
+			int[] dims = new int[_dependents.size() + _contingents.size() + (contextModel == null ? 0 : 1)];
 			int i = 0;
 			for (IQueryResult r : _dependents)
+				dims[i++] = r.getTotalResultCount();
+			if (contextModel != null) 
+				dims[i++] = contextModel.getTotalResultCount();
+			for (IQueryResult r : _contingents)
 				dims[i++] = r.getTotalResultCount();
 			ticker.defineDimensions(dims);
 		}
@@ -303,9 +312,8 @@ public class ModelResult implements IQueryResult  {
 	 * communicate that this result will have to build its contingencies using this
 	 * context model and states, and define the switchlayer for the observation merger.
 	 */
-	public void setContextModel(Model cm, Map<String, IState> statemap, ObservationContext exts) {
+	public void setContextModel(IQueryResult cm, ArrayList<Topology> ... exts) {
 		this.contextModel = cm;
-		this.contextStateMap = statemap;
 		this.contextExt = exts;
 	}
 
