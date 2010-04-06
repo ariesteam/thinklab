@@ -88,7 +88,8 @@ public class Model extends DefaultAbstractModel {
 					" contingencies of model " +
 					id);	
 		}
-		
+				
+		ret.initialize();
 		
 		return ret;
 		

@@ -94,8 +94,8 @@ public class ModelFactory {
 		public IValue getResult(int n, ISession session)
 				throws ThinklabException {
 			IInstance res = session.createObject(getResultAsList(n, null));
-			IInstance result = new ObservationFactory().contextualize(res,
-					session, listeners, extents);
+			IInstance result = 
+				ObservationFactory.contextualize(res, session, listeners, extents);
 			return new ObjectReferenceValue(result);
 		}
 

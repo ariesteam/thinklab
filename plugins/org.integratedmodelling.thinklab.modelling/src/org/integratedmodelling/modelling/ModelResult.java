@@ -168,13 +168,18 @@ public class ModelResult implements IQueryResult  {
 			
 			if (contextModel != null) {
 				
+				System.out.println("computing context model....");
+				
 				/*
 				 * compute context model and pass it to merging observation
 				 */
 				IInstance cobs = contextModel.getResult(ofs[_dependents.size()], _session).
 					asObjectReference().getObject();
+				
 				IInstance result = ObservationFactory.
 					contextualize(cobs, _session, contextExt.toArray(new Topology[contextExt.size()]));
+
+				System.out.println("context model computed");
 				
 				ret = ObservationFactory.addReflectedField(ret, "contextObs", 
 						ObservationFactory.getObservation(result));
@@ -275,11 +280,8 @@ public class ModelResult implements IQueryResult  {
 		if (_mediated != null) {
 			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
 			ticker.defineDimensions(_mediated.getTotalResultCount());
-		} else if (_dependents.size() > 0) {
-			
-			/* 
-			 * TODO add dimensions for the context model and contingencies
-			 */
+		} else if (_dependents.size() > 0 || _contingents.size() > 0 || contextModel != null) {
+
 			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
 			int[] dims = new int[_dependents.size() + _contingents.size() + (contextModel == null ? 0 : 1)];
 			int i = 0;
