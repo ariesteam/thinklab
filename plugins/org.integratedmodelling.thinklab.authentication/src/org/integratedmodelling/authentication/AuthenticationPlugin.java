@@ -63,8 +63,9 @@ public class AuthenticationPlugin extends ThinklabPlugin implements IThinklabAut
 	 * Provided as a convenience for wherever a username property is needed to 
 	 * reflect authentication.
 	 */
-	public static String USERID_PROPERTY = "authentication.user.id";
-	public static String USER_PROPERTIES = "authentication.user.properties";
+	public static final String USERID_PROPERTY = "authentication.user.id";
+	public static final String USER_PROPERTIES = "authentication.user.properties";
+	public static final String USE_ENCRYPTION_PROPERTY = "authentication.encryption";
 	
 	
 	IThinklabAuthenticationManager authManager = null;

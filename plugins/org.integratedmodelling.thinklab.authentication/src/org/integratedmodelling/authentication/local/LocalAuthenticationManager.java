@@ -51,6 +51,7 @@ import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
+import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
 
@@ -97,11 +98,12 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 			throw new ThinklabInvalidUserException(username);
 		}
 		
-		String ew = encryptionManager.encrypt(password);
+		String ew = encryptionManager == null ?
+				password : 
+				encryptionManager.encrypt(password);
 		
 		return ew.equals(qr.get(0,1));
 	}
-
 
 	public Properties getUserProperties(String username)  throws ThinklabException{
 		
@@ -190,10 +192,11 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 		database = 
 			SQLPlugin.get().createSQLServer(db, properties);
 
-		encryptionManager = 
-			new EncryptionManager(
+		if (BooleanValue.parseBoolean(properties.getProperty(AuthenticationPlugin.USE_ENCRYPTION_PROPERTY, "false"))) {
+			encryptionManager = new EncryptionManager(
 					EncryptionManager.AES_ENCRYPTION_SCHEME,
-					ek);
+					ek);			
+		}
 
 		/* create db if necessary */
 		if (!database.haveTable("tluser")) {
@@ -211,10 +214,8 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 		
 		if (userfile.exists()) {
 			loadUsers(userfile);
-		}
-		
+		}	
 	}
-
 
 	private void loadUsers(File userfile) throws ThinklabException {
 
@@ -255,7 +256,7 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 			throw new ThinklabDuplicateUserException(user);
 		}
 		
-		String ew = encryptionManager.encrypt(password);
+		String ew = encryptionManager == null ? password : encryptionManager.encrypt(password);
 		
 		database.execute("INSERT INTO tluser VALUES ('" +
 				user + 
@@ -291,7 +292,7 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 			throw new ThinklabInvalidUserException(user);
 		}
 		
-		String ew = encryptionManager.encrypt(password);
+		String ew = encryptionManager == null ? password : encryptionManager.encrypt(password);
 		
 		database.execute("UPDATE tluser SET userpass = '" +
 				ew + 

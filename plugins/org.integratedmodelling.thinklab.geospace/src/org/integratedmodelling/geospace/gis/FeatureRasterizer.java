@@ -32,6 +32,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.type.NumericAttributeType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
@@ -44,6 +45,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.referencing.cs.AxisDirection;
+import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -77,12 +79,16 @@ public class FeatureRasterizer {
 	     */
 	    public FeatureRasterizerException(String message) {
 	        super(message);
-	    }	    
+	    }
+
+		public FeatureRasterizerException(Throwable e) {
+			super(e);
+		}	    
 	 }
 
     private int height;
     private int width;
-    private double noDataValue;
+    private double noDataValue = Double.NaN;
     private WritableRaster raster = null;   
     private BufferedImage bimage = null;
     private Graphics2D graphics = null;
@@ -245,7 +251,7 @@ public class FeatureRasterizer {
 			setWritableRaster(raster);
     	} 
 
-    	clearRaster();
+    	clearRaster(null, null);
     	
     	if (env == null) {
     	    		
@@ -340,7 +346,7 @@ public class FeatureRasterizer {
 			setWritableRaster(raster);
     	} 
 
-        clearRaster();
+        clearRaster(null, null);
         
         setBounds(grid.getNormalizedBox());
         this.value = (float)value;
@@ -371,7 +377,8 @@ public class FeatureRasterizer {
 	
 	
 	public GridCoverage2D rasterize(String name, FeatureIterator<SimpleFeature> fc, String attributeName, IConcept valueType, 
-			String valueDefault, ReferencedEnvelope env, ReferencedEnvelope normEnv) throws FeatureRasterizerException {
+			String valueDefault, ReferencedEnvelope env, ReferencedEnvelope normEnv,
+			ReferencedEnvelope dataEnvelope) throws FeatureRasterizerException {
     	
     	if (raster == null) {
     	
@@ -405,8 +412,8 @@ public class FeatureRasterizer {
     				normEnv.getMinY(), 
     				normEnv.getWidth(), 
     				normEnv.getHeight());
-			 
-		rasterize(fc, box, attributeName, valueType, valueDefault);
+			     	
+		rasterize(fc, box, attributeName, valueType, valueDefault, dataEnvelope);
 
 		GridCoverage2D coverage = 
 			rasterFactory.create(name, raster, env);
@@ -448,7 +455,7 @@ public class FeatureRasterizer {
 
         this.attributeName = attributeName;
         checkReset(DataBuffer.TYPE_FLOAT);
-        clearRaster();
+        clearRaster(null, null);
         setBounds(bounds);
         FeatureIterator<SimpleFeature> fci = fc.features();
         SimpleFeature feature;
@@ -473,7 +480,7 @@ public class FeatureRasterizer {
      * @exception  FeatureRasterizerException  An error when rasterizing the data
      */
     public void rasterize(FeatureIterator<SimpleFeature> fc, java.awt.geom.Rectangle2D.Double bounds, 
-    		String attributeName, IConcept valueType, String valueDefault)
+    		String attributeName, IConcept valueType, String valueDefault, ReferencedEnvelope denv)
     	throws FeatureRasterizerException {
     	
         this.attributeName = attributeName;
@@ -488,7 +495,7 @@ public class FeatureRasterizer {
         }
         
         // initialize raster to NoData value
-        clearRaster();
+        clearRaster(bounds, denv);
         setBounds(bounds);
 
         SimpleFeature feature; int n = 0;
@@ -802,21 +809,35 @@ public class FeatureRasterizer {
 
     /**
      *  Sets the entire raster to NoData
+     * @param bounds2 
      */
-    public void clearRaster() {
+    public void clearRaster(java.awt.geom.Rectangle2D.Double bounds, ReferencedEnvelope denv) {
 
     	minAttValue = 999999999;
         maxAttValue = -999999999;
 
+        double xc = 0.0;
+        double yc = 0.0;
+        if (bounds != null) {
+        	xc = bounds.width / width;
+        	yc = bounds.height / height;
+        }
+        
         // initialize raster to NoData value
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
+            	
+            	boolean inRegion = true;
+            	if (bounds != null && denv != null) {
+            		inRegion = denv.contains(xc*i + xc/2.0, yc*j + yc/2);
+            	}
+            		
             	if (classification != null) {
-            		raster.setSample(i, j, 0, 0);
-            		bimage.setRGB(i, j, 0);	
+            		raster.setSample(i, j, 0, inRegion ? 0.0 : Double.NaN);
+            		bimage.setRGB(i, j, inRegion? 0 : floatBitsToInt(Float.NaN));	
             	} else {
-            		raster.setSample(i, j, 0, noDataValue);
-            		bimage.setRGB(i, j, floatBitsToInt((float)noDataValue));
+            		raster.setSample(i, j, 0, inRegion ? noDataValue : Double.NaN);
+            		bimage.setRGB(i, j, floatBitsToInt((float)(inRegion ? noDataValue : Double.NaN)));
             	}
             }
         }

@@ -32,12 +32,9 @@
  **/
 package org.integratedmodelling.geospace.coverage;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-
-import javax.swing.JFrame;
 
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -50,15 +47,7 @@ import org.geotools.feature.collection.DelegateFeatureIterator;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.gui.swing.JMapPane;
-import org.geotools.map.DefaultMapContext;
-import org.geotools.map.DefaultMapLayer;
-import org.geotools.map.MapContext;
-import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.geotools.styling.Style;
-import org.geotools.styling.StyleBuilder;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
