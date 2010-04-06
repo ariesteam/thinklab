@@ -40,7 +40,7 @@ public class Measurement extends Observation implements MediatingObservation {
 	private IRandomValue randomValue = null;
 	double inlineValue = 0;
 	private double value = 0.0;
-    Unit<?> unit;
+    public Unit<?> unit;
     
 	private boolean isConstant = false;
 	
@@ -105,7 +105,7 @@ public class Measurement extends Observation implements MediatingObservation {
 			this.converter = 
 				unit.equals(otherUnit) ? 
 					null :
-					unit.getConverterTo(otherUnit);
+					otherUnit.getConverterTo(unit);
 		}
 		
 		@Override

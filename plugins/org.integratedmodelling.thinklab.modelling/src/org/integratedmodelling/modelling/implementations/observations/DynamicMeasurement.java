@@ -1,6 +1,10 @@
 package org.integratedmodelling.modelling.implementations.observations;
 
+import javax.measure.converter.UnitConverter;
+import javax.measure.unit.Unit;
+
 import org.integratedmodelling.corescience.implementations.observations.Measurement;
+import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.modelling.data.adapters.ClojureAccessor;
@@ -18,10 +22,34 @@ public class DynamicMeasurement extends Measurement {
 	public Object code = null;
 	String lang = "clojure";
 	
+	class ClojureMeasurementAccessor extends ClojureAccessor {
+	    
+		protected Unit<?> otherUnit;
+		private UnitConverter converter = null;
+		
+		public ClojureMeasurementAccessor(IFn code, Observation obs, boolean isMediator, Measurement other) {
+			super(code, obs, isMediator);
+			
+			if (isMediator) {
+				this.otherUnit = other.unit;
+				this.converter = 
+					unit.equals(otherUnit) ? 
+							null :
+						otherUnit.getConverterTo(unit);
+			}
+		}
+
+		@Override
+		protected Object processMediated(Object object) {
+			return  converter == null ? object : converter.convert(((Number)object).doubleValue());
+		}
+		
+	}
+	
 	@Override
 	public IStateAccessor getAccessor() {
 		if (lang.equals("clojure"))
-			return new ClojureAccessor((IFn)code, false);
+			return new ClojureMeasurementAccessor((IFn)code, this, false, null);
 		else
 			return new MVELAccessor((String)code, false);
 	}
@@ -31,9 +59,13 @@ public class DynamicMeasurement extends Measurement {
 	public IStateAccessor getMediator(IndirectObservation observation)
 			throws ThinklabException {
 		if (lang.equals("clojure"))
-			return new ClojureAccessor((IFn)code, true);
+			return new ClojureMeasurementAccessor((IFn)code, this, true, (Measurement) observation);
 		else
 			return new MVELAccessor((String)code, true);
+		
+		/*
+		 * TODO must pass own value AFTER CONVERSION!
+		 */
 	}
 
 	/* (non-Javadoc)

@@ -305,4 +305,19 @@ public class ObservationFactory extends org.integratedmodelling.corescience.Obse
 		return observation.appendElement(
 				Polylist.list(CoreScience.HAS_FORMAL_NAME, id));
 	}
+	
+
+	/**
+	 * Return a contingency handler for the given observable
+	 * @param observableClass
+	 * @return
+	 */
+	public static Polylist createMerger(Polylist observable) {
+		
+		return Polylist.list(ModellingPlugin.MERGER_OBSERVATION, 
+				Polylist.list(
+						CoreScience.HAS_OBSERVABLE,
+						observable));
+	}
+	
 }

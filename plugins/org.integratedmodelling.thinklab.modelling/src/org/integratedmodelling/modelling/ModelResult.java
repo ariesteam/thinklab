@@ -168,8 +168,6 @@ public class ModelResult implements IQueryResult  {
 			
 			if (contextModel != null) {
 				
-				System.out.println("computing context model....");
-				
 				/*
 				 * compute context model and pass it to merging observation
 				 */
@@ -179,8 +177,6 @@ public class ModelResult implements IQueryResult  {
 				IInstance result = ObservationFactory.
 					contextualize(cobs, _session, contextExt.toArray(new Topology[contextExt.size()]));
 
-				System.out.println("context model computed");
-				
 				ret = ObservationFactory.addReflectedField(ret, "contextObs", 
 						ObservationFactory.getObservation(result));
 				ret = ObservationFactory.addReflectedField(ret, "contextExt", contextExt);
@@ -194,6 +190,7 @@ public class ModelResult implements IQueryResult  {
 		 * formal name is the name of the model if any
 		 */
 		ret = ObservationFactory.addFormalName(ret, _model.getId());
+		
 		/*
 		 * add the model to the resulting observation
 		 */
@@ -204,7 +201,6 @@ public class ModelResult implements IQueryResult  {
 		
 		// TODO anything else by default?
 		metadata.put(Metadata.DEFINING_MODEL, _model);
-
 		ret = ObservationFactory.addReflectedField(ret, "metadata", metadata);
 
 		if (_mediated != null) {

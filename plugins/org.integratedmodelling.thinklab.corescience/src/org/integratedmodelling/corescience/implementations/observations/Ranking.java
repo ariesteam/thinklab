@@ -126,7 +126,7 @@ public class Ranking extends Observation implements MediatingObservation {
 			return noConv? registers[reg] : convert((Double)(registers[reg]));
 		}
 
-		private double convert(double d) {
+		public double convert(double d) {
 		
 			double ret = d*conversion;
 			ret += offset;

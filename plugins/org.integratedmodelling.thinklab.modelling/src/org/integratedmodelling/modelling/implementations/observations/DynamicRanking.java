@@ -1,11 +1,14 @@
 package org.integratedmodelling.modelling.implementations.observations;
 
+import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.implementations.observations.Ranking;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.modelling.data.adapters.ClojureAccessor;
 import org.integratedmodelling.modelling.data.adapters.MVELAccessor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -18,10 +21,32 @@ public class DynamicRanking extends Ranking {
 	public Object code = null;
 	String lang = "clojure";
 	
+	class ClojureRankingAccessor extends ClojureAccessor {
+
+		RankingMediator mediator = null;
+		
+		public ClojureRankingAccessor(IFn code, Observation obs,
+				boolean isMediator, IndirectObservation mediated) {
+			super(code, obs, isMediator);
+			if (mediated != null)
+				try {
+					mediator = new RankingMediator(mediated);
+				} catch (ThinklabValidationException e) {
+					throw new ThinklabRuntimeException(e);
+				}
+		}
+
+		@Override
+		protected Object processMediated(Object object) {
+			return mediator == null ? object : mediator.convert(((Number)object).doubleValue());
+		}
+		
+	}
+	
 	@Override
 	public IStateAccessor getAccessor() {
 		if (lang.equals("clojure"))
-			return new ClojureAccessor((IFn)code, false);
+			return new ClojureRankingAccessor((IFn)code, this, false, null);
 		else
 			return new MVELAccessor((String)code, false);
 	}
@@ -31,7 +56,7 @@ public class DynamicRanking extends Ranking {
 	public IStateAccessor getMediator(IndirectObservation observation)
 			throws ThinklabException {
 		if (lang.equals("clojure"))
-			return new ClojureAccessor((IFn)code, true);
+			return new ClojureRankingAccessor((IFn)code, this, true, observation);
 		else
 			return new MVELAccessor((String)code, true);
 	}

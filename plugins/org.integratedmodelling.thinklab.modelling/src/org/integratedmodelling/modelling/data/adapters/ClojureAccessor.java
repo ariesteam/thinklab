@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.data.adapters;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
@@ -16,7 +17,7 @@ import clojure.lang.IFn;
 import clojure.lang.Keyword;
 import clojure.lang.PersistentArrayMap;
 
-public class ClojureAccessor implements IStateAccessor {
+public abstract class ClojureAccessor implements IStateAccessor {
 
 	IFn clojureCode = null;
 	int[] prmOrder = null;
@@ -26,10 +27,23 @@ public class ClojureAccessor implements IStateAccessor {
 	boolean isMediator;
 	String namespace = NameGenerator.newName("clj");
 	ArrayList<Keyword> kwList = null;
+	int index = 0;
+	Observation obs = null;
+	Keyword selfId = null;
+	String selfLabel = null;
+	int mediatedIndex = 0;
 	
-	public ClojureAccessor(IFn code, boolean isMediator) {
+	public ClojureAccessor(IFn code, Observation obs, boolean isMediator) {
 		clojureCode = code;
 		this.isMediator = isMediator;
+		this.obs = obs;
+		
+		if (isMediator) {
+			selfLabel = ((Observation)obs).getFormalName();
+			if (selfLabel == null)
+				selfLabel = obs.getObservableClass().getLocalName();
+			selfId = Keyword.intern(null, selfLabel);
+		}
 	}
 
 	@Override
@@ -37,6 +51,14 @@ public class ClojureAccessor implements IStateAccessor {
 		
 		PersistentArrayMap parms = new PersistentArrayMap(new Object[] {});
 		
+		/*
+		 * set whatever we are mediating to its mediated value so we can use the post-mediation
+		 * result.
+		 */
+		if (isMediator) {
+			parms = (PersistentArrayMap) parms.assoc(selfId, processMediated(registers[mediatedIndex]));
+		}
+
 		if (kwList == null) {
 			kwList = new ArrayList<Keyword>();
 			for (int i = 0; i < parmList.size(); i++)
@@ -44,9 +66,14 @@ public class ClojureAccessor implements IStateAccessor {
 		}
 		
 		for (int i = 0; i < parmList.size(); i++) {
-			parms = (PersistentArrayMap) parms.assoc(
-						kwList.get(i),
-						registers[parmList.get(i).getSecond()]);
+
+			Object val = registers[parmList.get(i).getSecond()];
+
+			// if we have any nodata dependency, we eval to nodata
+			if (val == null || (val instanceof Double && ((Double)val).isNaN()))
+				return null;
+			
+			parms = (PersistentArrayMap) parms.assoc(kwList.get(i), val);
 		}
 		
 		try {
@@ -56,6 +83,16 @@ public class ClojureAccessor implements IStateAccessor {
 		}
 	}
 
+	/**
+	 * This one is called if this accessor is for a mediator; if so, it must process
+	 * the passed object implementing the mediation strategy. The mediated object will become
+	 * available to the code using the :as id or the concept as usual.
+	 * 
+	 * @param object
+	 * @return
+	 */
+	protected abstract Object processMediated(Object object);
+
 	@Override
 	public boolean isConstant() {
 		return false;
@@ -63,11 +100,8 @@ public class ClojureAccessor implements IStateAccessor {
 
 
 	@Override
-	public boolean notifyDependencyObservable(IObservation o,
+	public boolean notifyDependencyObservable(IObservation observation,
 			IConcept observable, String formalName) throws ThinklabException {
-		// TODO Auto-generated method stub
-		if (!(o instanceof Topology))
-			obsToName.put(observable, formalName);
 		return true;
 	}
 
@@ -75,10 +109,21 @@ public class ClojureAccessor implements IStateAccessor {
 	public void notifyDependencyRegister(IObservation observation,
 			IConcept observable, int register, IConcept stateType)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		if (!(observation instanceof Topology))
-			parmList.add(new Pair<String, Integer>(obsToName.get(observable), register));
+		
+		if (!(observation instanceof Topology)) {
+			
+			if (isMediator && observation.isMediated() && 
+					observation.getMediatorObservation().equals(this.obs)) {
+				mediatedIndex = register;
+			} else {
+				
+				String label = ((Observation)observation).getFormalName();
+				if (label == null)
+					label = observation.getObservableClass().getLocalName();
+
+				parmList.add(new Pair<String, Integer>(label, register));
+			}
+		}
 	}
-	
 	
 }

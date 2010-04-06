@@ -251,6 +251,10 @@ public class Observation implements IObservation, IInstanceImplementation {
 	}
 
 	public String getFormalName() {
+		
+		if (formalName == null && mediatedObservation != null) 
+			formalName = ((Observation)mediatedObservation).getFormalName();
+		
 		return formalName;
 	}
 	

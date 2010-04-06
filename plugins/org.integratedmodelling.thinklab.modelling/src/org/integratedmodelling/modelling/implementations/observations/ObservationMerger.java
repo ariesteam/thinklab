@@ -1,8 +1,8 @@
 package org.integratedmodelling.modelling.implementations.observations;
 
 import java.util.ArrayList;
-import java.util.Map;
 
+import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.context.ContextMapper;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
@@ -14,16 +14,21 @@ import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
-import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModellingPlugin;
+import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.utils.Triple;
 
 import clojure.lang.IFn;
+import clojure.lang.Keyword;
+import clojure.lang.PersistentArrayMap;
 
 /**
  * An observation capable of building a merged datasource to properly handle contingencies.
@@ -45,14 +50,20 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 	int[] idxMap = null; 
 	
 	IConcept stateType = null;
+	private IObservationContext ourContext;
+	
+	ArrayList<Triple<Keyword,IState,ContextMapper>> pmap = 
+			new ArrayList<Triple<Keyword,IState,ContextMapper>>();
 	
 	class SwitchingAccessor implements IStateAccessor {
+
+		int index = 0;
 
 		@Override
 		public Object getValue(Object[] registers) {
 
 			Object ret = null;
-
+			
 			/*
 			 * scan the dependencies in priority order until one of them returns a non-null
 			 * value that satisfies its conditionals. A glorified, high-level logical expression
@@ -61,21 +72,33 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 			for (int i = 0; i < idxMap.length; i++) {
 				
 				Object val = registers[idxMap[i]];
-				if (val != null) {
+				if (val != null && !(val instanceof Double && Double.isNaN((Double)val))) {
 					
 					if (conditionals != null && conditionals.get(i) != null) {
 						
 						/*
 						 * create new parameter map
 						 */
+						PersistentArrayMap parms = new PersistentArrayMap(new Object[]{});
+						
+						for (int pp = 0; pp < pmap.size(); pp++) {
+							parms = (PersistentArrayMap) parms.assoc(
+									pmap.get(pp).getFirst(), 
+									pmap.get(pp).getSecond().
+										getValue(pmap.get(pp).getThird().getIndex(index), null));
+						}
 						
 						/*
 						 * call closure
 						 */
-						
-						/*
-						 * if closure returns true, set value and break
-						 */
+						try {
+							if ((Boolean)conditionals.get(i).invoke(parms)) {
+								ret = val;
+								break;
+							}
+						} catch (Exception e) {
+							throw new ThinklabRuntimeException(e);
+						}
 						
 					} else {
 						ret = val;
@@ -83,6 +106,8 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 					}
 				}
 			}
+			
+			index ++;
 			
 			return ret;
 		}
@@ -109,11 +134,6 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 			// remember where in the registers we'll find the state in order of priority
 			idxMap[((Observation)observation).contingencyOrder] = register;
 			
-			// TODO build the context mapper between the obs and the context if we have a context model
-			contextMappers[((Observation)observation).contingencyOrder] =
-				contextExt == null ?
-					null :
-					/* new ContextMapper(contextExt, FUCK) */ null;
 		}
 	}
 
@@ -121,14 +141,38 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 	public IState createState(int size, IObservationContext context)
 			throws ThinklabException {
 		
-		if (stateType.is(KnowledgeManager.Number()))
-			return new MemDoubleContextualizedDatasource(stateType, size, (ObservationContext) context);
+		IState ret = null;
+		
+		if (stateType.is(KnowledgeManager.Number())) {
+			ret = new MemDoubleContextualizedDatasource(stateType, size, (ObservationContext) context);
+		} else {
+			/*
+			 * TODO if all deps are classifications, we should produce an indexed state instead of storing all those
+			 * concepts.
+			 */
+			ret = new MemObjectContextualizedDatasource(stateType, size, (ObservationContext) context);
+		}
+		
+		if (contextObs != null) {
 
-		/*
-		 * TODO if all deps are classifications, we should produce an indexed state instead of storing all those
-		 * concepts.
-		 */
-		return new MemObjectContextualizedDatasource(stateType, size, (ObservationContext) context);
+			// get all states of context and prepare for mediation at the corresponding
+			// state
+			for (IState s : ObservationFactory.getStates(contextObs)) {
+				
+				IModel mod = (IModel) s.getMetadata(Metadata.DEFINING_MODEL);
+				String label = mod == null ? s.getObservableClass().getLocalName() : mod.getId();
+				ContextMapper cmap = new ContextMapper(s, ret);
+				
+				pmap.add(new Triple<Keyword,IState,ContextMapper>(
+							Keyword.intern(null, label), 
+							s, 
+							cmap));
+			}
+			
+		}
+		
+		return ret;
+
 	}
 
 	@Override

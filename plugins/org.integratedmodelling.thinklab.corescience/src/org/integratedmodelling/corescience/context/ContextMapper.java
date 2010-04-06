@@ -1,9 +1,6 @@
 package org.integratedmodelling.corescience.context;
 
-import java.util.Map;
-
 import org.integratedmodelling.corescience.interfaces.IState;
-
 
 /**
  * A helper object that maps state indexes from a context to a compatible other. The "to" context
@@ -12,12 +9,11 @@ import org.integratedmodelling.corescience.interfaces.IState;
  * dimension, its multiplicity will be either 1 or the same.
  * 
  * The getIndex(from) function returns the index of state in  from that maps to the "same" state in to.
- *
+ * 
  * @author Ferdinando
  *
  */
 public class ContextMapper {
-
 	
 	private ObservationContext _from;
 	private ObservationContext _to;
@@ -40,7 +36,8 @@ public class ContextMapper {
 	 * @return
 	 */
 	public int getIndex(int n) {
-		return 0;
+		// TODO only works with identical contexts
+		return n;
 	}
 	
 	/**
@@ -54,17 +51,5 @@ public class ContextMapper {
 		return false;
 	}
 
-	/**
-	 * Return the local state (keyword->Object) of "to" model at subdivision i ("from" model is ignored) by remapping
-	 * all context values in all states.
-	 * 
-	 * @param statemap
-	 * @param i
-	 * @return
-	 */
-	public Map<?, ?> getLocalState(Map<?, ?> statemap, int i) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 }

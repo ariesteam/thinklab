@@ -139,6 +139,8 @@ public abstract class DefaultAbstractModel implements IModel {
 			this.observableId = this.observableSpecs.first().toString();
 		} else {
 			this.observableId = observableOrModel.toString();
+			this.observable = KnowledgeManager.get().requireConcept(this.observableId);
+			this.observableSpecs = Polylist.list(this.observableId);
 		}
 		
 		id = observableId.toString().replace(':','_');
@@ -199,15 +201,6 @@ public abstract class DefaultAbstractModel implements IModel {
 	}
 
 	/**
-	 * This handles the :when condition if any is given for us in defmodel.
-	 * 
-	 * @param condition
-	 */
-	public void addConditionalClause(Polylist condition) {
-		
-	}
-	
-	/**
 	 * If the resulting observation is to be transformed by a transformer obs,
 	 * add a transformer definition from defmodel (e.g. :cluster (def)) in the transformer
 	 * queue.
@@ -260,6 +253,9 @@ public abstract class DefaultAbstractModel implements IModel {
 		metadata = model.metadata;
 		name = model.name;
 		isOptional = model.isOptional;
+		whenClause = model.whenClause;
+		state = model.state;
+		mediatesExternal = model.mediatesExternal;
 	}
 	
 	/**
