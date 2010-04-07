@@ -44,6 +44,8 @@ public class ModeledClassification
 	IConcept cSpace = null;
 	double[] continuousDistribution = null;
 
+	private boolean hasNilClassifier = false;
+
 	@Override
 	public String toString() {
 		return ("classification(" + getObservableClass() + "): " + cSpace);
@@ -104,12 +106,14 @@ public class ModeledClassification
 
 			Object o = registers[index];
 			
+			if (o == null && !hasNilClassifier)
+				return null;
+			
 			for (Pair<GeneralClassifier, IConcept> p : classifiers) {
 				if (p.getFirst().classify(o))
 					return p.getSecond();
 			}
 
-			// this is actually OK - 
 			// null means "no data"; it can be caught using with a nil classifier						
 			return null;
 		}
@@ -169,8 +173,20 @@ public class ModeledClassification
 			else 
 				classifiers.add(cls);					
 		}
+		
 		if (universal != null) 
 			classifiers.add(universal);
+		
+		/*
+		 * check if we have a nil classifier; if we don't we don't bother classifying nulls
+		 */
+		this.hasNilClassifier = false;
+		for (Pair<GeneralClassifier, IConcept> cl : classifiers) {
+			if (cl.getFirst().isNil()) {
+				this.hasNilClassifier = true;
+				break;
+			}
+		}
 		
 		IValue def = i.get(CoreScience.HAS_CONCEPTUAL_SPACE);
 		if (def != null)

@@ -227,8 +227,25 @@ public class BayesianTransformer
 		 * appropriately; use evidence state ID for speed.
 		 */
 		class Evidence { 
-			int field; ICategoryData data; String nodename;
-			Evidence(int f, ICategoryData d, String n) { field = f; data = d; nodename = n; }
+			int field; IState data; String nodename;
+			Evidence(int f, IState d, String n) { field = f; data = d; nodename = n; }
+
+			public IConcept getStateConcept(int state) throws ThinklabValidationException {
+			
+				if (data instanceof ICategoryData)
+					return ((ICategoryData)data).getCategory(state);
+				
+				Object ret = data.getValue(state, null);
+				
+				if (ret != null && !(ret instanceof IConcept)) {
+					throw new ThinklabValidationException(
+							"data used to set bayesian evidence for " + 
+							nodename + 
+							" is not a classification");
+				}
+				
+				return (IConcept)ret;
+			}
 		}
 		i = 0;
 		
@@ -242,12 +259,7 @@ public class BayesianTransformer
 			if (!nodeIDs.contains(ec.getLocalName()))
 				continue;
 			IState cs = smap.get(ec);
-			if (! (cs instanceof ICategoryData))
-				throw new ThinklabModelException(
-						"bayesian(" + getObservableClass() + "): dependent for " +
-						ec + 
-						" is not a classification");
-			evdnc.add(new Evidence(bn.getNode(ec.getLocalName()), (ICategoryData)cs, ec.getLocalName()));
+			evdnc.add(new Evidence(bn.getNode(ec.getLocalName()), cs, ec.getLocalName()));
 		}		
 
 		Evidence[] evidence = evdnc.toArray(new Evidence[evdnc.size()]);
@@ -271,7 +283,7 @@ public class BayesianTransformer
 			String ekey = debug ? "" : null;
 			
 			/*
-			 * FIXME or better FIXIT - removing node evidence when there is a null 
+			 * TBC removing single node evidence when there is a null 
 			 * causes an exception (SMILE error -2), so we must do this OR understand why.
 			 */ 
 			bn.clearAllEvidence();
@@ -286,13 +298,8 @@ public class BayesianTransformer
 			 */
 			for (int e = 0; e < evidence.length; e++) {
 				try {
-					IConcept ev = evidence[e].data.getCategory(state);
-					if (ev == null) {
-						// FIXME
-						// TODO see comment above - this causes a SMILE error -2 when called
-						// with an existing, valid node name or id. 
-						//bn.clearEvidence(evidence[e].field);
-					} else {
+					IConcept ev = evidence[e].getStateConcept(state);
+					if (ev != null) {
 						bn.setEvidence(
 								evidence[e].field, 
 								ev.getLocalName());
@@ -393,21 +400,6 @@ public class BayesianTransformer
 			rdef = ObservationFactory.addDependency(rdef, ddef);
 		}
 
-		/*
-		 * all evidence has the same context so keep it as provenance info. That
-		 * will bring in a lot of stuff. Should be linked to a context parameter in the session?
-		 */
-//		for (IConcept ec : smap.keySet()) {
-//			IObservation oo = ObservationFactory.findObservation(orig, ec);
-//			rdef = ObservationFactory.addSameContextObservation(rdef, oo.getObservationInstance());
-//		}
-		
-//		// TODO remove
-//		System.out.println(
-//				"\n >>>>>>>>>>>>>>>>>>>>>>>>> \n" + 
-//				Polylist.prettyPrint(rdef) + 
-//				"\n <<<<<<<<<<<<<<<<<<<<<<<<< \n");
-		
 		/*
 		 * go for it
 		 */

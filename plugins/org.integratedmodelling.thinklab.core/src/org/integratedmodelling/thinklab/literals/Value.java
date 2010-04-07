@@ -353,6 +353,16 @@ public class Value implements IValue {
             (this.getClass() == NumberValue.class) || 
             (this.getClass() == BooleanValue.class);
     }
+    
+    /* (non-Javadoc)
+     * @see org.integratedmodelling.ima.core.value.IValue#isPODType()
+     */
+    public static boolean isPOD(IConcept c) {
+    	return 
+            c.is(KnowledgeManager.Number()) ||
+            c.is(KnowledgeManager.Text()) ||
+            c.is(KnowledgeManager.Boolean());
+    }
 
     public boolean isList() {
         return false;

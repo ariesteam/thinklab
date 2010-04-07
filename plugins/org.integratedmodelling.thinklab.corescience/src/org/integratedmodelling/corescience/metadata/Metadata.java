@@ -19,6 +19,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
+import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.utils.InputSerializer;
 import org.integratedmodelling.utils.OutputSerializer;
 import org.integratedmodelling.utils.Pair;
@@ -325,6 +326,9 @@ public class Metadata {
 		boolean isRanking = false; 
 		IConcept truecase = null;
 		
+		if (Value.isPOD(type))
+			return null;
+		
 		/*
 		 * if presence-absence, map the "No*" or "notpresent" to 0 and 
 		 * the other to 1, then return. Must be two concepts at most.
@@ -457,6 +461,7 @@ public class Metadata {
 			IState datasource) {
 		
 		rankConcepts(type, datasource);
+		
 		/*
 		 * recompute ranks as requested and substitute
 		 */

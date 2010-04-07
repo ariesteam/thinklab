@@ -146,10 +146,6 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 		if (stateType.is(KnowledgeManager.Number())) {
 			ret = new MemDoubleContextualizedDatasource(stateType, size, (ObservationContext) context);
 		} else {
-			/*
-			 * TODO if all deps are classifications, we should produce an indexed state instead of storing all those
-			 * concepts.
-			 */
 			ret = new MemObjectContextualizedDatasource(stateType, size, (ObservationContext) context);
 		}
 		

@@ -227,5 +227,10 @@ public class GeneralClassifier {
 	public IntervalValue getInterval() {
 		return interval;
 	}
+
+	public boolean isNil() {
+		// TODO Auto-generated method stub
+		return this.isNil;
+	}
 	
 }

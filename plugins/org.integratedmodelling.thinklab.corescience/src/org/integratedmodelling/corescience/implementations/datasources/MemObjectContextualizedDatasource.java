@@ -64,6 +64,7 @@ public class MemObjectContextualizedDatasource
 	private IConcept _type;
 	private Object[] data = null;
 	private int idx = 0;
+	private Object prototype = null;
 	HashMap<String,Object> metadata = new HashMap<String,Object>();
 	private ObservationContext context;
 
@@ -71,6 +72,12 @@ public class MemObjectContextualizedDatasource
 		_type = type;
 		data = new Object[size];
 		this.context = context;
+		
+		/*
+		 * prepare to hold data of this type, determining if it's going to be a classification or what
+		 */
+		Metadata.rankConcepts(type, this);
+		
 	}
 	
 	@Override
@@ -91,6 +98,8 @@ public class MemObjectContextualizedDatasource
 
 	@Override
 	public void addValue(Object o) {
+		if (prototype == null)
+			prototype = o;
 		data[idx++] = o;
 	}
 
@@ -122,14 +131,25 @@ public class MemObjectContextualizedDatasource
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
 	
-		if (data[0] instanceof Number) {
+		if (prototype instanceof Number) {
 			double[] ret = new double[data.length];
 			for (int i = 0; i < data.length; i++) {
-				ret[i] = ((Number)data[i]).doubleValue();
+				ret[i] = (data[i] == null ? Double.NaN : ((Number)data[i]).doubleValue());
 			}
 			return ret;
+		} else if (prototype instanceof IConcept && Metadata.getClassMappings(this) != null) {
+			double[] ret = new double[data.length];
+			HashMap<IConcept, Integer> rnk = Metadata.getClassMappings(this);
+			for (int i = 0; i < data.length; i++) {
+				ret[i] = (data[i] == null ? Double.NaN : (double)(rnk.get((IConcept)data[i])));
+			}
+			return ret;			
 		}
-		throw new ThinklabValueConversionException("can't convert IValue into double");
+	
+		// TODO must accommodate distributions 
+		
+		throw new ThinklabValueConversionException("can't convert a " + prototype.getClass() + " into a double");
+		 
 	}
 	
 	@Override
@@ -208,7 +228,7 @@ public class MemObjectContextualizedDatasource
 			out.writeInteger(data == null ? 0 : data.length);
 			if (data != null)
 				for (int i = 0; i < data.length; i++)
-					out.writeDouble((Double)(data[i]));
+					out.writeDouble(data[i] == null ? Double.NaN : (Double)(data[i]));
 
 			Metadata.serializeMetadata(metadata, fop);
 			ret = true;

@@ -101,7 +101,8 @@ public class ObservationFactory {
 	private static void collectStates(IObservation observation,
 			HashMap<IConcept, IState> ret) throws ThinklabException {
 		
-		if (observation.getDataSource() instanceof IState) {
+		if (observation.getDataSource() instanceof IState && 
+				!ret.containsKey(observation.getObservableClass())) {
 			ret.put(observation.getObservableClass(), (IState) observation.getDataSource());
 		}
 		for (IObservation o : observation.getDependencies()) {
