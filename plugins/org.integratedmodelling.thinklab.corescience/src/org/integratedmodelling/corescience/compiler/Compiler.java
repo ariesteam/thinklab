@@ -493,7 +493,6 @@ public class Compiler {
 		ArrayList<IStateAccessor> accessorsThatWantUs = new ArrayList<IStateAccessor>();
 		ArrayList<IDataSource<?>> datasourcesThatWantUs = new ArrayList<IDataSource<?>>();
 		
-		boolean weAreMediated = false;
 		/* 
 		 * notify our state to our dependents, and determine if they
 		 * actually want us. 
@@ -513,9 +512,6 @@ public class Compiler {
 			 */
 			if (isExtent && dependent.isMediator())
 				continue;
-			
-			if (dependent.isMediator())
-				weAreMediated = true;
 			
 			if (odsc.accessor != null &&
 					odsc.accessor.notifyDependencyObservable(o, o.getObservableClass(), o.getFormalName())) {

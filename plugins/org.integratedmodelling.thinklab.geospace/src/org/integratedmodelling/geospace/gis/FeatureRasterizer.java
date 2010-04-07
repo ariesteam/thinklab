@@ -32,7 +32,6 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.type.NumericAttributeType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
@@ -45,7 +44,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -294,7 +292,7 @@ public class FeatureRasterizer {
     			/*
     			 * default to classification, use short integers for parsimony
     			 */
-    			ret = DataBuffer.TYPE_SHORT;
+    			ret = DataBuffer.TYPE_FLOAT;
     			if (classification == null) {
     				classification = new HashMap<String, Integer>();
     			}
@@ -308,7 +306,7 @@ public class FeatureRasterizer {
     			/*
     			 * default to classification, use short integers for parsimony
     			 */
-    			ret = DataBuffer.TYPE_SHORT;
+    			ret = DataBuffer.TYPE_FLOAT;
     			if (classification == null) {
     				classification = new HashMap<String, Integer>();
     			}
@@ -364,7 +362,7 @@ public class FeatureRasterizer {
 	private void checkReset(int type) {
 
 		if (resetRaster) {
-            raster = RasterFactory.createBandedRaster(type,width, height, 1, null);
+            raster = RasterFactory.createBandedRaster(type, width, height, 1, null);
 
             bimage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             bimage.setAccelerationPriority(1.0f);
@@ -583,10 +581,6 @@ public class FeatureRasterizer {
         				}
         			}
         			
-        			/*
-        			 * TODO string values may need to be turned into classifications and the final
-        			 * set of classes returned in the coverage
-        			 */
         			if (classification != null) {
         				value = getClassifiedValue(attr.toString());
         			} else {
@@ -672,12 +666,16 @@ public class FeatureRasterizer {
     public void close() {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-        		double val = Float.intBitsToFloat(bimage.getRGB(i, j));
-            	if (classification != null) {
-            		raster.setSample(i, j, 0, (int)val);
-            	} else {
-            		raster.setSample(i, j, 0, val);
-            	}
+        		float fval = Float.intBitsToFloat(bimage.getRGB(i, j));
+        		double val = fval;
+        		if (Float.isNaN(fval))
+        			val = Double.NaN;
+        		
+//            	if (classification != null) {
+//            		raster.setSample(i, j, 0, (int)val);
+//            	} else {
+            		raster.setSample(i, j, 0, fval);
+//            	}
             }
         }
     }
@@ -829,12 +827,12 @@ public class FeatureRasterizer {
             	
             	boolean inRegion = true;
             	if (bounds != null && denv != null) {
-            		inRegion = denv.contains(xc*i + xc/2.0, yc*j + yc/2);
+            		inRegion = denv.contains(bounds.getMinX() + xc*i + xc/2.0, bounds.getMinY() + yc*j + yc/2);
             	}
             		
             	if (classification != null) {
             		raster.setSample(i, j, 0, inRegion ? 0.0 : Double.NaN);
-            		bimage.setRGB(i, j, inRegion? 0 : floatBitsToInt(Float.NaN));	
+            		bimage.setRGB(i, j,  floatBitsToInt(inRegion? 0.0f : Float.NaN));	
             	} else {
             		raster.setSample(i, j, 0, inRegion ? noDataValue : Double.NaN);
             		bimage.setRGB(i, j, floatBitsToInt((float)(inRegion ? noDataValue : Double.NaN)));

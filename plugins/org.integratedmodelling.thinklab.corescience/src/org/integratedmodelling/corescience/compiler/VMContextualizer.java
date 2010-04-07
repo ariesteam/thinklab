@@ -12,6 +12,7 @@ import org.integratedmodelling.corescience.implementations.datasources.MemIntege
 import org.integratedmodelling.corescience.implementations.datasources.MemLongContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemObjectContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemValueContextualizedDatasource;
+import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
@@ -309,45 +310,6 @@ public class VMContextualizer<T> {
 			((int)parm2 << 8) |
 			parm1;	
 	}
-
-	/**
-	 * This is used to create the state datasources for the given type
-	 * You're most likely to want to override this one, if any.
-	 * 
-	 * @param stateType
-	 * @return
-	 */
-//	protected IState makeState(IConcept stateType, int size) {
-//
-//		IState ret = null;
-//		if (stateType.is(KnowledgeManager.Integer()))
-//			ret = new MemIntegerContextualizedDatasource(stateType, size);
-//		else if (stateType.is(KnowledgeManager.Long()))
-//			ret = new MemLongContextualizedDatasource(stateType, size);
-//		else if (stateType.is(KnowledgeManager.Float()))
-//			ret = new MemFloatContextualizedDatasource(stateType, size);
-//		// catch all mixed numbers into doubles - may want to use floats
-//		// instead
-//		else if (stateType.is(KnowledgeManager.Double())
-//				|| stateType.is(KnowledgeManager.Number()))
-//			ret = new MemDoubleContextualizedDatasource(stateType, size);
-//		else if (stateType.is(KnowledgeManager.LiteralValue()))
-//			ret = new MemValueContextualizedDatasource(stateType, size);
-//		else if (stateType.equals(KnowledgeManager.Thing()))
-//			// we have a mixed situation with no common types, can only use
-//			// an object
-//			ret = new MemObjectContextualizedDatasource(stateType, size);
-//		else {
-//			/*
-//			 * if we get here, we have failed to ask the CMs what datasource
-//			 * they want.
-//			 */
-//			throw new ThinklabRuntimeException(
-//					"internal error: datasource creation for custom concept "
-//							+ stateType + "not properly set up");
-//		}
-//		return ret;
-//	}
 	
 	private int encode(int instruction) {
 		_code.add(instruction);
@@ -372,25 +334,15 @@ public class VMContextualizer<T> {
 
 		_observed.add(observable);
 		IState dds = null;
-/*
- * 		if (o.getStateType().is(KnowledgeManager.Number())) {
- 
-			// let's build all DSs at compile time so we have a chance to encode metadata
-			// ASTOR is currently unused
-			//			encode(makeInst(ASTOR_I, _storegs));
-			//			encode(size);
-			dds = makeState(_stackType, size);
-			
-		} else {
-*/			
+		
 			try {
 				dds = o.createState(size, ownContext);	
 				
 				/*
 				 * transfer any metadata coming from model specs to state
 				 */
-				if (o instanceof IInstanceImplementation && ((IInstanceImplementation)o).getMetadata() != null) {
-					for (Entry<String, Object> e : ((IInstanceImplementation)o).getMetadata().entrySet()) {
+				if (((Observation)o).getMetadata() != null) {
+					for (Entry<String, Object> e : ((Observation)o).getMetadata().entrySet()) {
 						dds.setMetadata(e.getKey(), e.getValue());
 					}
 				}
