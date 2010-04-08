@@ -6,26 +6,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
-import org.integratedmodelling.corescience.implementations.datasources.MemFloatContextualizedDatasource;
-import org.integratedmodelling.corescience.implementations.datasources.MemIntegerContextualizedDatasource;
-import org.integratedmodelling.corescience.implementations.datasources.MemLongContextualizedDatasource;
-import org.integratedmodelling.corescience.implementations.datasources.MemObjectContextualizedDatasource;
-import org.integratedmodelling.corescience.implementations.datasources.MemValueContextualizedDatasource;
+import org.integratedmodelling.corescience.context.ContextMapper;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
-import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.utils.Ticker;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 
@@ -48,6 +40,15 @@ public class VMContextualizer<T> {
 	private int _vldregs = 0;
 	private int _immregs = 0;
 	private int _cstords = 0;
+	
+	class ContextMediator {
+		
+		IState state;
+		ContextMapper mapper;
+		
+		
+		
+	}
 	
 	public ArrayList<Integer> _code = new ArrayList<Integer>();
 	
