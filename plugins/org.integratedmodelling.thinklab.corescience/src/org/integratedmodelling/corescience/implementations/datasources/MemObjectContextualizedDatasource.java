@@ -63,9 +63,8 @@ public class MemObjectContextualizedDatasource
 	private static final long serialVersionUID = -6567783706189229920L;
 	private IConcept _type;
 	private Object[] data = null;
-	private int idx = 0;
 	private Object prototype = null;
-	HashMap<String,Object> metadata = new HashMap<String,Object>();
+	Metadata metadata = new Metadata();
 	private ObservationContext context;
 
 	public MemObjectContextualizedDatasource(IConcept type, int size, ObservationContext context) {

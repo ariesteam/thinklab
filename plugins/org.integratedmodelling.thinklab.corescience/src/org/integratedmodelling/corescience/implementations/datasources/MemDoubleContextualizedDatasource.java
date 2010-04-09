@@ -62,8 +62,7 @@ public class MemDoubleContextualizedDatasource
 	private static final long serialVersionUID = -6567783706189229920L;
 	private IConcept _type;
 	protected double[] data = null;
-	private int idx = 0;
-	HashMap<String,Object> metadata = new HashMap<String,Object>();
+	Metadata metadata = new Metadata();
 	private ObservationContext context;
 	
 	public MemDoubleContextualizedDatasource() {

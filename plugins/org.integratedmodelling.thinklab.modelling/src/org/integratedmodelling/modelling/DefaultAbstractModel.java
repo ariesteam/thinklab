@@ -10,6 +10,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.annotation.ModelAnnotation;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
@@ -61,7 +62,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * Any clause not intercepted by applyClause becomes metadata, which is communicated
 	 * to the observation created. 
 	 */
-	protected HashMap<String, Object> metadata = new HashMap<String, Object>();
+	protected Metadata metadata = new Metadata();
 	
 	protected boolean isOptional = false;
 	

@@ -30,7 +30,9 @@ import org.integratedmodelling.utils.Triple;
  * @author Ferdinando Villa
  *
  */
-public class Metadata {
+public class Metadata extends HashMap<String, Object> {
+
+	private static final long serialVersionUID = 1265732119608093598L;
 
 	public static final String UNCERTAINTY = "uncertainty";
 	public static final String UNITS = "units";
@@ -565,7 +567,7 @@ public class Metadata {
 		return new Pair<double[],IConcept[]>(ret,cret);
 	}
 
-	public static void serializeMetadata(HashMap<String,Object> metadata, OutputStream fop) throws ThinklabException {
+	public static void serializeMetadata(Metadata metadata, OutputStream fop) throws ThinklabException {
 
 
 		MetadataSerializer out = new MetadataSerializer(fop);
@@ -599,10 +601,9 @@ public class Metadata {
 	}
 
 
-	public static HashMap<String,Object> deserializeMetadata(InputStream fop) throws ThinklabException {
-
+	public static Metadata deserializeMetadata(InputStream fop) throws ThinklabException {
 		
-		HashMap<String,Object> ret = new HashMap<String,Object>();
+		Metadata ret = new Metadata();
 		MetadataDeserializer in = new MetadataDeserializer(fop);
 		
 		// UNCERTAINTY (double[])

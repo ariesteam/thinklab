@@ -1,12 +1,12 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -44,7 +44,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 	protected IObservation mediatorObservation = null;
 	
 	// public so that getField can find it
-	public HashMap<String, Object> metadata = new HashMap<String, Object>();
+	public Metadata metadata = new Metadata();
 	public Integer contingencyOrder = 0; // used to sort contingencies if this is in a merger obs
 	
 	public IDataSource<?> getDataSource()  {
@@ -285,7 +285,7 @@ public class Observation implements IObservation, IInstanceImplementation {
     }
 
 	@Override
-	public HashMap<String, Object> getMetadata() {
+	public Metadata getMetadata() {
 		return this.metadata ;
 	}
 

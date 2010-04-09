@@ -9,6 +9,7 @@ import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -37,8 +38,7 @@ public class IndexedContextualizedDatasourceInt<T>
 	protected IConcept _type;
 	protected int[] data = null;
 	private int max = 1;
-	private int idx = 0;
-	HashMap<String,Object> metadata = new HashMap<String,Object>();
+	Metadata metadata = new Metadata();
 
 	protected HashMap<T, Integer> map = new HashMap<T, Integer>();
 	protected HashMap<Integer, T> inverseMap = new HashMap<Integer, T>();

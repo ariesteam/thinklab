@@ -1,701 +1,398 @@
 <?xml version="1.0"?>
-
-
-<!DOCTYPE rdf:RDF [
-    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
-    <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
-    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
-    <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
-    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
-    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
-    <!ENTITY observation "http://www.integratedmodelling.org/ks/science/observation.owl#" >
-    <!ENTITY thinklab-core "http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#" >
-]>
-
-
-<rdf:RDF xmlns="http://www.integratedmodelling.org/ks/science/observation.owl#"
-     xml:base="http://www.integratedmodelling.org/ks/science/observation.owl"
-     xmlns:dc="http://purl.org/dc/elements/1.1/"
-     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-     xmlns:observation="http://www.integratedmodelling.org/ks/science/observation.owl#"
-     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
-     xmlns:owl="http://www.w3.org/2002/07/owl#"
-     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-     xmlns:thinklab-core="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#">
-    <owl:Ontology rdf:about="">
-        <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl"/>
-    </owl:Ontology>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Annotation properties
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    <owl:AnnotationProperty rdf:about="&thinklab-core;AbstractClass"/>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Object Properties
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#dependsOn -->
-
-    <owl:ObjectProperty rdf:about="#dependsOn">
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >(A dependsOn B) is the statement that in order to make observation A, observation B must be made first. It represents the most general case of a dependency, which does not necessarily require the dependent observation to be in the same context of the others.</rdfs:comment>
-        <rdfs:range rdf:resource="#Observation"/>
-        <rdfs:domain rdf:resource="#Observation"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#dependsOnObservable -->
-
-    <owl:ObjectProperty rdf:about="#dependsOnObservable">
-        <rdfs:comment
-            >Used to state the types that another observable depends on.A ModeledObservable states the schema of its dependencies when observed.</rdfs:comment>
-        <rdfs:domain rdf:resource="#ModeledObservable"/>
-        <rdfs:subPropertyOf rdf:resource="&thinklab-core;ClassificationProperty"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#derivedFrom -->
-
-    <owl:ObjectProperty rdf:about="#derivedFrom">
-        <rdfs:comment
-            >Allows to link to auxliiary observations that are not part of the context. Typically used to store information pertaining to the context of an observation that was transformed to produce the current one, and are not needed in this context but are wanted for provenance analysis.</rdfs:comment>
-        <rdfs:domain rdf:resource="#Observation"/>
-        <rdfs:range rdf:resource="#Observation"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasClassMapping -->
-
-    <owl:ObjectProperty rdf:about="#hasClassMapping">
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >Links to one or more ClassMappings to define the match between category data and concepts in a ClassificationSpace.</rdfs:comment>
-        <rdfs:range rdf:resource="#ClassMapping"/>
-        <rdfs:domain rdf:resource="#ClassificationSpace"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasConceptSpace -->
-
-    <owl:ObjectProperty rdf:about="#hasConceptSpace">
-        <rdfs:domain rdf:resource="#Classification"/>
-        <rdfs:subPropertyOf rdf:resource="&thinklab-core;ClassificationProperty"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasConceptualModel -->
-
-    <owl:ObjectProperty rdf:about="#hasConceptualModel">
-        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:domain rdf:resource="#IndirectObservation"/>
-        <rdfs:range rdf:resource="#ObservationSpace"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasDataSource -->
-
-    <owl:ObjectProperty rdf:about="#hasDataSource">
-        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:range rdf:resource="#DataSource"/>
-        <rdfs:domain rdf:resource="#IndirectObservation"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasInterval -->
-
-    <owl:ObjectProperty rdf:about="#hasInterval">
-        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:comment
-            >Links to the numeric interval in a numeric mapping.</rdfs:comment>
-        <rdfs:domain rdf:resource="#NumericRangeToClassMapping"/>
-        <rdfs:range rdf:resource="&thinklab-core;NumericInterval"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasObservable -->
-
-    <owl:ObjectProperty rdf:about="#hasObservable">
-        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:domain rdf:resource="#Observation"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasObservableModel -->
-
-    <owl:ObjectProperty rdf:about="#hasObservableModel">
-        <rdfs:comment
-            >Specifies the type of conceptual model that this observable requires. Should be restricted appropriately in any subclass. For example, the model for an AndersonLandUse should be restricted to be an instance of a classification space that lists all the classes allowed for it.</rdfs:comment>
-        <rdfs:domain rdf:resource="#ModeledObservable"/>
-        <rdfs:range rdf:resource="#ObservationSpace"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasObservationClass -->
-
-    <owl:ObjectProperty rdf:about="#hasObservationClass">
-        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >Points to the class that values must have in the observation space. For concrete spaces, the class must be the one that the value instances belong to. For abstract space, the superclass of all possible value classes.</rdfs:comment>
-        <rdfs:domain rdf:resource="#AbstractObservationSpace"/>
-        <rdfs:subPropertyOf rdf:resource="&thinklab-core;ClassificationProperty"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasObservationContext -->
-
-    <owl:ObjectProperty rdf:about="#hasObservationContext">
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >Defines observations that provide the context for this one. Philosophically it should be a mandatory property as no observation can be made without context except &quot;universal properties&quot;, such as Plank&#39;s constant. Yet, instances of Observation don&#39;t require philosophical consistency, but merely state chosen properties of an observation made. It is a dependency as observing the context is required in order to observe the observable.</rdfs:comment>
-        <rdfs:domain rdf:resource="#Observation"/>
-        <rdfs:range rdf:resource="#Observation"/>
-        <rdfs:subPropertyOf rdf:resource="#dependsOn"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasObservationExtent -->
-
-    <owl:ObjectProperty rdf:about="#hasObservationExtent">
-        <rdfs:label rdf:datatype="&xsd;string"
-            >hasObservationExtent</rdfs:label>
-        <owl:versionInfo rdf:datatype="&xsd;string"
-            >Created by Ferdinando Villa on Sat Jun 02 14:02:00 EDT 2007</owl:versionInfo>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >This property is used to identify contextual relationships that imply distribution of a measurement on a physical extent (such as area of a space for a spatial density). It is used to reconstruct relationships between the conceptual models of an observation and its context, allowing to redistribute quantities over extents or reconstruct the extensive quantity from an intensive property and its extent.</rdfs:comment>
-        <rdfs:subPropertyOf rdf:resource="#hasObservationContext"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasSameContextAntecedent -->
-
-    <owl:ObjectProperty rdf:about="#hasSameContextAntecedent">
-        <rdfs:comment
-            >Links to an observation that is in the provenance chain of the main one and is guaranteed to share the same context with it. This makes it possible to store it along with the main dependencies  in a uniform context dataset.</rdfs:comment>
-        <rdfs:subPropertyOf rdf:resource="#derivedFrom"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasSourceClass -->
-
-    <owl:ObjectProperty rdf:about="#hasSourceClass">
-        <rdfs:comment
-            >Links to one or more classes to define the source set of classes in a classification mapping.</rdfs:comment>
-        <rdfs:domain rdf:resource="#ClassSetToClassMapping"/>
-        <rdfs:subPropertyOf rdf:resource="&thinklab-core;ClassificationProperty"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasTargetClass -->
-
-    <owl:ObjectProperty rdf:about="#hasTargetClass">
-        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:comment
-            >Links to the target class for a class mapping.</rdfs:comment>
-        <rdfs:domain rdf:resource="#ClassMapping"/>
-        <rdfs:subPropertyOf rdf:resource="&thinklab-core;ClassificationProperty"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#isContingentTo -->
-
-    <owl:ObjectProperty rdf:about="#isContingentTo">
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >The statement (A isContingentTo B) states that making observation A causes observation B to be made. Along with dependsOn and its subproperties, it&#39;s the main building block of observation structures.</rdfs:comment>
-        <rdfs:domain rdf:resource="#Observation"/>
-        <rdfs:range rdf:resource="#Observation"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#mediates -->
-
-    <owl:ObjectProperty rdf:about="#mediates">
-        <rdfs:comment
-            >Mediation is a specific dependency that only links to one observation and makes the current one take its state from the mediated one, after mediation handled by the matching of the conceptual models. The observable in a mediating observation can be omitted and will be taken from the mediated. Any datasource in the mediating observation will be ignored.</rdfs:comment>
-        <rdfs:range rdf:resource="#Observation"/>
-        <rdfs:domain rdf:resource="#Observation"/>
-        <rdfs:subPropertyOf rdf:resource="#dependsOn"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ClassificationProperty -->
-
-    <owl:ObjectProperty rdf:about="&thinklab-core;ClassificationProperty"/>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Data properties
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#conceptualSpace -->
-
-    <owl:DatatypeProperty rdf:about="#conceptualSpace">
-        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >The URI or semantic type of the least general concept that subsumes all possible values for this space. Its subclasses should be disjoint; in validating mode, thinklab will check for disjointness.</rdfs:comment>
-        <rdfs:domain rdf:resource="#ClassificationSpace"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#hasFormalName -->
-
-    <owl:DatatypeProperty rdf:about="#hasFormalName">
-        <rdfs:domain rdf:resource="#Observation"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#sourceValueType -->
-
-    <owl:DatatypeProperty rdf:about="#sourceValueType">
-        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >The URI or semantic type of the source value expected for mapping data to concepts.</rdfs:comment>
-        <rdfs:domain rdf:resource="#ClassificationSpace"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#value -->
-
-    <owl:DatatypeProperty rdf:about="#value">
-        <rdfs:comment
-            >A convenience relationship to enable specification of the value of a simple observation as a literal string, to be processed by the observation.</rdfs:comment>
-        <rdfs:domain rdf:resource="#IndirectObservation"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Classes
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#AbstractObservationSpace -->
-
-    <owl:Class rdf:about="#AbstractObservationSpace">
-        <rdfs:subClassOf rdf:resource="#DiscreteObservationSpace"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >An observation space where each value is abstract - e.g. a particular land cover class. Instances of an abstract observation space must specify the superclass of all allowed values, which must be disjoint.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Categorization -->
-
-    <owl:Class rdf:about="#Categorization">
-        <rdfs:subClassOf rdf:resource="#IndirectObservation"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >Categorizes value with an arbitrary string assumed consistent i.e. same tag means same value but with no other formal value.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ClassMapping -->
-
-    <owl:Class rdf:about="#ClassMapping">
-        <rdfs:subClassOf rdf:resource="#Mapping"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >A mapping between a source value (expressed as a literal) and a target concept (expressed as a concept URI or semantic type). Used by ClassificationSpace.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ClassSetToClassMapping -->
-
-    <owl:Class rdf:about="#ClassSetToClassMapping">
-        <rdfs:subClassOf rdf:resource="#ClassMapping"/>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="#hasSourceClass"/>
-                <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:comment
-            >A mapping that associates a set of classes to a class.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Classification -->
-
-    <owl:Class rdf:about="#Classification">
-        <rdfs:subClassOf rdf:resource="#IndirectObservation"/>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="#hasConceptualModel"/>
-                <owl:allValuesFrom rdf:resource="#DiscreteRankingSpace"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >An observation made by mapping an abstract type to the context.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ClassificationSpace -->
-
-    <owl:Class rdf:about="#ClassificationSpace">
-        <rdfs:subClassOf rdf:resource="#AbstractObservationSpace"/>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="#hasClassMapping"/>
-                <owl:onClass rdf:resource="#ClassMapping"/>
-                <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >A Classification space is an abstract space where numeric or string data are mapped to concepts.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ConcreteObservationSpace -->
-
-    <owl:Class rdf:about="#ConcreteObservationSpace">
-        <rdfs:subClassOf rdf:resource="#DiscreteObservationSpace"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >An observation space where each value is an instance. E.g. an observation of time where each value is a distinct period of time, or an observation of space where each value is a distinct spatial tessellation.
-
-Each instance in a concrete observation space is a &quot;grain&quot; and its characteristics determine the granularity of the observation. Its extent is the observation space itself, defined as the union of the granules. The granularity of the observation space is defined as the total number of granules, physical or implied.</rdfs:comment>
-        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ContextualizedDataSource -->
-
-    <owl:Class rdf:about="#ContextualizedDataSource">
-        <rdfs:subClassOf rdf:resource="#DataSource"/>
-        <rdfs:comment
-            >A data source produced by the process of contextualization.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ContinuousDistribution -->
-
-    <owl:Class rdf:about="#ContinuousDistribution">
-        <rdfs:subClassOf rdf:resource="#RandomValue"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ContinuousObservationSpace -->
-
-    <owl:Class rdf:about="#ContinuousObservationSpace">
-        <rdfs:subClassOf rdf:resource="#ObservationSpace"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >An observation space where values are quantified on of a continuous space identified by a mathematical relationship between the observable and the set of all possible values.</rdfs:comment>
-        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Count -->
-
-    <owl:Class rdf:about="#Count">
-        <rdfs:subClassOf rdf:resource="#IndirectObservation"/>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="#hasConceptualModel"/>
-                <owl:allValuesFrom rdf:resource="#CountObservationSpace"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >An observation made by counting instances in the specified context, ignoring the individual characteristics of the instances in the observation space.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#CountObservationSpace -->
-
-    <owl:Class rdf:about="#CountObservationSpace">
-        <rdfs:subClassOf rdf:resource="#ConcreteObservationSpace"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >An observation space where values reflect  the number of instances of the defined observation class, and the individual instances do not matter. Typically this observation space equates to an instance of a collection of individuals.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#DataSource -->
-
-    <owl:Class rdf:about="#DataSource">
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >A DataSource is the abstract model for something that can provide information that characterizes an observation. This information is viewed through the lens of the ConceptualModel to define internal relationships to contexts and parts and to validate it. Datasources are agnostic about the conceptual model and only specify how the data are obtained, which can range from literal numbers to functions and statistical distribution, including parsed and internally organized sources such as tables, grids and collections. Details of the DataSource are expanded in the source ontology.</rdfs:comment>
-        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#DiscreteDistribution -->
-
-    <owl:Class rdf:about="#DiscreteDistribution">
-        <rdfs:subClassOf rdf:resource="#RandomValue"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#DiscreteNumericRankingSpace -->
-
-    <owl:Class rdf:about="#DiscreteNumericRankingSpace">
-        <rdfs:subClassOf rdf:resource="#DiscreteRankingSpace"/>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="#hasClassMapping"/>
-                <owl:allValuesFrom rdf:resource="#NumericRangeToClassMapping"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#DiscreteObservationSpace -->
-
-    <owl:Class rdf:about="#DiscreteObservationSpace">
-        <rdfs:subClassOf rdf:resource="#ObservationSpace"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >Observation map onto discrete objects, either classes or instances, and the observation space defines the class they must belong to.</rdfs:comment>
-        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#DiscreteRanking -->
-
-    <owl:Class rdf:about="#DiscreteRanking">
-        <rdfs:subClassOf rdf:resource="#Classification"/>
-        <rdfs:comment
-            >A discrete ranking has values that come from an instance of a DiscreteRankingSpace. A typical case is &quot;high, medium, low&quot; - where the ranking can be each of a set of categories, but the categories represent a well-known partitioning of a continuous domain and have a precise ordinal relationship to each other.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#DiscreteRankingSpace -->
-
-    <owl:Class rdf:about="#DiscreteRankingSpace">
-        <rdfs:subClassOf rdf:resource="#ClassificationSpace"/>
-        <thinklab-core:AbstractClass>true</thinklab-core:AbstractClass>
-        <rdfs:comment
-            >A ranking made up of a number of different classes, each with a specified relationship to a continuous range. Because of this, the classes can be sorted based on their ordinal relationship to each other.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ExtentObservation -->
-
-    <owl:Class rdf:about="#ExtentObservation">
-        <rdfs:subClassOf rdf:resource="#Quantification"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >An observation that characterizes an extent in some conceptual domain. An extent is something that can serve to distribute other observations, possibly determining multiple states and ordering relationships between them.</rdfs:comment>
-        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#FunctionalMapping -->
-
-    <owl:Class rdf:about="#FunctionalMapping">
-        <rdfs:subClassOf rdf:resource="#Mapping"/>
-        <rdfs:comment
-            >A mapping that associates one or more inputs to an arbitrary output based on the evaluation of a supplied function.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Identification -->
-
-    <owl:Class rdf:about="#Identification">
-        <rdfs:subClassOf rdf:resource="#Observation"/>
-        <owl:disjointWith rdf:resource="#IndirectObservation"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >A direct observation that just identifies an object (or a concept) directly in a specified context. Its does not need an explicit conceptual model or value model because the observation space is the same as the observable and the data source, and it is the observed object itself. It does not use comparison with known quantities or properties.
+<rdf:RDF
+    xmlns:observation="http://www.integratedmodelling.org/ks/science/observation.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:thinklab-core="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://www.integratedmodelling.org/ks/science/observation.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl"/>
+  </owl:Ontology>
+  <owl:Class rdf:ID="ObservationSpace">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+  </owl:Class>
+  <owl:Class rdf:ID="RandomValue">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralValued"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="ContextualizedDataSource">
+    <rdfs:comment>A data source produced by the process of contextualization.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="DataSource"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#NumericInterval"/>
+  <owl:Class rdf:ID="ModeledObservable">
+    <rdfs:comment>An observable that specifies a particular observation space. bservables in observations can be of any types, but if they are instances of ModeledObservable, the conceptual model class of the observation will be validated against the restricted CM in the specific subclass of ModeledObservable.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Count">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An observation made by counting instances in the specified context, ignoring the individual characteristics of the instances in the observation space.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom>
+          <owl:Class rdf:ID="CountObservationSpace"/>
+        </owl:allValuesFrom>
+        <owl:onProperty>
+          <owl:FunctionalProperty rdf:ID="hasConceptualModel"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="IndirectObservation"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Identification">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A direct observation that just identifies an object (or a concept) directly in a specified context. Its does not need an explicit conceptual model or value model because the observation space is the same as the observable and the data source, and it is the observed object itself. It does not use comparison with known quantities or properties.
 
 An Identification can also identify merelogical relationships of an observable to others. In order to do that, the parts must be observed as well, so the hasObservableParts still has Observation as its range.</rdfs:comment>
-    </owl:Class>
-    
+    <owl:disjointWith>
+      <owl:Class rdf:about="#IndirectObservation"/>
+    </owl:disjointWith>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Observation"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="FunctionalMapping">
+    <rdfs:comment>A mapping that associates one or more inputs to an arbitrary output based on the evaluation of a supplied function.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Mapping"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="ClassSetToClassMapping">
+    <rdfs:comment>A mapping that associates a set of classes to a class.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:minCardinality>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="hasSourceClass"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="ClassMapping"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="ContinuousObservationSpace">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An observation space where values are quantified on of a continuous space identified by a mathematical relationship between the observable and the set of all possible values.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#ObservationSpace"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Quantification">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An observation that describes the observable through a numeric value. Practical implementations of quantification are detailed in the measurement ontology..</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#IndirectObservation"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Observation">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A statement that describes an observable in an observation context.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="#IndirectObservation">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An indirect observation uses independent information (values) in order to describe the observable. In order to do so, it must define a conceptual model that states how these values will be mapped to the state of the object in the observation context.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#Observation"/>
+  </owl:Class>
+  <owl:Class rdf:ID="DiscreteNumericRankingSpace">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom>
+          <owl:Class rdf:ID="NumericRangeToClassMapping"/>
+        </owl:allValuesFrom>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="hasClassMapping"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="DiscreteRankingSpace"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="ConcreteObservationSpace">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An observation space where each value is an instance. E.g. an observation of time where each value is a distinct period of time, or an observation of space where each value is a distinct spatial tessellation.
 
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#IndirectObservation -->
-
-    <owl:Class rdf:about="#IndirectObservation">
-        <rdfs:subClassOf rdf:resource="#Observation"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >An indirect observation uses independent information (values) in order to describe the observable. In order to do so, it must define a conceptual model that states how these values will be mapped to the state of the object in the observation context.</rdfs:comment>
-        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#IrregularDiscreteObservationSpace -->
-
-    <owl:Class rdf:about="#IrregularDiscreteObservationSpace">
-        <rdfs:subClassOf rdf:resource="#ConcreteObservationSpace"/>
-        <rdfs:comment rdf:datatype="&xsd;string"></rdfs:comment>
-        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Mapping -->
-
-    <owl:Class rdf:about="#Mapping">
-        <rdfs:subClassOf rdf:resource="&thinklab-core;LiteralValued"/>
-        <thinklab-core:AbstractClass>true</thinklab-core:AbstractClass>
-        <rdfs:comment
-            >Superclass for types whose instances specify mapping of observable states to other observable states.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ModeledObservable -->
-
-    <owl:Class rdf:about="#ModeledObservable">
-        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
-        <rdfs:comment
-            >An observable that specifies a particular observation space. bservables in observations can be of any types, but if they are instances of ModeledObservable, the conceptual model class of the observation will be validated against the restricted CM in the specific subclass of ModeledObservable.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#NumericRangeToClassMapping -->
-
-    <owl:Class rdf:about="#NumericRangeToClassMapping">
-        <rdfs:subClassOf rdf:resource="#ClassMapping"/>
-        <rdfs:comment
-            >A mappings that associates a numeric interval to a concepts.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Observation -->
-
-    <owl:Class rdf:about="#Observation">
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >A statement that describes an observable in an observation context.</rdfs:comment>
-        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ObservationSpace -->
-
-    <owl:Class rdf:about="#ObservationSpace">
-        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#ProbabilisticClassification -->
-
-    <owl:Class rdf:about="#ProbabilisticClassification">
-        <rdfs:subClassOf rdf:resource="#Classification"/>
-        <rdfs:comment
-            >The state of a probabilistic classification gives a probability to each concept in the observation space.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#Quantification -->
-
-    <owl:Class rdf:about="#Quantification">
-        <rdfs:subClassOf rdf:resource="#IndirectObservation"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >An observation that describes the observable through a numeric value. Practical implementations of quantification are detailed in the measurement ontology..</rdfs:comment>
-        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#RandomValue -->
-
-    <owl:Class rdf:about="#RandomValue">
-        <rdfs:subClassOf rdf:resource="&thinklab-core;LiteralValued"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/science/observation.owl#RegularGridObservationSpace -->
-
-    <owl:Class rdf:about="#RegularGridObservationSpace">
-        <rdfs:subClassOf rdf:resource="#ConcreteObservationSpace"/>
-        <rdfs:comment rdf:datatype="&xsd;string"
-            >A concrete observation space where instances have an known relationship between each one and the next. Subclasses may define specific relationships and ordering constraints.</rdfs:comment>
-        <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralValued -->
-
-    <owl:Class rdf:about="&thinklab-core;LiteralValued"/>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#NumericInterval -->
-
-    <owl:Class rdf:about="&thinklab-core;NumericInterval"/>
-    
-
-
-    <!-- http://www.w3.org/2002/07/owl#Thing -->
-
-    <owl:Class rdf:about="&owl;Thing"/>
+Each instance in a concrete observation space is a "grain" and its characteristics determine the granularity of the observation. Its extent is the observation space itself, defined as the union of the granules. The granularity of the observation space is defined as the total number of granules, physical or implied.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="DiscreteObservationSpace"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#CountObservationSpace">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An observation space where values reflect  the number of instances of the defined observation class, and the individual instances do not matter. Typically this observation space equates to an instance of a collection of individuals.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#ConcreteObservationSpace"/>
+  </owl:Class>
+  <owl:Class rdf:about="#ClassMapping">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A mapping between a source value (expressed as a literal) and a target concept (expressed as a concept URI or semantic type). Used by ClassificationSpace.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Mapping"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="DiscreteRanking">
+    <rdfs:comment>A discrete ranking has values that come from an instance of a DiscreteRankingSpace. A typical case is "high, medium, low" - where the ranking can be each of a set of categories, but the categories represent a well-known partitioning of a continuous domain and have a precise ordinal relationship to each other.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Classification"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="RegularGridObservationSpace">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A concrete observation space where instances have an known relationship between each one and the next. Subclasses may define specific relationships and ordering constraints.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#ConcreteObservationSpace"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ProbabilisticClassification">
+    <rdfs:comment>The state of a probabilistic classification gives a probability to each concept in the observation space.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Classification"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Categorization">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Categorizes value with an arbitrary string assumed consistent i.e. same tag means same value but with no other formal value.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#IndirectObservation"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ExtentObservation">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An observation that characterizes an extent in some conceptual domain. An extent is something that can serve to distribute other observations, possibly determining multiple states and ordering relationships between them.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#Quantification"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ContingencyMerger">
+    <rdfs:subClassOf rdf:resource="#Identification"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ClassificationSpace">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A Classification space is an abstract space where numeric or string data are mapped to concepts.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        >1</owl:minCardinality>
+        <owl:onClass rdf:resource="#ClassMapping"/>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#hasClassMapping"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="AbstractObservationSpace"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#DataSource">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A DataSource is the abstract model for something that can provide information that characterizes an observation. This information is viewed through the lens of the ConceptualModel to define internal relationships to contexts and parts and to validate it. Datasources are agnostic about the conceptual model and only specify how the data are obtained, which can range from literal numbers to functions and statistical distribution, including parsed and internally organized sources such as tables, grids and collections. Details of the DataSource are expanded in the source ontology.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="#Classification">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An observation made by mapping an abstract type to the context.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom>
+          <owl:Class rdf:about="#DiscreteRankingSpace"/>
+        </owl:allValuesFrom>
+        <owl:onProperty>
+          <owl:FunctionalProperty rdf:about="#hasConceptualModel"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="#IndirectObservation"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ContinuousDistribution">
+    <rdfs:subClassOf rdf:resource="#RandomValue"/>
+  </owl:Class>
+  <owl:Class rdf:about="#AbstractObservationSpace">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >An observation space where each value is abstract - e.g. a particular land cover class. Instances of an abstract observation space must specify the superclass of all allowed values, which must be disjoint.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#DiscreteObservationSpace"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="IrregularDiscreteObservationSpace">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    ></rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#ConcreteObservationSpace"/>
+  </owl:Class>
+  <owl:Class rdf:about="#Mapping">
+    <rdfs:comment>Superclass for types whose instances specify mapping of observable states to other observable states.</rdfs:comment>
+    <thinklab-core:AbstractClass>true</thinklab-core:AbstractClass>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralValued"/>
+  </owl:Class>
+  <owl:Class rdf:about="#NumericRangeToClassMapping">
+    <rdfs:comment>A mappings that associates a numeric interval to a concepts.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#ClassMapping"/>
+  </owl:Class>
+  <owl:Class rdf:ID="DiscreteDistribution">
+    <rdfs:subClassOf rdf:resource="#RandomValue"/>
+  </owl:Class>
+  <owl:Class rdf:about="#DiscreteRankingSpace">
+    <rdfs:comment>A ranking made up of a number of different classes, each with a specified relationship to a continuous range. Because of this, the classes can be sorted based on their ordinal relationship to each other.</rdfs:comment>
+    <thinklab-core:AbstractClass>true</thinklab-core:AbstractClass>
+    <rdfs:subClassOf rdf:resource="#ClassificationSpace"/>
+  </owl:Class>
+  <owl:Class rdf:about="#DiscreteObservationSpace">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Observation map onto discrete objects, either classes or instances, and the observation space defines the class they must belong to.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#ObservationSpace"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="dependsOnObservable">
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ClassificationProperty"/>
+    </rdfs:subPropertyOf>
+    <rdfs:domain rdf:resource="#ModeledObservable"/>
+    <rdfs:comment>Used to state the types that another observable depends on.A ModeledObservable states the schema of its dependencies when observed.</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="derivedFrom">
+    <rdfs:range rdf:resource="#Observation"/>
+    <rdfs:domain rdf:resource="#Observation"/>
+    <rdfs:comment>Allows to link to auxliiary observations that are not part of the context. Typically used to store information pertaining to the context of an observation that was transformed to produce the current one, and are not needed in this context but are wanted for provenance analysis.</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="isContingentTo">
+    <rdfs:range rdf:resource="#Observation"/>
+    <rdfs:domain rdf:resource="#Observation"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The statement (A isContingentTo B) states that making observation A causes observation B to be made. Along with dependsOn and its subproperties, it's the main building block of observation structures.</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="mediates">
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:ID="dependsOn"/>
+    </rdfs:subPropertyOf>
+    <rdfs:domain rdf:resource="#Observation"/>
+    <rdfs:range rdf:resource="#Observation"/>
+    <rdfs:comment>Mediation is a specific dependency that only links to one observation and makes the current one take its state from the mediated one, after mediation handled by the matching of the conceptual models. The observable in a mediating observation can be omitted and will be taken from the mediated. Any datasource in the mediating observation will be ignored.</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#hasSourceClass">
+    <rdfs:subPropertyOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ClassificationProperty"/>
+    <rdfs:domain rdf:resource="#ClassSetToClassMapping"/>
+    <rdfs:comment>Links to one or more classes to define the source set of classes in a classification mapping.</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#hasClassMapping">
+    <rdfs:domain rdf:resource="#ClassificationSpace"/>
+    <rdfs:range rdf:resource="#ClassMapping"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Links to one or more ClassMappings to define the match between category data and concepts in a ClassificationSpace.</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasConceptSpace">
+    <rdfs:subPropertyOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ClassificationProperty"/>
+    <rdfs:domain rdf:resource="#Classification"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasSameContextAntecedent">
+    <rdfs:subPropertyOf rdf:resource="#derivedFrom"/>
+    <rdfs:comment>Links to an observation that is in the provenance chain of the main one and is guaranteed to share the same context with it. This makes it possible to store it along with the main dependencies  in a uniform context dataset.</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#dependsOn">
+    <rdfs:domain rdf:resource="#Observation"/>
+    <rdfs:range rdf:resource="#Observation"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >(A dependsOn B) is the statement that in order to make observation A, observation B must be made first. It represents the most general case of a dependency, which does not necessarily require the dependent observation to be in the same context of the others.</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasObservationContext">
+    <rdfs:subPropertyOf rdf:resource="#dependsOn"/>
+    <rdfs:range rdf:resource="#Observation"/>
+    <rdfs:domain rdf:resource="#Observation"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Defines observations that provide the context for this one. Philosophically it should be a mandatory property as no observation can be made without context except "universal properties", such as Plank's constant. Yet, instances of Observation don't require philosophical consistency, but merely state chosen properties of an observation made. It is a dependency as observing the context is required in order to observe the observable.</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasObservableModel">
+    <rdfs:range rdf:resource="#ObservationSpace"/>
+    <rdfs:domain rdf:resource="#ModeledObservable"/>
+    <rdfs:comment>Specifies the type of conceptual model that this observable requires. Should be restricted appropriately in any subclass. For example, the model for an AndersonLandUse should be restricted to be an instance of a classification space that lists all the classes allowed for it.</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasObservationExtent">
+    <rdfs:subPropertyOf rdf:resource="#hasObservationContext"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >This property is used to identify contextual relationships that imply distribution of a measurement on a physical extent (such as area of a space for a spatial density). It is used to reconstruct relationships between the conceptual models of an observation and its context, allowing to redistribute quantities over extents or reconstruct the extensive quantity from an intensive property and its extent.</rdfs:comment>
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created by Ferdinando Villa on Sat Jun 02 14:02:00 EDT 2007</owl:versionInfo>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >hasObservationExtent</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:ID="value">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#IndirectObservation"/>
+    <rdfs:comment>A convenience relationship to enable specification of the value of a simple observation as a literal string, to be processed by the observation.</rdfs:comment>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="hasFormalName">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#Observation"/>
+  </owl:DatatypeProperty>
+  <owl:FunctionalProperty rdf:ID="hasDataSource">
+    <rdfs:domain rdf:resource="#IndirectObservation"/>
+    <rdfs:range rdf:resource="#DataSource"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="conceptualSpace">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#ClassificationSpace"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The URI or semantic type of the least general concept that subsumes all possible values for this space. Its subclasses should be disjoint; in validating mode, thinklab will check for disjointness.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="sourceValueType">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#ClassificationSpace"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The URI or semantic type of the source value expected for mapping data to concepts.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasInterval">
+    <rdfs:range rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#NumericInterval"/>
+    <rdfs:domain rdf:resource="#NumericRangeToClassMapping"/>
+    <rdfs:comment>Links to the numeric interval in a numeric mapping.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasObservable">
+    <rdfs:domain rdf:resource="#Observation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:about="#hasConceptualModel">
+    <rdfs:range rdf:resource="#ObservationSpace"/>
+    <rdfs:domain rdf:resource="#IndirectObservation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasTargetClass">
+    <rdfs:subPropertyOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ClassificationProperty"/>
+    <rdfs:domain rdf:resource="#ClassMapping"/>
+    <rdfs:comment>Links to the target class for a class mapping.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasObservationClass">
+    <rdfs:subPropertyOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ClassificationProperty"/>
+    <rdfs:domain rdf:resource="#AbstractObservationSpace"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Points to the class that values must have in the observation space. For concrete spaces, the class must be the one that the value instances belong to. For abstract space, the superclass of all possible value classes.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:AnnotationProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#AbstractClass"/>
 </rdf:RDF>
 
-
-
-<!-- Generated by the OWL API (version 2.2.1.1042) http://owlapi.sourceforge.net -->
-
+<!-- Created with TopBraid Composer -->
