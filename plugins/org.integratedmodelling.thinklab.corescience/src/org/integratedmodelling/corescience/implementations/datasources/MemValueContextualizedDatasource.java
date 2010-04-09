@@ -86,9 +86,9 @@ public class MemValueContextualizedDatasource
 	}
 
 	@Override
-	public void addValue(Object o) {
+	public void addValue(int idx, Object o) {
 		try {
-			data[idx++] = Value.getValueForObject(o);
+			data[idx] = Value.getValueForObject(o);
 		} catch (ThinklabException e) {
 			throw new ThinklabRuntimeException(e);
 		}

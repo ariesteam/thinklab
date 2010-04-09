@@ -82,8 +82,8 @@ public class MemLongContextualizedDatasource
 	}
 
 	@Override
-	public void addValue(Object o) {
-		data[idx++] = ((Long)o);
+	public void addValue(int idx, Object o) {
+		data[idx] = ((Long)o);
 	}
 
 	@Override

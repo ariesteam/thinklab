@@ -1,0 +1,26 @@
+/**
+ * 
+ */
+package org.integratedmodelling.multidimensional;
+
+public class Average extends Sum {
+	int n = 0;
+
+	@Override
+	public void add(Object value) {
+		super.add(value);
+		n++;
+	}
+
+	@Override
+	public Object getAggregatedValue() {
+		return (Double)(super.getAggregatedValue())/(double)n;
+	}
+
+	@Override
+	public void reset() {
+		super.reset();
+		n = 0;
+	}
+	
+}

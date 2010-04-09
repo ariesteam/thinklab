@@ -115,9 +115,9 @@ public class MemDoubleContextualizedDatasource
 	}
 
 	@Override
-	public void addValue(Object o) {
+	public void addValue(int idx, Object o) {
 		double d = o == null ? Double.NaN : ((Double)o);
-		data[idx++] = d;
+		data[idx] = d;
 	}
 
 	@Override

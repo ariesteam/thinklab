@@ -30,7 +30,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.utils.multidimensional;
+package org.integratedmodelling.multidimensional;
 
 import java.util.ArrayList;
 

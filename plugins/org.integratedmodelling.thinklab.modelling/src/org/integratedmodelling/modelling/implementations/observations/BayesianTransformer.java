@@ -329,10 +329,11 @@ public class BayesianTransformer
 			
 			/*
 			 * set states of all desired outcomes
+			 * TODO check whether this should use a context mapper 
 			 */
 			String rrs = "";
 			for (int s = 0; s < pstorage.length; s++) {
-				pstorage[s].data.addValue(bn.getNodeValue(pstorage[s].field));
+				pstorage[s].data.addValue(state, bn.getNodeValue(pstorage[s].field));
 				if (ekey != null) {
 					rrs += 
 						pstorage[s].observable.getLocalName() + "=" + Arrays.toString(bn.getNodeValue(pstorage[s].field)) + 

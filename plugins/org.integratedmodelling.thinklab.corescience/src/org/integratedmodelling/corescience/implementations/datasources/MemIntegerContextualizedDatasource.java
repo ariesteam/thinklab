@@ -86,8 +86,8 @@ public class MemIntegerContextualizedDatasource
 	}
 
 	@Override
-	public void addValue(Object o) {
-		data[idx++] = ((Integer)o);
+	public void addValue(int idx, Object o) {
+		data[idx] = ((Integer)o);
 	}
 
 	@Override

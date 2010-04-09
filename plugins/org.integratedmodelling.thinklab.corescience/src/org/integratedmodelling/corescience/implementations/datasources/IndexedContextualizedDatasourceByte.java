@@ -36,7 +36,6 @@ public class IndexedContextualizedDatasourceByte<T>
 	IConcept _type;
 	byte[] data = null;
 	private byte max = 1;
-	private int idx = 0;
 	private ObservationContext context = null;
 	
 	HashMap<String,Object> metadata = new HashMap<String,Object>();
@@ -66,8 +65,8 @@ public class IndexedContextualizedDatasourceByte<T>
 	}
 
 	@Override
-	public void addValue(Object o) {
-		data[idx++] = getIndex((T)o);
+	public void addValue(int idx, Object o) {
+		data[idx] = getIndex((T)o);
 	}
 
 	private byte getIndex(T o) {

@@ -97,10 +97,10 @@ public class MemObjectContextualizedDatasource
 
 
 	@Override
-	public void addValue(Object o) {
+	public void addValue(int idx, Object o) {
 		if (prototype == null)
 			prototype = o;
-		data[idx++] = o;
+		data[idx] = o;
 	}
 
 	@Override

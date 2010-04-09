@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -17,7 +18,6 @@ import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.utils.Polylist;
-import org.integratedmodelling.utils.multidimensional.MultidimensionalCursor;
 
 import clojure.lang.IFn;
 
@@ -149,6 +149,13 @@ public class ModelResult implements IQueryResult  {
 		 * dependent, but use an obs class that will merge them.
 		 */
 		if (_contingents.size() > 0) {
+			
+			/*
+			 * TODO this is a good strategy for stateful contingencies but not for
+			 * higher-level identifications or similar, whose states have to be 
+			 * comuted independently and merged after that. In that case we need
+			 * to pass a switch layer and treat it specifically in ObservationContext.
+			 */
 		
 			ret = ObservationFactory.createMerger(((DefaultAbstractModel)_model).observableSpecs);
 			

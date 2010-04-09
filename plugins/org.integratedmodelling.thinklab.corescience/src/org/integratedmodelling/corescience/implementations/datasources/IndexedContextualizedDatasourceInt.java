@@ -66,8 +66,8 @@ public class IndexedContextualizedDatasourceInt<T>
 	}
 
 	@Override
-	public void addValue(Object o) {
-		data[idx++] = getIndex((T)o);
+	public void addValue(int idx, Object o) {
+		data[idx] = getIndex((T)o);
 	}
 
 	private int getIndex(T o) {

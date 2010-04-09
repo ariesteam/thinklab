@@ -82,8 +82,8 @@ public class MemClassContextualizedDatasource
 
 
 	@Override
-	public void addValue(Object o) {
-		data[idx++] = ((IConcept)o);
+	public void addValue(int idx, Object o) {
+		data[idx] = ((IConcept)o);
 	}
 
 	@Override

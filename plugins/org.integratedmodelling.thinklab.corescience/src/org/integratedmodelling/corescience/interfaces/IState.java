@@ -8,7 +8,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 @SuppressWarnings("unchecked")
 public interface IState extends IDataSource, IConceptualizable {
 		
-	public void addValue(Object o);
+	public void addValue(int index, Object o);
 
 	/**
 	 * This will return an array of the appropriate type without any further allocation.

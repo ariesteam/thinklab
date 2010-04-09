@@ -47,15 +47,12 @@ public class Compiler {
 		int accessorId = -1;
 		IStateAccessor accessor = null;
 		boolean needed = false;
-		int aggregatorId = -1;
 		int register = -1;
-		int activationRegister = -1;
 		boolean stateStored = false;
 		int stateId = -1;
 		int validatorId = -1;
 		int initialValueId = -1;
 		boolean needsContextStates = false;
-		boolean[] activeDims;
 		IDataSource<?> datasource = null;
 		boolean contextualized = false;
 	}
@@ -238,23 +235,11 @@ public class Compiler {
 		 * build descriptors with all the needed info for each obs
 		 */
 		boolean needsContextStates = false;
-		boolean anyAccessors = false;
 		for (IObservation o : order) {		
 			
 			if (buildObsDesc((Observation)o, accessors, deactivatable, context, ret, stateType).needsContextStates)
 				needsContextStates = true;
-			
-			if (accessors.get(o).accessorId >= 0)
-				anyAccessors = true;	
 		}
-		
-		/*
-		 * resolve the deactivations
-		 */
-		for (IObservation o : order)
-			if (deactivatable.contains(o)) {
-				accessors.get(o).activationRegister = ret.getNewActivationRegister();
-			}
 		
 		boolean anythingNeeded = false;
 		
@@ -302,27 +287,9 @@ public class Compiler {
 			anythingNeeded = true;
 			
 			/*
-			 * this is not null if not all context changes determine a change in our state. If so,
-			 * compile in a jump over all our state setting unless those specific dimensions have
-			 * changed.
-			 */
-			int[] ctxInact = null;
-			if (odesc.activeDims != null) {
-				ctxInact = new int[odesc.activeDims.length];
-				for (int zi = 0; zi < odesc.activeDims.length; zi++) {
-					ctxInact[zi] = ret.encodeContextJump(zi);
-				}
-			}
-			
-			/*
 			 * if it can be deactivated, store the address of the activation check to encode a jump
 			 * to next variable if the activation register is off
 			 */
-			int jumpAddr = ret.getPC();
-			int activationJump = -1;
-			if (odesc.activationRegister >= 0)
-				activationJump = ret.encodeActivationCheck(odesc.activationRegister);
-			
 			/*
 			 * push result
 			 */
@@ -331,38 +298,6 @@ public class Compiler {
 			/* validate if required */
 			if (odesc.validatorId >= 0)
 				ret.encodeValidation(odesc.validatorId);
-
-			/*
-			 * if we're aggregating, compile in aggregation and check of coverage
-			 * with jump address. Also determine activation register for all dependents
-			 * and we must ensure we jump after pop state if the dependent needs us.
-			 */
-			if (odesc.aggregatorId != -1) {
-				
-				/* encode coverage check of current extent; 
-				 * if ok, jump to state storage, else encode deactivation of all
-				 * dependents and jump to after pop state
-				 */
-				int jump = ret.encodeCoverageCheck(odesc.aggregatorId);
-				
-				ArrayList<Integer> deacRegs = new ArrayList<Integer>();
-				for (MediatedDependencyEdge e : dependencies.outgoingEdgesOf(o)) {
-					
-					IObservation oo = e.getTargetObservation();
-					ObsDesc obd = accessors.get(oo);
-					deacRegs.add(obd.activationRegister);
-				}
-				
-				// this part is skipped unless coverage test fails
-				// for all dependents, ret.encodeDeactivation() of their activation registers
-				for (int reg : deacRegs) {
-					ret.encodeDeactivation(reg);
-				}
-								
-				// resolve the check with jump to next PC so that deactivation is skipped if
-				// check is successful
-				ret.resolveJump(jump, ret.getNextPC());				
-			}
 			
 			if (odesc.needed) {
 
@@ -374,21 +309,6 @@ public class Compiler {
 			} else if (odesc.stateStored) {
 
 				ret.encodeStoreFromStack(odesc.stateId);
-			}
-
-			/*
-			 * if we had an activation check, compile in the jump address now.
-			 */
-			if (activationJump >= 0)
-				ret.resolveJump(activationJump, jumpAddr);
-			
-			/*
-			 * if we are skipping context states, resolve their instructions
-			 */
-			if (ctxInact != null) {
-				for (int z : ctxInact) {
-					ret.resolveJump(ctxInact[z], jumpAddr);
-				}
 			}
 		}
 		
@@ -471,11 +391,7 @@ public class Compiler {
 			o instanceof IndirectObservation && 
 			((IndirectObservation)o).getStateType() != null && 
 			isStored(o.getObservableClass());
-		
-		/*
-		 * if we depend on an aggregated state upstream, compile in a check for activation and
-		 * insert a jump if deactivated, to be resolved later.
-		 */
+
 		boolean isExtent = o instanceof Topology;
 
 		if ( (odesc.stateStored = (storeState && !isExtent && !o.isMediated()))) {
@@ -486,7 +402,8 @@ public class Compiler {
 						(IndirectObservation) o, 
 						o.getObservableClass(), 
 						size,
-						ownContext);
+						ownContext,
+						context);
 		}
 		
 		/* store them all here, we notify our register to them at the end when we have one */
@@ -520,9 +437,6 @@ public class Compiler {
 				odesc.needed = true;
 			}
 
-			if (odesc.aggregatorId != -1) {
-				deactivatable.add(dependent);
-			}
 		}
 
 		/* another good reason to keep it is that we have and want its state, even if nothing
@@ -559,32 +473,6 @@ public class Compiler {
 							o.getObservableClass(), stateType, odesc.register);
 				
 			}
-			
-			/*
-			 * last, determine when our state should be updated in our register, which 
-			 * is when any of the dimensions of the overall context that we also have
-			 * in ours have changed. If this array is null, no conditional jump will
-			 * be inserted.
-			 */
-			boolean[] activeDims = new boolean[context.getNumberOfDimensions()];
-			int xind = 0;
-			boolean hasAll = true;
-			for (IConcept dc : context.getDimensions()) {
-				if (ownContext != null && ownContext.getExtent(dc) != null) {
-					activeDims[xind] = true;
-				} else {
-					hasAll = false;
-				} 
-				xind++;	
-			}
-			if (!hasAll) {
-				
-				// TLC-46: Wrong generation of context skipping in observation contextualization compiler
-				// http://ecoinformatics.uvm.edu/jira/browse/TLC-46
-				// FIXME will croak with an array out of bounds when interpreting bytecode
-				odesc.activeDims = activeDims;
-			}
-		
 		}
 			
 		accessors.put(o, odesc);

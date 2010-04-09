@@ -30,7 +30,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.utils.multidimensional;
+package org.integratedmodelling.multidimensional;
 
 import java.util.Iterator;
 
@@ -111,76 +111,7 @@ public class ArrayMultidimensionalArray {
 		}
 	}
 	
-	/**
-	 * Aggregators are supplied to the multidimensional iterator when a dimension must be collapsed
-	 * to size 1.
-	 * 
-	 * @author Ferdinando
-	 *
-	 * @param <T>
-	 */
-	public interface Aggregator {
-		
-		public abstract void reset();
-		public abstract void add(Object value);
-		public abstract Object getAggregatedValue();
-	}
-	
-	public static class Sum implements Aggregator {
 
-		double acc = 0.0;
-		
-		@Override
-		public void add(Object value) {
-			if (value instanceof Double) {
-				acc += (Double)value;
-			} else if (value instanceof Float) {
-				acc += (double)(Float)value;
-			} else if (value instanceof Long) {
-				acc += (double)(Long)value;
-			} else if (value instanceof Integer) {
-				acc += (double)(Integer)value;
-			} else if (value instanceof Byte) {
-				acc += (double)(Byte)value;
-			} else {
-				throw new ThinklabRuntimeException("cannot accumulate non-numeric values.");
-			}
-		}
-
-		@Override
-		public Object getAggregatedValue() {
-			return new Double(acc);
-		}
-
-		@Override
-		public void reset() {
-			acc = 0.0;
-		}
-		
-	}
-	
-	public static class Average extends Sum {
-		int n = 0;
-
-		@Override
-		public void add(Object value) {
-			super.add(value);
-			n++;
-		}
-
-		@Override
-		public Object getAggregatedValue() {
-			return (Double)(super.getAggregatedValue())/(double)n;
-		}
-
-		@Override
-		public void reset() {
-			super.reset();
-			n = 0;
-		}
-		
-	}
-	
 	public class MultidimensionalIterator implements Iterator<Object> {
 
 		int step;
@@ -320,7 +251,7 @@ public class ArrayMultidimensionalArray {
 	 * @param aggregator
 	 * @return
 	 */
-	public ArrayMultidimensionalArray reduce(int dimensionIndex, Aggregator aggregator) {
+	public ArrayMultidimensionalArray reduce(int dimensionIndex, IAggregator aggregator) {
 		
 		int[] dims = cursor.getExtents();
 		dims[dimensionIndex] = 1;

@@ -359,7 +359,6 @@ public class ObservationContext implements IObservationContext {
 	public int getMultiplicity(IConcept dimension) throws ThinklabException {
 		return 
 			extents.get(getDimension(dimension)).getTotalGranularity();
-
 	}
 
 	@Override

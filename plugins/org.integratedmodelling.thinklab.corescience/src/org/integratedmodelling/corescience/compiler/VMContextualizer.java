@@ -14,6 +14,7 @@ import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.utils.Ticker;
+import org.integratedmodelling.multidimensional.IAggregator;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -33,21 +34,63 @@ public class VMContextualizer<T> {
 	private int _pc = 0;
 	private int _actregs = 0;
 	private int _accregs = 0;
-	private int _aggregs = 0;
 	private int _parregs = 0;
 	private int _storegs = 0;
 	private int _valregs = 0;
-	private int _vldregs = 0;
 	private int _immregs = 0;
 	private int _cstords = 0;
 	
-	class ContextMediator {
+	static class ContextMediator {
 		
 		IState state;
 		ContextMapper mapper;
+		ArrayList<Object> accumulator;
+		IAggregator aggregator = null;
 		
+		public ContextMediator(IState state, IObservationContext overall, IObservationContext own) throws ThinklabException {
+			this.state = state;
+			mapper = new ContextMapper(overall, own);
+		}
 		
-		
+		/**
+		 * Add a value to the state, using the appropriate index for its context. If the overall index
+		 * does not select a visible state for the destination context, store the result for accumulation
+		 * and successive aggregation.
+		 * 
+		 * @param overallIndex
+		 * @param value
+		 */
+		public void addValue(int overallIndex, Object value) {
+			/*
+			 * handle accumulation and aggregation if index doesn't map
+			 * 
+			 * FIXME this must work multi-dimensionally, accumulating along the dimensions that don't match
+			 * 
+			 */
+			int idx = mapper.getIndex(overallIndex);
+			if (idx < 0) {
+				if (accumulator == null)
+					accumulator = new ArrayList<Object>();
+				accumulator.add(value);
+			} else {
+				if (accumulator != null && accumulator.size() > 0) {
+					if (aggregator == null) {
+						// TODO create aggregator based on type of observable, use an intelligent map
+					}
+					for (Object o : accumulator)
+						aggregator.add(o);
+					aggregator.add(value);
+					value = aggregator.getAggregatedValue();
+					aggregator.reset();
+					accumulator.clear();
+				}
+				this.state.addValue(idx, value);
+			}
+		}
+
+		public IDataSource<?> getState() {
+			return this.state;
+		}
 	}
 	
 	public ArrayList<Integer> _code = new ArrayList<Integer>();
@@ -55,7 +98,7 @@ public class VMContextualizer<T> {
 	public ArrayList<IStateAccessor> _accessors = new ArrayList<IStateAccessor>();
 	public ArrayList<Object> _immediates = new ArrayList<Object>();
 	public ArrayList<IConcept> _observed = new ArrayList<IConcept>();
-	public ArrayList<IState> _datasources = new ArrayList<IState>();
+	public ArrayList<ContextMediator> _datasources = new ArrayList<ContextMediator>();
 	
 	HashMap<IConcept, IState> tstates = new HashMap<IConcept, IState>();
 	
@@ -168,7 +211,7 @@ public class VMContextualizer<T> {
 		T[] regs  = (T[]) new Object[_valregs];
 		
 		/* states */
-		IState[] states = new IState[_storegs];
+		ContextMediator[] states = new ContextMediator[_storegs];
 		
 		/* initialize ticker */
 		Ticker ticker = new Ticker();
@@ -212,12 +255,12 @@ public class VMContextualizer<T> {
 				break;
 			case SSTORE:
 				// store top of stack 
-				states[ins & 0x0000ffff].addValue(stack[--sp]);
+				states[ins & 0x0000ffff].addValue((int)ticker.current(), stack[--sp]);
 				break;
 			case RSTORE: 
 				// store from register
 				states[(ins & 0x00ff0000) >> 16].
-					addValue(regs[ins & 0x0000ffff]);
+					addValue((int)ticker.current(), regs[ins & 0x0000ffff]);
 				break;
 			case CACCS: 
 				stack[sp++] = 
@@ -268,7 +311,7 @@ public class VMContextualizer<T> {
 		 * reconstruct state map
 		 */
 		for (int i = 0; i < _observed.size(); i++) {
-			ret.put(_observed.get(i), states[i]);
+			ret.put(_observed.get(i), states[i].getState());
 		}
 				
 		return ret;
@@ -331,7 +374,7 @@ public class VMContextualizer<T> {
 	}
 
 	public int registerStateStorage(IndirectObservation o, IConcept observable, int size, 
-				IObservationContext ownContext) {
+				IObservationContext ownContext, IObservationContext overallContext) throws ThinklabException {
 
 		_observed.add(observable);
 		IState dds = null;
@@ -353,7 +396,7 @@ public class VMContextualizer<T> {
 			}
 		/*}*/
 		
-		_datasources.add(dds);
+		_datasources.add(new ContextMediator(dds, overallContext, ownContext));
 		encode(makeInst(MKSTOR_I, _storegs, _cstords++));
 			
 		return _storegs++;

@@ -83,8 +83,9 @@ public class MemFloatContextualizedDatasource
 
 
 	@Override
-	public void addValue(Object o) {
-		data[idx++] = ((Float)o);
+	public void addValue(int idx, Object o) {
+		float d = o == null ? Float.NaN : ((Float)o);
+		data[idx] = d;
 	}
 
 	@Override

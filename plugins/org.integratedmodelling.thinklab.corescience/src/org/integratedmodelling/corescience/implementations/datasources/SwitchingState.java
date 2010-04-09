@@ -21,7 +21,7 @@ public class SwitchingState implements IState {
 	}
 
 	@Override
-	public void addValue(Object o) {
+	public void addValue(int idx, Object o) {
 		// TODO Auto-generated method stub
 
 	}
