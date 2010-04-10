@@ -1,10 +1,16 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
+import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
+
+import clojure.lang.IFn;
 
 /**
  * This one is used mostly by the modelling system. It is expected to have contingencies and
@@ -21,19 +27,25 @@ import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplement
  * @author Ferdinando
  *
  */
-@InstanceImplementation(concept="observation:ContingencyMerger")
+@InstanceImplementation(concept=ModellingPlugin.STATELESS_MERGER_OBSERVATION)
 public class ContingencyMerger extends Observation {
 
-	SwitchLayer<IObservation> switchLayer = null;
-	
+	// reflected 
+	public SwitchLayer<IState> switchLayer = null;
+	public ArrayList<Topology> contextExt = null;
+	public IObservation        contextObs = null;
+	public ArrayList<IFn>      conditionals = null;
+
 	/**
 	 * Called after all the contingencies have been independently contextualized. Will find
 	 * observations of the same observables and build new switching datasources for them.
 	 * 
+	 * TODO this one is tough.
+	 * 
 	 * @param cResults
 	 */
-	public void mergeResults(List<IObservation> cResults) {
-		
+	public IObservation mergeResults(List<IObservation> cResults) {
+		return null;
 	}
 	
 }

@@ -9,6 +9,7 @@ import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -150,14 +151,33 @@ public class ModelResult implements IQueryResult  {
 		 */
 		if (_contingents.size() > 0) {
 			
-			/*
-			 * TODO this is a good strategy for stateful contingencies but not for
-			 * higher-level identifications or similar, whose states have to be 
-			 * comuted independently and merged after that. In that case we need
-			 * to pass a switch layer and treat it specifically in ObservationContext.
+			boolean hasStateful  = false;
+			boolean hasStateless = false;
+			
+			/* they need to be all stateful or all stateless, the contextualization strategy is
+			 * very different for the two.
 			 */
-		
-			ret = ObservationFactory.createMerger(((DefaultAbstractModel)_model).observableSpecs);
+			for (IQueryResult mr : _contingents) {
+				if (((ModelResult)mr)._model instanceof DefaultStatefulAbstractModel) {
+					hasStateful = true;
+				} else {
+					hasStateless = true;
+				}
+			}
+			
+			if (hasStateful && hasStateless) {
+				throw new ThinklabValidationException(
+						"model: cannot combine stateful and stateless models as contingencies of the same model");
+			}
+			
+			/* if stateless, it will act like a transformer, building all contingencies separately and 
+			 * merging states after contextualization. Otherwise, it will embed the switching strategy in
+			 * the compiled code.
+			 */
+			ret =
+				hasStateless ?
+					ObservationFactory.createStatelessContingencyMerger(((DefaultAbstractModel)_model).observableSpecs) :
+					ObservationFactory.createStatefulContingencyMerger(((DefaultAbstractModel)_model).observableSpecs);
 			
 			for (int i = 0; i < _contingents.size(); i++) {
 				Polylist dep = _contingents.get(i).getResultAsList(

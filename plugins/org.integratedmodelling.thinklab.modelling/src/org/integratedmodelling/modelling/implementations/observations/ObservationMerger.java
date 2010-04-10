@@ -37,15 +37,15 @@ import clojure.lang.PersistentArrayMap;
  * 
  * @author Ferdinando
  */
-@InstanceImplementation(concept=ModellingPlugin.MERGER_OBSERVATION)
+@InstanceImplementation(concept=ModellingPlugin.STATEFUL_MERGER_OBSERVATION)
 public class ObservationMerger extends Observation implements IndirectObservation {
 
 	// reflected 
 	public SwitchLayer<IState> switchLayer = null;
 	public ArrayList<Topology> contextExt = null;
 	public IObservation        contextObs = null;
-
 	public ArrayList<IFn> conditionals = null;
+
 	ContextMapper[] contextMappers = null;
 	int[] idxMap = null; 
 	

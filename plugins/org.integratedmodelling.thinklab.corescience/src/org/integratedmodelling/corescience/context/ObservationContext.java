@@ -12,6 +12,7 @@ import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.compiler.Compiler;
 import org.integratedmodelling.corescience.compiler.Contextualizer;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
+import org.integratedmodelling.corescience.implementations.observations.ContingencyMerger;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IExtent;
@@ -403,9 +404,45 @@ public class ObservationContext implements IObservationContext {
 		}
 		
 		/*
-		 * 2. transform the observation if required
+		 * 2. transform the observation if required. Contingency mergers and
+		 * transformers work differently. We only treat a contingency merger
+		 * specially if it has contingencies, otherwise it just behaves like
+		 * a normal stateless observation.
 		 */
-		if (obs instanceof TransformingObservation) {
+		if (obs instanceof ContingencyMerger && obs.getContingencies().length > 0) {
+			
+			/*
+			 * get the conditionals and the context observation if any exist
+			 */
+			ArrayList<IObservation> cres = new ArrayList<IObservation>();
+			for (IObservation cont : obs.getContingencies()) {
+
+				/*
+				 * TODO pass conditional for switching and context states
+				 */
+				ObservationContext co = new ObservationContext(cont, originalContext);
+				Contextualizer ctx = new Compiler().compile(co);
+				IInstance cinst = ctx.run(session);
+				cres.add(ObservationFactory.getObservation(cinst));
+			}
+			
+			/*
+			 * swap obs with the result of merging all switched states
+			 */
+			this.observation = ((ContingencyMerger)obs).mergeResults(cres);
+			
+			/*
+			 * reset all dependencies to (possibly) new ones, with switching states and 
+			 * merged metadata.
+			 */
+			dependents.clear();
+			for (IObservation dep : obs.getDependencies()) {				
+				ObservationContext depctx = new ObservationContext(dep, this);
+				dependents.add(depctx);
+			}
+			
+			
+		} else if (obs instanceof TransformingObservation) {
 
 			Contextualizer contextualizer = new Compiler().compile(originalContext);
 			IInstance inst =  contextualizer.run(session);
