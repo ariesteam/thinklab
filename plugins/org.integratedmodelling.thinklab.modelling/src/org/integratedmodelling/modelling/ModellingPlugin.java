@@ -22,7 +22,6 @@ public class ModellingPlugin extends ThinklabPlugin {
 	private ObservationCache cache = null;
 
 	public static final String STATEFUL_MERGER_OBSERVATION = "modeltypes:MergerObservation";
-	public static final String STATELESS_MERGER_OBSERVATION = "observation:ContingencyMerger";
 	
 	public static ModellingPlugin get() {
 		return (ModellingPlugin) getPlugin(PLUGIN_ID);

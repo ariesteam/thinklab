@@ -3,11 +3,11 @@ package org.integratedmodelling.corescience.implementations.observations;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
-import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 
 import clojure.lang.IFn;
@@ -27,7 +27,7 @@ import clojure.lang.IFn;
  * @author Ferdinando
  *
  */
-@InstanceImplementation(concept=ModellingPlugin.STATELESS_MERGER_OBSERVATION)
+@InstanceImplementation(concept=CoreScience.STATELESS_MERGER_OBSERVATION)
 public class ContingencyMerger extends Observation {
 
 	// reflected 

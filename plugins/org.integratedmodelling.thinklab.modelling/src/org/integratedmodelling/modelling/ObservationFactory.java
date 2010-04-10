@@ -320,7 +320,7 @@ public class ObservationFactory extends org.integratedmodelling.corescience.Obse
 
 	public static Polylist createStatelessContingencyMerger(Polylist observable) {
 		
-		return Polylist.list(ModellingPlugin.STATELESS_MERGER_OBSERVATION, 
+		return Polylist.list(CoreScience.STATELESS_MERGER_OBSERVATION, 
 				Polylist.list(
 						CoreScience.HAS_OBSERVABLE,
 						observable));

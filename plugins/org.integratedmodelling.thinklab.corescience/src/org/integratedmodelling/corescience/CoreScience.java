@@ -112,7 +112,8 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String RANKING_SET_REMAPPER = "measurement:RankingSetRemapper";
 	public static final String RANKING_INTERVAL_REMAPPER = "measurement:RankingIntervalRemapper";
 	public static final String PROBABILISTIC_CLASSIFICATION = "observation:ProbabilisticClassification";
-	
+	public static final String STATELESS_MERGER_OBSERVATION = "observation:ContingencyMerger";
+
 	static final public String GENERIC_OBSERVABLE = "representation:GenericObservable";
 	static final public String GENERIC_QUANTIFIABLE = "representation:GenericQuantifiable";
 
