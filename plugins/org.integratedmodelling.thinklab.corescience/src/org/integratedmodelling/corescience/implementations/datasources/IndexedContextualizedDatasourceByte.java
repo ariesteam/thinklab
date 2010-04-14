@@ -8,6 +8,7 @@ import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -38,7 +39,7 @@ public class IndexedContextualizedDatasourceByte<T>
 	private byte max = 1;
 	private ObservationContext context = null;
 	
-	HashMap<String,Object> metadata = new HashMap<String,Object>();
+	Metadata metadata = new Metadata();
 	
 	HashMap<T, Integer> map = new HashMap<T, Integer>();
 	HashMap<Integer, T> inverseMap = new HashMap<Integer, T>();
@@ -109,15 +110,10 @@ public class IndexedContextualizedDatasourceByte<T>
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
 		throw new ThinklabValueConversionException("can't convert concepts into doubles");
 	}
-	
+		
 	@Override
-	public void setMetadata(String id, Object o) {
-		metadata.put(id, o);
-	}
-	
-	@Override
-	public Object getMetadata(String id) {
-		return metadata.get(id);
+	public Metadata getMetadata() {
+		return metadata;
 	}
 
 	@Override
@@ -144,11 +140,6 @@ public class IndexedContextualizedDatasourceByte<T>
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public HashMap<String, Object> getMetadata() {
-		return metadata;
 	}
 
 	@Override

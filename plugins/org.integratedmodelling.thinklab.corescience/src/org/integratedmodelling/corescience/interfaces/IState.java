@@ -1,6 +1,7 @@
 package org.integratedmodelling.corescience.interfaces;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
@@ -29,23 +30,11 @@ public interface IState extends IDataSource, IConceptualizable {
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException;
 
 	/**
-	 * States are visualized and stored so they carry metadata to aid the
-	 * process. Metadata should be set by the createContextualizedStorage
-	 * method in the corresponding conceptual model. A catalog of metadata
-	 * ID is in org.integratedmodelling.corescience.metadata.Metadata and its
-	 * plugin-specific derivatives.
-	 * 
-	 * @param id
-	 * @param o
-	 */
-	public void setMetadata(String id, Object o);
-
-	/**
 	 * Just get the metadata. A property object interface should suffice.
 	 * @param id
 	 * @return
 	 */
-	public Object getMetadata(String id);
+	public Metadata getMetadata();
 
 	/**
 	 * Return the total number of states.

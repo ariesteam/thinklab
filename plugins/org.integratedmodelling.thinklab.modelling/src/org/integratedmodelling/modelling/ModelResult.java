@@ -221,14 +221,13 @@ public class ModelResult implements IQueryResult  {
 		/*
 		 * add the model to the resulting observation
 		 */
-		HashMap<String,Object> metadata = ((DefaultAbstractModel)_model).metadata;
-		if (metadata == null) {
-			metadata = new HashMap<String, Object>();
-		}
-		
+		Metadata metadata = new Metadata(((DefaultAbstractModel)_model).metadata);
+
 		// TODO anything else by default?
 		metadata.put(Metadata.DEFINING_MODEL, _model);
-		ret = ObservationFactory.addReflectedField(ret, "metadata", metadata);
+		
+		// will be added to whatever the obs has already
+		ret = ObservationFactory.addReflectedField(ret, "additionalMetadata", metadata);
 
 		if (_mediated != null) {
 			

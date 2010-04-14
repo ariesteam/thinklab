@@ -398,7 +398,8 @@ public class ModelFactory {
 			 
 			 for (IState state : states.values()) {
 				 
-				DefaultAbstractModel mod = (DefaultAbstractModel) state.getMetadata(Metadata.DEFINING_MODEL);
+				DefaultAbstractModel mod =
+					(DefaultAbstractModel) state.getMetadata().get(Metadata.DEFINING_MODEL);
 				String name = 
 					 (mod == null || (mod.getId() == null)) ? 
 						state.getObservableClass().getLocalName() : 

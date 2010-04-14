@@ -73,9 +73,10 @@ public class MemObjectContextualizedDatasource
 		this.context = context;
 		
 		/*
+		 * FIXME: remove?
 		 * prepare to hold data of this type, determining if it's going to be a classification or what
 		 */
-		Metadata.rankConcepts(type, this);
+		Metadata.rankConcepts(type,  metadata);
 		
 	}
 	
@@ -136,9 +137,9 @@ public class MemObjectContextualizedDatasource
 				ret[i] = (data[i] == null ? Double.NaN : ((Number)data[i]).doubleValue());
 			}
 			return ret;
-		} else if (prototype instanceof IConcept && Metadata.getClassMappings(this) != null) {
+		} else if (prototype instanceof IConcept && Metadata.getClassMappings(metadata) != null) {
 			double[] ret = new double[data.length];
-			HashMap<IConcept, Integer> rnk = Metadata.getClassMappings(this);
+			HashMap<IConcept, Integer> rnk = Metadata.getClassMappings(metadata);
 			for (int i = 0; i < data.length; i++) {
 				ret[i] = (data[i] == null ? Double.NaN : (double)(rnk.get((IConcept)data[i])));
 			}
@@ -152,13 +153,8 @@ public class MemObjectContextualizedDatasource
 	}
 	
 	@Override
-	public void setMetadata(String id, Object o) {
-		metadata.put(id, o);
-	}
-	
-	@Override
-	public Object getMetadata(String id) {
-		return metadata.get(id);
+	public Metadata getMetadata() {
+		return metadata;
 	}
 
 	@Override
@@ -239,12 +235,6 @@ public class MemObjectContextualizedDatasource
 	@Override
 	public IConcept getObservableClass() {
 		return _type;
-	}
-
-
-	@Override
-	public HashMap<String, Object> getMetadata() {
-		return metadata;
 	}
 
 	@Override

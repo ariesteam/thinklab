@@ -173,7 +173,7 @@ public class NetCDFArchive {
 				ncfile.addVariable(varname, DataType.FLOAT, new Dimension[]{latDim,lonDim});
 
 				// add uncertainty if any
-				if (variables.get(obs).getMetadata(Metadata.UNCERTAINTY) != null)
+				if (variables.get(obs).getMetadata().get(Metadata.UNCERTAINTY) != null)
 					ncfile.addVariable(varname+"Uncertainty", DataType.FLOAT, new Dimension[]{latDim,lonDim});
 				
 				// TODO if var is a measurement, add units attribute - this is a stupid stub
@@ -251,7 +251,7 @@ public class NetCDFArchive {
 				ArrayDouble data = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
 				Index ind = data.getIndex();
 				double[] dd = state.getDataAsDoubles();
-				double[] uu = (double[]) state.getMetadata(Metadata.UNCERTAINTY);
+				double[] uu = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
 				ArrayDouble unce = null;
 				if (uu != null)
 					unce = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());

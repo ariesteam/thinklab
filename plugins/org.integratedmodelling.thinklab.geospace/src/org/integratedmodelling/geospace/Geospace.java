@@ -685,7 +685,6 @@ public class Geospace extends ThinklabPlugin  {
 		}
 		
 		return ret;
-
 	}
 	
 	/**
@@ -714,7 +713,6 @@ public class Geospace extends ThinklabPlugin  {
         }
         
         return ret;
-        
     }
 
     /**
@@ -726,8 +724,10 @@ public class Geospace extends ThinklabPlugin  {
 	public ShapeValue retrieveFeature(String id) throws ThinklabException {
 		for (IGazetteer g : gazetteers.values()) {
 			Collection<ShapeValue> shapes = g.resolve(id, null, null);
-			if (shapes.size() > 0)
-				return shapes.iterator().next();
+			if (shapes.size() > 0) {
+				ShapeValue ret = shapes.iterator().next();
+				return ret;
+			}
 		}
 		return null;
 	}

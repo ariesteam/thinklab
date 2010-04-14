@@ -191,6 +191,9 @@ public class Measurement extends Observation implements MediatingObservation {
 			observable.is(CoreScience.EXTENSIVE_PHYSICAL_PROPERTY) ?
 			PhysicalNature.EXTENSIVE :
 			PhysicalNature.INTENSIVE;
+		
+		metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
+		metadata.put(Metadata.PHYSICAL_NATURE, physicalNature);
 	}
 
 	@Override
@@ -230,8 +233,6 @@ public class Measurement extends Observation implements MediatingObservation {
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
 		IState ret = new MemDoubleContextualizedDatasource(
 				getObservableClass(), size, (ObservationContext)context);
-		ret.setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
-		ret.setMetadata(Metadata.PHYSICAL_NATURE, physicalNature);
 		return ret;
 	}
 

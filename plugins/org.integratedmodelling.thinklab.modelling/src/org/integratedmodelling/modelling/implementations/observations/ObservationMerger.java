@@ -149,13 +149,19 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 			ret = new MemObjectContextualizedDatasource(stateType, size, (ObservationContext) context);
 		}
 		
+		/*
+		 * inherit the merged metadata of the dependencies
+		 */
+		for (String key : metadata.keySet())
+			ret.getMetadata().put(key, metadata.get(key));
+		
 		if (contextObs != null) {
 
 			// get all states of context and prepare for mediation at the corresponding
 			// state
 			for (IState s : ObservationFactory.getStates(contextObs)) {
 				
-				IModel mod = (IModel) s.getMetadata(Metadata.DEFINING_MODEL);
+				IModel mod = (IModel) s.getMetadata().get(Metadata.DEFINING_MODEL);
 				String label = mod == null ? s.getObservableClass().getLocalName() : mod.getId();
 				ContextMapper cmap = new ContextMapper(s, ret);
 				
@@ -194,8 +200,10 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 		 */
 		ArrayList<IConcept> cs = new ArrayList<IConcept>();
 		for (int i = 0; i < dependencies.length; i++) {
-			if (dependencies[i] instanceof IndirectObservation)
+			if (dependencies[i] instanceof IndirectObservation) {
 				cs.add(((IndirectObservation)dependencies[i]).getStateType());
+				this.metadata.merge(((Observation)dependencies[i]).metadata);
+			}
 		}
 		this.stateType = KnowledgeManager.get().getLeastGeneralCommonConcept(cs);
 		

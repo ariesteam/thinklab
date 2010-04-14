@@ -63,14 +63,14 @@ public class FileBasedDataset implements IDataset {
 					ColorMap.getColormap("Set1()", nlevels, null) : 
 					ColorMap.jet(nlevels);
 			
-			if (state.getMetadata(Metadata.RANKING) != null ||
-					state.getMetadata(Metadata.CONTINUOUS) != null) {
+			if (state.getMetadata().get(Metadata.RANKING) != null ||
+					state.getMetadata().get(Metadata.CONTINUOUS) != null) {
 
 				// ordered rankings
 				
 				
-			} else if (state.getMetadata(Metadata.BOOLEAN) != null && 
-					state.getMetadata(Metadata.UNCERTAINTY) != null) {
+			} else if (state.getMetadata().get(Metadata.BOOLEAN) != null && 
+					state.getMetadata().get(Metadata.UNCERTAINTY) != null) {
 				
 					// probability of true - should normalize to 0
 					ret = ColorMap.greyscale(nlevels);
@@ -159,11 +159,11 @@ public class FileBasedDataset implements IDataset {
 		
 		int[] idata = Metadata.getImageData(state);
 		
-		int nlevels = (Integer)state.getMetadata(Metadata.IMAGE_LEVELS);
-		int[] iarange = (int[])state.getMetadata(Metadata.ACTUAL_IMAGE_RANGE);
-		double[] dtrange = (double[])state.getMetadata(Metadata.THEORETICAL_IMAGE_RANGE);
-		double[] darange = (double[])state.getMetadata(Metadata.ACTUAL_DATA_RANGE);
-		String[] categories = (String[])state.getMetadata(Metadata.CATEGORIES);
+		int nlevels = (Integer)state.getMetadata().get(Metadata.IMAGE_LEVELS);
+		int[] iarange = (int[])state.getMetadata().get(Metadata.ACTUAL_IMAGE_RANGE);
+		double[] dtrange = (double[])state.getMetadata().get(Metadata.THEORETICAL_IMAGE_RANGE);
+		double[] darange = (double[])state.getMetadata().get(Metadata.ACTUAL_DATA_RANGE);
+		String[] categories = (String[])state.getMetadata().get(Metadata.CATEGORIES);
 
 		if (state instanceof IInstanceImplementation)
 		System.out.println("metadata: " +
@@ -190,7 +190,7 @@ public class FileBasedDataset implements IDataset {
 			int x, int y, int... flags) throws ThinklabException {
 		
 		IState state = states.get(observable);
-		double[] data = (double[]) state.getMetadata(Metadata.UNCERTAINTY);
+		double[] data = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
 		double[] odat = state.getDataAsDoubles();
 		
 		if (data == null)

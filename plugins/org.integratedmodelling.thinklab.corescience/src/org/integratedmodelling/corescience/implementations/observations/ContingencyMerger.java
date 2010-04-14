@@ -6,9 +6,12 @@ import java.util.List;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 import clojure.lang.IFn;
 
@@ -47,5 +50,14 @@ public class ContingencyMerger extends Observation {
 	public IObservation mergeResults(List<IObservation> cResults) {
 		return null;
 	}
+
+	@Override
+	public void initialize(IInstance inst) throws ThinklabException {
+
+		super.initialize(inst);
+		
+	}
+	
+	
 	
 }

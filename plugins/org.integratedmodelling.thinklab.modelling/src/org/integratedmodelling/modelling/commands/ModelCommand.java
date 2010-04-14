@@ -3,7 +3,6 @@ package org.integratedmodelling.modelling.commands;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
@@ -119,14 +118,16 @@ public class ModelCommand implements ICommandHandler {
 			if (result.getTotalResultCount() > 0)
 				roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
 				
-			if (roi != null)
+			if (roi != null) {
+				System.out.println("ROIA: " + roi);
 				where = 
 					session.createObject(RasterGrid.createRasterGrid(roi, res));
-			else 
+			} else { 
 				throw new ThinklabResourceNotFoundException(
 						"region name " + 
 						command.getArgumentAsString("context") +
 						" cannot be resolved");
+			}
 		}
 		
 		ArrayList<IContextualizationListener> listeners = 

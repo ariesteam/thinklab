@@ -62,7 +62,7 @@ public class MemDoubleContextualizedDatasource
 	private static final long serialVersionUID = -6567783706189229920L;
 	private IConcept _type;
 	protected double[] data = null;
-	Metadata metadata = new Metadata();
+	protected Metadata metadata = new Metadata();
 	private ObservationContext context;
 	
 	public MemDoubleContextualizedDatasource() {
@@ -76,7 +76,7 @@ public class MemDoubleContextualizedDatasource
 	public MemDoubleContextualizedDatasource(IConcept type, double[] data, ObservationContext context) {
 		_type = type;
 		this.data = data;
-		setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
+		metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 		this.context = context;
 	}
 	
@@ -149,15 +149,9 @@ public class MemDoubleContextualizedDatasource
 		return data;
 	}
 	
-	
 	@Override
-	public void setMetadata(String id, Object o) {
-		metadata.put(id, o);
-	}
-	
-	@Override
-	public Object getMetadata(String id) {
-		return metadata.get(id);
+	public Metadata getMetadata() {
+		return metadata;
 	}
 	
 	@Override
@@ -203,12 +197,6 @@ public class MemDoubleContextualizedDatasource
 		out.writeDoubles(data);
 		Metadata.serializeMetadata(metadata, fop);
 		return true;
-	}
-
-
-	@Override
-	public HashMap<String, Object> getMetadata() {
-		return metadata;
 	}
 
 	@Override

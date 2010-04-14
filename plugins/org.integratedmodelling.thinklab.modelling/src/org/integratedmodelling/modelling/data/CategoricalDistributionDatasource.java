@@ -38,7 +38,7 @@ public class CategoricalDistributionDatasource extends
 		boolean contp = false; 
 		double[] ret = new double[this.data.length];
 		double[] unc = new double[this.data.length];
-		IConcept truecase = (IConcept) getMetadata(Metadata.TRUECASE);
+		IConcept truecase = (IConcept) getMetadata().get(Metadata.TRUECASE);
 		
 		for (int i = 0; i < this.data.length; i++) {
 
@@ -66,10 +66,10 @@ public class CategoricalDistributionDatasource extends
 			}
 		}
 		
-		setMetadata(Metadata.UNCERTAINTY, unc);
+		getMetadata().put(Metadata.UNCERTAINTY, unc);
 		if (contp) {
-			setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
-			setMetadata(Metadata.THEORETICAL_DATA_RANGE, new double[]{0.0, 1.0});
+			getMetadata().put(Metadata.CONTINUOUS, Boolean.TRUE);
+			getMetadata().put(Metadata.THEORETICAL_DATA_RANGE, new double[]{0.0, 1.0});
 		}
 		return ret;
 	}
@@ -141,13 +141,13 @@ public class CategoricalDistributionDatasource extends
 		}
 			
 		if (rnk == null) {	
-			this.ranks = Metadata.rankConcepts(_type, this);
+			this.ranks = Metadata.rankConcepts(_type, metadata);
 		} else {
-			this.ranks = Metadata.rankConcepts(_type, rnk, this);
+			this.ranks = Metadata.rankConcepts(_type, rnk, metadata);
 		}
 		int offset = 0; 
-		if (getMetadata(Metadata.HASZERO) != null)
-			offset = ((Boolean)getMetadata(Metadata.HASZERO)) ? 0 : 1;
+		if (getMetadata().get(Metadata.HASZERO) != null)
+			offset = ((Boolean)getMetadata().get(Metadata.HASZERO)) ? 0 : 1;
 		
 		if (ranks == null)
 			throw new ThinklabRuntimeException(

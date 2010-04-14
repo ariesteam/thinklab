@@ -75,9 +75,9 @@ public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> impl
 		}
 		
 		if (rnk == null) {	
-			this.ranks = Metadata.rankConcepts(_type, this);
+			this.ranks = Metadata.rankConcepts(_type, metadata);
 		} else {
-			this.ranks = Metadata.rankConcepts(_type, rnk, this);
+			this.ranks = Metadata.rankConcepts(_type, rnk, metadata);
 		}
 
 		if (ranks == null) {

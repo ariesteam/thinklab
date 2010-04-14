@@ -35,7 +35,6 @@ package org.integratedmodelling.corescience;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 /**

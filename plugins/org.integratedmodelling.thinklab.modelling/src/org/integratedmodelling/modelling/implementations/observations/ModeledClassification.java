@@ -1,6 +1,7 @@
 package org.integratedmodelling.modelling.implementations.observations;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
@@ -155,6 +156,8 @@ public class ModeledClassification
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 
+		metadata.put(Metadata.CONTINUOUS, Boolean.FALSE);
+		
 		super.initialize(i);
 		Pair<GeneralClassifier, IConcept> universal = null;
 		Pair<GeneralClassifier, IConcept> cls = null;
@@ -196,10 +199,53 @@ public class ModeledClassification
 		if (def != null)
 			continuousDistribution = MiscUtilities.parseDoubleVector(def.toString());
 
+		// TODO remove?
 		if (continuousDistribution != null && getDataSource() != null && (getDataSource() instanceof IState))
-			((IState)getDataSource()).setMetadata(
+			((IState)getDataSource()).getMetadata().put(
 					Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS, 
 					continuousDistribution); 
+
+		if (continuousDistribution != null)
+			metadata.put(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS, 
+					continuousDistribution);
+		
+
+		if (classifiers != null) {
+
+			metadata.put(Metadata.CLASSIFIERS, classifiers);
+			
+			IConcept[] rnk = null;
+			/*
+			 * remap the values to ranks and determine how to rewire the input
+			 * if necessary, use classifiers instead of lexicographic order to
+			 * infer the appropriate concept order
+			 */
+			ArrayList<GeneralClassifier> cla = new ArrayList<GeneralClassifier>();
+			ArrayList<IConcept> con = new ArrayList<IConcept>();
+			for (Pair<GeneralClassifier, IConcept> op : classifiers) {
+				cla.add(op.getFirst());
+				con.add(op.getSecond());
+			}
+
+			Pair<double[], IConcept[]> pd = Metadata
+					.computeDistributionBreakpoints(cSpace, cla, con);
+			if (pd != null) {
+				if (pd.getSecond()[0] != null) {
+					rnk = pd.getSecond();
+				}
+			}
+
+			HashMap<IConcept, Integer> ranks;
+			if (rnk == null) {	
+				ranks = Metadata.rankConcepts(cSpace, metadata);
+			} else {
+				ranks = Metadata.rankConcepts(cSpace, rnk, metadata);
+			}
+
+		}
+		
+
+		
 	}
 
 
@@ -222,15 +268,15 @@ public class ModeledClassification
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
 		
 		IState ret = new ClassData(cSpace, size, classifiers, (ObservationContext)context);
-
-		/*
-		 * TODO other metadata
-		 */
-		if (continuousDistribution != null)
-			ret.setMetadata(
-					Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS, 
-					continuousDistribution); 
-		
+//
+//		/*
+//		 * TODO other metadata
+//		 */
+//		if (continuousDistribution != null)
+//			ret.getMetadata().put(
+//					Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS, 
+//					continuousDistribution); 
+//		
 		return ret;
 	}
 

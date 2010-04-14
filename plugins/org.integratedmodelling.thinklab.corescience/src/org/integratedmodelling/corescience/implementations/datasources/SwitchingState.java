@@ -5,6 +5,7 @@ import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
@@ -14,6 +15,7 @@ import org.integratedmodelling.utils.Polylist;
 public class SwitchingState implements IState {
 	
 	private ObservationContext context;
+	private Metadata metadata = new Metadata();
 
 	public SwitchingState(SwitchLayer<IState> switchLayer, ObservationContext context) {
 		this.context = context;
@@ -28,12 +30,6 @@ public class SwitchingState implements IState {
 
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object getMetadata(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -55,13 +51,7 @@ public class SwitchingState implements IState {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-	@Override
-	public void setMetadata(String id, Object o) {
-		// TODO Auto-generated method stub
-
-	}
-
+	
 	@Override
 	public Object getInitialValue() {
 		// TODO Auto-generated method stub
@@ -110,6 +100,11 @@ public class SwitchingState implements IState {
 	@Override
 	public ObservationContext getObservationContext() {
 		return this.context;
+	}
+
+	@Override
+	public Metadata getMetadata() {
+		return this.metadata ;
 	}
 
 }

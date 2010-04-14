@@ -32,9 +32,6 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import java.util.HashMap;
-import java.util.Properties;
-
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
@@ -55,14 +52,13 @@ public class MemFloatContextualizedDatasource
 	private static final long serialVersionUID = -6567783706189229920L;
 	private IConcept _type;
 	private float[] data = null;
-	private int idx = 0;
-	HashMap<String,Object> metadata = new HashMap<String,Object>();
+	Metadata metadata = new Metadata();
 	private ObservationContext context;
 
 	public MemFloatContextualizedDatasource(IConcept type, int size, ObservationContext context) {
 		_type = type;
 		data = new float[size];
-		setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
+		metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 		this.context = context;
 	}
 	
@@ -120,13 +116,8 @@ public class MemFloatContextualizedDatasource
 	}
 	
 	@Override
-	public void setMetadata(String id, Object o) {
-		metadata.put(id, o);
-	}
-	
-	@Override
-	public Object getMetadata(String id) {
-		return metadata.get(id);
+	public Metadata getMetadata() {
+		return metadata;
 	}
 
 	@Override
@@ -153,11 +144,6 @@ public class MemFloatContextualizedDatasource
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public HashMap<String, Object> getMetadata() {
-		return metadata;
 	}
 	
 	@Override

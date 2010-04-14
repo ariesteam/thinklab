@@ -3,7 +3,6 @@ package org.integratedmodelling.corescience.context;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -23,6 +22,7 @@ import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransf
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -462,12 +462,9 @@ public class ObservationContext implements IObservationContext {
 			 * transfer metadata
 			 * TODO: anything else to put in transformed obs?
 			 */
-			HashMap<String, Object> metadata = 
-				((Observation)ObservationFactory.getObservation(inst)).getMetadata();
-			if (metadata != null) {
-				// which it should never be
-				tlist = ObservationFactory.addReflectedField(tlist, "metadata", metadata);
-			}
+			Metadata metadata = 
+				((Observation)ObservationFactory.getObservation(inst)).metadata;
+			tlist = ObservationFactory.addReflectedField(tlist, "additionalMetadata", metadata);
 			
 			obs = ObservationFactory.getObservation(session.createObject(tlist));
 

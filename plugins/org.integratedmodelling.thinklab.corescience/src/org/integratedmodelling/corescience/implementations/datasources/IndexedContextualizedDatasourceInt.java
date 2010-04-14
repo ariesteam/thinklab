@@ -1,8 +1,6 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
 import java.util.HashMap;
-import java.util.Properties;
-
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
@@ -38,7 +36,7 @@ public class IndexedContextualizedDatasourceInt<T>
 	protected IConcept _type;
 	protected int[] data = null;
 	private int max = 1;
-	Metadata metadata = new Metadata();
+	protected Metadata metadata = new Metadata();
 
 	protected HashMap<T, Integer> map = new HashMap<T, Integer>();
 	protected HashMap<Integer, T> inverseMap = new HashMap<Integer, T>();
@@ -115,15 +113,9 @@ public class IndexedContextualizedDatasourceInt<T>
 		throw new ThinklabValueConversionException("can't convert concepts into doubles");
 	}
 
-	
 	@Override
-	public void setMetadata(String id, Object o) {
-		metadata.put(id, o);
-	}
-	
-	@Override
-	public Object getMetadata(String id) {
-		return metadata.get(id);
+	public Metadata getMetadata() {
+		return metadata;
 	}
 
 	@Override
@@ -151,11 +143,6 @@ public class IndexedContextualizedDatasourceInt<T>
 		// TODO Auto-generated method stub
 		
 	}	
-
-	@Override
-	public HashMap<String, Object> getMetadata() {
-		return metadata;
-	}
 
 	@Override
 	public IConcept getObservableClass() {

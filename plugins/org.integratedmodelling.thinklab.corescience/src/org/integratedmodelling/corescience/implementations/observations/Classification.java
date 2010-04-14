@@ -41,6 +41,7 @@ import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.interfaces.internal.MediatingObservation;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
@@ -128,6 +129,8 @@ public class Classification extends Observation implements MediatingObservation 
 
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
+
+		metadata.put(Metadata.CONTINUOUS, Boolean.FALSE);
 
 		super.initialize(i);
 		IValue v = i.get(CoreScience.HAS_CONCEPTUAL_SPACE);

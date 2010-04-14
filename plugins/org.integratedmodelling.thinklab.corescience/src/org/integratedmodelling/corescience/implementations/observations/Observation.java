@@ -45,6 +45,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 	
 	// public so that getField can find it
 	public Metadata metadata = new Metadata();
+	public Metadata additionalMetadata = null;
+	
 	public Integer contingencyOrder = 0; // used to sort contingencies if this is in a merger obs
 	
 	public IDataSource<?> getDataSource()  {
@@ -216,6 +218,14 @@ public class Observation implements IObservation, IInstanceImplementation {
 			((Observation) mediatedObservation).mediatorObservation = this;
 		}
 
+		/*
+		 * if we have been given metadata through reflection, start with those.
+		 */
+		if (additionalMetadata != null) {
+			metadata.merge(additionalMetadata);
+			// give the GC a chance
+			additionalMetadata = null;
+		}
 	}
 
 	@Override

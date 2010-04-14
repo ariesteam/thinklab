@@ -291,10 +291,9 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	}
 
 	public Geometry getBoundary() {
-		return 
-			boundary == null ? 
-				ShapeValue.makeCell(envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY()) : 
-				boundary;
+		
+		ReferencedEnvelope env = getNormalizedEnvelope(); 
+		return ShapeValue.makeCell(env.getMinX(), env.getMinY(), env.getMaxX(), env.getMaxY());
 	}
 
 	public int getXCells() {

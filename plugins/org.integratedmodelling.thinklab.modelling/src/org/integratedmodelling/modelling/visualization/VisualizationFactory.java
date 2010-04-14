@@ -68,9 +68,9 @@ public class VisualizationFactory {
 	 */
 	public ColorMap getDefaultColormap(IConcept observable, IState state, int nlevels) throws ThinklabException {
 		
-		String[] categories  = (String[])state.getMetadata(Metadata.CATEGORIES);
-		Boolean isBoolean    = (Boolean)state.getMetadata(Metadata.BOOLEAN);
-		Boolean zeroIsNodata = (Boolean)state.getMetadata(Metadata.ZERO_IS_NODATA);
+		String[] categories  = (String[])state.getMetadata().get(Metadata.CATEGORIES);
+		Boolean isBoolean    = (Boolean)state.getMetadata().get(Metadata.BOOLEAN);
+		Boolean zeroIsNodata = (Boolean)state.getMetadata().get(Metadata.ZERO_IS_NODATA);
 
 		ColorMap ret = null;
 		
@@ -167,8 +167,8 @@ public class VisualizationFactory {
 		}
 		
 		int[] idata = Metadata.getImageData(state);
-		int nlevels = (Integer)state.getMetadata(Metadata.IMAGE_LEVELS);
-		Boolean zeroIsNodata = (Boolean)state.getMetadata(Metadata.ZERO_IS_NODATA);
+		int nlevels = (Integer)state.getMetadata().get(Metadata.IMAGE_LEVELS);
+		Boolean zeroIsNodata = (Boolean)state.getMetadata().get(Metadata.ZERO_IS_NODATA);
 		
 		IGridMask mask = space.getMask();
 		if (mask != null) {
@@ -186,7 +186,7 @@ public class VisualizationFactory {
 		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
 				space.getColumns(), x, y, cmap, fileOrNull);
 
-		state.setMetadata(Metadata.COLORMAP, cmap);
+		state.getMetadata().put(Metadata.COLORMAP, cmap);
 		
 		return fileOrNull;
 	}
@@ -194,7 +194,7 @@ public class VisualizationFactory {
 	public String makeUncertaintyMask(IConcept observable,  IState state,  String fileOrNull,
 			int x, int y, RasterGrid space) throws ThinklabException {
 		
-		double[] data = (double[]) state.getMetadata(Metadata.UNCERTAINTY);
+		double[] data = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
 		double[] odat = state.getDataAsDoubles();
 		
 		if (data == null)
@@ -255,9 +255,9 @@ public class VisualizationFactory {
 	 */
 	public Pair<File[], String[]> getLegend(IState state, int totalLength, int height, String fileBaseName) throws ThinklabException {
 		
-		ColorMap cmap = (ColorMap) state.getMetadata(Metadata.COLORMAP);
-		String units  = (String) state.getMetadata(Metadata.UNITS);
-		Integer offset = (Integer) state.getMetadata(Metadata.IMAGE_TO_CLASS_OFFSET);
+		ColorMap cmap = (ColorMap) state.getMetadata().get(Metadata.COLORMAP);
+		String units  = (String) state.getMetadata().get(Metadata.UNITS);
+		Integer offset = (Integer) state.getMetadata().get(Metadata.IMAGE_TO_CLASS_OFFSET);
 		
 		if (units == null)
 			units = "";
@@ -266,13 +266,13 @@ public class VisualizationFactory {
 			throw new ThinklabValidationException("internal: getLegend called on a state without colormap");
 		}
 		
-		if (Metadata.isContinuous(state)) {
+		if (Metadata.isContinuous(state.getMetadata())) {
 			// for now - we should make one segment and describe the whole range in the text
 			return null;
 		}
 		
-		double[] breakpoints = (double[])state.getMetadata(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
-		HashMap<IConcept, Integer> ranking = Metadata.getClassMappings(state);
+		double[] breakpoints = (double[])state.getMetadata().get(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
+		HashMap<IConcept, Integer> ranking = Metadata.getClassMappings(state.getMetadata());
 
 		int nlevels = cmap.getVisibleColorCount();
 		int w = totalLength/nlevels;
@@ -332,8 +332,8 @@ public class VisualizationFactory {
 		
 		String ret = "";
 		
-		double[] adr = (double[]) state.getMetadata(Metadata.ACTUAL_DATA_RANGE);
-		String units = (String) state.getMetadata(Metadata.UNITS);
+		double[] adr = (double[]) state.getMetadata().get(Metadata.ACTUAL_DATA_RANGE);
+		String units = (String) state.getMetadata().get(Metadata.UNITS);
 		
 		if (adr != null) {
 			ret = adr[0] + " to " + adr[1];
@@ -353,10 +353,10 @@ public class VisualizationFactory {
 			nf = NumberFormat.getCurrencyInstance();
 		}
 		
-		Double max = (Double)state.getMetadata(Metadata.AGGREGATED_MAX);
-		Double min = (Double)state.getMetadata(Metadata.AGGREGATED_MIN);
-		Double tot = (Double)state.getMetadata(Metadata.AGGREGATED_TOTAL);
-		String units = (String) state.getMetadata(Metadata.UNITS);
+		Double max = (Double)state.getMetadata().get(Metadata.AGGREGATED_MAX);
+		Double min = (Double)state.getMetadata().get(Metadata.AGGREGATED_MIN);
+		Double tot = (Double)state.getMetadata().get(Metadata.AGGREGATED_TOTAL);
+		String units = (String) state.getMetadata().get(Metadata.UNITS);
 		
 		if (tot != null)
 			ret += nf.format(tot);

@@ -380,17 +380,10 @@ public class VMContextualizer<T> {
 		IState dds = null;
 		
 			try {
+
 				dds = o.createState(size, ownContext);	
-				
-				/*
-				 * transfer any metadata coming from model specs to state
-				 */
-				if (((Observation)o).getMetadata() != null) {
-					for (Entry<String, Object> e : ((Observation)o).getMetadata().entrySet()) {
-						dds.setMetadata(e.getKey(), e.getValue());
-					}
-				}
-				
+				dds.getMetadata().merge(((Observation)o).metadata);
+
 			} catch (ThinklabException e) {
 				throw new ThinklabRuntimeException(e);
 			}

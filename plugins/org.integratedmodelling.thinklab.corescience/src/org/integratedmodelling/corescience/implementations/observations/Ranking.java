@@ -225,11 +225,8 @@ public class Ranking extends Observation implements MediatingObservation {
 
 	@Override
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
-		IState ret = new MemDoubleContextualizedDatasource(
-				getObservableClass(), size, (ObservationContext)context);
-		ret.setMetadata(Metadata.CONTINUOUS, Boolean.TRUE);
-		// TODO add min-max etc
-		return ret;
+		return new MemDoubleContextualizedDatasource(
+						getObservableClass(), size, (ObservationContext)context);
 	}
 
 	@Override
@@ -256,7 +253,10 @@ public class Ranking extends Observation implements MediatingObservation {
 		if (iva != null) {
 			value = Double.parseDouble(iva.toString());
 		}
-	
+		
+		// TODO add min-max etc
+		metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
+
 	}
 
 
