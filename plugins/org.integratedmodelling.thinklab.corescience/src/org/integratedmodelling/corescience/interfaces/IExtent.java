@@ -71,9 +71,17 @@ public abstract interface IExtent extends IConceptualizable, ITopologicallyCompa
 	/**
 	 * Return the value that is the union of all granules, aggregated in the way that makes
 	 * sense for the particular conceptual domain.
+	 * @deprecated use getAggregatedExtent().getState(0)
 	 * @return
 	 */
 	public IValue getFullExtentValue();
+	
+	/**
+	 * Return the 1-dimensional extent that corresponds to the full extent of our topology.
+	 * @return
+	 */
+	public IExtent getAggregatedExtent();
+	
 
 	/**
 	 * Return the n-th member of the ordered topology.

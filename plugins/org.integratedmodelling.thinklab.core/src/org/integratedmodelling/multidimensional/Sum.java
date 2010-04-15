@@ -35,5 +35,10 @@ public class Sum implements IAggregator {
 	public void reset() {
 		acc = 0.0;
 	}
+
+	@Override
+	public Object getDistributedValue(Object value, float ratio) {
+		return ((Number)value).doubleValue()/ratio;
+	}
 	
 }

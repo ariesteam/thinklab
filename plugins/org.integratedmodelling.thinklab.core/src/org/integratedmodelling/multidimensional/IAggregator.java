@@ -8,4 +8,6 @@ public interface IAggregator {
 
 	public abstract Object getAggregatedValue();
 
+	public abstract Object getDistributedValue(Object value, float ratio);
+	
 }

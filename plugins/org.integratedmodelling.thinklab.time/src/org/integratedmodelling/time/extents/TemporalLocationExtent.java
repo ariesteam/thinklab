@@ -44,6 +44,11 @@ import org.integratedmodelling.utils.Polylist;
 
 /**
  * Extent class for a single temporal location.
+ * TODO this should be defined from a period as well as a timevalue, because it is exactly
+ * what it represents (according to resolution). In the present implementation resolutions
+ * are fixed, but I need to make them arbitrary and connect TimeGrid with this using the
+ * full extent value. 
+ * 
  * @author Ferdinando Villa
  *
  */
@@ -55,10 +60,12 @@ public class TemporalLocationExtent implements IExtent {
 		this.value = value;
 	}
 	
+	@Override
 	public IValue getFullExtentValue() {
 		return value;
 	}
-
+	
+	@Override
 	public IValue getState(int granule) {
 		return value;
 	}
@@ -152,6 +159,12 @@ public class TemporalLocationExtent implements IExtent {
 
 	@Override
 	public IExtent or(IExtent myExtent) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IExtent getAggregatedExtent() {
 		// TODO Auto-generated method stub
 		return null;
 	}

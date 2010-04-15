@@ -3,6 +3,14 @@
  */
 package org.integratedmodelling.multidimensional;
 
+/**
+ * Not intended as merely an averager, but as the handler of an intensive physical
+ * property (meaning the aggregation will be an average, but the distribution will 
+ * leave the value unchanged).
+ * 
+ * @author Ferdinando
+ *
+ */
 public class Average extends Sum {
 	int n = 0;
 
@@ -23,4 +31,8 @@ public class Average extends Sum {
 		n = 0;
 	}
 	
+	@Override
+	public Object getDistributedValue(Object value, float ratio) {
+		return ((Number)value).doubleValue();
+	}
 }

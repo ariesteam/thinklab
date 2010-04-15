@@ -39,6 +39,10 @@ public abstract class ConfigurableIntelligentMap<T> implements Map<IConcept, T> 
 		this.propertyPrefix = propertyPrefix;
 	}
 	
+	protected void registerProperty(IConcept c, String value) {
+		pmap.put(c, value);
+	}
+	
 	public void load(Properties properties) throws ThinklabException {
 		int ln = propertyPrefix.length();
 		for (Object k : properties.keySet()) {

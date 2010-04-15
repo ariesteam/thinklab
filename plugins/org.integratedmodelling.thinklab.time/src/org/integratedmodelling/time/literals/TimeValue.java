@@ -259,19 +259,19 @@ public class TimeValue extends ParsedLiteralValue {
 		return value;
 	}
 
-// I don't know why it doesn't get called.
-//	public boolean equals(Object other) {
-//		
-//		System.out.println("Called");
-//		
-//		boolean ret = (other instanceof TimeValue);
-//
-//		if (ret)
-//			ret = precision == ((TimeValue)other).precision;
-//		
-//		if (ret)
-//			ret = value.equals(((TimeValue)other).value);
-//		return ret;
-//	}
+	@Override
+	public boolean equals(Object other) {
+		
+		boolean ret = (other instanceof TimeValue);
+		if (ret)
+			ret = precision == ((TimeValue)other).precision;
+		if (ret)
+			ret = value.equals(((TimeValue)other).value);
+		return ret;
+	}
 
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
+	}
 }

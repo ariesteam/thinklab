@@ -175,6 +175,9 @@ public class ObservationContext implements IObservationContext {
 		initialize();
 	}
 	
+	private ObservationContext() {
+	}
+
 	private void constrainExtents(ObservationContext ctx) throws ThinklabException {
 		
 		for (IConcept c : extents.keySet()) {
@@ -282,6 +285,28 @@ public class ObservationContext implements IObservationContext {
 		}		
 	}
 
+	private void mergeExtent(IConcept dimension, IExtent itsExtent) throws ThinklabException {
+
+		IExtent myExtent  = extents.get(dimension);
+		
+		if (myExtent == null) {
+			
+			/* just add the extent */
+			extents.put(dimension, itsExtent);
+		
+		} else {
+
+			/* ask CM to modify the current extent record in order to represent the
+			   new one as well. */
+			IExtent merged = itsExtent.and(myExtent);
+			if (merged == null) {
+				this.isNull = true;
+			} else {
+				extents.put(dimension, merged);
+			}
+		}		
+	}
+	
 	@Override
 	public void dump(PrintStream printStream) {
 		dumpNode(this, printStream, 0, true);
@@ -624,4 +649,42 @@ public class ObservationContext implements IObservationContext {
 	public boolean isEmpty() {
 		return isNull;
 	}
+	
+	/**
+	 * Create a new context with one dimension collapsed to its 1-d equivalent
+	 * 
+	 * @param dimension
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public ObservationContext collapse(IConcept dimension)
+		throws ThinklabException {
+
+		ObservationContext ret = new ObservationContext();
+		for (IConcept dim : this.getDimensions()) {
+			IExtent ext = this.getExtent(dim);
+			if (dim.is(dimension)) {
+				ext = ext.getAggregatedExtent();
+			}
+			ret.mergeExtent(dim, ext);
+		}
+		return ret;
+	}
+
+	/**
+	 * Create a new context with all dimensions collapsed to its 1-d equivalent
+	 * 
+	 * @throws ThinklabException
+	 */
+	public ObservationContext collapse()
+		throws ThinklabException {
+
+		ObservationContext ret = new ObservationContext();
+		for (IConcept dim : this.getDimensions()) {
+			IExtent ext = this.getExtent(dim).getAggregatedExtent();
+			ret.mergeExtent(dim, ext);
+		}
+		return ret;
+	}
+
 }

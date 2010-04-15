@@ -75,11 +75,14 @@ public class Measurement extends Observation implements MediatingObservation {
 
 		@Override
 		public Object getValue(Object[] registers) {
-			return isConstant ? (randomValue == null ? value : randomValue) : getNextValue(registers);
+			return getNextValue(registers);
 		}
 
 		private Object getNextValue(Object[] registers) {
-			return getDataSource().getValue(index++, registers);
+			return 
+				isConstant ? 
+					(randomValue == null ? value : randomValue.draw()) : 
+					 getDataSource().getValue(index++, registers);
 		}
 
 		@Override
@@ -151,16 +154,17 @@ public class Measurement extends Observation implements MediatingObservation {
 				valueSpecs = s.substring(0, idx).trim();
 				unitSpecs = s.substring(idx+1).trim();
 			} else {
-				throw new ThinklabValidationException(
-						"measurement value must contain numeric value and units: " + s);
+				valueSpecs = s;
 			}
-		} else {
+			isConstant = true;
+			value = Double.parseDouble(valueSpecs);
 			
-			// may just have unit and link to datasource or mediated obs
+		} 
+		
+		if (unitSpecs == null) {
 			v = i.get("measurement:unit");
 			if (v != null)
 				unitSpecs = v.toString().trim();
-			
 		}
 		
 		v = i.get("measurement:distribution");
@@ -171,6 +175,9 @@ public class Measurement extends Observation implements MediatingObservation {
 			randomValue = new DistributionValue(v.toString());
 		}
 		
+		if (unitSpecs == null) {
+			throw new ThinklabValidationException("measurement: units not specified");
+		}
 		this.unit = Unit.valueOf(unitSpecs);
 		
 		super.initialize(i);

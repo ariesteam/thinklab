@@ -114,17 +114,6 @@ public class RegularTimeGridExtent implements IExtent {
 		validateGrid();
 	}
 
-//	public RegularTimeGridExtent(DateTime start, long startoffset, long length, long step) throws ThinklabValidationException {
-//		this.start = start;
-//		this.end = end;
-//		this.step = step;
-//		c[0] = new Coordinate(start.getMillis() + startoffset, 0);
-//		c[1] = new Coordinate(start.getMillis() + startoffset + length, 0);
-//		granuleSize = step;
-//		extent = geometryFactory.createLineString(c);
-//		validateGrid();
-//	}
-
 	public RegularTimeGridExtent(LineString gg, long step) throws ThinklabValidationException {
 
 		// TODO compute start and end from grid
@@ -136,6 +125,7 @@ public class RegularTimeGridExtent implements IExtent {
 		validateGrid();
 	}
 
+	@Override
 	public IValue getFullExtentValue() {
 
 		IValue ret = null;
@@ -148,6 +138,7 @@ public class RegularTimeGridExtent implements IExtent {
 		return ret;
 	}
 
+	@Override
 	public IValue getState(int granule) throws ThinklabException {
 		long ls = (long)(extent.getStartPoint().getX()) + granuleSize*granule;
 		return new PeriodValue(ls, ls + granuleSize);
@@ -283,6 +274,13 @@ public class RegularTimeGridExtent implements IExtent {
 
 	@Override
 	public IExtent or(IExtent myExtent) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public IExtent getAggregatedExtent() {
 		// TODO Auto-generated method stub
 		return null;
 	}

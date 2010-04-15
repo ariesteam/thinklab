@@ -67,7 +67,7 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String HAS_CONCEPTUAL_MODEL = "observation:hasConceptualModel";
 	public static final String HAS_SOURCE_URI = "source:hasSourceURI";
 	public static final String HAS_FILTER = "source:hasFilter";
-	public static final String HAS_UNIT = "measurement:hasUnit";
+	public static final String HAS_UNIT = "measurement:unit";
 	public static final String HAS_CLASS_MAPPING = "observation:hasClassMapping";
 	public static final String HAS_SOURCE_VALUE_TYPE = "observation:sourceValueType";
 	public static final String HAS_CONCEPTUAL_SPACE = "observation:hasConceptSpace";
@@ -101,6 +101,7 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String COLUMN_EXTRACTOR = "source:ColumnExtractor";
 	public static final String PHYSICAL_PROPERTY = "representation:PhysicalProperty";
 	public static final String EXTENSIVE_PHYSICAL_PROPERTY = "representation:ExtensivePhysicalProperty";
+	public static final String INTENSIVE_PHYSICAL_PROPERTY = "representation:IntensivePhysicalProperty";
 	public static final String EXTENT_OBSERVATION = "observation:ExtentObservation";
 	public static final String DATASOURCE_FUNCTION_LITERAL = "source:hasFunctionLiteral";
 	public static final String CLASSIFICATION_MODEL = "observation:ClassificationSpace";

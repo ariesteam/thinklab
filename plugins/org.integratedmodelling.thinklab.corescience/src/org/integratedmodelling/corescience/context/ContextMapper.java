@@ -3,6 +3,8 @@ package org.integratedmodelling.corescience.context;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.multidimensional.MultidimensionalCursor;
+import org.integratedmodelling.multidimensional.MultidimensionalCursor.StorageOrdering;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
@@ -21,17 +23,24 @@ public class ContextMapper {
 	
 	private IObservationContext _from;
 	private IObservationContext _to;
-
-	public ContextMapper(IState from, IState to) {
-		this._from = from.getObservationContext();
-		this._to = to.getObservationContext();
+	MultidimensionalCursor fromCursor = 
+		new MultidimensionalCursor(StorageOrdering.COLUMN_FIRST);
+	MultidimensionalCursor toCursor = 
+		new MultidimensionalCursor(StorageOrdering.COLUMN_FIRST);
+	int[] cdims = null;
+	boolean identical = false;
+	
+	public ContextMapper(IState from, IState to) throws ThinklabException {
+		this(from.getObservationContext(), to.getObservationContext());
 	}
 	
 	public ContextMapper(IObservationContext from, IObservationContext to) throws ThinklabException {
+		
 		this._from = from;
 		this._to = to;
-		
+		int td = 0;
 		int[] indexesFrom = from.getDimensionSizes();
+		this.cdims = new int[indexesFrom.length];
 		int[] indexesTo = new int[indexesFrom.length];
 		int i = 0;
 		for (IConcept c : from.getDimensions()) {
@@ -43,9 +52,15 @@ public class ContextMapper {
 						" should be 1 or " + indexesFrom[i] +
 						"; check datasource transformation");
 			
-			indexesTo[i++] = dim;			
+			indexesTo[i] = dim;	
+			cdims[i] =  (indexesFrom[i] == indexesTo[i]) ? 0 : 1;
+			td += cdims[i];
+			i++;
 		}
 		
+		this.identical = td == 0;
+		this.fromCursor.defineDimensions(indexesFrom);
+		this.toCursor.defineDimensions(indexesTo);
 	}
 	
 	/**
@@ -60,20 +75,15 @@ public class ContextMapper {
 	 * @return
 	 */
 	public int getIndex(int n) {
-		// TODO only works with identical contexts
-		return n;
-	}
-	
-	/**
-	 * true if extent subdivision n of the "to" context is defined and visible in all dimensions of the
-	 * "from" context.
-	 * 
-	 * @param n
-	 * @return
-	 */
-	public boolean isCovered(int n) {
-		return false;
-	}
+		
+		if (identical)
+			return n;
+		
+		int[] ofss = fromCursor.getElementIndexes(n);
+		for (int i = 0; i < cdims.length; i++)
+			if(cdims[i] > 0)
+				ofss[i] = 0;
+		return toCursor.getElementOffset(ofss);
+	}	
 
-	
 }

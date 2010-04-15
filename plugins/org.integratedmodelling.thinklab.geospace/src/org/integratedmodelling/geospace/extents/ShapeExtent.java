@@ -110,15 +110,18 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 		this.shape = shape.getGeometry();
 	}
 
+	@Override
 	public IValue getFullExtentValue() {
 		return new ShapeValue(shape, getCRS());
 	}
 
+	@Override
 	public IValue getState(int granule) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public int getTotalGranularity() {
 		return features == null ? 1 : features.size();
 	}
@@ -277,6 +280,11 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 	public IExtent or(IExtent myExtent) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public IExtent getAggregatedExtent() {
+		return new ShapeExtent(new ShapeValue(shape, getCRS()));
 	}
 
 //	@Override

@@ -45,9 +45,12 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 						"modeltypes:hasExpressionLanguage", 
 						this.lang.equals(language.CLOJURE) ? "clojure" : "mvel")
 						: null), 
-				unitSpecs.contains(" ") ? Polylist.list(
-						"measurement:value", unitSpecs) : Polylist.list(
-						"measurement:unit", unitSpecs), 
+				(unitSpecs.contains(" ") ? 
+						Polylist.list(CoreScience.HAS_VALUE, unitSpecs) : 
+						Polylist.list(CoreScience.HAS_UNIT, unitSpecs)), 
+				(this.state != null ? 
+						Polylist.list(CoreScience.HAS_VALUE, this.state) : 
+						null), 
 				(isMediating() ?
 						null :
 						Polylist.list(CoreScience.HAS_OBSERVABLE,

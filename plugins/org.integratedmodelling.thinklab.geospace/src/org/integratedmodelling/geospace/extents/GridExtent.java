@@ -253,14 +253,17 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		return env.getHeight() * env.getWidth();
 	}
 	
+	@Override
 	public String toString() {
 		return "grid-extent(" + xDivs + "," + yDivs + ": " + envelope + ": " + getCRS().getName() + ")"; 
 	}
 	
+	@Override
 	public IValue getFullExtentValue() {
 		return new ShapeValue(getBoundary(), crs);
 	}
 
+	@Override
 	public IValue getState(int granule) throws ThinklabException {
 
 		/* 
@@ -564,6 +567,11 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	public IExtent or(IExtent myExtent) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public IExtent getAggregatedExtent() {
+		return new ShapeExtent((ShapeValue) getFullExtentValue());
 	}
 
 }
