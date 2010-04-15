@@ -35,7 +35,7 @@ public class ModelProxy extends DefaultAbstractModel {
 
 	@Override
 	public IModel getConfigurableClone() {
-		return new ModelProxy(model);
+		return model.getConfigurableClone();
 	}
 
 	@Override

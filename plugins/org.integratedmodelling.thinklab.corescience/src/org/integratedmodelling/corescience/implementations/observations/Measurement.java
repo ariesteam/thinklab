@@ -42,6 +42,9 @@ public class Measurement extends Observation implements MediatingObservation {
 	private double value = 0.0;
     public Unit<?> unit;
     
+	// set through reflection
+	public DistributionValue distribution = null;
+
 	private boolean isConstant = false;
 	
 	public static enum PhysicalNature {
@@ -79,9 +82,13 @@ public class Measurement extends Observation implements MediatingObservation {
 		}
 
 		private Object getNextValue(Object[] registers) {
+			
+			if (distribution != null)
+				return distribution.draw();
+			
 			return 
 				isConstant ? 
-					(randomValue == null ? value : randomValue.draw()) : 
+					(randomValue == null ? value : randomValue) : 
 					 getDataSource().getValue(index++, registers);
 		}
 

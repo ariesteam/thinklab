@@ -20,6 +20,7 @@ import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
+import org.integratedmodelling.modelling.Scenario;
 import org.integratedmodelling.modelling.visualization.NetCDFArchive;
 import org.integratedmodelling.modelling.visualization.ObservationListing;
 import org.integratedmodelling.thinklab.command.Command;
@@ -48,11 +49,11 @@ import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 		optionalArgumentDefaultValues="_NONE_",
 		optionalArgumentDescriptions="id of a spatial feature to define the spatial context",
 		optionalArgumentTypes="thinklab-core:Text",
-		optionArgumentLabels="all kboxes,,,none,256, ",
-		optionLongNames="kbox,visualize,dump,outfile,resolution,clear",
-		optionNames="k,v,d,o,r,c",
-		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing",
-		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing",
+		optionArgumentLabels="all kboxes,,,none,256, , ",
+		optionLongNames="kbox,visualize,dump,outfile,resolution,clear,scenario",
+		optionNames="k,v,d,o,r,c,s",
+		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing,thinklab-core:Text",
+		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing,scenario to apply before computing",
 		returnType="observation:Observation")
 public class ModelCommand implements ICommandHandler {
 
@@ -119,7 +120,6 @@ public class ModelCommand implements ICommandHandler {
 				roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
 				
 			if (roi != null) {
-				System.out.println("ROIA: " + roi);
 				where = 
 					session.createObject(RasterGrid.createRasterGrid(roi, res));
 			} else { 
@@ -138,6 +138,12 @@ public class ModelCommand implements ICommandHandler {
 	
 		if (command.hasOption("clear")) {
 			ModelFactory.get().clearCache();
+		}
+		
+		if (command.hasOption("scenario")) {
+			String sc = command.getOptionAsString("scenario");
+			Scenario scenario = ModelFactory.get().requireScenario(sc);
+			model = (Model) model.applyScenario(scenario);
 		}
 		
 		IQueryResult r = ModelFactory.get().run(model, kbox, session, listeners, 

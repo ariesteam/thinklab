@@ -463,7 +463,7 @@ public class Constraint implements IQuery {
         
     	boolean ok = concept.is(i.getType());
     	
-    	if (ok) {
+    	if (ok && body != null) {
     		ok = body.match(i);
     	}
     	

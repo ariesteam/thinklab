@@ -255,6 +255,19 @@ public class ModelFactory {
 		return ret;
 	}
 
+	public Scenario retrieveScenario(String s) throws ThinklabException {
+		return scenariosById.get(s);
+	}
+
+	public Scenario requireScenario(String s) throws ThinklabException {
+
+		Scenario ret = retrieveScenario(s);
+		if (ret == null)
+			throw new ThinklabResourceNotFoundException("no scenario found for "
+					+ s);
+		return ret;
+	}
+
 	/**
 	 * Return a shape (usually a multipolygon) that describes the coverage of a
 	 * particular model in a given kbox. It will be the union of the spatial

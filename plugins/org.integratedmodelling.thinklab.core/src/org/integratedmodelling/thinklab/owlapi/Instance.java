@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
@@ -190,6 +191,10 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public boolean isConformant(IInstance otherInstance,
 			IConformance conformance) throws ThinklabException {
+		
+		if (conformance == null)
+			conformance = new DefaultConformance();
+		
 		return conformance.getConstraint(this).match(otherInstance);
 	}
 

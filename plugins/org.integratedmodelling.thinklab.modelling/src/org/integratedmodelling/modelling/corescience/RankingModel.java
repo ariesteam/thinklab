@@ -74,6 +74,9 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 					Polylist.list("modeltypes:hasExpressionLanguage", 	
 						this.lang.equals(language.CLOJURE) ? "clojure" : "mvel") :
 					null),
+				(this.distribution != null ? 
+					Polylist.list(":distribution", this.distribution) : 
+					null),
 				/*
 				 * TODO add scale attributes
 				 */

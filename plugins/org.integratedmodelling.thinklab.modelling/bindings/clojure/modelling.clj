@@ -89,6 +89,8 @@
 				(.applyClause model ":derivative" (tl/listp (second clause)))
 				(= (first clause) :state)
 				(.applyClause model ":state" (eval (second clause)))
+				(= (first clause) :value)
+				(.applyClause model ":value" (eval (second clause)))
 				(= (first clause) :context)
 				(.applyClause model ":context" (map configure-model (tl/group-with-keywords (second clause))))
 				(= (first clause) :observed)

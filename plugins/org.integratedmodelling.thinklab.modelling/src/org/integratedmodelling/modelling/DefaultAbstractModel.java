@@ -3,12 +3,12 @@ package org.integratedmodelling.modelling;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Map.Entry;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.annotation.ModelAnnotation;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
@@ -27,6 +27,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.Inte
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.IFn;
@@ -45,6 +46,7 @@ public abstract class DefaultAbstractModel implements IModel {
 
 	protected Polylist observableSpecs = null;
 	protected Object state = null;
+	protected DistributionValue distribution = null;
 	protected String id = null;
 	protected IFn whenClause = null;
 	private LinkedList<Polylist> transformerQueue = new LinkedList<Polylist>();
@@ -253,6 +255,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * Copy the relevant fields when a clone is created before configuration
 	 */
 	protected void copy(DefaultAbstractModel model) {
+		
 		id = model.id;
 		mediated = model.mediated;
 		observable = model.observable;
@@ -526,4 +529,103 @@ public abstract class DefaultAbstractModel implements IModel {
 	public String getId() {
 		return id;
 	}
+	
+	/**
+	 * 
+	 * @param scenario
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	@Override
+	public IModel applyScenario(Scenario scenario) throws ThinklabException {		
+		return applyScenarioInternal(scenario, new Session());
+	}
+	
+	protected IModel applyScenarioInternal(Scenario scenario, Session session) throws ThinklabException {
+		
+		DefaultAbstractModel ret = null; 
+		
+		IInstance match = session.createObject(observableSpecs);
+		
+		/*
+		 * if I am in the scenario, clone the scenario's, not me, unless I am a Model which
+		 * requires to be preserved for functionality
+		 */
+		if (!(this instanceof Model)) {
+			for (IModel m : scenario.models) {
+			
+				IInstance im = session.createObject(((DefaultAbstractModel)m).observableSpecs);
+				if (im.isConformant(match, null)) {
+					try {
+						return (IModel) ((DefaultAbstractModel)m).clone();
+					} catch (CloneNotSupportedException e) {
+						// no
+					}
+				}
+			}
+		}
+		
+		/*
+		 * clone me and add the applyScenarios of the dependents as dependents
+		 */
+		try {
+			ret = (DefaultAbstractModel) this.clone();
+		} catch (CloneNotSupportedException e) {
+			// yeah, right		
+		}
+
+		if (mediated != null) {
+			IModel dep = ((DefaultAbstractModel)mediated).applyScenarioInternal(scenario, session);
+			ret.mediated = (dep == null ? mediated : dep);
+		}
+		
+		for (IModel d : dependents) {
+			IModel dep = ((DefaultAbstractModel)d).applyScenarioInternal(scenario, session);
+			ret.addDependentModel(dep == null ? d : dep);
+		}
+		
+		/*
+		 * give the sucker our ID so it will work in references
+		 */
+		if (ret != null)
+			ret.id = id;
+		
+		return ret;
+	}
+	
+
+	@Override
+	public Polylist buildDefinition(IKBox kbox, ISession session)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getCompatibleObservationType(ISession session) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IModel getConfigurableClone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return getConfigurableClone();
+	}
+
+	@Override
+	public Polylist conceptualize() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	
+
+
 }

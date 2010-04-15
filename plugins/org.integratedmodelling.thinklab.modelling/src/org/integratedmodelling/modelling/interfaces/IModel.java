@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling.interfaces;
 
+import org.integratedmodelling.modelling.Scenario;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -118,5 +119,14 @@ public interface IModel extends IConceptualizable {
 	 */
 	IModel train(IKBox kbox, ISession session, Object ... params) throws ThinklabException;
 
-	
+	/**
+	 * A scenario is a model modifier, containing alternative models for given observables.
+	 * Applying the scenario simply substitutes any models of the same observables with those
+	 * in the scenario, going as deep as needed in the dependency chain.
+	 * 
+	 * @param scenario
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public IModel applyScenario(Scenario scenario) throws ThinklabException;
 }

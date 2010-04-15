@@ -1,7 +1,10 @@
 package org.integratedmodelling.modelling;
 
+import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+
+import umontreal.iro.lecuyer.probdist.Distribution;
 
 public abstract class DefaultStatefulAbstractModel extends DefaultAbstractModel {
 
@@ -11,7 +14,11 @@ public abstract class DefaultStatefulAbstractModel extends DefaultAbstractModel 
 		// System.out.println(this + "processing clause " + keyword + " -> " + argument);
 		
 		if (keyword.equals(":value")) {
-			state = validateState(argument);			
+			if (argument instanceof Distribution) {
+				distribution = new DistributionValue((Distribution)argument);
+			} else {
+				state = validateState(argument);			
+			}
 		} else super.applyClause(keyword, argument);
 	}
 		

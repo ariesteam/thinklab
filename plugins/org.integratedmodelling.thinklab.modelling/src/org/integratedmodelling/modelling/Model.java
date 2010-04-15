@@ -12,6 +12,8 @@ import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.modelling.corescience.ObservationModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.thinklab.constraint.Constraint;
+import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
@@ -19,9 +21,11 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.IFn;
@@ -117,6 +121,7 @@ public class Model extends DefaultAbstractModel {
 		this.description = s;
 	}
 
+	// FIXME CHECK - is this called at all? This does not correspond to what contingencies are
 	public void addContingency(IModel m, Map<?,?> metadata) {
 		
 		if (this.context == null)
@@ -165,7 +170,7 @@ public class Model extends DefaultAbstractModel {
 	@Override
 	public IModel getConfigurableClone() {
 		/*
-		 * Skip copying
+		 * Skip copying. 
 		 */
 		return new ModelProxy(this);
 	}
@@ -211,33 +216,6 @@ public class Model extends DefaultAbstractModel {
 	}
 	
 	/**
-	 * 
-	 * @param scenario
-	 * @return
-	 */
-	public Model applyScenario(Scenario scenario) {
-		
-		/*
-		 * 1. determine common observables
-		 */
-		
-		/*
-		 * 2. build an identification with just the relevant
-		 * observations
-		 */
-		
-		/*
-		 * 3. contextualize to model's context
-		 */
-		
-		/*
-		 * 4. build a new model with computed datasources
-		 */
-		
-		return null;
-	}
-
-	/**
 	 * Return a scenario with all the observables that were declared
 	 * editable in the defmodel form.
 	 * 
@@ -258,11 +236,81 @@ public class Model extends DefaultAbstractModel {
 			collectEditableModels((DefaultAbstractModel)m, ret);
 	}
 
-
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		/*
+		 * clone() creates an actual model, not a proxy, without any contingencies or
+		 * context model. This is meant for applyScenario to use, and yes, it's an
+		 * ugly mess overall.
+		 */
+		Model ret = new Model();
+		ret.copy(this);
+		
+		return ret;
+	}
 	@Override
 	public Polylist buildDefinition(IKBox kbox, ISession session)
 			throws ThinklabException {
 		// WON'T GET CALLED UNLESS I SCREWED UP
 		throw new ThinklabInternalErrorException("SHIT! BUILDDEFINITION CALLED ON MODEL!");
 	}
+	
+	@Override
+	protected IModel applyScenarioInternal(Scenario scenario, Session session)
+			throws ThinklabException {
+
+		IModel ret = super.applyScenarioInternal(scenario, session);
+
+		/*
+		 * make a set of all distinct observables in our contingencies
+		 */
+		ArrayList<IInstance> obsi = new ArrayList<IInstance>();
+		for (IModel m : models) {
+			IInstance io = session.createObject(((DefaultAbstractModel)m).observableSpecs);
+			Constraint cl = new DefaultConformance().getConstraint(io);
+			boolean gotIt = false;
+			for (IInstance z : obsi) {
+				if (cl.match(z)) {
+					gotIt = true;
+					break;
+				}
+			}
+			if (!gotIt)
+				obsi.add(io);
+		}
+		
+		/*
+		 * create a set of all models in scenario that match the observables
+		 */
+		ArrayList<IModel> toAdd = new ArrayList<IModel>();
+		for (IInstance myc : obsi) {
+			Constraint cl = new DefaultConformance().getConstraint(myc);
+			for (IModel m : scenario.models) {
+				IInstance io = session.createObject(((DefaultAbstractModel)m).observableSpecs);
+				if (cl.match(io))
+					toAdd.add(m);
+			}
+		}
+		
+		/*
+		 * if the set has 1+ elements, add those as contingencies; otherwise 
+		 * just add the original contingencies.
+		 */
+		// ugly hack
+		while (ret instanceof ModelProxy) {
+			
+		}
+		if (toAdd.size() > 0) {
+			for (IModel m : toAdd)
+				((Model)ret).defModel(m,null);
+		} else {
+			for (IModel m : models)
+				((Model)ret).defModel(m,null);			
+		}
+		
+		return ret;
+	}
+	
+	
+	
 }

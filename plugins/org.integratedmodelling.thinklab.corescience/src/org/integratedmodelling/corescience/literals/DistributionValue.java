@@ -11,10 +11,19 @@ import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 
 import umontreal.iro.lecuyer.probdist.Distribution;
 import umontreal.iro.lecuyer.probdist.DistributionFactory;
+import umontreal.iro.lecuyer.randvar.RandomVariateGen;
+import umontreal.iro.lecuyer.rng.LFSR113;
+import umontreal.iro.lecuyer.rng.RandomStream;
 
 @InstanceImplementation(concept=CoreScience.RANDOM_VALUE)
 public class DistributionValue extends ParsedLiteralValue implements IRandomValue {
 
+	/*
+	 * TODO not sure one per object is overkill or not. If needed, this can be made
+	 * static and draw() synchronized.
+	 */
+	RandomStream stream = new LFSR113();
+	
 	public enum Distributions {
 		ANDERSON_DARLING,
 		BETA,
@@ -66,13 +75,20 @@ public class DistributionValue extends ParsedLiteralValue implements IRandomValu
 
 
 	private Distribution distribution = null;
+	private RandomVariateGen genN;
 	
 	public DistributionValue(Distributions distribution, double ... parameters) {
-		
+	}
+	
+	public DistributionValue(Distribution distribution) {
+		this.distribution = distribution;
+		this.genN = new RandomVariateGen(stream, distribution);
 	}
 	
 	public DistributionValue(String literal) throws ThinklabValidationException {
 		parseLiteral(literal);
+		this.genN = new RandomVariateGen(stream, distribution);
+
 	}
 	
 	@Override
@@ -93,8 +109,7 @@ public class DistributionValue extends ParsedLiteralValue implements IRandomValu
 
 	@Override
 	public double draw() {
-		// TODO Auto-generated method stub
-		return 0.0;
+		return genN.nextDouble();
 	}
 
 	@Override

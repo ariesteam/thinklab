@@ -42,6 +42,7 @@ import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.interfaces.internal.MediatingObservation;
+import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -89,6 +90,10 @@ public class Ranking extends Observation implements MediatingObservation {
 
 	private boolean isConstant = false;
 	private double value = 0.0;
+	
+	// set through reflection
+	public DistributionValue distribution = null;
+
 
 	@Override
 	public String toString() {
@@ -186,6 +191,8 @@ public class Ranking extends Observation implements MediatingObservation {
 
 		@Override
 		public Object getValue(Object[] registers) {
+			if (distribution != null)
+				return distribution.draw();
 			return isConstant ? value : getNextValue(registers);
 		}
 

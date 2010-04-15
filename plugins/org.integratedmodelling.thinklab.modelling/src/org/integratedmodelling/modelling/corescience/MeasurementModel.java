@@ -51,6 +51,9 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 				(this.state != null ? 
 						Polylist.list(CoreScience.HAS_VALUE, this.state) : 
 						null), 
+				(this.distribution != null ? 
+						Polylist.list(":distribution", this.distribution) : 
+						null), 				
 				(isMediating() ?
 						null :
 						Polylist.list(CoreScience.HAS_OBSERVABLE,
