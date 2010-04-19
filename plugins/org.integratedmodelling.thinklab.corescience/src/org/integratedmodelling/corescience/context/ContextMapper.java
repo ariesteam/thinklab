@@ -6,6 +6,7 @@ import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor.StorageOrdering;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 /**
@@ -29,9 +30,11 @@ public class ContextMapper {
 		new MultidimensionalCursor(StorageOrdering.COLUMN_FIRST);
 	int[] cdims = null;
 	boolean identical = false;
+	private IState state;
 	
-	public ContextMapper(IState from, IState to) throws ThinklabException {
-		this(from.getObservationContext(), to.getObservationContext());
+	public ContextMapper(IState state, IObservationContext to) throws ThinklabException {
+		this(state.getObservationContext(), to);
+		this.state = state;
 	}
 	
 	public ContextMapper(IObservationContext from, IObservationContext to) throws ThinklabException {
@@ -84,6 +87,18 @@ public class ContextMapper {
 			if(cdims[i] > 0)
 				ofss[i] = 0;
 		return toCursor.getElementOffset(ofss);
+	}
+
+	public IState getState() {
+		return state;
+	}
+
+	public Object getValue(int index, Object[] parameters) {
+		return state.getValue(getIndex(index), parameters);
+	}
+
+	public double getDoubleValue(int i) throws ThinklabValueConversionException {
+		return state.getDoubleValue(getIndex(i));
 	}	
 
 }

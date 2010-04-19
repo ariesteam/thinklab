@@ -57,7 +57,7 @@ public class MemValueContextualizedDatasource
 	private IValue[] data = null;
 	Metadata metadata = new Metadata();
 	private ObservationContext context;
-
+	private IValue prototype = null;
 
 	public MemValueContextualizedDatasource(IConcept type, int size, ObservationContext context) {
 		_type = type;
@@ -84,6 +84,8 @@ public class MemValueContextualizedDatasource
 	public void addValue(int idx, Object o) {
 		try {
 			data[idx] = Value.getValueForObject(o);
+			if (prototype == null && data[idx] != null)
+				prototype = data[idx];			
 		} catch (ThinklabException e) {
 			throw new ThinklabRuntimeException(e);
 		}
@@ -116,8 +118,11 @@ public class MemValueContextualizedDatasource
 
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
-
-		if (!data[0].isNumber())
+		
+		if (prototype == null)
+			return null;
+		
+		if (!prototype.isNumber())
 			throw new ThinklabValueConversionException("can't convert IValue into double");
 		
 		double[] ret = new double[data.length];
@@ -125,6 +130,18 @@ public class MemValueContextualizedDatasource
 			ret[i] = data[i].asNumber().asDouble();
 		}
 		return ret;
+	}
+	
+	@Override
+	public double getDoubleValue(int i) throws ThinklabValueConversionException {
+
+		if (prototype == null)
+			return Double.NaN;
+		
+		if (!prototype.isNumber())
+			throw new ThinklabValueConversionException("can't convert IValue into double");
+
+		return data[i].asNumber().asDouble();
 	}
 	
 	@Override

@@ -153,5 +153,10 @@ public class MemLongContextualizedDatasource
 		return this.context;
 	}
 
+	@Override
+	public double getDoubleValue(int index)
+			throws ThinklabValueConversionException {
+		return data[index];
+	}
 
 }

@@ -32,9 +32,6 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import java.util.HashMap;
-import java.util.Properties;
-
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
@@ -155,6 +152,12 @@ public class MemClassContextualizedDatasource
 	@Override
 	public ObservationContext getObservationContext() {
 		return this.context;
+	}
+
+	@Override
+	public double getDoubleValue(int index)
+			throws ThinklabValueConversionException {
+		throw new ThinklabValueConversionException("can't convert concepts into doubles");
 	}
 
 

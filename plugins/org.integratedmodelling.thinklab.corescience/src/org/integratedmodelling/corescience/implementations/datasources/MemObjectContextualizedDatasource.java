@@ -153,6 +153,21 @@ public class MemObjectContextualizedDatasource
 	}
 	
 	@Override
+	public double getDoubleValue(int i) throws ThinklabValueConversionException {
+	
+		if (prototype instanceof Number) {
+			return (data[i] == null ? Double.NaN : ((Number)data[i]).doubleValue());
+		} else if (prototype instanceof IConcept && Metadata.getClassMappings(metadata) != null) {
+			HashMap<IConcept, Integer> rnk = Metadata.getClassMappings(metadata);
+			return (data[i] == null ? Double.NaN : (double)(rnk.get((IConcept)data[i])));
+		}
+	
+		// TODO must accommodate distributions 
+		
+		throw new ThinklabValueConversionException("can't convert a " + prototype.getClass() + " into a double");
+		 
+	}
+	@Override
 	public Metadata getMetadata() {
 		return metadata;
 	}

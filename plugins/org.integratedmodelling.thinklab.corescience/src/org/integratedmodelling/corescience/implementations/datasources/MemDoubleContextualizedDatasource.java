@@ -209,5 +209,11 @@ public class MemDoubleContextualizedDatasource
 		return this.context;
 	}
 
+	@Override
+	public double getDoubleValue(int index)
+			throws ThinklabValueConversionException {
+		return data[index];
+	}
+
 
 }

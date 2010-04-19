@@ -155,6 +155,12 @@ public class IndexedContextualizedDatasourceLong<T>
 		return this.context;
 	}
 
+	@Override
+	public double getDoubleValue(int index)
+			throws ThinklabValueConversionException {
+		throw new ThinklabValueConversionException("can't convert concepts into doubles");
+	}
+
 
 
 }

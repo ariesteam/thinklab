@@ -35,7 +35,6 @@ package org.integratedmodelling.thinklab.literals;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
@@ -87,7 +86,6 @@ public class Value implements IValue {
 			cc = KnowledgeManager.get().getLeastGeneralCommonConcept(getConcept(), setTo);
 		} catch (ThinklabNoKMException e) {
 		}
-		// FIXME USE CLASSTREE?
 		if (cc == null || !cc.is(mustBe)) {
 			throw new ThinklabValueConversionException("concept " + concept.getSemanticType().toString() + 
 												  " can't be set to " + setTo.getSemanticType().toString());

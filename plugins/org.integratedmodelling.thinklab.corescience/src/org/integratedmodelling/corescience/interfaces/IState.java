@@ -30,6 +30,11 @@ public interface IState extends IDataSource, IConceptualizable {
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException;
 
 	/**
+	 * get a single double for the given index.
+	 */
+	public double getDoubleValue(int index) throws ThinklabValueConversionException;
+	
+	/**
 	 * Just get the metadata. A property object interface should suffice.
 	 * @param id
 	 * @return

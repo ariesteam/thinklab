@@ -1,6 +1,5 @@
 package org.integratedmodelling.corescience.storage;
 
-import java.util.ArrayList;
 import java.util.BitSet;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
@@ -15,7 +14,6 @@ import org.integratedmodelling.corescience.context.ObservationContext;
 public class SwitchLayer<T> {
 
 	byte[] data = null;
-	ArrayList<T> switchers = new ArrayList<T>();
 	BitSet activation = null;
 	int size = 0;
 	ObservationContext context = null;
@@ -25,7 +23,7 @@ public class SwitchLayer<T> {
 	 * @param ctx
 	 */
 	public SwitchLayer(ObservationContext ctx) {
-		this(ctx.getMultiplicity(), null);
+		this(ctx.getMultiplicity());
 		this.context = ctx;
 	}
 	
@@ -37,21 +35,21 @@ public class SwitchLayer<T> {
 		return size;
 	}
 	
-	public SwitchLayer(int size, T[] switchers) {
+	public void set(int index, byte b) {
+		data[index] = b;
+		activation.set(index);
+	}
+	
+	public SwitchLayer(int size) {
 		this.size = size;
 		data = new byte[size];
-		
-		if (switchers != null)
-			for (T sw : switchers)
-				this.switchers.add(sw);
-		
 		activation = new BitSet(size);
 	}
 	
-	public T get(int i) {
-		return data[i] == 0 ? null : switchers.get(data[i]-1);
+	public T get(int i, T[] switchers) {
+		return data[i] == 0 ? null : switchers[data[i]-1];
 	}
-	
+		
 	public boolean isCovered() {
 		return activation.cardinality() == size;
 	}

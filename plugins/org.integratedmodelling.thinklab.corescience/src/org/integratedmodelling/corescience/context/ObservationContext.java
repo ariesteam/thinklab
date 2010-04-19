@@ -439,22 +439,31 @@ public class ObservationContext implements IObservationContext {
 			/*
 			 * get the conditionals and the context observation if any exist
 			 */
-			ArrayList<IObservation> cres = new ArrayList<IObservation>();
-			for (IObservation cont : obs.getContingencies()) {
-
+			IObservation[] cres = new IObservation[obs.getDependencies().length];
+			for (IObservation cont : obs.getDependencies()) {
+				
 				/*
-				 * TODO pass conditional for switching and context states
+				 * FIXME this will compute each contingency even where there is no
+				 * need to. We should precompute the switch layer and pass it to the
+				 * compiler along with the contingency order, so the inappropriate states 
+				 * can be skipped. This may need to be more intelligent as some obs 
+				 * may need their neighbourhood anyway, or such.
 				 */
 				ObservationContext co = new ObservationContext(cont, originalContext);
 				Contextualizer ctx = new Compiler().compile(co);
 				IInstance cinst = ctx.run(session);
-				cres.add(ObservationFactory.getObservation(cinst));
+				// set in order of declaration in the model, so the pairing with their
+				// conditionals is right and the order is respected
+				cres[((Observation)cont).contingencyOrder] = 
+						ObservationFactory.getObservation(cinst);
 			}
 			
 			/*
 			 * swap obs with the result of merging all switched states
 			 */
-			this.observation = ((ContingencyMerger)obs).mergeResults(cres);
+			Polylist  merged = ((ContingencyMerger)obs).mergeResults(cres, this);
+			IInstance imerge = session.createObject(merged);
+			this.observation = ObservationFactory.getObservation(imerge);
 			
 			/*
 			 * reset all dependencies to (possibly) new ones, with switching states and 

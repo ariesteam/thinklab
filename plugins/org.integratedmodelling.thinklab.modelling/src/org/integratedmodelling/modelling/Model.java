@@ -296,10 +296,6 @@ public class Model extends DefaultAbstractModel {
 		 * if the set has 1+ elements, add those as contingencies; otherwise 
 		 * just add the original contingencies.
 		 */
-		// ugly hack
-		while (ret instanceof ModelProxy) {
-			
-		}
 		if (toAdd.size() > 0) {
 			for (IModel m : toAdd)
 				((Model)ret).defModel(m,null);
