@@ -2,15 +2,22 @@ package org.integratedmodelling.modelling;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
+import org.integratedmodelling.corescience.context.ContextMapper;
+import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
@@ -18,9 +25,12 @@ import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.IFn;
+import clojure.lang.Keyword;
+import clojure.lang.PersistentArrayMap;
 
 /**
  * The query() operation on a IModel produces one of these objects, which acts as a lazy generator of result
@@ -203,10 +213,36 @@ public class ModelResult implements IQueryResult  {
 				
 				IInstance result = ObservationFactory.
 					contextualize(cobs, _session, contextExt.toArray(new Topology[contextExt.size()]));
+				IObservation contextObs = ObservationFactory.getObservation(result);
+								
+				if (hasStateless) {
 
-				ret = ObservationFactory.addReflectedField(ret, "contextObs", 
-						ObservationFactory.getObservation(result));
-				ret = ObservationFactory.addReflectedField(ret, "contextExt", contextExt);
+					ArrayList<Pair<Keyword, IState>> cdata = new ArrayList<Pair<Keyword,IState>>();
+					
+					for (Entry<IConcept, IState> ee : ObservationFactory.getStateMap(
+							contextObs).entrySet()) {
+
+						String id = ee.getKey().getLocalName();
+						IModel mo = (IModel) ee.getValue().getMetadata().get(
+								Metadata.DEFINING_MODEL);
+						if (mo != null) {
+							id = mo.getId();
+						}
+
+						cdata.add(new Pair<Keyword, IState>(
+								Keyword.intern(null, id),
+								ee.getValue()));
+					}
+
+					/*
+					 * the observation needs these to compute the switch layer, but we don't
+					 * want to build another context so we don't do it here.
+					 */
+					if (cdata.size() > 0) {
+						ret = ObservationFactory.addReflectedField(ret, "contextStates", cdata);
+					}
+
+				}
 			}
 					
 		} else {

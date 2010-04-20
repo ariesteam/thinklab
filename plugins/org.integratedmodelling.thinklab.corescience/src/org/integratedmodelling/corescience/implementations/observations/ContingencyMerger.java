@@ -1,8 +1,6 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.ObservationFactory;
@@ -12,15 +10,12 @@ import org.integratedmodelling.corescience.implementations.datasources.Switching
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
-import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
-import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
@@ -48,10 +43,9 @@ import clojure.lang.PersistentArrayMap;
 public class ContingencyMerger extends Observation {
 
 	// reflected 
-	public ArrayList<Topology> contextExt = null;
-	public IObservation        contextObs = null;
 	public ArrayList<IFn>      conditionals = null;
-
+	public ArrayList<Pair<Keyword, IState>> contextStates = null;
+	
 	class OSource {
 		IInstance observable;
 		ArrayList<IState> states = new ArrayList<IState>();
@@ -68,62 +62,47 @@ public class ContingencyMerger extends Observation {
 	public Polylist mergeResults(IObservation[] cResults, IObservationContext context) throws ThinklabException {
 		
 		SwitchLayer<ContextMapper> switchLayer = null;
-		if (contextObs != null) {
-
-			switchLayer = new SwitchLayer<ContextMapper>(
-					(ObservationContext) context);
+		
+		if (contextStates != null) {
 
 			ArrayList<Pair<Keyword, ContextMapper>> cdata = 
 				new ArrayList<Pair<Keyword, ContextMapper>>();
-			for (Entry<IConcept, IState> ee : ObservationFactory.getStateMap(
-					contextObs).entrySet()) {
 
-				String id = ee.getKey().getLocalName();
-				IModel mo = (IModel) ee.getValue().getMetadata().get(
-						Metadata.DEFINING_MODEL);
-				if (mo != null) {
-					id = mo.getId();
-				}
-
-				cdata.add(new Pair<Keyword, ContextMapper>(
-						Keyword.intern(null, id),
-						new ContextMapper(ee.getValue(), context)));
+			for (Pair<Keyword, IState> kc : contextStates) {
+				cdata.add(new Pair<Keyword,ContextMapper>(
+						kc.getFirst(), 
+						new ContextMapper(kc.getSecond(), context)));
 			}
 
-			/*
-			 * create switch layer to select what obs to merge where, based
-			 * on either results of conditionals or having state there. This is
-			 * indexed by the main contingency, but will be used to merge their
-			 * common dependencies across the whole hierarchy.
-			 */
-			for (int i = 0; i < context.getMultiplicity(); i++) {
+			switchLayer = new SwitchLayer<ContextMapper>((ObservationContext) context);
 
+			for (int i = 0; i < context.getMultiplicity(); i++) {
 				for (int st = 0; st < cResults.length; st++) {
 
-					boolean ok = true; // if no conditional, it's true, order matters
+					boolean ok = true; // if no conditional, it's true, order
+										// matters
 
 					if (conditionals != null && conditionals.get(st) != null) {
 
 						/*
 						 * build parameter map
 						 */
-						PersistentArrayMap pmap = new PersistentArrayMap(new Object[]{});
+						PersistentArrayMap pmap = new PersistentArrayMap(
+								new Object[] {});
 						for (Pair<Keyword, ContextMapper> p : cdata) {
-							pmap = (PersistentArrayMap) 
-								pmap.assoc(
-										p.getFirst(),
-										p.getSecond().getValue(i, null));
+							pmap = (PersistentArrayMap) pmap.assoc(
+									p.getFirst(), p.getSecond().getValue(i,
+											null));
 						}
-						
+
 						/*
 						 * eval conditionals or check for non-null val until one
 						 * of the states matches
 						 */
 						try {
-							ok = (Boolean)conditionals.get(st).invoke(pmap);
+							ok = (Boolean) conditionals.get(st).invoke(pmap);
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							throw new ThinklabValidationException(e);
 						}
 					}
 					/*
@@ -136,6 +115,7 @@ public class ContingencyMerger extends Observation {
 				}
 			}
 		}
+		
 		/*
 		 * determine the appropriate observables for the merged states and establish a merge
 		 * ordering. We use a list where each element is a pair, the first being the 

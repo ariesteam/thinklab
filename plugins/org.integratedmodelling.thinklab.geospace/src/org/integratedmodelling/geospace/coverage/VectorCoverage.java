@@ -147,8 +147,6 @@ public class VectorCoverage implements ICoverage {
 		this.valueDefault = valueDefault;
 		this.filterExpression = filterExpression;
 		
-		if (filterExpression != null)
-			throw new ThinklabUnimplementedFeatureException("TODO - implement filters in this constructor!");
 		if (validate)
 			validateFeatures();
 		

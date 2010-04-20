@@ -174,10 +174,7 @@ public class CoverageFactory {
 
 					System.out.println("reading ArcGrid " + url);
 					
-					ArcGridReader reader = 
-						new ArcGridReader(url, 
-								new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
-
+					ArcGridReader reader = new ArcGridReader(url, null);
 					coverage = (GridCoverage2D)reader.read(null);
 					
 					

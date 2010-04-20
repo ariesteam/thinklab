@@ -128,7 +128,7 @@ public class Geospace extends ThinklabPlugin  {
 	public static final String GRID_CLASSIFIER = "geospace:GridClassifier";
 	public static final String CLASSIFIED_GRID = "geospace:ClassifiedGrid";
 	public static final String GRID_CLASSIFICATION_MODEL = "geospace:GridClassification";
-	public static final Object HAS_FILTER_PROPERTY = "geospace:hasFilter";	
+	public static final String HAS_FILTER_PROPERTY = "geospace:hasFilter";	
 
 		
 	// the projection to use if we need meters

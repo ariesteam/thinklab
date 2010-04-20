@@ -65,6 +65,9 @@ public class WFSCoverageDataSource extends VectorCoverageDataSource {
 		attr = i.get("geospace:hasValueDefault");
 		if (attr != null)
 			p.put(CoverageFactory.VALUE_DEFAULT_PROPERTY, attr.toString());
+		attr = i.get(Geospace.HAS_FILTER_PROPERTY);
+		if (attr != null)
+			p.put(CoverageFactory.CQL_FILTER_PROPERTY, attr.toString());
 		
 		URL url;
 		try {
@@ -79,8 +82,7 @@ public class WFSCoverageDataSource extends VectorCoverageDataSource {
 			throw new ThinklabIOException(e);
 		}
 		
-		this.coverage = 
-			CoverageFactory.requireCoverage(url, p);
+		this.coverage = CoverageFactory.requireCoverage(url, p);
 		this.coverage.setName(covId);
 		
 	}

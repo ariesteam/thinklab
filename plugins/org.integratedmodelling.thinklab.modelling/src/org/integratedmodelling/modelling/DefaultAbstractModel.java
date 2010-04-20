@@ -592,40 +592,10 @@ public abstract class DefaultAbstractModel implements IModel {
 		
 		return ret;
 	}
-	
-
-	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IConcept getCompatibleObservationType(ISession session) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IModel getConfigurableClone() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return getConfigurableClone();
 	}
-
-	@Override
-	public Polylist conceptualize() throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
-	
-
 
 }
