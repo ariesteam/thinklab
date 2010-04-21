@@ -66,6 +66,7 @@ public class PostgisGazetteer implements IGazetteer {
 	String[] createStatements = {
 			// TODO add metadata table as ugly id/key/value container
 	};
+	private int priority = 128;
 	
 	class GazetteerResult implements IQueryResult {
 
@@ -190,6 +191,9 @@ public class PostgisGazetteer implements IGazetteer {
 		 */
 		String ifl = _additionalProperties.getProperty(INDEXED_FIELDS_PROPERTY);
 						
+		this.priority  = 
+			Integer.parseInt(properties.getProperty(PRIORITY_PROPERTY, "128").trim());
+		
 		if (ifl != null) {
 			String[] ps = ifl.split(",");
 			for (String f : ps) {
@@ -447,6 +451,11 @@ public class PostgisGazetteer implements IGazetteer {
 	public IQueryResult query(IQuery q, String[] metadata, int offset,
 			int maxResults) throws ThinklabException {
 		return new GazetteerResult((ResultContainer) searchEngine.query(q, metadata, offset, maxResults));
+	}
+
+	@Override
+	public int getPriority() {
+		return this.priority;
 	}
 	
 }

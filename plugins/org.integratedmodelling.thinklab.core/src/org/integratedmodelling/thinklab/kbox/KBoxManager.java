@@ -108,6 +108,11 @@ public class KBoxManager implements IKBox {
      */
     HashMap<String, IKBox> kBoxes = new HashMap<String, IKBox>();
 	
+    @Override
+    public String toString() {
+    	return "[global kbox: " + kBoxes.size() + " sources online]";
+    }
+    
 	/**
 	 * Properties starting with this prefix declare a metadata field in
 	 * their name (after the prefix) and its semantic type. Plugins can

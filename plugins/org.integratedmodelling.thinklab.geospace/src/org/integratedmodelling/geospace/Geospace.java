@@ -38,7 +38,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
@@ -454,7 +456,20 @@ public class Geospace extends ThinklabPlugin  {
 		MultipleQueryResult ret =
 			new MultipleQueryResult(new QueryString(name));
 		
-		for (IGazetteer g : gazetteers.values()) {
+		// sort them every time, we're not going to have a million of these.
+		IGazetteer[] gazz = new IGazetteer[gazetteers.size()];
+		int i = 0;
+		for (IGazetteer g : gazetteers.values())
+			gazz[i++] = g;
+		
+		Arrays.sort(gazz, new Comparator<IGazetteer>() {
+			@Override
+			public int compare(IGazetteer o1, IGazetteer o2) {
+				return o1.getPriority() - o2.getPriority();
+			}
+		});
+		
+		for (IGazetteer g : gazz) {
 			ret.add(g.query(g.parseQuery(name)));
 		}
 		

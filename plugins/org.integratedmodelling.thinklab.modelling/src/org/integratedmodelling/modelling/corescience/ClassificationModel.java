@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
+import org.integratedmodelling.modelling.DefaultStatefulAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -36,6 +38,17 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	ArrayList<IConcept> concepts = new ArrayList<IConcept>();
 	ArrayList<String> conceptIds = new ArrayList<String>();
 	IConcept state = null;
+	private IConcept stateType;
+
+	@Override
+	protected void copy(DefaultStatefulAbstractModel model) {
+		super.copy(model);
+		classifiers = ((ClassificationModel)model).classifiers;
+		concepts = ((ClassificationModel)model).concepts;
+		conceptIds = ((ClassificationModel)model).conceptIds;
+		state = ((ClassificationModel)model).state;
+		stateType = ((ClassificationModel)model).stateType;
+	}
 
 	public ClassificationModel() {
 		this.metadata.put(Metadata.CONTINUOUS, Boolean.FALSE);
@@ -217,13 +230,16 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	public IModel getConfigurableClone() {
 		ClassificationModel ret = new ClassificationModel();
 		ret.copy(this);
-		// we can share these
-		ret.classifiers = this.classifiers;
-		ret.conceptIds = this.conceptIds;
-		ret.concepts = this.concepts;
 		return ret;
 	}
 
+	public IConcept getStateType() {
+		if (this.stateType == null) {
+			stateType = KnowledgeManager.get().getLeastGeneralCommonConcept(concepts);
+		}
+		return this.stateType;
+	}
+	
 	@Override
 	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException {
 
@@ -285,4 +301,20 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		}
 	}
 
+	@Override
+	protected IModel validateSubstitutionModel(IModel m) {
+		
+		IModel ret = null;
+		
+		if (m instanceof ClassificationModel && 
+				((ClassificationModel)m).getStateType().equals(getStateType())) {
+			// TODO not sure this check is robust enough.
+			try {
+				ret = (IModel) ((DefaultAbstractModel)m).clone();
+			} catch (CloneNotSupportedException e) {
+			}
+		}
+		
+		return ret;
+	}
 }

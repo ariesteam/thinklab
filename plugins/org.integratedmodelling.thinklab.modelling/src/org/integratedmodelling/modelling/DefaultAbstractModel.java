@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -28,6 +29,7 @@ import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.owlapi.Session;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.IFn;
@@ -268,6 +270,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		whenClause = model.whenClause;
 		state = model.state;
 		mediatesExternal = model.mediatesExternal;
+		distribution = model.distribution;
 	}
 
 	/**
@@ -556,20 +559,43 @@ public abstract class DefaultAbstractModel implements IModel {
 			
 				IInstance im = session.createObject(((DefaultAbstractModel)m).observableSpecs);
 				if (im.isConformant(match, null)) {
-					try {
-						return (IModel) ((DefaultAbstractModel)m).clone();
-					} catch (CloneNotSupportedException e) {
-						// no
-					}
+					/*
+					 * use the return value of a model function that 
+					 * accepts/rejects/mediates the model, if null don't substitute
+					 * and continue.
+					 */
+					IModel mo = validateSubstitutionModel(m);
+					if (mo != null)
+						return mo;
 				}
+			}
+		} else {
+
+			/*
+			 * Substitute the contingencies. They should be substituted in toto if
+			 * the observable matches. 
+			 * 
+			 * FIXME We just should not substitute two different contingencies
+			 * with the same model, which is possible right now.
+			 */
+			for (IModel m : ((Model)this).models) {
+
+				IModel con = ((DefaultAbstractModel)m).applyScenarioInternal(scenario, session);
+				try {
+					if (ret == null)
+						ret = (Model) this.clone();
+				} catch (CloneNotSupportedException e) {
+				}
+				((Model)ret).defModel(con == null ? m : con,  null);
 			}
 		}
 		
 		/*
-		 * clone me and add the applyScenarios of the dependents as dependents
+		 * clone me if necessary and add the applyScenarios of the dependents as dependents
 		 */
 		try {
-			ret = (DefaultAbstractModel) this.clone();
+			if (ret == null)
+				ret = (DefaultAbstractModel) this.clone();
 		} catch (CloneNotSupportedException e) {
 			// yeah, right		
 		}
@@ -593,9 +619,56 @@ public abstract class DefaultAbstractModel implements IModel {
 		return ret;
 	}
 
+	/**
+	 * This one gets called when a scenario contains a model that has a conformant
+	 * observable as us. In that case, the model is passed and we are expected to
+	 * return a clone or a wrapper so that it expresses our same semantics. E.g., any
+	 * passed measurement must be wrapped so that its units are the same as ours. If
+	 * the model is not compatible, return null.
+	 * 
+	 * @param m
+	 * @return
+	 */
+	protected IModel validateSubstitutionModel(IModel m) {
+		return null;
+	}
+
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
+	public Object clone() throws CloneNotSupportedException {
 		return getConfigurableClone();
+	}
+	
+	public void dump(PrintStream out) {
+		dumpInternal(out, 0);
+		
+	}
+
+	protected void dumpInternal(PrintStream out, int i) {
+		String prefix = MiscUtilities.spaces(i);
+		out.println(prefix+this+" (" + getId() + ")");
+		out.println(prefix+this.metadata);
+		
+		if (mediated != null) {
+			out.println(prefix + "Mediates:");
+			((DefaultAbstractModel)mediated).dumpInternal(out, i+3);
+		}
+		
+		if (dependents.size() > 0) {
+			out.println(prefix + "Depends on:");
+			for (IModel m : dependents)
+				((DefaultAbstractModel)m).dumpInternal(out, i+3);
+
+		}
+
+		if (this instanceof Model && ((Model)this).models.size() > 0) {
+			out.println(prefix + "Contingent on:");
+			for (IModel m : ((Model)this).models)
+				((DefaultAbstractModel)m).dumpInternal(out, i+3);
+		}
+	}
+
+	public void setMediatedModel(IModel m) {
+		this.mediated = m;
 	}
 
 }

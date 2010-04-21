@@ -16,6 +16,7 @@ import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.idv.IDV;
+import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.modelling.ModellingPlugin;
@@ -141,9 +142,17 @@ public class ModelCommand implements ICommandHandler {
 		}
 		
 		if (command.hasOption("scenario")) {
+
+			// remove
+			((DefaultAbstractModel)model).dump(System.out);
+
+			
 			String sc = command.getOptionAsString("scenario");
 			Scenario scenario = ModelFactory.get().requireScenario(sc);
 			model = (Model) model.applyScenario(scenario);
+			
+			// remove
+			((DefaultAbstractModel)model).dump(System.out);
 		}
 		
 		IQueryResult r = ModelFactory.get().run(model, kbox, session, listeners, 

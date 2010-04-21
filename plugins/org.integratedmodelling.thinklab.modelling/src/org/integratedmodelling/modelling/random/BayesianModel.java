@@ -32,6 +32,15 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 	ArrayList<IConcept> keepers = new ArrayList<IConcept>();
 	
 	@Override
+	protected void copy(DefaultAbstractModel model) {
+		super.copy(model);
+		algorithm = ((BayesianModel)model).algorithm;
+		keeperIds = ((BayesianModel)model).keeperIds;
+		keepers = ((BayesianModel)model).keepers;
+		source = ((BayesianModel)model).source;
+	}
+
+	@Override
 	public void applyClause(String keyword, Object argument)
 			throws ThinklabException {
 		
@@ -80,10 +89,6 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 		
 		BayesianModel ret = new BayesianModel();
 		ret.copy(this);
-		ret.algorithm = this.algorithm;
-		ret.keeperIds = this.keeperIds;
-		ret.keepers = this.keepers;
-		ret.source = this.source;
 		return ret;
 	}
 

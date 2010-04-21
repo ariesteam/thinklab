@@ -144,7 +144,7 @@
 	 a classified observation. If this returns true, (get-data) will return the probability of the true
 	 case."
 	[datasource]
-	(not (nil? (.getMetadata datasource "truecase"))))
+	(not (nil? (.get (.getMetadata datasource) "truecase"))))
 
 (defn probabilistic?
 	"True if the given datasource is a discrete distribution. If so, uncertainty info can be
@@ -155,7 +155,7 @@
 (defn get-uncertainty
 	"Return uncertainty information from a datasource as an array of doubles."
 	[datasource]
-	(.getMetadata datasource "uncertainty"))
+	(.get (.getMetadata datasource) "uncertainty"))
 	
 (defn get-data
 	"Return numbers from a datasource as an array of doubles."
@@ -183,10 +183,10 @@
 	discretized categories in the passed probabilistic datasource. Throws an exception if the 
 	datasource is not encoding a continuous distribution."
 	[datasource]
-	(.getMetadata datasource "continuous_dist_breakpoints"))
+	(.get (.getMetadata datasource) "continuous_dist_breakpoints"))
 	
 (defn encodes-continuous-distribution? 
 	"True if the given datasource is the discrete encoding of a continuous probability distribution, 
  	 meaning that get-dist-breakpoints will not throw an exception when called."
 	[datasource]
-	(not (nil? (.getMetadata datasource "continuous_dist_breakpoints"))))
+	(not (nil? (.get (.getMetadata datasource) "continuous_dist_breakpoints"))))

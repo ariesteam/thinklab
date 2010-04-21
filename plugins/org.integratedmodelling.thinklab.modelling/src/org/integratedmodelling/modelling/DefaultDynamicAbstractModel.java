@@ -1,7 +1,13 @@
 package org.integratedmodelling.modelling;
 
 
+import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.IFn;
 
@@ -44,5 +50,51 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 	public boolean isResolved() {
 		return super.isResolved() || this.dynSpecs != null;
 	}
+
+	@Override
+	protected void copy(DefaultStatefulAbstractModel model) {
+		super.copy(model);
+		lang = ((DefaultDynamicAbstractModel)model).lang;
+		dynSpecs = ((DefaultDynamicAbstractModel)model).dynSpecs;
+	}
+
+	@Override
+	protected void validateMediatedModel(IModel model)
+			throws ThinklabValidationException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void validateSemantics(ISession session) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Polylist buildDefinition(IKBox kbox, ISession session)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getCompatibleObservationType(ISession session) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IModel getConfigurableClone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Polylist conceptualize() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	
 }

@@ -237,7 +237,7 @@ public class Model extends DefaultAbstractModel {
 	}
 
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
+	public Object clone() throws CloneNotSupportedException {
 		/*
 		 * clone() creates an actual model, not a proxy, without any contingencies or
 		 * context model. This is meant for applyScenario to use, and yes, it's an
@@ -255,57 +255,60 @@ public class Model extends DefaultAbstractModel {
 		throw new ThinklabInternalErrorException("SHIT! BUILDDEFINITION CALLED ON MODEL!");
 	}
 	
-	@Override
-	protected IModel applyScenarioInternal(Scenario scenario, Session session)
-			throws ThinklabException {
-
-		IModel ret = super.applyScenarioInternal(scenario, session);
-
-		/*
-		 * make a set of all distinct observables in our contingencies
-		 */
-		ArrayList<IInstance> obsi = new ArrayList<IInstance>();
-		for (IModel m : models) {
-			IInstance io = session.createObject(((DefaultAbstractModel)m).observableSpecs);
-			Constraint cl = new DefaultConformance().getConstraint(io);
-			boolean gotIt = false;
-			for (IInstance z : obsi) {
-				if (cl.match(z)) {
-					gotIt = true;
-					break;
-				}
-			}
-			if (!gotIt)
-				obsi.add(io);
-		}
-		
-		/*
-		 * create a set of all models in scenario that match the observables
-		 */
-		ArrayList<IModel> toAdd = new ArrayList<IModel>();
-		for (IInstance myc : obsi) {
-			Constraint cl = new DefaultConformance().getConstraint(myc);
-			for (IModel m : scenario.models) {
-				IInstance io = session.createObject(((DefaultAbstractModel)m).observableSpecs);
-				if (cl.match(io))
-					toAdd.add(m);
-			}
-		}
-		
-		/*
-		 * if the set has 1+ elements, add those as contingencies; otherwise 
-		 * just add the original contingencies.
-		 */
-		if (toAdd.size() > 0) {
-			for (IModel m : toAdd)
-				((Model)ret).defModel(m,null);
-		} else {
-			for (IModel m : models)
-				((Model)ret).defModel(m,null);			
-		}
-		
-		return ret;
-	}
+// TODO I suspect this logics is screwed up, but maybe there's some good hidden here. The default logics in
+// DefaultAbstractModel can be redundant.
+//
+//	@Override
+//	protected IModel applyScenarioInternal(Scenario scenario, Session session)
+//			throws ThinklabException {
+//
+//		IModel ret = super.applyScenarioInternal(scenario, session);
+//
+//		/*
+//		 * make a set of all distinct observables in our contingencies
+//		 */
+//		ArrayList<IInstance> obsi = new ArrayList<IInstance>();
+//		for (IModel m : models) {
+//			IInstance io = session.createObject(((DefaultAbstractModel)m).observableSpecs);
+//			Constraint cl = new DefaultConformance().getConstraint(io);
+//			boolean gotIt = false;
+//			for (IInstance z : obsi) {
+//				if (cl.match(z)) {
+//					gotIt = true;
+//					break;
+//				}
+//			}
+//			if (!gotIt)
+//				obsi.add(io);
+//		}
+//		
+//		/*
+//		 * create a set of all models in scenario that match the observables
+//		 */
+//		ArrayList<IModel> toAdd = new ArrayList<IModel>();
+//		for (IInstance myc : obsi) {
+//			Constraint cl = new DefaultConformance().getConstraint(myc);
+//			for (IModel m : scenario.models) {
+//				IInstance io = session.createObject(((DefaultAbstractModel)m).observableSpecs);
+//				if (cl.match(io))
+//					toAdd.add(m);
+//			}
+//		}
+//		
+//		/*
+//		 * if the set has 1+ elements, add those as contingencies; otherwise 
+//		 * just add the original contingencies.
+//		 */
+//		if (toAdd.size() > 0) {
+//			for (IModel m : toAdd)
+//				((Model)ret).defModel(m,null);
+//		} else {
+//			for (IModel m : models)
+//				((Model)ret).defModel(m,null);			
+//		}
+//		
+//		return ret;
+//	}
 	
 	
 	

@@ -2,7 +2,9 @@ package org.integratedmodelling.modelling.corescience;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
+import org.integratedmodelling.modelling.DefaultStatefulAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -14,6 +16,14 @@ import org.integratedmodelling.utils.Polylist;
 public class RankingModel extends DefaultDynamicAbstractModel {
 
 	Object unitSpecs = null;
+	// TODO scale stuff
+	
+	@Override
+	protected void copy(DefaultStatefulAbstractModel model) {
+		super.copy(model);
+		unitSpecs = ((RankingModel)model).unitSpecs;
+		// TODO scale stuff
+	}
 	
 	public RankingModel() {
 		this.metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
@@ -99,6 +109,22 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 	protected void validateSemantics(ISession session) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	protected IModel validateSubstitutionModel(IModel m) {
+		
+		IModel ret = null;
+		
+		if (m instanceof RankingModel) {
+			// FIXME mediate to substitute ranks and scale if necessary.
+			try {
+				ret = (IModel) ((DefaultAbstractModel)m).clone();
+				} catch (CloneNotSupportedException e) {
+			}
+		}
+		
+		return ret;
 	}
 
 }

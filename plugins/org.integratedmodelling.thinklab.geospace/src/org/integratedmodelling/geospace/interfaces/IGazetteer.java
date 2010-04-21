@@ -24,6 +24,7 @@ import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
 public interface IGazetteer extends IQueriable {
 
 	public static final String SHAPE_FIELD = "shape";
+	public static final String PRIORITY_PROPERTY = "gazetteer.priority";
 	
 	/**
 	 * Lookup a name in the gazetteer.
@@ -73,4 +74,14 @@ public interface IGazetteer extends IQueriable {
 	 */
 	public abstract void initialize(Properties properties) throws ThinklabException;
 
+	/**
+	 * Gazetteers can specify a priority (0 = highest) so that they are consulted sooner
+	 * or later when a name is looked up. A good value for a database-backed, multiple-value
+	 * database should be 128 or so - 0 should be reserved for local, user-defined gazetteers
+	 * that have few unambiguous results.
+	 * 
+	 * @return
+	 */
+	public abstract int getPriority();
+	
 }

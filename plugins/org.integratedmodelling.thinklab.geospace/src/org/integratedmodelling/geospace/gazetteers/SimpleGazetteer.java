@@ -42,6 +42,7 @@ public class SimpleGazetteer implements IGazetteer {
 	public static final String ENTRY_PROPERTY_PREFIX = "geospace.gazetteer.entry.";
 	
 	HashMap<String, ShapeValue> locations = new HashMap<String, ShapeValue>();
+	private int priority = 0;
 	
 	class SingleResult implements IQueryResult {
 
@@ -183,6 +184,8 @@ public class SimpleGazetteer implements IGazetteer {
 				ShapeValue shape = 
 					new ShapeValue(properties.getProperty(prop), Geospace.get().getStraightGeoCRS());
 				locations.put(loc, shape);
+			} else if (prop.equals(PRIORITY_PROPERTY)) {
+				this.priority = Integer.parseInt(properties.getProperty(prop).trim());
 			}
 		}
 	}
@@ -208,6 +211,11 @@ public class SimpleGazetteer implements IGazetteer {
 	public IQueryResult query(IQuery q, String[] metadata, int offset,
 			int maxResults) throws ThinklabException {
 		return query(q);
+	}
+
+	@Override
+	public int getPriority() {
+		return this.priority;
 	}
 
 

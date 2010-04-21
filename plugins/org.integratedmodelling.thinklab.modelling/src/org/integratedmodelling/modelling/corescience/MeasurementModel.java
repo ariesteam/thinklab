@@ -2,7 +2,9 @@ package org.integratedmodelling.modelling.corescience;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
+import org.integratedmodelling.modelling.DefaultStatefulAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -14,6 +16,12 @@ import org.integratedmodelling.utils.Polylist;
 public class MeasurementModel extends DefaultDynamicAbstractModel {
 
 	String unitSpecs = null;
+
+	@Override
+	protected void copy(DefaultStatefulAbstractModel model) {
+		super.copy(model);
+		unitSpecs = ((MeasurementModel)model).unitSpecs;
+	}
 
 	@Override
 	public String toString() {
@@ -104,4 +112,30 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 
 	}
 
+	@Override
+	protected IModel validateSubstitutionModel(IModel m) {
+		
+		IModel ret = null;
+		
+		if (m instanceof MeasurementModel) {
+			// FIXME ensure substitution of units. This is a very dumb way to do it.
+			if (!((MeasurementModel)m).unitSpecs.equals(this.unitSpecs)) {
+				
+				try {
+					ret = (IModel) this.clone();
+					((DefaultAbstractModel)ret).setMediatedModel(m);
+				} catch (CloneNotSupportedException e) {
+				}
+				
+			} else {
+				try {
+					ret = (IModel) ((DefaultAbstractModel)m).clone();
+				} catch (CloneNotSupportedException e) {
+				}
+			}
+		}
+		
+		return ret;
+	}
+	
 }
