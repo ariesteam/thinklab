@@ -259,6 +259,7 @@ public class Ranking extends Observation implements MediatingObservation {
 
 		if (iva != null) {
 			value = Double.parseDouble(iva.toString());
+			isConstant = true;
 		}
 		
 		// TODO add min-max etc

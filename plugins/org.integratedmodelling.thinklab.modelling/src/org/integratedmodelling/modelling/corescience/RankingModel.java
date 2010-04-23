@@ -87,6 +87,9 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 				(this.distribution != null ? 
 					Polylist.list(":distribution", this.distribution) : 
 					null),
+				(this.state != null ? 
+					Polylist.list(CoreScience.HAS_VALUE, this.state) : 
+					null), 
 				/*
 				 * TODO add scale attributes
 				 */

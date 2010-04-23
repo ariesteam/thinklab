@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.corescience.metadata.Metadata;
@@ -197,6 +198,23 @@ public abstract class DefaultAbstractModel implements IModel {
 		return entityAgent;
 	}
 
+	/**
+	 * Pass a precontextualized state and get a model which is exactly
+	 * like us, but will only produce one observation with a predefined
+	 * state, only valid in the context that the state was generated for.
+	 * Used to build scenarios based on precomputed information.
+	 * 
+	 * @param state
+	 * @return
+	 */
+	public IModel getPrecontextualizedModel(IState state) {
+		try {
+			return new PrecontextualizedModelProxy((IModel) this.clone(), state);
+		} catch (CloneNotSupportedException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+	}
+	
 	/**
 	 * This is called for each model defined for us in a :context clause, after
 	 * the dependent has been completely specified.

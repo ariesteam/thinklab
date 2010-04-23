@@ -22,9 +22,9 @@ import org.integratedmodelling.utils.Polylist;
  */
 public class ModelProxy extends DefaultAbstractModel {
 
-	Model model = null;
+	IModel model = null;
 	
-	public ModelProxy(Model model) {
+	public ModelProxy(IModel model) {
 		this.model = model;
 	}
 
@@ -69,7 +69,7 @@ public class ModelProxy extends DefaultAbstractModel {
 			IntelligentMap<IConformance> cp, ArrayList<Topology> extents,
 			boolean acceptEmpty)
 			throws ThinklabException {
-		return model.observeInternal(kbox, session, cp, extents, acceptEmpty);
+		return ((DefaultAbstractModel)model).observeInternal(kbox, session, cp, extents, acceptEmpty);
 	}
 	
 	@Override
@@ -79,11 +79,11 @@ public class ModelProxy extends DefaultAbstractModel {
 
 	@Override
 	protected void validateSemantics(ISession session) throws ThinklabException {
-		model.validateSemantics(session);
+		((DefaultAbstractModel)model).validateSemantics(session);
 	}
 	
 	@Override
 	public void validateConcepts(ISession session) throws ThinklabException {
-		model.validateConcepts(session);
+		((DefaultAbstractModel)model).validateConcepts(session);
 	}
 }

@@ -41,8 +41,6 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.owlapi.Session;
-import org.integratedmodelling.utils.Escape;
-import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.boot.Application;
 import org.java.plugin.boot.ApplicationPlugin;
 import org.java.plugin.util.ExtendedProperties;

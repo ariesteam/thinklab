@@ -31,4 +31,7 @@ public abstract class DefaultStatefulAbstractModel extends DefaultAbstractModel 
 		state = model.state;		
 	}
 
+	public Object getState() {
+		return this.state;
+	}
 }

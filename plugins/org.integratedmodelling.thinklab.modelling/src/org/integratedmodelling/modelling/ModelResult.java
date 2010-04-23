@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import org.integratedmodelling.corescience.context.ContextMapper;
-import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
-import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -30,7 +27,6 @@ import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.IFn;
 import clojure.lang.Keyword;
-import clojure.lang.PersistentArrayMap;
 
 /**
  * The query() operation on a IModel produces one of these objects, which acts as a lazy generator of result
@@ -44,13 +40,13 @@ public class ModelResult implements IQueryResult  {
 	private static final long serialVersionUID = 5204113167121644188L;
 	
 	// we need these later
-	IKBox _kbox;
-	ISession _session;
+	protected IKBox _kbox;
+	protected ISession _session;
 	
 	/*
 	 * each node contains the model, which is used to build each observation
 	 */
-	IModel _model = null;
+	protected IModel _model = null;
 	
 	/*
 	 * we may have been generated from a single list representing a cached result;
