@@ -117,6 +117,7 @@ public class Model extends DefaultAbstractModel {
 		
 		return ret;
 	}
+	
 	public void setDescription(String s) {
 		this.description = s;
 	}

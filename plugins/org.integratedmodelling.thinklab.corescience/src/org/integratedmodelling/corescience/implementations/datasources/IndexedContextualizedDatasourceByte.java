@@ -136,10 +136,8 @@ public class IndexedContextualizedDatasourceByte<T>
 	}
 
 	@Override
-	public void preProcess(IObservationContext context)
+	public void preProcess(IObservationContext ctx)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

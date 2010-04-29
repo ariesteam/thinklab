@@ -1,6 +1,7 @@
 package org.integratedmodelling.modelling.visualization;
 
 import java.io.PrintStream;
+import java.text.NumberFormat;
 import java.util.Map;
 
 import org.integratedmodelling.modelling.ObservationFactory;
@@ -33,8 +34,8 @@ public class ObservationListing {
 		if (ObservationFactory.isRaster(observation)) {
 			rgrid = ObservationFactory.getRasterGrid(observation);
 			out.println("Spatially distributed on a " + 
-					rgrid.getRows() + " by " + rgrid.getColumns() + 
-					" raster grid");
+						rgrid.getRows() + " by " + rgrid.getColumns() + 
+						" raster grid");
 		}
 		
 		for (IConcept c : states.keySet()) {
@@ -83,8 +84,50 @@ public class ObservationListing {
 			}
 		}
 		
-		out.println("\tmin = " + min+ "; max = " + max + "; " + nans + " NaN values out of " + data.length);
-		
+		NumberFormat nf = NumberFormat.getInstance();
+		int ndivs = 10;
+		if (min != null && max != null) {
+
+			int[] bins = new int[ndivs + 1];
+			double step = (max - min) / ndivs;
+			for (int i = 0; i < data.length; i++) {
+				
+				if (Double.isNaN(data[i]))
+					bins[ndivs] ++;
+				else {
+					int bin = (int)(((data[i] - min) / (max - min)) * ndivs);
+					bins[bin] ++;
+				}
+			}
+			
+			int mx = bins[0];
+			for (int i = 1; i <= ndivs; i++) {
+				if (mx < bins[i])
+					mx = bins[i];
+			}
+						
+			for (int i = 0; i <= ndivs; i++) {
+
+				if (i < ndivs) {	
+					out.print(
+						"[" + 
+						nf.format(min + step*i) + "-" + 
+						nf.format(min + (step * (i+1))) +
+						"]: (" + 
+						bins[i] + ")\t"); 
+				} else {
+					out.print("no-data: (" + bins[i] + ")\t\t");
+				}
+				
+				int nstars = (int)((double)(bins[i])/(double)mx * 40.0);
+				for (int j = 0; j < nstars; j++)
+					out.print("*");
+				out.print("\n");
+			}
+		} else {	
+			out.println("Min = " + min+ "; max = " + max + "; " + nans + 
+						" no-data values out of " + data.length);
+		}
 	}
 	
 	
