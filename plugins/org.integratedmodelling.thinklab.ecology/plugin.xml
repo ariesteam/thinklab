@@ -45,5 +45,8 @@
 		<parameter id="url" value="infrastructure.owl"/>
 		<parameter id="concept-space" value="infrastructure"/>
 	</extension>
-	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="corine">
+		<parameter id="url" value="corine.owl"/>
+		<parameter id="concept-space" value="corine"/>
+	</extension>	
 </plugin>
