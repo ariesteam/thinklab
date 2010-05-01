@@ -194,7 +194,9 @@ public class Measurement extends Observation implements MediatingObservation {
 		 * working, but no big deal to add it.
 		 */
 		if (!observable.is(CoreScience.PHYSICAL_PROPERTY)) {
-			throw new ThinklabValidationException("measurements can only be of physical properties: " + observable);
+			throw new ThinklabValidationException(
+					"measurements can only be of physical properties: " + 
+						observable.getDirectType());
 		}
 
 		/*

@@ -48,5 +48,9 @@
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="corine">
 		<parameter id="url" value="corine.owl"/>
 		<parameter id="concept-space" value="corine"/>
+	</extension>
+		<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="mglulc">
+		<parameter id="url" value="mglulc.owl"/>
+		<parameter id="concept-space" value="mglulc"/>
 	</extension>	
 </plugin>
