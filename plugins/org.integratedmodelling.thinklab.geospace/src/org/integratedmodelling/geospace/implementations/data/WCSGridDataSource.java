@@ -38,6 +38,7 @@ import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.geospace.Geospace;
+import org.integratedmodelling.geospace.coverage.AbstractRasterCoverage;
 import org.integratedmodelling.geospace.coverage.WCSCoverage;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.transformations.Resample;
@@ -64,7 +65,7 @@ public class WCSGridDataSource extends RegularRasterGridDataSource {
 			p.put(WCSCoverage.WCS_FORMAT_PROPERTY, format.toString());
 		IValue nodata = i.get("geospace:hasNodataValue");
 		if (nodata != null)
-			p.put(WCSCoverage.WCS_NODATA_PROPERTY, nodata.toString());
+			p.put(AbstractRasterCoverage.NODATA_PROPERTY, nodata.toString());
 		
 		this.coverage = 
 			new WCSCoverage(i.get("geospace:hasCoverageId").toString(), p);

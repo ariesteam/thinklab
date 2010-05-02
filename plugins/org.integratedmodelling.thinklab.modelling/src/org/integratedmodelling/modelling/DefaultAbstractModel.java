@@ -222,11 +222,15 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * @param model
 	 */
 	public void addDependentModel(IModel model) {
-		dependents.add(model);
+		// null-tolerant so we can deal with the silly "functional comments" in clojure
+		if (model != null)
+			dependents.add(model);
 	}
 
 	public void addObservedModel(IModel model) {
-		observed.add(model);
+		// null-tolerant so we can deal with the silly "functional comments" in clojure
+		if (model != null)
+			observed.add(model);
 	}
 
 	/**

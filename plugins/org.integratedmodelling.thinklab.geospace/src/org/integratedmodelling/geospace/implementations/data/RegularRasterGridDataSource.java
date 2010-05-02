@@ -137,7 +137,7 @@ public class RegularRasterGridDataSource implements IDataSource<Object>, IInstan
 		try {
 			Object ret = coverage.getSubdivisionValue(index, gridExtent);
 			Double nd = coverage.getNodataValue();
-			if (nd != null && ((Double)ret).equals(nd)) {
+			if (nd != null && ret != null && (ret instanceof Double) && ((Double)ret).equals(nd)) {
 				ret = Double.NaN;
 			}
 			return ret;

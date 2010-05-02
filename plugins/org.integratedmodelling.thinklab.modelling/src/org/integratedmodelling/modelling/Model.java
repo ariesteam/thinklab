@@ -138,6 +138,10 @@ public class Model extends DefaultAbstractModel {
 	 */
 	public void defModel(IModel model, Map<?,?> metadata) {
 		
+		// null-tolerant so we can deal with the silly "functional comments" in clojure
+		if (model == null)
+			return;
+		
 		if (this.models == null) {
 			this.models = new ArrayList<IModel>();
 		}

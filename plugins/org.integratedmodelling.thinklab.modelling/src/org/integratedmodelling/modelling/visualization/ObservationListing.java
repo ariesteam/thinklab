@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.text.NumberFormat;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -45,19 +46,20 @@ public class ObservationListing {
 			/*
 			 * 
 			 */
-			out.println("Listing state of observable " + c + " (" + state + ")");
+			out.println(c);
 			
 			/*
 			 * list datasource
 			 */
 			if (verbose) {
-				// TODO
+				out.println(""+state);
 			}
 						
 			/*
 			 * compute histogram
 			 */
 			listHistogram(state, out);
+			out.println();
 			
 		}
 		
@@ -108,21 +110,25 @@ public class ObservationListing {
 						
 			for (int i = 0; i <= ndivs; i++) {
 
-				if (i < ndivs) {	
-					out.print(
+				if (i == 0 || i == ndivs)
+					out.println(StringUtils.repeat("-", 76));
+				
+				String udsc = 
+					i < ndivs ? 
 						"[" + 
-						nf.format(min + step*i) + "-" + 
-						nf.format(min + (step * (i+1))) +
-						"]: (" + 
-						bins[i] + ")\t"); 
-				} else {
-					out.print("no-data: (" + bins[i] + ")\t\t");
-				}
+							nf.format(min + step*i) + " " + 
+							nf.format(min + (step * (i+1))) +
+							"]: (" + 
+							bins[i] + ")" :
+						"no-data: (" + 
+							bins[i] + 
+							")";	
 				
 				int nstars = (int)((double)(bins[i])/(double)mx * 40.0);
-				for (int j = 0; j < nstars; j++)
-					out.print("*");
-				out.print("\n");
+				out.println(
+						StringUtils.rightPad(udsc, 35) +
+						"|" +
+						StringUtils.repeat("*", nstars));
 			}
 		} else {	
 			out.println("Min = " + min+ "; max = " + max + "; " + nans + 

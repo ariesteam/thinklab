@@ -21,11 +21,12 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.utils.Pair;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 public abstract class AbstractRasterCoverage implements ICoverage {
+
+	public static final String NODATA_PROPERTY = "raster.nodata";
 
 	protected GridCoverage2D coverage = null;
 	protected CoordinateReferenceSystem crs = null;
@@ -57,7 +58,7 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	
 	@Override
 	public Double getNodataValue() {
-		return this.noData == null ? null : this.noData[0];
+		return this.noData == null ? Double.NaN : this.noData[0];
 	}
 	
 	public void writeImage(File outfile, String format) throws ThinklabIOException {
@@ -126,11 +127,18 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 		
 		int[] xy = ((GridExtent)extent).getXYCoordinates(subdivisionOrder);
 		
-		if (classMappings == null)
-		   return itera.getSampleDouble(xy[0], xy[1], 0);
-
-		int index = itera.getSample(xy[0], xy[1], 0);
+		if (classMappings == null) {
+			
+		   Double r = itera.getSampleDouble(xy[0], xy[1], 0);
+		   if (this.noData != null) {
+			   for (double nd : noData) 
+				   if (Double.compare(r, nd) == 0)
+					   return Double.NaN;
+		   }
+		   return r;
+		}
 		
+		int index = itera.getSample(xy[0], xy[1], 0);
 		return 
 			index == 0 ?
 				null : // the "nodata" of categories
