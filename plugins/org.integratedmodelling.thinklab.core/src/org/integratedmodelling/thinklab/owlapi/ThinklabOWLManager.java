@@ -809,10 +809,9 @@ public class ThinklabOWLManager {
 								
 							} else 	if (c.is(KnowledgeManager.DoubleType())) {
 
-								// FIXME actually it's FIXIT, protege wants a float or it will crash
-								Float d = null;
+								Double d = null;
 								try {
-									d = new Float(Float.parseFloat(so2));
+									d = new Double(Double.parseDouble(so2));
 								} catch (NumberFormatException e) {
 								}
 								if (d != null)
@@ -888,8 +887,7 @@ public class ThinklabOWLManager {
 						IConcept c = ivalue.getConcept();
 						
 						if (c.is(KnowledgeManager.DoubleType())) {
-							// FIXME actually FIXIT, protege wants a Float here, a Double will crash it
-							toAdd = new Float(((NumberValue)ivalue).asFloat());
+							toAdd = new Double(((NumberValue)ivalue).asDouble());
 						} else if (c.is(KnowledgeManager.FloatType())) {
 							toAdd = new Float(((NumberValue)ivalue).asFloat());
 						} else if (c.is(KnowledgeManager.LongType())) {

@@ -25,6 +25,8 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Polylist;
 
+import com.vividsolutions.jts.geom.Dimension;
+
 /**
  * Implementation for instances of measurements. Admits definition of simple "value unit" cases
  * through a single observation:value property.
@@ -190,13 +192,32 @@ public class Measurement extends Observation implements MediatingObservation {
 		super.initialize(i);
 
 		/*
-		 * validate observable. This should be redundant if OWL validation is
-		 * working, but no big deal to add it.
+		 * validate observable
 		 */
 		if (!observable.is(CoreScience.PHYSICAL_PROPERTY)) {
-			throw new ThinklabValidationException(
+			
+			/*
+			 * acceptable if the main unit is unitless, meaning this
+			 * is a density or other distribution measurement of countable
+			 * objects. It should only be accepted if the unit is complex 
+			 * (otherwise we should use a count, not a measurement) and we
+			 * should have provided a prototype semantics for the counted
+			 * entity.
+			 * 
+			 * FIXME this check works, but just hides too much time spent
+			 * trying to figure out how to do it properly.
+			 */
+			if (this.unit.toString().startsWith("1")) {
+				/*
+				 * TODO
+				 * dimensionless: check if we have semantics for the counted object
+				 */
+			} else {
+			
+				throw new ThinklabValidationException(
 					"measurements can only be of physical properties: " + 
 						observable.getDirectType());
+			}
 		}
 
 		/*

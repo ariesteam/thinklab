@@ -90,6 +90,7 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String INDIRECT_OBSERVATION = "observation:IndirectObservation";
 	public static final String EXCEL_CSV_DATASOURCE = "source:ExcelCSVDataSource";
 	public static final String MEASUREMENT = "measurement:Measurement";
+	public static final String COUNT = "measurement:Count";
 	public static final String CSV_DATASOURCE = "source:CSVDataSource";
 	public static final String RANDOM_DATASOURCE = "source:Randomizer";
 	public static final String RANDOM_VALUE = "observation:RandomValue";
@@ -118,6 +119,7 @@ public class CoreScience extends ThinklabPlugin {
 	static final public String GENERIC_QUANTIFIABLE = "representation:GenericQuantifiable";
 
 	public static final String CONTINGENT_TO = "observation:isContingentTo";
+
 
 	public static CoreScience get() {
 		return (CoreScience) getPlugin(PLUGIN_ID );

@@ -2,12 +2,14 @@ package org.integratedmodelling.modelling.visualization;
 
 import java.io.PrintStream;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
@@ -42,10 +44,13 @@ public class ObservationListing {
 		for (IConcept c : states.keySet()) {
 			
 			IState state = states.get(c);
+			// throw away the result, but instantiate all metadata
+			Metadata.getImageData(state);
 			
 			/*
 			 * 
 			 */
+			out.println(StringUtils.repeat("-", 76));
 			out.println(c);
 			
 			/*
@@ -88,6 +93,13 @@ public class ObservationListing {
 		
 		NumberFormat nf = NumberFormat.getInstance();
 		int ndivs = 10;
+		Integer nlev = (Integer)state.getMetadata().get(Metadata.IMAGE_LEVELS);
+		HashMap<IConcept, Integer> ranks = Metadata.getClassMappings(state.getMetadata());
+
+		if (ranks != null || (nlev != null && nlev < 12)) {
+			ndivs = nlev;
+		}
+		
 		if (min != null && max != null) {
 
 			int[] bins = new int[ndivs + 1];
@@ -107,7 +119,7 @@ public class ObservationListing {
 				if (mx < bins[i])
 					mx = bins[i];
 			}
-						
+			
 			for (int i = 0; i <= ndivs; i++) {
 
 				if (i == 0 || i == ndivs)
@@ -118,17 +130,17 @@ public class ObservationListing {
 						"[" + 
 							nf.format(min + step*i) + " " + 
 							nf.format(min + (step * (i+1))) +
-							"]: (" + 
-							bins[i] + ")" :
-						"no-data: (" + 
-							bins[i] + 
-							")";	
+							"]" :
+						"no-data";	
 				
 				int nstars = (int)((double)(bins[i])/(double)mx * 40.0);
 				out.println(
-						StringUtils.rightPad(udsc, 35) +
+						StringUtils.rightPad(udsc, 26) +
 						"|" +
-						StringUtils.repeat("*", nstars));
+						StringUtils.rightPad(
+								StringUtils.repeat("*", nstars), 40) +
+					    "|" +
+						StringUtils.leftPad(""+bins[i], 8));
 			}
 		} else {	
 			out.println("Min = " + min+ "; max = " + max + "; " + nans + 

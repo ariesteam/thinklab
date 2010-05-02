@@ -653,8 +653,6 @@ public abstract class SQLThinklabServer {
 			throw new ThinklabStorageException(
 					"sql: translation of non-literal value of type " + c);
 
-		log.debug("getting type translator for \"" + value + "\" (" + c + ")");
-		
 		TypeTranslator tt = getTypeTranslator(c);
 		String template = tt.fLiteral;
 		

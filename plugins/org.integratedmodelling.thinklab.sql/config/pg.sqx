@@ -145,7 +145,7 @@
       </sql-operator>
     </type>
     <type name="thinklab-core:Real" based-on="thinklab-core:Integer">
-      <sql-type>float</sql-type>
+      <sql-type>double</sql-type>
     </type>
     <type name="thinklab-core:Text" based-on="default">
       <sql-operator imt-name="like" sql-translation="like" 

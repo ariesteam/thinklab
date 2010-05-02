@@ -164,8 +164,6 @@ public class NumberValue extends ParsedLiteralValue {
     public int asInteger() {
         return (int)value;
     }
-    
-    
  
     @Override
     public Object clone() {
@@ -193,7 +191,7 @@ public class NumberValue extends ParsedLiteralValue {
     }
 
     public String toString() {
-        return Double.toString(value);
+        return ""+value;
     }
 
 	public void assign(double d) {
