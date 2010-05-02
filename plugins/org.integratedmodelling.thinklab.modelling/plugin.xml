@@ -12,6 +12,7 @@
 		<import plugin-id="org.integratedmodelling.thinklab.dynamicmodelling"/>
 		<import plugin-id="org.integratedmodelling.thinklab.rules"/>
 		<import plugin-id="org.integratedmodelling.thinklab.idv"/>
+		<import plugin-id="org.integratedmodelling.thinklab.mca"/>
 	</requires>
 
 	<runtime>
