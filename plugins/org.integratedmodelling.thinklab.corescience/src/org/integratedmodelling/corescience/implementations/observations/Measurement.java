@@ -25,8 +25,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Polylist;
 
-import com.vividsolutions.jts.geom.Dimension;
-
 /**
  * Implementation for instances of measurements. Admits definition of simple "value unit" cases
  * through a single observation:value property.
