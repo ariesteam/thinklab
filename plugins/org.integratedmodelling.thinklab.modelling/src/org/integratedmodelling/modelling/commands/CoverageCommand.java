@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.thinklab.command.Command;
@@ -43,7 +44,10 @@ public class CoverageCommand implements ICommandHandler {
 			kbox = KBoxManager.get().requireGlobalKBox(command.getOptionAsString("kbox"));
 		
 		Model model = ModelFactory.get().requireModel(concept);	
-		return ModelFactory.get().getSpatialCoverage(model, kbox, session);
+		
+		return 
+			ModelFactory.get().getSpatialCoverage(model, kbox, session).
+				transform(Geospace.get().getStraightGeoCRS());
 	}
 
 }

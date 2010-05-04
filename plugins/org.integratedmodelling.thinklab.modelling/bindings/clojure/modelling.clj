@@ -211,6 +211,11 @@
 		[model-name observable & body]
  		`(def ~model-name (modelling/register-agent (eval '(modelling/tl-agent ~observable ~@body)) (str '~model-name))))
   
+(defn apply-scenario
+  "Apply a scenario to a model, return a new model with the scenario applied."
+  [scenario model]
+  (.applyScenario model scenario)) 
+
 (defn get-topology-in-location 
 	"Return the spatial topology of the first observation found in the given location that
 	matches the passed observable"

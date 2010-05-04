@@ -351,6 +351,10 @@ public class Metadata extends HashMap<String, Object> {
 			}
 
 			for (IConcept c : type.getChildren()) {
+
+				if (c.isAbstract())
+					continue;
+
 				int i = 0;
 				for (String rx : booleanNarrative) {
 					if (c.getLocalName().matches(rx)) {
@@ -382,6 +386,10 @@ public class Metadata extends HashMap<String, Object> {
 			isRanking = true;
 
 			for (IConcept c : type.getChildren()) {
+				
+				if (c.isAbstract())
+					continue;
+				
 				int i = 0;
 				for (String rx : orderNarrative) {
 					if (c.getLocalName().matches(rx)) {
@@ -397,7 +405,11 @@ public class Metadata extends HashMap<String, Object> {
 			 * no ranking, we still have subclasses to remember and assign
 			 * numbers to.
 			 */
-			Collection<IConcept> ch = type.getChildren();
+			Collection<IConcept> ch = new ArrayList<IConcept>();
+			for (IConcept cc : type.getChildren())
+				if (!cc.isAbstract())
+					ch.add(cc);
+			
 			String[] cnames = new String[ch.size()];
 			int i = 0;
 			HashMap<IConcept, Integer> ret = new HashMap<IConcept, Integer>();

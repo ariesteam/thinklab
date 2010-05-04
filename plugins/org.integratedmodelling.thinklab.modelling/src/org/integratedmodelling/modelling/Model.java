@@ -75,7 +75,7 @@ public class Model extends DefaultAbstractModel {
 		int totres = 0;
 		for (IModel m : models) {
 						
-			ModelResult mr = ((DefaultAbstractModel)m).observeInternal(kbox, session, cp, extents, acceptEmpty);
+			ModelResult mr = ((DefaultAbstractModel)m).observeInternal(kbox, session, cp, extents, true);
 
 			if (mr != null && mr.getTotalResultCount() > 0) {
 				ret.addContingentResult(m, mr);

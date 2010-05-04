@@ -394,8 +394,7 @@ public class ShapeValue extends ParsedLiteralValue implements ITopologicallyComp
 	public ShapeValue union(ShapeValue region) throws ThinklabException {
 		
 		if ((crs != null || region.crs != null) && !crs.equals(region.crs))
-			throw new ThinklabUnimplementedFeatureException(
-					"shape projections differ: reprojection on shape operations unimplemented");
+			region = region.transform(crs);
 
 		ShapeValue ret = new ShapeValue(shape.union(region.shape));
 		ret.crs = crs;
@@ -405,8 +404,7 @@ public class ShapeValue extends ParsedLiteralValue implements ITopologicallyComp
 	public ShapeValue difference(ShapeValue region) throws ThinklabException {
 		
 		if ((crs != null || region.crs != null) && !crs.equals(region.crs))
-			throw new ThinklabUnimplementedFeatureException(
-					"shape projections differ: reprojection on shape operations unimplemented");
+			region = region.transform(crs);
 
 		ShapeValue ret = new ShapeValue(shape.difference(region.shape));
 		ret.crs = crs;

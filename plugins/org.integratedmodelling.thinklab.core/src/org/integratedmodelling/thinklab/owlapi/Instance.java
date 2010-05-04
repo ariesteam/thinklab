@@ -29,6 +29,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -431,4 +432,13 @@ public class Instance extends Knowledge implements IInstance {
 		throw new ThinklabUnimplementedFeatureException("UNIMPLEMENTED: storing objects as URIs");
 	}
 
+	@Override
+	public String toString() {
+		try {
+			return getLocalName() + ": " + toList(null);
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+	}
+	
 }
