@@ -54,7 +54,7 @@ public class WCSGridDataSource extends RegularRasterGridDataSource {
 	private GridExtent finalExtent = null;
 	
 	public void initialize(IInstance i) throws ThinklabException {
-
+		
 		Properties p = new Properties();
 		p.putAll(Geospace.get().getProperties());
 		IValue server = i.get("geospace:hasServiceUrl");
@@ -66,10 +66,13 @@ public class WCSGridDataSource extends RegularRasterGridDataSource {
 		IValue nodata = i.get("geospace:hasNodataValue");
 		if (nodata != null)
 			p.put(AbstractRasterCoverage.NODATA_PROPERTY, nodata.toString());
-		
-		this.coverage = 
-			new WCSCoverage(i.get("geospace:hasCoverageId").toString(), p);
 
+		String rid = i.get("geospace:hasCoverageId").toString();
+		
+		Geospace.get().logger().info("reading WCS source " + server + "#" + rid);
+
+		this.coverage = 
+			new WCSCoverage(rid, p);
 	}
 	
 	@Override
