@@ -131,6 +131,14 @@ public class MemObjectContextualizedDatasource
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
 	
+		if (prototype == null) {
+			double[] ret = new double[data.length];
+			for (int i = 0; i < data.length; i++) {
+				ret[i] = Double.NaN;
+			}
+			return ret;			
+		}
+		
 		if (prototype instanceof Number) {
 			double[] ret = new double[data.length];
 			for (int i = 0; i < data.length; i++) {
@@ -148,7 +156,9 @@ public class MemObjectContextualizedDatasource
 	
 		// TODO must accommodate distributions 
 		
-		throw new ThinklabValueConversionException("can't convert a " + prototype.getClass() + " into a double");
+		throw new ThinklabValueConversionException(_type + ": can't convert a " + 
+				(prototype == null ? "null" : prototype.getClass().getCanonicalName()) + 
+				" into a double");
 		 
 	}
 	

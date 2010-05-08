@@ -85,7 +85,7 @@
 		<library type="code" id="gt2-epsg-hsql" path="lib/gt-epsg-hsql-2.6.2.jar">
 			<export prefix="*"/>
 		</library>
-		<library type="code" id="gt2-epsg-wkt" path="lib/gt-epsg-extension-2.6.2.jar">
+		<library type="code" id="gt2-epsg-extension" path="lib/gt-epsg-extension-2.6.2.jar">
 			<export prefix="*"/>
 		</library>
 		<library type="code" id="gt2-feature-pregeneralized" path="lib/gt-feature-pregeneralized-2.6.2.jar">
