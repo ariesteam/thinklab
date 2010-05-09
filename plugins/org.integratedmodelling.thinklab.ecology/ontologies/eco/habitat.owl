@@ -386,6 +386,14 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HighBathymetricSlope -->
+
+    <owl:Class rdf:about="#HighBathymetricSlope">
+        <rdfs:subClassOf rdf:resource="#BathymetricSlope"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HighTropicalStormProbability -->
 
     <owl:Class rdf:about="#HighTropicalStormProbability">
@@ -430,6 +438,14 @@
 
     <owl:Class rdf:about="#InvasiveSpecies">
         <rdfs:subClassOf rdf:resource="#CommunityQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#LowBathymetricSlope -->
+
+    <owl:Class rdf:about="#LowBathymetricSlope">
+        <rdfs:subClassOf rdf:resource="#BathymetricSlope"/>
     </owl:Class>
     
 
@@ -486,6 +502,14 @@
 
     <owl:Class rdf:about="#MixedTidalCoverage">
         <rdfs:subClassOf rdf:resource="#TidalWaterCoverage"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#ModerateBathymetricSlope -->
+
+    <owl:Class rdf:about="#ModerateBathymetricSlope">
+        <rdfs:subClassOf rdf:resource="#BathymetricSlope"/>
     </owl:Class>
     
 
@@ -927,6 +951,14 @@
 
     <owl:Class rdf:about="#VegetationType">
         <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#VeryLowBathymetricSlope -->
+
+    <owl:Class rdf:about="#VeryLowBathymetricSlope">
+        <rdfs:subClassOf rdf:resource="#BathymetricSlope"/>
     </owl:Class>
     
 

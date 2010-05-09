@@ -86,7 +86,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		 *  Number  (specific match)
 		 *  String  (specific match)
 		 *  Concept (concept to concept, using the reasoner)
-		 * 	Vector  (numeric range, honoring :< :> :open :closed keywords)
+		 * 	Vector  (numeric range, honoring :< :> :exclusive :inclusive keywords)
 		 *  List    (executable code, run after setting self to state)
 		 *  Set     (set of values to choose from: final match is an OR on the contents)
 		 */
