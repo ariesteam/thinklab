@@ -1,20 +1,20 @@
-# Saved by TopBraid on Thu May 06 15:23:26 EDT 2010
-# baseURI: http://www.integratedmodelling.org/ks/ecology/lulc/domlulc.owl
-# imports: http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:lulc="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns="http://www.integratedmodelling.org/ks/ecology/lulc/domlulc.owl#"
+  xml:base="http://www.integratedmodelling.org/ks/ecology/lulc/domlulc.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl"/>
+  </owl:Ontology>
+  <owl:Class rdf:ID="DOMLULCNumeric">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Used to identify annotations that are part of the same dataset. These are treated differently in the modeling system, which is allowed to fill holes from multiple observations that match the same datasets even if only one contingent model has been specified.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#LandClassificationNumericMapping"/>
+  </owl:Class>
+</rdf:RDF>
 
-@prefix :        <http://www.integratedmodelling.org/ks/ecology/lulc/domlulc.owl#> .
-@prefix lulc:    <http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#> .
-@prefix owl:     <http://www.w3.org/2002/07/owl#> .
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-
-<http://www.integratedmodelling.org/ks/ecology/lulc/domlulc.owl>
-      rdf:type owl:Ontology ;
-      owl:imports <http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl> ;
-      owl:versionInfo "Created with TopBraid Composer"^^xsd:string .
-
-:DOMLULCNumeric
-      rdf:type owl:Class ;
-      rdfs:comment "Used to identify annotations that are part of the same dataset. These are treated differently in the modeling system, which is allowed to fill holes from multiple observations that match the same datasets even if only one contingent model has been specified."^^xsd:string ;
-      rdfs:subClassOf lulc:LandClassificationNumericMapping .
+<!-- Created with TopBraid -->

@@ -49,8 +49,16 @@
 		<parameter id="url" value="corine.owl"/>
 		<parameter id="concept-space" value="corine"/>
 	</extension>
-		<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="mglulc">
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="mglulc">
 		<parameter id="url" value="mglulc.owl"/>
 		<parameter id="concept-space" value="mglulc"/>
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="domlulc">
+		<parameter id="url" value="domlulc.owl"/>
+		<parameter id="concept-space" value="domlulc"/>
+	</extension>	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="glc">
+		<parameter id="url" value="glc.owl"/>
+		<parameter id="concept-space" value="glc"/>
 	</extension>	
 </plugin>
