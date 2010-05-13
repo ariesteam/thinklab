@@ -254,7 +254,7 @@ public class NetCDFArchive {
 				double[] dd = state.getDataAsDoubles();
 				// FIXME: same deal, more Uncertainty-related badness
 				//double[] uu = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
-				double[] uu;
+				double[] uu = null;
 				ArrayDouble unce = null;
 				if (uu != null)
 					unce = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
