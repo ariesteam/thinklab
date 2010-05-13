@@ -172,9 +172,10 @@ public class NetCDFArchive {
 				String varname = getVarname(obs);
 				ncfile.addVariable(varname, DataType.FLOAT, new Dimension[]{latDim,lonDim});
 
+				// FIXME: this crashes hard (something semantically bad is happening here)
 				// add uncertainty if any
-				if (variables.get(obs).getMetadata().get(Metadata.UNCERTAINTY) != null)
-					ncfile.addVariable(varname+"Uncertainty", DataType.FLOAT, new Dimension[]{latDim,lonDim});
+				//if (variables.get(obs).getMetadata().get(Metadata.UNCERTAINTY) != null)
+				//        ncfile.addVariable(varname+"Uncertainty", DataType.FLOAT, new Dimension[]{latDim,lonDim});
 				
 				// TODO if var is a measurement, add units attribute - this is a stupid stub
 				if (varname.equals("Altitude")) {
@@ -251,7 +252,9 @@ public class NetCDFArchive {
 				ArrayDouble data = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
 				Index ind = data.getIndex();
 				double[] dd = state.getDataAsDoubles();
-				double[] uu = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
+				// FIXME: same deal, more Uncertainty-related badness
+				//double[] uu = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
+				double[] uu;
 				ArrayDouble unce = null;
 				if (uu != null)
 					unce = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
