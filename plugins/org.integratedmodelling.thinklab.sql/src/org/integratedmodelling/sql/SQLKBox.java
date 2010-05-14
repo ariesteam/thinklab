@@ -203,6 +203,9 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 
 		/* add limits if any */
 		query = addLimitsToQuery(query, offset, maxResults);
+		
+		/* add sorting options if any */
+		query = addSortingToQuery(query);
 
 		/*
 		 * TODO do we want this? Should we make it an option? How? only select

@@ -7,44 +7,47 @@
     xmlns="http://www.integratedmodelling.org/ks/metadata/metadata.owl#"
   xml:base="http://www.integratedmodelling.org/ks/metadata/metadata.owl">
   <owl:Ontology rdf:about=""/>
-  <owl:DatatypeProperty rdf:ID="hasWGS84Latitude">
+  <owl:DatatypeProperty rdf:ID="hasISIClassification">
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </owl:DatatypeProperty>
-  <owl:DatatypeProperty rdf:ID="hasSourceCitation">
+  <owl:DatatypeProperty rdf:ID="hasPriority">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+  </owl:DatatypeProperty>
+  <owl:AnnotationProperty rdf:ID="hasWGS84Latitude">
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-    >The text of a citation that documents the associated instance.</rdfs:comment>
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
-  </owl:DatatypeProperty>
-  <owl:DatatypeProperty rdf:ID="hasWGS84Longitude">
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
-  </owl:DatatypeProperty>
-  <owl:DatatypeProperty rdf:ID="hasAssociatedEventDate">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
-  </owl:DatatypeProperty>
-  <owl:DatatypeProperty rdf:ID="hasAssociatedEventDescriptor">
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
-  </owl:DatatypeProperty>
-  <owl:DatatypeProperty rdf:ID="hasDownloadLink">
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
-  </owl:DatatypeProperty>
-  <owl:DatatypeProperty rdf:ID="hasImageUrl">
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-    >The URL of an image that documents the associated instance.</rdfs:comment>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
-  </owl:DatatypeProperty>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
   <owl:AnnotationProperty rdf:ID="belongsToDataset">
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >Used to identify annotations that are part of the same dataset. These are treated differently in the modeling system, which is allowed to fill holes from multiple observations that match the same datasets even if only one contingent model has been specified.</rdfs:comment>
-  </owl:AnnotationProperty>
-  <owl:AnnotationProperty rdf:ID="hasISIClassification">
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="hasSourceCitation">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The text of a citation that documents the associated instance.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="hasWGS84Longitude">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="hasAssociatedEventDate">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="hasAssociatedEventDescriptor">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="hasDownloadLink">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="hasImageUrl">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The URL of an image that documents the associated instance.</rdfs:comment>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
   </owl:AnnotationProperty>
 </rdf:RDF>

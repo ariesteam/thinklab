@@ -16,7 +16,6 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.modelling.agents.ThinkAgent;
-import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
@@ -31,9 +30,6 @@ import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.time.literals.TemporalExtentValue;
 import org.integratedmodelling.utils.Polylist;
-
-import clojure.lang.Keyword;
-import clojure.lang.PersistentArrayMap;
 
 /**
  * A singleton (access from ModellingPlugin) that catalogs models and provides

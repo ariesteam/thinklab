@@ -2220,6 +2220,19 @@ public abstract class SQLThinklabServer {
 		return query;
 	}
 
+
+	public String addSortingToQuery(String query) {
+		
+		/*
+		 * if the metadata for an object contain a priority field, use it
+		 * to sort in ascendent order
+		 */
+		if (metadataCatalog.containsKey("priority")) {
+			query += " SORT BY priority ASCENDENT";
+		}
+		return query;
+	}
+
 	/*
 	 * FIXME this probably needs some serious work
 	 */
