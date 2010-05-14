@@ -145,7 +145,9 @@ public class CategoricalDistributionDatasource extends
 		} else {
 			this.ranks = Metadata.rankConcepts(_type, rnk, metadata);
 		}
-		int offset = 0; 
+		
+		// GARY GARY GARY - please change this back into offset = 0 if you get errors from BayesianTransformer
+		int offset = 1; 
 		if (getMetadata().get(Metadata.HASZERO) != null)
 			offset = ((Boolean)getMetadata().get(Metadata.HASZERO)) ? 0 : 1;
 		
