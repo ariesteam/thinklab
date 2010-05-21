@@ -297,20 +297,21 @@ public class BayesianTransformer
 			 * 
 			 */
 			for (int e = 0; e < evidence.length; e++) {
-				try {
 					IConcept ev = evidence[e].getStateConcept(state);
-					if (ev != null) {
-						bn.setEvidence(
+					try {
+						if (ev != null) {
+							bn.setEvidence(
 								evidence[e].field, 
 								ev.getLocalName());
-						if (ekey != null) {
-							ekey += evidence[e].nodename + "=" + ev.getLocalName() + ", ";
-						}
+							if (ekey != null) {
+								ekey += evidence[e].nodename + "=" + ev.getLocalName() + ", ";
+							}
+						}	
+					} catch (Exception ex) {
+					
+						ModellingPlugin.get().logger().error("exception " + ex + " while setting " + evidence[e].nodename + " to " + ev);
+						// throw new ThinklabValidationException(ex);
 					}
-				} catch (Exception ex) {
-					ModellingPlugin.get().logger().error("exception " + ex + " while setting " + evidence[e].nodename);
-					// throw new ThinklabValidationException(ex);
-				}
 			}
 			
 			/*
