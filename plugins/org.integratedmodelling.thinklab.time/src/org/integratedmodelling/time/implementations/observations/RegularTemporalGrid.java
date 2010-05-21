@@ -39,7 +39,6 @@ import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.time.TimePlugin;
 import org.integratedmodelling.time.extents.RegularTimeGridExtent;

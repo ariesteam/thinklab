@@ -70,6 +70,27 @@ public class DurationValue extends ParsedLiteralValue {
 
     @Override
     public void parseLiteral(String s) throws ThinklabValidationException {
+    	
+    	/*
+    	 * insert a space to break strings like 1s or 2year
+    	 */
+    	int brk = -1;
+    	if (!s.contains(" ")) {
+    		for (int i = 0; i < s.length(); i++) {
+    			if (!Character.isDigit(s.charAt(i))) {
+    				brk = i;
+    				break;
+    			}
+    		}
+    	}
+    	
+    	if (brk > 0) {
+    		s =
+    			s.substring(0,brk) + 
+    			" " +
+    			s.substring(brk);
+    	}
+    	
         try  {
         	/* oh do I like this */
         	literal = s;
