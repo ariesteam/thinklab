@@ -78,6 +78,10 @@ public class Locate implements ICommandHandler {
 							+ (int)(result.getResultScore(i)) + "%"
 							+ "\t"
 							+ result.getResultField(i, "label"));
+					
+					session.getOutputStream().println(
+							"\t" +
+							result.getResultField(i, IGazetteer.SHAPE_FIELD));
 				}
 			} else {
 				session.getOutputStream().println("no results found");
