@@ -251,7 +251,10 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 				
 		ArrayList<Object> arr = new ArrayList<Object>();
 		
-		arr.add(dynSpecs == null ? "modeltypes:ModeledClassification" : "modeltypes:DynamicClassification");
+		arr.add((dynSpecs == null && changeSpecs == null && derivativeSpecs == null) ?
+					"modeltypes:ModeledClassification" : 
+					"modeltypes:DynamicClassification");
+		
 		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(state)));
 		
 		if (id != null) {
@@ -260,9 +263,17 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		
 		if (dynSpecs != null) {
 			arr.add(Polylist.list(":code", dynSpecs));
-			arr.add(Polylist.list("modeltypes:hasExpressionLanguage", 
-					this.lang.equals(language.CLOJURE) ? "clojure" : "mvel"));
 		}
+		if (changeSpecs != null) {
+			arr.add(Polylist.list(":change", changeSpecs));
+		}
+		if (derivativeSpecs != null) {
+			arr.add(Polylist.list(":derivative", derivativeSpecs));
+		}
+
+		if (dynSpecs != null || changeSpecs != null || derivativeSpecs != null)
+			arr.add(Polylist.list("modeltypes:hasExpressionLanguage", 
+				this.lang.equals(language.CLOJURE) ? "clojure" : "mvel"));
 
 		double[] breakpoints = null;
 		Pair<double[], IConcept[]> pd = Metadata.computeDistributionBreakpoints(observable, classifiers, null);		

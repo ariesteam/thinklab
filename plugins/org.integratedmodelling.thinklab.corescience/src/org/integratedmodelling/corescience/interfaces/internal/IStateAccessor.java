@@ -1,6 +1,8 @@
 package org.integratedmodelling.corescience.interfaces.internal;
 
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
@@ -59,10 +61,18 @@ public interface IStateAccessor {
 	 * for the notified dependency observables, in the type notified
 	 * previously.
 	 * 
+	 * @param index the global index of the overall context. The latter is known to the getAccessor() and getMediator()
+	 * 	      methods of the observations that create the accessor, and is also passed to the notifyState method, 
+	 *        so it can be passed to it if necessary. Note that this is the OVERALL index, not the local (own) index, so
+	 *        it is wrong to use it as the index in a local data array. If used, this should be mediated
+	 *        through a context mapper created in notifyState. Most of the time you don't need to, as 
+	 *        a simple sequential fill of the storage array is enough; this parameter is used by computing
+	 *        states so they can mediate to dependency states that are not in the same context.
+	 *        
 	 * @param registers
 	 * @return
 	 */
-	public Object getValue(Object[] registers);
+	public Object getValue(int overallContextIndex, Object[] registers);
 
 	/**
 	 * returning true means that the value returned by getValue() does not change 
@@ -74,5 +84,15 @@ public interface IStateAccessor {
 	 * @return
 	 */
 	public boolean isConstant();
+
+	/**
+	 * The compiler will pass the state, the overall context and the state's own context when
+	 * the state is created. NOTE: this will be called with a null for the state if the compiler
+	 * doesn't need the state to be stored. If the accessor needs to remember state, it should create
+	 * suitable private storage.
+	 * @param dds
+	 * @throws ThinklabException 
+	 */
+	public void notifyState(IState dds, IObservationContext overallContext, IObservationContext ownContext) throws ThinklabException;
 
 }

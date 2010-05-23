@@ -1,15 +1,22 @@
 package org.integratedmodelling.modelling.data.adapters;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
+import org.integratedmodelling.corescience.implementations.datasources.DefaultAbstractAccessor;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
+import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
-import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.time.TimePlugin;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Pair;
 
@@ -17,9 +24,11 @@ import clojure.lang.IFn;
 import clojure.lang.Keyword;
 import clojure.lang.PersistentArrayMap;
 
-public abstract class ClojureAccessor implements IStateAccessor {
+public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 
 	IFn clojureCode = null;
+	IFn changeCode = null;
+	boolean changeIsDerivative = false;
 	int[] prmOrder = null;
 	Object[] parameters;
 	HashMap<IConcept, String> obsToName = new HashMap<IConcept, String>();
@@ -33,32 +42,131 @@ public abstract class ClojureAccessor implements IStateAccessor {
 	String selfLabel = null;
 	int mediatedIndex = 0;
 	
-	public ClojureAccessor(IFn code, Observation obs, boolean isMediator) {
+	// index of time dimension in overall context; if -1, we have no time
+	int timeIndex = -1;
+	private boolean storeState = false;
+	
+	public ClojureAccessor(
+			IFn code, Observation obs, boolean isMediator, 
+			IObservationContext context, IFn change, IFn derivative) {
+		
 		clojureCode = code;
+		if (change != null)
+			changeCode = change;
+		if (derivative != null) {
+			changeCode = derivative;
+			changeIsDerivative = true;
+		}
+		
 		this.isMediator = isMediator;
 		this.obs = obs;
 		
 		if (isMediator) {
 			selfLabel = ((Observation)obs).getFormalName();
 			if (selfLabel == null)
-				selfLabel = obs.getObservableClass().getLocalName();
+				selfLabel = obs.getObservableClass().getLocalName().toLowerCase();
 			selfId = Keyword.intern(null, selfLabel);
 		}
+		
+		int i = 0;
+		for (IConcept c : context.getDimensions()) {
+			if (c.is(TimePlugin.get().TimeObservable()))
+				timeIndex = i;
+			i++;
+		}
+		
 	}
 
 	@Override
-	public Object getValue(Object[] registers) {
+	public Object getValue(int idx, Object[] registers) {
 		
 		PersistentArrayMap parms = new PersistentArrayMap(new Object[] {});
+
+		// current offset in own state
+		int stateOffset = cmapper.getIndex(idx);
 		
 		/*
-		 * set whatever we are mediating to its mediated value so we can use the post-mediation
-		 * result.
+		 * current offset in time dimension. This only gets redefined if we have and need to 
+		 * compute change equations instead of state equations.
 		 */
-		if (isMediator) {
-			parms = (PersistentArrayMap) parms.assoc(selfId, processMediated(registers[mediatedIndex]));
-		}
+		int[] eidx = cursor.getElementIndexes(idx);
+		int ctime = timeIndex < 0 ? -1 : eidx[timeIndex];
+		
+		/*
+		 * signals we should use the change equations instead of the state equations if we have 
+		 * them.
+		 */
+		boolean changing = ctime > 0;
+		
+		
+		/*
+		 * set values for self. It should be:
+		 * 
+		 * - undefined if we're not changing or mediating;
+		 * - mediated value if we're mediating and are not changing;
+		 * - previous value if we're changing and have change expressions. If that's the case, also have
+		 *   other extents set their additional contextualized versions of "self" (e.g. neighborhoods).  
+		 */
+		Object self = null;
+		if (isMediator && !changing) {
+			self = processMediated(registers[mediatedIndex]);
+		} else if (changing && changeCode != null) {
 
+			/*
+			 * retrieve previous value with all other extents being equal
+			 */
+			int[] iidx = cursor.getElementIndexes(stateOffset);
+			iidx[timeIndex] = iidx[timeIndex] - 1;
+			int previousOffset = cursor.getElementOffset(iidx);
+			self = this.state.getDataAt(previousOffset);
+			
+			/*
+			 * give other extents a chance to define their own values
+			 */
+			int ii = 0;
+			for (IConcept extc : this.overallContext.getDimensions()) {
+
+				IExtent ext = this.overallContext.getExtent(extc);
+
+				/*
+				 * add the index of each extent and the corresponding subextent value with the
+				 * name of the concept space to which the concept belongs.
+				 */
+				try {
+					IValue vv = ext.getState(eidx[ii]);
+					String kk = extc.getConceptSpace();
+					parms = (PersistentArrayMap) parms.assoc(Keyword.intern(null, kk), vv);
+				} catch (ThinklabException e) {
+					throw new ThinklabRuntimeException(e);
+				}
+
+				// TODO this may change when we support closures, so we can allow arbitrarily
+				// parameterized history access
+				if (ii == timeIndex)
+					continue;
+				
+				Collection<Pair<String, Integer>> mvars = ext.getStateLocators(eidx[ii]);
+				
+				int zeroIdx = iidx[ii];
+				if (mvars != null)
+					for (Pair<String, Integer> mv : mvars) {
+
+						String kwid = selfId.toString().substring(1) + "/" + mv.getFirst();
+						iidx[ii] = zeroIdx + mv.getSecond();
+						previousOffset = cursor.getElementOffset(iidx);
+						Object ov = this.state.getDataAt(previousOffset);
+						parms = (PersistentArrayMap) parms.assoc(Keyword.intern(null, kwid), ov);			
+					}
+				ii++;
+			}
+
+			
+		}
+		
+		if (self != null) {
+			parms = (PersistentArrayMap) parms.assoc(selfId, self);			
+		}
+		
 		if (kwList == null) {
 			kwList = new ArrayList<Keyword>();
 			for (int i = 0; i < parmList.size(); i++)
@@ -76,11 +184,23 @@ public abstract class ClojureAccessor implements IStateAccessor {
 			parms = (PersistentArrayMap) parms.assoc(kwList.get(i), val);
 		}
 		
+		Object ret = null;
+		
 		try {
-			return clojureCode.invoke(parms);
+			
+			ret = 
+				changing ? 
+					(changeIsDerivative ? /* TODO */ null : changeCode.invoke(parms)) :
+					clojureCode.invoke(parms);
+					
 		} catch (Exception e) {
 			throw new ThinklabRuntimeException(e);
 		}
+		
+		if (this.storeState)
+			this.state.addValue(stateOffset, ret);
+		
+		return ret;
 	}
 
 	/**
@@ -119,11 +239,27 @@ public abstract class ClojureAccessor implements IStateAccessor {
 				
 				String label = ((Observation)observation).getFormalName();
 				if (label == null)
-					label = observation.getObservableClass().getLocalName();
+					label = observation.getObservableClass().getLocalName().toLowerCase();
 
 				parmList.add(new Pair<String, Integer>(label, register));
 			}
 		}
 	}
 	
+	protected IState createMissingState(IObservation observation, IObservationContext ctx) throws ThinklabException {
+
+		IState ret = null;
+		if (changeCode != null) {
+			ret = 
+				((IndirectObservation)(ctx.getObservation())).
+					createState(
+						ctx.getMultiplicity(),
+						ctx);
+			
+			// remind our getValue that the state must be stored internally
+			this.storeState  = true;
+		}
+		return ret;
+	}
+
 }

@@ -264,7 +264,7 @@ public class VMContextualizer<T> {
 				break;
 			case CACCS: 
 				stack[sp++] = 
-					(T) _accessors.get(ins & 0x00ffffff).getValue(regs);
+					(T) _accessors.get(ins & 0x00ffffff).getValue((int)ticker.current(), regs);
 				break;
 			case IFACT:
 //				dumpIns(printStream, pc, IFACT_I, ins & 0x00ffffff);
@@ -374,7 +374,8 @@ public class VMContextualizer<T> {
 	}
 
 	public int registerStateStorage(IndirectObservation o, IConcept observable, int size, 
-				IObservationContext ownContext, IObservationContext overallContext) throws ThinklabException {
+				IObservationContext ownContext, IObservationContext overallContext, 
+				IStateAccessor accessor) throws ThinklabException {
 
 		_observed.add(observable);
 		IState dds = null;
@@ -384,6 +385,9 @@ public class VMContextualizer<T> {
 				dds = o.createState(size, ownContext);	
 				dds.getMetadata().merge(((Observation)o).metadata);
 
+				if (accessor != null)
+					accessor.notifyState(dds, overallContext, ownContext);
+				
 			} catch (ThinklabException e) {
 				throw new ThinklabRuntimeException(e);
 			}

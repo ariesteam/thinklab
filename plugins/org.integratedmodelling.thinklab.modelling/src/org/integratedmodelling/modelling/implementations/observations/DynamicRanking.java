@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.implementations.observations;
 
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.implementations.observations.Ranking;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.modelling.data.adapters.ClojureAccessor;
@@ -19,6 +20,9 @@ import clojure.lang.IFn;
 public class DynamicRanking extends Ranking {
 
 	public Object code = null;
+	public Object change = null;
+	public Object derivative = null;
+
 	String lang = "clojure";
 	
 	class ClojureRankingAccessor extends ClojureAccessor {
@@ -26,8 +30,9 @@ public class DynamicRanking extends Ranking {
 		RankingMediator mediator = null;
 		
 		public ClojureRankingAccessor(IFn code, Observation obs,
-				boolean isMediator, IndirectObservation mediated) {
-			super(code, obs, isMediator);
+				boolean isMediator, IndirectObservation mediated, 
+				IObservationContext context, IFn change, IFn derivative) {
+			super(code, obs, isMediator, context, change, derivative);
 			if (mediated != null)
 				try {
 					mediator = new RankingMediator(mediated);
@@ -44,23 +49,21 @@ public class DynamicRanking extends Ranking {
 	}
 	
 	@Override
-	public IStateAccessor getAccessor() {
+	public IStateAccessor getAccessor(IObservationContext context) {
 		if (lang.equals("clojure"))
-			return new ClojureRankingAccessor((IFn)code, this, false, null);
+			return new ClojureRankingAccessor((IFn)code, this, false, null, context, (IFn)change, (IFn)derivative);
 		else
 			return new MVELAccessor((String)code, false);
 	}
 
-
 	@Override
-	public IStateAccessor getMediator(IndirectObservation observation)
+	public IStateAccessor getMediator(IndirectObservation observation, IObservationContext context)
 			throws ThinklabException {
 		if (lang.equals("clojure"))
-			return new ClojureRankingAccessor((IFn)code, this, true, observation);
+			return new ClojureRankingAccessor((IFn)code, this, true, null, context, (IFn)observation, (IFn)context);
 		else
 			return new MVELAccessor((String)code, true);
 	}
-
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.corescience.implementations.observations.Measurement#initialize(org.integratedmodelling.thinklab.interfaces.knowledge.IInstance)

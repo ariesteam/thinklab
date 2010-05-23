@@ -51,7 +51,7 @@ public class ArrayMultidimensionalArray {
 
 	public ArrayMultidimensionalArray(Object data, int ... dimensions) {
 
-		cursor = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
+		cursor = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.ROW_FIRST);
 		cursor.defineDimensions(dimensions);
 
 		if (data instanceof double[]) {

@@ -32,6 +32,8 @@
  **/
 package org.integratedmodelling.time.extents;
 
+import java.util.Collection;
+
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.ITopologicallyComparable;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
@@ -41,6 +43,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.time.TimePlugin;
 import org.integratedmodelling.time.literals.PeriodValue;
+import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 import org.joda.time.DateTime;
 
@@ -281,6 +284,13 @@ public class RegularTimeGridExtent implements IExtent {
 
 	@Override
 	public IExtent getAggregatedExtent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public Collection<Pair<String, Integer>> getStateLocators(int index) {
 		// TODO Auto-generated method stub
 		return null;
 	}

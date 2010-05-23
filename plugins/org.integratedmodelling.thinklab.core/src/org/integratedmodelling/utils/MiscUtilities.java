@@ -1798,6 +1798,17 @@ loop:		for(;;)
 	    } 
 	 
 	    return fileOrDir.delete(); 
+	}
+
+	public static int readIntegerFromString(String s) {
+		s = s.trim();
+		String ss = "";
+		for (int i = 0; i < s.length(); i++) {
+			if (!Character.isDigit(s.charAt(i)))
+				break;
+			ss += s.charAt(i);
+		}
+		return Integer.parseInt(ss);
 	} 
 
 	

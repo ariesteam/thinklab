@@ -37,13 +37,11 @@ import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.utils.cformat.PrintfFormat;
 
 /**
  * A lookup table that can be initialized from a string using PERL syntax, extended to support numeric ranges for

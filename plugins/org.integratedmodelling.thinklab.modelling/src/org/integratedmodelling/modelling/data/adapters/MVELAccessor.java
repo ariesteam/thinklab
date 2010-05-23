@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -15,6 +17,14 @@ import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Pair;
 import org.mvel2.MVEL;
 
+/**
+ * MVEL-enabled accessor is called when expressions are strings, parsed as MVEL. NOTE: this must
+ * be finished, at this point it only handles basic parameters but no change, derivative or 
+ * contextualized expressions. 
+ * 
+ * @author Ferdinando
+ *
+ */
 public class MVELAccessor implements IStateAccessor {
 
 	String mvelCode = null;
@@ -33,7 +43,7 @@ public class MVELAccessor implements IStateAccessor {
 	}
 
 	@Override
-	public Object getValue(Object[] registers) {
+	public Object getValue(int idx, Object[] registers) {
 		
 		HashMap<String, Object> parms = new HashMap<String, Object>();
 		
@@ -71,6 +81,13 @@ public class MVELAccessor implements IStateAccessor {
 		// TODO Auto-generated method stub
 		if (!(observation instanceof Topology))
 			parmList.add(new Pair<String, Integer>(obsToName.get(observable), register));
+		
+	}
+
+	@Override
+	public void notifyState(IState dds, IObservationContext overallContext,
+			IObservationContext ownContext)  throws ThinklabException {
+		// TODO Auto-generated method stub
 		
 	}
 	

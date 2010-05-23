@@ -69,7 +69,6 @@
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding" id="clj">
 		<parameter id="language" value="clojure"/>
 		<parameter id="resource" value="clojure/corescience.clj"/>
-		<parameter id="resource" value="clojure/builders.clj"/>
 		<parameter id="resource" value="clojure/ssj.clj"/>
 	</extension>
 	

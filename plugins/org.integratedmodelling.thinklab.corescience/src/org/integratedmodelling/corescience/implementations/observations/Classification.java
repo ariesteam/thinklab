@@ -83,7 +83,7 @@ public class Classification extends Observation implements MediatingObservation 
 		protected int index = 0;
 		
 		@Override
-		public Object getValue(Object[] registers) {
+		public Object getValue(int idx, Object[] registers) {
 			return getNextValue(registers);
 		}
 
@@ -116,12 +116,17 @@ public class Classification extends Observation implements MediatingObservation 
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public void notifyState(IState dds, IObservationContext overallContext,
+				IObservationContext ownContext) throws ThinklabException {
+		}
 	}
 	
 	public class ClassificationMediator extends ClassificationAccessor {
 
 		@Override
-		public Object getValue(Object[] registers) {
+		public Object getValue(int idx, Object[] registers) {
 			return registers[index];
 		}
 		
@@ -152,7 +157,7 @@ public class Classification extends Observation implements MediatingObservation 
 	}
 
 	@Override
-	public IStateAccessor getAccessor() {
+	public IStateAccessor getAccessor(IObservationContext context) {
 		return new ClassificationAccessor();
 	}
 
@@ -167,7 +172,7 @@ public class Classification extends Observation implements MediatingObservation 
 	}
 
 	@Override
-	public IStateAccessor getMediator(IndirectObservation observation)
+	public IStateAccessor getMediator(IndirectObservation observation, IObservationContext context)
 			throws ThinklabException {
 		return new ClassificationMediator();
 	}

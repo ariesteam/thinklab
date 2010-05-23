@@ -108,6 +108,11 @@ public class MemDoubleContextualizedDatasource
 	}
 
 	@Override
+	public Object getDataAt(int offset) {
+		return (offset >= 0 && offset < data.length) ? data[offset] : null;
+	}
+	
+	@Override
 	public IConcept getValueType() {
 		return _type;
 	}

@@ -332,11 +332,11 @@ public class ModelResult implements IQueryResult  {
 		
 		// initialize the ticker in this (root) node and give all nodes their dimension ID.
 		if (_mediated != null) {
-			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
+			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.ROW_FIRST);
 			ticker.defineDimensions(_mediated.getTotalResultCount());
 		} else if (_dependents.size() > 0 || _contingents.size() > 0 || contextModel != null) {
 
-			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
+			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.ROW_FIRST);
 			int[] dims = new int[_dependents.size() + _contingents.size() + (contextModel == null ? 0 : 1)];
 			int i = 0;
 			for (IQueryResult r : _dependents)

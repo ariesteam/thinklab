@@ -45,6 +45,10 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.time.TimePlugin;
+import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.Pair;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.jscience.physics.amount.Amount;
 
 /**
@@ -61,7 +65,8 @@ public class DurationValue extends ParsedLiteralValue {
 
     long value = 0l;
     String literal = null;
-    
+    int precision = TemporalPrecision.MILLISECOND;
+    int origQuantity = 1;
     
     public DurationValue() throws ThinklabException {
         super();
@@ -91,9 +96,13 @@ public class DurationValue extends ParsedLiteralValue {
     			s.substring(brk);
     	}
     	
+		if (Character.isDigit(s.charAt(0)))
+			this.origQuantity = MiscUtilities.readIntegerFromString(s);
+
         try  {
-        	/* oh do I like this */
+        	precision = TemporalPrecision.getPrecisionFromUnit(s);
         	literal = s;
+        	/* oh do I like this */
         	Amount<Duration> duration = Amount.valueOf(s).to(MILLI(SECOND));
         	value = duration.getExactValue();
         	concept = TimePlugin.Duration();
@@ -161,4 +170,111 @@ public class DurationValue extends ParsedLiteralValue {
 		return value;
 	}
 
+	/**
+	 * Localize a duration to an extent starting at the current moment
+	 * using the same resolution that was implied in the generating 
+	 * text. For example, if the duration was one year, localize to the 
+	 * current year (jan 1st to dec 31st). Return the start and end points
+	 * of the extent.
+	 * 
+	 * @return
+	 */
+	public Pair<TimeValue, TimeValue> localize() {
+		
+		DateTime date = new DateTime();
+		TimeValue start = null, end = null;
+		long val = value;
+		
+		switch (precision) {
+		
+			case TemporalPrecision.MILLISECOND:
+				start = new TimeValue(date);
+				end = new TimeValue(date.plus(val));
+				break;
+			case TemporalPrecision.SECOND:
+				val = value/DateTimeConstants.MILLIS_PER_SECOND;
+				start = 
+					new TimeValue(
+						new DateTime(
+							date.getYear(),
+							date.getMonthOfYear(),
+							date.getDayOfMonth(),
+							date.getHourOfDay(),
+							date.getMinuteOfHour(),
+							date.getSecondOfMinute(),
+							0));
+				end = new TimeValue(start.getTimeData().plusSeconds((int)val));
+				break;
+			case TemporalPrecision.MINUTE:
+				val = value/DateTimeConstants.MILLIS_PER_MINUTE;
+				start = 
+					new TimeValue(
+						new DateTime(
+							date.getYear(),
+							date.getMonthOfYear(),
+							date.getDayOfMonth(),
+							date.getHourOfDay(),
+							date.getMinuteOfHour(),
+							0,
+							0));
+				end = new TimeValue(start.getTimeData().plusMinutes((int)val));
+				break;
+			case TemporalPrecision.HOUR:
+				val = value/DateTimeConstants.MILLIS_PER_HOUR;
+				start = 
+					new TimeValue(
+						new DateTime(
+							date.getYear(),
+							date.getMonthOfYear(),
+							date.getDayOfMonth(),
+							date.getHourOfDay(),
+							0,
+							0,
+							0));
+				end = new TimeValue(start.getTimeData().plusHours((int)val));
+				break;
+			case TemporalPrecision.DAY:
+				val = value/DateTimeConstants.MILLIS_PER_DAY;
+				start = 
+					new TimeValue(
+						new DateTime(
+							date.getYear(),
+							date.getMonthOfYear(),
+							date.getDayOfMonth(),
+							0,
+							0,
+							0,
+							0));
+				end = new TimeValue(start.getTimeData().plusDays((int)val));
+				break;
+			case TemporalPrecision.MONTH:
+				start = 
+					new TimeValue(
+						new DateTime(
+							date.getYear(),
+							date.getMonthOfYear(),
+							1,
+							0,
+							0,
+							0,
+							0));
+				end = new TimeValue(start.getTimeData().plusMonths(origQuantity));
+				break;
+			case TemporalPrecision.YEAR:
+				start = 
+					new TimeValue(
+						new DateTime(
+							date.getYear(),
+							1,
+							1,
+							0,
+							0,
+							0,
+							0));
+				end = new TimeValue(start.getTimeData().plusYears(origQuantity));
+				break;		
+		}
+		
+		return new Pair<TimeValue, TimeValue>(start, end);
+	}
 }

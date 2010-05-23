@@ -25,24 +25,43 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 		MVEL
 	};
 	protected language lang = null;
+
+	protected Object changeSpecs = null;
+	protected Object derivativeSpecs = null;
+
+	private void setLanguage(Object arg) throws ThinklabValidationException {
+		
+		language l = null;
+		if (arg instanceof IFn) {
+			l = language.CLOJURE;
+		} else if (arg instanceof String) {
+			l = language.MVEL;
+		} else
+			throw new ThinklabValidationException("invalid expression in model: " + arg);
+		
+		if (this.lang != null && this.lang != l) {
+			throw new ThinklabValidationException("cannot mix expression languages in model specification");			
+		}
+		
+		this.lang = l;
+	}
 	
 	@Override
 	public void applyClause(String keyword, Object argument) throws ThinklabException {
 		
 		if (keyword.equals(":state") && (argument instanceof IFn)) {
 			this.dynSpecs = argument;
-			lang = language.CLOJURE;
-		} else if (keyword.equals(":state") && (argument instanceof String)) {
-			this.dynSpecs = argument;
-			lang = language.MVEL;
+			setLanguage(argument);
 		} else if (keyword.equals(":derivative")) {
-			
-			// TODO accept dynamic derivative specs
-			
+			this.derivativeSpecs = argument;
+			setLanguage(argument);
 		} else if (keyword.equals(":probability")) {
 			
 			// TODO accept bayesian node form
 			
+		} else if (keyword.equals(":update")) {
+			this.changeSpecs = argument;
+			setLanguage(argument);
 		} else super.applyClause(keyword, argument);
 	}
 	

@@ -32,11 +32,14 @@
  **/
 package org.integratedmodelling.corescience.interfaces;
 
+import java.util.Collection;
+
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.utils.Pair;
 
 /**
  * An Extent describes the topology of the observable
@@ -141,6 +144,23 @@ public abstract interface IExtent extends IConceptualizable, ITopologicallyCompa
 	 */
 	public abstract String getSignature();
 
+	/**
+	 * Return a list of location references to use in expressions and
+	 * their relative offsets in the dimension described by this extent.
+	 * For example, a time grid extent will return "previous, -1" so that
+	 * the previous state can be referenced in expressions (with syntax
+	 * dependent on the language: e.g. in the Clojure accessor, for state
+	 * "altitude", the var will be :altitude/previous). Space grids should
+	 * return things like n,s,e,w, etc. with offsets determined by the
+	 * specific configuration.
+	 * 
+	 * The list of locators depends on the specific location, so the overall
+	 * index in the dimension is passed.
+	 * 
+	 * If no locators can be defined, a null should be returned.
+	 * @return
+	 */
+	public abstract Collection<Pair<String,Integer>> getStateLocators(int index);
 
 
 }

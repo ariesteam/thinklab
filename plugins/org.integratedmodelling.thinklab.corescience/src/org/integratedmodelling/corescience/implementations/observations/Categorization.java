@@ -94,7 +94,7 @@ public class Categorization extends Observation implements MediatingObservation 
 		}
 
 		@Override
-		public Object getValue(Object[] registers) {
+		public Object getValue(int idx, Object[] registers) {
 			return isConstant ? value : getNextValue(registers);
 		}
 
@@ -111,6 +111,12 @@ public class Categorization extends Observation implements MediatingObservation 
 		public String toString() {
 			return "[CategorizationAccessor]";
 		}
+
+		@Override
+		public void notifyState(IState dds, IObservationContext overallContext,
+				IObservationContext ownContext) throws ThinklabException {
+
+		}
 	}
 	
 	public class CategorizationMediator extends CategorizationAccessor {
@@ -122,7 +128,7 @@ public class Categorization extends Observation implements MediatingObservation 
 		}
 		
 		@Override
-		public Object getValue(Object[] registers) {
+		public Object getValue(int idx, Object[] registers) {
 			return registers[index];
 		}
 		
@@ -158,7 +164,7 @@ public class Categorization extends Observation implements MediatingObservation 
 	}
 
 	@Override
-	public IStateAccessor getAccessor() {
+	public IStateAccessor getAccessor(IObservationContext context) {
 		return new CategorizationAccessor();
 	}
 
@@ -168,7 +174,7 @@ public class Categorization extends Observation implements MediatingObservation 
 	}
 
 	@Override
-	public IStateAccessor getMediator(IndirectObservation observation)
+	public IStateAccessor getMediator(IndirectObservation observation, IObservationContext context)
 			throws ThinklabException {
 		return new CategorizationMediator();
 	}

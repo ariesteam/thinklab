@@ -64,6 +64,11 @@ public class IndexedContextualizedDatasourceLong<T>
 	}
 
 	@Override
+	public Object getDataAt(int offset) {
+		return (offset >= 0 && offset < data.length) ? inverseMap.get(new Long(data[offset])) : null;
+	}
+
+	@Override
 	public IConcept getValueType() {
 		return _type;
 	}

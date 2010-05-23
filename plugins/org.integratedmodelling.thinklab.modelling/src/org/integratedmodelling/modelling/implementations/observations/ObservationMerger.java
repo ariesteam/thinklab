@@ -60,7 +60,7 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 		int index = 0;
 
 		@Override
-		public Object getValue(Object[] registers) {
+		public Object getValue(int idx, Object[] registers) {
 
 			Object ret = null;
 			
@@ -135,6 +135,13 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 			idxMap[((Observation)observation).contingencyOrder] = register;
 			
 		}
+
+		@Override
+		public void notifyState(IState dds, IObservationContext overallContext,
+				IObservationContext ownContext) throws ThinklabException  {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 
 	@Override
@@ -178,7 +185,7 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 	}
 
 	@Override
-	public IStateAccessor getAccessor() {
+	public IStateAccessor getAccessor(IObservationContext context) {
 		return new SwitchingAccessor();
 	}
 

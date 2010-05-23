@@ -119,7 +119,7 @@ public class MultidimensionalArray<T> {
 	 */
 	public MultidimensionalArray(int ... dimensions) {
 	
-		cursor = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.COLUMN_FIRST);
+		cursor = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.ROW_FIRST);
 		cursor.defineDimensions(dimensions);
 		storage.ensureCapacity(cursor.getMultiplicity());
 	}

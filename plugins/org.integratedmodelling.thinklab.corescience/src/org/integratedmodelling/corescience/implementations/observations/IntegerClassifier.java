@@ -42,7 +42,7 @@ public class IntegerClassifier extends Observation implements IndirectObservatio
 		int index = 0;
 		
 		@Override
-		public Object getValue(Object[] registers) {
+		public Object getValue(int cidx, Object[] registers) {
 			
 			Integer idx = (Integer)getDataSource().getValue(index++, registers);
 			return valueMap.get(idx);
@@ -67,6 +67,12 @@ public class IntegerClassifier extends Observation implements IndirectObservatio
 				throws ThinklabException {
 			// TODO Auto-generated method stub
 			
+		}
+
+		@Override
+		public void notifyState(IState dds, IObservationContext overallContext,
+				IObservationContext ownContext)  throws ThinklabException {
+
 		}
 
 	}
@@ -143,7 +149,7 @@ public class IntegerClassifier extends Observation implements IndirectObservatio
 	}
 
 	@Override
-	public IStateAccessor getAccessor() {
+	public IStateAccessor getAccessor(IObservationContext context) {
 		return new ClassificationAccessor();
 	}
 

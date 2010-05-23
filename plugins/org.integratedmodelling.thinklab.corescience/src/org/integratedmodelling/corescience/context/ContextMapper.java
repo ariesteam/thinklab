@@ -25,9 +25,9 @@ public class ContextMapper {
 	private IObservationContext _from;
 	private IObservationContext _to;
 	MultidimensionalCursor fromCursor = 
-		new MultidimensionalCursor(StorageOrdering.COLUMN_FIRST);
+		new MultidimensionalCursor(StorageOrdering.ROW_FIRST);
 	MultidimensionalCursor toCursor = 
-		new MultidimensionalCursor(StorageOrdering.COLUMN_FIRST);
+		new MultidimensionalCursor(StorageOrdering.ROW_FIRST);
 	int[] cdims = null;
 	boolean identical = false;
 	private IState state;
@@ -35,6 +35,20 @@ public class ContextMapper {
 	public ContextMapper(IState state, IObservationContext to) throws ThinklabException {
 		this(state.getObservationContext(), to);
 		this.state = state;
+	}
+	
+	/**
+	 * When a cursor over the dimensions of a context is needed, this one should be used
+	 * to obtain it in order to use the same layout.
+	 * 
+	 * @param ctx
+	 * @return
+	 */
+	public static MultidimensionalCursor getCursor(IObservationContext ctx) {
+		MultidimensionalCursor ret = 
+			new MultidimensionalCursor(StorageOrdering.ROW_FIRST);
+		ret.defineDimensions(ctx.getDimensionSizes());
+		return ret;
 	}
 	
 	public ContextMapper(IObservationContext from, IObservationContext to) throws ThinklabException {

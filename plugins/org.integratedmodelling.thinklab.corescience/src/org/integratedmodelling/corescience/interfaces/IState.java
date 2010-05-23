@@ -2,6 +2,7 @@ package org.integratedmodelling.corescience.interfaces;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
@@ -59,4 +60,13 @@ public interface IState extends IDataSource, IConceptualizable {
 	 * return the context it represents.
 	 */
 	public abstract ObservationContext getObservationContext();
+
+	
+	/**
+	 * Return the unmodified object at given offset. Most times it will be a duplicate of
+	 * getValue() but should not make any modification. If data are unknown, return null.
+	 * @param previousOffset
+	 * @return
+	 */
+	public Object getDataAt(int offset);
 }

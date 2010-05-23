@@ -5,6 +5,7 @@ import javax.measure.unit.Unit;
 
 import org.integratedmodelling.corescience.implementations.observations.Measurement;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.modelling.data.adapters.ClojureAccessor;
@@ -20,6 +21,8 @@ import clojure.lang.IFn;
 public class DynamicMeasurement extends Measurement {
 
 	public Object code = null;
+	public Object change = null;
+	public Object derivative = null;
 	String lang = "clojure";
 	
 	class ClojureMeasurementAccessor extends ClojureAccessor {
@@ -27,8 +30,8 @@ public class DynamicMeasurement extends Measurement {
 		protected Unit<?> otherUnit;
 		private UnitConverter converter = null;
 		
-		public ClojureMeasurementAccessor(IFn code, Observation obs, boolean isMediator, Measurement other) {
-			super(code, obs, isMediator);
+		public ClojureMeasurementAccessor(IFn code, Observation obs, boolean isMediator, Measurement other, IObservationContext context, IFn change, IFn derivative) {
+			super(code, obs, isMediator, context, change, derivative);
 			
 			if (isMediator) {
 				this.otherUnit = other.unit;
@@ -47,25 +50,21 @@ public class DynamicMeasurement extends Measurement {
 	}
 	
 	@Override
-	public IStateAccessor getAccessor() {
+	public IStateAccessor getAccessor(IObservationContext context) {
 		if (lang.equals("clojure"))
-			return new ClojureMeasurementAccessor((IFn)code, this, false, null);
+			return new ClojureMeasurementAccessor((IFn)code, this, false, null, context, (IFn)change, (IFn)derivative);
 		else
 			return new MVELAccessor((String)code, false);
 	}
 
 
 	@Override
-	public IStateAccessor getMediator(IndirectObservation observation)
+	public IStateAccessor getMediator(IndirectObservation observation, IObservationContext context)
 			throws ThinklabException {
 		if (lang.equals("clojure"))
-			return new ClojureMeasurementAccessor((IFn)code, this, true, (Measurement) observation);
+			return new ClojureMeasurementAccessor((IFn)code, this, true, (Measurement) observation, context, (IFn)change, (IFn)derivative);
 		else
 			return new MVELAccessor((String)code, true);
-		
-		/*
-		 * TODO must pass own value AFTER CONVERSION!
-		 */
 	}
 
 	/* (non-Javadoc)

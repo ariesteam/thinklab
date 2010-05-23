@@ -42,13 +42,18 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 		 * choose observation class according to derivative, probability etc.
 		 */
 		Polylist def = Polylist.listNotNull(
-				(dynSpecs == null ? CoreScience.MEASUREMENT
-						: "modeltypes:DynamicMeasurement"),
+				((dynSpecs == null && changeSpecs == null && derivativeSpecs == null) ? 
+						CoreScience.MEASUREMENT : 
+						"modeltypes:DynamicMeasurement"),
 				(id != null ? Polylist.list(CoreScience.HAS_FORMAL_NAME, id)
 						: null), 
 				(dynSpecs != null ? 
 					Polylist.list(":code", dynSpecs) : null),
-				(dynSpecs != null ? 
+				(changeSpecs != null ? 
+					Polylist.list(":change", changeSpecs) : null),
+				(derivativeSpecs != null ? 
+					Polylist.list(":derivative", derivativeSpecs) : null),
+				((dynSpecs != null || changeSpecs != null || derivativeSpecs != null)? 
 					Polylist.list(
 						"modeltypes:hasExpressionLanguage", 
 						this.lang.equals(language.CLOJURE) ? "clojure" : "mvel")

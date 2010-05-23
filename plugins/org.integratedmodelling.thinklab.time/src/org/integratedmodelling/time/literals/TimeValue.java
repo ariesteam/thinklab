@@ -33,10 +33,8 @@
 package org.integratedmodelling.time.literals;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -64,13 +62,9 @@ import org.joda.time.format.DateTimeFormatter;
 @LiteralImplementation(concept="time:DateTimeValue")
 public class TimeValue extends ParsedLiteralValue {
 
-	public enum Precision {
-		MILLISECOND, DAY, MONTH, YEAR
-	}
-
 	DateTime value;
 
-	Precision precision = Precision.MILLISECOND;
+	int precision = TemporalPrecision.MILLISECOND;
 
 	public static String matchYear = "[0-2][0-9][0-9][0-9]";
 
@@ -85,6 +79,12 @@ public class TimeValue extends ParsedLiteralValue {
 		concept = TimePlugin.DateTime();
 	}
 
+	public TimeValue(DateTime date) {
+		super();
+		value = date;
+		concept = TimePlugin.DateTime();
+	}
+	
 	@Override
 	public void parseLiteral(String s) throws ThinklabValidationException {
 		try {
@@ -92,15 +92,15 @@ public class TimeValue extends ParsedLiteralValue {
 			if (s.matches(matchYear)) {
 				DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy");
 				value = fmt.parseDateTime(s);
-				precision = Precision.YEAR;
+				precision = TemporalPrecision.YEAR;
 			} else if (s.matches(matchMonthYear)) {
 				DateTimeFormatter fmt = DateTimeFormat.forPattern("MM-yyyy");
 				value = fmt.parseDateTime(s);
-				precision = Precision.MONTH;
+				precision = TemporalPrecision.MONTH;
 			} else if (s.matches(matchDayMonthYear)) {
 				DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy");
 				value = fmt.parseDateTime(s);
-				precision = Precision.DAY;
+				precision = TemporalPrecision.DAY;
 			} else {
 				value = new DateTime(s);
 			}
@@ -175,7 +175,7 @@ public class TimeValue extends ParsedLiteralValue {
 		return value;
 	}
 
-	public Precision getPrecision() {
+	public int getPrecision() {
 		return precision;
 	}
 
@@ -190,17 +190,17 @@ public class TimeValue extends ParsedLiteralValue {
 	 */
 	public boolean comparable(TimeValue v1) {
 				
-		if (precision.equals(Precision.YEAR)) {
+		if (precision == TemporalPrecision.YEAR) {
 			return 
 				value.year().getMaximumValue() == v1.value.year().getMaximumValue();
 			
-		} else if (precision.equals(Precision.MONTH)) {
+		} else if (precision == TemporalPrecision.MONTH) {
 			
 			return 
 				value.year().equals(v1.value.year()) &&
 				value.monthOfYear().equals(v1.value.monthOfYear());
 			
-		} else if (precision.equals(Precision.DAY)) {
+		} else if (precision == TemporalPrecision.DAY) {
 			return 
 			value.year().equals(v1.value.year()) &&
 			value.monthOfYear().equals(v1.value.monthOfYear()) &&
@@ -212,11 +212,11 @@ public class TimeValue extends ParsedLiteralValue {
 
 	public String toString() {
 
-		if (precision.equals(Precision.YEAR))
+		if (precision == TemporalPrecision.YEAR)
 			return value.toString("yyyy");
-		else if (precision.equals(Precision.MONTH))
+		else if (precision == TemporalPrecision.MONTH)
 			return value.toString("MM-yyyy");
-		else if (precision.equals(Precision.DAY))
+		else if (precision == TemporalPrecision.DAY)
 			return value.toString("dd-MM-yyyy");
 		return value.toString();
 	}
@@ -233,7 +233,7 @@ public class TimeValue extends ParsedLiteralValue {
 	public TimeValue leastPrecise(TimeValue v) {
 
 		if (comparable(v)) {
-			return precision.compareTo(v.precision) > 0 ? this : v;
+			return new Integer(precision).compareTo(v.precision) > 0 ? this : v;
 		}	
 		return null;
 	}
@@ -241,7 +241,7 @@ public class TimeValue extends ParsedLiteralValue {
 	public TimeValue mostPrecise(TimeValue v) {
 
 		if (comparable(v)) {
-			return precision.compareTo(v.precision) > 0 ? v : this;
+			return new Integer(precision).compareTo(v.precision) > 0 ? v : this;
 		}
 		return null;
 	}
@@ -273,5 +273,44 @@ public class TimeValue extends ParsedLiteralValue {
 	@Override
 	public int hashCode() {
 		return toString().hashCode();
+	}
+
+	/**
+	 * Return the end of the implied extent according to the precision
+	 * in the generating string.
+	 * 
+	 * @return
+	 */
+	public TimeValue getEndOfImpliedExtent() {
+
+		TimeValue end = null;
+		switch (precision) {
+		
+		case TemporalPrecision.MILLISECOND:
+			end = new TimeValue(value.plus(1));
+			break;
+		case TemporalPrecision.SECOND:
+			end = new TimeValue(value.plusSeconds(1));
+			break;
+		case TemporalPrecision.MINUTE:
+			end = new TimeValue(value.plusMinutes(1));
+			break;
+		case TemporalPrecision.HOUR:
+			end = new TimeValue(value.plusHours(1));
+			break;
+		case TemporalPrecision.DAY:
+			end = new TimeValue(value.plusDays(1));
+			break;
+		case TemporalPrecision.MONTH:
+			end = new TimeValue(value.plusMonths(1));
+			break;
+		case TemporalPrecision.YEAR:
+			end = new TimeValue(value.plusYears(1));
+			break;		
+	}
+	
+		return end;
+
+		
 	}
 }

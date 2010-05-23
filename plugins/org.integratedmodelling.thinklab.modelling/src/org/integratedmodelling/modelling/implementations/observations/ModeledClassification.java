@@ -64,7 +64,7 @@ public class ModeledClassification
 		int index = 0;
 		
 		@Override
-		public Object getValue(Object[] registers) {
+		public Object getValue(int idx, Object[] registers) {
 			Object o = getDataSource().getValue(index++, registers);
 			for (Pair<GeneralClassifier, IConcept> p : classifiers) {
 				if (p.getFirst().classify(o))
@@ -95,6 +95,13 @@ public class ModeledClassification
 				IConcept observable, int register, IConcept stateType)
 				throws ThinklabException {
 		}
+
+		@Override
+		public void notifyState(IState dds, IObservationContext overallContext,
+				IObservationContext ownContext) throws ThinklabException  {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	
 
@@ -103,7 +110,7 @@ public class ModeledClassification
 		int index = 0;
 		
 		@Override
-		public Object getValue(Object[] registers) {
+		public Object getValue(int idx, Object[] registers) {
 
 			Object o = registers[index];
 			
@@ -140,11 +147,18 @@ public class ModeledClassification
 		public String toString() {
 			return "[Classifier " + classifiers + " @ " + index + " ]";
 		}
+
+		@Override
+		public void notifyState(IState dds, IObservationContext overallContext,
+				IObservationContext ownContext)  throws ThinklabException {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 
 	
 	@Override
-	public IStateAccessor getAccessor() {
+	public IStateAccessor getAccessor(IObservationContext context) {
 		return new ClassificationAccessor();
 	}
 
@@ -278,7 +292,7 @@ public class ModeledClassification
 	}
 
 	@Override
-	public IStateAccessor getMediator(IndirectObservation observation)
+	public IStateAccessor getMediator(IndirectObservation observation, IObservationContext context)
 			throws ThinklabException {
 		return new ClassificationMediator();
 	}

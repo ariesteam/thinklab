@@ -89,6 +89,11 @@ public class MemObjectContextualizedDatasource
 	public Object getValue(int index, Object[] parameters) {
 		return data[index];
 	}
+	
+	@Override
+	public Object getDataAt(int offset) {
+		return (offset >= 0 && offset < data.length) ? data[offset] : null;
+	}
 
 	@Override
 	public IConcept getValueType() {

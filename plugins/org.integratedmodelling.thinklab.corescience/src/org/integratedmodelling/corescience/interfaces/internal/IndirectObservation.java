@@ -24,7 +24,7 @@ public interface IndirectObservation extends IObservation {
 	 * Return an appropriate accessor to obtain data from the datasource.
 	 * @return
 	 */
-	public abstract IStateAccessor getAccessor();
+	public abstract IStateAccessor getAccessor(IObservationContext context);
 	
 	/**
 	 * Indirect observations are responsible for creating the state of the result observation

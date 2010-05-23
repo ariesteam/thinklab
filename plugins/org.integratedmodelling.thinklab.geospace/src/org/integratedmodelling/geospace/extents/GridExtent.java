@@ -574,4 +574,10 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		return new ShapeExtent((ShapeValue) getFullExtentValue());
 	}
 
+	@Override
+	public Collection<Pair<String, Integer>> getStateLocators(int index) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

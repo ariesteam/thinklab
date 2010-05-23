@@ -49,58 +49,34 @@ public class Pair<T1,T2> implements Serializable
 	public Pair()
 	{
 	}
-	/**
-	 *  This method was created in VisualAge.
-	 *
-	 * @param  first java.lang.Object
-	 * @param  second java.lang.Object
-	 */
+
 	public Pair(T1 first, T2 second)
 	{
 		this.first = first;
 		this.second = second;
 	}
-	/**
-	 *  This method was created in VisualAge.
-	 *
-	 * @param  newValue java.lang.Object
-	 */
+
 	public void setFirst(T1 newValue)
 	{
 		this.first = newValue;
 	}
-	/**
-	 *  This method was created in VisualAge.
-	 *
-	 * @param  newValue java.lang.Object
-	 */
+
 	public void setSecond(T2 newValue)
 	{
 		this.second = newValue;
 	}
-	/**
-	 *  This method was created in VisualAge.
-	 *
-	 * @return  java.lang.Object
-	 */
+	
 	public T1 getFirst()
 	{
 		return first;
 	}
-	/**
-	 *  This method was created in VisualAge.
-	 *
-	 * @return  java.lang.Object
-	 */
+
 	public T2 getSecond()
 	{
 		return second;
 	}
-	/**
-	 *  This method was created in VisualAge.
-	 *
-	 * @return  java.lang.String
-	 */
+
+	
 	public String toString()
 	{
 		return "{" + getFirst() + "," + getSecond() + "}";

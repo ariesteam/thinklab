@@ -36,7 +36,7 @@ public class ProbabilisticClassification extends Observation implements Indirect
 	}
 
 	@Override
-	public IStateAccessor getAccessor() {
+	public IStateAccessor getAccessor(IObservationContext context) {
 		// TODO Auto-generated method stub
 		return null;
 	}

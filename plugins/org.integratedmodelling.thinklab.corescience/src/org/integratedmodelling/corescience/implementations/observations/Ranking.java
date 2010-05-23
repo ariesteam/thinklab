@@ -127,7 +127,7 @@ public class Ranking extends Observation implements MediatingObservation {
 		}
 		
 		@Override
-		public Object getValue(Object[] registers) {
+		public Object getValue(int idx, Object[] registers) {
 			return noConv? registers[reg] : convert((Double)(registers[reg]));
 		}
 
@@ -160,6 +160,12 @@ public class Ranking extends Observation implements MediatingObservation {
 				throws ThinklabException {
 			this.reg = register;
 		}
+
+		@Override
+		public void notifyState(IState dds, IObservationContext overallContext,
+				IObservationContext ownContext) throws ThinklabException  {
+
+		}
 		
 	}
 
@@ -190,7 +196,7 @@ public class Ranking extends Observation implements MediatingObservation {
 		}
 
 		@Override
-		public Object getValue(Object[] registers) {
+		public Object getValue(int idx, Object[] registers) {
 			if (distribution != null)
 				return distribution.draw();
 			return isConstant ? value : getNextValue(registers);
@@ -208,6 +214,12 @@ public class Ranking extends Observation implements MediatingObservation {
 		@Override
 		public String toString() {
 			return "[RankingAccessor]";
+		}
+
+		@Override
+		public void notifyState(IState dds, IObservationContext overallContext,
+				IObservationContext ownContext) throws ThinklabException  {
+
 		}
 
 	}
@@ -285,7 +297,7 @@ public class Ranking extends Observation implements MediatingObservation {
 
 
 	@Override
-	public IStateAccessor getMediator(IndirectObservation observation)
+	public IStateAccessor getMediator(IndirectObservation observation, IObservationContext context)
 			throws ThinklabException {
 
 		RankingMediator ret = null;
@@ -323,7 +335,7 @@ public class Ranking extends Observation implements MediatingObservation {
 
 
 	@Override
-	public IStateAccessor getAccessor() {
+	public IStateAccessor getAccessor(IObservationContext context) {
 		return new RankingStateAccessor();
 	}
 

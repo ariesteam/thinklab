@@ -34,6 +34,8 @@ package org.integratedmodelling.currency.observations;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabInexactConversionException;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.currency.CurrencyPlugin;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -42,7 +44,7 @@ import org.integratedmodelling.time.literals.TimeValue;
 
 /**
  * Mediates the purchasing power of one currency at a time towards another at another
- * time. May throw an exception 
+ * time. 
  * @author Ferdinando Villa
  *
  */
@@ -59,7 +61,7 @@ public class MonetaryValueMediator implements IStateAccessor {
 	}
 
 	@Override
-	public Object getValue(Object[] registers) {
+	public Object getValue(int idx, Object[] registers) {
 		return ((Double)registers[0]) * conversionFactor;
 	}
 
@@ -80,6 +82,13 @@ public class MonetaryValueMediator implements IStateAccessor {
 	public void notifyDependencyRegister(IObservation observation,
 			IConcept observable, int register, IConcept stateType)
 			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void notifyState(IState dds, IObservationContext overallContext,
+			IObservationContext ownContext) throws ThinklabException  {
 		// TODO Auto-generated method stub
 		
 	}

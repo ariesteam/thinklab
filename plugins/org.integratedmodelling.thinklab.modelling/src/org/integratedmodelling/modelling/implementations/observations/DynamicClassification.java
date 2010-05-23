@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.implementations.observations;
 
 import org.integratedmodelling.corescience.implementations.observations.Classification;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.modelling.data.adapters.ClojureAccessor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -15,13 +16,16 @@ import clojure.lang.IFn;
 public class DynamicClassification extends Classification {
 
 	public IFn code = null;
+	public Object change = null;
+	public Object derivative = null;
+
 	String lang = "clojure";
 	
 	class ClojureClassificationAccessor extends ClojureAccessor {
 
 		public ClojureClassificationAccessor(IFn code, Observation obs,
-				boolean isMediator) {
-			super(code, obs, isMediator);
+				boolean isMediator, IObservationContext context, IFn change, IFn derivative) {
+			super(code, obs, isMediator, context, change, derivative);
 		}
 
 		@Override
@@ -32,8 +36,8 @@ public class DynamicClassification extends Classification {
 	}
 	
 	@Override
-	public IStateAccessor getAccessor() {
-		return new ClojureClassificationAccessor(code, this, false);
+	public IStateAccessor getAccessor(IObservationContext context) {
+		return new ClojureClassificationAccessor(code, this, false, context, (IFn)observation, (IFn)context);
 	}
 	
 	/* (non-Javadoc)

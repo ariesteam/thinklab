@@ -49,6 +49,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -285,6 +286,12 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 	@Override
 	public IExtent getAggregatedExtent() {
 		return new ShapeExtent(new ShapeValue(shape, getCRS()));
+	}
+
+	@Override
+	public Collection<Pair<String, Integer>> getStateLocators(int index) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 //	@Override

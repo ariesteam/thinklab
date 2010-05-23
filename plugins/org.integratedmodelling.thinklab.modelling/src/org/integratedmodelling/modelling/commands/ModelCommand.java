@@ -29,6 +29,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
@@ -39,6 +40,8 @@ import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.time.TimeFactory;
+import org.integratedmodelling.utils.Polylist;
 
 @ThinklabCommand(
 		name="model",
@@ -46,10 +49,10 @@ import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 		argumentNames="model",
 		argumentTypes="thinklab-core:Text",
 		argumentDescriptions="the concept to build a model for or the model id",
-		optionalArgumentNames="context",
-		optionalArgumentDefaultValues="_NONE_",
-		optionalArgumentDescriptions="id of a spatial feature to define the spatial context",
-		optionalArgumentTypes="thinklab-core:Text",
+		optionalArgumentNames="context,context1",
+		optionalArgumentDefaultValues="_NONE_,_NONE_",
+		optionalArgumentDescriptions="spatial or temporal context,spatial or temporal context",
+		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text",
 		optionArgumentLabels="all kboxes,,,none,256, , ",
 		optionLongNames="kbox,visualize,dump,outfile,resolution,clear,scenario",
 		optionNames="k,v,d,o,r,c,s",
@@ -95,6 +98,55 @@ public class ModelCommand implements ICommandHandler {
 		}
 	}
 	
+	private Topology getTopology(Command command, String argid, ISession session) throws ThinklabException {
+		
+		Topology ret = null;
+		
+		String arg = command.getArgumentAsString(argid);
+		if (arg != null && !arg.equals("_NONE_")) {
+			
+			if (Character.isDigit(arg.charAt(0))) {
+				
+				Polylist pls = TimeFactory.parseTimeTopology(arg);
+				
+				if (pls == null) {
+					throw new ThinklabValidationException(
+							"temporal extent specification invalid or unsupported: " + 
+							arg);
+				}
+				IInstance when = 
+					session.createObject(pls);
+				ret = (Topology)ObservationFactory.getObservation(when);
+				
+			} else {
+				
+				int res = 
+					(int)command.getOptionAsDouble("resolution", 256.0);	
+				ShapeValue roi = null;
+				IQueryResult result = 
+					Geospace.get().lookupFeature(arg);
+				
+				if (result.getTotalResultCount() > 0)
+					roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
+					
+				if (roi != null) {
+					IInstance where = 
+						session.createObject(RasterGrid.createRasterGrid(roi, res));
+					ret = (Topology)ObservationFactory.getObservation(where);
+				} else { 
+					throw new ThinklabResourceNotFoundException(
+							"region name " + 
+							arg +
+							" cannot be resolved");
+				}
+				
+			}
+			
+		}
+		
+		return ret;
+	}
+	
 	@Override
 	public IValue execute(Command command, ISession session)
 			throws ThinklabException {
@@ -107,28 +159,13 @@ public class ModelCommand implements ICommandHandler {
 		
 		Model model = ModelFactory.get().requireModel(concept);
 		
-		IInstance where = null;
-		
-		if (command.hasArgument("context")) {
-			
-			int res = 
-				(int)command.getOptionAsDouble("resolution", 256.0);	
-			ShapeValue roi = null;
-			IQueryResult result = 
-				Geospace.get().lookupFeature(
-						command.getArgumentAsString("context"));
-			if (result.getTotalResultCount() > 0)
-				roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
-				
-			if (roi != null) {
-				where = 
-					session.createObject(RasterGrid.createRasterGrid(roi, res));
-			} else { 
-				throw new ThinklabResourceNotFoundException(
-						"region name " + 
-						command.getArgumentAsString("context") +
-						" cannot be resolved");
-			}
+		Topology top = null;
+		ArrayList<Topology> topologies = new ArrayList<Topology>();
+		if ((top = getTopology(command, "context", session)) != null) {
+			topologies.add(top);
+		}
+		if ((top = getTopology(command, "context1", session)) != null) {
+			topologies.add(top);
 		}
 		
 		ArrayList<IContextualizationListener> listeners = 
@@ -156,7 +193,7 @@ public class ModelCommand implements ICommandHandler {
 		}
 		
 		IQueryResult r = ModelFactory.get().run(model, kbox, session, listeners, 
-				(Topology)ObservationFactory.getObservation(where));
+				topologies.toArray(new Topology[topologies.size()]));
 		
 		if (session.getOutputStream() != null) {
 			session.getOutputStream().println(

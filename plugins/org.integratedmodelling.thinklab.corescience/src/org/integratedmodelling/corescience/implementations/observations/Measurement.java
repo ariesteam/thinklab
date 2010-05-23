@@ -77,7 +77,7 @@ public class Measurement extends Observation implements MediatingObservation {
 		}
 
 		@Override
-		public Object getValue(Object[] registers) {
+		public Object getValue(int idx, Object[] registers) {
 			return getNextValue(registers);
 		}
 
@@ -100,6 +100,11 @@ public class Measurement extends Observation implements MediatingObservation {
 		@Override
 		public String toString() {
 			return "[MeasurementAccessor]";
+		}
+
+		@Override
+		public void notifyState(IState dds, IObservationContext overallContext,
+				IObservationContext ownContext)  throws ThinklabException {
 		}
 	}
 
@@ -131,7 +136,7 @@ public class Measurement extends Observation implements MediatingObservation {
 		}
 
 		@Override
-		public Object getValue(Object[] registers) {
+		public Object getValue(int idx, Object[] registers) {
 			return converter == null ? registers[reg] : converter.convert((Double)registers[reg]);
 		}
 
@@ -143,6 +148,12 @@ public class Measurement extends Observation implements MediatingObservation {
 		@Override
 		public String toString() {
 			return "[MeasurementMediator {"+ unit + " ->" + otherUnit + "}]";
+		}
+
+		@Override
+		public void notifyState(IState dds, IObservationContext overallContext,
+				IObservationContext ownContext)  throws ThinklabException  {
+
 		}
 
 	}
@@ -246,7 +257,7 @@ public class Measurement extends Observation implements MediatingObservation {
 	}
 
 	@Override
-	public IStateAccessor getMediator(IndirectObservation observation)
+	public IStateAccessor getMediator(IndirectObservation observation, IObservationContext context)
 			throws ThinklabException {
 
 		if ( ! (observation instanceof Measurement))
@@ -255,7 +266,7 @@ public class Measurement extends Observation implements MediatingObservation {
 	}
 
 	@Override
-	public IStateAccessor getAccessor() {
+	public IStateAccessor getAccessor(IObservationContext context) {
 		return new MeasurementAccessor();
 	}
 

@@ -360,9 +360,9 @@ public class Compiler {
 		IStateAccessor accessor = null;
 		
 		if (o.isMediator() && (o instanceof MediatingObservation)) {
-			accessor = ((MediatingObservation)o).getMediator((IndirectObservation) o.getMediatedObservation());
+			accessor = ((MediatingObservation)o).getMediator((IndirectObservation) o.getMediatedObservation(), context);
 		} else if (o instanceof IndirectObservation) {
-			accessor = ((IndirectObservation)o).getAccessor();
+			accessor = ((IndirectObservation)o).getAccessor(context);
 		}
 		
 		if (accessor != null) {
@@ -372,7 +372,7 @@ public class Compiler {
 			// if initial value, make it a parameter and load value into register			
 			boolean constant = false;
 			if ( (constant = accessor.isConstant())) {
-				odesc.initialValueId = contextualizer.registerValue(accessor.getValue(null));
+				odesc.initialValueId = contextualizer.registerValue(accessor.getValue(0, null));
 			} 
 			
 			if (!constant) {
@@ -403,7 +403,15 @@ public class Compiler {
 						o.getObservableClass(), 
 						size,
 						ownContext,
-						context);
+						context,
+						accessor);
+		} else if (accessor != null) {
+			/*
+			 * give the accessor a chance to create private state storage if necessary in 
+			 * case the compiler doesn't need to keep state but the accessor does, as in
+			 * computing accessors.
+			 */
+			accessor.notifyState(null, context, ownContext);
 		}
 		
 		/* store them all here, we notify our register to them at the end when we have one */

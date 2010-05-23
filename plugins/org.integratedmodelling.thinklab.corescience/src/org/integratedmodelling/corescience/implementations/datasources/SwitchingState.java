@@ -122,6 +122,11 @@ public class SwitchingState implements IState {
 		}
 		return null;
 	}
+	
+	@Override
+	public Object getDataAt(int offset) {
+		return (offset >= 0 && offset < getTotalSize()) ? getValue(offset, null) : null;
+	}
 
 	@Override
 	public IConcept getValueType() {

@@ -41,9 +41,13 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 public class TimePlugin extends ThinklabPlugin {
 
+	public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.time";
+	
 	public static final String CONTINUOUS_TIME_OBSERVABLE_INSTANCE = "time:ContinuousTimeObservableInstance";
 	public static final String ABSOLUTE_TIME_OBSERVABLE_INSTANCE = "time:AbsoluteTimeObservableInstance";
 
+	public static final String TIME_OBSERVABLE_ID = "time:TemporalObservable";
+	
 	static public String DATETIME_TYPE_ID;
     static public String TIMERECORD_TYPE_ID;
     static public String TEMPORALGRID_TYPE_ID;
@@ -57,10 +61,15 @@ public class TimePlugin extends ThinklabPlugin {
     static private IConcept timeRecordConcept;
     static private IConcept dateTimeConcept;
     static private IConcept durationConcept;
+    static private IConcept timeObservable;
     
     private static IInstance absoluteTimeInstance; 
     private static IInstance continuousTimeInstance; 
     
+	public static TimePlugin get() {
+		return (TimePlugin) getPlugin(PLUGIN_ID);
+	}
+	
     public void load(KnowledgeManager km) throws ThinklabPluginException {
 
     	DATETIME_TYPE_ID = 
@@ -86,6 +95,7 @@ public class TimePlugin extends ThinklabPlugin {
 			timeRecordConcept = km.requireConcept(TIMERECORD_TYPE_ID);
 			dateTimeConcept = km.requireConcept(DATETIME_TYPE_ID);
 			durationConcept = km.requireConcept(DURATION_TYPE_ID);
+			timeObservable = km.requireConcept(TIME_OBSERVABLE_ID);
 			
 			absoluteTimeInstance = km.requireInstance(ABSOLUTE_TIME_OBSERVABLE_INSTANCE);
 			continuousTimeInstance = km.requireInstance(CONTINUOUS_TIME_OBSERVABLE_INSTANCE);
@@ -118,6 +128,10 @@ public class TimePlugin extends ThinklabPlugin {
 
 	public static IInstance absoluteTimeInstance() {
 		return absoluteTimeInstance;
+	}
+
+	public IConcept TimeObservable() {
+		return timeObservable;
 	}
 
 }

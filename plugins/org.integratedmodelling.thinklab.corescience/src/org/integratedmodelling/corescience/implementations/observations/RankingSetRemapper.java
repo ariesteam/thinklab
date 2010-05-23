@@ -32,7 +32,7 @@ public class RankingSetRemapper extends Ranking implements IndirectObservation {
 		int index = 0;
 		
 		@Override
-		public Object getValue(Object[] registers) {
+		public Object getValue(int idx, Object[] registers) {
 			
 			int mval = 0; 
 			Double ret = defValue;
@@ -88,6 +88,12 @@ public class RankingSetRemapper extends Ranking implements IndirectObservation {
 			
 		}
 
+		@Override
+		public void notifyState(IState dds, IObservationContext overallContext,
+				IObservationContext ownContext) throws ThinklabException  {
+
+		}
+
 
 	}
 
@@ -140,7 +146,7 @@ public class RankingSetRemapper extends Ranking implements IndirectObservation {
 
 
 	@Override
-	public IStateAccessor getAccessor() {
+	public IStateAccessor getAccessor(IObservationContext context) {
 		return new RankingSetRemappingAccessor();
 	}
 

@@ -39,7 +39,7 @@ import org.integratedmodelling.utils.Triple;
 public class MultidimensionalCursor {
 
 	public enum StorageOrdering {
-		ROW_FIRST,
+		ROW_FIRST,   // the first dimension in defineDimensions() varies slowest in internal ordering
 		COLUMN_FIRST;
 	}
 	

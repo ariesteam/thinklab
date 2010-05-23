@@ -59,6 +59,11 @@ public class IndexedContextualizedDatasourceByte<T>
 	public Object getValue(int index, Object[] parameters) {
 		return inverseMap.get(new Integer(data[index]));
 	}
+	
+	@Override
+	public Object getDataAt(int offset) {
+		return (offset >= 0 && offset < data.length) ? inverseMap.get(new Integer(data[offset])) : null;
+	}
 
 	@Override
 	public IConcept getValueType() {
@@ -155,5 +160,6 @@ public class IndexedContextualizedDatasourceByte<T>
 			throws ThinklabValueConversionException {
 		throw new ThinklabValueConversionException("can't convert concepts into doubles");
 	}
+
 
 }

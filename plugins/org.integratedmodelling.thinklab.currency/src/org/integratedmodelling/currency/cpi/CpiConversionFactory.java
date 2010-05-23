@@ -42,6 +42,7 @@ import org.integratedmodelling.sql.SQLServer;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
+import org.integratedmodelling.time.literals.TemporalPrecision;
 import org.integratedmodelling.time.literals.TimeValue;
 
 public class CpiConversionFactory {
@@ -179,7 +180,7 @@ public class CpiConversionFactory {
 	private String getDateRestriction(TimeValue date) {
 
 		String sql;
-		if (date.getPrecision() == TimeValue.Precision.YEAR) {
+		if (date.getPrecision() == TemporalPrecision.YEAR) {
 			sql = 
 				"BETWEEN '" 
 				+ date + 

@@ -1,6 +1,16 @@
 package org.integratedmodelling.time;
 
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.time.extents.RegularTimeGridExtent;
+import org.integratedmodelling.time.extents.TemporalLocationExtent;
+import org.integratedmodelling.time.implementations.observations.TimeRecord;
+import org.integratedmodelling.time.literals.DurationValue;
+import org.integratedmodelling.time.literals.TimeValue;
+import org.integratedmodelling.utils.Pair;
+import org.integratedmodelling.utils.Polylist;
 
 
 /**
@@ -12,7 +22,8 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 public class TimeFactory {
 
 	/**
-	 * Turn a string into a time topology. If the string contains a slash, that
+	 * Turn a string into a the list representation of the corresponding
+	 * time topology. If the string contains a slash, that
 	 * is assumed to separate extent from resolution and the result will be a 
 	 * regular time grid. Otherwise, the result will be a time record observation.
 	 * 
@@ -27,8 +38,10 @@ public class TimeFactory {
 	 * 
 	 * @param s
 	 * @return
+	 * @throws ThinklabNoKMException 
+	 * @throws ThinklabValidationException 
 	 */
-	IInstance parseTimeTopology(String s) {
+	public static Polylist parseTimeTopology(String s) throws ThinklabException {
 		
 		String ext = null;
 		String res = null;
@@ -41,9 +54,43 @@ public class TimeFactory {
 			ext = s;
 		}
 		
+		TimeValue start = null;
+		TimeValue end = null;
 		
+		if (Character.isLetter(ext.charAt(ext.length()-1))) {
+			/*
+			 * extent is a duration, start it now
+			 */
+			DurationValue duration = new DurationValue(ext);
+			Pair<TimeValue, TimeValue> pd = duration.localize();
+			start = pd.getFirst();
+			end = pd.getSecond();
+		} else {
+			/*
+			 * extent is a date, extent is one time the implied 
+			 * resolution.
+			 */
+			start = new TimeValue(ext);
+			end = start.getEndOfImpliedExtent();
+		}
 		
-		return null;
+		DurationValue step = null;
+		if (res != null)
+			step = new DurationValue(res);
+		
+		Polylist ret = null;
+		if (res == null) {
+			ret = new TemporalLocationExtent(start).conceptualize();
+		} else {
+			ret = 
+				new RegularTimeGridExtent(
+						start.getTimeData(), 
+						end.getTimeData(), 
+						step.getMilliseconds()).
+					conceptualize();
+		}
+		
+		return ret;
 	}
 	
 }

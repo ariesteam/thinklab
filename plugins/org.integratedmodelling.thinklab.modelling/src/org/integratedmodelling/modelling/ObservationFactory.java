@@ -50,6 +50,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
+import org.integratedmodelling.time.TimePlugin;
 import org.integratedmodelling.utils.Polylist;
 
 public class ObservationFactory extends org.integratedmodelling.corescience.ObservationFactory {
@@ -241,6 +242,15 @@ public class ObservationFactory extends org.integratedmodelling.corescience.Obse
 	 */
 	public static boolean isSpatiallyDistributed(IObservation obs) {
 		return obs.getExtent(Geospace.get().SpaceObservable()) != null;
+	}
+	
+	/**
+	 * 
+	 * @param obs
+	 * @return
+	 */
+	public static boolean isTemporallyDistributed(IObservation obs) {
+		return obs.getExtent(TimePlugin.get().TimeObservable()) != null;
 	}
 
 	/**

@@ -5,6 +5,7 @@ import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
 import org.integratedmodelling.modelling.DefaultStatefulAbstractModel;
+import org.integratedmodelling.modelling.DefaultDynamicAbstractModel.language;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -73,17 +74,23 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 		 * TODO choose observation class according to derivative, probability etc.
 		 */
 		Polylist def = Polylist.listNotNull(
-				(dynSpecs == null ? CoreScience.RANKING : "modeltypes:DynamicRanking"),
+				((dynSpecs == null && changeSpecs == null && derivativeSpecs == null) ?
+							CoreScience.RANKING : 
+							"modeltypes:DynamicRanking"),
 				(id != null ? 
 					Polylist.list(CoreScience.HAS_FORMAL_NAME, id) :
 					null),
-				(dynSpecs != null?
-					Polylist.list(":code", dynSpecs) :
-					null),
-				(dynSpecs != null?
-					Polylist.list("modeltypes:hasExpressionLanguage", 	
-						this.lang.equals(language.CLOJURE) ? "clojure" : "mvel") :
-					null),
+				(dynSpecs != null ? 
+					Polylist.list(":code", dynSpecs) : null),
+				(changeSpecs != null ? 
+					Polylist.list(":change", changeSpecs) : null),
+				(derivativeSpecs != null ? 
+					Polylist.list(":derivative", derivativeSpecs) : null),
+				((dynSpecs != null || changeSpecs != null || derivativeSpecs != null)? 
+							Polylist.list(
+								"modeltypes:hasExpressionLanguage", 
+								this.lang.equals(language.CLOJURE) ? "clojure" : "mvel")
+								: null), 
 				(this.distribution != null ? 
 					Polylist.list(":distribution", this.distribution) : 
 					null),
