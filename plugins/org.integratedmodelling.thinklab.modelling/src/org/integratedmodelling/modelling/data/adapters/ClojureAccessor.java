@@ -38,9 +38,10 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 	ArrayList<Keyword> kwList = null;
 	int index = 0;
 	Observation obs = null;
-	Keyword selfId = null;
+//	Keyword selfId = null;
 	String selfLabel = null;
 	int mediatedIndex = 0;
+	Object initialValue = null;
 	
 	// index of time dimension in overall context; if -1, we have no time
 	int timeIndex = -1;
@@ -61,13 +62,14 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 		this.isMediator = isMediator;
 		this.obs = obs;
 		
-		if (isMediator) {
-			selfLabel = ((Observation)obs).getFormalName();
-			if (selfLabel == null)
-				selfLabel = obs.getObservableClass().getLocalName().toLowerCase();
-			selfId = Keyword.intern(null, selfLabel);
-		}
-		
+		selfLabel = ((Observation)obs).getFormalName();
+		if (selfLabel == null)
+			selfLabel = obs.getObservableClass().getLocalName().toLowerCase();
+
+//		if (isMediator) {
+//			selfId = Keyword.intern(null, selfLabel);
+//		}
+//		
 		int i = 0;
 		for (IConcept c : context.getDimensions()) {
 			if (c.is(TimePlugin.get().TimeObservable()))
@@ -77,6 +79,10 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 		
 	}
 
+	protected void setInitialValue(Object object) {
+		initialValue = object;
+	}
+	
 	@Override
 	public Object getValue(int idx, Object[] registers) {
 		
@@ -151,7 +157,7 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 				if (mvars != null)
 					for (Pair<String, Integer> mv : mvars) {
 
-						String kwid = selfId.toString().substring(1) + "/" + mv.getFirst();
+						String kwid = selfLabel + "/" + mv.getFirst();
 						iidx[ii] = zeroIdx + mv.getSecond();
 						previousOffset = cursor.getElementOffset(iidx);
 						Object ov = this.state.getDataAt(previousOffset);
@@ -164,7 +170,7 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 		}
 		
 		if (self != null) {
-			parms = (PersistentArrayMap) parms.assoc(selfId, self);			
+			parms = (PersistentArrayMap) parms.assoc(Keyword.intern(null, selfLabel), self);			
 		}
 		
 		if (kwList == null) {
@@ -191,7 +197,9 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 			ret = 
 				(changing && changeCode != null) ? 
 					(changeIsDerivative ? /* TODO */ null : changeCode.invoke(parms)) :
-					clojureCode.invoke(parms);
+					((initialValue == null && clojureCode != null) ? 
+						clojureCode.invoke(parms) :
+						initialValue);
 					
 		} catch (Exception e) {
 			throw new ThinklabRuntimeException(e);

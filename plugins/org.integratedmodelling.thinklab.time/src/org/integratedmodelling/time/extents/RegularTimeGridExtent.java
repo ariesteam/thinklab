@@ -119,9 +119,8 @@ public class RegularTimeGridExtent implements IExtent {
 
 	public RegularTimeGridExtent(LineString gg, long step) throws ThinklabValidationException {
 
-		// TODO compute start and end from grid
-		this.start = start;
-		this.end = end;
+		this.start = new DateTime((long)gg.getStartPoint().getX());
+		this.end = new DateTime((long)gg.getEndPoint().getX());
 		this.step = step;
 		extent = gg;
 		granuleSize = step;

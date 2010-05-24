@@ -37,15 +37,15 @@ public class Measurement extends Observation implements MediatingObservation {
 	
 	protected String unitSpecs = null;
 	String valueSpecs = null;
-	private IRandomValue randomValue = null;
-	double inlineValue = 0;
-	private double value = 0.0;
+	protected IRandomValue randomValue = null;
+	protected double inlineValue = 0;
+	protected double value = 0.0;
     public Unit<?> unit;
     
 	// set through reflection
 	public DistributionValue distribution = null;
 
-	private boolean isConstant = false;
+	protected boolean isConstant = false;
 	
 	public static enum PhysicalNature {
 		EXTENSIVE,

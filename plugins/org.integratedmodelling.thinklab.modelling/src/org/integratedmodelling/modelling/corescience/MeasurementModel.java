@@ -49,8 +49,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 				((dynSpecs == null && changeSpecs == null && derivativeSpecs == null) ? 
 						CoreScience.MEASUREMENT : 
 						"modeltypes:DynamicMeasurement"),
-				(id != null ? Polylist.list(CoreScience.HAS_FORMAL_NAME, id)
-						: null), 
+				(id != null ? Polylist.list(CoreScience.HAS_FORMAL_NAME, id) : null), 
 				(dynSpecs != null ? 
 					Polylist.list(":code", dynSpecs) : null),
 				(changeSpecs != null ? 

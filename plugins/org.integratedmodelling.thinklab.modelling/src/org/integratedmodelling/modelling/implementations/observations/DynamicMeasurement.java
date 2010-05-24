@@ -40,7 +40,11 @@ public class DynamicMeasurement extends Measurement {
 							null :
 						otherUnit.getConverterTo(unit);
 			}
+			
+			if (isConstant)
+					setInitialValue(randomValue == null ? value : randomValue);
 		}
+
 
 		@Override
 		protected Object processMediated(Object object) {

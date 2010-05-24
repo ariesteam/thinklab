@@ -33,6 +33,7 @@ import org.integratedmodelling.thinklab.kbox.FilteringQueryResult;
 import org.integratedmodelling.thinklab.kbox.ProxyQueryResult;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.Path;
 import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.IFn;
@@ -181,7 +182,7 @@ public abstract class DefaultAbstractModel implements IModel {
 			this.observableSpecs = Polylist.list(this.observableId);
 		}
 
-		id = observableId.toString().replace(':', '_');
+		id = Path.getLast(observableId, ':').toLowerCase();
 	}
 
 	@Override
