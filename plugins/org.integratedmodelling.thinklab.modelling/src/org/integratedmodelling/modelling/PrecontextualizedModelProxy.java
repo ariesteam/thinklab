@@ -28,14 +28,14 @@ public class PrecontextualizedModelProxy extends ModelProxy {
 	class PResult extends ModelResult {
 
 		public PResult(IModel model, IKBox kbox, ISession session) {
-			super(model, kbox, session);
+			super(model, kbox, session, null);
 		}
 
 		@Override
 		public Polylist getResultAsList(int n,
 				HashMap<String, String> references) throws ThinklabException {
 
-			Polylist ret = model.buildDefinition(_kbox, _session);
+			Polylist ret = model.buildDefinition(_kbox, _session, null);
 			ret = ObservationFactory.addDatasource(ret, state.conceptualize());
 			return ret;
 		}

@@ -1,6 +1,9 @@
 package org.integratedmodelling.modelling.corescience;
 
+import java.util.Collection;
+
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
@@ -35,8 +38,9 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 	}
 
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session)
+	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents)
 			throws ThinklabException {
+		
 		
 		/*
 		 * choose observation class according to derivative, probability etc.
@@ -66,7 +70,8 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 						null), 
 				(this.distribution != null ? 
 						Polylist.list(":distribution", this.distribution) : 
-						null), 				
+						null),
+				getImplicitExtents(extents),
 				(isMediating() ?
 						null :
 						Polylist.list(CoreScience.HAS_OBSERVABLE,

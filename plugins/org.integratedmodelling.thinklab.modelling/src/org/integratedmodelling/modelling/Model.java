@@ -58,7 +58,7 @@ public class Model extends DefaultAbstractModel {
 	@Override
 	public ModelResult observeInternal(IKBox kbox, ISession session, IntelligentMap<IConformance> cp, ArrayList<Topology> extents, boolean acceptEmpty)  throws ThinklabException {
 	
-		ModelResult ret = new ModelResult(this, kbox, session);
+		ModelResult ret = new ModelResult(this, kbox, session, extents);
 
 		/*
 		 * if we have a context model, query it and pass it along. 
@@ -254,7 +254,7 @@ public class Model extends DefaultAbstractModel {
 		return ret;
 	}
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session)
+	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents)
 			throws ThinklabException {
 		// WON'T GET CALLED UNLESS I SCREWED UP
 		throw new ThinklabInternalErrorException("SHIT! BUILDDEFINITION CALLED ON MODEL!");

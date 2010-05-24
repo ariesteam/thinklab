@@ -89,7 +89,7 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 		 * current offset in time dimension. This only gets redefined if we have and need to 
 		 * compute change equations instead of state equations.
 		 */
-		int[] eidx = cursor.getElementIndexes(idx);
+		int[] eidx = cursor.getElementIndexes(stateOffset);
 		int ctime = timeIndex < 0 ? -1 : eidx[timeIndex];
 		
 		/*
@@ -189,7 +189,7 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 		try {
 			
 			ret = 
-				changing ? 
+				(changing && changeCode != null) ? 
 					(changeIsDerivative ? /* TODO */ null : changeCode.invoke(parms)) :
 					clojureCode.invoke(parms);
 					

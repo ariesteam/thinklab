@@ -1,5 +1,8 @@
 package org.integratedmodelling.modelling.corescience;
 
+import java.util.Collection;
+
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -38,7 +41,7 @@ public class CountModel extends DefaultDynamicAbstractModel {
 	}
 
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException {
+	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

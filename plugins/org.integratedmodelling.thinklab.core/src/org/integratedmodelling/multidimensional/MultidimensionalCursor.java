@@ -126,6 +126,9 @@ public class MultidimensionalCursor {
     	int[] ret = new int[dimensions];
     	int rest = offset;
     	
+    	if (dimensions == 0)
+    		return ret;
+    	
     	if (storageOrderType == StorageOrdering.COLUMN_FIRST) {
     		for (int i = dimensions - 1; i > 0; i--) {
     			ret[i] = offset/strides.get(i);

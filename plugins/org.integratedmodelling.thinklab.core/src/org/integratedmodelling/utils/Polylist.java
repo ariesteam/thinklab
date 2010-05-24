@@ -40,6 +40,7 @@ import java.io.InputStream;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Stack;
@@ -1007,12 +1008,19 @@ public class Polylist {
 	}
 
 	/**
-	 * PolylistFromArray makes a list out of an array of objects
+	 * PolylistFromArray makes a list out of an array of objects. If an object
+	 * is a collection, all of its objects are added one by one.
 	 */
 	public static Polylist PolylistFromArray(Object array[]) {
 		Polylist result = nil;
-		for (int i = array.length - 1; i >= 0; i--)
-			result = cons(array[i], result);
+		for (int i = array.length - 1; i >= 0; i--) {
+			if (array[i] instanceof Collection<?>) {
+				for (Object oo : (Collection<?>)array[i])
+					result = cons(oo, result);
+			} else {
+				result = cons(array[i], result);
+			}
+		}
 		return result;
 	}
 	

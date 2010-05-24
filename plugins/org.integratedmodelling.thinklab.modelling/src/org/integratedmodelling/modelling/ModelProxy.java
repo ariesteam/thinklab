@@ -1,6 +1,7 @@
 package org.integratedmodelling.modelling;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;
@@ -55,8 +56,8 @@ public class ModelProxy extends DefaultAbstractModel {
 	}
 
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException {
-		return model.buildDefinition(kbox, session);
+	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents) throws ThinklabException {
+		return model.buildDefinition(kbox, session, extents);
 	}
 
 	@Override

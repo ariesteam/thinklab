@@ -1,6 +1,9 @@
 package org.integratedmodelling.modelling.corescience;
 
+import java.util.Collection;
+
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -52,7 +55,7 @@ public class CategorizationModel extends DefaultDynamicAbstractModel {
 	}
 
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException {
+	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents) throws ThinklabException {
 
 		Polylist def = Polylist.listNotNull(
 				CoreScience.CATEGORIZATION,

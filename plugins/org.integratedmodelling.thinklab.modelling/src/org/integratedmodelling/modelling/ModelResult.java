@@ -1,6 +1,7 @@
 package org.integratedmodelling.modelling;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -96,10 +97,13 @@ public class ModelResult implements IQueryResult  {
 	private IQueryResult contextModel = null;
 	private ArrayList<Topology> contextExt = null;
 
-	public ModelResult(IModel model, IKBox kbox, ISession session) {
+	private Collection<Topology> _externalExtents = null;
+
+	public ModelResult(IModel model, IKBox kbox, ISession session, Collection<Topology> externalExtents) {
 		_model = model;
 		_kbox = kbox;
 		_session = session;
+		_externalExtents  = externalExtents;
 	}
 
 	/**
@@ -242,7 +246,7 @@ public class ModelResult implements IQueryResult  {
 			}
 					
 		} else {
-			ret = _model.buildDefinition(_kbox, _session);
+			ret = _model.buildDefinition(_kbox, _session, _externalExtents);
 		}
 		
 		/*

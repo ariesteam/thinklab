@@ -1,12 +1,18 @@
 package org.integratedmodelling.modelling;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.time.TimePlugin;
 import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.IFn;
@@ -52,7 +58,7 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 		if (keyword.equals(":state") && (argument instanceof IFn)) {
 			this.dynSpecs = argument;
 			setLanguage(argument);
-		} else if (keyword.equals(":derivative")) {
+		} else if (keyword.equals(":rate")) {
 			this.derivativeSpecs = argument;
 			setLanguage(argument);
 		} else if (keyword.equals(":probability")) {
@@ -77,43 +83,25 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 		dynSpecs = ((DefaultDynamicAbstractModel)model).dynSpecs;
 	}
 
-	@Override
-	protected void validateMediatedModel(IModel model)
-			throws ThinklabValidationException {
-		// TODO Auto-generated method stub
+	protected Polylist getImplicitExtents(Collection<Topology> extents) {
 		
-	}
-
-	@Override
-	protected void validateSemantics(ISession session) throws ThinklabException {
-		// TODO Auto-generated method stub
+		ArrayList<Polylist> el = new ArrayList<Polylist>();
 		
+		for (Topology t : extents) {		
+			if (t.getObservableClass().is(TimePlugin.get().TimeObservable())) {
+				if ((changeSpecs != null || derivativeSpecs != null) && !isMediating()) {
+				}
+			}
+		}
+		
+		Polylist ret = null;
+		
+		if (el.size() > 0) {
+			
+			ret = Polylist.list(CoreScience.HAS_EXTENT, el);
+		}
+		
+		return ret;
 	}
-
-	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IConcept getCompatibleObservationType(ISession session) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IModel getConfigurableClone() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Polylist conceptualize() throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	
 }

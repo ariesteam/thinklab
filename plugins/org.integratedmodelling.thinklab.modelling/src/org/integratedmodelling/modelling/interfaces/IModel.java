@@ -1,5 +1,9 @@
 package org.integratedmodelling.modelling.interfaces;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.Scenario;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -74,11 +78,16 @@ public interface IModel extends IConceptualizable {
 
 	/**
 	 * Create the base list definition for the resulting observation
+	 * @param externalExtents the list definition of any extents that were added by
+	 * 		  the user (as a context of computation). Typically they should be
+	 * 	      ignored unless the observations built are leaves and implicitly
+	 *        know the extent (e.g. time for dynamic models) in which case they
+	 *        should be added to the generated definition.
 	 * 
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException;
+	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> externalExtents) throws ThinklabException;
 
 	/**
 	 * Models must have an ID

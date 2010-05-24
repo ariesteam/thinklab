@@ -86,7 +86,7 @@
 				(= (first clause) :probability)
 				(.applyClause model ":probability" (eval (second clause)))
 				(= (first clause) :derivative)
-				(.applyClause model ":derivative" (eval (second clause)))
+				(.applyClause model ":rate" (eval (second clause)))
 				(= (first clause) :state)
 				(.applyClause model ":state" (eval (second clause)))
 				(= (first clause) :value)

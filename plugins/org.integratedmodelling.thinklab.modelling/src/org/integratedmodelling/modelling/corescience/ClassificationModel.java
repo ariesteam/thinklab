@@ -1,8 +1,10 @@
 package org.integratedmodelling.modelling.corescience;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.DefaultAbstractModel;
@@ -241,7 +243,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	}
 	
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session) throws ThinklabException {
+	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents) throws ThinklabException {
 
 		if (state == null)
 			state = KnowledgeManager.get().getLeastGeneralCommonConcept(concepts);
@@ -270,6 +272,10 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		if (derivativeSpecs != null) {
 			arr.add(Polylist.list(":derivative", derivativeSpecs));
 		}
+		
+		Polylist iex = getImplicitExtents(extents);
+		if (iex != null)
+			arr.add(iex);
 
 		if (dynSpecs != null || changeSpecs != null || derivativeSpecs != null)
 			arr.add(Polylist.list("modeltypes:hasExpressionLanguage", 

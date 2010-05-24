@@ -192,7 +192,8 @@ public class ModelCommand implements ICommandHandler {
 			((DefaultAbstractModel)model).dump(System.out);
 		}
 		
-		IQueryResult r = ModelFactory.get().run(model, kbox, session, listeners, 
+		IQueryResult r = 
+			ModelFactory.get().run(model, kbox, session, listeners, 
 				topologies.toArray(new Topology[topologies.size()]));
 		
 		if (session.getOutputStream() != null) {

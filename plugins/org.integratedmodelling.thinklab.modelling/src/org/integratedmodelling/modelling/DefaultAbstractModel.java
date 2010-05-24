@@ -490,7 +490,7 @@ public abstract class DefaultAbstractModel implements IModel {
 			IntelligentMap<IConformance> cp, ArrayList<Topology> extents,
 			boolean acceptEmpty) throws ThinklabException {
 
-		ModelResult ret = new ModelResult(this, kbox, session);
+		ModelResult ret = new ModelResult(this, kbox, session, extents);
 
 		/*
 		 * if we're resolved, the model result contains all we need to know
