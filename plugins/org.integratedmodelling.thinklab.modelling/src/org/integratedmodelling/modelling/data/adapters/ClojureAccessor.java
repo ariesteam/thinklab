@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.apache.commons.math.ode.DerivativeException;
+import org.apache.commons.math.ode.FirstOrderDifferentialEquations;
+import org.apache.commons.math.ode.FirstOrderIntegrator;
+import org.apache.commons.math.ode.nonstiff.DormandPrince853Integrator;
 import org.integratedmodelling.corescience.implementations.datasources.DefaultAbstractAccessor;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IExtent;
@@ -12,6 +16,7 @@ import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -21,6 +26,7 @@ import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Pair;
 
 import clojure.lang.IFn;
+import clojure.lang.IPersistentMap;
 import clojure.lang.Keyword;
 import clojure.lang.PersistentArrayMap;
 
@@ -38,7 +44,6 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 	ArrayList<Keyword> kwList = null;
 	int index = 0;
 	Observation obs = null;
-//	Keyword selfId = null;
 	String selfLabel = null;
 	int mediatedIndex = 0;
 	Object initialValue = null;
@@ -46,6 +51,57 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 	// index of time dimension in overall context; if -1, we have no time
 	int timeIndex = -1;
 	private boolean storeState = false;
+	
+	class ChangeDerivative implements FirstOrderDifferentialEquations {
+
+		private IPersistentMap _parm;
+
+		public ChangeDerivative(IPersistentMap  parms) {
+			_parm = parms;
+		}
+		
+		@Override
+		public void computeDerivatives(double t, double[] y, double[] ydot)
+				throws DerivativeException {
+			
+			Object o = null;
+			try {
+				// TODO add the actual time point corresponding to the computed index
+				_parm = _parm.assoc(Keyword.intern(null, "time#index"), new Double(t));
+				o = changeCode.invoke(_parm);
+			} catch (Exception e) {
+				throw new DerivativeException(e);
+			}
+			if (o != null && o instanceof Number)
+				ydot[0] = ((Number)o).doubleValue();
+			else 
+				ydot[0] = 0.0;
+			
+		}
+
+		@Override
+		public int getDimension() {
+			return 1;
+		}
+		
+	}
+	
+	private Object integrate(IPersistentMap parms, double initialState, double start, double end) {
+		
+		// TODO support other integrators using a metadata keyword to selects
+		FirstOrderIntegrator dp853 = new DormandPrince853Integrator(1.0e-8, 100.0, 1.0e-10, 1.0e-10);
+		FirstOrderDifferentialEquations ode = new ChangeDerivative(parms);
+		double[] y = new double[] { initialState}; 
+		try {
+			dp853.integrate(ode, start, y, end, y);
+		} catch (Exception e) {
+			throw new ThinklabRuntimeException(e);
+		}
+		
+		return new Double(y[0]);
+	}
+	
+
 	
 	public ClojureAccessor(
 			IFn code, Observation obs, boolean isMediator, 
@@ -66,10 +122,6 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 		if (selfLabel == null)
 			selfLabel = obs.getObservableClass().getLocalName().toLowerCase();
 
-//		if (isMediator) {
-//			selfId = Keyword.intern(null, selfLabel);
-//		}
-//		
 		int i = 0;
 		for (IConcept c : context.getDimensions()) {
 			if (c.is(TimePlugin.get().TimeObservable()))
@@ -103,7 +155,6 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 		 * them.
 		 */
 		boolean changing = ctime > 0;
-		
 		
 		/*
 		 * set values for self. It should be:
@@ -139,7 +190,9 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 				 * name of the concept space to which the concept belongs.
 				 */
 				try {
-					IValue vv = ext.getState(eidx[ii]);
+					// if we're computing time, the extent we're computing is that between initial value and 
+					// now
+					IValue vv = ext.getState(eidx[ii] - (ii == timeIndex ? 1 : 0));
 					String kk = extc.getConceptSpace();
 					parms = (PersistentArrayMap) parms.assoc(Keyword.intern(null, kk), vv);
 				} catch (ThinklabException e) {
@@ -157,7 +210,7 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 				if (mvars != null)
 					for (Pair<String, Integer> mv : mvars) {
 
-						String kwid = selfLabel + "/" + mv.getFirst();
+						String kwid = selfLabel + "#" + mv.getFirst();
 						iidx[ii] = zeroIdx + mv.getSecond();
 						previousOffset = cursor.getElementOffset(iidx);
 						Object ov = this.state.getDataAt(previousOffset);
@@ -193,13 +246,16 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 		Object ret = null;
 		
 		try {
-			
 			ret = 
 				(changing && changeCode != null) ? 
-					(changeIsDerivative ? /* TODO */ null : changeCode.invoke(parms)) :
+					(changeIsDerivative ? 
+							integrate(parms, ((Number)self).doubleValue(), ctime - 1, ctime) : 
+							changeCode.invoke(parms)) :
 					((initialValue == null && clojureCode != null) ? 
 						clojureCode.invoke(parms) :
-						initialValue);
+						(initialValue instanceof DistributionValue) ? 
+							new Double(((DistributionValue)initialValue).draw()) : 
+							initialValue);
 					
 		} catch (Exception e) {
 			throw new ThinklabRuntimeException(e);

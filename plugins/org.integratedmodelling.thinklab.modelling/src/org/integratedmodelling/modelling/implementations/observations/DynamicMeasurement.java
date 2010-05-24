@@ -42,7 +42,9 @@ public class DynamicMeasurement extends Measurement {
 			}
 			
 			if (isConstant)
-					setInitialValue(randomValue == null ? value : randomValue);
+				setInitialValue(randomValue == null ? value : randomValue);
+			else if (distribution != null)
+				setInitialValue(distribution);
 		}
 
 

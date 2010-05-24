@@ -45,6 +45,9 @@
 			<export prefix="*" />
 		</library>
 		<library type="code" id="commons-logging"  path="lib/commons-logging-1.1.1.jar"/>
+		<library type="code" id="commons-math"  path="lib/commons-math-2.1.jar">
+			<export prefix="*" />
+		</library>
 		<library type="code" id="commons-pool"  path="lib/commons-pool-1.3.jar">
 			<export prefix="*" />
 		</library>

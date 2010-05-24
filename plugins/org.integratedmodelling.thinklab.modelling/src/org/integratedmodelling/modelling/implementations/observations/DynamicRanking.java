@@ -39,6 +39,12 @@ public class DynamicRanking extends Ranking {
 				} catch (ThinklabValidationException e) {
 					throw new ThinklabRuntimeException(e);
 				}
+				
+			if (isConstant)
+				setInitialValue(value);
+			else if (distribution != null)
+				setInitialValue(distribution);
+
 		}
 
 		@Override

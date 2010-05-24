@@ -56,7 +56,7 @@ public class PeriodValue extends ParsedLiteralValue {
     @Override
     public void parseLiteral(String s) throws ThinklabValidationException {
         try {
-        	/* literal is two dates separated by a dash */
+        	/* literal is two dates separated by a pound sign */
         	concept = getBaseTimeConcept();
         } catch (Exception e) {
             throw new ThinklabValidationException(e);
@@ -73,7 +73,6 @@ public class PeriodValue extends ParsedLiteralValue {
         this.interval = interval;
     }
 
-    
     public PeriodValue(String s) throws ThinklabException {
         parseLiteral(s);
     }

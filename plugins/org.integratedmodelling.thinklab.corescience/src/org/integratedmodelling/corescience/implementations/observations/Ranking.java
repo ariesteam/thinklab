@@ -88,8 +88,8 @@ public class Ranking extends Observation implements MediatingObservation {
 	boolean leftBounded = false;
 	boolean rightBounded = false;
 
-	private boolean isConstant = false;
-	private double value = 0.0;
+	protected boolean isConstant = false;
+	protected double value = 0.0;
 	
 	// set through reflection
 	public DistributionValue distribution = null;

@@ -301,7 +301,7 @@ public abstract class DefaultAbstractModel implements IModel {
 
 	@Override
 	public boolean isResolved() {
-		return state != null || mediated != null;
+		return state != null || mediated != null || distribution != null;
 	}
 
 	/*
@@ -496,7 +496,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		/*
 		 * if we're resolved, the model result contains all we need to know
 		 */
-		if (state != null)
+		if (state != null || distribution != null)
 			return ret;
 
 		/*

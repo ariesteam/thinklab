@@ -1014,12 +1014,7 @@ public class Polylist {
 	public static Polylist PolylistFromArray(Object array[]) {
 		Polylist result = nil;
 		for (int i = array.length - 1; i >= 0; i--) {
-			if (array[i] instanceof Collection<?>) {
-				for (Object oo : (Collection<?>)array[i])
-					result = cons(oo, result);
-			} else {
-				result = cons(array[i], result);
-			}
+			result = cons(array[i], result);
 		}
 		return result;
 	}

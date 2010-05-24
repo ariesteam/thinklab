@@ -374,5 +374,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/net.opengis.wps-2.6.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/org.w3.xlink-2.6.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-process-2.6.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/commons-math-2.1.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>
