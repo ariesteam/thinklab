@@ -120,6 +120,10 @@ public class TimeValue extends ParsedLiteralValue {
 		parseLiteral(s);
 	}
 
+	public TimeValue(long d) {
+		this(new DateTime(d));
+	}
+
 	public boolean isNumber() {
 		return false;
 	}

@@ -67,6 +67,7 @@ public class DurationValue extends ParsedLiteralValue {
     String literal = null;
     int precision = TemporalPrecision.MILLISECOND;
     int origQuantity = 1;
+    String origUnit = "";
     
     public DurationValue() throws ThinklabException {
         super();
@@ -84,9 +85,12 @@ public class DurationValue extends ParsedLiteralValue {
     		for (int i = 0; i < s.length(); i++) {
     			if (!Character.isDigit(s.charAt(i))) {
     				brk = i;
+    				origUnit = s.substring(i);
     				break;
     			}
     		}
+    	} else {
+    		origUnit = s.substring(s.indexOf(" ") + 1);
     	}
     	
     	if (brk > 0) {
@@ -276,5 +280,13 @@ public class DurationValue extends ParsedLiteralValue {
 		}
 		
 		return new Pair<TimeValue, TimeValue>(start, end);
+	}
+	
+	public int getOriginalQuantity() {
+		return origQuantity;
+	}
+	
+	public String getOriginalUnit() {
+		return origUnit;
 	}
 }

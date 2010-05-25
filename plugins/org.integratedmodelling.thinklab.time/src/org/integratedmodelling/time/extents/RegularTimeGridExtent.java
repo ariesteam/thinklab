@@ -78,6 +78,18 @@ public class RegularTimeGridExtent implements IExtent {
 	private DateTime end;
 	private long step;
 	
+	public DateTime getStart() {
+		return start;
+	}
+
+	public DateTime getEnd() {
+		return end;
+	}
+
+	public long getStep() {
+		return step;
+	}
+
 	// geometry factory used for all calculations; we use fixed 0-decimal precision, so that we deal
 	// with whole milliseconds.
 	static private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(0.0));

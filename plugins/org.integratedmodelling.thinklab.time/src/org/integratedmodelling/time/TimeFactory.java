@@ -54,6 +54,10 @@ public class TimeFactory {
 			ext = s;
 		}
 		
+		DurationValue step = null;
+		if (res != null)
+			step = new DurationValue(res);
+
 		TimeValue start = null;
 		TimeValue end = null;
 		
@@ -65,18 +69,28 @@ public class TimeFactory {
 			Pair<TimeValue, TimeValue> pd = duration.localize();
 			start = pd.getFirst();
 			end = pd.getSecond();
+			
+			if (res == null && duration.getOriginalQuantity() > 1) {
+				res = (1 + duration.getOriginalUnit());
+				step = new DurationValue(res);
+			}
+			
 		} else {
+			
+			String exd = null;
+			if (ext.contains("#")) {
+				String[] zo = ext.split("#");
+				ext = zo[0];
+				exd = zo[1];
+			}
 			/*
-			 * extent is a date, extent is one time the implied 
+			 * extent is a date or a range thereof, extent is one time the implied 
 			 * resolution.
 			 */
 			start = new TimeValue(ext);
-			end = start.getEndOfImpliedExtent();
+			end = exd == null ? start.getEndOfImpliedExtent() : new TimeValue(exd);
 		}
 		
-		DurationValue step = null;
-		if (res != null)
-			step = new DurationValue(res);
 		
 		Polylist ret = null;
 		if (res == null) {

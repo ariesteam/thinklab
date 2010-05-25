@@ -22,6 +22,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.time.TimePlugin;
+import org.integratedmodelling.time.extents.RegularTimeGridExtent;
+import org.integratedmodelling.time.literals.TimeValue;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Pair;
 
@@ -47,6 +49,8 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 	String selfLabel = null;
 	int mediatedIndex = 0;
 	Object initialValue = null;
+	long startMilli = -1l;
+	long stepMilli = 0;
 	
 	// index of time dimension in overall context; if -1, we have no time
 	int timeIndex = -1;
@@ -68,6 +72,12 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 			try {
 				// TODO add the actual time point corresponding to the computed index
 				_parm = _parm.assoc(Keyword.intern(null, "time#index"), new Double(t));
+
+				if (startMilli >= 0) {
+					TimeValue tv = new TimeValue((long)(startMilli + stepMilli * t));
+					_parm = _parm.assoc(Keyword.intern(null, "time#now"), tv);
+				}
+				
 				o = changeCode.invoke(_parm);
 			} catch (Exception e) {
 				throw new DerivativeException(e);
@@ -201,8 +211,15 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 
 				// TODO this may change when we support closures, so we can allow arbitrarily
 				// parameterized history access
-				if (ii == timeIndex)
+				if (ii == timeIndex) {
+					
+					if (startMilli < 0 && ext instanceof RegularTimeGridExtent) {
+						startMilli = ((RegularTimeGridExtent)ext).getStart().getMillis();
+						stepMilli = ((RegularTimeGridExtent)ext).getStep();
+					}
+					
 					continue;
+				}
 				
 				Collection<Pair<String, Integer>> mvars = ext.getStateLocators(eidx[ii]);
 				
