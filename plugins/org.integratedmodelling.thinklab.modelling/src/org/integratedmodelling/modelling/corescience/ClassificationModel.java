@@ -67,6 +67,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public void validateMediatedModel(IModel model) throws ThinklabValidationException {
+		super.validateMediatedModel(model);
 		if (! (
 				(model instanceof CountModel) ||
 				(model instanceof RankingModel) ||

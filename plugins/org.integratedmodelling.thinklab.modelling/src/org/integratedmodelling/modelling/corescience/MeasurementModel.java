@@ -87,6 +87,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 	@Override
 	public void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
+		super.validateMediatedModel(model);
 		if (!(model instanceof MeasurementModel)) {
 			throw new ThinklabValidationException(
 					"measurement models can only mediate other measurements");

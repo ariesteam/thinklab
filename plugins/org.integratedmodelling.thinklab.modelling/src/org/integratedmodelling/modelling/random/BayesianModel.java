@@ -76,6 +76,7 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 	@Override
 	public void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
+		super.validateMediatedModel(model);
 	}
 
 

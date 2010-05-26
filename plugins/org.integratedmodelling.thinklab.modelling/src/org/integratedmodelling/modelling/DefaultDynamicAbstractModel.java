@@ -103,5 +103,10 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 		
 		return ret;
 	}
+
+	@Override
+	public void validateMediatedModel(IModel model) throws ThinklabValidationException {
+		super.validateMediatedModel(model);
+	}
 	
 }

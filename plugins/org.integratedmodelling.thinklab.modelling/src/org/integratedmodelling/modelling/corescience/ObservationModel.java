@@ -37,6 +37,8 @@ public class ObservationModel extends DefaultAbstractModel {
 	@Override
 	public void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
+
+		super.validateMediatedModel(model);
 		
 		/*
 		 * TODO a fairly sophisticated mediation may actually take place - a real semantic

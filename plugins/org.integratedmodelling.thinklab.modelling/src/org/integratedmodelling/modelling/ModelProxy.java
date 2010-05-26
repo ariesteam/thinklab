@@ -52,7 +52,7 @@ public class ModelProxy extends DefaultAbstractModel {
 	@Override
 	protected void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
-		// TODO
+		((DefaultAbstractModel)this.model).validateMediatedModel(model);
 	}
 
 	@Override

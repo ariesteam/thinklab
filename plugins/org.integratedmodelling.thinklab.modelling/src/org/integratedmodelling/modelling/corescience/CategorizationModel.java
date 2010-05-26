@@ -29,6 +29,7 @@ public class CategorizationModel extends DefaultDynamicAbstractModel {
 	@Override
 	public void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
+		super.validateMediatedModel(model);
 		// a ranking can mediate another ranking or a measurement
 		if (! (model instanceof CategorizationModel)) {
 			throw new ThinklabValidationException("categorization models can only mediate other categorizations");

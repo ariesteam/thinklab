@@ -18,6 +18,7 @@ public class CountModel extends DefaultDynamicAbstractModel {
 	public void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
 		// TODO Auto-generated method stub
+		super.validateMediatedModel(model);
 		
 	}
 

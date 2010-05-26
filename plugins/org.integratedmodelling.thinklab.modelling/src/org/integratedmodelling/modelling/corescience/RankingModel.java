@@ -46,6 +46,7 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 	public void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
 		// a ranking can mediate another ranking or a measurement
+		super.validateMediatedModel(model);
 		if (! ((model instanceof MeasurementModel) || (model instanceof RankingModel))) {
 			throw new ThinklabValidationException("ranking models can only mediate ranking or measurements");
 		}

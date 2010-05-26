@@ -283,8 +283,14 @@ public abstract class DefaultAbstractModel implements IModel {
 		this.id = id;
 	}
 
-	protected abstract void validateMediatedModel(IModel model)
-			throws ThinklabValidationException;
+	protected void validateMediatedModel(IModel model)
+			throws ThinklabValidationException {
+		if (getObservable().equals(model.getObservable())) {
+			throw new ThinklabValidationException(
+					"a model cannot mediate another that observes the same concept: " + 
+					model.getObservable());
+		}
+	}
 
 	@Override
 	public IConcept getObservable() {
