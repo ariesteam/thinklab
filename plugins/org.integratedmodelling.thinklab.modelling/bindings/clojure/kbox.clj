@@ -20,7 +20,7 @@
 			(org.integratedmodelling.modelling.data.KBoxHandler/fixMetadata 
 				(tl/map-keyed-functions fnmap instance)))))
 
-(defmacro object
+(defmacro defobject
 	"Define an instance. Forward references (InstanceHandler) may also be returned, but will only 
 	 be allowed within a with-kbox form."
 	[concept & body]

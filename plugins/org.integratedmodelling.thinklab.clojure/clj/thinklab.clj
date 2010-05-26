@@ -190,4 +190,24 @@
 ;	""
 ;	[command-name & arguments] 
 ;	`())
+
+;; -------------------------------------------------------------------------------------
+;; definition of knowledge through clojure forms
+;; -------------------------------------------------------------------------------------
+(defn j-make-object-handler
+	[concept]
+	(new org.integratedmodelling.clojure.ConceptHandler (tl/get-session) concept))
+
+(defmacro defconcept
+	"Define an instance. Forward references (InstanceHandler) may also be returned, but will only 
+	 be allowed within a with-kbox form."
+	[concept & body]
+	`(let [conc# (str ~concept)
+				 inst# (j-make-concept-handler conc#)] 
+		(doseq [prop# '~body]
+			(if (string? prop#)
+				(.addAnnotation inst# prop#)
+				(.define inst# prop#)))
+		(.getConcept inst#)))
+
 	

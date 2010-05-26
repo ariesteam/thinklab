@@ -1,11 +1,20 @@
 (ns modelling.examplesb
 	(:refer-clojure)
+	(:use [tl :only (defconcept)])
   (:use [modelling :only (defmodel measurement dde-measurement identification 
   												classified-raster)]))
 
 ; we need these ontologies to define our observables
 (tl/load "biodiversity.owl" "ecology.owl")
 
+(defconcept 'harewolf:HarePopulationAbundance
+	:subsumes ('representation:Count 'ecology:PopulationAbundance)
+	:persist 'org.integratedmodelling.thinklab.modelling)
+
+(defconcept 'harewolf:WolfPopulationAbundance
+	:subsumes 'ecology:PopulationAbundance
+	:persist true)
+	
 ;; hare model
 (defmodel wolf-controlled-hare-density 
 
@@ -20,23 +29,23 @@
 	  :derivative
 	  	(time:ContinuousTime (- (* hare-birth-rate self) (* wolf-abundance wolf-consumption-rate)))	  	 	
 	  :context
-			((enumeration
+			((measurement
 					'(ecology:BirthRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
-					"n/d") :as hare-birth-rate
-			 (enumeration
+					"/d") :as hare-birth-rate
+			 (measurement
 					'(ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:GreyWolf)))
-					"n/m^2") :as wolf-abundance
-			 (enumeration 
+					"/m^2") :as wolf-abundance
+			 (measurement 
 					'(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
-					"n/d") 
+					"/d") 
 						:as   wolf-consumption-rate 
 						:when (tl/is? biome 'ecology:BorealForest)
 						:parameter 0.023 
 			 (enumeration 
 					'(ecology:PredationRate (ecology:hasSpecies (biodiversity:SnowShoeHare)))
-					"n/d") 
+					"/d") 
 						:as wolf-consumption-rate 
-						:parameter 0.123))
+						:value 0.123))
 
 ;; wolf model
 (defmodel hare-dependent-wolf-density
@@ -53,24 +62,24 @@
 	  :derivative 
 	  	(time:ContinuousTime (* hare-abundance hare-conversion-efficiency wolf))
 	  :context
-			((enumeration 
+			((measurement 
 					'(ecology:PredationEfficiency 
 							(ecology:hasSource (biodiversity:SnowShoeHare))
 							(ecology:hasTarget (biodiversity:GreyWolf)))					
-					"n/d") 
+					"/d") 
 				    :as hare-conversion-efficiency
 						:parameter 0.0034
-			 (enumeration
+			 (measurement
 					'(ecology:PopulationAbundance (ecology:hasSpecies (biodiversity:SnowShoeHare)))
-					"ind/m^2") 
+					"/m^2") 
 						:as hare-abundance))
 
 (defmodel hare-wolf-system 
 	 '(ecology:Community (ecology:hasSpecies (biodiversity:Hare biodiversity:Wolf)))
 		(identification 'ecology:Community)
 		  :context 
-			  (wolf-controlled-hare-density :as hare :state 10
-			   hare-dependent-wolf-density  :as wolf :state 2))
+			  (wolf-controlled-hare-density :as hare :value 10
+			   hare-dependent-wolf-density  :as wolf :value 2))
 			
 ; (run hare-wolf-system)
 
