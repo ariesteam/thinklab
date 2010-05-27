@@ -55,6 +55,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 import org.integratedmodelling.utils.URLUtils;
 import org.mvel2.MVEL;
 
@@ -72,7 +73,7 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 	private GridExtent gridExtent;
 	private ShapeExtent shapeExtent;
 
-	private Serializable bytecode;
+	private MVELExpression transformation;
 	
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
@@ -107,7 +108,7 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 				} else if (r.getProperty().equals(Geospace.HAS_FILTER_PROPERTY)) {
 					filterExpression = r.getValue().toString();
 				} else if (r.getProperty().equals(Geospace.HAS_TRANSFORMATION_EXPRESSION)) {
-					this.bytecode = MVEL.compileExpression( r.getValue().toString());
+					this.transformation = new MVELExpression(r.getValue().toString());
 				}
 			}
 		}
@@ -166,10 +167,10 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 					index, 
 					gridExtent == null ? shapeExtent : gridExtent);
 			
-			if (bytecode != null && ret != null && !(ret instanceof Double && Double.isNaN((Double)ret)) ) {
+			if (this.transformation != null && ret != null && !(ret instanceof Double && Double.isNaN((Double)ret)) ) {
 				HashMap<String, Object> parms = new HashMap<String, Object>();
 				parms.put("self", ret);
-				ret = MVEL.executeExpression(this.bytecode, parms);
+				ret = this.transformation.eval(parms);
 			}
 			
 		} catch (ThinklabValidationException e) {

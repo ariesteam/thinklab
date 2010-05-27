@@ -32,6 +32,7 @@
  **/
 package org.integratedmodelling.time.extents;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.integratedmodelling.corescience.interfaces.IExtent;
@@ -299,10 +300,16 @@ public class RegularTimeGridExtent implements IExtent {
 		return null;
 	}
 
-
 	@Override
 	public Collection<Pair<String, Integer>> getStateLocators(int index) {
-		// TODO Auto-generated method stub
-		return null;
+
+		ArrayList<Pair<String,Integer>> ret = null;
+		
+		if (index > 0) {
+			ret = new ArrayList<Pair<String,Integer>>();
+			// previous
+			ret.add(new Pair<String, Integer>("previous", index-1));
+		}
+		return ret;
 	}
 }

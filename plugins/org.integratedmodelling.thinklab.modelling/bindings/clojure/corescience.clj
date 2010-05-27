@@ -7,11 +7,6 @@
 	[]
 	(new org.integratedmodelling.modelling.corescience.MeasurementModel))
 
-(defn j-make-count
-	"Make a new instance of Model and return it."
-	[]
-	(new org.integratedmodelling.modelling.corescience.CountModel))
-
 (defn j-make-classification
 	"Make a new instance of Model and return it."
 	[]
@@ -38,7 +33,8 @@
 	(new org.integratedmodelling.modelling.random.BayesianModel))
 
 (defmacro classification
-	""
+	"The states of a classification model are concepts. All states must be direct children of the main observable
+	of the model."
 	[observable & specs]
 	`(let [model# (modelling/j-make-classification)] 
  	   (.setObservable model# 
@@ -51,23 +47,9 @@
 		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (eval (second classifier#)))))
  	   model#))
 
-(defmacro enumeration
-	""
-	[observable & body]
-	`(let [model# 
- 	        	(modelling/j-make-count)] 
- 	   (.setObservable model# 
-	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
- 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
- 	   					(eval ~observable))) 	
- 	   (if (not (nil? '~body)) 
-				(doseq [classifier# (partition 2 '~body)]
-		 	   	(if  (keyword? (first classifier#)) 
-		 	   		  (transform-model model# classifier#))))
- 	    model#))
-	
 (defmacro ranking
-	""
+	"Rankings describe their states as numeric values that have an ordinal relationship and optionally
+	a scale. Rankings of different scales are mediated appropriately."
 	[observable & body]
 	`(let [model# 
  	        	(modelling/j-make-ranking)] 
@@ -82,16 +64,18 @@
  	   model#))
 
 (defn binary-coding
+	 "A binary coding is a numeric model that will mediate anything non-zero to 1."
    [observable & body]
    (ranking observable :binary true body)) 
 
 (defn numeric-coding
+   "A numeric coding is like a numeric ranking but no ordinal assumption is made on the states."
    [observable & body]
    (ranking observable :numeric-classification true body)) 
 	
-;; TODO fix the transform-model thing
 (defmacro categorization
-	""
+	"Categorizations have string tags as states. They hold little semantics and should only be used to
+	 handle hard-to-annotate datasets."
 	[observable & categories]
 	`(let [model# 
  	        	(modelling/j-make-categorization)] 
@@ -117,6 +101,17 @@
 		 	   	(if  (keyword? (first classifier#)) 
 		 	   		  (transform-model model# classifier#) )))
  	    model#))
+	
+(defn enumeration
+   "An enumeration is a count of individual objects, possibly distributed over an extent. It should have
+    units, but these should only have the extent components in them, e.g. /km^2*year. If the enumeration is
+    given no units, it's translated into an abundance ranking. For now there is a limitation in the syntax:
+    enumerations with no units cannot have other metadata in the form, i.e. they can only contain the 
+    observable."
+   ([observable]
+    (ranking observable :enumeration true))
+   ([observable units & body]
+    (measurement observable units :enumeration true body))) 	
 	
 (defmacro identification
 	"Create an identification model. The observable can only be a semantic object."

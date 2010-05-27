@@ -54,6 +54,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 import org.integratedmodelling.utils.URLUtils;
 import org.mvel2.MVEL;
 
@@ -65,7 +66,7 @@ public class RegularRasterGridDataSource implements IDataSource<Object>, IInstan
 	/* same here - these are overall extents that we need to conform to */
 	private GridExtent gridExtent;
 	/* any expression to transform with gets compiled into this */
-	protected Serializable bytecode = null;
+	protected MVELExpression transformation = null;
 	
 	public RegularRasterGridDataSource() {
 	}
@@ -101,7 +102,7 @@ public class RegularRasterGridDataSource implements IDataSource<Object>, IInstan
 				} else if (r.getProperty().equals(Geospace.HAS_VALUE_ATTRIBUTE)) {
 					valueAttr = r.getValue().toString();
 				} else if (r.getProperty().equals(Geospace.HAS_TRANSFORMATION_EXPRESSION)) {
-					this.bytecode = MVEL.compileExpression( r.getValue().toString());
+					this.transformation = new MVELExpression(r.getValue().toString());
 				}
 			} 
 		}
@@ -146,10 +147,10 @@ public class RegularRasterGridDataSource implements IDataSource<Object>, IInstan
 			if (nd != null && ret != null && (ret instanceof Double) && ((Double)ret).equals(nd)) {
 				ret = Double.NaN;
 			}
-			if (this.bytecode != null && ret != null && !(ret instanceof Double && Double.isNaN((Double)ret)) ) {
+			if (this.transformation != null && ret != null && !(ret instanceof Double && Double.isNaN((Double)ret)) ) {
 				HashMap<String, Object> parms = new HashMap<String, Object>();
 				parms.put("self", ret);
-				ret = MVEL.executeExpression(this.bytecode, parms);
+				ret = this.transformation.eval(parms);
 			}
 			return ret;
 		} catch (ThinklabValidationException e) {
