@@ -85,6 +85,11 @@
   <owl:Class rdf:ID="Enthalpy">
     <rdfs:subClassOf rdf:resource="#ThermodynamicPotential"/>
   </owl:Class>
+  <owl:Class rdf:ID="ObjectVolumeDensity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="ObjectDensity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:about="#IntensivePhysicalProperty">
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >A physical property whose perceived state does not depend on extent (size or amount of 
@@ -135,8 +140,18 @@
     <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >true</thinklab-core:AbstractClass>
   </owl:Class>
+  <owl:Class rdf:ID="ObjectArealDensity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#ObjectDensity"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="Acceleration">
     <rdfs:subClassOf rdf:resource="#IntensivePhysicalProperty"/>
+  </owl:Class>
+  <owl:Class rdf:about="#ObjectDensity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Density"/>
+    </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="Length">
     <rdfs:subClassOf rdf:resource="#ExtensivePhysicalProperty"/>
