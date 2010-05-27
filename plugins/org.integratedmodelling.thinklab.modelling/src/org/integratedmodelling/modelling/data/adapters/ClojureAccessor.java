@@ -235,8 +235,6 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 					}
 				ii++;
 			}
-
-			
 		}
 		
 		if (self != null) {
