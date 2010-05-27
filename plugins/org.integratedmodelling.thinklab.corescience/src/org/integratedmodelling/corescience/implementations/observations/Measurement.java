@@ -46,6 +46,8 @@ public class Measurement extends Observation implements MediatingObservation {
 	public DistributionValue distribution = null;
 
 	protected boolean isConstant = false;
+	protected boolean isCount = false;
+	protected boolean isUnitless = false;
 	
 	public static enum PhysicalNature {
 		EXTENSIVE,
@@ -241,6 +243,16 @@ public class Measurement extends Observation implements MediatingObservation {
 		
 		metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 		metadata.put(Metadata.PHYSICAL_NATURE, physicalNature);
+		
+		/*
+		 * validate units against extents
+		 */
+		validateExtents();
+	}
+
+	private void validateExtents() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
