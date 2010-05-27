@@ -576,8 +576,64 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 
 	@Override
 	public Collection<Pair<String, Integer>> getStateLocators(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		int[] xy = getXYCoordinates(index);
+		
+		int brow = 0, bcol = 0, trow = getYCells() -1, tcol = getXCells() - 1;
+		int col = xy[0], row = xy[1];
+		int n = 0;
+		
+		ArrayList<Pair<String,Integer>> ret = new ArrayList<Pair<String,Integer>>();
+		
+		// n
+		if (row < trow) {
+			n = getIndex(col, row + 1);
+			ret.add(new Pair<String, Integer>("n", n));
+		}
+		
+		// s
+		if (row > brow) {
+			n = getIndex(col, row - 1);
+			ret.add(new Pair<String, Integer>("s", n));
+		}
+		
+		// e
+		if (col > bcol) {
+			n = getIndex(col - 1, row);
+			ret.add(new Pair<String, Integer>("e", n));
+		}
+		
+		// w
+		if (col < tcol) {
+			n = getIndex(col + 1, row);
+			ret.add(new Pair<String, Integer>("w", n));
+		}
+		
+		// nw
+		if (row < trow && col < tcol) {
+			n = getIndex(col + 1, row + 1);
+			ret.add(new Pair<String, Integer>("nw", n));
+		}
+
+		// ne
+		if (row < trow && col > bcol) {
+			n = getIndex(col - 1, row + 1);
+			ret.add(new Pair<String, Integer>("ne", n));
+		}
+		
+		// se
+		if (row > brow && col > bcol) {
+			n = getIndex(col - 1, row - 1);
+			ret.add(new Pair<String, Integer>("se", n));
+		}
+		
+		// sw
+		if (row > brow && col < tcol) {
+			n = getIndex(col + 1, row - 1);
+			ret.add(new Pair<String, Integer>("sw", n));
+		}
+		
+		return ret;
 	}
 
 }
