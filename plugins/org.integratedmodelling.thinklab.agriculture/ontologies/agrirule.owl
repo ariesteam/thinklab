@@ -1,0 +1,1176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns="http://ontologies.seamless-ip.org/agrirule.owl#" xmlns:crop="http://ontologies.seamless-ip.org/crop.owl#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:persistence="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#"
+	xmlns:prodent="http://ontologies.seamless-ip.org/prodent.owl#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xml:base="http://ontologies.seamless-ip.org/agrirule.owl">
+	<owl:Ontology rdf:about="">
+		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Agricultural Rule
+			Management Ontology</rdfs:label>
+		<owl:imports rdf:resource="http://ontologies.seamless-ip.org/crop.owl" />
+		<owl:imports rdf:resource="http://ontologies.seamless-ip.org/prodent.owl" />
+		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">This ontology contains the
+			datatypes definitions shared by APES, the Production Technique
+			Generator and the Current Activities Component of Seamless with
+			respect to agricultural management of crops according to timing
+			rules.</rdfs:comment>
+	</owl:Ontology>
+  <owl:Class rdf:ID="AirTemperatureThreshold">
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Rule"/>
+    </rdfs:subClassOf>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="TillageImplement">
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Implement"/>
+    </rdfs:subClassOf>
+    
+  </owl:Class>
+  <owl:Class rdf:about="#Rule">
+    
+    <persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistence:factory>
+  </owl:Class>
+  <owl:Class rdf:ID="DaysWithoutRainRepetitionThreshold">
+    
+    
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Input">
+    <persistence:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistence:abstract>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="InputsAndImplements"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="CropPhenologicalStageTemperatureThreshold">
+    
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="MultipleRepetitionThreshold">
+    
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="ClippingOperation">
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Operation"/>
+    </rdfs:subClassOf>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="AgromanagementConfiguration"/>
+  <owl:Class rdf:ID="VineyardHarvest">
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Operation"/>
+    </rdfs:subClassOf>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="ReduceLeafAreaIndexClippingOperation">
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Operation"/>
+    </rdfs:subClassOf>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="SoilTemperatureThreshold">
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="SoilWaterLevelThreshold">
+    
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ReduceBiomassClippingOperation">
+    <rdfs:subClassOf rdf:resource="#ClippingOperation"/>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="Seed">
+    <rdfs:subClassOf rdf:resource="#Input"/>
+  </owl:Class>
+  <owl:Class rdf:ID="PesticideApplicationMethod">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Implement"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Fertiliser">
+    
+    <rdfs:subClassOf rdf:resource="#Input"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SowingImplement">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Implement"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="IrrigationOperation">
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Operation"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="DefaultImplements"/>
+  <owl:Class rdf:ID="OrganicFertiliser">
+    <rdfs:subClassOf rdf:resource="#Fertiliser"/>
+  </owl:Class>
+  <owl:Class rdf:ID="IrrigationWater">
+    <rdfs:subClassOf rdf:resource="#Input"/>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="IrrigationMethod">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Implement"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Operation">
+    <persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistence:factory>
+  </owl:Class>
+  <owl:Class rdf:ID="SowingOperation">
+    <rdfs:subClassOf rdf:resource="#Operation"/>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="TillageMachineBased">
+    
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="TillageOperation"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="TimePeriod">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="TimeMoment"/>
+    </rdfs:subClassOf>
+    
+  </owl:Class>
+  <owl:Class rdf:about="#Implement">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#InputsAndImplements"/>
+    </rdfs:subClassOf>
+    <persistence:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistence:abstract>
+  </owl:Class>
+  <owl:Class rdf:ID="CropPhenologicalStageThreshold">
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="LeafAreaIndexThreshold">
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+  </owl:Class>
+  <owl:Class rdf:ID="TimeDecade">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#TimeMoment"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="SoilWaterRootingDepthThreshold">
+    
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+  </owl:Class>
+  <owl:Class rdf:ID="CropPhenologicalStage">
+    
+  </owl:Class>
+  <owl:Class rdf:ID="FertiliserApplicationMethod">
+    <rdfs:subClassOf rdf:resource="#Implement"/>
+  </owl:Class>
+  <owl:Class rdf:about="#InputsAndImplements">
+    <persistence:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistence:abstract>
+  </owl:Class>
+  <owl:Class rdf:ID="DaysWithoutRainThreshold">
+    
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+  </owl:Class>
+  <owl:Class rdf:ID="NutrientOperation">
+    <rdfs:subClassOf rdf:resource="#Operation"/>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:about="#TillageOperation">
+    <rdfs:subClassOf rdf:resource="#Operation"/>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="SugarContentNoRainThreshold">
+    
+    
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+  </owl:Class>
+  <owl:Class rdf:ID="PesticidesMixtures">
+    
+    
+    <rdfs:subClassOf rdf:resource="#Operation"/>
+  </owl:Class>
+  <owl:Class rdf:ID="IrrigationSimple">
+    
+    <rdfs:subClassOf rdf:resource="#IrrigationOperation"/>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="RelativeDay">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#TimeMoment"/>
+    </rdfs:subClassOf>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="TillageSimple">
+    
+    <rdfs:subClassOf rdf:resource="#TillageOperation"/>
+  </owl:Class>
+  <owl:Class rdf:about="#TimeMoment">
+    
+    <persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistence:factory>
+  </owl:Class>
+  <owl:Class rdf:ID="TreeStart">
+    
+    <rdfs:subClassOf rdf:resource="#Operation"/>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="CropManagementRule"/>
+  <owl:Class rdf:ID="ManureSimple">
+    
+    <rdfs:subClassOf rdf:resource="#NutrientOperation"/>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="BiomassThreshold">
+    
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SowingOperationRegional">
+    <rdfs:subClassOf rdf:resource="#SowingOperation"/>
+     
+  </owl:Class>
+  <owl:Class rdf:ID="InorganicFertiliser">
+    <rdfs:subClassOf rdf:resource="#Fertiliser"/>
+  </owl:Class>
+  <owl:Class rdf:ID="PesticideOperation">
+    <rdfs:subClassOf rdf:resource="#Operation"/>
+  </owl:Class>
+  <owl:Class rdf:ID="IrrigationWindow"/>
+  <owl:Class rdf:ID="Pesticide">
+    <rdfs:subClassOf rdf:resource="#Input"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Event">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:FunctionalProperty rdf:ID="hasOperation"/>
+        </owl:onProperty>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</owl:minCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SoilWaterRepetitionThreshold">
+    
+    
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+  </owl:Class>
+  <owl:Class rdf:ID="RepetitionThreshold">
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="FertiliserSplit"/>
+  <owl:Class rdf:ID="ClippingHarvestImplement">
+    
+    <rdfs:subClassOf rdf:resource="#Implement"/>
+  </owl:Class>
+  <owl:Class rdf:ID="DaysWithoutRainCropPhenologicalStageThreshold">
+    
+    <rdfs:subClassOf rdf:resource="#Rule"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="hasFertiliserSplits">
+    <rdfs:domain rdf:resource="#CropManagementRule"/>
+    <rdfs:range rdf:resource="#FertiliserSplit"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasIrrigationWindows">
+    <rdfs:domain rdf:resource="#CropManagementRule"/>
+    <rdfs:range rdf:resource="#IrrigationWindow"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasPesticideOperations">
+    <rdfs:domain rdf:resource="#PesticidesMixtures"/>
+    <rdfs:range rdf:resource="#PesticideOperation"/>
+    
+    
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasCropManagementRules">
+    <rdfs:range rdf:resource="#CropManagementRule"/>
+    <rdfs:domain rdf:resource="#AgromanagementConfiguration"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasDefaultImplements">
+    <rdfs:range rdf:resource="#DefaultImplements"/>
+    <rdfs:domain rdf:resource="#CropManagementRule"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:ID="arrayOfDayIntervals">
+    
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="#MultipleRepetitionThreshold"/>
+  </owl:DatatypeProperty>
+  <owl:FunctionalProperty rdf:ID="averageAirTemperature">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    
+    <rdfs:domain rdf:resource="#AirTemperatureThreshold"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="minimumBiomass">
+    
+    <rdfs:domain rdf:resource="#BiomassThreshold"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="decade">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    
+    <rdfs:domain rdf:resource="#TimeDecade"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="sowingWindow">
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#AgromanagementConfiguration"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="numberOfRepetitions">
+    
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#SoilWaterRepetitionThreshold"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/prodent.owl#WaterManagement"/>
+          <owl:Class rdf:about="#SoilWaterRootingDepthThreshold"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="maximumExtraIrrigation">
+    <rdfs:domain rdf:resource="#AgromanagementConfiguration"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="sugarContent">
+    <rdfs:domain rdf:resource="#SugarContentNoRainThreshold"/>
+    
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="daysInYear">
+    <rdfs:domain rdf:resource="#TimeDecade"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:about="#hasOperation">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#Event"/>
+    <rdfs:range rdf:resource="#Operation"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="applicationNO3Nrate">
+    
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#NutrientOperation"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="temperatureSum">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#CropPhenologicalStageTemperatureThreshold"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="biomassLossFraction">
+    
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#ClippingOperation"/>
+          <owl:Class rdf:about="#VineyardHarvest"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="irrigationPAWThresholdWaterSensitive">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#AgromanagementConfiguration"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="irrigationPAWThreshold">
+    <rdfs:domain rdf:resource="#AgromanagementConfiguration"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="daysAfterCropPhenologicalStage">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#CropPhenologicalStageThreshold"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="applicationNH4Nrate">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:domain rdf:resource="#NutrientOperation"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="irrigationMethod">
+    <rdfs:domain rdf:resource="#IrrigationMethod"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="totalAmount">
+    <rdfs:domain rdf:resource="#ManureSimple"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="cropRegionalID">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="#SowingOperationRegional"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="concentrationChemical">
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#PesticideOperation"/>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="pOnOrganicMatrixPercentageContent">
+    
+    <rdfs:domain rdf:resource="#ManureSimple"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="rentalPrice">
+    <rdfs:domain rdf:resource="#Implement"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="fertiliserNO3Content">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:domain rdf:resource="#Fertiliser"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasIrrigationMethod">
+    
+    <rdfs:domain rdf:resource="#IrrigationOperation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#IrrigationMethod"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="tillageImplementPrimary">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#TillageImplement"/>
+    <rdfs:domain rdf:resource="#DefaultImplements"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="pesticideType">
+    
+    <rdfs:range rdf:resource="#Pesticide"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#PesticideOperation"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="startDay">
+    
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#TimePeriod"/>
+          <owl:Class rdf:about="#TimeDecade"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/prodent.owl#WaterManagement"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="labour">
+    <rdfs:domain rdf:resource="#Implement"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="dryMatterFraction">
+    <rdfs:domain rdf:resource="#InorganicFertiliser"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="irrigationVolume">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    
+    <rdfs:domain rdf:resource="#IrrigationOperation"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="pesticideApplicationMethod">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#PesticideApplicationMethod"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="irrigationImplement">
+    <rdfs:domain rdf:resource="#DefaultImplements"/>
+    <rdfs:range rdf:resource="#IrrigationMethod"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="cropPhenologicalStageEnd">
+    <rdfs:range rdf:resource="#CropPhenologicalStage"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#IrrigationWindow"/>
+          <owl:Class rdf:about="#SoilWaterRootingDepthThreshold"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="daysWithoutRain">
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#SugarContentNoRainThreshold"/>
+          <owl:Class rdf:about="#DaysWithoutRainRepetitionThreshold"/>
+          <owl:Class rdf:about="#DaysWithoutRainThreshold"/>
+          <owl:Class rdf:about="#DaysWithoutRainCropPhenologicalStageThreshold"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="price">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Input"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/prodent.owl#FieldBorders"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="tillageDepthSecondary">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#DefaultImplements"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="decadenumber">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="#TimeDecade"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="harvestYear">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#TimeDecade"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="activeIngredientName">
+    <rdfs:domain rdf:resource="#Pesticide"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="fertiliserApplicationMethod">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#FertiliserApplicationMethod"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasSeed">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#Seed"/>
+    <rdfs:domain rdf:resource="#SowingOperation"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasFertiliser">
+    <rdfs:range rdf:resource="#Fertiliser"/>
+    <rdfs:domain rdf:resource="#NutrientOperation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="fertiliserOrganicNContent">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:domain rdf:resource="#OrganicFertiliser"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasCrop">
+    <rdfs:domain rdf:resource="#CropManagementRule"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/crop.owl#Crop"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="nitrogenMin">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#FertiliserSplit"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="sowingImplement">
+    <rdfs:range rdf:resource="#SowingImplement"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#DefaultImplements"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="minimumLAI">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#LeafAreaIndexThreshold"/>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="reductionBiomass">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#ReduceBiomassClippingOperation"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasTimeMoment">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#Event"/>
+    <rdfs:range rdf:resource="#TimeMoment"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="minimumTemperature">
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#CropPhenologicalStageTemperatureThreshold"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="energyUse">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#InorganicFertiliser"/>
+          <owl:Class rdf:about="#TillageImplement"/>
+          <owl:Class rdf:about="#SowingImplement"/>
+          <owl:Class rdf:about="#IrrigationMethod"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasTillageImplement">
+    <rdfs:range rdf:resource="#TillageImplement"/>
+    <rdfs:domain rdf:resource="#TillageOperation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasCropPhenologicalStage">
+    <rdfs:range rdf:resource="#CropPhenologicalStage"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#FertiliserSplit"/>
+          <owl:Class rdf:about="#CropPhenologicalStageThreshold"/>
+          <owl:Class rdf:about="#DaysWithoutRainCropPhenologicalStageThreshold"/>
+          <owl:Class rdf:about="#CropPhenologicalStageTemperatureThreshold"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="applicationOrganicNrate">
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#ManureSimple"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="isHarvest">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#ClippingOperation"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasClippingHarvestImplement">
+    <rdfs:range rdf:resource="#ClippingHarvestImplement"/>
+    <rdfs:domain rdf:resource="#ClippingOperation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="harvestingWindow">
+    
+    <rdfs:domain rdf:resource="#AgromanagementConfiguration"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="month">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="#TimeDecade"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="tillageDepthPrimary">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#DefaultImplements"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="residueRemoval">
+    
+    <rdfs:domain rdf:resource="#ClippingOperation"/>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="name">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#Fertiliser"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="harvestResidualLeft">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#CropManagementRule"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasRule">
+    <rdfs:domain rdf:resource="#TimePeriod"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#Rule"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="plantAvailableWaterThreshold">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#SoilWaterRepetitionThreshold"/>
+          <owl:Class rdf:about="#SoilWaterRootingDepthThreshold"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="doItAnyway">
+    
+    <rdfs:domain rdf:resource="#TimePeriod"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="claySoilThreshold">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#AgromanagementConfiguration"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasSowingImplement">
+    <rdfs:domain rdf:resource="#SowingOperation"/>
+    <rdfs:range rdf:resource="#SowingImplement"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="fertiliserNH4Content">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#Fertiliser"/>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="aridityMax">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#IrrigationWindow"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="surfaceBroadCast">
+    <rdfs:domain rdf:resource="#FertiliserApplicationMethod"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="averageSoilTemperature">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+    
+    <rdfs:domain rdf:resource="#SoilTemperatureThreshold"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="description">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#SowingOperation"/>
+    
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="cropPhenologicalStageStart">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#IrrigationWindow"/>
+          <owl:Class rdf:about="#SoilWaterRootingDepthThreshold"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="#CropPhenologicalStage"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="sowingImplementName">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#SowingImplement"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="minimalReferenceDepth">
+    <rdfs:domain rdf:resource="#SoilWaterRootingDepthThreshold"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="nitrogenMax">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#FertiliserSplit"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="tillageImplementName">
+    <rdfs:domain rdf:resource="#TillageImplement"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="tillageImplementSecondary">
+    <rdfs:range rdf:resource="#TillageImplement"/>
+    <rdfs:domain rdf:resource="#DefaultImplements"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasPesticideApplicationMethod">
+    <rdfs:domain rdf:resource="#PesticideOperation"/>
+    <rdfs:range rdf:resource="#PesticideApplicationMethod"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasAgromanagementConfiguration">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#AgromanagementConfiguration"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="seedAmount">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#SowingOperation"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="lowerPAWThreshold">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#SoilWaterLevelThreshold"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasIrrigationWater">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#IrrigationOperation"/>
+    <rdfs:range rdf:resource="#IrrigationWater"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="referenceDepthPlantAvailableWater">
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#SoilWaterRepetitionThreshold"/>
+          <owl:Class rdf:about="#SoilWaterLevelThreshold"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="consecutiveDays">
+    <rdfs:domain rdf:resource="#AirTemperatureThreshold"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasFertiliserApplicationMethod">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#NutrientOperation"/>
+    
+    <rdfs:range rdf:resource="#FertiliserApplicationMethod"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="aridityMin">
+    <rdfs:domain rdf:resource="#IrrigationWindow"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="upperPAWThreshold">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#SoilWaterLevelThreshold"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="relativeDayNumber">
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="#RelativeDay"/>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="mixingCoefficient">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#TillageSimple"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="endDay">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#TimePeriod"/>
+          <owl:Class rdf:about="#TimeDecade"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/prodent.owl#WaterManagement"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="fraction">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#FertiliserSplit"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="meanTillageDepth">
+    
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#TillageImplement"/>
+          <owl:Class rdf:about="#ClippingHarvestImplement"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="treeType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#ReduceLeafAreaIndexClippingOperation"/>
+          <owl:Class rdf:about="#TreeStart"/>
+          <owl:Class rdf:about="#VineyardHarvest"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="plantingDepth">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#SowingOperation"/>
+          <owl:Class rdf:about="#DefaultImplements"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+ 
+  <owl:FunctionalProperty rdf:ID="pesticideAmount">
+    <rdfs:domain rdf:resource="#PesticideOperation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="dayInterval">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#RepetitionThreshold"/>
+          <owl:Class rdf:about="#DaysWithoutRainRepetitionThreshold"/>
+          <owl:Class rdf:about="#DaysWithoutRainCropPhenologicalStageThreshold"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  
+  
+  <owl:ObjectProperty rdf:about="http://ontologies.seamless-ip.org/prodent.owl#hasEvents">
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/prodent.owl#ReducedTillage"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/agrirule.owl#Event"/>
+    <rdfs:comment xml:lang="en">Specification of events belonging to the conservation option</rdfs:comment>
+  </owl:ObjectProperty>
+  
+
+  
+	<rdf:Description rdf:about="#activeIngredientName"><rdfs:comment xml:lang="en">Name of active ingredient of pesticide</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#AgromanagementConfiguration"><rdfs:comment xml:lang="en">Parameters relevant to the agricultural management rules for translating survey inputs into detailed day-to-day operations on the field as desired by cropping system models</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#AirTemperatureThreshold"><rdfs:label xml:lang="x-apes">RuleAirTemp</rdfs:label><rdfs:comment xml:lang="en">When the average air temperature stays above temperature for a certain number of days, a threshold is reached</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#applicationNH4Nrate"><rdfs:label xml:lang="x-apes">TotalAmmoniaAmount</rdfs:label><persistence:unit>kg/ha</persistence:unit><rdfs:comment xml:lang="en">Ammonium used in one operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#applicationNO3Nrate"><rdfs:label xml:lang="x-apes">TotalNitrateAmount</rdfs:label><persistence:unit>kg/ha</persistence:unit><rdfs:comment xml:lang="en">Nitrate used in one operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#applicationOrganicNrate"><persistence:unit>kg/ha</persistence:unit><rdfs:comment xml:lang="en">Amount of organic N applied in one nutrient application</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#aridityMax"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">The maximum aridity index of the irrigation window</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#aridityMin"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">The minimum aridity index of the irrigation window</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#arrayOfDayIntervals"><rdfs:label xml:lang="x-apes">DayIntervals</rdfs:label><persistence:unit>days</persistence:unit><rdfs:comment xml:lang="en">Array of day intervals that occur between each repetition of the same operation. Start with the number of days in the first position in the array and so on</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#averageAirTemperature"><rdfs:label xml:lang="x-apes">ReferenceAirTemperature</rdfs:label><persistence:unit>Deg C</persistence:unit><rdfs:comment xml:lang="en">Average air temperature serving as threshold value</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#averageSoilTemperature"><rdfs:label xml:lang="x-apes">ReferenceSoilTemperature</rdfs:label><persistence:unit>Deg C</persistence:unit><rdfs:comment xml:lang="en">Average soil temperature that needs to be achieved within a  time period</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#biomassLossFraction"><rdfs:label xml:lang="x-apes">YieldLossFraction</rdfs:label><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Biomass loss during the operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#BiomassThreshold"><rdfs:comment xml:lang="en">Minimum amount of biomass that needs to be available to trigger an operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#claySoilThreshold"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Maximum clay content in soil</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#ClippingHarvestImplement"><rdfs:comment xml:lang="en">Machinery used in clipping or harvesting operations</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#ClippingOperation"><rdfs:label xml:lang="x-apes">CropHarvest</rdfs:label><rdfs:comment xml:lang="en">Clipping means cutting the crop, which can mean harvest or just clipping</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#concentrationChemical"><rdfs:label xml:lang="x-apes">FractionChemical</rdfs:label><persistence:unit>g/kg</persistence:unit><rdfs:comment xml:lang="en">Concentration of the chemical in the solution</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#consecutiveDays"><rdfs:label xml:lang="x-apes">ConsecutiveDays</rdfs:label><rdfs:label xml:lang="x-gams">ConsecutiveDays</rdfs:label><persistence:unit>No</persistence:unit><rdfs:comment xml:lang="en">Number of consecutive days to reach threshold</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#CropManagementRule"><rdfs:comment xml:lang="en">Rule for the management of a crop</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#CropPhenologicalStage"><rdfs:label xml:lang="x-apes">APES</rdfs:label><rdfs:comment xml:lang="en">Phenological development stages of a crop</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#cropPhenologicalStageEnd"><rdfs:comment xml:lang="en">Specification of crop phenological stage that terminates the operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#cropPhenologicalStageStart"><rdfs:comment xml:lang="en">Specification of crop phenological stage that triggers the operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#CropPhenologicalStageTemperatureThreshold"><rdfs:label xml:lang="x-apes">RuleDatePhenEventGDD</rdfs:label><rdfs:comment xml:lang="en">Rule triggering management based on: relative date of a phenological event, growing degree days after an event, last possible date and rotation year</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#CropPhenologicalStageThreshold"><rdfs:label xml:lang="x-apes">RuleDatePhenEventDays</rdfs:label><rdfs:comment xml:lang="en">Trigger operations based on: relative date of a phenological event, days after an event, last possible date, and rotation year</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#cropRegionalID"><persistence:unit>unitless</persistence:unit><rdfs:comment xml:lang="en">Id for a regional crop name; will be deleted in next iteration</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#dayInterval"><rdfs:label xml:lang="x-apes">DayInterval</rdfs:label><persistence:unit>days</persistence:unit><rdfs:comment xml:lang="en">Day interval triggering a repetition of the event</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#daysAfterCropPhenologicalStage"><rdfs:label xml:lang="x-apes">Days</rdfs:label><persistence:unit>days</persistence:unit><rdfs:comment xml:lang="en">Number of days after the start of a certain crop phase that trigger an operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#daysInYear"><persistence:unit>Day</persistence:unit><rdfs:comment xml:lang="en">Number of day in year of the first day of the decade</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#daysWithoutRain"><rdfs:label xml:lang="x-apes">DayIntervalNoRain</rdfs:label><persistence:unit>days</persistence:unit><rdfs:comment xml:lang="en">Days without rain that trigger the event (min. value: 0, max. value: 10, default: 2)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#DaysWithoutRainCropPhenologicalStageThreshold"><rdfs:label xml:lang="x-apes">RuleNoRainPhenEventDays</rdfs:label><rdfs:comment xml:lang="en">Rule that triggers operations based on days without rain and crop phenological stage</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#DaysWithoutRainRepetitionThreshold"><rdfs:label xml:lang="x-apes">RuleDatesWindowNoRain</rdfs:label><rdfs:comment xml:lang="en">Rule that if it has not rained for a number of days, an event is triggered and repeated if it still not rains within a given interval</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#DaysWithoutRainThreshold"><rdfs:label xml:lang="x-apes">RuleDateNoRain</rdfs:label><rdfs:comment xml:lang="en">Rule that trigger operation based on days without rain</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#decade"><rdfs:comment xml:lang="en">Description of the decade</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#decadenumber"><persistence:unit>No</persistence:unit><rdfs:comment xml:lang="en">Number of the decade in the year</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#DefaultImplements"><rdfs:comment xml:lang="en">Set of implements (e.g. machinery) required to translate the survey inputs into detailed day-to-day operations on the field</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#description"><rdfs:label xml:lang="x-apes">CropOperation</rdfs:label><rdfs:comment xml:lang="en">Description of the operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#doItAnyway"><rdfs:comment xml:lang="en">Triggering of operations in relation to the conditions (true = operation triggered regardless of conditions, false = operation triggered depending on conditions)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#dryMatterFraction"><rdfs:label xml:lang="x-apes">DryMatterFraction</rdfs:label><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Fraction of dry matter in total amount of  fertiliser supplied</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#endDay"><rdfs:label xml:lang="x-apes">RelativeDateEnd</rdfs:label><persistence:unit>Day</persistence:unit><rdfs:comment xml:lang="en">End day of the period as day number of year</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#energyUse"><persistence:unit>dependent</persistence:unit><rdfs:comment xml:lang="en">Energy consumed in crop management. Units depend on the implement: With tillage implements: litres gasoline/ha, with irrigation tools: MegaJoule/m3/ha, for fertilizers in MJ/kg</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Event"><rdfs:comment xml:lang="en">A management event consisting of an operation in a specified time period</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Fertiliser"><rdfs:comment xml:lang="en">Fertilisers used in nutrient management, of which only one organic and only one inorganic can be used in the nutrient management</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#FertiliserApplicationMethod"><rdfs:comment xml:lang="en">Machinery used for nutrient operations</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#fertiliserApplicationMethod"><rdfs:comment xml:lang="en">Name of machinery used for nutrient operations</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#fertiliserNH4Content"><rdfs:label xml:lang="x-apes">NH4PercentageContent</rdfs:label><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Ammonia content as the fraction of the dry matter of the fertiliser</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#fertiliserNO3Content"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Nitrate content of the fertiliser (share of weight or volume)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#fertiliserOrganicNContent"><rdfs:label xml:lang="x-apes">NOrganicPercentageContent</rdfs:label><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Organic N as share as of the dry matter fraction</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#FertiliserSplit"><rdfs:comment xml:lang="en">Fertiliser split defines characteristics of the individual events of the nutrient operation. The nutrient operation can be divided in more 'splits' applying specific fractions of the fertilisers</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#fraction"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Fraction of fertilisers applied in this split</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#harvestingWindow"><persistence:unit>No</persistence:unit><rdfs:comment xml:lang="en">Number of days for harvesting</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#harvestResidualLeft"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Share of biomass left on field at harvest</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#harvestYear"><rdfs:comment xml:lang="en">Current year is the harvest year (true = current year is harvest year, false = current year is not harvest year)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasAgromanagementConfiguration"><rdfs:comment xml:lang="en">Specification of the agro management configuration of the context</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasClippingHarvestImplement"><rdfs:comment xml:lang="en">Specification of machinery used for the clipping operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasCrop"><rdfs:comment xml:lang="en">Specification of the crop for which the management rules are given</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasCropManagementRules"><rdfs:comment xml:lang="en">Specification of crop management rules of the agro-management configuration</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasCropPhenologicalStage"><rdfs:comment xml:lang="en">Specification of crop phenological stage of the rule</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasDefaultImplements"><rdfs:comment xml:lang="en">Specification of the default machinery of the crop management</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasFertiliser"><rdfs:comment xml:lang="en">Specification of fertiliser used in the fertiliser operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasFertiliserApplicationMethod"><rdfs:comment xml:lang="en">Specification of machinery used in the fertiliser operation, for example a manure spreader or a slurry tank</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasFertiliserSplits"><rdfs:comment xml:lang="en">Specification of the fertiliser splits of the crop management rule</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasIrrigationMethod"><rdfs:label xml:lang="x-apes">IrrigationType</rdfs:label><rdfs:comment xml:lang="en">Specification of method used for irrigation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasIrrigationWater"><rdfs:comment xml:lang="en">Specification of price of irrigation water</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasIrrigationWindows"><rdfs:comment xml:lang="en">Specification of the irrigation windows of the crop management</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasOperation"><rdfs:comment xml:lang="en">Specification of the operation of the event</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasPesticideApplicationMethod"><rdfs:comment xml:lang="en">Specification of machinery used in the pesticide operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasPesticideOperations"><rdfs:label xml:lang="x-apes">AgroChemicals</rdfs:label><rdfs:label xml:lang="x-gams">AgroChemicals</rdfs:label><rdfs:comment xml:lang="en">Specification of the pesticide operations of the combined operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasRule"><rdfs:comment xml:lang="en">Specification of rules with a periodical temporal dimension</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasSeed"><rdfs:comment xml:lang="en">Specification of price of seed</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasSowingImplement"><rdfs:comment xml:lang="en">Specification of machinery used for the sowing operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasTillageImplement"><rdfs:label xml:lang="x-apes">Implement</rdfs:label><rdfs:comment xml:lang="en">Specification of machinery used in the tillage operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasTimeMoment"><rdfs:comment xml:lang="en">Specification of the temporal dimension of the event</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Implement"><rdfs:comment xml:lang="en">Machinery to carry out tillage, fertilisation etc</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#InorganicFertiliser"><rdfs:comment xml:lang="en">Inorganic fertiliser used for fertiliser application</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Input"><rdfs:comment xml:lang="en">inputs like seed, fertilisers etc</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#InputsAndImplements"><rdfs:comment xml:lang="en">Inputs (seed, fertiliser etc.) and machinery for tillage, irrigation etc</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#irrigationImplement"><rdfs:comment xml:lang="en">Specification of the implement/machine used for irrigation, for example sprinkler, furrow, water canon, etc</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IrrigationMethod"><rdfs:comment xml:lang="en">Machinery used for irrigation, e.g. sprinkler, water canon, etc</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IrrigationOperation"><rdfs:label xml:lang="x-apes">irrigation</rdfs:label><rdfs:comment xml:lang="en">Irrigation operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#irrigationPAWThreshold"><persistence:unit>%</persistence:unit><rdfs:comment xml:lang="en">Plant available water threshold in the soil to trigger irrigation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#irrigationPAWThresholdWaterSensitive"><persistence:unit>%</persistence:unit><rdfs:comment xml:lang="en">Plant available water threshold in the soil to trigger irrigation, if irrigation is supposed to happen frequently</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IrrigationSimple"><rdfs:label xml:lang="x-apes">IrrigationSimple</rdfs:label><rdfs:comment xml:lang="en">Irrigation operation with a limited set of input parameters</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#irrigationVolume"><rdfs:label xml:lang="x-apes">IrrigationVolume</rdfs:label><persistence:unit>mm</persistence:unit><rdfs:comment xml:lang="en">Amount of water supplied in each irrigation operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IrrigationWater"><rdfs:label xml:lang="x-gams">FSSIM: watc</rdfs:label><rdfs:comment xml:lang="en">Water used for irrigation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IrrigationWindow"><rdfs:comment xml:lang="en">Period of irrigation operation in relation to crop phenological stages and taken into account aridity index</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#isHarvest"><rdfs:comment xml:lang="en">Specification of whether a clipping operation is just a clipping operation, or whether also a harvestable product is the result of it (true = harvest, false = only clipping)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#labour"><persistence:unit>h/ha</persistence:unit><rdfs:comment xml:lang="en">Labour demand of the machinery</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#LeafAreaIndexThreshold"><rdfs:comment xml:lang="en">Rule triggering an operation based on a minimum leaf area index</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#lowerPAWThreshold"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Lower plant available water value that has to be met to trigger the operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#ManureSimple"><rdfs:label xml:lang="x-apes">ManureSimple</rdfs:label><rdfs:comment xml:lang="en">Nutrient operation using organic fertiliser</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#maximumExtraIrrigation"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Maximum amount of extra irrigation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#meanTillageDepth"><rdfs:label xml:lang="x-apes">MeanTillageDepth</rdfs:label><persistence:unit>m</persistence:unit><rdfs:comment xml:lang="en">Average depth of tillage</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#minimalReferenceDepth"><persistence:unit>m</persistence:unit><rdfs:comment xml:lang="en">Minimal rooting depth triggering the operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#minimumBiomass"><persistence:unit>kg/ha</persistence:unit><rdfs:comment xml:lang="en">Minimum amount of biomass that should be present, before an operation is carried out</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#minimumLAI"><persistence:unit>m2/m2</persistence:unit><rdfs:comment xml:lang="en">Minimum leaf area index that is required to trigger an operation. LAI is without  dimension or m2/m2</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#minimumTemperature"><rdfs:label xml:lang="x-apes">BaseTemperature</rdfs:label><persistence:unit>Deg C</persistence:unit><rdfs:comment xml:lang="en">Minimum temperature that should be exceeded during a day before the degrees start counting towards the temperature sum</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#mixingCoefficient"><persistence:unit>%</persistence:unit><rdfs:comment xml:lang="en">Extent to which soil is mixed by a machine</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#month"><persistence:unit>Month</persistence:unit><rdfs:comment xml:lang="en">Number of the month of the year to which the decade belongs</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#MultipleRepetitionThreshold"><rdfs:label xml:lang="x-apes">RuleDatesWindowArray</rdfs:label><rdfs:comment xml:lang="en">Rule that triggers an operation several times in a period, with different number of days between</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#name"><rdfs:comment xml:lang="en">Name of the fertiliser</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#nitrogenMax"><persistence:unit>kg/ha</persistence:unit><rdfs:comment xml:lang="en">Maximum application of nitrogen in the split</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#nitrogenMin"><persistence:unit>kg/ha</persistence:unit><rdfs:comment xml:lang="en">Minimum application of nitrogen in the split</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#numberOfRepetitions"><rdfs:label xml:lang="x-apes">MaxNumberIrrigations</rdfs:label><persistence:unit>No</persistence:unit><rdfs:comment xml:lang="en">Maximum number of times an operation is carried out in a time period with a start and end day</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#NutrientOperation"><rdfs:label xml:lang="x-apes">NitrogenOne</rdfs:label><rdfs:comment xml:lang="en">Nutrient operations</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Operation"><rdfs:comment xml:lang="en">Agricultural operation like sowing, irrigation, clipping etc</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#OrganicFertiliser"><rdfs:comment xml:lang="en">Organic fertiliser</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Pesticide"><rdfs:comment xml:lang="en">Pesticides used in pesticide applications</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#pesticideAmount"><persistence:unit>kg/ha</persistence:unit><rdfs:comment xml:lang="en">Amount of pesticides applied in the operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#PesticideApplicationMethod"><rdfs:comment xml:lang="en">Machinery used for a pesticide operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#PesticideOperation"><rdfs:comment xml:lang="en">Pesticide operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#PesticidesMixtures"><rdfs:label xml:lang="x-apes">PesticidesICAA</rdfs:label><rdfs:comment xml:lang="en">Pesticide operation in which a number of pesticide operations are applied in one combined operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#pesticideType"><rdfs:label xml:lang="x-apes">pesticideChemical</rdfs:label><rdfs:comment xml:lang="en">Specification of pesticide used</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#plantAvailableWaterThreshold"><rdfs:label xml:lang="x-apes">ThresholdPAW</rdfs:label><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Fraction of plant available water at which the operation is triggered</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#plantingDepth"><persistence:unit>m</persistence:unit><rdfs:comment xml:lang="en">planting depth of the sowing operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#pOnOrganicMatrixPercentageContent"><rdfs:label xml:lang="x-apes">POnOrganicMatrixPercentageContent</rdfs:label><persistence:unit>kg/ha</persistence:unit><rdfs:comment xml:lang="en">Availability of Phosphorus in organic matter, default set to zero</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#price"><persistence:unit>dependent</persistence:unit><rdfs:comment xml:lang="en">Price of the input. �/kg for solids and �/l for liquids</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#ReduceBiomassClippingOperation"><rdfs:label xml:lang="x-apes">ReduceBiomass</rdfs:label><rdfs:comment xml:lang="en">Clipping operation to reduce biomass</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#ReduceLeafAreaIndexClippingOperation"><rdfs:label xml:lang="x-apes">TreeGreenPruning</rdfs:label><rdfs:comment xml:lang="en">Clipping operation that reduces the leaf area index which can be used for pruning operations</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#reductionBiomass"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Reduction in biomass during the clipping operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#referenceDepthPlantAvailableWater"><rdfs:label xml:lang="x-apes">ReferenceDepth</rdfs:label><persistence:unit>m</persistence:unit><rdfs:comment xml:lang="en">Depth of the soil profile that should be taken into account to measure plant available water</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#RelativeDay"><rdfs:label xml:lang="x-apes">RuleDate</rdfs:label><rdfs:comment xml:lang="en">Temporal dimension defined as the number of the day of the year. (1 to 365, negative values can be used for previous years)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#relativeDayNumber"><rdfs:label xml:lang="x-apes">RelativeDate</rdfs:label><persistence:unit>Day</persistence:unit><rdfs:comment xml:lang="en">Number of day in year</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#rentalPrice"><persistence:unit>�/ha</persistence:unit><rdfs:comment xml:lang="en">Rental price of the machinery</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#RepetitionThreshold"><rdfs:label xml:lang="x-apes">RuleDatesWindow</rdfs:label><rdfs:comment xml:lang="en">Rule based on a window of dates and a day interval</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#residueRemoval"><rdfs:label xml:lang="x-apes">ResidualRemovalFraction</rdfs:label><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Share of residue is removed</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Rule"><rdfs:comment xml:lang="en">Rules for carrying out operation. Defines threshold for carrying out operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Seed"><rdfs:comment xml:lang="en">Seed used for sowing</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#seedAmount"><persistence:unit>kg/ha</persistence:unit><rdfs:comment xml:lang="en">Amount of seed used in the sowing operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#SoilTemperatureThreshold"><rdfs:label xml:lang="x-apes">RuleSoilTempLayer</rdfs:label><rdfs:comment xml:lang="en">Rule that triggers operations based on surface soil temperature</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#SoilWaterLevelThreshold"><rdfs:label xml:lang="x-apes">RulePAWOnce</rdfs:label><rdfs:comment xml:lang="en">Rule that triggers an operation based on plant available water</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#SoilWaterRepetitionThreshold"><rdfs:label xml:lang="x-apes">RuleIrrigatePAW</rdfs:label><rdfs:comment xml:lang="en">Rule for repeated irrigation based on soil water content</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#SoilWaterRootingDepthThreshold"><rdfs:label xml:lang="x-apes">RuleIrrigatePAWRootingDepth</rdfs:label><rdfs:comment xml:lang="en">Rule triggering operations based on soil water and rooting depth in different phenological stages</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#SowingImplement"><rdfs:comment xml:lang="en">Machinery used for a sowing operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#sowingImplement"><rdfs:comment xml:lang="en">Specification of the implement/machine used for sowing or planting the crop</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#sowingImplementName"><rdfs:comment xml:lang="en">Name of the machinery</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#SowingOperation"><rdfs:label xml:lang="x-apes">CropPlanting</rdfs:label><rdfs:comment xml:lang="en">Sowing operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#SowingOperationRegional"><rdfs:label xml:lang="x-apes">CropPlanting</rdfs:label><rdfs:comment xml:lang="en">Regional specification of the sowing operation, for a specific regional crop type</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#sowingWindow"><persistence:unit>No</persistence:unit><rdfs:comment xml:lang="en">Number days of sowing</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#startDay"><rdfs:label xml:lang="x-apes">RelativeDateBegin</rdfs:label><persistence:unit>Day</persistence:unit><rdfs:comment xml:lang="en">Start day of the period as day number of year</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#sugarContent"><rdfs:label xml:lang="x-apes">SugarThreshold</rdfs:label><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Sugar content that should be reached to trigger the operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#SugarContentNoRainThreshold"><rdfs:label xml:lang="x-apes">RuleFruitsHarvest</rdfs:label><rdfs:comment xml:lang="en">Rule that triggers an operation when it has not rained for a number of days, and the sugar content of the fruits has reached a certain value</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#surfaceBroadCast"><rdfs:label xml:lang="x-apes">SurfaceBroadCast</rdfs:label><rdfs:comment xml:lang="en">Whether or not the application is on the surface (true = surface application, false = sub-surface application)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#temperatureSum"><rdfs:label xml:lang="x-apes">GrowingDegreeDays</rdfs:label><persistence:unit>Deg C</persistence:unit><rdfs:comment xml:lang="en">Minimum temperature sum that needs to be achieved before a operation takes place</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#tillageDepthPrimary"><persistence:unit>m</persistence:unit><rdfs:comment xml:lang="en">Depth of the tillage during the primary tillage (for example, ploughing depth)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#tillageDepthSecondary"><persistence:unit>m</persistence:unit><rdfs:comment xml:lang="en">Tillage depth of the secondary implement for tillage</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#TillageImplement"><rdfs:label xml:lang="x-apes">Implement</rdfs:label><rdfs:comment xml:lang="en">Machine to carry out all sorts of operations on the soil to prepare it for seeding, or for manuring, or for winter rest or for weeding</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#tillageImplementName"><rdfs:comment xml:lang="en">Name of the machine</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#tillageImplementPrimary"><rdfs:comment xml:lang="en">Specification of the tillage implement used for primary tillage, usually a soil turning tillage, like a plow</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#tillageImplementSecondary"><rdfs:comment xml:lang="en">Specification of the tillage implement used for secondary tillage, usually a seed bed preparation tillage</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#TillageMachineBased"><rdfs:label xml:lang="x-apes">TillageWepp</rdfs:label><rdfs:comment xml:lang="en">Tillage machinery in a list according to the Wepp approach</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#TillageOperation"><rdfs:label xml:lang="x-apes">tillage</rdfs:label><rdfs:comment xml:lang="en">Tillage operations, that can be used in conservation management, weed management and general management for operations like ploughing, hoeing, seedbed preparation, etc</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#TillageSimple"><rdfs:label xml:lang="x-apes">Tillage</rdfs:label><rdfs:label xml:lang="x-gams">Tillage</rdfs:label><rdfs:comment xml:lang="en">Tillage not based on machinery in list based on wepp approach</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#TimeDecade"><rdfs:comment xml:lang="en">Temporal dimension defined as a decade (=100 days) within year. Values 1 to 35 are decades in previous year, values 36 to 70 are decades in current year</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#TimeMoment"><rdfs:comment xml:lang="en">Specification of time used to describe the timing of an operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#TimePeriod"><rdfs:comment xml:lang="en">Temporal dimension defined as a period with a start and an end day</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#totalAmount"><rdfs:label xml:lang="x-apes">TotalAmount</rdfs:label><persistence:unit>t/ha</persistence:unit><rdfs:comment xml:lang="en">Total amount of manure in the nutrient operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#TreeStart"><rdfs:label xml:lang="x-apes">TreeStart</rdfs:label><rdfs:comment xml:lang="en">Tree/vineyard/orchard start; e.g. planting the perennial crop</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#treeType"><rdfs:label xml:lang="x-apes">TreeType</rdfs:label><rdfs:comment xml:lang="en">Tree type harvested</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#upperPAWThreshold"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Upper plant available water value that has to be met to trigger the operation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#VineyardHarvest"><rdfs:label xml:lang="x-apes">VineyardHarvest</rdfs:label><rdfs:comment xml:lang="en">Harvest of vineyards</rdfs:comment></rdf:Description>  
+
+</rdf:RDF>

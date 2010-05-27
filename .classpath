@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.corescience/classes" path="plugins/org.integratedmodelling.thinklab.corescience/src"/>
+	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.agriculture/classes" path="plugins/org.integratedmodelling.thinklab.agriculture/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.idv/classes" path="plugins/org.integratedmodelling.thinklab.idv/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.modelling/classes" path="plugins/org.integratedmodelling.thinklab.modelling/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.riskwiz/classes" path="plugins/org.integratedmodelling.thinklab.riskwiz/src"/>

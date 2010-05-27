@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<rdf:RDF 
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns="http://ontologies.seamless-ip.org/capri.owl#" 
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:persistence="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+	xmlns:crop="http://ontologies.seamless-ip.org/crop.owl#"
+	xmlns:farm="http://ontologies.seamless-ip.org/farm.owl#"
+	xml:base="http://ontologies.seamless-ip.org/capri.owl">
+	<owl:Ontology rdf:about="">
+		<owl:imports rdf:resource="http://ontologies.seamless-ip.org/farm.owl"/>
+		<owl:imports rdf:resource="http://ontologies.seamless-ip.org/crop.owl"/>
+	</owl:Ontology>
+	
+
+   <owl:ObjectProperty rdf:ID="ofCountry">
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/farm.owl#NUTSregion"/>
+    <rdfs:range rdf:resource="#Country"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:comment xml:lang="en">Specification of the country in which the NUTS region is located</rdfs:comment>
+  </owl:ObjectProperty>
+  
+  
+	<owl:Class rdf:ID="GlobalTariff">
+		<rdfs:subClassOf>
+			<owl:Class rdf:ID="CAPRIParameter"/>
+		</rdfs:subClassOf>
+	</owl:Class>
+	<owl:Class rdf:ID="PremiumGroup">
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="CountryAggregate">
+    <rdfs:subClassOf rdf:resource="http://ontologies.seamless-ip.org/farm.owl#Region"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SupplyShift">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ActivityEnergyContent">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ExchangeRates">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="TradeReformProposal">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ProductionItem">
+    <persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistence:factory>
+  </owl:Class>
+  <owl:Class rdf:ID="Modulation">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="YieldGrowth">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="TradeReformProposalCut"/>
+  <owl:Class rdf:ID="PriceElasticity">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="BasicPremium">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="DemandShift">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="EnergyPrice">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="BilateralTariff">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="CutfactorSubsidies">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="InputGroup">
+    
+    
+    <rdfs:subClassOf rdf:resource="#ProductionItem"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ActivityGroup">
+    <rdfs:subClassOf rdf:resource="#ProductionItem"/>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="SubsidisedExport">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Country">
+    
+    <rdfs:subClassOf rdf:resource="http://ontologies.seamless-ip.org/farm.owl#Region"/>
+  </owl:Class>
+  <owl:Class rdf:ID="CouplingDegree">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SetAsideRegulation">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="EquilibriumPrice">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="InflationRate">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="BiofuelDemand">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:Class rdf:ID="QuotaCountry">
+    <rdfs:subClassOf rdf:resource="#CAPRIParameter"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="fromProductGroup">
+    <rdfs:domain rdf:resource="#PriceElasticity"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/crop.owl#ProductGroup"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasNUTSRegion">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farm.owl#NUTSregion"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#CutfactorSubsidies"/>
+          <owl:Class rdf:about="#EquilibriumPrice"/>
+          <owl:Class rdf:about="#PriceElasticity"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="toCountryAggregate">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="#CountryAggregate"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#BilateralTariff"/>
+          <owl:Class rdf:about="#ExchangeRates"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasActivityGroup">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#CutfactorSubsidies"/>
+          <owl:Class rdf:about="#YieldGrowth"/>
+          <owl:Class rdf:about="#ActivityEnergyContent"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="#ActivityGroup"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasInputGroup">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#EnergyPrice"/>
+    <rdfs:range rdf:resource="#InputGroup"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasTradeReformProposalCuts">
+    <rdfs:range rdf:resource="#TradeReformProposalCut"/>
+    <rdfs:domain rdf:resource="#TradeReformProposal"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="isCropGroupOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+    <rdfs:range rdf:resource="#ActivityGroup"/>
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/crop.owl#CropGroup"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="hasCropGroup"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasPremiumGroups">
+    <rdfs:range rdf:resource="#PremiumGroup"/>
+    <rdfs:domain rdf:resource="#ActivityGroup"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="hasActivityGroups"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="fromCountryAggregate">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#BilateralTariff"/>
+          <owl:Class rdf:about="#Modulation"/>
+          <owl:Class rdf:about="#ExchangeRates"/>
+          <owl:Class rdf:about="#TradeReformProposal"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="#CountryAggregate"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasCountry">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#YieldGrowth"/>
+          <owl:Class rdf:about="#BiofuelDemand"/>
+          <owl:Class rdf:about="#CouplingDegree"/>
+          <owl:Class rdf:about="#QuotaCountry"/>
+          <owl:Class rdf:about="#DemandShift"/>
+          <owl:Class rdf:about="#SupplyShift"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="#Country"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasPremiumGroup">
+    <rdfs:range rdf:resource="#PremiumGroup"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#CouplingDegree"/>
+          <owl:Class rdf:about="#BasicPremium"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:ObjectProperty>
+
+ 
+  
+  <owl:ObjectProperty rdf:ID="hasCountryAggregate">
+    <rdfs:range rdf:resource="#CountryAggregate"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#SubsidisedExport"/>
+          <owl:Class rdf:about="#EnergyPrice"/>
+          <owl:Class rdf:about="#GlobalTariff"/>
+          <owl:Class rdf:about="#SetAsideRegulation"/>
+          <owl:Class rdf:about="#InflationRate"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#hasActivityGroups">
+    <rdfs:range rdf:resource="#ActivityGroup"/>
+    <owl:inverseOf rdf:resource="#hasPremiumGroups"/>
+    <rdfs:domain rdf:resource="#PremiumGroup"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#hasCropGroup">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/crop.owl#CropGroup"/>
+    <owl:inverseOf rdf:resource="#isCropGroupOf"/>
+    <rdfs:domain rdf:resource="#ActivityGroup"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="toProductGroup">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/crop.owl#ProductGroup"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#PriceElasticity"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasSetOfCountries">
+    <rdfs:range rdf:resource="#Country"/>
+    <rdfs:domain rdf:resource="#CountryAggregate"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasProductGroup">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#DemandShift"/>
+          <owl:Class rdf:about="#SubsidisedExport"/>
+          <owl:Class rdf:about="#EquilibriumPrice"/>
+          <owl:Class rdf:about="#BiofuelDemand"/>
+          <owl:Class rdf:about="#GlobalTariff"/>
+          <owl:Class rdf:about="#BilateralTariff"/>
+          <owl:Class rdf:about="#QuotaCountry"/>
+          <owl:Class rdf:about="#SupplyShift"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/crop.owl#ProductGroup"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:ID="additionalPrice">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#QuotaCountry"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="quotaLevel">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#QuotaCountry"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="cutoffTariff">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#TradeReformProposalCut"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="thresholdLow">
+    <rdfs:domain rdf:resource="#TradeReformProposalCut"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="valueMax">
+    <rdfs:domain rdf:resource="#SetAsideRegulation"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="quotaShare">
+    <rdfs:domain rdf:resource="#QuotaCountry"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="valueMin">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#SetAsideRegulation"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="specificTariff">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#GlobalTariff"/>
+          <owl:Class rdf:about="#BilateralTariff"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="applicationType">
+    <rdfs:domain rdf:resource="#BasicPremium"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="tariffRateQuota">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#BilateralTariff"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="value">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#DemandShift"/>
+          <owl:Class rdf:about="#SubsidisedExport"/>
+          <owl:Class rdf:about="#CutfactorSubsidies"/>
+          <owl:Class rdf:about="#EnergyPrice"/>
+          <owl:Class rdf:about="#YieldGrowth"/>
+          <owl:Class rdf:about="#BiofuelDemand"/>
+          <owl:Class rdf:about="#EquilibriumPrice"/>
+          <owl:Class rdf:about="#PriceElasticity"/>
+          <owl:Class rdf:about="#InflationRate"/>
+          <owl:Class rdf:about="#Modulation"/>
+          <owl:Class rdf:about="#ExchangeRates"/>
+          <owl:Class rdf:about="#CouplingDegree"/>
+          <owl:Class rdf:about="#BasicPremium"/>
+          <owl:Class rdf:about="#SupplyShift"/>
+          <owl:Class rdf:about="#ActivityEnergyContent"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="CAPValue">
+    <rdfs:domain rdf:resource="#TradeReformProposal"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="adValorem">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#GlobalTariff"/>
+          <owl:Class rdf:about="#BilateralTariff"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  
+  <owl:Class rdf:about="http://ontologies.seamless-ip.org/crop.owl#ProductGroup">
+    <rdfs:subClassOf rdf:resource="#ProductionItem"/>
+  </owl:Class>
+  
+	<rdf:Description rdf:about="#ActivityGroup"><rdfs:label xml:lang="x-gams">AG</rdfs:label><rdfs:comment xml:lang="en">Activities of different groups of crops or animals</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#additionalPrice"><persistence:unit>dependent</persistence:unit><rdfs:comment xml:lang="en">Additional price obtained for selling product within the quota limits. �/t for solids and �/l for liquids</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#adValorem"><persistence:unit>%</persistence:unit><rdfs:comment xml:lang="en">Ad valorem Tariffs</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#applicationType"><rdfs:comment xml:lang="en">Type of application, for example fixed premium per head or ha</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#BasicPremium"><rdfs:comment xml:lang="en">Premiums for different groups of crops or animals as specified by EU</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#BilateralTariff"><rdfs:comment xml:lang="en">Trading partners may have preferential trading agreements. For example market access for the exporting country is lower than the global tariffs, possibly subject to a certain import quota. Therefore, this parameter contains specific and ad valorem preferential tariffs as well as the tariff rate quota</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#BiofuelDemand"><rdfs:comment xml:lang="en">Amount of agricultural feed stocks demanded by the bio fuel processing industry</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#CAPRIParameter"><rdfs:comment xml:lang="en">Parameters for CAPRI</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#CAPValue"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Maximum allowed ad valorem tariff</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Country"><rdfs:label xml:lang="x-gams">Country</rdfs:label><rdfs:comment xml:lang="en">A country is defined by national Borders</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#CountryAggregate"><rdfs:label xml:lang="x-gams">CountryAggregate</rdfs:label><rdfs:comment xml:lang="en">A country aggregate is the most aggregated spatial concept in SEAMLESS. It consists of at least of one country</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#CouplingDegree"><rdfs:comment xml:lang="en">Coupling degree of subsidies is an interesting variable since the mid term review of the CAP. Since then the AGENDA 2000 premiums which have been coupled to activity levels have been at least partially decoupled and translated into single farm payments. Coupling degree table gives the choices of the different EU members after the CAP reform of 2003. Those values could be changed to e.g. simulate AGENDA 2000 policies by setting all values to 100</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#CutfactorSubsidies"><rdfs:comment xml:lang="en">CAP premiums are subject to reduction, if the sum of premiums paid for a certain premium group would exceed certain limits. The Premium Cut factor gives the share of final premiums per activity level in non cut premium amounts</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#cutoffTariff"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Corresponding Tariff cut</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#DemandShift"><rdfs:comment xml:lang="en">With the demand shift parameter one can move the human consumption of a certain product for a certain country</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#EnergyPrice"><rdfs:comment xml:lang="en">Crude oil price</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#EquilibriumPrice"><rdfs:comment xml:lang="en">Producer price as a result of a market equilibrium</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#ExchangeRates"><rdfs:comment xml:lang="en">SEAMLESS features relative exchange rates. All prices are converted into Euros and in the Baseline run all relative exchange rates are equal 1. The �real� exchange rates between the single currencies are not known in the system. The user can only change relative values indicating if the currency of one country changes its value relative to that of the others</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#fromCountryAggregate"><rdfs:comment xml:lang="en">Country aggregate from which the value of the variable is specified</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#fromProductGroup"><rdfs:comment xml:lang="en">The from product group for which the price elasticities are specified</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#GlobalTariff"><rdfs:comment xml:lang="en">Each trading country block has a certain degree of border protection. The most common instruments are tariffs. Global tariffs are applied to all imports at the border which do not benefit from preferential agreements. They can either be specific expressed in Euro per ton or ad valorem expressed as percentage of the input price. For some products even both types exist</rdfs:comment><dc:source>CAPRI:mfn_store</dc:source></rdf:Description>
+	<rdf:Description rdf:about="#hasActivityGroup"><rdfs:comment xml:lang="en">The activity group for which the value of the variable is specified</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasActivityGroups"><rdfs:comment xml:lang="en">Activity groups contained in the premium group</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasCountry"><rdfs:comment xml:lang="en">Country for which the value of the variable is specified</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasCountryAggregate"><rdfs:comment xml:lang="en">Country aggregate for which the value of the variable is specified</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasCropGroup"><rdfs:comment xml:lang="en">Specification of crop groups of the activity groups</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasInputGroup"><rdfs:comment xml:lang="en">Input group for which the energy price is specified</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasNUTSRegion"><rdfs:comment xml:lang="en">NUTS region for which the values of the variable are specified</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasPremiumGroup"><rdfs:comment xml:lang="en">Premium group for which the value of the variable is specified</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasPremiumGroups"><rdfs:comment xml:lang="en">Specification of premium groups of the activity groups</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasProductGroup"><rdfs:comment xml:lang="en">Product group for which the value of the variable is specified</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasSetOfCountries"><rdfs:comment xml:lang="en">A link to the specification of countries belonging to the country aggregate</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasTradeReformProposalCuts"><rdfs:comment xml:lang="en">Link to the specification of the cuts in the trade reform proposal</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#InflationRate"><rdfs:comment xml:lang="en">Inflation is a continuing devaluation of money over time. Here it is the yearly inflation rate</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#InputGroup"><rdfs:label xml:lang="x-gams">IG</rdfs:label><rdfs:comment xml:lang="en">Group of products that are used as input factors in agriculture</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#isCropGroupOf"><rdfs:comment xml:lang="en">Specification of the activity group of the crop group</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Modulation"><rdfs:comment xml:lang="en">Modulation rate gives the percentage of premiums that are transferred form the first to the second pillar</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#PremiumGroup"><rdfs:label xml:lang="x-gams">PG</rdfs:label><rdfs:comment xml:lang="en">EU CAP premium system is defined per Premium group. For example, all cereals get the same per ha premium under the Agenda 2000 scheme. Cereals are in this context a premium group</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#PriceElasticity"><rdfs:comment xml:lang="en">Supply Elasticities with respect to producer prices</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#ProductionItem"><rdfs:label xml:lang="x-gams">PI</rdfs:label><rdfs:comment xml:lang="en">Production items are activity groups, input groups and product groups</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#QuotaCountry"><rdfs:comment xml:lang="en">Production limitation of a product at country as set by the European Union</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#quotaLevel"><rdfs:comment xml:lang="en">Level of the quota, for example A sugar quota, B sugar quota, and Total milk quota</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#quotaShare"><persistence:unit>t/country</persistence:unit><rdfs:comment xml:lang="en">Amount of the quota on the product</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#SetAsideRegulation"><rdfs:comment xml:lang="en">Since the Mc Sharry CAP reform, farmers producing Cereals and Oilseeds had to partly set aside a certain amount of their area. The set aside rates given here are meant relative to the grand culture area. It has a minimum and a maximum value and is expressed in percent</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#specificTariff"><persistence:unit>�/t</persistence:unit><rdfs:comment xml:lang="en">Specific tariffs</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#SubsidisedExport"><rdfs:comment xml:lang="en">Export subsidies are paid for certain commodities in the EU and gives the maximal amount of money available for these exports</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#tariffRateQuota"><persistence:unit>1000 t</persistence:unit><rdfs:comment xml:lang="en">Tariff Rate Quota subject to respective tariffs</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#thresholdLow"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Lower Tariff threshold</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#toCountryAggregate"><rdfs:comment xml:lang="en">The to country aggregate for which the value of the variable is specified</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#toProductGroup"><rdfs:comment xml:lang="en">The to product group for which the price elasticities are specified</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#TradeReformProposal"><rdfs:comment xml:lang="en">�G20 Proposal� made during the DOHA WTO round proposes a world wide cut in tariffs according to a certain key that reduces tariffs according to the initial protection rate and the developing state of a nation. High tariffs receive a stronger cut than lower ones and developing countries are less affected than developed ones. Within SEAMLESS, the user can currently adjust the thresholds as well as the corresponding cut in tariffs and also to high tariff cap</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#TradeReformProposalCut"><rdfs:comment xml:lang="en">Definition of reduction rates for Tariffs</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#value"><persistence:unit>dependent</persistence:unit><rdfs:comment xml:lang="en">Value of the variable. For exchange rate, yield growth, modulation rate, demand shift, cut factor, coupling degree and inflation rate given as a ratio. The bio fuel demand given in 1000 ton. The energy price given in $/litre. The equilibrium price given in �/ton. The value of the subsidised exports given in mn �. The value of the price elasticity given with no unit</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#valueMax"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Maximum value of set aside rate</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#valueMin"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Minimum value of set aside rate</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#YieldGrowth"><rdfs:comment xml:lang="en">Yield growth gives the relative change to Baseline yields of agricultural production activities per country</rdfs:comment></rdf:Description>  
+</rdf:RDF>

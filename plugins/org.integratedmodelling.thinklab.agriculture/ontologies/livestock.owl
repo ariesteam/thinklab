@@ -1,0 +1,793 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://ontologies.seamless-ip.org/livestock.owl#" xmlns:activity="http://ontologies.seamless-ip.org/activity.owl#" xmlns:agrirule="http://ontologies.seamless-ip.org/agrirule.owl#" xmlns:capri="http://ontologies.seamless-ip.org/capri.owl#" xmlns:crop="http://ontologies.seamless-ip.org/crop.owl#" xmlns:cropman="http://ontologies.seamless-ip.org/cropman.owl#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:farm="http://ontologies.seamless-ip.org/farm.owl#" xmlns:farmopt="http://ontologies.seamless-ip.org/farmopt.owl#" xmlns:indi="http://ontologies.seamless-ip.org/indi.owl#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:persistence="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#" xmlns:prodent="http://ontologies.seamless-ip.org/prodent.owl#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:seamproj="http://ontologies.seamless-ip.org/seamproj.owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xml:base="http://ontologies.seamless-ip.org/livestock.owl">
+  <owl:Ontology rdf:about="">
+    <rdfs:comment xml:lang="en">This ontology defines the livestock activities and their relationships in Seamless</rdfs:comment>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/prodent.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/farm.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/crop.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/activity.owl"/>
+  </owl:Ontology>
+  
+  
+   <rdf:Description rdf:about="http://ontologies.seamless-ip.org/farm.owl#environmentalZone">
+     <rdfs:domain rdf:resource="#GrassFeeds"/>
+ </rdf:Description>
+ 
+    <rdf:Description rdf:about="http://ontologies.seamless-ip.org/farmopt.owl#nitrogenUseOrganic">
+     <rdfs:domain rdf:resource="#AnimalActivity"/>
+ </rdf:Description>
+ 
+     <rdf:Description rdf:about="http://ontologies.seamless-ip.org/farmopt.owl#nitrogenUse">
+     <rdfs:domain rdf:resource="#AnimalActivity"/>
+ </rdf:Description>
+ <rdf:Description rdf:about="http://ontologies.seamless-ip.org/farmopt.owl#yieldVariability">
+     <rdfs:domain rdf:resource="#AnimalActivity"/>
+ </rdf:Description>
+ <rdf:Description rdf:about="http://ontologies.seamless-ip.org/farmopt.owl#priceVariability">
+     <rdfs:domain rdf:resource="#AnimalActivity"/>
+ </rdf:Description>
+
+ <rdf:Description rdf:about="http://ontologies.seamless-ip.org/farmopt.owl#labour">
+     <rdfs:domain rdf:resource="#AnimalActivity"/>
+ </rdf:Description> 
+ 
+   <rdf:Description rdf:about="http://ontologies.seamless-ip.org/farmopt.owl#yieldVariability">
+     <rdfs:domain rdf:resource="#variableCosts"/>
+ </rdf:Description>
+ 
+
+  <owl:FunctionalProperty rdf:ID="amount">
+    <persistence:unit>dependent</persistence:unit>
+    <rdfs:comment xml:lang="en">Total production of the product. T for solids and l for liquids</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#AnimalProduction"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+   
+  
+  <owl:ObjectProperty rdf:ID="hasOptimalLivestockActivity">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/livestock.owl#OptimalLivestockActivity"/>
+    <rdfs:domain rdf:resource="#OptimalFarmBehaviour"/>
+    <rdfs:comment xml:lang="en">Specification of optimal livestock activities of the optimal farm behaviour</rdfs:comment>
+  </owl:ObjectProperty>
+  
+  
+  <owl:Class rdf:ID="ConcentratedFeeds">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="FeedStuff"/>
+    </rdfs:subClassOf>
+    
+    
+  </owl:Class>
+  
+  
+  
+  
+  <owl:Class rdf:ID="Bull">
+    
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Animal"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="BeefCalve">
+    
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Animal"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="YieldEnergyProteinOfGrass">
+    <rdfs:subClassOf rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl#YieldofCropProduct"/>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="BeefManagement"/>
+  <owl:Class rdf:ID="GrassManagementAlternative"/>
+  <owl:Class rdf:ID="AnimalProduct">
+    <rdfs:subClassOf rdf:resource="http://ontologies.seamless-ip.org/crop.owl#Product"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="AlternativeBeefOption"/>
+  <owl:Class rdf:ID="ObservedAnimalLevels">
+    
+  </owl:Class>
+  <owl:Class rdf:ID="DairyCow">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Animal"/>
+    </rdfs:subClassOf>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="BeefCattle">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Animal"/>
+    </rdfs:subClassOf>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="RoughageFeeds">
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#FeedStuff"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="YieldEnergyProteinOfFeedProduct">
+    
+    
+    <rdfs:subClassOf rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl#YieldofCropProduct"/>
+  </owl:Class>
+  <owl:Class rdf:ID="DairyCalve">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Animal"/>
+    </rdfs:subClassOf>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="AlternativeDairyOption"/>
+  <owl:Class rdf:ID="DairyHeifer">
+    
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Animal"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Goatling">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Animal"/>
+    </rdfs:subClassOf>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="Lamb">
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Animal"/>
+    </rdfs:subClassOf>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="SucklerCow">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Animal"/>
+    </rdfs:subClassOf>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="Goat">
+    
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Animal"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="GrassFeeds">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#FeedStuff"/>
+    </rdfs:subClassOf>
+    
+  </owl:Class>
+  <owl:Class rdf:ID="DairyManagement"/>
+  <owl:Class rdf:about="#Animal">
+    <persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistence:factory>
+    
+  </owl:Class>
+  <owl:Class rdf:about="#FeedStuff">
+    
+    <persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistence:factory>
+  </owl:Class>
+  <owl:Class rdf:ID="AnimalProduction"/>
+  <owl:Class rdf:ID="Ewe">
+    <rdfs:subClassOf rdf:resource="#Animal"/>
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="OptimalLivestockActivity">
+    
+  </owl:Class>
+  <owl:Class rdf:ID="AnimalShares"/>
+  <owl:Class rdf:ID="AnimalActivity">
+    
+    <rdfs:subClassOf rdf:resource="http://ontologies.seamless-ip.org/activity.owl#AgriculturalActivity"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="hasAnimalProduction">
+    <rdfs:domain rdf:resource="#AnimalActivity"/>
+    <rdfs:range rdf:resource="#AnimalProduction"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasAlternativeDairyOptions">
+    <rdfs:range rdf:resource="#AlternativeDairyOption"/>
+    <rdfs:domain rdf:resource="#DairyManagement"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasAlternativeGrassManagement">
+    <rdfs:domain rdf:resource="#GrassManagementAlternative"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/activity.owl#GrassManagement"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasAnimalShares">
+    <rdfs:range rdf:resource="#AnimalShares"/>
+    <rdfs:domain rdf:resource="#AnimalActivity"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasSmallDairyRuminantManagements">
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/prodent.owl#ProductionOrientation"/>
+    <rdfs:range rdf:resource="#DairyManagement"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasBeefManagements">
+    <rdfs:range rdf:resource="#BeefManagement"/>
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/prodent.owl#ProductionOrientation"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasDairyManagements">
+    <rdfs:range rdf:resource="#DairyManagement"/>
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/prodent.owl#ProductionOrientation"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasSmallBeefRuminantManagements">
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/prodent.owl#ProductionOrientation"/>
+    <rdfs:range rdf:resource="#BeefManagement"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasAlternativeBeefOptions">
+    <rdfs:range rdf:resource="#AlternativeBeefOption"/>
+    <rdfs:domain rdf:resource="#BeefManagement"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasObservedAnimalLevels">
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl#FSSIMLivestockFarm"/>
+    <rdfs:range rdf:resource="#ObservedAnimalLevels"/>
+    
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasGrassManagementAlternatives">
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/prodent.owl#ProductionOrientation"/>
+    <rdfs:range rdf:resource="#GrassManagementAlternative"/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:ID="fillUnitsDairy">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+    <rdfs:domain rdf:resource="#FeedStuff"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="weightInitial">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#BeefCattle"/>
+          <owl:Class rdf:about="#Goat"/>
+          <owl:Class rdf:about="#Goatling"/>
+          <owl:Class rdf:about="#Lamb"/>
+          <owl:Class rdf:about="#DairyCalve"/>
+          <owl:Class rdf:about="#Ewe"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="exitAge">
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#Animal"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="price">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#AnimalProduction"/>
+          <owl:Class rdf:about="#ConcentratedFeeds"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="nitrogenFixation">
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/farm.owl#NUTSregion"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="nitrogenContent">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Animal"/>
+          <owl:Class rdf:about="#FeedStuff"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="costsForHarvesting">
+    <rdfs:domain rdf:resource="#YieldEnergyProteinOfGrass"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasProduct">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#FeedStuff"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/crop.owl#CropProduct"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="digestibleProtein">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#FeedStuff"/>
+          <owl:Class rdf:about="#YieldEnergyProteinOfFeedProduct"/>
+          <owl:Class rdf:about="#YieldEnergyProteinOfGrass"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="description">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#DairyManagement"/>
+          <owl:Class rdf:about="#BeefManagement"/>
+          <owl:Class rdf:about="#GrassManagementAlternative"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="liveweight">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#AlternativeBeefOption"/>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasFeed">
+    <rdfs:range rdf:resource="#FeedStuff"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#YieldEnergyProteinOfFeedProduct"/>
+          <owl:Class rdf:about="#YieldEnergyProteinOfGrass"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="additionalCosts">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#AlternativeDairyOption"/>
+          <owl:Class rdf:about="#AlternativeBeefOption"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="liveweightGain">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#AlternativeBeefOption"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="fatteningPeriod">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="#AlternativeBeefOption"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="dailyWeightGain">
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#BeefCattle"/>
+          <owl:Class rdf:about="#Lamb"/>
+          <owl:Class rdf:about="#Goatling"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="numberOfChildren">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Ewe"/>
+          <owl:Class rdf:about="#DairyCow"/>
+          <owl:Class rdf:about="#Goat"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="netEnergyMeat">
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#FeedStuff"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="energyRequirements">
+    
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#AnimalActivity"/>
+          <owl:Class rdf:about="#YieldEnergyProteinOfGrass"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#GrassLandActivity"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#GrassProduction"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="replacementRate">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#AlternativeDairyOption"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="sellingPriceFemale">
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#Animal"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="number">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#ObservedAnimalLevels"/>
+          <owl:Class rdf:about="#OptimalLivestockActivity"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="dryMatterContent">
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#FeedStuff"/>
+          <owl:Class rdf:about="#YieldEnergyProteinOfGrass"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasAnimal">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#Animal"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#AnimalShares"/>
+          <owl:Class rdf:about="#AnimalProduct"/>
+          <owl:Class rdf:about="#ObservedAnimalLevels"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="share">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#AnimalShares"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasAnimalActivity">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#OptimalLivestockActivity"/>
+    <rdfs:range rdf:resource="#AnimalActivity"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="netEnergyDairy">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#FeedStuff"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="fillUnitsOtherCattle">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:domain rdf:resource="#FeedStuff"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="lengthOfFatteningPeriod">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#BeefCattle"/>
+          <owl:Class rdf:about="#Lamb"/>
+          <owl:Class rdf:about="#Goatling"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="lossRate">
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#BeefCattle"/>
+          <owl:Class rdf:about="#Goat"/>
+          <owl:Class rdf:about="#Lamb"/>
+          <owl:Class rdf:about="#Goatling"/>
+          <owl:Class rdf:about="#DairyCalve"/>
+          <owl:Class rdf:about="#Ewe"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="livestockUnit">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:domain rdf:resource="#Animal"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="energyUse">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#FeedStuff"/>
+          <owl:Class rdf:about="#Animal"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="weightAtMaturity">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#Animal"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="milkYield">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#AlternativeDairyOption"/>
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="annualDepreciation">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#Animal"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="name">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#DairyManagement"/>
+          <owl:Class rdf:about="#BeefManagement"/>
+          <owl:Class rdf:about="#GrassManagementAlternative"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="weightOfCarcass">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#BeefCattle"/>
+          <owl:Class rdf:about="#Goat"/>
+          <owl:Class rdf:about="#Ewe"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="harvestIndex">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#FeedStuff"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="intakeCapacity">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#AnimalActivity"/>
+          <owl:Class rdf:about="#YieldEnergyProteinOfFeedProduct"/>
+          <owl:Class rdf:about="#YieldEnergyProteinOfGrass"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#GrassLandActivity"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#GrassProduction"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="netEnergy">
+    <rdfs:domain rdf:resource="#YieldEnergyProteinOfFeedProduct"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasNUTSRegion">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#DairyManagement"/>
+          <owl:Class rdf:about="#BeefManagement"/>
+          <owl:Class rdf:about="#GrassManagementAlternative"/>
+          <owl:Class rdf:about="#ConcentratedFeeds"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farm.owl#NUTSregion"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="milkProduction">
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#DairyCow"/>
+          <owl:Class rdf:about="#Ewe"/>
+          <owl:Class rdf:about="#Goat"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="proteinRequirement">
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#AnimalActivity"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#GrassLandActivity"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#GrassProduction"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="sellingPriceMale">
+    
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#BeefCattle"/>
+          <owl:Class rdf:about="#Goat"/>
+          <owl:Class rdf:about="#Lamb"/>
+          <owl:Class rdf:about="#Goatling"/>
+          <owl:Class rdf:about="#DairyCalve"/>
+          <owl:Class rdf:about="#Ewe"/>
+          <owl:Class rdf:about="#Bull"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasAnimalProduct">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#AnimalProduction"/>
+    <rdfs:range rdf:resource="#AnimalProduct"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="fillUnitsSheepGoats">
+    <rdfs:domain rdf:resource="#FeedStuff"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="nitrogenDeposition">
+    
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/farm.owl#NUTSregion"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="buildingRequirement">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#Animal"/>
+  </owl:FunctionalProperty>
+  
+  
+	<rdf:Description rdf:about="#additionalCosts"><persistence:unit>�/LU</persistence:unit><rdfs:comment xml:lang="en">Additional costs required to produce beef in an alternative way</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#AlternativeBeefOption"><rdfs:comment xml:lang="en">Beef options alternative to the current ones</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#AlternativeDairyOption"><rdfs:comment xml:lang="en">Dairy options alternative to the current ones</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Animal"><rdfs:label xml:lang="x-gams">ANIM</rdfs:label><rdfs:comment xml:lang="en">Husbandry information for FSSIM modelling</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#AnimalActivity"><rdfs:label xml:lang="x-gams">ANAC</rdfs:label><rdfs:comment xml:lang="en">Set of animals with operations, inputs and outputs</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#AnimalProduct"><rdfs:label xml:lang="x-gams">AP</rdfs:label><rdfs:comment xml:lang="en">Animal product is a unique combination of an animal (cow, calve, etc) with a product type (meat, milk, alive)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#AnimalProduction"><rdfs:comment xml:lang="en">Production of one animal product</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#AnimalShares"><rdfs:comment xml:lang="en">Share of an type of animal (cow, heifer, etc) in the dressed animal, as calculated from livestock information</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#annualDepreciation"><persistence:unit>years</persistence:unit><rdfs:comment xml:lang="en">Length of depreciation period of the animal</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#BeefCalve"><rdfs:label xml:lang="x-gams">CAFF</rdfs:label><rdfs:comment xml:lang="en">Calves in a beef cattle system, which can be either fattening or suckler</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#BeefCattle"><rdfs:label xml:lang="x-gams">HEIF</rdfs:label><rdfs:comment xml:lang="en">Young beef cattle between 1 and 2 years kept for fattening</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#BeefManagement"><rdfs:comment xml:lang="en">Beef management as a set of alternative beef options</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#buildingRequirement"><persistence:unit>m2/head</persistence:unit><rdfs:comment xml:lang="en">Building space required by the husbandry</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Bull"><rdfs:label xml:lang="x-gams">DBUL,BBUL</rdfs:label><rdfs:comment xml:lang="en">Male cattle of all ages above one year</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#ConcentratedFeeds"><rdfs:label xml:lang="x-gams">CF</rdfs:label><rdfs:comment xml:lang="en">Concentrated feedstuff</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#costsForHarvesting"><persistence:unit>�/t</persistence:unit><rdfs:comment xml:lang="en">Cost associated with harvesting</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#dailyWeightGain"><persistence:unit>kg/head</persistence:unit><rdfs:comment xml:lang="en">Daily weight gain during the fattening period</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#DairyCalve"><rdfs:label xml:lang="x-gams">CAFR</rdfs:label><rdfs:comment xml:lang="en">Young calve less than 1 year at a dairy farm</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#DairyCow"><rdfs:label xml:lang="x-gams">DCOW</rdfs:label><rdfs:comment xml:lang="en">Cows producing milk and giving birth to calves in a dairy system, which are replaced through an replacement rate with young dairy cows</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#DairyHeifer"><rdfs:label xml:lang="x-gams">HEIR</rdfs:label><rdfs:comment xml:lang="en">Young dairy heifers (1 - 2 years) kept on the farm to replace old dairy cows</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#DairyManagement"><rdfs:comment xml:lang="en">Dairy management as a set of alternative dairy options</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#description"><rdfs:comment xml:lang="en">Description of the beef management</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#digestibleProtein"><persistence:unit>PDI/head</persistence:unit><rdfs:comment xml:lang="en">Ingested protein that may be regarded as truly available for metabolism by the animal, abbreviated as PDI. In other words, protein that is truly digestible in the small intestine</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#dryMatterContent"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Dry matter fraction of a product</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#energyRequirements"><persistence:unit>feed units/head</persistence:unit><rdfs:comment xml:lang="en">Energy required by the animal for maintenance, gestation, reproduction, etc</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#energyUse"><persistence:unit>MJ/t</persistence:unit><rdfs:comment xml:lang="en">Amount of energy used in the production</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Ewe"><rdfs:label xml:lang="x-gams">DSRU, BSRU</rdfs:label><rdfs:comment xml:lang="en">Sheep that produces milk and gives birth to lambs</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#exitAge"><persistence:unit>months</persistence:unit><rdfs:comment xml:lang="en">Age at which the animal exits from the current class and goes into a new age class, for example the breeding time for young cattle, so the time till real fattening starts, or the selling age for old cows, cattle or sheep or goat or the age of the first birth of an young calves/lambs/goatlings, after which milk production starts</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#fatteningPeriod"><persistence:unit>days</persistence:unit><rdfs:comment xml:lang="en">Length of fattening period</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#FeedStuff"><rdfs:comment xml:lang="en">Products for feeding animals, for example hay, Lucerne, maize silages, etc</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#fillUnitsDairy"><persistence:unit>fill units</persistence:unit><rdfs:comment xml:lang="en">Fill units for lactating cattle, sheep and goats (abbreviated as: LFU). The �fill unit� is defined with respect to a reference forage (an average pasture grass cut at the grazing stage of the first growth) that contains one fill unit per kg of dry matter (DM)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#fillUnitsOtherCattle"><persistence:unit>fill units/head</persistence:unit><rdfs:comment xml:lang="en">Fill units for other cattle, that is not lactating (abbreviated: CFUI). The �fill unit� is defined with respect to a reference forage (an average pasture grass cut at the grazing stage of the first growth) that contains one fill unit per kg of dry matter (DM)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#fillUnitsSheepGoats"><persistence:unit>fill units/head</persistence:unit><rdfs:comment xml:lang="en">Fill units for sheep and presumably goats (abbreviation: SFU). The �fill unit� is defined with respect to a reference forage (an average pasture grass cut at the grazing stage of the first growth) that contains one fill unit per kg of dry matter (DM)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Goat"><rdfs:label xml:lang="x-gams">DSRU, BSRU</rdfs:label><rdfs:comment xml:lang="en">Mature goat that is butchered for its meat</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Goatling"><rdfs:label xml:lang="x-gams">DYSR, BYSM</rdfs:label><rdfs:comment xml:lang="en">Young goat used to replace diary goats or used for fattening</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#GrassFeeds"><rdfs:comment xml:lang="en">Products used for feeding animals based on grassland, for example hay, grass silages, etc</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#GrassManagementAlternative"><rdfs:comment xml:lang="en">Captures options for alternative grassland management, by redefining a new set of grassland parameters</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#harvestIndex"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Share of the crop harvested as main product (rest harvested as by product)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasAlternativeBeefOptions"><rdfs:comment xml:lang="en">Alternative beef options of the beef management</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasAlternativeDairyOptions"><rdfs:comment xml:lang="en">Specification of the alternative dairy options of the dairy management</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasAlternativeGrassManagement"><rdfs:comment xml:lang="en">Specification of the set of parameters that can be classified as an alternative grassland management</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasAnimal"><rdfs:comment xml:lang="en">Specification of animals of the animal product</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasAnimalActivity"><rdfs:comment xml:lang="en">Specification of animal activities of the optimal animal activity</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasAnimalProduct"><rdfs:comment xml:lang="en">Specification of the animal products of the animal production</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasAnimalProduction"><rdfs:comment xml:lang="en">Specification of the animal production of the animal activity</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasAnimalShares"><rdfs:comment xml:lang="en">Specification of the animal shares of the animal activity</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasBeefManagements"><rdfs:comment xml:lang="en">Specification of the beef cattle management(s) of the production orientation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasDairyManagements"><rdfs:comment xml:lang="en">Specification of the dairy management(s) of the production orientation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasFeed"><rdfs:comment xml:lang="en">Specification of the feed for which the information is given</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasGrassManagementAlternatives"><rdfs:comment xml:lang="en">Specification of the grass management(s) of the production orientation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasNUTSRegion"><rdfs:comment xml:lang="en">Specification of NUTS region for which the price of concentrated feedstuff is given</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasObservedAnimalLevels"><rdfs:comment xml:lang="en">Specification of animal levels of the FSSIM livestock farm</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasProduct"><rdfs:comment xml:lang="en">Specification of the product of the feed stuff</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasSmallBeefRuminantManagements"><rdfs:comment xml:lang="en">Specification of the small ruminant beef management(s) of the production orientation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasSmallDairyRuminantManagements"><rdfs:comment xml:lang="en">Specification of the small ruminant dairy management(s) of the production orientation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#intakeCapacity"><persistence:unit>fill units</persistence:unit><rdfs:comment xml:lang="en">Amount of fill-units the animal should eat to keep his/her stomach full. The �fill unit� is defined with respect to a reference forage (an average pasture grass cut at the grazing stage of the first growth) that contains one fill unit per kg of dry matter (DM)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Lamb"><rdfs:label xml:lang="x-gams">DYSR, BYSM</rdfs:label><rdfs:comment xml:lang="en">Young sheep, lamb, used to replace mother sheep for dairy or to be fattened</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#lengthOfFatteningPeriod"><persistence:unit>days</persistence:unit><rdfs:comment xml:lang="en">Length of the fattening period</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#livestockUnit"><persistence:unit>LU</persistence:unit><rdfs:comment xml:lang="en">Contribution of one animal to a livestock unit. These are EU-wide standards</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#liveweight"><persistence:unit>kg/head</persistence:unit><rdfs:comment xml:lang="en">Animal live weight</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#liveweightGain"><persistence:unit>kg/head</persistence:unit><rdfs:comment xml:lang="en">Live weight gain of animal during fattening period</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#lossRate"><persistence:unit>%</persistence:unit><rdfs:comment xml:lang="en">Mortality rate in animal class</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#milkProduction"><persistence:unit>kg/head</persistence:unit><rdfs:comment xml:lang="en">Yearly milk production of an average cow, goat or sheep</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#milkYield"><persistence:unit>l/cow</persistence:unit><rdfs:comment xml:lang="en">Yearly milk yield</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#name"><rdfs:comment xml:lang="en">Name of the beef management</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#netEnergy"><persistence:unit>feed units/head</persistence:unit><rdfs:comment xml:lang="en">Ingested energy that is actually usable for maintenance and productive purposes as represented in the French Feed System</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#netEnergyDairy"><persistence:unit>feed units/head</persistence:unit><rdfs:comment xml:lang="en">Net energy for maintenance and production in lactating animals (Abbreviation: UFL). Measured in feed units equivalent to 1700 k cal</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#netEnergyMeat"><persistence:unit>feed units/head</persistence:unit><rdfs:comment xml:lang="en">Net energy for maintenance and body weight gain in meat producing animals (abbreviation: UFV). Measured in feed units (equivalent to 1820 k cal)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#nitrogenContent"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Share of nitrogen content of the animal</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#nitrogenDeposition"><persistence:unit>kg/ha</persistence:unit><rdfs:comment xml:lang="en">Yearly atmospheric nitrogen deposition from air to soil</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#nitrogenFixation"><persistence:unit>kg/ha</persistence:unit><rdfs:comment xml:lang="en">Yearly biological nitrogen fixation</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#number"><persistence:unit>No</persistence:unit><rdfs:comment xml:lang="en">Dressed animals on the farm</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#numberOfChildren"><persistence:unit>No</persistence:unit><rdfs:comment xml:lang="en">Average number of children per birth</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#ObservedAnimalLevels"><rdfs:comment xml:lang="en">Observed levels of animals on the farm with price and yield variability</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#OptimalLivestockActivity"><rdfs:comment xml:lang="en">Optimal animal activities in terms of number of animals as modelled for livestock farms in FSSIM</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#price"><persistence:unit>�/t</persistence:unit><rdfs:comment xml:lang="en">Price of concentrated feedstuff</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#proteinRequirement"><persistence:unit>PDI/head</persistence:unit><rdfs:comment xml:lang="en">Protein required by the animal in the small intestine for maintenance, production and reproductive purposes</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#replacementRate"><persistence:unit>%</persistence:unit><rdfs:comment xml:lang="en">Replacement rate. The share of the dairy cows replaced per year (Example: If this is 27.9%, the useful life of a cow will be 3.6 years)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#RoughageFeeds"><rdfs:comment xml:lang="en">Rough fodder used for feeding excluding grass</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#sellingPriceFemale"><persistence:unit>�/head</persistence:unit><rdfs:comment xml:lang="en">Selling price of a female animal</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#sellingPriceMale"><persistence:unit>�/head</persistence:unit><rdfs:comment xml:lang="en">Selling price of a male animal</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#share"><persistence:unit>fraction</persistence:unit><rdfs:comment xml:lang="en">Share of animal type</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#SucklerCow"><rdfs:label xml:lang="x-gams">SCOW</rdfs:label><rdfs:comment xml:lang="en">Suckler cows are the mother cows in suckler beef fattening systems, producing young calves</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#weightAtMaturity"><persistence:unit>kg/head</persistence:unit><rdfs:comment xml:lang="en">Weight of the animal at maturity or at the end of the fattening period (= maturity) or when the animal is sold</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#weightInitial"><persistence:unit>kg/head</persistence:unit><rdfs:comment xml:lang="en">Weight with which the animal enters the age class</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#weightOfCarcass"><persistence:unit>kg/head</persistence:unit><rdfs:comment xml:lang="en">Weight of the carcass after it has been butchered</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#YieldEnergyProteinOfFeedProduct"><rdfs:comment xml:lang="en">Energy, protein and fill units content of different feed products, together with their yield</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#YieldEnergyProteinOfGrass"><rdfs:comment xml:lang="en">Energy, protein and fill units content of different grass feeds, together with their yield</rdfs:comment></rdf:Description>
+
+
+</rdf:RDF>

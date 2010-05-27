@@ -89,11 +89,11 @@ public class Ranking extends Observation implements MediatingObservation {
 	boolean rightBounded = false;
 
 	protected boolean isConstant = false;
+	protected boolean isBinary = false;
 	protected double value = 0.0;
 	
 	// set through reflection
 	public DistributionValue distribution = null;
-	private boolean isBinary = false;
 
 
 	@Override
@@ -232,7 +232,6 @@ public class Ranking extends Observation implements MediatingObservation {
 		}
 
 	}
-	
 	
 //	/**
 //	 * TODO move to the validator and pass it boundaries.

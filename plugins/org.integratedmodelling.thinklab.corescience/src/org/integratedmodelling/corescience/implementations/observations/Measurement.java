@@ -1,7 +1,6 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
 import javax.measure.converter.UnitConverter;
-import javax.measure.unit.Unit;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
@@ -15,6 +14,7 @@ import org.integratedmodelling.corescience.interfaces.internal.MediatingObservat
 import org.integratedmodelling.corescience.interfaces.literals.IRandomValue;
 import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -40,7 +40,7 @@ public class Measurement extends Observation implements MediatingObservation {
 	protected IRandomValue randomValue = null;
 	protected double inlineValue = 0;
 	protected double value = 0.0;
-    public Unit<?> unit;
+    public Unit unit;
     
 	// set through reflection
 	public DistributionValue distribution = null;
@@ -110,17 +110,17 @@ public class Measurement extends Observation implements MediatingObservation {
 
 	public class MeasurementMediator implements IStateAccessor {
 		
-	    protected Unit<?> otherUnit;
+	    protected javax.measure.unit.Unit<?> otherUnit;
 		private UnitConverter converter;
 		private int reg = 0;
 
 		public MeasurementMediator(Measurement other) {
 
-			this.otherUnit = other.unit;
+			this.otherUnit = other.unit.getUnit();
 			this.converter = 
 				unit.equals(otherUnit) ? 
 					null :
-					otherUnit.getConverterTo(unit);
+					otherUnit.getConverterTo(unit.getUnit());
 		}
 		
 		@Override
@@ -196,7 +196,8 @@ public class Measurement extends Observation implements MediatingObservation {
 		if (unitSpecs == null) {
 			throw new ThinklabValidationException("measurement: units not specified");
 		}
-		this.unit = Unit.valueOf(unitSpecs);
+		
+		this.unit = new Unit(unitSpecs);
 		
 		super.initialize(i);
 
@@ -280,6 +281,13 @@ public class Measurement extends Observation implements MediatingObservation {
 		IState ret = new MemDoubleContextualizedDatasource(
 				getObservableClass(), size, (ObservationContext)context);
 		return ret;
+	}
+	
+	@Override
+	public void validateOverallContext(IObservationContext ctx) {
+		
+		// TODO perform unit validation and conversion of extensive values
+		
 	}
 
 }

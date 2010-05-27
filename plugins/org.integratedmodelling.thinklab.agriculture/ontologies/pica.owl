@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<rdf:RDF
+	xmlns:persistence="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+	xmlns="http://ontologies.seamless-ip.org/pica.owl#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/" 
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:seamproj="http://ontologies.seamless-ip.org/seamproj.owl#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+	xml:base="http://ontologies.seamless-ip.org/pica.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/thinklab/persistence.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/seamproj.owl"/>
+  </owl:Ontology>
+  
+   <owl:ObjectProperty rdf:about="http://ontologies.seamless-ip.org/seamproj.owl#hasInstitutionalCompatibility">
+    <rdfs:range rdf:resource="#InstitutionalCompatibility"/>
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/seamproj.owl#PolicyOption"/>
+    <rdfs:comment xml:lang="en">Specification of PICA institutional compatibility assessments linked to the policy option</rdfs:comment>
+  </owl:ObjectProperty>
+  
+  
+  
+  
+  <owl:Class rdf:ID="PICAassessment"/>
+  <owl:Class rdf:ID="CrucialInstitutionalAspect"/>
+  <owl:Class rdf:ID="NaturalResourceFocus"/>
+  <owl:Class rdf:ID="PICAIndicatorValue"/>
+  <owl:Class rdf:ID="InstitutionalCompatibility"/>
+  <owl:Class rdf:ID="PropertyRightsChanges"/>
+  <owl:Class rdf:ID="PicaIndicator"/>
+  <owl:Class rdf:ID="PICASpatialLevel"/>
+  <owl:Class rdf:ID="PolicyType"/>
+  <owl:Class rdf:ID="PICAIndicatorGeneral"/>
+  <owl:ObjectProperty rdf:ID="hasSuitableIndicators">
+    <rdfs:domain rdf:resource="#CrucialInstitutionalAspect"/>
+    <rdfs:range rdf:resource="#PICAIndicatorGeneral"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="hasLinkageCrucialInstitutionalAspects"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasNaturalResourceFoci">
+    <rdfs:domain rdf:resource="#CrucialInstitutionalAspect"/>
+    <rdfs:range rdf:resource="#NaturalResourceFocus"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasPICASpatialLevels">
+    <rdfs:domain rdf:resource="#InstitutionalCompatibility"/>
+    <rdfs:range rdf:resource="#PICASpatialLevel"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#hasLinkageCrucialInstitutionalAspects">
+    <rdfs:range rdf:resource="#CrucialInstitutionalAspect"/>
+    <rdfs:domain rdf:resource="#PICAIndicatorGeneral"/>
+    <owl:inverseOf rdf:resource="#hasSuitableIndicators"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasInstitutionalCompatibilityIndicatorValues">
+    <rdfs:range rdf:resource="#PicaIndicator"/>
+    <owl:inverseOf>
+      <owl:FunctionalProperty rdf:ID="hasInstitutionalCompatibility"/>
+    </owl:inverseOf>
+    <rdfs:domain rdf:resource="#InstitutionalCompatibility"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="hasPolicyTypes">
+    <rdfs:range rdf:resource="#PolicyType"/>
+    <rdfs:domain rdf:resource="#CrucialInstitutionalAspect"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasPropertyRightsChanges">
+    <rdfs:range rdf:resource="#PropertyRightsChanges"/>
+    <rdfs:domain rdf:resource="#CrucialInstitutionalAspect"/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:ID="geographicalScope">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#PicaIndicator"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasCrucialInstitutionalAspect">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#CrucialInstitutionalAspect"/>
+    <rdfs:domain rdf:resource="#PICAassessment"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="rankcrucialinstitutionalaspect">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="#PICAassessment"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasPolicyType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#InstitutionalCompatibility"/>
+    <rdfs:range rdf:resource="#PolicyType"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="value">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#PICAIndicatorValue"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="fromInstitutionalCompability">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#InstitutionalCompatibility"/>
+    <rdfs:domain rdf:resource="#PICASpatialLevel"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="weblink">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#CrucialInstitutionalAspect"/>
+          <owl:Class rdf:about="#InstitutionalCompatibility"/>
+          <owl:Class rdf:about="#PICAIndicatorGeneral"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="classification">
+    <rdfs:domain rdf:resource="#PICASpatialLevel"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="influenceCategory">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#PICAassessment"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasPICASpatialLevel">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#PICAIndicatorValue"/>
+    <rdfs:range rdf:resource="#PICASpatialLevel"/>
+  </owl:FunctionalProperty>
+
+  <owl:FunctionalProperty rdf:ID="generalLinkage">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#PICAIndicatorGeneral"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="unit">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#PICAIndicatorGeneral"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="name">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#NaturalResourceFocus"/>
+          <owl:Class rdf:about="#PolicyType"/>
+          <owl:Class rdf:about="#PropertyRightsChanges"/>
+          <owl:Class rdf:about="#PICAIndicatorGeneral"/>
+          <owl:Class rdf:about="#CrucialInstitutionalAspect"/>
+          <owl:Class rdf:about="#InstitutionalCompatibility"/>
+          <owl:Class rdf:about="#PICASpatialLevel"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="specificLinkage">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#PicaIndicator"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="assessmentCrucialInstitutionalAspect">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#PICAassessment"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasMainCrucialInstitutionalAspect">
+    <rdfs:range rdf:resource="#CrucialInstitutionalAspect"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#PICAIndicatorGeneral"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="ofInstitutionalCompatibility">
+    <rdfs:range rdf:resource="#InstitutionalCompatibility"/>
+    <owl:inverseOf>
+      <owl:InverseFunctionalProperty rdf:ID="hasPICACIAThemes"/>
+    </owl:inverseOf>
+    <rdfs:domain rdf:resource="#PICAassessment"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="rankThematicCategory">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#PICAassessment"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="description">
+    <rdfs:subPropertyOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#text"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#NaturalResourceFocus"/>
+          <owl:Class rdf:about="#PolicyType"/>
+          <owl:Class rdf:about="#PropertyRightsChanges"/>
+          <owl:Class rdf:about="#PICAIndicatorGeneral"/>
+          <owl:Class rdf:about="#CrucialInstitutionalAspect"/>
+          <owl:Class rdf:about="#PicaIndicator"/>
+          <owl:Class rdf:about="#PICASpatialLevel"/>
+          <owl:Class rdf:about="#InstitutionalCompatibility"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasPropertyRightsChange">
+    <rdfs:domain rdf:resource="#InstitutionalCompatibility"/>
+    <rdfs:range rdf:resource="#PropertyRightsChanges"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  
+  <owl:FunctionalProperty rdf:ID="dataSourceSpecification">
+    <rdfs:domain rdf:resource="#PicaIndicator"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasNaturalResourceFocus">
+    <rdfs:domain rdf:resource="#InstitutionalCompatibility"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#NaturalResourceFocus"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="project">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/seamproj.owl#Project"/>
+    <rdfs:domain rdf:resource="#InstitutionalCompatibility"/>
+  </owl:FunctionalProperty>
+
+  <owl:FunctionalProperty rdf:ID="thematicCategory">
+    <rdfs:domain rdf:resource="#PICAassessment"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="assessmentLevelPICAIndicator">
+    <rdfs:domain rdf:resource="#PICAIndicatorValue"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+
+  <owl:FunctionalProperty rdf:ID="compatibilityStatement">
+    <rdfs:domain rdf:resource="#PICAassessment"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#text"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasPICAIndicatorGeneral">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#PICAIndicatorGeneral"/>
+    <rdfs:domain rdf:resource="#PicaIndicator"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:about="#hasInstitutionalCompatibility">
+    <rdfs:range rdf:resource="#InstitutionalCompatibility"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <owl:inverseOf rdf:resource="#hasInstitutionalCompatibilityIndicatorValues"/>
+    <rdfs:domain rdf:resource="#PicaIndicator"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="date">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#InstitutionalCompatibility"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="dataSource">
+    <rdfs:domain rdf:resource="#PicaIndicator"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasPICAIndicator">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#PICAIndicatorValue"/>
+    <rdfs:range rdf:resource="#PicaIndicator"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="assessmentSummary">
+    <rdfs:domain rdf:resource="#InstitutionalCompatibility"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#text"/>
+  </owl:FunctionalProperty>
+  <owl:InverseFunctionalProperty rdf:about="#hasPICACIAThemes">
+    <rdfs:domain rdf:resource="#InstitutionalCompatibility"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#PICAassessment"/>
+    <owl:inverseOf rdf:resource="#ofInstitutionalCompatibility"/>
+  </owl:InverseFunctionalProperty>
+  
+  <rdf:Description rdf:about="#assessmentCrucialInstitutionalAspect"><rdfs:comment xml:lang="en">An assessment of the impact of all crucial institutional aspects subsumed under this thematic category</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#assessmentLevelPICAIndicator"><rdfs:comment xml:lang="en">An assessment of the classified values of institutional indicators ranging from low to high related to the respective crucial institutional aspect</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#assessmentSummary"><rdfs:comment xml:lang="en">An overall assessment of the compatibility between the policy option in question and the respective institutional context the policy option is to be implemented in</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#classification"><rdfs:comment xml:lang="en">Optional field enabling a reference to a standard classification of the level - for example NUTS2 region</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#compatibilityStatement"><rdfs:comment xml:lang="en">A statement on the impact of the crucial institutional aspect within the thematic categories on the implementation process in the application in question</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#CrucialInstitutionalAspect"><rdfs:comment xml:lang="en">Crucial institutional aspects are institutional factors that foster or hamper the effective and cost-efficient implementation of policies. This table contains a complete list of crucial institutional aspects recommended to be included in a specific application based on the selection of policy type, property right changes and natural resource focus</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#dataSource"><rdfs:comment xml:lang="en">A short reference to the data source</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#dataSourceSpecification"><rdfs:comment xml:lang="en">A longer description of the data source</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#date"><rdfs:comment xml:lang="en">Date for the creation of the application in question</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#description"><rdfs:comment xml:lang="en">A short description of the PICA item</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#fromInstitutionalCompability"><rdfs:comment xml:lang="en">Specification of the institutional compatibility for which the PICA spatial level is described</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#generalLinkage"><rdfs:comment xml:lang="en">A short description of the linkage between the indicator and the crucial institutional aspect</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#geographicalScope"><rdfs:comment xml:lang="en">A short description of the geographical extent of the application</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasCrucialInstitutionalAspect"><rdfs:comment xml:lang="en">Specification of the crucial institutional aspects included in the assessment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasInstitutionalCompatibility"><rdfs:comment xml:lang="en">Institutional compatibility for which the PICA indicator is selected</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasInstitutionalCompatibilityIndicatorValues"><rdfs:comment xml:lang="en">Specification of the PICA indicator values belonging to the institutional compatibility assessment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasLinkageCrucialInstitutionalAspects"><rdfs:comment xml:lang="en">Crucial institutional aspects for which the PICA indicator is recommended</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasMainCrucialInstitutionalAspect"><rdfs:comment xml:lang="en">Most important crucial aspects for which the PICA indicator is recommended</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasNaturalResourceFoci"><rdfs:comment xml:lang="en">Specification of the natural resource focus of the crucial institutional aspect</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasNaturalResourceFocus"><rdfs:comment xml:lang="en">Specification of the natural resource focus of the institutional compatibility assessment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPICACIAThemes"><rdfs:comment xml:lang="en">Specification of the crucial institutional aspect themes of the institutional compatibility assessment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPICAIndicator"><rdfs:comment xml:lang="en">PICA indicator for which the value is given</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPICAIndicatorGeneral"><rdfs:comment xml:lang="en">Specification of the general PICA indicator the selected PICA indicator is linked to</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPICASpatialLevel"><rdfs:comment xml:lang="en">PICA spatial level of the PICA indicator value</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPICASpatialLevels"><rdfs:comment xml:lang="en">Specification of the PICA spatial levels of the institutional compatibility assessment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPolicyType"><rdfs:comment xml:lang="en">Specification of the policy type of the institutional compatibility assessment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPolicyTypes"><rdfs:comment xml:lang="en">Specification of the policy types of the crucial institutional aspect</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPropertyRightsChange"><rdfs:comment xml:lang="en">Specification of the property right changes of the institutional compatibility assessment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPropertyRightsChanges"><rdfs:comment xml:lang="en">Specification of the property right changes of the crucial institutional aspect</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasSuitableIndicators"><rdfs:comment xml:lang="en">Suggestions on suitable indicators for the crucial institutional aspect</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#influenceCategory"><rdfs:comment xml:lang="en">Indicates if the crucial institutional aspect has a negative, mixed or positive impact on the implementation process</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#InstitutionalCompatibility"><rdfs:comment xml:lang="en">Institutional compatibility refers to the compatibility between the policy option and the respective institutional context to assess the effectiveness and cost-efficiency of the implementation of this policy. This table describes the specific application (case) and summarises the findings of the assessment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#name"><rdfs:comment xml:lang="en">Name of the PICA item</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#NaturalResourceFocus"><rdfs:comment xml:lang="en">Natural resource focus describes if the policy in questions targets a specific natural resource. Five types of natural resources are distinguished: Water, Land/Soil, Biodiversity, Forestry and Complex Resources</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#ofInstitutionalCompatibility"><rdfs:comment xml:lang="en">Specification of the institutional compatibility to which the PICA assessment belongs</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#PICAassessment"><rdfs:comment xml:lang="en">Assessment and ranking of the importance of the crucial institutional aspects and of the thematic categories for the policy implementation process covered by a specific application</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#PicaIndicator"><rdfs:comment xml:lang="en">Institutional indicators are defined as variables and proxies that are used to empirically assess the extent of crucial institutional aspects . This table contains records on indicators selected for a specific application</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#PICAIndicatorGeneral"><rdfs:comment xml:lang="en">Institutional indicators are defined as variables and proxies that are used to empirically describe the extent of crucial institutional aspects. This table contains records on indicators recommended to include in an application based on the selection of crucial institutional aspects</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#PICAIndicatorValue"><rdfs:comment xml:lang="en">Actual values of institutional indicators and the result of the comparative classification of indicator values in a specific application</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#PICASpatialLevel"><rdfs:comment xml:lang="en">Spatial levels included for indicator calculation in a specific application</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#PolicyType"><rdfs:comment xml:lang="en">Policy type describes the policy in questions as a combination of area of intervention (Hierarchy, Market or Self-Organized networks) and type of intervention (Regulatory, Economic or Voluntary). In total 9 policy types</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#project"><rdfs:comment xml:lang="en">Specification of the project to which the institutional compatibility assessment belongs</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#PropertyRightsChanges"><rdfs:comment xml:lang="en">Property right change describes the policy in questions regarding the inclusion of property right changes in three different types based on Regulatory, Economic or Voluntary approaches</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#rankcrucialinstitutionalaspect"><persistence:unit>rank</persistence:unit><rdfs:comment xml:lang="en">Importance of the crucial institutional aspect for the implementation process within the thematic categories. 1 is most important</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#rankThematicCategory"><persistence:unit>rank</persistence:unit><rdfs:comment xml:lang="en">Importance of the thematic category for the implementation process. 1 is most important.</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#specificLinkage"><rdfs:comment xml:lang="en">A short description of the linkage between the indicator and the crucial institutional aspect in the specific application</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#thematicCategory"><rdfs:comment xml:lang="en">Thematic categories of institutional compatibility are groups of the crucial institutional aspects identified as potentially hampering/fostering policy implementation</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#unit"><rdfs:comment xml:lang="en">Unit of the indicator values for the indicator</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#value"><persistence:unit>dependent</persistence:unit><rdfs:comment xml:lang="en">Value of the specific indicator. Units of the value dependents on the indicator as specified in PICA indicator general</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#weblink"><rdfs:comment xml:lang="en">A link to a documentation of the item on the web</rdfs:comment></rdf:Description>
+
+
+</rdf:RDF><!-- Created with Protege (with OWL Plugin 3.2, Build 355)  http://protege.stanford.edu -->

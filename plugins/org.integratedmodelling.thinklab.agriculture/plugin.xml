@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.agriculture" version="0.8.0" class="org.integratedmodelling.agriculture.AgriculturePlugin">
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+	</requires>	
+	<runtime>
+		<library id="core" path="classes/" type="code">
+			<export prefix="*" />
+		</library>
+		<library type="resources" path="ontologies/" id="seamless-ontologies" />
+	</runtime>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="activity">
+		<parameter id="url" value="activity.owl"/>
+		<parameter id="concept-space" value="activity" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="agrirule">
+		<parameter id="url" value="agrirule.owl"/>
+		<parameter id="concept-space" value="agrirule" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="capri">
+		<parameter id="url" value="capri.owl"/>
+		<parameter id="concept-space" value="capri" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="crop">
+		<parameter id="url" value="crop.owl"/>
+		<parameter id="concept-space" value="crop" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="cropman">
+		<parameter id="url" value="cropman.owl"/>
+		<parameter id="concept-space" value="cropman" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="seamproj">
+		<parameter id="url" value="seamproj.owl"/>
+		<parameter id="concept-space" value="seamproj" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="persistence">
+		<parameter id="url" value="persistence.owl"/>
+		<parameter id="concept-space" value="persistence" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="farm">
+		<parameter id="url" value="farm.owl"/>
+		<parameter id="concept-space" value="farm" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="farmopt">
+		<parameter id="url" value="farmopt.owl"/>
+		<parameter id="concept-space" value="farmopt" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="indi">
+		<parameter id="url" value="indi.owl"/>
+		<parameter id="concept-space" value="indi" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="livestock">
+		<parameter id="url" value="livestock.owl"/>
+		<parameter id="concept-space" value="livestock" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="pica">
+		<parameter id="url" value="pica.owl"/>
+		<parameter id="concept-space" value="pica" />
+	</extension>
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="prodent">
+		<parameter id="url" value="prodent.owl"/>
+		<parameter id="concept-space" value="prodent" />
+	</extension>
+
+</plugin>

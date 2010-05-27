@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -302,6 +303,16 @@ public class Observation implements IObservation, IInstanceImplementation {
 	@Override
 	public IObservation[] getContingencies() {
 		return contingencies;
+	}
+
+	/**
+	 * This is called by ObservationContext.validate() to expose the obs to the overall context.
+	 * 
+	 * @param ctx
+	 */
+	public void validateOverallContext(IObservationContext ctx) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

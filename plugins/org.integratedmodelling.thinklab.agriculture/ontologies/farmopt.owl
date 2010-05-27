@@ -1,0 +1,881 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:prodent="http://ontologies.seamless-ip.org/prodent.owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:indi="http://ontologies.seamless-ip.org/indi.owl#"
+    xmlns:activity="http://ontologies.seamless-ip.org/activity.owl#"
+    xmlns:crop="http://ontologies.seamless-ip.org/crop.owl#"
+    xmlns="http://ontologies.seamless-ip.org/farmopt.owl#"
+    xmlns:cropman="http://ontologies.seamless-ip.org/cropman.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:farm="http://ontologies.seamless-ip.org/farm.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:seamproj="http://ontologies.seamless-ip.org/seamproj.owl#"
+    xmlns:capri="http://ontologies.seamless-ip.org/capri.owl#"
+    xmlns:agrirule="http://ontologies.seamless-ip.org/agrirule.owl#"
+    xmlns:persistence="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://ontologies.seamless-ip.org/farmopt.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/capri.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/crop.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/activity.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/farm.owl"/>
+  </owl:Ontology>
+  <owl:Class rdf:ID="CropArea">
+    <rdfs:comment xml:lang="en">Area of one crop grown on a FSSIM Farm in a reference year, for example 2003, or 2000</rdfs:comment>
+    <persistence:unit>ha</persistence:unit>
+  </owl:Class>
+  <owl:Class rdf:ID="Constraints">
+    <rdfs:comment xml:lang="en">Political constraints for farming (premium ceilings..)</rdfs:comment>
+    <rdfs:label xml:lang="x-gams">CONSTRAINT</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="SubsidyCrossCompliance">
+    <rdfs:comment xml:lang="en">Describes subsidies obtained for cross compliance measures, like lowering the nitrogen use below a value. The subsidy is provided by a value if any of the properties nitrogen use, water use, erosion, n-leaching, pesticide pressure is above/below maximum/minimum values</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="PolicyMeasure"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="FarmConstraint">
+    <rdfs:comment xml:lang="en">Farm constraints are sets of constraints</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="Price">
+    <rdfs:comment xml:lang="en">Changes of prices as part of policy options</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="FSSIMLivestockFarm">
+    <rdfs:comment xml:lang="en">Livestock farm as required by FSSIM</rdfs:comment>
+    <rdfs:label xml:lang="x-gams">FTL</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="FSSIMFarm"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="FarmAreaPerAgriEnvironmentalZone">
+    <rdfs:comment xml:lang="en">Area in hectares per agri-environmental zone managed by a FSSIM-farm</rdfs:comment>
+    <persistence:unit>ha</persistence:unit>
+  </owl:Class>
+  <owl:Class rdf:ID="OptimalProductionCoefficient">
+    <rdfs:comment xml:lang="en">Each production coefficient that is found in the optimal solution has an area attached to it, that is found by the model. This area is one of the decision variables of the FSSIM-model</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="ProductionActivity">
+    <rdfs:comment xml:lang="en">Output of APES that evaluated an agricultural activity (grassland/arable) on the production (yield) and externalities (environmental effects). An agricultural activity is thus only a description of the inputs, while a production activity also captures the outputs of the agricultural activity</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdfs:subClassOf rdf:resource="http://ontologies.seamless-ip.org/activity.owl#AgriculturalActivity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="OptimalFarmBehaviour">
+    <rdfs:comment xml:lang="en">Optimal farm behaviour as calculated by the FSSIM model for one FSSIM farm. The optimal farm behaviour consists of choosing a number of production coefficients that are considered optimal according to the objective function and the constraints active on this farm</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="YieldTrend">
+    <rdfs:comment xml:lang="en">Yield of activity groups at regional level given different policy options</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="#PolicyMeasure">
+    <rdfs:comment xml:lang="en">Policy measures to be applied when certain thresholds are violated (taxes..)</rdfs:comment>
+    <persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean"
+    >true</persistence:factory>
+  </owl:Class>
+  <owl:Class rdf:about="#FSSIMFarm">
+    <rdfs:comment xml:lang="en">FSSIM Farm, which is a processed form of the representative farms, which requires to be translated to something FSSIM can use to model with. The FSSIM Farm is thus the implementation of the representative farm in a model</rdfs:comment>
+    <rdfs:label xml:lang="x-gams">FT</rdfs:label>
+    <persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean"
+    >true</persistence:factory>
+  </owl:Class>
+  <owl:Class rdf:ID="Penalty">
+    <rdfs:comment xml:lang="en">Penalty a farmer has to pay for exceeding a minimum or maximum value on nitrate leaching, nitrogen use or another input or output</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#PolicyMeasure"/>
+  </owl:Class>
+  <owl:Class rdf:ID="CalibrationTerm">
+    <rdfs:comment xml:lang="en">PMP terms, used to calibrate FSSIM to the base year situation</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="RegionalWage">
+    <rdfs:comment xml:lang="en">Wage paid in a specific region</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="ProductionCoefficient">
+    <rdfs:comment xml:lang="en">A completely quantified input to FSSIM-MP in terms of crop, management inputs, rotation year, crop production and externalities. The Production Coefficient specifies for one crop in one rotation year, which management is being used on this crop, for which agri-environmental zone it is valid, etc</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="FarmQuota">
+    <rdfs:comment xml:lang="en">Production limitation of a product at farm level as set by the European Union</rdfs:comment>
+    <rdfs:label xml:lang="x-gams">QUOTA</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="CropProduction">
+    <rdfs:comment xml:lang="en">Production of one crop product</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="EnvironmentalEffects">
+    <rdfs:comment xml:lang="en">Environmental effects, relevant of growing a crop in with a management in a year, as calculated by APES or based on some expert knowledge</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="FSSIMArableFarm">
+    <rdfs:comment xml:lang="en">Arable farm as required by FSSIM for modelling</rdfs:comment>
+    <rdfs:label xml:lang="x-gams">FTL</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#FSSIMFarm"/>
+  </owl:Class>
+  <owl:Class rdf:ID="ProductionTechnique">
+    <rdfs:comment xml:lang="en">A production technique is a set of crop managements of the crops belonging to one rotation</rdfs:comment>
+    <rdfs:label xml:lang="x-gams">T</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="ProductionActivityPerFSSIMFarm">
+    <rdfs:comment xml:lang="en">Production activities specified for FSSIM farms</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="SupplyResponse">
+    <rdfs:comment xml:lang="en">Change in supply of a crop product due to a change in price</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="Subsidy">
+    <rdfs:comment xml:lang="en">Subsidy for a product</rdfs:comment>
+    <persistence:unit>�/t</persistence:unit>
+  </owl:Class>
+  <owl:Class rdf:ID="YieldofCropProduct">
+    <rdfs:comment xml:lang="en">Yield of a crop product for a certain year of the rotation</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="Tax">
+    <rdfs:comment xml:lang="en">Describes taxes obtained for agri-environmental measures, like having the nitrogen use above a value. The tax is provided as a value if any of the properties nitrogen use, water use, erosion, n-leaching, pesticide pressure is below/above minimum/maximum values</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#PolicyMeasure"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="hasAgriculturalActivities">
+    <rdfs:comment xml:lang="en">Specification of the agricultural activities of the FSSIM farm</rdfs:comment>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/activity.owl#AgriculturalActivity"/>
+    <rdfs:domain rdf:resource="#ProductionActivityPerFSSIMFarm"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasPolicyMeasures">
+    <rdfs:comment xml:lang="en">Specification of the policy measures of the policy option</rdfs:comment>
+    <rdfs:range rdf:resource="#PolicyMeasure"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasFSSIMFarm">
+    <rdfs:comment xml:lang="en">Specification of FSSIM farms of the agricultural activities</rdfs:comment>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#OptimalFarmBehaviour"/>
+          <owl:Class rdf:about="#ProductionActivityPerFSSIMFarm"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="#FSSIMFarm"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasCropProduction">
+    <rdfs:comment xml:lang="en">Specification of the crop productions of the supply response</rdfs:comment>
+    <rdfs:range rdf:resource="#CropProduction"/>
+    <rdfs:domain rdf:resource="#SupplyResponse"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasCropProductYearManagements">
+    <rdfs:comment xml:lang="en">Specification of the crop product in s specific year of the rotation for which the  data is given</rdfs:comment>
+    <rdfs:domain rdf:resource="#ProductionActivity"/>
+    <rdfs:range rdf:resource="#ProductionCoefficient"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasSupplyResponses">
+    <rdfs:comment xml:lang="en">Specification of supply responses of the optimal farm behaviour</rdfs:comment>
+    <rdfs:range rdf:resource="#SupplyResponse"/>
+    <rdfs:domain rdf:resource="#OptimalFarmBehaviour"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasNUTSRegion">
+    <rdfs:comment xml:lang="en">Specification of the NUTS region of the policy measure</rdfs:comment>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farm.owl#NUTSregion"/>
+    <rdfs:domain rdf:resource="#PolicyMeasure"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasRegion">
+    <rdfs:comment xml:lang="en">Specification of regions for which the price change is given</rdfs:comment>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farm.owl#NUTSregion"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#YieldTrend"/>
+          <owl:Class rdf:about="#Price"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasConstraints">
+    <rdfs:comment xml:lang="en">Specification of the single constraints of the farm constraints</rdfs:comment>
+    <rdfs:range rdf:resource="#Constraints"/>
+    <rdfs:domain rdf:resource="#FarmConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasAgriculturalActivity">
+    <rdfs:comment xml:lang="en">Specification of the agricultural activity for which the optimal production coefficient is given</rdfs:comment>
+    <rdfs:domain rdf:resource="#OptimalProductionCoefficient"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/activity.owl#AgriculturalActivity"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasCropYearManagement">
+    <rdfs:comment xml:lang="en">Specification of the crops in specific years of the rotation for which the production coefficients are given</rdfs:comment>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/activity.owl#CropYearManagement"/>
+    <rdfs:domain rdf:resource="#ProductionCoefficient"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasEnvironmentalEffects">
+    <rdfs:comment xml:lang="en">Specification of the environmental effects of the production activity</rdfs:comment>
+    <rdfs:domain rdf:resource="#ProductionActivity"/>
+    <rdfs:range rdf:resource="#EnvironmentalEffects"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasProductionTechnique">
+    <rdfs:comment xml:lang="en">Specification of the production technique of the arable agricultural activity</rdfs:comment>
+    <rdfs:range rdf:resource="#ProductionTechnique"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#ArableActivity"/>
+          <owl:Class rdf:about="#ProductionActivity"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasCalibrationTerms">
+    <rdfs:comment xml:lang="en">Specification of calibration terms of the optimal farm behaviour</rdfs:comment>
+    <rdfs:range rdf:resource="#CalibrationTerm"/>
+    <rdfs:domain rdf:resource="#OptimalFarmBehaviour"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasActivityGroup">
+    <rdfs:comment xml:lang="en">Activity group for which the yield trend is specified</rdfs:comment>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#ActivityGroup"/>
+    <rdfs:domain rdf:resource="#YieldTrend"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasOptimalCroppingPattern">
+    <rdfs:comment xml:lang="en">Specification of optimal cropping patterns of the optimal farm behaviour</rdfs:comment>
+    <rdfs:domain rdf:resource="#OptimalFarmBehaviour"/>
+    <rdfs:range rdf:resource="#OptimalProductionCoefficient"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasCropProductYield">
+    <rdfs:comment xml:lang="en">Specification of yields of the crop product in the specific year of the rotation</rdfs:comment>
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/activity.owl#CropProductInYear"/>
+    <rdfs:range rdf:resource="#YieldofCropProduct"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasFarmAreaPerAgriEnvironmentalZone">
+    <rdfs:comment xml:lang="en">Specification of the farm area per agri-environmental zone</rdfs:comment>
+    <rdfs:domain rdf:resource="#FSSIMFarm"/>
+    <rdfs:range rdf:resource="#FarmAreaPerAgriEnvironmentalZone"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasRepresentativeFarm">
+    <rdfs:comment xml:lang="en">Specification of the representative farm of the FSSIM farm</rdfs:comment>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#FSSIMFarm"/>
+          <owl:Class rdf:about="#FarmConstraint"/>
+          <owl:Class rdf:about="#FarmQuota"/>
+          <owl:Class rdf:about="#Subsidy"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farm.owl#RepresentativeFarm"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasCropProduct">
+    <rdfs:comment xml:lang="en">Specification of crop  product for which the yield is specified</rdfs:comment>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/crop.owl#CropProduct"/>
+    <rdfs:domain rdf:resource="#YieldofCropProduct"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasObservedCropPattern">
+    <rdfs:comment xml:lang="en">Specification of the cropping pattern of the FSSIM farm</rdfs:comment>
+    <rdfs:domain rdf:resource="#FSSIMFarm"/>
+    <rdfs:range rdf:resource="#CropArea"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasSimpleCropGroup">
+    <rdfs:comment xml:lang="en">Specification of simple crop groups for which the crop area is given</rdfs:comment>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/crop.owl#SimpleCropGroup"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#CalibrationTerm"/>
+          <owl:Class rdf:about="#CropArea"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasYieldofCropProducts">
+    <rdfs:comment xml:lang="en">Specification of the yield of the crop products for which the production coefficients are given</rdfs:comment>
+    <rdfs:range rdf:resource="#YieldofCropProduct"/>
+    <rdfs:domain rdf:resource="#ProductionCoefficient"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasAgriEnvironmentalZone">
+    <rdfs:comment xml:lang="en">Specification of the agri-environmental zone of the arable agricultural activity</rdfs:comment>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#ProductionActivity"/>
+          <owl:Class rdf:about="#FarmAreaPerAgriEnvironmentalZone"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#ArableActivity"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#GrassLandActivity"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farm.owl#AgriEnvironmentalZone"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:ID="irrigationWaterRequirement">
+    <rdfs:comment xml:lang="en">Yearly amount of irrigation water required in</rdfs:comment>
+    <persistence:unit>m3/ha</persistence:unit>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#ProductionCoefficient"/>
+          <owl:Class rdf:about="#OptimalFarmBehaviour"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="area">
+    <rdfs:comment xml:lang="en">Area of the FSSIM farm</rdfs:comment>
+    <persistence:unit>ha</persistence:unit>
+    <rdfs:label xml:lang="x-gams">TOLAND</rdfs:label>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#CropArea"/>
+          <owl:Class rdf:about="#OptimalProductionCoefficient"/>
+          <owl:Class rdf:about="#FarmAreaPerAgriEnvironmentalZone"/>
+          <owl:Class rdf:about="#FSSIMFarm"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="farmerIncome">
+    <rdfs:comment xml:lang="en">Yearly farm income, as calculated by FSSIM as expected utility = expected income - risk and it does not include interactions between farm types</rdfs:comment>
+    <persistence:unit>�</persistence:unit>
+    <rdfs:domain rdf:resource="#OptimalFarmBehaviour"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="nitrogenVolatilizationVariability">
+    <rdfs:comment xml:lang="en">Variability in nitrogen volatilization as measured over a large numbers of years based on an average and the deviation from the average</rdfs:comment>
+    <persistence:unit>SD</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#EnvironmentalEffects"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="energyUseTillage">
+    <rdfs:comment xml:lang="en">Energy use for tillage</rdfs:comment>
+    <persistence:unit>MJ/ha</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#ProductionCoefficient"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="priceVariability">
+    <rdfs:comment xml:lang="en">Variability in producer prices for products as an average of the price found in a number of years based on FADN data</rdfs:comment>
+    <persistence:unit>%</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#CropArea"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="totalCostsShare">
+    <rdfs:comment xml:lang="en">Share of costs in total income</rdfs:comment>
+    <persistence:unit>%</persistence:unit>
+    <rdfs:domain rdf:resource="#OptimalFarmBehaviour"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="wage">
+    <rdfs:comment xml:lang="en">Wage of an unskilled worker</rdfs:comment>
+    <persistence:unit>�/hour</persistence:unit>
+    <rdfs:domain rdf:resource="#RegionalWage"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="additionalPrice">
+    <rdfs:comment xml:lang="en">Additional price obtained for selling product within the quota limits. �/t for solids and �/l for liquids</rdfs:comment>
+    <persistence:unit>dependent</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#FarmQuota"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="riskAversionCoefficient">
+    <rdfs:comment xml:lang="en">Specification of the risk aversion coefficients of the FSSIM farm. Describes the level to which a farmer is risk averse and ranges from 0 to 2, with 2 as very risk averse. 1.65 is the most commonly found value according to literature</rdfs:comment>
+    <persistence:unit>unitless</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#FSSIMFarm"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="waterDrainage">
+    <rdfs:comment xml:lang="en">Average drainage of water as measured over a large numbers of years</rdfs:comment>
+    <persistence:unit>mm</persistence:unit>
+    <rdfs:domain rdf:resource="#EnvironmentalEffects"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="energyUseIrrigation">
+    <rdfs:comment xml:lang="en">Energy use for irrigation</rdfs:comment>
+    <persistence:unit>MJ/ha</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#ProductionCoefficient"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="pmptermquadratic">
+    <rdfs:comment xml:lang="en">Amount of additional costs attributed to growing a crop during calibration. These costs increase quadratic with increased production</rdfs:comment>
+    <persistence:unit>�/ha</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#CalibrationTerm"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="enabled">
+    <rdfs:comment xml:lang="en">Specification of if farm constraints are enables in modelling (true = constraints enabled, false = constraints not enabled)</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdfs:domain rdf:resource="#FarmConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="pmptermlinear">
+    <rdfs:comment xml:lang="en">Amount of additional costs attributed to growing a crop during calibration. These costs increase linearly with increased production</rdfs:comment>
+    <persistence:unit>�/ha</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#CalibrationTerm"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="nitrogenLossPercentage">
+    <rdfs:comment xml:lang="en">Share of nitrogen lost by emissions</rdfs:comment>
+    <persistence:unit>%</persistence:unit>
+    <rdfs:domain rdf:resource="#FSSIMLivestockFarm"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="runOff">
+    <rdfs:comment xml:lang="en">Average run off as simulated over a large numbers of years</rdfs:comment>
+    <persistence:unit>mm</persistence:unit>
+    <rdfs:domain rdf:resource="#EnvironmentalEffects"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="priceChange">
+    <rdfs:comment xml:lang="en">the relative change in price</rdfs:comment>
+    <persistence:unit>%</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#SupplyResponse"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="concentratesShareMaximum">
+    <rdfs:comment xml:lang="en">Maximum share of concentrates in the diets of the animals</rdfs:comment>
+    <persistence:unit>%</persistence:unit>
+    <rdfs:domain rdf:resource="#FSSIMLivestockFarm"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="energyUseFertilizer">
+    <rdfs:comment xml:lang="en">Energy use for fertilisation</rdfs:comment>
+    <persistence:unit>MJ/ha</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#ProductionCoefficient"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="nitrogenUseOrganic">
+    <rdfs:comment xml:lang="en">Organic part of the nitrogen application</rdfs:comment>
+    <persistence:unit>kg/ha</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#SimpleCropManagement"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#GrassManagement"/>
+          <owl:Class rdf:about="#ProductionCoefficient"/>
+          <owl:Class rdf:about="#OptimalFarmBehaviour"/>
+          <owl:Class rdf:about="#PolicyMeasure"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#CropYearManagement"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#GrassLandActivity"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="minimum">
+    <rdfs:comment xml:lang="en">Describes whether the value for a subsidy, tax or penalty is a maximum or a minimum value (true = minimum, false = maximum)</rdfs:comment>
+    <rdfs:domain rdf:resource="#PolicyMeasure"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="totalCosts">
+    <rdfs:comment xml:lang="en">Yearly cost of the FSSIM farm</rdfs:comment>
+    <persistence:unit>�</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#OptimalFarmBehaviour"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="mathematicalExpression">
+    <rdfs:comment xml:lang="en">Description of the constraint in mathematical terms (can be directly obtained from GAMS)</rdfs:comment>
+    <rdfs:domain rdf:resource="#Constraints"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="nitrateleaching">
+    <rdfs:comment xml:lang="en">Yearly nitrate leaching as calculated by APES</rdfs:comment>
+    <persistence:unit>kg/ha</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#EnvironmentalEffects"/>
+          <owl:Class rdf:about="#OptimalFarmBehaviour"/>
+          <owl:Class rdf:about="#PolicyMeasure"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="erosionVariability">
+    <rdfs:comment xml:lang="en">Variability in erosion as measured over a large numbers of years based on an average and the deviation from the average</rdfs:comment>
+    <persistence:unit>SD</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#EnvironmentalEffects"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="pesticidePressure">
+    <rdfs:comment xml:lang="en">Pesticides leaching to the environment as calculated by the pesticide component of APES</rdfs:comment>
+    <persistence:unit>g/m2</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#EnvironmentalEffects"/>
+          <owl:Class rdf:about="#OptimalFarmBehaviour"/>
+          <owl:Class rdf:about="#PolicyMeasure"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="penalty">
+    <rdfs:comment xml:lang="en">Amount of penalty on a measure relative to a minimum or maximum threshold</rdfs:comment>
+    <persistence:unit>�/kg</persistence:unit>
+    <rdfs:domain rdf:resource="#Penalty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="yieldVariability">
+    <rdfs:comment xml:lang="en">Variability in yields of products as an average of the yield found in a number of years</rdfs:comment>
+    <persistence:unit>%</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#CropArea"/>
+          <owl:Class rdf:about="#YieldofCropProduct"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="variableCosts">
+    <rdfs:comment xml:lang="en">Variable costs totalled for this crop in this rotation year with this crop management</rdfs:comment>
+    <persistence:unit>�/ha</persistence:unit>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#ProductionCoefficient"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#CropYearManagement"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#GrassLandActivity"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="value">
+    <rdfs:comment xml:lang="en">Price change. �/t for solids and �/l for liquids</rdfs:comment>
+    <persistence:unit>dependent</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#Price"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="quotaAmount">
+    <rdfs:comment xml:lang="en">Quota of the product</rdfs:comment>
+    <persistence:unit>t/farm</persistence:unit>
+    <rdfs:label xml:lang="x-gams">QUOTA</rdfs:label>
+    <rdfs:domain rdf:resource="#FarmQuota"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="nitrogenUse">
+    <rdfs:comment xml:lang="en">Nitrogen given to a crop</rdfs:comment>
+    <persistence:unit>kg/ha</persistence:unit>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#SimpleCropManagement"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#GrassManagement"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#GrassLandActivity"/>
+          <owl:Class rdf:about="#ProductionCoefficient"/>
+          <owl:Class rdf:about="#OptimalFarmBehaviour"/>
+          <owl:Class rdf:about="#PolicyMeasure"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#CropYearManagement"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="annuityShare">
+    <rdfs:comment xml:lang="en">Share of annuity in farm income</rdfs:comment>
+    <persistence:unit>%</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#OptimalFarmBehaviour"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="erosion">
+    <rdfs:comment xml:lang="en">Yearly erosion of soil as calculated by APES</rdfs:comment>
+    <persistence:unit>kg/ha</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#EnvironmentalEffects"/>
+          <owl:Class rdf:about="#OptimalFarmBehaviour"/>
+          <owl:Class rdf:about="#PolicyMeasure"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="price">
+    <rdfs:comment xml:lang="en">Price of the crop (price paid to farmer)</rdfs:comment>
+    <persistence:unit>�/t</persistence:unit>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#YieldofCropProduct"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#SimpleCropManagement"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="irrigationWaterAvailability">
+    <rdfs:comment xml:lang="en">Availability of water for irrigation</rdfs:comment>
+    <persistence:unit>m3/farm</persistence:unit>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#FSSIMFarm"/>
+          <owl:Class rdf:about="#PolicyMeasure"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="pesticidePressureVariability">
+    <rdfs:comment xml:lang="en">Variability in pesticide pressure as measured over a large numbers of years based on an average and the deviation from the average</rdfs:comment>
+    <persistence:unit>SD</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#EnvironmentalEffects"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="totalFarmProduction">
+    <rdfs:comment xml:lang="en">Total farm production of a product, so the sum over area for crops or heads of cattle</rdfs:comment>
+    <persistence:unit>t/farm</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#CropProduction"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="amountOfSubsidy">
+    <rdfs:comment xml:lang="en">Yearly amount of subsidies</rdfs:comment>
+    <persistence:unit>�/ha</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#OptimalFarmBehaviour"/>
+          <owl:Class rdf:about="#ProductionCoefficient"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="organicMatterInitial">
+    <rdfs:comment xml:lang="en">Initial organic matter in the top 20 cm of the soil</rdfs:comment>
+    <persistence:unit>%</persistence:unit>
+    <rdfs:domain rdf:resource="#EnvironmentalEffects"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="annuity">
+    <rdfs:comment xml:lang="en">yearly annuity of investments</rdfs:comment>
+    <persistence:unit>�</persistence:unit>
+    <rdfs:domain rdf:resource="#OptimalFarmBehaviour"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="grossProduction">
+    <rdfs:comment xml:lang="en">Total production of the FSSIM farm</rdfs:comment>
+    <persistence:unit>�</persistence:unit>
+    <rdfs:label xml:lang="x-gams">GPROD</rdfs:label>
+    <rdfs:domain rdf:resource="#OptimalFarmBehaviour"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="organicMatterRate">
+    <rdfs:comment xml:lang="en">Mean change in the yearly rate of change of soil organic matter</rdfs:comment>
+    <persistence:unit>%</persistence:unit>
+    <rdfs:domain rdf:resource="#EnvironmentalEffects"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="soilOrganicMatter">
+    <rdfs:comment xml:lang="en">Status of soil organic matter due to cropping a crop with associated management</rdfs:comment>
+    <persistence:unit>%</persistence:unit>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#OptimalFarmBehaviour"/>
+          <owl:Class rdf:about="#PolicyMeasure"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="organicMatterAcceleration">
+    <rdfs:comment xml:lang="en">Mean acceleration of change of soil organic matter</rdfs:comment>
+    <persistence:unit>%</persistence:unit>
+    <rdfs:domain rdf:resource="#EnvironmentalEffects"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="farmerIncomePerHectare">
+    <rdfs:comment xml:lang="en">Yearly farm income</rdfs:comment>
+    <persistence:unit>�/ha</persistence:unit>
+    <rdfs:domain rdf:resource="#OptimalFarmBehaviour"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="description">
+    <rdfs:comment xml:lang="en">Description of the constraint</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#Constraints"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="referenceYear">
+    <rdfs:comment xml:lang="en">Reference year for the crop area</rdfs:comment>
+    <persistence:unit>Year</persistence:unit>
+    <rdfs:domain rdf:resource="#CropArea"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="labour">
+    <rdfs:comment xml:lang="en">Farm labour demand</rdfs:comment>
+    <persistence:unit>h/ha</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#OptimalFarmBehaviour"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#SimpleCropManagement"/>
+          <owl:Class rdf:about="#FSSIMFarm"/>
+          <owl:Class rdf:about="#ProductionCoefficient"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#CropYearManagement"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#GrassLandActivity"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="yield">
+    <rdfs:comment xml:lang="en">Yield of a crop</rdfs:comment>
+    <persistence:unit>t/ha</persistence:unit>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#YieldofCropProduct"/>
+          <owl:Class rdf:about="#YieldTrend"/>
+          <rdf:Description rdf:about="http://ontologies.seamless-ip.org/activity.owl#SimpleCropManagement"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="grossProductionShare">
+    <rdfs:comment xml:lang="en">Share of production in total income</rdfs:comment>
+    <persistence:unit>%</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#OptimalFarmBehaviour"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="nitrateLeachingVariability">
+    <rdfs:comment xml:lang="en">Variability in nitrate leaching as measured over a large numbers of years based on an average and the deviation from the average</rdfs:comment>
+    <persistence:unit>SD</persistence:unit>
+    <rdfs:domain rdf:resource="#EnvironmentalEffects"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="tax">
+    <rdfs:comment xml:lang="en">Amount of tax on a measure relative to a minimum or maximum threshold. Can be �/t or �/kg or �/head</rdfs:comment>
+    <persistence:unit>dependent</persistence:unit>
+    <rdfs:domain rdf:resource="#Tax"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="subsidiesShare">
+    <rdfs:comment xml:lang="en">Share of premiums and/or subsidies in farm income</rdfs:comment>
+    <persistence:unit>%</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#OptimalFarmBehaviour"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="nitrogenVolatilization">
+    <rdfs:comment xml:lang="en">Yearly amount of nitrogen escaping to the sky</rdfs:comment>
+    <persistence:unit>kg/ha</persistence:unit>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#EnvironmentalEffects"/>
+          <owl:Class rdf:about="#OptimalFarmBehaviour"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="name">
+    <rdfs:comment xml:lang="en">Name of the constraint</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#Constraints"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="subsidy">
+    <rdfs:comment xml:lang="en">Amount of subsidy on a measure relative to a minimum or maximum threshold</rdfs:comment>
+    <persistence:unit>�/t</persistence:unit>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Subsidy"/>
+          <owl:Class rdf:about="#SubsidyCrossCompliance"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="quotaLevel">
+    <rdfs:comment xml:lang="en">Level of the quota, for example A sugar quota, B sugar quota, and total milk quota</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#FarmQuota"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <rdf:Description rdf:about="http://ontologies.seamless-ip.org/farm.owl#nutsregion">
+    <rdfs:domain rdf:resource="#RegionalWage"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://ontologies.seamless-ip.org/crop.owl#hasRotation">
+    <rdfs:domain rdf:resource="#ProductionActivity"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://ontologies.seamless-ip.org/crop.owl#hasProduct">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#FarmQuota"/>
+          <owl:Class rdf:about="#Price"/>
+          <owl:Class rdf:about="#Subsidy"/>
+          <owl:Class rdf:about="#SupplyResponse"/>
+          <owl:Class rdf:about="#CropProduction"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </rdf:Description>
+</rdf:RDF>
+
+<!-- Created with TopBraid Composer -->

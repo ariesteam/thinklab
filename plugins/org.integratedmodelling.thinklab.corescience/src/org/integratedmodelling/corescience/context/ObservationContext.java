@@ -720,8 +720,13 @@ public class ObservationContext implements IObservationContext {
 	 * the extents they're computed in.
 	 */
 	public void validate() {
-		// TODO Auto-generated method stub
-		
+		validateInternal(observation, this);
+	}
+
+	private void validateInternal(IObservation obs, IObservationContext ctx) {
+		((Observation)obs).validateOverallContext(ctx);
+		for (IObservation dep : obs.getDependencies())
+			validateInternal(dep, ctx);
 	}
 	
 }

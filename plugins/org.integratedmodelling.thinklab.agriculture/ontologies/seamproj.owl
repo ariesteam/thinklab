@@ -1,0 +1,860 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<rdf:RDF 
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:persistence="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns="http://ontologies.seamless-ip.org/seamproj.owl#" 
+	xmlns:capri="http://ontologies.seamless-ip.org/capri.owl#" 
+	xmlns:farm="http://ontologies.seamless-ip.org/farm.owl#"
+	xmlns:farmopt="http://ontologies.seamless-ip.org/farmopt.owl#"
+	xmlns:prodent="http://ontologies.seamless-ip.org/prodent.owl#"
+	xml:base="http://ontologies.seamless-ip.org/seamproj.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/farm.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/prodent.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/capri.owl"/>
+  </owl:Ontology>
+  
+
+   <rdf:Description rdf:about="http://ontologies.seamless-ip.org/farmopt.owl#hasPolicyMeasures">
+     <rdfs:domain rdf:resource="#PolicyOption"/>
+ </rdf:Description>
+  
+  
+ <rdf:Description rdf:about="http://ontologies.seamless-ip.org/prodent.owl#hasRegionalCropGenotypes">
+     <rdfs:domain rdf:resource="#Context"/>
+ </rdf:Description>
+  
+<rdf:Description rdf:about="http://ontologies.seamless-ip.org/agrirule.owl#hasAgromanagementConfiguration">
+     <rdfs:domain rdf:resource="#Context"/>
+ </rdf:Description>
+  
+  
+  <owl:ObjectProperty rdf:ID="hasActivityEnergyContent">
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/seamproj.owl#Outlook"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#ActivityEnergyContent"/>
+  </owl:ObjectProperty>
+  
+   <owl:ObjectProperty rdf:ID="hasSupplyShifts">
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/seamproj.owl#Outlook"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#SupplyShift"/>
+  </owl:ObjectProperty>
+  
+  <owl:Class rdf:ID="User"/>
+  <owl:Class rdf:ID="Role">
+      <persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistence:factory>
+  </owl:Class>
+    
+  <owl:Class rdf:ID="ApplicationRole">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SpatialScale">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Scale"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Image"/>
+  <owl:Class rdf:ID="Permission"/>
+  <owl:Class rdf:ID="Outlook">
+    
+  </owl:Class>
+  <owl:Class rdf:ID="PermisionGroup"/>
+  <owl:Class rdf:ID="ExperimentPlan">
+    
+  </owl:Class>
+  <owl:Class rdf:ID="Experiment">
+    
+  </owl:Class>
+  <owl:Class rdf:ID="PolicyAssessment">
+    
+  </owl:Class>
+  <owl:Class rdf:ID="ExpectedImpact"/>
+  <owl:Class rdf:ID="NarrativeOption"/>
+  <owl:Class rdf:ID="Narrative"/>
+  <owl:Class rdf:ID="Problem">
+    
+  </owl:Class>
+  <owl:Class rdf:ID="TemporalScale">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Scale"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="ExperimentQueue"/>
+  <owl:Class rdf:ID="Project"/>
+  <owl:Class rdf:ID="HelpTopic">
+    
+  </owl:Class>
+  <owl:Class rdf:about="#Scale">
+    <persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistence:factory>
+  </owl:Class>
+  <owl:Class rdf:ID="PolicyOption">
+    
+  </owl:Class>
+  <owl:Class rdf:ID="BiophysicalSimulation"/>
+  <owl:Class rdf:ID="Model"/>
+  <owl:Class rdf:ID="ModelChain"/>
+  <owl:Class rdf:ID="ExperimentRun"/>
+  <owl:Class rdf:ID="Context">
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="ProjectRole">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+  </owl:Class>
+  
+  <owl:ObjectProperty rdf:ID="hasExperimentPlans">
+    <rdfs:range rdf:resource="#ExperimentPlan"/>
+    <rdfs:domain rdf:resource="#Problem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasFarmConstraints">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl#FarmConstraint"/>
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasModulations">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#Modulation"/>
+    <rdfs:domain rdf:resource="#Outlook"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasSubsidisedExports">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#SubsidisedExport"/>
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="models">
+    <rdfs:range rdf:resource="#Model"/>
+    <rdfs:domain rdf:resource="#Problem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasRepresentativeFarm">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farm.owl#RepresentativeFarm"/>
+    <rdfs:domain rdf:resource="#Context"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasSpatialScales">
+    <rdfs:range rdf:resource="#SpatialScale"/>
+    <rdfs:domain rdf:resource="#Model"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasPriceChange">
+    <rdfs:range>
+      <rdf:Description rdf:about="http://ontologies.seamless-ip.org/farmopt.owl#Price">
+        
+      </rdf:Description>
+    </rdfs:range>
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasExperimentRuns">
+    <rdfs:range rdf:resource="#ExperimentRun"/>
+    <rdfs:domain rdf:resource="#ExperimentQueue"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasQuotaCountries">
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+    
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#QuotaCountry"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasTradeReformProposals">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#TradeReformProposal"/>
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasSubsidies">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl#Subsidy"/>
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasBiofuelDemands">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#BiofuelDemand"/>
+    <rdfs:domain rdf:resource="#Outlook"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasEnergyPrice">
+    <rdfs:domain rdf:resource="#Outlook"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#EnergyPrice"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasPriceElasticities">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#PriceElasticity"/>
+    <rdfs:domain rdf:resource="#PolicyAssessment"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasProducts">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/prodent.owl#ProductsForRegion"/>
+    <rdfs:domain rdf:resource="#Context"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasFarmQuotas">
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl#FarmQuota"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasDemandShifts">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#DemandShift"/>
+    <rdfs:domain rdf:resource="#Outlook"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasCouplingDegrees">
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#CouplingDegree"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="fssimFarmIndicators">
+    <rdfs:domain rdf:resource="#PolicyAssessment"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl#OptimalFarmBehaviour"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasTwoExperiments">
+    <rdfs:range rdf:resource="#Experiment"/>
+    <rdfs:domain rdf:resource="#ExperimentPlan"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasInflationRates">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#InflationRate"/>
+    <rdfs:domain rdf:resource="#Outlook"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasCutFactorSubsidies">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#CutfactorSubsidies"/>
+    <rdfs:domain rdf:resource="#PolicyAssessment"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasNarrativeOptions">
+    <rdfs:domain rdf:resource="#Narrative"/>
+    <rdfs:range rdf:resource="#NarrativeOption"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasBilateralTariffs">
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#BilateralTariff"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasRoles">
+    <rdfs:domain rdf:resource="#User"/>
+    <rdfs:range rdf:resource="#Role"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasProductionOrientation">
+    <rdfs:domain rdf:resource="#Context"/>
+    <rdfs:range>
+      <rdf:Description rdf:about="http://ontologies.seamless-ip.org/prodent.owl#ProductionOrientation">
+        
+      </rdf:Description>
+    </rdfs:range>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="hasExchangeRates">
+    <rdfs:domain rdf:resource="#Outlook"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#ExchangeRates"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasBasicPremiums">
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#BasicPremium"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasGlobalTariffs">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#GlobalTariff"/>
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasPermissions">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Role"/>
+          <owl:Class rdf:about="#PermisionGroup"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="#Permission"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="hasYieldGrowth">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#YieldGrowth"/>
+    <rdfs:domain rdf:resource="#Outlook"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasRegionalWages">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl#RegionalWage"/>
+    <rdfs:domain rdf:resource="#Context"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="calculatedProductionCoefficients">
+    
+    <rdfs:domain rdf:resource="#BiophysicalSimulation"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl#ProductionActivityPerFSSIMFarm"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasYieldTrend">
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl#YieldTrend"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasSetAsideRegulations">
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#SetAsideRegulation"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasEquilibriumPrices">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#EquilibriumPrice"/>
+    <rdfs:domain rdf:resource="#PolicyAssessment"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasRegion">
+    <rdfs:domain rdf:resource="#Context"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farm.owl#NUTSregion"/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:ID="task">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#Permission"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="tradeReformActivated">
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasFactSheet">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#ModelChain"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="label">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#PermisionGroup"/>
+          <owl:Class rdf:about="#ModelChain"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="weblink">
+    <rdfs:domain rdf:resource="#HelpTopic"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="email">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#User"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="extent">
+    <rdfs:domain rdf:resource="#Scale"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  
+  <owl:FunctionalProperty rdf:ID="mimeType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#Image"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasPolicyAssessment">
+    <rdfs:range rdf:resource="#PolicyAssessment"/>
+    <rdfs:domain rdf:resource="#Experiment"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="institute">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#User"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="description">
+    <rdfs:subPropertyOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#text"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Problem"/>
+          <owl:Class rdf:about="#Project"/>
+          <owl:Class rdf:about="#Experiment"/>
+          <owl:Class rdf:about="#Narrative"/>
+          <owl:Class rdf:about="#ExperimentPlan"/>
+          <owl:Class rdf:about="#HelpTopic"/>
+          <owl:Class rdf:about="#Model"/>
+          <owl:Class rdf:about="#ModelChain"/>
+          <owl:Class rdf:about="#ExperimentQueue"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="accountName">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#User"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="modificationDate">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#Image"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="properties">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#text"/>
+    <rdfs:domain rdf:resource="#Problem"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+
+  <owl:FunctionalProperty rdf:ID="creationDate">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Image"/>
+          <owl:Class rdf:about="#ExperimentQueue"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="logfile">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#ExperimentRun"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasBiophysicalSimulation">
+    <rdfs:domain rdf:resource="#Experiment"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#BiophysicalSimulation"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasOutlook">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#BiophysicalSimulation"/>
+    <rdfs:range rdf:resource="#Outlook"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="resolution">
+    <rdfs:domain rdf:resource="#Scale"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasProblem">
+    <rdfs:range rdf:resource="#Problem"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#Project"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasExperiment">
+    <rdfs:domain rdf:resource="#ExperimentRun"/>
+    <rdfs:range rdf:resource="#Experiment"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="password">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#User"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="status">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#ExperimentRun"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="lastName">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#User"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="changed">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdfs:domain rdf:resource="#Experiment"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="right">
+    <rdfs:domain rdf:resource="#Permission"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasContext">
+    <rdfs:range rdf:resource="#Context"/>
+    <rdfs:domain rdf:resource="#BiophysicalSimulation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="impact">
+    <rdfs:domain rdf:resource="#ExpectedImpact"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="firstName">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#User"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasProject">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#ProjectRole"/>
+    <rdfs:range rdf:resource="#Project"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasBaseYearExperiment">
+    <rdfs:domain rdf:resource="#Experiment"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#Experiment"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="keywords">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#HelpTopic"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="title">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Project"/>
+          <owl:Class rdf:about="#Experiment"/>
+          <owl:Class rdf:about="#Narrative"/>
+          <owl:Class rdf:about="#Role"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="size">
+    <rdfs:domain rdf:resource="#Image"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="filename">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#Image"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasExperimentPlan">
+    <rdfs:range rdf:resource="#ExperimentPlan"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#ExpectedImpact"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="modelZipSaved">
+    <rdfs:domain rdf:resource="#Experiment"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+ 
+  <owl:FunctionalProperty rdf:ID="name">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#Model"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="lastCompetedModel">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#Model"/>
+    <rdfs:domain rdf:resource="#ExperimentRun"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasModelChain">
+    <rdfs:domain rdf:resource="#Experiment"/>
+    <rdfs:range rdf:resource="#ModelChain"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="value">
+    <rdfs:subPropertyOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#text"/>
+    <rdfs:domain rdf:resource="#NarrativeOption"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="option">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#NarrativeOption"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasPolicyOption">
+    <rdfs:range rdf:resource="#PolicyOption"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#PolicyAssessment"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasImage">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Project"/>
+          <owl:Class rdf:about="#User"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="#Image"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasNarrative">
+    <rdfs:range rdf:resource="#Narrative"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Context"/>
+          <owl:Class rdf:about="#Outlook"/>
+          <owl:Class rdf:about="#PolicyOption"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasBaselineExperiment">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#Experiment"/>
+    <rdfs:range rdf:resource="#Experiment"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="published">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Experiment"/>
+          <owl:Class rdf:about="#Project"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="modelZip">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#Experiment"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasMIMEType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#HelpTopic"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasSpatialScale">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Problem"/>
+          <owl:Class rdf:about="#ModelChain"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="#SpatialScale"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="endDate">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#User"/>
+          <owl:Class rdf:about="#ExperimentQueue"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="baseline">
+    <rdfs:domain rdf:resource="#Experiment"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="version">
+    <rdfs:domain rdf:resource="#Model"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+ 
+  <owl:FunctionalProperty rdf:ID="time">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#PolicyOption"/>
+    
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="state">
+    <rdfs:domain rdf:resource="#Experiment"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="ofProblem">
+    <rdfs:range rdf:resource="#Problem"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    
+    <owl:inverseOf>
+      <owl:InverseFunctionalProperty rdf:ID="hasExperiments"/>
+    </owl:inverseOf>
+    <rdfs:domain rdf:resource="#Experiment"/>
+  </owl:FunctionalProperty>
+  
+  <owl:ObjectProperty rdf:ID="hasModels">
+    <rdfs:range rdf:resource="#Model"/>
+    <rdfs:domain rdf:resource="#ModelChain"/>
+  </owl:ObjectProperty>
+  
+  
+  <owl:FunctionalProperty rdf:ID="rank">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Scale"/>
+          <owl:Class rdf:about="#ExperimentRun"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasTemporalScale">
+    <rdfs:range rdf:resource="#TemporalScale"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Experiment"/>
+          <owl:Class rdf:about="#ModelChain"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+ 
+  <owl:InverseFunctionalProperty rdf:about="#hasExperiments">
+    
+    
+    <owl:inverseOf rdf:resource="#ofProblem"/>
+    <rdfs:range rdf:resource="#Experiment"/>
+    <rdfs:domain rdf:resource="#Problem"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:InverseFunctionalProperty>
+ 
+  <owl:DataRange>
+    <owl:oneOf rdf:parseType="Resource">
+      <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GoalOrientedFramework</rdf:first>
+      <rdf:rest rdf:parseType="Resource">
+        <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">OtherFramework</rdf:first>
+        <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+      </rdf:rest>
+    </owl:oneOf>
+  </owl:DataRange>
+  <owl:DataRange>
+    <owl:oneOf rdf:parseType="Resource">
+      <rdf:rest rdf:parseType="Resource">
+        <rdf:rest rdf:parseType="Resource">
+          <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Not Started</rdf:first>
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+            <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Error</rdf:first>
+          </rdf:rest>
+        </rdf:rest>
+        <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Calculated</rdf:first>
+      </rdf:rest>
+      <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Running</rdf:first>
+    </owl:oneOf>
+  </owl:DataRange>
+  <owl:DataRange>
+    <owl:oneOf rdf:parseType="Resource">
+      <rdf:rest rdf:parseType="Resource">
+        <rdf:rest rdf:parseType="Resource">
+          <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">region</rdf:first>
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">memberstate</rdf:first>
+            <rdf:rest rdf:parseType="Resource">
+              <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">EuropeanUnion</rdf:first>
+              <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+            </rdf:rest>
+          </rdf:rest>
+        </rdf:rest>
+        <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">farm</rdf:first>
+      </rdf:rest>
+      <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">field</rdf:first>
+    </owl:oneOf>
+  </owl:DataRange>
+  
+  
+  
+  <rdf:Description rdf:about="#accountName"><rdfs:comment xml:lang="en">Username</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#ApplicationRole"><rdfs:comment xml:lang="en">A role defining universal access to SEAMLESS-IF</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#baseline"><rdfs:comment xml:lang="en">Specification of if this is a baseline experiment (true = baseline experiment, false = not a baseline experiment)</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#BiophysicalSimulation"><rdfs:comment xml:lang="en">Results of a biophysical simulation chain</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#calculatedProductionCoefficients"><rdfs:comment xml:lang="en">Specification of production coefficients calculated for the biophysical simulation</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#changed"><rdfs:comment xml:lang="en">Specification of if the experiment has been changed (true = experiment has been changed, false = experiment has not been changed)</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#Context"><rdfs:comment xml:lang="en">Context defines the boundaries of the SEAMLESS simulator, i.e. limits the problem solution space. Sometimes is referred to as "System aspects". It consists of a set of selected crops, a set of production orientations, a set of regions and a set of representative farms</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#creationDate"><rdfs:comment xml:lang="en">Date for the creation of the image</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#description"><rdfs:comment xml:lang="en">Description of the experiment plan</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#email"><rdfs:comment xml:lang="en">Email of the user</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#endDate"><rdfs:comment xml:lang="en">Optional end data for use of SEAMLESS-IF</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#ExpectedImpact"><rdfs:comment xml:lang="en">Expected changes in indicator-value due to changes in policy options, context and outlook in the future as compared to the reference (base) situation</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#Experiment"><rdfs:comment xml:lang="en">An experiment is one run of the models within SEAMLESS-IF that evaluate the effects of one or a combination of �policy options� in one context and one outlook</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#ExperimentPlan"><rdfs:comment xml:lang="en">Information on planning of experiments for example more than one experiment and expected impacts</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#ExperimentQueue"><rdfs:comment xml:lang="en">Information on experiments ready to be executed</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#ExperimentRun"><rdfs:comment xml:lang="en">Information on the execution of model runs</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#extent"><rdfs:comment xml:lang="en">Extent defines the time span or total area covered by the scale</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#filename"><rdfs:comment xml:lang="en">File name of the image</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#firstName"><rdfs:comment xml:lang="en">First name of the user</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#fssimFarmIndicators"><rdfs:comment xml:lang="en">Speciation of the optimal behaviour of farm types modelled by FSSIM in the policy assessment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasBaselineExperiment"><rdfs:comment xml:lang="en">Specification of the baseline experiment used for the experiment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasBaseYearExperiment"><rdfs:comment xml:lang="en">Specification of the base year experiment used for the experiment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasBasicPremiums"><rdfs:comment xml:lang="en">Specification of basic  in the policy option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasBilateralTariffs"><rdfs:comment xml:lang="en">Specification of the bilateral tariffs of the policy option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasBiofuelDemands"><rdfs:comment xml:lang="en">Specification of the bio fuel demands used in the outlook</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasBiophysicalSimulation"><rdfs:comment xml:lang="en">Specification of the biophysical simulation used in the experiment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasContext"><rdfs:comment xml:lang="en">Specification of the context of the biophysical simulation</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasCouplingDegrees"><rdfs:comment xml:lang="en">Specification of the coupling degree of the policy option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasCutFactorSubsidies"><rdfs:comment xml:lang="en">Specification of the cut factors on subsidies of the policy assessment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasDemandShifts"><rdfs:comment xml:lang="en">Specification of the demand shifts used in the outlook</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasEnergyPrice"><rdfs:comment xml:lang="en">Specification of the energy prices used in the outlook</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasEquilibriumPrices"><rdfs:comment xml:lang="en">Specification of the equilibrium prices of the policy assessment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasExchangeRates"><rdfs:comment xml:lang="en">Specification of the exchange rates used in the outlook</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasExperiment"><rdfs:comment xml:lang="en">Specification of the experiment of the experiment run</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasExperimentPlan"><rdfs:comment xml:lang="en">Specification of the experiment plans of the expected impact</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasExperimentPlans"><rdfs:comment xml:lang="en">Specification of the experiment plans of the project</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasExperimentRuns"><rdfs:comment xml:lang="en">Specification of the experiment runs in the experiment queue</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasExperiments"><rdfs:comment xml:lang="en">Each problem is associated with a set of experiments to allow assessments</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasFactSheet"><rdfs:comment xml:lang="en">Web link to a description of the model chain</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasFarmConstraints"><rdfs:comment xml:lang="en">Specification of farm constraints of the policy option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasFarmQuotas"><rdfs:comment xml:lang="en">Specification of the farm quotas of the policy option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasGlobalTariffs"><rdfs:comment xml:lang="en">Specification of global tariffs the policy option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasImage"><rdfs:comment xml:lang="en">Specification of image of the user</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasInflationRates"><rdfs:comment xml:lang="en">Specification of the inflation rates used in the outlook</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasMIMEType"><rdfs:comment xml:lang="en">MIME type (file type) of the provided help topic</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasModelChain"><rdfs:comment xml:lang="en">Specification of the model chain used for the experiment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasModels"><rdfs:comment xml:lang="en">Models included in the model chain</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasModulations"><rdfs:comment xml:lang="en">Specification of the modulation rates used in the outlook</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasNarrative"><rdfs:comment xml:lang="en">Specification of the narrative of the outlook</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasNarrativeOptions"><rdfs:comment xml:lang="en">Specification of narrative options belonging to the narrative</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasOutlook"><rdfs:comment xml:lang="en">Specification of the outlook of the biophysical simulation</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPermissions"><rdfs:comment xml:lang="en">Specification of the permissions of the role</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPolicyAssessment"><rdfs:comment xml:lang="en">Specification of the policy assessments belonging to the experiment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPolicyOption"><rdfs:comment xml:lang="en">Specification of which policy options the policy assessment belongs to</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPriceChange"><rdfs:comment xml:lang="en">Specification of price changes of the policy option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasPriceElasticities"><rdfs:comment xml:lang="en">Specification of the price elasticities of the policy assessment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasProblem"><rdfs:comment xml:lang="en">Problem of the project</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasProductionOrientation"><rdfs:comment xml:lang="en">Specification of the production orientation of the context</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasProducts"><rdfs:comment xml:lang="en">Specification of the products of the context</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasProject"><rdfs:comment xml:lang="en">Specification of the project for which the role is valid</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasQuotaCountries"><rdfs:comment xml:lang="en">Specification of country quotas in the policy option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasRegion"><rdfs:comment xml:lang="en">Specification of the regions of the context</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasRegionalWages"><rdfs:comment xml:lang="en">Specification of the regional wages of the context</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasRepresentativeFarm"><rdfs:comment xml:lang="en">Specification of the representative farms of the context</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasRoles"><rdfs:comment xml:lang="en">Roles of the user</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasSetAsideRegulations"><rdfs:comment xml:lang="en">Specification of the set aside regulation of the policy option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasSpatialScale"><rdfs:comment xml:lang="en">Specification of the spatial scale of the problem</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasSpatialScales"><rdfs:comment xml:lang="en">Specification of the spatial scales that can be modelled</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasSubsidies"><rdfs:comment xml:lang="en">Specification of the subsidies of the policy option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasSubsidisedExports"><rdfs:comment xml:lang="en">Specification of subsidised exports of the policy option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasTemporalScale"><rdfs:comment xml:lang="en">Specification of the temporal scale of the experiment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasTradeReformProposals"><rdfs:comment xml:lang="en">Specification of the trade reform proposal of the policy option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasTwoExperiments"><rdfs:comment xml:lang="en">Specification of the experiments of the experiment plan</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasYieldGrowth"><rdfs:comment xml:lang="en">Specification of the yield growths used in the outlook</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#hasYieldTrend"><rdfs:comment xml:lang="en">Specification of the set yield trend of the policy option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#HelpTopic"><rdfs:comment xml:lang="en">Help topics are provided for different aspects of SEAMLESS-IF accessible on internet</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#Image"><rdfs:comment xml:lang="en">List of images. Images can be linked to a user or to a project</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#impact"><rdfs:comment xml:lang="en">Description of the expected impact</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#institute"><rdfs:comment xml:lang="en">Name of the institute of the user</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#keywords"><rdfs:comment xml:lang="en">Keywords of the help topic</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#label"><rdfs:comment xml:lang="en">Name of the permission group</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#lastCompetedModel"><rdfs:comment xml:lang="en">Specification of the last completed model in the model chain</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#lastName"><rdfs:comment xml:lang="en">Last name of the user</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#logfile"><rdfs:comment xml:lang="en">Link to the log file of the experiment run</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#mimeType"><rdfs:comment xml:lang="en">Specification of the MIME type (file format) of the image</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#Model"><rdfs:comment xml:lang="en">Models integrated in SEAMLESS-IF</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#ModelChain"><rdfs:comment xml:lang="en">Model chains integrated in SEAMLESS-IF</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#models"><rdfs:comment xml:lang="en">Models used</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#modelZip"><rdfs:comment xml:lang="en">Web link to saved zip file of the experiment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#modelZipSaved"><rdfs:comment xml:lang="en">Specification of if the experiment has been saved to a zip file (true = file saved, false = file not saved)</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#modificationDate"><rdfs:comment xml:lang="en">Date for modification of the image</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#name"><rdfs:comment xml:lang="en">Name of the model</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#Narrative"><rdfs:comment xml:lang="en">A narrative us a semiformal description of an experiment</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#NarrativeOption"><rdfs:comment xml:lang="en">Features of particular interest in the narrative</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#ofProblem"><rdfs:comment xml:lang="en">Each Experiment is associated to the problem it was defined for</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#option"><rdfs:comment xml:lang="en">A short description of the narrative option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#Outlook"><rdfs:comment xml:lang="en">An outlook on the future, that describe the trends and/or trend deviations in society at large, which affect the results produced by SEAMLESS-IF, but which are not forecasted by SEAMLESS-IF. These outlooks discuss trends and trend deviations exogenous to SEAMLESS</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#password"><rdfs:comment xml:lang="en">Password to access SEAMLESS-IF</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#PermisionGroup"><rdfs:comment xml:lang="en">Groups of permissions</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#Permission"><rdfs:comment xml:lang="en">Permissions defined different rights in relation to the use of SEAMLESS-IF</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#PolicyAssessment"><rdfs:comment xml:lang="en">Outcomes of the assessment of the policy. It investigates ex-ante the impacts of a policy on agricultural sustainability</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#PolicyOption"><rdfs:comment xml:lang="en">A set of policy parameters within a given timeframe or for a time series that the integrated modeller concerns related to the problem and the experiment(s) defined in the current project</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#Problem"><rdfs:comment xml:lang="en">Question the policy expert wants to have an answer to. The problem definition is defined by the policy evaluator and the integrated modeller helps to translate the problem to capabilities of the SEAMLESS-IF tools, for example: �to assess the integrated cross impacts of a specific change in the CAP and/or an implementation of the Nitrate directive.� Each problem can be tackled in different ways, leading to one or more experiments for each problem</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#Project"><rdfs:comment xml:lang="en">A project is used to tackle one problem that the user wants to assess by using SEAMLESS-IF. One project has one and only one problem and has one or a set of experiments</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#ProjectRole"><rdfs:comment xml:lang="en">A role defining access to SEAMLESS-IF linked to projects</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#properties"><rdfs:comment xml:lang="en">Specification of how the problem is presented in SEAMLESS-IF</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#published"><rdfs:comment xml:lang="en">Specification of if the experiment has been published (true = experiment published, false = experiment not published)</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#rank"><persistence:unit>rank</persistence:unit><rdfs:comment xml:lang="en">Ranking of the scale: Firstly by largest extent, secondly by largest resolution (1 = largest)</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#resolution"><rdfs:comment xml:lang="en">Resolution defines the smallest unit in time and space of the scale</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#right"><rdfs:comment xml:lang="en">Rights, for example read, update�, related to the permission</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#Role"><rdfs:comment xml:lang="en">Role defines sets of permissions for accessing SEAMLESS-IF</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#Scale"><rdfs:comment xml:lang="en">Scale describe temporal and spatial scales of indicators, experiments and model chains</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#size"><persistence:unit>kb</persistence:unit><rdfs:comment xml:lang="en">Size of the image</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#SpatialScale"><rdfs:comment xml:lang="en">Spatial scale defines the extent, resolution and rank of the spatial dimension</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#state"><persistence:unit>unitless</persistence:unit><rdfs:comment xml:lang="en">Status of the experiment, e.g. calculated, in progress, error. Will be revised with no processing centre, so relevant values cannot be given at this stage.</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#status"><rdfs:comment xml:lang="en">Status of the experiment run</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#task"><rdfs:comment xml:lang="en">Task related to the permission</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#TemporalScale"><rdfs:comment xml:lang="en">Temporal scale defines the extent, resolution and rank of the time dimension</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#time"><persistence:unit>Year</persistence:unit><rdfs:comment xml:lang="en">Year</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#title"><rdfs:comment xml:lang="en">Title of the role</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#tradeReformActivated"><rdfs:comment xml:lang="en">Specification of if trade reform is activated in the policy option (true = trade reform activated, false = trade reform not activated)</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#User"><rdfs:comment xml:lang="en">Users of the SEAMLESS-IF</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#value"><rdfs:comment xml:lang="en">Value of the narrative option</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#version"><rdfs:comment xml:lang="en">Version of the model</rdfs:comment></rdf:Description>
+<rdf:Description rdf:about="#weblink"><rdfs:comment xml:lang="en">Web link to the help topic</rdfs:comment></rdf:Description>
+
+
+
+</rdf:RDF><!-- Created with Protege (with OWL Plugin 3.2, Build 355)  http://protege.stanford.edu -->

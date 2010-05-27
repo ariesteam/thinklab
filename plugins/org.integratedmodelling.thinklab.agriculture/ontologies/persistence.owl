@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#"
+    xmlns:xsp="http://www.owl-ontologies.com/2005/08/07/xsp.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:swrlb="http://www.w3.org/2003/11/swrlb#"
+    xmlns="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://www.integratedmodelling.org/ks/thinklab/persistence.owl">
+  <owl:Ontology rdf:about="">
+    <rdfs:comment xml:lang="en">Contains annotations for ontologies specifying domain models. These annotations allow to manipulate text attributes, abstract classes and implementing the factory pattern.</rdfs:comment>
+    <owl:versionInfo xml:lang="en">Initial version by Ioannis Athanasiadis (May 23, 2007)</owl:versionInfo>
+  </owl:Ontology>
+  <owl:DatatypeProperty rdf:ID="factory">
+    <rdfs:subPropertyOf>
+      <owl:DatatypeProperty rdf:ID="abstract"/>
+    </rdfs:subPropertyOf>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:comment xml:lang="en">The annotated class C is the root for a "factory patern" equivalent in OWL. Class C will be abstract, i.e. cannot have direct instances. However, it has to have subclasses (multiple layers are allowed) and through them C is incarnated. According to the factory pattern,  all subclasses of C have as a sole ancestor C and no other, and are disjoint to each other.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="text">
+    <rdfs:comment xml:lang="en">When a datatype property with range xsd:string inherits from this property, then it will persisted as "TEXT" instead of the default VARCHAR[255]</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="#abstract">
+    <rdfs:comment xml:lang="en">An abstract OWL class is not allowed to have direct instances. In the programming layer it is implemented only as an interface, and in the persistency layer it does not  have a table associated to it for storing its instances.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </owl:DatatypeProperty>
+  <owl:FunctionalProperty rdf:ID="unit">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:comment xml:lang="en">This property can be used for annotating the units of a certain datatype property</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 3.4.1, Build 536)  http://protege.stanford.edu -->

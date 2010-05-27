@@ -34,11 +34,11 @@ public class DynamicMeasurement extends Measurement {
 			super(code, obs, isMediator, context, change, derivative);
 			
 			if (isMediator) {
-				this.otherUnit = other.unit;
+				this.otherUnit = other.unit.getUnit();
 				this.converter = 
 					unit.equals(otherUnit) ? 
 							null :
-						otherUnit.getConverterTo(unit);
+						otherUnit.getConverterTo(unit.getUnit());
 			}
 			
 			if (isConstant)

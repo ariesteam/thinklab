@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+		 xmlns:owl="http://www.w3.org/2002/07/owl#"
+		 xmlns:persistence="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#"	
+		 xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+	     xmlns:xsd="http://www.w3.org/2001/XMLSchema#" 
+    	 xmlns="http://ontologies.seamless-ip.org/crop.owl#" 
+    	 xml:base="http://ontologies.seamless-ip.org/crop.owl">
+	<owl:Ontology rdf:about="">
+		<rdfs:comment xml:lang="en">This ontology defines crop-product relationships in SEAMELESS and their various groups.
+		</rdfs:comment>
+	</owl:Ontology>
+
+	<owl:Class rdf:ID="Crop">
+    </owl:Class>
+    
+    	<owl:Class rdf:ID="ProductGroup">
+    </owl:Class>
+    
+  <owl:FunctionalProperty rdf:ID="hasProduct">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/crop.owl#Product"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:comment xml:lang="en">Specification of the crop product for which data is given</rdfs:comment>
+  </owl:FunctionalProperty>
+
+
+	
+	<owl:Class rdf:ID="Product">
+		<persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true
+		</persistence:factory>
+	</owl:Class>
+	<owl:Class rdf:ID="SimpleCropGroup">
+
+
+		<rdfs:subClassOf>
+			<owl:Class rdf:ID="CropGroup" />
+		</rdfs:subClassOf>
+	</owl:Class>
+	<owl:Class rdf:about="#CropGroup">
+		<persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true
+		</persistence:factory>
+
+
+	</owl:Class>
+	<owl:Class rdf:ID="ProductType">
+
+
+	</owl:Class>
+	<owl:Class rdf:ID="CropProduct">
+
+
+
+		<rdfs:subClassOf>
+			<owl:Restriction>
+				<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</owl:cardinality>
+				<owl:onProperty>
+					<owl:ObjectProperty rdf:ID="ofCrop" />
+				</owl:onProperty>
+			</owl:Restriction>
+		</rdfs:subClassOf>
+		<rdfs:subClassOf rdf:resource="#Product" />
+	</owl:Class>
+	<owl:ObjectProperty rdf:ID="realized">
+		<rdfs:range rdf:resource="#Product" />
+
+		<owl:inverseOf>
+			<owl:ObjectProperty rdf:ID="ofType" />
+		</owl:inverseOf>
+		<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty" />
+		<rdfs:domain rdf:resource="#ProductType" />
+	</owl:ObjectProperty>
+	<owl:ObjectProperty rdf:ID="hasSetOfCrops">
+
+		<owl:inverseOf>
+			<owl:ObjectProperty rdf:ID="isPartOfCropGroups" />
+		</owl:inverseOf>
+		<rdfs:domain rdf:resource="#CropGroup" />
+		<rdfs:range rdf:resource="#Crop" />
+	</owl:ObjectProperty>
+	<owl:ObjectProperty rdf:about="#ofCrop">
+		<rdfs:domain rdf:resource="#CropProduct" />
+		<rdfs:range rdf:resource="#Crop" />
+		<owl:inverseOf>
+			<owl:ObjectProperty rdf:ID="produces" />
+		</owl:inverseOf>
+		<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+	</owl:ObjectProperty>
+	<owl:ObjectProperty rdf:about="#ofType">
+		<rdfs:domain rdf:resource="#Product" />
+		<rdfs:range rdf:resource="#ProductType" />
+		<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+		<owl:inverseOf rdf:resource="#realized" />
+	</owl:ObjectProperty>
+	
+
+	
+	<owl:ObjectProperty rdf:about="#isPartOfCropGroups">
+		<rdfs:domain rdf:resource="#Crop" />
+		<rdfs:range rdf:resource="#CropGroup" />
+		<owl:inverseOf rdf:resource="#hasSetOfCrops" />
+	</owl:ObjectProperty>
+	
+	
+	<owl:ObjectProperty rdf:about="#hasSetOfProducts">
+		<owl:inverseOf rdf:resource="#isPartOfProductGroups" />
+		<rdfs:range rdf:resource="#Product" />
+		<rdfs:domain rdf:resource="#ProductGroup" />
+	</owl:ObjectProperty>
+	
+	<owl:ObjectProperty rdf:about="#isPartOfProductGroups">
+		<owl:inverseOf rdf:resource="hasSetOfProducts" />
+		<rdfs:range rdf:resource="#ProductGroup" />
+		<rdfs:domain rdf:resource="#Product" />
+	</owl:ObjectProperty>
+	
+	<owl:ObjectProperty rdf:about="#produces">
+		<owl:inverseOf rdf:resource="#ofCrop" />
+		<rdfs:domain rdf:resource="#Crop" />
+		<rdfs:range rdf:resource="#CropProduct" />
+	</owl:ObjectProperty>
+	<owl:DatatypeProperty rdf:ID="harvestIndex">
+		<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float" />
+		<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+		<rdfs:domain rdf:resource="#Crop" />
+
+	</owl:DatatypeProperty>
+	<owl:DatatypeProperty rdf:ID="waterSensitive">
+		<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean" />
+		<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+		<rdfs:domain rdf:resource="#Crop" />
+	</owl:DatatypeProperty>
+	<owl:DatatypeProperty rdf:ID="name">
+		<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string" />
+
+		<rdfs:domain>
+			<owl:Class>
+				<owl:unionOf rdf:parseType="Collection">
+					<owl:Class rdf:about="#ProductType" />
+					<owl:Class rdf:about="#CropGroup" />
+				</owl:unionOf>
+			</owl:Class>
+		</rdfs:domain>
+		<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+	</owl:DatatypeProperty>
+	<owl:DatatypeProperty rdf:ID="type">
+		<rdfs:domain rdf:resource="#SimpleCropGroup" />
+		<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string" />
+		<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+	</owl:DatatypeProperty>
+	<owl:DatatypeProperty rdf:ID="nitrogenContent">
+		<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+		<rdfs:domain rdf:resource="#Crop" />
+		<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float" />
+
+	</owl:DatatypeProperty>
+	<owl:DatatypeProperty rdf:ID="IsWinterCrop">
+		<rdfs:domain rdf:resource="#Crop" />
+		<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+		<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean" />
+	</owl:DatatypeProperty>
+	<owl:FunctionalProperty rdf:ID="dryMatterFraction">
+
+		<rdfs:domain rdf:resource="#Crop" />
+		<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float" />
+		<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty" />
+	</owl:FunctionalProperty>
+
+
+
+
+
+
+
+
+
+	<rdf:Description rdf:about="#Crop">
+		<rdfs:label xml:lang="x-apes">Crop</rdfs:label>
+		<rdfs:label xml:lang="x-gams">C</rdfs:label>
+		<rdfs:comment xml:lang="en">Classification list of crops we are using in SEAMLESS. Crops are defined in the most fine level, i.e. that of APES and FSSIM</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#CropGroup">
+		<rdfs:label xml:lang="x-gams">FAMILIES</rdfs:label>
+		<rdfs:comment xml:lang="en">General Crop Groups
+		</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#CropProduct">
+		<rdfs:label xml:lang="x-gams">CP</rdfs:label>
+		<rdfs:comment xml:lang="en">Crop products are unique combinations of a crop with a product type</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#harvestIndex">
+		<persistence:unit>fraction</persistence:unit>
+		<rdfs:comment xml:lang="en">Share of the crop harvested as main product (rest harvested as by product)</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#hasSetOfCrops">
+		<rdfs:comment xml:lang="en">Specification of the set of crops of the crop group</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#hasSetOfProducts">
+		<rdfs:comment xml:lang="en">Each product group has a set of products</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#isPartOfCropGroups">
+		<rdfs:comment xml:lang="en">Each Crop is part of several Crop Groups</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#isPartOfProductGroups">
+		<rdfs:comment xml:lang="en">Specification of the product group(s) to which the product belongs</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#IsWinterCrop">
+		<rdfs:comment xml:lang="en">Specification of if this is a winter crop (true = winter crop, false = spring crop)
+		</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#name">
+		<rdfs:comment xml:lang="en">Name of the group</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#nitrogenContent">
+		<persistence:unit>fraction</persistence:unit>
+		<rdfs:comment xml:lang="en">Share of nitrogen in a crop, usually between 0 and 0.2 of crop biomass</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#ofCrop">
+		<rdfs:comment xml:lang="en">Specification of the crops of the crop product</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#ofType">
+		<rdfs:comment xml:lang="en">Specification of the product type of the product</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#produces">
+		<rdfs:comment xml:lang="en">Each crop produces one or more products</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#Product">
+		<rdfs:label xml:lang="x-gams">P</rdfs:label>
+		<rdfs:comment xml:lang="en">Products used in SEAMLESS. A product is a unique combination of a crop or animal and a product type</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#ProductGroup">
+		<rdfs:label xml:lang="x-gams">PG_O</rdfs:label>
+		<rdfs:comment xml:lang="en">Product groups used by CAPRI</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#ProductType">
+		<rdfs:label xml:lang="x-gams">PRODUCTS</rdfs:label>
+		<rdfs:comment xml:lang="en">Classification list of product types (straw, grain, seed�)</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#realized">
+		<rdfs:comment xml:lang="en">Specification of
+			products (crop or animal) of the product type</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#SimpleCropGroup">
+		<rdfs:label xml:lang="x-gams">CG</rdfs:label>
+		<rdfs:comment xml:lang="en">Groups of crops as defined in different types (FADN, CAPRI�)</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#type">
+		<rdfs:comment xml:lang="en">Type of grouping (CAPRI, FADN�)</rdfs:comment>
+	</rdf:Description>
+	<rdf:Description rdf:about="#waterSensitive">
+		<rdfs:comment xml:lang="en">Specification of if this is a water sensitive crop (true = water sensitive crop, false = non water sensitive crop)</rdfs:comment>
+	</rdf:Description>
+</rdf:RDF>

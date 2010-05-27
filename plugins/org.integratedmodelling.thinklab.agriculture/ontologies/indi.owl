@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://ontologies.seamless-ip.org/indi.owl#" xmlns:activity="http://ontologies.seamless-ip.org/activity.owl#" xmlns:agrirule="http://ontologies.seamless-ip.org/agrirule.owl#" xmlns:capri="http://ontologies.seamless-ip.org/capri.owl#" xmlns:crop="http://ontologies.seamless-ip.org/crop.owl#" xmlns:cropman="http://ontologies.seamless-ip.org/cropman.owl#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:farm="http://ontologies.seamless-ip.org/farm.owl#" xmlns:farmopt="http://ontologies.seamless-ip.org/farmopt.owl#" xmlns:livestock="http://ontologies.seamless-ip.org/livestock.owl#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:persistence="http://www.integratedmodelling.org/ks/thinklab/persistence.owl#" xmlns:prodent="http://ontologies.seamless-ip.org/prodent.owl#" xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:seamproj="http://ontologies.seamless-ip.org/seamproj.owl#" xmlns:swrl="http://www.w3.org/2003/11/swrl#" xmlns:swrlb="http://www.w3.org/2003/11/swrlb#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:xsp="http://www.owl-ontologies.com/2005/08/07/xsp.owl#" xml:base="http://ontologies.seamless-ip.org/indi.owl">
+  <owl:Ontology rdf:about="">
+    <rdfs:comment xml:lang="en">A specification of a simplified indicator documentation framework</rdfs:comment>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/seamproj.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/crop.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/capri.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl"/>
+    <owl:imports rdf:resource="http://ontologies.seamless-ip.org/farm.owl"/>
+  </owl:Ontology>
+  
+  
+  <owl:ObjectProperty rdf:ID="hasIndicators">
+    <rdfs:range rdf:resource="#Indicator"/>
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/seamproj.owl#Problem"/>
+    <rdfs:comment xml:lang="en">Specification of the indicators belonging to the problem</rdfs:comment>
+  </owl:ObjectProperty>
+  
+   <owl:FunctionalProperty rdf:ID="hasIndicator">
+    <rdfs:range rdf:resource="#Indicator"/>
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/seamproj.owl#ExpectedImpact"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:comment xml:lang="en">Specification of the indicator with an expected impact</rdfs:comment>
+  </owl:FunctionalProperty>
+ 
+ 
+
+ 
+ 
+   <owl:InverseFunctionalProperty rdf:ID="hasIndicatorValues">
+    <rdfs:range rdf:resource="#IndicatorValue"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/seamproj.owl#Experiment"/>
+    <owl:inverseOf>
+      <rdf:Description rdf:about="#experiment">
+        <owl:inverseOf rdf:resource="#hasIndicatorValues"/>
+        <rdfs:domain rdf:resource="#IndicatorValue"/>
+      </rdf:Description>
+    </owl:inverseOf>
+    <rdfs:comment xml:lang="en">Specification of the indicator values of the experiment</rdfs:comment>
+  </owl:InverseFunctionalProperty>
+  
+   <rdf:Description rdf:about="http://ontologies.seamless-ip.org/indi.owl#indicator">
+    <rdfs:domain rdf:resource="http://ontologies.seamless-ip.org/indi.owl#IndicatorValue"/>
+  </rdf:Description>
+  <!-- above from seamproj  -->
+  
+  
+  <owl:Class rdf:ID="IndicatorValueCrop">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="IndicatorValue"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Theme">
+    
+  </owl:Class>
+  <owl:Class rdf:ID="Subtheme">
+    
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueTable"/>
+  <owl:Class rdf:ID="IndicatorValueActivityGroupCountryAggregate">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#IndicatorValue"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Dimension">
+    
+  </owl:Class>
+  <owl:Class rdf:ID="UpscalingProcedure"/>
+  <owl:Class rdf:ID="IndicatorValueCountry">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#IndicatorValue"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="GenericTheme">
+    
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueFarm">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#IndicatorValue"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="ModelVariable">
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Indicator"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueProductGroupCountry">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#IndicatorValue"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueInputGroupNUTSRegion">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#IndicatorValue"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueInputGroupCountryAggregate">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#IndicatorValue"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueActivityGroupCountry">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#IndicatorValue"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="EndorsedIndicator">
+    
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Indicator"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Indicator">
+    
+    <persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistence:factory>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueProductGroupCountryAggregate">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#IndicatorValue"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueActivity">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#IndicatorValue"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueCountryAggregate">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#IndicatorValue"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueSimple">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#IndicatorValue"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorGroup">
+    
+  </owl:Class>
+  <owl:Class rdf:about="#IndicatorValue">
+    <persistence:factory rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistence:factory>
+  </owl:Class>
+  <owl:Class rdf:ID="Domain">
+    
+    
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueProductGroupNUTSRegion">
+    <rdfs:subClassOf rdf:resource="#IndicatorValue"/>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueInputGroupCountry">
+    <rdfs:subClassOf rdf:resource="#IndicatorValue"/>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueFarmAgriEnvironmentalZone">
+    <rdfs:subClassOf rdf:resource="#IndicatorValue"/>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueNUTSRegion">
+    <rdfs:subClassOf rdf:resource="#IndicatorValue"/>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueBetweenCountryAggregates">
+    <rdfs:subClassOf rdf:resource="#IndicatorValue"/>
+  </owl:Class>
+  <owl:Class rdf:ID="IndicatorValueActivityGroupNUTSRegion">
+    <rdfs:subClassOf rdf:resource="#IndicatorValue"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="hasEndorsedIndicators">
+    <rdfs:range rdf:resource="#EndorsedIndicator"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="isPartOfIndicatorGroup"/>
+    </owl:inverseOf>
+    <rdfs:domain rdf:resource="#IndicatorGroup"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasDomains">
+    <rdfs:range rdf:resource="#Domain"/>
+    <rdfs:domain rdf:resource="#IndicatorGroup"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasTemporalScale">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/seamproj.owl#TemporalScale"/>
+    <rdfs:domain rdf:resource="#Indicator"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasSpatialScale">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/seamproj.owl#SpatialScale"/>
+    <rdfs:domain rdf:resource="#Indicator"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasTradeOff">
+    <rdfs:range rdf:resource="#IndicatorGroup"/>
+    <rdfs:domain rdf:resource="#IndicatorGroup"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="crop">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/crop.owl#Crop"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#IndicatorValueCrop"/>
+  </owl:ObjectProperty>
+  
+  <owl:ObjectProperty rdf:ID="farm">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#IndicatorValueFarm"/>
+          <owl:Class rdf:about="#IndicatorValueCrop"/>
+          <owl:Class rdf:about="#IndicatorValueActivity"/>
+          <owl:Class rdf:about="#IndicatorValueFarmAgriEnvironmentalZone"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farm.owl#RepresentativeFarm"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="indicator">
+    <rdfs:range rdf:resource="#Indicator"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="toCountryAggregate">
+    <rdfs:domain rdf:resource="#IndicatorValueBetweenCountryAggregates"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#CountryAggregate"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasModel">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#Indicator"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/seamproj.owl#Model"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#isPartOfIndicatorGroup">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="#IndicatorGroup"/>
+    <owl:inverseOf rdf:resource="#hasEndorsedIndicators"/>
+    <rdfs:domain rdf:resource="#EndorsedIndicator"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="productionActivity">
+    <rdfs:domain rdf:resource="#IndicatorValueActivity"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farmopt.owl#ProductionActivity"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasInformativeModelVariables">
+    <rdfs:range rdf:resource="#ModelVariable"/>
+    <rdfs:domain rdf:resource="#EndorsedIndicator"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasIndicatorValueTable">
+    <rdfs:domain rdf:resource="#Indicator"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="#IndicatorValueTable"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="productGroup">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#IndicatorValueProductGroupCountry"/>
+          <owl:Class rdf:about="#IndicatorValueProductGroupNUTSRegion"/>
+          <owl:Class rdf:about="#IndicatorValueProductGroupCountryAggregate"/>
+          <owl:Class rdf:about="#IndicatorValueBetweenCountryAggregates"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/crop.owl#ProductGroup"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="fromCountryAggregate">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#CountryAggregate"/>
+    <rdfs:domain rdf:resource="#IndicatorValueBetweenCountryAggregates"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="inputGroup">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#IndicatorValueInputGroupCountry"/>
+          <owl:Class rdf:about="#IndicatorValueInputGroupCountryAggregate"/>
+          <owl:Class rdf:about="#IndicatorValueInputGroupNUTSRegion"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#InputGroup"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="activityGroup">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#ActivityGroup"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#IndicatorValueActivityGroupCountryAggregate"/>
+          <owl:Class rdf:about="#IndicatorValueActivityGroupCountry"/>
+          <owl:Class rdf:about="#IndicatorValueActivityGroupNUTSRegion"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasTheme">
+    <rdfs:range rdf:resource="#Theme"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#Subtheme"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="hasSubthemes"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasGenericTheme">
+    <rdfs:range rdf:resource="#GenericTheme"/>
+    <rdfs:domain rdf:resource="#Theme"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="hasThemes"/>
+    </owl:inverseOf>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#hasThemes">
+    <owl:inverseOf rdf:resource="#hasGenericTheme"/>
+    <rdfs:domain rdf:resource="#GenericTheme"/>
+    <rdfs:range rdf:resource="#Theme"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="subthemes">
+    <rdfs:range rdf:resource="#Subtheme"/>
+    <rdfs:domain rdf:resource="#IndicatorGroup"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="experiment">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/seamproj.owl#Experiment"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#hasSubthemes">
+    <owl:inverseOf rdf:resource="#hasTheme"/>
+    <rdfs:domain rdf:resource="#Theme"/>
+    <rdfs:range rdf:resource="#Subtheme"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasDimensions">
+    <rdfs:domain rdf:resource="#IndicatorGroup"/>
+    <rdfs:range rdf:resource="#Dimension"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="agriEnvironmentalZone">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farm.owl#AgriEnvironmentalZone"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#IndicatorValueFarmAgriEnvironmentalZone"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="countryAggregate">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#CountryAggregate"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#IndicatorValueCountryAggregate"/>
+          <owl:Class rdf:about="#IndicatorValueProductGroupCountryAggregate"/>
+          <owl:Class rdf:about="#IndicatorValueActivityGroupCountryAggregate"/>
+          <owl:Class rdf:about="#IndicatorValueInputGroupCountryAggregate"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasUpscalingProcedure">
+    <rdfs:range rdf:resource="#UpscalingProcedure"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#EndorsedIndicator"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="region">
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/farm.owl#NUTSregion"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#IndicatorValueNUTSRegion"/>
+          <owl:Class rdf:about="#IndicatorValueProductGroupNUTSRegion"/>
+          <owl:Class rdf:about="#IndicatorValueActivityGroupNUTSRegion"/>
+          <owl:Class rdf:about="#IndicatorValueInputGroupNUTSRegion"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="country">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#IndicatorValueCountry"/>
+          <owl:Class rdf:about="#IndicatorValueProductGroupCountry"/>
+          <owl:Class rdf:about="#IndicatorValueActivityGroupCountry"/>
+          <owl:Class rdf:about="#IndicatorValueInputGroupCountry"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://ontologies.seamless-ip.org/capri.owl#Country"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:ID="thresholdMin">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#EndorsedIndicator"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="hasModelOutputName">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#Indicator"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="unit">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#Indicator"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="value">
+    <rdfs:domain rdf:resource="#IndicatorValue"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="name">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#UpscalingProcedure"/>
+          <owl:Class rdf:about="#IndicatorValueTable"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="description">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#Indicator"/>
+          <owl:Class rdf:about="#IndicatorGroup"/>
+          <owl:Class rdf:about="#UpscalingProcedure"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="javaLabel">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#IndicatorValueTable"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="hasFactSheet">
+    <rdfs:domain rdf:resource="#IndicatorGroup"/>
+    
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="thresholdOnVariation">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#EndorsedIndicator"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="thresholdMax">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="#EndorsedIndicator"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="implemented">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdfs:domain rdf:resource="#EndorsedIndicator"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+
+
+	<rdf:Description rdf:about="#activityGroup"><rdfs:comment xml:lang="en">Specification of activity group for which the indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#agriEnvironmentalZone"><rdfs:comment xml:lang="en">Specification of agri-environmental zone for which the indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#country"><rdfs:comment xml:lang="en">Specification of country for which the indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#countryAggregate"><rdfs:comment xml:lang="en">Specification of country aggregate for which the indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#crop"><rdfs:comment xml:lang="en">Specification of crop for which the indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#description"><rdfs:comment xml:lang="en">Description of the indicator (endorsed indicator or model variable)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Dimension"><rdfs:comment xml:lang="en">Distinguish between the three main dimensions of sustainability: 1) environmental, 2) economic or 3) social</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Domain"><rdfs:comment xml:lang="en">Domain distinguish two sets of assessment of impact: 1) impacts of the agricultural sector on itself, 2) impacts of agriculture on the rest of the world</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#EndorsedIndicator"><rdfs:comment xml:lang="en">Model output that can be used as indicators in the assessments</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#experiment"><rdfs:comment xml:lang="en">Specification of experiment for which the indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#farm"><rdfs:comment xml:lang="en">Specification of farm type for which the indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#fromCountryAggregate"><rdfs:comment xml:lang="en">Specification of from country aggregate for which the indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#GenericTheme"><rdfs:comment xml:lang="en">Generic themes defines the position in a causal chain of action from ultimate goals to means and process of achievement</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasDimensions"><rdfs:comment xml:lang="en">Link that specifies the dimensions of the indicator group</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasDomains"><rdfs:comment xml:lang="en">Link that specifies the domain of the indicator group</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasEndorsedIndicators"><rdfs:comment xml:lang="en">Link that specifies the endorsed indicators of the indicator group</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasFactSheet"><rdfs:comment xml:lang="en">Web link to the factsheet that contains information on the indicator group</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasGenericTheme"><rdfs:comment xml:lang="en">Link to the generic theme to which the theme belongs</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasIndicatorValueTable"><rdfs:comment xml:lang="en">Link to specify where values for the specific indicators (endorsed indicators or model variables) are stored</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasInformativeModelVariables"><rdfs:comment xml:lang="en">Link to specify which model variables that can be used to help the assessment of the endorsed indicator</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasModel"><rdfs:comment xml:lang="en">Link to specify the model that provides the  values for the specific indicators (endorsed indicators or model variables)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasModelOutputName"><rdfs:comment xml:lang="en">Name of the model output that provides the values for the indicators (endorsed indicators or model variables)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasSpatialScale"><rdfs:comment xml:lang="en">Link to specify the spatial scale of the indicator (endorsed indicator or model variable)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasSubthemes"><rdfs:comment xml:lang="en">Link to the subthemes belonging to the theme</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasTemporalScale"><rdfs:comment xml:lang="en">Link to specify the temporal scale of the indicator (endorsed indicator or model variable)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasTheme"><rdfs:comment xml:lang="en">Theme to which the subtheme belongs</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasThemes"><rdfs:comment xml:lang="en">Specification of the themes of the generic theme</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasTradeOff"><rdfs:comment xml:lang="en">Link that specifies where trade offs between different indicator groups can be relevant in the assessments</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#hasUpscalingProcedure"><rdfs:comment xml:lang="en">Link to specify which up scaling procedure that can be used to upscale the endorsed indicator</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#implemented"><rdfs:comment xml:lang="en">Specification of the implementation status of the endorsed indicator (true = indicator implemented, false = indicator not implemented)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Indicator"><rdfs:comment xml:lang="en">Indicators are model outputs used for the assessments. Endorsed indicator are a part of the indicator assessment framework, whereas model variable can be used by experts for in-depth information on the calculations</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#indicator"><rdfs:comment xml:lang="en">Specification of which indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorGroup"><rdfs:comment xml:lang="en">Grouping of endorsed indicators within the same subject and described in the same factsheet</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValue"><rdfs:comment xml:lang="en">Calculated values of indicators (endorsed indicators or model variables)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueActivity"><rdfs:comment xml:lang="en">Indicator values for indicators at activity level</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueActivityGroupCountry"><rdfs:comment xml:lang="en">Indicator values for indicators at activity group level for countries</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueActivityGroupCountryAggregate"><rdfs:comment xml:lang="en">Indicator values for indicators at the activity group level for country aggregates</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueActivityGroupNUTSRegion"><rdfs:comment xml:lang="en">Indicator values for indicators at activity group level for regions</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueBetweenCountryAggregates"><rdfs:comment xml:lang="en">Indicator values for indicators at the level of product groups between country aggregates</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueCountry"><rdfs:comment xml:lang="en">Indicator values for indicators for countries</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueCountryAggregate"><rdfs:comment xml:lang="en">Indicator values for indicators for country aggregates</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueCrop"><rdfs:comment xml:lang="en">Indicator values for indicators at the crop level</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueFarm"><rdfs:comment xml:lang="en">Indicator values for indicators at the farm level</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueFarmAgriEnvironmentalZone"><rdfs:comment xml:lang="en">Indicator values for indicators at farm level for agri-environmentalzones</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueInputGroupCountry"><rdfs:comment xml:lang="en">Indicator values for indicators at input group level for countries</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueInputGroupCountryAggregate"><rdfs:comment xml:lang="en">Indicator values for indicators at input group level for country aggregates</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueInputGroupNUTSRegion"><rdfs:comment xml:lang="en">Indicator values for indicators at input group level for regions</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueNUTSRegion"><rdfs:comment xml:lang="en">Indicator values for indicators for regions</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueProductGroupCountry"><rdfs:comment xml:lang="en">Indicator values for indicators at product group level for countries</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueProductGroupCountryAggregate"><rdfs:comment xml:lang="en">Indicator values for indicators at product group level for country aggregates</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueProductGroupNUTSRegion"><rdfs:comment xml:lang="en">Indicator values for indicators at product group level for regions</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueSimple"><rdfs:comment xml:lang="en">Indicator values where indicators have only one value per experiment</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#IndicatorValueTable"><rdfs:comment xml:lang="en">Links between the java name and data base name of indicator value tables</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#inputGroup"><rdfs:comment xml:lang="en">Specification of input group for which the indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#isPartOfIndicatorGroup"><rdfs:comment xml:lang="en">Link to specify to which indicator group the endorsed indicator belongs</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#javaLabel"><rdfs:comment xml:lang="en">Java name of the indicator value table</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#ModelVariable"><rdfs:comment xml:lang="en">Model output that do not have endorsed indicator status, but can be used  to interpret the processes behind the values of the endorsed indicators</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#name"><rdfs:comment xml:lang="en">Data base name of the item</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#productGroup"><rdfs:comment xml:lang="en">Specification of product group for which the indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#productionActivity"><rdfs:comment xml:lang="en">Specification of production activity for which the indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#region"><rdfs:comment xml:lang="en">Specification of region for which the indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Subtheme"><rdfs:comment xml:lang="en">Second level of categorisation within a generic theme for one dimension of sustainable development (first level is theme). Can also be seen as the policy problems relevant to the agri-environmental policy area</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#subthemes"><rdfs:comment xml:lang="en">Link that specifies the subtheme of the indicator group</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#Theme"><rdfs:comment xml:lang="en">First level of categorisation within a generic theme for one dimension of sustainable development</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#thresholdMax"><persistence:unit>dependent</persistence:unit><rdfs:comment xml:lang="en">General maximum threshold value of the indicator (not used in current version). The units of the value depends on the indicator as specified in units</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#thresholdMin"><persistence:unit>dependent</persistence:unit><rdfs:comment xml:lang="en">General minimum threshold value of the indicator (not used in current version). The units of the value depends on the indicator as specified in units</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#thresholdOnVariation"><rdfs:comment xml:lang="en">General threshold value for the variation of the indicator</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#toCountryAggregate"><rdfs:comment xml:lang="en">Specification of to country aggregate for which the indicator value is calculated</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#unit"><rdfs:comment xml:lang="en">Specification of the unit of the indicator (endorsed indicator or model variable)</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#UpscalingProcedure"><rdfs:comment xml:lang="en">Generic up scaling procedures to modify model output to relevant scales</rdfs:comment></rdf:Description>
+	<rdf:Description rdf:about="#value"><persistence:unit>dependent</persistence:unit><rdfs:comment xml:lang="en">Indicator value. The units of the value depends on the indicator as specified in endorsed indicators and model variables</rdfs:comment></rdf:Description>
+
+
+</rdf:RDF>
