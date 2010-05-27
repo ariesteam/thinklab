@@ -73,7 +73,7 @@ import org.integratedmodelling.utils.Polylist;
  * @author Ferdinando Villa
  *
  */
-@InstanceImplementation(concept="measurement:Ranking")
+@InstanceImplementation(concept="measurement:Ranking,measurement:NumericCoding,measurement:BinaryCoding")
 public class Ranking extends Observation implements MediatingObservation {
 
 	private static final String MINVALUE_PROPERTY = "measurement:minValue";

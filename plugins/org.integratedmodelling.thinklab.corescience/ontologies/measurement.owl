@@ -25,6 +25,11 @@
       <owl:Class rdf:ID="DerivedUnit"/>
     </rdfs:subClassOf>
   </owl:Class>
+  <owl:Class rdf:ID="Count">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="ExtensiveMeasurement"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="RankingIntervalRemapper">
     <rdfs:subClassOf>
       <owl:Class rdf:ID="Ranking"/>
@@ -68,17 +73,17 @@
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >Concepts grouped by this class represent the fundamental conceptualization behind the JScience unit framework.</rdfs:comment>
   </owl:Class>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/science/representation.owl#PhysicalProperty"/>
   <owl:Class rdf:about="#MappingObservation">
     <thinklab-core:AbstractClass>true</thinklab-core:AbstractClass>
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#Quantification"/>
   </owl:Class>
-  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/science/representation.owl#PhysicalProperty"/>
   <owl:Class rdf:ID="Dimension">
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     ></rdfs:comment>
     <rdfs:subClassOf rdf:resource="#UnitConcept"/>
   </owl:Class>
-  <owl:Class rdf:ID="ExtensiveMeasurement">
+  <owl:Class rdf:about="#ExtensiveMeasurement">
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:allValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#ExtensivePhysicalProperty"/>
@@ -92,6 +97,13 @@
   <owl:Class rdf:ID="LogarithmicTransformation">
     <rdfs:subClassOf>
       <owl:Class rdf:about="#Transformation"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#DerivedUnit">
+    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >true</thinklab-core:AbstractClass>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Unit"/>
     </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:about="#Measurement">
@@ -108,7 +120,7 @@ A Measurement admits a literal equivalent in ThinkLab for simple numeric measure
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:allValuesFrom>
-          <owl:Class rdf:ID="Unit"/>
+          <owl:Class rdf:about="#Unit"/>
         </owl:allValuesFrom>
         <owl:onProperty>
           <owl:ObjectProperty rdf:about="http://www.integratedmodelling.org/ks/science/observation.owl#hasConceptualModel"/>
@@ -116,13 +128,6 @@ A Measurement admits a literal equivalent in ThinkLab for simple numeric measure
       </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#Quantification"/>
-  </owl:Class>
-  <owl:Class rdf:about="#DerivedUnit">
-    <thinklab-core:AbstractClass rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-    >true</thinklab-core:AbstractClass>
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#Unit"/>
-    </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="MultiplicativeTransformation">
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
@@ -146,6 +151,9 @@ A Measurement admits a literal equivalent in ThinkLab for simple numeric measure
   <owl:Class rdf:ID="ProductUnit">
     <rdfs:subClassOf rdf:resource="#DerivedUnit"/>
   </owl:Class>
+  <owl:Class rdf:ID="NumericCoding">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#Classification"/>
+  </owl:Class>
   <owl:Class rdf:ID="TransformedUnit">
     <rdfs:subClassOf rdf:resource="#DerivedUnit"/>
   </owl:Class>
@@ -163,6 +171,9 @@ A Measurement admits a literal equivalent in ThinkLab for simple numeric measure
 Units instances are best represented as literals for brevity and ease of connection with a supporting API. Nevertheless, the conceptual details elaborated in the JScience framework are captured in this ontology.</rdfs:comment>
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#ContinuousObservationSpace"/>
     <rdfs:subClassOf rdf:resource="#UnitConcept"/>
+  </owl:Class>
+  <owl:Class rdf:ID="BinaryCoding">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/observation.owl#Classification"/>
   </owl:Class>
   <owl:Class rdf:about="#Ranking">
     <rdfs:comment xml:lang="en">A ranking is a numeric observation that states the observable's state 

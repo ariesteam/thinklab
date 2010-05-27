@@ -32,7 +32,7 @@ import org.integratedmodelling.utils.Polylist;
  * @author Ferdinando
  *
  */
-@InstanceImplementation(concept="measurement:Measurement")
+@InstanceImplementation(concept="measurement:Measurement,measurement:Count")
 public class Measurement extends Observation implements MediatingObservation {
 	
 	protected String unitSpecs = null;

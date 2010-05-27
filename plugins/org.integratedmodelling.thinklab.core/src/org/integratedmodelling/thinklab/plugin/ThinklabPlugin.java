@@ -599,8 +599,12 @@ public abstract class ThinklabPlugin extends Plugin
 			
 			if (concept != null) {
 
-				logger().info("registering class " + cls + " as implementation for instances of type " + concept);				
-				KnowledgeManager.get().registerInstanceImplementationClass(concept, cls);
+				String[] cc = concept.split(",");
+				
+				for (String ccc : cc) {
+					logger().info("registering class " + cls + " as implementation for instances of type " + ccc);				
+					KnowledgeManager.get().registerInstanceImplementationClass(ccc, cls);
+				}
 			}
 		}
 	}
