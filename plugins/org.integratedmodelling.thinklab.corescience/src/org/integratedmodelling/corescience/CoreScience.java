@@ -35,6 +35,7 @@ package org.integratedmodelling.corescience;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 /**
@@ -114,12 +115,13 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String RANKING_INTERVAL_REMAPPER = "measurement:RankingIntervalRemapper";
 	public static final String PROBABILISTIC_CLASSIFICATION = "observation:ProbabilisticClassification";
 	public static final String STATELESS_MERGER_OBSERVATION = "observation:ContingencyMerger";
+	public static final String BINARY_CODING = "measurement:BinaryCoding";
+	public static final String NUMERIC_CODING = "measurement:NumericCoding";
 
 	static final public String GENERIC_OBSERVABLE = "representation:GenericObservable";
 	static final public String GENERIC_QUANTIFIABLE = "representation:GenericQuantifiable";
 
 	public static final String CONTINGENT_TO = "observation:isContingentTo";
-
 
 	public static CoreScience get() {
 		return (CoreScience) getPlugin(PLUGIN_ID );

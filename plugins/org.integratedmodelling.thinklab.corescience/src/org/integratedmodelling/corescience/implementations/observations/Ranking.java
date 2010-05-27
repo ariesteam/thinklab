@@ -93,6 +93,7 @@ public class Ranking extends Observation implements MediatingObservation {
 	
 	// set through reflection
 	public DistributionValue distribution = null;
+	private boolean isBinary = false;
 
 
 	@Override
@@ -197,9 +198,17 @@ public class Ranking extends Observation implements MediatingObservation {
 
 		@Override
 		public Object getValue(int idx, Object[] registers) {
+			Object ret = null;
 			if (distribution != null)
-				return distribution.draw();
-			return isConstant ? value : getNextValue(registers);
+				ret = distribution.draw();
+			else
+				ret = isConstant ? value : getNextValue(registers);
+			
+			if (isBinary && ret != null && ret instanceof Number) {
+				ret = ((Number)ret).doubleValue() == 0.0 ? 0.0 : 1.0;
+			}
+			
+			return ret;
 		}
 
 		private Object getNextValue(Object[] registers) {
@@ -274,6 +283,9 @@ public class Ranking extends Observation implements MediatingObservation {
 			isConstant = true;
 		}
 		
+		if (i.getDirectType().is(CoreScience.BINARY_CODING)) {
+			this.isBinary  = true;
+		}
 		// TODO add min-max etc
 		metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 
