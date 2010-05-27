@@ -109,12 +109,29 @@ public class Unit {
 		return ret;
 	}
 	
-	public void validate(IConcept observable) throws ThinklabValidationException {
-		
-	}
-
 	@Override
 	public String toString() {
 		return _unit.toString();
+	}
+	
+	public boolean isUnitless() {
+
+		boolean ret = false;
+		
+		if (_unit instanceof ProductUnit<?>) {
+			
+			// assume no unitless unit without a distribution
+			ret = true;
+			ProductUnit<?> pu = (ProductUnit<?>)_unit;
+			for (int i = 0; i < pu.getUnitCount(); i++) {
+				int power = pu.getUnitPow(i);
+				if (power > 0) {
+					ret = false;
+					break;
+				}
+			}
+		}
+		return ret;
+		
 	}
 }
