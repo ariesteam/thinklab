@@ -16,6 +16,10 @@ public class Unit {
 		
 		Pair<Double, String> pd = MiscUtilities.splitNumberFromString(s);
 		
+		// TEMPORARY - REMOVE
+		if (pd == null)
+			pd = new Pair<Double,String>(null, s);
+		
 		double factor = 1.0;
 		if (pd.getFirst() != null) {
 			factor = pd.getFirst();
