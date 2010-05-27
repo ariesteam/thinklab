@@ -4,9 +4,6 @@
    id="org.integratedmodelling.thinklab.core"
    version="0.8.0"
    class="org.integratedmodelling.thinklab.Thinklab">
-	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.geospace"/>
-	</requires>
 	<runtime>
 		<library id="core" path="classes/" type="code">
 			<export prefix="*" />
