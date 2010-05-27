@@ -1,22 +1,10 @@
 package org.integratedmodelling.clojure;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.integratedmodelling.modelling.data.InstanceHandler;
-import org.integratedmodelling.modelling.data.KBoxHandler;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.utils.NameGenerator;
-import org.integratedmodelling.utils.Polylist;
 
 public class ConceptHandler {
 	
