@@ -47,6 +47,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.mvel2.MVEL;
 
 @InstanceImplementation(concept="geospace:WCSDataSource")
 public class WCSGridDataSource extends RegularRasterGridDataSource {
@@ -66,7 +67,10 @@ public class WCSGridDataSource extends RegularRasterGridDataSource {
 		IValue nodata = i.get("geospace:hasNodataValue");
 		if (nodata != null)
 			p.put(AbstractRasterCoverage.NODATA_PROPERTY, nodata.toString());
-
+		IValue transf = i.get(Geospace.HAS_TRANSFORMATION_EXPRESSION);
+		if (transf != null) {
+			this.bytecode = MVEL.compileExpression(transf.toString());
+		}
 		String rid = i.get("geospace:hasCoverageId").toString();
 		
 		Geospace.get().logger().info("reading WCS source " + server + "#" + rid);

@@ -32,6 +32,7 @@
  **/
 package org.integratedmodelling.geospace.implementations.data;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -54,6 +55,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.utils.URLUtils;
+import org.mvel2.MVEL;
 
 @InstanceImplementation(concept="geospace:ExternalRasterDataSource")
 public class RegularRasterGridDataSource implements IDataSource<Object>, IInstanceImplementation {
@@ -62,6 +64,8 @@ public class RegularRasterGridDataSource implements IDataSource<Object>, IInstan
 
 	/* same here - these are overall extents that we need to conform to */
 	private GridExtent gridExtent;
+	/* any expression to transform with gets compiled into this */
+	protected Serializable bytecode = null;
 	
 	public RegularRasterGridDataSource() {
 	}
@@ -96,8 +100,10 @@ public class RegularRasterGridDataSource implements IDataSource<Object>, IInstan
 					
 				} else if (r.getProperty().equals(Geospace.HAS_VALUE_ATTRIBUTE)) {
 					valueAttr = r.getValue().toString();
+				} else if (r.getProperty().equals(Geospace.HAS_TRANSFORMATION_EXPRESSION)) {
+					this.bytecode = MVEL.compileExpression( r.getValue().toString());
 				}
-			}
+			} 
 		}
 
 		try {
@@ -139,6 +145,11 @@ public class RegularRasterGridDataSource implements IDataSource<Object>, IInstan
 			Double nd = coverage.getNodataValue();
 			if (nd != null && ret != null && (ret instanceof Double) && ((Double)ret).equals(nd)) {
 				ret = Double.NaN;
+			}
+			if (this.bytecode != null && ret != null && !(ret instanceof Double && Double.isNaN((Double)ret)) ) {
+				HashMap<String, Object> parms = new HashMap<String, Object>();
+				parms.put("self", ret);
+				ret = MVEL.executeExpression(this.bytecode, parms);
 			}
 			return ret;
 		} catch (ThinklabValidationException e) {

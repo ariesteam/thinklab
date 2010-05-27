@@ -80,6 +80,14 @@
 		 	   	(if  (keyword? (first classifier#)) 
 		 	   		  (transform-model model# classifier#))))
  	   model#))
+
+(defn binary-coding
+   [observable & body]
+   (ranking observable :binary true body)) 
+
+(defn numeric-coding
+   [observable & body]
+   (ranking observable :numeric-classification true body)) 
 	
 ;; TODO fix the transform-model thing
 (defmacro categorization

@@ -32,6 +32,7 @@
  **/
 package org.integratedmodelling.geospace.implementations.data;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -55,6 +56,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.utils.URLUtils;
+import org.mvel2.MVEL;
 
 /**
  * TODO it's just a verbatim copy of the raster one for now.
@@ -69,6 +71,8 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 	/* same here - these are overall extents that we need to conform to */
 	private GridExtent gridExtent;
 	private ShapeExtent shapeExtent;
+
+	private Serializable bytecode;
 	
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
@@ -102,6 +106,8 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 					dataURL = r.getValue().toString();
 				} else if (r.getProperty().equals(Geospace.HAS_FILTER_PROPERTY)) {
 					filterExpression = r.getValue().toString();
+				} else if (r.getProperty().equals(Geospace.HAS_TRANSFORMATION_EXPRESSION)) {
+					this.bytecode = MVEL.compileExpression( r.getValue().toString());
 				}
 			}
 		}
@@ -154,13 +160,22 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 	@Override
 	public Object getValue(int index, Object[] parameters) {
 		
+		Object ret = null;
 		try {
-			return coverage.getSubdivisionValue(
+			ret = coverage.getSubdivisionValue(
 					index, 
 					gridExtent == null ? shapeExtent : gridExtent);
+			
+			if (bytecode != null && ret != null && !(ret instanceof Double && Double.isNaN((Double)ret)) ) {
+				HashMap<String, Object> parms = new HashMap<String, Object>();
+				parms.put("self", ret);
+				ret = MVEL.executeExpression(this.bytecode, parms);
+			}
+			
 		} catch (ThinklabValidationException e) {
 			throw new ThinklabRuntimeException(e);
 		}
+		return ret;
 	}
 
 	@Override
