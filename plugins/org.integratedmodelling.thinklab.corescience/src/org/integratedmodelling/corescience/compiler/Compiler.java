@@ -104,6 +104,8 @@ public class Compiler {
 
 	public Contextualizer compile(ObservationContext context) throws ThinklabException {
 		
+		context.validate();
+		
 		/*
 		 * figure out all dependencies from the context
 		 */

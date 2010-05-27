@@ -711,5 +711,17 @@ public class ObservationContext implements IObservationContext {
 		// collapsed peer of the other topology
 		return false;
 	}
+
+	
+	/**
+	 * Called only on a fully merged context by the compiler before any code is run. It will expose
+	 * each observation to the overall context to give it a chance of adapting to it. The main use 
+	 * in thinklab so far is that of allowing extensive measurement to adjust their value according to
+	 * the extents they're computed in.
+	 */
+	public void validate() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

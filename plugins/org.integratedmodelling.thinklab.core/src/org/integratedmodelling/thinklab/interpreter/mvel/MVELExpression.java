@@ -3,7 +3,6 @@ package org.integratedmodelling.thinklab.interpreter.mvel;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.mvel2.MVEL;
@@ -33,7 +32,7 @@ public class MVELExpression {
 		} catch (Exception e) {
 			throw new ThinklabRuntimeException(e);
 		} finally {
-			Geospace.get().resetClassLoader(clsl);
+			Thinklab.get().resetClassLoader(clsl);
 		}
 		return ret;
 	}
