@@ -37,6 +37,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ShapeExtent;
 import org.integratedmodelling.geospace.interfaces.IGeolocatedObject;
@@ -44,7 +45,9 @@ import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -137,5 +140,19 @@ public class SpatialCoverage extends Observation implements Topology, IGeolocate
 	@Override
 	public ShapeValue getShape() {
 		return getBoundingBox();
+	}
+
+	@Override
+	public void checkUnitConformance(IConcept concept, Unit unit)
+			throws ThinklabValidationException {
+		
+		if (!unit.isArealDensity())
+			throw new ThinklabValidationException(
+					"concept " + 
+					concept + 
+					" is observed in 2d-space but unit " + 
+					unit + 
+					" does not specify an areal density");
+
 	}
 }

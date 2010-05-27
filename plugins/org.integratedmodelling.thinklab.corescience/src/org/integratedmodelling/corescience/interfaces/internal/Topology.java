@@ -34,8 +34,11 @@ package org.integratedmodelling.corescience.interfaces.internal;
 
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 /**
  * Conceptual models of observations that define observation extents should be capable of
@@ -60,6 +63,13 @@ public interface Topology extends IObservation {
 	 * a formal enum or topological operator)
 	 */
 	public abstract Restriction getConstraint(String operator) throws ThinklabException;
+
+	/**
+	 * Check that the passed unit represents an observable that adopts this topology. 
+	 * 
+	 * @param unit
+	 */
+	public abstract void checkUnitConformance(IConcept concept, Unit unit) throws ThinklabValidationException;
 		
 
 }

@@ -36,9 +36,12 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.time.TimePlugin;
 import org.integratedmodelling.time.extents.RegularTimeGridExtent;
@@ -100,6 +103,19 @@ public class RegularTemporalGrid extends Observation implements Topology {
 	@Override
 	public IExtent getExtent() throws ThinklabException {
 		return extent;
+	}
+
+	@Override
+	public void checkUnitConformance(IConcept concept, Unit unit)
+			throws ThinklabValidationException {
+		
+		if (!unit.isRate())
+			throw new ThinklabValidationException(
+					"concept " + 
+					concept + 
+					" is observed in time but unit " + 
+					unit + 
+					" does not specify a rate");
 	}
 
 }

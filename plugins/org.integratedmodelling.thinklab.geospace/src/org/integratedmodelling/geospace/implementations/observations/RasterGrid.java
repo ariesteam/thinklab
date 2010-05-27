@@ -53,7 +53,9 @@ import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.utils.MalformedListException;
@@ -381,6 +383,22 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 	
 	public IGridMask getMask() {
 		return this.mask;
+	}
+
+	@Override
+	public void checkUnitConformance(
+			IConcept concept, 
+			org.integratedmodelling.corescience.units.Unit unit)
+			throws ThinklabValidationException {
+		
+		if (!unit.isArealDensity())
+			throw new ThinklabValidationException(
+					"concept " + 
+					concept + 
+					" is observed in 2d-space but unit " + 
+					unit + 
+					" does not specify an areal density");
+
 	}
 	
 }

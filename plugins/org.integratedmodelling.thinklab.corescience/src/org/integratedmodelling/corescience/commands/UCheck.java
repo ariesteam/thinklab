@@ -1,8 +1,6 @@
 package org.integratedmodelling.corescience.commands;
 
-import javax.measure.quantity.Quantity;
-import javax.measure.unit.Unit;
-
+import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
@@ -23,17 +21,9 @@ public class UCheck implements ICommandHandler {
 			throws ThinklabException {
 
 		String s = command.getArgumentAsString("unit");
+		Unit unit = new Unit(s);
+		unit.dump(session.getOutputStream());
 		
-		try {
-			Unit<? extends Quantity> unit = Unit.valueOf(s);
-			session.getOutputStream().println(
-					"parsing OK: " + 
-					unit.toString());
-		} catch (Exception e) {
-			session.getOutputStream().println(
-					"wrong unit syntax: " +
-					e.getMessage());
-		}
 		return null;
 	}
 

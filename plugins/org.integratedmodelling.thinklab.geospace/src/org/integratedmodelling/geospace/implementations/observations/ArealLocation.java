@@ -35,6 +35,7 @@ package org.integratedmodelling.geospace.implementations.observations;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ShapeExtent;
 import org.integratedmodelling.geospace.interfaces.IGeolocatedObject;
@@ -43,6 +44,7 @@ import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IParseable;
 
@@ -135,6 +137,19 @@ public class ArealLocation extends Observation implements Topology, IParseable, 
 	public IExtent getExtent() throws ThinklabException {
 		return new ShapeExtent(shape.getGeometry(), 
 				shape.getGeometry().getEnvelopeInternal(), shape.getCRS());
+	}
+
+	@Override
+	public void checkUnitConformance(IConcept concept, Unit unit)
+			throws ThinklabValidationException {
+		
+		if (!unit.isArealDensity())
+			throw new ThinklabValidationException(
+					"concept " + 
+					concept + 
+					" is observed in 2d-space but unit " + 
+					unit + 
+					" does not specify an areal density");
 	}
 	
 }

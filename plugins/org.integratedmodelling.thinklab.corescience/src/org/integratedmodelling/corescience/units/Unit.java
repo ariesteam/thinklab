@@ -1,5 +1,7 @@
 package org.integratedmodelling.corescience.units;
 
+import java.io.PrintStream;
+
 import javax.measure.unit.Dimension;
 import javax.measure.unit.ProductUnit;
 
@@ -68,7 +70,7 @@ public class Unit {
 			for (int i = 0; i < pu.getUnitCount(); i++) {
 				javax.measure.unit.Unit<?> su = pu.getUnit(i);
 				int power = pu.getUnitPow(i);
-				if (su.getDimension().equals(Dimension.LENGTH.pow(1)) && power == -1) {
+				if (su.getDimension().equals(Dimension.LENGTH) && power == -1) {
 					ret = true;
 					break;
 				}
@@ -84,7 +86,8 @@ public class Unit {
 			for (int i = 0; i < pu.getUnitCount(); i++) {
 				javax.measure.unit.Unit<?> su = pu.getUnit(i);
 				int power = pu.getUnitPow(i);
-				if (su.getDimension().equals(Dimension.LENGTH.pow(2)) && power == -1) {
+				if ((su.getDimension().equals(Dimension.LENGTH.pow(2)) && power == -1) ||
+					(su.getDimension().equals(Dimension.LENGTH) && power == -2)) {
 					ret = true;
 					break;
 				}
@@ -100,7 +103,8 @@ public class Unit {
 			for (int i = 0; i < pu.getUnitCount(); i++) {
 				javax.measure.unit.Unit<?> su = pu.getUnit(i);
 				int power = pu.getUnitPow(i);
-				if (su.getDimension().equals(Dimension.LENGTH.pow(3)) && power == -1) {
+				if (su.getDimension().equals(Dimension.LENGTH.pow(3)) && power == -1||
+						(su.getDimension().equals(Dimension.LENGTH) && power == -3)) {
 					ret = true;
 					break;
 				}
@@ -133,5 +137,15 @@ public class Unit {
 		}
 		return ret;
 		
+	}
+
+	public void dump(PrintStream out) {
+
+		out.println("unit " + _unit);
+		out.println("is" + (isUnitless() ? " " : " not ") +  "unitless");
+		out.println("is" + (isRate() ? " " : " not ") +  "a rate");
+		out.println("is" + (isLengthDensity() ? " " : " not ") +  "a lenght density");
+		out.println("is" + (isArealDensity() ? " " : " not ") +  "an areal density");
+		out.println("is" + (isVolumeDensity() ? " " : " not ") +  "a volumetric density");
 	}
 }

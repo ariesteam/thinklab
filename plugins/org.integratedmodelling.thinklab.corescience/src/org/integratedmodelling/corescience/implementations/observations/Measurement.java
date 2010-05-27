@@ -11,6 +11,7 @@ import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.interfaces.internal.MediatingObservation;
+import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.interfaces.literals.IRandomValue;
 import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.corescience.metadata.Metadata;
@@ -162,6 +163,8 @@ public class Measurement extends Observation implements MediatingObservation {
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 
+		isCount = i.getDirectType().is(CoreScience.COUNT);
+		
 		// lookup defs - either unit and value or textual definition of both
 		IValue v = i.get(CoreScience.HAS_VALUE);
 		
@@ -200,36 +203,17 @@ public class Measurement extends Observation implements MediatingObservation {
 		}
 		
 		this.unit = new Unit(unitSpecs);
+		this.isUnitless = this.unit.isUnitless();
 		
 		super.initialize(i);
 
 		/*
-		 * validate observable
+		 * validate observable. Must be physical property or a count with unitless units.
 		 */
-		if (!observable.is(CoreScience.PHYSICAL_PROPERTY)) {
-			
-			/*
-			 * acceptable if the main unit is unitless, meaning this
-			 * is a density or other distribution measurement of countable
-			 * objects. It should only be accepted if the unit is complex 
-			 * (otherwise we should use a count, not a measurement) and we
-			 * should have provided a prototype semantics for the counted
-			 * entity.
-			 * 
-			 * FIXME this check works, but just hides too much time spent
-			 * trying to figure out how to do it properly.
-			 */
-			if (this.unit.toString().startsWith("1")) {
-				/*
-				 * TODO
-				 * dimensionless: check if we have semantics for the counted object
-				 */
-			} else {
-			
+		if (!observable.is(CoreScience.PHYSICAL_PROPERTY) && !(isCount || isUnitless)) {
 				throw new ThinklabValidationException(
 					"measurements can only be of physical properties: " + 
 						observable.getDirectType());
-			}
 		}
 
 		/*
@@ -250,9 +234,16 @@ public class Measurement extends Observation implements MediatingObservation {
 		validateExtents();
 	}
 
-	private void validateExtents() {
-		// TODO Auto-generated method stub
-		
+	private void validateExtents() throws ThinklabValidationException {
+
+		// the unit must reflect all topologies if we have an extensive observable. We don't check
+		// the other way around; that is done when the overall context is defined, so we can provide
+		// what's missing from the outside.
+		if (isUnitless || physicalNature.equals(PhysicalNature.EXTENSIVE)) {
+			for (Topology t : getTopologies()) {
+				t.checkUnitConformance(getObservableClass(), unit);
+			}
+		}
 	}
 
 	@Override
