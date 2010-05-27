@@ -3,6 +3,7 @@
 <plugin id="org.integratedmodelling.thinklab.clojure" version="0.8.0" class="org.integratedmodelling.clojure.ClojurePlugin">
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="true"/>
+		<import plugin-id="org.integratedmodelling.thinklab.modelling"/>
 	</requires>	
 	<runtime>
 		<library id="clo" path="lib/clojure.jar" type="code">
