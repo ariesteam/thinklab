@@ -32,7 +32,6 @@
  **/
 package org.integratedmodelling.geospace.implementations.data;
 
-import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -57,7 +56,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementa
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 import org.integratedmodelling.utils.URLUtils;
-import org.mvel2.MVEL;
 
 /**
  * TODO it's just a verbatim copy of the raster one for now.
