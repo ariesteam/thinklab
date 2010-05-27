@@ -1809,24 +1809,12 @@ loop:		for(;;)
 			ss += s.charAt(i);
 		}
 		return Integer.parseInt(ss);
+	}
+
+
+	public static Pair<Double, String> splitNumberFromString(String s) {
+		// TODO Auto-generated method stub
+		return null;
 	} 
 
-	
-//	//{{{ getPathStart()
-//	private static int getPathStart(String path)
-//	{
-//		int start = 0;
-//		if(path.startsWith("/"))
-//			return 1;
-//		else if(OperatingSystem.isDOSDerived()
-//			&& path.length() >= 3
-//			&& path.charAt(1) == ':'
-//			&& (path.charAt(2) == '/'
-//			|| path.charAt(2) == '\\'))
-//			return 3;
-//		else
-//			return 0;
-//	} //}}}
-
-	//}}}
 }
