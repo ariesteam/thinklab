@@ -63,15 +63,15 @@
 		 	   		  (transform-model model# classifier#))))
  	   model#))
 
-(defn binary-coding
+(defmacro binary-coding
 	 "A binary coding is a numeric model that will mediate anything non-zero to 1."
    [observable & body]
-   (ranking observable :binary true body)) 
+   `(ranking ~observable :binary true ~@body)) 
 
-(defn numeric-coding
+(defmacro numeric-coding
    "A numeric coding is like a numeric ranking but no ordinal assumption is made on the states."
    [observable & body]
-   (ranking observable :numeric-classification true body)) 
+   `(ranking ~observable :numeric-classification true ~@body)) 
 	
 (defmacro categorization
 	"Categorizations have string tags as states. They hold little semantics and should only be used to
@@ -102,16 +102,16 @@
 		 	   		  (transform-model model# classifier#) )))
  	    model#))
 	
-(defn enumeration
+(defmacro enumeration
    "An enumeration is a count of individual objects, possibly distributed over an extent. It should have
     units, but these should only have the extent components in them, e.g. /km^2*year. If the enumeration is
     given no units, it's translated into an abundance ranking. For now there is a limitation in the syntax:
     enumerations with no units cannot have other metadata in the form, i.e. they can only contain the 
     observable."
    ([observable]
-    (ranking observable :enumeration true))
+    `(ranking ~observable :enumeration true))
    ([observable units & body]
-    (measurement observable units :enumeration true body))) 	
+    `(measurement ~observable ~units :enumeration true ~@body))) 	
 	
 (defmacro identification
 	"Create an identification model. The observable can only be a semantic object."

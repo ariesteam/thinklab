@@ -59,6 +59,11 @@ public class WCSToOPAL implements ICommandHandler {
 
 		String server = command.getArgumentAsString("server");
 		String output = command.getArgumentAsString("output");
+		String match  = command.getArgumentAsString("match");
+		
+		if (match.equals("_NONE_"))
+			match = null;
+		
 		int nCovs = 0;
 		
 		XMLDocument cap = null;
@@ -76,7 +81,7 @@ public class WCSToOPAL implements ICommandHandler {
 		}
 		
 		Node n = cap.findNode("ContentMetadata");
-		nCovs = parseMetadata(n, out, server);
+		nCovs = parseMetadata(n, out, server, match);
 		out.writeToFile(new File(output));
 		
 		session.getOutputStream().println(
@@ -87,7 +92,7 @@ public class WCSToOPAL implements ICommandHandler {
 		return null;
 	}
 
-	private int parseMetadata(Node n, XMLDocument out, String server) throws ThinklabException {
+	private int parseMetadata(Node n, XMLDocument out, String server, String match) throws ThinklabException {
 
 		Properties p = new Properties();
 		
@@ -97,7 +102,10 @@ public class WCSToOPAL implements ICommandHandler {
 				 
 			  next = child.getNextSibling(); 
 			  if (child.getNodeName().equals("CoverageOfferingBrief")) {
+				  
 				  String covId = XMLDocument.getTextValue((Element) child, "name");
+				  if (match != null && !covId.startsWith(match))
+					  continue;
 				  
 				  WCSCoverage coverage = new WCSCoverage(covId, p);
 				  coverage.addOpalDescriptor(out, out.root());

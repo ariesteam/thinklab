@@ -343,6 +343,10 @@
 		<parameter id="argument-names" value="server,output"/>
 		<parameter id="argument-types" value="thinklab-core:Text,thinklab-core:Text"/>
 		<parameter id="argument-descriptions" value="URL of wcs service,name of output file"/>
+		<parameter id="optional-argument-names" value="match"/>
+		<parameter id="optional-argument-types" value="thinklab-core:Text"/>
+		<parameter id="optional-argument-default-values" value="_NONE_"/>
+		<parameter id="optional-argument-descriptions" value="name prefix filter for coverages"/>
 	</extension>
 
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="rasterize">
