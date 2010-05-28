@@ -132,4 +132,10 @@
 	"Apply a map of functions to one argument and return a map of results with the correspondent keys"
 	[function-map arg]
 	(zipmap (keys function-map) (map #(% arg) (vals function-map))))
+	
+(defmacro apply-not-nil
+	"Apply op to only the arguments that are not nil"
+	[op & body]
+	(let [nsq (filter #(not (nil? %)) body)]  
+	`(~op ~@nsq)))
 	 

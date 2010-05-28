@@ -1,4 +1,5 @@
-(ns modelling)
+(ns modelling
+	(:refer-clojure :rename {count length}))
 
 (tl/load-bindings 'org.integratedmodelling.thinklab.corescience)
 
@@ -102,7 +103,7 @@
 		 	   		  (transform-model model# classifier#) )))
  	    model#))
 	
-(defmacro enumeration
+(defmacro count
    "An enumeration is a count of individual objects, possibly distributed over an extent. It should have
     units, but these should only have the extent components in them, e.g. /km^2*year. If the enumeration is
     given no units, it's translated into an abundance ranking. For now there is a limitation in the syntax:

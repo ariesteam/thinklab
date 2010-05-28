@@ -109,7 +109,7 @@ public class ObservationListing {
 				if (Double.isNaN(data[i]))
 					bins[ndivs] ++;
 				else {
-					int bin = (int)(((data[i] - min) / (max - min)) * ndivs);
+					int bin = (int)(((data[i] - min) / (max - min)) * (ndivs-1));
 					bins[bin] ++;
 				}
 			}
