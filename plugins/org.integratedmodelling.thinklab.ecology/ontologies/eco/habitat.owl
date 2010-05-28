@@ -183,6 +183,8 @@
     </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="HydrologicSoilsGroup">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Soil pH</rdfs:label>
     <rdfs:subClassOf>
       <owl:Class rdf:ID="SoilQuality"/>
     </rdfs:subClassOf>
