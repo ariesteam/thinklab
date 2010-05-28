@@ -177,7 +177,10 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 		Object self = null;
 		if (isMediator && !changing) {
 			self = processMediated(registers[mediatedIndex]);
-		} else if (changing && changeCode != null) {
+		}
+		
+		// mediators change, too
+		if (changing && changeCode != null) {
 
 			/*
 			 * retrieve previous value with all other extents being equal
