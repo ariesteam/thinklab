@@ -180,7 +180,8 @@ public class ModelResult implements IQueryResult  {
 						"model: cannot combine stateful and stateless models as contingencies of the same model");
 			}
 			
-			/* if stateless, it will act like a transformer, building all contingencies separately and 
+			/* 
+			 * if stateless, it will act like a transformer, building all contingencies separately and 
 			 * merging states after contextualization. Otherwise, it will embed the switching strategy in
 			 * the compiled code.
 			 */
