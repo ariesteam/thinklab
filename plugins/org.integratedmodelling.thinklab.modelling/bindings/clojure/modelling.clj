@@ -2,7 +2,9 @@
 ;; Core functions to enable semantic modelling using observations.
 ;; -------------------------------------------------------------------------------------------
 
-(ns modelling)
+(ns modelling
+  (:refer-clojure :rename {count length}))
+(tl/load-bindings 'org.integratedmodelling.thinklab.corescience)
 
 ; birecursive patterns be damned
 (declare transform-model)
@@ -27,6 +29,36 @@
 	[concept]
 	(new org.integratedmodelling.modelling.agents.ThinkGeolocatedAgent))
 		
+(defn j-make-measurement
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.MeasurementModel))
+
+(defn j-make-classification
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.ClassificationModel))
+
+(defn j-make-observation
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.ObservationModel))
+
+(defn j-make-ranking
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.RankingModel))
+	
+(defn j-make-categorization
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.CategorizationModel))
+
+(defn j-make-bayesian
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.random.BayesianModel))
+
 (defn register-model
 	"Get the single instance of the model manager from the modelling plugin and register the passed model
 	 with it."
@@ -47,7 +79,7 @@
 		
 (defn kw-pair? 
   [obj] 
-  (and (seq? obj) (= (count obj) 2) (keyword? (first obj))))	
+  (and (seq? obj) (= (length obj) 2) (keyword? (first obj))))	
 
 (defn- get-configurable-model
 	"Return a model clone that we can safely configure. Essentially a copy on write pattern, called
@@ -304,4 +336,242 @@
 		    qresult (.. org.integratedmodelling.modelling.ModelFactory (get) (run model kbox (tl/get-session) extent))]
 		(if (> (.getTotalResultCount qresult) 0) 
 				   (.getImplementation (.getObject (.getResult qresult 0 (tl/get-session))))))))
-		    
+
+(defmacro classification
+	"The states of a classification model are concepts. All states must be direct children of the main observable
+	of the model."
+	[observable & specs]
+	`(let [model# (modelling/j-make-classification)] 
+ 	   (.setObservable model# 
+	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
+ 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
+ 	   					(eval ~observable)))
+		 (doseq [classifier# (partition 2 '~specs)]
+		 	   (if  (and  (keyword? (first classifier#)) (not (= :otherwise (first classifier#)))) 
+		 	   		  (transform-model model# classifier#) 
+		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (eval (second classifier#)))))
+ 	   model#))
+
+(defmacro ranking
+	"Rankings describe their states as numeric values that have an ordinal relationship and optionally
+	a scale. Rankings of different scales are mediated appropriately."
+	[observable & body]
+	`(let [model# 
+ 	        	(modelling/j-make-ranking)] 
+ 	   (.setObservable model# 
+	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
+ 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
+ 	   					(eval ~observable)))
+ 	   (if (not (nil? '~body)) 
+				(doseq [classifier# (partition 2 '~body)]
+		 	   	(if  (keyword? (first classifier#)) 
+		 	   		  (transform-model model# classifier#))))
+ 	   model#))
+
+(defmacro binary-coding
+	 "A binary coding is a numeric model that will mediate anything non-zero to 1."
+   [observable & body]
+   `(ranking ~observable :binary true ~@body)) 
+
+(defmacro numeric-coding
+   "A numeric coding is like a numeric ranking but no ordinal assumption is made on the states."
+   [observable & body]
+   `(ranking ~observable :numeric-classification true ~@body)) 
+	
+(defmacro categorization
+	"Categorizations have string tags as states. They hold little semantics and should only be used to
+	 handle hard-to-annotate datasets."
+	[observable & categories]
+	`(let [model# 
+ 	        	(modelling/j-make-categorization)] 
+ 	   (.setObservable model# 
+	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
+ 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
+ 	   					(eval ~observable)))
+ 	   (if (not (nil? '~categories)) (.setCategories model# (first '~categories))) 
+ 	   model#))
+	
+(defmacro measurement
+	"Create a measurement model. The observable can be another measurement model or a semantic object."
+	[observable units & body]
+	`(let [model# 
+ 	        	(modelling/j-make-measurement)] 
+ 	   (.setObservable model# 
+	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
+ 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
+ 	   					(eval ~observable)))
+ 	   (.setUnits model# ~units)
+ 	   (if (not (nil? '~body)) 
+				(doseq [classifier# (partition 2 '~body)]
+		 	   	(if  (keyword? (first classifier#)) 
+		 	   		  (transform-model model# classifier#) )))
+ 	    model#))
+	
+(defmacro count
+   "An enumeration is a count of individual objects, possibly distributed over an extent. It should have
+    units, but these should only have the extent components in them, e.g. /km^2*year. If the enumeration is
+    given no units, it's translated into an abundance ranking. For now there is a limitation in the syntax:
+    enumerations with no units cannot have other metadata in the form, i.e. they can only contain the 
+    observable."
+   ([observable]
+    `(ranking ~observable :enumeration true))
+   ([observable units & body]
+    `(measurement ~observable ~units :enumeration true ~@body))) 	
+	
+(defmacro identification
+	"Create an identification model. The observable can only be a semantic object."
+	[observable & body]
+	`(let [model# 
+ 	        	(modelling/j-make-observation)] 
+ 	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	   (if (not (nil? '~body)) 
+				(doseq [classifier# (partition 2 '~body)]
+		 	   	(if  (keyword? (first classifier#)) 
+		 	   		  (transform-model model# classifier#))))
+ 	   model#))
+
+(defmacro bayesian
+	"Create a bayesian model. The observable can only be a semantic object. For now the only way to
+	 define it is through the :import clause; bayesian network specifications are admitted but ignored."
+	[observable & body]
+	`(let [model# 
+ 	        	(modelling/j-make-bayesian)] 
+ 	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	   (if (not (nil? '~body)) 
+				(doseq [classifier# (partition 2 '~body)]
+		 	   	(if  (keyword? (first classifier#)) 
+		 	   		  (transform-model model# classifier#))))
+ 	   model#))
+ 	   
+;; -------------------------------------------------------------------------------------------------------
+;; inquiry, extraction etc
+;; -------------------------------------------------------------------------------------------------------
+
+(defn binary? 
+	"Returns true if the datasource encodes a binary distribution that represents a yes/no situation for
+	 a classified observation. If this returns true, (get-data) will return the probability of the true
+	 case."
+	[datasource]
+	(not (nil? (.get (.getMetadata datasource) "truecase"))))
+
+(defn probabilistic?
+	"True if the given datasource is a discrete distribution. If so, uncertainty info can be
+	extracted using get-uncertainty"
+	[datasource]
+	(instance? org.integratedmodelling.modelling.data.CategoricalDistributionDatasource datasource))
+	
+(defn get-uncertainty
+	"Return uncertainty information from a datasource as an array of doubles."
+	[datasource]
+	(.get (.getMetadata datasource) "uncertainty"))
+	
+(defn get-data
+	"Return numbers from a datasource as an array of doubles."
+	[datasource]
+	(.getDataAsDoubles datasource))
+	
+(defn get-probabilities
+	"Return probabilities for the given context state: returns an array of doubles with probabilities 
+	for each state returned by get-possible-states"
+	[datasource n]
+	(.getProbabilities datasource n))
+
+(defn get-possible-states
+	"Returns an array of concepts that index the probabilites returned by get-probabilities"
+	[datasource]
+	(.getStates datasource))
+	
+(defn get-probability
+	"Return the probability for the state represented by the passed concept at context state n"
+	[datasource concept n]
+	(.getProbability datasource n concept))
+
+(defn get-dist-breakpoints
+	"Return an array of doubles describing the continuous probability distribution encoded in the
+	discretized categories in the passed probabilistic datasource. Throws an exception if the 
+	datasource is not encoding a continuous distribution."
+	[datasource]
+	(.get (.getMetadata datasource) "continuous_dist_breakpoints"))
+	
+(defn encodes-continuous-distribution? 
+	"True if the given datasource is the discrete encoding of a continuous probability distribution, 
+ 	 meaning that get-dist-breakpoints will not throw an exception when called."
+	[datasource]
+	(not (nil? (.get (.getMetadata datasource) "continuous_dist_breakpoints"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  VISUALIZATION CODE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn write-netcdf
+	"Write out a netcdf file with all the states linked to the passed observation"
+	[observation filename]
+	(doto (new org.integratedmodelling.modelling.visualization.NetCDFArchive)
+		(.setObservation observation)
+		(.write filename)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  KBOX CODE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; root binding for kbox variable
+(def *_kbox_* nil)
+
+(defn j-make-kbox-handler
+	[]
+	(new org.integratedmodelling.modelling.data.KBoxHandler (tl/get-session)))
+	
+(defn j-make-object-handler
+	[concept kbox]
+	(new org.integratedmodelling.modelling.data.InstanceHandler (tl/get-session) concept kbox))
+
+(defn get-metadata-extractor
+	"Return a metadata extractor whose extractMetadata method will apply a Clojure function map to 
+	an instance, and return a corresponding map of the results."
+	[fnmap]
+	(proxy [org.integratedmodelling.thinklab.interfaces.storage.IMetadataExtractor] []
+		(extractMetadata [instance] 
+			(org.integratedmodelling.modelling.data.KBoxHandler/fixMetadata 
+				(tl/map-keyed-functions fnmap instance)))))
+
+(defmacro defobject
+	"Define an instance. Forward references (InstanceHandler) may also be returned, but will only 
+	 be allowed within a with-kbox form."
+	[concept & body]
+	`(let [conc# (str ~concept)
+				 inst# (j-make-object-handler conc# (eval '*_kbox_*))] 
+		(doseq [prop# '~body]
+			(if (string? prop#)
+				(.addAnnotation inst# prop#)
+				(.addProperty inst# (tl/prop (first prop#)) (eval (second prop#)))))
+		(.getObject inst#)))
+
+(defmacro kbox 
+	"Define a kbox and return it. According to passed keywords, the kbox can be persisted to an indicated plugin."
+	[id uri & body]
+	 `(let [kbox#   (modelling/j-make-kbox-handler)]
+			(.createKbox kbox# (str '~id) ~uri '~body)))
+
+(defmacro with-kbox
+	"The first argument must be a kbox. All other arguments must eval to knowledge (usually objects). 
+	 Each argument can be followed by an arbitrary number of keyword-value pairs. 
+	 Will eval all the s-expressions in body and if they represent knowledge, store them in the passed kbox. If a 
+	 (import url) form is passed, knowledge is imported from there. 
+	 Behavior can be modified using the keywords."
+	[& body]
+	 `(let [body#  (tl/group-with-keywords '~body)
+	 			  md-extractor# (eval (:metadata-generator (tl/assoc-map (second (first body#)))))
+	 	 	    kbox#   (modelling/j-make-kbox-handler)
+	 	 	    ]
+	 	 	 (binding [*_kbox_* kbox#]
+				 (.setKbox kbox# (eval (first (first body#))) (second (first body#)))	      	     
+ 		     (if (not (.isDisabled kbox#)) 
+ 		     		 (doseq [mdef# (rest body#)]
+ 		     		 		(if (and (seq? (first mdef#)) (= (str (first (first mdef#))) "import"))
+ 		     		 			(let [url# (str (eval (second (first mdef#))))]
+ 		     		 				(.setWithKbox (tl/get-session) (.getKbox kbox#) (modelling/get-metadata-extractor md-extractor#))
+ 		     		 				(.loadObjects (tl/get-session) url#)
+ 		     		 				(.setWithKbox (tl/get-session) nil nil))
+ 			     		 		(let [object# (eval (first mdef#))]
+    	     		       (.addKnowledge kbox# object# (second mdef#) (tl/map-keyed-functions md-extractor# object#)))))) 
+      	 (.getKbox kbox#))))
