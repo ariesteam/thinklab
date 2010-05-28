@@ -61,4 +61,8 @@
 		<parameter id="url" value="glc.owl"/>
 		<parameter id="concept-space" value="glc"/>
 	</extension>	
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="veracruz">
+		<parameter id="url" value="veracruz-lulc.owl"/>
+		<parameter id="concept-space" value="veracruz-lulc"/>
+	</extension>	
 </plugin>
