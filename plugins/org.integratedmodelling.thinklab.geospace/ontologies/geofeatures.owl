@@ -362,14 +362,6 @@
     
 
 
-    <!-- http://www.integratedmodelling.org/geospace/geofeatures.owl#NotUnitedStates -->
-
-    <owl:Class rdf:about="#NotUnitedStates">
-        <rdfs:subClassOf rdf:resource="#Country"/>
-    </owl:Class>
-    
-
-
     <!-- http://www.integratedmodelling.org/geospace/geofeatures.owl#Ocean -->
 
     <owl:Class rdf:about="#Ocean">
@@ -382,14 +374,6 @@
 
     <owl:Class rdf:about="#River">
         <rdfs:subClassOf rdf:resource="#NaturalFeature"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/geospace/geofeatures.owl#UnitedStates -->
-
-    <owl:Class rdf:about="#UnitedStates">
-        <rdfs:subClassOf rdf:resource="#Country"/>
     </owl:Class>
     
 
