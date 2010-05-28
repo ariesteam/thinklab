@@ -84,13 +84,12 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 	}
 
 	protected Polylist getImplicitExtents(Collection<Topology> extents) throws ThinklabException {
-		
-		ArrayList<Object> el = new ArrayList<Object>();
+				ArrayList<Object> el = new ArrayList<Object>();
 		el.add(CoreScience.HAS_EXTENT);
 		
 		for (Topology t : extents) {		
 			if (t.getObservableClass().is(TimePlugin.get().TimeObservable())) {
-				if ((changeSpecs != null || derivativeSpecs != null) && !isMediating()) {
+				if (changeSpecs != null || derivativeSpecs != null) {
 					el.add(t.getExtent().conceptualize());
 				}
 			}

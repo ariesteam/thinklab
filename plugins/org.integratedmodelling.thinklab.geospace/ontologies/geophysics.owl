@@ -9,8 +9,8 @@
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
   xml:base="http://www.integratedmodelling.org/ks/geospace/geophysics.owl">
   <owl:Ontology rdf:about="">
-    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl"/>
     <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl"/>
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl"/>
   </owl:Ontology>
   <owl:Class rdf:ID="GroundSurfaceTemperature">
     <rdfs:subClassOf>
@@ -18,21 +18,20 @@
     </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="Slope">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/science/representation.owl#GenericQuantifiable"/>
-    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Slope"/>
   </owl:Class>
   <owl:Class rdf:about="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
+  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/science/representation.owl#GenericQuantifiable"/>
   <owl:Class rdf:ID="Altitude">
-    <rdfs:comment>Altitude is a type of length whose use is specific to geophysical applications. By making it the observable in, e.g., an altitude raster layer, we know how to properly aggregate and distribute altitudinal data.</rdfs:comment>
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
+    <rdfs:comment>Altitude is a type of length whose use is specific to geophysical applications. By making it the observable in, e.g., an altitude raster layer, we know how to properly aggregate and distribute altitudinal data.</rdfs:comment>
   </owl:Class>
   <owl:Class rdf:ID="DegreeSlope">
     <rdfs:subClassOf rdf:resource="#Slope"/>
   </owl:Class>
   <owl:Class rdf:ID="GroundElevation">
-    <rdfs:comment>Elevation of the highest feature on the ground, such as in LIDAR data</rdfs:comment>
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
+    <rdfs:comment>Elevation of the highest feature on the ground, such as in LIDAR data</rdfs:comment>
   </owl:Class>
   <owl:Class rdf:ID="FlowConcept">
     <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
