@@ -414,10 +414,20 @@
     enumerations with no units cannot have other metadata in the form, i.e. they can only contain the 
     observable."
    ([observable]
-    `(ranking ~observable :enumeration true))
+    `(ranking ~observable :count true))
    ([observable units & body]
-    `(measurement ~observable ~units :enumeration true ~@body))) 	
+    `(measurement ~observable ~units :count true ~@body))) 	
 	
+(defmacro probabilistic-ranking
+   "Same as a numeric ranking but the states are distributions. Unimplemented."
+   [observable & body]
+   `(ranking ~observable :probabilistic true ~@body)) 
+
+(defmacro probabilistic-measurement   
+   "Same as a numeric measurement but the states are distributions. Unimplemented."
+   [observable units & body]
+   `(measurement ~observable ~units :probabilistic true ~@body)) 
+
 (defmacro identification
 	"Create an identification model. The observable can only be a semantic object."
 	[observable & body]

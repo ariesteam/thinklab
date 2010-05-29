@@ -85,6 +85,11 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 
 	protected Polylist getImplicitExtents(Collection<Topology> extents) throws ThinklabException {
 				ArrayList<Object> el = new ArrayList<Object>();
+				
+		/*
+		 * adopt them all unless there is a value statement; if time, adopt it
+		 * anyway if we have change statements.		
+		 */
 		el.add(CoreScience.HAS_EXTENT);
 		
 		for (Topology t : extents) {		
@@ -92,6 +97,9 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 				if (changeSpecs != null || derivativeSpecs != null) {
 					el.add(t.getExtent().conceptualize());
 				}
+// TODO add back
+//			} else if (state == null) {
+//				el.add(t.getExtent().conceptualize());				
 			}
 		}
 		

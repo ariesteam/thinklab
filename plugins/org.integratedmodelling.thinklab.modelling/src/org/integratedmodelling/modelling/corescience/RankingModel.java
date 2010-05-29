@@ -8,7 +8,6 @@ import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
 import org.integratedmodelling.modelling.DefaultStatefulAbstractModel;
-import org.integratedmodelling.modelling.DefaultDynamicAbstractModel.language;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -19,16 +18,50 @@ import org.integratedmodelling.utils.Polylist;
 
 public class RankingModel extends DefaultDynamicAbstractModel {
 
-	Object unitSpecs = null;
-	// TODO scale stuff
+	boolean isBinary = false;
+	boolean isCategorical = false;
+	boolean isProbabilistic = false;
+	boolean isInteger = false;
+	boolean isScale = false;
+	double  scaleMin = -1.0;
+	double  scaleMax = -1.0;
 	
 	@Override
 	protected void copy(DefaultStatefulAbstractModel model) {
+
 		super.copy(model);
-		unitSpecs = ((RankingModel)model).unitSpecs;
-		// TODO scale stuff
+
+		isBinary = ((RankingModel)model).isBinary;
+		isCategorical = ((RankingModel)model).isCategorical;
+		isProbabilistic = ((RankingModel)model).isProbabilistic;
+		isInteger = ((RankingModel)model).isInteger;
+		isScale = ((RankingModel)model).isScale;
+		scaleMin = ((RankingModel)model).scaleMin;
+		scaleMax = ((RankingModel)model).scaleMax;
 	}
 	
+	@Override
+	public void applyClause(String keyword, Object argument)
+			throws ThinklabException {
+
+		if (keyword.equals(":binary"))
+			isBinary = (Boolean)argument;
+		else if (keyword.equals(":numeric-classification"))
+			isCategorical = (Boolean)argument;
+		else if (keyword.equals(":probabilistic"))
+			isProbabilistic = (Boolean)argument;
+		else if (keyword.equals(":min"))
+			scaleMin = ((Number)argument).doubleValue();
+		else if (keyword.equals(":max"))
+			scaleMax = ((Number)argument).doubleValue();
+		else if (keyword.equals(":integer"))
+			isInteger = (Boolean)argument;
+		else if (keyword.equals(":scale"))
+			isScale = (Boolean)argument;
+		else
+			super.applyClause(keyword, argument);
+	}
+
 	public RankingModel() {
 		this.metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 	}
@@ -36,10 +69,6 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 	@Override
 	public String toString() {
 		return ("ranking(" + getObservable() + ")");
-	}
-
-	public void setUnits(Object unitSpecs) {
-		this.unitSpecs = unitSpecs;
 	}
 	
 	@Override
@@ -67,7 +96,6 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 	public IModel getConfigurableClone() {
 		RankingModel ret = new RankingModel();
 		ret.copy(this);
-		ret.unitSpecs = unitSpecs;
 		return ret;
 	}
 
@@ -123,8 +151,9 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	protected void validateSemantics(ISession session) throws ThinklabException {
-		// TODO Auto-generated method stub
-		
+		// TODO check that scale has min/max, that we don't have scale if 
+		// we are binary or categories, and that probabilistic specs and
+		// states are OK and match
 	}
 	
 	@Override

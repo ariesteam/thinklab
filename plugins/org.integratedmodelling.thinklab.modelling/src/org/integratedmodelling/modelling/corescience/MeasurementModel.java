@@ -19,11 +19,27 @@ import org.integratedmodelling.utils.Polylist;
 public class MeasurementModel extends DefaultDynamicAbstractModel {
 
 	String unitSpecs = null;
+	boolean isProbabilistic = false;
+	boolean isCount = false;
+	
+	@Override
+	public void applyClause(String keyword, Object argument)
+			throws ThinklabException {
 
+		if (keyword.equals(":count"))
+			isCount = (Boolean)argument;
+		else if (keyword.equals(":probabilistic"))
+			isProbabilistic = (Boolean)argument;
+		else
+			super.applyClause(keyword, argument);
+	}
+	
 	@Override
 	protected void copy(DefaultStatefulAbstractModel model) {
 		super.copy(model);
 		unitSpecs = ((MeasurementModel)model).unitSpecs;
+		isProbabilistic = ((MeasurementModel)model).isProbabilistic;
+		isCount = ((MeasurementModel)model).isCount;
 	}
 
 	@Override
