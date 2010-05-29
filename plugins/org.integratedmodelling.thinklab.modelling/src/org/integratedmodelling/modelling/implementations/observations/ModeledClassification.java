@@ -39,13 +39,13 @@ public class ModeledClassification
 	extends Observation 
 	implements MediatingObservation {
 	
-	ArrayList<Pair<GeneralClassifier, IConcept>> classifiers = 
+	protected ArrayList<Pair<GeneralClassifier, IConcept>> classifiers = 
 		new ArrayList<Pair<GeneralClassifier,IConcept>>();
 	
 	IConcept cSpace = null;
 	double[] continuousDistribution = null;
 
-	private boolean hasNilClassifier = false;
+	protected boolean hasNilClassifier = false;
 
 	@Override
 	public String toString() {

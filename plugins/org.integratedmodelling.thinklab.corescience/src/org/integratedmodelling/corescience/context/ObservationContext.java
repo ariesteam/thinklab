@@ -3,6 +3,8 @@ package org.integratedmodelling.corescience.context;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -576,9 +578,24 @@ public class ObservationContext implements IObservationContext {
 		for (IConcept ss : extents.keySet())
 			order.add(ss);
 		
-		/* TODO sort. Is it fair to think that if two extent concepts have an ordering 
+		/* sort. Is it fair to think that if two extent concepts have an ordering 
 		 * relationship, they should know about each other? So that we can implement the
-		 * ordering as a relationship between extent observation classes? */
+		 * ordering as a relationship between extent observation classes?
+		 * 
+		 * For now, all we care about is that time, if present, comes first.
+		 *  */
+		Collections.sort(order, new Comparator<IConcept>() {
+
+			@Override
+			public int compare(IConcept o1, IConcept o2) {
+				// neg if o1 < o2
+				boolean o1t = o1.getConceptSpace().equals("time");
+				boolean o2t = o2.getConceptSpace().equals("time");
+				if (o1t && !o2t) return -1;
+				if (!o1t && o2t) return 1;
+				return 0;
+			}
+		});
 	}
 	
 	/**

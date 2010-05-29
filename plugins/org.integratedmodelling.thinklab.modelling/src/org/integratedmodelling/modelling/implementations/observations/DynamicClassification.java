@@ -1,20 +1,22 @@
 package org.integratedmodelling.modelling.implementations.observations;
 
-import org.integratedmodelling.corescience.implementations.observations.Classification;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
+import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.modelling.data.adapters.ClojureAccessor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.utils.Pair;
 
 import clojure.lang.IFn;
 
 @InstanceImplementation(concept="modeltypes:DynamicClassification")
-public class DynamicClassification extends Classification {
+public class DynamicClassification extends ModeledClassification {
 
 	public IFn code = null;
 	public Object change = null;
@@ -30,7 +32,15 @@ public class DynamicClassification extends Classification {
 
 		@Override
 		protected Object processMediated(Object object) {
-			// TODO this should have its own classifiers and mediate to them before calling the code
+			
+			if (object == null && !hasNilClassifier)
+				return null;
+			
+			for (Pair<GeneralClassifier, IConcept> p : classifiers) {
+				if (p.getFirst().classify(object))
+					return p.getSecond();
+			}
+
 			return object;
 		}
 	}
@@ -45,7 +55,7 @@ public class DynamicClassification extends Classification {
 			throws ThinklabException {
 		return (code == null && change == null) ? 
 					new ClassificationMediator() :
-				    new ClojureClassificationAccessor(code, this, false, context, (IFn)change);
+				    new ClojureClassificationAccessor(code, this, true, context, (IFn)change);
 	}
 
 	/* (non-Javadoc)

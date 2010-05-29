@@ -174,7 +174,11 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 		 * - previous value if we're changing and have change expressions. If that's the case, also have
 		 *   other extents set their additional contextualized versions of "self" (e.g. neighborhoods).  
 		 */
-		Object self = null;
+		Object self = 
+			(initialValue instanceof DistributionValue) ? 
+				new Double(((DistributionValue)initialValue).draw()) : 
+				initialValue;
+				
 		if (isMediator && !changing) {
 			self = processMediated(registers[mediatedIndex]);
 		}
@@ -261,20 +265,16 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 			parms = (PersistentArrayMap) parms.assoc(kwList.get(i), val);
 		}
 		
-		Object ret = null;
-		
+		Object ret = self;
 		try {
-			ret = 
-				(changing && changeCode != null) ? 
+			if (changing && changeCode != null) {
+				ret = 
 					(changeIsDerivative ? 
-							integrate(parms, ((Number)self).doubleValue(), ctime - 1, ctime) : 
-							changeCode.invoke(parms)) :
-					((initialValue == null && clojureCode != null) ? 
-						clojureCode.invoke(parms) :
-						(initialValue instanceof DistributionValue) ? 
-							new Double(((DistributionValue)initialValue).draw()) : 
-							initialValue);
-					
+						integrate(parms, ((Number)self).doubleValue(), ctime - 1, ctime) : 
+						changeCode.invoke(parms));
+			} else if (clojureCode != null) { 
+				ret = clojureCode.invoke(parms);
+			}				
 		} catch (Exception e) {
 			throw new ThinklabRuntimeException(e);
 		}

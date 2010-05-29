@@ -66,7 +66,7 @@ public class DynamicRanking extends Ranking {
 	public IStateAccessor getMediator(IndirectObservation observation, IObservationContext context)
 			throws ThinklabException {
 		if (lang.equals("clojure"))
-			return new ClojureRankingAccessor((IFn)code, this, true, null, context, (IFn)observation, (IFn)context);
+			return new ClojureRankingAccessor((IFn)code, this, true, null, context, (IFn)change, (IFn)derivative);
 		else
 			return new MVELAccessor((String)code, true);
 	}
