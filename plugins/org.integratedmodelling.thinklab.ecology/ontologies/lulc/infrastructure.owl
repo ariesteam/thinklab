@@ -1,149 +1,93 @@
 <?xml version="1.0"?>
-
-
-<!DOCTYPE rdf:RDF [
-    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
-    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
-    <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
-    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
-    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
-    <!ENTITY infrastructure "http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#" >
-]>
-
-
-<rdf:RDF xmlns="http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#"
-     xml:base="http://www.integratedmodelling.org/ks/lulc/infrastructure.owl"
-     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
-     xmlns:owl="http://www.w3.org/2002/07/owl#"
-     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-     xmlns:infrastructure="http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#">
-    <owl:Ontology rdf:about=""/>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Classes
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#Airport -->
-
-    <owl:Class rdf:about="#Airport">
-        <rdfs:subClassOf rdf:resource="#TransportationHub"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#Bridge -->
-
-    <owl:Class rdf:about="#Bridge">
-        <rdfs:subClassOf rdf:resource="#TransportationMedium"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#Dam -->
-
-    <owl:Class rdf:about="#Dam">
-        <rdfs:subClassOf rdf:resource="#EnvironmentalInfrastructure"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#DetentionBasin -->
-
-    <owl:Class rdf:about="#DetentionBasin">
-        <rdfs:subClassOf rdf:resource="#EnvironmentalInfrastructure"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#EnvironmentalInfrastructure -->
-
-    <owl:Class rdf:about="#EnvironmentalInfrastructure">
-        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#Highway -->
-
-    <owl:Class rdf:about="#Highway">
-        <rdfs:subClassOf rdf:resource="#Road"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#Levee -->
-
-    <owl:Class rdf:about="#Levee">
-        <rdfs:subClassOf rdf:resource="#EnvironmentalInfrastructure"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#RailStation -->
-
-    <owl:Class rdf:about="#RailStation">
-        <rdfs:subClassOf rdf:resource="#TransportationHub"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#Railway -->
-
-    <owl:Class rdf:about="#Railway">
-        <rdfs:subClassOf rdf:resource="#TransportationMedium"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#Road -->
-
-    <owl:Class rdf:about="#Road">
-        <rdfs:subClassOf rdf:resource="#TransportationMedium"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#TransportationHub -->
-
-    <owl:Class rdf:about="#TransportationHub">
-        <rdfs:subClassOf rdf:resource="#TransportationInfrastucture"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#TransportationInfrastucture -->
-
-    <owl:Class rdf:about="#TransportationInfrastucture">
-        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#TransportationMedium -->
-
-    <owl:Class rdf:about="#TransportationMedium">
-        <rdfs:subClassOf rdf:resource="#TransportationInfrastucture"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.w3.org/2002/07/owl#Thing -->
-
-    <owl:Class rdf:about="&owl;Thing"/>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:infrastructure="http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://www.integratedmodelling.org/ks/lulc/infrastructure.owl">
+  <owl:Ontology rdf:about=""/>
+  <owl:Class rdf:ID="TransportationHub">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="TransportationInfrastucture"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Bridge">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="TransportationMedium"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="DetentionBasin">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="EnvironmentalInfrastructure"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="WindTurbine">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="EnergyInfrastructure"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Airport">
+    <rdfs:subClassOf rdf:resource="#TransportationHub"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Highway">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Road"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="TransmissionLine">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#EnergyInfrastructure"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Road">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#TransportationMedium"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="OilAndGasWells">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#EnergyInfrastructure"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Pipeline">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#EnergyInfrastructure"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="RailStation">
+    <rdfs:subClassOf rdf:resource="#TransportationHub"/>
+  </owl:Class>
+  <owl:Class rdf:about="#TransportationMedium">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#TransportationInfrastucture"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Levee">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#EnvironmentalInfrastructure"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Path">
+    <rdfs:subClassOf rdf:resource="#TransportationMedium"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing"/>
+  <owl:Class rdf:about="#EnergyInfrastructure">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:Class rdf:about="#EnvironmentalInfrastructure">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:Class rdf:about="#TransportationInfrastucture">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Dam">
+    <rdfs:subClassOf rdf:resource="#EnvironmentalInfrastructure"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Railway">
+    <rdfs:subClassOf rdf:resource="#TransportationMedium"/>
+  </owl:Class>
 </rdf:RDF>
 
-
-
-<!-- Generated by the OWL API (version 2.2.1.1042) http://owlapi.sourceforge.net -->
-
+<!-- Created with TopBraid -->
