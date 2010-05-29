@@ -274,10 +274,6 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 			arr.add(Polylist.list(":derivative", derivativeSpecs));
 		}
 		
-		Polylist iex = getImplicitExtents(extents);
-		if (iex != null)
-			arr.add(iex);
-
 		if (dynSpecs != null || changeSpecs != null || derivativeSpecs != null)
 			arr.add(Polylist.list("modeltypes:hasExpressionLanguage", 
 				this.lang.equals(language.CLOJURE) ? "clojure" : "mvel"));
@@ -301,7 +297,8 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 						"modeltypes:hasClassifier", 
 						concepts.get(i) + "->" + classifiers.get(i)));
 		}
-		return Polylist.PolylistFromArrayList(arr);
+
+		return addImplicitExtents(Polylist.PolylistFromArrayList(arr), extents);
 	}
 
 	@Override

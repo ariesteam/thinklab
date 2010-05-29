@@ -86,13 +86,12 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 				(this.distribution != null ? 
 						Polylist.list(":distribution", this.distribution) : 
 						null),
-				getImplicitExtents(extents),
 				(isMediating() ?
 						null :
 						Polylist.list(CoreScience.HAS_OBSERVABLE,
 								Polylist.list(getObservable()))));
 
-		return def;
+		return addImplicitExtents(def, extents);
 	}
 
 	@Override

@@ -9,9 +9,6 @@ import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.time.TimePlugin;
 import org.integratedmodelling.utils.Polylist;
 
@@ -30,8 +27,8 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 		CLOJURE,
 		MVEL
 	};
+	
 	protected language lang = null;
-
 	protected Object changeSpecs = null;
 	protected Object derivativeSpecs = null;
 
@@ -83,32 +80,24 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 		dynSpecs = ((DefaultDynamicAbstractModel)model).dynSpecs;
 	}
 
-	protected Polylist getImplicitExtents(Collection<Topology> extents) throws ThinklabException {
-				ArrayList<Object> el = new ArrayList<Object>();
-				
+	protected Polylist addImplicitExtents(Polylist list, Collection<Topology> extents) throws ThinklabException {
+							
 		/*
 		 * adopt them all unless there is a value statement; if time, adopt it
 		 * anyway if we have change statements.		
-		 */
-		el.add(CoreScience.HAS_EXTENT);
-		
+		 */		
 		for (Topology t : extents) {		
 			if (t.getObservableClass().is(TimePlugin.get().TimeObservable())) {
 				if (changeSpecs != null || derivativeSpecs != null) {
-					el.add(t.getExtent().conceptualize());
+					list = ObservationFactory.addExtent(list, t.getExtent().conceptualize());
 				}
-// TODO add back
+// TODO reintegrate
 //			} else if (state == null) {
-//				el.add(t.getExtent().conceptualize());				
+//				list = ObservationFactory.addExtent(list, t.getExtent().conceptualize());				
 			}
 		}
 		
-		Polylist ret = null;
-		if (el.size() > 1) {
-			ret = Polylist.PolylistFromArrayList(el);
-		}
-		
-		return ret;
+		return list;
 	}
 
 	@Override

@@ -357,20 +357,22 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
 
-		return Polylist.list(
+		Polylist ret = Polylist.list(
 				Geospace.RASTER_GRID,
 				// communicate the extent so we don't lose lineage info in contextualized obs
 				Polylist.list(":extent", this),
-				Polylist.list(Geospace.X_RANGE_OFFSET, "" + getXMinCell()),
-				Polylist.list(Geospace.X_RANGE_MAX, "" + getXMaxCell()),
-				Polylist.list(Geospace.Y_RANGE_OFFSET, "" + getYMinCell()),
-				Polylist.list(Geospace.Y_RANGE_MAX, "" + getYMaxCell()),
-				Polylist.list(Geospace.LAT_LOWER_BOUND, "" + getSouth()),
-				Polylist.list(Geospace.LON_LOWER_BOUND, "" + getWest()),
-				Polylist.list(Geospace.LAT_UPPER_BOUND, "" + getNorth()),
-				Polylist.list(Geospace.LON_UPPER_BOUND, "" + getEast()),
+				Polylist.list(Geospace.X_RANGE_MAX,    "" + getXMaxCell()),
+				Polylist.list(Geospace.Y_RANGE_MAX,    "" + getYMaxCell()),
+				Polylist.list(Geospace.LAT_LOWER_BOUND, getSouth()),
+				Polylist.list(Geospace.LON_LOWER_BOUND, getWest()),
+				Polylist.list(Geospace.LAT_UPPER_BOUND, getNorth()),
+				Polylist.list(Geospace.LON_UPPER_BOUND, getEast()),
 				Polylist.list(Geospace.CRS_CODE, 
 						Geospace.getCRSIdentifier(getCRS(), false)));
+		
+		System.out.println(Polylist.prettyPrint(ret));
+
+		return ret;
 	}
 
 	@Override

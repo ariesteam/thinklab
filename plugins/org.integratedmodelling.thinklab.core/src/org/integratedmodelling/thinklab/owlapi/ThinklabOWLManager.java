@@ -907,7 +907,10 @@ public class ThinklabOWLManager {
 				 */
 				if (toAdd == null) {
 					if (canTestRange)
-						throw new ThinklabValidationException("plain data property " + property + " can't use value " + o2);
+						throw new ThinklabValidationException(
+								"plain data property " + property + 
+								" can't use value " + o2 + " for " + 
+								property.getRange());
 					else
 						toAdd = o2;
 				}
