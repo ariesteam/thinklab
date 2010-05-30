@@ -1,4 +1,4 @@
-package org.integratedmodelling.modelling.data;
+package org.integratedmodelling.clojure.knowledge;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.integratedmodelling.clojure.ClojurePlugin;
 import org.integratedmodelling.clojure.utils.OptionListIterator;
-import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -98,7 +98,7 @@ public class KBoxHandler {
 				if (policy.equals(":disable-unless-empty") && this.kbox != null) {
 					if (this.kbox.getObjectCount() > 0l) {
 						_disabled = true;
-						ModellingPlugin.get().logger().info("kbox not empty: any object definitions ignored");
+						ClojurePlugin.get().logger().info("kbox not empty: any object definitions ignored");
 					}
 				} else if (policy.equals(":recreate-always") && this.kbox != null) {
 					this.kbox.resetToEmpty();
@@ -107,7 +107,7 @@ public class KBoxHandler {
 
 				String plugin = Thinklab.resolvePluginName(kv.getSecond().toString(), true);
 				try {
-					ThinklabPlugin persistTo = (ThinklabPlugin) ModellingPlugin.get().getManager().getPlugin(plugin);
+					ThinklabPlugin persistTo = (ThinklabPlugin) ClojurePlugin.get().getManager().getPlugin(plugin);
 					File dest = 
 						new File(persistTo.getScratchPath() + File.separator + MiscUtilities.getNameFromURL(this.kbox.getUri()) + ".kbox");
 					this.kbox.getProperties().store(new FileOutputStream(dest), null);
@@ -216,8 +216,7 @@ public class KBoxHandler {
 		File kboxFile = null;
 		
 		try {
-			
-			kboxFile = new File(ModellingPlugin.get().getScratchPath() + File.separator + "temp_kbox");
+			kboxFile = new File(ClojurePlugin.get().getScratchPath() + File.separator + "temp_kbox");
 			kboxFile.mkdir();
 			kboxFile = new File(kboxFile + File.separator + name + ".kbox");
 			

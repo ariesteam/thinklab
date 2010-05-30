@@ -270,7 +270,7 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		 * determine coordinates of granule. This should not get called if the activation layer
 		 * is null, so no check for now. 
 		 */
-		Pair<Integer, Integer> xy = activationLayer.getCell(granule);
+		Pair<Integer, Integer> xy = requireActivationLayer(true).getCell(granule);
 		
 		/*
 		 * TODO reimplement to use nextCell on activation layer. Must enforce sequential access
@@ -361,8 +361,8 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 				Geospace.RASTER_GRID,
 				// communicate the extent so we don't lose lineage info in contextualized obs
 				Polylist.list(":extent", this),
-				Polylist.list(Geospace.X_RANGE_MAX,    "" + getXMaxCell()),
-				Polylist.list(Geospace.Y_RANGE_MAX,    "" + getYMaxCell()),
+				Polylist.list(Geospace.X_RANGE_MAX,     Integer.toString(getXMaxCell())),
+				Polylist.list(Geospace.Y_RANGE_MAX,     Integer.toString(getYMaxCell())),
 				Polylist.list(Geospace.LAT_LOWER_BOUND, getSouth()),
 				Polylist.list(Geospace.LON_LOWER_BOUND, getWest()),
 				Polylist.list(Geospace.LAT_UPPER_BOUND, getNorth()),
@@ -370,16 +370,14 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 				Polylist.list(Geospace.CRS_CODE, 
 						Geospace.getCRSIdentifier(getCRS(), false)));
 		
-		System.out.println(Polylist.prettyPrint(ret));
-
 		return ret;
 	}
 
 	@Override
 	protected IExtent createMergedExtent(
-			ArealExtent orextent, ArealExtent otextent,
-			CoordinateReferenceSystem ccr, Envelope common,
-			 Envelope orenvnorm, Envelope otenvnorm) throws ThinklabException {
+					ArealExtent orextent, ArealExtent otextent,
+					CoordinateReferenceSystem ccr, Envelope common,
+					Envelope orenvnorm, Envelope otenvnorm) throws ThinklabException {
 
 		/*
 		 * for now, raster always wins
@@ -579,10 +577,10 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	@Override
 	public Collection<Pair<String, Integer>> getStateLocators(int index) {
 		
-		int[] xy = getXYCoordinates(index);
-		
+		Pair<Integer, Integer> xy = requireActivationLayer(true).getCell(index);
+
 		int brow = 0, bcol = 0, trow = getYCells() -1, tcol = getXCells() - 1;
-		int col = xy[0], row = xy[1];
+		int col = xy.getFirst(), row = xy.getSecond();
 		int n = 0;
 		
 		ArrayList<Pair<String,Integer>> ret = new ArrayList<Pair<String,Integer>>();

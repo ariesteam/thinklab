@@ -23,6 +23,7 @@ public class ClojurePlugin extends ThinklabPlugin {
 			logger().info("initializing Clojure runtime");
 			RT.loadResourceScript("thinklab.clj");			
 			RT.loadResourceScript("utils.clj");			
+			RT.loadResourceScript("knowledge.clj");			
 			logger().info("Clojure initialized successfully");
 		} catch (Exception e) {
 			throw new ThinklabPluginException(e);

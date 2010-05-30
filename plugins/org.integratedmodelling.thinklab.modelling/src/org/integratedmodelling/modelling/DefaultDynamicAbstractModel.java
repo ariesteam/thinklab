@@ -1,10 +1,8 @@
 package org.integratedmodelling.modelling;
 
 
-import java.util.ArrayList;
 import java.util.Collection;
 
-import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -82,18 +80,19 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 
 	protected Polylist addImplicitExtents(Polylist list, Collection<Topology> extents) throws ThinklabException {
 							
+		if (extents == null)
+			return list;
+		
 		/*
 		 * adopt them all unless there is a value statement; if time, adopt it
 		 * anyway if we have change statements.		
 		 */		
 		for (Topology t : extents) {		
-			if (t.getObservableClass().is(TimePlugin.get().TimeObservable())) {
-				if (changeSpecs != null || derivativeSpecs != null) {
-					list = ObservationFactory.addExtent(list, t.getExtent().conceptualize());
-				}
-// TODO reintegrate
-//			} else if (state == null) {
-//				list = ObservationFactory.addExtent(list, t.getExtent().conceptualize());				
+			if (state == null) {
+				list = ObservationFactory.addExtent(list, t.getExtent().conceptualize());				
+			} else if (t.getObservableClass().is(TimePlugin.get().TimeObservable()) &&
+					(changeSpecs != null || derivativeSpecs != null)) {
+						list = ObservationFactory.addExtent(list, t.getExtent().conceptualize());
 			}
 		}
 		

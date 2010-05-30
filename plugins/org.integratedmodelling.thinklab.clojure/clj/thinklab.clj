@@ -25,12 +25,16 @@
 (defn get-session
 	"Retrieve the current session. Throw an exception if no session was passed to the interpreter
 	 in the current thread, and true is passed as an argument."
-	([] (if (nil? (resolve '*session*)) nil (eval '*session*)))
+	([] (if (nil? (resolve 'tl/*session*)) nil (eval 'tl/*session*)))
 	([complain]
 	(do 
-		(if (and (nil? (resolve '*session*)) complain) 
+		(if (and (nil? (resolve 'tl/*session*)) complain) 
 			(throw (new ThinklabValidationException "no session is defined")))
-		(if (nil? (resolve '*session*)) nil (eval '*session*)))))
+		(if (nil? (resolve 'tl/*session*)) nil (eval 'tl/*session*)))))
+
+(defn get-new-session
+  []
+  (new org.integratedmodelling.thinklab.owlapi.Session))
 
 (defn plist 
 	"Translates a polylist into a sequence for Thinklab->Clojure bridging of datastructures"
@@ -191,23 +195,5 @@
 ;	[command-name & arguments] 
 ;	`())
 
-;; -------------------------------------------------------------------------------------
-;; definition of knowledge through clojure forms
-;; -------------------------------------------------------------------------------------
-(defn j-make-object-handler
-	[concept]
-	(new org.integratedmodelling.clojure.ConceptHandler (tl/get-session) concept))
-
-(defmacro defconcept
-	"Define an instance. Forward references (InstanceHandler) may also be returned, but will only 
-	 be allowed within a with-kbox form."
-	[concept & body]
-	`(let [conc# (str ~concept)
-				 inst# (j-make-concept-handler conc#)] 
-		(doseq [prop# '~body]
-			(if (string? prop#)
-				(.addAnnotation inst# prop#)
-				(.define inst# prop#)))
-		(.getConcept inst#)))
 
 	

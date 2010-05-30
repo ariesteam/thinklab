@@ -249,7 +249,7 @@ public class ModeledClassification
 				}
 			}
 
-			HashMap<IConcept, Integer> ranks;
+			HashMap<IConcept, Integer> ranks = null;
 			if (rnk == null) {	
 				ranks = Metadata.rankConcepts(cSpace, metadata);
 			} else {
@@ -258,7 +258,6 @@ public class ModeledClassification
 
 		}		
 	}
-
 
 	@Override
 	public Polylist conceptualize() throws ThinklabException {

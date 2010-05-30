@@ -163,7 +163,7 @@ public class GraphicalShell {
 		
 		/* greet user */
 		printStatusMessage();
-		
+
 		String input = "";
 		
 		/* define commands from user input */

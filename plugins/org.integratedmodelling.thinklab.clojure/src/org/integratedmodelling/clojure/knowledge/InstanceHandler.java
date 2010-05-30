@@ -1,4 +1,4 @@
-package org.integratedmodelling.modelling.data;
+package org.integratedmodelling.clojure.knowledge;
 
 import java.net.URI;
 import java.net.URISyntaxException;

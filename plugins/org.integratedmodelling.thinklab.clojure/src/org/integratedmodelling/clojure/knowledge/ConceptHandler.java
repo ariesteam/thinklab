@@ -1,4 +1,4 @@
-package org.integratedmodelling.clojure;
+package org.integratedmodelling.clojure.knowledge;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;

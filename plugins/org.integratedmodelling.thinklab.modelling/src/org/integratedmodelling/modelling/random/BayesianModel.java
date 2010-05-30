@@ -123,7 +123,7 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 		for (IModel c : observed) {
 			arr.add(Polylist.list(
 					BayesianTransformer.HAS_PROTOTYPE_MODEL,
-					((Model)c).getDefinition().buildDefinition(kbox, session, extents)));
+					((Model)c).getDefinition().buildDefinition(kbox, session, null)));
 		}
 
 		return Polylist.PolylistFromArrayList(arr);
