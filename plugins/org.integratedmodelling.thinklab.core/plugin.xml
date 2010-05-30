@@ -20,7 +20,7 @@
 		<library type="code" id="asm-attris"  path="lib/asm-attrs.jar"/>
 		<library type="code" id="aterm"  path="lib/aterm-java-1.6.jar"/>
 		<library type="code" id="bsf"  path="lib/bsf.jar"/>
-		<library type="code" id="bsh"  path="lib/bsh-1.2b7.jar">
+		<library type="code" id="bsh"  path="lib/bsh_custom.jar">
 			<export prefix="*" />
 		</library>
 		<library type="code" id="common"  path="lib/common-2.2.1.jar">

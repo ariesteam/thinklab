@@ -50,7 +50,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/asm.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/asm-attrs.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/bsf.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/bsh-1.2b7.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/common-2.2.1.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/commons-beanutils-1.7.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/commons-codec-1.2.jar"/>
@@ -376,5 +375,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/org.w3.xlink-2.6.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-process-2.6.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/commons-math-2.1.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/bsh_custom.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>
