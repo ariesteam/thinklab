@@ -328,12 +328,14 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			throw new ThinklabValidationException("coverage can only be reprojected on a grid extent for now");
 		
 		URL getCov = buildRetrieveUrl((GridExtent) arealExtent);
-
+		String savUrl = getCov.toString();
+		
 		ClassLoader clsl = null;
 		
 		try {
 
 			clsl = Geospace.get().swapClassloader();
+
 			
 			File f = File.createTempFile("geo", ".tiff");
 			CopyURL.copy(getCov, f);
@@ -343,7 +345,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			this.coverage = (GridCoverage2D)reader.read(null);	
 			
 		} catch (IOException e) {
-			throw new ThinklabIOException(layerName + ": " + e.getMessage());
+			throw new ThinklabIOException(layerName + ": " + e.getMessage() + ": url = " + savUrl);
 		} finally {
 			Geospace.get().resetClassLoader(clsl);
 		}

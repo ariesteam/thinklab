@@ -442,20 +442,8 @@ public abstract class ThinklabPlugin extends Plugin
     		   CopyURL.copy(sprop, pfile);
        } 
        
-       if (pfile.exists()) {
-    	   try {
-    		propertySource = pfile;
-    		FileInputStream inp = new FileInputStream(pfile);
-			properties.load(inp);
-			inp.close();
-			logger().info("plugin properties loaded from " + pfile);
-		} catch (Exception e) {
-			throw new ThinklabIOException(e);
-		}
-       }
-       
        /*
-        * load all other properties files directly from plugin load dir
+        * load all non-customized properties files directly from plugin load dir
         */
        File cdir = new File(getLoadDirectory() + File.separator + "config");
        if (cdir.exists() && cdir.isDirectory())
@@ -472,6 +460,19 @@ public abstract class ThinklabPlugin extends Plugin
 				}
 			}
 		}
+       
+       // load custom properties, overriding any in system folder.
+       if (pfile.exists()) {
+    	   try {
+    		propertySource = pfile;
+    		FileInputStream inp = new FileInputStream(pfile);
+			properties.load(inp);
+			inp.close();
+			logger().info("plugin customized properties loaded from " + pfile);
+		} catch (Exception e) {
+			throw new ThinklabIOException(e);
+		}
+       }
 	}
 
 	public void writeConfiguration() throws ThinklabIOException {

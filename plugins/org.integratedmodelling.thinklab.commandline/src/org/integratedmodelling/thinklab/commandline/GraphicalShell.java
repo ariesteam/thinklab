@@ -184,7 +184,7 @@ public class GraphicalShell {
 				
 				try {
 					
-					Command cmd = CommandParser.parse(input);
+					Command cmd = CommandParser.parse(input.trim());
 					
 					if (cmd == null)
 						continue;
