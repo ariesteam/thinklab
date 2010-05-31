@@ -40,15 +40,20 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.apache.commons.io.FileUtils;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
@@ -70,6 +75,8 @@ import bsh.util.JConsole;
 public class GraphicalShell {
 	
 	JConsole console = null;
+	
+	File historyFile = null;
 	
 	Font inputFont = new Font("Courier", Font.BOLD, 12);
 	Font outputFont = new Font("Courier", Font.PLAIN, 12);
@@ -132,6 +139,12 @@ public class GraphicalShell {
 	
 	public GraphicalShell() throws ThinklabException {
 		this.session = new ConsoleSession();
+		
+		historyFile = 
+			new File(
+				CommandLine.get().getScratchPath() + 
+				File.separator + 
+				".history");
 	}
 	
 	public  void printStatusMessage() {
@@ -161,6 +174,22 @@ public class GraphicalShell {
 				
 		ConsolePanel jpanels = new ConsolePanel();
 		
+		/*
+		 * read history if any
+		 */
+		List<?> lines = null;
+		try {
+			lines = FileUtils.readLines(historyFile, null);
+		} catch (IOException e) {
+			// no problem
+		}
+		
+		if (lines != null) {
+			for (Object line : lines) {
+				console.addToHistory(line.toString());
+			}
+		}
+		
 		/* greet user */
 		printStatusMessage();
 
@@ -168,6 +197,8 @@ public class GraphicalShell {
 		
 		/* define commands from user input */
 		while(true) {
+			
+			boolean error = false;
 			
 			console.print("> ");
 			console.setStyle(inputFont);
@@ -197,7 +228,26 @@ public class GraphicalShell {
                     
 				} catch (Exception e) {
 					e.printStackTrace();
+					error = true;
 					console.println(">>> error: " + e.getMessage() + " <<<");
+				}
+				
+				if (!error) {
+			          BufferedWriter bw = null;
+				      try {
+				        	 bw = new BufferedWriter(
+				        			  new FileWriter(historyFile, true));
+				          bw.write(input.trim());
+				          bw.newLine();
+				          bw.flush();
+				       } catch (IOException ioe) {
+				       } finally {
+				 	 if (bw != null) 
+				 		 try {
+				 			 bw.close();
+				 	 	} catch (IOException ioe2) {
+				 	 	}
+				    }
 				}
 			}
 		}
