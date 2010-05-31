@@ -172,4 +172,16 @@ public interface IKnowledgeRepository {
 
 	public abstract IConcept getNothingType();
 
+	/**
+	 * This is called when concepts are requested with a string identifier, and
+	 * gives the knowledge repository a chance to recognize a syntax that
+	 * will automatically create the concept if supported. Just return 
+	 * null if the KR shouldn't support this feature.
+	 *  
+	 * @param conc
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public abstract IConcept checkSelfAnnotation(String conc) throws ThinklabException;
+
 }

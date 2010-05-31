@@ -241,7 +241,10 @@ public abstract class ThinklabPlugin extends Plugin
 		for (Extension ext : getOwnThinklabExtensions("language-binding")) {
 
 			String language = getParameter(ext, "language");
+			boolean b = KnowledgeManager.get().getAdminPrivileges();
+			KnowledgeManager.get().setAdminPrivileges(true);
 			loadLanguageBindings(language);
+			KnowledgeManager.get().setAdminPrivileges(b);
 		}
 	}
 	

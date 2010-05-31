@@ -203,7 +203,6 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		}
 		
 		return ret;
-		
 	}
 	
 	public void addClassifier(Object classifier, Object concept) throws ThinklabException {

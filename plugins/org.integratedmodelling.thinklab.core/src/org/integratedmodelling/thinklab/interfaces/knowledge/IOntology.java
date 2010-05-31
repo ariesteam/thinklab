@@ -41,6 +41,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.Polylist;
 
 /**
@@ -185,11 +186,17 @@ public interface IOntology  extends IResource {
 	public abstract long getLastModificationDate();
 
 	/**
-	 * Write the ontology to the passed physical URI.
+	 * Write the ontology to the passed physical URI. If the URI is 
+	 * null, the ontology should be written to its original file 
+	 * location; if it was not loaded from a file, the request should
+	 * be ignored and false should be returned. If the URI is not
+	 * null, the request should be attempted and an exception raised
+	 * on error.
+	 * 
 	 * @param uri
 	 * @throws ThinklabException 
 	 */
-	public void write(URI uri) throws ThinklabException;
+	public boolean write(URI uri) throws ThinklabException;
 
 
 	/**
@@ -210,4 +217,16 @@ public interface IOntology  extends IResource {
 	 * @return
 	 */
 	public IConcept createConcept(Polylist list) throws ThinklabException;
+
+	/**
+	 * Create the passed concept, using the passed parents as its superclasses, and
+	 * return it. The concept may exist, if so only the
+	 * parents that are not already its parents should be added.
+	 * 
+	 * @param localName
+	 * @param parents
+	 * @return a pair <concept, boolean> with the boolean set to true if the concept was there already.
+	 * @throws ThinklabValidationException 
+	 */
+	public IConcept createConcept(String localName, IConcept[] parents, boolean persist) throws ThinklabException;
 }

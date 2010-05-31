@@ -22,18 +22,16 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -61,7 +59,6 @@ import org.semanticweb.owl.model.OWLOntologyManager;
 import org.semanticweb.owl.util.AutoURIMapper;
 import org.semanticweb.owl.util.DLExpressivityChecker;
 import org.semanticweb.owl.util.SimpleURIMapper;
-import org.semanticweb.owl.util.ToldClassHierarchyReasoner;
 import org.semanticweb.owl.vocab.Namespaces;
 
 import uk.ac.manchester.cs.owl.inference.dig11.DIGReasoner;
@@ -511,6 +508,60 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 			noConcept = new Concept(manager.getOWLDataFactory().getOWLClass(URI.create(Namespaces.OWL + "Nothing")));
 		}
 		return noConcept;
+	}
+
+	@Override
+	public IConcept checkSelfAnnotation(String conc) throws ThinklabException {
+
+		/*
+		 * syntax for self-annotations:
+		 * 
+		 * <ontology>:<concept>$[[<ontology>:<concept>[&<ontology>:<concept>]*]$]
+		 * 
+		 * First $ sign means create if absent (ontology must exist)
+		 * Semantic types after $ are superclasses (also created and persisted
+		 * 	if not existing, according to same rules of main concept)
+		 * Second $ sign (at the end) means persist (ontology must exist)
+		 * 
+		 */
+		if (!conc.contains("$"))
+			return null;
+		
+		String[] cc = conc.trim().split("\\$", -1);
+		boolean persist = cc.length == 3;
+		
+		SemanticType st = new SemanticType(cc[0]);
+		String parents = cc[1].trim();
+		IConcept[] pars = null;
+		
+		if (parents != null && !parents.equals("")) {
+		
+			int i = 0;
+			String[] pp =  parents.split("&");
+			pars = new IConcept[pp.length];
+			for (String p : pp) {
+				pars[i++] = createIfAbsent(new SemanticType(p), persist, null);
+			}
+		}
+		
+		return createIfAbsent(st, persist, pars);
+	}
+
+	
+	// create concept and return it if not present in ontology; check that all parents are
+	// there
+	private IConcept createIfAbsent(SemanticType t, boolean persist, IConcept[] parents) throws ThinklabException {
+
+		IConcept cr = null;
+		IOntology o = retrieveOntology(t.getConceptSpace());
+	    if (o == null)
+	    	throw new ThinklabResourceNotFoundException(
+	    			"concept space " + t.getConceptSpace() + 
+	    			" unknown in checking concept " + 
+	    			t.getLocalName() +
+	    			" for self-annotation"); 
+	    
+	    return o.createConcept(t.getLocalName(), parents, persist);	
 	}
 
 	

@@ -54,6 +54,12 @@
 		<parameter id="concept-space" value="modeltypes" /> 
 	</extension>
 	
+	<!-- FIXME test ontology - remove -->
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="test">
+		<parameter id="url" value="test.owl"/>
+		<parameter id="concept-space" value="test" /> 
+	</extension>
+	
 	<!-- bindings -->
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding" id="clj">
 		<parameter id="language" value="clojure"/>

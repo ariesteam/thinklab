@@ -70,7 +70,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
 import org.integratedmodelling.thinklab.session.SingleSessionManager;
@@ -106,6 +105,8 @@ import org.semanticweb.owl.vocab.XSDVocabulary;
  */
 public class KnowledgeManager implements IKnowledgeProvider {
 
+	private boolean adminPrivileges = false;
+	
     /** default core ontology URL. It really is small - just some POD data types and a couple properties. */
 	private static final String DEFAULT_CORE_ONTOLOGY = "thinklab-core.owl";
 
@@ -678,8 +679,22 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#requireConcept(java.lang.String)
 	 */
     public IConcept requireConcept(String id) throws ThinklabException {
-        SemanticType st = new SemanticType(id);
-        return requireConcept(st);
+    	
+		IConcept ret = null;
+		if (adminPrivileges) {
+			try {
+				ret = knowledgeRepository.checkSelfAnnotation(id);
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+		
+		if (ret == null) {
+			SemanticType st = new SemanticType(id);
+			return requireConcept(st);
+		}
+		
+		return ret;
     }
     
     /* (non-Javadoc)
@@ -940,9 +955,9 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	}
 
 	public IConcept retrieveConcept(SemanticType t) {
-		
+
 		IConcept ret = null;
-	    IOntology o = knowledgeRepository.retrieveOntology(t.getConceptSpace());
+		IOntology o = knowledgeRepository.retrieveOntology(t.getConceptSpace());
 	    if (o != null)
 	    	ret = o.getConcept(t.getLocalName());
 	    if (ret == null && t.toString().equals(rootTypeID.toString()))	{
@@ -970,8 +985,21 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#retrieveConcept(java.lang.String)
 	 */
-	public IConcept retrieveConcept(String prop) {
-		return retrieveConcept(new SemanticType(prop));
+	public IConcept retrieveConcept(String conc) {
+				
+		IConcept ret = null;
+		if (adminPrivileges) {
+			try {
+				ret = knowledgeRepository.checkSelfAnnotation(conc);
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+
+		return 
+			ret == null ?
+				retrieveConcept(new SemanticType(conc)) :
+				ret;
 	}
 
 	/**
@@ -1375,6 +1403,14 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		return KM.ordinalRangeMappingType;
 	}
 
+	public void setAdminPrivileges(boolean b) {
+		adminPrivileges = b;
+	}
+	
+	public boolean getAdminPrivileges() {
+		return adminPrivileges;
+	}
+	
 	/**
 	 * Return the literal concept that represents the POD type of the
 	 * object passed. Anything non-POD will return null.

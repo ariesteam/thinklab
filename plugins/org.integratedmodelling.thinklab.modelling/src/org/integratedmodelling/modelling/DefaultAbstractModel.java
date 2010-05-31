@@ -144,6 +144,7 @@ public abstract class DefaultAbstractModel implements IModel {
 			Object potentialParent) throws ThinklabValidationException {
 
 		IConcept c = KnowledgeManager.get().retrieveConcept(conceptId);
+		
 		if (c == null) {
 
 			ModelAnnotation an = (ModelAnnotation) session

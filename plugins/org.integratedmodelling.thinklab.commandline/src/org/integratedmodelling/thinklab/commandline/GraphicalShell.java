@@ -54,6 +54,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.apache.commons.io.FileUtils;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
@@ -189,6 +190,14 @@ public class GraphicalShell {
 				console.addToHistory(line.toString());
 			}
 		}
+		
+		/*
+		 * TODO
+		 * privileged shell by default. We may want to condition this
+		 * to authentication. For now all a privileged shell can do
+		 * is to auto-annotate concepts. 
+		 */
+		KnowledgeManager.get().setAdminPrivileges(true);
 		
 		/* greet user */
 		printStatusMessage();

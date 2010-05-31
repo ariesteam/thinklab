@@ -45,6 +45,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -459,14 +460,27 @@ public class Ontology implements IOntology {
 
 	}
 
-	public void write(URI physicalURI) throws ThinklabException{
+	@Override
+	public boolean write(URI physicalURI) throws ThinklabException {
 
+		boolean ret = true;
+		if (physicalURI == null) {
+			try {
+				FileKnowledgeRepository.get().manager.saveOntology(ont);
+			} catch (Exception e) {
+				ret = false;
+			}
+			return ret;
+		}
+		
 		try {
 			FileKnowledgeRepository.get().manager.
 				saveOntology(ont, new OWLXMLOntologyFormat(), physicalURI);
 		} catch (Exception e) {
 			throw new ThinklabIOException(e);
 		}
+		
+		return ret;
 	}
 
 
@@ -805,6 +819,64 @@ public class Ontology implements IOntology {
 	@Override
 	public IOntology getOntology() {
 		return this;
+	}
+
+	@Override
+	public IConcept createConcept(String localName, IConcept[] parents, boolean persist) throws ThinklabException {
+
+		OWLOntologyManager manager = FileKnowledgeRepository.get().manager;
+		OWLDataFactory factory = FileKnowledgeRepository.get().manager.getOWLDataFactory();		
+		IConcept ret = getConcept(localName);
+		boolean changed = false;
+		
+		if (ret == null) {
+			
+			URI uri = URI.create(getURI() + "#" + localName);
+			OWLClass newcl = factory.getOWLClass(uri);
+			OWLAxiom axiom = factory.getOWLDeclarationAxiom(newcl);
+			
+			try {
+				manager.addAxiom(ont, axiom);
+				changed = true;
+			} catch (OWLOntologyChangeException e) {
+				throw new ThinklabValidationException(e);
+			}
+			
+			ret = new Concept(newcl);
+			concepts.put(kr.registry.getSemanticType(uri), new Concept(newcl));
+		}
+		
+		ArrayList<IConcept> pars = new ArrayList<IConcept>();
+		if (parents != null) {
+			for (IConcept c : parents)
+				if (c != null)
+					pars.add(c);
+		}
+		
+		for (IConcept p : pars) {
+						
+			if (ret.is(p))
+				continue;
+			
+			OWLClass parent = (OWLClass) ((Concept)p).entity;
+			OWLAxiom axiom = factory.getOWLSubClassAxiom((OWLClass)((Concept)ret).entity, parent);
+		
+			try {
+				manager.addAxiom(ont,axiom);
+				changed = true;
+			} catch (OWLOntologyChangeException e) {
+				throw new ThinklabValidationException(e);
+			}
+		}
+		
+    	if (persist && changed && !this.write(null)) {
+    		Thinklab.get().logger().warn(
+    				"attempt to persist ontology " + 
+    				getConceptSpace() +
+    				" failed: ontology does not come from a filesystem resource");
+    	}
+    	
+		return ret;
 	}
 
 }
