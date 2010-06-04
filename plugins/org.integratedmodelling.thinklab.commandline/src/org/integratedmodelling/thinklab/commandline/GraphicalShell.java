@@ -241,7 +241,8 @@ public class GraphicalShell {
 					console.println(">>> error: " + e.getMessage() + " <<<");
 				}
 				
-				if (!error) {
+				// TODO see if we want to exclude commands that created errors.
+				if (/*!error*/true) {
 			          BufferedWriter bw = null;
 				      try {
 				        	 bw = new BufferedWriter(

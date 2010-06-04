@@ -115,7 +115,8 @@ public class MemClassContextualizedDatasource
 
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
-		throw new ThinklabValueConversionException("can't convert concepts into doubles");
+//		throw new ThinklabValueConversionException("can't convert concepts into doubles");
+		return null;
 	}
 
 	@Override

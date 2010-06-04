@@ -680,6 +680,10 @@ public class Metadata extends HashMap<String, Object> {
 			throws ThinklabValueConversionException {
 
 		double[] data = state.getDataAsDoubles();
+		
+		if (data == null)
+			return null;
+		
 		int len = data.length;
 		int[] idata = new int[len];
 

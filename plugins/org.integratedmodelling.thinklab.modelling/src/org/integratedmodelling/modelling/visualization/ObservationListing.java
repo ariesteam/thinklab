@@ -73,6 +73,10 @@ public class ObservationListing {
 	private void listHistogram(IState state, PrintStream out) throws ThinklabValueConversionException {
 		
 		double[] data = state.getDataAsDoubles();
+		
+		if (data == null)
+			return;
+		
 		Double min = null; Double max = null;
 
 		int nans = 0;
