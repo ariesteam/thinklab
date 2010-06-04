@@ -252,6 +252,11 @@ public class NetCDFArchive {
 				ArrayDouble data = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
 				Index ind = data.getIndex();
 				double[] dd = state.getDataAsDoubles();
+				
+				// this can now happen for stuff like categories, eventually it will be removed
+				if (dd == null)
+					return;
+				
 				// FIXME: same deal, more Uncertainty-related badness
 				//double[] uu = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
 				double[] uu = null;
