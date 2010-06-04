@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.visualization;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ public class NetCDFArchive {
 	Map<String,IState> auxVariables = 
 		new Hashtable<String, IState>();
 	ObservationContext context = null;
+	HashSet<String> varnames = new HashSet<String>();
 	
 	/*
 	 * container for variables to write
@@ -163,6 +165,8 @@ public class NetCDFArchive {
 			ncfile.addVariableAttribute("lon", "long_name", "longitude");
 		}
 		
+		varnames.clear();
+		
 		for (IConcept obs : variables.keySet()) {
 			
 			// TODO implement the rest
@@ -170,8 +174,14 @@ public class NetCDFArchive {
 			if (spdims.size() == 2) {
 				// we have space only
 				String varname = getVarname(obs);
+				if (varnames.contains(varname))
+					continue;
+				
 				ncfile.addVariable(varname, DataType.FLOAT, new Dimension[]{latDim,lonDim});
 
+				varnames.add(varname);
+				
+				
 				// FIXME: this crashes hard (something semantically bad is happening here)
 				// add uncertainty if any
 				//if (variables.get(obs).getMetadata().get(Metadata.UNCERTAINTY) != null)
@@ -242,12 +252,19 @@ public class NetCDFArchive {
 				continue;
 			}
 			
+			varnames.clear();
+			
 			// TODO implement the rest			
 			if (spdims.size() == 2) {
 				
 				// we have space only
 				String varname = getVarname(obs);
 				IState state = variables.get(obs);
+				
+				if (varnames.contains(varname))
+					continue;
+				
+				varnames.add(varname);
 				
 				ArrayDouble data = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
 				Index ind = data.getIndex();
