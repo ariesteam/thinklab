@@ -32,6 +32,7 @@
  **/
 package org.integratedmodelling.thinklab.owlapi;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -77,8 +78,6 @@ import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLOntologyChangeException;
 import org.semanticweb.owl.model.OWLOntologyManager;
 import org.semanticweb.owl.util.OWLEntityRemover;
-
-
 
 /**
  * @author Ioannis N. Athanasiadis, Dalle Molle Institute for Artificial Intelligence, USI/SUPSI
@@ -466,8 +465,12 @@ public class Ontology implements IOntology {
 		boolean ret = true;
 		if (physicalURI == null) {
 			try {
-				FileKnowledgeRepository.get().manager.saveOntology(ont);
-			} catch (Exception e) {
+				String fn = kr.ontologyfn.get(getConceptSpace());
+				if (fn != null) {
+					File ff = new File(fn);
+					FileKnowledgeRepository.get().manager.saveOntology(ont, ff.toURI());
+				}
+				} catch (Exception e) {
 				ret = false;
 			}
 			return ret;

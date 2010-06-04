@@ -76,6 +76,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	private File backupDirectory;
 	private File tempDirectory;
 	protected Hashtable<String, IOntology> ontologies = new Hashtable<String, IOntology>();
+	protected Hashtable<String, String> ontologyfn = new Hashtable<String, String>();
 	protected Hashtable<String, IOntology> tempontologies = new Hashtable<String, IOntology>();
 	
 	protected Registry registry;
@@ -192,10 +193,23 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	public String importOntology(URL url, String name, boolean saveToRepository) throws ThinklabException {
 		try {
 			URI physicalURI = url.toURI();			
+			String fname = null;
+			
+			/*
+			 * if file, put that away
+			 */
+			URL uu = new URL(physicalURI.toString());
+			if (uu.toString().startsWith("file:")) {
+				fname = uu.getFile();
+			}
+			
 			OWLOntology ontology = manager.loadOntology(physicalURI);
 			name = registry.registerURI(name, ontology.getURI());
 			Ontology onto = new Ontology(ontology, this);
 			ontologies.put(name, onto);
+			if (fname != null) {
+				ontologyfn.put(name, fname);
+			}
 			registry.updateRegistry(manager, ontology);
 			onto.initialize(name);
 			
