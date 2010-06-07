@@ -137,6 +137,8 @@ public class GraphicalShell {
 		}
 	
 	public ISession session;
+
+	private boolean error;
 	
 	public GraphicalShell() throws ThinklabException {
 		this.session = new ConsoleSession();
@@ -207,39 +209,34 @@ public class GraphicalShell {
 		/* define commands from user input */
 		while(true) {
 			
-			boolean error = false;
-			
 			console.print("> ");
 			console.setStyle(inputFont);
 			
-			input = readLine(session.getInputStream());
+			input = readLine(session.getInputStream()).trim();
 			
 			console.setStyle(outputFont);
 			
 			if ("exit".equals(input)) {
+				
 				console.println("shell terminated");
 				System.exit(0);
 				break;
-			} else if (!("".equals(input.trim())) && /* WTF? */!input.equals(";")) {
 				
-				try {
-					
-					Command cmd = CommandParser.parse(input.trim());
-					
-					if (cmd == null)
-						continue;
-					
-					IValue result = CommandManager.get().submitCommand(cmd, session);
-                    if (result != null)
-                        console.println(result.toString());
-                    
-                    console.getOut().flush();
-                    
-				} catch (Exception e) {
-					e.printStackTrace();
-					error = true;
-					console.println(">>> error: " + e.getMessage() + " <<<");
+			} else if (input.startsWith("!")) {
+				
+				String ss = input.substring(1);
+				for (int i = console.getHistory().size(); i > 0; i--) {
+					String s = console.getHistory().get(i-1);
+					if (s.startsWith(ss)) {
+						console.println(s);
+						execute(s);
+						break;
+					}
 				}
+				
+			} else if (!("".equals(input)) && /* WTF? */!input.equals(";")) {
+				
+				execute(input);
 				
 				// TODO see if we want to exclude commands that created errors.
 				if (/*!error*/true) {
@@ -262,5 +259,29 @@ public class GraphicalShell {
 			}
 		}
 		
+	}
+
+	private void execute(String input) {
+
+		try {
+			this.error = false;
+			
+			Command cmd = CommandParser.parse(input);
+			
+			if (cmd == null)
+				return;
+			
+			IValue result = CommandManager.get().submitCommand(cmd, session);
+            if (result != null)
+                console.println(result.toString());
+            
+            console.getOut().flush();
+            
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.error = true;
+			console.println(">>> error: " + e.getMessage() + " <<<");
+		}
+
 	}
 }
