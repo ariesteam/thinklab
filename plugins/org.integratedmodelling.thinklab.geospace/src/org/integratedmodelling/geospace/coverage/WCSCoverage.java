@@ -117,6 +117,8 @@ public class WCSCoverage extends AbstractRasterCoverage {
 
 		  // desc.dump(System.out);
 
+		  Geospace.get().logger().info("parsing descriptor for " + layerName);
+		  
 		  Node n = desc.findNode("gml:Envelope");
 		  
 		  String srs = XMLDocument.getAttributeValue(n, "srsName").trim();
