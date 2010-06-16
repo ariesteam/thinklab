@@ -24,6 +24,11 @@
       <owl:Class rdf:ID="RunningWater"/>
     </rdfs:subClassOf>
   </owl:Class>
+  <owl:Class rdf:ID="DecompositionFactor">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="EcosystemQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="JanuaryPrecipitation">
     <rdfs:subClassOf>
       <owl:Class rdf:ID="MonthlyPrecipitation"/>
@@ -49,6 +54,16 @@
       <owl:Class rdf:about="#MonthlyPrecipitation"/>
     </rdfs:subClassOf>
   </owl:Class>
+  <owl:Class rdf:ID="ReptileRichness">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="SpeciesRichness"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="AvianRichness">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#SpeciesRichness"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="StillWater">
     <rdfs:subClassOf>
       <owl:Class rdf:ID="CompleteWaterCoverage"/>
@@ -59,24 +74,24 @@
       <owl:Class rdf:ID="CommunityQuality"/>
     </rdfs:subClassOf>
   </owl:Class>
-  <owl:Class rdf:ID="AprilSnowmelt">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#MonthlySnowmelt"/>
-    </rdfs:subClassOf>
-  </owl:Class>
   <owl:Class rdf:ID="ManagedLandNotForProduction">
     <rdfs:subClassOf>
       <owl:Class rdf:ID="ManagedLand"/>
     </rdfs:subClassOf>
   </owl:Class>
-  <owl:Class rdf:ID="SoilTexture">
+  <owl:Class rdf:ID="AprilSnowmelt">
     <rdfs:subClassOf>
-      <owl:Class rdf:ID="SoilQuality"/>
+      <owl:Class rdf:about="#MonthlySnowmelt"/>
     </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="PastureLand">
     <rdfs:subClassOf>
       <owl:Class rdf:ID="PlantHarvestingLand"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="SoilTexture">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="SoilQuality"/>
     </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="WaterSalinity">
@@ -181,7 +196,7 @@
   </owl:Class>
   <owl:Class rdf:ID="PrimaryProductivity">
     <rdfs:subClassOf>
-      <owl:Class rdf:ID="EcosystemQuality"/>
+      <owl:Class rdf:about="#EcosystemQuality"/>
     </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="Highway">
@@ -207,13 +222,15 @@
       <owl:Class rdf:about="#MonthlySnowmelt"/>
     </rdfs:subClassOf>
   </owl:Class>
+  <owl:Class rdf:ID="InvertebrateRichness">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#SpeciesRichness"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="JulyPrecipitation">
     <rdfs:subClassOf>
       <owl:Class rdf:about="#MonthlyPrecipitation"/>
     </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="AmphibianDiversity">
-    <rdfs:subClassOf rdf:resource="#SpeciesDiversity"/>
   </owl:Class>
   <owl:Class rdf:ID="SoilErodibility">
     <rdfs:subClassOf>
@@ -223,22 +240,27 @@
   <owl:Class rdf:ID="DirectServiceProvision">
     <rdfs:subClassOf rdf:resource="#CommercialActivityLand"/>
   </owl:Class>
+  <owl:Class rdf:ID="MammalRichness">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#SpeciesRichness"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="MixedTidalCoverage">
     <rdfs:subClassOf>
       <owl:Class rdf:ID="TidalWaterCoverage"/>
     </rdfs:subClassOf>
   </owl:Class>
-  <owl:Class rdf:about="#WaterType">
+  <owl:Class rdf:ID="AugustDaysOfPrecipitation">
     <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
+      <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
     </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="Snowfall">
     <rdfs:subClassOf rdf:resource="#Precipitation"/>
   </owl:Class>
-  <owl:Class rdf:ID="AugustDaysOfPrecipitation">
+  <owl:Class rdf:about="#WaterType">
     <rdfs:subClassOf>
-      <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
+      <owl:Class rdf:about="#HabitatQuality"/>
     </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="HabitatRelativeComposition">
@@ -251,6 +273,12 @@
     >Soil pH</rdfs:label>
     <rdfs:subClassOf>
       <owl:Class rdf:about="#SoilQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="ActualEvapotranspiration">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#EcosystemQuality"/>
     </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="AnnualSnowmelt">
@@ -300,9 +328,6 @@
     <rdfs:subClassOf>
       <owl:Class rdf:about="#MonthlyPrecipitation"/>
     </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="MammalDiversity">
-    <rdfs:subClassOf rdf:resource="#SpeciesDiversity"/>
   </owl:Class>
   <owl:Class rdf:about="#TidalWaterCoverage">
     <rdfs:subClassOf>
@@ -423,11 +448,15 @@
   <owl:Class rdf:ID="Construction">
     <rdfs:subClassOf rdf:resource="#IndustrialActivityLand"/>
   </owl:Class>
-  <owl:Class rdf:ID="Evapotranspiration">
+  <owl:Class rdf:ID="FireThreat">
     <rdfs:subClassOf>
-      <owl:Class rdf:about="#EcosystemQuality"/>
+      <owl:Class rdf:about="#FireRegime"/>
     </rdfs:subClassOf>
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
+  </owl:Class>
+  <owl:Class rdf:ID="AmphibianRichness">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#SpeciesRichness"/>
+    </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="ModerateTropicalStormProbability">
     <rdfs:subClassOf>
@@ -441,9 +470,6 @@
     <rdfs:subClassOf>
       <owl:Class rdf:about="#HabitatQuality"/>
     </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="FishDiversity">
-    <rdfs:subClassOf rdf:resource="#SpeciesDiversity"/>
   </owl:Class>
   <owl:Class rdf:ID="DiurnalTidalCoverage">
     <rdfs:subClassOf rdf:resource="#TidalWaterCoverage"/>
@@ -468,13 +494,13 @@
       <owl:Class rdf:about="#EventRelatedQuality"/>
     </rdfs:subClassOf>
   </owl:Class>
+  <owl:Class rdf:ID="SoilCNRatio">
+    <rdfs:subClassOf rdf:resource="#SoilQuality"/>
+  </owl:Class>
   <owl:Class rdf:ID="MayPrecipitation">
     <rdfs:subClassOf>
       <owl:Class rdf:about="#MonthlyPrecipitation"/>
     </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="SoilCNRatio">
-    <rdfs:subClassOf rdf:resource="#SoilQuality"/>
   </owl:Class>
   <owl:Class rdf:about="#MonthlySnowmelt">
     <rdfs:subClassOf rdf:resource="#Snowmelt"/>
@@ -557,9 +583,6 @@
       <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
     </rdfs:subClassOf>
   </owl:Class>
-  <owl:Class rdf:ID="FreshWater">
-    <rdfs:subClassOf rdf:resource="#WaterSalinity"/>
-  </owl:Class>
   <owl:Class rdf:about="#EventRelatedQuality">
     <rdfs:subClassOf>
       <owl:Class rdf:about="#HabitatQuality"/>
@@ -567,6 +590,9 @@
   </owl:Class>
   <owl:Class rdf:ID="SnowPresence">
     <rdfs:subClassOf rdf:resource="#ClimateQuality"/>
+  </owl:Class>
+  <owl:Class rdf:ID="FreshWater">
+    <rdfs:subClassOf rdf:resource="#WaterSalinity"/>
   </owl:Class>
   <owl:Class rdf:about="#HabitatMatrix">
     <rdfs:subClassOf>
@@ -605,9 +631,6 @@
   </owl:Class>
   <owl:Class rdf:ID="OctoberSnowmelt">
     <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
-  </owl:Class>
-  <owl:Class rdf:ID="InvertebrateDiversity">
-    <rdfs:subClassOf rdf:resource="#SpeciesDiversity"/>
   </owl:Class>
   <owl:Class rdf:about="#BathymetricSlope">
     <rdfs:subClassOf>
@@ -652,6 +675,11 @@
   <owl:Class rdf:ID="JanuarySnowmelt">
     <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
   </owl:Class>
+  <owl:Class rdf:about="#SpeciesRichness">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#CommunityQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="RemoteServiceProvision">
     <rdfs:subClassOf rdf:resource="#CommercialActivityLand"/>
   </owl:Class>
@@ -675,6 +703,9 @@
     <rdfs:subClassOf rdf:resource="#Precipitation"/>
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
   </owl:Class>
+  <owl:Class rdf:ID="FishRichness">
+    <rdfs:subClassOf rdf:resource="#SpeciesRichness"/>
+  </owl:Class>
   <owl:Class rdf:ID="Slope">
     <rdfs:subClassOf>
       <owl:Class rdf:about="#HabitatQuality"/>
@@ -689,6 +720,9 @@
   </owl:Class>
   <owl:Class rdf:ID="ShrubLand">
     <rdfs:subClassOf rdf:resource="#VegetationType"/>
+  </owl:Class>
+  <owl:Class rdf:ID="PotentialEvapotranspiration">
+    <rdfs:subClassOf rdf:resource="#EcosystemQuality"/>
   </owl:Class>
   <owl:Class rdf:about="#TransportationLand">
     <rdfs:subClassOf rdf:resource="#ManagedLandNotForProduction"/>
@@ -747,14 +781,8 @@
   <owl:Class rdf:ID="MarchDaysOfPrecipitation">
     <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
   </owl:Class>
-  <owl:Class rdf:ID="AvianDiversity">
-    <rdfs:subClassOf rdf:resource="#SpeciesDiversity"/>
-  </owl:Class>
   <owl:Class rdf:ID="MarqueeStatus">
     <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
-  </owl:Class>
-  <owl:Class rdf:ID="ReptileDiversity">
-    <rdfs:subClassOf rdf:resource="#SpeciesDiversity"/>
   </owl:Class>
   <owl:ObjectProperty rdf:ID="containsHabitat">
     <rdfs:domain rdf:resource="#HabitatMatrix"/>
