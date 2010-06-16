@@ -106,8 +106,8 @@
 		(let [
 			cshapes (.. org.integratedmodelling.geospace.Geospace (get) (lookupFeature (str name)))
 			]
-		(if (> (.size cshapes) 0) 
-				(.get cshapes 0)))) 
+		(if (> (.getTotalResultCount cshapes) 0) 
+				(.getResult cshapes 0 nil)))) 
 
 (defn get-shape
 	"Return the full extent shape from a grid." 
@@ -139,11 +139,11 @@
 			cshapes (.. org.integratedmodelling.geospace.Geospace (get) (lookupFeature (str name)))
 			retval (make-array org.integratedmodelling.corescience.interfaces.internal.Topology 1)]
 			(if 
-				(> (.size cshapes) 0) 
+				(> (.getTotalResultCount cshapes) 0) 
 				(let [inst (.getImplementation 
 											(tl/create-object
 												(org.integratedmodelling.geospace.implementations.observations.RasterGrid/createRasterGrid
-												(.get cshapes 0) resolution)))]
+												(.getResult cshapes 0 nil) resolution)))]
 								(aset retval 0 inst)
 								retval))))
 								

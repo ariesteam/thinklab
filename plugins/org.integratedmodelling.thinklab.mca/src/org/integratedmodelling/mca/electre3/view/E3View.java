@@ -275,7 +275,7 @@ public class E3View extends javax.swing.JFrame {
         cbxIndividualView = new javax.swing.JComboBox();
         jlbTitle = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("ELECTRE III Demo");
 
         pnlContainer.setBackground(new java.awt.Color(255, 255, 255));

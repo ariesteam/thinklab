@@ -102,7 +102,7 @@ import org.java.plugin.registry.Extension.Parameter;
  * @author Ferdinando Villa
  *
  */
-public abstract class ThinklabPlugin extends Plugin
+public abstract class ThinklabPlugin extends Plugin 
 {
 	HashMap<String, URL> resources = new HashMap<String, URL>();
 	Properties properties = new Properties();
@@ -139,6 +139,9 @@ public abstract class ThinklabPlugin extends Plugin
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getClassLoader()
+	 */
 	public ClassLoader getClassLoader() {
 		return getManager().getPluginClassLoader(getDescriptor());
 	}
@@ -151,6 +154,9 @@ public abstract class ThinklabPlugin extends Plugin
 		return (ThinklabPlugin)(Thinklab.get().getManager().getPluginFor(o));
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#logger()
+	 */
 	public Log logger() {
 		return log;
 	}
@@ -229,12 +235,8 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 
-	/**
-	 * Load bindings for all languages. Because this must be called by hand (see reason in
-	 * loadLanguageBindings(String), typically you want to use the language-specific version,
-	 * but here goes.
-	 * 
-	 * @throws ThinklabException
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#loadLanguageBindings()
 	 */
 	public synchronized void loadLanguageBindings() throws ThinklabException {
 		
@@ -248,14 +250,8 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 	
-	/**
-	 * Load declared bindings for given language. Must be called by hand and must make sure
-	 * that if the bindings refer to plugin classes, the plugin that calls the interpreter has 
-	 * declared its dependencies with reverse-lookup=true, otherwise the bindings won't see the 
-	 * Java classes in their own plugin. 
-	 * 
-	 * @param language
-	 * @throws ThinklabException
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#loadLanguageBindings(java.lang.String)
 	 */
 	public void loadLanguageBindings(String language) throws ThinklabException {
 		
@@ -299,12 +295,18 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#swapClassloader()
+	 */
 	public ClassLoader swapClassloader() {
 		ClassLoader clsl = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(getClassLoader());
 		return clsl;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#resetClassLoader(java.lang.ClassLoader)
+	 */
 	public void resetClassLoader(ClassLoader clsl) {
 		Thread.currentThread().setContextClassLoader(clsl);
 	}
@@ -402,6 +404,9 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getLoadDirectory()
+	 */
 	public File getLoadDirectory() {
 		
 		if (loadFolder == null) {
@@ -478,6 +483,9 @@ public abstract class ThinklabPlugin extends Plugin
        }
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#writeConfiguration()
+	 */
 	public void writeConfiguration() throws ThinklabIOException {
 	
 		if (propertySource != null) {
@@ -643,19 +651,15 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getResourceURL(java.lang.String)
+	 */
 	public URL getResourceURL(String resource) throws ThinklabIOException 	{
 		return getResourceURL(resource, null);
 	}
 	
-	/**
-	 * Retrieve an URL for the named resource: if the resource string represents a URL, return the
-	 * url constructed from it; otherwise, check if the resource string represents an existing
-	 * file path. If so, create a file url from it and return it. Otherwise, construct a URL from
-	 * the plugin path and the resource name and return that.
-	 * 
-	 * @param resource
-	 * @return
-	 * @throws ThinklabIOException 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getResourceURL(java.lang.String, org.integratedmodelling.thinklab.plugin.ThinklabPlugin)
 	 */
 	public URL getResourceURL(String resource, ThinklabPlugin plugin) throws ThinklabIOException 	{
 
@@ -967,6 +971,9 @@ public abstract class ThinklabPlugin extends Plugin
 		return ret == null ? defValue : ret;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#createInstance(java.lang.String)
+	 */
 	public Object createInstance(String clazz) throws ThinklabPluginException {
 		
 		Object ret = null;
@@ -1186,35 +1193,44 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 	
-	/**
-	 * Use to check if a specific resource has been found in the JAR
-	 * @param name
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#hasResource(java.lang.String)
 	 */
 	public boolean hasResource(String name) {
 		return resources.get(name) != null;
 	} 
 	
-	/**
-	 * Return the plugin properties, read from any .properties file in distribution.
-	 * @return the plugin Properties. It's never null.
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getProperties()
 	 */
 	public Properties getProperties() {
 		return properties;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getScratchPath()
+	 */
 	public File getScratchPath() throws ThinklabException  {
 		return dataFolder;
 	}
 	
-	public File getLoadPath() throws ThinklabException  {
-		return plugFolder;	
-	}
+//	/* (non-Javadoc)
+//	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getLoadPath()
+//	 */
+//	public File getLoadPath() throws ThinklabException  {
+//		return plugFolder;	
+//	}
 	
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getVersion()
+	 */
 	public Version getVersion() {
 		return getDescriptor().getVersion();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getConfigPath()
+	 */
 	public File getConfigPath() {
 		return confFolder;
 	}
