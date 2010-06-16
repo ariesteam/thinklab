@@ -104,7 +104,7 @@
 		is found in the global gazetteer."
 		[name] 
 		(let [
-			cshapes (.. org.integratedmodelling.geospace.Geospace (get) (lookupFeature (str name) true))
+			cshapes (.. org.integratedmodelling.geospace.Geospace (get) (lookupFeature (str name)))
 			]
 		(if (> (.size cshapes) 0) 
 				(.get cshapes 0)))) 
@@ -136,7 +136,7 @@
 		is found in the global gazetteer."
 		[name resolution] 
 		(let [
-			cshapes (.. org.integratedmodelling.geospace.Geospace (get) (lookupFeature (str name) true))
+			cshapes (.. org.integratedmodelling.geospace.Geospace (get) (lookupFeature (str name)))
 			retval (make-array org.integratedmodelling.corescience.interfaces.internal.Topology 1)]
 			(if 
 				(> (.size cshapes) 0) 
