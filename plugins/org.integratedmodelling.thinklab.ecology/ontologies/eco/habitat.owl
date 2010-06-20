@@ -1,792 +1,1523 @@
 <?xml version="1.0"?>
-<rdf:RDF
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns:ecology="http://www.integratedmodelling.org/ks/ecology/eco/ecology.owl#"
-    xmlns:habitat="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#"
-    xmlns:representation="http://www.integratedmodelling.org/ks/science/representation.owl#"
-    xmlns:owl="http://www.w3.org/2002/07/owl#"
-    xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-    xmlns:DOLCE-Lite="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#"
-    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-  xml:base="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl">
-  <owl:Ontology rdf:about="">
-    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/ecology/eco/ecology.owl"/>
-    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl"/>
-  </owl:Ontology>
-  <owl:Class rdf:ID="MaySnowmelt">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="MonthlySnowmelt"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="Stream">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="RunningWater"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="DecompositionFactor">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="EcosystemQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="JanuaryPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="MonthlyPrecipitation"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="NoWaterCoverage">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="WaterCoveragePattern"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="AnimalByproducts">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="AnimalHarvestingLand"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="SeasonalFlooding">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="TimeDependentWaterCoverage"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="DecemberPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#MonthlyPrecipitation"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="ReptileRichness">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="SpeciesRichness"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="AvianRichness">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#SpeciesRichness"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="StillWater">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="CompleteWaterCoverage"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="SpeciesDiversity">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="CommunityQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="ManagedLandNotForProduction">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="ManagedLand"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="AprilSnowmelt">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#MonthlySnowmelt"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="PastureLand">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="PlantHarvestingLand"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="SoilTexture">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="SoilQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="WaterSalinity">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="WaterType"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#physical-quality"/>
-  <owl:Class rdf:ID="CommercialActivityLand">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="ArtifactProductingLand"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="VegetationType">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="HumanPopulation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="SocioEconomicQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="OctoberDaysOfPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="DaysOfPrecipitationMonthly"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="NaturalProducingLand">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="ManagedLandForProduction"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="FloodplainWidth">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="UrbanRuralGradient">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#SocioEconomicQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="MonthsOfPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="Precipitation"/>
-    </rdfs:subClassOf>
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
-  </owl:Class>
-  <owl:Class rdf:ID="HabitatFragmentation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="HabitatMatrixQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="Snowmelt">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="ClimateQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="FebruaryDaysOfPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#ManagedLandForProduction">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#ManagedLand"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="Rainfall">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#Precipitation"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="ModerateBathymetricSlope">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="BathymetricSlope"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#RunningWater">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#CompleteWaterCoverage"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#Precipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#ClimateQuality"/>
-    </rdfs:subClassOf>
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
-    <rdfs:comment>Precipitation is a physical property expressed as a length. We may need to specialize later.</rdfs:comment>
-  </owl:Class>
-  <owl:Class rdf:ID="Wetland">
-    <rdfs:subClassOf rdf:resource="#StillWater"/>
-  </owl:Class>
-  <owl:Class rdf:ID="AnimalProducts">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#AnimalHarvestingLand"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="PrimaryProductivity">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#EcosystemQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="Highway">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="TransportationLand"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="River">
-    <rdfs:subClassOf rdf:resource="#RunningWater"/>
-  </owl:Class>
-  <owl:Class rdf:ID="CropHarvestingLand">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#PlantHarvestingLand"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="OwnershipQuality">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#SocioEconomicQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="MarchSnowmelt">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#MonthlySnowmelt"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="InvertebrateRichness">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#SpeciesRichness"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="JulyPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#MonthlyPrecipitation"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="SoilErodibility">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#SoilQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="DirectServiceProvision">
-    <rdfs:subClassOf rdf:resource="#CommercialActivityLand"/>
-  </owl:Class>
-  <owl:Class rdf:ID="MammalRichness">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#SpeciesRichness"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="MixedTidalCoverage">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="TidalWaterCoverage"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="AugustDaysOfPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="Snowfall">
-    <rdfs:subClassOf rdf:resource="#Precipitation"/>
-  </owl:Class>
-  <owl:Class rdf:about="#WaterType">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="HabitatRelativeComposition">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatMatrixQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="HydrologicSoilsGroup">
-    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-    >Soil pH</rdfs:label>
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#SoilQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="ActualEvapotranspiration">
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#EcosystemQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="AnnualSnowmelt">
-    <rdfs:subClassOf rdf:resource="#Snowmelt"/>
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
-  </owl:Class>
-  <owl:Class rdf:ID="BrackishWater">
-    <rdfs:subClassOf rdf:resource="#WaterSalinity"/>
-  </owl:Class>
-  <owl:Class rdf:ID="JunePrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#MonthlyPrecipitation"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="SubstrateQuality">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="http://www.integratedmodelling.org/ks/ecology/eco/ecology.owl#AggregateBioticAbioticEntity"/>
-  <owl:Class rdf:ID="PartialWaterCoverage">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#WaterCoveragePattern"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="SoilPh">
-    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-    >Soil pH</rdfs:label>
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#SoilQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#SoilQuality">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="Runoff">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="SizeOfOwnershipUnit">
-    <rdfs:subClassOf rdf:resource="#OwnershipQuality"/>
-  </owl:Class>
-  <owl:Class rdf:ID="OctoberPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#MonthlyPrecipitation"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#TidalWaterCoverage">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#TimeDependentWaterCoverage"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="AugustPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#MonthlyPrecipitation"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="MayDaysOfPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="LowBathymetricSlope">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#BathymetricSlope"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="FireFrequency">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="FireRegime"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="DaysOfPrecipitationAnnual">
-    <rdfs:subClassOf rdf:resource="#Precipitation"/>
-  </owl:Class>
-  <owl:Class rdf:ID="IndustrialActivityLand">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#ArtifactProductingLand"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="VegetationCover">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="DecemberSnowmelt">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#MonthlySnowmelt"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="FebruaryPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#MonthlyPrecipitation"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="UsageType">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="InvasiveSpecies">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#CommunityQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#WaterCoveragePattern">
-    <rdfs:subClassOf rdf:resource="#WaterType"/>
-  </owl:Class>
-  <owl:Class rdf:ID="JulyDaysOfPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#ManagedLand">
-    <rdfs:subClassOf rdf:resource="#UsageType"/>
-  </owl:Class>
-  <owl:Class rdf:ID="NovemberPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#MonthlyPrecipitation"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="StormLikelihood">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="EventRelatedQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="PercentImperviousness">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="SubstratePerviousness"/>
-    </rdfs:subClassOf>
-    <rdfs:comment>The percentage of water that stays out</rdfs:comment>
-  </owl:Class>
-  <owl:Class rdf:ID="HighBathymetricSlope">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#BathymetricSlope"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#SocioEconomicQuality">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="StreamGradient">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Slope"/>
-  </owl:Class>
-  <owl:Class rdf:about="#HabitatMatrixQuality">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-    <rdfs:subClassOf>
-      <owl:Restriction>
-        <owl:onProperty>
-          <owl:ObjectProperty rdf:about="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#inherent-in"/>
-        </owl:onProperty>
-        <owl:allValuesFrom>
-          <owl:Class rdf:ID="HabitatMatrix"/>
-        </owl:allValuesFrom>
-      </owl:Restriction>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="Construction">
-    <rdfs:subClassOf rdf:resource="#IndustrialActivityLand"/>
-  </owl:Class>
-  <owl:Class rdf:ID="FireThreat">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#FireRegime"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="AmphibianRichness">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#SpeciesRichness"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="ModerateTropicalStormProbability">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="TropicalStormProbability"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="Factory">
-    <rdfs:subClassOf rdf:resource="#IndustrialActivityLand"/>
-  </owl:Class>
-  <owl:Class rdf:about="#ClimateQuality">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="DiurnalTidalCoverage">
-    <rdfs:subClassOf rdf:resource="#TidalWaterCoverage"/>
-  </owl:Class>
-  <owl:Class rdf:ID="AnnualRunoff">
-    <rdfs:subClassOf rdf:resource="#Runoff"/>
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
-  </owl:Class>
-  <owl:Class rdf:ID="AprilDaysOfPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="HabitativeLand">
-    <rdfs:subClassOf rdf:resource="#ManagedLandNotForProduction"/>
-  </owl:Class>
-  <owl:Class rdf:ID="AtmosphericTemperature">
-    <rdfs:subClassOf rdf:resource="#ClimateQuality"/>
-  </owl:Class>
-  <owl:Class rdf:about="#FireRegime">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#EventRelatedQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="SoilCNRatio">
-    <rdfs:subClassOf rdf:resource="#SoilQuality"/>
-  </owl:Class>
-  <owl:Class rdf:ID="MayPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#MonthlyPrecipitation"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#MonthlySnowmelt">
-    <rdfs:subClassOf rdf:resource="#Snowmelt"/>
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
-  </owl:Class>
-  <owl:Class rdf:ID="HypersalineWater">
-    <rdfs:subClassOf rdf:resource="#WaterSalinity"/>
-  </owl:Class>
-  <owl:Class rdf:ID="ManagementStructure">
-    <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
-  </owl:Class>
-  <owl:Class rdf:ID="HabitatConnectivity">
-    <rdfs:subClassOf rdf:resource="#HabitatMatrixQuality"/>
-  </owl:Class>
-  <owl:Class rdf:ID="TimberHarvestingLand">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#PlantHarvestingLand"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="StorageLand">
-    <rdfs:subClassOf rdf:resource="#ManagedLandNotForProduction"/>
-  </owl:Class>
-  <owl:Class rdf:about="#PlantHarvestingLand">
-    <rdfs:subClassOf rdf:resource="#NaturalProducingLand"/>
-  </owl:Class>
-  <owl:Class rdf:ID="SolidWasteManagement">
-    <rdfs:subClassOf rdf:resource="#IndustrialActivityLand"/>
-  </owl:Class>
-  <owl:Class rdf:ID="JanuaryDaysOfPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="HardwoodSoftwoodRatio">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#CommunityQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="DecemberDaysOfPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="PercentVegetationCover">
-    <rdfs:subClassOf rdf:resource="#VegetationCover"/>
-  </owl:Class>
-  <owl:Class rdf:ID="VeryLowBathymetricSlope">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#BathymetricSlope"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="VegetationHeight">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
-  </owl:Class>
-  <owl:Class rdf:ID="SaltWater">
-    <rdfs:subClassOf rdf:resource="#WaterSalinity"/>
-  </owl:Class>
-  <owl:Class rdf:ID="NotVegetated">
-    <rdfs:subClassOf rdf:resource="#VegetationType"/>
-  </owl:Class>
-  <owl:Class rdf:ID="SlopeStability">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="FebruarySnowmelt">
-    <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
-  </owl:Class>
-  <owl:Class rdf:ID="SeptemberSnowmelt">
-    <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
-  </owl:Class>
-  <owl:Class rdf:ID="Accessibility">
-    <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
-  </owl:Class>
-  <owl:Class rdf:ID="NovemberDaysOfPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#EventRelatedQuality">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="SnowPresence">
-    <rdfs:subClassOf rdf:resource="#ClimateQuality"/>
-  </owl:Class>
-  <owl:Class rdf:ID="FreshWater">
-    <rdfs:subClassOf rdf:resource="#WaterSalinity"/>
-  </owl:Class>
-  <owl:Class rdf:about="#HabitatMatrix">
-    <rdfs:subClassOf>
-      <owl:Class rdf:ID="Habitat"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="AutoctonousSpecies">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#CommunityQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="AprilPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#MonthlyPrecipitation"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="JuneDaysOfPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="AnnualPrecipitation">
-    <rdfs:subClassOf rdf:resource="#Precipitation"/>
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
-  </owl:Class>
-  <owl:Class rdf:about="#CompleteWaterCoverage">
-    <rdfs:subClassOf rdf:resource="#WaterCoveragePattern"/>
-  </owl:Class>
-  <owl:Class rdf:about="#EcosystemQuality">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#SubstratePerviousness">
-    <rdfs:subClassOf rdf:resource="#SubstrateQuality"/>
-  </owl:Class>
-  <owl:Class rdf:ID="OctoberSnowmelt">
-    <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
-  </owl:Class>
-  <owl:Class rdf:about="#BathymetricSlope">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Slope"/>
-  </owl:Class>
-  <owl:Class rdf:ID="AugustSnowmelt">
-    <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
-  </owl:Class>
-  <owl:Class rdf:ID="PercentFloodplainVegetationCover">
-    <rdfs:subClassOf rdf:resource="#VegetationCover"/>
-  </owl:Class>
-  <owl:Class rdf:ID="MineralHarvestingLand">
-    <rdfs:subClassOf rdf:resource="#ManagedLandForProduction"/>
-  </owl:Class>
-  <owl:Class rdf:ID="HighTropicalStormProbability">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#TropicalStormProbability"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="PollutionQuality">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="EndemicSpecies">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#CommunityQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="Herbaceous">
-    <rdfs:subClassOf rdf:resource="#VegetationType"/>
-  </owl:Class>
-  <owl:Class rdf:ID="PercentPerviousness">
-    <rdfs:subClassOf rdf:resource="#SubstratePerviousness"/>
-    <rdfs:comment>The percentage of the water that gets in</rdfs:comment>
-  </owl:Class>
-  <owl:Class rdf:ID="JuneSnowmelt">
-    <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
-  </owl:Class>
-  <owl:Class rdf:ID="JanuarySnowmelt">
-    <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
-  </owl:Class>
-  <owl:Class rdf:about="#SpeciesRichness">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#CommunityQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="RemoteServiceProvision">
-    <rdfs:subClassOf rdf:resource="#CommercialActivityLand"/>
-  </owl:Class>
-  <owl:Class rdf:about="#TimeDependentWaterCoverage">
-    <rdfs:subClassOf rdf:resource="#WaterCoveragePattern"/>
-  </owl:Class>
-  <owl:Class rdf:about="#Habitat">
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/ecology/eco/ecology.owl#AggregateBioticAbioticEntity"/>
-    <rdfs:subClassOf>
-      <owl:Restriction>
-        <owl:onProperty>
-          <owl:ObjectProperty rdf:about="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#has-quality"/>
-        </owl:onProperty>
-        <owl:allValuesFrom>
-          <owl:Class rdf:about="#HabitatQuality"/>
-        </owl:allValuesFrom>
-      </owl:Restriction>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#MonthlyPrecipitation">
-    <rdfs:subClassOf rdf:resource="#Precipitation"/>
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
-  </owl:Class>
-  <owl:Class rdf:ID="FishRichness">
-    <rdfs:subClassOf rdf:resource="#SpeciesRichness"/>
-  </owl:Class>
-  <owl:Class rdf:ID="Slope">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Slope"/>
-  </owl:Class>
-  <owl:Class rdf:ID="SeptemberPrecipitation">
-    <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
-  </owl:Class>
-  <owl:Class rdf:ID="MarchPrecipitation">
-    <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
-  </owl:Class>
-  <owl:Class rdf:ID="ShrubLand">
-    <rdfs:subClassOf rdf:resource="#VegetationType"/>
-  </owl:Class>
-  <owl:Class rdf:ID="PotentialEvapotranspiration">
-    <rdfs:subClassOf rdf:resource="#EcosystemQuality"/>
-  </owl:Class>
-  <owl:Class rdf:about="#TransportationLand">
-    <rdfs:subClassOf rdf:resource="#ManagedLandNotForProduction"/>
-  </owl:Class>
-  <owl:Class rdf:ID="SeptemberDaysOfPrecipitation">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#AnimalHarvestingLand">
-    <rdfs:subClassOf rdf:resource="#NaturalProducingLand"/>
-  </owl:Class>
-  <owl:Class rdf:ID="JulySnowmelt">
-    <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
-  </owl:Class>
-  <owl:Class rdf:about="#DaysOfPrecipitationMonthly">
-    <rdfs:subClassOf rdf:resource="#Precipitation"/>
-    <rdfs:comment>Count of days that characterizes precipitation</rdfs:comment>
-  </owl:Class>
-  <owl:Class rdf:about="#CommunityQuality">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#HabitatQuality"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:about="#ArtifactProductingLand">
-    <rdfs:subClassOf rdf:resource="#ManagedLandForProduction"/>
-  </owl:Class>
-  <owl:Class rdf:ID="NoTropicalStormProbability">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#TropicalStormProbability"/>
-    </rdfs:subClassOf>
-  </owl:Class>
-  <owl:Class rdf:ID="NovemberSnowmelt">
-    <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
-  </owl:Class>
-  <owl:Class rdf:ID="SemiDiurnalTidalCoverage">
-    <rdfs:subClassOf rdf:resource="#TidalWaterCoverage"/>
-  </owl:Class>
-  <owl:Class rdf:ID="Natural">
-    <rdfs:subClassOf rdf:resource="#UsageType"/>
-  </owl:Class>
-  <owl:Class rdf:ID="SummerHighWinterLow">
-    <rdfs:subClassOf rdf:resource="#AtmosphericTemperature"/>
-  </owl:Class>
-  <owl:Class rdf:about="#HabitatQuality">
-    <rdfs:subClassOf rdf:resource="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#physical-quality"/>
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-    >The subclasses of HabitatQuality detail the OBSERVABLES in an observation of habitat. Subclasses should be defined for each restricted concrete case - e.g., RequiredWaterCoverageForFrogHabitat... which will later be detailed with constraints so that the observer agent will be able to discover them in data. Because these detail the observables and not the observation, each class should just hint to numeric constraints in the comments, and we will teach the intelligent agents to recognize them using formal constraints and rules.</rdfs:comment>
-  </owl:Class>
-  <owl:Class rdf:about="#TropicalStormProbability">
-    <rdfs:subClassOf rdf:resource="#StormLikelihood"/>
-  </owl:Class>
-  <owl:Class rdf:ID="TreeLand">
-    <rdfs:subClassOf rdf:resource="#VegetationType"/>
-  </owl:Class>
-  <owl:Class rdf:ID="MarchDaysOfPrecipitation">
-    <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
-  </owl:Class>
-  <owl:Class rdf:ID="MarqueeStatus">
-    <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
-  </owl:Class>
-  <owl:ObjectProperty rdf:ID="containsHabitat">
-    <rdfs:domain rdf:resource="#HabitatMatrix"/>
-  </owl:ObjectProperty>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY DOLCE-Lite "http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#" >
+    <!ENTITY ecology "http://www.integratedmodelling.org/ks/ecology/eco/ecology.owl#" >
+    <!ENTITY habitat "http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#" >
+    <!ENTITY representation "http://www.integratedmodelling.org/ks/science/representation.owl#" >
+]>
+
+
+<rdf:RDF xmlns="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#"
+     xml:base="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl"
+     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+     xmlns:DOLCE-Lite="http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#"
+     xmlns:ecology="http://www.integratedmodelling.org/ks/ecology/eco/ecology.owl#"
+     xmlns:representation="http://www.integratedmodelling.org/ks/science/representation.owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:habitat="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#">
+    <owl:Ontology rdf:about="">
+        <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/ecology/eco/ecology.owl"/>
+        <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#containsHabitat -->
+
+    <owl:ObjectProperty rdf:about="#containsHabitat">
+        <rdfs:domain rdf:resource="#HabitatMatrix"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#has-quality -->
+
+    <owl:ObjectProperty rdf:about="&DOLCE-Lite;has-quality"/>
+    
+
+
+    <!-- http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#inherent-in -->
+
+    <owl:ObjectProperty rdf:about="&DOLCE-Lite;inherent-in"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/ecology.owl#AggregateBioticAbioticEntity -->
+
+    <owl:Class rdf:about="&ecology;AggregateBioticAbioticEntity"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Accessibility -->
+
+    <owl:Class rdf:about="#Accessibility">
+        <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#ActualEvapotranspiration -->
+
+    <owl:Class rdf:about="#ActualEvapotranspiration">
+        <rdfs:subClassOf rdf:resource="#EcosystemQuality"/>
+        <rdfs:subClassOf rdf:resource="&representation;Length"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AmphibianRichness -->
+
+    <owl:Class rdf:about="#AmphibianRichness">
+        <rdfs:subClassOf rdf:resource="#SpeciesRichness"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AnimalByproducts -->
+
+    <owl:Class rdf:about="#AnimalByproducts">
+        <rdfs:subClassOf rdf:resource="#AnimalHarvestingLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AnimalHarvestingLand -->
+
+    <owl:Class rdf:about="#AnimalHarvestingLand">
+        <rdfs:subClassOf rdf:resource="#NaturalProducingLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AnimalProducts -->
+
+    <owl:Class rdf:about="#AnimalProducts">
+        <rdfs:subClassOf rdf:resource="#AnimalHarvestingLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AnnualPrecipitation -->
+
+    <owl:Class rdf:about="#AnnualPrecipitation">
+        <rdfs:subClassOf rdf:resource="#Precipitation"/>
+        <rdfs:subClassOf rdf:resource="&representation;Length"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AnnualRunoff -->
+
+    <owl:Class rdf:about="#AnnualRunoff">
+        <rdfs:subClassOf rdf:resource="#Runoff"/>
+        <rdfs:subClassOf rdf:resource="&representation;Length"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AnnualSnowmelt -->
+
+    <owl:Class rdf:about="#AnnualSnowmelt">
+        <rdfs:subClassOf rdf:resource="#Snowmelt"/>
+        <rdfs:subClassOf rdf:resource="&representation;Length"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AprilDaysOfPrecipitation -->
+
+    <owl:Class rdf:about="#AprilDaysOfPrecipitation">
+        <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AprilPrecipitation -->
+
+    <owl:Class rdf:about="#AprilPrecipitation">
+        <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AprilSnowmelt -->
+
+    <owl:Class rdf:about="#AprilSnowmelt">
+        <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#ArtifactProductingLand -->
+
+    <owl:Class rdf:about="#ArtifactProductingLand">
+        <rdfs:subClassOf rdf:resource="#ManagedLandForProduction"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AtmosphericTemperature -->
+
+    <owl:Class rdf:about="#AtmosphericTemperature">
+        <rdfs:subClassOf rdf:resource="#ClimateQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AugustDaysOfPrecipitation -->
+
+    <owl:Class rdf:about="#AugustDaysOfPrecipitation">
+        <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AugustPrecipitation -->
+
+    <owl:Class rdf:about="#AugustPrecipitation">
+        <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AugustSnowmelt -->
+
+    <owl:Class rdf:about="#AugustSnowmelt">
+        <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AutoctonousSpecies -->
+
+    <owl:Class rdf:about="#AutoctonousSpecies">
+        <rdfs:subClassOf rdf:resource="#CommunityQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#AvianRichness -->
+
+    <owl:Class rdf:about="#AvianRichness">
+        <rdfs:subClassOf rdf:resource="#SpeciesRichness"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#BathymetricSlope -->
+
+    <owl:Class rdf:about="#BathymetricSlope">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+        <rdfs:subClassOf rdf:resource="&representation;Slope"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#BrackishWater -->
+
+    <owl:Class rdf:about="#BrackishWater">
+        <rdfs:subClassOf rdf:resource="#WaterSalinity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#ClimateQuality -->
+
+    <owl:Class rdf:about="#ClimateQuality">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#CommercialActivityLand -->
+
+    <owl:Class rdf:about="#CommercialActivityLand">
+        <rdfs:subClassOf rdf:resource="#ArtifactProductingLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#CommunityQuality -->
+
+    <owl:Class rdf:about="#CommunityQuality">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#CompleteWaterCoverage -->
+
+    <owl:Class rdf:about="#CompleteWaterCoverage">
+        <rdfs:subClassOf rdf:resource="#WaterCoveragePattern"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Construction -->
+
+    <owl:Class rdf:about="#Construction">
+        <rdfs:subClassOf rdf:resource="#IndustrialActivityLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#CropHarvestingLand -->
+
+    <owl:Class rdf:about="#CropHarvestingLand">
+        <rdfs:subClassOf rdf:resource="#PlantHarvestingLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#DaysOfPrecipitationAnnual -->
+
+    <owl:Class rdf:about="#DaysOfPrecipitationAnnual">
+        <rdfs:subClassOf rdf:resource="#Precipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#DaysOfPrecipitationMonthly -->
+
+    <owl:Class rdf:about="#DaysOfPrecipitationMonthly">
+        <rdfs:subClassOf rdf:resource="#Precipitation"/>
+        <rdfs:comment
+            >Count of days that characterizes precipitation</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#DecemberDaysOfPrecipitation -->
+
+    <owl:Class rdf:about="#DecemberDaysOfPrecipitation">
+        <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#DecemberPrecipitation -->
+
+    <owl:Class rdf:about="#DecemberPrecipitation">
+        <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#DecemberSnowmelt -->
+
+    <owl:Class rdf:about="#DecemberSnowmelt">
+        <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#DecompositionFactor -->
+
+    <owl:Class rdf:about="#DecompositionFactor">
+        <rdfs:subClassOf rdf:resource="#EcosystemQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#DirectServiceProvision -->
+
+    <owl:Class rdf:about="#DirectServiceProvision">
+        <rdfs:subClassOf rdf:resource="#CommercialActivityLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#DiurnalTidalCoverage -->
+
+    <owl:Class rdf:about="#DiurnalTidalCoverage">
+        <rdfs:subClassOf rdf:resource="#TidalWaterCoverage"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#EcosystemQuality -->
+
+    <owl:Class rdf:about="#EcosystemQuality">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#EndemicSpecies -->
+
+    <owl:Class rdf:about="#EndemicSpecies">
+        <rdfs:subClassOf rdf:resource="#CommunityQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#EventRelatedQuality -->
+
+    <owl:Class rdf:about="#EventRelatedQuality">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Factory -->
+
+    <owl:Class rdf:about="#Factory">
+        <rdfs:subClassOf rdf:resource="#IndustrialActivityLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#FebruaryDaysOfPrecipitation -->
+
+    <owl:Class rdf:about="#FebruaryDaysOfPrecipitation">
+        <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#FebruaryPrecipitation -->
+
+    <owl:Class rdf:about="#FebruaryPrecipitation">
+        <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#FebruarySnowmelt -->
+
+    <owl:Class rdf:about="#FebruarySnowmelt">
+        <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#FireFrequency -->
+
+    <owl:Class rdf:about="#FireFrequency">
+        <rdfs:subClassOf rdf:resource="#FireRegime"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#FireRegime -->
+
+    <owl:Class rdf:about="#FireRegime">
+        <rdfs:subClassOf rdf:resource="#EventRelatedQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#FireThreat -->
+
+    <owl:Class rdf:about="#FireThreat">
+        <rdfs:subClassOf rdf:resource="#FireRegime"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#FishRichness -->
+
+    <owl:Class rdf:about="#FishRichness">
+        <rdfs:subClassOf rdf:resource="#SpeciesRichness"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#FloodplainWidth -->
+
+    <owl:Class rdf:about="#FloodplainWidth">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+        <rdfs:subClassOf rdf:resource="&representation;Length"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#FreshWater -->
+
+    <owl:Class rdf:about="#FreshWater">
+        <rdfs:subClassOf rdf:resource="#WaterSalinity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Habitat -->
+
+    <owl:Class rdf:about="#Habitat">
+        <rdfs:subClassOf rdf:resource="&ecology;AggregateBioticAbioticEntity"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&DOLCE-Lite;has-quality"/>
+                <owl:allValuesFrom rdf:resource="#HabitatQuality"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HabitatConnectivity -->
+
+    <owl:Class rdf:about="#HabitatConnectivity">
+        <rdfs:subClassOf rdf:resource="#HabitatMatrixQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HabitatFragmentation -->
+
+    <owl:Class rdf:about="#HabitatFragmentation">
+        <rdfs:subClassOf rdf:resource="#HabitatMatrixQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HabitatMatrix -->
+
+    <owl:Class rdf:about="#HabitatMatrix">
+        <rdfs:subClassOf rdf:resource="#Habitat"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HabitatMatrixQuality -->
+
+    <owl:Class rdf:about="#HabitatMatrixQuality">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&DOLCE-Lite;inherent-in"/>
+                <owl:allValuesFrom rdf:resource="#HabitatMatrix"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HabitatQuality -->
+
+    <owl:Class rdf:about="#HabitatQuality">
+        <rdfs:subClassOf rdf:resource="&DOLCE-Lite;physical-quality"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >The subclasses of HabitatQuality detail the OBSERVABLES in an observation of habitat. Subclasses should be defined for each restricted concrete case - e.g., RequiredWaterCoverageForFrogHabitat... which will later be detailed with constraints so that the observer agent will be able to discover them in data. Because these detail the observables and not the observation, each class should just hint to numeric constraints in the comments, and we will teach the intelligent agents to recognize them using formal constraints and rules.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HabitatRelativeComposition -->
+
+    <owl:Class rdf:about="#HabitatRelativeComposition">
+        <rdfs:subClassOf rdf:resource="#HabitatMatrixQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HabitativeLand -->
+
+    <owl:Class rdf:about="#HabitativeLand">
+        <rdfs:subClassOf rdf:resource="#ManagedLandNotForProduction"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HardwoodSoftwoodRatio -->
+
+    <owl:Class rdf:about="#HardwoodSoftwoodRatio">
+        <rdfs:subClassOf rdf:resource="#CommunityQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Herbaceous -->
+
+    <owl:Class rdf:about="#Herbaceous">
+        <rdfs:subClassOf rdf:resource="#VegetationType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HighBathymetricSlope -->
+
+    <owl:Class rdf:about="#HighBathymetricSlope">
+        <rdfs:subClassOf rdf:resource="#BathymetricSlope"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HighTropicalStormProbability -->
+
+    <owl:Class rdf:about="#HighTropicalStormProbability">
+        <rdfs:subClassOf rdf:resource="#TropicalStormProbability"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Highway -->
+
+    <owl:Class rdf:about="#Highway">
+        <rdfs:subClassOf rdf:resource="#TransportationLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HumanPopulation -->
+
+    <owl:Class rdf:about="#HumanPopulation">
+        <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HydrologicSoilsGroup -->
+
+    <owl:Class rdf:about="#HydrologicSoilsGroup">
+        <rdfs:label rdf:datatype="&xsd;string">Soil pH</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#SoilQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HypersalineWater -->
+
+    <owl:Class rdf:about="#HypersalineWater">
+        <rdfs:subClassOf rdf:resource="#WaterSalinity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#IndustrialActivityLand -->
+
+    <owl:Class rdf:about="#IndustrialActivityLand">
+        <rdfs:subClassOf rdf:resource="#ArtifactProductingLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#InvasiveSpecies -->
+
+    <owl:Class rdf:about="#InvasiveSpecies">
+        <rdfs:subClassOf rdf:resource="#CommunityQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#InvertebrateRichness -->
+
+    <owl:Class rdf:about="#InvertebrateRichness">
+        <rdfs:subClassOf rdf:resource="#SpeciesRichness"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#JanuaryDaysOfPrecipitation -->
+
+    <owl:Class rdf:about="#JanuaryDaysOfPrecipitation">
+        <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#JanuaryPrecipitation -->
+
+    <owl:Class rdf:about="#JanuaryPrecipitation">
+        <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#JanuarySnowmelt -->
+
+    <owl:Class rdf:about="#JanuarySnowmelt">
+        <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#JulyDaysOfPrecipitation -->
+
+    <owl:Class rdf:about="#JulyDaysOfPrecipitation">
+        <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#JulyPrecipitation -->
+
+    <owl:Class rdf:about="#JulyPrecipitation">
+        <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#JulySnowmelt -->
+
+    <owl:Class rdf:about="#JulySnowmelt">
+        <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#JuneDaysOfPrecipitation -->
+
+    <owl:Class rdf:about="#JuneDaysOfPrecipitation">
+        <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#JunePrecipitation -->
+
+    <owl:Class rdf:about="#JunePrecipitation">
+        <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#JuneSnowmelt -->
+
+    <owl:Class rdf:about="#JuneSnowmelt">
+        <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#LowBathymetricSlope -->
+
+    <owl:Class rdf:about="#LowBathymetricSlope">
+        <rdfs:subClassOf rdf:resource="#BathymetricSlope"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#MammalRichness -->
+
+    <owl:Class rdf:about="#MammalRichness">
+        <rdfs:subClassOf rdf:resource="#SpeciesRichness"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#ManagedLand -->
+
+    <owl:Class rdf:about="#ManagedLand">
+        <rdfs:subClassOf rdf:resource="#UsageType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#ManagedLandForProduction -->
+
+    <owl:Class rdf:about="#ManagedLandForProduction">
+        <rdfs:subClassOf rdf:resource="#ManagedLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#ManagedLandNotForProduction -->
+
+    <owl:Class rdf:about="#ManagedLandNotForProduction">
+        <rdfs:subClassOf rdf:resource="#ManagedLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#ManagementStructure -->
+
+    <owl:Class rdf:about="#ManagementStructure">
+        <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#MarchDaysOfPrecipitation -->
+
+    <owl:Class rdf:about="#MarchDaysOfPrecipitation">
+        <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#MarchPrecipitation -->
+
+    <owl:Class rdf:about="#MarchPrecipitation">
+        <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#MarchSnowmelt -->
+
+    <owl:Class rdf:about="#MarchSnowmelt">
+        <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#MarqueeStatus -->
+
+    <owl:Class rdf:about="#MarqueeStatus">
+        <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#MayDaysOfPrecipitation -->
+
+    <owl:Class rdf:about="#MayDaysOfPrecipitation">
+        <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#MayPrecipitation -->
+
+    <owl:Class rdf:about="#MayPrecipitation">
+        <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#MaySnowmelt -->
+
+    <owl:Class rdf:about="#MaySnowmelt">
+        <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#MineralHarvestingLand -->
+
+    <owl:Class rdf:about="#MineralHarvestingLand">
+        <rdfs:subClassOf rdf:resource="#ManagedLandForProduction"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#MixedTidalCoverage -->
+
+    <owl:Class rdf:about="#MixedTidalCoverage">
+        <rdfs:subClassOf rdf:resource="#TidalWaterCoverage"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#ModerateBathymetricSlope -->
+
+    <owl:Class rdf:about="#ModerateBathymetricSlope">
+        <rdfs:subClassOf rdf:resource="#BathymetricSlope"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#ModerateTropicalStormProbability -->
+
+    <owl:Class rdf:about="#ModerateTropicalStormProbability">
+        <rdfs:subClassOf rdf:resource="#TropicalStormProbability"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#MonthlyPrecipitation -->
+
+    <owl:Class rdf:about="#MonthlyPrecipitation">
+        <rdfs:subClassOf rdf:resource="#Precipitation"/>
+        <rdfs:subClassOf rdf:resource="&representation;Length"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#MonthlySnowmelt -->
+
+    <owl:Class rdf:about="#MonthlySnowmelt">
+        <rdfs:subClassOf rdf:resource="#Snowmelt"/>
+        <rdfs:subClassOf rdf:resource="&representation;Length"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#MonthsOfPrecipitation -->
+
+    <owl:Class rdf:about="#MonthsOfPrecipitation">
+        <rdfs:subClassOf rdf:resource="#Precipitation"/>
+        <rdfs:subClassOf rdf:resource="&representation;Length"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Natural -->
+
+    <owl:Class rdf:about="#Natural">
+        <rdfs:subClassOf rdf:resource="#UsageType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#NaturalProducingLand -->
+
+    <owl:Class rdf:about="#NaturalProducingLand">
+        <rdfs:subClassOf rdf:resource="#ManagedLandForProduction"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#NoTropicalStormProbability -->
+
+    <owl:Class rdf:about="#NoTropicalStormProbability">
+        <rdfs:subClassOf rdf:resource="#TropicalStormProbability"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#NoWaterCoverage -->
+
+    <owl:Class rdf:about="#NoWaterCoverage">
+        <rdfs:subClassOf rdf:resource="#WaterCoveragePattern"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#NotVegetated -->
+
+    <owl:Class rdf:about="#NotVegetated">
+        <rdfs:subClassOf rdf:resource="#VegetationType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#NovemberDaysOfPrecipitation -->
+
+    <owl:Class rdf:about="#NovemberDaysOfPrecipitation">
+        <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#NovemberPrecipitation -->
+
+    <owl:Class rdf:about="#NovemberPrecipitation">
+        <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#NovemberSnowmelt -->
+
+    <owl:Class rdf:about="#NovemberSnowmelt">
+        <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#OctoberDaysOfPrecipitation -->
+
+    <owl:Class rdf:about="#OctoberDaysOfPrecipitation">
+        <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#OctoberPrecipitation -->
+
+    <owl:Class rdf:about="#OctoberPrecipitation">
+        <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#OctoberSnowmelt -->
+
+    <owl:Class rdf:about="#OctoberSnowmelt">
+        <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#OwnershipQuality -->
+
+    <owl:Class rdf:about="#OwnershipQuality">
+        <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#PartialWaterCoverage -->
+
+    <owl:Class rdf:about="#PartialWaterCoverage">
+        <rdfs:subClassOf rdf:resource="#WaterCoveragePattern"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#PastureLand -->
+
+    <owl:Class rdf:about="#PastureLand">
+        <rdfs:subClassOf rdf:resource="#PlantHarvestingLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#PercentFloodplainVegetationCover -->
+
+    <owl:Class rdf:about="#PercentFloodplainVegetationCover">
+        <rdfs:subClassOf rdf:resource="#VegetationCover"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#PercentImperviousness -->
+
+    <owl:Class rdf:about="#PercentImperviousness">
+        <rdfs:subClassOf rdf:resource="#SubstratePerviousness"/>
+        <rdfs:comment
+            >The percentage of water that stays out</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#PercentPerviousness -->
+
+    <owl:Class rdf:about="#PercentPerviousness">
+        <rdfs:subClassOf rdf:resource="#SubstratePerviousness"/>
+        <rdfs:comment
+            >The percentage of the water that gets in</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#PercentVegetationCover -->
+
+    <owl:Class rdf:about="#PercentVegetationCover">
+        <rdfs:subClassOf rdf:resource="#VegetationCover"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#PlantHarvestingLand -->
+
+    <owl:Class rdf:about="#PlantHarvestingLand">
+        <rdfs:subClassOf rdf:resource="#NaturalProducingLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#PollutionQuality -->
+
+    <owl:Class rdf:about="#PollutionQuality">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#PotentialEvapotranspiration -->
+
+    <owl:Class rdf:about="#PotentialEvapotranspiration">
+        <rdfs:subClassOf rdf:resource="#EcosystemQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Precipitation -->
+
+    <owl:Class rdf:about="#Precipitation">
+        <rdfs:subClassOf rdf:resource="#ClimateQuality"/>
+        <rdfs:subClassOf rdf:resource="&representation;Length"/>
+        <rdfs:comment
+            >Precipitation is a physical property expressed as a length. We may need to specialize later.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#PrimaryProductivity -->
+
+    <owl:Class rdf:about="#PrimaryProductivity">
+        <rdfs:subClassOf rdf:resource="#EcosystemQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Rainfall -->
+
+    <owl:Class rdf:about="#Rainfall">
+        <rdfs:subClassOf rdf:resource="#Precipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#RemoteServiceProvision -->
+
+    <owl:Class rdf:about="#RemoteServiceProvision">
+        <rdfs:subClassOf rdf:resource="#CommercialActivityLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#ReptileRichness -->
+
+    <owl:Class rdf:about="#ReptileRichness">
+        <rdfs:subClassOf rdf:resource="#SpeciesRichness"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#River -->
+
+    <owl:Class rdf:about="#River">
+        <rdfs:subClassOf rdf:resource="#RunningWater"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#RunningWater -->
+
+    <owl:Class rdf:about="#RunningWater">
+        <rdfs:subClassOf rdf:resource="#CompleteWaterCoverage"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Runoff -->
+
+    <owl:Class rdf:about="#Runoff">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SaltWater -->
+
+    <owl:Class rdf:about="#SaltWater">
+        <rdfs:subClassOf rdf:resource="#WaterSalinity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SeasonalFlooding -->
+
+    <owl:Class rdf:about="#SeasonalFlooding">
+        <rdfs:subClassOf rdf:resource="#TimeDependentWaterCoverage"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SemiDiurnalTidalCoverage -->
+
+    <owl:Class rdf:about="#SemiDiurnalTidalCoverage">
+        <rdfs:subClassOf rdf:resource="#TidalWaterCoverage"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SeptemberDaysOfPrecipitation -->
+
+    <owl:Class rdf:about="#SeptemberDaysOfPrecipitation">
+        <rdfs:subClassOf rdf:resource="#DaysOfPrecipitationMonthly"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SeptemberPrecipitation -->
+
+    <owl:Class rdf:about="#SeptemberPrecipitation">
+        <rdfs:subClassOf rdf:resource="#MonthlyPrecipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SeptemberSnowmelt -->
+
+    <owl:Class rdf:about="#SeptemberSnowmelt">
+        <rdfs:subClassOf rdf:resource="#MonthlySnowmelt"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#ShrubLand -->
+
+    <owl:Class rdf:about="#ShrubLand">
+        <rdfs:subClassOf rdf:resource="#VegetationType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SizeOfOwnershipUnit -->
+
+    <owl:Class rdf:about="#SizeOfOwnershipUnit">
+        <rdfs:subClassOf rdf:resource="#OwnershipQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Slope -->
+
+    <owl:Class rdf:about="#Slope">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+        <rdfs:subClassOf rdf:resource="&representation;Slope"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SlopeStability -->
+
+    <owl:Class rdf:about="#SlopeStability">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SnowPresence -->
+
+    <owl:Class rdf:about="#SnowPresence">
+        <rdfs:subClassOf rdf:resource="#ClimateQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Snowfall -->
+
+    <owl:Class rdf:about="#Snowfall">
+        <rdfs:subClassOf rdf:resource="#Precipitation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Snowmelt -->
+
+    <owl:Class rdf:about="#Snowmelt">
+        <rdfs:subClassOf rdf:resource="#ClimateQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SocioEconomicQuality -->
+
+    <owl:Class rdf:about="#SocioEconomicQuality">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SoilCNRatio -->
+
+    <owl:Class rdf:about="#SoilCNRatio">
+        <rdfs:subClassOf rdf:resource="#SoilQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SoilErodibility -->
+
+    <owl:Class rdf:about="#SoilErodibility">
+        <rdfs:subClassOf rdf:resource="#SoilQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SoilPh -->
+
+    <owl:Class rdf:about="#SoilPh">
+        <rdfs:label rdf:datatype="&xsd;string">Soil pH</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#SoilQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SoilQuality -->
+
+    <owl:Class rdf:about="#SoilQuality">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SoilTexture -->
+
+    <owl:Class rdf:about="#SoilTexture">
+        <rdfs:subClassOf rdf:resource="#SoilQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SolidWasteManagement -->
+
+    <owl:Class rdf:about="#SolidWasteManagement">
+        <rdfs:subClassOf rdf:resource="#IndustrialActivityLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SpeciesDiversity -->
+
+    <owl:Class rdf:about="#SpeciesDiversity">
+        <rdfs:subClassOf rdf:resource="#CommunityQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SpeciesRichness -->
+
+    <owl:Class rdf:about="#SpeciesRichness">
+        <rdfs:subClassOf rdf:resource="#CommunityQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#StillWater -->
+
+    <owl:Class rdf:about="#StillWater">
+        <rdfs:subClassOf rdf:resource="#CompleteWaterCoverage"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#StorageLand -->
+
+    <owl:Class rdf:about="#StorageLand">
+        <rdfs:subClassOf rdf:resource="#ManagedLandNotForProduction"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#StormLikelihood -->
+
+    <owl:Class rdf:about="#StormLikelihood">
+        <rdfs:subClassOf rdf:resource="#EventRelatedQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Stream -->
+
+    <owl:Class rdf:about="#Stream">
+        <rdfs:subClassOf rdf:resource="#RunningWater"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#StreamGradient -->
+
+    <owl:Class rdf:about="#StreamGradient">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+        <rdfs:subClassOf rdf:resource="&representation;Slope"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SubstratePerviousness -->
+
+    <owl:Class rdf:about="#SubstratePerviousness">
+        <rdfs:subClassOf rdf:resource="#SubstrateQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SubstrateQuality -->
+
+    <owl:Class rdf:about="#SubstrateQuality">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SummerHighWinterLow -->
+
+    <owl:Class rdf:about="#SummerHighWinterLow">
+        <rdfs:subClassOf rdf:resource="#AtmosphericTemperature"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#TidalWaterCoverage -->
+
+    <owl:Class rdf:about="#TidalWaterCoverage">
+        <rdfs:subClassOf rdf:resource="#TimeDependentWaterCoverage"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#TimberHarvestingLand -->
+
+    <owl:Class rdf:about="#TimberHarvestingLand">
+        <rdfs:subClassOf rdf:resource="#PlantHarvestingLand"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#TimeDependentWaterCoverage -->
+
+    <owl:Class rdf:about="#TimeDependentWaterCoverage">
+        <rdfs:subClassOf rdf:resource="#WaterCoveragePattern"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#TransportationLand -->
+
+    <owl:Class rdf:about="#TransportationLand">
+        <rdfs:subClassOf rdf:resource="#ManagedLandNotForProduction"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#TreeLand -->
+
+    <owl:Class rdf:about="#TreeLand">
+        <rdfs:subClassOf rdf:resource="#VegetationType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#TropicalStormProbability -->
+
+    <owl:Class rdf:about="#TropicalStormProbability">
+        <rdfs:subClassOf rdf:resource="#StormLikelihood"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#UrbanRuralGradient -->
+
+    <owl:Class rdf:about="#UrbanRuralGradient">
+        <rdfs:subClassOf rdf:resource="#SocioEconomicQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#UsageType -->
+
+    <owl:Class rdf:about="#UsageType">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#VegetationCover -->
+
+    <owl:Class rdf:about="#VegetationCover">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#VegetationHeight -->
+
+    <owl:Class rdf:about="#VegetationHeight">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+        <rdfs:subClassOf rdf:resource="&representation;Length"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#VegetationType -->
+
+    <owl:Class rdf:about="#VegetationType">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#VeryLowBathymetricSlope -->
+
+    <owl:Class rdf:about="#VeryLowBathymetricSlope">
+        <rdfs:subClassOf rdf:resource="#BathymetricSlope"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#WaterCoveragePattern -->
+
+    <owl:Class rdf:about="#WaterCoveragePattern">
+        <rdfs:subClassOf rdf:resource="#WaterType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#WaterSalinity -->
+
+    <owl:Class rdf:about="#WaterSalinity">
+        <rdfs:subClassOf rdf:resource="#WaterType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#WaterType -->
+
+    <owl:Class rdf:about="#WaterType">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#Wetland -->
+
+    <owl:Class rdf:about="#Wetland">
+        <rdfs:subClassOf rdf:resource="#StillWater"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#WoodyDebris -->
+
+    <owl:Class rdf:about="#WoodyDebris">
+        <rdfs:subClassOf rdf:resource="#HabitatQuality"/>
+        <rdfs:subClassOf rdf:resource="&representation;MassAreaDensity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/representation.owl#Length -->
+
+    <owl:Class rdf:about="&representation;Length"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/representation.owl#MassAreaDensity -->
+
+    <owl:Class rdf:about="&representation;MassAreaDensity"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/representation.owl#Slope -->
+
+    <owl:Class rdf:about="&representation;Slope"/>
+    
+
+
+    <!-- http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#physical-quality -->
+
+    <owl:Class rdf:about="&DOLCE-Lite;physical-quality"/>
 </rdf:RDF>
 
-<!-- Created with TopBraid -->
+
+
+<!-- Generated by the OWL API (version 2.2.1.1138) http://owlapi.sourceforge.net -->
+
