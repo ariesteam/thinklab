@@ -99,77 +99,54 @@
 	 		model))
 
 (defn transform-model 
-	"Apply the passed clause to the passed model after transforming the argument according to 
-	 the keyword. A map would be much more elegant but won't work in the bi-recursive pattern.
-	 Just passes through anything that isn't handled - leave it to Java to validate the keyword."
-	[model clause]
-	(cond (= (first clause) :when)
-				(.applyClause model ":when" (eval (second clause)))
-				(= (first clause) :as)
-				(.applyClause model ":as" (str (second clause)))
-				(= (first clause) :optional)
-				(.applyClause model ":optional" (eval (second clause)))
-				(= (first clause) :optional)
-				(.applyClause model ":required" (eval (second clause)))
-				(= (first clause) :keep)
-				(.applyClause model ":keep" (map eval (second clause)))
-				(= (first clause) :discard)
-				(.applyClause model ":discard" (map eval (second clause)))
-				(= (first clause) :probability)
-				(.applyClause model ":probability" (eval (second clause)))
-				(= (first clause) :rate)
-				(.applyClause model ":rate" (eval (second clause)))
-				(= (first clause) :state)
-				(.applyClause model ":state" (eval (second clause)))
-				(= (first clause) :value)
-				(.applyClause model ":value" (eval (second clause)))
-				(= (first clause) :context)
-				(.applyClause model ":context" (map configure-model (tl/group-with-keywords (second clause))))
-				(= (first clause) :observed)
-				(.applyClause model ":observed" (map configure-model (tl/group-with-keywords (second clause))))
-				(= (first clause) :update)
-				(.applyClause model ":update" (eval (second clause)))
-				(= (first clause) :initialize)
-				(.applyClause model ":initialize" (eval (second clause)))
-				(= (first clause) :play)
-				(.applyClause model ":play" (eval (second clause)))
-				:otherwise
-				(.applyClause model (str (first clause)) (second clause))))
+  "Apply the passed clause to the passed model after transforming the
+   argument according to the option. A map would be much more elegant
+   but won't work in the bi-recursive pattern.  Just passes through
+   anything that isn't handled - leave it to Java to validate the
+   keyword."
+  [model [option val]]
+  (cond (= option :when)        (.applyClause model ":when"        (eval val))
+        (= option :as)          (.applyClause model ":as"          (str val))
+        (= option :optional)    (.applyClause model ":optional"    (eval val))
+        (= option :required)    (.applyClause model ":required"    (eval val))
+        (= option :keep)        (.applyClause model ":keep"        (map eval val))
+        (= option :discard)     (.applyClause model ":discard"     (map eval val))
+        (= option :probability) (.applyClause model ":probability" (eval val))
+        (= option :rate)        (.applyClause model ":rate"        (eval val))
+        (= option :state)       (.applyClause model ":state"       (eval val))
+        (= option :value)       (.applyClause model ":value"       (eval val))
+        (= option :context)     (.applyClause model ":context"     (map configure-model (tl/group-with-keywords val)))
+        (= option :observed)    (.applyClause model ":observed"    (map configure-model (tl/group-with-keywords val)))
+        (= option :update)      (.applyClause model ":update"      (eval val))
+        (= option :initialize)  (.applyClause model ":initialize"  (eval val))
+        (= option :play)        (.applyClause model ":play"        (eval val))
+        :otherwise              (.applyClause model (str option)   val)))
 
 (defmacro model 
-	"Return a new model for the given observable, defined using the given contingency 
-	 structure and conditional specifications, or the given unconditional model if no 
-	 contingency structure is supplied."
-	[model-name observable & body]
-	 `(let [desc#  
-	 					(if (string? (first '~body)) (first '~body))
-	        contingency-model# 
-	        	(if (vector? (first (drop (if (nil? desc#) 0 1) '~body)))
-	        		(first (drop (if (nil? desc#) 0 1) '~body)))
- 	        definition# 
- 	        	(drop (tl/count-not-nil (list desc# contingency-model#)) '~body)
- 	        model# 
- 	        	(modelling/j-make-model)]
- 	       
- 	     (.setName model# ~model-name)
- 	     (.setObservable  model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
- 	     (.setDescription model# desc#)
-
- 	     ; process the contingency model - should be one model with possible qualifying clauses
-; 	     (doseq [mdef# contingency-model#]
-;         	(.addContingency model# mdef# (meta contingency-model#))) 
-; keep the kw grouping for now
-         (doseq [mdef# (tl/group-with-keywords contingency-model#)]
-            (.addContingency model# (configure-model mdef#) (meta contingency-model#))) 
-        
-       
-        ; process the model definitions - one or more models and configuration keyword pairs
-       (doseq [mdef# (tl/group-keywords definition#)] 
-         (if (kw-pair? mdef#)
-           (transform-model model# mdef#) 
-           (.defModel model# (eval mdef#) (meta definition#))))  
-
-       model#))
+  "Return a new model for the given observable, defined using the
+   given contingency structure and conditional specifications, or the
+   given unconditional model if no contingency structure is supplied."
+  [model-name observable & body]
+  `(let [desc# (if (string? (first '~body)) (first '~body))
+         contingency-model# (if (vector? (first (drop (if (nil? desc#) 0 1) '~body)))
+                              (first (drop (if (nil? desc#) 0 1) '~body)))
+         definition#        (drop (tl/count-not-nil (list desc# contingency-model#)) '~body)
+         model#             (modelling/j-make-model)]
+     (.setName model# ~model-name)
+     (.setObservable  model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+     (.setDescription model# desc#)
+     ;; process the contingency model - should be one model with possible qualifying clauses
+     ;; 	     (doseq [mdef# contingency-model#]
+     ;;         	(.addContingency model# mdef# (meta contingency-model#))) 
+     ;; keep the kw grouping for now
+     (doseq [mdef# (tl/group-with-keywords contingency-model#)]
+       (.addContingency model# (configure-model mdef#) (meta contingency-model#))) 
+     ;; process the model definitions - one or more models and configuration keyword pairs
+     (doseq [mdef# (tl/group-keywords definition#)] 
+       (if (kw-pair? mdef#)
+         (transform-model model# mdef#) 
+         (.defModel model# (eval mdef#) (meta definition#))))  
+     model#))
        
 (defmacro scenario 
 	"Return a new model for the given observable, defined using the given contingency 
