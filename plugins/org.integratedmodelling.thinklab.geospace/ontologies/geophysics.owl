@@ -9,8 +9,8 @@
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
   xml:base="http://www.integratedmodelling.org/ks/geospace/geophysics.owl">
   <owl:Ontology rdf:about="">
-    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl"/>
     <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl"/>
+    <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl"/>
   </owl:Ontology>
   <owl:Class rdf:ID="BathymetricSlope">
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Slope"/>
@@ -31,16 +31,19 @@
   <owl:Class rdf:ID="GroundSurfaceTemperature">
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Temperature"/>
   </owl:Class>
+  <owl:Class rdf:ID="Bathymetry">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="NovemberMeanGroundSurfaceTemperature">
     <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
   </owl:Class>
   <owl:Class rdf:ID="Altitude">
+    <rdfs:comment>Altitude is a type of length whose use is specific to geophysical applications. By making it the observable in, e.g., an altitude raster layer, we know how to properly aggregate and distribute altitudinal data.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
     <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >Elevation</rdfs:label>
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
-    </rdfs:subClassOf>
-    <rdfs:comment>Altitude is a type of length whose use is specific to geophysical applications. By making it the observable in, e.g., an altitude raster layer, we know how to properly aggregate and distribute altitudinal data.</rdfs:comment>
   </owl:Class>
   <owl:Class rdf:ID="FlowConcept">
     <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
@@ -51,13 +54,13 @@
   <owl:Class rdf:ID="JanuaryMeanGroundSurfaceTemperature">
     <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
   </owl:Class>
-  <owl:Class rdf:ID="AprilMeanGroundSurfaceTemperature">
-    <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
-  </owl:Class>
   <owl:Class rdf:ID="DegreeSlope">
     <rdfs:subClassOf>
       <owl:Class rdf:about="#Slope"/>
     </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="AprilMeanGroundSurfaceTemperature">
+    <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
   </owl:Class>
   <owl:Class rdf:ID="AnnualMeanGroundSurfaceTemperature">
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Temperature"/>
@@ -66,8 +69,8 @@
     <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
   </owl:Class>
   <owl:Class rdf:ID="GroundElevation">
-    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
     <rdfs:comment>Elevation of the highest feature on the ground, such as in LIDAR data</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
   </owl:Class>
   <owl:Class rdf:ID="FlowDirection">
     <rdfs:subClassOf rdf:resource="#FlowConcept"/>
