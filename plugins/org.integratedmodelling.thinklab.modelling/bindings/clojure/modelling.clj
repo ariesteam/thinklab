@@ -329,6 +329,23 @@
 		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (eval (second classifier#)))))
  	   model#))
 
+(defmacro classification-cleaner
+	"The states of a classification model are concepts. All states
+     must be direct children of the main observable of the model."
+	[observable & specs]
+    (let [interned-function-call? (comp namespace first)]
+      `(let [model# (modelling/j-make-classification)]
+         (.setObservable model# (if (seq? ~observable)
+                                  (if (interned-function-call? '~observable)
+                                    (eval ~observable)
+                                    (tl/listp ~observable))
+                                  ~observable))
+		 (doseq [[key# val# :as classifier#] (partition 2 '~specs)]
+           (if (and (keyword? key#) (not= :otherwise key#))
+             (transform-model model# classifier#)
+             (.addClassifier model# (tl/unquote-if-quoted key#) (eval val#))))
+         model#)))
+
 (defmacro ranking
 	"Rankings describe their states as numeric values that have an ordinal relationship and optionally
 	a scale. Rankings of different scales are mediated appropriately."
