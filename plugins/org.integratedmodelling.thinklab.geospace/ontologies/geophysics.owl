@@ -12,6 +12,21 @@
     <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl"/>
     <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl"/>
   </owl:Ontology>
+  <owl:Class rdf:ID="JuneMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="MonthlyMaximumGroundSurfaceTemperature"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="SeptemberMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#MonthlyMaximumGroundSurfaceTemperature"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="OctoberMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#MonthlyMaximumGroundSurfaceTemperature"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="BathymetricSlope">
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Slope"/>
   </owl:Class>
@@ -23,6 +38,11 @@
   <owl:Class rdf:ID="OctoberMeanGroundSurfaceTemperature">
     <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
   </owl:Class>
+  <owl:Class rdf:ID="JulyMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#MonthlyMaximumGroundSurfaceTemperature"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="PercentSlope">
     <rdfs:subClassOf>
       <owl:Class rdf:ID="Slope"/>
@@ -31,10 +51,21 @@
   <owl:Class rdf:ID="GroundSurfaceTemperature">
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Temperature"/>
   </owl:Class>
+  <owl:Class rdf:ID="AnnualMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Temperature"/>
+  </owl:Class>
+  <owl:Class rdf:ID="NovemberMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#MonthlyMaximumGroundSurfaceTemperature"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="Bathymetry">
     <rdfs:subClassOf>
       <owl:Class rdf:about="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
     </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#MonthlyMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Temperature"/>
   </owl:Class>
   <owl:Class rdf:ID="NovemberMeanGroundSurfaceTemperature">
     <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
@@ -44,6 +75,9 @@
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Length"/>
     <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >Elevation</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="MayMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf rdf:resource="#MonthlyMaximumGroundSurfaceTemperature"/>
   </owl:Class>
   <owl:Class rdf:ID="FlowConcept">
     <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
@@ -59,14 +93,17 @@
       <owl:Class rdf:about="#Slope"/>
     </rdfs:subClassOf>
   </owl:Class>
+  <owl:Class rdf:ID="FebruaryMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf rdf:resource="#MonthlyMaximumGroundSurfaceTemperature"/>
+  </owl:Class>
   <owl:Class rdf:ID="AprilMeanGroundSurfaceTemperature">
+    <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
+  </owl:Class>
+  <owl:Class rdf:ID="MayMeanGroundSurfaceTemperature">
     <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
   </owl:Class>
   <owl:Class rdf:ID="AnnualMeanGroundSurfaceTemperature">
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Temperature"/>
-  </owl:Class>
-  <owl:Class rdf:ID="MayMeanGroundSurfaceTemperature">
-    <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
   </owl:Class>
   <owl:Class rdf:ID="GroundElevation">
     <rdfs:comment>Elevation of the highest feature on the ground, such as in LIDAR data</rdfs:comment>
@@ -78,17 +115,32 @@
   <owl:Class rdf:ID="FebruaryMeanGroundSurfaceTemperature">
     <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
   </owl:Class>
+  <owl:Class rdf:ID="AugustMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf rdf:resource="#MonthlyMaximumGroundSurfaceTemperature"/>
+  </owl:Class>
+  <owl:Class rdf:ID="DecemberMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf rdf:resource="#MonthlyMaximumGroundSurfaceTemperature"/>
+  </owl:Class>
   <owl:Class rdf:ID="SeptemberMeanGroundSurfaceTemperature">
     <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
   </owl:Class>
   <owl:Class rdf:about="#Slope">
     <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Slope"/>
   </owl:Class>
+  <owl:Class rdf:ID="MarchMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf rdf:resource="#MonthlyMaximumGroundSurfaceTemperature"/>
+  </owl:Class>
+  <owl:Class rdf:ID="AprilMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf rdf:resource="#MonthlyMaximumGroundSurfaceTemperature"/>
+  </owl:Class>
   <owl:Class rdf:ID="DecemberMeanGroundSurfaceTemperature">
     <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
   </owl:Class>
   <owl:Class rdf:ID="MarchMeanGroundSurfaceTemperature">
     <rdfs:subClassOf rdf:resource="#MonthlyMeanGroundSurfaceTemperature"/>
+  </owl:Class>
+  <owl:Class rdf:ID="JanuaryMaximumGroundSurfaceTemperature">
+    <rdfs:subClassOf rdf:resource="#MonthlyMaximumGroundSurfaceTemperature"/>
   </owl:Class>
   <owl:Class rdf:about="http://www.integratedmodelling.org/ks/science/representation.owl#GenericQuantifiable"/>
   <owl:Class rdf:ID="JulyMeanGroundSurfaceTemperature">
