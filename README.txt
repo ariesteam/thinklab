@@ -21,3 +21,12 @@ Then cd into the toplevel Thinklab directory (which contains this README) and...
    java -jar lib/im-boot.jar        [unix/linux]
 
 That's it.  Enjoy.
+
+For Eclipse: a sample configuration to run would use thinklab as the project, im-boot.jar
+as the only runtime library, and org.java.plugin.boot.Boot as the boot class. The parameters
+for the VM could be something like
+
+-Xms1512M -Xmx1512M -Dthinklab.inst=. -Dthinklab.plugins=../xxxx/plugins -Djava.library.path=./plugins/org.integratedmodelling.thinklab.riskwiz/common
+
+where the thinklab.plugins refers to other projects with thinklab plugins in them; it's
+unnecessary if none are installed.
