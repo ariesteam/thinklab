@@ -5,3 +5,10 @@ To setup in eclipse:
 3. in the run configuration's classpath, remove everything under User entries, then Add Jar and select ONLY lib/im-boot.jar
 4. That's it - run it and the Shell plugin will be loaded from the corresponding plugin (see
 	boot.properties for configuration). The pload command loads plugins on demand.
+
+The parametersfor the VM could be something like
+
+-Xms1512M -Xmx1512M -Dthinklab.inst=. -Dthinklab.plugins=../xxxx/plugins -Djava.library.path=./plugins/org.integratedmodelling.thinklab.riskwiz/common
+
+where the thinklab.plugins refers to other projects with thinklab plugins in them; it's
+unnecessary if none are installed.	
