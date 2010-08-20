@@ -46,18 +46,29 @@
       <owl:Class rdf:about="#TransportationMedium"/>
     </rdfs:subClassOf>
   </owl:Class>
+  <owl:Class rdf:ID="MediumPipeline">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Pipeline"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="OilAndGasWells">
     <rdfs:subClassOf>
       <owl:Class rdf:about="#EnergyInfrastructure"/>
     </rdfs:subClassOf>
   </owl:Class>
-  <owl:Class rdf:ID="Pipeline">
+  <owl:Class rdf:about="#Pipeline">
     <rdfs:subClassOf>
       <owl:Class rdf:about="#EnergyInfrastructure"/>
     </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="RailStation">
     <rdfs:subClassOf rdf:resource="#TransportationHub"/>
+  </owl:Class>
+  <owl:Class rdf:ID="SmallPipeline">
+    <rdfs:subClassOf rdf:resource="#Pipeline"/>
+  </owl:Class>
+  <owl:Class rdf:ID="LargePipeline">
+    <rdfs:subClassOf rdf:resource="#Pipeline"/>
   </owl:Class>
   <owl:Class rdf:about="#TransportationMedium">
     <rdfs:subClassOf>
