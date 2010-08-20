@@ -123,7 +123,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	}
 
 	/**
-	 * This one is invoked oncr before any use is made of the model, and is
+	 * This one is invoked once before any use is made of the model, and is
 	 * supposed to validate all concepts used in the model's definition. In
 	 * order to allow facilitated and automated annotation, no model should
 	 * perform concept validation at declaration; all validation should be done
@@ -180,9 +180,11 @@ public abstract class DefaultAbstractModel implements IModel {
 			this.observableId = observableOrModel.toString();
 			this.observable = KnowledgeManager.get().requireConcept(
 					this.observableId);
+			// this takes care of the self-annotating models with the $ at the end
+			this.observableId = this.observable.toString();
 			this.observableSpecs = Polylist.list(this.observableId);
 		}
-
+		
 		id = Path.getLast(observableId, ':').toLowerCase();
 	}
 
