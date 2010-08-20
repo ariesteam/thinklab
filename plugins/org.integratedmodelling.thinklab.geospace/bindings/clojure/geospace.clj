@@ -97,7 +97,8 @@
   "Returns (x, y) where x is the width of one cell in meters and y is the height. Throw an exception if
    the observation is not distributed over a grid extent."
    [observation]
-   [(.getCellWidthMeters (get-spatial-extent observation)) (.getCellHeightMeters (get-spatial-extent observation))])
+   (let [extent (.getExtent (get-spatial-extent observation))]
+     [(.getCellWidthMeters extent) (.getCellHeightMeters extent)]))
    
 (defn build-coverage
 	"Build and show a coverage from a passed spatial extent, data vector, and x/y size info"
