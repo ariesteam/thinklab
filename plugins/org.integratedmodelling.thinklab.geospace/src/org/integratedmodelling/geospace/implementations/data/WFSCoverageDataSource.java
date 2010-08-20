@@ -43,6 +43,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 
 @InstanceImplementation(concept="geospace:WFSDataSource")
 public class WFSCoverageDataSource extends VectorCoverageDataSource {
@@ -68,7 +69,10 @@ public class WFSCoverageDataSource extends VectorCoverageDataSource {
 		attr = i.get(Geospace.HAS_FILTER_PROPERTY);
 		if (attr != null)
 			p.put(CoverageFactory.CQL_FILTER_PROPERTY, attr.toString());
-		
+		attr = i.get(Geospace.HAS_TRANSFORMATION_EXPRESSION);
+		if (attr != null)
+			this.transformation = new MVELExpression(attr.toString());
+	
 		URL url;
 		try {
 			url = new URL(

@@ -68,6 +68,7 @@ public class CoverageFactory {
 	public static final String WFS_BUFFER_SIZE_PROPERTY = "wfs.service.buffersize";
 	public static final String COVERAGE_ID_PROPERTY = "wfs.coverage.id";
 	public static final String CQL_FILTER_PROPERTY = "geospace.feature.filter";
+	public static final String TRANSFORMATION_EXPRESSION = "transformation.expression";
 	
 	static Hashtable<String, ICoverage> coverages = 
 		new Hashtable<String, ICoverage>();

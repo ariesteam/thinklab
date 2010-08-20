@@ -77,6 +77,21 @@ public class RegularRasterGridDataSource implements IDataSource<Object>, IInstan
 		this.gridExtent = gridExtent;
 	}
 
+	/**
+	 * This one is used when we want to transform the values with an expression as
+	 * they are accessed. 
+	 * 
+	 * @param coverage
+	 * @param gridExtent
+	 * @param transformation
+	 */
+	public RegularRasterGridDataSource(ICoverage coverage,
+			GridExtent gridExtent, MVELExpression transformation) {
+		this.coverage = coverage;
+		this.gridExtent = gridExtent;
+		this.transformation = transformation;
+	}
+
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 

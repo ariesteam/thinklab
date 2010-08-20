@@ -71,7 +71,7 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 	private GridExtent gridExtent;
 	private ShapeExtent shapeExtent;
 
-	private MVELExpression transformation;
+	protected MVELExpression transformation;
 	
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
@@ -194,7 +194,7 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 			gridExtent.requireActivationLayer(true);
 			coverage = coverage.requireMatch(gridExtent, true);
 			coverage.loadData();
-			ret = new RegularRasterGridDataSource(coverage, gridExtent);
+			ret = new RegularRasterGridDataSource(coverage, gridExtent, this.transformation);
 		} else {
 			throw new ThinklabValidationException(
 					"vector datasource: don't know how to deal with " + transformation);
