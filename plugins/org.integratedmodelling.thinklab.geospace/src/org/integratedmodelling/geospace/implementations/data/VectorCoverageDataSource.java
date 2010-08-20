@@ -58,9 +58,7 @@ import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 import org.integratedmodelling.utils.URLUtils;
 
 /**
- * TODO it's just a verbatim copy of the raster one for now.
  * @author Ferdinando
- *
  */
 public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceImplementation {
 
