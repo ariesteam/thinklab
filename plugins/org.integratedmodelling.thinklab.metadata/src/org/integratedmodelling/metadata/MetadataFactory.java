@@ -65,9 +65,9 @@ import org.integratedmodelling.utils.Polylist;
  */
 public class MetadataFactory {
 
-	private static final String SOURCE_CITATIONS_PROPERTY = "metadata:hasSourceCitation";
-	
-	private static final String IMAGE_URL_PROPERTY = "metadata:hasImageUrl";
+	public static final String PRIORITY_PROPERTY = "metadata:hasPriority";	
+	public static final String SOURCE_CITATIONS_PROPERTY = "metadata:hasSourceCitation";
+	public static final String IMAGE_URL_PROPERTY = "metadata:hasImageUrl";
 
 	/**
 	 * Adds the default metadata.

@@ -92,6 +92,8 @@ import org.w3c.dom.Node;
  */
 public abstract class SQLThinklabServer {
 
+	public static final String PRIORITY_PROPERTY = "metadata:hasPriority";	
+	
 	enum OpType {INFIX, PREFIX, POSTFIX, FUNCTION};
 	enum UseRestrictions {TRUE, FALSE, PARTIAL};
 	
@@ -1372,6 +1374,10 @@ public abstract class SQLThinklabServer {
 		
 		String sql = query;
 
+		IValue priorityV = c.get(PRIORITY_PROPERTY);
+		int priority = 
+			priorityV == null ? 0 : priorityV.asNumber().asInteger();
+		
 		/*
 		 * 1. check if object has already been put in abox. If so, success with
 		 * no effort.
@@ -1407,7 +1413,8 @@ public abstract class SQLThinklabServer {
 				"', " + cid.getSecond() + // concept_id
 				", " + totalRels + // total_rel
 				", " + ((c instanceof IInstance) ? "true" : "false") + // is-instance
-				", '" + extUri + "'"; // external_uri
+				", '" + extUri + "', " + // external_uri
+				priority; // priority
 
 		/* add all extensions, calculated fields */
 		TableDesc tab = getTableDescriptor("object");
@@ -2226,10 +2233,11 @@ public abstract class SQLThinklabServer {
 		/*
 		 * if the metadata for an object contain a priority field, use it
 		 * to sort in ascendent order
+		 * FV now priority is a system field
 		 */
-		if (metadataCatalog.containsKey("priority")) {
-			query += " SORT BY priority ASCENDENT";
-		}
+//		if (metadataCatalog.containsKey("priority")) {
+			query += " ORDER BY priority";
+//		}
 		return query;
 	}
 

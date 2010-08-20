@@ -3,6 +3,7 @@
 <plugin id="org.integratedmodelling.thinklab.sql" version="0.8.0" class="org.integratedmodelling.sql.SQLPlugin">
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="true"/>
+		<import plugin-id="org.integratedmodelling.thinklab.metadata" reverse-lookup="true"/>
 	</requires>	
 	<runtime>
 		<library id="opal" path="classes/" type="code">
