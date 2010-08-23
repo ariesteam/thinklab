@@ -18,6 +18,7 @@ import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
+import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
@@ -49,8 +50,6 @@ public class BayesianTransformer
 	extends Observation 
 	implements  TransformingObservation {
 	
-	// relevant properties from ontology
-	public static final String RETAINS_STATES = "modeltypes:retainsState";
 	public static final String HAS_NETWORK_SOURCE = "modeltypes:hasBayesianNetworkSource";
 	public static final String HAS_BAYESIAN_ALGORITHM = "modeltypes:hasBayesianAlgorithm";
 	public static final String HAS_PROTOTYPE_MODEL = "modeltypes:hasPrototypeModel";
@@ -109,7 +108,7 @@ public class BayesianTransformer
 			/*
 			 * read the states we want
 			 */
-			for (IRelationship r : i.getRelationships(RETAINS_STATES)) {
+			for (IRelationship r : i.getRelationships(ModelFactory.RETAINS_STATES)) {
 				outputStates.add(KnowledgeManager.get().requireConcept(r.getValue().toString()));
 			}
 			

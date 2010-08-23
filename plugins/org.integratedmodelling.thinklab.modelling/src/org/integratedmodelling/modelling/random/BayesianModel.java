@@ -8,6 +8,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.Model;
+import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.corescience.ClassificationModel;
 import org.integratedmodelling.modelling.implementations.observations.BayesianTransformer;
@@ -112,7 +113,7 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 
 		for (int i = 0; i < keepers.size(); i++) {
 			arr.add(Polylist.list(
-						BayesianTransformer.RETAINS_STATES, 
+						ModelFactory.RETAINS_STATES, 
 						keepers.get(i).toString()));
 		}
 		

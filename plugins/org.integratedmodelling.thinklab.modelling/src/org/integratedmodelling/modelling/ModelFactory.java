@@ -57,6 +57,9 @@ public class ModelFactory {
 	public Hashtable<String, Scenario> scenariosById = new Hashtable<String, Scenario>();
 	public Hashtable<String, ThinkAgent> agentsById = new Hashtable<String, ThinkAgent>();
 
+	// relevant properties from ontology
+	public static final String RETAINS_STATES = "modeltypes:retainsState";
+
 	class ContextualizingModelResult implements IQueryResult {
 
 		IQueryResult mres = null;
