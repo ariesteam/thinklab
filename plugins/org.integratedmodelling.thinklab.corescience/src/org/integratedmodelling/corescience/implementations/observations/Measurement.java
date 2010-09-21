@@ -142,9 +142,10 @@ public class Measurement extends Observation implements MediatingObservation {
 		public Object getValue(int idx, Object[] registers) {
 			return converter == null ? 
 					registers[reg] : 
-					((registers[reg] == null || (registers[reg] instanceof Double && ((Double)registers[reg]).isNaN())) ? 
+					((registers[reg] == null || 
+							(registers[reg] instanceof Number && Double.isNaN(((Number)registers[reg]).doubleValue()))) ? 
 							Double.NaN : 
-							converter.convert((Double)registers[reg]));
+							converter.convert(((Number)(registers[reg])).doubleValue()));
 		}
 
 		@Override
