@@ -213,6 +213,15 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 			}
 		}
 		this.stateType = KnowledgeManager.get().getLeastGeneralCommonConcept(cs);
+
+		/*
+		 * FIXME - not sure this is the proper way
+		 * if this happens, we are classifying incompatible classifications into the type
+		 * of our own observable, which should then take over. This should be done 
+		 * right, but I'm not sure of what that means.
+		 */
+		if (this.stateType.equals(KnowledgeManager.Thing())) 
+			this.stateType = this.getObservableClass();
 		
 		/*
 		 * build index to register mapper to preserve datasource order, which we will fill in when dependency

@@ -39,7 +39,6 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	ArrayList<GeneralClassifier> classifiers = new ArrayList<GeneralClassifier>();	
 	ArrayList<IConcept> concepts = new ArrayList<IConcept>();
 	ArrayList<String> conceptIds = new ArrayList<String>();
-	IConcept state = null;
 	private IConcept stateType;
 
 	@Override
@@ -48,7 +47,6 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		classifiers = ((ClassificationModel)model).classifiers;
 		concepts = ((ClassificationModel)model).concepts;
 		conceptIds = ((ClassificationModel)model).conceptIds;
-		state = ((ClassificationModel)model).state;
 		stateType = ((ClassificationModel)model).stateType;
 	}
 
@@ -223,9 +221,9 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	}
 
 	@Override
-	protected Object validateState(Object state)
+	protected Object validateState(Object stat)
 			throws ThinklabValidationException {
-		return state;
+		return stat;
 	}
 
 	@Override
@@ -245,19 +243,19 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	@Override
 	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents) throws ThinklabException {
 
-		if (state == null)
-			state = KnowledgeManager.get().getLeastGeneralCommonConcept(concepts);
+		IConcept theState =
+			KnowledgeManager.get().getLeastGeneralCommonConcept(concepts);
 
-		if (state /* still */ == null)
-			state = observable;
-				
+		if (theState /* still */ == null)
+			theState = observable;
+						
 		ArrayList<Object> arr = new ArrayList<Object>();
 		
 		arr.add((dynSpecs == null && changeSpecs == null && derivativeSpecs == null) ?
 					"modeltypes:ModeledClassification" : 
 					"modeltypes:DynamicClassification");
 		
-		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(state)));
+		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(theState)));
 		
 		if (id != null) {
 			arr.add(Polylist.list(CoreScience.HAS_FORMAL_NAME, id));			

@@ -77,7 +77,6 @@ public class MemObjectContextualizedDatasource
 		 * prepare to hold data of this type, determining if it's going to be a classification or what
 		 */
 		Metadata.rankConcepts(type,  metadata);
-		
 	}
 	
 	@Override
@@ -154,7 +153,8 @@ public class MemObjectContextualizedDatasource
 			double[] ret = new double[data.length];
 			HashMap<IConcept, Integer> rnk = Metadata.getClassMappings(metadata);
 			for (int i = 0; i < data.length; i++) {
-				ret[i] = (data[i] == null ? Double.NaN : (double)(rnk.get((IConcept)data[i])));
+				Object o = data[i];
+				ret[i] = (o == null ? Double.NaN : (double)(rnk.get((IConcept)o)));
 			}
 			return ret;			
 		}

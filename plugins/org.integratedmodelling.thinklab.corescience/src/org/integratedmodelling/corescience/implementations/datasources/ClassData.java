@@ -38,7 +38,8 @@ public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> impl
 			} else if (ranks == null) {
 				ret[i] = (double)data[i];
 			} else {
-				ret[i] = (double)ranks.get(c);
+				Object o = ranks.get(c);
+				ret[i] = o == null ? Double.NaN : ((Number)o).doubleValue();
 			}
 		}
 		
