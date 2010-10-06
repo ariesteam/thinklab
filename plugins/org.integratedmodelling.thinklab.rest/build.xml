@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="org.integratedmodelling.thinklab.core plug-in build file"
+         default="help"
+         basedir=".">
+	<jpf-info manifest="${basedir}/plugin.xml"
+	          propertyid="plugin.id"
+	          propertyversion="plugin.version" />
+	<property name="plugin.home"
+	          value="${basedir}/../../build/plugins/${plugin.id}" />
+
+	<path id="plugin.classpath">
+		<fileset dir="${basedir}/../../lib" includes="*.jar" />
+	</path>
+	<jpf-path pathidref="plugin.classpath" pluginid="${plugin.id}">
+		<fileset dir="${plugin.home}/.."
+		         includes="*/plugin*.xml"
+		         excludes="${plugin.id}/**" />
+		<fileset file="plugin.xml" />
+	</jpf-path>
+
+	<target name="help">
+		<echo>
+			<![CDATA[
+${plugin.id} plug-in build file:
+Use top-level project build file to build application.
+]]>
+		</echo>
+	</target>
+
+	<target name="build">
+		<echo>Building plug-in ${plugin.id} to folder ${plugin.home}</echo>
+		<mkdir dir="${plugin.home}/classes" />
+		<javac destdir="${plugin.home}/classes"
+		       srcdir="${basedir}/src"
+		       classpathref="plugin.classpath"
+		       excludes=""
+		       target="1.5"
+		       debug="true"
+		       optimize="false">
+		</javac>
+		<copy todir="${plugin.home}/classes">
+			<fileset dir="${basedir}/src"
+			         includes="**/*"
+			         excludes="**/.*,**/*.java" />
+		</copy>
+		<copy todir="${plugin.home}" includeemptydirs="false">
+			<fileset dir="${basedir}"
+			         excludes="classes/,nbproject/,.*,*build*,src/" />
+		</copy>
+	</target>
+
+	<target name="docs">
+		<echo>Generating javadoc for plug-in ${plugin.id} to folder ${plugin.home}/docs/api</echo>
+		<javadoc destdir="${plugin.home}/docs/api"
+		         classpathref="plugin.classpath"
+		         sourcepath="${basedir}/src"
+				packagenames="org.integratedmodelling.*">
+		</javadoc>
+	</target>
+</project>

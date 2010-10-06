@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.corescience/classes" path="plugins/org.integratedmodelling.thinklab.corescience/src"/>
+	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.rest/classes" path="plugins/org.integratedmodelling.thinklab.rest/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.agriculture/classes" path="plugins/org.integratedmodelling.thinklab.agriculture/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.idv/classes" path="plugins/org.integratedmodelling.thinklab.idv/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.modelling/classes" path="plugins/org.integratedmodelling.thinklab.modelling/src"/>
@@ -376,5 +377,13 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-process-2.6.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/commons-math-2.1.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/bsh_custom.jar" sourcepath="/BeanShell"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rest/lib/org.restlet.ext.jetty.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rest/lib/org.restlet.ext.json.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rest/lib/org.restlet.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rest/lib/org.eclipse.jetty.http.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rest/lib/org.eclipse.jetty.io.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rest/lib/org.eclipse.jetty.server.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rest/lib/org.eclipse.jetty.util.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rest/lib/org.json.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

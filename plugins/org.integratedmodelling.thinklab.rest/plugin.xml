@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.rest" version="0.8.0" class="org.integratedmodelling.thinklab.rest.RESTPlugin">
+
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+	</requires>
+
+	<runtime>
+		<library id="classes" path="classes/" type="code">
+			<export prefix="*" />
+		</library>
+
+		<library id="restlet" path="lib/org.restlet.jar" type="code">
+			<export prefix="*" />
+		</library>
+
+		<library id="restlet.ext.json" path="lib/org.restlet.ext.json.jar" type="code">
+			<export prefix="*" />
+		</library>
+		
+		<library id="restlet.ext.jetty" path="lib/org.restlet.ext.jetty.jar" type="code">
+			<export prefix="*" />
+		</library>
+
+		<library id="javax.servlet" path="lib/javax.servlet.jar" type="code">
+			<export prefix="*" />
+		</library>
+		
+		<library id="jetty.server" path="lib/org.eclipse.jetty.server.jar" type="code">
+			<export prefix="*" />
+		</library>
+		<library id="jetty.io" path="lib/org.eclipse.jetty.io.jar" type="code">
+			<export prefix="*" />
+		</library>
+		<library id="jetty.ajp" path="lib/org.eclipse.jetty.ajp.jar" type="code">
+			<export prefix="*" />
+		</library>
+		<library id="jetty.http" path="lib/org.eclipse.jetty.http.jar" type="code">
+			<export prefix="*" />
+		</library>
+		<library id="jetty.continuations" path="lib/org.eclipse.jetty.continuations.jar" type="code">
+			<export prefix="*" />
+		</library>
+		<library id="jetty.util" path="lib/org.eclipse.jetty.util.jar" type="code">
+			<export prefix="*" />
+		</library>
+		
+		<library id="json" path="lib/org.json.jar" type="code">
+			<export prefix="*" />
+		</library>
+		
+		<library type="resources" path="config/" id="config" />
+		
+	</runtime>
+	
+	
+</plugin>
