@@ -20,7 +20,7 @@ public class RestApplication extends Application {
 		 * TODO configure an entry point per installed command
 		 * down here is just a test
 		 */
-		router.attach("/tl", ThinklabRESTResource.class);
+		router.attach("/cmd", JSONCommandResource.class);
 		
 		return router;
 	}

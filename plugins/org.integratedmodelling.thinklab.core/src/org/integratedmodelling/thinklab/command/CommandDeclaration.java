@@ -64,7 +64,7 @@ public class CommandDeclaration {
 	public String description;
 	public IConcept returnType = null;
 	
-	private class argDescriptor {
+	class argDescriptor {
 		String id;
 		String description;
 		IConcept type;

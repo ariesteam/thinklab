@@ -49,9 +49,9 @@ public class KeyValueMap extends HashMap<String, String> {
 
 	private static final long serialVersionUID = 1123680512640721726L;
 
-	private void initialize(String s) {
+	private void initialize(String s, String separator) {
 		
-		String[] pairs = s.trim().split(" ");
+		String[] pairs = s.trim().split(separator);
 		for (String p : pairs) {
 			addPair(p);
 		}
@@ -77,7 +77,11 @@ public class KeyValueMap extends HashMap<String, String> {
 	}
 	
 	public KeyValueMap(String string) {
-		initialize(string);
+		initialize(string, " ");
+	}
+	
+	public KeyValueMap(String string, String separator) {
+		initialize(string, separator);
 	}
 	
 	public static void main(String[] args) {

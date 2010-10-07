@@ -1,5 +1,6 @@
 package org.integratedmodelling.thinklab.command;
 
+import java.util.HashMap;
 import java.util.List;
 
 import joptsimple.OptionParser;
@@ -76,4 +77,36 @@ public class CommandParser {
 		return ret;
 	}
 	
+	public static Command parse(HashMap<String, String> values) throws ThinklabException {
+
+		Command ret = null;
+		
+		if (!values.containsKey("id")) {
+			throw new ThinklabValidationException("can't parse an empty command");
+		}
+		
+		CommandDeclaration declaration = 
+			CommandManager.get().requireDeclarationForCommand(values.get("id"));
+				
+		ret = new Command(declaration);
+		
+		for (CommandDeclaration.argDescriptor k : declaration.mandatoryArguments) {
+			if (values.containsKey(k.id)) {
+				ret.args.put(k.id,values.get(k.id));
+			}
+		}
+		for (CommandDeclaration.argDescriptor k : declaration.optionalArguments) {
+			if (values.containsKey(k.id)) {
+				ret.args.put(k.id,values.get(k.id));
+			}
+		}
+		for (CommandDeclaration.argDescriptor k : declaration.options) {
+			if (values.containsKey(k.id)) {
+				ret.opts.put(k.id,values.get(k.id));
+			}
+		}
+		
+		ret.validate();
+		return ret;
+	}
 }
