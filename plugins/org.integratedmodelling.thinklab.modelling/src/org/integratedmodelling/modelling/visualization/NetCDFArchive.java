@@ -184,8 +184,8 @@ public class NetCDFArchive {
 				
 				// FIXME: this crashes hard (something semantically bad is happening here)
 				// add uncertainty if any
-				//if (variables.get(obs).getMetadata().get(Metadata.UNCERTAINTY) != null)
-				//        ncfile.addVariable(varname+"Uncertainty", DataType.FLOAT, new Dimension[]{latDim,lonDim});
+				if (variables.get(obs).getMetadata().get(Metadata.UNCERTAINTY) != null)
+					ncfile.addVariable(varname+"Uncertainty", DataType.FLOAT, new Dimension[]{latDim,lonDim});
 				
 				// TODO if var is a measurement, add units attribute - this is a stupid stub
 				if (varname.equals("Altitude")) {

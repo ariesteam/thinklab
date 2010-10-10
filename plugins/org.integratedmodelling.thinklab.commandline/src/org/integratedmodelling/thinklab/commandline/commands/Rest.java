@@ -1,6 +1,4 @@
-package org.integratedmodelling.thinklab.rest.commands;
-
-import java.util.HashMap;
+package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -10,6 +8,7 @@ import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.rest.RESTManager;
 import org.integratedmodelling.thinklab.rest.RestApplication;
 import org.restlet.Component;
 import org.restlet.data.Protocol;
@@ -31,9 +30,6 @@ import org.restlet.data.Protocol;
 		optionTypes="thinklab-core:Integer"
 		)
 public class Rest implements ICommandHandler {
-
-	HashMap<Integer, Component> _components = 
-		new HashMap<Integer, Component>(); 
 	
 	@Override
 	public IValue execute(Command command, ISession session)
@@ -47,38 +43,26 @@ public class Rest implements ICommandHandler {
 		
 		if (cmd.equals("start")) {
 			
-			if (_components.containsKey(port))
-				throw new ThinklabInappropriateOperationException(
-						"a REST service is already running on port " + port);
-			
-			Component component = new Component();
-			// TODO configure port
-			component.getServers().add(Protocol.HTTP, port);
-			component.getDefaultHost().attach("/tl", new RestApplication());
-			try {
-				component.start();
-			} catch (Exception e) {
-				throw new ThinklabInternalErrorException(e);
-			}
-			_components.put(port, component);
+			RESTManager.get().start(port);
 			
 		} else if (cmd.equals("stop")) {
 			
-			Component component = _components.get(port);
-			if (component == null) 
-				throw new ThinklabInappropriateOperationException(
-						"no REST service running on port " + port);
-			try {
-				component.stop();
-			} catch (Exception e) {
-				throw new ThinklabInternalErrorException(e);
-			}
-			_components.remove(port);
-			
+			RESTManager.get().stop(port);			
+
 		}  else if (cmd.equals("status")) {
+		
+			// TODO
 			
 		}  else if (cmd.equals("restart")) {
-			
+
+			RESTManager.get().stop(port);			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// come on
+			}
+			RESTManager.get().start(port);
+
 		} 
 		
 		return null;

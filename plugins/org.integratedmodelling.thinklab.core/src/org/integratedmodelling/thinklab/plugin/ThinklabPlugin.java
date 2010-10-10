@@ -70,6 +70,7 @@ import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplement
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.PersistentObject;
+import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
@@ -83,6 +84,8 @@ import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.owlapi.Session;
+import org.integratedmodelling.thinklab.rest.RESTManager;
+import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
 import org.integratedmodelling.thinklab.transformations.ITransformation;
 import org.integratedmodelling.thinklab.transformations.TransformationFactory;
 import org.integratedmodelling.utils.CopyURL;
@@ -217,6 +220,7 @@ public abstract class ThinklabPlugin extends Plugin
 		loadLanguageInterpreters();
 		loadCommandHandlers();
 		loadListingProviders();
+		loadRESTHandlers();
 		loadTransformations();
 		loadCommands();
 		loadInstanceImplementationConstructors();
@@ -844,9 +848,36 @@ public abstract class ThinklabPlugin extends Plugin
 				}
 			}
 		}
-
 	}
 
+	protected void loadRESTHandlers() throws ThinklabException {
+		
+		String ipack = this.getClass().getPackage().getName() + ".rest";
+		
+		for (Class<?> cls : MiscUtilities.findSubclasses(IRESTHandler.class, ipack, getClassLoader())) {	
+			
+			/*
+			 * lookup annotation, ensure we can use the class
+			 */
+			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+				continue;
+			
+			for (Annotation annotation : cls.getAnnotations()) {
+				if (annotation instanceof RESTResourceHandler) {
+					
+					String path = ((RESTResourceHandler)annotation).path();
+					try {
+						RESTManager.get().registerService(path, (Class<?>) cls);
+					} catch (Exception e) {
+						throw new ThinklabValidationException(e);
+					}
+					
+					break;
+				}
+			}
+		}
+
+	}
 	protected void loadTransformations() throws ThinklabException {
 		
 		String ipack = this.getClass().getPackage().getName() + ".transformations";
