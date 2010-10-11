@@ -24,10 +24,10 @@ public class RESTManager {
 	 * If query contains the ID of a valid user session, return the ISession 
 	 * allocated to it, otherwise return null. 
 	 * 
-	 * @param query
+	 * @param hashMap
 	 * @return
 	 */
-	public ISession getSessionForCommand(KeyValueMap query) {
+	public ISession getSessionForCommand(HashMap<String, String> hashMap) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -104,5 +104,10 @@ public class RESTManager {
 		}
 		_components.remove(port);
 		
+	}
+
+	public ISession createRESTSession(HashMap<String, String> arguments) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

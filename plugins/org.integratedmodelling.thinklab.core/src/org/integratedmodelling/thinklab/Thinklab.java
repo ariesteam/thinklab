@@ -21,6 +21,7 @@ public class Thinklab extends ThinklabPlugin {
 
 	public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.core";
 	
+	
 	public static Thinklab get() {
 		return _this;
 	}

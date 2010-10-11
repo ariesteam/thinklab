@@ -15,4 +15,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RESTResourceHandler {
 	public String path();
+	public String description();
+	public String[] mimeTypes();
 }

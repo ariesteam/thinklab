@@ -1,6 +1,8 @@
 package org.integratedmodelling.thinklab.rest;
 
+import org.integratedmodelling.thinklab.rest.resources.Capabilities;
 import org.integratedmodelling.thinklab.rest.resources.JSONCommandResource;
+import org.integratedmodelling.thinklab.rest.resources.Status;
 import org.restlet.Application;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
@@ -19,22 +21,25 @@ public class RestApplication extends Application {
 		Router router = new Router(getContext());
 		
 		/*
-		 * TODO
-		 * root entry point should be linked to a "ping" service that returns stats on the
-		 * service.
+		 * root entry point is a "ping" service that returns Thinklab and server stats.
 		 */
+		router.attach("/", Status.class);
 		
 		/*
-		 * TODO
 		 * register "capabilities" service - returns array of services if no further context, or 
 		 * service description etc if context is given. Use wiki/html if html requested.
 		 */
+		router.attach("/capabilities", Capabilities.class, Template.MODE_STARTS_WITH);
 		
-		/*
-		 * configure an entry point per installed command
-		 * down here is just a test
+		/**
+		 * send service exposes all registered Thinklab commands as REST services.
 		 */
-		router.attach("/cmd", JSONCommandResource.class, Template.MODE_STARTS_WITH);
+		router.attach("/send", JSONCommandResource.class, Template.MODE_STARTS_WITH);
+
+		/*
+		 * TODO
+		 * configure an entry point per installed command
+		 */
 		
 		return router;
 	}

@@ -38,6 +38,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -224,14 +225,18 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	private Hashtable<String, Class<?>> instanceImplementationClasses = new Hashtable<String, Class<?>>();
 	private Hashtable<String, Class<?>> literalImplementationClasses = new Hashtable<String, Class<?>>();
 
+	private Date start;
+
 	public KnowledgeManager(IKnowledgeRepository kr, ISessionManager ki) {
 
         /* set KM */
         KM = this;
         
+        this.start = new Date();
+        
         /* create stuff */
-        knowledgeRepository = kr;
-		sessionManager  = ki;
+        this.knowledgeRepository = kr;
+		this.sessionManager  = ki;
 	}
 	
 	/**
@@ -282,8 +287,18 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		
 		knowledgeRepository = kr;
 		sessionManager = sm;
+        
+        this.start = new Date();
 	}
 
+	/**
+	 * Time of boot of Thinklab.
+	 * 
+	 * @return
+	 */
+	public Date activeSince() {
+		return start;
+	}
 	
 	public IKnowledgeRepository getKnowledgeRepository() {
 		return knowledgeRepository;

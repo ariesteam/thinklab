@@ -56,8 +56,7 @@ public class JSONCommandResource extends ServerResource {
 	}
     
     
-    JsonRepresentation jr = new JsonRepresentation(json);
-    
+    JsonRepresentation jr = new JsonRepresentation(json);   
     jr.setCharacterSet(CharacterSet.UTF_8);
     
     return jr;

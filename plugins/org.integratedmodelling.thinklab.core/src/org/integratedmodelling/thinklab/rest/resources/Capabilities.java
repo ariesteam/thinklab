@@ -1,18 +1,27 @@
 package org.integratedmodelling.thinklab.rest.resources;
 
-import java.util.HashMap;
-import java.util.List;
-
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
+import org.json.JSONObject;
+import org.restlet.data.CharacterSet;
+import org.restlet.ext.json.JsonRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.resource.Get;
 
 public class Capabilities extends DefaultRESTHandler {
 
-	@Override
-	protected void execute(List<String> context,
-			HashMap<String, String> parameters) throws ThinklabException {
-		// TODO Auto-generated method stub
+	@Get
+	public Representation getCapabilities() {
+		
+		JSONObject oret = new JSONObject();
+		
+		/*
+		 * TODO
+		 */
+		
+		JsonRepresentation ret = new JsonRepresentation(oret);
+	    ret.setCharacterSet(CharacterSet.UTF_8);
 
+		return ret;
 	}
-
+	
 }
