@@ -866,11 +866,9 @@ public abstract class ThinklabPlugin extends Plugin
 				if (annotation instanceof RESTResourceHandler) {
 					
 					String path = ((RESTResourceHandler)annotation).path();
-					try {
-						RESTManager.get().registerService(path, (Class<?>) cls);
-					} catch (Exception e) {
-						throw new ThinklabValidationException(e);
-					}
+					String description = ((RESTResourceHandler)annotation).description();
+					RESTManager.get().registerService(path, (Class<?>) cls);
+
 					
 					break;
 				}

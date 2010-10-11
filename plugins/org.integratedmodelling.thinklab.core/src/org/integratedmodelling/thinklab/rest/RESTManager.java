@@ -1,13 +1,12 @@
 package org.integratedmodelling.thinklab.rest;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
-import org.integratedmodelling.utils.KeyValueMap;
 import org.restlet.Component;
 import org.restlet.data.Protocol;
 
@@ -18,6 +17,14 @@ public class RESTManager {
 	HashMap<Integer, Component> _components = 
 		new HashMap<Integer, Component>(); 
 
+	/*
+	 * resource classes harvested from plugin code.
+	 */
+	HashMap<String, Class<?>> _resources =
+		new HashMap<String, Class<?>>();
+	
+	int sessionCount;
+	
 	public static RESTManager _this = null;
 	
 	/**
@@ -50,9 +57,8 @@ public class RESTManager {
 
 	public void registerService(String path, Class<?> handlerClass) {
 
-		// TODO use reflection to scan the methods and their annotation; use annotations to attribute the
-		// allowed return MIME types
-		
+		// TODO pass and store all further documentation.
+		_resources.put(path, handlerClass);
 	}
 	
 	/**
@@ -109,5 +115,13 @@ public class RESTManager {
 	public ISession createRESTSession(HashMap<String, String> arguments) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public Collection<String> getPaths() {
+		return _resources.keySet();
+	}
+
+	public Class<?> getResourceForPath(String path) {
+		return _resources.get(path);
 	}
 }

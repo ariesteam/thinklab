@@ -7,7 +7,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.rest.RESTManager;
-import org.integratedmodelling.thinklab.rest.interfaces.JSONCommandHandler;
 import org.integratedmodelling.utils.KeyValueMap;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +22,6 @@ import org.restlet.resource.ServerResource;
  
 public class JSONCommandResource extends ServerResource {
   
- 
   @Get
   public Representation represent() throws ResourceException {
 	  
@@ -33,28 +31,20 @@ public class JSONCommandResource extends ServerResource {
     
     ISession session = RESTManager.get().getSessionForCommand(query);
     
-    try {
-		
-    	Command command = CommandParser.parse(query);
-		
-    	if (command instanceof JSONCommandHandler)
-    		json = ((JSONCommandHandler)command).executeJSON(command, session);
-    	else {
-    		
-    		IValue value = CommandManager.get().submitCommand(command, session);
-    		
-    	    try {    	                		
-        		json = new JSONObject();
-    	        json.put("result", value == null ? "nil" : value.toString());
-    	    } catch (JSONException e) {
-    	      throw new ResourceException(Status.SERVER_ERROR_INTERNAL);
-    	    }
-    	}
-    	
+    IValue value = null;
+	try {
+		Command command = CommandParser.parse(query);
+	    value = CommandManager.get().submitCommand(command, session);
 	} catch (ThinklabException e1) {
 		throw new ResourceException(e1);
-	}
+	}			
     
+    try {    	                		
+    	json = new JSONObject();
+    	json.put("result", value == null ? "nil" : value.toString());
+    } catch (JSONException e) {
+    	throw new ResourceException(Status.SERVER_ERROR_INTERNAL);
+    }
     
     JsonRepresentation jr = new JsonRepresentation(json);   
     jr.setCharacterSet(CharacterSet.UTF_8);

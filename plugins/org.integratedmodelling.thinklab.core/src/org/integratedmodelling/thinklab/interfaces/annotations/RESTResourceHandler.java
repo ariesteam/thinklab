@@ -16,5 +16,5 @@ import java.lang.annotation.RetentionPolicy;
 public @interface RESTResourceHandler {
 	public String path();
 	public String description();
-	public String[] mimeTypes();
+	public String[] mimeTypes() default {};
 }
