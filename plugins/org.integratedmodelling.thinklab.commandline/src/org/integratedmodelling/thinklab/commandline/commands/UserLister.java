@@ -1,5 +1,5 @@
 /**
- * ThinklabEncryptionException.java
+ * AddUser.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,31 +30,38 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.authentication.exceptions;
+package org.integratedmodelling.thinklab.commandline.commands;
 
+import java.io.PrintStream;
+import java.util.Collection;
+import java.util.Properties;
+
+import org.integratedmodelling.thinklab.authentication.AuthenticationManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
+import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 
-public class ThinklabEncryptionException extends ThinklabException {
+@ListingProvider(label="users", itemlabel="user")
+public class UserLister implements IListingProvider {
 
-	private static final long serialVersionUID = -5786939729463617817L;
-
-	public ThinklabEncryptionException() {
-		// TODO Auto-generated constructor stub
+	@Override
+	public Collection<String> getListing() throws ThinklabException {
+		return AuthenticationManager.get().listUsers();
 	}
 
-	public ThinklabEncryptionException(String arg0, Throwable arg1) {
-		super(arg0, arg1);
-		// TODO Auto-generated constructor stub
-	}
+	@Override
+	public void listItem(String username, PrintStream out) throws ThinklabException {
 
-	public ThinklabEncryptionException(String arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
+		if (AuthenticationManager.get().haveUser(username)) {
+			Properties props = AuthenticationManager.get().getUserProperties(username);
+			out.println("properties for user " + username + ":");
+			for (Object s : props.keySet()) {
+				out.println("  " + s + " = " + props.getProperty(s.toString()));				
+			}
+		} else {
+			out.println("user " + username + " does not exist");			
+		}
 
-	public ThinklabEncryptionException(Throwable arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
 	}
 
 }

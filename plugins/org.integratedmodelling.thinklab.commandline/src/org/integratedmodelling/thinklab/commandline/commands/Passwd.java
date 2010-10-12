@@ -1,5 +1,5 @@
 /**
- * ThinklabAuthenticationException.java
+ * Login.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,31 +30,32 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.authentication.exceptions;
+package org.integratedmodelling.thinklab.commandline.commands;
 
+import org.integratedmodelling.thinklab.authentication.AuthenticationManager;
+import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
-public class ThinklabAuthenticationException extends ThinklabException {
+@ThinklabCommand(
+		name="passwd",
+		description="change a user's password",
+		argumentNames="user,password",
+		argumentDescriptions="name of user,password for user",
+		argumentTypes="thinklab-core:Text,thinklab-core:Text")
+public class Passwd implements ICommandHandler {
 
-	private static final long serialVersionUID = 6356631397605799204L;
+	public IValue execute(Command command, ISession session) throws ThinklabException {
 
-	public ThinklabAuthenticationException() {
-		// TODO Auto-generated constructor stub
-	}
+		String username = command.getArgumentAsString("user");
+		String password = command.getArgumentAsString("password");
 
-	public ThinklabAuthenticationException(String arg0, Throwable arg1) {
-		super(arg0, arg1);
-		// TODO Auto-generated constructor stub
-	}
-
-	public ThinklabAuthenticationException(String arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
-
-	public ThinklabAuthenticationException(Throwable arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
+		AuthenticationManager.get().setUserPassword(username, password);
+		session.getOutputStream().println("password changed");
+		return null;
 	}
 
 }

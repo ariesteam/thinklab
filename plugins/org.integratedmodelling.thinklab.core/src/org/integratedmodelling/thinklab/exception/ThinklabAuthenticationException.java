@@ -1,5 +1,5 @@
 /**
- * ThinklabDuplicateUserException.java
+ * ThinklabAuthenticationException.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,29 +30,28 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.authentication.exceptions;
+package org.integratedmodelling.thinklab.exception;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 
-public class ThinklabDuplicateUserException extends ThinklabException {
+public class ThinklabAuthenticationException extends ThinklabException {
 
-	private static final long serialVersionUID = -531398720073851507L;
+	private static final long serialVersionUID = 6356631397605799204L;
 
-	public ThinklabDuplicateUserException() {
+	public ThinklabAuthenticationException() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ThinklabDuplicateUserException(String arg0, Throwable arg1) {
-		super("duplicate user: " + arg0, arg1);
+	public ThinklabAuthenticationException(String arg0, Throwable arg1) {
+		super(arg0, arg1);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ThinklabDuplicateUserException(String arg0) {
-		super("duplicate user: " + arg0);
+	public ThinklabAuthenticationException(String arg0) {
+		super(arg0);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ThinklabDuplicateUserException(Throwable arg0) {
+	public ThinklabAuthenticationException(Throwable arg0) {
 		super(arg0);
 		// TODO Auto-generated constructor stub
 	}

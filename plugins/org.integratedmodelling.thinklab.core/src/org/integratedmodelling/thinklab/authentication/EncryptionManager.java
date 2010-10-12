@@ -30,7 +30,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.authentication.local;
+package org.integratedmodelling.thinklab.authentication;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -46,7 +46,7 @@ import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.integratedmodelling.authentication.exceptions.ThinklabEncryptionException;
+import org.integratedmodelling.thinklab.exception.ThinklabEncryptionException;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;

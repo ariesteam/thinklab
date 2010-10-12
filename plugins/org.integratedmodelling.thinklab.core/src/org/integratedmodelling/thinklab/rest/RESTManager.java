@@ -2,11 +2,14 @@ package org.integratedmodelling.thinklab.rest;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
+import org.integratedmodelling.thinklab.owlapi.Session;
 import org.restlet.Component;
 import org.restlet.data.Protocol;
 
@@ -112,9 +115,18 @@ public class RESTManager {
 		
 	}
 
-	public ISession createRESTSession(HashMap<String, String> arguments) {
-		// TODO Auto-generated method stub
-		return null;
+	public ISession createRESTSession(final HashMap<String, String> arguments, final Properties properties) throws ThinklabException {
+		
+		Session ret = new Session() {
+			
+			@Override
+			protected IUserModel createUserModel() {
+				// TODO Auto-generated method stub
+				return new RESTUserModel(arguments, properties);
+			}
+			
+		};
+		return ret;
 	}
 
 	public Collection<String> getPaths() {

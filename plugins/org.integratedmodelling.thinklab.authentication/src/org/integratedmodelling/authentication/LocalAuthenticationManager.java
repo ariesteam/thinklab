@@ -30,7 +30,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.authentication.local;
+package org.integratedmodelling.authentication;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,18 +39,18 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Properties;
 
-import org.integratedmodelling.authentication.AuthenticationPlugin;
-import org.integratedmodelling.authentication.IThinklabAuthenticationManager;
-import org.integratedmodelling.authentication.exceptions.ThinklabAuthenticationException;
-import org.integratedmodelling.authentication.exceptions.ThinklabDuplicateUserException;
-import org.integratedmodelling.authentication.exceptions.ThinklabInvalidUserException;
 import org.integratedmodelling.sql.QueryResult;
 import org.integratedmodelling.sql.SQLPlugin;
 import org.integratedmodelling.sql.SQLServer;
+import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.authentication.AuthenticationManager;
+import org.integratedmodelling.thinklab.authentication.EncryptionManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
+import org.integratedmodelling.thinklab.exception.ThinklabAuthenticationException;
+import org.integratedmodelling.thinklab.exception.ThinklabDuplicateUserException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
+import org.integratedmodelling.thinklab.exception.ThinklabInvalidUserException;
+import org.integratedmodelling.thinklab.interfaces.IThinklabAuthenticationProvider;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
@@ -64,7 +64,7 @@ import org.w3c.dom.Node;
  * @author Ferdinando Villa
  *
  */
-public class LocalAuthenticationManager implements IThinklabAuthenticationManager {
+public class LocalAuthenticationManager implements IThinklabAuthenticationProvider {
 
 	private SQLServer database = null;
 	private EncryptionManager encryptionManager = null;
@@ -192,7 +192,7 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 		database = 
 			SQLPlugin.get().createSQLServer(db, properties);
 
-		if (BooleanValue.parseBoolean(properties.getProperty(AuthenticationPlugin.USE_ENCRYPTION_PROPERTY, "false"))) {
+		if (BooleanValue.parseBoolean(properties.getProperty(AuthenticationManager.USE_ENCRYPTION_PROPERTY, "false"))) {
 			encryptionManager = new EncryptionManager(
 					EncryptionManager.AES_ENCRYPTION_SCHEME,
 					ek);			
@@ -208,7 +208,7 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationManage
 		 * there.
 		 */
 		File userfile = new File(
-				LocalConfiguration.getUserConfigDirectory(AuthenticationPlugin.PLUGIN_ID) +
+				LocalConfiguration.getUserConfigDirectory(Thinklab.PLUGIN_ID) +
 				File.separator + 
 				"users.xml");
 		

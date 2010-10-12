@@ -1,5 +1,5 @@
 /**
- * AddUser.java
+ * ThinklabEncryptionException.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,35 +30,30 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.authentication.commands;
+package org.integratedmodelling.thinklab.exception;
 
-import org.integratedmodelling.authentication.AuthenticationPlugin;
-import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
-@ThinklabCommand(
-		name="deleteuser",
-		description="delete a user",
-		argumentNames="user",
-		argumentDescriptions="name of user",
-		argumentTypes="thinklab-core:Text")
-public class DeleteUser implements ICommandHandler {
+public class ThinklabEncryptionException extends ThinklabException {
 
-	public IValue execute(Command command, ISession session) throws ThinklabException {
+	private static final long serialVersionUID = -5786939729463617817L;
 
-		String username = command.getArgumentAsString("user");
+	public ThinklabEncryptionException() {
+		// TODO Auto-generated constructor stub
+	}
 
-		AuthenticationPlugin.get().deleteUser(username);
-		
-		/*
-		 * let the interactive bastard know
-		 */
-		session.getOutputStream().println("user " + username + " deleted");
-		return null;
+	public ThinklabEncryptionException(String arg0, Throwable arg1) {
+		super(arg0, arg1);
+		// TODO Auto-generated constructor stub
+	}
+
+	public ThinklabEncryptionException(String arg0) {
+		super(arg0);
+		// TODO Auto-generated constructor stub
+	}
+
+	public ThinklabEncryptionException(Throwable arg0) {
+		super(arg0);
+		// TODO Auto-generated constructor stub
 	}
 
 }

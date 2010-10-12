@@ -2,6 +2,7 @@ package org.integratedmodelling.thinklab.interfaces.applications;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Properties;
 
 /**
  * Implements the model of the user during a Thinklab session. Only one user model should exist per
@@ -35,5 +36,15 @@ public interface IUserModel {
 	 * initialize, passing the session that this user works in
 	 */
 	public abstract void initialize(ISession session);
-	
+
+	/*
+	 * set properties for user
+	 */
+	public abstract void setProperties(Properties uprop);
+
+	/*
+	 * get properties for user. Should never return null.
+	 */
+	public abstract Properties getProperties();
+
 }

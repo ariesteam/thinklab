@@ -30,9 +30,11 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.authentication.commands;
+package org.integratedmodelling.thinklab.commandline.commands;
 
-import org.integratedmodelling.authentication.AuthenticationPlugin;
+import java.util.Properties;
+
+import org.integratedmodelling.thinklab.authentication.AuthenticationManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
@@ -41,21 +43,17 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 @ThinklabCommand(
-		name="userprop",
-		description="set a property for a user",
-		argumentNames="user,name,value",
-		argumentDescriptions="name of user,name of property,value of property",
-		argumentTypes="thinklab-core:Text,thinklab-core:Text,thinklab-core:Text")
-public class SetUserProperty implements ICommandHandler {
+		name="who",
+		description="show current user")
+public class Who implements ICommandHandler {
 
 	public IValue execute(Command command, ISession session) throws ThinklabException {
 
-		String username = command.getArgumentAsString("user");
-		String name = command.getArgumentAsString("name");
-		String value = command.getArgumentAsString("value");
-
-		AuthenticationPlugin.get().setUserProperty(username, name, value);
-		AuthenticationPlugin.get().saveUserProperties(username);
+		Properties p = session.getProperties();
+		String user = p.getProperty(AuthenticationManager.USERID_PROPERTY);
+		session.getOutputStream().println(user == null ? 
+				"no user logged in" :			
+				user);
 		
 		return null;
 	}

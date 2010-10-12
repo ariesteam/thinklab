@@ -1,5 +1,6 @@
 package org.integratedmodelling.thinklab.rest;
 
+import org.integratedmodelling.thinklab.rest.resources.Authenticate;
 import org.integratedmodelling.thinklab.rest.resources.Capabilities;
 import org.integratedmodelling.thinklab.rest.resources.JSONCommandResource;
 import org.integratedmodelling.thinklab.rest.resources.Status;
@@ -25,6 +26,12 @@ public class RestApplication extends Application {
 		 */
 		router.attach("/", Status.class);
 		
+		/*
+		 * register authentication service, which gives you a session with privileges depending on
+		 * user properties. Will use whatever authentication manager is installed.
+		 */
+		router.attach("/auth", Authenticate.class);
+
 		/*
 		 * register "capabilities" service - returns array of services if no further context, or 
 		 * service description etc if context is given. Use wiki/html if html requested.

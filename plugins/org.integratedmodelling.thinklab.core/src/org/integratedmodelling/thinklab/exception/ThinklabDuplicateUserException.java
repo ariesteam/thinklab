@@ -1,5 +1,5 @@
 /**
- * AddUser.java
+ * ThinklabDuplicateUserException.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -30,38 +30,30 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.authentication.commands;
+package org.integratedmodelling.thinklab.exception;
 
-import java.io.PrintStream;
-import java.util.Collection;
-import java.util.Properties;
 
-import org.integratedmodelling.authentication.AuthenticationPlugin;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
-import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
+public class ThinklabDuplicateUserException extends ThinklabException {
 
-@ListingProvider(label="users", itemlabel="user")
-public class UserLister implements IListingProvider {
+	private static final long serialVersionUID = -531398720073851507L;
 
-	@Override
-	public Collection<String> getListing() throws ThinklabException {
-		return AuthenticationPlugin.get().listUsers();
+	public ThinklabDuplicateUserException() {
+		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public void listItem(String username, PrintStream out) throws ThinklabException {
+	public ThinklabDuplicateUserException(String arg0, Throwable arg1) {
+		super("duplicate user: " + arg0, arg1);
+		// TODO Auto-generated constructor stub
+	}
 
-		if (AuthenticationPlugin.get().haveUser(username)) {
-			Properties props = AuthenticationPlugin.get().getUserProperties(username);
-			out.println("properties for user " + username + ":");
-			for (Object s : props.keySet()) {
-				out.println("  " + s + " = " + props.getProperty(s.toString()));				
-			}
-		} else {
-			out.println("user " + username + " does not exist");			
-		}
+	public ThinklabDuplicateUserException(String arg0) {
+		super("duplicate user: " + arg0);
+		// TODO Auto-generated constructor stub
+	}
 
+	public ThinklabDuplicateUserException(Throwable arg0) {
+		super(arg0);
+		// TODO Auto-generated constructor stub
 	}
 
 }

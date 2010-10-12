@@ -48,6 +48,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -84,6 +85,8 @@ public class GraphicalShell {
 
 	public class ConsoleUserModel implements IUserModel {
 
+		Properties properties = null;
+		
 		@Override
 		public InputStream getInputStream() {
 			return console.getInputStream();
@@ -99,6 +102,21 @@ public class GraphicalShell {
 			// TODO Auto-generated method stub
 			
 		}
+		
+		@Override
+		public void setProperties(Properties uprop) {
+			properties = uprop;
+		}
+
+		@Override
+		public Properties getProperties() {
+
+			if (properties == null)
+				properties = new Properties();
+			
+			return properties;
+		}
+
 	}
 	
 	public class ConsoleSession extends Session {

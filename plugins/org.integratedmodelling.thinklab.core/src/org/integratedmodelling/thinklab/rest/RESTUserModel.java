@@ -1,44 +1,49 @@
-package org.integratedmodelling.thinklab.session;
+package org.integratedmodelling.thinklab.rest;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
 
-public class TTYUserModel implements IUserModel {
+public class RESTUserModel implements IUserModel {
 
-	private ISession session = null;
-	private Properties properties = null;
+	Properties properties = null;
+	ISession session = null;
 	
+	public RESTUserModel(
+			HashMap<String, String> arguments,
+			Properties p) {
+		this.properties = p;
+	}
+
 	@Override
 	public InputStream getInputStream() {
-		return System.in;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public PrintStream getOutputStream() {
-		return System.out;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public void initialize(ISession session) {
-		this.session  = session;
+		this.session = session;
 	}
 
 	@Override
 	public void setProperties(Properties uprop) {
-		properties = uprop;
+		this.properties = uprop;
 	}
 
 	@Override
 	public Properties getProperties() {
-
-		if (properties == null)
-			properties = new Properties();
-		
-		return properties;
+		return this.properties;
 	}
 
 }

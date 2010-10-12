@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.CharacterSet;
@@ -26,6 +28,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 
 	ArrayList<String> _context = new ArrayList<String>();
 	HashMap<String, String> _query = new HashMap<String, String>();
+	HashMap<String, Object> _parameters = new HashMap<String, Object>();
 	String _MIME = null;
 	Date start = null;
 
@@ -64,6 +67,10 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		if (!_processed)
 			processRequest();
 		return _query;
+	}
+	
+	public String getArgument(String id) throws ThinklabException {
+		return getArguments().get(id);
 	}
 	
 	/**
@@ -114,10 +121,76 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		super.doRelease();
 	}
 	
+	/**
+	 * Return this when you have a JSON object of your own
+	 * 
+	 * @param jsonObject
+	 * @return
+	 */
 	protected JsonRepresentation wrap(JSONObject jsonObject) {
 	    JsonRepresentation jr = new JsonRepresentation(jsonObject);   
 	    jr.setCharacterSet(CharacterSet.UTF_8);
 	    return jr;
 	}
 	
+	/**
+	 * If this is used, "return wrap()" should be the last call in your handler function. Any 
+	 * data set through this one or setResult will be automatically returned in a JSON object.
+	 * 
+	 * @param key
+	 * @param o
+	 */
+	protected void put(String key, Object... o) {
+		if (o == null || o.length == 0)
+			_parameters.put(key, "nil");
+		else if (o.length == 1)
+			_parameters.put(key, o[0]);
+		else {
+			
+			/*
+			 * if a tree node, do our tree thing
+			 * TODO when we know what it is, of course.
+			 */
+			
+			/*
+			 * else make a JSONArray
+			 */
+			try {
+				JSONArray ja = new JSONArray(o);
+				_parameters.put(key, ja);
+			} catch (JSONException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+	}
+	
+	/**
+	 * Return this if you have used any of the put() or setResult() functions. Will create and 
+	 * wrap a suitable JSON object automatically.
+	 * @return
+	 */
+	protected JsonRepresentation wrap() {
+		
+		JSONObject jsonObject = new JSONObject();
+		
+		/*
+		 * TODO
+		 * put any result; add type if indirect (URN)
+		 */
+		
+		/*
+		 * put any fields
+		 */
+		for (String s : _parameters.keySet()) {
+			try {
+				jsonObject.put(s, _parameters.get(s));
+			} catch (JSONException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+		
+	    JsonRepresentation jr = new JsonRepresentation(jsonObject);   
+	    jr.setCharacterSet(CharacterSet.UTF_8);
+	    return jr;
+	}
 }

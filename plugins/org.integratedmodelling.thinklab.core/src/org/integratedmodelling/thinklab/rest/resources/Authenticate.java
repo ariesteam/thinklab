@@ -1,14 +1,15 @@
 package org.integratedmodelling.thinklab.rest.resources;
 
+import java.util.Properties;
+
+import org.integratedmodelling.thinklab.authentication.AuthenticationManager;
+import org.integratedmodelling.thinklab.exception.ThinklabAuthenticationException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.integratedmodelling.thinklab.rest.RESTManager;
-import org.json.JSONObject;
-import org.restlet.data.CharacterSet;
-import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
-import org.restlet.resource.Get;
+import org.restlet.resource.Post;
 
 /**
  * Authenticate creates a session for the calling service and returns a descriptor 
@@ -19,31 +20,32 @@ import org.restlet.resource.Get;
  * return session status.
  * 
  * @author ferdinando.villa
- *
+ * 
  */
 public class Authenticate extends DefaultRESTHandler {
 
-	@Get
-	public Representation authenticate() {
-		
-		JSONObject oret = new JSONObject();
-		
+	@Post
+	public Representation authenticate() throws ThinklabException {
+				
 		/*
 		 * TODO
 		 */
-		try {
-			ISession session = RESTManager.get().createRESTSession(this.getArguments());
-		} catch (ThinklabException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String user = this.getArgument("user");
+		String pass = this.getArgument("password");
+		Properties uprop = null;
+		
+		if (AuthenticationManager.get().authenticateUser(user, pass, null)) {
+			uprop = AuthenticationManager.get().getUserProperties(user);			
+		} else {
+			throw new ThinklabAuthenticationException("failed to authenticate user " + user);
 		}
 		
+		ISession session = RESTManager.get().createRESTSession(this.getArguments(), uprop);
+		session.getUserModel().setProperties(uprop);
 		
+		put("session", session.getSessionID());
 		
-		JsonRepresentation ret = new JsonRepresentation(oret);
-	    ret.setCharacterSet(CharacterSet.UTF_8);
-
-		return ret;
+		return wrap();
 	}
 	
 }
