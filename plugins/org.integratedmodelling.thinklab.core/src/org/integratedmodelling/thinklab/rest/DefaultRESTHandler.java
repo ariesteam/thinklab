@@ -8,10 +8,13 @@ import java.util.List;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
+import org.integratedmodelling.utils.NameGenerator;
+import org.integratedmodelling.utils.exec.TaskScheduler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.CharacterSet;
+import org.restlet.data.Method;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
@@ -21,26 +24,87 @@ import org.restlet.resource.ServerResource;
  * Default resource handler always responds JSON, with fields pointing to results or 
  * further resource URNs.
  * 
+ * The handler methods should return one of the wrap() functions.
+ * 
  * @author Ferdinando
  *
  */
 public abstract class DefaultRESTHandler extends ServerResource implements IRESTHandler {
 
+	// result types
+	static public final int VOID = 0;
+	static public final int INT = 1;
+	static public final int DOUBLE = 2;
+	static public final int TEXT = 3;
+	static public final int URN = 4;
+	static public final int INTS = 5;
+	static public final int DOUBLES = 6;
+	static public final int TEXTS = 7;
+	static public final int URNS = 8;
+	
+	// codes for getStatus()
+	static public final int DONE = 0;
+	static public final int FAIL = 0;
+	static public final int WAIT = 0;
+
 	ArrayList<String> _context = new ArrayList<String>();
 	HashMap<String, String> _query = new HashMap<String, String>();
-	HashMap<String, Object> _parameters = new HashMap<String, Object>();
 	String _MIME = null;
 	Date start = null;
+	int resultStatus = DONE;
+	private ResultHolder rh = new ResultHolder();
 
-//	private JSONObject _result = null;
-//	
-//	protected JSONObject getResult() {
-//		if (_result == null)
-//			_result = new JSONObject();
-//		return _result;
-//	}
-//	
 	boolean _processed = false;
+	
+	/**
+	 * The thread used to enqueue any non-instantaneous work.
+	 * 
+	 * @author Ferdinando
+	 *
+	 */
+	protected abstract class TaskThread extends TaskScheduler.Task {
+
+		private volatile boolean isComputing = false;
+		private volatile boolean isException = false;
+		private String error = null;
+		
+		protected abstract void execute() throws Exception;
+		protected abstract void cleanup();
+		
+		
+		@Override
+		public void run() {
+
+			isComputing = true;
+			
+			try {
+				execute();
+			} catch (Exception e) {
+				error = e.getMessage();
+				// TODO log exception & stack trace
+				isComputing = false;
+				isException = true;
+			} finally {
+				cleanup();
+			}
+			
+			/*
+			 * finish up, notify the user model and all others that this module has completed and
+			 * with what status.
+			 */
+
+			isComputing = false;
+		}
+
+		@Override
+		public boolean finished() {
+			return !isComputing;
+		}
+		
+		public boolean error() {
+			return isException;
+		}
+	}
 	
 	/**
 	 * Return the elements of the request path after the service identifier, in the same
@@ -88,7 +152,9 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	private void processRequest() {
 		
 		// TODO Auto-generated method stub
-		
+		if (getRequest().getMethod().equals(Method.GET)) {
+			
+		}
 		_processed = true;
 	}
 
@@ -112,6 +178,9 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 				((JsonRepresentation)r).getJsonObject().put(
 						"elapsed", 
 						((float)(date.getTime() - start.getTime()))/1000.0f);
+				
+				((JsonRepresentation)r).getJsonObject().put(
+						"endTime", date.getTime());
 				
 			} catch (JSONException e) {
 				throw new ResourceException(e);
@@ -141,28 +210,47 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	 * @param o
 	 */
 	protected void put(String key, Object... o) {
-		if (o == null || o.length == 0)
-			_parameters.put(key, "nil");
-		else if (o.length == 1)
-			_parameters.put(key, o[0]);
-		else {
-			
-			/*
-			 * if a tree node, do our tree thing
-			 * TODO when we know what it is, of course.
-			 */
-			
-			/*
-			 * else make a JSONArray
-			 */
-			try {
-				JSONArray ja = new JSONArray(o);
-				_parameters.put(key, ja);
-			} catch (JSONException e) {
-				throw new ThinklabRuntimeException(e);
-			}
-		}
 	}
+	
+	protected void setResult(int... iResult) {
+		rh.setResult(iResult);
+	}
+
+	protected void setResult(double... dResult) {
+		rh.setResult(dResult);
+	}
+
+	protected void setResult(String... tResult) {
+		rh.setResult(tResult);
+	}
+	
+	protected void addResult(String rURN, String rMIME) {
+		rh.addResult(rURN, rMIME);
+	}
+	
+	protected void fail() {
+		resultStatus = FAIL;
+	}
+	
+	/**
+	 * TODO pass a thread of a subclass that can be checked for finish, so we 
+	 * can rely on this uniformly.
+	 * 
+	 * Postpone result to next call. Sets task and returns taskId. If possible pass
+	 * a number of milliseconds before which it's not worth trying again. If not, pass
+	 * -1L to tell client that it's on its own figuring it out.
+	 * 
+	 * @return
+	 */
+	protected String postpone(long howLong) {
+
+		String taskId = NameGenerator.newName("task");
+		
+		resultStatus = WAIT;
+		
+		return taskId;
+	}
+	
 	
 	/**
 	 * Return this if you have used any of the put() or setResult() functions. Will create and 
@@ -172,23 +260,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	protected JsonRepresentation wrap() {
 		
 		JSONObject jsonObject = new JSONObject();
-		
-		/*
-		 * TODO
-		 * put any result; add type if indirect (URN)
-		 */
-		
-		/*
-		 * put any fields
-		 */
-		for (String s : _parameters.keySet()) {
-			try {
-				jsonObject.put(s, _parameters.get(s));
-			} catch (JSONException e) {
-				throw new ThinklabRuntimeException(e);
-			}
-		}
-		
+		rh.toJSON(jsonObject);
 	    JsonRepresentation jr = new JsonRepresentation(jsonObject);   
 	    jr.setCharacterSet(CharacterSet.UTF_8);
 	    return jr;
