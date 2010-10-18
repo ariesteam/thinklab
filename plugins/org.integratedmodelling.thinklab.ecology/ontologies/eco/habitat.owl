@@ -228,6 +228,12 @@
       <owl:Class rdf:ID="FireRegime"/>
     </rdfs:subClassOf>
   </owl:Class>
+  <owl:Class rdf:ID="VegetationCarbonStorage">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Weight"/>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="IndustrialActivityLand">
     <rdfs:subClassOf>
       <owl:Class rdf:about="#ArtifactProductingLand"/>
@@ -253,13 +259,13 @@
       <owl:Class rdf:ID="CommunityQuality"/>
     </rdfs:subClassOf>
   </owl:Class>
-  <owl:Class rdf:about="#ManagedLand">
-    <rdfs:subClassOf rdf:resource="#UsageType"/>
-  </owl:Class>
   <owl:Class rdf:ID="JulyDaysOfPrecipitation">
     <rdfs:subClassOf>
       <owl:Class rdf:about="#DaysOfPrecipitationMonthly"/>
     </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#ManagedLand">
+    <rdfs:subClassOf rdf:resource="#UsageType"/>
   </owl:Class>
   <owl:Class rdf:ID="NovemberPrecipitation">
     <rdfs:subClassOf>
@@ -486,6 +492,12 @@
   <owl:Class rdf:about="#TimeDependentWaterCoverage">
     <rdfs:subClassOf>
       <owl:Class rdf:about="#WaterCoveragePattern"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="SoilCarbonStorage">
+    <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/science/representation.owl#Weight"/>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#HabitatQuality"/>
     </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="FishRichness">
