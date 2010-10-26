@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.visualization;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
@@ -18,13 +19,13 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.modelling.ModellingPlugin;
-import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.time.implementations.observations.RegularTemporalGrid;
+import org.integratedmodelling.time.TimePlugin;
+import org.integratedmodelling.time.extents.RegularTimeGridExtent;
 import org.integratedmodelling.utils.Pair;
 
 import ucar.ma2.ArrayDouble;
@@ -43,7 +44,8 @@ import ucar.nc2.NetcdfFileWriteable;
 public class NetCDFArchive {
 
 	GridExtent space         = null;
-	RegularTemporalGrid time = null;
+	RegularTimeGridExtent time = null;
+	
 	Map<IConcept,IState> variables;
 	Map<String,IState> auxVariables = 
 		new Hashtable<String, IState>();
@@ -78,18 +80,24 @@ public class NetCDFArchive {
 	/**
 	 * Alternative to SetObservation, just pass a context and a map of
 	 * states.
+	 * 
+	 * TODO context should contain all states.
+	 * 
 	 * @param obs
 	 * @throws ThinklabException
 	 */
 	public void setStates(Map<IConcept, IState> states, IObservationContext context) throws ThinklabException {
 		
 		IExtent spc = context.getExtent(Geospace.get().SubdividedSpaceObservable());
+		IExtent tim = context.getExtent(TimePlugin.get().TimeObservable());
 		
 		if (spc == null || !(spc instanceof GridExtent))
 			throw new ThinklabUnimplementedFeatureException(
 					"only raster grid data are supported in NetCDF exporter for now");
 
-		//time  = (RasterGrid) Obs.findObservation(o, TimePlugin.GridObservable());
+		if (tim != null && tim instanceof RegularTimeGridExtent)
+			this.time = (RegularTimeGridExtent) tim;
+		
 		space = (GridExtent)spc; 
 		variables = states;
 	}
@@ -128,6 +136,8 @@ public class NetCDFArchive {
 		Dimension latDim = null;
 		Dimension lonDim = null;
 		Dimension timDim = null;
+
+		HashMap<IConcept, double[]> dataCatalog = new HashMap<IConcept, double[]>();
 
 		ArrayList<Dimension> spdims = new ArrayList<Dimension>();
 		
@@ -177,15 +187,23 @@ public class NetCDFArchive {
 				if (varnames.contains(varname))
 					continue;
 				
+				IState state = variables.get(obs);
+				
 				ncfile.addVariable(varname, DataType.FLOAT, new Dimension[]{latDim,lonDim});
+				
+				// do this now, so we have the uncertainty info in the metadata. Save for later. 
+				// FIXME the logics of this is a little on the perverse side but the IState
+				// contract does not mandate caching so for now it's good as is.
+				dataCatalog.put(obs, state.getDataAsDoubles());
 
 				varnames.add(varname);
 				
-				
 				// FIXME: this crashes hard (something semantically bad is happening here)
 				// add uncertainty if any
-				if (variables.get(obs).getMetadata().get(Metadata.UNCERTAINTY) != null)
+				double[] uu = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
+				if (uu != null) {
 					ncfile.addVariable(varname+"Uncertainty", DataType.FLOAT, new Dimension[]{latDim,lonDim});
+				}
 				
 				// TODO if var is a measurement, add units attribute - this is a stupid stub
 				if (varname.equals("Altitude")) {
@@ -268,19 +286,19 @@ public class NetCDFArchive {
 				
 				ArrayDouble data = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
 				Index ind = data.getIndex();
-				double[] dd = state.getDataAsDoubles();
+				double[] dd = dataCatalog.get(obs);
 				
 				// this can now happen for stuff like categories, eventually it will be removed
 				if (dd == null)
 					return;
 				
-				// FIXME: same deal, more Uncertainty-related badness
-				//double[] uu = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
-				double[] uu = null;
+				double[] uu = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
 				ArrayDouble unce = null;
-				if (uu != null)
+				if (uu != null) {
+					System.out.println("FOUND UNCERTAINTY FOR " + varname);
 					unce = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
-
+				}
+					
 				int i = 0;
 				for (int lat = 0; lat < latDim.getLength(); lat++) {
 					for (int lon = 0; lon < lonDim.getLength(); lon++) {
@@ -293,8 +311,10 @@ public class NetCDFArchive {
 				}
 				try {
 					ncfile.write(varname, data);
-					if (uu != null)
+					if (uu != null){
+						System.out.println("WRITING UNCERTAINTY VAR FOR " + varname);
 						ncfile.write(varname+"Uncertainty", unce);
+					}
 				} catch (Exception e) {
 					throw new ThinklabIOException(e);
 				}
