@@ -63,8 +63,16 @@ public class NetCDFArchive {
 	 * @throws ThinklabException 
 	 */
 	public void setObservation(IInstance obs) throws ThinklabException {
+		setObservation(ObservationFactory.getObservation(obs));
+	}
+	
+	/**
+	 * Add a contextualized observation and we do the rest.
+	 * @param obs
+	 * @throws ThinklabException 
+	 */
+	public void setObservation(IObservation o) throws ThinklabException {
 		
-		IObservation o = ObservationFactory.getObservation(obs);
 		this.context = new ObservationContext(o);
 		IObservation spc = ObservationFactory.findTopology(o, Geospace.get().SubdividedSpaceObservable());
 		
@@ -76,7 +84,6 @@ public class NetCDFArchive {
 		space = (GridExtent) ((RasterGrid)spc).getExtent(); 
 		variables = ObservationFactory.getStateMap(o);
 	}
-	
 	/**
 	 * Alternative to SetObservation, just pass a context and a map of
 	 * states.

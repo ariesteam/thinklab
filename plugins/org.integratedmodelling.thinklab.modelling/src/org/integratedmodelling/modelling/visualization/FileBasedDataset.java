@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.visualization;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 
@@ -21,6 +22,9 @@ import org.integratedmodelling.utils.image.ColorMap;
 import org.integratedmodelling.utils.image.ImageUtil;
 
 /**
+ * 
+ * This whole thing must be straightened out. But for now, this is a dataset implementation backed by
+ * a netCDF file.
  * 
  * @author Ferdinando
  *
@@ -239,6 +243,24 @@ public class FileBasedDataset implements IDataset {
 
 	public RasterGrid getGrid() {
 		return space;
+	}
+
+	@Override
+	public void initialize(IObservation observation) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initialize(URL resource) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void persist(File resource) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

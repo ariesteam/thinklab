@@ -1,7 +1,10 @@
 package org.integratedmodelling.modelling.interfaces;
 
+import java.io.File;
+import java.net.URL;
 import java.util.Collection;
 
+import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -17,6 +20,12 @@ import org.integratedmodelling.utils.image.ColorMap;
  *
  */
 public interface IDataset {
+	
+	public abstract void initialize(IObservation observation) throws ThinklabException;
+
+	public abstract void initialize(URL resource) throws ThinklabException;
+	
+	public abstract void persist(File resource) throws ThinklabException;
 
 	public abstract boolean isSpatial();
 	
