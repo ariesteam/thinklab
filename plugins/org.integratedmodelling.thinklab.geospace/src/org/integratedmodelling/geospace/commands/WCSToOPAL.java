@@ -44,6 +44,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -71,6 +72,7 @@ public class WCSToOPAL implements ICommandHandler {
 		
 		out.addNamespace("observation", "http://www.integratedmodelling.org/ks/science/observation.owl");
 		out.addNamespace("geospace", "http://www.integratedmodelling.org/ks/geospace/geospace.owl");
+		
 		
 		try {
 			 cap = 

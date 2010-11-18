@@ -94,8 +94,10 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		}
 				
 		layerName = coverageID;
+		URL durl = buildDescribeUrl(coverageID);
 		
-		XMLDocument desc = new XMLDocument(buildDescribeUrl(coverageID));
+		System.out.println("accessing: " + durl);
+		XMLDocument desc = new XMLDocument(durl);		
 		parseDescriptor(desc);
 		
 	}
