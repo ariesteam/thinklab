@@ -255,8 +255,12 @@ public class OPALValidator {
 		
 		IConcept c = profile.locateConcept(n.getNodeName());
 		
-		if (c == null)
+		if (c == null) {
+
+			System.out.println("dio capitone");
 			throw new OPALValidationException("node " + n.getNodeName() + " does not identify a known concept");
+				
+		}
 		
 		if (c.isAbstract())
 			throw new OPALValidationException("can't create an instance of abstract concept " + c);
