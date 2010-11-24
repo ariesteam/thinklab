@@ -222,7 +222,7 @@ public class CoverageFactory {
 		Map<Object,Object> connectionParameters = new HashMap<Object,Object>();
 		connectionParameters.put(
 					WFSDataStoreFactory.URL.key, 
-					wfsService + "?request=getCapabilities" );
+					wfsService + "?request=getCapabilities&VERSION=1.0.0" );
 		connectionParameters.put(
 				WFSDataStoreFactory.TIMEOUT.key, 
 				wfsTimeout);
