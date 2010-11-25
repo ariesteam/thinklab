@@ -80,6 +80,7 @@ public class WFSCoverageDataSource extends VectorCoverageDataSource {
 							"http://127.0.0.1:8080/geoserver/wfs" : 
 							server.toString()) + 
 					"?coverage="  + covId + 
+					"?VERSION=1.1.0" +
 					"?attribute=" + (attr == null ? "NONE" : attr.toString()));
 			
 		} catch (MalformedURLException e) {
