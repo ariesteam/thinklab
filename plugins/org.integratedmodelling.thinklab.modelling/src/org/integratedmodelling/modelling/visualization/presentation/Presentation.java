@@ -1,8 +1,11 @@
 package org.integratedmodelling.modelling.visualization.presentation;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 
+import org.integratedmodelling.modelling.interfaces.IDataset;
+import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
@@ -37,6 +40,11 @@ public class Presentation {
 		public String name;
 		public String id;
 		public int sequence = -1;
+		
+		public void setup(File directory, IVisualization visual) {
+			
+		}
+		
 		public String getConcept() {
 			return concept;
 		}
@@ -146,5 +154,13 @@ public class Presentation {
 		return style;
 	}
 	
-	
+	/**
+	 * Sets up each individual page in a persistent location, so that the actual visualization
+	 * can be quickly built.
+	 * 
+	 * @param vis
+	 */
+	public void initialize(IVisualization vis) throws ThinklabException {
+		
+	}
 }

@@ -17,10 +17,17 @@ import java.util.HashSet;
 
 import javax.imageio.ImageIO;
 
+import org.geotools.data.ows.Layer;
+import org.geotools.data.wms.WMSUtils;
+import org.geotools.data.wms.WebMapServer;
+import org.geotools.data.wms.request.GetMapRequest;
+import org.geotools.data.wms.response.GetMapResponse;
+import org.geotools.ows.ServiceException;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.utils.MiscUtilities;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -40,14 +47,55 @@ public class GeoImageFactory {
 		MIDDLE,
 		BOTTOM
 	}
+
+
+	public static final String WMS_IMAGERY_SERVER_PROPERTY = "imagery.wms";
 	
 	
 	/*
-	 * yes, it's a singleton.
+	 * yes, it's a singleton. It's also a simpleton.
 	 */
 	private static GeoImageFactory _instance;
 
+	private static WebMapServer _wms = null;
+	private boolean _wms_inited = false;
+	
 	private HashMap<String, URL> worldImages = new HashMap<String, URL>();
+	
+	/**
+	 * Try out all the configured WMS servers (in imagery.properties) stopping at the first
+	 * one that responds. The server will be in _wms after that; if none has responded, _wms
+	 * will be null. It will only run the search once, so it can safely be called multiple 
+	 * times with no performance penalty, and should be called by each function that wants
+	 * to use WMS imagery.
+	 */
+	private void initializeWms() {
+		
+		if (_wms_inited)
+			return;
+		
+		for (int i = 0; ; i++) {
+			
+			String url = 
+				Geospace.get().getProperties().getProperty(WMS_IMAGERY_SERVER_PROPERTY + "." + i);
+			
+			if (url == null)
+				break;
+			
+			try {
+				WebMapServer wms = new WebMapServer(new URL(url));
+				if (wms != null)
+					_wms = wms;
+			} catch (Exception e) {
+				/* just try the next */
+			}
+			
+			if (_wms != null)
+				break;
+		}
+		
+		_wms_inited = true;
+	}
 	
 	public URL getWorldImage(String worldImage, ShapeValue ... shapes) throws ThinklabIOException {
 		
@@ -135,7 +183,47 @@ public class GeoImageFactory {
 				HAlignment.MIDDLE, VAlignment.MIDDLE);
 	}
 	
+	private BufferedImage getWFSImage(Envelope envelope, int width, int height) throws ThinklabResourceNotFoundException {
+		
+		initializeWms();
+		BufferedImage ret = null;
+		
+		if (_wms != null) {
+		
+			GetMapRequest request = _wms.createGetMapRequest();
+			request.setFormat("image/png");
+			request.setDimensions(""+width, ""+height); 
+			request.setTransparent(true);
+			
+			// TODO use envelope
+			request.setSRS("EPSG:4326");
+			request.setBBox("-131.13151509433965,46.60532747661736,-117.61620566037737,56.34191403281659");
+
+			Layer l = getWMSLayer();
+			
+			if (l  == null) {
+				for ( Layer layer : WMSUtils.getNamedLayers(_wms.getCapabilities()) ) {
+				  request.addLayer(layer);
+				}
+			}
+			
+			GetMapResponse response;
+			try {
+				response = (GetMapResponse) _wms.issueRequest(request);
+				ret = ImageIO.read(response.getInputStream());
+			} catch (Exception e) {
+				throw new ThinklabResourceNotFoundException(e);
+			}
+		}
+		
+		return ret;
+	}
 	
+	private Layer getWMSLayer() {
+		// TODO get layer from properties
+		return null;
+	}
+
 	public URL getSatelliteImage(Envelope envelope, URL other, int width, int height) throws ThinklabException {
 		return getSatelliteImage(
 				envelope, width, height, null, other, 
