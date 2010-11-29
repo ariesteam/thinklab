@@ -80,6 +80,12 @@ public final class Picture implements ActionListener {
        // set to TYPE_INT_ARGB to support transparency
    }
 
+   // create from a preexisting image
+   public Picture(BufferedImage image) {
+       this.image = image;
+   }
+
+   
    // create an image by reading in the PNG, GIF, or JPEG from a filename
    public Picture(String filename) {
 

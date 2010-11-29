@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -50,7 +52,7 @@ public class GeoImageFactory {
 
 
 	public static final String WMS_IMAGERY_SERVER_PROPERTY = "imagery.wms";
-	
+	public static final String WMS_LAYER_PROPERTY = "imagery.wms.layers";
 	
 	/*
 	 * yes, it's a singleton. It's also a simpleton.
@@ -58,7 +60,7 @@ public class GeoImageFactory {
 	private static GeoImageFactory _instance;
 
 	private static WebMapServer _wms = null;
-	private boolean _wms_inited = false;
+	private int _wms_index = -1;
 	
 	private HashMap<String, URL> worldImages = new HashMap<String, URL>();
 	
@@ -71,7 +73,7 @@ public class GeoImageFactory {
 	 */
 	private void initializeWms() {
 		
-		if (_wms_inited)
+		if (_wms_index >= 0)
 			return;
 		
 		for (int i = 0; ; i++) {
@@ -90,14 +92,16 @@ public class GeoImageFactory {
 				/* just try the next */
 			}
 			
-			if (_wms != null)
+			_wms_index = i;
+
+			if (_wms != null) {
 				break;
+			}
 		}
 		
-		_wms_inited = true;
 	}
 	
-	public URL getWorldImage(String worldImage, ShapeValue ... shapes) throws ThinklabIOException {
+	public URL getWorldImageURL(String worldImage, ShapeValue ... shapes) throws ThinklabIOException {
 		
 		URL f = getWorldImageFile(worldImage);
 		
@@ -178,15 +182,27 @@ public class GeoImageFactory {
 	}
 	
 	public URL getSatelliteImage(Envelope envelope, int width, int height) throws ThinklabException {
-		return getSatelliteImage(
+		return getSatelliteImageURL(
 				envelope, width, height, null, null, 
 				HAlignment.MIDDLE, VAlignment.MIDDLE);
 	}
 	
+	public BufferedImage getImagery(Envelope envelope, int width, int height) throws ThinklabException {
+
+		BufferedImage ret = getWFSImage(envelope, width, height);
+
+		if (ret == null)
+			ret = getSatelliteImage(envelope, width, height, null, null, 
+					HAlignment.MIDDLE, VAlignment.MIDDLE);
+		
+		return ret;
+		
+	}
+	
 	private BufferedImage getWFSImage(Envelope envelope, int width, int height) throws ThinklabResourceNotFoundException {
 		
-		initializeWms();
 		BufferedImage ret = null;
+		initializeWms();
 		
 		if (_wms != null) {
 		
@@ -195,19 +211,20 @@ public class GeoImageFactory {
 			request.setDimensions(""+width, ""+height); 
 			request.setTransparent(true);
 			
-			// TODO use envelope
+			// FIXME this assumes the envelope is in lat/lon
 			request.setSRS("EPSG:4326");
-			request.setBBox("-131.13151509433965,46.60532747661736,-117.61620566037737,56.34191403281659");
-
-			Layer l = getWMSLayer();
 			
-			if (l  == null) {
-				for ( Layer layer : WMSUtils.getNamedLayers(_wms.getCapabilities()) ) {
-				  request.addLayer(layer);
-				}
+			String bbox =
+				envelope.getMinX() + "," + envelope.getMinY() + "," +
+				envelope.getMaxX() + "," + envelope.getMaxY();
+			
+			request.setBBox(bbox);
+
+			for ( Layer layer : getWMSLayers()) {
+				 request.addLayer(layer);
 			}
 			
-			GetMapResponse response;
+			GetMapResponse response = null;
 			try {
 				response = (GetMapResponse) _wms.issueRequest(request);
 				ret = ImageIO.read(response.getInputStream());
@@ -219,16 +236,24 @@ public class GeoImageFactory {
 		return ret;
 	}
 	
-	private Layer getWMSLayer() {
-		// TODO get layer from properties
-		return null;
+	private Collection<Layer> getWMSLayers() {
+		
+		String zp = Geospace.get().getProperties().getProperty(WMS_LAYER_PROPERTY + "." + _wms_index);
+		ArrayList<Layer> layers = new ArrayList<Layer>();
+		for (Layer l : WMSUtils.getNamedLayers(_wms.getCapabilities())) {
+			if (zp == null || (zp != null && zp.contains(l.getName()))) {
+				layers.add(l);
+			}
+		}
+		return layers;
 	}
 
 	public URL getSatelliteImage(Envelope envelope, URL other, int width, int height) throws ThinklabException {
-		return getSatelliteImage(
+		return getSatelliteImageURL(
 				envelope, width, height, null, other, 
 				HAlignment.MIDDLE, VAlignment.MIDDLE);
 	}
+	
 	/**
 	 * The all-configurable draw image engine
 	 * 
@@ -242,7 +267,7 @@ public class GeoImageFactory {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public URL getSatelliteImage(Envelope envelope, int width, int height, String worldImage, URL otherImage, HAlignment horAligment, VAlignment verAlignment) throws ThinklabException {
+	public BufferedImage getSatelliteImage(Envelope envelope, int width, int height, String worldImage, URL otherImage, HAlignment horAligment, VAlignment verAlignment) throws ThinklabException {
 		
 		URL f = null;
 		
@@ -319,7 +344,18 @@ public class GeoImageFactory {
 			}
 		}
 		
+		return newImage;
+				
+	}
+	
+	public URL getSatelliteImageURL(Envelope envelope, int width, int height, String worldImage, URL otherImage, HAlignment horAligment, VAlignment verAlignment) throws ThinklabException {
+		
+		BufferedImage newImage = 
+			getSatelliteImage(envelope, width, height, worldImage, otherImage, horAligment, verAlignment);
+
+		URL f = null;
 		File o = null;
+		
 		try {
 			o = File.createTempFile("sim", ".png");
 			ImageIO.write(newImage, "png", o);
