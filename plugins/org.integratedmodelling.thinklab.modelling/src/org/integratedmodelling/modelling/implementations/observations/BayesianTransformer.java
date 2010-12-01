@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.apache.derby.impl.sql.GenericClassInfo;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
@@ -211,11 +212,16 @@ public class BayesianTransformer
 				pcstates[j] = KnowledgeManager.get().requireConcept(pstates[j]);
 			}
  			
+ 			ArrayList<Pair<GeneralClassifier, IConcept>> classf = new ArrayList<Pair<GeneralClassifier, IConcept>>();
+ 			IObservation gmodel = modelPrototypes.get(var);
+ 			if (gmodel instanceof ModeledClassification) 
+ 				classf = ((ModeledClassification)gmodel).classifiers;
+ 			
  			/*
  			 * TODO add metadata to ds. These come from the classifications: must know if 
  			 * we're discretizing a continuous distribution or not. 
  			 */
-			st.data = new CategoricalDistributionDatasource(var, size, pcstates, classifiers, 
+			st.data = new CategoricalDistributionDatasource(var, size, pcstates, classf, 
 					(ObservationContext) context);
 			st.data.addAllMetadata(modelMetadata.get(st.observable));
 			pstorage[i++] = st;

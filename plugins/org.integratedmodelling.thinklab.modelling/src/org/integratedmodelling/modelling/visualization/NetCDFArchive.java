@@ -212,7 +212,6 @@ public class NetCDFArchive {
 
 				varnames.add(varname);
 				
-				// FIXME: this crashes hard (something semantically bad is happening here)
 				// add uncertainty if any
 				double[] uu = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
 				if (uu != null) {
@@ -332,7 +331,7 @@ public class NetCDFArchive {
 						Index index = ind.set(lat,lon);
 						
 						double val = dd[i];
-						double uvl = uu[i];
+						double uvl = uu == null ? 0 : uu[i];
 						
 						if (mask != null) {
 							int[] xy = space.getXYCoordinates(i);

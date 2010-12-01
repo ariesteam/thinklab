@@ -30,7 +30,9 @@ public class CategoricalDistributionDatasource extends
 	int[] sortedIndexes = null;
 	double[] shuttle = null;
 	HashMap<IConcept, Integer> ranks = null;
-	private Pair<double[], IConcept[]> distributionBreakpoints;
+	private double[] distributionBreakpoints;
+	private IConcept[] rnk;
+	boolean averageable = false;
 	
 	class DistributionParameters {
 		double mean;
@@ -76,7 +78,11 @@ public class CategoricalDistributionDatasource extends
 				 * data encode a continuous distribution. Set contp=true in
 				 * that case.
 				 */
-				ret[i] = (double)ranks.get(c);
+				if (averageable) {
+					ret[i] = val.mean;
+				} else {
+					ret[i] = (double)ranks.get(c);
+				}
 				unc[i] = val.shannon;
 			}
 		}
@@ -122,7 +128,12 @@ public class CategoricalDistributionDatasource extends
 					Math.log(probabilities[i]);
 				nst++;
 			}
-//			mu += probabilities[i]*
+			
+			if (averageable)
+				mu += (this.distributionBreakpoints[i] + 
+					   (this.distributionBreakpoints[i+1] - this.distributionBreakpoints[i])/2)
+					*		
+				probabilities[i];
 		}
 		
 		ret.shannon = (sh/Math.log((double)nst)) * -1.0;
@@ -154,14 +165,19 @@ public class CategoricalDistributionDatasource extends
 			con.add(op.getSecond());
 		}
 
-		IConcept[] rnk = null;
-		this.distributionBreakpoints = 
+		Pair<double[], IConcept[]> dst = 
 			Metadata.computeDistributionBreakpoints(type, cls, con);		
-		if (distributionBreakpoints != null) {
-			if (distributionBreakpoints.getSecond()[0] != null) {
-				rnk = distributionBreakpoints.getSecond();
+		if (dst != null) {
+			if (dst.getSecond()[0] != null) {
+				this.rnk = dst.getSecond();
+				this.distributionBreakpoints =  dst.getFirst();
 			}
 		}
+		
+		this.averageable = 
+			this.distributionBreakpoints != null &&
+			!Double.isInfinite(distributionBreakpoints[0]) &&
+			!Double.isInfinite(distributionBreakpoints[distributionBreakpoints.length - 1]);
 			
 		if (rnk == null) {	
 			this.ranks = Metadata.rankConcepts(_type, metadata);
@@ -211,18 +227,16 @@ public class CategoricalDistributionDatasource extends
 	/**
 	 * If the distribution encoded in the states is the discretization of a continuous distribution,
 	 * return the breakpoints of each numeric class. If either end is open, start and/or end the
-	 * returned array with a NaN.
+	 * returned array with the appropriate Infinity. If this does not encode a continuous distribution,
+	 * return null.
 	 * 
-	 * @return
+	 * @return 
 	 * @throws ThinklabInappropriateOperationException if the distribution is not continuous or
 	 * 	       there are gaps in the classes.
 	 */
-//	public double[] getDistributionBreakpoints() throws ThinklabInappropriateOperationException {
-//	
-//		double[] ret = null;
-//		
-//		return ret;
-//	}
+	public double[] getDistributionBreakpoints() {
+		return distributionBreakpoints;
+	}
 
 	/**
 	 * Return the probabilities of all the states in value mappings
