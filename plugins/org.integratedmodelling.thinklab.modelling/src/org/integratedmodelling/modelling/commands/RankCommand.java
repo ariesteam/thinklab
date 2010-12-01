@@ -130,14 +130,16 @@ public class RankCommand implements ICommandHandler {
 			if (result.getTotalResultCount() > 0)
 				roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
 				
-			if (roi != null)
+			if (roi != null) {
 				where = 
 					session.createObject(RasterGrid.createRasterGrid(roi, res));
-			else 
+				((RasterGrid) ObservationFactory.getObservation(where)).mask(roi);
+			} else { 
 				throw new ThinklabResourceNotFoundException(
 						"region name " + 
 						command.getArgumentAsString("context") +
 						" cannot be resolved");
+			}
 		}
 		
 		ArrayList<IContextualizationListener> listeners = 

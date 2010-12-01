@@ -130,9 +130,14 @@ public class ModelCommand implements ICommandHandler {
 					roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
 					
 				if (roi != null) {
+				
 					IInstance where = 
 						session.createObject(RasterGrid.createRasterGrid(roi, res));
 					ret = (Topology)ObservationFactory.getObservation(where);
+					
+					// TODO this should be part of the instance definition but it's very expensive
+					((RasterGrid) ObservationFactory.getObservation(where)).mask(roi);
+
 				} else { 
 					throw new ThinklabResourceNotFoundException(
 							"region name " + 

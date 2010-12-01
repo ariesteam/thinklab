@@ -40,6 +40,7 @@ import javax.measure.unit.Unit;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
@@ -81,10 +82,9 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 	
 	// public so it can be set through reflection
 	public GridExtent extent;
-	private IGridMask mask;
-	private ShapeValue shape;
+	public IGridMask mask;
+	public ShapeValue shape;
 
-	
 	@Override
 	public String toString() {
 		return ("raster-grid("  + getRows() + " x " + getColumns() +")");
@@ -141,6 +141,14 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 		// rasterized shapes and vector coverages.
 		if (extent == null) 
 			this.extent = new GridExtent(crs,lonLB, latLB, lonUB, latUB, xRM - xRO, yRM - yRO);
+		
+		// TODO check the shape (which may have been put there through reflection). If there,
+		// compute the mask.
+		this.extent.shape = this.shape;
+		if (shape != null && mask == null)
+			mask(shape);
+		this.extent.setActivationLayer(this.mask);
+		
 	}
 	
 		
@@ -299,7 +307,6 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 		 */
 		double csize = (env.getMaxX() - env.getMinX())/xcells;
 		
-		
 		sym.put("xRangeOffset", 0);
 		sym.put("xRangeMax", xcells);
 		sym.put("yRangeOffset", 0);
@@ -317,7 +324,7 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 			throw new ThinklabInternalErrorException(e);
 		}
 		
-		return ret;
+		return ObservationFactory.addReflectedField(ret, "shape", shape);
 	}
 
 	public double getTop() {

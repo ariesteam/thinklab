@@ -218,6 +218,9 @@ public class ObservationFactory extends org.integratedmodelling.corescience.Obse
 	public static Polylist setSpatialContext(Polylist observation, 
 			ShapeValue where, int maxLinearResolution) throws ThinklabException {
 
+		/*
+		 * TODO the grid should contain the shape
+		 */
 		return observation.appendElement(
 				Polylist.list(
 						CoreScience.HAS_EXTENT,

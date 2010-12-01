@@ -39,6 +39,7 @@ import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.interfaces.lineage.ILineageTraceable;
@@ -93,6 +94,7 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	private double cellWidthMeters;
 	private double cellAreaMeters = -1.0;
 	Geometry boundary = null;
+	public ShapeValue shape;
 	
 	public GridExtent(
 				CoordinateReferenceSystem crs, 
@@ -356,11 +358,13 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
-
+		
 		Polylist ret = Polylist.list(
 				Geospace.RASTER_GRID,
 				// communicate the extent so we don't lose lineage info in contextualized obs
 				Polylist.list(":extent", this),
+				Polylist.list(":shape", this.shape),
+				Polylist.list(":mask", this.activationLayer),
 				Polylist.list(Geospace.X_RANGE_MAX,     Integer.toString(getXMaxCell())),
 				Polylist.list(Geospace.Y_RANGE_MAX,     Integer.toString(getYMaxCell())),
 				Polylist.list(Geospace.LAT_LOWER_BOUND, getSouth()),
@@ -533,7 +537,6 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 				
 		System.out.println("constrained extent is now " + nwext);
 		
-		
 		return nwext;
 
 	}
@@ -634,6 +637,10 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		}
 		
 		return ret;
+	}
+
+	public void setActivationLayer(IGridMask mask) {
+		this.activationLayer = mask;
 	}
 
 }

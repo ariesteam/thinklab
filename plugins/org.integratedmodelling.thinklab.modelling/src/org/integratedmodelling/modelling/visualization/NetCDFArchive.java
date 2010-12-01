@@ -117,6 +117,7 @@ public class NetCDFArchive {
 	}
 	
 	public void setSpaceGrid(RasterGrid grid) {
+		this.grid = grid;
 	}
 	
 	public void setTimeGrid() {
