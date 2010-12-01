@@ -293,6 +293,13 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 
 		ReferencedEnvelope env = shape.getEnvelope();
 
+		/*
+		 * fv 11/2010: force the cell to square, so that primitive software
+		 * (Arc-Info) does not stop working with the data we produce.
+		 */
+		double csize = (env.getMaxX() - env.getMinX())/xcells;
+		
+		
 		sym.put("xRangeOffset", 0);
 		sym.put("xRangeMax", xcells);
 		sym.put("yRangeOffset", 0);
@@ -300,7 +307,8 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 		sym.put("crsCode", Geospace.getCRSIdentifier(shape.getCRS(), true));
 		sym.put("latLowerBound", env.getMinY());
 		sym.put("lonLowerBound", env.getMinX());
-		sym.put("latUpperBound", env.getMaxY());
+		// adjusted to fit the cell size; this will at most add to the bounding box 
+		sym.put("latUpperBound", env.getMinY()+ycells*csize); 
 		sym.put("lonUpperBound", env.getMaxX());
 		
 		try {

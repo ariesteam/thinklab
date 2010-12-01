@@ -18,6 +18,7 @@ import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
+import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -56,6 +57,7 @@ public class NetCDFArchive {
 	 * container for variables to write
 	 */
 	ArrayList<Pair<String, String>> attributes;
+	private RasterGrid grid;
 	
 	/**
 	 * Add a contextualized observation and we do the rest.
@@ -81,8 +83,9 @@ public class NetCDFArchive {
 					"only raster grid data are supported in NetCDF exporter for now");
 
 		//time  = (RasterGrid) Obs.findObservation(o, TimePlugin.GridObservable());
-		space = (GridExtent) ((RasterGrid)spc).getExtent(); 
-		variables = ObservationFactory.getStateMap(o);
+		this.grid = (RasterGrid)spc;
+		this.space = (GridExtent) ((RasterGrid)spc).getExtent(); 
+		this.variables = ObservationFactory.getStateMap(o);
 	}
 	/**
 	 * Alternative to SetObservation, just pass a context and a map of
@@ -94,6 +97,10 @@ public class NetCDFArchive {
 	 * @throws ThinklabException
 	 */
 	public void setStates(Map<IConcept, IState> states, IObservationContext context) throws ThinklabException {
+		
+		this.grid =
+			(RasterGrid) 
+			ObservationFactory.findTopology(context.getObservation(), Geospace.get().SubdividedSpaceObservable());
 		
 		IExtent spc = context.getExtent(Geospace.get().SubdividedSpaceObservable());
 		IExtent tim = context.getExtent(TimePlugin.get().TimeObservable());
@@ -173,11 +180,11 @@ public class NetCDFArchive {
 			spdims.add(lonDim);
 
 			/* add latitude and longitude as variables */
-			ncfile.addVariable("lat", DataType.FLOAT, new Dimension[]{latDim});
+			ncfile.addVariable("lat", DataType.DOUBLE, new Dimension[]{latDim});
 			ncfile.addVariableAttribute("lat", "units", "degrees_north");
 			ncfile.addVariableAttribute("lat", "long_name", "latitude");
 			/* add latitude and longitude as variables */
-			ncfile.addVariable("lon", DataType.FLOAT, new Dimension[]{lonDim});
+			ncfile.addVariable("lon", DataType.DOUBLE, new Dimension[]{lonDim});
 			ncfile.addVariableAttribute("lon", "units", "degrees_east");
 			ncfile.addVariableAttribute("lon", "long_name", "longitude");
 		}
@@ -245,18 +252,31 @@ public class NetCDFArchive {
 		/*
 		 * lat and lon data if any
 		 */
+		IGridMask mask = null;
+		
 		if (space != null) {
+			
+			mask = grid.getMask();
+			
+//			System.out.println("SPACE IS " + space.getNSResolution() + " " + space.getEWResolution());
 			
 			ArrayDouble alat = new ArrayDouble.D1(latDim.getLength());
 			Index ind1 = alat.getIndex();
+			double xcn = space.getSouth() + space.getNSResolution() * 0.5;
 			for (int i = 0; i < latDim.getLength(); i++) {
-				alat.setFloat(ind1.set(i), (float)(space.getSouth() + space.getNSResolution() * i));
+				alat.setDouble(ind1.set(i), xcn);
+				xcn += space.getNSResolution();
 			}
 			
 			ArrayDouble alon = new ArrayDouble.D1(lonDim.getLength());
 			Index ind2 = alon.getIndex();
+			xcn = space.getWest() + space.getEWResolution() * 0.5;
 			for (int i = 0; i < lonDim.getLength(); i++) {
-				alon.setFloat(ind2.set(i), (float)(space.getWest() + space.getEWResolution() * i));
+				alon.setDouble(ind2.set(i), xcn);
+				// use NSres instead of EWres as they may differ slightly. This will 
+				// skew results if the cell is not square. This way import to ARC will
+				// work.
+				xcn += space.getNSResolution();
 			}
 			
 			try {
@@ -302,24 +322,35 @@ public class NetCDFArchive {
 				double[] uu = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
 				ArrayDouble unce = null;
 				if (uu != null) {
-					System.out.println("FOUND UNCERTAINTY FOR " + varname);
 					unce = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
 				}
 					
 				int i = 0;
 				for (int lat = 0; lat < latDim.getLength(); lat++) {
 					for (int lon = 0; lon < lonDim.getLength(); lon++) {
+						
 						Index index = ind.set(lat,lon);
-						data.setFloat(index, (float)dd[i]);
+						
+						double val = dd[i];
+						double uvl = uu[i];
+						
+						if (mask != null) {
+							int[] xy = space.getXYCoordinates(i);
+							if (!mask.isActive(xy[0], xy[1])) {
+								val = Double.NaN;
+								uvl = Double.NaN;
+							}
+						}
+
+						data.setFloat(index, (float)val);
 						if (uu != null)
-							unce.setFloat(index, (float)uu[i]);
+							unce.setFloat(index, (float)uvl);
 						i++;
 					}	
 				}
 				try {
 					ncfile.write(varname, data);
 					if (uu != null){
-						System.out.println("WRITING UNCERTAINTY VAR FOR " + varname);
 						ncfile.write(varname+"Uncertainty", unce);
 					}
 				} catch (Exception e) {
@@ -338,7 +369,16 @@ public class NetCDFArchive {
 				int i = 0;
 				for (int lat = 0; lat < latDim.getLength(); lat++) {
 					for (int lon = 0; lon < lonDim.getLength(); lon++) {
-						data.setFloat(ind.set(lat,lon), (float)dd[i++]);
+						
+						double val = dd[i];
+						if (mask != null) {
+							int[] xy = space.getXYCoordinates(i);
+							if (!mask.isActive(xy[0], xy[1]))
+								val = Double.NaN;
+						}
+						
+						data.setFloat(ind.set(lat,lon), (float)val);
+						i++;
 					}	
 				}
 				

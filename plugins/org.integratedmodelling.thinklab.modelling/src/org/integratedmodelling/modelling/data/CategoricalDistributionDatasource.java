@@ -9,7 +9,6 @@ import org.integratedmodelling.corescience.implementations.datasources.IndexedCo
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.random.IndexedCategoricalDistribution;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
@@ -31,6 +30,14 @@ public class CategoricalDistributionDatasource extends
 	int[] sortedIndexes = null;
 	double[] shuttle = null;
 	HashMap<IConcept, Integer> ranks = null;
+	private Pair<double[], IConcept[]> distributionBreakpoints;
+	
+	class DistributionParameters {
+		double mean;
+		double std;
+		IConcept mostLikelyCategory;
+		double shannon;
+	}
 	
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
@@ -42,27 +49,35 @@ public class CategoricalDistributionDatasource extends
 		
 		for (int i = 0; i < this.data.length; i++) {
 
-			Pair<IConcept, Double> val = 
+			DistributionParameters val = 
 				getDistributionParameters(getProbabilities(i));
 			
-			IConcept c = val.getFirst();
+			IConcept c = val.mostLikelyCategory;
 			if (c == null) {
 				ret[i] = Double.NaN;
 				unc[i] = Double.NaN;
 			} else if (ranks == null) {
 				ret[i] = (double)data[i];
-				unc[i] = val.getSecond();
+				unc[i] = val.shannon;
 			} else if (truecase != null) {
 				/*
 				 * default value for boolean is p(true)
 				 */
 				ret[i] = getProbability(i, truecase);
-				unc[i] = val.getSecond();
+				unc[i] = val.shannon;
 				contp = true;
 				
 			} else {
+				
+				/*
+				 * TODO allow passing a property to return the mean of the
+				 * distribution (if there is one) instead of the most likely
+				 * category rank. This should probably be the default if the 
+				 * data encode a continuous distribution. Set contp=true in
+				 * that case.
+				 */
 				ret[i] = (double)ranks.get(c);
-				unc[i] = val.getSecond();
+				unc[i] = val.shannon;
 			}
 		}
 		
@@ -80,13 +95,17 @@ public class CategoricalDistributionDatasource extends
 	 * @param probabilities
 	 * @return
 	 */
-	private Pair<IConcept, Double> getDistributionParameters(
+	private DistributionParameters getDistributionParameters(
 			double[] probabilities) {
 	
 		IConcept c = valueMappings[0];
 		double   v = probabilities[0];
 		double   sh = 0;
+		double mu = 0.0;
+		double std = 0.0;
 		int nst = 0;
+		
+		DistributionParameters ret = new DistributionParameters();
 		
 		/*
 		 * compute Shannon's entropy along with the rest
@@ -103,11 +122,15 @@ public class CategoricalDistributionDatasource extends
 					Math.log(probabilities[i]);
 				nst++;
 			}
+//			mu += probabilities[i]*
 		}
 		
-		sh = (sh/Math.log((double)nst)) * -1.0;
+		ret.shannon = (sh/Math.log((double)nst)) * -1.0;
+		ret.mostLikelyCategory = c;
+		ret.mean = mu;
+		ret.std = std;
 		
-		return new Pair<IConcept, Double>(c,sh);
+		return ret;
 	}
 
 	public CategoricalDistributionDatasource(
@@ -132,11 +155,11 @@ public class CategoricalDistributionDatasource extends
 		}
 
 		IConcept[] rnk = null;
-		Pair<double[], IConcept[]> pd = 
+		this.distributionBreakpoints = 
 			Metadata.computeDistributionBreakpoints(type, cls, con);		
-		if (pd != null) {
-			if (pd.getSecond()[0] != null) {
-				rnk = pd.getSecond();
+		if (distributionBreakpoints != null) {
+			if (distributionBreakpoints.getSecond()[0] != null) {
+				rnk = distributionBreakpoints.getSecond();
 			}
 		}
 			
@@ -194,12 +217,12 @@ public class CategoricalDistributionDatasource extends
 	 * @throws ThinklabInappropriateOperationException if the distribution is not continuous or
 	 * 	       there are gaps in the classes.
 	 */
-	public double[] getDistributionBreakpoints() throws ThinklabInappropriateOperationException {
-	
-		double[] ret = null;
-		
-		return ret;
-	}
+//	public double[] getDistributionBreakpoints() throws ThinklabInappropriateOperationException {
+//	
+//		double[] ret = null;
+//		
+//		return ret;
+//	}
 
 	/**
 	 * Return the probabilities of all the states in value mappings
