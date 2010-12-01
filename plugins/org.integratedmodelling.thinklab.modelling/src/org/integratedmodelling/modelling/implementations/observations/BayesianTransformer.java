@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.apache.derby.impl.sql.GenericClassInfo;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
@@ -23,7 +22,6 @@ import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
-import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
