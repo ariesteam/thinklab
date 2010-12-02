@@ -63,9 +63,16 @@ public class ImageUtil {
 			int imgh, ColorMap cmap, String fileName ) {
 		BufferedImage img = createImage(pixels, rowWidth, imgw, imgh, cmap );
 		saveImage(img, fileName);
-
 	}
 	
+	// start from an existing image; 
+	// imgw and imgh are parameters of generated image
+	// pixels and rowWidth are parameters of the input data
+	public static void createImageFile(BufferedImage image, int[] pixels, int rowWidth, int imgw,
+			int imgh, ColorMap cmap, String fileName ) {
+		BufferedImage img = createImage(image, pixels, rowWidth, imgw, imgh, cmap );
+		saveImage(img, fileName);
+	}
 	public static int[] upsideDown(int[] pixels, int rowWidth){
 		int[] pixelsud= new int[pixels.length];
 		int cols = pixels.length/rowWidth;
@@ -89,6 +96,18 @@ public class ImageUtil {
 	public static BufferedImage createImage(int[] pixels, int rowWidth,
 			int imgw, int imgh, ColorMap cmap) {
 		
+		MemoryImageSource source = new MemoryImageSource(rowWidth,
+				pixels.length / rowWidth, cmap.getColorModel(), pixels, 0,
+				rowWidth);
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		return toBufferedImage(tk.createImage(source), imgw, imgh);
+	}
+	
+
+	public static BufferedImage createImage(BufferedImage image, 
+			int[] pixels, int rowWidth,
+			int imgw, int imgh, ColorMap cmap) {
+		// TODO
 		MemoryImageSource source = new MemoryImageSource(rowWidth,
 				pixels.length / rowWidth, cmap.getColorModel(), pixels, 0,
 				rowWidth);
