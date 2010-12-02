@@ -80,6 +80,7 @@ public class CategoricalDistributionDatasource extends
 				 */
 				if (averageable) {
 					ret[i] = val.mean;
+					contp = true;
 				} else {
 					ret[i] = (double)ranks.get(c);
 				}
