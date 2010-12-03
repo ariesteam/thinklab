@@ -288,7 +288,7 @@ public class ModelFactory {
 
 		IQueryResult res = model.observe(kbox, session, (Object[]) null);
 
-		for (int i = 0; i < res.getResultCount(); i++) {
+		for (int i = 0; i < res.getTotalResultCount(); i++) {
 
 			IValue rr = res.getResult(i, session);
 			IObservation obs = ObservationFactory.getObservation(rr
@@ -311,7 +311,7 @@ public class ModelFactory {
 		 * just in case
 		 */
 		if (ret != null)
-			ret.transform(Geospace.get().getStraightGeoCRS());
+			ret = ret.transform(Geospace.get().getStraightGeoCRS());
 
 		return ret;
 	}
