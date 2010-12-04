@@ -46,6 +46,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 
@@ -64,10 +65,19 @@ public class WCSGridDataSource extends RegularRasterGridDataSource {
 		IValue format = i.get("geospace:hasImageFormat");
 		if (format != null)
 			p.put(WCSCoverage.WCS_FORMAT_PROPERTY, format.toString());
-		IValue nodata = i.get("geospace:hasNodataValue");
-		if (nodata != null)
-			p.put(AbstractRasterCoverage.NODATA_PROPERTY, nodata.toString());
-		IValue transf = i.get(Geospace.HAS_TRANSFORMATION_EXPRESSION);
+		
+		for (IRelationship r : i.getRelationships("geospace:hasNodataValue")) {
+			IValue nodata = r.getValue();
+			if (nodata != null) {
+				String s = p.getProperty(AbstractRasterCoverage.NODATA_PROPERTY, "");
+				if (s.length() > 0)
+					s += ",";
+				s += nodata.toString();
+				p.put(AbstractRasterCoverage.NODATA_PROPERTY, nodata.toString());
+			}
+		}
+			
+			IValue transf = i.get(Geospace.HAS_TRANSFORMATION_EXPRESSION);
 		if (transf != null) {
 			this.transformation = new MVELExpression(transf.toString());
 		}

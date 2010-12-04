@@ -88,8 +88,10 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			wcsFormat =
 				properties.getProperty(WCS_FORMAT_PROPERTY, wcsFormat);
 			if (properties.containsKey(NODATA_PROPERTY)) {
-				this.noData = new double[1];
-				this.noData[0] = Double.parseDouble(properties.getProperty(NODATA_PROPERTY));
+				String[] zz = properties.getProperty(NODATA_PROPERTY).split(",");
+				this.noData = new double[zz.length];
+				for (int i = 0; i < zz.length; i++)
+					this.noData[i] = Double.parseDouble(zz[i]);
 			}
 		}
 				

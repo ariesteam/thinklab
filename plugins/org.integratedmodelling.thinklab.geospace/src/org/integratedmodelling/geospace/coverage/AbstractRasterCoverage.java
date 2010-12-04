@@ -57,8 +57,8 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	}
 	
 	@Override
-	public Double getNodataValue() {
-		return this.noData == null ? Double.NaN : this.noData[0];
+	public double[] getNodataValue() {
+		return this.noData;
 	}
 	
 	public void writeImage(File outfile, String format) throws ThinklabIOException {

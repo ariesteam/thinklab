@@ -32,7 +32,6 @@
  **/
 package org.integratedmodelling.geospace.implementations.data;
 
-import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -56,7 +55,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementa
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 import org.integratedmodelling.utils.URLUtils;
-import org.mvel2.MVEL;
 
 @InstanceImplementation(concept="geospace:ExternalRasterDataSource")
 public class RegularRasterGridDataSource implements IDataSource<Object>, IInstanceImplementation {
@@ -158,9 +156,14 @@ public class RegularRasterGridDataSource implements IDataSource<Object>, IInstan
 		 */
 		try {
 			Object ret = coverage.getSubdivisionValue(index, gridExtent);
-			Double nd = coverage.getNodataValue();
-			if (nd != null && ret != null && (ret instanceof Double) && ((Double)ret).equals(nd)) {
-				ret = Double.NaN;
+			double[] nd = coverage.getNodataValue();
+			if (nd != null && ret != null && (ret instanceof Double)) {
+				for (double d : nd) {
+					if  (((Double)ret).equals(d)) {
+						ret = Double.NaN;
+						break;
+					}
+				}
 			}
 			if (this.transformation != null && ret != null && !(ret instanceof Double && Double.isNaN((Double)ret)) ) {
 				HashMap<String, Object> parms = new HashMap<String, Object>();

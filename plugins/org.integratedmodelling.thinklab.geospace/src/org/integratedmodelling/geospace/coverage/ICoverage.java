@@ -82,7 +82,7 @@ public interface ICoverage {
 	 * double if specified (either by the original source or by a datasource).
 	 * @return
 	 */
-	public Double getNodataValue();
+	public double[] getNodataValue();
 
 	/**
 	 * 

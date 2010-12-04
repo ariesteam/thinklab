@@ -481,7 +481,7 @@ public class VectorCoverage implements ICoverage {
 	}
 
 	@Override
-	public Double getNodataValue() {
+	public double[] getNodataValue() {
 		// TODO see what applies here. For now no support for nodata values.
 		return null;
 	}
