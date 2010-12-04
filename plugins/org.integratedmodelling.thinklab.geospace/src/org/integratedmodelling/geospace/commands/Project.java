@@ -27,8 +27,17 @@ public class Project implements ICommandHandler {
 
 		String ssrid = command.getArgumentAsString("source-srid");
 		String dsrid = command.getArgumentAsString("destination-srid");
-		double xcoor = Double.parseDouble(command.getArgumentAsString("x-coordinate"));
-		double ycoor = Double.parseDouble(command.getArgumentAsString("y-coordinate"));
+		
+		String zx = command.getArgumentAsString("x-coordinate");
+		String zy = command.getArgumentAsString("y-coordinate");
+		
+		if (zx.startsWith("\\"))
+			zx = zx.substring(1);
+		if (zy.startsWith("\\"))
+			zy = zy.substring(1);
+
+		double xcoor = Double.parseDouble(zx);
+		double ycoor = Double.parseDouble(zy);
 		
 		CoordinateReferenceSystem sr = Geospace.getCRSFromID("EPSG:" + ssrid);
 		CoordinateReferenceSystem dr = Geospace.getCRSFromID("EPSG:" + dsrid);
