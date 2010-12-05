@@ -44,6 +44,8 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.Geospace;
+import org.integratedmodelling.geospace.interfaces.IGazetteer;
+import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.InteractiveSubcommandInterface;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -52,13 +54,16 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.w3c.dom.Node;
 
 /**
@@ -80,12 +85,15 @@ public class WFSToOPAL extends InteractiveSubcommandInterface {
 	XMLDocument doc = null;
 	private ISession session;
 	
+	private ShapeValue forced = null;
+	
 	public IValue execute(Command command, ISession session) throws ThinklabException {
 
 		this.service = command.getArgumentAsString("server");
 		this.doc = new XMLDocument("kbox");
 		this.coverages.clear();
 		this.session = session;
+		this.forced = null;
 		
 		doc.addNamespace("observation", "http://www.integratedmodelling.org/ks/science/observation.owl");
 		doc.addNamespace("measurement", "http://www.integratedmodelling.org/ks/science/measurement.owl");
@@ -132,7 +140,9 @@ public class WFSToOPAL extends InteractiveSubcommandInterface {
 			}
 		} else if (cmd.equals("info")) {
 			info(Integer.parseInt(arguments[1])-1);
-		} else if (cmd.equals("annotate")) {
+		} else if (cmd.equals("force")) {
+			setShape(arguments[1]);
+		}else if (cmd.equals("annotate")) {
 			annotate(Integer.parseInt(arguments[1])-1);
 		} else if (cmd.equals("write")) {
 			write(arguments.length < 2 ? null : arguments[1]);
@@ -140,6 +150,43 @@ public class WFSToOPAL extends InteractiveSubcommandInterface {
  		
 		return null;
 	}
+
+	private void setShape(String loc) throws ThinklabException {
+		
+		// TODO Auto-generated method stub
+		IQueryResult result = Geospace.get().lookupFeature(loc);		
+		int shapeidx = 0;
+
+		if (result.getResultCount() > 0) {
+
+			for (int i = 0; i < result.getResultCount(); i++) {
+
+				session.getOutputStream().println(
+						i +
+						".\t"
+						+ result.getResultField(i, "id")
+						+ "\t"
+						+ (int)(result.getResultScore(i)) + "%"
+						+ "\t"
+						+ result.getResultField(i, "label"));
+				
+				session.getOutputStream().println(
+						"\t" +
+						result.getResultField(i, IGazetteer.SHAPE_FIELD));
+			}
+			
+			if (result.getResultCount() > 1)
+				shapeidx = Integer.parseInt(ask("choose a location: "));
+
+			this.forced = (ShapeValue) result.getResultField(shapeidx, IGazetteer.SHAPE_FIELD);
+			
+		} else {
+			say("no shape found");
+		}
+
+	}
+
+
 
 	private void annotate(int cov) throws ThinklabException {
 
@@ -172,10 +219,32 @@ public class WFSToOPAL extends InteractiveSubcommandInterface {
 			int n = Integer.parseInt(ask("Attribute to use? "));
 			String aname = n == 0 ? null : anames.get(n-1);
 
+			
 			/*
 			 * normalize envelope for OPAL output
 			 */
 			envelope = Geospace.normalizeEnvelope(envelope, crs);
+
+			if (forced != null) {
+
+				ReferencedEnvelope fenv = this.forced.getEnvelope();
+				
+				try {
+					fenv = Geospace.normalizeEnvelope(fenv, crs);
+					say("forcing to include: " + fenv);					
+					fenv = fenv.transform(crs, true);
+					say("transformed to: " + fenv);					
+				} catch (Exception e) {
+					throw new ThinklabException(e);
+				}
+				
+				say("original bounding box: " + envelope);
+				
+				envelope.expandToInclude(fenv);
+				
+				say("expanded to include: " + fenv);
+				say("resulting bounding box: " + envelope);
+			}
 			
 			/*
 			 * build up observation in XML, add to list
