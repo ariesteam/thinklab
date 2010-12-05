@@ -37,14 +37,19 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.WCSCoverage;
+import org.integratedmodelling.geospace.interfaces.IGazetteer;
+import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.utils.CopyURL;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -61,6 +66,44 @@ public class WCSToOPAL implements ICommandHandler {
 		String server = command.getArgumentAsString("server");
 		String output = command.getArgumentAsString("output");
 		String match  = command.getArgumentAsString("match");
+		ShapeValue forced = null;
+		
+		if (command.hasOption("bounding-box")) {
+		
+			String loc = command.getOptionAsString("bounding-box");
+			
+			IQueryResult result = Geospace.get().lookupFeature(loc);		
+			int shapeidx = 0;
+
+			if (result.getResultCount() > 0) {
+
+				for (int i = 0; i < result.getResultCount(); i++) {
+
+					session.getOutputStream().println(
+							i +
+							".\t"
+							+ result.getResultField(i, "id")
+							+ "\t"
+							+ (int)(result.getResultScore(i)) + "%"
+							+ "\t"
+							+ result.getResultField(i, "label"));
+					
+					session.getOutputStream().println(
+							"\t" +
+							result.getResultField(i, IGazetteer.SHAPE_FIELD));
+				}
+				
+				if (result.getResultCount() > 1)
+					session.getOutputStream().println("warning: multiple locations for " + loc + ": choosing the first match");
+
+				forced = (ShapeValue) result.getResultField(shapeidx, IGazetteer.SHAPE_FIELD);
+				
+			} else {
+				throw new ThinklabResourceNotFoundException("no shape found for " + loc);
+			}
+			
+		}
+			
 		
 		if (match.equals("_NONE_"))
 			match = null;
@@ -73,7 +116,6 @@ public class WCSToOPAL implements ICommandHandler {
 		out.addNamespace("observation", "http://www.integratedmodelling.org/ks/science/observation.owl");
 		out.addNamespace("geospace", "http://www.integratedmodelling.org/ks/geospace/geospace.owl");
 		
-		
 		try {
 			 cap = 
 				 new XMLDocument(
@@ -83,8 +125,12 @@ public class WCSToOPAL implements ICommandHandler {
 		}
 		
 		Node n = cap.findNode("ContentMetadata");
-		nCovs = parseMetadata(n, out, server, match);
-		out.writeToFile(new File(output));
+		nCovs = parseMetadata(n, out, server, match, forced);
+
+		if (output.equals("console"))
+			out.dump(session.getOutputStream());
+		else
+			out.writeToFile(new File(output));
 		
 		session.getOutputStream().println(
 				nCovs + 
@@ -94,9 +140,14 @@ public class WCSToOPAL implements ICommandHandler {
 		return null;
 	}
 
-	private int parseMetadata(Node n, XMLDocument out, String server, String match) throws ThinklabException {
+	private int parseMetadata(Node n, XMLDocument out, String server, String match, ShapeValue forced) throws ThinklabException {
 
 		Properties p = new Properties();
+		ReferencedEnvelope fenv = null;
+		
+		if (forced != null) {
+			fenv = forced.getEnvelope();
+		}		
 		
 		p.put(WCSCoverage.WCS_SERVICE_PROPERTY, server);
 		  int i = 0; Node child; Node next = (Node)n.getFirstChild();
@@ -110,7 +161,7 @@ public class WCSToOPAL implements ICommandHandler {
 					  continue;
 				  
 				  WCSCoverage coverage = new WCSCoverage(covId, p);
-				  coverage.addOpalDescriptor(out, out.root());
+				  coverage.addOpalDescriptor(out, out.root(), fenv);
 				  i++;
 			  }
 		  }

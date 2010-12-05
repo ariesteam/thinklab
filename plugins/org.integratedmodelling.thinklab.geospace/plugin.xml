@@ -347,6 +347,10 @@
 		<parameter id="optional-argument-types" value="thinklab-core:Text"/>
 		<parameter id="optional-argument-default-values" value="_NONE_"/>
 		<parameter id="optional-argument-descriptions" value="name prefix filter for coverages"/>
+		<parameter id="option-names" value="bbox"/>
+		<parameter id="option-long-names" value="bounding-box"/>
+		<parameter id="option-types" value="thinklab-core:Text"/>
+		<parameter id="option-descriptions" value="Gazetteer feature to expand the bounding box"/>
 	</extension>
 
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="rasterize">

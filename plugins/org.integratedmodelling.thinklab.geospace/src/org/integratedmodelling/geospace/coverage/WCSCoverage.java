@@ -58,6 +58,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.xml.XMLDocument;
+import org.opengis.geometry.Envelope;
 import org.w3c.dom.Node;
 
 public class WCSCoverage extends AbstractRasterCoverage {
@@ -367,7 +368,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		  this.xCellSize = e.getNSResolution();
 			
 		  this.boundingBox = e.getNormalizedEnvelope();
-
+		  
 		  this.gridGeometry = 
 				new GridGeometry2D(
 					new GeneralGridEnvelope( 
@@ -382,12 +383,33 @@ public class WCSCoverage extends AbstractRasterCoverage {
 	 * @param out
 	 * @throws ThinklabPluginException 
 	 */
-	public void addOpalDescriptor(XMLDocument doc, Node root) throws ThinklabException {
+	public void addOpalDescriptor(XMLDocument doc, Node root, ReferencedEnvelope fenv) throws ThinklabException {
 		
 		String obsClass =
 			properties.getProperty("observation.type", "measurement:Ranking");
 		String observable =  
 			properties.getProperty("observable.type", "observation:GenericQuantifiable");
+		
+
+		ReferencedEnvelope envelope = new ReferencedEnvelope(boundingBox);
+		
+		if (fenv != null) {
+			try {
+				fenv = Geospace.normalizeEnvelope(fenv, crs);
+				fenv = fenv.transform(crs, true);
+			} catch (Exception e) {
+				throw new ThinklabException(e);
+			}
+			
+			System.out.println("original envelope: " + envelope);
+			System.out.println("expanding to include: " + fenv);
+
+			envelope.expandToInclude(fenv);
+			
+			System.out.println("expanded envelope: " + envelope);
+			System.out.println("bounding box: " + boundingBox);
+		}
+
 		
 		Node obs = doc.appendTextNode(obsClass, null, root);
 		doc.addAttribute(obs, "id", layerName);
@@ -404,10 +426,10 @@ public class WCSCoverage extends AbstractRasterCoverage {
 //		doc.appendTextNode("geospace:hasYRangeMin", ""+gridGeometry.getGridRange2D().getLow(1), esc);
 		doc.appendTextNode("geospace:hasXRangeMax", ""+gridGeometry.getGridRange2D().getHigh(0), esc);
 		doc.appendTextNode("geospace:hasYRangeMax", ""+gridGeometry.getGridRange2D().getHigh(1), esc);
-		doc.appendTextNode("geospace:hasLatLowerBound", ""+boundingBox.getMinimum(1), esc);
-		doc.appendTextNode("geospace:hasLonLowerBound", ""+boundingBox.getMinimum(0), esc);
-		doc.appendTextNode("geospace:hasLatUpperBound", ""+boundingBox.getMaximum(1), esc);
-		doc.appendTextNode("geospace:hasLonUpperBound", ""+boundingBox.getMaximum(0), esc);
+		doc.appendTextNode("geospace:hasLatLowerBound", ""+envelope.getMinimum(1), esc);
+		doc.appendTextNode("geospace:hasLonLowerBound", ""+envelope.getMinimum(0), esc);
+		doc.appendTextNode("geospace:hasLatUpperBound", ""+envelope.getMaximum(1), esc);
+		doc.appendTextNode("geospace:hasLonUpperBound", ""+envelope.getMaximum(0), esc);
 		doc.appendTextNode("geospace:hasCoordinateReferenceSystem", 
 				Geospace.getCRSIdentifier(crs, false), esc);
 	}
