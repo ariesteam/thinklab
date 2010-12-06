@@ -401,6 +401,16 @@ public class ShapeValue extends ParsedLiteralValue implements ITopologicallyComp
 		return ret;
 	}
 	
+	public ShapeValue intersection(ShapeValue region) throws ThinklabException {
+		
+		if ((crs != null || region.crs != null) && !crs.equals(region.crs))
+			region = region.transform(crs);
+
+		ShapeValue ret = new ShapeValue(shape.intersection(region.shape));
+		ret.crs = crs;
+		return ret;
+	}
+	
 	public ShapeValue difference(ShapeValue region) throws ThinklabException {
 		
 		if ((crs != null || region.crs != null) && !crs.equals(region.crs))

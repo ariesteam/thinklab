@@ -27,7 +27,7 @@ public class EuclideanDistanceModel extends DefaultAbstractModel {
 
 	@Override
 	public Polylist buildDefinition(IKBox kbox, ISession session,
-			Collection<Topology> externalExtents) throws ThinklabException {
+			Collection<Topology> externalExtents, int flags) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

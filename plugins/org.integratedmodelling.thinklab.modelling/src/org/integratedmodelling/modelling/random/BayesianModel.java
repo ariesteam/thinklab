@@ -96,7 +96,7 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 	}
 
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents) throws ThinklabException {
+	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents, int flags) throws ThinklabException {
 
 		ArrayList<Object> arr = new ArrayList<Object>();
 		
@@ -119,12 +119,18 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 		
 		/*
 		 * communicate how to model specific nodes that had their
-		 * model specified by passing a prototype observation
+		 * model specified by passing a prototype observation.
+		 * 
+		 * FIXME: this will create observations that will not be resolved, so when the
+		 * models are mediating, they won't have their mediated counterpart so they must
+		 * include an observable. The whole observable transmission strategy should be revised.
+		 * For now we add the stupid flags and pass it to buildDefinition, but the function
+		 * shouldn't need any flags.
 		 */
 		for (IModel c : observed) {
 			arr.add(Polylist.list(
 					BayesianTransformer.HAS_PROTOTYPE_MODEL,
-					((Model)c).getDefinition().buildDefinition(kbox, session, null)));
+					((Model)c).getDefinition().buildDefinition(kbox, session, null, FORCE_OBSERVABLE)));
 		}
 
 		return Polylist.PolylistFromArrayList(arr);

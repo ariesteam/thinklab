@@ -34,6 +34,12 @@ import org.integratedmodelling.utils.Polylist;
  */
 public interface IModel extends IConceptualizable {
 
+	/*
+	 * values for flags to be passed to buildDefinition. THIS SHOULD BECOME UNNECESSARY AND BE REMOVED ALONG WITH THE
+	 * FLAGS PARAMETER in buildDefinition().
+	 */
+	static final int FORCE_OBSERVABLE = 0x0001;
+	
 	/**
 	 * Return the base observable concept
 	 * 
@@ -83,11 +89,12 @@ public interface IModel extends IConceptualizable {
 	 * 	      ignored unless the observations built are leaves and implicitly
 	 *        know the extent (e.g. time for dynamic models) in which case they
 	 *        should be added to the generated definition.
-	 * 
+	 * @param flags TODO FIXME - this is used to address problems in creating "observed" observation models (see BayesianModel.java for
+	 *              explanation). It should eventually be made unnecessary and removed.
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> externalExtents) throws ThinklabException;
+	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> externalExtents, int flags) throws ThinklabException;
 
 	/**
 	 * Models must have an ID

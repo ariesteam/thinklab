@@ -35,7 +35,7 @@ public class PrecontextualizedModelProxy extends ModelProxy {
 		public Polylist getResultAsList(int n,
 				HashMap<String, String> references) throws ThinklabException {
 
-			Polylist ret = model.buildDefinition(_kbox, _session, null);
+			Polylist ret = model.buildDefinition(_kbox, _session, null, 0);
 			ret = ObservationFactory.addDatasource(ret, state.conceptualize());
 			return ret;
 		}

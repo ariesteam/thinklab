@@ -254,7 +254,7 @@ public class Model extends DefaultAbstractModel {
 		return ret;
 	}
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents)
+	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents, int flags)
 			throws ThinklabException {
 		// WON'T GET CALLED UNLESS I SCREWED UP
 		throw new ThinklabInternalErrorException("SHIT! BUILDDEFINITION CALLED ON MODEL!");

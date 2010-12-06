@@ -103,7 +103,7 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public Polylist buildDefinition(IKBox kbox, ISession session,
-			Collection<Topology> extents) throws ThinklabException {
+			Collection<Topology> extents, int flags) throws ThinklabException {
 
 		/*
 		 * TODO choose observation class according to derivative, probability

@@ -56,7 +56,7 @@ public class CategorizationModel extends DefaultDynamicAbstractModel {
 	}
 
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents) throws ThinklabException {
+	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents, int flags) throws ThinklabException {
 
 		Polylist def = Polylist.listNotNull(
 				CoreScience.CATEGORIZATION,

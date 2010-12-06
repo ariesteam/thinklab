@@ -241,7 +241,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	}
 	
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents) throws ThinklabException {
+	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents, int flags) throws ThinklabException {
 
 		IConcept theState =
 			KnowledgeManager.get().getLeastGeneralCommonConcept(concepts);
@@ -256,6 +256,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 					"modeltypes:DynamicClassification");
 		
 		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(theState)));
+		
 		
 		if (id != null) {
 			arr.add(Polylist.list(CoreScience.HAS_FORMAL_NAME, id));			
@@ -286,7 +287,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 					MiscUtilities.printVector(breakpoints)));
 		}
 		
-		if (!isMediating())
+		if (!isMediating() || (flags & FORCE_OBSERVABLE) != 0)
 			arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, this.observableSpecs));
 		
 		for (int i = 0; i < classifiers.size(); i++) {

@@ -247,7 +247,7 @@ public class ModelResult implements IQueryResult  {
 			}
 					
 		} else {
-			ret = _model.buildDefinition(_kbox, _session, _externalExtents);
+			ret = _model.buildDefinition(_kbox, _session, _externalExtents, 0);
 		}
 		
 		/*
