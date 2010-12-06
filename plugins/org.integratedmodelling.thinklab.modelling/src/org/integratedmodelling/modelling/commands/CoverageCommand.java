@@ -85,8 +85,9 @@ public class CoverageCommand implements ICommandHandler {
 		
 		Model model = ModelFactory.get().requireModel(concept);	
 		
-		ShapeValue ret = ModelFactory.get().getSpatialCoverage(model, kbox, session).
-			transform(Geospace.get().getStraightGeoCRS());
+		ShapeValue ret = 
+			ModelFactory.get().getSpatialCoverage(model, kbox, session).
+				transform(Geospace.get().getStraightGeoCRS());
 		
 		if (area != null) {
 			if (ret.contains(area)) {
