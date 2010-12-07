@@ -68,7 +68,7 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public String toString() {
-		return ("ranking(" + getObservable() + ")");
+		return ("ranking(" + getObservableClass() + ")");
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 						 */
 						(isMediating() ? null : Polylist.list(
 								CoreScience.HAS_OBSERVABLE, Polylist
-										.list(getObservable()))));
+										.list(getObservableClass()))));
 
 		return addImplicitExtents(def, extents);
 	}

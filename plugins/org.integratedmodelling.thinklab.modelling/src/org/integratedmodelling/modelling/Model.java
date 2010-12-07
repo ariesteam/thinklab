@@ -168,7 +168,7 @@ public class Model extends DefaultAbstractModel {
 			mdesc += (mdesc.length() == 1 ? "" : ",") + m ;
 		}
 		mdesc += "}";
-		return "model(" + getObservable() +") " + mdesc;
+		return "model(" + getObservableClass() +") " + mdesc;
 	}
 
 

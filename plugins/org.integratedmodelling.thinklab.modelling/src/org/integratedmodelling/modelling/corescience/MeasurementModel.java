@@ -44,7 +44,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public String toString() {
-		return ("measurement(" + getObservable() + "," + unitSpecs + ")");
+		return ("measurement(" + getObservableClass() + "," + unitSpecs + ")");
 	}
 
 	public void setUnits(Object unitSpecs) {
@@ -89,7 +89,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 				(isMediating() ?
 						null :
 						Polylist.list(CoreScience.HAS_OBSERVABLE,
-								Polylist.list(getObservable()))));
+								Polylist.list(getObservableClass()))));
 
 		return addImplicitExtents(def, extents);
 	}

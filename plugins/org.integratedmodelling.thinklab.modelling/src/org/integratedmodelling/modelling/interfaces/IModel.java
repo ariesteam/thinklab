@@ -45,7 +45,7 @@ public interface IModel extends IConceptualizable {
 	 * 
 	 * @return
 	 */
-	public abstract IConcept getObservable();
+	public abstract IConcept getObservableClass();
 	
 	/**
 	 * Return the type of observation that we can deal with if we need to

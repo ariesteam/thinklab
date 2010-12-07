@@ -343,7 +343,7 @@ public class ModelFactory {
 		ArrayList<Scenario> ret = new ArrayList<Scenario>();
 		
 		for (Scenario s : scenariosById.values()) {
-			if (model.getObservable().is(s.getObservable())) {
+			if (model.getObservableClass().is(s.getObservableClass())) {
 				ret.add(s);
 			}
 		}

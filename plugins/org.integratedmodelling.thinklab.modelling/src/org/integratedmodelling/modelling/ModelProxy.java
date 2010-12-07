@@ -40,8 +40,8 @@ public class ModelProxy extends DefaultAbstractModel {
 	}
 
 	@Override
-	public IConcept getObservable() {
-		return model.getObservable();
+	public IConcept getObservableClass() {
+		return model.getObservableClass();
 	}
 
 	@Override

@@ -49,7 +49,7 @@ public class Scenario extends ObservationModel {
 		for (IModel m : scenario.models) {
 			int i = 0;
 			for (IModel om : models) {
-				if (m.getObservable().is(om.getObservable())) {
+				if (m.getObservableClass().is(om.getObservableClass())) {
 					models.set(i, m);
 					break;
 				}

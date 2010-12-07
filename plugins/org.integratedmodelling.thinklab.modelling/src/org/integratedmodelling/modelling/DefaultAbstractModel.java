@@ -288,15 +288,15 @@ public abstract class DefaultAbstractModel implements IModel {
 
 	protected void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
-		if (getObservable().equals(model.getObservable())) {
+		if (getObservableClass().equals(model.getObservableClass())) {
 			throw new ThinklabValidationException(
 					"a model cannot mediate another that observes the same concept: " + 
-					model.getObservable());
+					model.getObservableClass());
 		}
 	}
 
 	@Override
-	public IConcept getObservable() {
+	public IConcept getObservableClass() {
 		if (observable == null) {
 			try {
 				observable = KnowledgeManager.get()

@@ -10,6 +10,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.Inte
 public class PresentationFactory {
 
 	IntelligentMap<Presentation> _presentations;
+	static PresentationFactory _this = null;
 	
 	public Presentation getPresentation(IConcept concept) {
 		return _presentations.get(concept);
@@ -30,5 +31,13 @@ public class PresentationFactory {
 			}
 				
 		}
+	}
+
+	public static PresentationFactory get() {
+
+		if (_this == null) {
+			_this = new PresentationFactory();
+		}
+		return _this;
 	}
 }

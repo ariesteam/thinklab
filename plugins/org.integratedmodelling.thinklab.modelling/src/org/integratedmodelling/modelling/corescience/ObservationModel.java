@@ -69,7 +69,7 @@ public class ObservationModel extends DefaultAbstractModel {
 					null),
 				Polylist.list(
 					CoreScience.HAS_OBSERVABLE,
-					Polylist.list(getObservable())));
+					Polylist.list(getObservableClass())));
 
 		return def;
 	}

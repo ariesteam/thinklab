@@ -17,7 +17,7 @@ public class CategorizationModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public String toString() {
-		return ("categorization(" + getObservable() + ")");
+		return ("categorization(" + getObservableClass() + ")");
 	}
 
 	
@@ -69,7 +69,7 @@ public class CategorizationModel extends DefaultDynamicAbstractModel {
 						null :
 						Polylist.list(
 								CoreScience.HAS_OBSERVABLE,
-								Polylist.list(getObservable()))));
+								Polylist.list(getObservableClass()))));
 		
 		return def;
 	}

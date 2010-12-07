@@ -60,7 +60,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	
 	@Override
 	public String toString() {
-		return ("classification(" + getObservable() + ")");
+		return ("classification(" + getObservableClass() + ")");
 	}
 
 	@Override
