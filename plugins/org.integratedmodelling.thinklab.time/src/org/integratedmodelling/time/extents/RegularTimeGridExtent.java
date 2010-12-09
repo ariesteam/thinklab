@@ -312,4 +312,22 @@ public class RegularTimeGridExtent implements IExtent {
 		}
 		return ret;
 	}
+
+	@Override
+	public boolean checkDomainDiscontinuity() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public IExtent intersection(IExtent extent) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IExtent force(IExtent extent) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

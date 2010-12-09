@@ -256,7 +256,8 @@ public class ModeledClassification
 				ranks = Metadata.rankConcepts(cSpace, rnk, metadata);
 			}
 
-		}		
+		}
+		
 	}
 
 	@Override

@@ -114,5 +114,18 @@ public interface IObservation extends IConceptualizable {
 	 */
 	public abstract IObservation getExtent(IConcept observable);
 
+	/**
+	 * True if it can be run in a context with partially specified dependencies. 
+	 * @return
+	 */
+	boolean acceptsNodata();
+
+	/**
+	 * True if it can be run in a context with disconnected topologies, e.g. spatial
+	 * or temporal holes. 
+	 * @return
+	 */
+	boolean acceptsDiscontinuousTopologies();
+
 
 }

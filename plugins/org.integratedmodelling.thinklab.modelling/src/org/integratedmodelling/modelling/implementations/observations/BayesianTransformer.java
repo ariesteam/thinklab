@@ -14,6 +14,7 @@ import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IPartiallySpecifiableObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
@@ -47,7 +48,7 @@ import smile.Network;
 @InstanceImplementation(concept="modeltypes:BayesianTransformer")
 public class BayesianTransformer 
 	extends Observation 
-	implements  TransformingObservation {
+	implements  TransformingObservation, IPartiallySpecifiableObservation {
 	
 	public static final String HAS_NETWORK_SOURCE = "modeltypes:hasBayesianNetworkSource";
 	public static final String HAS_BAYESIAN_ALGORITHM = "modeltypes:hasBayesianAlgorithm";
@@ -416,13 +417,6 @@ public class BayesianTransformer
 		return ("bayesian(" + getObservableClass() + "): " + bn.getName());
 	}
 
-
-	@Override
-	public IObservationContext getTransformedContext(IObservationContext context)
-			throws ThinklabException {
-		// we don't change the context at all, fortunately
-		return context;
-	}
 
 	@Override
 	public IConcept getTransformedObservationClass() {

@@ -162,5 +162,38 @@ public abstract interface IExtent extends IConceptualizable, ITopologicallyCompa
 	 */
 	public abstract Collection<Pair<String,Integer>> getStateLocators(int index);
 
+	/**
+	 * Should return whether the coverage of the domain is discontinuous to the
+	 * point of breaking the internal rules of the represented topologies. E.g.,
+	 * if we represent continuous uninterrupted space, discontinuities will break
+	 * neighborhood relationships that models may need to count on. This may come
+	 * as a result of intersecting partial extents.
+	 * 
+	 * @return
+	 */
+	public boolean checkDomainDiscontinuity() throws ThinklabException;
 
+
+	/**
+	 * Return an extent which represents the intersection of this with the passed
+	 * one.
+	 * 
+	 * @param myExtent
+	 * @return
+	 */
+	public IExtent intersection(IExtent extent) throws ThinklabException;
+
+
+	/**
+	 * Return an extent that is capable of representing the passed one 
+	 * exactly. If the passed one is of the same class, it can just return
+	 * the passed one, but it's provided to give the extent a chance of 
+	 * adjustments or raising errors.
+	 * 
+	 * @param extent
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public IExtent force(IExtent extent) throws ThinklabException;
+	
 }

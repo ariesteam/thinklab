@@ -88,6 +88,9 @@ public class DynamicMeasurement extends Measurement {
 		IValue lng = i.get("modeltypes:hasExpressionLanguage");
 		if (lng != null)
 			this.lang = lng.toString().toLowerCase();
+		if (change != null) {
+			acceptsDiscontinuousTopologies = false;
+		}
 	}
 
 }

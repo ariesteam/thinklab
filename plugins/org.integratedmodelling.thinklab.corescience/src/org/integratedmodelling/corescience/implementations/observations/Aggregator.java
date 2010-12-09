@@ -2,7 +2,7 @@ package org.integratedmodelling.corescience.implementations.observations;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
+import org.integratedmodelling.corescience.interfaces.internal.ContextTransformingObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -16,7 +16,7 @@ import org.integratedmodelling.utils.Polylist;
  * @author Ferdinando
  *
  */
-public class Aggregator extends Observation implements TransformingObservation {
+public class Aggregator extends Observation implements ContextTransformingObservation {
 
 	// public so it can be set using reflection
 	public IConcept[] dimensions = null;

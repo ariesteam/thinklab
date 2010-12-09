@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -20,12 +21,14 @@ import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.ContextTransformingObservation;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -76,6 +79,58 @@ public class ObservationContext implements IObservationContext {
 		this(o, null);
 	}
 
+	public void initializeAll() throws ThinklabException {
+		
+		if (_initialized || isNull)
+			return;
+
+		for (ObservationContext o : dependents)
+			initializeAll();
+				
+		sort();
+		
+		dimensionalities = new int[extents.size()];
+		totalSize = 1;
+		
+		int i = 0;
+		for (IConcept s : order) {
+									
+			IExtent extent = extents.get(s);
+			int gr = extent.getTotalGranularity();
+			dimensionalities[i++] = gr;
+			totalSize *= gr;
+		}
+
+		/*
+		 * if we have a datasource, determine the necessary transformations to 
+		 * move from our own extent to whatever was defined in the context.
+		 */
+		if (observation.getDataSource() != null) {
+			for (Topology extent : observation.getTopologies()) {
+				IExtent ext = extent.getExtent();
+				IDatasourceTransformation transform = 
+					ext.getDatasourceTransformation(
+							observation.getObservableClass(),
+							getExtent(extent.getObservableClass()));
+				if (transform != null)
+					transformations.add(transform);
+			}	
+		}
+
+		/* 
+		 * if we represent a transformer, we store our "original" context in a field and
+		 * switch to what we will be after transformation.
+		 */
+		if (observation instanceof ContextTransformingObservation) {
+			switchTo(((ContextTransformingObservation)observation).getTransformedContext(this));
+		}
+		
+		
+		_initialized = true;
+		
+	}
+	
+	
 	/**
 	 * Compute the context of the passed observation. If required, constrain it to match the
 	 * passed context.
@@ -159,12 +214,183 @@ public class ObservationContext implements IObservationContext {
 		 * if we represent a transformer, we store our "original" context in a field and
 		 * switch to what we will be after transformation.
 		 */
-		if (observation instanceof TransformingObservation) {
-			switchTo(((TransformingObservation)observation).getTransformedContext(this));
+		if (observation instanceof ContextTransformingObservation) {
+			switchTo(((ContextTransformingObservation)observation).getTransformedContext(this));
 		}
 		
 	}
 	
+	/**
+	 * Basically the constructor for a context. Strategy for contingencies is still
+	 * partial.
+	 * 
+	 * @param o
+	 * @param desired
+	 * @throws ThinklabException 
+	 */
+	public HashMap<IConcept, IExtent> defineObservationContext(IObservation o, ObservationContext desired) throws ThinklabException {
+		
+		HashMap<IConcept, IExtent> ret = new HashMap<IConcept, IExtent>();
+		
+		if (o.getContingencies().length > 0) {
+			ret = assembleContingentContext(o, desired);
+		} else {
+			ret = assembleObservationContext(o, desired);
+		}
+		initializeAll();
+
+		return ret;
+	}
+	
+	private HashMap<IConcept, IExtent> assembleContingentContext(IObservation o,
+			ObservationContext desired) throws ThinklabException {
+
+		/*
+		 * this may end up unmodified, but we need to return it for consistency.
+		 */
+		HashMap<IConcept, IExtent> ret = new HashMap<IConcept, IExtent>();
+
+		for (IObservation b : o.getContingencies()) {
+			ObservationContext oc = new ObservationContext();
+			HashMap<IConcept, IExtent> mods = 
+				oc.defineObservationContext(b, desired);
+			
+			if (mods.size() > 1) {
+				/*
+				 * TODO
+				 * for now just reject it; otherwise we should use these extents to
+				 * inform the switching strategy for the main observation
+				 */
+				throw new ThinklabUnimplementedFeatureException(
+						"contingencies in observation of " +
+						o.getObservableClass() +
+						" have incompatible extents for current compilation strategy");
+			}
+			contingents.add(oc);
+		}
+		
+		return ret;
+	}
+
+	/**
+	 * Align own extents with the constraining one and merge with the dependencies. Return
+	 * any extent that differs compared to the desired context. When this returns, call
+	 * initializeAll() to compute multiplicities and build datasource transformations.
+	 * 
+	 * @param o the observation to contextualize.
+	 * @param constraining should not be null. If empty, the constraining context will be
+	 *        that of the top observation.
+	 * @throws ThinklabException when it likes to.
+	 */
+	public HashMap<IConcept,IExtent> assembleObservationContext(IObservation o, ObservationContext constraining) throws ThinklabException {
+		
+		this.observation = o;
+		this.extents.clear();
+
+		ArrayList<ObservationContext> dd = new ArrayList<ObservationContext>();
+		
+		/*
+		 * we start by adding all extents from the observation we represent.
+		 */
+		for (Topology topology : observation.getTopologies()) {
+			extents.put(topology.getObservableClass(), topology.getExtent());
+		}
+		
+		/*
+		 * collect all the extents we have modified based on our observation's 
+		 * capabilities, so we can later push them to the contexts of the dependencies.
+		 */
+		HashMap<IConcept,IExtent> modified = new HashMap<IConcept, IExtent>();
+		
+		/*
+		 * determine intersection between the requested context and ours. Complain
+		 * if the intersection determines a discontinuous context and we don't 
+		 * accept it.
+		 */
+		for (IConcept c : extents.keySet()) {
+			
+			IExtent myExtent  = extents.get(c);
+			IExtent cExtent = constraining.extents.get(c);
+			
+			IExtent finalExtent = myExtent;
+			
+			if (cExtent != null) {
+
+				if (o.acceptsNodata())
+					// this will normally set finalExtent to cExtent.
+					finalExtent = myExtent.force(cExtent);
+				else {
+					finalExtent = cExtent.intersection(myExtent);
+					modified.put(c, finalExtent);
+				}
+				
+				/*
+				 * check for discontinuities (meaning internal nodata that may break the
+				 * internal topological relationships) only if the observation states that
+				 * it can't handle them.
+				 */
+				if (!o.acceptsDiscontinuousTopologies() &&
+						finalExtent.checkDomainDiscontinuity()) {
+					throw new ThinklabContextualizationException(
+							"unacceptable discontinuities in merged extent of observation for " + c);
+				}
+			}
+			
+			extents.put(c, finalExtent);
+		}
+		
+		/*
+		 *  have all dependents compute their contexts constrained to ours as
+		 *  it is now. If they end up modifying it, we need to redefine ours
+		 *  accordingly.
+		 */
+		for (IObservation dep : observation.getDependencies()) {			
+			
+			ObservationContext odep = new ObservationContext();
+			HashMap<IConcept, IExtent> mods = odep.assembleObservationContext(dep, this);
+			
+			dependents.add(odep);
+			
+			/*
+			 * adopt any extent we don't have from the dependency first
+			 */
+			for (IConcept oo : odep.getDimensions()) {
+				if (!this.extents.containsKey(oo)) {
+					this.extents.put(oo, odep.getExtent(oo));
+				}
+			}
+			
+			/*
+			 * merge in anything that was modified below us. If anything needs to be
+			 * merged in, the dependency cannot handle the context so we have to 
+			 * change it. 
+			 */
+			for (IConcept cmod : mods.keySet()) {
+				
+					/*
+					 * TODO warn better.
+					 */
+					CoreScience.get().logger().warn(
+						"dependent observation of " + 
+						dep.getObservableClass() + 
+						" modifies " + 
+						cmod.getLocalName() + 
+						" extent of observation for " +
+						o.getObservableClass());
+						
+					extents.put(cmod, mods.get(cmod));
+					
+					/*
+					 * float the modified extent to whoever depends on us.
+					 */
+					modified.put(cmod, mods.get(cmod));
+			}
+		}
+		
+		return modified;
+		
+	}
+
 	/**
 	 * Build a context from an array of topologies.
 	 * 
@@ -480,7 +706,13 @@ public class ObservationContext implements IObservationContext {
 			
 		} else if (obs instanceof TransformingObservation) {
 
-			Contextualizer contextualizer = new Compiler().compile(originalContext);
+			ObservationContext ctx = 
+				(obs instanceof ContextTransformingObservation) ?
+					originalContext :
+					this;
+			
+			Contextualizer contextualizer = new Compiler().compile(ctx);
+			
 			IInstance inst =  contextualizer.run(session);
 			
 			if (listeners != null) {
@@ -488,11 +720,11 @@ public class ObservationContext implements IObservationContext {
 					l.preTransformation(
 							observation, 
 							ObservationFactory.getObservation(inst), 
-							originalContext);
+							ctx);
 				}
 			}
 			
-			Polylist tlist = ((TransformingObservation)obs).transform(inst, session, originalContext);
+			Polylist tlist = ((TransformingObservation)obs).transform(inst, session, ctx);
 			
 			/*
 			 * transfer metadata

@@ -2,7 +2,7 @@ package org.integratedmodelling.modelling.implementations.observations.geoproces
 
 import org.integratedmodelling.corescience.implementations.observations.Measurement;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
+import org.integratedmodelling.corescience.interfaces.internal.ContextTransformingObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -21,7 +21,7 @@ import org.integratedmodelling.utils.Polylist;
  *
  */
 public class EuclideanDistanceTransformer extends Measurement implements
-		TransformingObservation {
+		ContextTransformingObservation {
 
 	@Override
 	public IObservationContext getTransformedContext(IObservationContext context)

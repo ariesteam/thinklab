@@ -6,6 +6,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IPartiallySpecifiableObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -43,12 +44,15 @@ public class Observation implements IObservation, IInstanceImplementation {
 	protected IObservation[] nonExtentDependencies = new IObservation[0];
 	protected IObservation mediatedObservation = null;
 	protected IObservation mediatorObservation = null;
+	protected boolean acceptsNodata = false;
+	protected boolean acceptsDiscontinuousTopologies = true;
 	
 	// public so that getField can find it
 	public Metadata metadata = new Metadata();
 	public Metadata additionalMetadata = null;
 	
-	public Integer contingencyOrder = 0; // used to sort contingencies if this is in a merger obs
+	// used to sort contingencies if this is in a merger obs
+	public Integer contingencyOrder = 0;
 	
 	public IDataSource<?> getDataSource()  {
 
@@ -119,6 +123,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 
+		acceptsNodata = this instanceof IPartiallySpecifiableObservation;
+		
 		/*
 		 * this one is easy
 		 */
@@ -313,6 +319,16 @@ public class Observation implements IObservation, IInstanceImplementation {
 	public void validateOverallContext(IObservationContext ctx) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public boolean acceptsNodata() {
+		return this.acceptsNodata;
+	}
+
+	@Override
+	public boolean acceptsDiscontinuousTopologies() {
+		return this.acceptsDiscontinuousTopologies;
 	}
 	
 }

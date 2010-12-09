@@ -294,6 +294,24 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 		return null;
 	}
 
+	@Override
+	public boolean checkDomainDiscontinuity() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public IExtent intersection(IExtent extent) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IExtent force(IExtent extent) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 //	@Override
 //	public Polylist conceptualize() throws ThinklabException {
 //
