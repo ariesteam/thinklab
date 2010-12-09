@@ -377,6 +377,15 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		return ret;
 	}
 
+	
+	/*
+	 * TODO check: this should be creating the largest extent that preserves
+	 * the topology of the original extent and covers the other extent. Cell size should
+	 * be the same as in the original extent, and the envelope should be the same or 
+	 * smaller.
+	 * 
+	 * @see org.integratedmodelling.geospace.extents.ArealExtent#createMergedExtent(org.integratedmodelling.geospace.extents.ArealExtent, org.integratedmodelling.geospace.extents.ArealExtent, org.opengis.referencing.crs.CoordinateReferenceSystem, com.vividsolutions.jts.geom.Envelope, com.vividsolutions.jts.geom.Envelope, com.vividsolutions.jts.geom.Envelope)
+	 */
 	@Override
 	protected IExtent createMergedExtent(
 					ArealExtent orextent, ArealExtent otextent,
@@ -651,8 +660,7 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 
 	@Override
 	public IExtent intersection(IExtent extent) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		return and(extent);
 	}
 
 	@Override

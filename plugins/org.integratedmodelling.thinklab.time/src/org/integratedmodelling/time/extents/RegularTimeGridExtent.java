@@ -322,12 +322,12 @@ public class RegularTimeGridExtent implements IExtent {
 	@Override
 	public IExtent intersection(IExtent extent) throws ThinklabException {
 		// TODO Auto-generated method stub
-		return null;
+		return extent;
 	}
 
 	@Override
 	public IExtent force(IExtent extent) throws ThinklabException {
 		// TODO Auto-generated method stub
-		return null;
+		return extent;
 	}
 }

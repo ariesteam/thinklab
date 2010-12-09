@@ -296,20 +296,20 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 
 	@Override
 	public boolean checkDomainDiscontinuity() throws ThinklabException {
-		// TODO Auto-generated method stub
+		// TODO this is tough if we need to check contiguity, the point is
+		// it's most often discontinuous unless there is one shape or full coverage.
 		return false;
 	}
 
 	@Override
 	public IExtent intersection(IExtent extent) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO this one is tough
+		return extent;
 	}
 
 	@Override
 	public IExtent force(IExtent extent) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		return extent;
 	}
 
 //	@Override
