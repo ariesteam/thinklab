@@ -24,6 +24,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.gce.arcgrid.ArcGridReader;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
@@ -239,11 +240,13 @@ public class CoverageFactory {
 			FeatureCollection<SimpleFeatureType, SimpleFeature> features = 
 				source.getFeatures();
 
+			ReferencedEnvelope bounds = source.getBounds();
+			
 			coverage = new VectorCoverage(
 					features, 
 					features.getSchema().getCoordinateReferenceSystem(), 
 					valAttr, valType, valDef,
-					source.getBounds(),
+					bounds,
 					source, 
 					filter,
 					false);

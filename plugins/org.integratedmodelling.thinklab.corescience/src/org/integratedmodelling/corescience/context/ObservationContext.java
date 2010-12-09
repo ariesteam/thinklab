@@ -85,7 +85,7 @@ public class ObservationContext implements IObservationContext {
 			return;
 
 		for (ObservationContext o : dependents)
-			initializeAll();
+			o.initializeAll();
 				
 		sort();
 		
@@ -140,6 +140,19 @@ public class ObservationContext implements IObservationContext {
 	 */
 	public ObservationContext(IObservation o, ObservationContext constraining) throws ThinklabException {
 		
+		
+// --- START NEW
+//		HashMap<IConcept, IExtent> mods = defineObservationContext(o, constraining);
+//		
+//		if (mods.size() > 0) {
+//			CoreScience.get().logger().warn(
+//					"context of observation of " + 
+//					o.getObservableClass() +
+//					" was modified to suit dependencies");
+//		}
+// --- END NEW
+		
+// -- START ORIGINAL
 		this.observation = o;
 
 		/*
@@ -218,6 +231,7 @@ public class ObservationContext implements IObservationContext {
 			switchTo(((ContextTransformingObservation)observation).getTransformedContext(this));
 		}
 		
+// -- END ORIGINAL
 	}
 	
 	/**
@@ -237,6 +251,7 @@ public class ObservationContext implements IObservationContext {
 		} else {
 			ret = assembleObservationContext(o, desired);
 		}
+		
 		initializeAll();
 
 		return ret;
@@ -286,8 +301,6 @@ public class ObservationContext implements IObservationContext {
 		
 		this.observation = o;
 		this.extents.clear();
-
-		ArrayList<ObservationContext> dd = new ArrayList<ObservationContext>();
 		
 		/*
 		 * we start by adding all extents from the observation we represent.
@@ -311,7 +324,6 @@ public class ObservationContext implements IObservationContext {
 			
 			IExtent myExtent  = extents.get(c);
 			IExtent cExtent = constraining.extents.get(c);
-			
 			IExtent finalExtent = myExtent;
 			
 			if (cExtent != null) {
@@ -334,9 +346,10 @@ public class ObservationContext implements IObservationContext {
 					throw new ThinklabContextualizationException(
 							"unacceptable discontinuities in merged extent of observation for " + c);
 				}
+				
+				extents.put(c, finalExtent);
 			}
 			
-			extents.put(c, finalExtent);
 		}
 		
 		/*
@@ -354,9 +367,9 @@ public class ObservationContext implements IObservationContext {
 			/*
 			 * adopt any extent we don't have from the dependency first
 			 */
-			for (IConcept oo : odep.getDimensions()) {
+			for (IConcept oo : odep.extents.keySet()) {
 				if (!this.extents.containsKey(oo)) {
-					this.extents.put(oo, odep.getExtent(oo));
+					this.extents.put(oo, odep.extents.get(oo));
 				}
 			}
 			

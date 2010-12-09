@@ -660,13 +660,108 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 
 	@Override
 	public IExtent intersection(IExtent extent) throws ThinklabException {
-		return and(extent);
+		
+		Object[] cc = computeCommonExtent(extent);
+		
+		ArealExtent orextent = (ArealExtent) cc[0];
+		ArealExtent otextent = (ArealExtent) cc[1];
+		CoordinateReferenceSystem ccr = (CoordinateReferenceSystem) cc[2];
+		Envelope common = (Envelope) cc[3];
+		
+		/*
+		 * TODO intersection may be empty - this should be checked in createMergedExtent instead
+		 * of cursing here.
+		 */
+		if (common.isNull()) {
+			return null;
+		}
+		
+		/*
+		 * for now, raster always wins
+		 */
+		if (otextent instanceof GridExtent && !(orextent instanceof GridExtent)) {
+			return makeRasterExtent((GridExtent)otextent, orextent, ccr, common);
+		}
+
+		if (orextent instanceof GridExtent && !(otextent instanceof GridExtent)) {
+			return makeRasterExtent((GridExtent)orextent, otextent, ccr, common);
+		}
+
+		/*
+		 * if we get here, we must be merging two rasters
+		 */
+		if ( !(orextent instanceof GridExtent && otextent instanceof GridExtent)) {
+			throw new ThinklabUnimplementedFeatureException("RasterModel: cannot yet merge extents of different types");
+		}
+
+		GridExtent orext = (GridExtent)orextent;
+		GridExtent otext = (GridExtent)otextent;
+		
+		/* we'll fix the resolution later  */
+		GridExtent nwext = 
+				new GridExtent(ccr, 
+						common.getMinX(), common.getMinY(), common.getMaxX(), common.getMaxY(), 
+						1, 1);
+
+		// this is the constrained resolution; we recompute it below if we are free to choose
+		int xc = otext.getXCells();
+		int yc = otext.getYCells();
+		
+		// phase errors in both directions due to choosing resolutions that do not
+		// match exactly. This is computed but not used right now. We could set what to 
+		// do with it as a property: e.g., log a warning or even raise an exception if nonzero.
+		double errx = 0.0;
+		double erry = 0.0;
+		
+		/* choose the smallest of the reprojected cells unless we're constrained to accept otextent */
+		Envelope cor = null;
+		Envelope cot = null; 
+		
+		try {
+			
+			cor = orext.getCellEnvelope(0, 0).transform(ccr, true, 10);
+			cot = otext.getCellEnvelope(0, 0).transform(ccr, true, 10);
+				
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		}
+		
+		double aor = cor.getHeight() * cor.getWidth();
+		double aot = cot.getHeight() * cot.getWidth();
+			
+		/*
+		 * We take the finest res
+		 */
+		Envelope cell = aor < aot ? cor : cot;
+	
+		// System.out.println("cells are " + cor + " and " + cot + "; chosen " + cell + " because areas are " + aor + " and " + aot);
+		
+		/* recompute the number of cells in the new extent */
+		xc = (int)Math.round(nwext.getNormalizedEnvelope().getWidth()/cell.getWidth());
+		yc = (int)Math.round(nwext.getNormalizedEnvelope().getHeight()/cell.getHeight());
+		
+		errx = nwext.getNormalizedEnvelope().getWidth() - (cell.getWidth() * xc);
+		erry = nwext.getNormalizedEnvelope().getHeight() - (cell.getHeight() * yc);
+		
+		// System.out.println("new cell size is " + xc + "," + yc);
+		
+		// TODO use the error, make sure it's not larger than too much
+		// System.out.println("errors are " + errx + "," + erry);
+		
+		nwext.setResolution(xc, yc);
+		
+		System.out.println("extent is now " + nwext);
+		
+		
+		return nwext;
+
+	
 	}
 
 	@Override
 	public IExtent force(IExtent extent) throws ThinklabException {
 		// TODO Auto-generated method stub
-		return null;
+		return extent;
 	}
 
 }

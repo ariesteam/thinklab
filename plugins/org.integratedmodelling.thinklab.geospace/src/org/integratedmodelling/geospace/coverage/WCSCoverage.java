@@ -120,7 +120,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 
 		  String[] dimSpecs = new String[2];
 
-		  desc.dump(System.out);
+		  // desc.dump(System.out);
 
 		  Geospace.get().logger().info("parsing descriptor for " + layerName);
 		  

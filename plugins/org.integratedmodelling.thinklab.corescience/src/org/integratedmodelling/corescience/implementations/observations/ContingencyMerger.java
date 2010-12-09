@@ -9,7 +9,6 @@ import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.SwitchingState;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IPartiallySpecifiableObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.thinklab.constraint.Constraint;
@@ -41,7 +40,7 @@ import clojure.lang.PersistentArrayMap;
  *
  */
 @InstanceImplementation(concept=CoreScience.STATELESS_MERGER_OBSERVATION)
-public class ContingencyMerger extends Observation implements IPartiallySpecifiableObservation {
+public class ContingencyMerger extends Observation  {
 
 	// reflected 
 	public ArrayList<IFn>      conditionals = null;
@@ -53,6 +52,15 @@ public class ContingencyMerger extends Observation implements IPartiallySpecifia
 		ArrayList<Integer> contingencies = new ArrayList<Integer>();
 	};
 	
+	
+	
+	@Override
+	public void initialize(IInstance i) throws ThinklabException {
+		// TODO Auto-generated method stub
+		super.initialize(i);
+		acceptsNodata = true;
+	}
+
 	/**
 	 * Called after all the contingencies have been independently contextualized. Will find
 	 * observations of the same observables and build new switching datasources for them.

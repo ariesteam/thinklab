@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.commands;
 
 import java.util.HashMap;
 
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.geospace.Geospace;
@@ -86,8 +87,9 @@ public class CoverageCommand implements ICommandHandler {
 		Model model = ModelFactory.get().requireModel(concept);	
 		
 		ShapeValue ret = 
-			ModelFactory.get().getSpatialCoverage(model, kbox, session).
-				transform(Geospace.get().getStraightGeoCRS());
+			ModelFactory.get().getSpatialCoverage(model, kbox, session);
+		
+		ret = ret.transform(DefaultGeographicCRS.WGS84/*Geospace.get().getStraightGeoCRS()*/);
 		
 		if (area != null) {
 			if (ret.contains(area)) {

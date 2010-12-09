@@ -559,6 +559,8 @@ public abstract class DefaultAbstractModel implements IModel {
 							+ observable + ": no kbox given");
 			}
 
+			// TODO must use the context here, before the "cache" - context should be
+			// primed with a cache if it's there
 			if (cache != null) {
 
 				/*

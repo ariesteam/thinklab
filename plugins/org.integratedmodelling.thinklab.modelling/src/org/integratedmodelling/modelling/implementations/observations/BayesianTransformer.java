@@ -14,7 +14,6 @@ import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IPartiallySpecifiableObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
@@ -48,7 +47,7 @@ import smile.Network;
 @InstanceImplementation(concept="modeltypes:BayesianTransformer")
 public class BayesianTransformer 
 	extends Observation 
-	implements  TransformingObservation, IPartiallySpecifiableObservation {
+	implements  TransformingObservation {
 	
 	public static final String HAS_NETWORK_SOURCE = "modeltypes:hasBayesianNetworkSource";
 	public static final String HAS_BAYESIAN_ALGORITHM = "modeltypes:hasBayesianAlgorithm";
@@ -77,6 +76,8 @@ public class BayesianTransformer
 
 		super.initialize(i);
 				
+		acceptsNodata = true;
+		
 		IValue url = i.get(HAS_NETWORK_SOURCE);
 		IValue alg = i.get(HAS_BAYESIAN_ALGORITHM);
 

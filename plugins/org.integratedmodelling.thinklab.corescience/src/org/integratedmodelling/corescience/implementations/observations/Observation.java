@@ -6,7 +6,6 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IPartiallySpecifiableObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -122,8 +121,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
-
-		acceptsNodata = this instanceof IPartiallySpecifiableObservation;
 		
 		/*
 		 * this one is easy

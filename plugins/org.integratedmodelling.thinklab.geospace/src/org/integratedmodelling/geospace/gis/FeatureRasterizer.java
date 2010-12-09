@@ -398,7 +398,7 @@ public class FeatureRasterizer {
     	 * if we have north-south on the X axis, swap the coordinates.
     	 */
     	if (env.getCoordinateReferenceSystem().getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH)) {
-    		swapAxis = true;
+    		// ZORK swapAxis = true;
     	}
     	
     	/*
@@ -917,7 +917,7 @@ public class FeatureRasterizer {
     }
 
 	public void swapAxes(boolean b) {
-		this.swapAxis = b;
+		// ZORK this.swapAxis = b;
 	}
     
 }

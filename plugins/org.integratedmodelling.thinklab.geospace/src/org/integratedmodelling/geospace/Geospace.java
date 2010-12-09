@@ -32,6 +32,7 @@
  **/
 package org.integratedmodelling.geospace;
 
+import java.awt.RenderingHints.Key;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,6 +44,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -193,6 +195,13 @@ public class Geospace extends ThinklabPlugin  {
 		
 		try {
 			
+//			Hints config = GeoTools.getDefaultHints();
+//			config.put( Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, true );
+//			config.put( Hints.FORCE_STANDARD_AXIS_DIRECTIONS, true );
+//
+//			Hints hints = new Hints( config );
+//			GeoTools.init( hints ); // Set FactoryUsingWKT as the default
+			
 			/*
 			 * TODO put all these class names into global strings
 			 */
@@ -224,9 +233,9 @@ public class Geospace extends ThinklabPlugin  {
 		try {
 			registerAdditionalCRS();
 
-			metersCRS = CRS.decode(EPSG_PROJECTION_METERS);
-			defaultCRS = CRS.decode(EPSG_PROJECTION_DEFAULT);
-			googleCRS = CRS.decode(EPSG_PROJECTION_GOOGLE);
+			metersCRS = CRS.decode(EPSG_PROJECTION_METERS, true);
+			defaultCRS = CRS.decode(EPSG_PROJECTION_DEFAULT, true);
+			googleCRS = CRS.decode(EPSG_PROJECTION_GOOGLE, true);
 			
 			CRSAuthorityFactory factory = CRS.getAuthorityFactory(true);
 			geoCRSstraight = factory.createCoordinateReferenceSystem("EPSG:4326");
@@ -722,7 +731,7 @@ public class Geospace extends ThinklabPlugin  {
         
         if (ret == null) {
         	try {
-        		ret = CRS.decode(crsId);
+        		ret = CRS.decode(crsId, true);
         	} catch (Exception e) {
                 throw new ThinklabValidationException(e);
         	}

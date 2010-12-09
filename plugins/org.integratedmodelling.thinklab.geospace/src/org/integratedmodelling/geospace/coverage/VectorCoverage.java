@@ -229,6 +229,20 @@ public class VectorCoverage implements ICoverage {
 			} else {
 				
 				/*
+				 * TODO/FIXME/CHECK
+				 * if WGS84, WFS will want the bounding box in lat/lon order. How do we ensure which box we need to use?
+				 * Datasource properties? For Geoserver, this is OK. For anything else, who knows. 
+				 * OR we need to set hints in the filter - more likely? FIXME FIXME FIXME
+				 */
+				if (Geospace.getCRSIdentifier(envelope.getCoordinateReferenceSystem(), true).equals("EPSG:4326")) {
+					envelope = 
+						new ReferencedEnvelope(
+								envelope.getMinY(), envelope.getMaxY(), 
+								envelope.getMinX(), envelope.getMaxX(), 
+								envelope.getCoordinateReferenceSystem());
+				}
+
+				/*
 				 * query
 				 */
 				FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
