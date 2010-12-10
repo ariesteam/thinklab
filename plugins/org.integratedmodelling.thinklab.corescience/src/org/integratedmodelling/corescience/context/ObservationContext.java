@@ -142,95 +142,95 @@ public class ObservationContext implements IObservationContext {
 		
 		
 // --- START NEW
-//		HashMap<IConcept, IExtent> mods = defineObservationContext(o, constraining);
-//		
-//		if (mods.size() > 0) {
-//			CoreScience.get().logger().warn(
-//					"context of observation of " + 
-//					o.getObservableClass() +
-//					" was modified to suit dependencies");
-//		}
+		HashMap<IConcept, IExtent> mods = defineObservationContext(o, constraining);
+		
+		if (mods.size() > 0) {
+			CoreScience.get().logger().warn(
+					"context of observation of " + 
+					o.getObservableClass() +
+					" was modified to suit dependencies");
+		}
 // --- END NEW
 		
 // -- START ORIGINAL
-		this.observation = o;
-
-		/*
-		 * put in anything that our observation has
-		 */
-		for (Topology extent : observation.getTopologies()) {
-			mergeExtent((Topology) extent);
-		}
-		
-		if (this.isNull)
-			return;
-		
-		if (constraining != null) {
-			constrainExtents(constraining);
-		}
-
-		if (this.isNull)
-			return;
-
-		
-		/*
-		 * contingent contexts will be constrained so partial overlap is allowed
-		 */
-		for (IObservation dep : observation.getContingencies()) {
-			
-			ObservationContext depctx = new ObservationContext(dep, constraining);
-			contingents.add(depctx);
-			// merge in any further restriction coming from downstream
-			mergeExtents(depctx);
-
-			if (this.isNull)
-				return;
-		}
-
-		
-		/*
-		 * merge with dependent contexts, constrained by ours
-		 */
-		for (IObservation dep : observation.getDependencies()) {
-			
-			ObservationContext depctx = new ObservationContext(dep, constraining);
-			dependents.add(depctx);
-			// merge in any further restriction coming from downstream
-			mergeExtents(depctx);
-
-			if (this.isNull)
-				return;
-		}
-
-		/*
-		 * compute multiplicities and extent order
-		 */
-		initialize();
-		
-		/*
-		 * if we have a datasource, determine the necessary transformations to 
-		 * move from our own extent to whatever was defined in the context.
-		 */
-		if (observation.getDataSource() != null) {
-			for (Topology extent : observation.getTopologies()) {
-				IExtent ext = extent.getExtent();
-				IDatasourceTransformation transform = 
-					ext.getDatasourceTransformation(
-							observation.getObservableClass(),
-							getExtent(extent.getObservableClass()));
-				if (transform != null)
-					transformations.add(transform);
-			}	
-		}
-
-		/* 
-		 * if we represent a transformer, we store our "original" context in a field and
-		 * switch to what we will be after transformation.
-		 */
-		if (observation instanceof ContextTransformingObservation) {
-			switchTo(((ContextTransformingObservation)observation).getTransformedContext(this));
-		}
-		
+//		this.observation = o;
+//
+//		/*
+//		 * put in anything that our observation has
+//		 */
+//		for (Topology extent : observation.getTopologies()) {
+//			mergeExtent((Topology) extent);
+//		}
+//		
+//		if (this.isNull)
+//			return;
+//		
+//		if (constraining != null) {
+//			constrainExtents(constraining);
+//		}
+//
+//		if (this.isNull)
+//			return;
+//
+//		
+//		/*
+//		 * contingent contexts will be constrained so partial overlap is allowed
+//		 */
+//		for (IObservation dep : observation.getContingencies()) {
+//			
+//			ObservationContext depctx = new ObservationContext(dep, constraining);
+//			contingents.add(depctx);
+//			// merge in any further restriction coming from downstream
+//			mergeExtents(depctx);
+//
+//			if (this.isNull)
+//				return;
+//		}
+//
+//		
+//		/*
+//		 * merge with dependent contexts, constrained by ours
+//		 */
+//		for (IObservation dep : observation.getDependencies()) {
+//			
+//			ObservationContext depctx = new ObservationContext(dep, constraining);
+//			dependents.add(depctx);
+//			// merge in any further restriction coming from downstream
+//			mergeExtents(depctx);
+//
+//			if (this.isNull)
+//				return;
+//		}
+//
+//		/*
+//		 * compute multiplicities and extent order
+//		 */
+//		initialize();
+//		
+//		/*
+//		 * if we have a datasource, determine the necessary transformations to 
+//		 * move from our own extent to whatever was defined in the context.
+//		 */
+//		if (observation.getDataSource() != null) {
+//			for (Topology extent : observation.getTopologies()) {
+//				IExtent ext = extent.getExtent();
+//				IDatasourceTransformation transform = 
+//					ext.getDatasourceTransformation(
+//							observation.getObservableClass(),
+//							getExtent(extent.getObservableClass()));
+//				if (transform != null)
+//					transformations.add(transform);
+//			}	
+//		}
+//
+//		/* 
+//		 * if we represent a transformer, we store our "original" context in a field and
+//		 * switch to what we will be after transformation.
+//		 */
+//		if (observation instanceof ContextTransformingObservation) {
+//			switchTo(((ContextTransformingObservation)observation).getTransformedContext(this));
+//		}
+//		
 // -- END ORIGINAL
 	}
 	
@@ -326,10 +326,11 @@ public class ObservationContext implements IObservationContext {
 			IExtent cExtent = constraining.extents.get(c);
 			IExtent finalExtent = myExtent;
 			
-			if (cExtent != null) {
+			if (cExtent != null && !cExtent.equals(myExtent)) {
 
-				if (o.acceptsNodata())
-					// this will normally set finalExtent to cExtent.
+				if (o.acceptsContextExtrapolation())
+					// this will normally set finalExtent to cExtent, although additional
+					// extent-dependent behavior is possible.
 					finalExtent = myExtent.force(cExtent);
 				else {
 					finalExtent = cExtent.intersection(myExtent);
@@ -349,18 +350,24 @@ public class ObservationContext implements IObservationContext {
 				
 				extents.put(c, finalExtent);
 			}
-			
 		}
 		
 		/*
-		 *  have all dependents compute their contexts constrained to ours as
-		 *  it is now. If they end up modifying it, we need to redefine ours
-		 *  accordingly.
+		 * make another OC from the constraining, changing the extents in common with our mediated
+		 * extents, to constrain the dependencies with. 
+		 */
+		ObservationContext newconstraining = constraining.adopt(this);
+		
+		/*
+		 *  have all dependents compute their contexts constrained to the merge of
+		 *  the constraining extent with ours as it is now. If they end up modifying 
+		 *  it, we need to redefine ours accordingly.
 		 */
 		for (IObservation dep : observation.getDependencies()) {			
 			
 			ObservationContext odep = new ObservationContext();
-			HashMap<IConcept, IExtent> mods = odep.assembleObservationContext(dep, this);
+			HashMap<IConcept, IExtent> mods = 
+				odep.assembleObservationContext(dep, newconstraining);
 			
 			dependents.add(odep);
 			
@@ -402,6 +409,23 @@ public class ObservationContext implements IObservationContext {
 		
 		return modified;
 		
+	}
+
+	/**
+	 * Return a new context that has all the extents in the passed one, but 
+	 * adds any extents we have that the passed one does not.
+	 * 
+	 * @param observationContext
+	 * @return
+	 */
+	public ObservationContext adopt(ObservationContext observationContext) {
+		
+		ObservationContext ret = new ObservationContext(observationContext);
+		for (IConcept ext : extents.keySet()) {
+			if (!ret.extents.containsKey(ext))
+				ret.extents.put(ext, extents.get(ext));
+		}
+		return ret;
 	}
 
 	/**

@@ -75,8 +75,6 @@ public class BayesianTransformer
 	public void initialize(IInstance i) throws ThinklabException {
 
 		super.initialize(i);
-				
-		acceptsNodata = true;
 		
 		IValue url = i.get(HAS_NETWORK_SOURCE);
 		IValue alg = i.get(HAS_BAYESIAN_ALGORITHM);

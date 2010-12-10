@@ -58,7 +58,6 @@ public class ContingencyMerger extends Observation  {
 	public void initialize(IInstance i) throws ThinklabException {
 		// TODO Auto-generated method stub
 		super.initialize(i);
-		acceptsNodata = true;
 	}
 
 	/**

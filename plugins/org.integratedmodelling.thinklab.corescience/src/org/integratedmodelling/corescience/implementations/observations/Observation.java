@@ -43,7 +43,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 	protected IObservation[] nonExtentDependencies = new IObservation[0];
 	protected IObservation mediatedObservation = null;
 	protected IObservation mediatorObservation = null;
-	protected boolean acceptsNodata = false;
+	private boolean acceptsNodata = true;
 	protected boolean acceptsDiscontinuousTopologies = true;
 	
 	// public so that getField can find it
@@ -127,6 +127,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 		 */
 		observation = i;
 
+		acceptsNodata = setAcceptsContextExtrapolation();
+		
 		ArrayList<IObservation> dep = new ArrayList<IObservation>();
 		ArrayList<IObservation> con = new ArrayList<IObservation>();
 		ArrayList<IObservation> ext = new ArrayList<IObservation>();
@@ -319,7 +321,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 	}
 	
 	@Override
-	public boolean acceptsNodata() {
+	public boolean acceptsContextExtrapolation() {
 		return this.acceptsNodata;
 	}
 
@@ -328,4 +330,16 @@ public class Observation implements IObservation, IInstanceImplementation {
 		return this.acceptsDiscontinuousTopologies;
 	}
 	
+	/**
+	 * Redefine this to inform the system of whether contextualizing beyond the
+	 * dependencies' stated context is acceptable or not. The default is true, which
+	 * may mean lots of wrongness if used unknowingly. If this is false, anything
+	 * that contains such observation as dependency will be shrunk to the intersection
+	 * with its context.
+	 * 
+	 * @return
+	 */
+	protected boolean setAcceptsContextExtrapolation() {
+		return true;
+	}
 }

@@ -238,8 +238,6 @@ public class Measurement extends Observation implements MediatingObservation {
 		 */
 		validateExtents();
 		
-		// ok unless there's a change expression
-		acceptsNodata = true;
 	}
 
 	private void validateExtents() throws ThinklabValidationException {

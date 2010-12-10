@@ -289,9 +289,7 @@ public class Ranking extends Observation implements MediatingObservation {
 		}
 		// TODO add min-max etc
 		metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
-		
-		// this will not accept nodata only when there is a change expression
-		acceptsNodata = true;
+
 	}
 
 

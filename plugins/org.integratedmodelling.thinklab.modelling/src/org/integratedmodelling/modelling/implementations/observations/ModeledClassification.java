@@ -175,6 +175,7 @@ public class ModeledClassification
 		super.initialize(i);
 		Pair<GeneralClassifier, IConcept> universal = null;
 		Pair<GeneralClassifier, IConcept> cls = null;
+
 		
 		/*
 		 * we have no guarantee that the universal classifier will be last, given that it

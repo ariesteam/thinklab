@@ -115,14 +115,18 @@ public interface IObservation extends IConceptualizable {
 	public abstract IObservation getExtent(IConcept observable);
 
 	/**
-	 * True if it can be run in a context with partially specified dependencies. 
+	 * True if it can be run in a context that goes beyond the natural context of
+	 * the observation or its dependencies, meaning that no-data values will occur
+	 * across the context and that large scaling errors are possible. True by default.
+	 *  
 	 * @return
 	 */
-	boolean acceptsNodata();
+	boolean acceptsContextExtrapolation();
 
 	/**
 	 * True if it can be run in a context with disconnected topologies, e.g. spatial
 	 * or temporal holes. 
+	 * 
 	 * @return
 	 */
 	boolean acceptsDiscontinuousTopologies();
