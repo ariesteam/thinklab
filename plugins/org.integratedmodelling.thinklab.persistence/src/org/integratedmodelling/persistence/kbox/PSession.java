@@ -44,7 +44,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.IThinklabSessionListener;
@@ -280,6 +279,12 @@ public class PSession implements ISession {
 	public String getSessionWorkspace() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void print(String s) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

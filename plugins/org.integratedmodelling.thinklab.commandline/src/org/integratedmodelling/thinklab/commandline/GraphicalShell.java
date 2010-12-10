@@ -276,7 +276,6 @@ public class GraphicalShell {
 				}
 			}
 		}
-		
 	}
 
 	private void execute(String input) {
@@ -289,9 +288,25 @@ public class GraphicalShell {
 			if (cmd == null)
 				return;
 			
+			if (cmd.isVerbose())
+				session.pushVariable(ISession.INFO, Boolean.TRUE);
+			if (cmd.isDebug())
+				session.pushVariable(ISession.DEBUG, Boolean.TRUE);
+			
+			session.pushVariable(ISession.COMMAND, cmd);
+			
 			IValue result = CommandManager.get().submitCommand(cmd, session);
+
+			session.popVariable(ISession.COMMAND);
+			
+			if (cmd.isDebug())
+				session.popVariable(ISession.DEBUG);
+			if (cmd.isVerbose())
+				session.popVariable(ISession.INFO);
+			
             if (result != null)
                 console.println(result.toString());
+
             
             console.getOut().flush();
             

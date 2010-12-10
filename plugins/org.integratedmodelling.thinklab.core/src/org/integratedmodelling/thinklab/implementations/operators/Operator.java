@@ -71,6 +71,11 @@ public abstract class Operator implements IOperator {
 	public String getOperatorId() {
 		return id;
 	}
+	
+	@Override
+	public String toString() {
+		return getOperatorId();
+	}
 
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {

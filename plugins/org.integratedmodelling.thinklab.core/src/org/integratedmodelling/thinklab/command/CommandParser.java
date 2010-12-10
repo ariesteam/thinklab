@@ -39,6 +39,14 @@ public class CommandParser {
 		
 		ret = new Command(declaration);
 		
+		if (options.has("verbose")) {
+			ret.setVerbose(true);
+		}
+
+		if (options.has("debug")) {
+			ret.setDebug(true);
+		}
+		
 		/*
 		 * scan all options; if not given, create default
 		 */

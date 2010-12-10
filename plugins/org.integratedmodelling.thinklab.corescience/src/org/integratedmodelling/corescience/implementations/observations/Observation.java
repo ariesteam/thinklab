@@ -18,6 +18,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Polylist;
 
 @InstanceImplementation(concept = "observation:Observation")
@@ -99,8 +100,11 @@ public class Observation implements IObservation, IInstanceImplementation {
 	}
 	
 	public String toString() {
+		String name = this.observable.getLocalName();
+		if (NameGenerator.isGenerated(name))
+			name = "";
 		return "[" + this.observation.getDirectType() + ": "
-				+ this.observable.getLocalName() + " ("
+				+ name + " ("
 				+ this.observable.getType() + ")]";
 	}
 

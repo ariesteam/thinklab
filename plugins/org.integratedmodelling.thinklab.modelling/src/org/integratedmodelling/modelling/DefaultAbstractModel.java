@@ -16,6 +16,7 @@ import org.integratedmodelling.modelling.annotation.ModelAnnotation;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.constraint.Restriction;
@@ -84,27 +85,6 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * values for a state, or simply "true" for any edit).
 	 */
 	protected Object editable = null;
-	
-	class CompatibleResult extends FilteringQueryResult {
-
-		public CompatibleResult(IQueryResult rs) {
-			super(rs);
-		}
-
-		@Override
-		protected boolean isAcceptable(IQueryResult r, int i) {
-			
-			/*
-			 * if scenario == null, no dataset with a scenario will be accepted;
-			 * if scenario != null, we only pass those with a scenario that subsumes
-			 * the observable in our scenario, and those without a scenario will be
-			 * passed only if there is not another with one.
-			 */
-			
-			return true;
-		}
-		
-	}
 
 	protected boolean isMediating() {
 		return mediated != null || mediatesExternal;
@@ -360,13 +340,6 @@ public abstract class DefaultAbstractModel implements IModel {
 		c = c.restrict(new Restriction(CoreScience.HAS_OBSERVABLE, conf
 				.getConstraint(inst)));
 
-		if (scenario == null) {
-			/*
-			 * constrain observations to NOT have scenarios
-			 */
-		} else {
-		}
-		
 		if (extents.size() > 0) {
 
 			ArrayList<Restriction> er = new ArrayList<Restriction>();
@@ -551,6 +524,12 @@ public abstract class DefaultAbstractModel implements IModel {
 
 			ObservationCache cache = ModellingPlugin.get().getCache();
 
+			if (Thinklab.debug(session)) {
+				session.print("---  " +
+					getId() + 
+					": looking up observations for: " + observable);
+			}
+			
 			if (kbox == null && cache == null) {
 				if (acceptEmpty)
 					return null;
@@ -579,11 +558,16 @@ public abstract class DefaultAbstractModel implements IModel {
 					return new ModelResult(res);
 			}
 
-			IQueryResult rs = kbox.query(generateObservableQuery(cp, session,
-					extents));
+			Constraint query = generateObservableQuery(cp, session, extents);
+			
+			if (Thinklab.debug(session)) {
+				session.print("---  query: " + query);
+			}
+			
+			IQueryResult rs = kbox.query(query);
 
-			if (rs != null) {
-				rs = new CompatibleResult(rs);
+			if (Thinklab.debug(session)) {
+				session.print("---  result: " + rs);
 			}
 			
 			if (rs == null || rs.getTotalResultCount() == 0)
@@ -632,6 +616,7 @@ public abstract class DefaultAbstractModel implements IModel {
 			
 				IInstance im = session.createObject(((DefaultAbstractModel)m).observableSpecs);
 				if (im.isConformant(match, null)) {
+					
 					/*
 					 * use the return value of a model function that 
 					 * accepts/rejects/mediates the model, if null don't substitute

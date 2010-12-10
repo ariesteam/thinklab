@@ -257,7 +257,10 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	
 	@Override
 	public String toString() {
-		return "grid-extent(" + xDivs + "," + yDivs + ": " + envelope + ": " + getCRS().getName() + ")"; 
+		return "grid(" + xDivs + "," + yDivs + ": " + 
+		envelope.getMinX() + " : " + envelope.getMaxX() + ", " + 
+		envelope.getMinY() + " : " + envelope.getMaxY() +
+		" " + getCRS().getName() + ")"; 
 	}
 	
 	@Override

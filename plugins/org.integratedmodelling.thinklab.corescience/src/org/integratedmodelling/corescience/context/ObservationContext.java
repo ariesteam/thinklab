@@ -35,6 +35,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Polylist;
 
 public class ObservationContext implements IObservationContext {
@@ -53,16 +54,28 @@ public class ObservationContext implements IObservationContext {
 	ArrayList<IDatasourceTransformation> transformations = 
 		new ArrayList<IDatasourceTransformation>();
 	
+	/**
+	 * Context accumulates conformant states from models, serving both as a 
+	 * result container and a cache. When part of an IContext (modelling plugin)
+	 * it can be conceptualized to a new observation.
+	 */
+	HashMap<IConcept, IState> states = new HashMap<IConcept, IState>();
+	
 	// this stores the context of the original untransformed instance when the 
-	// observation is a transformer, so it can be passed to transform()
+	// observation is a context transformer, so it can be passed to transform()
 	private ObservationContext originalContext;
 	private boolean isNull;
 
 	@Override
 	public String toString() {
+		
+		String name = observation.getObservationInstance().getDirectType().getLocalName();
+		if (NameGenerator.isGenerated(name))
+			name = "";
+		
 		return 
 			"context(" + extents + "): " + 
-			observation.getObservationInstance().getDirectType().getLocalName() + 
+			 name + 
 			"(" + observation.getObservableClass() + ")";
 	}
 	
@@ -582,13 +595,9 @@ public class ObservationContext implements IObservationContext {
 
 		String s = MiscUtilities.createWhiteSpace(i, 0);
 
-		if (followtrans && (ctx.observation instanceof TransformingObservation)) {
+		if (followtrans && (ctx.observation instanceof ContextTransformingObservation)) {
 			dumpNode(ctx.originalContext, out, i, false);
 			out.println(s + ">>> Transform to <<< ");
-		}
-		
-		for (ObservationContext dep : ctx.dependents) {
-			dumpNode(dep, out, i+0, true);
 		}
 		
 		out.println(s + ctx.observation + ":");
@@ -600,6 +609,12 @@ public class ObservationContext implements IObservationContext {
 		for (IDatasourceTransformation t : ctx.transformations) {
 			out.println(s + t);
 		}
+
+		for (ObservationContext dep : ctx.dependents) {
+			dumpNode(dep, out, i+3, true);
+		}
+		
+
 	}
 		
 	@Override

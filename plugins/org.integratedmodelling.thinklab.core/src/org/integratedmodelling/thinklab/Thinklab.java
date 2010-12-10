@@ -6,6 +6,7 @@ import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.PluginDescriptor;
@@ -143,4 +144,12 @@ public class Thinklab extends ThinklabPlugin {
 		super.requirePlugin(pid);
 	}
 	
+	public static boolean verbose(ISession session) {
+		return session.getVariable(ISession.INFO) != null;
+	}
+
+	public static boolean debug(ISession session) {
+		return session.getVariable(ISession.DEBUG) != null;
+	}
+
 }

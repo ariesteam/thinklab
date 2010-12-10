@@ -159,4 +159,8 @@ public class MultipleQueryResult implements IQueryResult {
 		return 0.0f;
 	}
 	
+	@Override
+	public String toString() {
+		return "[" + getTotalResultCount() + " results]";
+	}
 }

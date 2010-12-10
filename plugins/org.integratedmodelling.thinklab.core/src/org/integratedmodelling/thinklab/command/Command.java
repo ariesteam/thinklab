@@ -57,6 +57,8 @@ public class Command {
     HashMap<String, IValue> optValues;
     HashMap<String, IValue> argValues;
     String stringValue = null;
+	private boolean verbose;
+	private boolean debug;
     
     public CommandDeclaration getDeclaration() {
     	return declaration;
@@ -259,6 +261,22 @@ public class Command {
 	public double getOptionAsDouble(String string, double d) {
 		String ret = getOptionAsString(string);
 		return ret == null ? d : Double.parseDouble(ret);
+	}
+
+	void setVerbose(boolean b) {
+		this.verbose = b;
+	}
+
+	void setDebug(boolean b) {
+		this.debug = b;
+	}
+	
+	public boolean isVerbose() {
+		return this.verbose;
+	}
+	
+	public boolean isDebug() {
+		return this.debug;
 	}
 
 }

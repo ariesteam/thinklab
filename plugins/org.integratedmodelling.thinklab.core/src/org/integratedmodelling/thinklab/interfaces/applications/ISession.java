@@ -37,21 +37,15 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.SemanticType;
-import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.literals.AlgorithmValue;
 import org.integratedmodelling.utils.Polylist;
 
 
@@ -66,8 +60,11 @@ import org.integratedmodelling.utils.Polylist;
  */
 public interface ISession {
 	
-	// standard variable names
+	// standard variable names for notification levels
 	public static final String DEBUG = "session.debug";
+	public static final String INFO = "session.info";
+	public static final String COMMAND = "session.command";
+	
 	
 	/**
 	 * Each session has a unique ID assigned by the Knowledge manager. 
@@ -275,10 +272,18 @@ public interface ISession {
 	 */
 	public abstract InputStream getInputStream(); 
 	
-	/*
+	/**
 	 * get the output stream if the user model defines one, otherwise return null.
 	 */
 	public PrintStream getOutputStream();
+	
+
+	/**
+	 * Print a string wherever is appropriate, or ignore if not appropriate. Do not
+	 * raise errors.
+	 * @param s
+	 */
+	public void print(String s);
 	
 	/**
 	 * 

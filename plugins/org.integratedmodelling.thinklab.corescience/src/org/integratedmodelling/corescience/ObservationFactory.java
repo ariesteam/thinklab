@@ -9,6 +9,7 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -61,6 +62,11 @@ public class ObservationFactory {
 		
 		ObservationContext constraint = new ObservationContext(context);
 		ObservationContext ctx = new ObservationContext(getObservation(observation), constraint);
+
+		if (Thinklab.debug(session)) {
+			ctx.dump(session.getOutputStream());
+		}
+		
 		return ctx.run(session, listeners);
 	}
 

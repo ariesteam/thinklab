@@ -64,6 +64,12 @@ public class CommandDeclaration {
 	public String description;
 	public IConcept returnType = null;
 	
+	/**
+	 * these are always accepted, and are passed to the session so that the 
+	 * run state can be pushed before any command is executed.
+	 */
+	public String[] generalOptions = {"--verbose", "--debug"};
+	
 	class argDescriptor {
 		String id;
 		String description;
@@ -461,6 +467,9 @@ public class CommandDeclaration {
 	public OptionParser createParser() {
 
 		OptionParser ret = new OptionParser();
+		
+		// universally recognized
+		ret.acceptsAll(Arrays.asList(new String [] {"verbose", "verbose", "debug", "debug" }));
 		
 		// TODO add defaults for arguments and options
 		for (argDescriptor argd : options) {

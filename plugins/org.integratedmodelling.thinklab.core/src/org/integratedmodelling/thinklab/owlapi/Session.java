@@ -544,4 +544,10 @@ public class Session implements ISession {
 		return workspace;
 	}
 
+	@Override
+	public void print(String s) {
+		if (getOutputStream() != null)
+			getOutputStream().println(s);
+	}
+
 }
