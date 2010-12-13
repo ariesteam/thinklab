@@ -1,4 +1,4 @@
-package org.integratedmodelling.modelling.visualization;
+package org.integratedmodelling.modelling.storage;
 
 import java.io.IOException;
 import java.util.ArrayList;

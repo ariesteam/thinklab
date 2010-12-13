@@ -25,7 +25,7 @@ import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.literals.ContextValue;
-import org.integratedmodelling.modelling.visualization.NetCDFArchive;
+import org.integratedmodelling.modelling.storage.NetCDFArchive;
 import org.integratedmodelling.modelling.visualization.ObservationListing;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
