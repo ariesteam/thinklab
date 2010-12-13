@@ -428,7 +428,7 @@ public class ObservationContext implements IObservationContext, IContext {
 	 */
 	public ObservationContext(Topology[] context) throws ThinklabException {
 		for (Topology t : context)
-			mergeExtent(t);
+			extents.put(t.getObservableClass(), t.getExtent());
 		initialize();
 	}
 	
@@ -518,30 +518,33 @@ public class ObservationContext implements IObservationContext, IContext {
 //		}
 //	}
 	
-	private void mergeExtent(Topology extobs) throws ThinklabException {
+//	private void mergeExtent(Topology extobs) throws ThinklabException {
+//
+//		IConcept dimension = extobs.getObservableClass();
+//		IExtent myExtent  = extents.get(dimension);
+//		IExtent itsExtent = extobs.getExtent();
+//		
+//		if (myExtent == null) {
+//			
+//			/* just add the extent */
+//			extents.put(dimension, itsExtent);
+//		
+//		} else {
+//
+//			/* ask CM to modify the current extent record in order to represent the
+//			   new one as well. */
+//			IExtent merged = itsExtent.and(myExtent);
+//			if (merged == null) {
+//				this.isNull = true;
+//			} else {
+//				extents.put(dimension, merged);
+//			}
+//		}		
+//	}
 
-		IConcept dimension = extobs.getObservableClass();
-		IExtent myExtent  = extents.get(dimension);
-		IExtent itsExtent = extobs.getExtent();
-		
-		if (myExtent == null) {
-			
-			/* just add the extent */
-			extents.put(dimension, itsExtent);
-		
-		} else {
-
-			/* ask CM to modify the current extent record in order to represent the
-			   new one as well. */
-			IExtent merged = itsExtent.and(myExtent);
-			if (merged == null) {
-				this.isNull = true;
-			} else {
-				extents.put(dimension, merged);
-			}
-		}		
-	}
-
+	/**
+	 * used only by collapse() - FIXME remove or change.
+	 */
 	private void mergeExtent(IConcept dimension, IExtent itsExtent) throws ThinklabException {
 
 		IExtent myExtent  = extents.get(dimension);
@@ -593,7 +596,11 @@ public class ObservationContext implements IObservationContext, IContext {
 			dumpNode(dep, out, i+3, true);
 		}
 	}
-		
+	
+	/**
+	 * Quick list of extents and states
+	 * @param out
+	 */
 	public void list(PrintStream out) {
 		
 		int i = 0;
@@ -887,13 +894,13 @@ public class ObservationContext implements IObservationContext, IContext {
 //		return session.createObject(l);
 //	}
 
-	/**
-	 * 
-	 * @param states
-	 * @return
-	 * @throws ThinklabException
-	 * @deprecated use conceptualize and forget observation - just use the states we have in us
-	 */
+//	/**
+//	 * 
+//	 * @param states
+//	 * @return
+//	 * @throws ThinklabException
+//	 * @deprecated use conceptualize and forget observation - just use the states we have in us
+//	 */
 //	private Polylist buildObservationList(Map<IConcept, IState> states) throws ThinklabException {
 //		
 //		ArrayList<Object> adl = null;

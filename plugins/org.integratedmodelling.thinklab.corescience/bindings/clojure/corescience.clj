@@ -180,7 +180,7 @@
 (defn get-dependent-states-map 
   "Use on a context only to retrieve the state of a particular observation and all its dependents."
   [observation concept]
-  (.getStatemap observation concept))
+  (.getStateMap observation concept))
 
 ;; ================================================================================================
 ;; utils

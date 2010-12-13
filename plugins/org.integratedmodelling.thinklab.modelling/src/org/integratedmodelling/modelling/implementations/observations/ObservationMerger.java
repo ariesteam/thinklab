@@ -151,9 +151,11 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 		IState ret = null;
 		
 		if (stateType.is(KnowledgeManager.Number())) {
-			ret = new MemDoubleContextualizedDatasource(stateType, size, (ObservationContext) context);
+			ret = new MemDoubleContextualizedDatasource(context.getObservation().getObservableClass(),
+					size, (ObservationContext) context);
 		} else {
-			ret = new MemObjectContextualizedDatasource(stateType, size, (ObservationContext) context);
+			ret = new MemObjectContextualizedDatasource(context.getObservation().getObservableClass(),
+						size, (ObservationContext) context);
 		}
 		
 		/*
