@@ -5,21 +5,16 @@ import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IContext;
+import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
-import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
-import org.integratedmodelling.geospace.interfaces.IGazetteer;
-import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.modelling.Context;
-import org.integratedmodelling.modelling.ObservationFactory;
+import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
@@ -66,32 +61,8 @@ public class ObserveCommand implements ICommandHandler {
 		ArrayList<Topology> extents = new ArrayList<Topology>();
 		
 		IContext context = null;
-		
-		if (command.hasArgument("context")) {
-			
-			int res = 
-				(int)command.getOptionAsDouble("resolution", 256.0);	
-//			IQueryResult result = 
-//				Geospace.get().lookupFeature(
-//						command.getArgumentAsString("context"));
-
-			context = Context.getContext(command.getArgumentAsString("context"), res);
-			
-//			ShapeValue roi = null;
-//
-//			if (result.getTotalResultCount() > 0)
-//				roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
-//				
-//			if (roi != null) {
-//				where = 
-//					session.createObject(RasterGrid.createRasterGrid(roi, res));
-//				((RasterGrid) ObservationFactory.getObservation(where)).mask(roi);
-//			} else { 
-//				throw new ThinklabResourceNotFoundException(
-//						"region name " + 
-//						command.getArgumentAsString("context") +
-//						" cannot be resolved");
-//			}
+		if (!command.getArgumentAsString("context").equals("_NONE_")) {			
+			context = ModelFactory.get().requireContext(command.getArgumentAsString("context"));
 		}		
 		
 		Constraint c = new Constraint(CoreScience.Observation());
@@ -101,11 +72,11 @@ public class ObserveCommand implements ICommandHandler {
 				CoreScience.HAS_OBSERVABLE,
 				new DefaultConformance().getConstraint(inst)));
 
-		if (extents.size() > 0) {
-
+		if (context != null) {
+			
 			ArrayList<Restriction> er = new ArrayList<Restriction>();
-			for (Topology o : extents) {
-				Restriction r = o.getExtent().getConstraint("intersects");
+			for (IExtent o : context.getExtents()) {
+				Restriction r = o.getConstraint("intersects");
 				if (r != null)
 					er.add(r);
 			}
@@ -122,7 +93,7 @@ public class ObserveCommand implements ICommandHandler {
 					r.getTotalResultCount() + " possible observation(s) found");
 
 		for (int i = 0; i < r.getTotalResultCount(); i++) {
-			Polylist o = r.getResultAsList(0, null);
+			Polylist o = r.getResultAsList(i, null);
 			session.print(i + ": " + o);
 		}
 			

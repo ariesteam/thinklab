@@ -128,9 +128,15 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 		return features == null ? 1 : features.size();
 	}
 	
+	/*
+	 * FIXME this should get a shapevalue from above - not sure if it's used
+	 * (non-Javadoc)
+	 * @see org.integratedmodelling.geospace.extents.ArealExtent#getShape()
+	 */
 	public Geometry getShape() {
 		return shape;
 	}
+	
 
 	public void setFeatures(FeatureCollection<?,?> features, String sourceURL) {
 		this.features = features;

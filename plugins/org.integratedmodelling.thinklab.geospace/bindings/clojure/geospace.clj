@@ -19,13 +19,19 @@
 	(. org.integratedmodelling.geospace.implementations.observations.RasterGrid (createRasterGrid where max-linear-resolution)))
 	
 (defn get-spatial-extent
-	"Return the IObservation that defines the spatial extent for the passed observation, or nil
-	if non-spatial"
+	"Return the IExtent that defines the spatial extent for the passed observation, or nil
+	if non-spatial. Applies to IInstance, IObservation and IObservationContext"
 	[observation]	
 	(if (not (nil? observation)) 
-     (if  (instance? org.integratedmodelling.corescience.interfaces.IObservationContext observation)
-       (.getExtent observation (.. org.integratedmodelling.geospace.Geospace (get) (SpaceObservable)))
-       (.getExtent (corescience/get-extent 
+     (cond  
+       (instance? org.integratedmodelling.corescience.interfaces.IObservationContext observation)
+          (.getExtent observation (.. org.integratedmodelling.geospace.Geospace (get) (SpaceObservable)))
+       (instance? org.integratedmodelling.thinklab.interfaces.knowledge.IInstance observation)
+          (.getExtent (corescience/get-extent 
+              (tl/get-implementation observation) 
+              (.. org.integratedmodelling.geospace.Geospace (get) (SpaceObservable))))
+       (instance? org.integratedmodelling.corescience.interfaces.IObservation observation)
+          (.getExtent (corescience/get-extent 
               observation 
               (.. org.integratedmodelling.geospace.Geospace (get) (SpaceObservable)))))))
 	
@@ -34,17 +40,16 @@
 	 nil if no spatial extent is there."
 	[observation]
 	(let [extent (get-spatial-extent observation)]
-		(if (instance? org.integratedmodelling.geospace.interfaces.IGeolocatedObject extent)
-			  (.getCentroid extent))))
+		(if (not (nil? extent))
+				(.getCentroid extent))))
 
 (defn get-bounding-box 
 	"Return a ShapeValue with the bounding box (polygon) of the spatial extent of the passed observation, or 
 	 nil if no spatial extent is there."
 	[observation]
 	(let [extent (get-spatial-extent observation)]
-		(if (instance? org.integratedmodelling.geospace.interfaces.IGeolocatedObject extent)
-				(.getBoundingBox extent)
-				nil)))
+		(if (not (nil? extent))
+				(.getBoundingBox extent))))
 		
 (defn get-shape 
 	"Return a ShapeValue with the overall shape (polygon) of the spatial extent of the passed observation, or 
@@ -52,8 +57,7 @@
 	[observation]
 	(let [extent (get-spatial-extent observation)]
 		(if (not (nil? extent))
-				(.getShape extent)
-				nil)))
+				(.getShape extent))))
 		
 (defn spatial? 
 	"Returns true if the given observation is spatial, i.e. has an extent that observes space."

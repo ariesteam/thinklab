@@ -40,6 +40,7 @@ import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -118,6 +119,29 @@ public abstract class ArealExtent implements IExtent {
 		
 		return ret;
 	}
+	
+	public ShapeValue getBoundingBox() {
+		try {
+			 ReferencedEnvelope e = Geospace.normalizeEnvelope(
+					getDefaultEnvelope().transform(
+							Geospace.get().getDefaultCRS(), true, 10), 
+							Geospace.get().getDefaultCRS());
+
+			return new ShapeValue(e);
+		} catch (Exception e) {
+			throw new ThinklabRuntimeException(e);
+		}
+	}
+
+	public ShapeValue getCentroid() {
+		return getBoundingBox().getCentroid();
+	}
+
+	// FIXME reintegrate and fix return values in derived classes
+//	public ShapeValue getShape() {
+//		return shape == null ? getBoundingBox() : shape;
+//	}
+
 	
 	/**
 	 * Get the envelope with the same axis order of the passed CRS.
