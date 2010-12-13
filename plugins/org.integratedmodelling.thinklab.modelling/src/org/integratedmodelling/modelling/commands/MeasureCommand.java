@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.integratedmodelling.clojure.ClojureInterpreter;
 import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -18,10 +19,12 @@ import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.idv.IDV;
+import org.integratedmodelling.modelling.Context;
 import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
+import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.modelling.visualization.NetCDFArchive;
 import org.integratedmodelling.modelling.visualization.ObservationListing;
 import org.integratedmodelling.thinklab.command.Command;
@@ -59,39 +62,20 @@ import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 public class MeasureCommand implements ICommandHandler {
 
 	IObservationContext ctx = null;
-	HashMap<IConcept, IState> states = new HashMap<IConcept, IState>();
 	
 	class Listener implements IContextualizationListener {
 
 		@Override
-		public void onContextualization(IObservation original,
-				IObservation obs, ObservationContext context) {
+		public void onContextualization(IObservation original, ObservationContext context) {
 			ctx = context;
-			try {
-				states.putAll(ObservationFactory.getStateMap(obs));
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
-			}
 		}
 
 		@Override
-		public void postTransformation(IObservation original, IObservation obs,
-				ObservationContext context) {
-			try {
-				states.putAll(ObservationFactory.getStateMap(obs));
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
-			}
+		public void postTransformation(IObservation original, ObservationContext context) {
 		}
 
 		@Override
-		public void preTransformation(IObservation original, IObservation obs,
-				ObservationContext context) {
-			try {
-				states.putAll(ObservationFactory.getStateMap(obs));
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
-			}
+		public void preTransformation(IObservation original, ObservationContext context) {
 		}
 	}
 	
@@ -118,29 +102,34 @@ public class MeasureCommand implements ICommandHandler {
 					
 		Model model = (Model) new ClojureInterpreter().evalRaw(clj, "user", null);
 		
-		IInstance where = null;
+//		IInstance where = null;
+		IContext context = null;
 		
 		if (command.hasArgument("context")) {
 			
 			int res = 
 				(int)command.getOptionAsDouble("resolution", 256.0);	
-			ShapeValue roi = null;
-			IQueryResult result = 
-				Geospace.get().lookupFeature(
-						command.getArgumentAsString("context"));
-			if (result.getTotalResultCount() > 0)
-				roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
-				
-			if (roi != null) {
-				where = 
-					session.createObject(RasterGrid.createRasterGrid(roi, res));
-				((RasterGrid) ObservationFactory.getObservation(where)).mask(roi);
-			} else { 
-				throw new ThinklabResourceNotFoundException(
-						"region name " + 
-						command.getArgumentAsString("context") +
-						" cannot be resolved");
-			}
+//			IQueryResult result = 
+//				Geospace.get().lookupFeature(
+//						command.getArgumentAsString("context"));
+
+			context = Context.getContext(command.getArgumentAsString("context"), res);
+			
+//			ShapeValue roi = null;
+//
+//			if (result.getTotalResultCount() > 0)
+//				roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
+//				
+//			if (roi != null) {
+//				where = 
+//					session.createObject(RasterGrid.createRasterGrid(roi, res));
+//				((RasterGrid) ObservationFactory.getObservation(where)).mask(roi);
+//			} else { 
+//				throw new ThinklabResourceNotFoundException(
+//						"region name " + 
+//						command.getArgumentAsString("context") +
+//						" cannot be resolved");
+//			}
 		}
 		
 		ArrayList<IContextualizationListener> listeners = 
@@ -153,8 +142,7 @@ public class MeasureCommand implements ICommandHandler {
 			ModelFactory.get().clearCache();
 		}
 		
-		IQueryResult r = ModelFactory.get().run(model, kbox, session, listeners, 
-				(Topology)ObservationFactory.getObservation(where));
+		IQueryResult r = ModelFactory.get().run(model, kbox, session, listeners, context);
 		
 		if (session.getOutputStream() != null) {
 			session.getOutputStream().println(
@@ -165,7 +153,7 @@ public class MeasureCommand implements ICommandHandler {
 		
 		if (r.getTotalResultCount() > 0) {
 			
-			IInstance result = r.getResult(0, session).asObjectReference().getObject();
+			IObservationContext result = ((ContextValue)r.getResult(0, session)).getObservationContext();
 
 			// check if a listener has set ctx, which means we're visualizing
 			if (this.ctx != null) {
@@ -183,7 +171,7 @@ public class MeasureCommand implements ICommandHandler {
 				}
 
 				NetCDFArchive out = new NetCDFArchive();
-				out.setStates(this.states, this.ctx);
+				out.setContext(this.ctx);
 				out.write(outfile);
 				ModellingPlugin.get().logger()
 						.info(
@@ -200,7 +188,7 @@ public class MeasureCommand implements ICommandHandler {
 				lister.dump(session.getOutputStream());
 			}
 
-			ret = new ObjectReferenceValue(result);
+			ret = new ContextValue(result);
 		}
 			
 		return ret;

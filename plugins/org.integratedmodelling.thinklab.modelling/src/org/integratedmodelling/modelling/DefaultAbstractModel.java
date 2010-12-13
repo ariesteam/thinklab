@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.interfaces.IContext;
+import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -31,6 +33,7 @@ import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.FilteringQueryResult;
+import org.integratedmodelling.thinklab.kbox.GroupingQueryResult;
 import org.integratedmodelling.thinklab.kbox.ProxyQueryResult;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -322,13 +325,13 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * @param extentRestriction
 	 * @param conformancePolicies
 	 * @param session
-	 * @param extents
+	 * @param context.getTopologies()
 	 * @return
 	 * @throws ThinklabException
 	 */
 	public Constraint generateObservableQuery(
 			IntelligentMap<IConformance> conformancePolicies, ISession session,
-			ArrayList<Topology> extents) throws ThinklabException {
+			IContext context) throws ThinklabException {
 
 		Constraint c = new Constraint(this
 				.getCompatibleObservationType(session));
@@ -340,10 +343,10 @@ public abstract class DefaultAbstractModel implements IModel {
 		c = c.restrict(new Restriction(CoreScience.HAS_OBSERVABLE, conf
 				.getConstraint(inst)));
 
-		if (extents.size() > 0) {
+		if (context.getExtents().size() > 0) {
 
 			ArrayList<Restriction> er = new ArrayList<Restriction>();
-			for (Topology o : extents) {
+			for (IExtent o : context.getExtents()) {
 				Restriction r = o.getConstraint("intersects");
 				if (r != null)
 					er.add(r);
@@ -372,7 +375,8 @@ public abstract class DefaultAbstractModel implements IModel {
 
 		IntelligentMap<IConformance> conformances = null;
 		ArrayList<Topology> extents = new ArrayList<Topology>();
-
+		IContext context = null;
+		
 		if (params != null)
 			for (Object o : params) {
 				if (o instanceof IntelligentMap<?>) {
@@ -386,10 +390,15 @@ public abstract class DefaultAbstractModel implements IModel {
 					}
 				} else if (o instanceof Topology) {
 					extents.add((Topology) o);
+				} else if (o instanceof IContext) {
+					context = (Context)o;;
 				}
 			}
 
-		return observeInternal(kbox, session, conformances, extents, false);
+		if (context == null) 
+			context = Context.getContext(extents);
+		
+		return observeInternal(kbox, session, conformances, context, false);
 
 	}
 
@@ -423,9 +432,9 @@ public abstract class DefaultAbstractModel implements IModel {
 				if (an != null) {
 					an.addUnresolvedState(this.observableId, this
 							.getCompatibleObservationType(session),
-							observable == null ? null
-									: generateObservableQuery(null, session,
-											new ArrayList<Topology>()));
+							observable == null ? 
+									null
+									: generateObservableQuery(null, session, new Context()));
 				}
 			}
 
@@ -470,10 +479,10 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * this should be protected, but...
 	 */
 	public ModelResult observeInternal(IKBox kbox, ISession session,
-			IntelligentMap<IConformance> cp, ArrayList<Topology> extents,
+			IntelligentMap<IConformance> cp, IContext context,
 			boolean acceptEmpty) throws ThinklabException {
 
-		ModelResult ret = new ModelResult(this, kbox, session, extents);
+		ModelResult ret = new ModelResult(this, kbox, session, context);
 
 		/*
 		 * if we're resolved, the model result contains all we need to know
@@ -487,7 +496,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		if (mediated != null) {
 
 			ModelResult res = ((DefaultAbstractModel) mediated)
-					.observeInternal(kbox, session, cp, extents, acceptEmpty);
+					.observeInternal(kbox, session, cp, context, acceptEmpty);
 
 			if (res == null || res.getTotalResultCount() == 0) {
 
@@ -508,7 +517,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		for (IModel dep : dependents) {
 
 			ModelResult d = ((DefaultAbstractModel) dep).observeInternal(kbox,
-					session, cp, extents,
+					session, cp, context,
 					((DefaultAbstractModel) dep).isOptional);
 
 			// can only return null if optional is true for the dependent
@@ -541,30 +550,30 @@ public abstract class DefaultAbstractModel implements IModel {
 			// TODO must use the context here, before the "cache" - context should be
 			// primed with a cache if it's there
 			if (cache != null) {
-
-				/*
-				 * build context from extent array
-				 */
-				IObservationContext ctx = ObservationFactory
-						.buildContext(extents);
-
-				/*
-				 * lookup in cache, if existing, return it
-				 */
-				Polylist res = cache.getObservation(observable, ctx,
-						(String) session
-								.getVariable(ModelFactory.AUX_VARIABLE_DESC));
-				if (res != null)
-					return new ModelResult(res);
+//
+//				/*
+//				 * build context from extent array
+//				 */
+//				IObservationContext ctx = ((Context)context).getObservationContext(o);
+//
+//				/*
+//				 * lookup in cache, if existing, return it
+//				 */
+//				Polylist res = cache.getObservation(observable, ctx,
+//						(String) session
+//								.getVariable(ModelFactory.AUX_VARIABLE_DESC));
+//				if (res != null)
+//					return new ModelResult(res);
 			}
 
-			Constraint query = generateObservableQuery(cp, session, extents);
+			Constraint query = generateObservableQuery(cp, session, context);
 			
 			if (Thinklab.debug(session)) {
 				session.print("---  query: " + query);
 			}
 			
-			IQueryResult rs = kbox.query(query);
+			IQueryResult rs = new GroupingQueryResult(
+					kbox.query(query, new String[] {"dataset"}, 0, -1), "dataset");
 
 			if (Thinklab.debug(session)) {
 				session.print("---  result: " + rs);

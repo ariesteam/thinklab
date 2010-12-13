@@ -54,12 +54,6 @@ public class TimeRecord extends Observation implements Topology {
 	TimeValue value = null;
 
 	@Override
-	public Restriction getConstraint(String operator) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public IExtent getExtent() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;

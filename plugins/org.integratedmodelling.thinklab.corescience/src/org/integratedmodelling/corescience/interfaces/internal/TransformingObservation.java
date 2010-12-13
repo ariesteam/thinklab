@@ -5,7 +5,6 @@ import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.utils.Polylist;
 
 public interface TransformingObservation extends IObservation {
@@ -17,7 +16,7 @@ public interface TransformingObservation extends IObservation {
 	 * 
 	 * @return
 	 */
-	public Polylist transform(IInstance sourceObs, ISession session, IObservationContext context) throws ThinklabException;
+	public Polylist transform(IObservationContext inputContext, ISession session, IObservationContext context) throws ThinklabException;
 
 	/**
 	 * Return the class of the transformed observation

@@ -85,7 +85,7 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 							parms = (PersistentArrayMap) parms.assoc(
 									pmap.get(pp).getFirst(), 
 									pmap.get(pp).getSecond().
-										getValue(pmap.get(pp).getThird().getIndex(index), null));
+										getValue(pmap.get(pp).getThird().getIndex(index)));
 						}
 						
 						/*

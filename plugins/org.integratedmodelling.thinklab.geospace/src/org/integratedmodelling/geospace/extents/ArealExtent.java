@@ -33,11 +33,16 @@
 package org.integratedmodelling.geospace.extents;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.ITopologicallyComparable;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.Geospace;
+import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 
@@ -76,6 +81,11 @@ public abstract class ArealExtent implements IExtent {
 		this.envelope = new ReferencedEnvelope(minx, maxx, miny, maxy, crs);
 	}
 	
+	public ArealExtent(ShapeValue shape) {
+		this.envelope = shape.getEnvelope();
+		this.crs = shape.getCRS();
+	}
+	
 	public CoordinateReferenceSystem getCRS() {
 		return crs;
 	}
@@ -91,6 +101,7 @@ public abstract class ArealExtent implements IExtent {
 	/**
 	 * Get the envelope with the axis order decided by the CRS.
 	 * @return
+	 * @deprecated abandon the axis swap, lon/lat axes are now enforced via geotools.
 	 */
 	public ReferencedEnvelope getDefaultEnvelope() {
 		
@@ -160,6 +171,9 @@ public abstract class ArealExtent implements IExtent {
 		return "areal-extent(" + envelope + "," + crs.getName() + ")";
 	}
 
+	/**
+	 * @deprecated
+	 */
 	Object[] computeCommonExtent(IExtent extent) throws ThinklabException {
 
 		if (! (extent instanceof ArealExtent))
@@ -315,5 +329,47 @@ public abstract class ArealExtent implements IExtent {
 	public int hashCode() {
 		return getSignature().hashCode();
 	}
-	
+
+	// TODO those below need attention (or informed ignorance)
+	@Override
+	public void setValue(int index, Object o) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Object getRawData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double getDoubleValue(int index)
+			throws ThinklabValueConversionException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Metadata getMetadata() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getObservableClass() {
+		return Geospace.get().SubdividedSpaceObservable();
+	}
+
+	@Override
+	public ObservationContext getObservationContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

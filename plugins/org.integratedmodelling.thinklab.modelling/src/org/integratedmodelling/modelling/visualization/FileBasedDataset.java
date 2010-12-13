@@ -7,11 +7,15 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.ObservationFactory;
+import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.Geospace;
+import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
+import org.integratedmodelling.modelling.Context;
 import org.integratedmodelling.modelling.interfaces.IDataset;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -31,8 +35,8 @@ import org.integratedmodelling.utils.image.ImageUtil;
  */
 public class FileBasedDataset implements IDataset {
 
-	private Map<IConcept, IState> states;
-	private RasterGrid space;
+	private IObservationContext context;
+	private GridExtent          space;
 
 	// colormap identifiers
 	public static final int GREY = 0;
@@ -42,17 +46,16 @@ public class FileBasedDataset implements IDataset {
 	public static final int YELLOW = 4;
 	public static final int RAINBOW = 5;
 	
-	public FileBasedDataset(IObservation obs) throws ThinklabException {
+	public FileBasedDataset(IObservationContext obs) throws ThinklabException {
 
-		this.states = ObservationFactory.getStateMap(obs);
-
-		IObservation spc = ObservationFactory.findTopology(obs, Geospace.get().SubdividedSpaceObservable());		
-		if (spc == null || !(spc instanceof RasterGrid))
+		this.context = obs;
+		IExtent spc   = Context.getSpace(obs);
+		
+		if (spc == null || !(spc instanceof GridExtent))
 			throw new ThinklabUnimplementedFeatureException(
 					"only raster grid data are supported in file exporter for now");
-
 		//time  = (RasterGrid) Obs.findObservation(o, TimePlugin.GridObservable());
-		this.space = (RasterGrid)spc; 
+		this.space = (GridExtent)spc; 
 	}
 	
 	@Override
@@ -101,17 +104,17 @@ public class FileBasedDataset implements IDataset {
 
 	@Override
 	public Collection<IConcept> getObservables() {
-		return this.states.keySet();
+		return this.context.getStateObservables();
 	}
 
 	@Override
 	public IState getState(IConcept observable) {
-		return states.get(observable);
+		return context.getState(observable);
 	}
 
 	@Override
 	public int getStateCount() {
-		return states.size();
+		return context.getStates().size();
 	}
 
 	@Override
@@ -150,7 +153,7 @@ public class FileBasedDataset implements IDataset {
 			int x, int y, 
 			int... flags) throws ThinklabException {
 		
-		IState state = states.get(observable);
+		IState state = context.getState(observable);
 
 		if (fileOrNull == null) {
 			try {
@@ -169,15 +172,13 @@ public class FileBasedDataset implements IDataset {
 		double[] darange = (double[])state.getMetadata().get(Metadata.ACTUAL_DATA_RANGE);
 		String[] categories = (String[])state.getMetadata().get(Metadata.CATEGORIES);
 
-		if (state instanceof IInstanceImplementation)
-		System.out.println("metadata: " +
-				((IInstanceImplementation)state).getMetadata());
+		System.out.println("metadata: " + state.getMetadata());
 		
 		System.out.println(observable + ": img [" + iarange[0] + " " + iarange[1] + "] data [" + darange[0] + " " + darange[1] + "]");
 
 		ColorMap cmap = chooseColormap(observable, nlevels, categories == null);
-		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
-				space.getColumns(), x, y, cmap, fileOrNull);
+		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getXCells()), 
+				space.getXCells(), x, y, cmap, fileOrNull);
 		
 		return fileOrNull;
 	}
@@ -193,7 +194,7 @@ public class FileBasedDataset implements IDataset {
 	public String makeUncertaintyMask(IConcept observable, String fileOrNull,
 			int x, int y, int... flags) throws ThinklabException {
 		
-		IState state = states.get(observable);
+		IState state = context.getState(observable);
 		double[] data = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
 		double[] odat = state.getDataAsDoubles();
 		
@@ -235,13 +236,13 @@ public class FileBasedDataset implements IDataset {
 			// nothing to show
 			return null;
 
-		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
-				space.getColumns(), x, y, ColorMap.alphamask(256), fileOrNull);
+		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getXCells()), 
+				space.getXCells(), x, y, ColorMap.alphamask(256), fileOrNull);
 
 		return fileOrNull;
 	}
 
-	public RasterGrid getGrid() {
+	public GridExtent getGrid() {
 		return space;
 	}
 

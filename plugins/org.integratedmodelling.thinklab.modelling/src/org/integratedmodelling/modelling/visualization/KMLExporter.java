@@ -137,7 +137,7 @@ public class KMLExporter  {
 			File.separator + 
 			MiscUtilities.getFileBaseName(file.toString()) + ".kml";
 
-		GridExtent ext = (GridExtent) dset.getGrid().getExtent();
+		GridExtent ext = (GridExtent) dset.getGrid();
 		ReferencedEnvelope env = null;
 		try {
 			env = ext.getNormalizedEnvelope().transform(Geospace.get().getStraightGeoCRS(), true);
@@ -161,8 +161,8 @@ public class KMLExporter  {
 			 * make image in temp dir
 			 * TODO at some point the res will become concept-dependent
 			 */
-			int x = dset.getGrid().getColumns();
-			int y = dset.getGrid().getRows();
+			int x = dset.getGrid().getXCells();
+			int y = dset.getGrid().getYCells();
 			dset.makeSurfacePlot(observable, imagefile, x, y, null);
 			
 			nodes.add(

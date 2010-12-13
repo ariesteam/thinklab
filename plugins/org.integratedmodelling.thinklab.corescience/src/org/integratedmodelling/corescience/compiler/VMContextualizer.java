@@ -84,11 +84,11 @@ public class VMContextualizer<T> {
 					aggregator.reset();
 					accumulator.clear();
 				}
-				this.state.addValue(idx, value);
+				this.state.setValue(idx, value);
 			}
 		}
 
-		public IDataSource<?> getState() {
+		public IState getState() {
 			return this.state;
 		}
 	}
@@ -183,10 +183,10 @@ public class VMContextualizer<T> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Map<IConcept, IDataSource<?>> run() throws ThinklabValidationException {
+	public Map<IConcept, IState> run() throws ThinklabValidationException {
 				
 		int sp = 0;
-		HashMap<IConcept, IDataSource<?>> ret = new HashMap<IConcept, IDataSource<?>>();
+		HashMap<IConcept, IState> ret = new HashMap<IConcept, IState>();
 
 		/*
 		 * we always want these. putAll not an option if compiler settings are strict, so

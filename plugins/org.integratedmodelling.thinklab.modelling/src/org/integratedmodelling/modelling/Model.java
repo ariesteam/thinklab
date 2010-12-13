@@ -7,6 +7,7 @@ import java.util.Map;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ContextMapper;
 import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
@@ -56,9 +57,9 @@ public class Model extends DefaultAbstractModel {
 	Object state = null;
 	
 	@Override
-	public ModelResult observeInternal(IKBox kbox, ISession session, IntelligentMap<IConformance> cp, ArrayList<Topology> extents, boolean acceptEmpty)  throws ThinklabException {
+	public ModelResult observeInternal(IKBox kbox, ISession session, IntelligentMap<IConformance> cp, IContext context, boolean acceptEmpty)  throws ThinklabException {
 	
-		ModelResult ret = new ModelResult(this, kbox, session, extents);
+		ModelResult ret = new ModelResult(this, kbox, session, context);
 
 		/*
 		 * if we have a context model, query it and pass it along. 
@@ -66,16 +67,16 @@ public class Model extends DefaultAbstractModel {
 		Model cm = buildContingencyModel();
 		if (cm != null) {
 
-			ModelResult mr = ((DefaultAbstractModel)cm).observeInternal(kbox, session, cp, extents, acceptEmpty);
+			ModelResult mr = ((DefaultAbstractModel)cm).observeInternal(kbox, session, cp, context, acceptEmpty);
 			if (mr != null && mr.getTotalResultCount() > 0) {
-				ret.setContextModel(mr, extents);
+				ret.setContextModel(mr, context);
 			}
 		}
 		
 		int totres = 0;
 		for (IModel m : models) {
 						
-			ModelResult mr = ((DefaultAbstractModel)m).observeInternal(kbox, session, cp, extents, true);
+			ModelResult mr = ((DefaultAbstractModel)m).observeInternal(kbox, session, cp, context, true);
 
 			if (mr != null && mr.getTotalResultCount() > 0) {
 				ret.addContingentResult(m, mr);
@@ -254,7 +255,7 @@ public class Model extends DefaultAbstractModel {
 		return ret;
 	}
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents, int flags)
+	public Polylist buildDefinition(IKBox kbox, ISession session, IContext context, int flags)
 			throws ThinklabException {
 		// WON'T GET CALLED UNLESS I SCREWED UP
 		throw new ThinklabInternalErrorException("SHIT! BUILDDEFINITION CALLED ON MODEL!");

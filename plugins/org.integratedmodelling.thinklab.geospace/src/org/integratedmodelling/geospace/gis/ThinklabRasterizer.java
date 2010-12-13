@@ -150,7 +150,7 @@ public class ThinklabRasterizer {
 		RenderedImage image = coverage.getRenderedImage();
 		RandomIter itera = RandomIterFactory.create(image, null);
 
-		for (int i = 0; i < grid.getTotalGranularity(); i++) {
+		for (int i = 0; i < grid.getValueCount(); i++) {
 			
 			int[] xy = grid.getXYCoordinates(i);
 			

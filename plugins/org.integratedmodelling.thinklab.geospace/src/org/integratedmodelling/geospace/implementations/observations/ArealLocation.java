@@ -129,11 +129,6 @@ public class ArealLocation extends Observation implements Topology, IParseable, 
 	}
 
 	@Override
-	public Restriction getConstraint(String operator) throws ThinklabException {
-		return new Restriction("boundingbox", operator, getExtent().getFullExtentValue().toString());
-	}
-
-	@Override
 	public IExtent getExtent() throws ThinklabException {
 		return new ShapeExtent(shape.getGeometry(), 
 				shape.getGeometry().getEnvelopeInternal(), shape.getCRS());

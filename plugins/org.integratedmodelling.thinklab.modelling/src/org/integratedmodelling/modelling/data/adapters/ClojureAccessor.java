@@ -192,7 +192,7 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 			int[] iidx = cursor.getElementIndexes(stateOffset);
 			iidx[timeIndex] = iidx[timeIndex] - 1;
 			int previousOffset = cursor.getElementOffset(iidx);
-			self = this.state.getDataAt(previousOffset);
+			self = this.state.getValue(previousOffset);
 			
 			/*
 			 * give other extents a chance to define their own values
@@ -206,15 +206,9 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 				 * add the index of each extent and the corresponding subextent value with the
 				 * name of the concept space to which the concept belongs.
 				 */
-				try {
-					// if we're computing time, the extent we're computing is that between initial value and 
-					// now
-					IValue vv = ext.getState(eidx[ii] - (ii == timeIndex ? 1 : 0));
-					String kk = extc.getConceptSpace();
-					parms = (PersistentArrayMap) parms.assoc(Keyword.intern(null, kk), vv);
-				} catch (ThinklabException e) {
-					throw new ThinklabRuntimeException(e);
-				}
+				Object vv = ext.getValue(eidx[ii] - (ii == timeIndex ? 1 : 0));
+				String kk = extc.getConceptSpace();
+				parms = (PersistentArrayMap) parms.assoc(Keyword.intern(null, kk), vv);
 
 				// TODO this may change when we support closures, so we can allow arbitrarily
 				// parameterized history access
@@ -237,7 +231,7 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 						String kwid = selfLabel + "#" + mv.getFirst();
 						iidx[ii] = zeroIdx + mv.getSecond();
 						previousOffset = cursor.getElementOffset(iidx);
-						Object ov = this.state.getDataAt(previousOffset);
+						Object ov = this.state.getValue(previousOffset);
 						parms = (PersistentArrayMap) parms.assoc(Keyword.intern(null, kwid), ov);			
 					}
 				ii++;
@@ -280,7 +274,7 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 		}
 		
 		if (this.storeState)
-			this.state.addValue(stateOffset, ret);
+			this.state.setValue(stateOffset, ret);
 		
 		return ret;
 	}

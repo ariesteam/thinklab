@@ -41,6 +41,7 @@ import javax.measure.unit.Unit;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.ObservationFactory;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
@@ -56,6 +57,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
@@ -348,11 +350,6 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 	}
 
 	@Override
-	public Restriction getConstraint(String operator) throws ThinklabException {
-		return new Restriction("boundingbox", operator, extent.getFullExtentValue().toString());
-	}
-
-	@Override
 	public IExtent getExtent() throws ThinklabException {
 		return extent;
 	}
@@ -415,5 +412,6 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 					" does not specify an areal density");
 
 	}
+
 	
 }

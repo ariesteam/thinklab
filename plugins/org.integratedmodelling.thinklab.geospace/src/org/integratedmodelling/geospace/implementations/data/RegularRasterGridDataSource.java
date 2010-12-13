@@ -213,11 +213,4 @@ public class RegularRasterGridDataSource implements IDataSource<Object>, IInstan
 		
 	}
 
-	@Override
-	public HashMap<String, Object> getMetadata() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 }

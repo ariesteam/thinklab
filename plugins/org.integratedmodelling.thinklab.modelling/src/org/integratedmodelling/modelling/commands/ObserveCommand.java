@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
@@ -11,6 +12,7 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.modelling.Context;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.constraint.Constraint;
@@ -63,30 +65,34 @@ public class ObserveCommand implements ICommandHandler {
 		
 		ArrayList<Topology> extents = new ArrayList<Topology>();
 		
+		IContext context = null;
+		
 		if (command.hasArgument("context")) {
 			
-			int res = 256;	
-			ShapeValue roi = null;
-			IQueryResult result = 
-				Geospace.get().lookupFeature(
-						command.getArgumentAsString("context"));
-			if (result.getTotalResultCount() > 0)
-				roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
-				
-			if (roi != null) {
-				
-				IInstance where = 
-					session.createObject(RasterGrid.createRasterGrid(roi, res));
-				extents.add((Topology) ObservationFactory.getObservation(where));
-				
-			} else { 
-				throw new ThinklabResourceNotFoundException(
-						"region name " + 
-						command.getArgumentAsString("context") +
-						" cannot be resolved");
-			}
-		}
-		
+			int res = 
+				(int)command.getOptionAsDouble("resolution", 256.0);	
+//			IQueryResult result = 
+//				Geospace.get().lookupFeature(
+//						command.getArgumentAsString("context"));
+
+			context = Context.getContext(command.getArgumentAsString("context"), res);
+			
+//			ShapeValue roi = null;
+//
+//			if (result.getTotalResultCount() > 0)
+//				roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
+//				
+//			if (roi != null) {
+//				where = 
+//					session.createObject(RasterGrid.createRasterGrid(roi, res));
+//				((RasterGrid) ObservationFactory.getObservation(where)).mask(roi);
+//			} else { 
+//				throw new ThinklabResourceNotFoundException(
+//						"region name " + 
+//						command.getArgumentAsString("context") +
+//						" cannot be resolved");
+//			}
+		}		
 		
 		Constraint c = new Constraint(CoreScience.Observation());
 
@@ -99,7 +105,7 @@ public class ObserveCommand implements ICommandHandler {
 
 			ArrayList<Restriction> er = new ArrayList<Restriction>();
 			for (Topology o : extents) {
-				Restriction r = o.getConstraint("intersects");
+				Restriction r = o.getExtent().getConstraint("intersects");
 				if (r != null)
 					er.add(r);
 			}

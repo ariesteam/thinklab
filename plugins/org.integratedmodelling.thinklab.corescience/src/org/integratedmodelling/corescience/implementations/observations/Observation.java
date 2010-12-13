@@ -179,7 +179,6 @@ public class Observation implements IObservation, IInstanceImplementation {
 								.asObjectReference().getObject()
 								.getImplementation();
 					}
-
 				} 
 			}
 		}
@@ -304,7 +303,6 @@ public class Observation implements IObservation, IInstanceImplementation {
             return observation.hashCode();
     }
 
-	@Override
 	public Metadata getMetadata() {
 		return this.metadata ;
 	}
@@ -339,7 +337,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 	 * dependencies' stated context is acceptable or not. The default is true, which
 	 * may mean lots of wrongness if used unknowingly. If this is false, anything
 	 * that contains such observation as dependency will be shrunk to the intersection
-	 * with its context.
+	 * with its context. Currently this may break models with contingencies.
 	 * 
 	 * @return
 	 */

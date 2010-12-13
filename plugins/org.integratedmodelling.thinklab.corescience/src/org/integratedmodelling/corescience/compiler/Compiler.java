@@ -107,7 +107,8 @@ public class Compiler {
 		context.validate();
 		
 		/*
-		 * figure out all dependencies from the context
+		 * figure out all dependencies from the context. Context may already contain states for
+		 * given observables.
 		 */
 		learnStructure(context);
 		
@@ -252,6 +253,9 @@ public class Compiler {
 		
 		/*
 		 * push constants and initial values into registers
+	     *
+		 * TODO this is a good time to ensure only the first view of the same concept
+		 * gets compiled.
 		 */
 		for (int i = 0; i < order.size(); i++) {
 
@@ -344,6 +348,11 @@ public class Compiler {
 		
 		ObsDesc odesc = new ObsDesc();
 
+		/*
+		 * TODO if context has a state for this observable, just use that state and compile
+		 * no further.
+		 */
+		
 		IDataSource<?> ds = o.getDataSource();
 		IObservationContext ownContext = contexts.get(o.getObservableClass());
 		

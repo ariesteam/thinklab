@@ -7,22 +7,21 @@ import java.util.Map;
 import javolution.context.ConcurrentContext;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
-import org.integratedmodelling.corescience.interfaces.IDataSource;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 public class Contextualizer  {
 	
-	ObservationContext structure = null;
+	ObservationContext context = null;
 
 	private static class RunContext implements Runnable {
 
 		VMContextualizer<?>  ctx = null;
-		Map<IConcept, IDataSource<?>> result = null;
+		Map<IConcept, IState> result = null;
 		ISession session = null;
 		
 		public RunContext(VMContextualizer<?>  ctx, ISession session) {
@@ -43,7 +42,7 @@ public class Contextualizer  {
 			}
 		}
 		
-		public Map<IConcept, IDataSource<?>> getResult() {
+		public Map<IConcept, IState> getResult() {
 			return result;
 		}
 		
@@ -59,14 +58,14 @@ public class Contextualizer  {
 	 * @param observation
 	 */
 	public Contextualizer(ObservationContext context) {
-		this.structure = context;
+		this.context = context;
 	}
 	
 	public void addContextualizer(VMContextualizer<?> ctxer) {
 		runnables.add(ctxer);
 	}
 	
-	public IInstance run(ISession session) throws ThinklabException {
+	public ObservationContext run(ISession session) throws ThinklabException {
 
 		RunContext[] runs = new RunContext[runnables.size()];
 		
@@ -85,13 +84,17 @@ public class Contextualizer  {
 		return mergeResults(runs, session);
 	}
 
-	private IInstance mergeResults(RunContext[] runs, ISession session) throws ThinklabException {
+	private ObservationContext mergeResults(RunContext[] runs, ISession session) throws ThinklabException {
 	
-		Map<IConcept, IDataSource<?>> allStates = new HashMap<IConcept, IDataSource<?>>();
+		Map<IConcept, IState> allStates = new HashMap<IConcept, IState>();
 		for (RunContext run : runs) {
 			allStates.putAll(run.getResult());
 		}
-		return structure.buildObservation(session, allStates);
+		
+		for (IConcept c : allStates.keySet())
+			context.addState(allStates.get(c));
+		
+		return context;
 	}
 
 }

@@ -35,11 +35,16 @@ package org.integratedmodelling.time.extents;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.ITopologicallyComparable;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.time.TimePlugin;
@@ -154,12 +159,16 @@ public class RegularTimeGridExtent implements IExtent {
 	}
 
 	@Override
-	public IValue getState(int granule) throws ThinklabException {
+	public Object getValue(int granule) {
 		long ls = (long)(extent.getStartPoint().getX()) + granuleSize*granule;
-		return new PeriodValue(ls, ls + granuleSize);
+		try {
+			return new PeriodValue(ls, ls + granuleSize);
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
-	public int getTotalGranularity() {
+	public int getValueCount() {
 		return (int)((long)(extent.getEndPoint().getX() - extent.getStartPoint().getX())/granuleSize);
 	}
 
@@ -329,5 +338,66 @@ public class RegularTimeGridExtent implements IExtent {
 	public IExtent force(IExtent extent) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return extent;
+	}
+
+	@Override
+	public IExtent union(IExtent extent) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getValueType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValue(int index, Object o) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Object getRawData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double getDoubleValue(int index)
+			throws ThinklabValueConversionException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Metadata getMetadata() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getObservableClass() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ObservationContext getObservationContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Restriction getConstraint(String operator) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

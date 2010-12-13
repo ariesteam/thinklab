@@ -2,15 +2,37 @@ package org.integratedmodelling.corescience.interfaces;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.metadata.Metadata;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
-
+/**
+ * A State is the result of contextualizing a stateful observation. It can conceptualize back to the
+ * semantic annotation for the observation it represents. States live in IContexts.
+ * 
+ * @author Ferdinando
+ *
+ */
 @SuppressWarnings("unchecked")
-public interface IState extends IDataSource, IConceptualizable {
+public interface IState  extends /* IDataSource, */ IConceptualizable {
 		
-	public void addValue(int index, Object o);
+	public IConcept getValueType();
+	
+	/*
+	 * Set the value at index. FIXME Should be protected, but for now needs to be public.
+	 * @param index
+	 * @param o
+	 */
+	public void setValue(int index, Object o);
+
+	/**
+	 * Return the unmodified object at given offset. Most times it will be a duplicate of
+	 * super.getValue(offset, parameters) but should not make any modification. If data are 
+	 * unknown (nodata), return null.
+	 * 
+	 * @param previousOffset
+	 * @return
+	 */
+	public Object getValue(int offset);
 
 	/**
 	 * This will return an array of the appropriate type without any further allocation.
@@ -36,8 +58,8 @@ public interface IState extends IDataSource, IConceptualizable {
 	public double getDoubleValue(int index) throws ThinklabValueConversionException;
 	
 	/**
-	 * Just get the metadata. A property object interface should suffice.
-	 * @param id
+	 * Just get the metadata.
+	 *
 	 * @return
 	 */
 	public Metadata getMetadata();
@@ -46,7 +68,7 @@ public interface IState extends IDataSource, IConceptualizable {
 	 * Return the total number of states.
 	 * @return
 	 */
-	public int getTotalSize();
+	public int getValueCount();
 
 	/**
 	 * Return the class of what our contents observe.
@@ -54,19 +76,10 @@ public interface IState extends IDataSource, IConceptualizable {
 	 */
 	public IConcept getObservableClass();
 
-	
 	/**
-	 * Contexts are passed to IObservation.createState(), and the state must be able to
-	 * return the context it represents.
+	 * States exist within a context, and must be able to
+	 * return the context they are part of.
 	 */
 	public abstract ObservationContext getObservationContext();
 
-	
-	/**
-	 * Return the unmodified object at given offset. Most times it will be a duplicate of
-	 * getValue() but should not make any modification. If data are unknown, return null.
-	 * @param previousOffset
-	 * @return
-	 */
-	public Object getDataAt(int offset);
 }

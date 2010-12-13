@@ -19,6 +19,7 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
+import org.integratedmodelling.modelling.Context;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -47,82 +48,86 @@ public class NetCDFArchive {
 	GridExtent space         = null;
 	RegularTimeGridExtent time = null;
 	
-	Map<IConcept,IState> variables;
+//	Map<IConcept,IState> variables;
 	Map<String,IState> auxVariables = 
-		new Hashtable<String, IState>();
-	ObservationContext context = null;
+	new Hashtable<String, IState>();
+	IObservationContext context = null;
 	HashSet<String> varnames = new HashSet<String>();
 	
 	/*
 	 * container for variables to write
 	 */
 	ArrayList<Pair<String, String>> attributes;
-	private RasterGrid grid;
+//	private RasterGrid grid;
 	
-	/**
-	 * Add a contextualized observation and we do the rest.
-	 * @param obs
-	 * @throws ThinklabException 
-	 */
-	public void setObservation(IInstance obs) throws ThinklabException {
-		setObservation(ObservationFactory.getObservation(obs));
-	}
+//	/**
+//	 * Add a contextualized observation and we do the rest.
+//	 * @param obs
+//	 * @throws ThinklabException 
+//	 * @deprecated create from computed context, not observation.
+//	 */
+//	public void setObservation(IObservation o) throws ThinklabException {
+//		
+//		// FIXME this should start with the context, not the obs
+//		this.context = new ObservationContext(o, null);
+//		IObservation spc = ObservationFactory.findTopology(o, Geospace.get().SubdividedSpaceObservable());
+//		
+//		if (spc == null || !(spc instanceof RasterGrid))
+//			throw new ThinklabUnimplementedFeatureException(
+//					"only raster grid data are supported in NetCDF exporter for now");
+//
+//		//time  = (RasterGrid) Obs.findObservation(o, TimePlugin.GridObservable());
+//		this.space = (GridExtent) ((RasterGrid)spc).getExtent(); 
+//		this.variables = ObservationFactory.getStateMap(o);
+//	}
 	
-	/**
-	 * Add a contextualized observation and we do the rest.
-	 * @param obs
-	 * @throws ThinklabException 
-	 */
-	public void setObservation(IObservation o) throws ThinklabException {
-		
-		this.context = new ObservationContext(o);
-		IObservation spc = ObservationFactory.findTopology(o, Geospace.get().SubdividedSpaceObservable());
-		
-		if (spc == null || !(spc instanceof RasterGrid))
-			throw new ThinklabUnimplementedFeatureException(
-					"only raster grid data are supported in NetCDF exporter for now");
+//	/**
+//	 * Alternative to SetObservation, just pass a context and a map of
+//	 * states.
+//	 * 
+//	 * TODO context should contain all states.
+//	 * 
+//	 * @param obs
+//	 * @throws ThinklabException
+//	 * @deprecated create from computed context, don't pass states.
+//	 */
+//	public void setStates(Map<IConcept, IState> states, IObservationContext context) throws ThinklabException {
+//		
+//		this.grid =
+//			(RasterGrid) 
+//			ObservationFactory.findTopology(context.getObservation(), Geospace.get().SubdividedSpaceObservable());
+//		
+//		IExtent spc = context.getExtent(Geospace.get().SubdividedSpaceObservable());
+//		IExtent tim = context.getExtent(TimePlugin.get().TimeObservable());
+//
+//		if (tim != null && tim instanceof RegularTimeGridExtent)
+//			this.time = (RegularTimeGridExtent) tim;
+//		
+//		space = (GridExtent)spc; 
+//		variables = states;
+//	}
+	
+	public void setContext(IObservationContext context) throws ThinklabUnimplementedFeatureException {
 
-		//time  = (RasterGrid) Obs.findObservation(o, TimePlugin.GridObservable());
-		this.grid = (RasterGrid)spc;
-		this.space = (GridExtent) ((RasterGrid)spc).getExtent(); 
-		this.variables = ObservationFactory.getStateMap(o);
-	}
-	/**
-	 * Alternative to SetObservation, just pass a context and a map of
-	 * states.
-	 * 
-	 * TODO context should contain all states.
-	 * 
-	 * @param obs
-	 * @throws ThinklabException
-	 */
-	public void setStates(Map<IConcept, IState> states, IObservationContext context) throws ThinklabException {
-		
-		this.grid =
-			(RasterGrid) 
-			ObservationFactory.findTopology(context.getObservation(), Geospace.get().SubdividedSpaceObservable());
-		
-		IExtent spc = context.getExtent(Geospace.get().SubdividedSpaceObservable());
-		IExtent tim = context.getExtent(TimePlugin.get().TimeObservable());
-		
-		if (spc == null || !(spc instanceof GridExtent))
+		IExtent rgrid = Context.getSpace(context);
+		if (rgrid instanceof GridExtent) {
+			this.space = (GridExtent)rgrid;
+		} else {
 			throw new ThinklabUnimplementedFeatureException(
-					"only raster grid data are supported in NetCDF exporter for now");
-
-		if (tim != null && tim instanceof RegularTimeGridExtent)
-			this.time = (RegularTimeGridExtent) tim;
+				"only raster grid data are supported in NetCDF exporter for now");			
+		}
 		
-		space = (GridExtent)spc; 
-		variables = states;
+		this.context = context;
+		
 	}
 	
-	public void setSpaceGrid(RasterGrid grid) {
-		this.grid = grid;
-	}
+//	public void setSpaceGrid(RasterGrid grid) {
+//		this.grid = grid;
+//	}
 	
-	public void setTimeGrid() {
-	}
-	
+//	public void setTimeGrid() {
+//	}
+//	
 	/**
 	 * Add another variable passing the data array directly. Must have called 
 	 * setObservation first to set the context.
@@ -133,7 +138,7 @@ public class NetCDFArchive {
 	public void addRasterVariable(String concept,  double[] data) {
 		
 		IState st = 
-			new MemDoubleContextualizedDatasource(null, data, context);
+			new MemDoubleContextualizedDatasource(null, data, (ObservationContext) context);
 		
 		auxVariables.put(concept, st);
 	}
@@ -141,7 +146,7 @@ public class NetCDFArchive {
 	public void addRasterVariable(String concept,  double[][] data) {
 		
 		IState st = 
-			new MemDoubleContextualizedDatasource(null, data, context);
+			new MemDoubleContextualizedDatasource(null, data, (ObservationContext)context);
 		
 		auxVariables.put(concept, st);
 	}
@@ -192,7 +197,7 @@ public class NetCDFArchive {
 		
 		varnames.clear();
 		
-		for (IConcept obs : variables.keySet()) {
+		for (IConcept obs : context.getStateObservables()) {
 			
 			// TODO implement the rest
 			
@@ -202,7 +207,7 @@ public class NetCDFArchive {
 				if (varnames.contains(varname))
 					continue;
 				
-				IState state = variables.get(obs);
+				IState state = context.getState(obs);
 				
 				ncfile.addVariable(varname, DataType.FLOAT, new Dimension[]{latDim,lonDim});
 				
@@ -256,7 +261,7 @@ public class NetCDFArchive {
 		
 		if (space != null) {
 			
-			mask = grid.getMask();
+			mask = space.getActivationLayer();
 			
 //			System.out.println("SPACE IS " + space.getNSResolution() + " " + space.getEWResolution());
 			
@@ -287,11 +292,11 @@ public class NetCDFArchive {
 			}
 		}
 		
-		for (IConcept obs : variables.keySet()) {
+		for (IConcept obs : context.getStateObservables()) {
 			
-			if (variables.get(obs).getTotalSize() != space.getXCells() * space.getYCells()) {
+			if (context.getState(obs).getValueCount() != space.getXCells() * space.getYCells()) {
 				ModellingPlugin.get().logger().error(
-						"state of " + obs + " has " + variables.get(obs).getTotalSize() + 
+						"state of " + obs + " has " + context.getState(obs).getValueCount() + 
 						" multiplicity when context expects " + (space.getXCells() * space.getYCells()) + 
 						": results not stored");
 				continue;
@@ -304,7 +309,7 @@ public class NetCDFArchive {
 				
 				// we have space only
 				String varname = getVarname(obs);
-				IState state = variables.get(obs);
+				IState state = context.getState(obs);
 				
 				if (varnames.contains(varname))
 					continue;
@@ -413,12 +418,9 @@ public class NetCDFArchive {
 	 * add all the states of another observation. setObservation() must have been
 	 * called, and all states must conform to the topology of the "master" obs.
 	 */
-	public void addObservation(IInstance obs) throws ThinklabException {
-		IObservation o = ObservationFactory.getObservation(obs);
-		space =
-			(GridExtent) ((RasterGrid)
-					ObservationFactory.findObservation(
-							o, Geospace.get().RasterGridObservable())).getExtent();
-		variables.putAll(ObservationFactory.getStateMap(o));
+	public void addObservation(IObservationContext obs) throws ThinklabException {
+		space = (GridExtent) Context.getSpace(obs);
+		((ObservationContext)context).mergeStates(obs);
 	}
+
 }

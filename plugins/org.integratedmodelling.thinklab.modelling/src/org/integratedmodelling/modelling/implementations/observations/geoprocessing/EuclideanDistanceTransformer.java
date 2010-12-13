@@ -36,7 +36,7 @@ public class EuclideanDistanceTransformer extends Measurement implements
 	}
 
 	@Override
-	public Polylist transform(IInstance sourceObs, ISession session,
+	public Polylist transform(IObservationContext sourceObs, ISession session,
 			IObservationContext context) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;

@@ -39,16 +39,17 @@ import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.interfaces.lineage.ILineageTraceable;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
+import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.geospace.transformations.Resample;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
@@ -120,6 +121,15 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		this.setResolution(gridExtent.getXCells(), gridExtent.getYCells());
 	}
 
+	public GridExtent(ShapeValue shape, int linearResolution) throws ThinklabException {
+		super(shape);
+		Pair<Integer, Integer> xy = RasterGrid.getRasterBoxDimensions(shape, linearResolution);
+		this.setResolution(xy.getFirst(), xy.getSecond());
+		this.ancestor = new ShapeExtent(shape);
+		this.ancestor.shape = shape.getGeometry();
+		activationLayer = ThinklabRasterizer.createMask(shape, this);
+	}
+	
 	/**
 	 * Used to set the activation layer from a shape. This also create a ShapeExtent and
 	 * sets the lineage to it, so that our "object" can be reconstructed.
@@ -226,6 +236,10 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 				env.getHeight());
 	}
 	
+	public ShapeValue getShape() {
+		return shape;
+	}
+	
 	public java.awt.geom.Rectangle2D.Double getNormalizedBox() {
 		
 		ReferencedEnvelope env = getNormalizedEnvelope();
@@ -269,7 +283,7 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	}
 
 	@Override
-	public IValue getState(int granule) throws ThinklabException {
+	public Object getValue(int granule) {
 
 		/* 
 		 * determine coordinates of granule. This should not get called if the activation layer
@@ -290,12 +304,18 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		return new ShapeValue(x1, y1, x2, y2);
 	}
 
-	public int getTotalGranularity() {
-		
-		return 
-			activationLayer == null ?
-				(xDivs * yDivs) :
-				activationLayer.totalActiveCells();
+	@Override
+	public int getValueCount() {
+
+		return xDivs * yDivs;
+
+// TODO this logic is consistent with only computing states along the active cells, but this is a grid, not
+// a tessellated polygon, so we should run states even on the no-data.
+//		
+//		return 
+//			activationLayer == null ?
+//				(xDivs * yDivs) :
+//				activationLayer.totalActiveCells();
 	}
 
 	public Geometry getBoundary() {
@@ -481,11 +501,12 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 
 		if (extent instanceof GridExtent) {
 			return new Resample((GridExtent) extent);
-		}
+		} 
 		
 		throw new ThinklabValidationException(
-				"grid extent: don't know how to transform to match " + extent);
-
+				"don't know how to transform a gridded observation of " + 
+				mainObservable + 
+				" to match extent: " + extent);
 	}
 
 	@Override
@@ -657,114 +678,89 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 
 	@Override
 	public boolean checkDomainDiscontinuity() throws ThinklabException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
+	
 	@Override
 	public IExtent intersection(IExtent extent) throws ThinklabException {
 		
-		Object[] cc = computeCommonExtent(extent);
-		
-		ArealExtent orextent = (ArealExtent) cc[0];
-		ArealExtent otextent = (ArealExtent) cc[1];
-		CoordinateReferenceSystem ccr = (CoordinateReferenceSystem) cc[2];
-		Envelope common = (Envelope) cc[3];
-		
 		/*
-		 * TODO intersection may be empty - this should be checked in createMergedExtent instead
-		 * of cursing here.
+		 * compute intersection of envelopes in our CSR. Ignore axis swap finally.
 		 */
-		if (common.isNull()) {
-			return null;
-		}
-		
-		/*
-		 * for now, raster always wins
-		 */
-		if (otextent instanceof GridExtent && !(orextent instanceof GridExtent)) {
-			return makeRasterExtent((GridExtent)otextent, orextent, ccr, common);
-		}
-
-		if (orextent instanceof GridExtent && !(otextent instanceof GridExtent)) {
-			return makeRasterExtent((GridExtent)orextent, otextent, ccr, common);
-		}
-
-		/*
-		 * if we get here, we must be merging two rasters
-		 */
-		if ( !(orextent instanceof GridExtent && otextent instanceof GridExtent)) {
-			throw new ThinklabUnimplementedFeatureException("RasterModel: cannot yet merge extents of different types");
-		}
-
-		GridExtent orext = (GridExtent)orextent;
-		GridExtent otext = (GridExtent)otextent;
-		
-		/* we'll fix the resolution later  */
-		GridExtent nwext = 
-				new GridExtent(ccr, 
-						common.getMinX(), common.getMinY(), common.getMaxX(), common.getMaxY(), 
-						1, 1);
-
-		// this is the constrained resolution; we recompute it below if we are free to choose
-		int xc = otext.getXCells();
-		int yc = otext.getYCells();
-		
-		// phase errors in both directions due to choosing resolutions that do not
-		// match exactly. This is computed but not used right now. We could set what to 
-		// do with it as a property: e.g., log a warning or even raise an exception if nonzero.
-		double errx = 0.0;
-		double erry = 0.0;
-		
-		/* choose the smallest of the reprojected cells unless we're constrained to accept otextent */
-		Envelope cor = null;
-		Envelope cot = null; 
-		
+		ReferencedEnvelope ourenv = this.getNormalizedEnvelope();
+		ReferencedEnvelope itsenv = null;
 		try {
-			
-			cor = orext.getCellEnvelope(0, 0).transform(ccr, true, 10);
-			cot = otext.getCellEnvelope(0, 0).transform(ccr, true, 10);
-				
+			itsenv = ((ArealExtent)extent).getNormalizedEnvelope().transform(crs, true, 10);
 		} catch (Exception e) {
 			throw new ThinklabValidationException(e);
 		}
 		
-		double aor = cor.getHeight() * cor.getWidth();
-		double aot = cot.getHeight() * cot.getWidth();
-			
+		Envelope comenv = ourenv.intersection(itsenv);
+		if (comenv == null)
+			return null;
+		
 		/*
-		 * We take the finest res
+		 * adjust intersection to be in phase with our cell size, ensuring it is fully contained.
 		 */
-		Envelope cell = aor < aot ? cor : cot;
-	
-		// System.out.println("cells are " + cor + " and " + cot + "; chosen " + cell + " because areas are " + aor + " and " + aot);
+		double startx = comenv.getMinX();
+		if (startx > ourenv.getMinX()) {
+			double delta = startx - ourenv.getMinX();
+			double nc = Math.floor(delta / cellLength);
+			startx = ourenv.getMinX() + (cellLength * nc);
+		}
+		double endx = comenv.getMaxX();
+		if (endx < ourenv.getMaxX()) {
+			double delta = ourenv.getMaxX() - endx;
+			double nc = Math.floor(delta / cellLength);
+			endx = ourenv.getMaxX() - (cellLength * nc);
+		}
+		double starty = comenv.getMinY();
+		if (starty > ourenv.getMinY()) {
+			double delta = starty - ourenv.getMinY();
+			double nc = Math.floor(delta / cellHeight);
+			starty = ourenv.getMinY() + (cellHeight * nc);
+		}
+		double endy = comenv.getMaxY();
+		if (endy < ourenv.getMaxY()) {
+			double delta = ourenv.getMaxY() - endy;
+			double nc = Math.floor(delta / cellHeight);
+			endx = ourenv.getMaxY() - (cellHeight * nc);
+		}
 		
-		/* recompute the number of cells in the new extent */
-		xc = (int)Math.round(nwext.getNormalizedEnvelope().getWidth()/cell.getWidth());
-		yc = (int)Math.round(nwext.getNormalizedEnvelope().getHeight()/cell.getHeight());
+		/*
+		 * compute new grid extent resolution for intersection.
+		 */
+		int xc = (int) ((endx - startx)/cellLength);
+		int yc = (int) ((endy - starty)/cellHeight);
 		
-		errx = nwext.getNormalizedEnvelope().getWidth() - (cell.getWidth() * xc);
-		erry = nwext.getNormalizedEnvelope().getHeight() - (cell.getHeight() * yc);
-		
-		// System.out.println("new cell size is " + xc + "," + yc);
-		
-		// TODO use the error, make sure it's not larger than too much
-		// System.out.println("errors are " + errx + "," + erry);
-		
-		nwext.setResolution(xc, yc);
-		
-		System.out.println("extent is now " + nwext);
-		
-		
-		return nwext;
-
-	
+		/*
+		 * create and return new extent.
+		 */
+		return new GridExtent(crs, startx, starty, endx, endy, xc, yc);
+			
 	}
 
 	@Override
 	public IExtent force(IExtent extent) throws ThinklabException {
-		// TODO Auto-generated method stub
 		return extent;
+	}
+
+	@Override
+	public IExtent union(IExtent extent) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getValueType() {
+		// TODO for now. We should give it a geometry/shape concept.
+		return null;
+	}
+
+	@Override
+	public Restriction getConstraint(String operator) throws ThinklabException {
+		return new Restriction("boundingbox", operator, getFullExtentValue().toString());
 	}
 
 }

@@ -279,8 +279,4 @@ public class CSVDataSource implements IDataSource<Object>, IInstanceImplementati
 		
 	}
 
-	@Override
-	public HashMap<String, Object> getMetadata() {
-		return metadata;
-	}
 }

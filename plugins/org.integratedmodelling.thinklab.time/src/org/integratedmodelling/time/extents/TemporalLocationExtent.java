@@ -34,11 +34,15 @@ package org.integratedmodelling.time.extents;
 
 import java.util.Collection;
 
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.ITopologicallyComparable;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.time.literals.TimeValue;
@@ -69,11 +73,11 @@ public class TemporalLocationExtent implements IExtent {
 	}
 	
 	@Override
-	public IValue getState(int granule) {
+	public Object getValue(int granule) {
 		return value;
 	}
 
-	public int getTotalGranularity() {
+	public int getValueCount() {
 		return 1;
 	}
 
@@ -194,6 +198,67 @@ public class TemporalLocationExtent implements IExtent {
 	public IExtent force(IExtent extent) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return extent;
+	}
+
+	@Override
+	public IExtent union(IExtent extent) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getValueType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValue(int index, Object o) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Object getRawData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double getDoubleValue(int index)
+			throws ThinklabValueConversionException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Metadata getMetadata() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getObservableClass() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ObservationContext getObservationContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Restriction getConstraint(String operator) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

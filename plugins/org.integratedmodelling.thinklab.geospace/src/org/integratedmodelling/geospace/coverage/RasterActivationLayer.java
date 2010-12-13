@@ -80,7 +80,7 @@ public class RasterActivationLayer extends BitSet implements IGridMask {
 	
 	public RasterActivationLayer(int x, int y, GridExtent grid) {
 		super(x*y);
-		active = grid.getTotalGranularity();
+		active = grid.getValueCount();
 		this.grid = grid;
 		// set all bits to true
 		and(this);
@@ -95,7 +95,7 @@ public class RasterActivationLayer extends BitSet implements IGridMask {
 		// set all bits to true
 		if (isActive) {
 			and(this);
-			active = grid.getTotalGranularity();
+			active = grid.getValueCount();
 		} else {
 			xor(this);
 		}

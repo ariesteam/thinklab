@@ -140,7 +140,7 @@ public class BayesianTransformer
 	}
 	
 	@Override
-	public Polylist transform(IInstance sourceObs, ISession session, IObservationContext context) 
+	public Polylist transform(IObservationContext sourceCtx, ISession session, IObservationContext context) 
 		throws ThinklabException {
 
 		// set to false unless you really want it
@@ -159,9 +159,6 @@ public class BayesianTransformer
 			out.println(" >>>>>> " + getObservableClass() + "<<<<<<<\n");
 		}
 		
-		IObservation orig = ObservationFactory.getObservation(sourceObs);
-		
-		Map<IConcept, IState> smap = ObservationFactory.getStateMap(orig);
 		int size = context.getMultiplicity();
 
 		/*
@@ -238,7 +235,7 @@ public class BayesianTransformer
 				if (data instanceof ICategoryData)
 					return ((ICategoryData)data).getCategory(state);
 				
-				Object ret = data.getValue(state, null);
+				Object ret = data.getValue(state);
 				
 				if (ret != null && !(ret instanceof IConcept)) {
 					throw new ThinklabValidationException(
@@ -258,10 +255,10 @@ public class BayesianTransformer
 		 */
 		ArrayList<Evidence> evdnc = new ArrayList<Evidence>();
 		
-		for (IConcept ec : smap.keySet()) {
+		for (IConcept ec : sourceCtx.getStateObservables()) {
 			if (!nodeIDs.contains(ec.getLocalName()))
 				continue;
-			IState cs = smap.get(ec);
+			IState cs = sourceCtx.getState(ec);
 			evdnc.add(new Evidence(bn.getNode(ec.getLocalName()), cs, ec.getLocalName()));
 		}		
 
@@ -337,7 +334,7 @@ public class BayesianTransformer
 			 */
 			String rrs = "";
 			for (int s = 0; s < pstorage.length; s++) {
-				pstorage[s].data.addValue(state, bn.getNodeValue(pstorage[s].field));
+				pstorage[s].data.setValue(state, bn.getNodeValue(pstorage[s].field));
 				if (ekey != null) {
 					rrs += 
 						pstorage[s].observable.getLocalName() + "=" + Arrays.toString(bn.getNodeValue(pstorage[s].field)) + 

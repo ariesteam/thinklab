@@ -7,16 +7,37 @@ import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 
-public interface IObservationContext {
+public interface IObservationContext extends IConceptualizable {
 
 	/**
 	 * Get the observation we represent
 	 * @return
 	 */
 	public IObservation getObservation();
+
+	/**
+	 * Get the state of the given concept.
+	 * 
+	 * @param concept
+	 * @return
+	 */
+	public abstract IState getState(IConcept concept);
+
+	/**
+	 * Return all the states that do not describe topology extents.
+	 * @return
+	 */
+	public abstract Collection<IState> getStates();
+
 	
+	/**
+	 * Return all the states that describe topology extents.
+	 * @return
+	 */
+	public abstract Collection<IExtent> getExtents();
+
 	/**
 	 * Return the total number of states in the context.
 	 * @return
@@ -76,7 +97,7 @@ public interface IObservationContext {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public IInstance run(
+	public void run(
 			ISession session, 
 			Collection<IContextualizationListener> listeners) throws ThinklabException;
 	
@@ -93,5 +114,11 @@ public interface IObservationContext {
 	 * @param out
 	 */
 	public void dump(PrintStream out);
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Collection<IConcept> getStateObservables();
 
 }

@@ -214,11 +214,4 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public HashMap<String, Object> getMetadata() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

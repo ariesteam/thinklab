@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -56,8 +57,8 @@ public class ModelProxy extends DefaultAbstractModel {
 	}
 
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents, int flags) throws ThinklabException {
-		return model.buildDefinition(kbox, session, extents, 0);
+	public Polylist buildDefinition(IKBox kbox, ISession session, IContext context, int flags) throws ThinklabException {
+		return model.buildDefinition(kbox, session, context, 0);
 	}
 
 	@Override
@@ -67,10 +68,10 @@ public class ModelProxy extends DefaultAbstractModel {
 
 	@Override
 	public ModelResult observeInternal(IKBox kbox, ISession session,
-			IntelligentMap<IConformance> cp, ArrayList<Topology> extents,
+			IntelligentMap<IConformance> cp, IContext context,
 			boolean acceptEmpty)
 			throws ThinklabException {
-		return ((DefaultAbstractModel)model).observeInternal(kbox, session, cp, extents, acceptEmpty);
+		return ((DefaultAbstractModel)model).observeInternal(kbox, session, cp, context, acceptEmpty);
 	}
 	
 	@Override

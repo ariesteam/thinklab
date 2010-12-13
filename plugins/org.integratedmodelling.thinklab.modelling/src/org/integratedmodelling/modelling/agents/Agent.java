@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
-import org.integratedmodelling.modelling.interfaces.IContext;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;

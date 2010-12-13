@@ -3,6 +3,7 @@ package org.integratedmodelling.corescience.context;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.multidimensional.Average;
 import org.integratedmodelling.multidimensional.IAggregator;
@@ -142,4 +143,7 @@ public class State {
 		return 0;
 	}
 	
+	public IDataSource<?> asDatasource(IState state) {
+		return new DatasourceStateAdapter(state);
+	}
 }

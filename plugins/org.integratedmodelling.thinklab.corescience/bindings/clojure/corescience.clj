@@ -41,7 +41,9 @@
 (defn get-observable-class
      ""
      [observation]
-     (.. (get-obs observation) (getObservableClass)))
+     (if (instance? org.integratedmodelling.corescience.interfaces.IObservationContext observation)
+       (.. observation getObservation getObservableClass)
+       (.. (get-obs observation) (getObservableClass))))
 
 (defn find-observation
 	"Return the observation of the specified observable in the passed observation tree"
@@ -57,14 +59,18 @@
 	"Return the state of the observation of the specified observable if it can be found in the passed
 	observation tree, or nil"
 	[observation concept]
-	(let [o (find-observation observation concept)]
-		(if (not (nil? o)) (get-state o))))
+  (if (instance? org.integratedmodelling.corescience.interfaces.IObservationContext observation)
+    (.getState observation concept)
+    (let [o (find-observation observation concept)]
+      (if (not (nil? o)) (get-state o)))))
 			
 (defn get-extent
 	"Retrieve and return the extent that observes the given concept (e.g. space) or nil. Note:
      this returns Java implementations of instances (IObservation), not IInstances."
 	[observation concept]
-	(.. (get-obs observation) (getExtent concept)))
+  (if (instance? org.integratedmodelling.corescience.interfaces.IObservationContext observation)
+    (.getExtent observation concept)
+    (.. (get-obs observation) (getExtent concept))))
 
 (defn get-conceptual-model
    "Retrieve the conceptual model of the passed observation"
@@ -167,7 +173,14 @@
 	[observation] 
 	(if (nil? observation)
 		{}
-	 (org.integratedmodelling.corescience.ObservationFactory/getStateMap (get-obs observation))))
+	 (if (instance? org.integratedmodelling.corescience.context.ObservationContext observation)
+    (.getStateMap observation)
+    (org.integratedmodelling.corescience.ObservationFactory/getStateMap (get-obs observation)))))
+
+(defn get-dependent-states-map 
+  "Use on a context only to retrieve the state of a particular observation and all its dependents."
+  [observation concept]
+  (.getStatemap observation concept))
 
 ;; ================================================================================================
 ;; utils

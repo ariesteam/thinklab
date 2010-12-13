@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.geospace;
 
 import java.util.Collection;
 
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
@@ -27,7 +28,7 @@ public class EuclideanDistanceModel extends DefaultAbstractModel {
 
 	@Override
 	public Polylist buildDefinition(IKBox kbox, ISession session,
-			Collection<Topology> externalExtents, int flags) throws ThinklabException {
+			IContext context, int flags) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

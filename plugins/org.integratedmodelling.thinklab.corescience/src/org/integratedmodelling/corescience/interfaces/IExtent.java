@@ -35,9 +35,9 @@ package org.integratedmodelling.corescience.interfaces;
 import java.util.Collection;
 
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Pair;
 
@@ -52,24 +52,8 @@ import org.integratedmodelling.utils.Pair;
  * @author Ferdinando Villa
  *
  */
-public abstract interface IExtent extends IConceptualizable, ITopologicallyComparable {
+public abstract interface IExtent extends IState, ITopologicallyComparable {
 
-	/**
-	 * Return the total number of granules in this extent.
-	 * 
-	 * @return
-	 */
-	public int getTotalGranularity();
-	
-	/**
-	 * Return the value of the granule indicated according to the natural order of
-	 * the topology.
-	 * 
-	 * @param granule
-	 * @return
-	 * @throws ThinklabException 
-	 */
-	public IValue getState(int granule) throws ThinklabException;
 	
 	/**
 	 * Return the value that is the union of all granules, aggregated in the way that makes
@@ -97,6 +81,7 @@ public abstract interface IExtent extends IConceptualizable, ITopologicallyCompa
 	 * merge with the passed extent of the same observable into a new extent and return it.
 	 * Merging is always an intersection operation - return the largest common extent with 
 	 * the finest common grain.
+	 * @deprecated use intersection
 	 */
 	public IExtent and(IExtent extent) throws ThinklabException;
 
@@ -105,6 +90,7 @@ public abstract interface IExtent extends IConceptualizable, ITopologicallyCompa
 	 * 
 	 * @param myExtent
 	 * @return
+	 * @deprecated use union
 	 */
 	public IExtent or(IExtent myExtent);
 	
@@ -117,8 +103,17 @@ public abstract interface IExtent extends IConceptualizable, ITopologicallyCompa
 	 * @param extent
 	 * @return
 	 * @throws ThinklabException 
+	 * @deprecated do not use - intersection, union, and force should do the job
 	 */
 	public IExtent constrain(IExtent extent) throws ThinklabException;
+
+
+	/*
+	 * FIXME still rough - return a restriction that will match observations with
+	 * similar topology, using the parameter to define the relationship (which should be
+	 * a formal enum or topological operator)
+	 */
+	public abstract Restriction getConstraint(String operator) throws ThinklabException;
 
 	
 	/**
@@ -176,19 +171,29 @@ public abstract interface IExtent extends IConceptualizable, ITopologicallyCompa
 
 	/**
 	 * Return an extent which represents the intersection of this with the passed
-	 * one.
+	 * one. NOTE: it is expected that the intersected extent can be index-remapped to
+	 * a sub-extent of this. Meaning that subdivisions etc. need to be in sync.
 	 * 
 	 * @param myExtent
 	 * @return
 	 */
 	public IExtent intersection(IExtent extent) throws ThinklabException;
 
+	/**
+	 * Return an extent which represents the union of this with the passed
+	 * one. Same note as intersect(): the union extent must be usable together with
+	 * this through an index remap operation.
+	 * 
+	 * @param myExtent
+	 * @return
+	 */
+	public IExtent union(IExtent extent) throws ThinklabException;
 
 	/**
 	 * Return an extent that is capable of representing the passed one 
 	 * exactly. If the passed one is of the same class, it can just return
 	 * the passed one, but it's provided to give the extent a chance of 
-	 * adjustments or raising errors.
+	 * adjustments or raising errors. 
 	 * 
 	 * @param extent
 	 * @return

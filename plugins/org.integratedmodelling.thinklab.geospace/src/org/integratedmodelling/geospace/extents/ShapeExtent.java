@@ -45,6 +45,7 @@ import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.feature.LazyShapeCollection;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.geospace.transformations.Rasterize;
+import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -117,13 +118,13 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 	}
 
 	@Override
-	public IValue getState(int granule) throws ThinklabException {
+	public Object getValue(int granule) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int getTotalGranularity() {
+	public int getValueCount() {
 		return features == null ? 1 : features.size();
 	}
 	
@@ -310,6 +311,27 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 	@Override
 	public IExtent force(IExtent extent) throws ThinklabException {
 		return extent;
+	}
+
+	@Override
+	public IExtent union(IExtent extent) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String toString() {
+		return "shape-extent(" + envelope + "," + crs.getName() + " @ " + shape + ")";
+	}
+
+	@Override
+	public IConcept getValueType() {
+		// TODO the concept corresponding to the shape in a ShapeValue.
+		return null;
+	}
+
+	@Override
+	public Restriction getConstraint(String operator) throws ThinklabException {
+		return new Restriction("boundingbox", operator, getFullExtentValue().toString());
 	}
 
 //	@Override

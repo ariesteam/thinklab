@@ -26,8 +26,7 @@ public interface IContextualizationListener {
 	 * @param iObservation
 	 * @param observationContext
 	 */
-	public abstract void onContextualization(
-			IObservation original, IObservation obs, ObservationContext context);
+	public abstract void onContextualization(IObservation original, ObservationContext context);
 
 	/**
 	 * Called before a TransformerObservation is transformed. The contextualized obs
@@ -39,8 +38,7 @@ public interface IContextualizationListener {
 	 * @param iObservation
 	 * @param observationContext
 	 */
-	public abstract void postTransformation(IObservation original,
-			IObservation obs, ObservationContext context);
+	public abstract void postTransformation(IObservation original, ObservationContext context);
 
 	/**
 	 * Called after a TransformerObservation is transformed. The transformed obs
@@ -51,6 +49,5 @@ public interface IContextualizationListener {
 	 * @param iObservation
 	 * @param observationContext
 	 */
-	public abstract void preTransformation(IObservation original,
-			IObservation obs, ObservationContext context);
+	public abstract void preTransformation(IObservation original, ObservationContext context);
 }

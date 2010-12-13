@@ -42,7 +42,7 @@ public class Aggregator extends Observation implements ContextTransformingObserv
 	}
 
 	@Override
-	public Polylist transform(IInstance sourceObs, ISession session,
+	public Polylist transform(IObservationContext sourceObs, ISession session,
 			IObservationContext context) throws ThinklabException {
 		
 		// TODO create new observations with the aggregated states of the

@@ -107,8 +107,8 @@ public class ContextMapper {
 		return state;
 	}
 
-	public Object getValue(int index, Object[] parameters) {
-		return state.getValue(getIndex(index), parameters);
+	public Object getValue(int index) {
+		return state.getValue(getIndex(index));
 	}
 
 	public double getDoubleValue(int i) throws ThinklabValueConversionException {

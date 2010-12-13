@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ContextMapper;
+import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
@@ -48,7 +49,7 @@ public class SwitchingState implements IState {
 	}
 
 	@Override
-	public void addValue(int idx, Object o) {
+	public void setValue(int idx, Object o) {
 		// not supposed to
 		throw new ThinklabRuntimeException("illegal addValue called on a switching datasource");
 	}
@@ -94,27 +95,27 @@ public class SwitchingState implements IState {
 	}
 
 	@Override
-	public int getTotalSize() {
+	public int getValueCount() {
 		return context.getMultiplicity();
 	}
 	
-	@Override
-	public Object getInitialValue() {
-		return null;
-	}
-
-	@Override
-	public Object getValue(int index, Object[] parameters) {
+//	@Override
+//	public Object getInitialValue() {
+//		return null;
+//	}
+//
+//	@Override
+	private Object switchValue(int index) {
 		
 		if (switchLayer != null) {
 			return switchLayer.get(index, states) == null ? 
 					null : 
-					switchLayer.get(index, states).getValue(index, parameters);
+					switchLayer.get(index, states).getValue(index);
 		} else {
 			// return the first non-null state
 			for (ContextMapper s : states) {
 				if (s != null) {
-					Object o = s.getValue(index, parameters);
+					Object o = s.getValue(index);
 					if (o != null && !(o instanceof Double && Double.isNaN((Double)o)))
 						return o;
 				}
@@ -124,8 +125,8 @@ public class SwitchingState implements IState {
 	}
 	
 	@Override
-	public Object getDataAt(int offset) {
-		return (offset >= 0 && offset < getTotalSize()) ? getValue(offset, null) : null;
+	public Object getValue(int offset) {
+		return (offset >= 0 && offset < getValueCount()) ? switchValue(offset) : null;
 	}
 
 	@Override
@@ -133,33 +134,33 @@ public class SwitchingState implements IState {
 		return this.valueType;
 	}
 
-	@Override
-	public void postProcess(IObservationContext context)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void preProcess(IObservationContext context)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public IDataSource<?> transform(IDatasourceTransformation transformation)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public void postProcess(IObservationContext context)
+//			throws ThinklabException {
+//		// TODO Auto-generated method stub
+//
+//	}
+//
+//	@Override
+//	public void preProcess(IObservationContext context)
+//			throws ThinklabException {
+//		// TODO Auto-generated method stub
+//
+//	}
+//
+//	@Override
+//	public IDataSource<?> transform(IDatasourceTransformation transformation)
+//			throws ThinklabException {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return Polylist.list(
 				CoreScience.CONTEXTUALIZED_DATASOURCE,
-				Polylist.list("@", this));
+				Polylist.list("@", new DatasourceStateAdapter(this)));
 	}
 
 	@Override

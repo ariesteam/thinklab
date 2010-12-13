@@ -213,7 +213,7 @@ public class CategoricalDistributionDatasource extends
 	 * @see org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceInt#addValue(java.lang.Object)
 	 */
 	@Override
-	public void addValue(int idx, Object o) {
+	public void setValue(int idx, Object o) {
 		/*
 		 * reorder values according to sorted order before inserting the distribution
 		 */
@@ -221,7 +221,7 @@ public class CategoricalDistributionDatasource extends
 		for (int i = 0; i < ps.length; i++) {
 			shuttle[this.sortedIndexes[i]] = ps[i];
 		}
-		super.addValue(idx, new IndexedCategoricalDistribution(shuttle));
+		super.setValue(idx, new IndexedCategoricalDistribution(shuttle));
 	}
 	
 	
@@ -245,7 +245,7 @@ public class CategoricalDistributionDatasource extends
 	 * @return
 	 */
 	public double[] getProbabilities(int n) {
-		return ((IndexedCategoricalDistribution)getValue(n, null)).data;
+		return ((IndexedCategoricalDistribution)getValue(n)).data;
 	}
 
 	/**
@@ -272,7 +272,7 @@ public class CategoricalDistributionDatasource extends
 		}
 		return 
 			i < valueMappings.length ? 
-				((IndexedCategoricalDistribution)getValue(n, null)).data[i] :
+				((IndexedCategoricalDistribution)getValue(n)).data[i] :
 				0.0;
 	}
 	

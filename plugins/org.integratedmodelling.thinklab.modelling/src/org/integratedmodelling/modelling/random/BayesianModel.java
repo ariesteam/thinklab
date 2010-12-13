@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.Model;
@@ -96,7 +97,7 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 	}
 
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents, int flags) throws ThinklabException {
+	public Polylist buildDefinition(IKBox kbox, ISession session, IContext context, int flags) throws ThinklabException {
 
 		ArrayList<Object> arr = new ArrayList<Object>();
 		

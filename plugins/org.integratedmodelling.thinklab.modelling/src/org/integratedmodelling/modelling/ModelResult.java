@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
@@ -95,15 +97,14 @@ public class ModelResult implements IQueryResult  {
 
 	// from computing the context model
 	private IQueryResult contextModel = null;
-	private ArrayList<Topology> contextExt = null;
+	private IContext contextExt = null;
+	private IContext _externalExtents = null;
 
-	private Collection<Topology> _externalExtents = null;
-
-	public ModelResult(IModel model, IKBox kbox, ISession session, Collection<Topology> externalExtents) {
+	public ModelResult(IModel model, IKBox kbox, ISession session, IContext context) {
 		_model = model;
 		_kbox = kbox;
 		_session = session;
-		_externalExtents  = externalExtents;
+		_externalExtents  = context;
 	}
 
 	/**
@@ -212,19 +213,17 @@ public class ModelResult implements IQueryResult  {
 				IInstance cobs = contextModel.getResult(ofs[_dependents.size()], _session).
 					asObjectReference().getObject();
 				
-				IInstance result = ObservationFactory.
-					contextualize(cobs, _session, contextExt.toArray(new Topology[contextExt.size()]));
-				IObservation contextObs = ObservationFactory.getObservation(result);
+				IObservationContext cContext = 
+					ObservationFactory.contextualize(cobs, _session, contextExt);
 								
 				if (hasStateless) {
 
 					ArrayList<Pair<Keyword, IState>> cdata = new ArrayList<Pair<Keyword,IState>>();
 					
-					for (Entry<IConcept, IState> ee : ObservationFactory.getStateMap(
-							contextObs).entrySet()) {
+					for (IState cstate : cContext.getStates()) {
 
-						String id = ee.getKey().getLocalName();
-						IModel mo = (IModel) ee.getValue().getMetadata().get(
+						String id = cstate.getObservableClass().getLocalName();
+						IModel mo = (IModel) cstate.getMetadata().get(
 								Metadata.DEFINING_MODEL);
 						if (mo != null) {
 							id = mo.getId();
@@ -232,7 +231,7 @@ public class ModelResult implements IQueryResult  {
 
 						cdata.add(new Pair<Keyword, IState>(
 								Keyword.intern(null, id),
-								ee.getValue()));
+								cstate));
 					}
 
 					/*
@@ -340,7 +339,6 @@ public class ModelResult implements IQueryResult  {
 			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.ROW_FIRST);
 			ticker.defineDimensions(_mediated.getTotalResultCount());
 		} else if (_dependents.size() > 0 || _contingents.size() > 0 || contextModel != null) {
-
 			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.ROW_FIRST);
 			int[] dims = new int[_dependents.size() + _contingents.size() + (contextModel == null ? 0 : 1)];
 			int i = 0;
@@ -375,7 +373,7 @@ public class ModelResult implements IQueryResult  {
 	 * communicate that this result will have to build its contingencies using this
 	 * context model and states, and define the switchlayer for the observation merger.
 	 */
-	public void setContextModel(IQueryResult cm, ArrayList<Topology> exts) {
+	public void setContextModel(IQueryResult cm, IContext exts) {
 		this.contextModel = cm;
 		this.contextExt = exts;
 	}

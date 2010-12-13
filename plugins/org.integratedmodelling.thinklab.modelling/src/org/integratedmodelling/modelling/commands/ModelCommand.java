@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -16,12 +17,14 @@ import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.idv.IDV;
+import org.integratedmodelling.modelling.Context;
 import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.Scenario;
+import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.modelling.visualization.NetCDFArchive;
 import org.integratedmodelling.modelling.visualization.ObservationListing;
 import org.integratedmodelling.thinklab.command.Command;
@@ -67,40 +70,23 @@ public class ModelCommand implements ICommandHandler {
 	class Listener implements IContextualizationListener {
 
 		@Override
-		public void onContextualization(IObservation original,
-				IObservation obs, ObservationContext context) {
+		public void onContextualization(IObservation original, ObservationContext context) {
 			ctx = context;
-			try {
-				states.putAll(ObservationFactory.getStateMap(obs));
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
-			}
 		}
 
 		@Override
-		public void postTransformation(IObservation original, IObservation obs,
-				ObservationContext context) {
-			try {
-				states.putAll(ObservationFactory.getStateMap(obs));
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
-			}
+		public void postTransformation(IObservation original, ObservationContext context) {
 		}
 
 		@Override
-		public void preTransformation(IObservation original, IObservation obs,
-				ObservationContext context) {
-			try {
-				states.putAll(ObservationFactory.getStateMap(obs));
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
-			}
+		public void preTransformation(IObservation original, ObservationContext context) {
 		}
 	}
-	
-	private Topology getTopology(Command command, String argid, ISession session) throws ThinklabException {
+
+	// TODO use elsewhere to create contexts from strings
+	private IContext getTopology(Command command, String argid, ISession session) throws ThinklabException {
 		
-		Topology ret = null;
+		IContext ret = null;
 		
 		String arg = command.getArgumentAsString(argid);
 		if (arg != null && !arg.equals("_NONE_")) {
@@ -116,7 +102,7 @@ public class ModelCommand implements ICommandHandler {
 				}
 				IInstance when = 
 					session.createObject(pls);
-				ret = (Topology)ObservationFactory.getObservation(when);
+				ret = Context.getContext(((Topology)ObservationFactory.getObservation(when)).getExtent());
 				
 			} else {
 				
@@ -133,7 +119,7 @@ public class ModelCommand implements ICommandHandler {
 				
 					IInstance where = 
 						session.createObject(RasterGrid.createRasterGrid(roi, res));
-					ret = (Topology)ObservationFactory.getObservation(where);
+					ret = Context.getContext(((Topology)ObservationFactory.getObservation(where)).getExtent());
 					
 					// TODO this should be part of the instance definition but it's very expensive
 					((RasterGrid) ObservationFactory.getObservation(where)).mask(roi);
@@ -157,6 +143,7 @@ public class ModelCommand implements ICommandHandler {
 			throws ThinklabException {
 		
 		String concept = command.getArgumentAsString("model");
+		String ctxname = command.getArgumentAsString("context");
 		
 		IKBox kbox = KBoxManager.get();
 		if (command.hasOption("kbox"))
@@ -164,15 +151,9 @@ public class ModelCommand implements ICommandHandler {
 		
 		Model model = ModelFactory.get().requireModel(concept);
 		
-		Topology top = null;
-		ArrayList<Topology> topologies = new ArrayList<Topology>();
-		if ((top = getTopology(command, "context", session)) != null) {
-			topologies.add(top);
-		}
-		if ((top = getTopology(command, "context1", session)) != null) {
-			topologies.add(top);
-		}
-		
+		IContext context = /*getTopology(command, "context", session); */
+			ModelFactory.get().requireContext(ctxname);
+
 		ArrayList<IContextualizationListener> listeners = 
 			new ArrayList<IContextualizationListener>();
 		if (command.hasOption("visualize") || command.hasOption("outfile")) {
@@ -198,8 +179,7 @@ public class ModelCommand implements ICommandHandler {
 		}
 		
 		IQueryResult r = 
-			ModelFactory.get().run(model, kbox, session, listeners, 
-				topologies.toArray(new Topology[topologies.size()]));
+			ModelFactory.get().run(model, kbox, session, listeners, context);
 		
 		if (session.getOutputStream() != null) {
 			session.getOutputStream().println(
@@ -210,7 +190,8 @@ public class ModelCommand implements ICommandHandler {
 		
 		if (r.getTotalResultCount() > 0) {
 			
-			IInstance result = r.getResult(0, session).asObjectReference().getObject();
+			IValue res = r.getResult(0, session);
+			IObservationContext result = ((ContextValue)res).getObservationContext();
 
 			// check if a listener has set ctx, which means we're visualizing
 			if (this.ctx != null) {
@@ -228,7 +209,7 @@ public class ModelCommand implements ICommandHandler {
 				}
 
 				NetCDFArchive out = new NetCDFArchive();
-				out.setStates(this.states, this.ctx);
+				out.setContext(result);
 				out.write(outfile);
 				ModellingPlugin.get().logger()
 						.info(
@@ -245,7 +226,7 @@ public class ModelCommand implements ICommandHandler {
 				lister.dump(session.getOutputStream());
 			}
 
-			ret = new ObjectReferenceValue(result);
+			ret = res;
 		}
 			
 		return ret;

@@ -35,6 +35,8 @@ package org.integratedmodelling.modelling;
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.interfaces.IContext;
+import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
@@ -71,11 +73,11 @@ public class ObservationFactory extends org.integratedmodelling.corescience.Obse
 						CoreScience.HAS_OBSERVABLE, new Constraint(what)));
 	}
 
-	public static IObservation findObservation(IConcept observable, ISession session, Topology ... extents)
+	public static IObservation findObservation(IConcept observable, ISession session, IContext context)
 		throws ThinklabException {
 	
 		IObservation ret = null;
-		Constraint c = queryObservation(observable, extents);
+		Constraint c = queryObservation(observable, context);
 		IQueryResult qret = KBoxManager.get().query(c);	
 		if (qret.getTotalResultCount() > 0) {
 			ret = getObservation(qret.getResult(0, session).asObjectReference().getObject());
@@ -83,17 +85,17 @@ public class ObservationFactory extends org.integratedmodelling.corescience.Obse
 		return ret;
 	}
 	
-	public static Constraint queryObservation(IConcept observable, Topology ... extents) throws ThinklabException {
+	public static Constraint queryObservation(IConcept observable, IContext context) throws ThinklabException {
 
 		Constraint c = new Constraint(CoreScience.Observation());
 		
 		c = c.restrict(
 				new Restriction(CoreScience.HAS_OBSERVABLE, new Constraint(observable)));
 
-		if (extents.length > 0) {
+		if (context.getExtents().size() > 0) {
 			
 			ArrayList<Restriction> er = new ArrayList<Restriction>();
-			for (Topology o : extents) {
+			for (IExtent o : context.getExtents()) {
 				Restriction r = o.getConstraint("contains");
 				if (r != null)
 					er.add(r);

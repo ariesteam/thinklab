@@ -32,7 +32,7 @@ public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> impl
 		
 		for (int i = 0; i < this.data.length; i++) {
 			
-			IConcept c = (IConcept) getValue(i, null);
+			IConcept c = (IConcept) getValue(i);
 			if (c == null) {
 				ret[i] = Double.NaN;
 			} else if (ranks == null) {
@@ -100,7 +100,7 @@ public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> impl
 
 	@Override
 	public IConcept getCategory(int n) {
-		return (IConcept) getValue(n, null);
+		return (IConcept) getValue(n);
 	}
 
 	@Override

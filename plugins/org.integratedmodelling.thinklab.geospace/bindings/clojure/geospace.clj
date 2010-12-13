@@ -12,35 +12,22 @@
 ;; the main space observable, used to retrieve extents from observations, is bound to geospace/*space*
 (def *space* (tl/conc 'geospace:SpaceObservable))
 
-(defn get-boundary
-	"Returns a space areal observation with the boundary of the given observation, or the convex hull
-	 of a list of observations."
-	 []
-	 nil)
-	 
 (defn make-grid
 	"Returns a new grid observation from a shape and a maximum linear resolution. The grid will
 	 be set to contain the shape, and the widest dimension will have the given number of cells."
 	[where max-linear-resolution]
 	(. org.integratedmodelling.geospace.implementations.observations.RasterGrid (createRasterGrid where max-linear-resolution)))
-
-(defn make-grid
-	"Returns a new rectangular grid observation with the specified number of cells, each cell equal
-	to 1 square degree in UTM coordinates, starting at the equator on Greenwich meridian."
-	[rows columns]
-	nil)
-
-(defn make-areal-location
-	"Returns a new areal space observation with the given shape"
-	[shape]
-	nil)
 	
 (defn get-spatial-extent
 	"Return the IObservation that defines the spatial extent for the passed observation, or nil
 	if non-spatial"
 	[observation]	
 	(if (not (nil? observation)) 
-		(corescience/get-extent observation (.. org.integratedmodelling.geospace.Geospace (get) (SpaceObservable)))))
+     (if  (instance? org.integratedmodelling.corescience.interfaces.IObservationContext observation)
+       (.getExtent observation (.. org.integratedmodelling.geospace.Geospace (get) (SpaceObservable)))
+       (.getExtent (corescience/get-extent 
+              observation 
+              (.. org.integratedmodelling.geospace.Geospace (get) (SpaceObservable)))))))
 	
 (defn get-centroid 
 	"Return a ShapeValue with the centroid of the spatial extent of the passed observation, or 
@@ -64,7 +51,7 @@
 	 nil if no spatial extent is there."
 	[observation]
 	(let [extent (get-spatial-extent observation)]
-		(if (instance? org.integratedmodelling.geospace.interfaces.IGeolocatedObject extent)
+		(if (not (nil? extent))
 				(.getShape extent)
 				nil)))
 		
@@ -79,25 +66,25 @@
 	(let [space (get-spatial-extent observation)]
 	  (and 
 	     (not (nil? space))
-	     (instance? org.integratedmodelling.geospace.implementations.observations.RasterGrid space)))) 
+	     (instance? org.integratedmodelling.geospace.extents.GridExtent space)))) 
 	    
 (defn grid-rows
 	"Returns the number of rows in the grid extent of the passed observation. Throw an exception if
 	 the observation is not distributed over a grid extent."
 	 [observation]
-	 (. (get-spatial-extent observation) (getRows)))
+  (.getYCells (get-spatial-extent observation)))
 
 (defn grid-columns
-	"Returns the number of rows in the grid extent of the passed observation. Throw an exception if
+	"Returns the number of columns in the grid extent of the passed observation. Throw an exception if
 	 the observation is not distributed over a grid extent."
 	 [observation]
-	 (. (get-spatial-extent observation) (getColumns)))
+  (.getXCells (get-spatial-extent observation)))
 
 (defn cell-dimensions
   "Returns (x, y) where x is the width of one cell in meters and y is the height. Throw an exception if
    the observation is not distributed over a grid extent."
    [observation]
-   (let [extent (.getExtent (get-spatial-extent observation))]
+   (let [extent (get-spatial-extent observation)]
      [(.getCellWidthMeters extent) (.getCellHeightMeters extent)]))
    
 (defn build-coverage
@@ -121,7 +108,6 @@
 	[rastergrid]
 	(.. rastergrid (getExtent) (getFullExtentValue))) 
 	 
-
 (defn get-matching-native-grid
 		"Return a grid topology (observations of space) from a name that
 		matches a location in a gazetteer. Name can be a string, a symbol or anything whose string value
@@ -164,3 +150,19 @@
 								 (org.integratedmodelling.geospace.implementations.observations.RasterGrid/createRasterGrid
 										shape resolution)))]
 				(topology-array inst)))
+
+(defn make-shape 
+  [wkt-or-wkb]
+  (new org.integratedmodelling.geospace.literals.ShapeValue wkt-or-wkb))
+
+(defn grid 
+  "Return an IExtent for a grid (GridExtent) with the specified linear resolution and encompassing the
+   given shape. If a symbol is passed, use that to lookup a feature in the online gazetteers. If a string
+   is passed, consider that WKT or WKB and create the shape from it."
+  [resolution shape]
+  (cond 
+    (symbol? shape)
+      (new org.integratedmodelling.geospace.extents.GridExtent (get-shape-from-name (str shape)) resolution) 
+    (string? shape)
+      (new org.integratedmodelling.geospace.extents.GridExtent (make-shape shape) resolution))) 
+

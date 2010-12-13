@@ -1,10 +1,9 @@
 package org.integratedmodelling.modelling;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -59,7 +58,7 @@ public class PrecontextualizedModelProxy extends ModelProxy {
 	
 	@Override
 	public ModelResult observeInternal(IKBox kbox, ISession session,
-			IntelligentMap<IConformance> cp, ArrayList<Topology> extents,
+			IntelligentMap<IConformance> cp, IContext context,
 			boolean acceptEmpty)
 			throws ThinklabException {
 		return new PResult(this, kbox, session);

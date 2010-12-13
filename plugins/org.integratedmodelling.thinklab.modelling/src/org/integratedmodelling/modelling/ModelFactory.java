@@ -7,7 +7,9 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
@@ -16,6 +18,7 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.modelling.agents.ThinkAgent;
+import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
@@ -55,6 +58,7 @@ public class ModelFactory {
 	public static final IObservation observation = null;
 	public Hashtable<String, Model> modelsById = new Hashtable<String, Model>();
 	public Hashtable<String, Scenario> scenariosById = new Hashtable<String, Scenario>();
+	public Hashtable<String, Context> contextsById = new Hashtable<String, Context>();
 	public Hashtable<String, ThinkAgent> agentsById = new Hashtable<String, ThinkAgent>();
 
 	// relevant properties from ontology
@@ -64,14 +68,14 @@ public class ModelFactory {
 
 		IQueryResult mres = null;
 		Collection<IContextualizationListener> listeners = null;
-		Topology[] extents;
+		IContext context;
 
 		public ContextualizingModelResult(IQueryResult r,
 				Collection<IContextualizationListener> listeners,
-				Topology[] extents2) {
+				IContext context) {
 			this.mres = r;
 			this.listeners = listeners;
-			this.extents = extents2;
+			this.context = context;
 		}
 
 		@Override
@@ -93,9 +97,9 @@ public class ModelFactory {
 		public IValue getResult(int n, ISession session)
 				throws ThinklabException {
 			IInstance res = session.createObject(getResultAsList(n, null));
-			IInstance result = 
-				ObservationFactory.contextualize(res, session, listeners, extents);
-			return new ObjectReferenceValue(result);
+			IObservationContext result = 
+				ObservationFactory.contextualize(res, session, listeners, context);
+			return new ContextValue(result);
 		}
 
 		@Override
@@ -169,24 +173,18 @@ public class ModelFactory {
 		}
 
 		@Override
-		public void onContextualization(IObservation original,
-				IObservation obs, ObservationContext context) {
+		public void onContextualization(IObservation original, ObservationContext context) {
 			scan(original, context);
-			scan(obs, context);
 		}
 
 		@Override
-		public void postTransformation(IObservation original, IObservation obs,
-				ObservationContext context) {
+		public void postTransformation(IObservation original, ObservationContext context) {
 			scan(original, context);
-			scan(obs, context);
 		}
 
 		@Override
-		public void preTransformation(IObservation original, IObservation obs,
-				ObservationContext context) {
+		public void preTransformation(IObservation original, ObservationContext context) {
 			scan(original, context);
-			scan(obs, context);
 		}
 	}
 
@@ -229,6 +227,17 @@ public class ModelFactory {
 	}
 	
 	/*
+	 * called by the defcontext macro.
+	 */
+	public Context registerContext(Context model, String name) throws ThinklabException {
+		
+		model.setId(name);
+		contextsById.put(model.getId(), model);
+		ModellingPlugin.get().logger().info("context " + model + " registered");
+		return model;
+	}
+	
+	/*
 	 * called by the defagent macro. Creates a prototype agent that we will use to
 	 * cloned agents from.
 	 */
@@ -267,6 +276,20 @@ public class ModelFactory {
 		return ret;
 	}
 
+	public Context retrieveContext(String s) throws ThinklabException {
+		return contextsById.get(s);
+	}
+
+	public Context requireContext(String s) throws ThinklabException {
+
+		Context ret = retrieveContext(s);
+		if (ret == null)
+			throw new ThinklabResourceNotFoundException("no context found for "
+					+ s);
+		return ret;
+	}
+
+	
 	/**
 	 * Return a shape (usually a multipolygon) that describes the coverage of a
 	 * particular model in a given kbox. It will be the union of the spatial
@@ -294,9 +317,15 @@ public class ModelFactory {
 			IObservation obs = ObservationFactory.getObservation(rr
 					.asObjectReference().getObject());
 
-			ObservationContext ctx = new ObservationContext(obs);
-
-			if (!ctx.isEmpty()) {
+			ObservationContext ctx = null;
+			try {
+				ctx = new ObservationContext(obs, null, true);	
+			} catch (ThinklabException e) {
+				// if we get here, this does not contextualize properly because of
+				// thinklab limitations. Just ignore it.
+			}
+			
+			if (ctx != null && !ctx.isEmpty()) {
 				ArealExtent ext = (ArealExtent) ctx.getExtent(Geospace.get()
 						.SpaceObservable());
 				ShapeValue sh = (ShapeValue) ext.getFullExtentValue();
@@ -366,13 +395,13 @@ public class ModelFactory {
 	 * @throws ThinklabException
 	 */
 	public IQueryResult run(Model model, IKBox kbox, ISession session,
-			Topology... extents) throws ThinklabException {
-		return run(model, kbox, session, null, extents);
+			IContext context) throws ThinklabException {
+		return run(model, kbox, session, null, context);
 	}
 
 	public IQueryResult run(Model model, IKBox kbox, ISession session,
 			Collection<IContextualizationListener> listeners,
-			Topology... extents) throws ThinklabException {
+			IContext context) throws ThinklabException {
 
 		if (listeners == null && ModellingPlugin.get().getCache() != null) {
 			listeners = new ArrayList<IContextualizationListener>();
@@ -380,8 +409,8 @@ public class ModelFactory {
 		if (ModellingPlugin.get().getCache() != null)
 			listeners.add(new Listener(session));
 
-		IQueryResult r = model.observe(kbox, session, (Object[]) extents);
-		return new ContextualizingModelResult(r, listeners, extents);
+		IQueryResult r = model.observe(kbox, session, context);
+		return new ContextualizingModelResult(r, listeners, context);
 	}
 	
 	/**
@@ -397,34 +426,18 @@ public class ModelFactory {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public Map<String, IState> eval(Model model, IKBox kbox, ISession session,
-			Topology... extents) throws ThinklabException {
+	public IObservationContext eval(Model model, IKBox kbox, ISession session, IContext context)
+		throws ThinklabException {
 
-		Map<String,IState> ret = new HashMap<String, IState>();
-		IQueryResult res = run(model, kbox, session, null, extents);
+		IObservationContext ret = null;
+		IQueryResult res = run(model, kbox, session, null, context);
 		
-		if (res.getResultCount() > 0) {
-			
-			 Map<IConcept, IState> states = 
-				 ObservationFactory.getStateMap(res.getResult(0, session).asObjectReference().getObject());
-			 
-			 for (IState state : states.values()) {
-				 
-				DefaultAbstractModel mod =
-					(DefaultAbstractModel) state.getMetadata().get(Metadata.DEFINING_MODEL);
-				String name = 
-					 (mod == null || (mod.getId() == null)) ? 
-						state.getObservableClass().getLocalName() : 
-						mod.getId();
- 				ret.put(name, state);
-			 }
+		if (res.getResultCount() > 0) {			
+			 ret = ((ContextValue)res.getResult(0, session)).getObservationContext();
 		}
 		
 		return ret;
-
-	
 	}
-	
 	
 	/**
 	 * Clones a new agent of the passed type and places it in the context

@@ -21,6 +21,12 @@
 	[]
 	(new org.integratedmodelling.modelling.Scenario))
 
+(defn j-make-context
+	"Make a new instance of Model and return it. We need this because the class won't be visible when
+	the macro is expanded at runtime."
+	[]
+	(new org.integratedmodelling.modelling.Context))
+
 (defn j-make-agent
 	"Make a new instance of Model and return it. We need this because the class won't be visible when
 	the macro is expanded at runtime."
@@ -70,6 +76,13 @@
 	 with it."
 	[model name]
 	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerScenario model (str *ns* "/" name))))
+
+(defn register-context
+	"Get the single instance of the model manager from the modelling plugin and register the passed model
+	 with it."
+	[model name]
+	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerContext model (str *ns* "/" name))))
+
 
 (defn register-agent
 	"Get the single instance of the model manager from the modelling plugin and register the passed model
@@ -174,7 +187,27 @@
             (.addModel model# (eval mdef#) (meta definition#) nil)))
           
        model#))
+     
        
+(defmacro context 
+	"Return a new context object that can be registered with a name and used to build matching contexts
+   on demand."
+	[& body]
+	 `(let [desc#  
+	 					(if (string? (first '~body)) (first '~body))
+ 	        definition# 
+ 	        	(drop (tl/count-not-nil (list desc#)) '~body)
+ 	        model# 
+ 	        	(modelling/j-make-context)]
+ 	      
+ 	     (.setDescription model# desc#)
+ 	      	     
+        ; process the model definitions - one or more models or kw pairs
+       (doseq [mdef# (tl/group-keywords definition#)] 
+            (.add model# (eval mdef#) definition#))
+          
+       model#))
+  
 (defmacro tl-agent 
 	"Return a new model for the given observable, defined using the given contingency 
 	 structure and conditional specifications, or the given unconditional model if no 
@@ -220,6 +253,12 @@
 		[model-name observable & body]
  		`(def ~model-name (modelling/register-agent (eval '(modelling/tl-agent ~observable ~@body)) (str '~model-name))))
   
+(defmacro defcontext
+	 "Define a context."
+		[model-name & body]
+ 		`(def ~model-name (modelling/register-context (eval '(modelling/context ~@body)) (str '~model-name))))
+
+
 (defn apply-scenario
   "Apply a scenario to a model, return a new model with the scenario applied."
   [scenario model]

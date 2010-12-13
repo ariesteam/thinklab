@@ -1,9 +1,6 @@
 package org.integratedmodelling.modelling.interfaces;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.modelling.Scenario;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -94,7 +91,7 @@ public interface IModel extends IConceptualizable {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> externalExtents, int flags) throws ThinklabException;
+	public Polylist buildDefinition(IKBox kbox, ISession session, IContext context, int flags) throws ThinklabException;
 
 	/**
 	 * Models must have an ID

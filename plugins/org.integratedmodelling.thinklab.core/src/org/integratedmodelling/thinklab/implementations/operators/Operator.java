@@ -86,9 +86,4 @@ public abstract class Operator implements IOperator {
 	public void validate(IInstance i) throws ThinklabException {
 	}
 
-	@Override
-	public HashMap<String, Object> getMetadata() {
-		return null;
-	}
-	
 }

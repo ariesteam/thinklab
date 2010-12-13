@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.metadata.Metadata;
@@ -241,7 +242,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	}
 	
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents, int flags) throws ThinklabException {
+	public Polylist buildDefinition(IKBox kbox, ISession session, IContext context, int flags) throws ThinklabException {
 
 		IConcept theState =
 			KnowledgeManager.get().getLeastGeneralCommonConcept(concepts);
@@ -296,7 +297,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 						concepts.get(i) + "->" + classifiers.get(i)));
 		}
 
-		return addImplicitExtents(Polylist.PolylistFromArrayList(arr), extents);
+		return addImplicitExtents(Polylist.PolylistFromArrayList(arr), context);
 	}
 
 	@Override

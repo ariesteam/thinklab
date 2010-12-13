@@ -108,12 +108,6 @@ public class SpatialCoverage extends Observation implements Topology, IGeolocate
 	}
 
 	@Override
-	public Restriction getConstraint(String operator) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public IExtent getExtent() throws ThinklabException {
 		return extent;
 	}

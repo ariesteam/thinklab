@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.context.ContextMapper;
+import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.SwitchingState;
 import org.integratedmodelling.corescience.interfaces.IObservation;
@@ -67,7 +68,7 @@ public class ContingencyMerger extends Observation  {
 	 * @param cResults
 	 * @throws ThinklabException 
 	 */
-	public Polylist mergeResults(IObservation[] cResults, IObservationContext context) throws ThinklabException {
+	public Polylist mergeResults(IObservationContext[] cResults, IObservationContext context) throws ThinklabException {
 		
 		SwitchLayer<ContextMapper> switchLayer = null;
 		
@@ -99,8 +100,7 @@ public class ContingencyMerger extends Observation  {
 								new Object[] {});
 						for (Pair<Keyword, ContextMapper> p : cdata) {
 							pmap = (PersistentArrayMap) pmap.assoc(
-									p.getFirst(), p.getSecond().getValue(i,
-											null));
+									p.getFirst(), p.getSecond().getValue(i));
 						}
 
 						/*
@@ -175,11 +175,13 @@ public class ContingencyMerger extends Observation  {
 		return ret;
 	}
 
-	private void scanContingency(IObservation obs, int cord,
+	private void scanContingency(IObservationContext obs, int cord,
 			ArrayList<OSource> catalog) throws ThinklabException {
 		
-		if (obs.getDataSource() instanceof IState) {
+		for (IState ist : obs.getStates()) {
+
 			Constraint c = new DefaultConformance().getConstraint(getObservable());
+
 			int i = 0;
 			for (; i < catalog.size(); i++) {
 				if (c.match(catalog.get(i).observable)) {
@@ -188,13 +190,11 @@ public class ContingencyMerger extends Observation  {
 				if (i == catalog.size()) {
 					catalog.add(new OSource());
 				}
+				
 				OSource os = catalog.get(i);
-				os.states.add((IState)obs.getDataSource());
+				os.states.add(ist);
 				os.contingencies.add(cord);
 			}
-		}
-		for (IObservation dep : obs.getDependencies()) {
-			scanContingency(dep, cord, catalog);
 		}
 	}
 }

@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
+import org.integratedmodelling.modelling.Context;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -28,9 +30,10 @@ public class ObservationFactory {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public static IInstance contextualize(IInstance observation, ISession session) throws ThinklabException {
+	public static IObservationContext contextualize(IInstance observation, ISession session) throws ThinklabException {
 		ObservationContext ctx = new ObservationContext(getObservation(observation), null);
-		return ctx.run(session, null);
+		ctx.run(session, null);
+		return ctx;
 	}
 	
 	/**
@@ -41,11 +44,12 @@ public class ObservationFactory {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public static IInstance contextualize(IInstance observation, ISession session, Topology ... context) throws ThinklabException {
+	public static IObservationContext contextualize(IInstance observation, ISession session, IContext context) throws ThinklabException {
 		
-		ObservationContext constraint = new ObservationContext(context);
-		ObservationContext ctx = new ObservationContext(getObservation(observation), constraint);
-		return ctx.run(session, null);
+		ObservationContext ctx = 
+			(ObservationContext) context.getObservationContext(getObservation(observation));
+		ctx.run(session, null);
+		return ctx;
 	}
 	
 	/**
@@ -56,25 +60,31 @@ public class ObservationFactory {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public static IInstance contextualize(IInstance observation, ISession session, 
+	public static IObservationContext contextualize(IInstance observation, ISession session, 
 			Collection<IContextualizationListener> listeners, 
-			Topology ... context) throws ThinklabException {
-		
-		ObservationContext constraint = new ObservationContext(context);
-		ObservationContext ctx = new ObservationContext(getObservation(observation), constraint);
+			IContext context) throws ThinklabException {
 
+		ObservationContext ctx = 
+			(ObservationContext)context.getObservationContext(getObservation(observation));
+		
 		if (Thinklab.debug(session)) {
 			ctx.dump(session.getOutputStream());
 		}
 		
-		return ctx.run(session, listeners);
+		ctx.run(session, listeners);
+
+		return ctx;
 	}
 
-	public IInstance contextualize(IInstance observation, ISession session,
+	public IObservationContext contextualize(IInstance observation, ISession session,
 			Collection<IContextualizationListener> lis) throws ThinklabException {
+		
 		ObservationContext ctx = new ObservationContext(getObservation(observation), null);
-		ctx.dump(session.getOutputStream());
-		return ctx.run(session, lis);
+		if (Thinklab.debug(session)) {
+			ctx.dump(session.getOutputStream());
+		}
+		ctx.run(session, lis);
+		return ctx;
 	}
 	
 	/**

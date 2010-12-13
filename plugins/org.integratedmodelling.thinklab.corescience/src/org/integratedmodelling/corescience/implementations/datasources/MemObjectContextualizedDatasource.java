@@ -37,6 +37,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
@@ -78,19 +79,19 @@ public class MemObjectContextualizedDatasource
 		 */
 		Metadata.rankConcepts(type,  metadata);
 	}
+//	
+//	@Override
+//	public Object getInitialValue() {
+//		return null;
+//	}
+//
+//	@Override
+//	public Object getValue(int index, Object[] parameters) {
+//		return data[index];
+//	}
 	
 	@Override
-	public Object getInitialValue() {
-		return null;
-	}
-
-	@Override
-	public Object getValue(int index, Object[] parameters) {
-		return data[index];
-	}
-	
-	@Override
-	public Object getDataAt(int offset) {
+	public Object getValue(int offset) {
 		return (offset >= 0 && offset < data.length) ? data[offset] : null;
 	}
 
@@ -101,7 +102,7 @@ public class MemObjectContextualizedDatasource
 
 
 	@Override
-	public void addValue(int idx, Object o) {
+	public void setValue(int idx, Object o) {
 		if (prototype == null)
 			prototype = o;
 		data[idx] = o;
@@ -112,7 +113,7 @@ public class MemObjectContextualizedDatasource
 
 		return Polylist.list(
 				CoreScience.CONTEXTUALIZED_DATASOURCE,
-				Polylist.list("@", this));
+				Polylist.list("@", new DatasourceStateAdapter(this)));
 	}
 
 	@Override
@@ -188,30 +189,30 @@ public class MemObjectContextualizedDatasource
 	}
 
 	@Override
-	public int getTotalSize() {
+	public int getValueCount() {
 		return data.length;
 	}
-
-	@Override
-	public IDataSource<?> transform(IDatasourceTransformation transformation)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return this;
-	}
-
-	@Override
-	public void postProcess(IObservationContext context)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void preProcess(IObservationContext context)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		
-	}
+//
+//	@Override
+//	public IDataSource<?> transform(IDatasourceTransformation transformation)
+//			throws ThinklabException {
+//		// TODO Auto-generated method stub
+//		return this;
+//	}
+//
+//	@Override
+//	public void postProcess(IObservationContext context)
+//			throws ThinklabException {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void preProcess(IObservationContext context)
+//			throws ThinklabException {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 	@Override
 	public IPersistentObject deserialize(InputStream fop)

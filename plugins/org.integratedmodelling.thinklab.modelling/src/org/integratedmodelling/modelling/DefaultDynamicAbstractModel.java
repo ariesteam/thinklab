@@ -3,6 +3,8 @@ package org.integratedmodelling.modelling;
 
 import java.util.Collection;
 
+import org.integratedmodelling.corescience.interfaces.IContext;
+import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -78,21 +80,21 @@ public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstrac
 		dynSpecs = ((DefaultDynamicAbstractModel)model).dynSpecs;
 	}
 
-	protected Polylist addImplicitExtents(Polylist list, Collection<Topology> extents) throws ThinklabException {
+	protected Polylist addImplicitExtents(Polylist list, IContext context) throws ThinklabException {
 							
-		if (extents == null)
+		if (context == null)
 			return list;
 		
 		/*
 		 * adopt them all unless there is a value statement; if time, adopt it
 		 * anyway if we have change statements.		
 		 */		
-		for (Topology t : extents) {		
+		for (IExtent t : context.getExtents()) {		
 			if (state == null) {
-				list = ObservationFactory.addExtent(list, t.getExtent().conceptualize());				
+				list = ObservationFactory.addExtent(list, t.conceptualize());				
 			} else if (t.getObservableClass().is(TimePlugin.get().TimeObservable()) &&
 					(changeSpecs != null || derivativeSpecs != null)) {
-						list = ObservationFactory.addExtent(list, t.getExtent().conceptualize());
+						list = ObservationFactory.addExtent(list, t.conceptualize());
 			}
 		}
 		

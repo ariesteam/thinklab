@@ -57,13 +57,6 @@ public interface Topology extends IObservation {
 	 */
 	public abstract IExtent getExtent() throws ThinklabException;
 
-	/*
-	 * FIXME still rough - return a restriction that will match observations with
-	 * similar topology, using the parameter to define the relationship (which should be
-	 * a formal enum or topological operator)
-	 */
-	public abstract Restriction getConstraint(String operator) throws ThinklabException;
-
 	/**
 	 * Check that the passed unit represents an observable that adopts this topology. 
 	 * 

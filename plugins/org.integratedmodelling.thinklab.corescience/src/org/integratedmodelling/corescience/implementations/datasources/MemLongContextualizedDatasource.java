@@ -33,6 +33,7 @@
 package org.integratedmodelling.corescience.implementations.datasources;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
@@ -61,19 +62,19 @@ public class MemLongContextualizedDatasource
 		this.context = context;
 	}
 	
-	@Override
-	public Object getInitialValue() {
-		return null;
-	}
+//	@Override
+//	public Object getInitialValue() {
+//		return null;
+//	}
+//
+//	@Override
+//	public Object getValue(int index, Object[] parameters) {
+//		return data[index];
+//	}
+
 
 	@Override
-	public Object getValue(int index, Object[] parameters) {
-		return data[index];
-	}
-
-
-	@Override
-	public Object getDataAt(int offset) {
+	public Object getValue(int offset) {
 		return (offset >= 0 && offset < data.length) ? data[offset] : null;
 	}
 	
@@ -83,7 +84,7 @@ public class MemLongContextualizedDatasource
 	}
 
 	@Override
-	public void addValue(int idx, Object o) {
+	public void setValue(int idx, Object o) {
 		data[idx] = ((Long)o);
 	}
 
@@ -92,7 +93,7 @@ public class MemLongContextualizedDatasource
 
 		return Polylist.list(
 				CoreScience.CONTEXTUALIZED_DATASOURCE,
-				Polylist.list("@", this));
+				Polylist.list("@", new DatasourceStateAdapter(this)));
 	}
 
 	@Override
@@ -124,30 +125,30 @@ public class MemLongContextualizedDatasource
 	}
 
 	@Override
-	public int getTotalSize() {
+	public int getValueCount() {
 		return data.length;
 	}
 
-	@Override
-	public IDataSource<?> transform(IDatasourceTransformation transformation)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return this;
-	}
-
-	@Override
-	public void postProcess(IObservationContext context)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void preProcess(IObservationContext context)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		
-	}
+//	@Override
+//	public IDataSource<?> transform(IDatasourceTransformation transformation)
+//			throws ThinklabException {
+//		// TODO Auto-generated method stub
+//		return this;
+//	}
+//
+//	@Override
+//	public void postProcess(IObservationContext context)
+//			throws ThinklabException {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void preProcess(IObservationContext context)
+//			throws ThinklabException {
+//		// TODO Auto-generated method stub
+//		
+//	}
 	
 	@Override
 	public IConcept getObservableClass() {

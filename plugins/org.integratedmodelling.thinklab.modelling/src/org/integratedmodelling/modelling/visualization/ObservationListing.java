@@ -3,28 +3,25 @@ package org.integratedmodelling.modelling.visualization;
 import java.io.PrintStream;
 import java.text.NumberFormat;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.integratedmodelling.modelling.ObservationFactory;
-import org.integratedmodelling.corescience.interfaces.IObservation;
+import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
-import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
+import org.integratedmodelling.geospace.extents.GridExtent;
+import org.integratedmodelling.modelling.Context;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 public class ObservationListing {
 
-	private IObservation observation = null;
-	private Map<IConcept, IState> states = null;
 	private boolean verbose;
+	private IObservationContext context;
 
-	public ObservationListing(IInstance observation) throws ThinklabException {
-		this.observation = ObservationFactory.getObservation(observation);
-		this.states = ObservationFactory.getStateMap(this.observation);
+	public ObservationListing(IObservationContext context) throws ThinklabException {
+		this.context = context;
 	}
 	
 	public void setVerbose(boolean verbose) {
@@ -33,17 +30,16 @@ public class ObservationListing {
 	
 	public void dump(PrintStream out) throws ThinklabException {
 		
-		RasterGrid rgrid = null;
-		if (ObservationFactory.isRaster(observation)) {
-			rgrid = ObservationFactory.getRasterGrid(observation);
+		IExtent rgrid = Context.getSpace(context);
+		if (rgrid instanceof GridExtent) {
 			out.println("Spatially distributed on a " + 
-						rgrid.getRows() + " by " + rgrid.getColumns() + 
+						((GridExtent)rgrid).getXCells() + " by " + ((GridExtent)rgrid).getYCells() + 
 						" raster grid");
 		}
 		
-		for (IConcept c : states.keySet()) {
+		for (IConcept c : context.getStateObservables()) {
 			
-			IState state = states.get(c);
+			IState state = context.getState(c);
 			// throw away the result, but instantiate all metadata
 			Metadata.getImageData(state);
 			

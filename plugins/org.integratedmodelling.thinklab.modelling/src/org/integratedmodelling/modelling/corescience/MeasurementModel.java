@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.corescience;
 import java.util.Collection;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.DefaultAbstractModel;
@@ -54,7 +55,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 	}
 
 	@Override
-	public Polylist buildDefinition(IKBox kbox, ISession session, Collection<Topology> extents, int flags)
+	public Polylist buildDefinition(IKBox kbox, ISession session, IContext context, int flags)
 			throws ThinklabException {
 		
 		
@@ -91,7 +92,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 						Polylist.list(CoreScience.HAS_OBSERVABLE,
 								Polylist.list(getObservableClass()))));
 
-		return addImplicitExtents(def, extents);
+		return addImplicitExtents(def, context);
 	}
 
 	@Override
