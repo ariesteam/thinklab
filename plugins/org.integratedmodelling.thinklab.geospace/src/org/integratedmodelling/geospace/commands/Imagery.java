@@ -24,11 +24,11 @@ import org.integratedmodelling.utils.image.Picture;
 		optionalArgumentDescriptions="region to locate",
 		optionalArgumentTypes="thinklab-core:Text",
 		optionalArgumentNames="location",
-		optionNames="r",
-		optionLongNames="resolution",
-		optionTypes="thinklab-core:Integer",
-		optionDescriptions="linear resolution of widest side of image (default 800)",
-		optionArgumentLabels="res"
+		optionNames="r,d",
+		optionLongNames="resolution,draw-shape",
+		optionTypes="thinklab-core:Integer,owl:Nothing",
+		optionDescriptions="linear resolution of widest side of image (default 800),draw the outline of the region",
+		optionArgumentLabels="res, "
 )
 public class Imagery implements ICommandHandler {
 
@@ -47,6 +47,10 @@ public class Imagery implements ICommandHandler {
 			}
 			
 		} else {
+			
+			/*
+			 * TODO also enable IContext
+			 */
 			
 			String loc = command.getArgumentAsString("location");
 			
@@ -70,7 +74,9 @@ public class Imagery implements ICommandHandler {
 						RasterGrid.getRasterBoxDimensions(sh, x);
 					
 					BufferedImage bfi = 
-						GeoImageFactory.get().getImagery(sh.getEnvelope(), xy.getFirst(), xy.getSecond());
+						command.hasOption("draw-shape") ?
+							GeoImageFactory.get().getImagery(sh, xy.getFirst(), xy.getSecond()) :
+							GeoImageFactory.get().getImagery(sh.getEnvelope(), xy.getFirst(), xy.getSecond());
 					
 					new Picture(bfi).show();
 

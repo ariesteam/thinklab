@@ -24,14 +24,11 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.geometry.BoundingBox;
-import org.opengis.geometry.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Point;
 
 public class ThinklabRasterizer {
 

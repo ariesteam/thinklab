@@ -35,6 +35,13 @@ import org.integratedmodelling.utils.MiscUtilities;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
 
 public class GeoImageFactory {
 
@@ -198,6 +205,118 @@ public class GeoImageFactory {
 		return ret;
 		
 	}
+	
+	public BufferedImage getImagery(ShapeValue shape, int width, int height) throws ThinklabException {
+
+		BufferedImage ret = getWFSImage(shape.getEnvelope(), width, height);
+		GeometryFactory geoFactory = new GeometryFactory();
+
+		double edgeBuffer = 0.0;
+	    
+		if (ret == null) {
+			ret = getSatelliteImage(shape.getEnvelope(), width, height, null, null, 
+					HAlignment.MIDDLE, VAlignment.MIDDLE);
+		}	
+		
+		/*
+		 * draw shape boundaries.
+		 */
+		Geometry geometry = shape.getGeometry();
+		double x = shape.getEnvelope().getMinX() - edgeBuffer;
+		double y = shape.getEnvelope().getMinY() - edgeBuffer;
+		double w = shape.getEnvelope().getWidth() + edgeBuffer * 2;
+		double h = shape.getEnvelope().getHeight() + edgeBuffer * 2;
+		java.awt.geom.Rectangle2D.Double bounds = 
+			new java.awt.geom.Rectangle2D.Double(x, y, w, h);
+
+		Graphics graphics = ret.getGraphics();
+		graphics.setColor(Color.red);
+		graphics.setPaintMode();
+		
+		if (geometry.getClass().equals(MultiPolygon.class) || geometry.getClass().equals(Polygon.class)) {	
+
+			for (int i = 0; i < geometry.getNumGeometries(); i++) {
+				com.vividsolutions.jts.geom.Polygon poly = 
+					(com.vividsolutions.jts.geom.Polygon) geometry.getGeometryN(i);
+				LinearRing lr = geoFactory.createLinearRing(poly.getExteriorRing().getCoordinates());
+				com.vividsolutions.jts.geom.Polygon part = 
+					geoFactory.createPolygon(lr, null);
+                drawGeometry(part, bounds, graphics, width, height);
+                for (int j = 0; j < poly.getNumInteriorRing(); j++) {
+                	lr = geoFactory.createLinearRing(poly.getInteriorRingN(j).getCoordinates());
+                	part = geoFactory.createPolygon(lr, null);
+                	drawGeometry(part, bounds, graphics, width, height);
+                }
+			}
+		} else if (geometry.getClass().equals(MultiLineString.class)) {
+			MultiLineString mp = (MultiLineString)geometry;
+			for (int n=0; n<mp.getNumGeometries(); n++) {
+				drawGeometry(mp.getGeometryN(n), bounds, graphics, width, height);
+			}
+		} else if (geometry.getClass().equals(MultiPoint.class)) {
+			MultiPoint mp = (MultiPoint)geometry;
+			for (int n=0; n<mp.getNumGeometries(); n++) {
+				drawGeometry(mp.getGeometryN(n), bounds, graphics, width, height);
+			}
+		} else {
+			drawGeometry(geometry, bounds, graphics, width, height);
+		}
+		
+		return ret;	
+	}
+	
+    private void drawGeometry(Geometry geometry, 
+    		java.awt.geom.Rectangle2D.Double bounds, 
+    		Graphics graphics, int width, int height) {
+
+        Coordinate[] coords = geometry.getCoordinates();
+        
+        double xInterval = bounds.width / (double) width;
+        double yInterval = bounds.height / (double) height;
+
+        // System.out.println("xInterval: " + xInterval + "  yInterval: " + yInterval);
+
+        if (xInterval > yInterval) {
+            yInterval = xInterval;
+        }
+        if (yInterval > xInterval) {
+            xInterval = yInterval;
+        }
+        
+        // for later
+        double cellsize = yInterval;
+
+        // TODO fix this stupid legacy preallocation when it works
+        int[] coordGridX = new int[coords.length];
+        int[] coordGridY = new int[coords.length];
+
+        // Go through coordinate array in order received (clockwise)
+        for (int n = 0; n < coords.length; n++) {
+        	
+        	coordGridX[n] = (int) (((coords[n].x - bounds.x) / xInterval));
+        	coordGridY[n] = (int) (((coords[n].y - bounds.y) / yInterval));
+        	coordGridY[n] = height - coordGridY[n] - 1; 
+        	
+        	// this may happen at the extremes, unless we use the pixel center as the coordinate
+        	if (coordGridX[n] < 0) coordGridX[n] = 0;
+        	if (coordGridY[n] < 0) coordGridY[n] = 0;
+        	if (coordGridX[n] >= width) coordGridX[n] = width - 1;
+        	if (coordGridY[n] >= height) coordGridY[n] = height -1;
+        }
+                
+        if (geometry.getClass().equals(com.vividsolutions.jts.geom.Polygon.class)) {
+            graphics.drawPolyline(coordGridX, coordGridY, coords.length);
+        }
+        else if (geometry.getClass().equals(LinearRing.class)) {
+            graphics.drawPolyline(coordGridX, coordGridY, coords.length);
+        }
+        else if (geometry.getClass().equals(LineString.class)) {
+            graphics.drawPolyline(coordGridX, coordGridY, coords.length);
+        }
+        else if (geometry.getClass().equals(Point.class)) {
+            graphics.drawPolyline(coordGridX, coordGridY, coords.length);
+        }
+    }
 	
 	private BufferedImage getWFSImage(Envelope envelope, int width, int height) throws ThinklabResourceNotFoundException {
 		
