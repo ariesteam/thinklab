@@ -30,7 +30,9 @@ import org.integratedmodelling.utils.xml.XML;
 //</GroundOverlay>
 //</kml>
 
-
+/**
+ * TODO should be a visualization and read from a context, not a FileBasedDataset
+ */
 public class KMLExporter  {
 	
 	private FileBasedDataset dset = null;

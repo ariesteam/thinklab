@@ -31,6 +31,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.image.ColorMap;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -204,6 +205,24 @@ public class GeoImageFactory {
 		
 		return ret;
 		
+	}
+	
+	public BufferedImage getRasterImagery(Envelope envelope, int width, int height, 
+			int[] imageData, int rowWidth, ColorMap cmap) 
+		throws ThinklabException {
+
+		BufferedImage ret = getWFSImage(envelope, width, height);
+
+		if (ret == null)
+			ret = getSatelliteImage(envelope, width, height, null, null, 
+					HAlignment.MIDDLE, VAlignment.MIDDLE);
+		
+		/*
+		 * draw the raster
+		 */
+		
+		return ret;
+
 	}
 	
 	public BufferedImage getImagery(ShapeValue shape, int width, int height) throws ThinklabException {

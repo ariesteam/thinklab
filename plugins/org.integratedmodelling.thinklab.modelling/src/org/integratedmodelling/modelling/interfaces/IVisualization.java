@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.interfaces;
 
 import java.util.Properties;
 
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
@@ -20,7 +21,7 @@ public interface IVisualization {
 	 * 
 	 * @param dataset
 	 */
-	public void initialize(IDataset dataset);
+	public void initialize(IObservationContext context);
 
 	/**
 	 * Create a plot with the appropriate MIME type for the context and the type of visualization

@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 
-import org.integratedmodelling.modelling.interfaces.IDataset;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.utils.xml.XMLDocument;

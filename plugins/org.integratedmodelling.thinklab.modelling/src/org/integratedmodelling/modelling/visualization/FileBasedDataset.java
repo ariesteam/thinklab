@@ -4,36 +4,31 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Map;
 
-import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
-import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
-import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.modelling.Context;
-import org.integratedmodelling.modelling.interfaces.IDataset;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.utils.image.ColorMap;
 import org.integratedmodelling.utils.image.ImageUtil;
 
 /**
  * 
- * This whole thing must be straightened out. But for now, this is a dataset implementation backed by
- * a netCDF file.
+ * This whole thing must be eliminated and substituted with the proper 
+ * context/dataset/visualization logics. Remains here to avoid breaking
+ * the ARIES GUI until it's straightened out.
  * 
  * @author Ferdinando
- *
+ * @deprecated 
  */
-public class FileBasedDataset implements IDataset {
+public class FileBasedDataset  {
 
 	private IObservationContext context;
 	private GridExtent          space;
@@ -58,7 +53,7 @@ public class FileBasedDataset implements IDataset {
 		this.space = (GridExtent)spc; 
 	}
 	
-	@Override
+//	@Override
 	public ColorMap chooseColormap(IConcept observable, int nlevels, boolean isCategorical) throws ThinklabException {
 		
 		IState state = getState(observable);
@@ -90,64 +85,64 @@ public class FileBasedDataset implements IDataset {
 		return ret;
 	}
 	
-	@Override
+//	@Override
 	public void dump(IConcept concept) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+//	@Override
 	public void dumpAll() {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+//	@Override
 	public Collection<IConcept> getObservables() {
 		return this.context.getStateObservables();
 	}
 
-	@Override
+//	@Override
 	public IState getState(IConcept observable) {
 		return context.getState(observable);
 	}
 
-	@Override
+//	@Override
 	public int getStateCount() {
 		return context.getStates().size();
 	}
 
-	@Override
+//	@Override
 	public Collection<IConcept> getStatefulObservables() {
 		return getObservables();
 	}
 
-	@Override
+//	@Override
 	public boolean isSpatial() {
 		return space != null;
 	}
 
-	@Override
+//	@Override
 	public boolean isTemporal() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
+//	@Override
 	public String makeContourPlot(IConcept observable, String fileOrNull,
 			int x, int y, int... flags) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+//	@Override
 	public String makeHistogramPlot(IConcept observable, String fileOrNull,
 			int x, int y, int... flags) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+//	@Override
 	public String makeSurfacePlot(IConcept observable, 
 			String fileOrNull,
 			int x, int y, 
@@ -183,14 +178,14 @@ public class FileBasedDataset implements IDataset {
 		return fileOrNull;
 	}
 	
-	@Override
+//	@Override
 	public String makeTimeSeriesPlot(IConcept observable, String fileOrNull,
 			int x, int y, int... flags) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+//	@Override
 	public String makeUncertaintyMask(IConcept observable, String fileOrNull,
 			int x, int y, int... flags) throws ThinklabException {
 		
@@ -246,19 +241,19 @@ public class FileBasedDataset implements IDataset {
 		return space;
 	}
 
-	@Override
+//	@Override
 	public void initialize(IObservation observation) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+//	@Override
 	public void initialize(URL resource) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+//	@Override
 	public void persist(File resource) throws ThinklabException {
 		// TODO Auto-generated method stub
 		

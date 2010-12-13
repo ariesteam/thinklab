@@ -1,8 +1,5 @@
 package org.integratedmodelling.modelling.data;
 
-import org.integratedmodelling.modelling.interfaces.IDataset;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 /**
  * A factory that will return a IDataset built from several possible sources.
@@ -11,27 +8,27 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
  */
 public class DatasetFactory {
 
-	/**
-	 * Return a IDataset built from a contextualized observation. 
-	 * 
-	 * @param observation
-	 * @return a new IDataset for the observation
-	 * @throws ThinklabException if the instance is not an observation or
-	 * 	the observation is not contextualized.
-	 */
-	public static IDataset getDataset(IInstance observation) throws ThinklabException {
-		return null;
-	}
-	
-	/**
-	 * This may use SPI or something
-	 * 
-	 * @param urlOrFile
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public static IDataset getDataset(String urlOrFile) throws ThinklabException {
-		return null;
-	}
+//	/**
+//	 * Return a IDataset built from a contextualized observation. 
+//	 * 
+//	 * @param observation
+//	 * @return a new IDataset for the observation
+//	 * @throws ThinklabException if the instance is not an observation or
+//	 * 	the observation is not contextualized.
+//	 */
+//	public static IDataset getDataset(IInstance observation) throws ThinklabException {
+//		return null;
+//	}
+//	
+//	/**
+//	 * This may use SPI or something
+//	 * 
+//	 * @param urlOrFile
+//	 * @return
+//	 * @throws ThinklabException
+//	 */
+//	public static IDataset getDataset(String urlOrFile) throws ThinklabException {
+//		return null;
+//	}
 	
 }
