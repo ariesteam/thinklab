@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.visualization;
 import java.io.File;
 import java.util.Properties;
 
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.modelling.ModellingPlugin;
@@ -46,6 +47,10 @@ public class FileVisualization implements IVisualization {
 	
 	@Override
 	public void initialize(IObservationContext context) throws ThinklabException {
+		
+		// TODO remove when not needed anymore.
+		((ObservationContext)context).collectStates();
+		
 		this.context = context;
 		if (this.archive == null) {
 			this.archive = new FileArchive(context);
