@@ -1124,6 +1124,26 @@ public class ObservationContext implements IObservationContext, IContext {
 		return null;
 	}
 
+	/*
+	 * FIXME temporary to address (potential) problem with state retrieval while I
+	 * figure it out. Clojure counterpart is corescience/collect-states.
+	 */
+	public void collectStates() {
+		collectStatesInternal(states);
+	}
+	
+	public void collectStatesInternal(HashMap<IConcept, IState> s) {
+		
+		s.putAll(this.states);
+		
+		for (ObservationContext cc : contingents) {
+			cc.collectStatesInternal(s);
+		}
+		for (ObservationContext cc : dependents) {
+			cc.collectStatesInternal(s);
+		}
+	}
+	
 	@Override
 	public IObservationContext getObservationContext(IObservation observation)
 			throws ThinklabException {

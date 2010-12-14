@@ -169,6 +169,10 @@
 	[observation concept]
 	false)
 
+(defn collect-states
+  [context]
+  (.collectStates context))
+
 (defn get-state-map
 	[observation] 
 	(if (nil? observation)
