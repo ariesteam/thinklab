@@ -726,7 +726,7 @@ public class ObservationContext implements IObservationContext, IContext {
 				 * need to. We should precompute the switch layer and pass it to the
 				 * compiler along with the contingency order, so the inappropriate states 
 				 * can be skipped. This may need to be more intelligent as some obs 
-				 * may need their neighbourhood anyway, or such.
+				 * may need their neighborhood anyway, or such.
 				 */
 				ObservationContext co = new ObservationContext(cont, originalContext);
 				Contextualizer ctx = new Compiler().compile(co);

@@ -8,13 +8,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.currency.CurrencyPlugin;
+import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
+import org.integratedmodelling.modelling.Context;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -47,6 +50,7 @@ public class VisualizationFactory {
 	static public final String PLOT_SURFACE_2D      = "plot_surface_2d.png";
 	static public final String PLOT_CONTOUR_2D      = "plot_contour_2d.png";
 	static public final String PLOT_GEOSURFACE_2D   = "plot_geosurface_2d.png";
+	static public final String PLOT_UNCERTAINTYSURFACE_2D = "plot_uncertainty_2d.png";
 	static public final String PLOT_GEOCONTOUR_2D   = "plot_geocontour_2d.png";
 	static public final String PLOT_TIMESERIES_LINE = "plot_timeseries_line.png";
 	static public final String PLOT_TIMELAPSE_VIDEO = "plot_timelapse_video.mpg";
@@ -398,9 +402,11 @@ public class VisualizationFactory {
 			
 		} else if (plotType.equals(PLOT_CONTOUR_2D)) {
 			
-		} else if (plotType.equals(PLOT_GEOCONTOUR_2D)) {
+		} else if (plotType.equals(PLOT_GEOSURFACE_2D)) {
 			
 		} else if (plotType.equals(PLOT_GEOCONTOUR_2D)) {
+			
+		} else if (plotType.equals(PLOT_UNCERTAINTYSURFACE_2D)) {
 			
 		} else if (plotType.equals(PLOT_TIMESERIES_LINE)) {
 			
@@ -427,7 +433,29 @@ public class VisualizationFactory {
 		
 		ArrayList<String> ret = new ArrayList<String>();
 	
+		IExtent space = Context.getSpace(context);
+		IExtent time  = Context.getTime(context);
 		
+		Boolean isContinuous   = (Boolean)state.getMetadata().get(Metadata.CONTINUOUS);
+		boolean hasUncertainty = state.getMetadata().get(Metadata.UNCERTAINTY) != null;
+
+		if (space != null && time == null) {
+			ret.add(PLOT_SURFACE_2D);
+			ret.add(PLOT_GEOSURFACE_2D);
+			
+			if (isContinuous) {
+				ret.add(PLOT_CONTOUR_2D);
+				ret.add(PLOT_GEOCONTOUR_2D);
+			}
+			
+			if (hasUncertainty)
+				ret.add(PLOT_UNCERTAINTYSURFACE_2D);
+			
+		} else if (time != null && space == null && time.getValueCount() > 1) {
+			ret.add(PLOT_TIMESERIES_LINE);
+		} else if (time != null && space != null) {
+			ret.add(PLOT_TIMELAPSE_VIDEO);
+		}
 		
 		return ret;
 	}
@@ -443,7 +471,21 @@ public class VisualizationFactory {
 	 */
 	public Pair<Integer,Integer> getPlotSize(int maxEdgeLength, IState state,
 			IObservationContext context) {
-		int x = 0, y = 0;
+		
+		int x = maxEdgeLength, y = maxEdgeLength;
+		
+		IExtent extent = Context.getSpace(context);
+		if (extent instanceof ArealExtent) {
+			double dx = ((ArealExtent) extent).getEWExtent();
+			double dy = ((ArealExtent) extent).getNSExtent();
+			
+			if (dx > dy) {
+				y = (int)((double)x * (dy/dx));
+			} else if (dy > dx) {
+				x = (int)((double)y * (dy/dx));					
+			}
+		}
+		
 		return new Pair<Integer,Integer>(x, y);
 	}
 
@@ -459,7 +501,23 @@ public class VisualizationFactory {
 	 */
 	public Pair<Integer, Integer> getPlotSize(int maxWidth, int maxHeight,
 			IState state, IObservationContext context) {
-		int x = 0, y = 0;
+		
+		int x = maxWidth, y = maxHeight;
+
+		IExtent extent = Context.getSpace(context);
+		if (extent instanceof ArealExtent) {
+			double dx = ((ArealExtent) extent).getEWExtent();
+			double dy = ((ArealExtent) extent).getNSExtent();
+			
+			if (dy > dx) {
+				y = maxHeight;
+				x = (int)((double)y * (dy/dx));					
+			} else {
+				x = maxWidth;
+				y = (int)((double)x * (dy/dx));
+			} 
+		}
+
 		return new Pair<Integer,Integer>(x, y);
 	}
 }

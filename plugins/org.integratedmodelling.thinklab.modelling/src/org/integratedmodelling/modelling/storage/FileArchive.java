@@ -90,7 +90,8 @@ public class FileArchive implements IDataset {
 		
 		if (location == null) {
 			location = 
-				context.getObservation().getObservableClass().toString().replaceAll(":",".") +
+				context.getObservation().getObservableClass().
+					toString().replaceAll(":",".").toLowerCase() +
 				"." + 
 				MiscUtilities.getDateSuffix();
 		}
@@ -181,7 +182,7 @@ public class FileArchive implements IDataset {
 				File.separator + 
 				getLocation() + 
 				File.separator +
-				c.toString().replaceAll(":","."));
+				c.toString().replaceAll(":",".").toLowerCase());
 		
 		ret.mkdirs();
 		
