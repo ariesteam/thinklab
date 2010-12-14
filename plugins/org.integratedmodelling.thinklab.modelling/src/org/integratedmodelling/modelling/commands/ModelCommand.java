@@ -24,8 +24,12 @@ import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.Scenario;
+import org.integratedmodelling.modelling.interfaces.IDataset;
+import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.literals.ContextValue;
+import org.integratedmodelling.modelling.storage.FileArchive;
 import org.integratedmodelling.modelling.storage.NetCDFArchive;
+import org.integratedmodelling.modelling.visualization.FileVisualization;
 import org.integratedmodelling.modelling.visualization.ObservationListing;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -56,11 +60,11 @@ import org.integratedmodelling.utils.Polylist;
 		optionalArgumentDefaultValues="_NONE_,_NONE_",
 		optionalArgumentDescriptions="spatial or temporal context,spatial or temporal context",
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text",
-		optionArgumentLabels="all kboxes,,,none,256, , ",
-		optionLongNames="kbox,visualize,dump,outfile,resolution,clear,scenario",
-		optionNames="k,v,d,o,r,c,s",
-		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing,thinklab-core:Text",
-		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing,scenario to apply before computing",
+		optionArgumentLabels="all kboxes,,,none,256, , , ",
+		optionLongNames="kbox,visualize,dump,outfile,resolution,clear,scenario,write",
+		optionNames="k,v,d,o,r,c,s,w",
+		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing,thinklab-core:Text,owl:Nothing",
+		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing,scenario to apply before computing,store results to standard workspace",
 		returnType="observation:Observation")
 public class ModelCommand implements ICommandHandler {
 
@@ -156,6 +160,7 @@ public class ModelCommand implements ICommandHandler {
 
 		ArrayList<IContextualizationListener> listeners = 
 			new ArrayList<IContextualizationListener>();
+		
 		if (command.hasOption("visualize") || command.hasOption("outfile")) {
 			listeners.add(new Listener());
 		}
@@ -193,6 +198,16 @@ public class ModelCommand implements ICommandHandler {
 			IValue res = r.getResult(0, session);
 			IObservationContext result = ((ContextValue)res).getObservationContext();
 
+			if (command.hasOption("write")) {
+				IDataset archive = new FileArchive(result);
+				archive.persist();
+			}
+			
+			if (command.hasOption("visualize")) {
+				IVisualization visualization = new FileVisualization(result);
+				visualization.visualize();
+			}
+			
 			// check if a listener has set ctx, which means we're visualizing
 			if (this.ctx != null) {
 				
@@ -216,9 +231,9 @@ public class ModelCommand implements ICommandHandler {
 							"result of " + concept + " model written to "
 										+ outfile);
 
-				if (command.hasOption("visualize")) {
-					IDV.visualize(outfile);
-				}
+//				if (command.hasOption("visualize")) {
+//					IDV.visualize(outfile);
+//				}
 			}
 			
 			if (command.hasOption("dump")) {

@@ -3,18 +3,23 @@ package org.integratedmodelling.modelling.visualization;
 import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.currency.CurrencyPlugin;
+import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.Pair;
@@ -35,6 +40,16 @@ public class VisualizationFactory {
 
 	static public final String COLORMAP_PROPERTY_PREFIX = "thinklab.colormap";
 	static public final String GNUPLOT_PATH_PROPERTY = "thinklab.modelling.gnuplot";
+	
+	/**
+	 * possible plot types. They also are valid file names for a plot of their type.
+	 */
+	static public final String PLOT_SURFACE_2D      = "plot_surface_2d.png";
+	static public final String PLOT_CONTOUR_2D      = "plot_contour_2d.png";
+	static public final String PLOT_GEOSURFACE_2D   = "plot_geosurface_2d.png";
+	static public final String PLOT_GEOCONTOUR_2D   = "plot_geocontour_2d.png";
+	static public final String PLOT_TIMESERIES_LINE = "plot_timeseries_line.png";
+	static public final String PLOT_TIMELAPSE_VIDEO = "plot_timelapse_video.mpg";
 	
 	static VisualizationFactory _this = new VisualizationFactory();
 	ColormapChooser colormapChooser = new ColormapChooser(COLORMAP_PROPERTY_PREFIX);
@@ -156,7 +171,7 @@ public class VisualizationFactory {
 	public String makeSurfacePlot(IConcept observable, IState state, 
 			String fileOrNull,
 			int x, int y, 
-			RasterGrid space) throws ThinklabException {
+			GridExtent space) throws ThinklabException {
 
 		if (fileOrNull == null) {
 			try {
@@ -170,7 +185,7 @@ public class VisualizationFactory {
 		int nlevels = (Integer)state.getMetadata().get(Metadata.IMAGE_LEVELS);
 		Boolean zeroIsNodata = (Boolean)state.getMetadata().get(Metadata.ZERO_IS_NODATA);
 		
-		IGridMask mask = space.getMask();
+		IGridMask mask = space.getActivationLayer();
 		if (mask != null) {
 			for (int i = 0; i < idata.length; i++) {			
 				int[] xy = space.getXYCoordinates(i);
@@ -183,8 +198,8 @@ public class VisualizationFactory {
 			getColormap(observable, nlevels, zeroIsNodata, 
 				getDefaultColormap(observable, state, nlevels));
 
-		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
-				space.getColumns(), x, y, cmap, fileOrNull);
+		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getXCells()), 
+				space.getXCells(), x, y, cmap, fileOrNull);
 
 		state.getMetadata().put(Metadata.COLORMAP, cmap);
 		
@@ -192,7 +207,7 @@ public class VisualizationFactory {
 	}
 	
 	public String makeUncertaintyMask(IConcept observable,  IState state,  String fileOrNull,
-			int x, int y, RasterGrid space) throws ThinklabException {
+			int x, int y, GridExtent space) throws ThinklabException {
 		
 		double[] data = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
 		double[] odat = state.getDataAsDoubles();
@@ -233,8 +248,8 @@ public class VisualizationFactory {
 			// nothing to show
 			return null;
 
-		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getColumns()), 
-				space.getColumns(), x, y, ColorMap.alphamask(256), fileOrNull);
+		ImageUtil.createImageFile(ImageUtil.upsideDown(idata, space.getXCells()), 
+				space.getXCells(), x, y, ColorMap.alphamask(256), fileOrNull);
 
 		return fileOrNull;
 	}
@@ -371,5 +386,80 @@ public class VisualizationFactory {
 		
 		return ret.equals("") ? null : ret;
 		
+	}
+	
+	public void plot(
+			IState state, IObservationContext context, String plotType, 
+			int x, int y, // these are hints and we may need to pass a viewport
+			File fileOrNull)
+		throws ThinklabException {
+		
+		if (plotType.equals(PLOT_SURFACE_2D)) {
+			
+		} else if (plotType.equals(PLOT_CONTOUR_2D)) {
+			
+		} else if (plotType.equals(PLOT_GEOCONTOUR_2D)) {
+			
+		} else if (plotType.equals(PLOT_GEOCONTOUR_2D)) {
+			
+		} else if (plotType.equals(PLOT_TIMESERIES_LINE)) {
+			
+		} else if (plotType.equals(PLOT_TIMELAPSE_VIDEO)) {
+			
+		} else {
+			throw new ThinklabInappropriateOperationException(
+					"cannot produce a plot of type " +
+					plotType + 
+					" for " + 
+					state.getObservableClass());
+		}
+		
+	}
+
+	/**
+	 * Return strings to match all possible types of plot for the passed
+	 * state and context.
+	 * @param state
+	 * @param context
+	 * @return
+	 */
+	public Collection<String> getPlotTypes(IState state, IObservationContext context) {
+		
+		ArrayList<String> ret = new ArrayList<String>();
+	
+		
+		
+		return ret;
+	}
+
+	/**
+	 * Define the plot size for the given state, context and plot type, ensuring that
+	 * the longest edge of the plot is the given pixel size.
+	 * 
+	 * @param maxEdgeLength
+	 * @param state
+	 * @param context
+	 * @return
+	 */
+	public Pair<Integer,Integer> getPlotSize(int maxEdgeLength, IState state,
+			IObservationContext context) {
+		int x = 0, y = 0;
+		return new Pair<Integer,Integer>(x, y);
+	}
+
+	/**
+	 * Define the plot size for the given state, context and plot type, ensuring
+	 * that the resulting plot fits maximally within the given viewport.
+	 * 
+	 * @param maxWidth
+	 * @param maxHeight
+	 * @param state
+	 * @param context
+	 * @return
+	 */
+	public Pair<Integer, Integer> getPlotSize(int maxWidth, int maxHeight,
+			IState state, IObservationContext context) {
+		int x = 0, y = 0;
+		return new Pair<Integer,Integer>(x, y);
 	}
 }

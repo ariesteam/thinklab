@@ -74,11 +74,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -130,6 +133,19 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
  */
 public class MiscUtilities{    
 	
+	
+	/**
+	 * Return a suffix representing the current date (to the second) suitable to
+	 * being used to append to a filename to make it date-specific.
+	 * 
+	 * @return
+	 */
+	public static String getDateSuffix() {
+
+		Date today = Calendar.getInstance().getTime();
+	    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
+	    return formatter.format(today);
+	}
 
 	private static Collection<Class<?>> findSubclasses(ArrayList<Class<?>> ret, Class<?> mainClass, String pckgname, ClassLoader cloader) {
 

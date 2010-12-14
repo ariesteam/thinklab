@@ -32,16 +32,17 @@ public interface IDataset {
 		throws ThinklabException;
 
 	/**
-	 * Ensure we can get GC's without losing data.
+	 * Ensure we can get GC's without losing data. We should know where. Return a 
+	 * location we can be restored from.
 	 * 
 	 * @throws ThinklabException
 	 */
-	public abstract void persist() throws ThinklabException;
+	public abstract String persist() throws ThinklabException;
 	
 	/**
 	 * Read the dataset from assigned storage.
 	 * @throws ThinklabException
 	 */
-	public abstract void restore() throws ThinklabException;
+	public abstract void restore(String location) throws ThinklabException;
 	
 }
