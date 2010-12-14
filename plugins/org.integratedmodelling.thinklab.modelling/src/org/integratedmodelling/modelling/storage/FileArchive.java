@@ -33,7 +33,12 @@ public class FileArchive implements IDataset {
 	private String location = null;
 	
 	public FileArchive() throws ThinklabException {
-		this.directory = new File(System.getenv("THINKLAB_ARCHIVE_DIR"));
+		
+		String fenv = System.getenv("THINKLAB_ARCHIVE_DIR");
+		if (fenv != null) {
+			this.directory = new File(fenv);			
+		}
+		
 		if (this.directory == null) {
 			this.directory = 
 				new File(

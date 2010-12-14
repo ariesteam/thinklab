@@ -10,11 +10,13 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.owlapi.Session;
+import org.integratedmodelling.time.TimePlugin;
 
 public class Context implements IContext {
 	
@@ -105,8 +107,7 @@ public class Context implements IContext {
 	 * @return
 	 */
 	public static IExtent getSpace(IObservationContext context) {
-		// TODO Auto-generated method stub
-		return null;
+		return context.getExtent(Geospace.get().SubdividedSpaceObservable());
 	}
 
 	/**
@@ -115,8 +116,7 @@ public class Context implements IContext {
 	 * @return
 	 */
 	public static IExtent getTime(IObservationContext context) {
-		// TODO Auto-generated method stub
-		return null;
+		return context.getExtent(TimePlugin.get().TimeObservable());
 	}
 
 	/**
