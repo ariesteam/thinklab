@@ -93,6 +93,9 @@
   <owl:Class rdf:ID="Path">
     <rdfs:subClassOf rdf:resource="#TransportationMedium"/>
   </owl:Class>
+  <owl:Class rdf:ID="Port">
+    <rdfs:subClassOf rdf:resource="#TransportationHub"/>
+  </owl:Class>
   <owl:Class rdf:ID="Dam">
     <rdfs:subClassOf rdf:resource="#EnvironmentalInfrastructure"/>
   </owl:Class>

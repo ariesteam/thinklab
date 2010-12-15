@@ -10,27 +10,27 @@
   xml:base="http://www.integratedmodelling.org/geospace/geofeatures.owl">
   <owl:Ontology rdf:about=""/>
   <owl:Class rdf:ID="BiogeographicalRegion">
-    <rdfs:label>BiogeographicalRegion</rdfs:label>
+    <owl:versionInfo>Created by Ferdinando Villa on Tue Aug 07 10:13:23 EDT 2007</owl:versionInfo>
     <rdfs:subClassOf>
       <owl:Class rdf:ID="FunctionalGeographicalDivision"/>
     </rdfs:subClassOf>
-    <owl:versionInfo>Created by Ferdinando Villa on Tue Aug 07 10:13:23 EDT 2007</owl:versionInfo>
+    <rdfs:label>BiogeographicalRegion</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="GeographicalJurisdiction">
-    <rdfs:label>HydrologicGeographicalDivision</rdfs:label>
+    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 17:03:33 EDT 2007</owl:versionInfo>
+    <rdfs:comment xml:lang="en">A geographical division that does not have its own governance but is subject to the governance of an AdministrativeGeographicalDivision.</rdfs:comment>
     <rdfs:subClassOf>
       <owl:Class rdf:ID="GeographicalDivision"/>
     </rdfs:subClassOf>
-    <rdfs:comment xml:lang="en">A geographical division that does not have its own governance but is subject to the governance of an AdministrativeGeographicalDivision.</rdfs:comment>
-    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 17:03:33 EDT 2007</owl:versionInfo>
+    <rdfs:label>HydrologicGeographicalDivision</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="AdministrativeRegion">
-    <rdfs:label>AdministrativeRegion</rdfs:label>
+    <rdfs:comment xml:lang="en">The largest-scale subdivision of a country. Abstract.</rdfs:comment>
+    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 16:52:11 EDT 2007</owl:versionInfo>
     <rdfs:subClassOf>
       <owl:Class rdf:ID="AdministrativeGeographicalDivision"/>
     </rdfs:subClassOf>
-    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 16:52:11 EDT 2007</owl:versionInfo>
-    <rdfs:comment xml:lang="en">The largest-scale subdivision of a country. Abstract.</rdfs:comment>
+    <rdfs:label>AdministrativeRegion</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="Lake">
     <rdfs:subClassOf>
@@ -53,28 +53,28 @@
     </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:about="#GeographicalDivision">
-    <rdfs:label>GeographicalDivision</rdfs:label>
     <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 17:03:15 EDT 2007</owl:versionInfo>
+    <rdfs:label>GeographicalDivision</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="Watershed">
-    <rdfs:label>Watershed</rdfs:label>
+    <owl:versionInfo>Created by Ferdinando Villa on Tue Aug 07 10:13:04 EDT 2007</owl:versionInfo>
     <rdfs:subClassOf>
       <owl:Class rdf:about="#FunctionalGeographicalDivision"/>
     </rdfs:subClassOf>
-    <owl:versionInfo>Created by Ferdinando Villa on Tue Aug 07 10:13:04 EDT 2007</owl:versionInfo>
+    <rdfs:label>Watershed</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="Country">
-    <rdfs:label>Country</rdfs:label>
+    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 16:56:23 EDT 2007</owl:versionInfo>
     <rdfs:subClassOf>
       <owl:Class rdf:about="#AdministrativeGeographicalDivision"/>
     </rdfs:subClassOf>
-    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 16:56:23 EDT 2007</owl:versionInfo>
+    <rdfs:label>Country</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="BoundedGeographicalDivision">
-    <rdfs:label>BoundedGeographicalDivision</rdfs:label>
-    <rdfs:subClassOf rdf:resource="#GeographicalDivision"/>
-    <owl:versionInfo>Created by Ferdinando Villa on Tue Aug 07 10:08:55 EDT 2007</owl:versionInfo>
     <rdfs:comment xml:lang="en">A geographical region defined by its physical  boundaries. This class does not imply uniform administration</rdfs:comment>
+    <owl:versionInfo>Created by Ferdinando Villa on Tue Aug 07 10:08:55 EDT 2007</owl:versionInfo>
+    <rdfs:subClassOf rdf:resource="#GeographicalDivision"/>
+    <rdfs:label>BoundedGeographicalDivision</rdfs:label>
   </owl:Class>
   <owl:Class rdf:about="#ManMadeFeature">
     <rdfs:subClassOf>
@@ -84,108 +84,111 @@
   <owl:Class rdf:ID="Mountain">
     <rdfs:subClassOf rdf:resource="#NaturalFeature"/>
   </owl:Class>
+  <owl:Class rdf:ID="Dune">
+    <rdfs:subClassOf rdf:resource="#NaturalFeature"/>
+  </owl:Class>
   <owl:Class rdf:about="#AdministrativeGeographicalDivision">
-    <rdfs:label>GeographicalDivision</rdfs:label>
-    <rdfs:subClassOf rdf:resource="#GeographicalDivision"/>
-    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 16:52:01 EDT 2007</owl:versionInfo>
     <rdfs:comment xml:lang="en">A geographical division that can be identified by a FIPS code and is subject to some form of autonomous governance.  Divisions can have a containment relationship.</rdfs:comment>
+    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 16:52:01 EDT 2007</owl:versionInfo>
+    <rdfs:subClassOf rdf:resource="#GeographicalDivision"/>
+    <rdfs:label>GeographicalDivision</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="FederatedState">
-    <rdfs:label>FederatedState</rdfs:label>
-    <rdfs:subClassOf rdf:resource="#AdministrativeRegion"/>
-    <rdfs:comment xml:lang="en">A state in a federal country, e.g. US state or Canadian province.</rdfs:comment>
     <owl:versionInfo>Created by Ferdinando Villa on Tue Aug 07 10:06:47 EDT 2007</owl:versionInfo>
+    <rdfs:comment xml:lang="en">A state in a federal country, e.g. US state or Canadian province.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#AdministrativeRegion"/>
+    <rdfs:label>FederatedState</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="Floodplain">
     <rdfs:subClassOf rdf:resource="#NaturalFeature"/>
   </owl:Class>
   <owl:Class rdf:ID="Biome">
-    <rdfs:label>Biome</rdfs:label>
+    <owl:versionInfo>Created by Ferdinando Villa on Tue Aug 07 10:13:10 EDT 2007</owl:versionInfo>
     <rdfs:subClassOf>
       <owl:Class rdf:about="#FunctionalGeographicalDivision"/>
     </rdfs:subClassOf>
-    <owl:versionInfo>Created by Ferdinando Villa on Tue Aug 07 10:13:10 EDT 2007</owl:versionInfo>
+    <rdfs:label>Biome</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="Ocean">
     <rdfs:subClassOf rdf:resource="#NaturalFeature"/>
   </owl:Class>
   <owl:Class rdf:ID="MetropolitanArea">
-    <rdfs:label>MetropolitanArea</rdfs:label>
-    <rdfs:subClassOf rdf:resource="#AdministrativeGeographicalDivision"/>
     <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 16:56:32 EDT 2007</owl:versionInfo>
+    <rdfs:subClassOf rdf:resource="#AdministrativeGeographicalDivision"/>
+    <rdfs:label>MetropolitanArea</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="NonFederatedRegion">
-    <rdfs:label>SemiAutonomousRegion</rdfs:label>
-    <rdfs:subClassOf rdf:resource="#AdministrativeRegion"/>
-    <owl:versionInfo>Created by Ferdinando Villa on Tue Aug 07 10:07:24 EDT 2007</owl:versionInfo>
     <rdfs:comment xml:lang="en">A region of a non-federal country, e.g.most European countries</rdfs:comment>
+    <owl:versionInfo>Created by Ferdinando Villa on Tue Aug 07 10:07:24 EDT 2007</owl:versionInfo>
+    <rdfs:subClassOf rdf:resource="#AdministrativeRegion"/>
+    <rdfs:label>SemiAutonomousRegion</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="River">
     <rdfs:subClassOf rdf:resource="#NaturalFeature"/>
   </owl:Class>
   <owl:Class rdf:ID="AdministrativeScale">
-    <rdfs:label>AdministrativeScale</rdfs:label>
     <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 17:00:34 EDT 2007</owl:versionInfo>
+    <rdfs:label>AdministrativeScale</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="Wetland">
     <rdfs:subClassOf rdf:resource="#NaturalFeature"/>
   </owl:Class>
   <owl:Class rdf:about="#FunctionalGeographicalDivision">
-    <rdfs:label>FunctionalGeographicalDivision</rdfs:label>
-    <rdfs:subClassOf rdf:resource="#GeographicalDivision"/>
-    <rdfs:comment xml:lang="en">A geographical division defined on the basis of uniform functional properties, e.g related to hydrology or to presence of particular ecosystems.</rdfs:comment>
     <owl:versionInfo>Created by Ferdinando Villa on Tue Aug 07 10:12:10 EDT 2007</owl:versionInfo>
+    <rdfs:comment xml:lang="en">A geographical division defined on the basis of uniform functional properties, e.g related to hydrology or to presence of particular ecosystems.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#GeographicalDivision"/>
+    <rdfs:label>FunctionalGeographicalDivision</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="Continent">
-    <rdfs:label>Continent</rdfs:label>
-    <rdfs:subClassOf rdf:resource="#BoundedGeographicalDivision"/>
     <owl:versionInfo>Created by Ferdinando Villa on Tue Aug 07 10:09:25 EDT 2007</owl:versionInfo>
+    <rdfs:subClassOf rdf:resource="#BoundedGeographicalDivision"/>
+    <rdfs:label>Continent</rdfs:label>
   </owl:Class>
   <owl:Class rdf:about="#GeographicalFeature">
-    <rdfs:subClassOf rdf:resource="#GeographicalDivision"/>
     <rdfs:comment>Very partial structure, fill in as needed</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#GeographicalDivision"/>
   </owl:Class>
   <owl:Class rdf:ID="Clearcut">
     <rdfs:subClassOf rdf:resource="#ManMadeFeature"/>
   </owl:Class>
   <owl:ObjectProperty rdf:ID="nextHigherAdministrativeLevel">
-    <rdfs:label>nextHigherAdministrativeLevel</rdfs:label>
-    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 17:00:56 EDT 2007</owl:versionInfo>
-    <rdfs:range rdf:resource="#AdministrativeScale"/>
     <rdfs:domain rdf:resource="#AdministrativeScale"/>
+    <rdfs:range rdf:resource="#AdministrativeScale"/>
+    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 17:00:56 EDT 2007</owl:versionInfo>
+    <rdfs:label>nextHigherAdministrativeLevel</rdfs:label>
   </owl:ObjectProperty>
   <owl:ObjectProperty rdf:ID="hasAdministrativeDistrict">
-    <rdfs:label>hasAdministrativeDistrict</rdfs:label>
-    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 17:04:06 EDT 2007</owl:versionInfo>
-    <rdfs:range rdf:resource="#AdministrativeGeographicalDivision"/>
     <rdfs:domain rdf:resource="#GeographicalJurisdiction"/>
+    <rdfs:range rdf:resource="#AdministrativeGeographicalDivision"/>
+    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 17:04:06 EDT 2007</owl:versionInfo>
+    <rdfs:label>hasAdministrativeDistrict</rdfs:label>
   </owl:ObjectProperty>
   <owl:ObjectProperty rdf:ID="nextHigherContainingDivision">
-    <rdfs:label>nextHigherContainingDivision</rdfs:label>
-    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 16:53:10 EDT 2007</owl:versionInfo>
-    <rdfs:range rdf:resource="#AdministrativeGeographicalDivision"/>
     <rdfs:domain rdf:resource="#AdministrativeRegion"/>
+    <rdfs:range rdf:resource="#AdministrativeGeographicalDivision"/>
+    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 16:53:10 EDT 2007</owl:versionInfo>
+    <rdfs:label>nextHigherContainingDivision</rdfs:label>
   </owl:ObjectProperty>
-  <owl:ObjectProperty rdf:ID="hasAdministrativeScale">
-    <rdfs:label>hasAdministrativeScale</rdfs:label>
-    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 17:02:12 EDT 2007</owl:versionInfo>
-    <rdfs:domain rdf:resource="#AdministrativeGeographicalDivision"/>
-    <rdfs:range rdf:resource="#AdministrativeScale"/>
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
-  </owl:ObjectProperty>
-  <owl:DatatypeProperty rdf:ID="hasFIPSCode">
-    <rdfs:label>hasFIPSCode</rdfs:label>
-    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 16:57:35 EDT 2007</owl:versionInfo>
-    <rdfs:domain rdf:resource="#AdministrativeGeographicalDivision"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
-  </owl:DatatypeProperty>
   <owl:DatatypeProperty rdf:ID="hasLocalName">
-    <rdfs:label>hasLocalName</rdfs:label>
-    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 16:58:08 EDT 2007</owl:versionInfo>
-    <rdfs:domain rdf:resource="#AdministrativeGeographicalDivision"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#AdministrativeGeographicalDivision"/>
+    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 16:58:08 EDT 2007</owl:versionInfo>
+    <rdfs:label>hasLocalName</rdfs:label>
   </owl:DatatypeProperty>
+  <owl:FunctionalProperty rdf:ID="hasFIPSCode">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#AdministrativeGeographicalDivision"/>
+    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 16:57:35 EDT 2007</owl:versionInfo>
+    <rdfs:label>hasFIPSCode</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="hasAdministrativeScale">
+    <rdfs:range rdf:resource="#AdministrativeScale"/>
+    <rdfs:domain rdf:resource="#AdministrativeGeographicalDivision"/>
+    <owl:versionInfo>Created by Ferdinando Villa on Mon Aug 06 17:02:12 EDT 2007</owl:versionInfo>
+    <rdfs:label>hasAdministrativeScale</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
 </rdf:RDF>
 
 <!-- Created with TopBraid -->
