@@ -103,6 +103,15 @@ public class ImageUtil {
 		return toBufferedImage(tk.createImage(source), imgw, imgh);
 	}
 	
+	public static Image drawUnscaledRaster(int[] pixels, int rowWidth, ColorMap cmap) {
+		
+		MemoryImageSource source = new MemoryImageSource(rowWidth,
+				pixels.length / rowWidth, cmap.getColorModel(), pixels, 0,
+				rowWidth);
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		return tk.createImage(source);
+	}
+	
 
 	public static BufferedImage createImage(BufferedImage image, 
 			int[] pixels, int rowWidth,

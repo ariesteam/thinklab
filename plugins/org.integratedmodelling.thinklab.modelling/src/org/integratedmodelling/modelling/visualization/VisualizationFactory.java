@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling.visualization;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -17,6 +18,7 @@ import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
+import org.integratedmodelling.geospace.visualization.GeoImageFactory;
 import org.integratedmodelling.modelling.Context;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
@@ -131,10 +133,51 @@ public class VisualizationFactory {
 		return ret.toString();
 	}
 	
+//	public String makeContourPlot(IConcept observable, IState state, 
+//			String fileOrNull,
+//			int x, int y, 
+//			GridExtent space) throws ThinklabException {
+//
+//		if (fileOrNull == null) {
+//			try {
+//				fileOrNull = File.createTempFile("img", ".png").toString();
+//			} catch (IOException e) {
+//				throw new ThinklabIOException(e);
+//			}
+//		}
+//		
+//		double[] data = state.getDataAsDoubles();
+//		
+//		int cols = space.getXCells();
+//		int rows = space.getYCells();
+//
+//		double[][] plotdata = new double[cols][rows];
+//		IGridMask mask = space.getActivationLayer();
+//		
+//		if (data != null) {
+//			
+//			for (int row = 0; row < rows; row++) {
+//				for (int col = 0; col < cols; col++) {
+//					double d = data[space.getIndex(col, row)];
+//					boolean active = mask == null || mask.isActive(space.getIndex(col, row));
+//					plotdata[col][rows-row-1] = (!active || Double.isNaN(d)) ? 0.0 : d;
+//				}
+//			}
+//		}
+//
+//		ContourPlot plot = 
+//			ContourPlot.createPlot(x, y, 
+//				ImageProc.gaussianSmooth0(plotdata,1.8));
+//		
+//		plot.save(fileOrNull);
+//		
+//		return fileOrNull;
+//	}
+	
 	public String makeContourPlot(IConcept observable, IState state, 
 			String fileOrNull,
 			int x, int y, 
-			RasterGrid space) throws ThinklabException {
+			GridExtent space) throws ThinklabException {
 
 		if (fileOrNull == null) {
 			try {
@@ -144,34 +187,43 @@ public class VisualizationFactory {
 			}
 		}
 		
+		((ContourPlot)makeContourImage(observable, state, x, y, space)).
+			save(fileOrNull);
+		
+		return fileOrNull;
+	}
+
+
+	public BufferedImage makeContourImage(IConcept observable, IState state, 
+			int x, int y, 
+			GridExtent space) throws ThinklabException {
+
+		
 		double[] data = state.getDataAsDoubles();
 		
-		int cols = space.getColumns();
-		int rows = space.getRows();
+		int cols = space.getXCells();
+		int rows = space.getYCells();
 
 		double[][] plotdata = new double[rows][cols];
-		IGridMask mask = space.getMask();
+		IGridMask mask = space.getActivationLayer();
 		
 		if (data != null) {
 			
 			for (int row = 0; row < rows; row++) {
 				for (int col = 0; col < cols; col++) {
-					double d = data[space.getIndex(row, col)];
-					boolean active = mask == null || mask.isActive(space.getIndex(row, col));
+					double d = data[space.getIndex(col, row)];
+					boolean active = mask == null || mask.isActive(space.getIndex(col, row));
 					plotdata[rows-row-1][col] = (!active || Double.isNaN(d)) ? 0.0 : d;
 				}
 			}
 		}
 
-		ContourPlot plot = 
+		return 
 			ContourPlot.createPlot(x, y, 
 				ImageProc.gaussianSmooth0(plotdata,1.8));
-		
-		plot.save(fileOrNull);
-		
-		return fileOrNull;
 	}
 
+	
 	public String makeSurfacePlot(IConcept observable, IState state, 
 			String fileOrNull,
 			int x, int y, 
@@ -209,7 +261,93 @@ public class VisualizationFactory {
 		
 		return fileOrNull;
 	}
+
 	
+	public String makeImagerySurfacePlot(IConcept observable, IState state, 
+			String fileOrNull,
+			int x, int y, 
+			GridExtent space) throws ThinklabException {
+
+		if (fileOrNull == null) {
+			try {
+				fileOrNull = File.createTempFile("img", ".png").toString();
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+		
+		int[] idata = Metadata.getImageData(state);
+		int nlevels = (Integer)state.getMetadata().get(Metadata.IMAGE_LEVELS);
+		Boolean zeroIsNodata = (Boolean)state.getMetadata().get(Metadata.ZERO_IS_NODATA);
+		
+		IGridMask mask = space.getActivationLayer();
+		if (mask != null) {
+			for (int i = 0; i < idata.length; i++) {			
+				int[] xy = space.getXYCoordinates(i);
+				if (!mask.isActive(xy[0], xy[1]))
+					idata[i] = -1;
+			}
+		}
+		
+		ColorMap cmap =
+			getColormap(observable, nlevels, zeroIsNodata, 
+				getDefaultColormap(observable, state, nlevels));
+
+		BufferedImage bim = GeoImageFactory.get().getRasterImagery(
+				space.getNormalizedEnvelope(), x, y, 
+				idata, space.getXCells(), cmap);
+
+		ImageUtil.saveImage(bim, fileOrNull);
+		
+		state.getMetadata().put(Metadata.COLORMAP, cmap);
+		
+		return fileOrNull;
+	}
+
+	public String makeImageryContourPlot(IConcept observable, IState state, 
+			String fileOrNull,
+			int x, int y, 
+			GridExtent space) throws ThinklabException {
+
+		if (fileOrNull == null) {
+			try {
+				fileOrNull = File.createTempFile("img", ".png").toString();
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+		
+		int[] idata = Metadata.getImageData(state);
+		int nlevels = (Integer)state.getMetadata().get(Metadata.IMAGE_LEVELS);
+		Boolean zeroIsNodata = (Boolean)state.getMetadata().get(Metadata.ZERO_IS_NODATA);
+		
+		IGridMask mask = space.getActivationLayer();
+		if (mask != null) {
+			for (int i = 0; i < idata.length; i++) {			
+				int[] xy = space.getXYCoordinates(i);
+				if (!mask.isActive(xy[0], xy[1]))
+					idata[i] = -1;
+			}
+		}
+		
+		ColorMap cmap =
+			getColormap(observable, nlevels, zeroIsNodata, 
+				getDefaultColormap(observable, state, nlevels));
+
+		BufferedImage bim = makeContourImage(state.getObservableClass(),
+				state, x, y, space);
+		
+		bim = GeoImageFactory.get().paintOverImagery(space.getNormalizedEnvelope(), x, y, 
+				bim, space.getXCells(), cmap);
+		
+		ImageUtil.saveImage(bim, fileOrNull);
+
+		state.getMetadata().put(Metadata.COLORMAP, cmap);
+		
+		return fileOrNull;
+	}
+
+
 	public String makeUncertaintyMask(IConcept observable,  IState state,  String fileOrNull,
 			int x, int y, GridExtent space) throws ThinklabException {
 		
@@ -391,23 +529,64 @@ public class VisualizationFactory {
 		return ret.equals("") ? null : ret;
 		
 	}
-	
+
+	/**
+	 * Plot the given state in the given way.
+	 * 
+	 * Note: the x/y are not necessarily smart and passing a size that does not
+	 * match the aspect factor may create errors, not only bad images. Use the 
+	 * viewport definition functions to ensure they're right (see FileVisualization).
+	 * 
+	 * @param state
+	 * @param context
+	 * @param plotType
+	 * @param x
+	 * @param y
+	 * @param fileOrNull
+	 * @throws ThinklabException
+	 */
 	public void plot(
 			IState state, IObservationContext context, String plotType, 
-			int x, int y, // these are hints and we may need to pass a viewport
+			int x, int y,
 			File fileOrNull)
 		throws ThinklabException {
 		
 		if (plotType.equals(PLOT_SURFACE_2D)) {
 			
+			makeSurfacePlot(
+				state.getObservableClass(), 
+				state, fileOrNull.toString(), x, y, 
+				(GridExtent)Context.getSpace(context));
+			
 		} else if (plotType.equals(PLOT_CONTOUR_2D)) {
+			
+			makeContourPlot(
+					state.getObservableClass(), 
+					state, fileOrNull.toString(), x, y, 
+					(GridExtent)Context.getSpace(context));
+			
 			
 		} else if (plotType.equals(PLOT_GEOSURFACE_2D)) {
 			
+			makeImagerySurfacePlot(
+					state.getObservableClass(), 
+					state, fileOrNull.toString(), x, y, 
+					(GridExtent)Context.getSpace(context));
+			
 		} else if (plotType.equals(PLOT_GEOCONTOUR_2D)) {
 			
-		} else if (plotType.equals(PLOT_UNCERTAINTYSURFACE_2D)) {
+			makeImageryContourPlot(
+					state.getObservableClass(), 
+					state, fileOrNull.toString(), x, y, 
+					(GridExtent)Context.getSpace(context));
 			
+		} else if (plotType.equals(PLOT_UNCERTAINTYSURFACE_2D)) {
+
+			makeUncertaintyMask(
+					state.getObservableClass(), 
+					state, fileOrNull.toString(), x, y, 
+					(GridExtent)Context.getSpace(context));
+
 		} else if (plotType.equals(PLOT_TIMESERIES_LINE)) {
 			
 		} else if (plotType.equals(PLOT_TIMELAPSE_VIDEO)) {
@@ -443,10 +622,10 @@ public class VisualizationFactory {
 			ret.add(PLOT_SURFACE_2D);
 			ret.add(PLOT_GEOSURFACE_2D);
 			
-			if (isContinuous) {
+//			if (isContinuous) {
 				ret.add(PLOT_CONTOUR_2D);
 				ret.add(PLOT_GEOCONTOUR_2D);
-			}
+//			}
 			
 			if (hasUncertainty)
 				ret.add(PLOT_UNCERTAINTYSURFACE_2D);
@@ -475,14 +654,27 @@ public class VisualizationFactory {
 		int x = maxEdgeLength, y = maxEdgeLength;
 		
 		IExtent extent = Context.getSpace(context);
+
+		// very sensiblest defaults
+		if (maxEdgeLength == 0) {
+			
+			if (extent instanceof GridExtent) {
+				x =  ((GridExtent)extent).getXCells();
+				y =  ((GridExtent)extent).getYCells();
+			} else {
+				x  = y = 800;
+			}
+		}
+		
 		if (extent instanceof ArealExtent) {
+
 			double dx = ((ArealExtent) extent).getEWExtent();
 			double dy = ((ArealExtent) extent).getNSExtent();
-			
+				
 			if (dx > dy) {
 				y = (int)((double)x * (dy/dx));
 			} else if (dy > dx) {
-				x = (int)((double)y * (dy/dx));					
+				x = (int)((double)y * (dx/dy));					
 			}
 		}
 		

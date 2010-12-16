@@ -61,7 +61,7 @@ public class ColorMap {
 		this.hasTransparentZero = zeroTransp;
 	}
 
-	Color getColor(int index) {
+	public Color getColor(int index) {
 		return new Color(
 				model.getRed(index), 
 				model.getGreen(index), 

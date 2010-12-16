@@ -121,10 +121,36 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		this.setResolution(gridExtent.getXCells(), gridExtent.getYCells());
 	}
 
+	/**
+	 * Create a grid from a shape in the CRS of the shape and using the given
+	 * resolution for the larger extent.
+	 * 
+	 * @param shape
+	 * @param linearResolution
+	 * @throws ThinklabException
+	 */
 	public GridExtent(ShapeValue shape, int linearResolution) throws ThinklabException {
 		super(shape);
 		Pair<Integer, Integer> xy = RasterGrid.getRasterBoxDimensions(shape, linearResolution);
 		this.setResolution(xy.getFirst(), xy.getSecond());
+		this.ancestor = new ShapeExtent(shape);
+		this.ancestor.shape = shape.getGeometry();
+		activationLayer = ThinklabRasterizer.createMask(shape, this);
+	}
+	
+	/**
+	 * Create a grid extent with a rasterized shape in the given grid. Will not
+	 * clip the shape or anything: use ONLY when you already know the precise aspect factor for the extent 
+	 * resulting from the shape.
+	 * 
+	 * @param shape
+	 * @param x
+	 * @param y
+	 * @throws ThinklabException
+	 */
+	public GridExtent(ShapeValue shape, int x, int y) throws ThinklabException {
+		super(shape);
+		this.setResolution(x, y);
 		this.ancestor = new ShapeExtent(shape);
 		this.ancestor.shape = shape.getGeometry();
 		activationLayer = ThinklabRasterizer.createMask(shape, this);
@@ -159,8 +185,26 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		return new int[]{xx, yy};
 	}
 
+	public static int[] getXYCoordinates(int index, int width, int height) {
+		int xx = index % width;
+		int yy = height - (index / width) - 1;
+		return new int[]{xx, yy};
+	}
+	
 	public int getIndex(int x, int y) {
 		return (y * getXCells()) + x;
+	}
+	
+	/**
+	 * Activate the cells that correspond to the passed shape. Note that this
+	 * doesn't change the multiplicity.
+	 * 
+	 * @param roi
+	 * @throws ThinklabException
+	 */
+	public void createActivationLayer(ShapeValue roi) throws ThinklabException {
+		this.activationLayer = ThinklabRasterizer.createMask(roi, this);
+		this.shape = roi;
 	}
 	
 	@Override
@@ -324,6 +368,8 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		return ShapeValue.makeCell(env.getMinX(), env.getMinY(), env.getMaxX(), env.getMaxY());
 	}
 
+	
+	
 	public int getXCells() {
 		return xDivs;
 	}

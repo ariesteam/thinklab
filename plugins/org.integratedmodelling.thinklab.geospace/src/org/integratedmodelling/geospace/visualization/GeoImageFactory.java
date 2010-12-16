@@ -3,14 +3,13 @@ package org.integratedmodelling.geospace.visualization;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Polygon;
-import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,14 +23,16 @@ import org.geotools.data.wms.WMSUtils;
 import org.geotools.data.wms.WebMapServer;
 import org.geotools.data.wms.request.GetMapRequest;
 import org.geotools.data.wms.response.GetMapResponse;
-import org.geotools.ows.ServiceException;
 import org.integratedmodelling.geospace.Geospace;
+import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.modelling.visualization.VisualizationFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.image.ColorMap;
+import org.integratedmodelling.utils.image.ImageUtil;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -58,6 +59,9 @@ public class GeoImageFactory {
 		BOTTOM
 	}
 
+	public static int HOLLOW_SHAPES = 0x0000;
+	public static int FILLED_SHAPES = 0x0001;
+	public static int BORDER = 0x0001;
 
 	public static final String WMS_IMAGERY_SERVER_PROPERTY = "imagery.wms";
 	public static final String WMS_LAYER_PROPERTY = "imagery.wms.layers";
@@ -218,14 +222,55 @@ public class GeoImageFactory {
 					HAlignment.MIDDLE, VAlignment.MIDDLE);
 		
 		/*
-		 * draw the raster
+		 * get unscaled image from pixels
 		 */
+		Image image = ImageUtil.drawUnscaledRaster(
+				ImageUtil.upsideDown(imageData, rowWidth),
+				rowWidth, cmap);
+		
+		/*
+		 * paint scaled over the scenery
+		 */
+		Graphics graphics = ret.getGraphics();
+		graphics.drawImage(image, 0, 0, width, height, null); // /??? scaling
+		graphics.dispose();
 		
 		return ret;
-
 	}
 	
-	public BufferedImage getImagery(ShapeValue shape, int width, int height) throws ThinklabException {
+	public BufferedImage paintOverImagery(Envelope envelope, int width, int height, 
+			Image image, int rowWidth, ColorMap cmap) 
+		throws ThinklabException {
+
+		BufferedImage ret = getWFSImage(envelope, width, height);
+
+		if (ret == null)
+			ret = getSatelliteImage(envelope, width, height, null, null, 
+					HAlignment.MIDDLE, VAlignment.MIDDLE);
+		
+		/*
+		 * paint scaled over the scenery
+		 */
+		Graphics graphics = ret.getGraphics();
+		graphics.drawImage(image, 0, 0, width, height, null); // /??? scaling
+		graphics.dispose();
+		
+		return ret;
+	}
+	
+	/**
+	 * Return an image of the world with a shape drawn on it. Flags control the
+	 * rendering mode. Default is a hollow shape in red outline, touching the borders
+	 * of the image.
+	 * 
+	 * @param shape
+	 * @param width
+	 * @param height
+	 * @param flags
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public BufferedImage getImagery(ShapeValue shape, int width, int height, int flags) throws ThinklabException {
 
 		BufferedImage ret = getWFSImage(shape.getEnvelope(), width, height);
 		GeometryFactory geoFactory = new GeometryFactory();
@@ -260,25 +305,25 @@ public class GeoImageFactory {
 				LinearRing lr = geoFactory.createLinearRing(poly.getExteriorRing().getCoordinates());
 				com.vividsolutions.jts.geom.Polygon part = 
 					geoFactory.createPolygon(lr, null);
-                drawGeometry(part, bounds, graphics, width, height);
+                drawGeometry(part, bounds, graphics, width, height, flags);
                 for (int j = 0; j < poly.getNumInteriorRing(); j++) {
                 	lr = geoFactory.createLinearRing(poly.getInteriorRingN(j).getCoordinates());
                 	part = geoFactory.createPolygon(lr, null);
-                	drawGeometry(part, bounds, graphics, width, height);
+                	drawGeometry(part, bounds, graphics, width, height, flags);
                 }
 			}
 		} else if (geometry.getClass().equals(MultiLineString.class)) {
 			MultiLineString mp = (MultiLineString)geometry;
 			for (int n=0; n<mp.getNumGeometries(); n++) {
-				drawGeometry(mp.getGeometryN(n), bounds, graphics, width, height);
+				drawGeometry(mp.getGeometryN(n), bounds, graphics, width, height, flags);
 			}
 		} else if (geometry.getClass().equals(MultiPoint.class)) {
 			MultiPoint mp = (MultiPoint)geometry;
 			for (int n=0; n<mp.getNumGeometries(); n++) {
-				drawGeometry(mp.getGeometryN(n), bounds, graphics, width, height);
+				drawGeometry(mp.getGeometryN(n), bounds, graphics, width, height, flags);
 			}
 		} else {
-			drawGeometry(geometry, bounds, graphics, width, height);
+			drawGeometry(geometry, bounds, graphics, width, height, flags);
 		}
 		
 		return ret;	
@@ -286,7 +331,7 @@ public class GeoImageFactory {
 	
     private void drawGeometry(Geometry geometry, 
     		java.awt.geom.Rectangle2D.Double bounds, 
-    		Graphics graphics, int width, int height) {
+    		Graphics graphics, int width, int height, int flags) {
 
         Coordinate[] coords = geometry.getCoordinates();
         
@@ -322,9 +367,17 @@ public class GeoImageFactory {
         	if (coordGridX[n] >= width) coordGridX[n] = width - 1;
         	if (coordGridY[n] >= height) coordGridY[n] = height -1;
         }
-                
+         
+        /*
+         * ok, this if isn't really necessary, but it may become so in the
+         * future.
+         */
         if (geometry.getClass().equals(com.vividsolutions.jts.geom.Polygon.class)) {
-            graphics.drawPolyline(coordGridX, coordGridY, coords.length);
+        	if ((flags & FILLED_SHAPES) != 0) {
+        		graphics.fillPolygon(coordGridX, coordGridY, coords.length);
+        	} else {
+        		graphics.drawPolyline(coordGridX, coordGridY, coords.length);
+        	}
         }
         else if (geometry.getClass().equals(LinearRing.class)) {
             graphics.drawPolyline(coordGridX, coordGridY, coords.length);
@@ -337,6 +390,16 @@ public class GeoImageFactory {
         }
     }
 	
+    /**
+     * TODO this should probably cache the image to prevent lots of slow
+     * network access.
+     * 
+     * @param envelope
+     * @param width
+     * @param height
+     * @return
+     * @throws ThinklabResourceNotFoundException
+     */
 	private BufferedImage getWFSImage(Envelope envelope, int width, int height) throws ThinklabResourceNotFoundException {
 		
 		BufferedImage ret = null;

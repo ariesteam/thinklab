@@ -1,7 +1,6 @@
 package org.integratedmodelling.modelling.visualization;
 
 import java.io.File;
-import java.util.Properties;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
@@ -29,7 +28,7 @@ public class FileVisualization implements IVisualization {
 	 * largest edge of plot in pixels, used to define the dimensions of any visual 
 	 * unless the max viewport is given.
 	 */
-	private int maxEdgeLength = 800;
+	private int maxEdgeLength = 1000;
 	
 	/**
 	 * if these are set, the plots will be the largest possible for the given viewport.
@@ -54,8 +53,7 @@ public class FileVisualization implements IVisualization {
 		this.context = context;
 		if (this.archive == null) {
 			this.archive = new FileArchive(context);
-		}
-		
+		}	
 	}
 	
 	/**
@@ -66,13 +64,6 @@ public class FileVisualization implements IVisualization {
 	 */
 	public void setViewPort(int width, int height) {
 		
-	}
-
-//	@Override
-	public String graph(IState concept, int width, int height,
-			String destination, Properties properties) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

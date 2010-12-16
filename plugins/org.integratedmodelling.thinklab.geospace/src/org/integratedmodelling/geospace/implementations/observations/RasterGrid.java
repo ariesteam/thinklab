@@ -41,7 +41,6 @@ import javax.measure.unit.Unit;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.ObservationFactory;
-import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
@@ -51,13 +50,11 @@ import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.geospace.interfaces.IGeolocatedObject;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
@@ -354,12 +351,37 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 		return extent;
 	}
 
+	/**
+	 * Get the x,y coordinates corresponding to linear index 
+	 * @param index
+	 * @return
+	 */
 	public int[] getXYCoordinates(int index) {
 		int xx = index % getColumns();
 		int yy = getRows() - (index / getColumns()) - 1;
 		return new int[]{xx, yy};
 	}
 
+	/**
+	 * Get the x,y coordinates corresponding to linear index in a grid of
+	 * given size.
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public static int[] getXYCoordinates(int index, int width, int height) {
+		int xx = index % width;
+		int yy = height - (index / width) - 1;
+		return new int[]{xx, yy};
+	}
+	
+	/**
+	 * Get the linear index corresponding to given coordinates.
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public int getIndex(int x, int y) {
 		return (x * getColumns()) + y;
 	}

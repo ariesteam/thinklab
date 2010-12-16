@@ -75,7 +75,7 @@ public class Imagery implements ICommandHandler {
 					
 					BufferedImage bfi = 
 						command.hasOption("draw-shape") ?
-							GeoImageFactory.get().getImagery(sh, xy.getFirst(), xy.getSecond()) :
+							GeoImageFactory.get().getImagery(sh, xy.getFirst(), xy.getSecond(), 0) :
 							GeoImageFactory.get().getImagery(sh.getEnvelope(), xy.getFirst(), xy.getSecond());
 					
 					new Picture(bfi).show();
