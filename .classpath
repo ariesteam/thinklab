@@ -323,7 +323,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-directory-2.6.5.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-epsg-extension-2.6.5.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-epsg-hsql-2.6.5.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-epsg-postgresql-2.6.5.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-epsg-wkt-2.6.5.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-feature-pregeneralized-2.6.5.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-geotiff-2.6.5.jar"/>

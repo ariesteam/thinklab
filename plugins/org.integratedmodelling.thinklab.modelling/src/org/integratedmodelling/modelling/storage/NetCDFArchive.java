@@ -113,6 +113,9 @@ public class NetCDFArchive {
 		
 		this.context = context;
 		
+		// FIXME remove eventually
+		((ObservationContext)context).collectStates();
+		
 	}
 	
 //	public void setSpaceGrid(RasterGrid grid) {
