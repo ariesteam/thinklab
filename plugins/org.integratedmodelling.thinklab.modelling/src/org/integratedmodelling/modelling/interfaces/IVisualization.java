@@ -24,7 +24,10 @@ public interface IVisualization {
 	public void initialize(IObservationContext context) throws ThinklabException;
 
 	/**
-	 * Do the magic. The results will depend on the type of visualization. 
+	 * Do the magic. The results will depend on the type of visualization. It should allow
+	 * multiple calls with no overhead, so make it remember if it was called before and do
+	 * nothing if so.
+	 * 
 	 * @throws ThinklabException
 	 */
 	public void visualize() throws ThinklabException;

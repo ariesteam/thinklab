@@ -23,6 +23,7 @@ public class FileVisualization implements IVisualization {
 
 	FileArchive archive = null;
 	private IObservationContext context;
+	boolean visualized = false;
 	
 	/**
 	 * largest edge of plot in pixels, used to define the dimensions of any visual 
@@ -63,12 +64,16 @@ public class FileVisualization implements IVisualization {
 	 * @param height
 	 */
 	public void setViewPort(int width, int height) {
-		
+		maxWidth  = width;
+		maxHeight = height;
 	}
 
 	@Override
 	public void visualize() throws ThinklabException {
 				
+		if (visualized)
+			return;
+		
 		for (IState state : context.getStates()) {
 			
 			for (String plotType : VisualizationFactory.get().getPlotTypes(state, context)) {
@@ -84,6 +89,8 @@ public class FileVisualization implements IVisualization {
 					plot(state, context, plotType, xy.getFirst(), xy.getSecond(), out);
 			}
 		}
+		
+		visualized = true;
 		
 		ModellingPlugin.get().logger().info(
 				"visualization of " + 

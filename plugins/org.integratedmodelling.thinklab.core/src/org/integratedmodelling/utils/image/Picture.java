@@ -134,6 +134,9 @@ public final class Picture implements ActionListener {
    }
 
    // view on-screen, creating new frame if necessary
+   /**
+    * @wbp.parser.entryPoint
+    */
    public void show() {
 
        // create the GUI for viewing the image if needed
