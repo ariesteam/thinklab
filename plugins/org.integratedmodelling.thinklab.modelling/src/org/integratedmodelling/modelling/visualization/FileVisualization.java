@@ -9,6 +9,7 @@ import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.storage.FileArchive;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.Pair;
 
 /**
@@ -98,6 +99,11 @@ public class FileVisualization implements IVisualization {
 				" created in " +
 				archive.getDirectory());
 				
+	}
+
+	@Override
+	public IConcept getObservableClass() {
+		return context.getObservation().getObservableClass();
 	}
 
 }

@@ -18,7 +18,7 @@ public class ModelLister implements IListingProvider {
 		
 		ArrayList<String> ret = new ArrayList<String>();
 		for (Object o : ModelFactory.get().modelsById.keySet()) {
-			ret.add(o.toString());
+			ret.add(o.toString() + " (" + ModelFactory.get().retrieveModel((String) o).getObservableClass() + ")");
 		}
 		Collections.sort(ret);
 		return ret;

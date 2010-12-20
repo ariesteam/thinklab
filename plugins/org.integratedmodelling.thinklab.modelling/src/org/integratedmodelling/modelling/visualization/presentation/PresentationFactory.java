@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.visualization.presentation;
 
 import java.io.File;
 
+import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.interfaces.IPresentation;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -11,27 +12,29 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.Inte
 
 public class PresentationFactory {
 
-	IntelligentMap<PresentationLayout> _presentations;
+	IntelligentMap<PresentationTemplate> _presentations = new IntelligentMap<PresentationTemplate>();
 	static PresentationFactory _this = null;
 	
-	public PresentationLayout getPresentation(IConcept concept) {
-		return _presentations.get(concept);
+	public static PresentationTemplate getPresentation(IConcept concept) {
+		return get()._presentations.get(concept);
 	}
 	
-	public void scanDirectory(File dir) throws ThinklabException {
+	public static void scanDirectory(File dir) throws ThinklabException {
 		
 		for (File f : dir.listFiles()) {
 			if (f.toString().endsWith(".xml")) {
-				PresentationLayout p = new PresentationLayout();
+				PresentationTemplate p = new PresentationTemplate();
 				try {
 					p.read(f.toURI().toURL());
 				} catch (Exception e) {
+					ModellingPlugin.get().logger().error(e.getMessage());
 					p = null;
 				}
-				if (p != null)
-					_presentations.put(KnowledgeManager.get().requireConcept(p.getConcept()), p);
+				if (p != null) {
+					get()._presentations.put(KnowledgeManager.get().requireConcept(p.getConcept()), p);
+					ModellingPlugin.get().logger().info("presentation template " + p + " read successfully");
+				}
 			}
-				
 		}
 	}
 
@@ -44,15 +47,20 @@ public class PresentationFactory {
 	}
 	
 	/**
+	 * When the presentation applies to a visualization, this is all that needs to be called.
 	 * Create a presentation outside of the factory, use the factory to render it. If will find the
-	 * layout and apply it to the presentation. 
+	 * layout for the , initialize the presentation and call render() on it. 
 	 * 
 	 * @param visual
 	 * @param presentation
 	 * @return
+	 * @throws ThinklabException 
 	 */
-	public static IPresentation renderPresentation(IVisualization visual, IPresentation presentation) {
+	public static IPresentation render(IVisualization visual, IPresentation presentation) throws ThinklabException {
 	
+		PresentationTemplate template = getPresentation(visual.getObservableClass());
+		presentation.initialize(visual, template);
+		presentation.render();
 		
 		return presentation;
 	}

@@ -160,12 +160,13 @@ public class MemObjectContextualizedDatasource
 			return ret;			
 		}
 	
-		// TODO must accommodate distributions 
-		
-		throw new ThinklabValueConversionException(_type + ": can't convert a " + 
+		// TODO must accommodate distributions and make histograms for Comparables
+		CoreScience.get().logger().warn(_type + ": can't convert a " + 
 				(prototype == null ? "null" : prototype.getClass().getCanonicalName()) + 
 				" into a double");
-		 
+		
+		return null;
+			 
 	}
 	
 	@Override

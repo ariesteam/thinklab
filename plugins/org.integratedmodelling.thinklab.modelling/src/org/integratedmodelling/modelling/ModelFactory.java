@@ -250,7 +250,7 @@ public class ModelFactory {
 		return model;
 	}
 	
-	public Model retrieveModel(String s) throws ThinklabException {
+	public Model retrieveModel(String s) {
 		return modelsById.get(s);
 	}
 
@@ -263,7 +263,7 @@ public class ModelFactory {
 		return ret;
 	}
 
-	public Scenario retrieveScenario(String s) throws ThinklabException {
+	public Scenario retrieveScenario(String s) {
 		return scenariosById.get(s);
 	}
 
@@ -276,7 +276,7 @@ public class ModelFactory {
 		return ret;
 	}
 
-	public Context retrieveContext(String s) throws ThinklabException {
+	public Context retrieveContext(String s) {
 		return contextsById.get(s);
 	}
 

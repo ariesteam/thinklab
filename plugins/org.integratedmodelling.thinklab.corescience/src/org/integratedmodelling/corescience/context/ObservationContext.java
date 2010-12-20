@@ -1161,4 +1161,16 @@ public class ObservationContext implements IObservationContext, IContext {
 		ret.states = this.states;		
 		return ret;
 	}
+
+	@Override
+	public boolean intersects(IContext context) throws ThinklabException {
+		
+		for (IExtent e : extents.values()) {
+			IExtent o = context.getExtent(e.getObservableClass());
+			if (e != null && !e.intersects(o)) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

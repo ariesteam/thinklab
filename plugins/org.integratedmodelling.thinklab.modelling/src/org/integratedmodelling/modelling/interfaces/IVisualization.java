@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.interfaces;
 
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 /**
  * Simple interface for a wrapper of any state provider that is capable of
@@ -31,4 +32,12 @@ public interface IVisualization {
 	 * @throws ThinklabException
 	 */
 	public void visualize() throws ThinklabException;
+
+	/**
+	 * Return the main observable of the visualization (normally the observable
+	 * of the top observation in the associated context).
+	 * 
+	 * @return
+	 */
+	public IConcept getObservableClass();
 }

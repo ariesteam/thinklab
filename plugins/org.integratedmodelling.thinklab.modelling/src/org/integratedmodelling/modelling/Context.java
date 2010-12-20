@@ -134,5 +134,25 @@ public class Context implements IContext {
 		return extents;
 	}
 
+	@Override
+	public IExtent getExtent(IConcept observable) {
+		for (IExtent e : extents)
+			if (e.getObservableClass().is(observable))
+				return e;
+		return null;
+	}
+
+	@Override
+	public boolean intersects(IContext context) throws ThinklabException {
+		
+		for (IExtent e : extents) {
+			IExtent o = context.getExtent(e.getObservableClass());
+			if (e != null && !e.intersects(o)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 }

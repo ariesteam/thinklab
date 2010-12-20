@@ -3,6 +3,8 @@ package org.integratedmodelling.modelling.visualization.presentation.impl;
 import javax.swing.JPanel;
 
 import org.integratedmodelling.modelling.interfaces.IPresentation;
+import org.integratedmodelling.modelling.interfaces.IVisualization;
+import org.integratedmodelling.modelling.visualization.presentation.PresentationTemplate;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import javax.swing.JMenuBar;
 import java.awt.GridLayout;
@@ -29,6 +31,12 @@ public class InteractivePresentation extends JPanel implements IPresentation {
 
 	@Override
 	public void render() throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initialize(IVisualization visual, PresentationTemplate layout) {
 		// TODO Auto-generated method stub
 		
 	}
