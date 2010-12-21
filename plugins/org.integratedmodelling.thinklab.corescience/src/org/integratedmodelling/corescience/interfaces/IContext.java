@@ -57,5 +57,17 @@ public interface IContext  {
 	 */
 	public abstract boolean intersects(IContext context) throws ThinklabException;
 
+	/**
+	 * 
+	 * @return
+	 */
+	public IExtent getTime();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public IExtent getSpace();
+
 
 }

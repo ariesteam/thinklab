@@ -71,7 +71,7 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 
 	// we either have one shape or a feature collection. If we see space as a collection of features, the
 	// shape should be the convex hull of all features, but we don't compute it unless necessary.
-	Geometry shape = null;
+	ShapeValue shape = null;
 	FeatureCollection<?,?> features = null;
 	private String featureURL;
 	// only used for lineage so far
@@ -80,12 +80,12 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 	public ShapeExtent(ReferencedEnvelope envelope, CoordinateReferenceSystem crs) {
 		super(crs, envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY());
 		// our overall shape is the bounding box
-		this.shape = new ShapeValue(envelope).getGeometry();
+		this.shape = new ShapeValue(envelope);
 	}
 	
 	public ShapeExtent(Geometry shape, Envelope envelope, CoordinateReferenceSystem crs) {
 		super(crs, envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY());
-		this.shape = shape;
+		this.shape = new ShapeValue(shape, crs);
 	}
 
 	public ShapeExtent(FeatureCollection<?,?> features, String sourceURL, ReferencedEnvelope envelope, CoordinateReferenceSystem crs) {
@@ -93,7 +93,7 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 		this.features = features;
 		this.featureURL = sourceURL;
 		// our overall shape is the bounding box
-		this.shape = new ShapeValue(envelope).getGeometry();
+		this.shape = new ShapeValue(envelope);
 	}
 
 	// this is used to create lineages so the original shapes can be reconstructed.
@@ -109,12 +109,12 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 			  shape.getEnvelope().getMinY(), 
 			  shape.getEnvelope().getMaxX(), 
 			  shape.getEnvelope().getMaxY());
-		this.shape = shape.getGeometry();
+		this.shape = shape;
 	}
 
 	@Override
 	public IValue getFullExtentValue() {
-		return new ShapeValue(shape, getCRS());
+		return shape;
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 	 * (non-Javadoc)
 	 * @see org.integratedmodelling.geospace.extents.ArealExtent#getShape()
 	 */
-	public Geometry getShape() {
+	public ShapeValue getShape() {
 		return shape;
 	}
 	
@@ -209,7 +209,7 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 			
 			// should check that they're exactly the same, or again rasterize
 			Geometry s =
-				((ShapeExtent)orextent).getShape().intersection(((ShapeExtent)otextent).getShape());
+				((ShapeExtent)orextent).getShape().getGeometry().intersection(((ShapeExtent)otextent).getShape().getGeometry());
 			Envelope env = s.getEnvelopeInternal();	
 			ret = new ShapeExtent(s, env, getCRS());
 			
@@ -259,7 +259,7 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 			return 
 				Geospace.getCRSIdentifier(crs, false) +
 				"," +
-				new ShapeValue(shape,crs).getWKB();
+				shape.getWKB();
 		} catch (ThinklabException e) {
 			throw new ThinklabRuntimeException(e);
 		}
@@ -279,7 +279,7 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 				new LazyShapeCollection(coverage.getFeatureIterator(envelope, (String[])null), crs);
 			
 		} else {
-			ret.add(new ShapeValue(shape, crs));
+			ret.add(shape);
 		}
 		return ret;
 	}
@@ -292,7 +292,7 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 
 	@Override
 	public IExtent getAggregatedExtent() {
-		return new ShapeExtent(new ShapeValue(shape, getCRS()));
+		return new ShapeExtent(shape);
 	}
 
 	@Override

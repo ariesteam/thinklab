@@ -51,6 +51,8 @@ import com.vividsolutions.jts.geom.Envelope;
 
 public abstract class ArealExtent implements IExtent {
 
+	public abstract ShapeValue getShape();
+	
 	@Override
 	public boolean contains(ITopologicallyComparable o)
 			throws ThinklabException {
@@ -136,12 +138,6 @@ public abstract class ArealExtent implements IExtent {
 	public ShapeValue getCentroid() {
 		return getBoundingBox().getCentroid();
 	}
-
-	// FIXME reintegrate and fix return values in derived classes
-//	public ShapeValue getShape() {
-//		return shape == null ? getBoundingBox() : shape;
-//	}
-
 	
 	/**
 	 * Get the envelope with the same axis order of the passed CRS.

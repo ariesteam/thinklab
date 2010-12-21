@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.visualization;
 import java.io.File;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.modelling.ModellingPlugin;
@@ -81,8 +82,8 @@ public class FileVisualization implements IVisualization {
 		
 				Pair<Integer,Integer> xy = 
 					maxHeight < 0 ?
-						VisualizationFactory.get().getPlotSize(maxEdgeLength, state, context) :
-						VisualizationFactory.get().getPlotSize(maxWidth, maxHeight, state, context);
+						VisualizationFactory.get().getPlotSize(maxEdgeLength, (IContext) context) :
+						VisualizationFactory.get().getPlotSize(maxWidth, maxHeight, (IContext) context);
 				
 				File dir = archive.getStateDirectory(state.getObservableClass());
 				File out = new File(dir + File.separator + plotType);

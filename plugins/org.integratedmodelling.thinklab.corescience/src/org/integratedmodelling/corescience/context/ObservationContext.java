@@ -27,6 +27,7 @@ import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.modelling.Context;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -1172,5 +1173,15 @@ public class ObservationContext implements IObservationContext, IContext {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public IExtent getTime() {
+		return Context.getTime(this);
+	}
+
+	@Override
+	public IExtent getSpace() {
+		return Context.getSpace(this);
 	}
 }

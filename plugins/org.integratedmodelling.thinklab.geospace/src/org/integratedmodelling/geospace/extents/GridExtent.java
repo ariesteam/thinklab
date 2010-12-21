@@ -130,11 +130,11 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	 * @throws ThinklabException
 	 */
 	public GridExtent(ShapeValue shape, int linearResolution) throws ThinklabException {
+		
 		super(shape);
 		Pair<Integer, Integer> xy = RasterGrid.getRasterBoxDimensions(shape, linearResolution);
 		this.setResolution(xy.getFirst(), xy.getSecond());
-		this.ancestor = new ShapeExtent(shape);
-		this.ancestor.shape = shape.getGeometry();
+		this.shape = shape;
 		activationLayer = ThinklabRasterizer.createMask(shape, this);
 	}
 	
@@ -152,7 +152,7 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		super(shape);
 		this.setResolution(x, y);
 		this.ancestor = new ShapeExtent(shape);
-		this.ancestor.shape = shape.getGeometry();
+		this.ancestor.shape = shape;
 		activationLayer = ThinklabRasterizer.createMask(shape, this);
 	}
 	
@@ -167,7 +167,7 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	public GridExtent(GridExtent extent, ShapeValue shape) throws ThinklabException {
 		this(extent);
 		this.ancestor = new ShapeExtent(extent.envelope, crs);
-		this.ancestor.shape = shape.getGeometry();
+		this.ancestor.shape = shape;
 		activationLayer = ThinklabRasterizer.createMask(shape, this);
 	}
 	
@@ -281,7 +281,7 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	}
 	
 	public ShapeValue getShape() {
-		return shape;
+		return (ShapeValue) (shape == null ? getFullExtentValue() : shape);
 	}
 	
 	public java.awt.geom.Rectangle2D.Double getNormalizedBox() {

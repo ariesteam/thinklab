@@ -11,6 +11,7 @@ import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
+import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -33,18 +34,24 @@ public class Context implements IContext {
 		return ret;
 	}
 	
-	public static IContext getContext(ShapeValue location, int resolution) {
+	public static IContext getContext(ShapeValue location, int resolution) throws ThinklabException {
+		
 		Context ret = new Context();
+		ret.extents.add(new GridExtent(location, resolution));
 		return ret;
 	}
 	
-	public static IContext getContext(Collection<Topology> extents) {
+	public static IContext getContext(Collection<Topology> extents) throws ThinklabException {
 		Context ret = new Context();
+		for (Topology t : extents)
+			ret.extents.add(t.getExtent());
 		return ret;
 	}
 	
 	public static IContext getContext(IExtent ... extents) {
 		Context ret = new Context();
+		for (IExtent t : extents)
+			ret.extents.add(t);
 		return ret;
 	}
 	
@@ -133,6 +140,17 @@ public class Context implements IContext {
 	public Collection<IExtent> getExtents() {
 		return extents;
 	}
+	
+	@Override
+	public IExtent getSpace() {
+		return getExtent(Geospace.get().SubdividedSpaceObservable());
+	}
+	
+	@Override
+	public IExtent getTime() {
+		return getExtent(TimePlugin.get().TimeObservable());
+	}
+
 
 	@Override
 	public IExtent getExtent(IConcept observable) {

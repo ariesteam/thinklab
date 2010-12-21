@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -133,46 +134,6 @@ public class VisualizationFactory {
 		return ret.toString();
 	}
 	
-//	public String makeContourPlot(IConcept observable, IState state, 
-//			String fileOrNull,
-//			int x, int y, 
-//			GridExtent space) throws ThinklabException {
-//
-//		if (fileOrNull == null) {
-//			try {
-//				fileOrNull = File.createTempFile("img", ".png").toString();
-//			} catch (IOException e) {
-//				throw new ThinklabIOException(e);
-//			}
-//		}
-//		
-//		double[] data = state.getDataAsDoubles();
-//		
-//		int cols = space.getXCells();
-//		int rows = space.getYCells();
-//
-//		double[][] plotdata = new double[cols][rows];
-//		IGridMask mask = space.getActivationLayer();
-//		
-//		if (data != null) {
-//			
-//			for (int row = 0; row < rows; row++) {
-//				for (int col = 0; col < cols; col++) {
-//					double d = data[space.getIndex(col, row)];
-//					boolean active = mask == null || mask.isActive(space.getIndex(col, row));
-//					plotdata[col][rows-row-1] = (!active || Double.isNaN(d)) ? 0.0 : d;
-//				}
-//			}
-//		}
-//
-//		ContourPlot plot = 
-//			ContourPlot.createPlot(x, y, 
-//				ImageProc.gaussianSmooth0(plotdata,1.8));
-//		
-//		plot.save(fileOrNull);
-//		
-//		return fileOrNull;
-//	}
 	
 	public String makeContourPlot(IConcept observable, IState state, 
 			String fileOrNull,
@@ -648,12 +609,11 @@ public class VisualizationFactory {
 	 * @param context
 	 * @return
 	 */
-	public Pair<Integer,Integer> getPlotSize(int maxEdgeLength, IState state,
-			IObservationContext context) {
+	public Pair<Integer,Integer> getPlotSize(int maxEdgeLength, IContext context) {
 		
 		int x = maxEdgeLength, y = maxEdgeLength;
 		
-		IExtent extent = Context.getSpace(context);
+		IExtent extent = context.getSpace();
 
 		// very sensiblest defaults
 		if (maxEdgeLength == 0) {
@@ -691,12 +651,12 @@ public class VisualizationFactory {
 	 * @param context
 	 * @return
 	 */
-	public Pair<Integer, Integer> getPlotSize(int maxWidth, int maxHeight,
-			IState state, IObservationContext context) {
+	public Pair<Integer, Integer> getPlotSize(int maxWidth, int maxHeight, IContext context) {
 		
 		int x = maxWidth, y = maxHeight;
 
-		IExtent extent = Context.getSpace(context);
+		IExtent extent = context.getSpace();
+		
 		if (extent instanceof ArealExtent) {
 			double dx = ((ArealExtent) extent).getEWExtent();
 			double dy = ((ArealExtent) extent).getNSExtent();
