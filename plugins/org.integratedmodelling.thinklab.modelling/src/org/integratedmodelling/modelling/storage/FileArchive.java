@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.modelling.ModellingPlugin;
@@ -17,7 +18,7 @@ import org.integratedmodelling.utils.MiscUtilities;
 
 public class FileArchive implements IDataset {
 
-	IObservationContext context = null;
+	IContext context = null;
 	
 	/* 
 	 * the main directory where the archives live. If not set, chosen from the 
@@ -54,30 +55,30 @@ public class FileArchive implements IDataset {
 		this.directory.mkdirs();
 	}
 
-	public FileArchive(IObservationContext context, File directory) throws ThinklabException {
+	public FileArchive(IContext context, File directory) throws ThinklabException {
 		this.directory = directory;
 		this.directory.mkdirs();
 		setContext(context);
 	}
 
-	public FileArchive(IObservationContext context) throws ThinklabException {
+	public FileArchive(IContext context) throws ThinklabException {
 		this();
 		setContext(context);
 	}
 
 	@Override
-	public void setContext(IObservationContext context)
+	public void setContext(IContext context)
 			throws ThinklabException {
 		
 		if (this.context != null) {
-			((ObservationContext)(this.context)).mergeStates(context);
+			((ObservationContext)(this.context)).mergeStates((IObservationContext) context);
 		} else {
 			this.context = context;
 		}
 	}
 
 	@Override
-	public IObservationContext getContext(IObservationContext context)
+	public IContext getContext()
 			throws ThinklabException {
 		return this.context;
 	}
@@ -90,7 +91,7 @@ public class FileArchive implements IDataset {
 		
 		if (location == null) {
 			location = 
-				context.getObservation().getObservableClass().
+				((IObservationContext)context).getObservation().getObservableClass().
 					toString().replaceAll(":",".").toLowerCase() +
 				"." + 
 				MiscUtilities.getDateSuffix();
@@ -116,7 +117,7 @@ public class FileArchive implements IDataset {
 					ff.delete();
 					new ThinklabInternalErrorException(
 							"file archiver: serialization of context for " + 
-							context.getObservation().getObservableClass() + 
+							((IObservationContext)context).getObservation().getObservableClass() + 
 							" failed"); 
 				}
 				fop.close();
@@ -187,6 +188,14 @@ public class FileArchive implements IDataset {
 		ret.mkdirs();
 		
 		return ret;
+	}
+	
+	public String getStateRelativePath(IConcept c) {
+		
+		return
+			getLocation() + 
+			"/" +
+			c.toString().replaceAll(":",".").toLowerCase();
 	}
 
 	public File getDirectory() {

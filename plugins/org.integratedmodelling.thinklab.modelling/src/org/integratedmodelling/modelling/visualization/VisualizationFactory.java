@@ -507,7 +507,7 @@ public class VisualizationFactory {
 	 * @throws ThinklabException
 	 */
 	public void plot(
-			IState state, IObservationContext context, String plotType, 
+			IState state, IContext context, String plotType, 
 			int x, int y,
 			File fileOrNull)
 		throws ThinklabException {
@@ -569,7 +569,7 @@ public class VisualizationFactory {
 	 * @param context
 	 * @return
 	 */
-	public Collection<String> getPlotTypes(IState state, IObservationContext context) {
+	public Collection<String> getPlotTypes(IState state, IContext context) {
 		
 		ArrayList<String> ret = new ArrayList<String>();
 	
@@ -663,7 +663,7 @@ public class VisualizationFactory {
 			
 			if (dy > dx) {
 				y = maxHeight;
-				x = (int)((double)y * (dy/dx));					
+				x = (int)((double)y * (dx/dy));					
 			} else {
 				x = maxWidth;
 				y = (int)((double)x * (dy/dx));

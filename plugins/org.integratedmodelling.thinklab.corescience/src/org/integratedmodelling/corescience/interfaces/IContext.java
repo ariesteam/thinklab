@@ -36,6 +36,15 @@ public interface IContext  {
 	 */
 	public abstract IExtent getExtent(IConcept observable);
 	
+	
+	/**
+	 * Return the extent for a specific topology observable, or null if not there.
+	 * 
+	 * @param observable
+	 * @return
+	 */
+	public abstract IState getState(IConcept observable);
+	
 	/**
 	 * Return a newly initialized IObservationContext to be used to contextualize the passed
 	 * observation. This will build the common context and contextualization strategy for the
@@ -68,6 +77,12 @@ public interface IContext  {
 	 * @return
 	 */
 	public IExtent getSpace();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract Collection<IState> getStates();
 
 
 }

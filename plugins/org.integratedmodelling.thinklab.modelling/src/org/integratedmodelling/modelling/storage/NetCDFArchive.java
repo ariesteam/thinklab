@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -45,7 +46,7 @@ public class NetCDFArchive {
 //	Map<IConcept,IState> variables;
 	Map<String,IState> auxVariables = 
 	new Hashtable<String, IState>();
-	IObservationContext context = null;
+	IContext context = null;
 	HashSet<String> varnames = new HashSet<String>();
 	
 	/*
@@ -101,7 +102,7 @@ public class NetCDFArchive {
 //		variables = states;
 //	}
 	
-	public void setContext(IObservationContext context) throws ThinklabUnimplementedFeatureException {
+	public void setContext(IContext context) throws ThinklabUnimplementedFeatureException {
 
 		IExtent rgrid = Context.getSpace(context);
 		if (rgrid instanceof GridExtent) {
@@ -194,7 +195,7 @@ public class NetCDFArchive {
 		
 		varnames.clear();
 		
-		for (IConcept obs : context.getStateObservables()) {
+		for (IConcept obs : ((IObservationContext)context).getStateObservables()) {
 			
 			// TODO implement the rest
 			
@@ -289,7 +290,7 @@ public class NetCDFArchive {
 			}
 		}
 		
-		for (IConcept obs : context.getStateObservables()) {
+		for (IConcept obs : ((IObservationContext)context).getStateObservables()) {
 			
 			if (context.getState(obs).getValueCount() != space.getXCells() * space.getYCells()) {
 				ModellingPlugin.get().logger().error(

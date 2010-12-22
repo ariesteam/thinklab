@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling.interfaces;
 
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -22,7 +23,7 @@ public interface IVisualization {
 	 * 
 	 * @param dataset
 	 */
-	public void initialize(IObservationContext context) throws ThinklabException;
+	public void initialize(IContext context) throws ThinklabException;
 
 	/**
 	 * Do the magic. The results will depend on the type of visualization. It should allow

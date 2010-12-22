@@ -9,7 +9,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 
-public interface IObservationContext extends IConceptualizable {
+public interface IObservationContext extends IContext, IConceptualizable {
 
 	/**
 	 * Get the observation we represent

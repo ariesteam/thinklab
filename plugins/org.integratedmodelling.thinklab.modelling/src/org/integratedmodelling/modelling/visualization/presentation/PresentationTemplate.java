@@ -4,7 +4,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
 
@@ -48,8 +51,12 @@ public class PresentationTemplate {
 		
 		public int sequence = -1;
 		
-		public String getConcept() {
-			return concept;
+		public IConcept getConcept() {
+			try {
+				return KnowledgeManager.get().requireConcept(concept);
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
 		}
 		public String getTitle() {
 			return title;

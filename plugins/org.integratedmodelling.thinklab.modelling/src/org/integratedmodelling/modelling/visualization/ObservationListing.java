@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -18,9 +19,9 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 public class ObservationListing {
 
 	private boolean verbose;
-	private IObservationContext context;
+	private IContext context;
 
-	public ObservationListing(IObservationContext context) throws ThinklabException {
+	public ObservationListing(IContext context) throws ThinklabException {
 		this.context = context;
 	}
 	
@@ -37,7 +38,7 @@ public class ObservationListing {
 						" raster grid");
 		}
 		
-		for (IConcept c : context.getStateObservables()) {
+		for (IConcept c : ((IObservationContext)context).getStateObservables()) {
 			
 			IState state = context.getState(c);
 			// throw away the result, but instantiate all metadata

@@ -1,6 +1,8 @@
 package org.integratedmodelling.modelling.visualization;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
@@ -24,7 +26,7 @@ import org.integratedmodelling.utils.Pair;
 public class FileVisualization implements IVisualization {
 
 	FileArchive archive = null;
-	private IObservationContext context;
+	private IContext context;
 	boolean visualized = false;
 	
 	/**
@@ -38,24 +40,33 @@ public class FileVisualization implements IVisualization {
 	 */
 	private int maxWidth  = -1;
 	private int maxHeight = -1;
+	private File directory;
 	
 	public FileVisualization() {
 	}
 	
-	public FileVisualization(IObservationContext context) throws ThinklabException {
+	public FileVisualization(IContext context) throws ThinklabException {
 		initialize(context);
 	}
 	
 	
+	public FileVisualization(IContext context, File directory) throws ThinklabException {
+		this.directory = directory;
+		initialize(context);
+	}
+	
 	@Override
-	public void initialize(IObservationContext context) throws ThinklabException {
+	public void initialize(IContext context) throws ThinklabException {
 		
-		// TODO remove when not needed anymore.
+		// remove when not needed anymore.
 		((ObservationContext)context).collectStates();
 		
 		this.context = context;
 		if (this.archive == null) {
-			this.archive = new FileArchive(context);
+			this.archive = 
+				directory == null ?
+					new FileArchive(context) :
+					new FileArchive(context, directory);
 		}	
 	}
 	
@@ -96,7 +107,7 @@ public class FileVisualization implements IVisualization {
 		
 		ModellingPlugin.get().logger().info(
 				"visualization of " + 
-				context.getObservation().getObservableClass() + 
+				((IObservationContext)context).getObservation().getObservableClass() + 
 				" created in " +
 				archive.getDirectory());
 				
@@ -104,7 +115,26 @@ public class FileVisualization implements IVisualization {
 
 	@Override
 	public IConcept getObservableClass() {
-		return context.getObservation().getObservableClass();
+		return ((IObservationContext)context).getObservation().getObservableClass();
+	}
+	
+	public File getStateDirectory(IConcept c) {
+		return archive.getStateDirectory(c);
 	}
 
+	public Collection<File> getStateImages(IConcept c) {
+		
+		ArrayList<File> ret = new ArrayList<File>();
+		for (String s : new String[] {	
+				VisualizationFactory.PLOT_SURFACE_2D, VisualizationFactory.PLOT_CONTOUR_2D, 
+				VisualizationFactory.PLOT_GEOSURFACE_2D, VisualizationFactory.PLOT_UNCERTAINTYSURFACE_2D, 
+				VisualizationFactory.PLOT_GEOCONTOUR_2D, VisualizationFactory.PLOT_TIMESERIES_LINE, 
+				VisualizationFactory.PLOT_TIMELAPSE_VIDEO}) {
+			
+			File f = new File(getStateDirectory(c) + File.separator + s);
+			if (f.exists())
+				ret.add(f);
+		}
+		return ret;
+	}
 }

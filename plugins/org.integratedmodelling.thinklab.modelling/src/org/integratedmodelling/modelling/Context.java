@@ -113,7 +113,7 @@ public class Context implements IContext {
 	 * @param context
 	 * @return
 	 */
-	public static IExtent getSpace(IObservationContext context) {
+	public static IExtent getSpace(IContext context) {
 		return context.getExtent(Geospace.get().SubdividedSpaceObservable());
 	}
 
@@ -122,7 +122,7 @@ public class Context implements IContext {
 	 * @param context
 	 * @return
 	 */
-	public static IExtent getTime(IObservationContext context) {
+	public static IExtent getTime(IContext context) {
 		return context.getExtent(TimePlugin.get().TimeObservable());
 	}
 
@@ -170,6 +170,17 @@ public class Context implements IContext {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public IState getState(IConcept observable) {
+		// the abstract context isn't linked to an observation and does not hold states.
+		return null;
+	}
+
+	@Override
+	public Collection<IState> getStates() {
+		return new ArrayList<IState>();
 	}
 
 

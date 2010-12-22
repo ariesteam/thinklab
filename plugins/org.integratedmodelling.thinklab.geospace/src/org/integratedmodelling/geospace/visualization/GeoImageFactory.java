@@ -64,6 +64,8 @@ public class GeoImageFactory {
 	public static final String WMS_IMAGERY_SERVER_PROPERTY = "imagery.wms";
 	public static final String WMS_LAYER_PROPERTY = "imagery.wms.layers";
 	
+	private HashMap<String, BufferedImage> _cache = new HashMap<String, BufferedImage>();
+	
 	/*
 	 * yes, it's a singleton. It's also a simpleton.
 	 */
@@ -403,6 +405,11 @@ public class GeoImageFactory {
 		BufferedImage ret = null;
 		initializeWms();
 		
+		String sig = envelope.toString() + "," + width + "," + height;
+		
+		if (_cache.containsKey(sig))
+			return _cache.get(sig);
+		
 		if (_wms != null) {
 		
 			GetMapRequest request = _wms.createGetMapRequest();
@@ -430,6 +437,11 @@ public class GeoImageFactory {
 			} catch (Exception e) {
 				throw new ThinklabResourceNotFoundException(e);
 			}
+			
+			/*
+			 * FIXME this obviously must have a limit
+			 */
+			_cache.put(sig, ret);
 		}
 		
 		return ret;

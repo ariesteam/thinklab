@@ -181,7 +181,7 @@ public class ModelCommand implements ICommandHandler {
 		if (r.getTotalResultCount() > 0) {
 			
 			IValue res = r.getResult(0, session);
-			IObservationContext result = ((ContextValue)res).getObservationContext();
+			IContext result = ((ContextValue)res).getObservationContext();
 
 			if (command.hasOption("write")) {
 				IDataset archive = new FileArchive(result);
