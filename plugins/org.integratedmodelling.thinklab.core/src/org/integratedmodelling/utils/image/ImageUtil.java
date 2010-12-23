@@ -46,8 +46,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.MemoryImageSource;
 import java.awt.image.PixelGrabber;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
@@ -57,6 +59,33 @@ import javax.imageio.ImageIO;
  */
 public class ImageUtil {
 
+	/**
+	 * Make a clone of a buffered image
+	 * 
+	 * @param image
+	 * @return
+	 */
+	public static BufferedImage clone(BufferedImage image) {
+		
+		String[] pnames = image.getPropertyNames();
+		Hashtable<String, Object> cproperties = new Hashtable<String, Object>();
+		if (pnames != null) {
+			for (int i = 0; i < pnames.length; i++) {
+				cproperties.put(pnames[i], image.getProperty(pnames[i]));
+			}
+		}
+		WritableRaster wr = image.getRaster();
+		WritableRaster cwr = wr.createCompatibleWritableRaster();
+		cwr.setRect(wr);
+		BufferedImage cimage = new BufferedImage(image.getColorModel(), // should
+																		// be
+																		// immutable
+				cwr, image.isAlphaPremultiplied(), cproperties);
+		
+		return cimage;
+	}
+	
+	
 	// imgw and imgh are parameters of generated image
 	// pixels and rowWidth are parameters of the input data
 	public static void createImageFile(int[] pixels, int rowWidth, int imgw,

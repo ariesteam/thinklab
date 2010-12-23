@@ -11,7 +11,6 @@ import java.util.Properties;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.currency.CurrencyPlugin;
@@ -50,13 +49,13 @@ public class VisualizationFactory {
 	/**
 	 * possible plot types. They also are valid file names for a plot of their type.
 	 */
-	static public final String PLOT_SURFACE_2D      = "plot_surface_2d.png";
-	static public final String PLOT_CONTOUR_2D      = "plot_contour_2d.png";
-	static public final String PLOT_GEOSURFACE_2D   = "plot_geosurface_2d.png";
-	static public final String PLOT_UNCERTAINTYSURFACE_2D = "plot_uncertainty_2d.png";
-	static public final String PLOT_GEOCONTOUR_2D   = "plot_geocontour_2d.png";
-	static public final String PLOT_TIMESERIES_LINE = "plot_timeseries_line.png";
-	static public final String PLOT_TIMELAPSE_VIDEO = "plot_timelapse_video.mpg";
+	static public final String PLOT_SURFACE_2D      = "surface-2d.png";
+	static public final String PLOT_CONTOUR_2D      = "contour-2d.png";
+	static public final String PLOT_GEOSURFACE_2D   = "geosurface-2d.png";
+	static public final String PLOT_UNCERTAINTYSURFACE_2D = "uncertainty-2d.png";
+	static public final String PLOT_GEOCONTOUR_2D   = "geocontour-2d.png";
+	static public final String PLOT_TIMESERIES_LINE = "timeseries-line.png";
+	static public final String PLOT_TIMELAPSE_VIDEO = "timelapse-video.mpg";
 	
 	static VisualizationFactory _this = new VisualizationFactory();
 	ColormapChooser colormapChooser = new ColormapChooser(COLORMAP_PROPERTY_PREFIX);

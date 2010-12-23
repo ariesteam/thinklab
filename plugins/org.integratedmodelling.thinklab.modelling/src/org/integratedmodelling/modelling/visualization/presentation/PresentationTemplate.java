@@ -47,9 +47,16 @@ public class PresentationTemplate {
 		public String background;
 		public String name;
 		public String id;
+		public String plotType;
 		public ArrayList<Node> customNodes = new ArrayList<Node>();
 		
 		public int sequence = -1;
+		public String credits;
+		public String seeAlso;
+		
+		public String descriptionTitle = "Description";
+		public String creditsTitle = "Credits";
+		public String seeAlsoTitle = "See Also";
 		
 		public IConcept getConcept() {
 			try {
@@ -78,6 +85,24 @@ public class PresentationTemplate {
 		}
 		public int getSequence() {
 			return sequence;
+		}
+		public String getPlotType() {
+			return plotType;
+		}
+		public String getCredits() {
+			return credits;
+		}
+		public String getSeeAlso() {
+			return seeAlso;
+		}
+		public String getDescriptionTitle() {
+			return descriptionTitle;
+		}
+		public String getCreditsTitle() {
+			return creditsTitle;
+		}
+		public String getSeeAlsoTitle() {
+			return seeAlsoTitle;
 		}
 	}
 	
@@ -113,6 +138,9 @@ public class PresentationTemplate {
 				page.title = XMLDocument.getNodeValue(node);
 			} else if (node.getNodeName().equals("description")) {
 				page.description = XMLDocument.getNodeValue(node);
+				String attr = XMLDocument.getAttributeValue(node, "title");
+				if (attr != null)
+					page.descriptionTitle = attr;
 			} else if (node.getNodeName().equals("runninghead")) {
 				page.runningHead = XMLDocument.getNodeValue(node);
 			} else if (node.getNodeName().equals("concept")) {
@@ -121,6 +149,18 @@ public class PresentationTemplate {
 				page.background = XMLDocument.getNodeValue(node);
 			} else if (node.getNodeName().equals("name")) {
 				page.name = XMLDocument.getNodeValue(node);
+			} else if (node.getNodeName().equals("plot-type")) {
+				page.plotType = XMLDocument.getNodeValue(node);
+			} else if (node.getNodeName().equals("credits")) {
+				page.credits = XMLDocument.getNodeValue(node);
+				String attr = XMLDocument.getAttributeValue(node, "title");
+				if (attr != null)
+					page.creditsTitle = attr;
+			} else if (node.getNodeName().equals("see-also")) {
+				page.seeAlso = XMLDocument.getNodeValue(node);
+				String attr = XMLDocument.getAttributeValue(node, "title");
+				if (attr != null)
+					page.seeAlsoTitle = attr;
 			} else if (node.getNodeName().equals("id")) {
 				page.id = XMLDocument.getNodeValue(node);
 			} else if (node.getNodeName().equals("sequence")) {

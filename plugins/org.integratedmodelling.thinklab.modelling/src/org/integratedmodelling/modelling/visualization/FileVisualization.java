@@ -25,8 +25,8 @@ import org.integratedmodelling.utils.Pair;
  */
 public class FileVisualization implements IVisualization {
 
-	FileArchive archive = null;
-	private IContext context;
+	protected FileArchive archive = null;
+	protected IContext context;
 	boolean visualized = false;
 	
 	/**
@@ -41,6 +41,8 @@ public class FileVisualization implements IVisualization {
 	private int maxWidth  = -1;
 	private int maxHeight = -1;
 	private File directory;
+	private Integer xPlotSize = -1;
+	private Integer yPlotSize = -1;
 	
 	public FileVisualization() {
 	}
@@ -55,6 +57,14 @@ public class FileVisualization implements IVisualization {
 		initialize(context);
 	}
 	
+	public int getXPlotSize() {
+		return xPlotSize;
+	}
+
+	public int getYPlotSize() {
+		return yPlotSize;
+	}
+
 	@Override
 	public void initialize(IContext context) throws ThinklabException {
 		
@@ -95,6 +105,11 @@ public class FileVisualization implements IVisualization {
 					maxHeight < 0 ?
 						VisualizationFactory.get().getPlotSize(maxEdgeLength, (IContext) context) :
 						VisualizationFactory.get().getPlotSize(maxWidth, maxHeight, (IContext) context);
+
+				if (this.xPlotSize == -1) {
+					this.xPlotSize = xy.getFirst();			
+					this.yPlotSize = xy.getSecond();			
+				}
 				
 				File dir = archive.getStateDirectory(state.getObservableClass());
 				File out = new File(dir + File.separator + plotType);

@@ -391,7 +391,7 @@ public abstract class DefaultAbstractModel implements IModel {
 				} else if (o instanceof Topology) {
 					extents.add((Topology) o);
 				} else if (o instanceof IContext) {
-					context = (Context)o;;
+					context = (IContext)o;;
 				}
 			}
 

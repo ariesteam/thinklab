@@ -408,7 +408,7 @@ public class GeoImageFactory {
 		String sig = envelope.toString() + "," + width + "," + height;
 		
 		if (_cache.containsKey(sig))
-			return _cache.get(sig);
+			return ImageUtil.clone(_cache.get(sig));
 		
 		if (_wms != null) {
 		
