@@ -32,7 +32,8 @@ public class PresentationTemplate {
 	private String runningHead;
 	private String concept;
 	private String style;
-	
+	public ArrayList<Node> customNodes = new ArrayList<Node>();
+
 	@Override
 	public String toString() {	
 		return "[presentation: " + title + ": " + concept + "]"; 
@@ -49,6 +50,7 @@ public class PresentationTemplate {
 		public String id;
 		public String plotType;
 		public ArrayList<Node> customNodes = new ArrayList<Node>();
+		public ArrayList<String> otherTypes = new ArrayList<String>();
 		
 		public int sequence = -1;
 		public String credits;
@@ -124,7 +126,14 @@ public class PresentationTemplate {
 				this.concept = XMLDocument.getNodeValue(node);
 			} else if (node.getNodeName().equals("style")) {
 				this.style = XMLDocument.getNodeValue(node);
-			} 
+			} else {
+				
+				/*
+				 * custom nodes: keep with the page for now. This is quite inelegant as the XML doc
+				 * doesn't get garbage collected, but polymorphism at this stage is worse. FIXME 
+				 */
+				customNodes.add(node);
+			}
 		}
 	}
 
@@ -150,7 +159,13 @@ public class PresentationTemplate {
 			} else if (node.getNodeName().equals("name")) {
 				page.name = XMLDocument.getNodeValue(node);
 			} else if (node.getNodeName().equals("plot-type")) {
-				page.plotType = XMLDocument.getNodeValue(node);
+				
+				String attr = XMLDocument.getAttributeValue(node, "default");
+				if (attr != null && attr.equals("true")) {
+					page.plotType = XMLDocument.getNodeValue(node);
+				} else {
+					page.otherTypes.add(XMLDocument.getNodeValue(node));
+				}
 			} else if (node.getNodeName().equals("credits")) {
 				page.credits = XMLDocument.getNodeValue(node);
 				String attr = XMLDocument.getAttributeValue(node, "title");
@@ -223,4 +238,7 @@ public class PresentationTemplate {
 		return style;
 	}
 	
+	public ArrayList<Node> getCustomNodes() {
+		return customNodes;
+	}
 }

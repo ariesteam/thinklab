@@ -2,6 +2,8 @@ package org.integratedmodelling.modelling.random;
 
 import java.util.Arrays;
 
+import org.integratedmodelling.utils.Pair;
+
 /*
  * nothing but a double array with appropriate hash methods
  */
@@ -50,6 +52,16 @@ public class IndexedCategoricalDistribution {
 		return Arrays.toString(data);
 	}
 	
-
+	/**
+	 * Pass the values of the distributed classified data (a double array of values at each
+	 * breakpoint, size n+1, or the actual values, size n) and return the mean and standard 
+	 * deviation. Takes values at midpoint if breakpoints are passed.
+	 */
+	public Pair<Double, Double> stats(double[] values) {
+		
+		double m = 0.0, std = 0.0;
+		
+		return new Pair<Double, Double>(m,std);
+	}
 	
 }

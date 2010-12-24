@@ -34,11 +34,35 @@ public class CategoricalDistributionDatasource extends
 	private IConcept[] rnk;
 	boolean averageable = false;
 	
-	class DistributionParameters {
-		double mean;
-		double std;
-		IConcept mostLikelyCategory;
-		double shannon;
+	public static class DistributionParameters {
+		public double mean;
+		public double std;
+		public IConcept mostLikelyCategory;
+		public double shannon;
+		public double[] probabilities;
+		public double[] min_values;
+		public double[] max_values;
+		public boolean isBinary = false;
+		public IConcept[] categories;
+	}
+	
+
+	/**
+	 * Return a full descriptor of the distribution represented in this state value.
+	 * 
+	 * @param dist
+	 * @return
+	 */
+	public DistributionParameters getDistribution(IndexedCategoricalDistribution dist) {
+		
+		DistributionParameters val = 
+			getDistributionParameters(dist.data);
+		
+		val.probabilities = dist.data;
+		val.categories = rnk;
+		val.isBinary = (IConcept) getMetadata().get(Metadata.TRUECASE) != null;
+		
+		return val;
 	}
 	
 	@Override
@@ -97,6 +121,7 @@ public class CategoricalDistributionDatasource extends
 	}
 
 
+	
 	/**
 	 * TODO should return the mean, not the most likely class, except if requested.
 	 * @param probabilities
@@ -108,11 +133,15 @@ public class CategoricalDistributionDatasource extends
 		IConcept c = valueMappings[0];
 		double   v = probabilities[0];
 		double   sh = 0;
-		double mu = 0.0;
-		double std = 0.0;
+		double mu = 0.0, mu2 = 0.0;
 		int nst = 0;
 		
 		DistributionParameters ret = new DistributionParameters();
+		
+		if (averageable) {
+			ret.max_values = new double[probabilities.length];
+			ret.min_values = new double[probabilities.length];
+		}
 		
 		/*
 		 * compute Shannon's entropy along with the rest
@@ -130,17 +159,23 @@ public class CategoricalDistributionDatasource extends
 				nst++;
 			}
 			
-			if (averageable)
-				mu += (this.distributionBreakpoints[i] + 
-					   (this.distributionBreakpoints[i+1] - this.distributionBreakpoints[i])/2)
-					*		
-				probabilities[i];
+			if (averageable) {
+				double midpoint = 
+						(this.distributionBreakpoints[i] + 
+								(this.distributionBreakpoints[i+1] - this.distributionBreakpoints[i])/2);
+				
+				mu += midpoint * probabilities[i];
+				mu2 += midpoint * midpoint * probabilities[i];
+				ret.min_values[i] = this.distributionBreakpoints[i];
+				ret.max_values[i] = this.distributionBreakpoints[i+1];
+			}
 		}
 		
 		ret.shannon = (sh/Math.log((double)nst)) * -1.0;
 		ret.mostLikelyCategory = c;
 		ret.mean = mu;
-		ret.std = std;
+		ret.std = Math.sqrt(mu2 - (mu*mu));
+
 		
 		return ret;
 	}

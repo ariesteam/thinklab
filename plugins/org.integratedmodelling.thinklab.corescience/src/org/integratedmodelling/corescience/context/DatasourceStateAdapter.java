@@ -27,6 +27,10 @@ public class DatasourceStateAdapter implements IDataSource<Object>, IState, IIns
 	public DatasourceStateAdapter(IState state) {
 		this._state = state;
 	}
+	
+	public IState getOriginalState() {
+		return _state;
+	}
 
 	@Override
 	public IConcept getValueType() {

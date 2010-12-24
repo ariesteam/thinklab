@@ -57,6 +57,20 @@ public class VisualizationFactory {
 	static public final String PLOT_TIMESERIES_LINE = "timeseries-line.png";
 	static public final String PLOT_TIMELAPSE_VIDEO = "timelapse-video.mpg";
 	
+
+	private static HashMap<String,String> ddesc;
+	
+	static {
+		ddesc = new HashMap<String, String>();
+		ddesc.put(VisualizationFactory.PLOT_SURFACE_2D, "Surface map");
+		ddesc.put(VisualizationFactory.PLOT_GEOSURFACE_2D, "Data over imagery");
+		ddesc.put(VisualizationFactory.PLOT_CONTOUR_2D, "Contours");
+		ddesc.put(VisualizationFactory.PLOT_GEOCONTOUR_2D, "Contours over imagery");
+		ddesc.put(VisualizationFactory.PLOT_UNCERTAINTYSURFACE_2D, "Uncertainty map");
+		ddesc.put(VisualizationFactory.PLOT_TIMESERIES_LINE, "Timeseries plot");
+		ddesc.put(VisualizationFactory.PLOT_TIMELAPSE_VIDEO, "Timed animation");
+	}
+	
 	static VisualizationFactory _this = new VisualizationFactory();
 	ColormapChooser colormapChooser = new ColormapChooser(COLORMAP_PROPERTY_PREFIX);
 	
@@ -77,6 +91,10 @@ public class VisualizationFactory {
 		if (ret == null)
 			ret = def;
 		return ret;
+	}
+	
+	static public String getPlotDescription(String plot) {
+		return ddesc.get(plot);
 	}
 	
 	/**
@@ -425,6 +443,56 @@ public class VisualizationFactory {
 		return new Pair<File[], String[]>(imgs, descs);
 	}
 
+	public HashMap<IConcept, String> getClassLegend(IState state) throws ThinklabException {
+		
+		ColorMap cmap = (ColorMap) state.getMetadata().get(Metadata.COLORMAP);
+		String units  = (String) state.getMetadata().get(Metadata.UNITS);
+		Integer offset = (Integer) state.getMetadata().get(Metadata.IMAGE_TO_CLASS_OFFSET);
+		
+		if (units == null)
+			units = "";
+		
+		if (cmap == null) {
+			throw new ThinklabValidationException("internal: getLegend called on a state without colormap");
+		}
+		
+		if (Metadata.isContinuous(state.getMetadata())) {
+			// for now - we should make one segment and describe the whole range in the text
+			return null;
+		}
+		
+		double[] breakpoints = (double[])state.getMetadata().get(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS);
+		HashMap<IConcept, Integer> ranking = Metadata.getClassMappings(state.getMetadata());
+		HashMap<IConcept, String> ret = new HashMap<IConcept, String>();
+		
+		for (int i = (cmap.hasTransparentZero() ? 1 : 0); i < cmap.getColorCount(); i++) {
+			String desc = "";
+			if (ranking != null){
+
+				// can't be that many
+				IConcept c = null;
+				for (IConcept k : ranking.keySet()) {
+					if (ranking.get(k) == (i + offset)) {
+						c = k;
+						break;
+					}
+				}
+				if (c != null) {
+					VisualConcept vc = TypeManager.get().getVisualConcept(c);
+					desc = vc.getLabel();
+					if (breakpoints != null) {
+						desc += 
+							getRangeDescription(breakpoints, i - (cmap.hasTransparentZero() ? 1 : 0), units);
+					}
+					ret.put(c,desc);
+				}
+			} 
+		}
+		
+		return ret;
+	}
+
+	
 	private String getRangeDescription(double[] breakpoints, int i, String units) {
 
 		// breakpoints should have lenght = MaxI+1

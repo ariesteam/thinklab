@@ -56,22 +56,23 @@ public abstract class ArealExtent implements IExtent {
 	@Override
 	public boolean contains(ITopologicallyComparable o)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return false;
+		ArealExtent e = (ArealExtent) o;
+		return getBoundingBox().getGeometry().contains(e.getBoundingBox().getGeometry());
+
 	}
 
 	@Override
 	public boolean intersects(ITopologicallyComparable o)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return false;
+		ArealExtent e = (ArealExtent) o;
+		return getBoundingBox().getGeometry().intersects(e.getBoundingBox().getGeometry());
 	}
 
 	@Override
 	public boolean overlaps(ITopologicallyComparable o)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return false;
+		ArealExtent e = (ArealExtent) o;
+		return getBoundingBox().getGeometry().overlaps(e.getBoundingBox().getGeometry());
 	}
 
 	// the envelope in here is always east-west on the X axis. getDefaultEnvelope() can be used to retrieve
