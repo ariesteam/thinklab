@@ -26,7 +26,6 @@ import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransf
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
-import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.Context;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
@@ -435,27 +434,7 @@ public class ObservationContext implements IObservationContext, IContext {
 	
 	private ObservationContext() {
 	}
-//
-//	private void constrainExtents(ObservationContext ctx) throws ThinklabException {
-//		
-//		for (IConcept c : extents.keySet()) {
-//			
-//			IExtent myExtent  = extents.get(c);
-//			IExtent itsExtent = ctx.extents.get(c);
-//			
-//			if (itsExtent != null) {
-//
-//				// constrain ours with its
-//				IExtent merged = myExtent.constrain(itsExtent);
-//				if (merged == null) {
-//					this.isNull = true;
-//					break;
-//				} else {
-//					extents.put(c, merged);
-//				}
-//			}		
-//		}
-//	}
+
 
 	/*
 	 * create a new context with our extents and dependents and set it into 
@@ -484,64 +463,6 @@ public class ObservationContext implements IObservationContext, IContext {
 			initialize();
 		}
 	}
-
-	
-	/**
-	 * AND any dependent context with the one we represent.
-	 * 
-	 * @param depctx
-	 * @throws ThinklabException
-	 */
-//	private void mergeExtents(ObservationContext depctx) throws ThinklabException {
-//		
-//		for (IConcept c : depctx.extents.keySet()) {
-//			
-//			IExtent myExtent  = extents.get(c);
-//			IExtent itsExtent = depctx.extents.get(c);
-//			
-//			if (myExtent == null) {
-//				
-//				/* just add the extent */
-//				extents.put(c, itsExtent);
-//			
-//			} else {
-//
-//				/* ask CM to modify the current extent record in order to represent the
-//				   new one as well. */
-//				IExtent merged = itsExtent.and(myExtent);
-//				if (merged == null) {
-//					this.isNull = true;
-//					break;
-//				} else {
-//					extents.put(c, merged);
-//				}
-//			}		
-//		}
-//	}
-	
-//	private void mergeExtent(Topology extobs) throws ThinklabException {
-//
-//		IConcept dimension = extobs.getObservableClass();
-//		IExtent myExtent  = extents.get(dimension);
-//		IExtent itsExtent = extobs.getExtent();
-//		
-//		if (myExtent == null) {
-//			
-//			/* just add the extent */
-//			extents.put(dimension, itsExtent);
-//		
-//		} else {
-//
-//			/* ask CM to modify the current extent record in order to represent the
-//			   new one as well. */
-//			IExtent merged = itsExtent.and(myExtent);
-//			if (merged == null) {
-//				this.isNull = true;
-//			} else {
-//				extents.put(dimension, merged);
-//			}
-//		}		
-//	}
 
 	/**
 	 * used only by collapse() - FIXME remove or change.
@@ -681,17 +602,20 @@ public class ObservationContext implements IObservationContext, IContext {
 	 * runs all transformations, sets transformed datasources into
 	 * observations and transformed observations into contexts.
 	 */
-	private void processTransformations(ISession session,
+	private IContext processTransformations(ISession session,
 			Collection<IContextualizationListener> listeners)
 			throws ThinklabException {
 		
 		IObservation obs = observation;
+		IContext ret = null;
 		
 		/*
-		 * process dependents recursively
+		 * process dependents recursively. Some of these may be transformers,whose states
+		 * may need to be floated to our level if the extents are compatible.
 		 */
 		for (ObservationContext c : dependents) {
-			c.processTransformations(session, listeners);
+			IContext ctx = c.processTransformations(session, listeners);
+			mergeDependentContext(ctx);
 		}
 		
 		/*
@@ -764,26 +688,15 @@ public class ObservationContext implements IObservationContext, IContext {
 			
 			Contextualizer contextualizer = new Compiler().compile(ctx);
 			
-			ObservationContext inst =  contextualizer.run(session);
+			ObservationContext inst = contextualizer.run(session);
 			
 			if (listeners != null) {
 				for (IContextualizationListener l : listeners) {
 					l.preTransformation(observation, ctx);
 				}
 			}
-			
-			Polylist tlist = ((TransformingObservation)obs).transform(inst, session, ctx);
-			
-			/*
-			 * transfer metadata
-			 * TODO: anything else to put in transformed obs?
-			 */
-			Metadata metadata = 
-				((Observation)(inst.getObservation())).metadata;
-
-			tlist = ObservationFactory.addReflectedField(tlist, "additionalMetadata", metadata);
-			
-			obs = ObservationFactory.getObservation(session.createObject(tlist));
+						
+			mergeDependentContext(((TransformingObservation)obs).transform(inst, session, ctx));
 
 			if (listeners != null) {
 				for (IContextualizationListener l : listeners) {
@@ -791,23 +704,29 @@ public class ObservationContext implements IObservationContext, IContext {
 				}
 			}
 			
-			/*
-			 * set a possibly transformed observation into our slot
-			 */
-			this.observation = obs;
-
-			// must reset the dependencies and get those of the transformed obs. No 
-			// need to merge the contexts, as we have previously done that and the 
-			// transformer should generate contextualized observations.
-			dependents.clear();
-			for (IObservation dep : obs.getDependencies()) {				
-				ObservationContext depctx = new ObservationContext(dep, this);
-				dependents.add(depctx);
-			}
 		}
 
+		return this;
 	}
 	
+	/*
+	 * if context contains compatible extents, add its states, otherwise
+	 * switch to it.
+	 */
+	private void mergeDependentContext(IContext other) {
+		
+		if (hasCompatibleExtents(other)) {
+			mergeStates((IObservationContext) other);
+		} else {
+			switchTo((IObservationContext) other);
+		}
+	}
+
+	private boolean hasCompatibleExtents(IContext inst) {
+		// TODO ACTUALLY CHECK although this check should be entirely impossible to fail.
+		return true;//((IObservationContext)inst).getMultiplicity() == this.getMultiplicity();
+	}
+
 	@Override
 	public void run(ISession session,
 			Collection<IContextualizationListener> listeners)
@@ -875,81 +794,6 @@ public class ObservationContext implements IObservationContext, IContext {
 		});
 	}
 	
-	/**
-	 * Reconstruct the structure we represent with the extents we have and the given
-	 * states. 
-	 * 
-	 * @param session
-	 * @param allStates
-	 * @return
-	 * @throws ThinklabException 
-	 */
-//	public IInstance buildObservation(ISession session,
-//			Map<IConcept, IState> states) throws ThinklabException {
-//		
-//		Polylist l = buildObservationList(states);
-//		
-//		if (session.getVariable(ISession.DEBUG) != null)
-//			System.out.println(Polylist.prettyPrint(l));
-//		
-//		return session.createObject(l);
-//	}
-
-//	/**
-//	 * 
-//	 * @param states
-//	 * @return
-//	 * @throws ThinklabException
-//	 * @deprecated use conceptualize and forget observation - just use the states we have in us
-//	 */
-//	private Polylist buildObservationList(Map<IConcept, IState> states) throws ThinklabException {
-//		
-//		ArrayList<Object> adl = null;
-//
-//		if (observation instanceof IConceptualizable) {
-//			adl = ((IConceptualizable)observation).conceptualize().toArrayList();
-//		} else {
-//			adl = new ArrayList<Object>(); 
-//			adl.add(
-//				observation instanceof TransformingObservation ?
-//					((TransformingObservation)observation).getTransformedObservationClass() :
-//					observation.getObservationInstance().getDirectType());
-//			adl.add(Polylist.list(
-//						CoreScience.HAS_OBSERVABLE,
-//						observation.getObservable().toList(null)));
-//		}		
-//		
-//		/* 
-//		 * add datasource 
-//		 * FIXME we should actually index observable INSTANCES, not 
-//		 * concepts.
-//		 */
-//		IState ds = states.get(observation.getObservableClass());
-//		if (ds != null) {
-//			adl.add(
-//				Polylist.list(
-//					CoreScience.HAS_DATASOURCE,
-//					((IState)ds).conceptualize()));
-//		}	
-//
-//		for (IExtent ext : extents.values()) {
-//			adl.add(
-//				Polylist.list(CoreScience.HAS_EXTENT,
-//				ext.conceptualize()));
-//		}
-//		
-//		if (!observation.isMediator()) {
-//			for (ObservationContext dep : dependents) {
-//				adl.add(
-//					Polylist.list(CoreScience.DEPENDS_ON,
-//					dep.buildObservationList(states)));
-//			}
-//		}
-//		
-//					
-//		return Polylist.PolylistFromArrayList(adl);
-//					
-//	}
 
 	public Collection<ObservationContext> getDependentContexts() {
 		return dependents;
@@ -1045,7 +889,7 @@ public class ObservationContext implements IObservationContext, IContext {
 	public Collection<IState> getStates() {
 		return states.values();
 	}
-	
+
 	/*
 	 * this is not in the API but it's used in the Clojure binding, so don't remove it even
 	 * if there are no Java references.
@@ -1106,6 +950,10 @@ public class ObservationContext implements IObservationContext, IContext {
 	 * @param other
 	 */
 	public void mergeStates(IObservationContext other) {
+
+		if (other == null)
+			return;
+		
 		for (IConcept c : other.getStateObservables()) {
 			states.put(c, other.getState(c));
 		}
@@ -1183,5 +1031,9 @@ public class ObservationContext implements IObservationContext, IContext {
 	@Override
 	public IExtent getSpace() {
 		return Context.getSpace(this);
+	}
+
+	public void setObservation(IObservation observation) {
+		this.observation = observation;
 	}
 }

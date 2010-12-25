@@ -1,13 +1,12 @@
 package org.integratedmodelling.modelling.implementations.observations.geoprocessing;
 
 import org.integratedmodelling.corescience.implementations.observations.Measurement;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.ContextTransformingObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * Unless I find a Sextante algorithm for this, computes a 2-scan EDT on a
@@ -36,8 +35,8 @@ public class EuclideanDistanceTransformer extends Measurement implements
 	}
 
 	@Override
-	public Polylist transform(IObservationContext sourceObs, ISession session,
-			IObservationContext context) throws ThinklabException {
+	public IContext transform(IObservationContext sourceObs, ISession session,
+			IContext context) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

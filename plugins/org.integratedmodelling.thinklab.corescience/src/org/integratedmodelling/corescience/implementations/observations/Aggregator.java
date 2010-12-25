@@ -1,13 +1,13 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.ContextTransformingObservation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * A transformer observation that will aggregate along one or more dimensions, collapsing
@@ -42,8 +42,8 @@ public class Aggregator extends Observation implements ContextTransformingObserv
 	}
 
 	@Override
-	public Polylist transform(IObservationContext sourceObs, ISession session,
-			IObservationContext context) throws ThinklabException {
+	public IContext transform(IObservationContext sourceObs, ISession session,
+			IContext context) throws ThinklabException {
 		
 		// TODO create new observations with the aggregated states of the
 		// source obs

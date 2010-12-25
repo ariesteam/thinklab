@@ -395,7 +395,7 @@ public class VMContextualizer<T> {
 		
 		_datasources.add(new ContextMediator(dds, overallContext, ownContext));
 		encode(makeInst(MKSTOR_I, _storegs, _cstords++));
-			
+				
 		return _storegs++;
 	}
 

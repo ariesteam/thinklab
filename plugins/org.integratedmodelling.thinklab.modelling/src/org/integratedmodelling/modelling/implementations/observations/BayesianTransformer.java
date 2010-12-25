@@ -11,6 +11,7 @@ import java.util.HashSet;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -139,11 +140,13 @@ public class BayesianTransformer
 	}
 	
 	@Override
-	public Polylist transform(IObservationContext sourceCtx, ISession session, IObservationContext context) 
+	public IContext transform(IObservationContext sourceCtx, ISession session, IContext context) 
 		throws ThinklabException {
 
 		// set to false unless you really want it
 		boolean debug = false;
+		// only log errors once
+		boolean logged = false;
 		
 		HashMap<String, Integer> keyset = debug ? new HashMap<String, Integer>() : null;
 		HashMap<String, String> resset = debug ? new HashMap<String, String>() : null;
@@ -158,7 +161,7 @@ public class BayesianTransformer
 			out.println(" >>>>>> " + getObservableClass() + "<<<<<<<\n");
 		}
 		
-		int size = context.getMultiplicity();
+		int size = ((IObservationContext)context).getMultiplicity();
 
 		/*
 		 * get an index of all node names from the network, to be used later
@@ -287,9 +290,6 @@ public class BayesianTransformer
 			 */ 
 			bn.clearAllEvidence();
 			
-			
-			boolean logged = false;
-			
 			/*
 			 * submit evidence - we set the same values at each cycle, so we don't need to
 			 * clear all previous evidence unless we have a null/nodata.
@@ -365,57 +365,17 @@ public class BayesianTransformer
 			out.close();
 		}
 		
-		/*
-		 * prepare new observation
-		 */
-		Polylist rdef = Polylist.list(
-				CoreScience.OBSERVATION,
-				Polylist.list(
-						CoreScience.HAS_OBSERVABLE, getObservable().toList(null)));
-		
-		/*
-		 * make new extents to match previous
-		 */
-		for (IConcept ext : context.getDimensions()) {
-			rdef = ObservationFactory.addExtent(rdef, context.getExtent(ext).conceptualize());
-		}
-		
+		ObservationContext ret = new ObservationContext(context.getExtents());
+		ret.setObservation(this);
+
 		/*
 		 * add states
 		 */
 		for (int s = 0; s < pstorage.length; s++) {
-			
-			IConcept obsv = pstorage[s].observable;
-			IObservation proto = modelPrototypes.get(obsv);
-			Polylist ddef = null;
-			
-			if (proto == null) {
-				ddef = Polylist.list(
-					CoreScience.PROBABILISTIC_CLASSIFICATION,
-					Polylist.list(
-							CoreScience.HAS_OBSERVABLE, Polylist.list(obsv)),
-					Polylist.list(
-							CoreScience.HAS_DATASOURCE, 
-							pstorage[s].data.conceptualize()));
-			} else {
-		
-				/*
-				 * TODO ensure that metadata are communicated to the DS when created even if
-				 * the DS is already set as we do here.
-				 */
-				ddef = proto.getObservationInstance().toList(null);
-				ddef = 
-					ObservationFactory.addDatasource(
-							ddef, pstorage[s].data.conceptualize());
-			}
-			
-			rdef = ObservationFactory.addDependency(rdef, ddef);
+			ret.addState(pstorage[s].data);
 		}
 
-		/*
-		 * go for it
-		 */
-		return rdef;
+		return ret;
 	}
 	
 	@Override
