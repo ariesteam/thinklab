@@ -287,6 +287,9 @@ public class BayesianTransformer
 			 */ 
 			bn.clearAllEvidence();
 			
+			
+			boolean logged = false;
+			
 			/*
 			 * submit evidence - we set the same values at each cycle, so we don't need to
 			 * clear all previous evidence unless we have a null/nodata.
@@ -307,9 +310,17 @@ public class BayesianTransformer
 							}
 						}	
 					} catch (Exception ex) {
-					
-						ModellingPlugin.get().logger().error("exception " + ex + " while setting " + evidence[e].nodename + " to " + ev);
-						// throw new ThinklabValidationException(ex);
+						
+						/*
+						 * only once, which enables further error to be hidden, but allows to avoi
+						 * one hundred thousand error messages. This should be put in the session instead
+						 * of printed if the session requires storage of errors.
+						 */
+						if (!logged) {
+							ModellingPlugin.get().logger().error("exception " + ex + " while setting " + evidence[e].nodename + " to " + ev);
+							// throw new ThinklabValidationException(ex);
+							logged = true;
+						}
 					}
 			}
 			
