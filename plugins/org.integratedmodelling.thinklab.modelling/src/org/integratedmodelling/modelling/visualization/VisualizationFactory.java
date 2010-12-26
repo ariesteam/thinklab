@@ -643,6 +643,9 @@ public class VisualizationFactory {
 		IExtent space = Context.getSpace(context);
 		IExtent time  = Context.getTime(context);
 		
+		// FIXME this is unnecessarily costly.
+		Metadata.analyzeData(state);
+		
 		Boolean isContinuous   = (Boolean)state.getMetadata().get(Metadata.CONTINUOUS);
 		boolean hasUncertainty = state.getMetadata().get(Metadata.UNCERTAINTY) != null;
 

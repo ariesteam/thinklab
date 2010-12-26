@@ -29,6 +29,7 @@ public class PresentationTemplate {
 	HashMap<String, Page> singlePagesById = new HashMap<String, PresentationTemplate.Page>();
 	private String title;
 	private String description;
+	private String shortDescription;
 	private String runningHead;
 	private String concept;
 	private String style;
@@ -120,7 +121,9 @@ public class PresentationTemplate {
 				this.title = XMLDocument.getNodeValue(node);
 			} else if (node.getNodeName().equals("description")) {
 				this.description = XMLDocument.getNodeValue(node);
-			} else if (node.getNodeName().equals("runninghead")) {
+			} else if (node.getNodeName().equals("short-description")) {
+				this.shortDescription = XMLDocument.getNodeValue(node);
+			}  else if (node.getNodeName().equals("runninghead")) {
 				this.runningHead = XMLDocument.getNodeValue(node);
 			} else if (node.getNodeName().equals("concept")) {
 				this.concept = XMLDocument.getNodeValue(node);
@@ -240,5 +243,9 @@ public class PresentationTemplate {
 	
 	public ArrayList<Node> getCustomNodes() {
 		return customNodes;
+	}
+
+	public String getShortDescription() {
+		return shortDescription;
 	}
 }

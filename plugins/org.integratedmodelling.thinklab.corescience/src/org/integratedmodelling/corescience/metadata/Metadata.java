@@ -162,7 +162,7 @@ public class Metadata extends HashMap<String, Object> {
 		return (HashMap<IConcept, Integer>) state.get(RANKING);
 	}
 
-	private static void analyzeData(IState state) {
+	public static void analyzeData(IState state) {
 
 		double[] data = null;
 		boolean nodata = true;

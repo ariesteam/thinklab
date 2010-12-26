@@ -441,7 +441,7 @@ public class GeoImageFactory {
 			/*
 			 * FIXME this obviously must have a limit
 			 */
-			_cache.put(sig, ret);
+			_cache.put(sig, ImageUtil.clone(ret));
 		}
 		
 		return ret;

@@ -194,7 +194,6 @@ public class ImageUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	// The rest of the class is pretty much is inside the besball
