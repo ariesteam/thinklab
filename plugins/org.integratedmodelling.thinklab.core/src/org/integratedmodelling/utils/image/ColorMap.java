@@ -644,10 +644,13 @@ public class ColorMap {
 		
 		int[][] cdata = new int[h][len];
 		int incr = len/levels;
+		if (incr == 0)
+			incr = 1;
 		for (int y = 0; y < h; y++) {
+			int xc = 0;
 			for (int i = 0; i < dlevels; i ++) {
-				for (int x = (i*incr); x < ((i+1)*incr); x++)
-					cdata[y][x] = (i+ofs);
+				for (int x = 0; x < incr; x++)
+					cdata[y][xc++] = (i+ofs);
 			}
 		}
 			

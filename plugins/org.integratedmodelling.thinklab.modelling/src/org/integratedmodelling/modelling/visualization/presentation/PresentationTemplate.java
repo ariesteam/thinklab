@@ -33,6 +33,8 @@ public class PresentationTemplate {
 	private String runningHead;
 	private String concept;
 	private String style;
+	public HashMap<String, String> attributes = new HashMap<String, String>();
+
 	public ArrayList<Node> customNodes = new ArrayList<Node>();
 
 	@Override
@@ -52,7 +54,7 @@ public class PresentationTemplate {
 		public String plotType;
 		public ArrayList<Node> customNodes = new ArrayList<Node>();
 		public ArrayList<String> otherTypes = new ArrayList<String>();
-		
+		public HashMap<String, String> attributes = new HashMap<String, String>();
 		public int sequence = -1;
 		public String credits;
 		public String seeAlso;
@@ -107,6 +109,10 @@ public class PresentationTemplate {
 		public String getSeeAlsoTitle() {
 			return seeAlsoTitle;
 		}
+		public String getAttribute(String s) {
+			return attributes.get(s);
+		}
+
 	}
 	
 	public void read(URL input) throws ThinklabException {
@@ -130,6 +136,15 @@ public class PresentationTemplate {
 			} else if (node.getNodeName().equals("style")) {
 				this.style = XMLDocument.getNodeValue(node);
 			} else {
+				
+				/*
+				 * any content of custom nodes goes in attributes. The node is 
+				 * preserved if structural analysis is required.
+				 */
+				String ss = XMLDocument.getNodeValue(node);
+				if (ss != null && !ss.isEmpty()) {
+					attributes.put(node.getNodeName(), ss);
+				}
 				
 				/*
 				 * custom nodes: keep with the page for now. This is quite inelegant as the XML doc
@@ -186,6 +201,15 @@ public class PresentationTemplate {
 			} else {
 				
 				/*
+				 * any content of custom nodes goes in attributes. The node is 
+				 * preserved if structural analysis is required.
+				 */
+				String ss = XMLDocument.getNodeValue(node);
+				if (ss != null && !ss.isEmpty()) {
+					page.attributes.put(node.getNodeName(), ss);
+				}
+				
+				/*
 				 * custom nodes: keep with the page for now. This is quite inelegant as the XML doc
 				 * doesn't get garbage collected, but polymorphism at this stage is worse. FIXME 
 				 */
@@ -201,6 +225,10 @@ public class PresentationTemplate {
 		}
 	}
 
+	public String getAttribute(String s) {
+		return attributes.get(s);
+	}
+	
 	public ArrayList<Page> getPages() {
 		return pages;
 	}

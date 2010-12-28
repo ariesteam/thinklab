@@ -73,6 +73,8 @@ public class CategoricalDistributionDatasource extends
 		double[] unc = new double[this.data.length];
 		IConcept truecase = (IConcept) getMetadata().get(Metadata.TRUECASE);
 		
+		double aggregatedMeanValue = 0.0;
+		
 		for (int i = 0; i < this.data.length; i++) {
 
 			DistributionParameters val = 
