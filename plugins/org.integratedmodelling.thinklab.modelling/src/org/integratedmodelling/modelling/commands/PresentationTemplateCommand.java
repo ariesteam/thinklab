@@ -100,8 +100,7 @@ public class PresentationTemplateCommand implements ICommandHandler {
 				}
 			}
 		}
-		
-		int i = 0;
+
 		for (IConcept c : states.keySet()) {
 			
 			VisualConcept vc = TypeManager.get().getVisualConcept(c);
@@ -109,14 +108,13 @@ public class PresentationTemplateCommand implements ICommandHandler {
 				XML.node("page",
 						XML.node("concept", c.toString()),
 						XML.node("name", vc.getLabel()),
+						XML.node("title", vc.getLabel()),
 						XML.node("group", ""),
 						XML.node("description", vc.getDescription()),
-						XML.node("runninghead", vc.getDescription()),
-						XML.node("sequence", i + ""),
+						XML.node("runninghead", vc.getLabel()),
 						XML.node("plot-type", "geosurface-2d").attr("default", "true"),
 						XML.node("plot-type", "geocontour-2d")
 			)).dump(session.getOutputStream());
-			i++;
 		}
 			
 		return null;

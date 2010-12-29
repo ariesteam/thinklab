@@ -67,6 +67,7 @@ public class BayesianTransformer
 		new ArrayList<Pair<GeneralClassifier,IConcept>>();
 	
 	HashSet<IConcept> outputStates = new HashSet<IConcept>();
+	HashSet<IConcept> requiredStates = new HashSet<IConcept>();
 	
 	IConcept cSpace = null;
 	private Network bn = null;
@@ -111,6 +112,13 @@ public class BayesianTransformer
 				outputStates.add(KnowledgeManager.get().requireConcept(r.getValue().toString()));
 			}
 			
+			/*
+			 * and the states we won't do without
+			 */
+			for (IRelationship r : i.getRelationships(ModelFactory.REQUIRES_STATES)) {
+				requiredStates.add(KnowledgeManager.get().requireConcept(r.getValue().toString()));
+			}
+			
 		} else {
 			
 			/*
@@ -125,7 +133,7 @@ public class BayesianTransformer
 		}
 		
 		/*
-		 * store any prototypes
+		 * store any prototypes. This must change, oh yes.
 		 */
 		for (IRelationship r : i.getRelationships(HAS_PROTOTYPE_MODEL)) {
 			IObservation prot = ObservationFactory.getObservation(r.getValue().asObjectReference().getObject());
@@ -221,6 +229,9 @@ public class BayesianTransformer
 			st.data = new CategoricalDistributionDatasource(var, size, pcstates, classf, 
 					(ObservationContext) context);
 			st.data.addAllMetadata(modelMetadata.get(st.observable));
+			if (gmodel != null)
+				st.data.addAllMetadata(((Observation)gmodel).getMetadata());
+			
 			pstorage[i++] = st;
 		}
 		
@@ -298,6 +309,8 @@ public class BayesianTransformer
 			 * setup time, so we should compare results before adopting it as default.
 			 * 
 			 */
+			boolean skip = false;
+			
 			for (int e = 0; e < evidence.length; e++) {
 					IConcept ev = evidence[e].getStateConcept(state);
 					try {
@@ -308,7 +321,16 @@ public class BayesianTransformer
 							if (ekey != null) {
 								ekey += evidence[e].nodename + "=" + ev.getLocalName() + ", ";
 							}
-						}	
+						} else {
+							/*
+							 * if we have nodata in one of the required states, we want
+							 * nodata as a result instead of using the priors.
+							 */
+							if (requiredStates.contains(evidence[e].data.getObservableClass())) {
+								skip = true;
+								break;
+							}
+						}
 					} catch (Exception ex) {
 						
 						/*
@@ -325,9 +347,10 @@ public class BayesianTransformer
 			}
 			
 			/*
-			 * run inference
+			 * run inference unless crucial data not available
 			 */
-			bn.updateBeliefs();
+			if (!skip)
+				bn.updateBeliefs();
 						
 			if (ekey != null) {
 				if (keyset.containsKey(ekey)) {
@@ -344,7 +367,11 @@ public class BayesianTransformer
 			 */
 			String rrs = "";
 			for (int s = 0; s < pstorage.length; s++) {
-				pstorage[s].data.setValue(state, bn.getNodeValue(pstorage[s].field));
+				
+				pstorage[s].data.setValue(
+						state, 
+						skip ? null : bn.getNodeValue(pstorage[s].field));
+				
 				if (ekey != null) {
 					rrs += 
 						pstorage[s].observable.getLocalName() + "=" + Arrays.toString(bn.getNodeValue(pstorage[s].field)) + 

@@ -747,19 +747,35 @@ public class VisualizationFactory {
 
 		IExtent extent = context.getSpace();
 
-		if (extent instanceof ArealExtent) {
-			double dx = ((ArealExtent) extent).getEWExtent();
-			double dy = ((ArealExtent) extent).getNSExtent();
+		if (extent instanceof GridExtent) {
+			
+			int dx = ((GridExtent) extent).getXCells();
+			int dy = ((GridExtent) extent).getYCells();
+			double image_aspect_ratio = (double)dx / (double)dy;
 
-			if (dy > dx) {
-				y = maxHeight;
-				x = (int) ((double) y * (dx / dy));
-			} else {
+			// largest side of image must fit within corresponding side of viewport
+			if (dx > dy) {
 				x = maxWidth;
-				y = (int) ((double) x * (dy / dx));
+				y = (int)(((double)x) / image_aspect_ratio);
+				if (y > maxHeight) {
+					// reduce further
+					double fc = (double)maxHeight/(double)y;
+					x = (int)((double)x*fc);
+					y = (int)((double)y*fc);
+				}
+			} else {
+				y = maxHeight;
+				x = (int)(((double)y) * image_aspect_ratio);
+				if (x > maxWidth) {
+					// reduce further
+					double fc = (double)maxWidth/(double)x;
+					x = (int)((double)x*fc);
+					y = (int)((double)y*fc);
+				}
 			}
 		}
 
 		return new Pair<Integer, Integer>(x, y);
 	}
+
 }

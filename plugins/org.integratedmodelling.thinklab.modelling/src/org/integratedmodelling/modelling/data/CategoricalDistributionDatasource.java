@@ -36,7 +36,9 @@ public class CategoricalDistributionDatasource extends
 	
 	public static class DistributionParameters {
 		public double mean;
+		public double var;
 		public double std;
+		public double cv;
 		public IConcept mostLikelyCategory;
 		public double shannon;
 		public double[] probabilities;
@@ -73,7 +75,8 @@ public class CategoricalDistributionDatasource extends
 		double[] unc = new double[this.data.length];
 		IConcept truecase = (IConcept) getMetadata().get(Metadata.TRUECASE);
 		
-		double aggregatedMeanValue = 0.0;
+		double aggregatedMean = 0.0;
+		double aggregatedVariance = 0.0;
 		
 		for (int i = 0; i < this.data.length; i++) {
 
@@ -96,7 +99,7 @@ public class CategoricalDistributionDatasource extends
 				contp = true;
 				
 			} else {
-				
+								
 				/*
 				 * TODO allow passing a property to return the mean of the
 				 * distribution (if there is one) instead of the most likely
@@ -106,18 +109,24 @@ public class CategoricalDistributionDatasource extends
 				 */
 				if (averageable) {
 					ret[i] = val.mean;
+					unc[i] = val.cv;
+
+					aggregatedMean += val.mean;
+					aggregatedVariance += val.var;
+
 					contp = true;
 				} else {
 					ret[i] = (double)ranks.get(c);
+					unc[i] = val.shannon;
 				}
-				unc[i] = val.shannon;
 			}
 		}
 		
 		getMetadata().put(Metadata.UNCERTAINTY, unc);
 		if (contp) {
 			getMetadata().put(Metadata.CONTINUOUS, Boolean.TRUE);
-			getMetadata().put(Metadata.THEORETICAL_DATA_RANGE, new double[]{0.0, 1.0});
+			if (truecase != null)
+				getMetadata().put(Metadata.THEORETICAL_DATA_RANGE, new double[]{0.0, 1.0});
 		}
 		return ret;
 	}
@@ -132,14 +141,16 @@ public class CategoricalDistributionDatasource extends
 	private DistributionParameters getDistributionParameters(
 			double[] probabilities) {
 	
+		DistributionParameters ret = new DistributionParameters();
+		if (probabilities == null)
+			return ret;
+
 		IConcept c = valueMappings[0];
 		double   v = probabilities[0];
 		double   sh = 0;
 		double mu = 0.0, mu2 = 0.0;
-		int nst = 0;
-		
-		DistributionParameters ret = new DistributionParameters();
-		
+		int nst = 0;		
+
 		if (averageable) {
 			ret.max_values = new double[probabilities.length];
 			ret.min_values = new double[probabilities.length];
@@ -176,9 +187,9 @@ public class CategoricalDistributionDatasource extends
 		ret.shannon = (sh/Math.log((double)nst)) * -1.0;
 		ret.mostLikelyCategory = c;
 		ret.mean = mu;
-		ret.std = Math.sqrt(mu2 - (mu*mu));
-
-		
+		ret.var = mu2 - (mu*mu);
+		ret.std = Math.sqrt(ret.var);
+		ret.cv  = mu == 0.0 ? 0.0 : ret.std/mu;
 		return ret;
 	}
 
@@ -251,14 +262,20 @@ public class CategoricalDistributionDatasource extends
 	 */
 	@Override
 	public void setValue(int idx, Object o) {
-		/*
-		 * reorder values according to sorted order before inserting the distribution
-		 */
-		double[] ps = (double[])o;
-		for (int i = 0; i < ps.length; i++) {
-			shuttle[this.sortedIndexes[i]] = ps[i];
+		
+		if (o == null)
+			super.setValue(idx, null);
+		else {
+			
+			/*
+			 * reorder values according to sorted order before inserting the distribution
+			 */
+			double[] ps = (double[])o;
+			for (int i = 0; i < ps.length; i++) {
+				shuttle[this.sortedIndexes[i]] = ps[i];
+			}
+			super.setValue(idx, new IndexedCategoricalDistribution(shuttle));
 		}
-		super.setValue(idx, new IndexedCategoricalDistribution(shuttle));
 	}
 	
 	
@@ -282,6 +299,10 @@ public class CategoricalDistributionDatasource extends
 	 * @return
 	 */
 	public double[] getProbabilities(int n) {
+		
+		if (getValue(n) == null)
+			return null;
+		
 		return ((IndexedCategoricalDistribution)getValue(n)).data;
 	}
 
@@ -302,6 +323,10 @@ public class CategoricalDistributionDatasource extends
 	 * @return
 	 */
 	public double getProbability(int n, IConcept state) {
+		
+		if (getValue(n) == null)
+			return 0.0;
+		
 		int i = 0;
 		for (; i < valueMappings.length; i++) {
 			if (state.equals(valueMappings[i]))

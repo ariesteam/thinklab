@@ -55,7 +55,6 @@ public class PresentationTemplate {
 		public ArrayList<Node> customNodes = new ArrayList<Node>();
 		public ArrayList<String> otherTypes = new ArrayList<String>();
 		public HashMap<String, String> attributes = new HashMap<String, String>();
-		public int sequence = -1;
 		public String credits;
 		public String seeAlso;
 		
@@ -87,9 +86,6 @@ public class PresentationTemplate {
 		}
 		public String getId() {
 			return id;
-		}
-		public int getSequence() {
-			return sequence;
 		}
 		public String getPlotType() {
 			return plotType;
@@ -196,8 +192,6 @@ public class PresentationTemplate {
 					page.seeAlsoTitle = attr;
 			} else if (node.getNodeName().equals("id")) {
 				page.id = XMLDocument.getNodeValue(node);
-			} else if (node.getNodeName().equals("sequence")) {
-				page.sequence = Integer.parseInt(XMLDocument.getNodeValue(node));
 			} else {
 				
 				/*
@@ -216,12 +210,11 @@ public class PresentationTemplate {
 				page.customNodes.add(node);
 			}
 		}
-		if (page.sequence < 0) {
+		if (page.id != null) {
 			singlePages.add(page);
 			singlePagesById.put(page.id, page);
 		} else {
-			pages.ensureCapacity(page.sequence+1);
-			pages.add(page.sequence, page);
+			pages.add(page);
 		}
 	}
 

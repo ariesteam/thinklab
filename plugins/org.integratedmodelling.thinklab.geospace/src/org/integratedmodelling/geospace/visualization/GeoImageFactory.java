@@ -201,7 +201,7 @@ public class GeoImageFactory {
 	
 	public BufferedImage getImagery(Envelope envelope, int width, int height) throws ThinklabException {
 
-		BufferedImage ret = getWFSImage(envelope, width, height);
+		BufferedImage ret = getWMSImage(envelope, width, height);
 
 		if (ret == null)
 			ret = getSatelliteImage(envelope, width, height, null, null, 
@@ -215,7 +215,7 @@ public class GeoImageFactory {
 			int[] imageData, int rowWidth, ColorMap cmap) 
 		throws ThinklabException {
 
-		BufferedImage ret = getWFSImage(envelope, width, height);
+		BufferedImage ret = getWMSImage(envelope, width, height);
 
 		if (ret == null)
 			ret = getSatelliteImage(envelope, width, height, null, null, 
@@ -242,7 +242,7 @@ public class GeoImageFactory {
 			Image image, int rowWidth, ColorMap cmap) 
 		throws ThinklabException {
 
-		BufferedImage ret = getWFSImage(envelope, width, height);
+		BufferedImage ret = getWMSImage(envelope, width, height);
 
 		if (ret == null)
 			ret = getSatelliteImage(envelope, width, height, null, null, 
@@ -272,7 +272,7 @@ public class GeoImageFactory {
 	 */
 	public BufferedImage getImagery(ShapeValue shape, int width, int height, int flags) throws ThinklabException {
 
-		BufferedImage ret = getWFSImage(shape.getEnvelope(), width, height);
+		BufferedImage ret = getImagery(shape.getEnvelope(), width, height);
 		GeometryFactory geoFactory = new GeometryFactory();
 
 		double edgeBuffer = 0.0;
@@ -391,16 +391,13 @@ public class GeoImageFactory {
     }
 	
     /**
-     * TODO this should probably cache the image to prevent lots of slow
-     * network access.
-     * 
      * @param envelope
      * @param width
      * @param height
      * @return
      * @throws ThinklabResourceNotFoundException
      */
-	private BufferedImage getWFSImage(Envelope envelope, int width, int height) throws ThinklabResourceNotFoundException {
+	private BufferedImage getWMSImage(Envelope envelope, int width, int height) throws ThinklabResourceNotFoundException {
 		
 		BufferedImage ret = null;
 		initializeWms();
@@ -421,27 +418,32 @@ public class GeoImageFactory {
 			request.setSRS("EPSG:4326");
 			
 			String bbox =
-				envelope.getMinX() + "," + envelope.getMinY() + "," +
-				envelope.getMaxX() + "," + envelope.getMaxY();
+				(float)envelope.getMinX() + "," + (float)envelope.getMinY() + "," +
+				(float)envelope.getMaxX() + "," + (float)envelope.getMaxY();
 			
 			request.setBBox(bbox);
-
+			
 			for ( Layer layer : getWMSLayers()) {
 				 request.addLayer(layer);
 			}
 			
 			GetMapResponse response = null;
 			try {
+				
+				System.out.println(request.getFinalURL());
+				
 				response = (GetMapResponse) _wms.issueRequest(request);
 				ret = ImageIO.read(response.getInputStream());
 			} catch (Exception e) {
-				throw new ThinklabResourceNotFoundException(e);
+				Geospace.get().logger().warn("cannot get WFS imagery: " + e.getLocalizedMessage());
+				return null;
 			}
 			
 			/*
 			 * FIXME this obviously must have a limit
 			 */
-			_cache.put(sig, ImageUtil.clone(ret));
+			if (ret != null)
+				_cache.put(sig, ImageUtil.clone(ret));
 		}
 		
 		return ret;

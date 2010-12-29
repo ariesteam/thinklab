@@ -6,7 +6,6 @@ import java.util.HashSet;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModelFactory;
@@ -32,13 +31,16 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 	String source = null;
 	String algorithm = null;
 	ArrayList<String> keeperIds = new ArrayList<String>();
+	ArrayList<String> requiredIds = new ArrayList<String>();
 	ArrayList<IConcept> keepers = new ArrayList<IConcept>();
+	ArrayList<IConcept> required = new ArrayList<IConcept>();
 	
 	@Override
 	protected void copy(DefaultAbstractModel model) {
 		super.copy(model);
 		algorithm = ((BayesianModel)model).algorithm;
 		keeperIds = ((BayesianModel)model).keeperIds;
+		requiredIds = ((BayesianModel)model).requiredIds;
 		keepers = ((BayesianModel)model).keepers;
 		source = ((BayesianModel)model).source;
 	}
@@ -56,6 +58,12 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 			Collection<?> p = (Collection<?>) argument;
 			for (Object c : p)
 				keeperIds.add(c.toString());
+
+		} else if (keyword.equals(":required")) {
+			
+			Collection<?> p = (Collection<?>) argument;
+			for (Object c : p)
+				requiredIds.add(c.toString());
 
 		} else super.applyClause(keyword, argument);
 			
@@ -116,6 +124,13 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 			arr.add(Polylist.list(
 						ModelFactory.RETAINS_STATES, 
 						keepers.get(i).toString()));
+			
+		}
+		
+		for (int i = 0; i < required.size(); i++) {
+			arr.add(Polylist.list(
+						ModelFactory.REQUIRES_STATES, 
+						required.get(i).toString()));
 		}
 		
 		/*
@@ -148,6 +163,9 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 		
 		for (String s : keeperIds) {
 			keepers.add(annotateConcept(s,session, null));
+		}
+		for (String s : requiredIds) {
+			required.add(annotateConcept(s,session, null));
 		}
 		
 		/*
