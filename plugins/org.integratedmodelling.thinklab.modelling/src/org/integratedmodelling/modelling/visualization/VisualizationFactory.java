@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -22,6 +23,7 @@ import org.integratedmodelling.geospace.visualization.GeoImageFactory;
 import org.integratedmodelling.modelling.Context;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
@@ -219,6 +221,8 @@ public class VisualizationFactory {
 			}
 		}
 
+		System.out.println("SCREW " + observable);
+		
 		int[] idata = Metadata.getImageData(state);
 		int nlevels = (Integer) state.getMetadata().get(Metadata.IMAGE_LEVELS);
 		Boolean zeroIsNodata = (Boolean) state.getMetadata().get(
@@ -660,6 +664,11 @@ public class VisualizationFactory {
 		IExtent space = Context.getSpace(context);
 		IExtent time = Context.getTime(context);
 
+//		if (state.getObservableClass().toString().is("")
+		
+		if (state.getObservableClass().is(KnowledgeManager.Text()))
+			return ret;
+		
 		// FIXME this is unnecessarily costly.
 		Metadata.analyzeData(state);
 

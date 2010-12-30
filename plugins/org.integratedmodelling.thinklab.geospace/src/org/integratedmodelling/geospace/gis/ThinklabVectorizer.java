@@ -4,15 +4,12 @@ import java.util.ArrayList;
 
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.Envelope2D;
-import org.geotools.process.ProcessException;
-import org.geotools.process.raster.RasterToVectorProcess;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.geospace.coverage.AbstractRasterCoverage;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
@@ -35,12 +32,12 @@ public class ThinklabVectorizer  {
 		// cross fingers
 		Envelope2D bounds = new Envelope2D(extent.getNormalizedEnvelope());
 		FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
-		try {
-			 features = 
-				RasterToVectorProcess.process(rCoverage.getCoverage(), 0, bounds, nans, null);
-		} catch (ProcessException e) {
-			throw new ThinklabValidationException(e);
-		}
+//		try {
+////			 features = 
+////				RasterToVectorProcess.process(rCoverage.getCoverage(), 0, bounds, nans, null);
+//		} catch (ProcessException e) {
+//			throw new ThinklabValidationException(e);
+//		}
 		
 		return new VectorCoverage(features, extent.getCRS());
 	}

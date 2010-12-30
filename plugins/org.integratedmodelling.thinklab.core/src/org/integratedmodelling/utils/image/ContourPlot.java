@@ -68,15 +68,15 @@ public class ContourPlot extends BufferedImage {
 	public static ContourPlot createPlot(int x, int y, double[][] data) throws ThinklabValidationException {
 		ColorMap cmap = ColorMap.getColormap("rainbow", N_CONTOURS+1, true);
 		ContourPlot ret = new ContourPlot(x, y, cmap, data.length, data[0].length);
-		ret.setData(data);
-		ret.paint();
+		if (ret.setData(data))
+			ret.paint();
 		return ret;
 	}
 
 	public static ContourPlot createPlot(int x, int y, double[][] data, ColorMap cmap) throws ThinklabValidationException {
 		ContourPlot ret = new ContourPlot(x, y, cmap, data.length, data[0].length);
-		ret.setData(data);
-		ret.paint();
+		if (ret.setData(data))
+			ret.paint();
 		return ret;
 	}
 	
@@ -99,7 +99,7 @@ public class ContourPlot extends BufferedImage {
 	// "GetExtremes" scans the data in "z" in order
 	// to assign values to "zMin" and "zMax".
 	//-------------------------------------------------------
-	private void getExtremes() throws ThinklabValidationException {
+	private boolean getExtremes() throws ThinklabValidationException {
 		int	i,j;
 		double	here;
 
@@ -113,9 +113,9 @@ public class ContourPlot extends BufferedImage {
 			}
 		}
 		if (zMin == zMax) {
-			throw new ThinklabValidationException("invalid data in contour plot");
+			return false;
 		}
-		return;
+		return true;
 	}
 
 	//-------------------------------------------------------
@@ -527,13 +527,15 @@ public class ContourPlot extends BufferedImage {
 		ImageUtil.saveImage(this, file);
 	}
 	
-	public void setData(double[][] data) throws ThinklabValidationException
+	public boolean setData(double[][] data) throws ThinklabValidationException
 	{
 		z = data;
-		getExtremes();
+		if (!getExtremes())
+			return false;
 		if (zMax > Z_MAX_MAX) zMax = Z_MAX_MAX;
 		if (zMin < Z_MIN_MIN) zMin = Z_MIN_MIN;
 		assignContourValues();
+		return true;
 	}
 
 	public static void test() {
