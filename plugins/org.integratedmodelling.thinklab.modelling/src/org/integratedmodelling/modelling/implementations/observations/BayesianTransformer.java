@@ -251,12 +251,13 @@ public class BayesianTransformer
 				Object ret = data.getValue(state);
 				
 				if (ret != null && !(ret instanceof IConcept)) {
-					throw new ThinklabValidationException(
-							"data used to set bayesian evidence for " + 
-							nodename + 
-							" is not a classification");
+//					throw new ThinklabValidationException(
+//							"data used to set bayesian evidence for " + 
+//							nodename + 
+//							" is not a classification");
+					return null;
 				}
-				
+								
 				return (IConcept)ret;
 			}
 		}
@@ -269,10 +270,12 @@ public class BayesianTransformer
 		ArrayList<Evidence> evdnc = new ArrayList<Evidence>();
 		
 		for (IConcept ec : sourceCtx.getStateObservables()) {
-			if (!nodeIDs.contains(ec.getLocalName()))
-				continue;
+			
+			// allowing unneeded evidence to get there for other purposes, checking at setEvidence time.
 			IState cs = sourceCtx.getState(ec);
-			evdnc.add(new Evidence(bn.getNode(ec.getLocalName()), cs, ec.getLocalName()));
+			evdnc.add(new Evidence(
+						nodeIDs.contains(ec.getLocalName()) ? bn.getNode(ec.getLocalName()) : -1000, 
+						cs, ec.getLocalName()));
 		}		
 
 		Evidence[] evidence = evdnc.toArray(new Evidence[evdnc.size()]);
@@ -315,11 +318,13 @@ public class BayesianTransformer
 					IConcept ev = evidence[e].getStateConcept(state);
 					try {
 						if (ev != null) {
-							bn.setEvidence(
-								evidence[e].field, 
-								ev.getLocalName());
-							if (ekey != null) {
-								ekey += evidence[e].nodename + "=" + ev.getLocalName() + ", ";
+							if (evidence[e].field != -1000) {
+								bn.setEvidence(
+										evidence[e].field, 
+										ev.getLocalName());
+								if (ekey != null) {
+									ekey += evidence[e].nodename + "=" + ev.getLocalName() + ", ";
+								}
 							}
 						} else {
 							/*

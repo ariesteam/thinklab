@@ -253,8 +253,8 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 			Object val = registers[parmList.get(i).getSecond()];
 
 			// if we have any nodata dependency, we eval to nodata
-			if (val == null || (val instanceof Double && ((Double)val).isNaN()))
-				return null;
+//			if (val == null || (val instanceof Double && ((Double)val).isNaN()))
+//				return null;
 			
 			parms = (PersistentArrayMap) parms.assoc(kwList.get(i), val);
 		}

@@ -28,6 +28,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
@@ -656,21 +657,19 @@ public class VisualizationFactory {
 	 * @param state
 	 * @param context
 	 * @return
+	 * @throws ThinklabException 
 	 */
-	public Collection<String> getPlotTypes(IState state, IContext context) {
+	public Collection<String> getPlotTypes(IState state, IContext context) throws ThinklabException {
 
 		ArrayList<String> ret = new ArrayList<String>();
 
 		IExtent space = Context.getSpace(context);
 		IExtent time = Context.getTime(context);
-
-//		if (state.getObservableClass().toString().is("")
-		
-		if (state.getObservableClass().is(KnowledgeManager.Text()))
-			return ret;
-		
+	
 		// FIXME this is unnecessarily costly.
 		Metadata.analyzeData(state);
+		if (state.getDataAsDoubles() == null)
+			return ret;
 
 		Boolean isContinuous = (Boolean) state.getMetadata().get(
 				Metadata.CONTINUOUS);
