@@ -26,8 +26,9 @@ import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransf
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
-import org.integratedmodelling.modelling.Context;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -1025,12 +1026,20 @@ public class ObservationContext implements IObservationContext, IContext {
 
 	@Override
 	public IExtent getTime() {
-		return Context.getTime(this);
+		try {
+			return getExtent(KnowledgeManager.get().requireConcept("time:TemporalObservable"));
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 	@Override
 	public IExtent getSpace() {
-		return Context.getSpace(this);
+		try {
+			return getExtent(KnowledgeManager.get().requireConcept("geospace:SubdividedSpace"));
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 	public void setObservation(IObservation observation) {

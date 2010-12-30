@@ -316,8 +316,8 @@ public class XMLDocument {
 		NodeList children = node.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
 			Node textChild = children.item(i);
-			if (textChild.getNodeType() != Node.TEXT_NODE) {
-				//System.err.println("Mixed content! Skipping child element " + textChild.getNodeName());
+			if (textChild.getNodeType() != Node.TEXT_NODE && 
+				textChild.getNodeType() != Node.CDATA_SECTION_NODE) {
 				continue;
 	        }
 			buf.append(textChild.getNodeValue());

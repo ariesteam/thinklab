@@ -128,7 +128,7 @@ public class PresentationTemplate {
 			}  else if (node.getNodeName().equals("runninghead")) {
 				this.runningHead = XMLDocument.getNodeValue(node);
 			} else if (node.getNodeName().equals("concept")) {
-				this.concept = XMLDocument.getNodeValue(node);
+				this.concept = XMLDocument.getNodeValue(node).trim();
 			} else if (node.getNodeName().equals("style")) {
 				this.style = XMLDocument.getNodeValue(node);
 			} else {
@@ -167,7 +167,7 @@ public class PresentationTemplate {
 			} else if (node.getNodeName().equals("runninghead")) {
 				page.runningHead = XMLDocument.getNodeValue(node);
 			} else if (node.getNodeName().equals("concept")) {
-				page.concept = XMLDocument.getNodeValue(node);
+				page.concept = XMLDocument.getNodeValue(node).trim();
 			} else if (node.getNodeName().equals("background")) {
 				page.background = XMLDocument.getNodeValue(node);
 			} else if (node.getNodeName().equals("name")) {
