@@ -323,8 +323,12 @@ public class ShapeValue extends ParsedLiteralValue implements ITopologicallyComp
 				c = Geospace.get().MultiPolygon();
 		}
 		
+		/*
+		 * happens with empty collection shapes
+		 */
 		if (c == null)
-			System.out.println("stocazzo, un " + shape + " non si sa come cazzo appioppar");
+			c = Geospace.get().Shape();
+			
 		super.setConceptWithoutValidation(c);
 	}
 

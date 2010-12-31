@@ -221,8 +221,6 @@ public class VisualizationFactory {
 				throw new ThinklabIOException(e);
 			}
 		}
-
-		System.out.println("SCREW " + observable);
 		
 		int[] idata = Metadata.getImageData(state);
 		int nlevels = (Integer) state.getMetadata().get(Metadata.IMAGE_LEVELS);

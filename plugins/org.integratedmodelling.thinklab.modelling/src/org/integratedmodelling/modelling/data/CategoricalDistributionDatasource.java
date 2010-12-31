@@ -108,6 +108,7 @@ public class CategoricalDistributionDatasource extends
 				 * that case.
 				 */
 				if (averageable) {
+					
 					ret[i] = val.mean;
 					unc[i] = val.cv;
 
@@ -125,6 +126,9 @@ public class CategoricalDistributionDatasource extends
 		getMetadata().put(Metadata.UNCERTAINTY, unc);
 		if (contp) {
 			getMetadata().put(Metadata.CONTINUOUS, Boolean.TRUE);
+			getMetadata().put(Metadata.AGGREGATED_TOTAL, new Double(aggregatedMean));
+			getMetadata().put(Metadata.AGGREGATED_CV, 
+					new Double(Math.sqrt(aggregatedVariance)/aggregatedMean));
 			if (truecase != null)
 				getMetadata().put(Metadata.THEORETICAL_DATA_RANGE, new double[]{0.0, 1.0});
 		}
@@ -179,6 +183,7 @@ public class CategoricalDistributionDatasource extends
 				
 				mu += midpoint * probabilities[i];
 				mu2 += midpoint * midpoint * probabilities[i];
+				
 				ret.min_values[i] = this.distributionBreakpoints[i];
 				ret.max_values[i] = this.distributionBreakpoints[i+1];
 			}
@@ -189,7 +194,7 @@ public class CategoricalDistributionDatasource extends
 		ret.mean = mu;
 		ret.var = mu2 - (mu*mu);
 		ret.std = Math.sqrt(ret.var);
-		ret.cv  = mu == 0.0 ? 0.0 : ret.std/mu;
+		ret.cv  = mu == 0.0 ? 0.0 : (ret.std/mu);
 		return ret;
 	}
 

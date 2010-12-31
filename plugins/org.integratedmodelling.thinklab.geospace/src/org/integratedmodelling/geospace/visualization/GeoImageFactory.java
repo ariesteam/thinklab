@@ -57,9 +57,10 @@ public class GeoImageFactory {
 		BOTTOM
 	}
 
-	public static int HOLLOW_SHAPES = 0x0000;
-	public static int FILLED_SHAPES = 0x0001;
-	public static int BORDER = 0x0001;
+	public static final int HOLLOW_SHAPES = 0x0000;
+	public static final int FILLED_SHAPES = 0x0001;
+	public static final int BORDER = 0x0002;
+	public static final int GREEN_SHAPES = 0x004;
 
 	public static final String WMS_IMAGERY_SERVER_PROPERTY = "imagery.wms";
 	public static final String WMS_LAYER_PROPERTY = "imagery.wms.layers";
@@ -270,15 +271,15 @@ public class GeoImageFactory {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public BufferedImage getImagery(ShapeValue shape, int width, int height, int flags) throws ThinklabException {
+	public BufferedImage getImagery(Envelope envelope, ShapeValue shape, int width, int height, int flags) throws ThinklabException {
 
-		BufferedImage ret = getImagery(shape.getEnvelope(), width, height);
+		BufferedImage ret = getImagery(envelope, width, height);
 		GeometryFactory geoFactory = new GeometryFactory();
 
 		double edgeBuffer = 0.0;
 	    
 		if (ret == null) {
-			ret = getSatelliteImage(shape.getEnvelope(), width, height, null, null, 
+			ret = getSatelliteImage(envelope, width, height, null, null, 
 					HAlignment.MIDDLE, VAlignment.MIDDLE);
 		}	
 		
@@ -286,15 +287,22 @@ public class GeoImageFactory {
 		 * draw shape boundaries.
 		 */
 		Geometry geometry = shape.getGeometry();
-		double x = shape.getEnvelope().getMinX() - edgeBuffer;
-		double y = shape.getEnvelope().getMinY() - edgeBuffer;
-		double w = shape.getEnvelope().getWidth() + edgeBuffer * 2;
-		double h = shape.getEnvelope().getHeight() + edgeBuffer * 2;
+		double x = envelope.getMinX() - edgeBuffer;
+		double y = envelope.getMinY() - edgeBuffer;
+		double w = envelope.getWidth() + edgeBuffer * 2;
+		double h = envelope.getHeight() + edgeBuffer * 2;
+		
 		java.awt.geom.Rectangle2D.Double bounds = 
 			new java.awt.geom.Rectangle2D.Double(x, y, w, h);
 
 		Graphics graphics = ret.getGraphics();
-		graphics.setColor(Color.red);
+		
+		if ((flags & GREEN_SHAPES) != 0) {
+			graphics.setColor(Color.green);
+		} else {
+			graphics.setColor(Color.red);
+		}
+		
 		graphics.setPaintMode();
 		
 		if (geometry.getClass().equals(MultiPolygon.class) || geometry.getClass().equals(Polygon.class)) {	
@@ -328,7 +336,11 @@ public class GeoImageFactory {
 		
 		return ret;	
 	}
-	
+
+	public BufferedImage getImagery(ShapeValue shape, int width, int height, int flags) throws ThinklabException {
+		return getImagery(shape.getEnvelope(), shape, width, height, flags);
+	}
+
     private void drawGeometry(Geometry geometry, 
     		java.awt.geom.Rectangle2D.Double bounds, 
     		Graphics graphics, int width, int height, int flags) {
