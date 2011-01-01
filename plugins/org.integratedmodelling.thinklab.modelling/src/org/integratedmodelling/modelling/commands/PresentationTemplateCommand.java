@@ -4,53 +4,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
-import org.integratedmodelling.corescience.listeners.IContextualizationListener;
-import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
-import org.integratedmodelling.geospace.interfaces.IGazetteer;
-import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.modelling.Context;
-import org.integratedmodelling.modelling.DefaultAbstractModel;
 import org.integratedmodelling.modelling.Model;
 import org.integratedmodelling.modelling.ModelFactory;
-import org.integratedmodelling.modelling.ObservationFactory;
-import org.integratedmodelling.modelling.Scenario;
-import org.integratedmodelling.modelling.interfaces.IDataset;
 import org.integratedmodelling.modelling.interfaces.IModel;
-import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.literals.ContextValue;
-import org.integratedmodelling.modelling.storage.FileArchive;
-import org.integratedmodelling.modelling.storage.NetCDFArchive;
-import org.integratedmodelling.modelling.visualization.FileVisualization;
-import org.integratedmodelling.modelling.visualization.ObservationListing;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
 import org.integratedmodelling.modelling.visualization.presentation.PresentationFactory;
 import org.integratedmodelling.modelling.visualization.presentation.PresentationTemplate;
+import org.integratedmodelling.modelling.visualization.presentation.PresentationTemplate.Page;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.time.TimeFactory;
-import org.integratedmodelling.utils.Pair;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.xml.XML;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
@@ -75,6 +51,11 @@ public class PresentationTemplateCommand implements ICommandHandler {
 				
 		PresentationTemplate template = PresentationFactory.getPresentation(concept);
 		HashMap<IConcept, IState> states = new HashMap<IConcept, IState>();
+		HashSet<IConcept> present = new HashSet<IConcept>();
+		
+		for (Page p : template.getPages()) {
+			present.add(p.getConcept());
+		}
 		
 		for (Node node : template.getCustomNodes()) {
 			if (node.getNodeName().equals("model")) {
@@ -93,7 +74,8 @@ public class PresentationTemplateCommand implements ICommandHandler {
 						IContext result = ((ContextValue)res).getObservationContext();
 					
 						for (IState s : result.getStates())
-							states.put(s.getObservableClass(), s);
+							if (!present.contains(s.getObservableClass()))
+								states.put(s.getObservableClass(), s);
 					}
 				} catch (ThinklabException e) {
 					session.print("error running " + m + " in " + c + ": skipping");
@@ -101,22 +83,28 @@ public class PresentationTemplateCommand implements ICommandHandler {
 			}
 		}
 
+		ArrayList<XML.XmlNode> nodes = new ArrayList<XML.XmlNode>();
 		for (IConcept c : states.keySet()) {
 			
 			VisualConcept vc = TypeManager.get().getVisualConcept(c);
-			XML.document(
+			nodes.add(
 				XML.node("page",
 						XML.node("concept", c.toString()),
 						XML.node("name", vc.getLabel()),
 						XML.node("title", vc.getLabel()),
-						XML.node("group", ""),
-						XML.node("description", vc.getDescription()),
+						XML.node("see-also", XML.cdata("")),
+						XML.node("credits", XML.cdata("")),
+						XML.node("group", "groupname"),
+						XML.node("description", XML.cdata(vc.getDescription())),
 						XML.node("runninghead", vc.getLabel()),
 						XML.node("plot-type", "geosurface-2d").attr("default", "true"),
 						XML.node("plot-type", "geocontour-2d")
-			)).dump(session.getOutputStream());
+				).attr("id", CamelCase.toLowerCase(c.getLocalName(), '-')));
 		}
-			
+
+		XML.document(XML.node("pages", nodes)).dump(session.getOutputStream());
+
+		
 		return null;
 	}
 

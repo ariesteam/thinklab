@@ -34,6 +34,7 @@ public class XML {
 	
 	public static class XmlNode extends DefaultMutableTreeNode {
 
+		boolean isCdata = false;
 		private static final long serialVersionUID = -3750169814447901831L;
 		String tag = null;
 		ArrayList<Pair<String, String>> attrs = null;
@@ -52,7 +53,7 @@ public class XML {
 		public void text(String text) {
 			contents.add(text);
 		}
-		
+
 		public XmlNode(String tag) {
 			this.tag = tag;
 		}
@@ -205,4 +206,10 @@ public class XML {
 				
 		return ret;
 	}
+	
+	
+	public static String cdata(String text) {
+		return "<![[CDATA\n" + text + "\n]]>";
+	}
+	
 }
