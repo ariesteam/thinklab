@@ -61,7 +61,14 @@ public class CategoricalDistributionDatasource extends
 			getDistributionParameters(dist.data);
 		
 		val.probabilities = dist.data;
-		val.categories = rnk;
+
+		IConcept[] cc = rnk;
+		if (rnk == null && sortedIndexes != null) {
+			cc = new IConcept[sortedIndexes.length];
+			for (int i = 0; i < sortedIndexes.length; i++)
+				cc[i] = valueMappings[sortedIndexes[i]];
+		}
+		val.categories = cc;
 		val.isBinary = (IConcept) getMetadata().get(Metadata.TRUECASE) != null;
 		
 		return val;
