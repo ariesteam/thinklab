@@ -421,29 +421,6 @@ public abstract class SQLServer {
     
     
     public void execute(String sql) throws ThinklabStorageException {
-    	    	
-// FIXME please
-// trying to make sense of why I get "no suitable driver" when using connection
-// pooling, which shows that everything is fine, drivers are there and like the URI, but it
-// just does not work anyway when used within a thinklab plugin. Funny thing is, the same
-// code OUTSIDE of thinklab works just fine with connection pooling. No jar conflicts to
-// speak of. What to do?
-//
-//    	System.out.println("In execute()");
-//    	Enumeration<Driver> en = DriverManager.getDrivers();
-//    	
-//    	while (en.hasMoreElements()) {
-//    		Driver dd = en.nextElement();
-//    		System.out.println("got driver: " + dd);
-//        	try {
-//				System.out.println("Does the stupid driver accept my URL " + 
-//						getURI()+ 
-//						"? " + dd.acceptsURL(getURI()) );
-//			} catch (SQLException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//    	}
 
     	if (logger != null) {
     		logger.info(sql);
@@ -451,11 +428,20 @@ public abstract class SQLServer {
     	
     	Connection conn = null;
     	Statement stmt  = null;
+    	int result = -1;
     	
 		try {
 			conn = getConnection();
 			stmt = conn.createStatement();
-	    	stmt.executeUpdate(sql);
+//	    	stmt.executeUpdate(sql);
+			if (stmt.execute(sql)) {
+				ResultSet rs = stmt.getResultSet();
+				rs.next();
+				result = 0;
+			} else {
+				result = stmt.getUpdateCount();
+			}
+				
 		} catch (SQLException e) {
 			throw new ThinklabStorageException(e);
 		} finally {
