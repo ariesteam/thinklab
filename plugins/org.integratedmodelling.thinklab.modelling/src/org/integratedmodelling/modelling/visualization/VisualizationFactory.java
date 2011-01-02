@@ -379,7 +379,7 @@ public class VisualizationFactory {
 
 		ImageUtil.createImageFile(
 				ImageUtil.upsideDown(idata, space.getXCells()),
-				space.getXCells(), x, y, ColorMap.alphamask(256), fileOrNull);
+				space.getXCells(), x, y, ColorMap.redscale(256), fileOrNull);
 
 		return fileOrNull;
 	}
