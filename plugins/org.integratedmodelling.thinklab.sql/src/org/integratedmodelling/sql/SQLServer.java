@@ -433,7 +433,6 @@ public abstract class SQLServer {
 		try {
 			conn = getConnection();
 			stmt = conn.createStatement();
-//	    	stmt.executeUpdate(sql);
 			if (stmt.execute(sql)) {
 				ResultSet rs = stmt.getResultSet();
 				rs.next();

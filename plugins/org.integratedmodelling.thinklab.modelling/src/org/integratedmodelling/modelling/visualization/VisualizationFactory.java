@@ -379,11 +379,25 @@ public class VisualizationFactory {
 
 		ImageUtil.createImageFile(
 				ImageUtil.upsideDown(idata, space.getXCells()),
-				space.getXCells(), x, y, ColorMap.redscale(256), fileOrNull);
+				space.getXCells(), x, y, ColorMap.jet(256), fileOrNull);
 
 		return fileOrNull;
 	}
 
+	public Pair<File[], String[]> 
+	
+		getLegend(ColorMap cmap, int totalLength, int height, String desc, String fileBaseName) throws ThinklabIOException {
+
+			String ext = MiscUtilities.getFileExtension(fileBaseName);
+			String bas = MiscUtilities.getFileBasePath(fileBaseName);
+			String fn = bas + "_0." + ext;
+
+			cmap.getColorbar(height, new File(fn));
+			return new Pair<File[], String[]>(
+					new File[]{new File(fn)},
+					new String[]{desc});
+	}
+	
 	/**
 	 * Return a pair with an array of image files and one of descriptions; each
 	 * file is a rectangle with the uniform color of a state, and each
