@@ -209,7 +209,8 @@ public class XML {
 	
 	
 	public static String cdata(String text) {
-		return "<![[CDATA\n" + text + "\n]]>";
+		// TODO make this a proxy for a proper node - this will convert the <> to entities
+		return "<![CDATA[\n" + text + "\n]]>";
 	}
 	
 }
