@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.visualization;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Properties;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
@@ -24,7 +25,7 @@ import org.integratedmodelling.utils.Pair;
  *
  */
 public class FileVisualization implements IVisualization {
-
+	
 	protected FileArchive archive = null;
 	protected IContext context;
 	boolean visualized = false;
@@ -48,13 +49,12 @@ public class FileVisualization implements IVisualization {
 	}
 	
 	public FileVisualization(IContext context) throws ThinklabException {
-		initialize(context);
+		initialize(context, null);
 	}
-	
 	
 	public FileVisualization(IContext context, File directory) throws ThinklabException {
 		this.directory = directory;
-		initialize(context);
+		initialize(context, null);
 	}
 	
 	public int getXPlotSize() {
@@ -66,7 +66,7 @@ public class FileVisualization implements IVisualization {
 	}
 
 	@Override
-	public void initialize(IContext context) throws ThinklabException {
+	public void initialize(IContext context, Properties properties) throws ThinklabException {
 		
 		// remove when not needed anymore.
 		((ObservationContext)context).collectStates();
@@ -78,7 +78,14 @@ public class FileVisualization implements IVisualization {
 					new FileArchive(context) :
 					new FileArchive(context, directory);
 		}	
-	}
+
+		String vpx = properties.getProperty(VIEWPORT_X_PROPERTY);
+		String vpy = properties.getProperty(VIEWPORT_Y_PROPERTY);
+		
+		if (vpx != null && vpy != null) {
+			setViewPort(Integer.parseInt(vpx.trim()), Integer.parseInt(vpy.trim()));
+		}
+	}	
 	
 	/**
 	 * Use this if you need the visuals to fit a given viewport.
@@ -124,8 +131,7 @@ public class FileVisualization implements IVisualization {
 				"visualization of " + 
 				((IObservationContext)context).getObservation().getObservableClass() + 
 				" created in " +
-				archive.getDirectory());
-				
+				archive.getDirectory());	
 	}
 
 	@Override

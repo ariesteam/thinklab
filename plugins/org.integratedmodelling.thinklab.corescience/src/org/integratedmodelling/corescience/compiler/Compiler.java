@@ -45,7 +45,7 @@ public class Compiler {
 	
 	class ObsDesc {
 		int accessorId = -1;
-		IStateAccessor accessor = null;
+		private IStateAccessor accessor = null;
 		boolean needed = false;
 		int register = -1;
 		boolean stateStored = false;

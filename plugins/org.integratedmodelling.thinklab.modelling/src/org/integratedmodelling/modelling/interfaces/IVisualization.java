@@ -1,5 +1,7 @@
 package org.integratedmodelling.modelling.interfaces;
 
+import java.util.Properties;
+
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -18,12 +20,20 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
  *
  */
 public interface IVisualization {
+	
+	public static final String VIEWPORT_X_PROPERTY = "viewport-x";
+	public static final String VIEWPORT_Y_PROPERTY = "viewport-y";
 
 	/**
+	 * Visualizations must have an empty constructor. The context passed
+	 * should define entirely, and it must be capable of redefining an already
+	 * defined visualization from scratch. The properties may contain data 
+	 * and attributes coming from configuration; according to the purposes,
+	 * visualizations should honor the properties but not depend on them.
 	 * 
 	 * @param dataset
 	 */
-	public void initialize(IContext context) throws ThinklabException;
+	public void initialize(IContext context, Properties properties) throws ThinklabException;
 
 	/**
 	 * Do the magic. The results will depend on the type of visualization. It should allow

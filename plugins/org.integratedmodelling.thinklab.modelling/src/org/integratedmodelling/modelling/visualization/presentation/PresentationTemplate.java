@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.visualization.presentation;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -27,12 +28,17 @@ public class PresentationTemplate {
 	ArrayList<Page> pages = new ArrayList<PresentationTemplate.Page>();
 	ArrayList<Page> singlePages = new ArrayList<PresentationTemplate.Page>();
 	HashMap<String, Page> singlePagesById = new HashMap<String, PresentationTemplate.Page>();
+
 	private String title;
 	private String description;
 	private String shortDescription;
 	private String runningHead;
 	private String concept;
 	private String style;
+	private String id;
+	
+	private Properties properties = new Properties();
+	
 	public HashMap<String, String> attributes = new HashMap<String, String>();
 
 	public ArrayList<Node> customNodes = new ArrayList<Node>();
@@ -40,6 +46,16 @@ public class PresentationTemplate {
 	@Override
 	public String toString() {	
 		return "[presentation: " + title + ": " + concept + "]"; 
+	}
+	
+	/**
+	 * Properties collects the content of all fields that have a simple
+	 * text content.
+	 * 
+	 * @return
+	 */
+	public Properties getProperties() {
+		return this.properties;
 	}
 	
 	public class Page {
@@ -121,16 +137,25 @@ public class PresentationTemplate {
 				addPage(doc, node);
 			} else if (node.getNodeName().equals("title")) {
 				this.title = XMLDocument.getNodeValue(node);
+				properties.put("title", this.title);
+			} else if (node.getNodeName().equals("id")) {
+				this.id = XMLDocument.getNodeValue(node);
+				properties.put("id", this.id);
 			} else if (node.getNodeName().equals("description")) {
 				this.description = XMLDocument.getNodeValue(node);
+				properties.put("description", this.description);
 			} else if (node.getNodeName().equals("short-description")) {
 				this.shortDescription = XMLDocument.getNodeValue(node);
+				properties.put("short-description", this.shortDescription);
 			}  else if (node.getNodeName().equals("runninghead")) {
 				this.runningHead = XMLDocument.getNodeValue(node);
+				properties.put("runninghead", this.runningHead);
 			} else if (node.getNodeName().equals("concept")) {
 				this.concept = XMLDocument.getNodeValue(node).trim();
+				properties.put("concept", this.concept);
 			} else if (node.getNodeName().equals("style")) {
 				this.style = XMLDocument.getNodeValue(node);
+				properties.put("style", this.style);
 			} else {
 				
 				/*
@@ -140,6 +165,7 @@ public class PresentationTemplate {
 				String ss = XMLDocument.getNodeValue(node);
 				if (ss != null && !ss.isEmpty()) {
 					attributes.put(node.getNodeName(), ss);
+					properties.put(node.getNodeName(), ss);
 				}
 				
 				/*
@@ -254,8 +280,12 @@ public class PresentationTemplate {
 		return runningHead;
 	}
 
-	public String getConcept() {
-		return concept;
+	public IConcept getConcept() {
+		try {
+			return KnowledgeManager.get().requireConcept(concept);
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 	public String getStyle() {

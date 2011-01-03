@@ -43,6 +43,8 @@ public class ClojureInterpreter implements Interpreter {
 	OutputStream error = System.err;
 	private ISession session;
 	
+	private URL currentSource = null;
+	
 	private synchronized Symbol newGlobalSymbol(String ns) {
 		return Symbol.intern(ns);
 	}
@@ -77,7 +79,9 @@ public class ClojureInterpreter implements Interpreter {
 	}
 	
 	@Override
-	public void loadBindings(URL source, ClassLoader cloader) throws ThinklabException {
+	public synchronized void loadBindings(URL source, ClassLoader cloader) throws ThinklabException {
+		
+		currentSource = source;
 		
         try {
         	
@@ -95,6 +99,8 @@ public class ClojureInterpreter implements Interpreter {
 			
 		} catch (Exception e) {
 			throw new ThinklabValidationException(e);
+		} finally {
+			currentSource = null;
 		}
 	}
 
@@ -118,6 +124,16 @@ public class ClojureInterpreter implements Interpreter {
 		this.session = session;
 	}
 
+	/**
+	 * Returns whatever URL is being read while executing loadBindings, which
+	 * is synchronized. 
+	 * 
+	 * @return
+	 */
+	public URL getCurrentSource() {
+		return currentSource;
+	}
+	
 	@Override
 	public void defineTask(Class<?> taskClass, ClassLoader cloader) throws ThinklabException {
 		

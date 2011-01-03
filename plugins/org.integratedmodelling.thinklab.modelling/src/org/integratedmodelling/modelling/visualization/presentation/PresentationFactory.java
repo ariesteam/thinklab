@@ -22,7 +22,9 @@ public class PresentationFactory {
 	public static void scanDirectory(File dir) throws ThinklabException {
 		
 		for (File f : dir.listFiles()) {
-			if (f.toString().endsWith(".xml")) {
+			if (f.isDirectory()) {
+				scanDirectory(f);
+			} else if (f.toString().endsWith(".xml")) {
 				PresentationTemplate p = new PresentationTemplate();
 				try {
 					p.read(f.toURI().toURL());
@@ -31,7 +33,7 @@ public class PresentationFactory {
 					p = null;
 				}
 				if (p != null) {
-					get()._presentations.put(KnowledgeManager.get().requireConcept(p.getConcept()), p);
+					get()._presentations.put(p.getConcept(), p);
 					ModellingPlugin.get().logger().info("presentation template " + p + " read successfully");
 				}
 			}

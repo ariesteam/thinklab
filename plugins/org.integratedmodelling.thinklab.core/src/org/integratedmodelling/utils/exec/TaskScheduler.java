@@ -8,7 +8,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 
 /**
- * A simple scheduler that can be fed with tasks and guarantees that at most a given
+ * A simple scheduler that can be fed tasks and guarantees that at most a given
  * maximum number sof them is executed at a time. Also supports listeners to enable
  * notification of task start, end and enqueuing.
  * 
