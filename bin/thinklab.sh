@@ -47,11 +47,12 @@ if [ -z "$THINKLAB_INST" ] ; then
   THINKLAB_INST=$THINKLAB_HOME
 fi
 
-if [ -x /usr/bin/rlwrap ]; then
-  RLWRAP_CMD="rlwrap --remember -c -f $HOME/.aries_hist"
-fi
+#if [ -x /usr/bin/rlwrap ]; then
+#  RLWRAP_CMD="rlwrap --remember -c -f $HOME/.aries_hist"
+#  JAVACMD="$RLWRAP_CMD $JAVACMD"
+#fi
 
-THINKLAB_CMD="$RLWRAP_CMD $JAVACMD $THINKLAB_OPTS -Djpf.boot.config=$THINKLAB_HOME/boot.properties -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH -Dthinklab.plugins=$THINKLAB_PLUGINS -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_HOME/lib/endorsed -jar $THINKLAB_HOME/lib/im-boot.jar org.java.plugin.boot.Boot"
+THINKLAB_CMD="$JAVACMD $THINKLAB_OPTS -Djpf.boot.config=$THINKLAB_HOME/boot.properties -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH -Dthinklab.plugins=$THINKLAB_PLUGINS -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_HOME/lib/endorsed -jar $THINKLAB_HOME/lib/im-boot.jar org.java.plugin.boot.Boot"
 
 #echo JAVA_HOME $JAVA_HOME
 #echo JAVACMD $JAVACMD
