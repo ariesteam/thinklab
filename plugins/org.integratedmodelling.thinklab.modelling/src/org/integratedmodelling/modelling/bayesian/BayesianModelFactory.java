@@ -65,8 +65,14 @@ public class BayesianModelFactory {
 				tm.setThird(createModel(bn, tm.getFirst()));
 			} else {
 				tm.setThird(syncModel(bn, tm.getFirst(), tm.getThird()));
-				
 			}
+		}
+		
+		/*
+		 * output? we need the string rep of each model, including those that 
+		 * were in the same file but not part of the bn.
+		 */
+		for (Triple<String, String, IModel> tm : models) {
 		}
 		
 	}
