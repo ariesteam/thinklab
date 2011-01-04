@@ -79,11 +79,13 @@ public class FileVisualization implements IVisualization {
 					new FileArchive(context, directory);
 		}	
 
-		String vpx = properties.getProperty(VIEWPORT_X_PROPERTY);
-		String vpy = properties.getProperty(VIEWPORT_Y_PROPERTY);
+		if (properties != null) {
+			String vpx = properties.getProperty(VIEWPORT_X_PROPERTY);
+			String vpy = properties.getProperty(VIEWPORT_Y_PROPERTY);
 		
-		if (vpx != null && vpy != null) {
-			setViewPort(Integer.parseInt(vpx.trim()), Integer.parseInt(vpy.trim()));
+			if (vpx != null && vpy != null) {
+				setViewPort(Integer.parseInt(vpx.trim()), Integer.parseInt(vpy.trim()));
+			}
 		}
 	}	
 	

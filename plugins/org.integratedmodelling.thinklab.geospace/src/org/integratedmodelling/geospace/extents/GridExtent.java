@@ -809,4 +809,75 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		return new Restriction("boundingbox", operator, getFullExtentValue().toString());
 	}
 
+	
+	public Collection<Integer> getNeumannNeighbors(int xcell, int ycell) {
+		ArrayList<Integer> ret = new ArrayList<Integer>();
+		
+		if (inRange(xcell-1, ycell))
+			ret.add(getIndex(xcell-1, ycell));
+		if (inRange(xcell+1, ycell))
+			ret.add(getIndex(xcell+1, ycell));
+		if (inRange(xcell, ycell-1))
+			ret.add(getIndex(xcell, ycell-1));
+		if (inRange(xcell, ycell+1))
+			ret.add(getIndex(xcell, ycell+1));
+
+		return ret;
+	}
+	
+	public Collection<Integer> getMooreNeighbors(int xcell, int ycell) {
+		
+		ArrayList<Integer> ret = (ArrayList<Integer>) getNeumannNeighbors(xcell, ycell);
+		
+		if (inRange(xcell-1, ycell-1))
+			ret.add(getIndex(xcell-1, ycell-1));
+		if (inRange(xcell+1, ycell))
+			ret.add(getIndex(xcell+1, ycell+1));
+		if (inRange(xcell, ycell-1))
+			ret.add(getIndex(xcell+1, ycell-1));
+		if (inRange(xcell, ycell+1))
+			ret.add(getIndex(xcell-1, ycell+1));
+
+		return ret;
+	}
+	
+	/**
+	 * Get all grid cell indexes that are within n meters of the given point.
+	 * @param i
+	 * @param j
+	 * @return
+	 */
+	public Collection<Integer> getCoordinatesWithinM(int xcell, int ycell, double meters) {
+		
+		ArrayList<Integer> ret = new ArrayList<Integer>();
+		
+		int xspan = (int)(meters/getCellWidthMeters());
+		int yspan = (int)(meters/getCellHeightMeters());
+		
+		for (int x = 0; x < xspan; x++) {
+			for (int y = 0; y < yspan; y++) {
+				
+				if (inRange(xcell-x, ycell-y))
+					ret.add(getIndex(xcell-x, ycell-y));
+				if (inRange(xcell+x, ycell-y))
+					ret.add(getIndex(xcell+x, ycell-y));
+				if (inRange(xcell-x, ycell+y))
+					ret.add(getIndex(xcell-x, ycell+y));
+				if (inRange(xcell+x, ycell+y))
+					ret.add(getIndex(xcell+x, ycell+y));				
+			}
+		}
+		
+		return ret;
+	}
+
+	public boolean inRange(int x, int y) {
+
+		return 
+			x >= 0 && 
+			x < getXCells() &&
+			y >= 0 &&
+			y < getYCells();
+	}
+
 }

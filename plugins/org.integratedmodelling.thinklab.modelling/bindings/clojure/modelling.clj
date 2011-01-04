@@ -40,6 +40,11 @@
 	[]
 	(new org.integratedmodelling.modelling.corescience.MeasurementModel))
 
+(defn j-make-spank
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.agents.SPANKModel))
+
 (defn j-make-classification
 	"Make a new instance of Model and return it."
 	[]
@@ -472,6 +477,21 @@
 		 	   	(if  (keyword? (first classifier#)) 
 		 	   		  (transform-model model# classifier#))))
  	   model#))
+
+;; TODO rename this to agent or something when the seas are quiet.
+(defmacro spank
+	"Create an generalized agent model, whose final implementation is chosen based on the
+   observable."
+	[observable & body]
+	`(let [model# 
+ 	        	(modelling/j-make-spank)] 
+ 	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	   (if (not (nil? '~body)) 
+				(doseq [classifier# (partition 2 '~body)]
+		 	   	(if  (keyword? (first classifier#)) 
+		 	   		  (transform-model model# classifier#))))
+ 	   model#))
+
 
 (defmacro bayesian
 	"Create a bayesian model. The observable can only be a semantic object. For now the only way to

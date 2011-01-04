@@ -20,6 +20,12 @@
       <owl:Class rdf:about="http://www.integratedmodelling.org/ks/science/observation.owl#Classification"/>
     </rdfs:subClassOf>
   </owl:Class>
+  <owl:Class rdf:ID="SPANKTransformer">
+    <rdfs:comment>This one selects a SPANK agent model and computes it.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://www.integratedmodelling.org/ks/science/observation.owl#Classification"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="DynamicRanking">
     <rdfs:comment>A commodity class to simplify definition of a ranking with dynamic code.</rdfs:comment>
     <rdfs:subClassOf>
