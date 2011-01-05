@@ -159,6 +159,10 @@
   [wkt-or-wkb]
   (new org.integratedmodelling.geospace.literals.ShapeValue wkt-or-wkb))
 
+(defn shape 
+  [wkt-or-wkb]
+  (make-shape wkt-or-wkb))
+
 (defn grid 
   "Return an IExtent for a grid (GridExtent) with the specified linear resolution and encompassing the
    given shape. If a symbol is passed, use that to lookup a feature in the online gazetteers. If a string

@@ -518,7 +518,7 @@
   `(let [ret# (modelling/j-make-transform (tl/conc ~concept) ~value)]
      (when '~filter-objs
        (doseq [filt# '~filter-objs]
-         (.addFilter ret# filt#)))
+         (.addFilter ret# (eval filt#))))
      ret#))       
          
 ;; -------------------------------------------------------------------------------------------------------

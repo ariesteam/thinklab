@@ -1453,4 +1453,19 @@ public class KnowledgeManager implements IKnowledgeProvider {
     
         return ret;
 	}
+
+	/**
+	 * Static and throws a runtime exception if not found. For simpler usage when you know the KM is 
+	 * there and the concept should be.
+	 * 
+	 * @param string
+	 * @return
+	 */
+	public static IConcept getConcept(String string) {
+		try {
+			return get().requireConcept(string);
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+	}
 }
