@@ -6,14 +6,14 @@ import java.util.HashSet;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.modelling.DefaultAbstractModel;
-import org.integratedmodelling.modelling.Model;
-import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.corescience.ClassificationModel;
 import org.integratedmodelling.modelling.implementations.observations.BayesianTransformer;
 import org.integratedmodelling.modelling.interfaces.IContextOptional;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.model.DefaultAbstractModel;
+import org.integratedmodelling.modelling.model.Model;
+import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;

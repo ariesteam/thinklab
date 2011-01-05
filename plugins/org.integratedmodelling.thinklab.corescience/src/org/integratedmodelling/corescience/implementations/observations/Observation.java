@@ -6,6 +6,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -53,6 +54,10 @@ public class Observation implements IObservation, IInstanceImplementation {
 	
 	// used to sort contingencies if this is in a merger obs
 	public Integer contingencyOrder = 0;
+
+	// if this isn't null, there was a state for us in the context, and
+	// we don't compute anything.
+	private IState predefinedState = null;
 	
 	public IDataSource<?> getDataSource()  {
 
@@ -313,7 +318,9 @@ public class Observation implements IObservation, IInstanceImplementation {
 	}
 
 	/**
-	 * This is called by ObservationContext.validate() to expose the obs to the overall context.
+	 * This is called by ObservationContext.validate() to expose the obs to the 
+	 * overall context. Redefine as needed to validate dependencies on specific
+	 * context representations.
 	 * 
 	 * @param ctx
 	 */
@@ -343,5 +350,20 @@ public class Observation implements IObservation, IInstanceImplementation {
 	 */
 	protected boolean setAcceptsContextExtrapolation() {
 		return true;
+	}
+
+	/*
+	 * USED BY THE COMPILER ONLY - this sets a predefined state in this obs,
+	 * so that it gets used as is instead of recomputing the whole thing.
+	 */
+	public void setPredefinedState(IState state) {
+		this.predefinedState = state;
+	}
+	
+	/*
+	 * USED BY THE COMPILER ONLY
+	 */
+	public IState getPredefinedState() {
+		return predefinedState;
 	}
 }

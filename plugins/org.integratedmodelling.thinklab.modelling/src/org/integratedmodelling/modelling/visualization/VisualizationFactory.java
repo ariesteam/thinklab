@@ -20,7 +20,7 @@ import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.geospace.visualization.GeoImageFactory;
-import org.integratedmodelling.modelling.Context;
+import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
 import org.integratedmodelling.thinklab.KnowledgeManager;

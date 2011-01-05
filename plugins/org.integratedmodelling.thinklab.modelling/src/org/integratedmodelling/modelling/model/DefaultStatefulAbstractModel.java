@@ -1,4 +1,4 @@
-package org.integratedmodelling.modelling;
+package org.integratedmodelling.modelling.model;
 
 import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

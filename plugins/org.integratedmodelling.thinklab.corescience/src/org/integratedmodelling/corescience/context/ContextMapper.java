@@ -65,7 +65,7 @@ public class ContextMapper {
 			int dim = theDim == null ? 1 : to.getMultiplicity(theDim);
 			if (!(dim == 1 || dim == indexesFrom[i]))
 				throw new ThinklabContextualizationException(
-						"dimension mismatch in concept mapper: " + dim +
+						"dimension mismatch in context mapper: " + dim +
 						" should be 1 or " + indexesFrom[i] +
 						"; check datasource transformation");
 			

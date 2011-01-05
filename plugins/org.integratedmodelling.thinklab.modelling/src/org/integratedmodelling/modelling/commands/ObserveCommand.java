@@ -9,7 +9,7 @@ import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
-import org.integratedmodelling.modelling.ModelFactory;
+import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;

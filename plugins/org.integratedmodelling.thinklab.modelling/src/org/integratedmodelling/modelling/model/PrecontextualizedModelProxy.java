@@ -1,9 +1,10 @@
-package org.integratedmodelling.modelling;
+package org.integratedmodelling.modelling.model;
 
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;

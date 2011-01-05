@@ -10,6 +10,8 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.literals.AlgorithmValue;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
 
+import clojure.lang.IFn;
+
 /**
  * A powerful classifier of objects meant to be defined from a Clojure classification model.
  * Can be serialized to an ugly string so that observations can be built easily, but it is
@@ -25,6 +27,7 @@ public class GeneralClassifier {
 	String string = null;
 	private boolean catchAll = false;
 	private boolean isNil = false; // a classifier specifically meant to catch nulls 
+	private IFn closure = null;
 	
 	public GeneralClassifier(String s) throws ThinklabException {
 		parse(s);
@@ -127,10 +130,10 @@ public class GeneralClassifier {
 
 			return string.equals(o.toString());
 
-		} else if (code != null) {
+		} else if (closure != null) {
 		
 			/*
-			 * TODO
+			 * TODO - eval the IFn, but it needs a parameter map.
 			 */
 		}
 		
@@ -231,6 +234,10 @@ public class GeneralClassifier {
 	public boolean isNil() {
 		// TODO Auto-generated method stub
 		return this.isNil;
+	}
+
+	public void setClosure(IFn closure) {
+		this.closure = closure;
 	}
 	
 }

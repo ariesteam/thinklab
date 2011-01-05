@@ -1,17 +1,16 @@
 package org.integratedmodelling.modelling.corescience;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.metadata.Metadata;
-import org.integratedmodelling.modelling.DefaultAbstractModel;
-import org.integratedmodelling.modelling.DefaultDynamicAbstractModel;
-import org.integratedmodelling.modelling.DefaultStatefulAbstractModel;
+import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.model.DefaultAbstractModel;
+import org.integratedmodelling.modelling.model.DefaultDynamicAbstractModel;
+import org.integratedmodelling.modelling.model.DefaultStatefulAbstractModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
@@ -24,6 +23,7 @@ import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
+import clojure.lang.IFn;
 import clojure.lang.IPersistentSet;
 import clojure.lang.IPersistentVector;
 import clojure.lang.ISeq;
@@ -161,8 +161,9 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 				set = set.rest();
 			}
 
-		} else if (classifier instanceof ISeq) {
+		} else if (classifier instanceof IFn) {
 			
+			ret.setClosure((IFn)classifier);
 			/*
 			 * TODO must pass Clojure class proxy to be stored here - needs to be handled in 
 			 * 	clj
@@ -291,13 +292,18 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		if (!isMediating() || (flags & FORCE_OBSERVABLE) != 0)
 			arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, this.observableSpecs));
 		
+		ArrayList<Pair<GeneralClassifier,IConcept>> clsf = 
+			new ArrayList<Pair<GeneralClassifier,IConcept>>();
+		
 		for (int i = 0; i < classifiers.size(); i++) {
-			arr.add(Polylist.list(
-						"modeltypes:hasClassifier", 
-						concepts.get(i) + "->" + classifiers.get(i)));
+			clsf.add(new Pair<GeneralClassifier,IConcept>(
+						classifiers.get(i), concepts.get(i)));
 		}
-
-		return addImplicitExtents(Polylist.PolylistFromArrayList(arr), context);
+		
+		Polylist ret = addImplicitExtents(Polylist.PolylistFromArrayList(arr), context);
+		ret = ObservationFactory.addReflectedField(ret, "classifiers", clsf);
+		
+		return ret;
 	}
 
 	@Override

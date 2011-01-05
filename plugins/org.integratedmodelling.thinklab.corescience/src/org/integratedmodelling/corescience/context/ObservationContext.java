@@ -22,6 +22,7 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.ContextTransformingObservation;
+import org.integratedmodelling.corescience.interfaces.internal.IContextTransformation;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
@@ -70,6 +71,14 @@ public class ObservationContext implements IObservationContext, IContext {
 	 * it can be conceptualized to a new observation.
 	 */
 	HashMap<IConcept, IState> states = new HashMap<IConcept, IState>();
+	
+	/*
+	 * a context may be given a map of transformations to apply to
+	 * states during contextualization. If there, these are transferred
+	 * to the compiler so that they are called.
+	 */
+	HashMap<IConcept, IContextTransformation> ctransf = 
+		new HashMap<IConcept, IContextTransformation>();
 	
 	// this stores the context of the original untransformed instance when the 
 	// observation is a context transformer, so it can be passed to transform()
@@ -1044,5 +1053,9 @@ public class ObservationContext implements IObservationContext, IContext {
 
 	public void setObservation(IObservation observation) {
 		this.observation = observation;
+	}
+
+	public IContextTransformation getTransformation(IConcept concept) {
+		return ctransf.get(concept);
 	}
 }

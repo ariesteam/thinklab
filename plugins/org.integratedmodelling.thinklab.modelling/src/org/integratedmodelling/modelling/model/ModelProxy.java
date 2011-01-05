@@ -1,4 +1,4 @@
-package org.integratedmodelling.modelling;
+package org.integratedmodelling.modelling.model;
 
 import java.util.ArrayList;
 import java.util.Collection;

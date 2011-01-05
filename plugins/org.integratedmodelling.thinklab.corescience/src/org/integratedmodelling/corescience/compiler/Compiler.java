@@ -12,6 +12,7 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.ComputedDataSource;
+import org.integratedmodelling.corescience.interfaces.internal.IContextTransformation;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.interfaces.internal.MediatingObservation;
@@ -55,6 +56,8 @@ public class Compiler {
 		boolean needsContextStates = false;
 		IDataSource<?> datasource = null;
 		boolean contextualized = false;
+		public IState predefined;
+		public ArrayList<IContextTransformation> transformations = null;
 	}
 
 	private HashMap<IConcept, IObservationContext> contexts = 
@@ -119,6 +122,11 @@ public class Compiler {
 		
 		TopologicalOrderIterator<IObservation, MediatedDependencyEdge> ord =
 			new TopologicalOrderIterator<IObservation, MediatedDependencyEdge>(dependencies);
+		
+		/*
+		 * TODO this is a good point to establish which states are computed more than
+		 * once, and ensure that we only compile their accessors in the first time.
+		 */
 				
 		/*
 		 * compile initialization sequence
@@ -175,10 +183,10 @@ public class Compiler {
 	}
 
 	private void learnStructure(ObservationContext context) {
+		
 		if (context != null)
 			insertDependencies(context);
 	}
-
 
 	private Observation insertDependencies(ObservationContext context) {
 		
@@ -187,8 +195,12 @@ public class Compiler {
 		contexts.put(ret.getObservableClass(), context);
 		addObservation(ret);
 
-		for (ObservationContext dep : context.getDependentContexts()) {
-			addObservationDependency(ret, insertDependencies(dep));
+		if (context.getState(ret.getObservableClass()) != null) {
+			ret.setPredefinedState(context.getState(ret.getObservableClass()));
+		} else {
+			for (ObservationContext dep : context.getDependentContexts()) {
+				addObservationDependency(ret, insertDependencies(dep));
+			}
 		}
 		return ret;
 	}
@@ -208,11 +220,11 @@ public class Compiler {
 		if (stackType == null) {
 			ret = createNoOpContextualizer();
 		} else if (stackType.is(KnowledgeManager.Number())) {
-			ret = new VMContextualizer<Float>(stackType);
+			ret = new VMContextualizer<Float>(stackType, context);
 			stateType = KnowledgeManager.Float();
 		} else if (KnowledgeManager.Thing().equals(stackType)
 				|| stackType.is(KnowledgeManager.LiteralValue())) {
-			ret = new VMContextualizer<IValue>(stackType);
+			ret = new VMContextualizer<IValue>(stackType, context);
 			stateType = KnowledgeManager.LiteralValue();
 		} else {
 
@@ -223,7 +235,7 @@ public class Compiler {
 			 * above, and ensure that observations build their own
 			 * datasources.
 			 */
-			ret = new VMContextualizer<IConcept>(stackType);
+			ret = new VMContextualizer<IConcept>(stackType, context);
 			stateType = stackType;
 		}
 		
@@ -287,6 +299,11 @@ public class Compiler {
 			IObservation o = order.get(i);
 			ObsDesc odesc = accessors.get(o);
 						
+			if (odesc.predefined != null) {
+				ret.encodePushPredefined(odesc.predefined);
+				continue;
+			}
+			
 			if (!odesc.needed || odesc.accessorId < 0 || odesc.contextualized)
 				continue;
 			
@@ -304,6 +321,13 @@ public class Compiler {
 			/* validate if required */
 			if (odesc.validatorId >= 0)
 				ret.encodeValidation(odesc.validatorId);
+			
+			/* transform if requested */
+			if (odesc.transformations != null) {
+				for (IContextTransformation t : odesc.transformations) {
+					ret.encodeTransform(t);
+				}
+			}
 			
 			if (odesc.needed) {
 
@@ -332,7 +356,7 @@ public class Compiler {
 
 	private VMContextualizer<?> createNoOpContextualizer() {
 		// TODO check if we need more
-		VMContextualizer<?> cc = new VMContextualizer<Float>(null);
+		VMContextualizer<?> cc = new VMContextualizer<Float>(null, null);
 		return cc;
 	}
 
@@ -348,10 +372,21 @@ public class Compiler {
 		
 		ObsDesc odesc = new ObsDesc();
 
-		/*
-		 * TODO if context has a state for this observable, just use that state and compile
-		 * no further.
-		 */
+		if (o.getPredefinedState() != null) {
+			/*
+			 * if context has a state for this observable, just use that state and compile
+			 * no further.
+			 */
+			odesc.predefined = o.getPredefinedState();
+			accessors.put(o, odesc);
+			return odesc;
+		}
+		
+		if (((ObservationContext)context).getTransformation(o.getObservableClass()) != null) {
+			odesc.transformations = new ArrayList<IContextTransformation>();
+			odesc.transformations.add(
+					((ObservationContext)context).getTransformation(o.getObservableClass()).newInstance());
+		}
 		
 		IDataSource<?> ds = o.getDataSource();
 		IObservationContext ownContext = contexts.get(o.getObservableClass());
@@ -364,7 +399,7 @@ public class Compiler {
 			accessors.put(o, odesc);
 			return odesc;
 		}
-
+		
 		/*
 		 * the accessor is a mediator if we are mediating
 		 */

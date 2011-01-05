@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.modelling.Model;
-import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.annotation.ModelAnnotation;
+import org.integratedmodelling.modelling.model.Model;
+import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.InteractiveSubcommandInterface;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

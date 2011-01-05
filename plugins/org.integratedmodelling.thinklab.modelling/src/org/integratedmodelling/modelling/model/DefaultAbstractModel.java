@@ -1,4 +1,4 @@
-package org.integratedmodelling.modelling;
+package org.integratedmodelling.modelling.model;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -9,12 +9,15 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.modelling.ModellingPlugin;
+import org.integratedmodelling.modelling.ObservationCache;
+import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.annotation.ModelAnnotation;
+import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -32,9 +35,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.Inte
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.kbox.FilteringQueryResult;
 import org.integratedmodelling.thinklab.kbox.GroupingQueryResult;
-import org.integratedmodelling.thinklab.kbox.ProxyQueryResult;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Path;

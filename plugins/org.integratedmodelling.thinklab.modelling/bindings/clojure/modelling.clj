@@ -13,19 +13,19 @@
 	"Make a new instance of Model and return it. We need this because the class won't be visible when
 	the macro is expanded at runtime."
 	[]
-	(new org.integratedmodelling.modelling.Model))
+	(new org.integratedmodelling.modelling.model.Model))
 	
 (defn j-make-scenario
 	"Make a new instance of Model and return it. We need this because the class won't be visible when
 	the macro is expanded at runtime."
 	[]
-	(new org.integratedmodelling.modelling.Scenario))
+	(new org.integratedmodelling.modelling.model.Scenario))
 
 (defn j-make-context
 	"Make a new instance of Model and return it. We need this because the class won't be visible when
 	the macro is expanded at runtime."
 	[]
-	(new org.integratedmodelling.modelling.Context))
+	(new org.integratedmodelling.modelling.context.Context))
 
 (defn j-make-agent
 	"Make a new instance of Model and return it. We need this because the class won't be visible when
@@ -323,17 +323,17 @@
 	provided, the resolution will be the native resolution of the first observation found for the model
 	observable."
 	([model-id shape]
-	(let [model   (.. org.integratedmodelling.modelling.ModelFactory (get) (requireModel (str model-id)))
+	(let [model   (.. org.integratedmodelling.modelling.model.ModelFactory (get) (requireModel (str model-id)))
 			  extent  (get-native-topology-at-shape (.getObservable model) shape)
 		    kbox    (org.integratedmodelling.thinklab.kbox.KBoxManager/get)
-		    qresult (.. org.integratedmodelling.modelling.ModelFactory (get) (run model kbox (tl/get-session) (geospace/topology-array extent)))]
+		    qresult (.. org.integratedmodelling.modelling.model.ModelFactory (get) (run model kbox (tl/get-session) (geospace/topology-array extent)))]
 		(if (> (.getTotalResultCount qresult) 0) 
 				   (.getImplementation (.getObject (.getResult qresult 0 (tl/get-session)))))))
 	([model-id shape resolution]
-	(let [model   (.. org.integratedmodelling.modelling.ModelFactory (get) (requireModel (str model-id)))
+	(let [model   (.. org.integratedmodelling.modelling.model.ModelFactory (get) (requireModel (str model-id)))
 			  extent  (geospace/get-topology-from-shape shape resolution)
 		    kbox    (org.integratedmodelling.thinklab.kbox.KBoxManager/get)
-		    qresult (.. org.integratedmodelling.modelling.ModelFactory (get) (run model kbox (tl/get-session) extent))]
+		    qresult (.. org.integratedmodelling.modelling.model.ModelFactory (get) (run model kbox (tl/get-session) extent))]
 		(if (> (.getTotalResultCount qresult) 0) 
 				   (.getImplementation (.getObject (.getResult qresult 0 (tl/get-session))))))))
 		    
@@ -344,17 +344,17 @@
 	provided, the resolution will be the native resolution of the first observation found for the model
 	observable."
 	([model-id extent-id]
-	(let [model   (.. org.integratedmodelling.modelling.ModelFactory (get) (requireModel (str model-id)))
+	(let [model   (.. org.integratedmodelling.modelling.model.ModelFactory (get) (requireModel (str model-id)))
 			  extent  (get-native-topology-in-location (.getObservable model) extent-id)
 		    kbox    (org.integratedmodelling.thinklab.kbox.KBoxManager/get)
-		    qresult (.. org.integratedmodelling.modelling.ModelFactory (get) (run model kbox (tl/get-session) (geospace/topology-array extent)))]
+		    qresult (.. org.integratedmodelling.modelling.model.ModelFactory (get) (run model kbox (tl/get-session) (geospace/topology-array extent)))]
 		(if (> (.getTotalResultCount qresult) 0) 
 				   (.getImplementation (.getObject (.getResult qresult 0 (tl/get-session)))))))
 	([model-id extent-id resolution]
-	(let [model   (.. org.integratedmodelling.modelling.ModelFactory (get) (requireModel (str model-id)))
+	(let [model   (.. org.integratedmodelling.modelling.model.ModelFactory (get) (requireModel (str model-id)))
 			  extent  (geospace/get-topology-from-name extent-id resolution)
 		    kbox    (org.integratedmodelling.thinklab.kbox.KBoxManager/get)
-		    qresult (.. org.integratedmodelling.modelling.ModelFactory (get) (run model kbox (tl/get-session) extent))]
+		    qresult (.. org.integratedmodelling.modelling.model.ModelFactory (get) (run model kbox (tl/get-session) extent))]
 		(if (> (.getTotalResultCount qresult) 0) 
 				   (.getImplementation (.getObject (.getResult qresult 0 (tl/get-session))))))))
 

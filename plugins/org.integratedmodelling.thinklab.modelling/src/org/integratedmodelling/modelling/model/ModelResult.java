@@ -1,4 +1,4 @@
-package org.integratedmodelling.modelling;
+package org.integratedmodelling.modelling.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +11,7 @@ import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

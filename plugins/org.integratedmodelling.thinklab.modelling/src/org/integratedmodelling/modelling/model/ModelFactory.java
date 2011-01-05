@@ -1,4 +1,4 @@
-package org.integratedmodelling.modelling;
+package org.integratedmodelling.modelling.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +17,11 @@ import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.modelling.ModellingPlugin;
+import org.integratedmodelling.modelling.ObservationCache;
+import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.agents.ThinkAgent;
+import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

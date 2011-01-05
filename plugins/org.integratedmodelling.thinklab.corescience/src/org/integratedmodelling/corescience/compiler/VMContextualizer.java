@@ -8,9 +8,11 @@ import java.util.Map.Entry;
 
 import org.integratedmodelling.corescience.context.ContextMapper;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.IContextTransformation;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.utils.Ticker;
@@ -39,6 +41,8 @@ public class VMContextualizer<T> {
 	private int _valregs = 0;
 	private int _immregs = 0;
 	private int _cstords = 0;
+	private int _prdregs = 0;
+	private int _trnregs = 0;
 	
 	static class ContextMediator {
 		
@@ -94,11 +98,13 @@ public class VMContextualizer<T> {
 	}
 	
 	public ArrayList<Integer> _code = new ArrayList<Integer>();
-	
 	public ArrayList<IStateAccessor> _accessors = new ArrayList<IStateAccessor>();
+	public ArrayList<IState> _predefined = new ArrayList<IState>();
 	public ArrayList<Object> _immediates = new ArrayList<Object>();
 	public ArrayList<IConcept> _observed = new ArrayList<IConcept>();
 	public ArrayList<ContextMediator> _datasources = new ArrayList<ContextMediator>();
+	public ArrayList<IContextTransformation> _transformations = 
+		new ArrayList<IContextTransformation>();
 	
 	HashMap<IConcept, IState> tstates = new HashMap<IConcept, IState>();
 	
@@ -150,6 +156,8 @@ public class VMContextualizer<T> {
 	static final int IREG = 18;
 	static final int IFCHNG = 19;
 	static final int MKSTOR = 20;
+	static final int PUSHPR = 21;
+	static final int TRANSFR = 22;
 	
 	// bytecodes
 	static public final Ins JMP_I = new Ins(JMP, "JMP", "jump to address");
@@ -173,13 +181,17 @@ public class VMContextualizer<T> {
 	static public final Ins IREG_I = new Ins(IREG, "IREG", "push immediate value in register");
 	static public final Ins IFCHNG_I = new Ins(IFCHNG, "IFCHNG", "jump unless given context register has changed");
 	static public final Ins MKSTOR_I = new Ins(MKSTOR, "MKSTOR", "declare custom datasource for storage of given observable");
-	
+	static public final Ins PUSHPR_I = new Ins(PUSHPR, "PUSHPR", "push value from pre-existing state in context");
+	static public final Ins TRANSFR_I = new Ins(TRANSFR, "TRANSFR", "invoke transformation on top of stack");
+
 	ContextRegister[] contextRegister = null;
 	private IConcept _stackType;
 	private boolean needsContextState;
+	private IContext _context;
 
-	public VMContextualizer(IConcept stackType) {
+	public VMContextualizer(IConcept stackType, IContext context) {
 		_stackType = stackType;
+		_context = context;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -304,6 +316,16 @@ public class VMContextualizer<T> {
 				states[(ins & 0x00ff0000) >> 16] =
 					_datasources.get(ins & 0x0000ffff);
 				break;
+			case PUSHPR:
+				stack[sp++] = 
+					(T)_predefined.get(ins & 0x00ffffff).getValue((int)ticker.current());
+				break;
+			case TRANSFR:
+				T obj = stack[--sp];
+				stack[sp++] =
+					(T)_transformations.get(ins & 0x00ffffff).
+						transform(obj, _context, (int)ticker.current(), null);
+				break;
 			}
 		}
 
@@ -371,6 +393,18 @@ public class VMContextualizer<T> {
 		_accessors.add(accessor);
 //		encode(makeInst(AACCS_I, _accregs));
 		return _accregs++;
+	}
+	
+	public int registerPredefinedState(IState state) {
+		if (state == null)
+			return -1;
+		_predefined.add(state);
+		return _prdregs++;
+	}
+
+	public int registerTransformation(IContextTransformation transf) {
+		_transformations.add(transf);
+		return _trnregs++;
 	}
 
 	public int registerStateStorage(IndirectObservation o, IConcept observable, int size, 
@@ -545,6 +579,12 @@ public class VMContextualizer<T> {
 						(ins & 0x00ff0000) >> 16, 
 						ins & 0x0000ffff);
 				break;
+			case PUSHPR: 
+				dumpIns(printStream, pc, PUSHPR_I, ins & 0x00ffffff);
+				break;
+			case TRANSFR: 
+				dumpIns(printStream, pc, PUSHPR_I, ins & 0x00ffffff);
+				break;
 			}
 		}
 
@@ -652,7 +692,6 @@ public class VMContextualizer<T> {
 		return _pc + 1;
 	}
 
-
 	public void encodeValidation(int validatorId) {
 		encode(makeInst(CVALID_I, validatorId));
 	}
@@ -664,6 +703,21 @@ public class VMContextualizer<T> {
 		encode(makeInst(DEACT_I, activationReg));
 	}
 
+	/*
+	 * each call to this creates a new register for the state
+	 * even if the state is the same, but it's safer this way.
+	 */
+	public void encodePushPredefined(IState state) {
+		encode(makeInst(PUSHPR_I, registerPredefinedState(state)));
+	}
+	
+	/*
+	 * each call to this creates a new register for the transformation
+	 * even if the transformation is the same, but it's safer this way.
+	 */
+	public void encodeTransform(IContextTransformation state) {
+		encode(makeInst(TRANSFR_I, registerTransformation(state)));
+	}
 
 	public void encodeReturn() {
 		encode(makeInst(RETURN_I));
@@ -693,5 +747,4 @@ public class VMContextualizer<T> {
 		this.tstates.put(observableClass, datasource);
 	}
 
-	
 }

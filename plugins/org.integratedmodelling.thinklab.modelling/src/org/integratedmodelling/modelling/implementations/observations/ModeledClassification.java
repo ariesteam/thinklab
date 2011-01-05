@@ -39,7 +39,8 @@ public class ModeledClassification
 	extends Observation 
 	implements MediatingObservation {
 	
-	protected ArrayList<Pair<GeneralClassifier, IConcept>> classifiers = 
+	// set through reflection - must be public
+	public ArrayList<Pair<GeneralClassifier, IConcept>> classifiers = 
 		new ArrayList<Pair<GeneralClassifier,IConcept>>();
 	
 	IConcept cSpace = null;
@@ -173,30 +174,50 @@ public class ModeledClassification
 		metadata.put(Metadata.CONTINUOUS, Boolean.FALSE);
 		
 		super.initialize(i);
-		Pair<GeneralClassifier, IConcept> universal = null;
-		Pair<GeneralClassifier, IConcept> cls = null;
 
-		
-		/*
-		 * we have no guarantee that the universal classifier will be last, given that it
-		 * comes from an OWL multiproperty
+		/* 
+		 * these should be in already through reflection, but let's keep
+		 * the OWL way supported just in case.
 		 */
 		for (IRelationship r : i.getRelationships("modeltypes:hasClassifier")) {
 			String[] rz = r.getValue().toString().split("->");
-			cls = new Pair<GeneralClassifier, IConcept>(
+			Pair<GeneralClassifier, IConcept> cls = 
+				new Pair<GeneralClassifier, IConcept>(
 					new GeneralClassifier(rz[1]), 
 					KnowledgeManager.get().requireConcept(rz[0]));
-			if (cls.getFirst().isUniversal())
-				universal = cls;
-			else 
-				classifiers.add(cls);					
+			classifiers.add(cls);					
 		}
 		
-		if (universal != null) 
-			classifiers.add(universal);
+		/*
+		 * we have no guarantee that the universal classifier, if there,
+		 * will be last, given that it may come from an OWL multiproperty where
+		 * the orderding isn't guaranteed.
+		 * 
+		 * scan the classifiers and if we have a universal classifier make sure
+		 * it's the last one, to avoid problems.
+		 */
+		int unidx = -1; int iz = 0;
+		for (Pair<GeneralClassifier, IConcept> cls : classifiers) {
+			if (cls.getFirst().isUniversal()) {
+				unidx = iz;
+			}
+			iz++;
+		}
+		
+		if (unidx >= 0 && unidx < classifiers.size() -1) { 
+			ArrayList<Pair<GeneralClassifier, IConcept>> nc =
+				new ArrayList<Pair<GeneralClassifier,IConcept>>();
+			for (iz = 0; iz < classifiers.size(); iz++) {
+				if (iz != unidx)
+					nc.add(classifiers.get(iz));
+			}
+			nc.add(classifiers.get(unidx));
+			classifiers = nc;
+		}
 		
 		/*
-		 * check if we have a nil classifier; if we don't we don't bother classifying nulls
+		 * check if we have a nil classifier; if we don't we don't bother classifying
+		 * nulls and save some work.
 		 */
 		this.hasNilClassifier = false;
 		for (Pair<GeneralClassifier, IConcept> cl : classifiers) {

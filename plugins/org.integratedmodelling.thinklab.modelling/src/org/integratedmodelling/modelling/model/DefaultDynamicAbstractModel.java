@@ -1,8 +1,9 @@
-package org.integratedmodelling.modelling;
+package org.integratedmodelling.modelling.model;
 
 
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;

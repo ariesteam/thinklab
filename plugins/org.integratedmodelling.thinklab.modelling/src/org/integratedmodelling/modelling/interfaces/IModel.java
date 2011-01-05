@@ -1,7 +1,7 @@
 package org.integratedmodelling.modelling.interfaces;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.modelling.Scenario;
+import org.integratedmodelling.modelling.model.Scenario;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;

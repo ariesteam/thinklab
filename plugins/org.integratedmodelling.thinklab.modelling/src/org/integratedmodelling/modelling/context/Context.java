@@ -1,4 +1,4 @@
-package org.integratedmodelling.modelling;
+package org.integratedmodelling.modelling.context;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,12 +13,24 @@ import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.modelling.model.Model;
+import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.time.TimePlugin;
 
+/**
+ * This is what is created by a defcontext form. It does implement IContext but
+ * has no observation associated, and serves as a factory to create observation
+ * contexts for specific observations. The resulting contexts can have extents,
+ * predefined states and transformations inserted automatically according to what
+ * is specified in the creation form.
+ * 
+ * @author ferdinando.villa
+ *
+ */
 public class Context implements IContext {
 	
 	ArrayList<Model>   models = new ArrayList<Model>();

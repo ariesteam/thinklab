@@ -3,8 +3,8 @@ package org.integratedmodelling.modelling.bayesian;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import org.integratedmodelling.modelling.ModelFactory;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.riskwiz.bn.BeliefNetwork;
 import org.integratedmodelling.riskwiz.io.genie.GenieReader;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

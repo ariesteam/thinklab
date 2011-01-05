@@ -1,5 +1,7 @@
 package org.integratedmodelling.modelling.implementations.observations;
 
+import java.util.HashMap;
+
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
@@ -24,6 +26,10 @@ public class SPANKTransformer
 	extends Observation 
 	implements TransformingObservation {
 	
+	// set by model through reflection
+	public HashMap<String, Object> parameters;
+
+	
 	@Override
 	public IConcept getTransformedObservationClass() {
 		return CoreScience.Observation();
@@ -39,7 +45,8 @@ public class SPANKTransformer
 		SPANK spank = 
 			SPANK.getSpankModel(
 				sourceCtx.getObservation().getObservableClass(),
-				context);
+				context,
+				parameters == null ? new HashMap<String,Object>() : parameters);
 		
 		ObservationContext ret = new ObservationContext(context.getExtents());
 		ret.setObservation(this);

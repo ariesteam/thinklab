@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.agents;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
@@ -38,6 +39,8 @@ public abstract class SPANK {
 	protected int width, height;
 	protected double xmeters, ymeters;
 	protected GridExtent grid;
+
+	protected HashMap<String, Object> parameters;
 	
 	public abstract class Agent {
 		
@@ -66,9 +69,37 @@ public abstract class SPANK {
 		}
 	}
 	
-	public void initialize(IContext context) throws ThinklabException {
+	public void initialize(IContext context, HashMap<String, Object> parameters) throws ThinklabException {
 		setupSpace(this.context = context);
+		this.parameters = parameters;
 	}
+	
+    /**
+     * This will return anything passed as a keyword in the 
+     * model form. Use the keyword string with the ":" prefix. All args
+     * are eval'ed at compile time before being stored.
+     * 
+     * @param s
+     * @return
+     */
+    protected Object getParameter(String s) {
+    	return parameters.get(s);
+    }
+	
+	
+    /**
+     * This will return anything passed as a keyword in the 
+     * model form. Use the keyword string with the ":" prefix. All args
+     * are eval'ed at compile time before being stored. If parameter is 
+     * not there, passed default is used.
+     * 
+     * @param s
+     * @return
+     */
+    protected Object getParameter(String s, Object def) {
+    	Object ret = parameters.get(s);
+    	return ret == null ? def : ret;
+    }
 	
 	/*
 	 * if redefined, make sure you call the parent first
@@ -109,7 +140,7 @@ public abstract class SPANK {
 	 * also
 	 * serves as a catalog of SPANK model classes keyed by observation type.
 	 */
-	public static SPANK getSpankModel(IConcept concept, IContext context) throws ThinklabException {
+	public static SPANK getSpankModel(IConcept concept, IContext context, HashMap<String, Object> parameters) throws ThinklabException {
 		
 		SPANK ret = null;
 		Class<?> cls = catalog.get(concept);
@@ -119,7 +150,7 @@ public abstract class SPANK {
 			} catch (Exception e) {
 				throw new ThinklabValidationException("error making a spank model for " + concept);
 			}
-			ret.initialize(context);
+			ret.initialize(context, parameters);
 		}
 		
 		if (ret == null)

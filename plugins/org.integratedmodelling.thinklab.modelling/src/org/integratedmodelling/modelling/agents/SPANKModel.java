@@ -1,11 +1,13 @@
 package org.integratedmodelling.modelling.agents;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.modelling.DefaultAbstractModel;
+import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -16,6 +18,8 @@ import clojure.lang.Compiler;
 
 public class SPANKModel extends DefaultAbstractModel {
 
+	protected HashMap<String, Object> parameters = new HashMap<String, Object>();
+	
     @Override
     public IConcept getCompatibleObservationType(ISession session) {
         return CoreScience.Observation();
@@ -45,13 +49,14 @@ public class SPANKModel extends DefaultAbstractModel {
             keyword.equals(":downscaling-factor") ||
             keyword.equals(":save-file")) {
 
-            Object evaledArgument;
+            Object evaledArgument = null;
             try {
                 evaledArgument = Compiler.eval(argument);
             } catch (Exception e) {
                 evaledArgument = argument;
             }
 
+            parameters.put(keyword, evaledArgument);
 
         } else {
             super.applyClause(keyword, argument);
@@ -67,8 +72,11 @@ public class SPANKModel extends DefaultAbstractModel {
         arr.add(Polylist.list(
                 CoreScience.HAS_OBSERVABLE,
                 Polylist.list(getObservableClass())));
-        
-        return Polylist.PolylistFromArrayList(arr);
+
+        Polylist ret = Polylist.PolylistFromArrayList(arr);
+        ret = ObservationFactory.addReflectedField(ret, "parameters", parameters);
+
+        return ret;
     }
 
     @Override
