@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.riskwiz.bn.BeliefNetwork;
+import org.integratedmodelling.riskwiz.bn.BeliefNode;
 import org.integratedmodelling.riskwiz.io.genie.GenieReader;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -83,8 +84,20 @@ public class BayesianModelFactory {
 	}
 
 	private IModel createModel(BeliefNetwork bn, String nodename) {
+		
+		BeliefNode node = bn.getBeliefNode(nodename);
+		
+		String mname = CamelCase.toLowerCase(nodename, '-');
+		ArrayList<IModel> context = new ArrayList<IModel>();
+		
+		for (BeliefNode o : bn.getChildren(node)) {
+			
+		}
+		
 		// TODO Auto-generated method stub
 		return null;
+		
+		
 	}
 	
 }

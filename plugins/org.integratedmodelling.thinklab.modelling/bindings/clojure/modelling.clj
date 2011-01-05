@@ -70,6 +70,11 @@
 	[]
 	(new org.integratedmodelling.modelling.random.BayesianModel))
 
+(defn j-make-transform
+	"Make a new instance of Model and return it."
+	[concept value]
+	(new org.integratedmodelling.modelling.context.FilteredTransformation concept value))
+
 (defn register-model
 	"Get the single instance of the model manager from the modelling plugin and register the passed model
 	 with it."
@@ -262,7 +267,6 @@
 	 "Define a context."
 		[model-name & body]
  		`(def ~model-name (modelling/register-context (eval '(modelling/context ~@body)) (str '~model-name))))
-
 
 (defn apply-scenario
   "Apply a scenario to a model, return a new model with the scenario applied."
@@ -478,10 +482,12 @@
 		 	   		  (transform-model model# classifier#))))
  	   model#))
 
-;; TODO rename this to agent or something when the seas are quiet.
+;; TODO rename this to agent or something when the seas are quiet. It can be nice to have, 
+;; particularly when passing closures to create agents and define behaviors. Can build a CA
+;; in 2 minutes with it.
 (defmacro spank
 	"Create an generalized agent model, whose final implementation is chosen based on the
-   observable."
+   observable, just like SPAN but simpler to call and without the balls."
 	[observable & body]
 	`(let [model# 
  	        	(modelling/j-make-spank)] 
@@ -494,8 +500,7 @@
 
 
 (defmacro bayesian
-	"Create a bayesian model. The observable can only be a semantic object. For now the only way to
-	 define it is through the :import clause; bayesian network specifications are admitted but ignored."
+	"Create a bayesian model. To be deleted in favor of a proper set of classifications with CPTs."
 	[observable & body]
 	`(let [model# 
  	        	(modelling/j-make-bayesian)] 
@@ -506,6 +511,16 @@
 		 	   		  (transform-model model# classifier#))))
  	   model#))
  	   
+(defmacro transform
+  "To be used within a defcontext specification. Create a transformation object to modify states 
+   during contextualization."
+  [concept value & filter-objs]
+  `(let [ret# (modelling/j-make-transform (tl/conc ~concept) ~value)]
+     (when '~filter-objs
+       (doseq [filt# '~filter-objs]
+         (.addFilter ret# filt#)))
+     ret#))       
+         
 ;; -------------------------------------------------------------------------------------------------------
 ;; inquiry, extraction etc
 ;; -------------------------------------------------------------------------------------------------------

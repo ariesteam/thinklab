@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.internal.IContextTransformation;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 /**
  * Created by the "transform" form. Can apply a variety of transformations
@@ -14,6 +15,14 @@ import org.integratedmodelling.corescience.interfaces.internal.IContextTransform
  */
 public class FilteredTransformation implements IContextTransformation {
 
+	private IConcept concept;
+	private Object value;
+
+	public FilteredTransformation(IConcept concept, Object value) {
+		this.concept = concept;
+		this.value = value;
+	}
+	
 	@Override
 	public Object transform(Object original, IContext context, int stateIndex,
 			Map<?, ?> parameters) {
@@ -23,8 +32,12 @@ public class FilteredTransformation implements IContextTransformation {
 
 	@Override
 	public IContextTransformation newInstance() {
-		// TODO Auto-generated method stub
-		return null;
+		return new FilteredTransformation(concept, value);
+	}
+
+	@Override
+	public IConcept getObservableClass() {
+		return this.concept;
 	}
 
 }

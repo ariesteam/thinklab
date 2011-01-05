@@ -1058,4 +1058,11 @@ public class ObservationContext implements IObservationContext, IContext {
 	public IContextTransformation getTransformation(IConcept concept) {
 		return ctransf.get(concept);
 	}
+
+	public void setTransformations(
+			ArrayList<IContextTransformation> transfs) {
+		for (IContextTransformation t : transfs) {
+			ctransf.put(t.getObservableClass(), t);
+		}
+	}
 }

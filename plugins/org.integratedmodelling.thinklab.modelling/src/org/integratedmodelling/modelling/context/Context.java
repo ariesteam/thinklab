@@ -9,6 +9,7 @@ import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.interfaces.internal.IContextTransformation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
@@ -35,6 +36,7 @@ public class Context implements IContext {
 	
 	ArrayList<Model>   models = new ArrayList<Model>();
 	ArrayList<IExtent> extents = new ArrayList<IExtent>();
+	ArrayList<IContextTransformation> transformations = new ArrayList<IContextTransformation>();
 	
 	private String description;
 	private String id;
@@ -80,6 +82,8 @@ public class Context implements IContext {
 			this.models.add((Model) object);
 		} else if (object instanceof IExtent) {
 			extents.add((IExtent)object);
+		} else if (object instanceof IContextTransformation) {
+			transformations.add((IContextTransformation)object);
 		}
 	}
 	
@@ -116,6 +120,9 @@ public class Context implements IContext {
 			if (mr != null)
 				ret.mergeStates(mr);
 		}
+		
+		if (transformations.size() > 0)
+			ret.setTransformations(transformations);
 		
 		return ret;
 	}

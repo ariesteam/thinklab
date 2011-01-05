@@ -3,6 +3,7 @@ package org.integratedmodelling.corescience.interfaces.internal;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 /**
  * These can be inserted in a context to modify a state during contextualization.
@@ -26,4 +27,10 @@ public interface IContextTransformation {
 	 * @return
 	 */
 	public abstract IContextTransformation newInstance();
+	
+	/**
+	 * Return the observable class this applies to.
+	 * @return
+	 */
+	public abstract IConcept getObservableClass();
 }
