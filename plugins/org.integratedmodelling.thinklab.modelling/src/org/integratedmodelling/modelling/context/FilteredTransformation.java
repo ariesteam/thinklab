@@ -33,14 +33,18 @@ public class FilteredTransformation implements IContextTransformation {
 	private ArrayList<Object> filters = new ArrayList<Object>();
 	private boolean _initialized = false;
 	private IGridMask activationLayer;
-	
-	
+	private IFn clojureFilter;
 	
 	public FilteredTransformation(IConcept concept, Object value) {
 		this.concept = concept;
 		this.value = interpretValue(value);
 	}
 	
+	private FilteredTransformation(IConcept concept, Object value, ArrayList<Object> filters) {
+		this(concept, value);
+		this.filters = filters;
+	}
+
 	private Object interpretValue(Object value) {
 
 		if (value instanceof IConcept || value instanceof String || value instanceof Number) {
@@ -58,10 +62,17 @@ public class FilteredTransformation implements IContextTransformation {
 	public Object transform(Object original, IContext context, int stateIndex,
 			Map<?, ?> parameters) {
 		
+		/*
+		 *  only allow to convert a nodata if there is explicit code that 
+		 *  can handle it. Will not turn nodata into data otherwise.
+		 */
+		if (original == null && closure == null)
+			return null;
+		
 		if (!_initialized)
 			initialize(context);
 		
-		if (match(context, stateIndex)) {
+		if (match(original, context, stateIndex)) {
 			try {
 				return closure == null ? value : closure.invoke(original);
 			} catch (Exception e) {
@@ -72,18 +83,31 @@ public class FilteredTransformation implements IContextTransformation {
 		return original;
 	}
 
-	private boolean match(IContext context, int stateIndex) {
+	private boolean match(Object original, IContext context, int stateIndex) {
 		
 		if (filters.size() == 0) {
 			return true;
 		}
 
-		boolean ret = false;
+		boolean ret = true;
 		
 		if (this.activationLayer != null) {
 			ret = this.activationLayer.isActive(stateIndex);
 		} // TODO add other possible context selectors
 		
+		if (ret && this.clojureFilter != null) {
+			try {
+				ret = (Boolean)clojureFilter.invoke(original);
+			} catch (Exception e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+		
+		if (ret) {
+
+//			System.out.println("Turned " + original + " into " + value + " at " + stateIndex);
+		
+		}
 		return ret;
 	}
 
@@ -100,13 +124,16 @@ public class FilteredTransformation implements IContextTransformation {
 				} catch (ThinklabException e) {
 					throw new ThinklabRuntimeException(e);
 				}			
+			} else if (f instanceof IFn) {
+				this.clojureFilter = (IFn)f;
 			}
 		}
+		_initialized = true;
 	}
 
 	@Override
 	public IContextTransformation newInstance() {
-		return new FilteredTransformation(concept, value);
+		return new FilteredTransformation(concept, value, filters);
 	}
 
 	@Override
@@ -116,7 +143,7 @@ public class FilteredTransformation implements IContextTransformation {
 	
 	public void addFilter(Object o) throws ThinklabException {
 		
-		if (o instanceof ShapeValue) {
+		if (o instanceof ShapeValue || o instanceof IFn) {
 			this.filters.add(o);
 		} else {
 			throw new ThinklabValidationException(

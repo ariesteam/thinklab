@@ -58,6 +58,11 @@ public class Observation implements IObservation, IInstanceImplementation {
 	// if this isn't null, there was a state for us in the context, and
 	// we don't compute anything.
 	private IState predefinedState = null;
+
+	// if this is a dependency of a stateful merger, we need to know so we 
+	// look mediated and our state isn't stored, to ensure unique observables
+	// in the final context.
+	private boolean isMerged = false;
 	
 	public IDataSource<?> getDataSource()  {
 
@@ -120,7 +125,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 	@Override
 	public boolean isMediated() {
-		return mediatorObservation != null;
+		return mediatorObservation != null || isMerged;
 	}
 
 	@Override
@@ -365,5 +370,9 @@ public class Observation implements IObservation, IInstanceImplementation {
 	 */
 	public IState getPredefinedState() {
 		return predefinedState;
+	}
+
+	public void setMerged(boolean b) {
+		isMerged  = b;
 	}
 }

@@ -414,18 +414,17 @@ public class VMContextualizer<T> {
 		_observed.add(observable);
 		IState dds = null;
 		
-			try {
-
-				dds = o.createState(size, ownContext);	
-				dds.getMetadata().merge(((Observation)o).metadata);
-
-				if (accessor != null)
-					accessor.notifyState(dds, overallContext, ownContext);
+		try {
+			
+			dds = o.createState(size, ownContext);	
+			dds.getMetadata().merge(((Observation)o).metadata);
+			
+			if (accessor != null)
+				accessor.notifyState(dds, overallContext, ownContext);
 				
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
-			}
-		/*}*/
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 		
 		_datasources.add(new ContextMediator(dds, overallContext, ownContext));
 		encode(makeInst(MKSTOR_I, _storegs, _cstords++));
@@ -583,7 +582,7 @@ public class VMContextualizer<T> {
 				dumpIns(printStream, pc, PUSHPR_I, ins & 0x00ffffff);
 				break;
 			case TRANSFR: 
-				dumpIns(printStream, pc, PUSHPR_I, ins & 0x00ffffff);
+				dumpIns(printStream, pc, TRANSFR_I, ins & 0x00ffffff);
 				break;
 			}
 		}

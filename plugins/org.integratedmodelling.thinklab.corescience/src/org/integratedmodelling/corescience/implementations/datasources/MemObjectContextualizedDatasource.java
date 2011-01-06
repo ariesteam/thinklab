@@ -39,10 +39,7 @@ import java.util.HashMap;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.context.ObservationContext;
-import org.integratedmodelling.corescience.interfaces.IDataSource;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -67,7 +64,7 @@ public class MemObjectContextualizedDatasource
 	private Object prototype = null;
 	Metadata metadata = new Metadata();
 	private ObservationContext context;
-
+	
 	public MemObjectContextualizedDatasource(IConcept type, int size, ObservationContext context) {
 		_type = type;
 		data = new Object[size];
@@ -79,17 +76,7 @@ public class MemObjectContextualizedDatasource
 		 */
 		Metadata.rankConcepts(type,  metadata);
 	}
-//	
-//	@Override
-//	public Object getInitialValue() {
-//		return null;
-//	}
-//
-//	@Override
-//	public Object getValue(int index, Object[] parameters) {
-//		return data[index];
-//	}
-	
+
 	@Override
 	public Object getValue(int offset) {
 		return (offset >= 0 && offset < data.length) ? data[offset] : null;
@@ -103,6 +90,7 @@ public class MemObjectContextualizedDatasource
 
 	@Override
 	public void setValue(int idx, Object o) {
+
 		if (prototype == null)
 			prototype = o;
 		data[idx] = o;

@@ -2,6 +2,7 @@ package org.integratedmodelling.corescience.interfaces;
 
 import java.util.Collection;
 
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
@@ -83,6 +84,13 @@ public interface IContext  {
 	 * @return
 	 */
 	public abstract Collection<IState> getStates();
+
+	/**
+	 * Return a new context without states but with the same extents, transformations etc. of ours.
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public abstract IContext cloneExtents() throws ThinklabException;
 
 
 }

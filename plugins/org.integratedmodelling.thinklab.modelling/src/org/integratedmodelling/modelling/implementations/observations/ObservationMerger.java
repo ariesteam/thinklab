@@ -50,7 +50,7 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 	int[] idxMap = null; 
 	
 	IConcept stateType = null;
-	private IObservationContext ourContext;
+//	private IObservationContext ourContext;
 	
 	ArrayList<Triple<Keyword,IState,ContextMapper>> pmap = 
 			new ArrayList<Triple<Keyword,IState,ContextMapper>>();
@@ -114,7 +114,6 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 
 		@Override
 		public boolean isConstant() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
@@ -233,8 +232,17 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 		this.contextMappers = new ContextMapper[dependencies.length];
 		
 		/*
+		 * TODO ?
 		 * if we have a context model, run it 
 		 */
+		
+		/*
+		 * all our dependencies are mediated, otherwise we end up (potentially) with 
+		 * the same state twice in the result, and an unmerged one could take over
+		 * the merged state.
+		 */
+		for (IObservation o : dependencies)
+			((Observation)o).setMerged(true);
 	}
 
 

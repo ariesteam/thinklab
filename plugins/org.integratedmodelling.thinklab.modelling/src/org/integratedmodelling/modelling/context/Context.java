@@ -202,5 +202,10 @@ public class Context implements IContext {
 		return new ArrayList<IState>();
 	}
 
+	@Override
+	public IContext cloneExtents() throws ThinklabException {
+		return getObservationContext(null);
+	}
+
 
 }

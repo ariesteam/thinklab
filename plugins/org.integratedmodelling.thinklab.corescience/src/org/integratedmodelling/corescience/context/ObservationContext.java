@@ -256,7 +256,7 @@ public class ObservationContext implements IObservationContext, IContext {
 		HashMap<IConcept, IExtent> ret = new HashMap<IConcept, IExtent>();
 
 		for (IObservation b : o.getContingencies()) {
-			ObservationContext oc = new ObservationContext();
+			ObservationContext oc = new ObservationContext(ctransf);
 			HashMap<IConcept, IExtent> mods = 
 				oc.defineObservationContext(b, desired);
 			
@@ -367,7 +367,7 @@ public class ObservationContext implements IObservationContext, IContext {
 		 */
 		for (IObservation dep : observation.getDependencies()) {			
 			
-			ObservationContext odep = new ObservationContext();
+			ObservationContext odep = new ObservationContext(ctransf);
 			HashMap<IConcept, IExtent> mods = 
 				odep.assembleObservationContext(dep, newconstraining);
 			
@@ -442,9 +442,14 @@ public class ObservationContext implements IObservationContext, IContext {
 		initialize();
 	}
 	
-	private ObservationContext() {
+	private ObservationContext(HashMap<IConcept, IContextTransformation> ctransf) {
+		this.ctransf = ctransf;
 	}
 
+
+	private ObservationContext() {
+		// TODO Auto-generated constructor stub
+	}
 
 	/*
 	 * create a new context with our extents and dependents and set it into 
@@ -468,6 +473,7 @@ public class ObservationContext implements IObservationContext, IContext {
 		this.totalSize = ctx.totalSize;
 		this.transformations = ctx.transformations;
 		this.isNull = ctx.isNull;
+		this.ctransf = ctx.ctransf;
 		
 		if (!_initialized) {
 			initialize();
@@ -967,6 +973,15 @@ public class ObservationContext implements IObservationContext, IContext {
 		for (IConcept c : other.getStateObservables()) {
 			states.put(c, other.getState(c));
 		}
+		
+		/*
+		 * merge transformations, so if this runs again it runs as expected
+		 */
+		for (IConcept t : ((ObservationContext)other).ctransf.keySet()) {
+			if (!ctransf.containsKey(t)) {
+				ctransf.put(t, ((ObservationContext)other).ctransf.get(t));
+			}
+		}
 	}
 	
 	/*
@@ -1008,7 +1023,8 @@ public class ObservationContext implements IObservationContext, IContext {
 			throws ThinklabException {
 		
 		ObservationContext cns = new ObservationContext(extents.values());
-		ObservationContext ret = new ObservationContext();
+		cns.ctransf = ctransf;
+		ObservationContext ret = new ObservationContext(ctransf);
 		HashMap<IConcept, IExtent> mods = ret.defineObservationContext(observation, cns);
 
 		if (mods.size() > 0 && this.states.size() > 0) {
@@ -1064,5 +1080,13 @@ public class ObservationContext implements IObservationContext, IContext {
 		for (IContextTransformation t : transfs) {
 			ctransf.put(t.getObservableClass(), t);
 		}
+	}
+
+	@Override
+	public IContext cloneExtents() throws ThinklabException {
+
+		ObservationContext ret = new ObservationContext(extents.values());
+		ret.ctransf = ctransf;
+		return ret;
 	}
 }

@@ -397,7 +397,7 @@ public class BayesianTransformer
 			out.close();
 		}
 		
-		ObservationContext ret = new ObservationContext(context.getExtents());
+		ObservationContext ret = (ObservationContext)context.cloneExtents();;
 		ret.setObservation(this);
 
 		/*
