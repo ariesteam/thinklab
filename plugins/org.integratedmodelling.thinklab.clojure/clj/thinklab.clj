@@ -179,6 +179,13 @@
 	 [concept]
 	 (. (conc concept) (getDefinition)))
 	 
+
+;; Gary's magic to add its own source code to a fun
+(defmacro with-source-code [[defsym name & body :as form]]
+  `(~defsym ~(with-meta name {:source-code `'~form}) ~@body))
+
+(defmacro get-source-code [var-name] `(:source-code (meta (var ~var-name))))
+
 ;; --------------------------------------------------------------------------------
 ;; command interface
 ;; --------------------------------------------------------------------------------

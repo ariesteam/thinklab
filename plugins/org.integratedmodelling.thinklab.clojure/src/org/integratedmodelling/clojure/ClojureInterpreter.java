@@ -3,9 +3,13 @@ package org.integratedmodelling.clojure;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FilterInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -15,7 +19,9 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabScriptException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
@@ -45,6 +51,10 @@ public class ClojureInterpreter implements Interpreter {
 	
 	private URL currentSource = null;
 	
+	public interface FormListener {
+		public abstract void onFormEvaluated(Object retval, String formCode);
+	}
+ 	
 	private synchronized Symbol newGlobalSymbol(String ns) {
 		return Symbol.intern(ns);
 	}
@@ -80,6 +90,17 @@ public class ClojureInterpreter implements Interpreter {
 	
 	@Override
 	public synchronized void loadBindings(URL source, ClassLoader cloader) throws ThinklabException {
+
+//		// TEMP delete
+//		loadMonitored(source, cloader, new FormListener() {
+//			
+//			@Override
+//			public void onFormEvaluated(Object retval, String formCode) {
+//				if (formCode.contains("defmodel")) {
+//					System.out.println("PIPI POOPOO");
+//				}
+//			}
+//		});
 		
 		currentSource = source;
 		
@@ -103,7 +124,174 @@ public class ClojureInterpreter implements Interpreter {
 			currentSource = null;
 		}
 	}
+	
 
+	/**
+	 * This one is basically a REPL that loads one form at a time and calls the 
+	 * listener with the result of evaluating it. It uses a special subclass of
+	 * Reader that stores the bytes read, so that the listener is passed the
+	 * unaltered source code as well as the result of evaluating it.
+	 * 
+	 * @param source
+	 * @param cloader
+	 * @param listener
+	 * @throws ThinklabException
+	 */
+	public synchronized void 
+		loadMonitored(URL source, ClassLoader cloader,
+					  FormListener listener) throws ThinklabException {
+		
+		currentSource = source;
+		
+		class MonitoringReader extends LineNumberingPushbackReader {
+			
+			StringBuffer buffer = new StringBuffer();
+			
+			public MonitoringReader(InputStreamReader i) {
+				super(i);
+			}
+
+			@Override
+			public int read(char[] arg0, int arg1, int arg2) throws IOException {
+				int ret = super.read(arg0, arg1, arg2);
+				buffer.append(arg0, arg1, arg2);
+				return ret;
+			}
+
+			@Override
+			public void unread(char[] arg0, int arg1, int arg2)
+					throws IOException {
+				// TODO Auto-generated method stub
+				super.unread(arg0, arg1, arg2);
+				buffer.delete(buffer.length() - arg1 - 1, buffer.length() - arg2 -1);
+			}
+			
+			public String getBuffer() {
+				String ret = buffer.toString();
+				buffer = new StringBuffer();
+				return ret;
+			}
+		}
+		
+		class MonitoringInputStream extends FilterInputStream {
+
+			StringBuffer buffer = new StringBuffer();
+			
+			public MonitoringInputStream(InputStream in) {
+				super(in);
+			}
+
+			@Override
+			public int read() throws IOException {
+				int n = super.read();
+				buffer.append((char)n);
+				return n;
+			}
+
+			@Override
+			public int read(byte[] arg0, int arg1, int arg2) throws IOException {
+				int ret = super.read(arg0, arg1, arg2);
+//				buffer.append(arg0, arg1, arg2);
+				return ret;
+			}
+			
+			public String getBuffer() {
+				String ret = buffer.toString();
+				buffer = new StringBuffer();
+				return ret;
+			}
+			
+			
+		}
+		
+		final Symbol USER = Symbol.create("user");
+		final Symbol CLOJURE = Symbol.create("clojure.core");
+		final Symbol TL = Symbol.create("tl");
+		final Symbol EXIT = Symbol.create("exit");
+		
+		final Var in_ns = RT.var("clojure.core", "in-ns");
+		final Var refer = RT.var("clojure.core", "refer");
+		final Var ns = RT.var("clojure.core", "*ns*");
+		final Var compile_path = RT.var("clojure.core", "*compile-path*");
+		final Var warn_on_reflection = RT.var("clojure.core",
+				"*warn-on-reflection*");
+		final Var print_meta = RT.var("clojure.core", "*print-meta*");
+		final Var print_length = RT.var("clojure.core", "*print-length*");
+		final Var print_level = RT.var("clojure.core", "*print-level*");
+		final Var star1 = RT.var("clojure.core", "*1");
+		final Var star2 = RT.var("clojure.core", "*2");
+		final Var star3 = RT.var("clojure.core", "*3");
+		final Var stare = RT.var("clojure.core", "*e");
+		final Var exit = RT.var("clojure.core", "exit");
+		final Var sess  = RT.var("tl", "*session*");
+		
+		Var.pushThreadBindings(RT.map(ns, ns.get(), warn_on_reflection,
+				warn_on_reflection.get(), print_meta, print_meta.get(),
+				print_length, print_length.get(), print_level, print_level
+						.get(), compile_path, "classes", star1, null,
+				star2, null, star3, null, stare, null, sess, this.session, exit, EXIT));
+
+		// create and move into the user namespace
+		try {
+			in_ns.invoke(USER);
+			refer.invoke(CLOJURE);
+			refer.invoke(TL);
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		}
+
+		InputStreamReader rd = null;
+		MonitoringInputStream input = null;
+		try {
+			input = new MonitoringInputStream(new FileInputStream(Escape.fromURL(source.getFile().toString())));
+			rd = new InputStreamReader(new MonitoringInputStream(input));
+		} catch (FileNotFoundException e) {
+			throw new ThinklabResourceNotFoundException(e);
+		}
+		
+		LineNumberingPushbackReader rdr = new LineNumberingPushbackReader(rd);
+		
+        try {
+        	
+        	DynamicClassLoader cl = null;
+        	if (cloader != null) {
+        		cl = RT.ROOT_CLASSLOADER;
+        		RT.ROOT_CLASSLOADER = new DynamicClassLoader(cloader);
+        	}
+        		
+        	// mah
+        	Object EOF = new Object();
+
+        	while (true) {
+
+        		Object r = LispReader.read(rdr, false, EOF, false);
+        		Object ret = Compiler.eval(r);
+        		
+        		if (listener != null) {
+        			listener.onFormEvaluated(ret, input.getBuffer());
+        		}
+        		
+        		if (r == EOF) {
+					break;
+				}
+        	}
+        	
+			if (cloader != null) {
+				RT.ROOT_CLASSLOADER = cl;
+			}
+			
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		} finally {
+			
+			try {
+				rdr.close();
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+			currentSource = null;
+		}
+	}
 	@Override
 	public void setError(OutputStream input) {
 		this.error = input;

@@ -103,11 +103,6 @@ public class FilteredTransformation implements IContextTransformation {
 			}
 		}
 		
-		if (ret) {
-
-//			System.out.println("Turned " + original + " into " + value + " at " + stateIndex);
-		
-		}
 		return ret;
 	}
 
