@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling;
 
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.modelling.visualization.VisualizationFactory;
+import org.integratedmodelling.modelling.visualization.wiki.WikiFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;

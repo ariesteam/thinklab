@@ -1,5 +1,7 @@
 package org.integratedmodelling.modelling.model;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,6 +25,7 @@ import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -32,7 +35,10 @@ import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.time.literals.TemporalExtentValue;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.utils.sexpr.FormReader;
+import org.integratedmodelling.utils.sexpr.FormReader.FormListener;
 
 /**
  * A singleton (access from ModellingPlugin) that catalogs models and provides
@@ -439,6 +445,58 @@ public class ModelFactory {
 		
 		return ret;
 	}
+	
+	/**
+	 * Load all models passed in the given Clojure file, creating a source code map
+	 * and associating each model and namespace to its node in the source map so that
+	 * the source can be reconstructed exactly.
+	 *  
+	 * @param resourceId
+	 * @throws ThinklabIOException 
+	 */
+	public void loadModels(String resourceId) throws ThinklabException {
+		
+		URL rurl = MiscUtilities.getURLForResource(resourceId);
+		FormReader f;
+		
+		/*
+		 * setup model read listener
+		 */
+		
+		try {
+			f = new FormReader(rurl.openStream());
+			f.read(new FormListener() {
+				
+				@Override
+				public void onFormRead(String s) {
+
+					/*
+					 * eval form
+					 */
+					
+					/*
+					 * if model has been read, get it and check its namespace if
+					 * we still don't know it
+					 */
+					
+					/*
+					 * create source node and add to source map
+					 */
+					
+					/*
+					 * stick source node into model
+					 */
+					
+				}
+			});
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}
+		
+		
+		f.close();
+	}
+	
 	
 	/**
 	 * Clones a new agent of the passed type and places it in the context

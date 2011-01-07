@@ -5,7 +5,7 @@ import org.integratedmodelling.modelling.visualization.presentation.Presentation
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 
 public class HtmlPresentation extends DefaultPresentation {
-
+	
 	@Override
 	public void render() throws ThinklabException {
 		// TODO Auto-generated method stub

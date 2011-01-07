@@ -394,5 +394,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/net.opengis.wfsv-2.6.5.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/net.opengis.wps-2.6.5.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/org.w3.xlink-2.6.5.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/xwiki-core-rendering-standalone-2.2.4.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

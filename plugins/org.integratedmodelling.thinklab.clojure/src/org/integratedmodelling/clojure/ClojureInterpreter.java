@@ -91,17 +91,6 @@ public class ClojureInterpreter implements Interpreter {
 	@Override
 	public synchronized void loadBindings(URL source, ClassLoader cloader) throws ThinklabException {
 
-//		// TEMP delete
-//		loadMonitored(source, cloader, new FormListener() {
-//			
-//			@Override
-//			public void onFormEvaluated(Object retval, String formCode) {
-//				if (formCode.contains("defmodel")) {
-//					System.out.println("PIPI POOPOO");
-//				}
-//			}
-//		});
-		
 		currentSource = source;
 		
         try {

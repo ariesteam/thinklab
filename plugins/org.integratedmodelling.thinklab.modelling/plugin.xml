@@ -45,6 +45,9 @@
 		<library type="code" id="stax-api" path="lib/stax-api-1.0.1.jar"/>
 		<library type="code" id="visad" path="lib/visad.jar"/>
 		<library type="code" id="gnuplot" path="lib/gnuplot.jar"/>
+	
+		<!-- wiki subsystem and all its f'ing dependencies -->
+		<library type="code" id="xwiki" path="lib/xwiki-core-rendering-standalone-2.2.4.jar"/>
 		
 	</runtime>
 	
