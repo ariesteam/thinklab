@@ -110,6 +110,7 @@ public class PostgisGazetteer implements IGazetteer {
 				throws ThinklabException {
 			
 			if (schemaField.equals(IGazetteer.SHAPE_FIELD)) {
+				IValue id = res.getResultField(n, "id");
 				return resolve(res.getResultField(n, "id").toString(), null, null).iterator().next();
 			}	
 			return res.getResultField(n, schemaField);
@@ -325,7 +326,6 @@ public class PostgisGazetteer implements IGazetteer {
 		        String idTemplate = fprop.getProperty(SHAPE_ID_TEMPLATE, "@{id}");
 		        HashMap<String,Object> fields = new HashMap<String, Object>();
 				
-		        // to be used if nothing else is available
 		        fields.put("id", f.getID());
 		        
 				/*
@@ -337,12 +337,10 @@ public class PostgisGazetteer implements IGazetteer {
 		        	 * FIXME this should use the "endorsed" name from the schema, although
 		        	 * it's always the_geom for now.
 		        	 */
-		        	if (fields.equals("the_geom"))
+		        	if (attributes[i].equals("the_geom"))
 		        		continue;
 		        	fields.put(attributes[i], f.getAttribute(attributes[i]));
 		        }
-		        
-		        String id = (String) TemplateRuntime.eval(idTemplate, fields);
 		        
 		        /*
 		         * compute any other field defined in properties and pass to the Lucene index.
@@ -357,6 +355,15 @@ public class PostgisGazetteer implements IGazetteer {
 		        		sav.add(fiel);
 		        	}
 		        }
+		        
+		        /*
+		         * compute id and use in both lucene index and postgis
+		         */
+		        String id = (String) TemplateRuntime.eval(idTemplate, fields);
+
+		        // do this again to update the ID in case it changed
+		        fields.put("id", id);
+
 		        
 		        addLocation(id, shape, fields);    
 		        		        

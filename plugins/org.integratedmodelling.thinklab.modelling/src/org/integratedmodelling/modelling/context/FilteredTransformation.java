@@ -9,6 +9,7 @@ import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
@@ -140,6 +141,9 @@ public class FilteredTransformation implements IContextTransformation {
 		
 		if (o instanceof ShapeValue || o instanceof IFn) {
 			this.filters.add(o);
+		} else if (o == null) {			
+			throw new ThinklabValidationException(
+					"filter expression in transformation evaluates to nil");
 		} else {
 			throw new ThinklabValidationException(
 					"defcontext/transform: don't know how to use " + o + " as a filter");

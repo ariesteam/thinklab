@@ -161,7 +161,9 @@
 
 (defn shape 
   [wkt-or-wkb]
-  (make-shape wkt-or-wkb))
+  (if (symbol? wkt-or-wkb) 
+    (get-shape-from-name (str wkt-or-wkb)) 
+    (make-shape wkt-or-wkb)))
 
 (defn grid 
   "Return an IExtent for a grid (GridExtent) with the specified linear resolution and encompassing the
