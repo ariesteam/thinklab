@@ -9,7 +9,6 @@ import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
@@ -21,7 +20,7 @@ import clojure.lang.Symbol;
 
 /**
  * Created by the "transform" form. Can apply a variety of transformations
- * to a state, optionally using a generalized context filter.
+ * to a state, optionally using generalized context and value filters.
  * 
  * @author ferdinando.villa
  *
@@ -34,7 +33,6 @@ public class FilteredTransformation implements IContextTransformation {
 	private ArrayList<Object> filters = new ArrayList<Object>();
 	private boolean _initialized = false;
 	private IGridMask activationLayer;
-	private IFn clojureFilter;
 	
 	public FilteredTransformation(IConcept concept, Object value) {
 		this.concept = concept;
@@ -86,25 +84,35 @@ public class FilteredTransformation implements IContextTransformation {
 
 	private boolean match(Object original, IContext context, int stateIndex) {
 		
-		if (filters.size() == 0) {
-			return true;
-		}
-
-		boolean ret = true;
-		
-		if (this.activationLayer != null) {
-			ret = this.activationLayer.isActive(stateIndex);
-		} // TODO add other possible context selectors
-		
-		if (ret && this.clojureFilter != null) {
-			try {
-				ret = (Boolean)clojureFilter.invoke(original);
-			} catch (Exception e) {
-				throw new ThinklabRuntimeException(e);
+		for (Object filter : filters) {
+			if (filter instanceof ShapeValue) {
+				if (!this.activationLayer.isActive(stateIndex))
+					return false;
+			} else if (filter instanceof IFn) {
+				Object o = null;
+				try {
+					o = ((IFn)filter).invoke(original);
+				} catch (Exception e) {
+					throw new ThinklabRuntimeException(e);
+				}
+				if (o == null || (o instanceof Boolean && !((Boolean)o)))
+					return false;
+			} else if (filter instanceof Number && original instanceof Number) {
+				if (!((Number)filter).equals((Number)original))
+					return false;
+			} else if (filter instanceof IConcept && original instanceof IConcept) {
+				if (! ((IConcept)original).equals((IConcept)filter))
+					return false;
+			} else if (filter instanceof String && original instanceof String) {
+				if (! ((String)filter).equals((String)original))
+					return false;
+			} else if (filter instanceof Boolean) {
+				if (!((Boolean)filter))
+					return false;
 			}
 		}
 		
-		return ret;
+		return true;
 	}
 
 	private void initialize(IContext context) {
@@ -120,9 +128,7 @@ public class FilteredTransformation implements IContextTransformation {
 				} catch (ThinklabException e) {
 					throw new ThinklabRuntimeException(e);
 				}			
-			} else if (f instanceof IFn) {
-				this.clojureFilter = (IFn)f;
-			}
+			} 
 		}
 		_initialized = true;
 	}
@@ -139,7 +145,11 @@ public class FilteredTransformation implements IContextTransformation {
 	
 	public void addFilter(Object o) throws ThinklabException {
 		
-		if (o instanceof ShapeValue || o instanceof IFn) {
+		if (o instanceof ShapeValue || 
+			o instanceof IFn ||
+			o instanceof Number ||
+			o instanceof Boolean ||
+			o instanceof String) {
 			this.filters.add(o);
 		} else if (o == null) {			
 			throw new ThinklabValidationException(
