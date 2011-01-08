@@ -89,6 +89,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * values for a state, or simply "true" for any edit).
 	 */
 	protected Object editable = null;
+	private String namespace;
 
 	protected boolean isMediating() {
 		return mediated != null || mediatesExternal;
@@ -104,6 +105,15 @@ public abstract class DefaultAbstractModel implements IModel {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	@Override
+	public String getNamespace() {
+		return this.namespace;
+	}
+
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
 	}
 
 	/**

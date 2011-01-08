@@ -46,8 +46,8 @@
 		<library type="code" id="visad" path="lib/visad.jar"/>
 		<library type="code" id="gnuplot" path="lib/gnuplot.jar"/>
 	
-		<!-- wiki subsystem and all its f'ing dependencies -->
-		<library type="code" id="xwiki" path="lib/xwiki-core-rendering-standalone-2.2.4.jar"/>
+		<!-- wiki subsystem  -->
+		<library type="code" id="textile" path="lib/textile-j-2.2.jar"/>
 		
 	</runtime>
 	

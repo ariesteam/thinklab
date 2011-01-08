@@ -14,6 +14,7 @@ import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.modelling.interfaces.IModelForm;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -32,7 +33,7 @@ import org.integratedmodelling.time.TimePlugin;
  * @author ferdinando.villa
  *
  */
-public class Context implements IContext {
+public class Context implements IContext, IModelForm {
 	
 	ArrayList<Model>   models = new ArrayList<Model>();
 	ArrayList<IExtent> extents = new ArrayList<IExtent>();
@@ -40,6 +41,7 @@ public class Context implements IContext {
 	
 	private String description;
 	private String id;
+	private String namespace;
 
 	public Context() {}
 
@@ -96,6 +98,16 @@ public class Context implements IContext {
 	public String getId() {
 		return this.id;
 	}
+	
+	@Override
+	public String getNamespace() {
+		return this.namespace;
+	}
+
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
+	}
+
 
 	/**
 	 * Create an observation context using our existing extent configuration for the passed

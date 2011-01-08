@@ -10,6 +10,7 @@ import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.interfaces.IModelForm;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -23,7 +24,7 @@ import clojure.lang.IFn;
  * @author Ferdinando
  *
  */
-public class Agent extends DefaultMutableTreeNode  {
+public class Agent extends DefaultMutableTreeNode implements IModelForm {
 
 	protected IContext context = null;
 	ArrayList<IModel> models = null;
@@ -54,6 +55,7 @@ public class Agent extends DefaultMutableTreeNode  {
 	Topology[] topologies;
 	ISession session;
 	IKBox kbox;
+	private String namespace;
 	
 	protected void copy(Agent agent) {
 		worldModel = agent.worldModel;
@@ -140,34 +142,18 @@ public class Agent extends DefaultMutableTreeNode  {
 		this.name = id;
 	}
 
+	@Override
 	public String getId() {
 		return name;
 	}
 
-//	@Override
-//	public void setModel(IModel... model) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public IContext onContextChanged() {
-//		// TODO check if session allows storage. If so, store previous context before going to the
-//		// next.
-//		return null;
-//	}
-//
-//	@Override
-//	public Collection<IAgent> getChildrenAgents() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public Collection<IAgent> getParentAgents() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	public String getNamespace() {
+		return this.namespace;
+	}
 
-	
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
+	}
+
 }

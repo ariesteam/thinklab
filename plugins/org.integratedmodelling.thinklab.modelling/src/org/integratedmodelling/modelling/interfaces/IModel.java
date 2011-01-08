@@ -29,7 +29,7 @@ import org.integratedmodelling.utils.Polylist;
  * @date Jan 25th, 2008.
  * 
  */
-public interface IModel extends IConceptualizable {
+public interface IModel extends IConceptualizable, IModelForm {
 
 	/*
 	 * values for flags to be passed to buildDefinition. THIS SHOULD BECOME UNNECESSARY AND BE REMOVED ALONG WITH THE
@@ -93,11 +93,6 @@ public interface IModel extends IConceptualizable {
 	 */
 	public Polylist buildDefinition(IKBox kbox, ISession session, IContext context, int flags) throws ThinklabException;
 
-	/**
-	 * Models must have an ID
-	 * @return
-	 */
-	public abstract String getId();
 
 	/**
 	 * Observing a model over a kbox is a query that produces zero or more observations of 

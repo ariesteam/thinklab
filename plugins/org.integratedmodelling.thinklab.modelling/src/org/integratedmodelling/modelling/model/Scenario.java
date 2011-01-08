@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.integratedmodelling.modelling.corescience.ObservationModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.interfaces.IModelForm;
 
 /**
  * A scenario is an identification model containing observables that can be
@@ -14,7 +15,7 @@ import org.integratedmodelling.modelling.interfaces.IModel;
  * @author Ferdinando Villa
  *
  */
-public class Scenario extends ObservationModel {
+public class Scenario extends ObservationModel implements IModelForm {
 
 	ArrayList<IModel> models = new ArrayList<IModel>();
 	ArrayList<Object> editableData = new ArrayList<Object>();

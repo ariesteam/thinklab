@@ -87,10 +87,8 @@ public class FormReader {
 					switch (ch) {
 					
 					case '(':
-						
 						if (plevel == -2)
 							plevel = -1;
-						
 						plevel ++;
 						break;
 					case ')':
@@ -111,11 +109,9 @@ public class FormReader {
 					}
 				}
 		
-				ret.append((char)ch);
-								
+				ret.append((char)ch);	
 				if (plevel == -1)
 					break;
-				
 				
 			} catch (IOException e) {
 				throw new ThinklabIOException(e);

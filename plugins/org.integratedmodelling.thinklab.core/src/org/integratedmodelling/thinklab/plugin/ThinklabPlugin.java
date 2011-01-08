@@ -35,7 +35,9 @@ package org.integratedmodelling.thinklab.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
@@ -65,6 +67,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.extensions.KBoxHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
+import org.integratedmodelling.thinklab.interfaces.IResourceLoader;
 import org.integratedmodelling.thinklab.interfaces.annotations.DataTransformation;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
@@ -112,6 +115,9 @@ public abstract class ThinklabPlugin extends Plugin
 	File propertySource = null;
 	
 	private ArrayList<String> ontologies = new ArrayList<String>();
+	
+	private static ArrayList<IResourceLoader> resourceLoaders = 
+		new ArrayList<IResourceLoader>();
 	
 	private File dataFolder;
 	private File confFolder;
@@ -184,6 +190,10 @@ public abstract class ThinklabPlugin extends Plugin
 		return ret;
 	}
 	
+	public void installResourceLoader(IResourceLoader l) {
+		resourceLoaders.add(l);
+	}
+	
 	/**
 	 * Any extensions other than the ones handled by default should be handled here.
 	 * @throws ThinklabException 
@@ -237,6 +247,32 @@ public abstract class ThinklabPlugin extends Plugin
 		for (IPluginLifecycleListener lis : KnowledgeManager.getPluginListeners()) {
 			lis.onPluginLoaded(this);
 		}
+		
+		for (IResourceLoader loader : resourceLoaders) {
+			loader.load(getThinklabPluginProperties(), getLoadDirectory());
+		}
+	}
+
+	private Properties getThinklabPluginProperties() throws ThinklabIOException {
+
+		Properties ret = new Properties();
+		File pfile = 
+			new File(
+				getLoadDirectory() + 
+				File.separator + 
+				"THINKLAB-INF" +
+				File.separator + 
+				"thinklab.properties");
+		
+		if (pfile.exists()) {
+			try {
+				ret.load(new FileInputStream(pfile));
+			} catch (Exception e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+		
+		return ret;
 	}
 
 	/* (non-Javadoc)

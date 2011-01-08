@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -446,6 +447,29 @@ public class ModelFactory {
 		return ret;
 	}
 	
+	public void loadModels(File dir) throws ThinklabException {
+		
+		/*
+		 * load all recognized model files 
+		 */
+		for (File f : dir.listFiles()) {
+			if (f.isDirectory()) {
+				loadModels(f);
+			} else if (f.toString().endsWith(".clj")) {
+				loadModelFile(f.toString());
+			}
+		}
+	}
+
+	public void loadContexts(File dir) {
+		
+	}
+
+	public void loadStorylines(File dir) {
+		
+	}
+	
+	
 	/**
 	 * Load all models passed in the given Clojure file, creating a source code map
 	 * and associating each model and namespace to its node in the source map so that
@@ -454,7 +478,7 @@ public class ModelFactory {
 	 * @param resourceId
 	 * @throws ThinklabIOException 
 	 */
-	public void loadModels(String resourceId) throws ThinklabException {
+	public void loadModelFile(String resourceId) throws ThinklabException {
 		
 		URL rurl = MiscUtilities.getURLForResource(resourceId);
 		FormReader f;

@@ -1,6 +1,5 @@
 package org.integratedmodelling.modelling.commands;
 
-import org.integratedmodelling.modelling.visualization.wiki.WikiFactory;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
@@ -26,8 +25,6 @@ public class StorylineCommand implements ICommandHandler {
 	@Override
 	public IValue execute(Command command, ISession session)
 			throws ThinklabException {
-		
-		System.out.println(WikiFactory.wikiToHtml("*Porco Dio* e Vaccamadonna"));
 		
 		// TODO Auto-generated method stub
 		return null;

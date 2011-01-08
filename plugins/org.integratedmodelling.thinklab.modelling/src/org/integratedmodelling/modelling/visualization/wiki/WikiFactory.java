@@ -1,50 +1,72 @@
 package org.integratedmodelling.modelling.visualization.wiki;
 
-import java.io.StringReader;
+import java.io.StringWriter;
 
-import org.integratedmodelling.modelling.ModellingPlugin;
-import org.xwiki.component.embed.EmbeddableComponentManager;
-import org.xwiki.component.manager.ComponentLookupException;
-import org.xwiki.rendering.converter.ConversionException;
-import org.xwiki.rendering.converter.Converter;
-import org.xwiki.rendering.renderer.printer.DefaultWikiPrinter;
-import org.xwiki.rendering.renderer.printer.WikiPrinter;
-import org.xwiki.rendering.syntax.Syntax;
+import net.java.textilej.parser.MarkupParser;
+import net.java.textilej.parser.builder.HtmlDocumentBuilder;
+import net.java.textilej.parser.markup.confluence.ConfluenceDialect;
+import net.java.textilej.parser.markup.textile.TextileDialect;
+
 
 public class WikiFactory {
 
-	public static String wikiToHtml(String wikitext) {
+	public final static String test = "%rdf:type toto:Document\r\n"
+			+ "\r\n"
+			+ "%title Hello World\r\n"
+			+ "\r\n"
+			+ "%summary This is a short description\r\n"
+			+ "should this come as a property-value of summary??\r\n"		//TODO check.
+			+ "%locatedIn (((\r\n"
+			+ "    %type [City]\r\n"		// onReference for the square brackets.
+			+ "    %name [Paris]\r\n"		// onReference
+			+ "    %address (((\r\n"
+			+ "      %building 10\r\n"
+			+ "      %street Cité Nollez\r\n"
+							+ "      %anotherprop (((\r\n"
+							+ "         %property1 value1\r\n"
+							+ "         %property2 value2\r\n"
+			+ "      ))) \r\n"
+			+ "    ))) \r\n"
+			+ ")))\r\n"
+			+ "= Hello World =\r\n"
+			+ "\r\n"
+			+ "* item one\r\n"
+			+ "  * sub-item a\r\n"
+			+ "  * sub-item b\r\n"
+			+ "    + ordered X \r\n"
+			+ "    + ordered Y\r\n"
+			+ "  * sub-item c\r\n"
+			+ "* item two\r\n"
+			+ "\r\n"
+			+ "\r\n"
+			+ "The table below contains \r\n"
+			+ "an %seeAlso(embedded document). \r\n";
+	
+	public final static String test2 = "* This is a bullet\n" +
+						"*# this is a numbered list\n" +
+						"*# this is another numbered list\n" +
+						"* This is another bullet";
+
+	public static String confluenceToHTML(String source) {
 		
-		// Convert input in XWiki Syntax 2.0 into XHTML. The result is stored in
-		// the printer.
-		WikiPrinter printer = null;
-		ClassLoader clsl = null;
-		
-		try {
-
-			clsl = ModellingPlugin.get().swapClassloader();			
-				
-			EmbeddableComponentManager ecm = new EmbeddableComponentManager();
-			ecm.initialize(ModellingPlugin.get().getClassLoader());
-			
-			// Use a the Converter component to convert between one syntax to
-			// another.
-			Converter converter = ecm.lookup(Converter.class);
-			printer = new DefaultWikiPrinter();
-			converter.convert(new StringReader(wikitext), Syntax.XWIKI_2_0,
-					Syntax.XHTML_1_0, printer);
-			
-		} catch (ComponentLookupException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConversionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			ModellingPlugin.get().resetClassLoader(clsl);
-		}
-
-
-		return printer.toString();
+		StringWriter sr = new StringWriter();
+		HtmlDocumentBuilder builder = new HtmlDocumentBuilder(sr);
+		builder.setEmitAsDocument(false);
+		MarkupParser parser = new MarkupParser(new ConfluenceDialect());
+		parser.setBuilder(builder);
+		parser.parse(source);
+		return sr.toString();
 	}
+	
+	public static String textileToHTML(String source) {
+
+		StringWriter sr = new StringWriter();
+		HtmlDocumentBuilder builder = new HtmlDocumentBuilder(sr);
+		builder.setEmitAsDocument(false);
+		MarkupParser parser = new MarkupParser(new TextileDialect());
+		parser.setBuilder(builder);
+		parser.parse(source);
+		return sr.toString();
+	}
+
 }

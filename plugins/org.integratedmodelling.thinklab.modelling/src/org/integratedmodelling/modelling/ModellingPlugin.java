@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling;
 
+import org.integratedmodelling.modelling.loader.ModelResourceLoader;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.modelling.visualization.VisualizationFactory;
 import org.integratedmodelling.modelling.visualization.wiki.WikiFactory;
@@ -44,6 +45,11 @@ public class ModellingPlugin extends ThinklabPlugin {
 		 * add whatever defaults we have in the colormap chooser
 		 */
 		VisualizationFactory.get().loadColormapDefinitions(getProperties());
+		
+		/*
+		 * install resource loader for future plugins
+		 */
+		installResourceLoader(new ModelResourceLoader());
 		
 	}
 
