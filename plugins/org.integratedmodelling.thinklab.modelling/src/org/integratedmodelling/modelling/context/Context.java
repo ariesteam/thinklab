@@ -252,6 +252,9 @@ public class Context implements IContext, IModelForm {
 		return getName().hashCode();
 	}
 
-
-
+	@Override
+	public String toString() {
+		return getName();
+	}
+	
 }

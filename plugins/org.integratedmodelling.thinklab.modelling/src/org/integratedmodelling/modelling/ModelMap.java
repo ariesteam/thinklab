@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -9,6 +10,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabCircularDependencyExce
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.graph.GraphViz;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.jgrapht.alg.CycleDetector;
@@ -49,6 +51,97 @@ public class ModelMap {
 		public boolean isDirty() {
 			return modified;
 		}
+		
+		public Entry findSourceEntry() {
+			Entry ret = null;
+			for (DepEdge e : map.outgoingEdgesOf(this)) {
+				if (e instanceof HasSourceEdge) {
+					ret = e.getTargetObservation();
+					break;
+				}
+			}
+			return ret;
+		}
+
+		public Entry getFirstSourceEntry() {
+			Entry ret = null;
+			for (DepEdge e : map.outgoingEdgesOf(this)) {
+				if (e instanceof SourceEdge) {
+					ret = e.getTargetObservation();
+					break;
+				}
+			}
+			return ret;
+		}
+		
+		public Entry findResourceEntry() {
+			Entry ret = null;
+			for (DepEdge e : map.outgoingEdgesOf(this)) {
+				if (e instanceof HasResourceEdge) {
+					ret = e.getTargetObservation();
+					break;
+				}
+			}
+			return ret;
+		}
+		
+		public Entry findNextEntry() {
+			Entry ret = null;
+			for (DepEdge e : map.outgoingEdgesOf(this)) {
+				if (e instanceof HasNextEdge) {
+					ret = e.getTargetObservation();
+					break;
+				}
+			}
+			return ret;
+		}
+		
+		public Entry findDependentEntry() {
+			Entry ret = null;
+			for (DepEdge e : map.outgoingEdgesOf(this)) {
+				if (e instanceof DependsOnEdge) {
+					ret = e.getTargetObservation();
+					break;
+				}
+			}
+			return ret;
+		}
+		
+		public Entry findNamespaceEntry() {
+			Entry ret = null;
+			for (DepEdge e : map.outgoingEdgesOf(this)) {
+				if (e instanceof HasNamespaceEdge) {
+					ret = e.getTargetObservation();
+					break;
+				}
+			}
+			return ret;
+		}
+		
+		public String getSource() {
+		
+			String ret = "";
+			
+			if (this instanceof FormObjectEntry) {
+				
+				Entry e = this.findSourceEntry();
+				ret = ((CodeFragmentEntry)e).source;
+			} else if (this instanceof NamespaceEntry) {
+				Entry e = this.findResourceEntry();
+				ret = e.getSource();
+			} else if (this instanceof ResourceEntry) {
+				Entry e = this.getFirstSourceEntry();
+				while (e != null) {
+					ret += ((CodeFragmentEntry)e).source;
+					e = e.findNextEntry();
+					if (e != null) {
+						ret += "\n\n";						
+					}
+				}
+			}
+			
+			return ret;
+		}
 	}
 	
 	public static class FormObjectEntry extends Entry {
@@ -61,7 +154,7 @@ public class ModelMap {
 	
 		@Override
 		public String toString() {
-			return form.getName();
+			return form.getId();
 		}
 		
 	}
@@ -75,7 +168,7 @@ public class ModelMap {
 
 		@Override
 		public String toString() {
-			return StringUtils.abbreviate(source, 24);
+			return "CF";// StringUtils.abbreviate(source, 8);
 		}
 	}
 	public static class ResourceEntry extends Entry {
@@ -101,14 +194,14 @@ public class ModelMap {
 
 		@Override
 		public String toString() {
-			return "NS: " + namespace;
+			return namespace;
 		}
 	}
 
 	static HashMap<String,Entry> namespaces = 
 		new HashMap<String, ModelMap.Entry>();
-	static HashMap<IModelForm,Entry> forms = 
-		new HashMap<IModelForm, ModelMap.Entry>();
+	static HashMap<String,Entry> forms = 
+		new HashMap<String, ModelMap.Entry>();
 	static HashMap<String,Entry> resources = 
 		new HashMap<String, ModelMap.Entry>();
 	
@@ -254,7 +347,7 @@ public class ModelMap {
 				map.addEdge(ret, dep, new DependsOnEdge());
 			}
 		
-		forms.put(form, ret);
+		forms.put(form.getName(), ret);
 		return ret;
 	}
 	
@@ -274,7 +367,7 @@ public class ModelMap {
 	
 		Entry ret = new NamespaceEntry(namespace);
 		map.addVertex(ret);
-		map.addEdge(ret, resource, new HasNamespaceEdge());
+		map.addEdge(ret, resource, new HasResourceEdge());
 		namespaces.put(namespace, ret);
 		return ret;
 	}
@@ -294,7 +387,7 @@ public class ModelMap {
 		return namespaces.get(ns);
 	}
 	
-	public static Entry getFormObject(IModelForm ns) {
+	public static Entry getFormObject(String ns) {
 		return forms.get(ns);
 	}
 	
@@ -326,8 +419,21 @@ public class ModelMap {
 			}
 		});
 		
-		System.out.println(gviz.getDotSource());
+		gviz.show();
+	}
+
+	public static void printSource(String object, PrintStream stream) throws ThinklabException {
 		
-		// gets enormous, takes hours -- gviz.show();
+		Entry src = getNamespace(object);
+		if (src == null) 
+			src = getFormObject(object);
+		
+		if (src == null) {
+			throw new ThinklabResourceNotFoundException(
+					object + 
+					" does not identify a namespace, model, context, scenario or agent");
+		}
+		
+		stream.println(src.getSource());
 	}
 }

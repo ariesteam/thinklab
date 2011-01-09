@@ -13,6 +13,7 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.modelling.ModelMap;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.interfaces.IDataset;
@@ -52,11 +53,11 @@ import org.integratedmodelling.utils.Polylist;
 		optionalArgumentDefaultValues="_NONE_,_NONE_",
 		optionalArgumentDescriptions="spatial or temporal context,spatial or temporal context",
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text",
-		optionArgumentLabels="all kboxes,,,none,256, , , ",
-		optionLongNames="kbox,visualize,dump,outfile,resolution,clear,scenario,write",
-		optionNames="k,v,d,o,r,c,s,w",
-		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing,thinklab-core:Text,owl:Nothing",
-		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing,scenario to apply before computing,store results to standard workspace",
+		optionArgumentLabels="all kboxes,,,none,256, , , , ",
+		optionLongNames="kbox,visualize,dump,outfile,resolution,clear,scenario,write,map",
+		optionNames="k,v,d,o,r,c,s,w,map",
+		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing,thinklab-core:Text,owl:Nothing,owl:Nothing",
+		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing,scenario to apply before computing,store results to standard workspace,show the model map (required dot installed)",
 		returnType="observation:Observation")
 public class ModelCommand implements ICommandHandler {
 
@@ -154,6 +155,10 @@ public class ModelCommand implements ICommandHandler {
 			ModelFactory.get().clearCache();
 		}
 		
+		if (command.hasOption("map")) {
+			ModelMap.show();
+		}
+			
 		if (command.hasOption("scenario")) {
 
 			// remove

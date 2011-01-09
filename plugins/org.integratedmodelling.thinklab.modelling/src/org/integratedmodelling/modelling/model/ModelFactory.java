@@ -489,6 +489,8 @@ public class ModelFactory {
 	 */
 	public void loadModelFile(final String resourceId) throws ThinklabException {
 		
+		ModellingPlugin.get().logger().info("model subsystem reading " + resourceId);
+		
 		URL rurl = MiscUtilities.getURLForResource(resourceId);
 		FormReader f;
 		lastRegistered = null;
@@ -511,7 +513,7 @@ public class ModelFactory {
 				String checkNamespace(String code) {
 					
 					String ret = null;
-					String pattern = "\\(ns ([a-z\\-\\_\\.]+)\\s*.*";
+					String pattern = ".*\\(ns ([a-z\\-\\_\\.]+)\\s*.*";
 					Pattern p = Pattern.compile(pattern);
 					Matcher m = p.matcher(code.trim());
 					if (m.find()) {
@@ -523,21 +525,25 @@ public class ModelFactory {
 				@Override
 				public void onFormRead(String s) throws ThinklabException {
 
+					s = s.trim();
+					
 					boolean wasunk = false;
 					
+					/*
+					 * get entry for resource
+					 */
+					if (resource == null) {
+						resource = ModelMap.addResource(resourceId);
+					}					
+
 					if (namespace == null) {
 						namespace = checkNamespace(s);
 						if (namespace != null) {
 							intp.eval(s);	
 							wasunk = true;
+							ModelMap.addNamespace(namespace, resource);
 						}
 					}
-
-					/*
-					 * get entry for resource
-					 */
-					if (resource == null)
-						resource = ModelMap.addResource(resourceId);
 					
 					/*
 					 * create source node and add to source map
@@ -589,7 +595,7 @@ public class ModelFactory {
 							if (deeps.size() > 0) {
 								deps = new ModelMap.Entry[deeps.size()];
 								for (IModel dep : deeps) {
-									deps[i++] = ModelMap.getFormObject(dep);
+									deps[i++] = ModelMap.getFormObject(dep.getName());
 								}
 							}
 						}
