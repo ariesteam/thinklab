@@ -1,5 +1,7 @@
 package org.integratedmodelling.modelling.interfaces;
 
+import java.util.Collection;
+
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.modelling.model.Scenario;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -137,4 +139,11 @@ public interface IModel extends IConceptualizable, IModelForm {
 	 * @throws ThinklabException
 	 */
 	public IModel applyScenario(Scenario scenario) throws ThinklabException;
+
+	/**
+	 * Get the models that this one depend upon. Return an empty collection, not null, if
+	 * none exist.
+	 * @return
+	 */
+	public abstract Collection<IModel> getDependencies();
 }

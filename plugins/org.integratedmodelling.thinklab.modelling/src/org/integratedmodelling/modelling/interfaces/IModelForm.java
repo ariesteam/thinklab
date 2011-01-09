@@ -23,4 +23,10 @@ public interface IModelForm {
 	 * @return
 	 */
 	public abstract String getNamespace();	
+	
+	/**
+	 * This must return getNamespace() + "/" + getId()
+	 * @return
+	 */
+	public abstract String getName();
 }

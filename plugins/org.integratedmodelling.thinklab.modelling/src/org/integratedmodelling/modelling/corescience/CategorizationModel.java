@@ -61,9 +61,8 @@ public class CategorizationModel extends DefaultDynamicAbstractModel {
 
 		Polylist def = Polylist.listNotNull(
 				CoreScience.CATEGORIZATION,
-				(id != null ? 
-					Polylist.list(CoreScience.HAS_FORMAL_NAME, id) :
-					null),				/*
+				Polylist.list(CoreScience.HAS_FORMAL_NAME, getLocalFormalName()),				
+				/*
 				 * TODO add scale attributes, possibly units
 				 */
 				(isMediating() ? 

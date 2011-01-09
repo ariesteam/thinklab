@@ -33,4 +33,13 @@ public interface IContextTransformation {
 	 * @return
 	 */
 	public abstract IConcept getObservableClass();
+
+	/**
+	 * We allow null or invalid transformations (e.g. when referring to gazetteer
+	 * shapes that are not found) to allow loading contexts without errors when
+	 * those are referenced.
+	 * 
+	 * @return
+	 */
+	public abstract boolean isNull();
 }

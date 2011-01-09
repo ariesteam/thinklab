@@ -1,4 +1,4 @@
-package org.integratedmodelling.modelling.commands;
+package org.integratedmodelling.geospace.commands;
 
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.InteractiveCommandHandler;
@@ -19,20 +19,34 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
  * @author Ferdinando
  *
  */
-@ThinklabCommand(name="storyline",
+@ThinklabCommand(name="gazetteer",
 		argumentNames="action",
 		argumentTypes="thinklab-core:Text",
-		argumentDescriptions="action {create|update|run|test|copy}",
+		argumentDescriptions="action {create|delete|reset|import}",
 		optionalArgumentNames="arg0,arg1,arg2",
 		optionalArgumentDefaultValues="_,_,_",
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text,thinklab-core:Text",
 		optionalArgumentDescriptions=" , , ")
-public class StorylineCommand extends InteractiveCommandHandler {
+public class GazetteerCommand extends InteractiveCommandHandler {
 
 	@Override
 	protected IValue doInteractive(Command command, ISession session)
 			throws ThinklabException {
+
+		String action = command.getArgumentAsString("action");
+	
+		if (action.equals("create")) {
+			
+		} else if (action.equals("delete")) {
+			
+		} else if (action.equals("reset")) {
+			
+		} else if (action.equals("import")) {
+			
+		}
+	
 		return null;
+	
 	}
 
 }

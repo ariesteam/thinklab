@@ -20,10 +20,10 @@ import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.time.TimePlugin;
 import org.integratedmodelling.time.extents.RegularTimeGridExtent;
 import org.integratedmodelling.time.literals.TimeValue;
+import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Pair;
 
@@ -130,7 +130,7 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 		
 		selfLabel = ((Observation)obs).getFormalName();
 		if (selfLabel == null)
-			selfLabel = obs.getObservableClass().getLocalName().toLowerCase();
+			selfLabel = CamelCase.toLowerCase(obs.getObservableClass().getLocalName(),'-');
 
 		int i = 0;
 		for (IConcept c : context.getDimensions()) {
@@ -315,7 +315,7 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 				
 				String label = ((Observation)observation).getFormalName();
 				if (label == null)
-					label = observation.getObservableClass().getLocalName().toLowerCase();
+					label = CamelCase.toLowerCase(observation.getObservableClass().getLocalName(), '-');
 
 				parmList.add(new Pair<String, Integer>(label, register));
 			}

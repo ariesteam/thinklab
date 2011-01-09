@@ -71,6 +71,7 @@ import java.io.InputStreamReader;
 import java.util.Hashtable;
 import java.util.Set;
 
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -121,7 +122,7 @@ public class GraphViz
 	int width;
 	int height;
 
-	public interface NodePropertiesProvider {
+	public static interface NodePropertiesProvider {
 		public String getNodeId(Object o);
 		public int getNodeWidth(Object o);
 		public int getNodeHeight(Object o);
@@ -173,8 +174,7 @@ public class GraphViz
 		switch (LocalConfiguration.getOS()) {
 		
 		case WIN:
-			ret = 
-				"C:\\Program Files\\Graphviz2.18\\bin\\" + exe + ".exe";
+			ret = exe + ".exe";
 			break;
 		case MACOS:
 			/* TODO check where it goes */
@@ -216,7 +216,7 @@ public class GraphViz
 	public GraphViz(String graphvizProgram) throws ThinklabResourceNotFoundException {
 	   
 	   DOT  = 
-		   LocalConfiguration.getProperties().getProperty(
+		   Thinklab.get().getProperties().getProperty(
 				   graphvizProgram + ".path", 
 		   		   getDefaultDotPath(graphvizProgram));
 	   
@@ -277,7 +277,7 @@ public class GraphViz
     * 
     * @param graph
     */
-   public void loadGraph(DirectedGraph<Object, Object> graph, NodePropertiesProvider npp) {
+   public void loadGraph(DirectedGraph graph, NodePropertiesProvider npp) {
 	   
 	   addln(start_graph("fontsize=8", "fontname=\"sanserif\"", "overlap=\"scale\""));
 	   	   

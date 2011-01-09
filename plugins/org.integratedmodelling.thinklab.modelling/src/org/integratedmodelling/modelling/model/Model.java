@@ -5,16 +5,9 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.context.ContextMapper;
-import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
-import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.modelling.corescience.ObservationModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
-import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
@@ -22,14 +15,11 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.owlapi.Session;
+import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Polylist;
-
-import clojure.lang.IFn;
 
 /**
  * The "default" model class reflects the defmodel form, and has
@@ -53,8 +43,14 @@ public class Model extends DefaultAbstractModel {
 	Collection<IModel> context = null;
 	Collection<String> contextIds = null;
 	String description = null;
-
 	Object state = null;
+	
+	public Model() {
+		// give it a default ID and namespace; if this is part of a defmodel, registering with
+		// the ModelFactory will change it to proper ID/Namespace
+		this.id = NameGenerator.newName("mod");
+		this.namespace = "thinklab.temp";
+	}
 	
 	@Override
 	public ModelResult observeInternal(IKBox kbox, ISession session, IntelligentMap<IConformance> cp, IContext context, boolean acceptEmpty)  throws ThinklabException {
@@ -91,7 +87,7 @@ public class Model extends DefaultAbstractModel {
 					" for any of " + 
 					models.size() + 
 					" contingencies of model " +
-					id);	
+					getName());	
 		}
 				
 		ret.initialize();
@@ -175,16 +171,23 @@ public class Model extends DefaultAbstractModel {
 
 	@Override
 	public IModel getConfigurableClone() {
-		/*
-		 * Skip copying. 
-		 */
-		return new ModelProxy(this);
+
+		Model ret = new Model();
+		ret.copy(this);
+		ret.context = context;
+		ret.contextIds = contextIds;
+		ret.description = description;
+		ret.models = models;
+		ret.state = state;
+		
+		return ret;
+		
 	}
 
 	@Override
 	protected void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
-		throw new ThinklabValidationException("model " + id + " cannot mediate another model");
+		throw new ThinklabValidationException("model " + getName() + " cannot mediate another model");
 	}
 
 	@Override

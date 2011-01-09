@@ -28,10 +28,7 @@ public class ProbabilisticClassification extends Observation implements Indirect
 		
 		arr.add("observation:ProbabilisticClassification");
 		arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, Polylist.list(getObservableClass())));
-
-		if (getFormalName() != null) {
-			arr.add(Polylist.list(CoreScience.HAS_FORMAL_NAME, getFormalName()));			
-		}
+		arr.add(Polylist.list(CoreScience.HAS_FORMAL_NAME, getFormalName()));			
 		return Polylist.PolylistFromArrayList(arr);
 	}
 

@@ -25,7 +25,7 @@ public class FormReader {
 	private boolean isEof = false;
 	
 	public interface FormListener {
-		public void onFormRead(String s);
+		public void onFormRead(String s) throws ThinklabException;
 	}
 	
 	public FormReader(InputStream input) {

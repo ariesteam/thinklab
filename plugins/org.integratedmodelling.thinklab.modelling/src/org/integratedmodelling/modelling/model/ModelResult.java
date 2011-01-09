@@ -227,7 +227,7 @@ public class ModelResult implements IQueryResult  {
 						IModel mo = (IModel) cstate.getMetadata().get(
 								Metadata.DEFINING_MODEL);
 						if (mo != null) {
-							id = mo.getId();
+							id = mo.getName();
 						}
 
 						cdata.add(new Pair<Keyword, IState>(
@@ -253,7 +253,7 @@ public class ModelResult implements IQueryResult  {
 		/*
 		 * formal name is the name of the model if any
 		 */
-		ret = ObservationFactory.addFormalName(ret, _model.getId());
+		ret = ObservationFactory.addFormalName(ret, ((DefaultAbstractModel)_model).getLocalFormalName());
 		
 		/*
 		 * add the model to the resulting observation

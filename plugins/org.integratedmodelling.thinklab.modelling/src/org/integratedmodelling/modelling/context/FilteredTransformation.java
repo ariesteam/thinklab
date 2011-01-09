@@ -9,6 +9,7 @@ import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
@@ -33,6 +34,7 @@ public class FilteredTransformation implements IContextTransformation {
 	private ArrayList<Object> filters = new ArrayList<Object>();
 	private boolean _initialized = false;
 	private IGridMask activationLayer;
+	private boolean isNull = false;
 	
 	public FilteredTransformation(IConcept concept, Object value) {
 		this.concept = concept;
@@ -152,12 +154,18 @@ public class FilteredTransformation implements IContextTransformation {
 			o instanceof String) {
 			this.filters.add(o);
 		} else if (o == null) {			
-			throw new ThinklabValidationException(
-					"filter expression in transformation evaluates to nil");
+			ModellingPlugin.get().logger().warn(
+					"filter expression in transformation evaluates to nil: transformation invalidates context");
+			isNull = true;
 		} else {
 			throw new ThinklabValidationException(
 					"defcontext/transform: don't know how to use " + o + " as a filter");
 		}
+	}
+
+	@Override
+	public boolean isNull() {
+		return isNull;
 	}
 
 }

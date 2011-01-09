@@ -47,7 +47,7 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.InteractiveSubcommandInterface;
+import org.integratedmodelling.thinklab.command.InteractiveSubcommandHandler;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -61,9 +61,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 import org.w3c.dom.Node;
 
 /**
@@ -76,7 +74,7 @@ import org.w3c.dom.Node;
 	argumentNames="server",
 	argumentDescriptions="WFS server URL",
 	argumentTypes="thinklab-core:Text")
-public class WFSToOPAL extends InteractiveSubcommandInterface {
+public class WFSToOPAL extends InteractiveSubcommandHandler {
 
 	int nCovs = 0;
 	ArrayList<String> coverages = new ArrayList<String>();
@@ -185,8 +183,6 @@ public class WFSToOPAL extends InteractiveSubcommandInterface {
 		}
 
 	}
-
-
 
 	private void annotate(int cov) throws ThinklabException {
 

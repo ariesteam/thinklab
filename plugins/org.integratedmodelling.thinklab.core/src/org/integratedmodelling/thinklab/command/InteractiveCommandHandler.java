@@ -14,30 +14,22 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
- * Something to derive from to implement a sub-command system.
+ * Something to derive from to implement a sub-command system. Provides functions to ask questions
+ * and print results; automatically binds in and out to console, and checks that session is
+ * interactive. doInteractive() virtual behaves like execute - i.e. can invoke the interactive
+ * functions or not. If a subcommand loop is desired, use InteractiveSubcommandHandler.
  * 
  * @author Ferdinando
  *
  */
-public abstract class InteractiveSubcommandInterface implements ICommandHandler {
+public abstract class InteractiveCommandHandler implements ICommandHandler {
 
 	InputStream inp = null;
 	PrintStream out = null;
 	String id = null;
 	BufferedReader in = null;
 	
-	/**
-	 * This will be passed a subcommand and a set of arguments (arg[0] is the subcommand again,
-	 * like in C's argv). The "exit" subcommand will exit the loop and should not be intercepted.
-	 * 
-	 * @param cmd
-	 * @param arguments
-	 * @return
-	 * @throws ThinklabException
-	 */
-	protected abstract IValue cmd(String cmd, String[] arguments) throws ThinklabException;
-	
-	private String prompt() throws ThinklabIOException {
+	protected String prompt() throws ThinklabIOException  {
 		return ask(null);
 	}
 	
@@ -85,23 +77,17 @@ public abstract class InteractiveSubcommandInterface implements ICommandHandler 
 		if (this.inp == null || this.out == null)
 			throw new ThinklabInappropriateOperationException(
 					"command " + command.getName() + " must be executed interactively");
-
-		String cm = null;
-		IValue ret = null;
-		do {
-			cm = prompt();
-			if (cm == null)
-				continue;
-			if (cm.equals("exit")) {
-				break;
-			}
-			if (!cm.trim().equals("")) {
-				String[] cmm = cm.split(" ");
-				ret = cmd(cmm[0], cmm);
-			}
-		} while (true);
 		
-		return ret;
+		return doInteractive(command, session);
 	}
+
+	/**
+	 * This can use interactive functions as much as necessary or not at all.
+	 * 
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	protected abstract IValue doInteractive(Command command, ISession session) 
+		throws ThinklabException;
 
 }

@@ -19,24 +19,11 @@ public class Scenario extends ObservationModel implements IModelForm {
 
 	ArrayList<IModel> models = new ArrayList<IModel>();
 	ArrayList<Object> editableData = new ArrayList<Object>();
-	private String description;
-	
-	public void setDescription(String s) {
-		description = s;
-	}
-	
-	public void setId(String s) {
-		id = s;
-	}
-	
+
 	public void addModel(IModel model, Map<?,?> metadata, Object editableDesc) {
 		
 		models.add(model);
 		editableData.add(editableDesc);
-	}
-	
-	public String getDescription() {
-		return description;
 	}
 	
 	/**
@@ -61,6 +48,18 @@ public class Scenario extends ObservationModel implements IModelForm {
 				editableData.add(((Model)m).editable);
 			}
 		}
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return 
+			obj instanceof Scenario ? 
+				getName().equals(((IModelForm)obj).getName()) : false;
+	}
+
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
 	}
 
 }

@@ -74,7 +74,7 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 		
 		if (! (((Model)model).getDefinition() instanceof ClassificationModel)) {
 			throw new ThinklabRuntimeException(
-					"bayesian node " + model.getId() + 
+					"bayesian node " + model.getName() + 
 					" should be a classification");
 		}
 
@@ -100,6 +100,11 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 	public IModel getConfigurableClone() {
 		
 		BayesianModel ret = new BayesianModel();
+		ret.algorithm = algorithm;
+		ret.keeperIds = keeperIds;
+		ret.required  = required;
+		ret.requiredIds = requiredIds;
+		ret.source = source;
 		ret.copy(this);
 		return ret;
 	}

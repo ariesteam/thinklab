@@ -30,7 +30,7 @@ public class Agent extends DefaultMutableTreeNode implements IModelForm {
 	ArrayList<IModel> models = null;
 	protected IConcept observable = null;
 	protected String observableId = null;
-	protected String name = null; 
+	protected String id = null; 
 	
 	protected Polylist observableSpecs = null;
 	
@@ -66,7 +66,8 @@ public class Agent extends DefaultMutableTreeNode implements IModelForm {
 		models = agent.models;
 		observable = agent.observable;
 		observableId = agent.observableId;
-		name = agent.name;
+		id = agent.id;
+		namespace = agent.namespace;
 	}
 	
 	@Override
@@ -139,12 +140,12 @@ public class Agent extends DefaultMutableTreeNode implements IModelForm {
 		models.add(model);
 	}
 	public void setId(String id) {
-		this.name = id;
+		this.id = id;
 	}
 
 	@Override
 	public String getId() {
-		return name;
+		return id;
 	}
 
 	@Override
@@ -155,5 +156,29 @@ public class Agent extends DefaultMutableTreeNode implements IModelForm {
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
 	}
+	
+	public void setName(String name) {
+		String[] x = name.split("/");
+		this.namespace = x[0];
+		this.id = x[1];
+	}
+	
+	@Override
+	public String getName() {
+		return namespace + "/" + id;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return 
+			obj instanceof Agent ? 
+				getName().equals(((IModelForm)obj).getName()) : false;
+	}
+
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
+	}
+
 
 }

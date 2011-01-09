@@ -170,7 +170,7 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 			for (IState s : ObservationFactory.getStates(contextObs)) {
 				
 				IModel mod = (IModel) s.getMetadata().get(Metadata.DEFINING_MODEL);
-				String label = mod == null ? s.getObservableClass().getLocalName() : mod.getId();
+				String label = mod == null ? s.getObservableClass().getLocalName() : mod.getName();
 				ContextMapper cmap = new ContextMapper(s, context);
 				
 				pmap.add(new Triple<Keyword,IState,ContextMapper>(

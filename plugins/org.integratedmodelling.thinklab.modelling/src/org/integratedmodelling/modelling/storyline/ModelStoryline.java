@@ -15,7 +15,6 @@ import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.modelling.visualization.FileVisualization;
 import org.integratedmodelling.modelling.visualization.presentation.PresentationTemplate;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -130,7 +129,7 @@ public class ModelStoryline extends Storyline {
 				
 				// TODO log user and possibly run time for billing
 				ModellingPlugin.get().logger().info(
-						"computation of " + model.getId() + " finished" + 
+						"computation of " + model.getName() + " finished" + 
 						(errors ? " with errors" : " successfully"));
 			}
 			

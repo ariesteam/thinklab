@@ -58,6 +58,9 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 	public Polylist buildDefinition(IKBox kbox, ISession session, IContext context, int flags)
 			throws ThinklabException {
 		
+		if (id.equals("sky-emperor-harvest")) {
+			System.out.println("STOPHERE");
+		}
 		
 		/*
 		 * choose observation class according to derivative, probability etc.
@@ -66,7 +69,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 				((dynSpecs == null && changeSpecs == null && derivativeSpecs == null) ? 
 						CoreScience.MEASUREMENT : 
 						"modeltypes:DynamicMeasurement"),
-				(id != null ? Polylist.list(CoreScience.HAS_FORMAL_NAME, id) : null), 
+						Polylist.list(CoreScience.HAS_FORMAL_NAME, getLocalFormalName()), 
 				(dynSpecs != null ? 
 					Polylist.list(":code", dynSpecs) : null),
 				(changeSpecs != null ? 
@@ -123,6 +126,8 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 		MeasurementModel ret = new MeasurementModel();
 		ret.copy(this);
 		ret.unitSpecs = unitSpecs;
+		ret.isCount = isCount;
+		ret.isProbabilistic = isProbabilistic;
 		return ret;
 	}
 

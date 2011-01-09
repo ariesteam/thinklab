@@ -232,6 +232,8 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	public IModel getConfigurableClone() {
 		ClassificationModel ret = new ClassificationModel();
 		ret.copy(this);
+		ret.classifiers = classifiers;
+		ret.conceptIds = conceptIds;
 		return ret;
 	}
 
@@ -257,12 +259,8 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 					"modeltypes:ModeledClassification" : 
 					"modeltypes:DynamicClassification");
 		
-		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(theState)));
-		
-		
-		if (id != null) {
-			arr.add(Polylist.list(CoreScience.HAS_FORMAL_NAME, id));			
-		}
+		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(theState)));			
+		arr.add(Polylist.list(CoreScience.HAS_FORMAL_NAME, getLocalFormalName()));					
 		
 		if (dynSpecs != null) {
 			arr.add(Polylist.list(":code", dynSpecs));

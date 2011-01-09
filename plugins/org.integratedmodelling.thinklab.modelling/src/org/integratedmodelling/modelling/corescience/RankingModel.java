@@ -99,6 +99,12 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 	public IModel getConfigurableClone() {
 		RankingModel ret = new RankingModel();
 		ret.copy(this);
+		ret.isBinary = isBinary;
+		ret.isCategorical = isCategorical;
+		ret.isProbabilistic = isProbabilistic;
+		ret.isScale = isScale;
+		ret.scaleMax = scaleMax;
+		ret.scaleMin = scaleMin;
 		return ret;
 	}
 
@@ -114,8 +120,7 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 				.listNotNull(
 						((dynSpecs == null && changeSpecs == null && derivativeSpecs == null) ? CoreScience.RANKING
 								: "modeltypes:DynamicRanking"),
-						(id != null ? Polylist.list(
-								CoreScience.HAS_FORMAL_NAME, id) : null),
+						Polylist.list(CoreScience.HAS_FORMAL_NAME, getLocalFormalName()),
 						(dynSpecs != null ? Polylist.list(":code", dynSpecs)
 								: null),
 						(changeSpecs != null ? Polylist.list(":change",

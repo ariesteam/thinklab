@@ -15,15 +15,18 @@ public class ModelResourceLoader implements IResourceLoader {
 		
 		File fmod = new File(dir + File.separator + "models");
 		if (fmod.exists())
-			ModelFactory.get().loadModels(fmod);
+			ModelFactory.get().loadModelFiles(fmod);
 		
 		fmod = new File(dir + File.separator + "contexts");
 		if (fmod.exists())
-			ModelFactory.get().loadContexts(new File(dir + File.separator + "contexts"));
+			ModelFactory.get().loadModelFiles(new File(dir + File.separator + "contexts"));
 		
-		fmod = new File(dir + File.separator + "models");
+		fmod = new File(dir + File.separator + "agents");
+		if (fmod.exists())
+			ModelFactory.get().loadModelFiles(new File(dir + File.separator + "agents"));
+		
+		fmod = new File(dir + File.separator + "storylines");
 		if (fmod.exists())
 			ModelFactory.get().loadStorylines(new File(dir + File.separator + "storylines"));
 	}
-
 }

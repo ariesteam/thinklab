@@ -10,7 +10,7 @@ import org.integratedmodelling.modelling.annotation.ModelAnnotation;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.InteractiveSubcommandInterface;
+import org.integratedmodelling.thinklab.command.InteractiveSubcommandHandler;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
@@ -29,7 +29,7 @@ import org.integratedmodelling.utils.Polylist;
 		argumentNames="model",
 		argumentDescriptions="model id",
 		argumentTypes="thinklab-core:Text")
-public class Annotate extends InteractiveSubcommandInterface {
+public class Annotate extends InteractiveSubcommandHandler {
 	
 	private ModelAnnotation annotation = null;
 	private IKBox kbox = KBoxManager.get();

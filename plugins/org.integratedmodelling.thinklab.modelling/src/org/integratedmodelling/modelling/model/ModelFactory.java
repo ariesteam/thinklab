@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.integratedmodelling.clojure.ClojureInterpreter;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
@@ -18,11 +21,14 @@ import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.modelling.ModelMap;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationCache;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.agents.ThinkAgent;
 import org.integratedmodelling.modelling.context.Context;
+import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.interfaces.IModelForm;
 import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -71,6 +77,11 @@ public class ModelFactory {
 	// relevant properties from ontology
 	public static final String RETAINS_STATES  = "modeltypes:retainsState";
 	public static final String REQUIRES_STATES = "modeltypes:requiresState";
+	
+	
+	// used only during registration to recognize what was built by the last code
+	// evaluated.
+	public IModelForm lastRegistered = null;
 
 	class ContextualizingModelResult implements IQueryResult {
 
@@ -218,6 +229,7 @@ public class ModelFactory {
 		modelsById.put(name, model);
 		model.setName(name);
 		ModellingPlugin.get().logger().info("model " + model + " registered as " + name);
+		lastRegistered = model;
 		return model;
 	}
 
@@ -226,11 +238,10 @@ public class ModelFactory {
 	 */
 	public Scenario registerScenario(Scenario model, String name) throws ThinklabException {
 		
-		// FIXME same ID and name
-		model.setId(name);
 		model.setName(name);
-		scenariosById.put(model.id, model);
+		scenariosById.put(model.getName(), model);
 		ModellingPlugin.get().logger().info("scenario " + model + " registered");
+		lastRegistered = model;
 		return model;
 	}
 	
@@ -239,9 +250,10 @@ public class ModelFactory {
 	 */
 	public Context registerContext(Context model, String name) throws ThinklabException {
 		
-		model.setId(name);
-		contextsById.put(model.getId(), model);
+		model.setName(name);
+		contextsById.put(model.getName(), model);
 		ModellingPlugin.get().logger().info("context " + model + " registered");
+		lastRegistered = model;
 		return model;
 	}
 	
@@ -252,9 +264,10 @@ public class ModelFactory {
 	public ThinkAgent registerAgent(ThinkAgent model, String name) throws ThinklabException {
 		
 		// FIXME same ID and name
-		model.setId(name);
-		agentsById.put(model.getId(), model);
+		model.setName(name);
+		agentsById.put(model.getName(), model);
 		ModellingPlugin.get().logger().info("scenario " + model + " registered");
+		lastRegistered = model;
 		return model;
 	}
 	
@@ -447,22 +460,18 @@ public class ModelFactory {
 		return ret;
 	}
 	
-	public void loadModels(File dir) throws ThinklabException {
+	public void loadModelFiles(File dir) throws ThinklabException {
 		
 		/*
 		 * load all recognized model files 
 		 */
 		for (File f : dir.listFiles()) {
 			if (f.isDirectory()) {
-				loadModels(f);
+				loadModelFiles(f);
 			} else if (f.toString().endsWith(".clj")) {
 				loadModelFile(f.toString());
 			}
 		}
-	}
-
-	public void loadContexts(File dir) {
-		
 	}
 
 	public void loadStorylines(File dir) {
@@ -478,39 +487,116 @@ public class ModelFactory {
 	 * @param resourceId
 	 * @throws ThinklabIOException 
 	 */
-	public void loadModelFile(String resourceId) throws ThinklabException {
+	public void loadModelFile(final String resourceId) throws ThinklabException {
 		
 		URL rurl = MiscUtilities.getURLForResource(resourceId);
 		FormReader f;
+		lastRegistered = null;
 		
 		/*
-		 * setup model read listener
+		 * create entry for resource in source map
 		 */
 		
 		try {
+
+			final ClojureInterpreter intp = new ClojureInterpreter();
+			
 			f = new FormReader(rurl.openStream());
 			f.read(new FormListener() {
+
+				String namespace = null;
+				ModelMap.Entry previousFragment = null;
+				ModelMap.Entry resource = null;
+				
+				String checkNamespace(String code) {
+					
+					String ret = null;
+					String pattern = "\\(ns ([a-z\\-\\_\\.]+)\\s*.*";
+					Pattern p = Pattern.compile(pattern);
+					Matcher m = p.matcher(code.trim());
+					if (m.find()) {
+						ret = code.substring(m.start(1), m.end(1));
+					}
+					return ret;
+				}
 				
 				@Override
-				public void onFormRead(String s) {
+				public void onFormRead(String s) throws ThinklabException {
+
+					boolean wasunk = false;
+					
+					if (namespace == null) {
+						namespace = checkNamespace(s);
+						if (namespace != null) {
+							intp.eval(s);	
+							wasunk = true;
+						}
+					}
 
 					/*
-					 * eval form
+					 * get entry for resource
 					 */
-					
-					/*
-					 * if model has been read, get it and check its namespace if
-					 * we still don't know it
-					 */
+					if (resource == null)
+						resource = ModelMap.addResource(resourceId);
 					
 					/*
 					 * create source node and add to source map
 					 */
+					ModelMap.Entry codeFrag = ModelMap.addSource(s, resource, previousFragment);
+					previousFragment = codeFrag;
+
+					/*
+					 * if namespace is still null or this code chunk defined it,
+					 * there was nothing else here we care about.
+					 */
+					if (wasunk || namespace == null)
+						return;
+					
+					IModelForm prev = lastRegistered;
+					IModelForm toRegister = null;
 					
 					/*
-					 * stick source node into model
+					 * eval form in given namespace. This may change lastRegistered
 					 */
+					intp.eval("(in-ns '"  + namespace + ")\n" + s);
 					
+					String newName = 
+						lastRegistered == null ? 
+							null : 
+							lastRegistered.getName();
+					
+					if (prev == null && newName != null || 
+						(prev != null && newName != null && 
+							!prev.getName().equals(newName))) {
+						/*
+						 * code has produced new model object, need to register it
+						 */
+						toRegister = lastRegistered;
+					}
+					
+					if (toRegister != null) {
+					
+						/*
+						 * if it's a model, check dependencies and add
+						 * dependency statements
+						 */
+
+						ModelMap.Entry[] deps = null;
+						if (toRegister instanceof IModel) {
+							
+							int i = 0;
+							Collection<IModel> deeps = ((IModel)toRegister).getDependencies();
+							if (deeps.size() > 0) {
+								deps = new ModelMap.Entry[deeps.size()];
+								for (IModel dep : deeps) {
+									deps[i++] = ModelMap.getFormObject(dep);
+								}
+							}
+						}
+						
+						ModelMap.addForm(toRegister, codeFrag, deps);
+
+					}
 				}
 			});
 		} catch (IOException e) {

@@ -14,10 +14,12 @@ import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IModelForm;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.owlapi.Session;
@@ -42,6 +44,7 @@ public class Context implements IContext, IModelForm {
 	private String description;
 	private String id;
 	private String namespace;
+	private boolean isInvalid = false;
 
 	public Context() {}
 
@@ -85,6 +88,8 @@ public class Context implements IContext, IModelForm {
 		} else if (object instanceof IExtent) {
 			extents.add((IExtent)object);
 		} else if (object instanceof IContextTransformation) {
+			if (((IContextTransformation)object).isNull())
+				this.isInvalid = true;
 			transformations.add((IContextTransformation)object);
 		}
 	}
@@ -118,6 +123,11 @@ public class Context implements IContext, IModelForm {
 	 * @throws ThinklabException 
 	 */
 	public IObservationContext getObservationContext(IObservation o) throws ThinklabException {
+		
+		if (isInvalid)
+			throw new ThinklabInappropriateOperationException(
+					"context " + getName() + " is invalid and cannot be used");
+	
 		
 		ObservationContext cns = new ObservationContext(extents);
 		ObservationContext ret = new ObservationContext(o, cns);
@@ -218,6 +228,30 @@ public class Context implements IContext, IModelForm {
 	public IContext cloneExtents() throws ThinklabException {
 		return getObservationContext(null);
 	}
+
+	public void setName(String name) {
+		String[] x = name.split("/");
+		this.namespace = x[0];
+		this.id = x[1];
+	}
+	
+	@Override
+	public String getName() {
+		return namespace + "/" + id;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return 
+			obj instanceof Context ? 
+				getName().equals(((IModelForm)obj).getName()) : false;
+	}
+
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
+	}
+
 
 
 }

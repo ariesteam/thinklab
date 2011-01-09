@@ -244,7 +244,6 @@ public class ModeledClassification
 		if (continuousDistribution != null)
 			metadata.put(Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS, 
 					continuousDistribution);
-		
 
 		if (classifiers != null) {
 
@@ -263,7 +262,8 @@ public class ModeledClassification
 				con.add(op.getSecond());
 			}
 
-			Pair<double[], IConcept[]> pd = Metadata
+			Pair<double[], IConcept[]> pd = 
+				Metadata
 					.computeDistributionBreakpoints(cSpace, cla, con);
 			if (pd != null) {
 				if (pd.getSecond()[0] != null) {
@@ -290,10 +290,7 @@ public class ModeledClassification
 		arr.add("observation:Classification");
 		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(cSpace)));
 		arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, Polylist.list(cSpace)));
-
-		if (getFormalName() != null) {
-			arr.add(Polylist.list(CoreScience.HAS_FORMAL_NAME, getFormalName()));			
-		}
+		
 		return Polylist.PolylistFromArrayList(arr);
 	}
 

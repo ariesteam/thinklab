@@ -10,6 +10,7 @@ import org.ascape.model.Agent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.interfaces.IModelForm;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -31,15 +32,14 @@ import clojure.lang.IFn;
  * @author Ferdinando
  *
  */
-public class ThinkAgent  extends DefaultMutableTreeNode {
+public class ThinkAgent  extends DefaultMutableTreeNode implements IModelForm {
 
 	Agent _agent;
 	
 	ArrayList<IModel> models = null;
 	protected IConcept observable = null;
 	protected String observableId = null;
-	protected String name = null; 
-	
+	protected String id = null; 
 	
 	protected Polylist observableSpecs = null;
 	
@@ -70,6 +70,8 @@ public class ThinkAgent  extends DefaultMutableTreeNode {
 	Topology[] topologies;
 	ISession session;
 	IKBox kbox;
+
+	private String namespace;
 	
 	protected void copy(ThinkAgent agent) {
 		worldModel = agent.worldModel;
@@ -80,8 +82,21 @@ public class ThinkAgent  extends DefaultMutableTreeNode {
 		models = agent.models;
 		observable = agent.observable;
 		observableId = agent.observableId;
-		name = agent.name;
+		id = agent.id;
+		namespace = agent.namespace;
 	}
+	
+	public void setName(String name) {
+		String[] x = name.split("/");
+		this.namespace = x[0];
+		this.id = x[1];
+	}
+	
+	@Override
+	public String getName() {
+		return namespace + "/" + id;
+	}
+
 	
 	@Override
 	public Object clone() {
@@ -153,11 +168,32 @@ public class ThinkAgent  extends DefaultMutableTreeNode {
 		models.add(model);
 	}
 	public void setId(String id) {
-		this.name = id;
+		this.id = id;
 	}
 
 	public String getId() {
-		return name;
+		return this.id;
 	}
 	
+	@Override
+	public String getNamespace() {
+		return this.namespace;
+	}
+
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return 
+			obj instanceof ThinkAgent ? 
+				getName().equals(((IModelForm)obj).getName()) : false;
+	}
+
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
+	}
+
 }
