@@ -56,8 +56,9 @@ public interface IGazetteer extends IQueriable {
 	
 	/**
 	 * Import locations from a url. Won't be called if isReadOnly returns true.
+	 * @param properties TODO
 	 */
-	public abstract void importLocations(String url) throws ThinklabException;
+	public abstract void importLocations(String url, Properties properties) throws ThinklabException;
 
 	/**
 	 * Add locations directly. Won't be called if isReadOnly returns true.
@@ -83,5 +84,12 @@ public interface IGazetteer extends IQueriable {
 	 * @return
 	 */
 	public abstract int getPriority();
+
+	/**
+	 * After calling this one, the gazetteer must be empty and ready for new
+	 * content.
+	 * @throws ThinklabException 
+	 */
+	public abstract void resetToEmpty() throws ThinklabException;
 	
 }

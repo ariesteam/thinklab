@@ -29,6 +29,7 @@ import org.integratedmodelling.sql.postgres.PostgreSQLServer;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
+import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -257,7 +258,7 @@ public class PostgisGazetteer implements IGazetteer {
 	}
 
 	@Override
-	public void importLocations(String url) throws ThinklabException {
+	public void importLocations(String url, Properties properties) throws ThinklabException {
 	
 		// this should be a shapefile or a WFS data source
 		ICoverage coverage =
@@ -460,6 +461,21 @@ public class PostgisGazetteer implements IGazetteer {
 	@Override
 	public int getPriority() {
 		return this.priority;
+	}
+
+	@Override
+	public void resetToEmpty() throws ThinklabException {
+		
+		if (_server.haveTable("locations")) {
+			
+			_server.execute("DROP TABLE locations;");
+			_server.execute("CREATE TABLE locations (id varchar(128) PRIMARY KEY);");
+			_server.query("SELECT AddGeometryColumn('', 'locations', 'shape', 4326, 'MULTIPOLYGON', 2);");
+
+			for (String s : createStatements) {
+				_server.execute(s);
+			}
+		}
 	}
 	
 }

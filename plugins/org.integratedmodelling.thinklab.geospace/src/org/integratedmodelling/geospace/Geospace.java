@@ -643,7 +643,7 @@ public class Geospace extends ThinklabPlugin  {
 						logger().info("adding gazetteer source " + ff);
 
 						try {
-							ret.importLocations(shp.toURI().toURL().toString());
+							ret.importLocations(shp.toURI().toURL().toString(), null);
 						} catch (MalformedURLException e) {
 							throw new ThinklabValidationException(e);
 						}
@@ -668,7 +668,7 @@ public class Geospace extends ThinklabPlugin  {
 	}
 
 	/**
-	 * Find a specific gazetteer by name
+	 * Find a specific gazetteer by name, complain if not found
 	 * 
 	 * @param id
 	 * @return
@@ -679,6 +679,17 @@ public class Geospace extends ThinklabPlugin  {
 		if (ret == null)
 			throw new ThinklabResourceNotFoundException("gazetteer " + id + " is not registered");
 		return ret;
+	}
+	
+	/**
+	 * Find a specific gazetteer by name
+	 * 
+	 * @param id
+	 * @return
+	 * @throws ThinklabResourceNotFoundException
+	 */
+	public IGazetteer retrieveGazetteer(String id) {
+		return gazetteers.get(id);
 	}
 
 	/**

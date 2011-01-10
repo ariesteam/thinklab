@@ -166,7 +166,7 @@ public class WFSGazetteer implements IGazetteer {
 	}
 
 	@Override
-	public void importLocations(String url) throws ThinklabException {
+	public void importLocations(String url, Properties properties) throws ThinklabException {
 		// TODO Auto-generated method stub
 
 	}
@@ -201,6 +201,11 @@ public class WFSGazetteer implements IGazetteer {
 	public int getPriority() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void resetToEmpty() throws ThinklabException {
+		// do nothing, read only
 	}
 
 }

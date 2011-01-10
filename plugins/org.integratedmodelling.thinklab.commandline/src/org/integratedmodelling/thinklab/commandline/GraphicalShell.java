@@ -309,6 +309,13 @@ public class GraphicalShell {
 
             
             console.getOut().flush();
+
+            /*
+             *  give it a little rest to help the output show entirely before the prompt
+             *  is printed again.
+             */
+			Thread.sleep(200);
+			
             
 		} catch (Exception e) {
 			e.printStackTrace();

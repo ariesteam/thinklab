@@ -162,7 +162,7 @@ public class Command {
         		val = (IValue) o;
         	}
 
-        	args.put(arg, val.toString());
+        	args.put(arg, val.toString().trim());
         	setArgumentValue(arg, val);
         }
         
@@ -178,7 +178,7 @@ public class Command {
 					val = (IValue) o;
 				}
 				
-	        	args.put(arg, val.toString());
+	        	args.put(arg, val.toString().trim());
 				setArgumentValue(arg, val);
         	}
         }
@@ -193,7 +193,7 @@ public class Command {
 				} else {
 					val = (IValue) o;
 				}
-	        	opts.put(arg, val.toString());
+	        	opts.put(arg, val.toString().trim());
 				setOptionValue(arg, val);
         	}
         }

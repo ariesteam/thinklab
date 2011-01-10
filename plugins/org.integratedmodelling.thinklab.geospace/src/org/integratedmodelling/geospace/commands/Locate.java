@@ -47,7 +47,7 @@ public class Locate implements ICommandHandler {
 					"gazetteer " + gname + " is read-only: cannot import");				
 			}
 			
-			gaz.importLocations(command.getOptionAsString("import"));
+			gaz.importLocations(command.getOptionAsString("import"), null);
 		}
 		
 		if (command.getArgumentAsString("location").equals("_")) {

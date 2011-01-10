@@ -165,7 +165,7 @@ public class SimpleGazetteer implements IGazetteer {
 	}
 
 	@Override
-	public void importLocations(String url) throws ThinklabException {
+	public void importLocations(String url, Properties properties) throws ThinklabException {
 		// do nothing, we're read only
 	}
 
@@ -216,6 +216,11 @@ public class SimpleGazetteer implements IGazetteer {
 	@Override
 	public int getPriority() {
 		return this.priority;
+	}
+
+	@Override
+	public void resetToEmpty() throws ThinklabException {
+		// can't be called, we're read only
 	}
 
 

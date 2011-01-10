@@ -113,8 +113,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 
     /** 
 	 * <p>The Knowledge Manager is a singleton. This is created by the initializer and an exception 
-	 * is thrown if a second one has been initialized. Note that you can create as many as you
-	 * want, but you can only initialize one. DANGER: professional driver on closed circuit. Do not attempt.</p>
+	 * is thrown if a second one has been initialized. </p>
      * 
      * <p>Note that this may change in the future. Having multiple kms is interesting for sophisticated
      * applications (e.g. cross-reasoning) but that's for another time.</p>

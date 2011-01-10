@@ -36,6 +36,7 @@ import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 
 /**
  * This one should wrap all the geotools methods that work on either raster or vector coverages. By vector coverage 
@@ -93,6 +94,11 @@ public class CoverageFactory {
 	final static String[] supportedVectorExtensions = {
 			"shp"
 	};
+
+	public static final String CRS_PROPERTY = "crs";
+	public static final String FIELD_NAMES_PROPERTY = "field.names";
+	public static final String PROTOTYPE_PROPERTY_PREFIX = "field.prototype";
+	public static final String GEOMETRY_TYPE_PROPERTY = "field.names";
 
 	private synchronized static AttributeTable readCSV(URL url, boolean hasHeaders, boolean isExcel) throws ThinklabIOException {
 		
@@ -271,7 +277,8 @@ public class CoverageFactory {
 		 * must define the link field in the properties
 		 */
 		
-		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = featureCollections.get(url.toString());
+		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = 
+			featureCollections.get(url.toString());
 		ReferencedEnvelope envelope = null;
 		FeatureSource<SimpleFeatureType, SimpleFeature> fc1 = null;
 		
@@ -360,7 +367,7 @@ public class CoverageFactory {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	private static ICoverage getCoverage(URL url, Properties properties) throws ThinklabException {
+	public static ICoverage getCoverage(URL url, Properties properties) throws ThinklabException {
 		
 		ICoverage ret = null;
 		
@@ -501,14 +508,63 @@ public class CoverageFactory {
 			int y = it.next();
 			int x = it.next();
 			double d = data.get(o);
-//			System.out.println(x + "," + y + " = " + d);
 			
 			dataset [(y * ext.getXCells()) + x] = d;
 		}
 		
 		RasterCoverage ret = new RasterCoverage("", ext, dataset);
+
+		return ret;
+	}
+
+	/**
+	 * Fill in properties with info describing the coverage in the passed
+	 * resource string. Sort of a gdalinfo/ogrinfo for the poor API user.
+	 * 
+	 * @param url
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	public static Properties getCoverageProperties(String url) throws ThinklabException {
+
+		Properties ret = new Properties();
 		
-//		ret.write(new File("C:\\A\\results\\temp.tif"));
+		// determine if url refers to service or file. For now only supports
+		// vector - wfs and shapefile.
+		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = null;
+		FeatureSource<SimpleFeatureType, SimpleFeature> fs = null;
+		Map<String, Object> connect = new HashMap<String,Object>();
+		connect.put( "url", url );
+		
+		try {
+			DataStore dataStore = DataStoreFinder.getDataStore(connect);
+			String name = dataStore.getTypeNames()[0];
+			fs = dataStore.getFeatureSource(name);
+			fc = fs.getFeatures();
+
+			ret.setProperty(
+					CRS_PROPERTY, 
+					Geospace.getCRSIdentifier(
+							fs.getSchema().getCoordinateReferenceSystem(),
+							false));
+			
+			String fields = "";
+			for (AttributeDescriptor ad : fs.getSchema().getAttributeDescriptors()) {
+
+				if (ad.getLocalName().equals("the_geom"))
+					continue;
+				
+				if (!fields.isEmpty()) 
+					fields += ",";
+				
+				fields += ad.getLocalName();
+			}
+			
+			ret.setProperty(FIELD_NAMES_PROPERTY, fields);
+			
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}
 		
 		return ret;
 	}
