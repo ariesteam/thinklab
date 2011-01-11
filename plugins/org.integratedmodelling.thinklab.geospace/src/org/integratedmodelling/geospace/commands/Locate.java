@@ -79,7 +79,8 @@ public class Locate implements ICommandHandler {
 							+ "\t"
 							+ result.getResultField(i, "label"));
 					
-					session.getOutputStream().println(
+					if (result.getResultCount() == 1)
+						session.getOutputStream().println(
 							"\t" +
 							result.getResultField(i, IGazetteer.SHAPE_FIELD));
 				}

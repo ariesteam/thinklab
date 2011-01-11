@@ -154,7 +154,7 @@ public abstract class SQLServer {
 	private DataSource dataSource = null;
 	private Logger logger = null;
 
-    private DataSource setupDataSource(String connectURI) throws ThinklabStorageException {
+    protected DataSource setupDataSource(String connectURI) throws ThinklabStorageException {
     	
     	PoolingDataSource dataSource = null;
     	ClassLoader clsl = null;

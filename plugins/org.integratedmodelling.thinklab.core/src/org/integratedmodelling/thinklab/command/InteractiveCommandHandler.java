@@ -56,6 +56,20 @@ public abstract class InteractiveCommandHandler implements ICommandHandler {
 		return ret == null ? null : ((ret.trim().isEmpty() || ret.equals(";")) ? null : ret.trim());
 	}
 	
+
+	/**
+	 * Like ask(prompt), returns default if user presses enter.
+	 * 
+	 * @param prompt
+	 * @param defaultresponse
+	 * @return
+	 * @throws ThinklabIOException
+	 */
+	protected String ask(String prompt, String defaultresponse) throws ThinklabIOException {
+		String ret = ask(prompt);
+		return ret == null ? defaultresponse : ret;
+	}
+	
 	/**
 	 * Just print the passed text.
 	 * 

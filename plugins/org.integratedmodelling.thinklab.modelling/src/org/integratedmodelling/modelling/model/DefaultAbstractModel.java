@@ -9,7 +9,6 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
-import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.corescience.metadata.Metadata;
@@ -192,15 +191,15 @@ public abstract class DefaultAbstractModel implements IModel {
 			this.observableId = this.observableSpecs.first().toString();
 		} else {
 			this.observableId = observableOrModel.toString();
-			this.observable = KnowledgeManager.get().requireConcept(
-					this.observableId);
-			// this takes care of the self-annotating models with the $ at the
-			// end
-			this.observableId = this.observable.toString();
+//			this.observable = KnowledgeManager.get().requireConcept(
+//					this.observableId);
+//			// this takes care of the self-annotating models with the $ at the
+//			// end
+//			this.observableId = this.observable.toString();
 			this.observableSpecs = Polylist.list(this.observableId);
 		}
 
-		id = Path.getLast(observableId, ':').toLowerCase();
+		id = Path.getLast(observableId.endsWith("$") ? observableId.substring(0, observableId.length()-2) : observableId, ':').toLowerCase();
 	}
 
 	@Override

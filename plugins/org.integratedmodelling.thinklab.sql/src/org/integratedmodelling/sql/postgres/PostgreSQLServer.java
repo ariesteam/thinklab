@@ -35,10 +35,15 @@ package org.integratedmodelling.sql.postgres;
 import java.net.URI;
 import java.util.Properties;
 
+import org.integratedmodelling.sql.SQLPlugin;
 import org.integratedmodelling.sql.SQLServer;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 
 public class PostgreSQLServer extends SQLServer {
+
+	public static final int DEFAULT_PORT = 5432;
 
 	public PostgreSQLServer(URI uri, Properties properties) throws ThinklabStorageException {
 		initialize(uri, properties);
@@ -56,7 +61,7 @@ public class PostgreSQLServer extends SQLServer {
 	
 	@Override
 	public int getDefaultPort() {
-		return 5432;
+		return DEFAULT_PORT;
 	}
 
 	@Override
@@ -109,5 +114,63 @@ public class PostgreSQLServer extends SQLServer {
 		this.execute("CLOSE DATABASE " + getDatabase() + ";");
 		this.execute("DROP DATABASE " + getDatabase() + ";");		
 	}
+	
+	public static boolean haveDatabase(String database, String user, String password, String host, int port) throws ThinklabStorageException {
+		
+		boolean ret = true;
+		
+		PostgreSQLServer pg = new PostgreSQLServer(user, password, host);
+		pg.setDatabase(database);
+		pg.initialize();
+		
+		try {
+			pg.execute("SELECT 1;");
+		} catch (ThinklabStorageException e) {
+			ret = false;
+		}
 
+		return ret;
+	}
+
+	/**
+	 * Use localhost, defaults, complain if not there
+	 * 
+	 * @param database
+	 * @return
+	 * @throws ThinklabStorageException
+	 */
+	public static boolean haveDatabase(String database) throws ThinklabException {
+
+		String user = SQLPlugin.get().getDefaultUser();
+		String pswd = SQLPlugin.get().getDefaultPassword();
+		String host = SQLPlugin.get().getDefaultHost();
+		
+		if (user == null || pswd == null || host == null)
+			throw new ThinklabValidationException("please set default database user and password in sql plugin properties");
+		
+		return haveDatabase(database, user, pswd, host, DEFAULT_PORT);
+	}
+
+	public static String getDefaultURI(String database) throws ThinklabValidationException {
+		
+
+		String user = SQLPlugin.get().getDefaultUser();
+		String pswd = SQLPlugin.get().getDefaultPassword();
+		String host = SQLPlugin.get().getDefaultHost();
+		
+		if (user == null || pswd == null || host == null)
+			throw new ThinklabValidationException("please set default database user and password in sql plugin properties");
+		
+		return 
+			"postgres://" + 
+			user + 
+			":" + 
+			pswd + 
+			"@" + 
+			host + 
+			":" + 
+			5432 + 
+			"/" 
+			+ database;
+	}
 }

@@ -64,6 +64,10 @@ public class SQLPlugin extends ThinklabPlugin {
 
 	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.sql";
 
+	static final public String DEFAULT_USER_PROPERTY = "thinklab.sql.user";
+	static final public String DEFAULT_PASSWORD_PROPERTY = "thinklab.sql.password";
+	static final public String DEFAULT_HOST_PROPERTY = "thinklab.sql.host";
+
 	public static SQLPlugin get() {
 		return (SQLPlugin) getPlugin(PLUGIN_ID);
 	}
@@ -121,5 +125,17 @@ public class SQLPlugin extends ThinklabPlugin {
 
 		return ret;
 	}
+	
+	public String getDefaultUser() {
+		return getProperties().getProperty(DEFAULT_USER_PROPERTY);
+	}
+	
+	
+	public String getDefaultPassword() {
+		return getProperties().getProperty(DEFAULT_PASSWORD_PROPERTY);
+	}
 
+	public String getDefaultHost() {
+		return getProperties().getProperty(DEFAULT_HOST_PROPERTY, "localhost");
+	}
 }

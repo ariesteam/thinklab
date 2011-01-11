@@ -68,6 +68,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -682,6 +683,14 @@ public final class SearchEngine implements IQueriable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			throw new ThinklabIOException(e);
+		}
+	}
+	
+	public void flush() {
+		try {
+			index.flush();
+		} catch (Exception e) {
+			throw new ThinklabRuntimeException(e);
 		}
 	}
 	

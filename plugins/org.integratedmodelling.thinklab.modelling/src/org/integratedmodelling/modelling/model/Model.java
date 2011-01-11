@@ -165,9 +165,8 @@ public class Model extends DefaultAbstractModel {
 			mdesc += (mdesc.length() == 1 ? "" : ",") + m ;
 		}
 		mdesc += "}";
-		return "model(" + getObservableClass() +") " + mdesc;
+		return "model(" + observableId +") " + mdesc;
 	}
-
 
 	@Override
 	public IModel getConfigurableClone() {

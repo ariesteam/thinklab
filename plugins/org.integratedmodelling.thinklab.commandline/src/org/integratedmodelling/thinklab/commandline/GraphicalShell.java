@@ -306,22 +306,25 @@ public class GraphicalShell {
 			
             if (result != null)
                 console.println(result.toString());
-
             
             console.getOut().flush();
 
-            /*
-             *  give it a little rest to help the output show entirely before the prompt
-             *  is printed again.
-             */
-			Thread.sleep(200);
-			
-            
 		} catch (Exception e) {
+			
 			e.printStackTrace();
 			this.error = true;
-			console.println(">>> error: " + e.getMessage() + " <<<");
+			console.setStyle(Color.red);
+			console.println("  " + e.getMessage());
+			console.setStyle(Color.black);
 		}
 
+        /*
+         *  give it a little rest to help the output show entirely before the prompt
+         *  is printed again.
+         */
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+		}
 	}
 }

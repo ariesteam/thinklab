@@ -29,6 +29,7 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
+import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -521,27 +522,64 @@ public class CoverageFactory {
 	 * Fill in properties with info describing the coverage in the passed
 	 * resource string. Sort of a gdalinfo/ogrinfo for the poor API user.
 	 * 
-	 * @param url
+	 * @param command
 	 * @return
 	 * @throws ThinklabException 
 	 */
-	public static Properties getCoverageProperties(String url) throws ThinklabException {
+	public static Properties getCoverageProperties(String url, String covId) throws ThinklabException {
 
 		Properties ret = new Properties();
-		
-		// determine if url refers to service or file. For now only supports
-		// vector - wfs and shapefile.
 		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = null;
 		FeatureSource<SimpleFeatureType, SimpleFeature> fs = null;
-		Map<String, Object> connect = new HashMap<String,Object>();
-		connect.put( "url", url );
+		
+		Map<Object,Object> connectionParameters = new HashMap<Object,Object>();
+		
+		if (url.startsWith("http://")) {
+			
+			if (covId == null) {
+				throw new ThinklabValidationException("WFS coverage name must be supplied");
+			}
+
+			connectionParameters.put(
+					WFSDataStoreFactory.URL.key, 
+					url + "?request=getCapabilities&VERSION=1.1.0" );
+			connectionParameters.put(
+					WFSDataStoreFactory.TIMEOUT.key, 
+					"100000");
+			connectionParameters.put(
+					WFSDataStoreFactory.BUFFER_SIZE.key, 
+					"512");
+
+			ret.put(WFS_SERVICE_PROPERTY, url);
+			ret.put(COVERAGE_ID_PROPERTY, covId);
+
+			try {
+				DataStore dataStore = DataStoreFinder.getDataStore(connectionParameters);
+				fs = dataStore.getFeatureSource(covId);
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+			
+		} else {
+
+			
+			connectionParameters.put("url", url );
+			    
+			try {
+				DataStore dataStore = DataStoreFinder.getDataStore(connectionParameters);
+				String name = dataStore.getTypeNames()[0];
+				fs = dataStore.getFeatureSource(name);
+				
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+			
+			ret.put("url", url);
+		}
+
 		
 		try {
-			DataStore dataStore = DataStoreFinder.getDataStore(connect);
-			String name = dataStore.getTypeNames()[0];
-			fs = dataStore.getFeatureSource(name);
-			fc = fs.getFeatures();
-
+			
 			ret.setProperty(
 					CRS_PROPERTY, 
 					Geospace.getCRSIdentifier(
@@ -561,6 +599,18 @@ public class CoverageFactory {
 			}
 			
 			ret.setProperty(FIELD_NAMES_PROPERTY, fields);
+
+			/*
+			 * get first feature as prototype
+			 */
+			fc = fs.getFeatures();
+
+			Iterator<SimpleFeature> fit = fc.iterator();
+			if (fit.hasNext()) {
+				SimpleFeature fea = fit.next();
+			}
+
+
 			
 		} catch (IOException e) {
 			throw new ThinklabIOException(e);
