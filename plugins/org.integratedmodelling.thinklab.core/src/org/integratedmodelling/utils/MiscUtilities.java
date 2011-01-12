@@ -1831,6 +1831,26 @@ loop:		for(;;)
 	public static Pair<Double, String> splitNumberFromString(String s) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/**
+	 * Get the last modification date if the resource resolves to a file. If
+	 * the resource is a URL, we cannot be sure so we assume it's just been
+	 * modified and return the current time.
+	 * 
+	 * @param resourceId
+	 * @return
+	 */
+	public static long getLastModificationForResource(String resourceId) {
+		
+		long ret = new Date().getTime();
+		
+		Object o = getSourceForResource(resourceId);
+		if (o instanceof File) {
+			ret = ((File)o).lastModified();
+		}
+		
+		return ret;
 	} 
 
 }

@@ -9,6 +9,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
+import org.integratedmodelling.thinklab.literals.Value;
 
 /**
  * A task that runs a script, specified either as a 
@@ -50,14 +51,14 @@ public class RunScript implements ITask {
 		 * run whatever
 		 */
 		for (URL url : codeUrl) {
-			result = intp.eval(url);
+			result = Value.getValueForObject(intp.eval(url));
 		}
 		
 		/*
 		 * if there's any inline code, run it last
 		 */
 		if (code != null) {
-			result = intp.eval(code);
+			result = Value.getValueForObject(intp.eval(code));
 		}
 
 	}

@@ -1,24 +1,31 @@
 package org.integratedmodelling.modelling;
 
 import java.io.PrintStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IModelForm;
+import org.integratedmodelling.modelling.knowledge.NamespaceOntology;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabCircularDependencyException;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.graph.GraphViz;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
+import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
 /**
- * The holder of the treemap to the whole modeling landscape. The map links together 
+ * The holder of the map to the whole model landscape. The map links together 
  * namespaces, models, contexts, storyline and agent objects with their source code and can 
  * reconstruct any of them or all after any change. Model content from external sources can
  * be integrated using the model map and synchronized to files so it can be edited by any
@@ -43,9 +50,11 @@ public class ModelMap {
 	public abstract static class Entry {
 		
 		private boolean modified = false;
+		public long lastModification;
 		
 		public void setDirty() {
 			modified = true;
+			lastModification = new Date().getTime();
 			ModelMap.dirty = true;
 		}
 		public boolean isDirty() {
@@ -175,8 +184,9 @@ public class ModelMap {
 
 		public String resource;
 
-		public ResourceEntry(String resource) {
+		public ResourceEntry(String resource, long lastModification) {
 			this.resource = resource;
+			this.lastModification = lastModification;
 		}
 
 		@Override
@@ -187,14 +197,64 @@ public class ModelMap {
 	public static class NamespaceEntry extends Entry {
 
 		public String namespace;
+		private IOntology ontology;
+		private HashMap<IConcept, IModel> modelsByObservable = null;
+		private NamespaceOntology ontologyDescriptor;
 
-		public NamespaceEntry(String namespace) {
+		public NamespaceEntry(String namespace, long lastModification) {
 			this.namespace = namespace;
+			this.lastModification = lastModification;
 		}
 
+		// this is lazy also to avoid issues with the annotator
+		private synchronized HashMap<IConcept, IModel> getAllModels() {
+			
+			if (modelsByObservable == null) {
+				modelsByObservable = new HashMap<IConcept, IModel>();
+				for (DepEdge e : map.outgoingEdgesOf(this)) {
+					if (e instanceof HasNamespaceEdge) {
+						Entry ee = e.getTargetObservation();
+						if (ee instanceof FormObjectEntry && 
+								((FormObjectEntry)ee).form instanceof IModel) {
+							IModel m = (IModel) ((FormObjectEntry)ee).form;
+							modelsByObservable.put(m.getObservableClass(), m);
+						}
+					}
+				}
+			}
+			return modelsByObservable;
+		}
+		
 		@Override
 		public String toString() {
 			return namespace;
+		}
+		
+		public IModel getModelForObservable(IConcept c) {
+			return getAllModels().get(c);
+		}
+
+		public void defineOntology(NamespaceOntology ret) {
+			this.ontologyDescriptor = ret;
+		}
+		
+		public IOntology getOntology() {
+			if (ontology == null) {
+				try {
+					if (ontologyDescriptor != null) {
+						ontology = ontologyDescriptor.getOntology();
+					} else {
+						ontology = 
+							KnowledgeManager.get().getKnowledgeRepository().
+								createTemporaryOntology(CamelCase.toLowerCamelCase(namespace, '.'));
+					}
+				} catch (ThinklabException e) {
+					throw new ThinklabRuntimeException(e);
+				}
+				
+
+			}
+			return ontology;
 		}
 	}
 
@@ -312,7 +372,6 @@ public class ModelMap {
 	 * done with types, code starts here
 	 * -------------------------------------------------------------------
 	 */
-	
 	public static void sync() throws ThinklabException {
 		
 	}
@@ -365,19 +424,20 @@ public class ModelMap {
 		if (getNamespace(namespace) != null)
 			throw new ThinklabInternalErrorException("namespace cannot be redefined: " + namespace);
 	
-		Entry ret = new NamespaceEntry(namespace);
+		NamespaceEntry ret = new NamespaceEntry(namespace, resource.lastModification);
+
 		map.addVertex(ret);
 		map.addEdge(ret, resource, new HasResourceEdge());
 		namespaces.put(namespace, ret);
 		return ret;
 	}
 	
-	public static Entry addResource(String resource) throws ThinklabException {
+	public static Entry addResource(String resource, long lastModification) throws ThinklabException {
 
 		if (getResource(resource) != null)
 			throw new ThinklabInternalErrorException("redefined resource: " + resource);
 		
-		Entry ret = new ResourceEntry(resource);
+		Entry ret = new ResourceEntry(resource, lastModification);
 		map.addVertex(ret);
 		resources.put(resource, ret);
 		return ret;
@@ -435,5 +495,15 @@ public class ModelMap {
 		}
 		
 		stream.println(src.getSource());
+	}
+
+	public static long getNamespaceLastModification(String ns) {
+		NamespaceEntry nse = (NamespaceEntry) getNamespace(ns);
+		return nse.lastModification;
+	}
+	
+	public static IOntology getNamespaceOntology(String ns) {
+		NamespaceEntry nse = (NamespaceEntry) getNamespace(ns);
+		return nse.ontology;
 	}
 }

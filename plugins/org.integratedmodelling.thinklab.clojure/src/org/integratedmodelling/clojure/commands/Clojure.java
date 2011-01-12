@@ -45,6 +45,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabScriptException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 /**
@@ -102,7 +103,7 @@ public class Clojure implements ICommandHandler {
 				ClojureInterpreter intp = new ClojureInterpreter();
 				intp.setInput(session.getInputStream());
 				intp.setOutput(session.getOutputStream());
-				ret = intp.eval(url);
+				ret = Value.getValueForObject(intp.eval(url));
 			}
 			
 		} catch (Exception e) {

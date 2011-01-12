@@ -22,6 +22,7 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.modelling.ModelMap;
+import org.integratedmodelling.modelling.ModelMap.NamespaceEntry;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationCache;
 import org.integratedmodelling.modelling.ObservationFactory;
@@ -29,6 +30,7 @@ import org.integratedmodelling.modelling.agents.ThinkAgent;
 import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IModelForm;
+import org.integratedmodelling.modelling.knowledge.NamespaceOntology;
 import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -492,6 +494,7 @@ public class ModelFactory {
 		ModellingPlugin.get().logger().info("model subsystem reading " + resourceId);
 		
 		URL rurl = MiscUtilities.getURLForResource(resourceId);
+		final long lmo = MiscUtilities.getLastModificationForResource(resourceId);
 		FormReader f;
 		lastRegistered = null;
 		
@@ -509,6 +512,7 @@ public class ModelFactory {
 				String namespace = null;
 				ModelMap.Entry previousFragment = null;
 				ModelMap.Entry resource = null;
+				ModelMap.NamespaceEntry nsentry = null;
 				
 				String checkNamespace(String code) {
 					
@@ -533,7 +537,7 @@ public class ModelFactory {
 					 * get entry for resource
 					 */
 					if (resource == null) {
-						resource = ModelMap.addResource(resourceId);
+						resource = ModelMap.addResource(resourceId, lmo);
 					}					
 
 					if (namespace == null) {
@@ -541,7 +545,8 @@ public class ModelFactory {
 						if (namespace != null) {
 							intp.eval(s);	
 							wasunk = true;
-							ModelMap.addNamespace(namespace, resource);
+							nsentry = 
+								(NamespaceEntry) ModelMap.addNamespace(namespace, resource);
 						}
 					}
 					
@@ -563,8 +568,14 @@ public class ModelFactory {
 					
 					/*
 					 * eval form in given namespace. This may change lastRegistered
+					 * and the associated ontology if a (namespace-ontology) form is
+					 * encountered.
 					 */
-					intp.eval("(in-ns '"  + namespace + ")\n" + s);
+					Object ret = intp.eval("(in-ns '"  + namespace + ")\n" + s);
+					
+					if (ret instanceof NamespaceOntology) {
+						nsentry.defineOntology((NamespaceOntology)ret);
+					}
 					
 					String newName = 
 						lastRegistered == null ? 
@@ -586,7 +597,6 @@ public class ModelFactory {
 						 * if it's a model, check dependencies and add
 						 * dependency statements
 						 */
-
 						ModelMap.Entry[] deps = null;
 						if (toRegister instanceof IModel) {
 							

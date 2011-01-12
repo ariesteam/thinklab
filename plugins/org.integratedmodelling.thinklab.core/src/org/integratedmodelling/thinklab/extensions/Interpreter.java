@@ -58,7 +58,7 @@ public interface Interpreter {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public abstract IValue eval(Object code) throws ThinklabException;
+	public abstract Object eval(Object code) throws ThinklabException;
 	
 	/**
 	 * Like eval but with some externally supplied context, passed as a map of varname,object pairs.
@@ -71,7 +71,7 @@ public interface Interpreter {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public abstract IValue eval(Object code, HashMap<String,Object> args) throws ThinklabException;
+	public abstract Object eval(Object code, HashMap<String,Object> args) throws ThinklabException;
 
 	/**
 	 * This one is different from eval because the bindings must remain in effect 

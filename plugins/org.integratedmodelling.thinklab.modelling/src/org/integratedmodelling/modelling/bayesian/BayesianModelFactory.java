@@ -1,18 +1,29 @@
 package org.integratedmodelling.modelling.bayesian;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Properties;
 
+import org.integratedmodelling.modelling.ModelMap;
 import org.integratedmodelling.modelling.interfaces.IModel;
-import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.riskwiz.bn.BeliefNetwork;
 import org.integratedmodelling.riskwiz.bn.BeliefNode;
 import org.integratedmodelling.riskwiz.io.genie.GenieReader;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Triple;
 import org.nfunk.jep.ParseException;
 
 /**
@@ -34,7 +45,53 @@ public class BayesianModelFactory {
 	 */
 	public void syncModels(String bayesianUrl, String modelNamespace) throws ThinklabException {
 
+		File bnfile = null;
+		File propfile = null;
+		long bndate = -1L;
+		long propdate = new Date().getTime();
+		
+		if (ModelMap.getNamespace(modelNamespace) == null)
+			// for now; we will eventually create it.
+			throw new ThinklabUnimplementedFeatureException("namespace " + modelNamespace + " must exist before synchronization");
+		
+		long nsdate = ModelMap.getNamespaceLastModification(modelNamespace);
+		
 		GenieReader r = new GenieReader();
+		Object oo = MiscUtilities.getSourceForResource(bayesianUrl);
+		if (oo instanceof File) {
+			bnfile = (File)oo;
+			bndate = bnfile.lastModified();
+		}
+		
+		if (bnfile == null) 
+			throw new ThinklabResourceNotFoundException("bayesian network file " + bayesianUrl + " is not readable or is not a file");
+			
+		
+		/*
+		 * see if we have an associated property file
+		 */
+		propfile = 
+			new File(MiscUtilities.changeExtension(bnfile.toString(), "properties"));
+			
+		Properties bnprops = new Properties();
+		if (propfile.exists()) {
+			try {
+				bnprops.load(new FileInputStream(propfile));
+				propdate = propfile.lastModified();
+			} catch (Exception e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+		
+		/*
+		 * ontology associated with the namespace - can be set with (namespace-ontology)
+		 * or is assigned by default to a temporary one.
+		 */
+		IOntology onto = ModelMap.getNamespaceOntology(modelNamespace);
+		
+		/*
+		 * read the BN
+		 */
 		InputStream is = MiscUtilities.getInputStreamForResource(bayesianUrl);
 		BeliefNetwork bn = null;
 		
@@ -43,39 +100,61 @@ public class BayesianModelFactory {
 		} catch (ParseException e) {
 			throw new ThinklabValidationException(e);
 		}
-		
-		ArrayList<Triple<String, String, IModel>> models = 
-			new ArrayList<Triple<String,String,IModel>>();
+			
+		/*
+		 * groundwork is done: now we have
+		 * 
+		 * bn       the bayesian network
+		 * bnprops  the properties associated, possibly empty, that will be stored
+		 * 	        at the end
+		 * propdate the date of last synchronization
+		 * nsdate   the date of last modification of the models
+		 * onto     the ontology for concepts and instances we didn't get from the
+		 *          knowledge base.
+		 */
 		
 		/*
-		 * find concept space from models if any exists in namespace.
+		 * associate each node in the BN with a model if any exist or was
+		 * specified, or leave it null if not so we know we have to create 
+		 * it.
 		 */
 		for (String nn : bn.getNodeNames()) {	
-			String mname = 
-				modelNamespace+ "/" + CamelCase.toLowerCase(nn, '-');
-			IModel model = ModelFactory.get().retrieveModel(mname);
-			models.add(new Triple<String, String, IModel>(nn, mname, model));
-		}
-		
-		/*
-		 * sync each model appropriately
-		 */
-		for (Triple<String, String, IModel> tm : models) {
 
-			if (tm.getThird() == null) {
-				tm.setThird(createModel(bn, tm.getFirst()));
-			} else {
-				tm.setThird(syncModel(bn, tm.getFirst(), tm.getThird()));
+			String mcname = onto.getConceptSpace() + ":" +  nn;
+			IConcept mc = KnowledgeManager.get().retrieveConcept(mcname);
+			
+			if (mc == null) {
+				
 			}
+				
+			//			if (tm.getThird() == null) {
+//				tm.setThird(createModel(bn, tm.getFirst()));
+//			} else {
+//				tm.setThird(syncModel(bn, tm.getFirst(), tm.getThird()));
+//			}
 		}
 		
 		/*
-		 * output? we need the string rep of each model, including those that 
-		 * were in the same file but not part of the bn.
+		 * perform synchronization
 		 */
-		for (Triple<String, String, IModel> tm : models) {
-		}
 		
+		/*
+		 * save the namespace to its clojure representation if any change was
+		 * done.
+		 */
+		ModelMap.sync();
+		
+		/*
+		 * save the properties along with the file, whatever we did to them. This
+		 * also gives us a date of last synchronization for next time.
+		 */
+		try {
+			OutputStream pout = new FileOutputStream(propfile);
+			bnprops.store(pout, "Change below at your own risk.");
+			pout.close();
+		} catch (Exception e) {
+			throw new ThinklabIOException(e);
+		}
 	}
 
 	private IModel syncModel(BeliefNetwork bn, String nodename, IModel third) {

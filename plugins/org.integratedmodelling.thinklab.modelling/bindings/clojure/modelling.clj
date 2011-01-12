@@ -15,6 +15,12 @@
 	[]
 	(new org.integratedmodelling.modelling.model.Model))
 	
+(defn j-make-nsontology
+	"Make a new instance of Model and return it. We need this because the class won't be visible when
+	the macro is expanded at runtime."
+	[concept-space]
+	(new org.integratedmodelling.modelling.knowledge.NamespaceOntology concept-space))
+
 (defn j-make-scenario
 	"Make a new instance of Model and return it. We need this because the class won't be visible when
 	the macro is expanded at runtime."
@@ -216,6 +222,22 @@
             (.add model# (eval mdef#) definition#))
           
        model#))
+
+(defmacro namespace-ontology 
+	"Define and optionally create the ontology associated with the namespace. If specified, add concepts and
+   properties to it using s-expr specifications."
+	[concept-space & body]
+	 `(let [desc#  
+	 					(if (string? (first '~body)) (first '~body))
+ 	        definition# 
+ 	        	(drop (tl/count-not-nil (list desc#)) '~body)
+ 	        nsonto# 
+ 	        	(modelling/j-make-nsontology (str (eval '~concept-space)))]
+     (.setDescription nsonto# desc#)
+     (doseq [mdef# (tl/group-keywords definition#)] 
+       (.add nsonto# (tl/listp mdef#) definition#))
+     (.initialize nsonto#)
+     nsonto#))
   
 (defmacro tl-agent 
 	"Return a new model for the given observable, defined using the given contingency 
