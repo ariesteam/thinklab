@@ -1,8 +1,9 @@
-package org.integratedmodelling.modelling.visualization.presentation;
+package org.integratedmodelling.modelling.visualization.storyline;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -23,11 +24,11 @@ import org.w3c.dom.Node;
  * @author ferdinando.villa
  *
  */
-public class PresentationTemplate {
+public class StorylineTemplate {
 
-	ArrayList<Page> pages = new ArrayList<PresentationTemplate.Page>();
-	ArrayList<Page> singlePages = new ArrayList<PresentationTemplate.Page>();
-	HashMap<String, Page> singlePagesById = new HashMap<String, PresentationTemplate.Page>();
+	ArrayList<Page> pages = new ArrayList<StorylineTemplate.Page>();
+	ArrayList<Page> singlePages = new ArrayList<StorylineTemplate.Page>();
+	HashMap<String, Page> singlePagesById = new HashMap<String, StorylineTemplate.Page>();
 
 	private String title;
 	private String description;
@@ -35,12 +36,23 @@ public class PresentationTemplate {
 	private String runningHead;
 	private String concept;
 	private String style;
+	
+	/*
+	 * a pretty primitive way of storing model specs: alternating strings are
+	 * model name and context name for coverage. If a context name is null model works
+	 * globally.
+	 */
+	private ArrayList<String> models = null;
+	
+	// works like any model object in that it has a namespace, an ID, and
+	// a name which is namespace + "." + id. 
 	private String id;
 	
 	private Properties properties = new Properties();
 	
 	public HashMap<String, String> attributes = new HashMap<String, String>();
 
+	@Deprecated
 	public ArrayList<Node> customNodes = new ArrayList<Node>();
 
 	@Override
@@ -58,6 +70,7 @@ public class PresentationTemplate {
 		return this.properties;
 	}
 	
+	
 	public class Page {
 
 		public String concept;
@@ -68,7 +81,10 @@ public class PresentationTemplate {
 		public String name;
 		public String id;
 		public String plotType;
+		
+		@Deprecated 
 		public ArrayList<Node> customNodes = new ArrayList<Node>();
+		
 		public ArrayList<String> otherTypes = new ArrayList<String>();
 		public HashMap<String, String> attributes = new HashMap<String, String>();
 		public String credits;
@@ -159,6 +175,20 @@ public class PresentationTemplate {
 			} else {
 				
 				/*
+				 * TODO put this at the top level and remove the customnodes thing
+				 * when possible.
+				 */
+				if (node.getNodeName().equals("model")) {
+					String id = XMLDocument.getAttributeValue(node, "id");
+					String ct = XMLDocument.getAttributeValue(node, "context");
+					if (this.models == null) {
+						this.models = new ArrayList<String>();
+					}
+					models.add(id);
+					models.add(ct);
+				}
+				
+				/*
 				 * any content of custom nodes goes in attributes. The node is 
 				 * preserved if structural analysis is required.
 				 */
@@ -170,6 +200,7 @@ public class PresentationTemplate {
 				
 				/*
 				 * custom nodes: keep with the page for now. This is quite inelegant as the XML doc
+				 * DEPRECATED -- remove when aries-gui is refactored
 				 * doesn't get garbage collected, but polymorphism at this stage is worse. FIXME 
 				 */
 				customNodes.add(node);
@@ -298,5 +329,9 @@ public class PresentationTemplate {
 
 	public String getShortDescription() {
 		return shortDescription;
+	}
+	
+	public List<String> getModelSpecifications() {
+		return this.models;
 	}
 }

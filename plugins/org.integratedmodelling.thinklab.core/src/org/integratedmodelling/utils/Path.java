@@ -23,6 +23,16 @@ public class Path {
 		}
 		return ret;
 	}
+
+	public static String join(String[] pth, int start, char separator) {
+		String ret = "";
+		for (int i = start; i < pth.length; i++) 
+			ret +=
+				(ret.isEmpty() ? "" : ".") +
+				pth[i];
+		return ret;
+	}
+	
 	
 
 }

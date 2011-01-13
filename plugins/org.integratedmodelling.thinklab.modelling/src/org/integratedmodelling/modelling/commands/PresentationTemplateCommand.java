@@ -11,11 +11,11 @@ import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
+import org.integratedmodelling.modelling.storyline.StorylineFactory;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
-import org.integratedmodelling.modelling.visualization.presentation.PresentationFactory;
-import org.integratedmodelling.modelling.visualization.presentation.PresentationTemplate;
-import org.integratedmodelling.modelling.visualization.presentation.PresentationTemplate.Page;
+import org.integratedmodelling.modelling.visualization.storyline.StorylineTemplate;
+import org.integratedmodelling.modelling.visualization.storyline.StorylineTemplate.Page;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -49,7 +49,7 @@ public class PresentationTemplateCommand implements ICommandHandler {
 		IConcept concept = 
 			KnowledgeManager.get().requireConcept(command.getArgumentAsString("template"));
 				
-		PresentationTemplate template = PresentationFactory.getPresentation(concept);
+		StorylineTemplate template = StorylineFactory.getPresentation(concept);
 		HashMap<IConcept, IState> states = new HashMap<IConcept, IState>();
 		HashSet<IConcept> present = new HashSet<IConcept>();
 		

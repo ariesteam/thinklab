@@ -1,7 +1,7 @@
 package org.integratedmodelling.modelling.visualization.presentation.impl;
 
-import org.integratedmodelling.modelling.visualization.presentation.DefaultPresentation;
-import org.integratedmodelling.modelling.visualization.presentation.PresentationTemplate;
+import org.integratedmodelling.modelling.visualization.storyline.DefaultPresentation;
+import org.integratedmodelling.modelling.visualization.storyline.StorylineTemplate;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 
 public class HtmlPresentation extends DefaultPresentation {
@@ -10,11 +10,11 @@ public class HtmlPresentation extends DefaultPresentation {
 	public void render() throws ThinklabException {
 		// TODO Auto-generated method stub
 
-		for (PresentationTemplate.Page page : template.getSinglePages()) {
+		for (StorylineTemplate.Page page : template.getSinglePages()) {
 			
 		}
 
-		for (PresentationTemplate.Page page : template.getPages()) {
+		for (StorylineTemplate.Page page : template.getPages()) {
 			
 		}
 	}

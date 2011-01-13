@@ -9,33 +9,22 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 
 /**
  * A simple scheduler that can be fed tasks and guarantees that at most a given
- * maximum number sof them is executed at a time. Also supports listeners to enable
+ * maximum number of them is executed at a time. Also supports listeners to enable
  * notification of task start, end and enqueuing.
  * 
  * @author Ferdinando Villa
  *
  */
-public class TaskScheduler {
+public class TaskScheduler implements ITaskScheduler {
 
 	int maxConcurrentTasks = 1;
 	int _delay = 200;
 	
-	volatile private boolean _stopped = true;
-	
-	public abstract static class Task extends Thread {
-		public abstract boolean finished();
-	}
-
-	public static interface  Listener {
-		
-		public void notifyTaskEnqueued(Task task, int currentlyExecuting, int currentlyScheduled);
-		public void notifyTaskFinished(Task task, int currentlyExecuting, int currentlyScheduled);
-		public void notifyTaskStarted(Task task, int currentlyExecuting, int currentlyScheduled);
-	}
+	volatile protected boolean _stopped = true;
 	
 	public ArrayList<Listener> _listeners = new ArrayList<Listener>();
 
-	private class TaskThread extends Thread {
+	protected class TaskThread extends Thread {
 
 		@Override
 		public void run() {
@@ -77,7 +66,7 @@ public class TaskScheduler {
 				while (_current.size() < maxConcurrentTasks) {
 					try {
 						Task t = _queue.remove();
-						t.start();
+						((Thread)t).start();
 						_current.add(t);
 						for (Listener l : _listeners) {
 							l.notifyTaskStarted(t, _current.size(), _queue.size());
@@ -90,15 +79,19 @@ public class TaskScheduler {
 		}
 	}
 	
-	ConcurrentLinkedQueue<Task> _queue = new ConcurrentLinkedQueue<Task>();
-	ConcurrentLinkedQueue<Task> _current = new ConcurrentLinkedQueue<Task>();
-	private TaskThread _polling = null;
+	protected ConcurrentLinkedQueue<Task> _queue = new ConcurrentLinkedQueue<Task>();
+	protected ConcurrentLinkedQueue<Task> _current = new ConcurrentLinkedQueue<Task>();
+	protected TaskThread _polling = null;
 	
 	public TaskScheduler(int maxConcurrentTasks) {
 		this.maxConcurrentTasks = maxConcurrentTasks;
 	}
 
 	public void enqueue(Task task) {
+		if (! (task instanceof Thread)) {
+			throw new ThinklabRuntimeException(
+					"scheduler: trying to enqueue a task that is not a thread");
+		}
 		_queue.add(task);
 		for (Listener l : _listeners) {
 			l.notifyTaskEnqueued(task, _current.size(), _queue.size());
@@ -151,4 +144,5 @@ public class TaskScheduler {
 	public void addListener(Listener listener) {
 		_listeners.add(listener);
 	}
+
 }

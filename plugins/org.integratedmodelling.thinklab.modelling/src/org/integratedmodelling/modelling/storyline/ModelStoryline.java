@@ -1,6 +1,6 @@
 package org.integratedmodelling.modelling.storyline;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
@@ -12,8 +12,7 @@ import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
-import org.integratedmodelling.modelling.visualization.FileVisualization;
-import org.integratedmodelling.modelling.visualization.presentation.PresentationTemplate;
+import org.integratedmodelling.modelling.visualization.storyline.StorylineTemplate;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -21,11 +20,9 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.owlapi.Session;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.Pair;
-import org.integratedmodelling.utils.exec.TaskScheduler;
-import org.integratedmodelling.utils.xml.XMLDocument;
-import org.w3c.dom.Node;
+import org.integratedmodelling.utils.exec.ITaskScheduler;
 
 public class ModelStoryline extends Storyline {
 
@@ -34,33 +31,17 @@ public class ModelStoryline extends Storyline {
 	IModel        model;
 	IConcept      observable;
 	boolean       isCovered = false;
-	/*
-	 * the set of all possible models that can compute this storyline in specified
-	 * contexts. Read from the storyline file. We can only run one at a time.
-	 */
-	ArrayList<Pair<IModel,IContext>> models = new ArrayList<Pair<IModel,IContext>>();
-	
-	// processing status
-	public static final int IDLE = 0, COMPUTING = 1, COMPUTED = 2, ERROR = 3, DISABLED = 4, PENDING = 5;
 	
 	//
 	public int status = DISABLED;
-
-	private IVisualization visualization;
-	private TaskScheduler scheduler;
-	private IKBox kbox;
-
 	
-	public interface Listener {
-		public void onStatusChange(int original, int newstatus);
-	}
 	/**
 	 * The thread that actually does the modeling work.
 	 * 
 	 * @author Ferdinando
 	 *
 	 */
-	public class ModelThread extends TaskScheduler.Task {
+	public class ModelThread extends Thread implements ITaskScheduler.Task {
 
 		IKBox  kbox = null;
 		ISession session = null;
@@ -107,8 +88,11 @@ public class ModelStoryline extends Storyline {
 				/*
 				 * create visualization and notify the browsers
 				 */
-				getVisualization().initialize(getContext(), template().getProperties());
-				getVisualization().visualize();
+				if (listener != null) {
+					IVisualization vis = listener.createVisualization(model, getContext());
+					vis.initialize(getContext(), template.getProperties());
+					vis.visualize();
+				}
 				
 				status = COMPUTED;
 				if (listener != null)
@@ -170,17 +154,18 @@ public class ModelStoryline extends Storyline {
 	}
 
 	/**
-	 * Set the context and return whether any of our models covers it. If this returns false,
-	 * the storyline should not be computed.
+	 * Set the context and check whether any of our models covers it. 
 	 * 
 	 * @param context
+	 * @return 
 	 * @return
 	 * @throws ThinklabException
+	 * @Override
 	 */
-	public boolean setContext(IContext context) throws ThinklabException {
+	public void setContext(IContext context) throws ThinklabException {
 
-		this.context = context;
-
+		super.setContext(context);
+		
 		// this is probably unnecessary as we create new storylines when we set the
 		// context, but just in case we change logics later, force recalculation of
 		// the coverage.
@@ -188,17 +173,12 @@ public class ModelStoryline extends Storyline {
 		this.coverage = null;
 		
 		/*
-		 * ensure the template is loaded and the model list has been read. 
-		 * FIXME this call is not very nice.
-		 */
-		template();
-		
-		/*
 		 * if we have no model/context pairs, we can run anywhere.
 		 */
 		if (models.size() == 0) {
 			status = IDLE;
-			return (isCovered = true);			
+			isCovered = true;			
+			return;
 		}
 		
 		/*
@@ -210,11 +190,10 @@ public class ModelStoryline extends Storyline {
 			if (context.intersects(mc.getSecond())) {
 				this.model = mc.getFirst();
 				status = IDLE;
-				return (isCovered = true);
+				isCovered = true;
+				return;
 			}
 		}
-		
-		return false;
 	}
 	
 	/**
@@ -233,91 +212,56 @@ public class ModelStoryline extends Storyline {
 		return isCovered;
 	}
 	
-	public ModelStoryline(IConcept observable) {
-		
-		this.observable = observable;		
+	public ModelStoryline(StorylineTemplate template) {
+		super(template);
 	}
 
 	public IModel getModel() {
 		return this.model;
 	}
 
-	public void compute(int viewportX, int viewportY,
-			String dir, String urlp, 
-			Listener listener) throws ThinklabException {
+	@Override
+	public void compute(Listener listener) throws ThinklabException {
 				
-		if (this.session == null)
-			this.session = new Session();
+		this.session = listener.getSession();
 		
 		status = PENDING;
 		
 		ModelThread process = 
-			new ModelThread(this.kbox, session, listener);
+			new ModelThread(KBoxManager.get(), session, listener);
 			
 		if (process != null) {
-			this.scheduler.enqueue(process);
+			listener.getScheduler().enqueue(process);
 		}
 	}
 
 	@Override
-	public IConcept getObservable() {
-		return observable;
-	}
+	protected void processTemplate(StorylineTemplate template) {
 
-	public IVisualization getVisualization() throws ThinklabException {
-		
-		if (this.visualization == null) {
-			/*
-			 * find the class we want to use for visualization. Look up
-			 * the hierarchy of storylines to check if any of the templates
-			 * specifies it. If not, use a standard FileVisualization.
-			 */
-			String vclass = findProperty("visualization-class");
-			if (vclass != null) {
-				Class<?> cls = null;
+		if (template.getModelSpecifications() != null) {
+			
+			List<String> mspecs  = template.getModelSpecifications();
+			
+			for (int i = 0; i < mspecs.size(); i += 2) {
+
+				String m = mspecs.get(i);
+				String c = mspecs.get(i+1);
+				
 				try {
-					cls = Class.forName(vclass);
-					this.visualization = (IVisualization) cls.newInstance();
 					
-				} catch (Exception e) {
+					IModel   mod = ModelFactory.get().requireModel(m);
+					IContext con = null;
+					if (c != null)
+						con = ModelFactory.get().requireContext(c);
+					this.models.add(new Pair<IModel, IContext>(mod,con));
+						
+				} catch (ThinklabException e) {
 					throw new ThinklabRuntimeException(e);
 				}
-			} else {
-				this.visualization = new FileVisualization();
 			}
 		}
-		return this.visualization;
-	}
-
-	@Override
-	protected void processTemplate(PresentationTemplate template) {
-
-		if (template.getCustomNodes() != null) {
-			
-			for (Node node : template.getCustomNodes()) {
-				if (node.getNodeName().equals("model")) {
-					String m = XMLDocument.getAttributeValue(node, "id");
-					String c = XMLDocument.getAttributeValue(node, "context");
-				
-					try {
-						IModel   mod = ModelFactory.get().requireModel(m);
-						IContext con = ModelFactory.get().requireContext(c);
-					
-						this.models.add(new Pair<IModel, IContext>(mod,con));
-						
-					} catch (ThinklabException e) {
-						throw new ThinklabRuntimeException(e);
-					}
-				}
-			}
-		}
-
 	}
 	
-	public ArrayList<Pair<IModel, IContext>> getModelCoverage() {
-		return null;
-	}
-
 	public int getStatus() {
 		return status;
 	}

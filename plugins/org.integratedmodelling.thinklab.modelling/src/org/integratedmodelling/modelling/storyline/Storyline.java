@@ -1,6 +1,7 @@
 package org.integratedmodelling.modelling.storyline;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -8,13 +9,14 @@ import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.geospace.visualization.GeoImageFactory;
-import org.integratedmodelling.modelling.visualization.presentation.PresentationFactory;
-import org.integratedmodelling.modelling.visualization.presentation.PresentationTemplate;
+import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.interfaces.IVisualization;
+import org.integratedmodelling.modelling.visualization.storyline.StorylineTemplate;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.Pair;
+import org.integratedmodelling.utils.exec.ITaskScheduler;
 
 /**
  * Storylines are the workflow metaphor for an agent, composed of a model and
@@ -26,13 +28,31 @@ import org.integratedmodelling.utils.Pair;
  * @author ferdinando.villa
  *
  */
-public abstract class Storyline extends DefaultMutableTreeNode {
+public class Storyline extends DefaultMutableTreeNode {
 
 	private static final long serialVersionUID = -1201242975327831908L;
 	
+	// processing status codes. Status changes are communicated to listener.
+	public static final int 
+		IDLE = 0, 
+		COMPUTING = 1, 
+		COMPUTED = 2, 
+		ERROR = 3, 
+		DISABLED = 4, 
+		PENDING = 5;
+	
+	public static final String[] statusLabels = {
+		"IDLE",
+		"COMPUTING",
+		"COMPUTED",
+		"ERROR",
+		"DISABLED",
+		"PENDING"
+	};
+	
 	protected IContext      context;
 	protected ISession      session;
-	protected PresentationTemplate template;
+	protected StorylineTemplate template;
 	
 	private double contextArea = -1.0;
 	private double percentCovered = -1.0;
@@ -41,8 +61,63 @@ public abstract class Storyline extends DefaultMutableTreeNode {
 	boolean coverageComputed = false;
 	BufferedImage coverageMap = null;
 	
-	protected void setTemplate(PresentationTemplate presentation) {
+	/*
+	 * the set of all possible models that can compute this storyline in specified
+	 * contexts. Read from the storyline file. We can only run one at a time and they
+	 * only apply to model storylines, but they need to be here because of constructor
+	 * logics.
+	 */
+	protected ArrayList<Pair<IModel,IContext>> models = 
+		new ArrayList<Pair<IModel,IContext>>();
+	
+
+	
+	public static interface Listener {
+		
+		/*
+		 * 
+		 */
+		public ITaskScheduler getScheduler();
+		
+		/*
+		 * Create a visualization if you want the storyline to be visualized. One
+		 * will be created for each model storyline run.
+		 * 
+		 * Do not initialize the visualization - it is initialized with the same
+		 * context after creation. Context is only passed to help choosing what
+		 * visualization to create.
+		 */
+		public IVisualization createVisualization(IModel model, IContext iContext);
+		
+		/*
+		 * called any time the computation status changes.
+		 */
+		public void onStatusChange(int original, int newstatus);
+
+		/*
+		 * 
+		 */
+		public ISession getSession();
+	}
+	
+	public Storyline(StorylineTemplate template) {
+		setTemplate(template);
+	}
+
+	protected void setTemplate(StorylineTemplate presentation) {
+		processTemplate(presentation);
 		this.template = presentation;
+	}
+	
+	public void setContext(IContext context) throws ThinklabException {
+
+		this.context = context;
+		this.coverage = null;
+		coverageComputed = false;
+		
+		for (int i = 0; i < getChildCount(); i++) {
+			((Storyline)getChildAt(i)).setContext(context);
+		}
 	}
 	
 	/**
@@ -113,7 +188,7 @@ public abstract class Storyline extends DefaultMutableTreeNode {
 		String ret = null;
 		Storyline start = this;
 		while (start != null) {
-			ret = start.template().getAttribute(property);
+			ret = start.template.getAttribute(property);
 			if (ret != null)
 				break;
 			start = (Storyline) start.getParent();
@@ -121,26 +196,29 @@ public abstract class Storyline extends DefaultMutableTreeNode {
 		return ret;
 	}
 
-	public PresentationTemplate template() {
+	protected void processTemplate(StorylineTemplate template) {
 		
-		if (template == null) {
-			template = PresentationFactory.getPresentation(getObservable());
-			processTemplate(template);
-		}
-		
-		if (template == null)
-			throw new ThinklabRuntimeException("internal error: no presentation template for " + getObservable());
-				
-		return template;
 	}
-	
-	protected abstract void processTemplate(PresentationTemplate template);
 
 	public IContext getContext() {
 		return context;
 	}
 	
 	public IConcept getObservable() {
-		return template().getConcept();
+		return template.getConcept();
+	}
+
+	/**
+	 * Compute the storyline and all its children using the given listener. All it
+	 * does is enqueue the tasks, if the scheduler in the listener isn't started it
+	 * needs to be started from outside.
+	 * 
+	 * @param listener
+	 * @throws ThinklabException
+	 */
+	public void compute(Listener listener) throws ThinklabException {
+		for (int i = 0; i < getChildCount(); i++) {
+			((Storyline)getChildAt(i)).compute(listener);
+		}
 	}
 }

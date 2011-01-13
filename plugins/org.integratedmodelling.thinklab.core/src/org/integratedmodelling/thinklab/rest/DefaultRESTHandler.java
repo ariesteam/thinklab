@@ -6,11 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
 import org.integratedmodelling.utils.NameGenerator;
-import org.integratedmodelling.utils.exec.TaskScheduler;
-import org.json.JSONArray;
+import org.integratedmodelling.utils.exec.ITaskScheduler;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.CharacterSet;
@@ -62,7 +60,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	 * @author Ferdinando
 	 *
 	 */
-	protected abstract class TaskThread extends TaskScheduler.Task {
+	protected abstract class TaskThread extends Thread implements ITaskScheduler.Task {
 
 		private volatile boolean isComputing = false;
 		private volatile boolean isException = false;
@@ -250,7 +248,6 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		
 		return taskId;
 	}
-	
 	
 	/**
 	 * Return this if you have used any of the put() or setResult() functions. Will create and 

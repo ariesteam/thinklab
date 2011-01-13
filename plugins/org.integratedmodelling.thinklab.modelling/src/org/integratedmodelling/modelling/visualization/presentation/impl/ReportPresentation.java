@@ -1,6 +1,6 @@
 package org.integratedmodelling.modelling.visualization.presentation.impl;
 
-import org.integratedmodelling.modelling.visualization.presentation.DefaultPresentation;
+import org.integratedmodelling.modelling.visualization.storyline.DefaultPresentation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 
 /**

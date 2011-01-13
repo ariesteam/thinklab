@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Properties;
 
 import org.integratedmodelling.modelling.model.ModelFactory;
+import org.integratedmodelling.modelling.storyline.StorylineFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.IResourceLoader;
 
@@ -19,14 +20,14 @@ public class ModelResourceLoader implements IResourceLoader {
 		
 		fmod = new File(dir + File.separator + "contexts");
 		if (fmod.exists())
-			ModelFactory.get().loadModelFiles(new File(dir + File.separator + "contexts"));
+			ModelFactory.get().loadModelFiles(fmod);
 		
 		fmod = new File(dir + File.separator + "agents");
 		if (fmod.exists())
-			ModelFactory.get().loadModelFiles(new File(dir + File.separator + "agents"));
+			ModelFactory.get().loadModelFiles(fmod);
 		
 		fmod = new File(dir + File.separator + "storylines");
 		if (fmod.exists())
-			ModelFactory.get().loadStorylines(new File(dir + File.separator + "storylines"));
+			StorylineFactory.addSourceDirectory(fmod);
 	}
 }
