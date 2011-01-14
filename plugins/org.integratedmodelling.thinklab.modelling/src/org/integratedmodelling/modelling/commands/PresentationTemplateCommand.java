@@ -57,31 +57,32 @@ public class PresentationTemplateCommand implements ICommandHandler {
 			present.add(p.getConcept());
 		}
 		
-		for (Node node : template.getCustomNodes()) {
-			if (node.getNodeName().equals("model")) {
-				String m = XMLDocument.getAttributeValue(node, "id");
-				String c = XMLDocument.getAttributeValue(node, "context");
-				IModel   model = ModelFactory.get().requireModel(m);
-				IContext context = ModelFactory.get().requireContext(c);
-
-				try {	
-					IQueryResult r = 
-						ModelFactory.get().run((Model) model, KBoxManager.get(), session, null, context);		
-				
-					if (r.getTotalResultCount() > 0) {
-					
-						IValue res = r.getResult(0, session);
-						IContext result = ((ContextValue)res).getObservationContext();
-					
-						for (IState s : result.getStates())
-							if (!present.contains(s.getObservableClass()))
-								states.put(s.getObservableClass(), s);
-					}
-				} catch (ThinklabException e) {
-					session.print("error running " + m + " in " + c + ": skipping");
-				}
-			}
-		}
+// TODO sync with implementation, transfer to storyline command
+//		for (Node node : template.getModelSpecifications()) {
+//			if (node.getNodeName().equals("model")) {
+//				String m = XMLDocument.getAttributeValue(node, "id");
+//				String c = XMLDocument.getAttributeValue(node, "context");
+//				IModel   model = ModelFactory.get().requireModel(m);
+//				IContext context = ModelFactory.get().requireContext(c);
+//
+//				try {	
+//					IQueryResult r = 
+//						ModelFactory.get().run((Model) model, KBoxManager.get(), session, null, context);		
+//				
+//					if (r.getTotalResultCount() > 0) {
+//					
+//						IValue res = r.getResult(0, session);
+//						IContext result = ((ContextValue)res).getObservationContext();
+//					
+//						for (IState s : result.getStates())
+//							if (!present.contains(s.getObservableClass()))
+//								states.put(s.getObservableClass(), s);
+//					}
+//				} catch (ThinklabException e) {
+//					session.print("error running " + m + " in " + c + ": skipping");
+//				}
+//			}
+//		}
 
 		ArrayList<XML.XmlNode> nodes = new ArrayList<XML.XmlNode>();
 		for (IConcept c : states.keySet()) {

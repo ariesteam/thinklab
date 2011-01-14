@@ -7,6 +7,7 @@ import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.modelling.ModellingPlugin;
+import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.literals.ContextValue;
@@ -31,9 +32,6 @@ public class ModelStoryline extends Storyline {
 	IModel        model;
 	IConcept      observable;
 	boolean       isCovered = false;
-	
-	//
-	public int status = DISABLED;
 	
 	/**
 	 * The thread that actually does the modeling work.
@@ -203,6 +201,7 @@ public class ModelStoryline extends Storyline {
 	
 	public ModelStoryline(StorylineTemplate template) {
 		super(template);
+		status = DISABLED;
 	}
 
 	public IModel getModel() {
@@ -255,7 +254,8 @@ public class ModelStoryline extends Storyline {
 		}
 	}
 	
-	public int getStatus() {
-		return status;
+	@Override
+	public String toString() {
+		return super.toString() + " [" + models.size() + " models]";
 	}
 }

@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.integratedmodelling.modelling.storyline.StorylineFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.utils.NameGenerator;
+import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
 
@@ -30,12 +33,7 @@ public class StorylineTemplate {
 	ArrayList<Page> singlePages = new ArrayList<StorylineTemplate.Page>();
 	HashMap<String, Page> singlePagesById = new HashMap<String, StorylineTemplate.Page>();
 
-	private String title;
-	private String description;
-	private String shortDescription;
-	private String runningHead;
 	private String concept;
-	private String style;
 	
 	/*
 	 * a pretty primitive way of storing model specs: alternating strings are
@@ -43,21 +41,19 @@ public class StorylineTemplate {
 	 * globally.
 	 */
 	private ArrayList<String> models = null;
-	
-	// works like any model object in that it has a namespace, an ID, and
-	// a name which is namespace + "." + id. 
+
 	private String id;
 	
 	private Properties properties = new Properties();
 	
-	public HashMap<String, String> attributes = new HashMap<String, String>();
+	public HashMap<String, String> attributes    = new HashMap<String, String>();
+	public HashMap<String, String> attrAttributes = new HashMap<String, String>();
 
-	@Deprecated
-	public ArrayList<Node> customNodes = new ArrayList<Node>();
+	private boolean _synchronized;
 
 	@Override
 	public String toString() {	
-		return "[presentation: " + title + ": " + concept + "]"; 
+		return "[presentation: " + getTitle() + ": " + concept + "]"; 
 	}
 	
 	/**
@@ -70,29 +66,25 @@ public class StorylineTemplate {
 		return this.properties;
 	}
 	
-	
+	/**
+	 * all templates have an ID. If not there, it's assigned an ugly unique
+	 * name.
+	 */
+	public String getId() {
+		if (id == null)
+			id = NameGenerator.newName("stempl");
+		return id;
+	}
+		
 	public class Page {
 
 		public String concept;
-		public String title;
-		public String description;
-		public String runningHead;
-		public String background;
-		public String name;
 		public String id;
-		public String plotType;
 		
-		@Deprecated 
-		public ArrayList<Node> customNodes = new ArrayList<Node>();
 		
 		public ArrayList<String> otherTypes = new ArrayList<String>();
 		public HashMap<String, String> attributes = new HashMap<String, String>();
-		public String credits;
-		public String seeAlso;
-		
-		public String descriptionTitle = "Description";
-		public String creditsTitle = "Credits";
-		public String seeAlsoTitle = "See Also";
+		public HashMap<String, String> attrAttributes = new HashMap<String, String>();
 		
 		public IConcept getConcept() {
 			try {
@@ -102,45 +94,47 @@ public class StorylineTemplate {
 			}
 		}
 		public String getTitle() {
-			return title;
+			return getAttribute("title");
 		}
 		public String getDescription() {
-			return description;
+			return getAttribute("description");
 		}
 		public String getRunningHead() {
-			return runningHead;
+			return getAttribute("runninghead");
 		}
 		public String getBackground() {
-			return background;
+			return getAttribute("background");
 		}
 		public String getName() {
-			return name;
+			return getAttribute("name");
 		}
 		public String getId() {
 			return id;
 		}
 		public String getPlotType() {
-			return plotType;
+			return getAttribute("plot-type");
 		}
 		public String getCredits() {
-			return credits;
+			return getAttribute("credits");
 		}
 		public String getSeeAlso() {
-			return seeAlso;
+			return getAttribute("see-also");
 		}
 		public String getDescriptionTitle() {
-			return descriptionTitle;
+			return getAttributeAttribute("description", "title");
 		}
 		public String getCreditsTitle() {
-			return creditsTitle;
+			return getAttributeAttribute("credits", "title");
 		}
 		public String getSeeAlsoTitle() {
-			return seeAlsoTitle;
+			return getAttributeAttribute("see-also", "title");
 		}
 		public String getAttribute(String s) {
 			return attributes.get(s);
 		}
-
+		public String getAttributeAttribute(String attr, String spec) {
+			return attrAttributes.get(attr + "|" + spec);
+		}
 	}
 	
 	public void read(URL input) throws ThinklabException {
@@ -151,42 +145,22 @@ public class StorylineTemplate {
 			Node node = it.next();
 			if (node.getNodeName().equals("page")) {
 				addPage(doc, node);
-			} else if (node.getNodeName().equals("title")) {
-				this.title = XMLDocument.getNodeValue(node);
-				properties.put("title", this.title);
 			} else if (node.getNodeName().equals("id")) {
 				this.id = XMLDocument.getNodeValue(node);
 				properties.put("id", this.id);
-			} else if (node.getNodeName().equals("description")) {
-				this.description = XMLDocument.getNodeValue(node);
-				properties.put("description", this.description);
-			} else if (node.getNodeName().equals("short-description")) {
-				this.shortDescription = XMLDocument.getNodeValue(node);
-				properties.put("short-description", this.shortDescription);
-			}  else if (node.getNodeName().equals("runninghead")) {
-				this.runningHead = XMLDocument.getNodeValue(node);
-				properties.put("runninghead", this.runningHead);
 			} else if (node.getNodeName().equals("concept")) {
 				this.concept = XMLDocument.getNodeValue(node).trim();
 				properties.put("concept", this.concept);
-			} else if (node.getNodeName().equals("style")) {
-				this.style = XMLDocument.getNodeValue(node);
-				properties.put("style", this.style);
-			} else {
-				
-				/*
-				 * TODO put this at the top level and remove the customnodes thing
-				 * when possible.
-				 */
-				if (node.getNodeName().equals("model")) {
-					String id = XMLDocument.getAttributeValue(node, "id");
-					String ct = XMLDocument.getAttributeValue(node, "context");
-					if (this.models == null) {
-						this.models = new ArrayList<String>();
-					}
-					models.add(id);
-					models.add(ct);
+			} else 	if (node.getNodeName().equals("model")) {
+				String id = XMLDocument.getAttributeValue(node, "id");
+				String ct = XMLDocument.getAttributeValue(node, "context");
+				if (this.models == null) {
+					this.models = new ArrayList<String>();
 				}
+				models.add(id);
+				models.add(ct);
+				
+			} else {
 				
 				/*
 				 * any content of custom nodes goes in attributes. The node is 
@@ -196,14 +170,12 @@ public class StorylineTemplate {
 				if (ss != null && !ss.isEmpty()) {
 					attributes.put(node.getNodeName(), ss);
 					properties.put(node.getNodeName(), ss);
+					for (Pair<String, String> ap : XMLDocument.getNodeAttributes(node)) {
+						attrAttributes.put(
+							node.getNodeName() + "|" + ap.getFirst(),
+							ap.getSecond());
+					}
 				}
-				
-				/*
-				 * custom nodes: keep with the page for now. This is quite inelegant as the XML doc
-				 * DEPRECATED -- remove when aries-gui is refactored
-				 * doesn't get garbage collected, but polymorphism at this stage is worse. FIXME 
-				 */
-				customNodes.add(node);
 			}
 		}
 	}
@@ -214,39 +186,8 @@ public class StorylineTemplate {
 		for (XMLDocument.NodeIterator ct = doc.iterator(root); ct.hasNext(); ) {
 			Node node = ct.next();
 			if (node.getNodeName().equals("type")) {
-			} else if (node.getNodeName().equals("title")) {
-				page.title = XMLDocument.getNodeValue(node);
-			} else if (node.getNodeName().equals("description")) {
-				page.description = XMLDocument.getNodeValue(node);
-				String attr = XMLDocument.getAttributeValue(node, "title");
-				if (attr != null)
-					page.descriptionTitle = attr;
-			} else if (node.getNodeName().equals("runninghead")) {
-				page.runningHead = XMLDocument.getNodeValue(node);
 			} else if (node.getNodeName().equals("concept")) {
 				page.concept = XMLDocument.getNodeValue(node).trim();
-			} else if (node.getNodeName().equals("background")) {
-				page.background = XMLDocument.getNodeValue(node);
-			} else if (node.getNodeName().equals("name")) {
-				page.name = XMLDocument.getNodeValue(node);
-			} else if (node.getNodeName().equals("plot-type")) {
-				
-				String attr = XMLDocument.getAttributeValue(node, "default");
-				if (attr != null && attr.equals("true")) {
-					page.plotType = XMLDocument.getNodeValue(node);
-				} else {
-					page.otherTypes.add(XMLDocument.getNodeValue(node));
-				}
-			} else if (node.getNodeName().equals("credits")) {
-				page.credits = XMLDocument.getNodeValue(node);
-				String attr = XMLDocument.getAttributeValue(node, "title");
-				if (attr != null)
-					page.creditsTitle = attr;
-			} else if (node.getNodeName().equals("see-also")) {
-				page.seeAlso = XMLDocument.getNodeValue(node);
-				String attr = XMLDocument.getAttributeValue(node, "title");
-				if (attr != null)
-					page.seeAlsoTitle = attr;
 			} else if (node.getNodeName().equals("id")) {
 				page.id = XMLDocument.getNodeValue(node);
 			} else {
@@ -258,13 +199,12 @@ public class StorylineTemplate {
 				String ss = XMLDocument.getNodeValue(node);
 				if (ss != null && !ss.isEmpty()) {
 					page.attributes.put(node.getNodeName(), ss);
+					for (Pair<String, String> ap : XMLDocument.getNodeAttributes(node)) {
+						attrAttributes.put(
+							node.getNodeName() + "|" + ap.getFirst(),
+							ap.getSecond());
+					}
 				}
-				
-				/*
-				 * custom nodes: keep with the page for now. This is quite inelegant as the XML doc
-				 * doesn't get garbage collected, but polymorphism at this stage is worse. FIXME 
-				 */
-				page.customNodes.add(node);
 			}
 		}
 		if (page.id != null) {
@@ -279,36 +219,81 @@ public class StorylineTemplate {
 		return attributes.get(s);
 	}
 	
+	public String getAttributeAttribute(String attr, String spec) {
+		return attrAttributes.get(attr + "|" + spec);
+	}
+	
 	public ArrayList<Page> getPages() {
+		syncPages();
 		return pages;
 	}
 
+	private void syncPages() {
+
+		/*
+		 * if we're inheriting pages from another template, ensure
+		 * we have them synchronized.
+		 */
+		if (!_synchronized) {
+			
+			String inherited = getAttribute("inherit");
+			
+			if (inherited != null) {
+				StorylineTemplate t = StorylineFactory.getPresentation(inherited);
+				
+				for (Page p : t.getSinglePages()) {
+					if (getPage(p.getId()) == null) {
+						singlePages.add(p);
+						singlePagesById.put(p.getId(), p);
+					}
+				}
+				for (Page p : t.getPages()) {
+					boolean hasIt = false;
+					for (Page op : getPages()) {
+						if (op.getConcept().equals(p.getConcept())) {
+							hasIt = true;
+							break;
+						}
+					}
+					if (!hasIt)
+						pages.add(p);
+				}
+			}
+			
+			_synchronized = true;
+		}
+	}
+
 	public ArrayList<Page> getSinglePages() {
+		syncPages();
 		return singlePages;
 	}
 	
 	public int getPagesCount() {
+		syncPages();
 		return pages.size();
 	}
 	
 	public Page getPage(String id) {
+		syncPages();
 		return singlePagesById.get(id);
 	}
 	
 	public Page getPage(int seq) {
+		syncPages();
 		return pages.get(seq);
 	}
 
 	public String getTitle() {
-		return title;
+		return getAttribute("title");
 	}
 
 	public String getDescription() {
-		return description;
+		return getAttribute("description");
 	}
 
 	public String getRunningHead() {
-		return runningHead;
+		return getAttribute("runninghead");
 	}
 
 	public IConcept getConcept() {
@@ -320,15 +305,12 @@ public class StorylineTemplate {
 	}
 
 	public String getStyle() {
-		return style;
+		return getAttribute("style");
 	}
 	
-	public ArrayList<Node> getCustomNodes() {
-		return customNodes;
-	}
 
 	public String getShortDescription() {
-		return shortDescription;
+		return getAttribute("short-description");
 	}
 	
 	public List<String> getModelSpecifications() {

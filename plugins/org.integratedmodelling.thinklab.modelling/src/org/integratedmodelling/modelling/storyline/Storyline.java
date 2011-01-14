@@ -54,6 +54,7 @@ public class Storyline extends DefaultMutableTreeNode {
 	protected IContext      context;
 	protected ISession      session;
 	protected StorylineTemplate template;
+	protected int status = IDLE;
 	
 	private double contextArea = -1.0;
 	private double percentCovered = -1.0;
@@ -105,6 +106,10 @@ public class Storyline extends DefaultMutableTreeNode {
 		setTemplate(template);
 	}
 
+	public StorylineTemplate getTemplate() {
+		return template;
+	}
+	
 	protected void setTemplate(StorylineTemplate presentation) {
 		processTemplate(presentation);
 		this.template = presentation;
@@ -242,4 +247,35 @@ public class Storyline extends DefaultMutableTreeNode {
 			ret.add((Storyline)getChildAt(i));
 		return ret;
 	}
+
+	public boolean isCovered() {
+		return true;
+	}
+
+	public boolean isAuthorized(ISession session) {
+		// TODO cross-check template privileges with user properties
+		return true;
+	}
+	
+	public int getStatus() {
+		return status;
+	}
+	
+	public Storyline findStoryline(IConcept c) {
+		return findStoryline(this, c);
+	}
+	
+	private Storyline findStoryline(Storyline sl,
+			IConcept concept) {
+		
+		if (sl.getObservable().equals(concept))
+			return sl;
+		for (int i = 0; i < sl.getChildCount(); i++) {
+			Storyline ret = findStoryline((Storyline) sl.getChildAt(i), concept);
+			if (ret != null)
+				return ret;
+		}
+		return null;
+	}
+
 }

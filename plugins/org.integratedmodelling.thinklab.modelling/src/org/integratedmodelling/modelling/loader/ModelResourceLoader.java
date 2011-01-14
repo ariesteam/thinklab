@@ -15,19 +15,20 @@ public class ModelResourceLoader implements IResourceLoader {
 			throws ThinklabException {
 		
 		File fmod = new File(dir + File.separator + "models");
-		if (fmod.exists())
+		if (fmod.exists()) {
 			ModelFactory.get().loadModelFiles(fmod);
-		
+		}
 		fmod = new File(dir + File.separator + "contexts");
-		if (fmod.exists())
+		if (fmod.exists()) {
 			ModelFactory.get().loadModelFiles(fmod);
-		
+		}
 		fmod = new File(dir + File.separator + "agents");
-		if (fmod.exists())
+		if (fmod.exists()) {
 			ModelFactory.get().loadModelFiles(fmod);
-		
+		}
 		fmod = new File(dir + File.separator + "storylines");
-		if (fmod.exists())
+		if (fmod.exists()) {
 			StorylineFactory.addSourceDirectory(fmod);
+		}
 	}
 }

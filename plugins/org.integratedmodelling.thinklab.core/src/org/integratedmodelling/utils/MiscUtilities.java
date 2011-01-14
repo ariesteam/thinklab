@@ -290,12 +290,12 @@ public class MiscUtilities{
 
 		String ret = s;
 
-		int sl = ret.lastIndexOf(".");
-		if (sl > 0)
-			ret = ret.substring(0, sl);
-		sl = ret.lastIndexOf(File.separator);
+		int sl = ret.lastIndexOf(File.separator);
 		if (sl > 0)
 			ret = ret.substring(sl+1);
+		sl = ret.lastIndexOf(".");
+		if (sl > 0)
+			ret = ret.substring(0, sl);
 		
 		return ret;
 	}

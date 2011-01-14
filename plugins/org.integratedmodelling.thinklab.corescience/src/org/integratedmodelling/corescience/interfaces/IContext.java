@@ -2,7 +2,6 @@ package org.integratedmodelling.corescience.interfaces;
 
 import java.util.Collection;
 
-import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
@@ -15,7 +14,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
  * @author ferdinando.villa
  *
  */
-public interface IContext  {
+public interface IContext {
 
 	/**
 	 * Models must have an ID

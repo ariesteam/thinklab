@@ -60,9 +60,11 @@ import org.apache.xerces.parsers.DOMParser;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.utils.Pair;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
@@ -469,5 +471,19 @@ public class XMLDocument {
 		} catch (Exception e) {
 			throw new ThinklabIOException(e);
 		}
+	}
+
+	public static Collection<Pair<String,String>> getNodeAttributes(Node n) {
+
+		ArrayList<Pair<String,String>> ret = new ArrayList<Pair<String,String>>();
+		
+		if (n.hasAttributes()) {
+			NamedNodeMap nnn = n.getAttributes();
+			for (int i = 0; i < nnn.getLength(); i++) {
+				Node zit = nnn.item(i);
+				ret.add(new Pair<String, String>(zit.getNodeName(), zit.getTextContent()));
+			}
+		}
+		return ret;
 	}
 }

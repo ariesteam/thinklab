@@ -24,6 +24,8 @@ public class StorylineFactory {
 	static StorylineFactory _this = null;
 	static ArrayList<File> _directories = new ArrayList<File>();
 	static HashMap<File, StorylineTemplate> _cache = new HashMap<File, StorylineTemplate>();
+	static HashMap<String, StorylineTemplate> _templatesByID = 
+		new HashMap<String, StorylineTemplate>();
 	
 	public static StorylineTemplate getPresentation(IConcept concept) {
 		return get()._presentations.get(concept);
@@ -41,6 +43,7 @@ public class StorylineFactory {
 			throw new ThinklabRuntimeException(e);
 		}
 		_cache.put(f, p);
+		_templatesByID.put(p.getId(), p);
 		return p;
 		
 	}
@@ -113,7 +116,7 @@ public class StorylineFactory {
 
 		// add all child storylines if requested
 		if (getChildren && templates.size() > 0) {
-			for (Storyline s : getChildStorylines(templates.get(templates.size() - 1))) {
+			for (Storyline s : getChildStorylines(templates.get(templates.size() - 1), true)) {
 				prev.add(s);
 			}
 		}
@@ -121,26 +124,32 @@ public class StorylineFactory {
 		return ret;
 	}
 	
-	private static Collection<Storyline> getChildStorylines(File file) throws ThinklabException {
+	private static Collection<Storyline> getChildStorylines(File file, boolean isRoot) throws ThinklabException {
 		
 		/*
 		 *  in order to have children, the directory containing the file must have
-		 *  subdirectories containing storylines.
+		 *  subdirectories containing storylines. Sibling .xml files are storylines
+		 *  only if not the root directory, not self and not parent.
 		 */
 		ArrayList<Storyline> ret = new ArrayList<Storyline>();
 		String ps = file.getParent();
 		if (ps == null)	
 			return ret;
 		
+		File pfile = getStorylineFile(new File(ps));
+		
 		for (File d : new File(ps).listFiles()) {
 			File sf = getStorylineFile(d);
 			if (sf != null) {
 				Storyline s = createStoryline(sf);
-				for (Storyline ss : getChildStorylines(sf)) {
+				for (Storyline ss : getChildStorylines(sf, false)) {
 					s.add(ss);
 				}
 				ret.add(s);
-			} else if (d.toString().endsWith(".xml")) {
+			} else if (//!isRoot &&
+						d.toString().endsWith(".xml") && 
+						!d.equals(file) && 
+						!d.equals(pfile)) {
 				ret.add(createStoryline(d));
 			}
 		}
@@ -164,7 +173,7 @@ public class StorylineFactory {
 					MiscUtilities.getFileBaseName(f.toString()) + 
 					".xml");
 			if (r.exists())
-				return f;
+				return r;
 		}
 		
 		return null;
@@ -215,12 +224,12 @@ public class StorylineFactory {
 		return ret;
 	}
 	
-	public static synchronized void addSourceDirectory(File dir) {
+	public static synchronized void addSourceDirectory(File dir) throws ThinklabException {
 		_directories.add(dir);
+		scanDirectory(dir);
 	}
 		
 	public static synchronized void scanDirectory(File dir) throws ThinklabException {
-		_directories.add(dir);
 		scanDirectoryInternal(dir, null);
 	}
 	
@@ -241,6 +250,7 @@ public class StorylineFactory {
 				if (p != null) {
 					get()._presentations.put(p.getConcept(), p);
 					_cache.put(f, p);
+					_templatesByID.put(p.getId(), p);
 					ModellingPlugin.get().logger().info("presentation template " + p + " read successfully");
 				}
 			} 
@@ -278,5 +288,15 @@ public class StorylineFactory {
 		presentation.render();
 		
 		return presentation;
+	}
+
+	/**
+	 * Return template by ID, provided it's been read.
+	 * 
+	 * @param inherited
+	 * @return
+	 */
+	public static StorylineTemplate getPresentation(String inherited) {
+		return _templatesByID.get(inherited);
 	}
 }
