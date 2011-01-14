@@ -21,7 +21,6 @@ public class TaskScheduler implements ITaskScheduler {
 	int _delay = 200;
 	
 	volatile protected boolean _stopped = true;
-	
 	public ArrayList<Listener> _listeners = new ArrayList<Listener>();
 
 	protected class TaskThread extends Thread {
@@ -50,8 +49,8 @@ public class TaskScheduler implements ITaskScheduler {
 			/*
 			 * check if we have anything to remove
 			 */
-			for (Task t : _current) {
-				if (t.finished()) {
+			for (Thread t : _current) {
+				if (!t.isAlive()) {
 					_current.remove(t);
 					for (Listener l : _listeners) {
 						l.notifyTaskFinished(t, _current.size(), _queue.size());
@@ -65,8 +64,8 @@ public class TaskScheduler implements ITaskScheduler {
 			if (_queue.size() > 0) {
 				while (_current.size() < maxConcurrentTasks) {
 					try {
-						Task t = _queue.remove();
-						((Thread)t).start();
+						Thread t = _queue.remove();
+						t.start();
 						_current.add(t);
 						for (Listener l : _listeners) {
 							l.notifyTaskStarted(t, _current.size(), _queue.size());
@@ -79,19 +78,15 @@ public class TaskScheduler implements ITaskScheduler {
 		}
 	}
 	
-	protected ConcurrentLinkedQueue<Task> _queue = new ConcurrentLinkedQueue<Task>();
-	protected ConcurrentLinkedQueue<Task> _current = new ConcurrentLinkedQueue<Task>();
+	protected ConcurrentLinkedQueue<Thread> _queue = new ConcurrentLinkedQueue<Thread>();
+	protected ConcurrentLinkedQueue<Thread> _current = new ConcurrentLinkedQueue<Thread>();
 	protected TaskThread _polling = null;
 	
 	public TaskScheduler(int maxConcurrentTasks) {
 		this.maxConcurrentTasks = maxConcurrentTasks;
 	}
 
-	public void enqueue(Task task) {
-		if (! (task instanceof Thread)) {
-			throw new ThinklabRuntimeException(
-					"scheduler: trying to enqueue a task that is not a thread");
-		}
+	public void enqueue(Thread task) {
 		_queue.add(task);
 		for (Listener l : _listeners) {
 			l.notifyTaskEnqueued(task, _current.size(), _queue.size());

@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.storyline;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -92,7 +93,7 @@ public class Storyline extends DefaultMutableTreeNode {
 		/*
 		 * called any time the computation status changes.
 		 */
-		public void onStatusChange(int original, int newstatus);
+		public void onStatusChange(Storyline storyline, int original, int newstatus);
 
 		/*
 		 * 
@@ -220,5 +221,25 @@ public class Storyline extends DefaultMutableTreeNode {
 		for (int i = 0; i < getChildCount(); i++) {
 			((Storyline)getChildAt(i)).compute(listener);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return template.getTitle() + " [" + template.getConcept() + "]";
+	}
+
+	/**
+	 * Return all children as an iterable collection.
+	 * 
+	 * Convenience method to escape the ugliness of DefaultMutableTreeNode.
+	 * 
+	 * @return
+	 */
+	public Collection<Storyline> getChildren() {
+
+		ArrayList<Storyline> ret = new ArrayList<Storyline>();
+		for (int i = 0; i < getChildCount(); i++)
+			ret.add((Storyline)getChildAt(i));
+		return ret;
 	}
 }

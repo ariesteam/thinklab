@@ -1,8 +1,10 @@
 package org.integratedmodelling.modelling.commands;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
@@ -17,6 +19,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.exec.ITaskScheduler;
 import org.integratedmodelling.utils.exec.SerialTaskScheduler;
 
@@ -52,21 +55,16 @@ public class StorylineCommand extends InteractiveCommandHandler {
 		
 		class Listener implements Storyline.Listener {
 
-			IModel model = null;
-			
 			@Override
 			public IVisualization createVisualization(IModel model,
 					IContext iContext) {
-				this.model = model;
 				return new FileVisualization();
 			}
 
 			@Override
-			public void onStatusChange(int original, int newstatus) {
+			public void onStatusChange(Storyline storyline, int original, int newstatus) {
 				session.print(
-						(model != null ? 
-							("model " + model.getName()) :
-							"session") +
+						storyline +
 						" changed status from " + 
 						Storyline.statusLabels[original] + 
 						" to " + 
@@ -94,7 +92,7 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			
 			IContext context = 
 				ModelFactory.get().requireContext(command.getArgumentAsString("arg0"));
-			Storyline storyline = StorylineFactory.getStoryline(fpath);
+			Storyline storyline = StorylineFactory.getStoryline(fpath, true);
 			storyline.setContext(context);
 			storyline.compute(new Listener());
 			scheduler.start();
@@ -104,9 +102,20 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			
 		} else if (action.equals("copy")) {
 			
+		}  else if (action.equals("list")) {
+			
+			Storyline storyline = StorylineFactory.getStorylines(path);
+			listStoryline(storyline, session.getOutputStream(), 0);
+			
 		} 
 		
 		return null;
+	}
+
+	private void listStoryline(Storyline storyline, PrintStream out, int spaces) {
+		out.println(MiscUtilities.spaces(spaces) + storyline.toString());
+		for (Storyline s : storyline.getChildren())
+			listStoryline(s, out, spaces + 2);
 	}
 
 }

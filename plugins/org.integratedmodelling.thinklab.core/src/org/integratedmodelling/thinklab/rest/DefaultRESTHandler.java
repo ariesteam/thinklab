@@ -8,7 +8,6 @@ import java.util.List;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
 import org.integratedmodelling.utils.NameGenerator;
-import org.integratedmodelling.utils.exec.ITaskScheduler;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.CharacterSet;
@@ -60,9 +59,8 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	 * @author Ferdinando
 	 *
 	 */
-	protected abstract class TaskThread extends Thread implements ITaskScheduler.Task {
+	protected abstract class TaskThread extends Thread  {
 
-		private volatile boolean isComputing = false;
 		private volatile boolean isException = false;
 		private String error = null;
 		
@@ -73,30 +71,14 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		@Override
 		public void run() {
 
-			isComputing = true;
-			
 			try {
 				execute();
 			} catch (Exception e) {
 				error = e.getMessage();
-				// TODO log exception & stack trace
-				isComputing = false;
 				isException = true;
 			} finally {
 				cleanup();
 			}
-			
-			/*
-			 * finish up, notify the user model and all others that this module has completed and
-			 * with what status.
-			 */
-
-			isComputing = false;
-		}
-
-		@Override
-		public boolean finished() {
-			return !isComputing;
 		}
 		
 		public boolean error() {

@@ -1,28 +1,16 @@
 package org.integratedmodelling.utils.exec;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 
 /**
- * A simple scheduler that can be fed tasks and guarantees that at most a given
- * maximum number of them is executed at a time. Also supports listeners to enable
- * notification of task start, end and enqueuing.
+ * This one will simply run all the tasks when started, waiting for them to finish, 
+ * and must be used in a single user context.
  * 
  * @author Ferdinando Villa
  *
  */
 public class SerialTaskScheduler extends TaskScheduler {
 
-	int maxConcurrentTasks = 1;
-	int _delay = 200;
-	
-	public interface Task {
-		public abstract boolean finished();
-	}
-	
 	public SerialTaskScheduler() {
 		super(1);
 	}
@@ -32,28 +20,17 @@ public class SerialTaskScheduler extends TaskScheduler {
 	 */
 	@Override
 	public void start() {
-		
-		if (_polling != null) {
-			stop();
+
+		for (Thread t : _queue) {
+			t.start();
 			try {
-				Thread.sleep(_delay*4);
+				t.join();
 			} catch (InterruptedException e) {
 				throw new ThinklabRuntimeException(e);
 			}
 		}
 		
-		_polling = new TaskThread();
-		_stopped = false;
-		_polling.start();
-		
-		// just wait 
-		while (_queue.size() > 0) {
-			try {
-				Thread.sleep(_delay*4);
-			} catch (InterruptedException e) {
-				throw new ThinklabRuntimeException(e);
-			}
-		}
+		_queue.clear();
 	}
 	
 	/* (non-Javadoc)

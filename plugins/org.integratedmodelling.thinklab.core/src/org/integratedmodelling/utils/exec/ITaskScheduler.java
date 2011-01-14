@@ -2,19 +2,15 @@ package org.integratedmodelling.utils.exec;
 
 
 public interface ITaskScheduler {
-
-	public interface Task {
-		public abstract boolean finished();
-	}
 	
 	public static interface  Listener {
 		
-		public void notifyTaskEnqueued(Task task, int currentlyExecuting, int currentlyScheduled);
-		public void notifyTaskFinished(Task task, int currentlyExecuting, int currentlyScheduled);
-		public void notifyTaskStarted(Task task, int currentlyExecuting, int currentlyScheduled);
+		public void notifyTaskEnqueued(Thread task, int currentlyExecuting, int currentlyScheduled);
+		public void notifyTaskFinished(Thread task, int currentlyExecuting, int currentlyScheduled);
+		public void notifyTaskStarted(Thread task, int currentlyExecuting, int currentlyScheduled);
 	}
 	
-	public abstract void enqueue(Task task);
+	public abstract void enqueue(Thread task);
 
 	/**
 	 * Start scheduling

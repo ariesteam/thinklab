@@ -15,6 +15,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Path;
 
 public class StorylineFactory {
@@ -29,8 +30,10 @@ public class StorylineFactory {
 	}
 
 	public static StorylineTemplate readPresentation(File f) throws ThinklabException {
+		
 		if (_cache.containsKey(f))
 			return _cache.get(f);
+		
 		StorylineTemplate p = new StorylineTemplate();
 		try {
 			p.read(f.toURI().toURL());
@@ -54,25 +57,51 @@ public class StorylineFactory {
 		List<File> pth = getTemplatePath(path);
 		if (pth == null)
 			return null;
-		return getStoryline(pth);
+		return getStoryline(pth, false);
 	}
 	
-	public static Storyline getStoryline(List<File> templates) throws ThinklabException {
+	/**
+	 * Return a new storyline for the given path, or null if there is no
+	 * template path to define it. Add all the child storylines that are found
+	 * in the namespace.
+	 * 
+	 * @param path
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public static Storyline getStorylines(String path) throws ThinklabException {
+		List<File> pth = getTemplatePath(path);
+		if (pth == null)
+			return null;
+		return getStoryline(pth, true);
+	}
+	
+	public static Storyline createStoryline(File f) throws ThinklabException {
+		
+		StorylineTemplate template = readPresentation(f);
+		Storyline ret = null;
+		
+		/*
+		 * produce the appropriate storyline for the template
+		 */
+		if (template.getModelSpecifications() != null) {
+			ret = new ModelStoryline(template);
+		} else {
+			ret = new Storyline(template);
+		}
+		
+		return ret;
+	}
+	
+	public static Storyline getStoryline(List<File> templates, boolean getChildren) throws ThinklabException {
 		
 		Storyline ret = null;
 		Storyline prev = null;
+		
 		for (File f : templates) {
 			
-			StorylineTemplate template = readPresentation(f);
+			ret = createStoryline(f);
 			
-			/*
-			 * produce the appropriate storyline for the template
-			 */
-			if (template.getModelSpecifications() != null) {
-				ret = new ModelStoryline(template);
-			} else {
-				ret = new Storyline(template);
-			}
 			/*
 			 * add as a child to previous
 			 */
@@ -81,10 +110,67 @@ public class StorylineFactory {
 			}
 			prev = ret;
 		}
+
+		// add all child storylines if requested
+		if (getChildren && templates.size() > 0) {
+			for (Storyline s : getChildStorylines(templates.get(templates.size() - 1))) {
+				prev.add(s);
+			}
+		}
 		
 		return ret;
 	}
 	
+	private static Collection<Storyline> getChildStorylines(File file) throws ThinklabException {
+		
+		/*
+		 *  in order to have children, the directory containing the file must have
+		 *  subdirectories containing storylines.
+		 */
+		ArrayList<Storyline> ret = new ArrayList<Storyline>();
+		String ps = file.getParent();
+		if (ps == null)	
+			return ret;
+		
+		for (File d : new File(ps).listFiles()) {
+			File sf = getStorylineFile(d);
+			if (sf != null) {
+				Storyline s = createStoryline(sf);
+				for (Storyline ss : getChildStorylines(sf)) {
+					s.add(ss);
+				}
+				ret.add(s);
+			} else if (d.toString().endsWith(".xml")) {
+				ret.add(createStoryline(d));
+			}
+		}
+		
+		return ret;
+	}
+
+	/**
+	 * Take a file name and if it contains a file with the directory's own name and 
+	 * a storyline file in it, return that file.
+	 * @param f
+	 * @return
+	 */
+	private static File getStorylineFile(File f) {
+
+		if (f.isDirectory()) {
+			File r  = 
+				new File(
+					f + 
+					File.separator + 
+					MiscUtilities.getFileBaseName(f.toString()) + 
+					".xml");
+			if (r.exists())
+				return f;
+		}
+		
+		return null;
+		
+	}
+
 	public static List<File> getTemplatePath(String namespace) {
 		
 		List<File> ret = null;

@@ -41,13 +41,11 @@ public class ModelStoryline extends Storyline {
 	 * @author Ferdinando
 	 *
 	 */
-	public class ModelThread extends Thread implements ITaskScheduler.Task {
+	public class ModelThread extends Thread {
 
 		IKBox  kbox = null;
 		ISession session = null;
 		Listener listener = null;
-		
-		private volatile boolean isComputing;
 		
 		public ModelThread(IKBox kbox, ISession session, Listener listener) {
 			this.kbox = kbox;
@@ -63,9 +61,8 @@ public class ModelStoryline extends Storyline {
 			
 			status = COMPUTING;
 			if (listener != null)
-				listener.onStatusChange(IDLE, COMPUTING);
+				listener.onStatusChange(ModelStoryline.this, IDLE, COMPUTING);
 			
-			isComputing = true;			
 			boolean errors = false;
 			
 			/*
@@ -96,16 +93,15 @@ public class ModelStoryline extends Storyline {
 				
 				status = COMPUTED;
 				if (listener != null)
-					listener.onStatusChange(COMPUTING, COMPUTED);
+					listener.onStatusChange(ModelStoryline.this, COMPUTING, COMPUTED);
 
 				
 			} catch (Exception e) {
 				
 				e.printStackTrace();
-				isComputing = false;
 				status = ERROR;
 				if (listener != null)
-					listener.onStatusChange(COMPUTING, ERROR);
+					listener.onStatusChange(ModelStoryline.this, COMPUTING, ERROR);
 				ModellingPlugin.get().logger().error(e.getMessage());
 				errors = true;
 				
@@ -116,14 +112,7 @@ public class ModelStoryline extends Storyline {
 						"computation of " + model.getName() + " finished" + 
 						(errors ? " with errors" : " successfully"));
 			}
-			
-			isComputing = false;
 		}
-
-		@Override
-		public boolean finished() {
-			return !isComputing;
-		}		
 	}
 	
 	@Override
@@ -222,7 +211,11 @@ public class ModelStoryline extends Storyline {
 
 	@Override
 	public void compute(Listener listener) throws ThinklabException {
-				
+			
+		if (!isCovered()) {
+			return;
+		}
+		
 		this.session = listener.getSession();
 		
 		status = PENDING;
