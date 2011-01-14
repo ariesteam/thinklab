@@ -34,7 +34,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
-import org.integratedmodelling.utils.Polylist;
 
 import smile.Network;
 

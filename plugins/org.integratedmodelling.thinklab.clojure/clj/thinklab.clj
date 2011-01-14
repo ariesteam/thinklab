@@ -11,6 +11,8 @@
    		(org.integratedmodelling.thinklab.exception ThinklabValidationException)
     	(org.integratedmodelling.thinklab Thinklab KnowledgeManager)))
 
+(def *session* nil)
+
 (defn load-bindings
 	"Load the Clojure bindings for the passed plugin (can use a partial name if not
 	 ambiguous). If the bindings need to see the classes of the plugin they're part
