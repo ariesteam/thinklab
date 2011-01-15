@@ -62,6 +62,7 @@ public class Storyline extends DefaultMutableTreeNode {
 	ShapeValue coverage = null;
 	boolean coverageComputed = false;
 	BufferedImage coverageMap = null;
+	IVisualization visualization = null;
 	
 	/*
 	 * the set of all possible models that can compute this storyline in specified
@@ -83,7 +84,9 @@ public class Storyline extends DefaultMutableTreeNode {
 		
 		/*
 		 * Create a visualization if you want the storyline to be visualized. One
-		 * will be created for each model storyline run.
+		 * will be created for each model storyline run unless you return null here.
+		 * When created, it will be stored in the storyline and will be accessible 
+		 * using getVisualization().
 		 * 
 		 * Do not initialize the visualization - it is initialized with the same
 		 * context after creation. Context is only passed to help choosing what
@@ -124,6 +127,16 @@ public class Storyline extends DefaultMutableTreeNode {
 		for (int i = 0; i < getChildCount(); i++) {
 			((Storyline)getChildAt(i)).setContext(context);
 		}
+	}
+	
+	/**
+	 * Return the latest visualization created by compute(), or 
+	 * null if none was created.
+	 * 
+	 * @return
+	 */
+	public IVisualization getVisualization() {
+		return visualization;
 	}
 	
 	/**
@@ -194,7 +207,7 @@ public class Storyline extends DefaultMutableTreeNode {
 		String ret = null;
 		Storyline start = this;
 		while (start != null) {
-			ret = start.template.getAttribute(property);
+			ret = start.template.get(property);
 			if (ret != null)
 				break;
 			start = (Storyline) start.getParent();

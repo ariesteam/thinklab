@@ -37,11 +37,7 @@ public class StorylineFactory {
 			return _cache.get(f);
 		
 		StorylineTemplate p = new StorylineTemplate();
-		try {
-			p.read(f.toURI().toURL());
-		} catch (MalformedURLException e) {
-			throw new ThinklabRuntimeException(e);
-		}
+		p.read(f.toString());
 		_cache.put(f, p);
 		_templatesByID.put(p.getId(), p);
 		return p;
@@ -241,12 +237,7 @@ public class StorylineFactory {
 		for (File f : dir.listFiles()) {
 			if (f.toString().endsWith(".xml")) {
 				StorylineTemplate p = new StorylineTemplate();
-				try {
-					p.read(f.toURI().toURL());
-				} catch (Exception e) {
-					ModellingPlugin.get().logger().error(e.getMessage());
-					p = null;
-				}
+				p.read(f.toString());
 				if (p != null) {
 					get()._presentations.put(p.getConcept(), p);
 					_cache.put(f, p);

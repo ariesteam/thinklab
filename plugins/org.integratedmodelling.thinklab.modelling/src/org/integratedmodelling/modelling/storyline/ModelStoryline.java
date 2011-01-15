@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling.storyline;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
@@ -7,7 +8,6 @@ import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.modelling.ModellingPlugin;
-import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.literals.ContextValue;
@@ -23,7 +23,6 @@ import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.Pair;
-import org.integratedmodelling.utils.exec.ITaskScheduler;
 
 public class ModelStoryline extends Storyline {
 
@@ -87,6 +86,7 @@ public class ModelStoryline extends Storyline {
 					IVisualization vis = listener.createVisualization(model, getContext());
 					vis.initialize(getContext(), template.getProperties());
 					vis.visualize();
+					visualization = vis;
 				}
 				
 				status = COMPUTED;
@@ -230,26 +230,14 @@ public class ModelStoryline extends Storyline {
 	@Override
 	protected void processTemplate(StorylineTemplate template) {
 
-		if (template.getModelSpecifications() != null) {
-			
-			List<String> mspecs  = template.getModelSpecifications();
-			
-			for (int i = 0; i < mspecs.size(); i += 2) {
-
-				String m = mspecs.get(i);
-				String c = mspecs.get(i+1);
+		for (StorylineTemplate.Model  mspec : template.getModelSpecifications()) {
 				
-				try {
-					
-					IModel   mod = ModelFactory.get().requireModel(m);
-					IContext con = null;
-					if (c != null)
-						con = ModelFactory.get().requireContext(c);
-					this.models.add(new Pair<IModel, IContext>(mod,con));
-						
-				} catch (ThinklabException e) {
-					throw new ThinklabRuntimeException(e);
-				}
+			try {
+				IModel   mod = mspec.getModel();
+				IContext con = mspec.getContext();
+				this.models.add(new Pair<IModel, IContext>(mod,con));
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
 			}
 		}
 	}

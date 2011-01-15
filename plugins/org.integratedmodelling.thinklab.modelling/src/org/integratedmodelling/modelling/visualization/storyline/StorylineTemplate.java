@@ -2,10 +2,14 @@ package org.integratedmodelling.modelling.visualization.storyline;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.integratedmodelling.corescience.interfaces.IContext;
+import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.modelling.storyline.StorylineFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -13,6 +17,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Pair;
+import org.integratedmodelling.utils.beans.BeanObject;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
 
@@ -24,208 +29,103 @@ import org.w3c.dom.Node;
  * Sequence and off-sequence pages can be defined (to be interpreted by the view). The 
  * off-sequence pages can be found by ID, the sequenced ones by sequence number.
  * 
+ * TODO this shoud be simply implemented using javabeans 
+ * 
  * @author ferdinando.villa
  *
  */
-public class StorylineTemplate {
-
-	ArrayList<Page> pages = new ArrayList<StorylineTemplate.Page>();
-	ArrayList<Page> singlePages = new ArrayList<StorylineTemplate.Page>();
-	HashMap<String, Page> singlePagesById = new HashMap<String, StorylineTemplate.Page>();
-
-	private String concept;
-	
-	/*
-	 * a pretty primitive way of storing model specs: alternating strings are
-	 * model name and context name for coverage. If a context name is null model works
-	 * globally.
-	 */
-	private ArrayList<String> models = null;
+public class StorylineTemplate extends BeanObject {
 
 	private String id;
-	
-	private Properties properties = new Properties();
-	
-	public HashMap<String, String> attributes    = new HashMap<String, String>();
-	public HashMap<String, String> attrAttributes = new HashMap<String, String>();
-
 	private boolean _synchronized;
-
+	
+	ArrayList<Page> pages = null;
+	
 	@Override
 	public String toString() {	
-		return "[presentation: " + getTitle() + ": " + concept + "]"; 
+		return "[presentation: " + getTitle() + ": " + get("concept") + "]"; 
 	}
 	
 	/**
-	 * Properties collects the content of all fields that have a simple
-	 * text content.
-	 * 
-	 * @return
-	 */
-	public Properties getProperties() {
-		return this.properties;
-	}
-	
-	/**
-	 * all templates have an ID. If not there, it's assigned an ugly unique
+	 * all templates must have an ID. If not given in configuration, it's assigned an ugly unique
 	 * name.
 	 */
 	public String getId() {
+		
 		if (id == null)
+			id = get("id");
+		if (id == null) {
 			id = NameGenerator.newName("stempl");
+		}
 		return id;
 	}
+	
+	public static class Model extends BeanObject {
 		
-	public class Page {
+		public IModel getModel() throws ThinklabException {
+			return ModelFactory.get().requireModel(get("id"));
+		}
+		
+		public IContext getContext() throws ThinklabException {
+			String ctx = get("context");
+			return 
+				ctx == null ?
+					null :
+					ModelFactory.get().requireContext(ctx);
+		}
+	}
+		
+	public static class Page extends BeanObject {
 
-		public String concept;
-		public String id;
-		
-		
-		public ArrayList<String> otherTypes = new ArrayList<String>();
-		public HashMap<String, String> attributes = new HashMap<String, String>();
-		public HashMap<String, String> attrAttributes = new HashMap<String, String>();
-		
 		public IConcept getConcept() {
 			try {
-				return KnowledgeManager.get().requireConcept(concept);
+				return KnowledgeManager.get().requireConcept(get("concept"));
 			} catch (ThinklabException e) {
 				throw new ThinklabRuntimeException(e);
 			}
 		}
 		public String getTitle() {
-			return getAttribute("title");
+			return get("title");
 		}
 		public String getDescription() {
-			return getAttribute("description");
+			return get("description");
 		}
 		public String getRunningHead() {
-			return getAttribute("runninghead");
-		}
-		public String getBackground() {
-			return getAttribute("background");
+			return get("runninghead");
 		}
 		public String getName() {
-			return getAttribute("name");
+			return get("name");
 		}
-		public String getId() {
-			return id;
-		}
+
 		public String getPlotType() {
-			return getAttribute("plot-type");
+			return get("plot-type");
 		}
 		public String getCredits() {
-			return getAttribute("credits");
+			return get("credits");
 		}
 		public String getSeeAlso() {
-			return getAttribute("see-also");
+			return get("see-also");
 		}
 		public String getDescriptionTitle() {
-			return getAttributeAttribute("description", "title");
+			return getAttribute("description", "title");
 		}
 		public String getCreditsTitle() {
-			return getAttributeAttribute("credits", "title");
+			return getAttribute("credits", "title");
 		}
 		public String getSeeAlsoTitle() {
-			return getAttributeAttribute("see-also", "title");
-		}
-		public String getAttribute(String s) {
-			return attributes.get(s);
-		}
-		public String getAttributeAttribute(String attr, String spec) {
-			return attrAttributes.get(attr + "|" + spec);
+			return getAttribute("see-also", "title");
 		}
 	}
-	
-	public void read(URL input) throws ThinklabException {
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Collection<Page> getPages() {
 		
-		XMLDocument doc = new XMLDocument(input);
-		
-		for (XMLDocument.NodeIterator it = doc.iterator(); it.hasNext(); ) {
-			Node node = it.next();
-			if (node.getNodeName().equals("page")) {
-				addPage(doc, node);
-			} else if (node.getNodeName().equals("id")) {
-				this.id = XMLDocument.getNodeValue(node);
-				properties.put("id", this.id);
-			} else if (node.getNodeName().equals("concept")) {
-				this.concept = XMLDocument.getNodeValue(node).trim();
-				properties.put("concept", this.concept);
-			} else 	if (node.getNodeName().equals("model")) {
-				String id = XMLDocument.getAttributeValue(node, "id");
-				String ct = XMLDocument.getAttributeValue(node, "context");
-				if (this.models == null) {
-					this.models = new ArrayList<String>();
-				}
-				models.add(id);
-				models.add(ct);
-				
-			} else {
-				
-				/*
-				 * any content of custom nodes goes in attributes. The node is 
-				 * preserved if structural analysis is required.
-				 */
-				String ss = XMLDocument.getNodeValue(node);
-				if (ss != null && !ss.isEmpty()) {
-					attributes.put(node.getNodeName(), ss);
-					properties.put(node.getNodeName(), ss);
-					for (Pair<String, String> ap : XMLDocument.getNodeAttributes(node)) {
-						attrAttributes.put(
-							node.getNodeName() + "|" + ap.getFirst(),
-							ap.getSecond());
-					}
-				}
-			}
+		if (this.pages == null) {
+			syncPages();
+			Collection<BeanObject> ret1 = getAllObjectsWithoutField("page", "id");
+			this.pages = (ArrayList)ret1;
 		}
-	}
-
-	private void addPage(XMLDocument doc, Node root) {
-
-		Page page = new Page();
-		for (XMLDocument.NodeIterator ct = doc.iterator(root); ct.hasNext(); ) {
-			Node node = ct.next();
-			if (node.getNodeName().equals("type")) {
-			} else if (node.getNodeName().equals("concept")) {
-				page.concept = XMLDocument.getNodeValue(node).trim();
-			} else if (node.getNodeName().equals("id")) {
-				page.id = XMLDocument.getNodeValue(node);
-			} else {
-				
-				/*
-				 * any content of custom nodes goes in attributes. The node is 
-				 * preserved if structural analysis is required.
-				 */
-				String ss = XMLDocument.getNodeValue(node);
-				if (ss != null && !ss.isEmpty()) {
-					page.attributes.put(node.getNodeName(), ss);
-					for (Pair<String, String> ap : XMLDocument.getNodeAttributes(node)) {
-						attrAttributes.put(
-							node.getNodeName() + "|" + ap.getFirst(),
-							ap.getSecond());
-					}
-				}
-			}
-		}
-		if (page.id != null) {
-			singlePages.add(page);
-			singlePagesById.put(page.id, page);
-		} else {
-			pages.add(page);
-		}
-	}
-
-	public String getAttribute(String s) {
-		return attributes.get(s);
-	}
-	
-	public String getAttributeAttribute(String attr, String spec) {
-		return attrAttributes.get(attr + "|" + spec);
-	}
-	
-	public ArrayList<Page> getPages() {
-		syncPages();
-		return pages;
+		return this.pages;
 	}
 
 	private void syncPages() {
@@ -236,16 +136,17 @@ public class StorylineTemplate {
 		 */
 		if (!_synchronized) {
 			
-			String inherited = getAttribute("inherit");
+			String inherited = get("inherit");
 			
 			if (inherited != null) {
 				StorylineTemplate t = StorylineFactory.getPresentation(inherited);
 				
 				for (Page p : t.getSinglePages()) {
-					if (getPage(p.getId()) == null) {
-						singlePages.add(p);
-						singlePagesById.put(p.getId(), p);
+					
+					if (getObjectWith("page", "id", p.get("id")) == null) {
+						addChild("page", p, t.getAttributes("page","id",p.get("id")));
 					}
+				
 				}
 				for (Page p : t.getPages()) {
 					boolean hasIt = false;
@@ -264,56 +165,63 @@ public class StorylineTemplate {
 		}
 	}
 
-	public ArrayList<Page> getSinglePages() {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Collection<Page> getSinglePages() {
 		syncPages();
-		return singlePages;
+		Collection<BeanObject> ret1 = getAllObjectsWithField("page", "id");
+		Collection<Page> ret = (Collection)ret1;
+		return ret;
 	}
 	
 	public int getPagesCount() {
-		syncPages();
-		return pages.size();
+		return getPages().size();
 	}
 	
 	public Page getPage(String id) {
 		syncPages();
-		return singlePagesById.get(id);
+		return (Page)getObjectWithField("page", "id", id);
 	}
 	
 	public Page getPage(int seq) {
-		syncPages();
-		return pages.get(seq);
+		return ((ArrayList<Page>)getPages()).get(seq);
 	}
 
 	public String getTitle() {
-		return getAttribute("title");
+		return get("title");
 	}
 
 	public String getDescription() {
-		return getAttribute("description");
+		return get("description");
 	}
 
 	public String getRunningHead() {
-		return getAttribute("runninghead");
+		return get("runninghead");
 	}
 
 	public IConcept getConcept() {
 		try {
-			return KnowledgeManager.get().requireConcept(concept);
+			return KnowledgeManager.get().requireConcept(get("concept"));
 		} catch (ThinklabException e) {
 			throw new ThinklabRuntimeException(e);
 		}
 	}
-
-	public String getStyle() {
-		return getAttribute("style");
-	}
 	
-
 	public String getShortDescription() {
-		return getAttribute("short-description");
+		return get("short-description");
 	}
 	
-	public List<String> getModelSpecifications() {
-		return this.models;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Collection<Model> getModelSpecifications() {
+		syncPages();
+		Collection<BeanObject> ret1 = getAllObjects("model");
+		return (Collection)ret1;
+	}
+	
+	public void read(String s) throws ThinklabException {
+		HashMap<String, Class<? extends BeanObject>> cls = 
+			new HashMap<String, Class<? extends BeanObject>>();
+		cls.put("page",  Page.class);
+		cls.put("model", Model.class);
+		read(s, cls);
 	}
 }

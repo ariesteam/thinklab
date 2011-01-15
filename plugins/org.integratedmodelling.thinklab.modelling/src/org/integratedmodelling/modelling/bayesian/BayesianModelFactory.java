@@ -106,9 +106,9 @@ public class BayesianModelFactory {
 		 * 
 		 * bn       the bayesian network
 		 * bnprops  the properties associated, possibly empty, that will be stored
-		 * 	        at the end
+		 * 	        at the end alongside the BN file
 		 * propdate the date of last synchronization
-		 * nsdate   the date of last modification of the models
+		 * nsdate   the date of last modification of the model namespace
 		 * onto     the ontology for concepts and instances we didn't get from the
 		 *          knowledge base.
 		 */
