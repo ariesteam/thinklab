@@ -57,6 +57,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.xerces.parsers.DOMParser;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -70,6 +71,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 /**
  * Trivial helper class to wrap the read/write interface for an XML file without having to remember too much. 
@@ -255,18 +258,14 @@ public class XMLDocument {
 			flush();
 	}
 	
-//	public XMLDocument(URL u) throws SAXException, IOException {
-//		
-//		parser = new DOMParser();
-//		parser.setFeature("http://xml.org/sax/features/namespaces", true);
-//		parser.parse(u.toString());
-//		dom = parser.getDocument();
-//	}
-	
-	public XMLDocument(InputStream is) throws SAXException, IOException {
+	public XMLDocument(InputStream is) throws ThinklabException {
 		parser = new DOMParser();
-		parser.setFeature("http://xml.org/sax/features/namespaces", true);
-		parser.parse(new InputSource(is));	
+		try {
+			parser.setFeature("http://xml.org/sax/features/namespaces", true);
+			parser.parse(new InputSource(is));
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		}	
 		dom = parser.getDocument();
 	}
 	
