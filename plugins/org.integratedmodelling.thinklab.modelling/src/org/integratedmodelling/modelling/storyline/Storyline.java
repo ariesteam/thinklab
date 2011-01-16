@@ -261,8 +261,19 @@ public class Storyline extends DefaultMutableTreeNode {
 		return ret;
 	}
 
+	/**
+	 * Covered by default if it has at least one covered child.
+	 * 
+	 * @return
+	 */
 	public boolean isCovered() {
-		return true;
+
+		boolean ret = false;
+		for (Storyline s : getChildren())
+			if (ret = s.isCovered())
+				break;
+		
+		return ret;
 	}
 
 	public boolean isAuthorized(ISession session) {
