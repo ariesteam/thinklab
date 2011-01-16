@@ -396,7 +396,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/org.w3.xlink-2.6.5.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/textile-j-2.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.jface-3.6.0.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.swt-3.6.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/swt.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>
