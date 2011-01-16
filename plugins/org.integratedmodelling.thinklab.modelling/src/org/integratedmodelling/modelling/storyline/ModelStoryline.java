@@ -1,8 +1,5 @@
 package org.integratedmodelling.modelling.storyline;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.geospace.extents.ArealExtent;

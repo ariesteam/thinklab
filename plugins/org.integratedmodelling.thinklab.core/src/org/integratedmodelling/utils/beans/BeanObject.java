@@ -44,8 +44,8 @@ public class BeanObject {
 			if (od.id.equals(property)) {
 				if (
 					(attribute == null && value == null) ||
-					(attribute != null && value == null && od.attributes.containsKey(attribute)) ||
-					(attribute != null && value != null && od.attributes.containsKey(attribute) && od.attributes.get(attribute).equals(value))) {
+					(attribute != null && value == null && od.attributes != null && od.attributes.containsKey(attribute)) ||
+					(attribute != null && value != null && od.attributes != null && od.attributes.containsKey(attribute) && od.attributes.get(attribute).equals(value))) {
 					it = od;
 					break;
 				}
@@ -61,8 +61,8 @@ public class BeanObject {
 			if (od.id.equals(property)) {
 				if (
 					(attribute == null && value == null) ||
-					(attribute != null && value == null && od.attributes.containsKey(attribute)) ||
-					(attribute != null && value != null && od.attributes.containsKey(attribute) && od.attributes.get(attribute).equals(value))) {
+					(attribute != null && value == null && od.attributes != null && od.attributes.containsKey(attribute)) ||
+					(attribute != null && value != null && od.attributes != null && od.attributes.containsKey(attribute) && od.attributes.get(attribute).equals(value))) {
 					ret.add(od);
 				}
 			}
@@ -76,8 +76,8 @@ public class BeanObject {
 		for (OD od : list) {
 			if (od.id.equals(property)) {
 				if (
-					(attribute != null && value == null && !od.attributes.containsKey(attribute)) ||
-					(attribute != null && value != null && (!od.attributes.containsKey(attribute) || !od.attributes.get(attribute).equals(value)))) {
+					(attribute != null && value == null && (od.attributes == null || !od.attributes.containsKey(attribute))) ||
+					(attribute != null && value != null && (od.attributes == null || !od.attributes.containsKey(attribute) || !od.attributes.get(attribute).equals(value)))) {
 					ret.add(od);
 				}
 			}

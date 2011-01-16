@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -117,6 +118,21 @@ public class StorylineTemplate extends BeanObject {
 		}
 	}
 
+	public static class Cast<B, T> {
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		public Collection<T> cast(Collection<B> b) {
+			return (Collection<T>)(Collection)b;
+		}
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		public ArrayList<T> cast(ArrayList<B> b) {
+			return (ArrayList<T>)(ArrayList)b;
+		}
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		public HashSet<T> cast(HashSet<B> b) {
+			return (HashSet<T>)(HashSet)b;
+		}
+	}
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Collection<Page> getPages() {
 		
@@ -210,11 +226,8 @@ public class StorylineTemplate extends BeanObject {
 		return get("short-description");
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Collection<Model> getModelSpecifications() {
-		syncPages();
-		Collection<BeanObject> ret1 = getAllObjects("model");
-		return (Collection)ret1;
+		return new Cast<BeanObject, Model>().cast(getAllObjects("model"));
 	}
 	
 	public void read(String s) throws ThinklabException {

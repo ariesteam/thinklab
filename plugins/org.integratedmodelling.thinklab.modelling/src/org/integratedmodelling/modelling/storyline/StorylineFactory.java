@@ -83,7 +83,7 @@ public class StorylineFactory {
 		/*
 		 * produce the appropriate storyline for the template
 		 */
-		if (template.getModelSpecifications() != null) {
+		if (template.getModelSpecifications().size() > 0) {
 			ret = new ModelStoryline(template);
 		} else {
 			ret = new Storyline(template);
