@@ -1,4 +1,4 @@
-package org.integratedmodelling.modelling.visualization.presentation.impl;
+package org.integratedmodelling.modelling.visualization.storyline.impl;
 
 import org.integratedmodelling.modelling.visualization.storyline.DefaultPresentation;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

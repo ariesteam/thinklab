@@ -1,27 +1,40 @@
 package org.integratedmodelling.modelling.commands;
 
-import java.io.File;
 import java.io.PrintStream;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
 
-import org.apache.commons.lang.StringUtils;
 import org.integratedmodelling.corescience.interfaces.IContext;
+import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
+import org.integratedmodelling.modelling.literals.ContextValue;
+import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
+import org.integratedmodelling.modelling.storyline.ModelStoryline;
 import org.integratedmodelling.modelling.storyline.Storyline;
 import org.integratedmodelling.modelling.storyline.StorylineFactory;
 import org.integratedmodelling.modelling.visualization.FileVisualization;
+import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
+import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
 import org.integratedmodelling.modelling.visualization.storyline.StorylineTemplate;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.InteractiveCommandHandler;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
+import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.exec.ITaskScheduler;
 import org.integratedmodelling.utils.exec.SerialTaskScheduler;
+import org.integratedmodelling.utils.xml.XML;
 
 /**
  * Driver for everything that can be done with storylines. Subcommands are
@@ -42,7 +55,12 @@ import org.integratedmodelling.utils.exec.SerialTaskScheduler;
 		optionalArgumentNames="arg0,arg1,arg2",
 		optionalArgumentDefaultValues="_,_,_",
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text,thinklab-core:Text",
-		optionalArgumentDescriptions=" , , ")
+		optionalArgumentDescriptions=" , , ",
+		optionNames="c,extends",
+		optionLongNames="concept,extends",
+		optionDescriptions="concept to use in storyline,storyline to derive from",
+		optionArgumentLabels="concept,storyline path",
+		optionTypes="thinklab-core:Text,thinklab-core:Text")
 public class StorylineCommand extends InteractiveCommandHandler {
 
 	@Override
@@ -52,6 +70,18 @@ public class StorylineCommand extends InteractiveCommandHandler {
 		String action = command.getArgumentAsString("action");
 		String path = command.getArgumentAsString("path");
 		final ITaskScheduler scheduler = new SerialTaskScheduler();
+		
+		IConcept concept = null;
+		String   importd = null;
+		IModel model = null;
+		IContext context = null;
+
+		if (command.hasOption("concept")) {
+			concept = KnowledgeManager.getConcept(command.getOptionAsString("concept"));
+		}
+		if (command.hasOption("extends")) {
+			importd = command.getOptionAsString("extends");
+		}
 		
 		class Listener implements Storyline.Listener {
 
@@ -82,17 +112,55 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			}
 		}
 		
-		List<File> fpath = StorylineFactory.getTemplatePath(path);
-		
 		if (action.equals("create")) {
+			
+			if (concept == null)
+				concept = KnowledgeManager.getConcept(ask("concept? "));
+			
+			StorylineTemplate st = StorylineFactory.createTemplate(path, concept);
+			if (importd != null) {
+				st.addField("inherit", importd, null);
+				st.save();
+			}
+
+			if (command.hasArgument("arg0")) {
+				model = ModelFactory.get().requireModel(
+						command.getArgumentAsString("arg0"));
+			}
+			if (command.hasArgument("arg1")) {
+				context = ModelFactory.get().requireContext(
+						command.getArgumentAsString("arg1"));
+			}
+			
+			if (model != null) {
+				syncModels(path, model, context, session);
+			}
+			
+			say("created storyline template at " + st.getSourceFile());
 			
 		} else if (action.equals("update")) {
 			
+			if (command.hasArgument("arg0")) {
+				model = ModelFactory.get().requireModel(
+						command.getArgumentAsString("arg0"));
+			}
+			if (command.hasArgument("arg1")) {
+				context = ModelFactory.get().requireContext(
+						command.getArgumentAsString("arg1"));
+			} else {
+				throw new ThinklabValidationException(
+						"please specify a context for " + model + " to run");
+			}
+			
+			if (model != null) {
+				syncModels(path, model, context, session);
+			}
+			
 		} else if (action.equals("run")) {
 			
-			IContext context = 
+			context = 
 				ModelFactory.get().requireContext(command.getArgumentAsString("arg0"));
-			Storyline storyline = StorylineFactory.getStoryline(fpath, true);
+			Storyline storyline = StorylineFactory.getStorylines(path);
 			storyline.setContext(context);
 			storyline.compute(new Listener());
 			scheduler.start();
@@ -110,6 +178,89 @@ public class StorylineCommand extends InteractiveCommandHandler {
 		} 
 		
 		return null;
+	}
+
+	private void syncModels(String path, IModel model, IContext context, ISession session) throws ThinklabException {
+
+		Storyline sl = StorylineFactory.getStoryline(path);
+		boolean present = false;
+		for (StorylineTemplate.Model ms : sl.getTemplate().getModelSpecifications()) {
+			if (ms.getModel().getName().equals(model.getName()) && 
+				((Context)(ms.getContext())).getName().equals(((Context)context).getName())) {
+				present = true;
+				break;
+			}
+		}
+		
+		if (!present) {
+			StorylineTemplate.Model nm = new StorylineTemplate.Model();
+			nm.addField("id", model.getName(), null);
+			nm.addField("context", ((Context)context).getName(), null);
+			sl.getTemplate().addChild("model", nm, null);
+		}
+		
+		/*
+		 * Run all models and create pages for all the missing
+		 * results.
+		 * If no error running models, save template
+		 */
+		HashMap<IConcept, IState> states = new HashMap<IConcept, IState>();
+		HashSet<IConcept> knownst = new HashSet<IConcept>();
+
+		for (StorylineTemplate.Page pg : sl.getTemplate().getPages()) {
+			knownst.add(pg.getConcept());
+		}
+		
+		for (StorylineTemplate.Model ms : sl.getTemplate().getModelSpecifications()) {
+
+			IModel   mod = ms.getModel();
+			IContext con = ms.getContext();
+
+			try {	
+				IQueryResult r = 
+					ModelFactory.get().run((Model) mod, KBoxManager.get(), session, null, con);		
+			
+				if (r.getTotalResultCount() > 0) {
+					
+					IValue res = r.getResult(0, session);
+					IContext result = ((ContextValue)res).getObservationContext();
+					
+					for (IState s : result.getStates())
+						if (!knownst.contains(s.getObservableClass()))
+							states.put(s.getObservableClass(), s);
+				}
+			} catch (ThinklabException e) {
+				session.print("error running " + mod.getName() + " in " + 
+						((Context)con).getName() + 
+						": skipping page creation for it");
+			}
+		}
+		
+		for (IConcept c : states.keySet()) {
+			
+			VisualConcept vc = TypeManager.get().getVisualConcept(c);
+			StorylineTemplate.Page pg = new StorylineTemplate.Page();
+
+			HashMap<String,String> attrs = new HashMap<String, String>();
+			
+			pg.addField("concept", c.toString(), null);
+			pg.addField("name", vc.getLabel(), null);
+			pg.addField("title", vc.getLabel(), null);
+			pg.addField("see-also", "", null);
+			pg.addField("credits", "", null);
+			pg.addField("group", "", null);
+			pg.addField("description", vc.getDescription(), null);
+			pg.addField("runninghead", vc.getLabel(), null);
+			attrs.put("default", "true");
+			pg.addField("plot-type", "geosurface-2d", attrs);
+			pg.addField("plot-type", "geocontour-2d", null);
+		
+			attrs.clear();
+			attrs.put("id", CamelCase.toLowerCase(c.getLocalName(), '-'));
+			sl.getTemplate().addChild("page", pg, attrs);
+		}
+		
+		sl.getTemplate().save();
 	}
 
 	private void listStoryline(Storyline storyline, PrintStream out, int spaces) {

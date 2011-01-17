@@ -1,4 +1,4 @@
-package org.integratedmodelling.modelling.visualization.presentation.impl;
+package org.integratedmodelling.modelling.visualization.storyline.impl;
 
 import javax.swing.JPanel;
 

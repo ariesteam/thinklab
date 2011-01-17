@@ -17,11 +17,10 @@ public class Path {
 
 	public static String getLeading(String path, char separator) {
 		int n = path.lastIndexOf(separator);
-		String ret = path;
 		if (n > 0) {
-			ret = path.substring(0,n);
+			return path.substring(0,n);
 		}
-		return ret;
+		return null;
 	}
 
 	public static String join(String[] pth, int start, char separator) {

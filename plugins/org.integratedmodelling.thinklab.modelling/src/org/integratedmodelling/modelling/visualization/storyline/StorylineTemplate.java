@@ -1,26 +1,22 @@
 package org.integratedmodelling.modelling.visualization.storyline;
 
-import java.net.URL;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.modelling.storyline.StorylineFactory;
+import org.integratedmodelling.modelling.visualization.wiki.WikiFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.NameGenerator;
-import org.integratedmodelling.utils.Pair;
-import org.integratedmodelling.utils.beans.BeanObject;
-import org.integratedmodelling.utils.xml.XMLDocument;
-import org.w3c.dom.Node;
+import org.integratedmodelling.utils.beans.Bean;
 
 /**
  * A descriptor for a "storyline". Serializable to/from XML. It's for now limited to one
@@ -35,12 +31,13 @@ import org.w3c.dom.Node;
  * @author ferdinando.villa
  *
  */
-public class StorylineTemplate extends BeanObject {
+public class StorylineTemplate extends Bean {
 
 	private String id;
 	private boolean _synchronized;
 	
 	ArrayList<Page> pages = null;
+	private File sourceFile;
 	
 	@Override
 	public String toString() {	
@@ -61,7 +58,7 @@ public class StorylineTemplate extends BeanObject {
 		return id;
 	}
 	
-	public static class Model extends BeanObject {
+	public static class Model extends Bean {
 		
 		public IModel getModel() throws ThinklabException {
 			return ModelFactory.get().requireModel(get("id"));
@@ -76,7 +73,7 @@ public class StorylineTemplate extends BeanObject {
 		}
 	}
 		
-	public static class Page extends BeanObject {
+	public static class Page extends Bean {
 
 		public IConcept getConcept() {
 			try {
@@ -97,7 +94,6 @@ public class StorylineTemplate extends BeanObject {
 		public String getName() {
 			return get("name");
 		}
-
 		public String getPlotType() {
 			return get("plot-type");
 		}
@@ -115,6 +111,28 @@ public class StorylineTemplate extends BeanObject {
 		}
 		public String getSeeAlsoTitle() {
 			return getAttribute("see-also", "title");
+		}
+		
+		public String getHtml(String field) {
+
+			String content = get(field);
+			String langatt = getAttribute("field", "language");
+			
+			if (langatt == null)
+				langatt = "textile";
+		
+			if (langatt.equals("textile")) {
+				content = WikiFactory.textileToHTML(content);
+			} else if (langatt.equals("confluence")) {
+				content = WikiFactory.confluenceToHTML(content);
+			} else if (langatt.equals("wikimedia")) {
+				content = WikiFactory.mediawikiToHTML(content);
+			} else if (!langatt.equals("html")) {
+				throw new ThinklabRuntimeException(
+						"cannot translate language " + langatt + " into html");
+			}
+			
+			return content;
 		}
 	}
 
@@ -138,7 +156,7 @@ public class StorylineTemplate extends BeanObject {
 		
 		if (this.pages == null) {
 			syncPages();
-			Collection<BeanObject> ret1 = getAllObjectsWithoutField("page", "id");
+			Collection<Bean> ret1 = getAllObjectsWithoutField("page", "id");
 			this.pages = (ArrayList)ret1;
 		}
 		return this.pages;
@@ -184,7 +202,7 @@ public class StorylineTemplate extends BeanObject {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Collection<Page> getSinglePages() {
 		syncPages();
-		Collection<BeanObject> ret1 = getAllObjectsWithField("page", "id");
+		Collection<Bean> ret1 = getAllObjectsWithField("page", "id");
 		Collection<Page> ret = (Collection)ret1;
 		return ret;
 	}
@@ -227,14 +245,36 @@ public class StorylineTemplate extends BeanObject {
 	}
 	
 	public Collection<Model> getModelSpecifications() {
-		return new Cast<BeanObject, Model>().cast(getAllObjects("model"));
+		return new Cast<Bean, Model>().cast(getAllObjects("model"));
 	}
 	
 	public void read(String s) throws ThinklabException {
-		HashMap<String, Class<? extends BeanObject>> cls = 
-			new HashMap<String, Class<? extends BeanObject>>();
+		HashMap<String, Class<? extends Bean>> cls = 
+			new HashMap<String, Class<? extends Bean>>();
 		cls.put("page",  Page.class);
 		cls.put("model", Model.class);
 		read(s, cls);
+	}
+
+	public void setSourceFile(File f) {
+		this.sourceFile = f;
+	}
+	
+	public File getSourceFile() {
+		return this.sourceFile;
+	}
+
+	public void write(String string) throws ThinklabException {
+		// TODO Auto-generated method stub
+		HashMap<Class<? extends Bean>, String> cls = 
+			new HashMap<Class<? extends Bean>, String>();
+		cls.put(Page.class, "page");
+		cls.put(Model.class, "model");
+		cls.put(StorylineTemplate.class, "storyline");
+		write(string, cls);
+	}
+	
+	public void save() throws ThinklabException {
+		write(this.sourceFile.toString());
 	}
 }

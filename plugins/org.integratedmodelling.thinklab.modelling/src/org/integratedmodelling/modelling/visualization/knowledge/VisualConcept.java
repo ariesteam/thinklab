@@ -185,7 +185,7 @@ public class VisualConcept extends VisualKnowledge {
 			ret = checkUpperCamel(ret);
 		}
 		
-		return ret;
+		return ret.trim();
 	}
 	
 	
@@ -219,7 +219,7 @@ public class VisualConcept extends VisualKnowledge {
 		// FIXME should never happen
 		if (ret != null) ret = checkUpperCamel(ret);
 		
-		return ret;
+		return ret.trim();
 	}
 
 
@@ -233,7 +233,7 @@ public class VisualConcept extends VisualKnowledge {
 		String ret = concept.getDescription();
 		if (ret == null || ret.equals(""))
 			ret = "No description given";
-		return ret;
+		return ret.trim();
 	}
 	
 	/**
@@ -250,7 +250,7 @@ public class VisualConcept extends VisualKnowledge {
 			ret = ret.substring(0, maxlen - 3) + "...";
 		}
 		
-		return ret;
+		return ret.trim();
 	}
 	
 	/**
@@ -302,7 +302,7 @@ public class VisualConcept extends VisualKnowledge {
 		/* reparse camel into sentence */
 		ret = checkUpperCamel(ret);
 		
-		return ret;
+		return ret.trim();
 	}
 
 }

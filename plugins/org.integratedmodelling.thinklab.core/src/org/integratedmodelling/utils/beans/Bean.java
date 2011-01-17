@@ -1,5 +1,8 @@
 package org.integratedmodelling.utils.beans;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -9,8 +12,10 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.utils.MiscUtilities;
 
 /**
@@ -18,12 +23,20 @@ import org.integratedmodelling.utils.MiscUtilities;
  * properties through set/get methods and has some relatively sophisticated ways of extracting 
  * subsets of properties and objects based on attributes and fields. 
  * 
+ * Node, property and attribute extraction is at the moment not particularly efficient as
+ * it uses no index hash. So limit the "get" operations to outside of loops and cache
+ * results if possible. Can be sped up to a great extent at the cost of a couple more hours
+ * of boredom (and some memory).
+ * 
  * Can have arbitrarily nested objects and supports reading objects into given subclasses of BeanObject.
+ * 
+ * One of those extremely boring classes to write that can be used everywhere to 
+ * simplify life.
  * 
  * @author Ferdinando
  *
  */
-public class BeanObject {
+public class Bean {
 	
 	private Properties properties = null;
 	
@@ -37,6 +50,14 @@ public class BeanObject {
 		readers.put("xml", XMLBeanReader.class);
 	}
 	
+	public Collection<OD> getFields() {
+		return fields;
+	}
+
+	public Collection<OD> getChildren() {
+		return childr;
+	}
+
 	private OD findOD(ArrayList<OD> list, String property, String attribute, String value) {
 
 		OD it = null;
@@ -56,7 +77,7 @@ public class BeanObject {
 
 	private Collection<OD> findODs(ArrayList<OD> list, String property, String attribute, String value) {
 
-		ArrayList<OD> ret = new ArrayList<BeanObject.OD>();
+		ArrayList<OD> ret = new ArrayList<Bean.OD>();
 		for (OD od : list) {
 			if (od.id.equals(property)) {
 				if (
@@ -72,7 +93,7 @@ public class BeanObject {
 	
 	private Collection<OD> findODsNeg(ArrayList<OD> list, String property, String attribute, String value) {
 
-		ArrayList<OD> ret = new ArrayList<BeanObject.OD>();
+		ArrayList<OD> ret = new ArrayList<Bean.OD>();
 		for (OD od : list) {
 			if (od.id.equals(property)) {
 				if (
@@ -87,13 +108,13 @@ public class BeanObject {
 
 	private Collection<OD> findODsF(ArrayList<OD> list, String property, String attribute, String value) {
 
-		ArrayList<OD> ret = new ArrayList<BeanObject.OD>();
+		ArrayList<OD> ret = new ArrayList<Bean.OD>();
 		for (OD od : list) {
 			if (od.id.equals(property)) {
 				if (
 					(attribute == null && value == null) ||
-					(attribute != null && value == null && ((BeanObject)(od.value)).get(attribute) != null) ||
-					(attribute != null && value != null && ((BeanObject)(od.value)).get(attribute) != null && ((BeanObject)(od.value)).get(attribute).equals(value))) {
+					(attribute != null && value == null && ((Bean)(od.value)).get(attribute) != null) ||
+					(attribute != null && value != null && ((Bean)(od.value)).get(attribute) != null && ((Bean)(od.value)).get(attribute).equals(value))) {
 					ret.add(od);
 				}
 			}
@@ -103,12 +124,12 @@ public class BeanObject {
 
 	private Collection<OD> findODsFNeg(ArrayList<OD> list, String property, String attribute, String value) {
 
-		ArrayList<OD> ret = new ArrayList<BeanObject.OD>();
+		ArrayList<OD> ret = new ArrayList<Bean.OD>();
 		for (OD od : list) {
 			if (od.id.equals(property)) {
 				if (
-					(attribute != null && value == null && ((BeanObject)(od.value)).get(attribute) == null ||
-					(attribute != null && value != null && (((BeanObject)(od.value)).get(attribute) == null || !((BeanObject)(od.value)).get(attribute).equals(value))))) {
+					(attribute != null && value == null && ((Bean)(od.value)).get(attribute) == null ||
+					(attribute != null && value != null && (((Bean)(od.value)).get(attribute) == null || !((Bean)(od.value)).get(attribute).equals(value))))) {
 					ret.add(od);
 				}
 			}
@@ -138,7 +159,7 @@ public class BeanObject {
 		fields.add(new OD(id, value, attributes));
 	}
 	
-	public void addChild(String id, BeanObject value, HashMap<String,String> attributes) {
+	public void addChild(String id, Bean value, HashMap<String,String> attributes) {
 		childr.add(new OD(id, value, attributes));		
 	}
 	
@@ -148,16 +169,39 @@ public class BeanObject {
 	
 	public static interface BeanReader {
 
-		void read(InputStream input, BeanObject object, Map<String, Class<? extends BeanObject>> cmap)
+		void read(InputStream input, Bean object, Map<String, Class<? extends Bean>> cmap)
 				throws ThinklabException;
+		
+		void write(OutputStream output, Bean object, Map<Class<? extends Bean>, String> cmap) throws ThinklabException;
 	}
 	
 	// these index the whole content. They're in the natural order.
-	private ArrayList<OD> fields = new ArrayList<BeanObject.OD>();
-	private ArrayList<OD> childr = new ArrayList<BeanObject.OD>();
+	private ArrayList<OD> fields = new ArrayList<Bean.OD>();
+	private ArrayList<OD> childr = new ArrayList<Bean.OD>();
 	
 	public String get(String property) {
 		return getWith(property, null, null);
+	}
+
+	public boolean getBoolean(String property) {
+		String p = get(property);
+		if (p == null)
+			return false;
+		return BooleanValue.parseBoolean(p);
+	}
+
+	public Integer getInteger(String property) {
+		String p = get(property);
+		if (p == null)
+			return null;
+		return Integer.parseInt(p);
+	}
+
+	public Double getDouble(String property) {
+		String p = get(property);
+		if (p == null)
+			return null;
+		return Double.parseDouble(p);
 	}
 
 	// expose all fields without attributes as properties
@@ -224,38 +268,38 @@ public class BeanObject {
 		return null;
 	}
 	
-	public BeanObject getObject(String property) {
+	public Bean getObject(String property) {
 		return getObjectWith(property, null, null);
 	}
 
-	public Collection<BeanObject> getAllObjects(String property) {
+	public Collection<Bean> getAllObjects(String property) {
 		return getAllObjectsWith(property, null, null);
 	}
 
-	public Collection<BeanObject> getAllObjectsWith(String property, String attribute) {
+	public Collection<Bean> getAllObjectsWith(String property, String attribute) {
 		return getAllObjectsWith(property, attribute, null);
 	}
 
-	public Collection<BeanObject> getAllObjectsWithout(String property, String attribute) {
+	public Collection<Bean> getAllObjectsWithout(String property, String attribute) {
 		return getAllObjectsWithout(property, attribute, null);
 	}
 
-	public BeanObject getObjectWith(String property, String attribute) {
+	public Bean getObjectWith(String property, String attribute) {
 		return getObjectWith(property, attribute, null);
 	}
 
-	public Map<String, BeanObject> mapObjectsWithAttribute(String property, String attribute) {
-		HashMap<String, BeanObject> ret = new HashMap<String, BeanObject>();
+	public Map<String, Bean> mapObjectsWithAttribute(String property, String attribute) {
+		HashMap<String, Bean> ret = new HashMap<String, Bean>();
 		for (OD od : findODs(childr, property, attribute, null)) {
-			ret.put(od.id, (BeanObject) od.value);
+			ret.put(od.id, (Bean) od.value);
 		}
 		return ret;
 	}
 
-	public Map<String, BeanObject> mapObjectsWithField(String property, String attribute) {
-		HashMap<String, BeanObject> ret = new HashMap<String, BeanObject>();
+	public Map<String, Bean> mapObjectsWithField(String property, String attribute) {
+		HashMap<String, Bean> ret = new HashMap<String, Bean>();
 		for (OD od : findODsF(childr, property, attribute, null)) {
-			ret.put(od.id, (BeanObject) od.value);
+			ret.put(od.id, (Bean) od.value);
 		}
 		return ret;	
 	}
@@ -268,70 +312,70 @@ public class BeanObject {
 		return ret;	
 	}
 
-	public BeanObject getObjectWith(String property, String attribute, String value) {
+	public Bean getObjectWith(String property, String attribute, String value) {
 		OD it = findOD(childr, property, attribute, value);
-		return it == null ? null : (BeanObject)(it.value);
+		return it == null ? null : (Bean)(it.value);
 	}
 
-	public Collection<BeanObject> getAllObjectsWith(String property, String attribute, String value) {
-		ArrayList<BeanObject> ret = new ArrayList<BeanObject>();
+	public Collection<Bean> getAllObjectsWith(String property, String attribute, String value) {
+		ArrayList<Bean> ret = new ArrayList<Bean>();
 		for (OD od : findODs(childr, property, attribute, value)) {
-			ret.add((BeanObject) od.value);
+			ret.add((Bean) od.value);
 		}
 		return ret;
 	}
 
-	public Collection<BeanObject> getAllObjectsWithout(String property, String attribute, String value) {
-		ArrayList<BeanObject> ret = new ArrayList<BeanObject>();
+	public Collection<Bean> getAllObjectsWithout(String property, String attribute, String value) {
+		ArrayList<Bean> ret = new ArrayList<Bean>();
 		for (OD od : findODsNeg(childr, property, attribute, value)) {
-			ret.add((BeanObject) od.value);
+			ret.add((Bean) od.value);
 		}
 		return ret;
 	}
 
-	public Collection<BeanObject> getAllObjectsWithoutField(String property, String attribute) {
-		ArrayList<BeanObject> ret = new ArrayList<BeanObject>();
+	public Collection<Bean> getAllObjectsWithoutField(String property, String attribute) {
+		ArrayList<Bean> ret = new ArrayList<Bean>();
 		for (OD od : findODsFNeg(childr, property, attribute, null)) {
-			ret.add((BeanObject) od.value);
+			ret.add((Bean) od.value);
 		}
 		return ret;
 	}
 
-	public Collection<BeanObject> getAllObjectsWithoutField(String property, String attribute, String value) {
-		ArrayList<BeanObject> ret = new ArrayList<BeanObject>();
+	public Collection<Bean> getAllObjectsWithoutField(String property, String attribute, String value) {
+		ArrayList<Bean> ret = new ArrayList<Bean>();
 		for (OD od : findODsFNeg(childr, property, attribute, value)) {
-			ret.add((BeanObject) od.value);
+			ret.add((Bean) od.value);
 		}
 		return ret;
 	}
 
-	public Collection<BeanObject> getAllObjectsWithField(String property, String attribute) {
-		ArrayList<BeanObject> ret = new ArrayList<BeanObject>();
+	public Collection<Bean> getAllObjectsWithField(String property, String attribute) {
+		ArrayList<Bean> ret = new ArrayList<Bean>();
 		for (OD od : findODsF(childr, property, attribute, null)) {
-			ret.add((BeanObject) od.value);
+			ret.add((Bean) od.value);
 		}
 		return ret;
 	}
 	
-	public BeanObject getObjectWithField(String property, String attribute) {
-		Collection<BeanObject> ret = getAllObjectsWithField(property,attribute);
+	public Bean getObjectWithField(String property, String attribute) {
+		Collection<Bean> ret = getAllObjectsWithField(property,attribute);
 		return ret.size() > 0 ? ret.iterator().next() : null;
 	}
 
-	public BeanObject getObjectWithField(String property, String field, String value) {
-		Collection<BeanObject> ret = getAllObjectsWithField(property, field, value);
+	public Bean getObjectWithField(String property, String field, String value) {
+		Collection<Bean> ret = getAllObjectsWithField(property, field, value);
 		return ret.size() > 0 ? ret.iterator().next() : null;
 	}
 
-	public Collection<BeanObject> getAllObjectsWithField(String property, String attribute, String value) {
-		ArrayList<BeanObject> ret = new ArrayList<BeanObject>();
+	public Collection<Bean> getAllObjectsWithField(String property, String attribute, String value) {
+		ArrayList<Bean> ret = new ArrayList<Bean>();
 		for (OD od : findODsF(childr, property, attribute, value)) {
-			ret.add((BeanObject) od.value);
+			ret.add((Bean) od.value);
 		}
 		return ret;
 	}
 
-	public void read(String input, Map<String, Class<? extends BeanObject>> cmap)
+	public void read(String input, Map<String, Class<? extends Bean>> cmap)
 		throws ThinklabException {
 	
 		String ext = MiscUtilities.getFileExtension(input);
@@ -351,11 +395,43 @@ public class BeanObject {
 		InputStream inp = MiscUtilities.getInputStreamForResource(input);
 		reader.read(inp, this, cmap);
 		
+		try {
+			inp.close();
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}		
+		
 		// TODO rebuild indices
 	}
 	
-	public void write(OutputStream out) {
+	public void write(String output, Map<Class<? extends Bean>, String> cmap) throws ThinklabException {
+
+		String ext = MiscUtilities.getFileExtension(output);
+		Class<? extends BeanReader> readerc = readers.get(ext);
+		if (readerc == null) {
+			throw new ThinklabValidationException(
+					"don't know how to write objects to file with extension " + ext);
+		}
 		
+		BeanReader reader = null;
+		try {
+			reader = readerc.newInstance();
+		} catch (Exception e) {
+			throw new ThinklabInternalErrorException(e);
+		}
+
+		FileOutputStream out = null;
+		try {
+			out = new FileOutputStream(output);
+		} catch (FileNotFoundException e) {
+			throw new ThinklabIOException(e);
+		}
+		reader.write(out, this, cmap);
+		try {
+			out.close();
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}		
 	}
 
 }

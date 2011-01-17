@@ -1,7 +1,6 @@
 package org.integratedmodelling.modelling.storyline;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,11 +9,14 @@ import java.util.List;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.interfaces.IPresentation;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
+import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
+import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
 import org.integratedmodelling.modelling.visualization.storyline.StorylineTemplate;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
+import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Path;
 
@@ -31,17 +33,100 @@ public class StorylineFactory {
 		return get()._presentations.get(concept);
 	}
 
-	public static StorylineTemplate readPresentation(File f) throws ThinklabException {
+	public static StorylineTemplate createTemplate(String path, IConcept concept) throws ThinklabException {
+		
+		if (getStoryline(path) != null) {
+			throw new ThinklabValidationException(
+					"cannot create storyline template " + path + ": storyline exists");
+		}
+		String pnm = Path.getLast(path, '.');
+		String pth = Path.getLeading(path, '.');
+		Storyline parent = null;
+		if (pth != null)
+			parent = getStoryline(pth);
+		if (pth == null || parent == null) {
+			throw new ThinklabValidationException(
+					"storyline template " + 
+					path + 
+					" does not have a parent: please use a path that names an existing parent");			
+		}
+		
+		File d = new File(parent.getTemplate().getSourceFile().getParent() + File.separator + pnm);
+		d.mkdirs();
+		File f = new File(d + File.separator + pnm + ".xml");
+
+		
+		StorylineTemplate st = new StorylineTemplate();
+		StorylineTemplate.Page pg = new StorylineTemplate.Page();
+		
+		/*
+		 * basic info
+		 */
+		VisualConcept vc = TypeManager.get().getVisualConcept(concept);
+		
+		st.addField("id", pth, null);
+		st.addField("concept", concept.toString(), null);
+		st.addField("title", vc.getLabel(), null);
+		st.addField("runninghead", vc.getLabel(), null);
+		st.addField("description", pnm, null);
+
+		pg.addField("id", "info", null);
+		pg.addField("name", vc.getName(), null);
+		pg.addField("title", vc.getLabel(), null);
+		pg.addField("description", vc.getDescription(), null);
+		pg.addField("runninghead", vc.getLabel(), null);
+		pg.addField("see-also", "", null);
+		pg.addField("credits", "", null);
+		
+		st.addChild("page", pg, null);
+		st.setSourceFile(f);
+		
+		_cache.put(f, st);
+		_templatesByID.put(pth, st);
+		
+		st.write(f.toString());
+		
+		return st;
+	}
+	
+	public static StorylineTemplate readTemplate(File f) throws ThinklabException {
 		
 		if (_cache.containsKey(f))
 			return _cache.get(f);
 		
 		StorylineTemplate p = new StorylineTemplate();
+		p.setSourceFile(f);
 		p.read(f.toString());
 		_cache.put(f, p);
 		_templatesByID.put(p.getId(), p);
 		return p;
 		
+	}
+	
+	/**
+	 * Save a template back to the original file it was read from, making a
+	 * backup copy of the original one.
+	 * 
+	 * @param f
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public static void saveTemplate(StorylineTemplate template) throws ThinklabException {
+
+		File dest = null;
+		for (int i = 1; ; i++) {
+			dest = new File(
+				MiscUtilities.changeExtension(template.getSourceFile().toString(), "bk" + i));
+			if (!dest.exists())
+				break;
+		}
+			
+		CopyURL.copy(template.getSourceFile(), dest);
+		template.write(template.getSourceFile().toString());
+	}
+	
+	public static void writeTemplate(StorylineTemplate template, File f) throws ThinklabException {
+		template.write(f.toString());
 	}
 	
 	/**
@@ -77,7 +162,7 @@ public class StorylineFactory {
 	
 	public static Storyline createStoryline(File f) throws ThinklabException {
 		
-		StorylineTemplate template = readPresentation(f);
+		StorylineTemplate template = readTemplate(f);
 		Storyline ret = null;
 		
 		/*
@@ -238,6 +323,7 @@ public class StorylineFactory {
 			if (f.toString().endsWith(".xml")) {
 				StorylineTemplate p = new StorylineTemplate();
 				p.read(f.toString());
+				p.setSourceFile(f);
 				if (p != null) {
 					get()._presentations.put(p.getConcept(), p);
 					_cache.put(f, p);

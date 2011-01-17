@@ -2,9 +2,13 @@ package org.integratedmodelling.modelling.visualization.wiki;
 
 import java.io.StringWriter;
 
+import org.integratedmodelling.utils.StringUtils;
+
 import net.java.textilej.parser.MarkupParser;
 import net.java.textilej.parser.builder.HtmlDocumentBuilder;
+import net.java.textilej.parser.markup.Dialect;
 import net.java.textilej.parser.markup.confluence.ConfluenceDialect;
+import net.java.textilej.parser.markup.mediawiki.MediaWikiDialect;
 import net.java.textilej.parser.markup.textile.TextileDialect;
 
 
@@ -52,9 +56,10 @@ public class WikiFactory {
 		StringWriter sr = new StringWriter();
 		HtmlDocumentBuilder builder = new HtmlDocumentBuilder(sr);
 		builder.setEmitAsDocument(false);
-		MarkupParser parser = new MarkupParser(new ConfluenceDialect());
+		Dialect dialect = new ConfluenceDialect();
+		MarkupParser parser = new MarkupParser(dialect);
 		parser.setBuilder(builder);
-		parser.parse(source);
+		parser.parse(StringUtils.pack(source));
 		return sr.toString();
 	}
 	
@@ -65,7 +70,18 @@ public class WikiFactory {
 		builder.setEmitAsDocument(false);
 		MarkupParser parser = new MarkupParser(new TextileDialect());
 		parser.setBuilder(builder);
-		parser.parse(source);
+		parser.parse(StringUtils.pack(source));
+		return sr.toString();
+	}
+
+	public static String mediawikiToHTML(String source) {
+		
+		StringWriter sr = new StringWriter();
+		HtmlDocumentBuilder builder = new HtmlDocumentBuilder(sr);
+		builder.setEmitAsDocument(false);
+		MarkupParser parser = new MarkupParser(new MediaWikiDialect());
+		parser.setBuilder(builder);
+		parser.parse(StringUtils.pack(source));
 		return sr.toString();
 	}
 
