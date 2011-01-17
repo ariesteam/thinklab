@@ -173,7 +173,13 @@ public class StorylineTemplate extends Bean {
 			String inherited = get("inherit");
 			
 			if (inherited != null) {
-				StorylineTemplate t = StorylineFactory.getPresentation(inherited);
+				
+				StorylineTemplate t;
+				try {
+					t = StorylineFactory.getStoryline(inherited).getTemplate();
+				} catch (ThinklabException e) {
+					throw new ThinklabRuntimeException(e);
+				}
 				
 				for (Page p : t.getSinglePages()) {
 					

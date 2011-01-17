@@ -163,6 +163,31 @@ public class Bean {
 		childr.add(new OD(id, value, attributes));		
 	}
 	
+	// remove all occurrences of named field or child bean
+	public void remove(String id) {
+
+		ArrayList<Integer> todo = new ArrayList<Integer>();
+		int i = 0;
+		for (OD od : fields) {
+			if (od.id.equals(id))
+				todo.add(i);
+			i++;
+		}
+		for (int n : todo)
+			fields.remove(n);
+
+		todo.clear();
+		i = 0;
+		for (OD od : childr) {
+			if (od.id.equals(id))
+				todo.add(i);
+			i++;
+		}
+		for (int n : todo)
+			childr.remove(n);
+
+	}
+	
 	public static void registerReader(String extension, Class<? extends BeanReader> readerClass) {
 		readers.put(extension, readerClass);
 	}

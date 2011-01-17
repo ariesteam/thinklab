@@ -54,7 +54,6 @@ public class StorylineFactory {
 		File d = new File(parent.getTemplate().getSourceFile().getParent() + File.separator + pnm);
 		d.mkdirs();
 		File f = new File(d + File.separator + pnm + ".xml");
-
 		
 		StorylineTemplate st = new StorylineTemplate();
 		StorylineTemplate.Page pg = new StorylineTemplate.Page();
@@ -73,6 +72,7 @@ public class StorylineFactory {
 		pg.addField("id", "info", null);
 		pg.addField("name", vc.getName(), null);
 		pg.addField("title", vc.getLabel(), null);
+		pg.addField("disabled", "false", null);
 		pg.addField("description", vc.getDescription(), null);
 		pg.addField("runninghead", vc.getLabel(), null);
 		pg.addField("see-also", "", null);

@@ -156,7 +156,16 @@ public class StorylineCommand extends InteractiveCommandHandler {
 				syncModels(path, model, context, session);
 			}
 			
-		} else if (action.equals("run")) {
+		} else if (action.equals("enable") || action.equals("disable")) {
+			
+			Storyline sl = StorylineFactory.getStoryline(path);
+			sl.getTemplate().remove("disabled");
+			sl.getTemplate().addField("disabled", 
+					action.equals("enable") ? "false"  : "true", 
+					null);
+			sl.getTemplate().save();
+			
+		}else if (action.equals("run")) {
 			
 			context = 
 				ModelFactory.get().requireContext(command.getArgumentAsString("arg0"));
@@ -169,6 +178,14 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			
 			
 		} else if (action.equals("copy")) {
+			
+			String path2 = command.getArgumentAsString("arg0");
+			Storyline sl = StorylineFactory.getStoryline(path);
+			if (concept == null)
+				concept = sl.getObservable();
+			StorylineTemplate st = StorylineFactory.createTemplate(path2, concept);
+			st.addField("inherit", path, null);
+			st.save();
 			
 		}  else if (action.equals("list")) {
 			
@@ -241,23 +258,24 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			VisualConcept vc = TypeManager.get().getVisualConcept(c);
 			StorylineTemplate.Page pg = new StorylineTemplate.Page();
 
-			HashMap<String,String> attrs = new HashMap<String, String>();
+			HashMap<String,String> attr1 = new HashMap<String, String>();
+			HashMap<String,String> attr2 = new HashMap<String, String>();
 			
 			pg.addField("concept", c.toString(), null);
 			pg.addField("name", vc.getLabel(), null);
 			pg.addField("title", vc.getLabel(), null);
+			pg.addField("description", vc.getDescription(), null);
+			pg.addField("runninghead", vc.getLabel(), null);
 			pg.addField("see-also", "", null);
 			pg.addField("credits", "", null);
 			pg.addField("group", "", null);
-			pg.addField("description", vc.getDescription(), null);
-			pg.addField("runninghead", vc.getLabel(), null);
-			attrs.put("default", "true");
-			pg.addField("plot-type", "geosurface-2d", attrs);
+			pg.addField("disabled", "false", null);
+			attr1.put("default", "true");
+			pg.addField("plot-type", "geosurface-2d", attr1);
 			pg.addField("plot-type", "geocontour-2d", null);
 		
-			attrs.clear();
-			attrs.put("id", CamelCase.toLowerCase(c.getLocalName(), '-'));
-			sl.getTemplate().addChild("page", pg, attrs);
+			attr2.put("id", CamelCase.toLowerCase(c.getLocalName(), '-'));
+			sl.getTemplate().addChild("page", pg, attr2);
 		}
 		
 		sl.getTemplate().save();

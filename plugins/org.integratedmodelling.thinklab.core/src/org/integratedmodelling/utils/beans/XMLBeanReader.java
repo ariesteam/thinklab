@@ -11,6 +11,7 @@ import java.util.Map;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.xml.XMLDocument;
@@ -84,7 +85,7 @@ class XMLBeanReader implements Bean.BeanReader {
 		writer.print(wspace + "<" + id);
 		if (attributes != null) {
 			for (String a : attributes.keySet()) {
-				writer.print(" " + a + "=\"" + attributes.get(a) + "\"");
+				writer.print(" " + a + "=\"" + Escape.forXML(attributes.get(a)) + "\"");
 			}
 		}
 		writer.print(">");
@@ -97,7 +98,7 @@ class XMLBeanReader implements Bean.BeanReader {
 		
 		for (Bean.OD o : object.getFields()) {
 			printRoot(writer, o.id, o.attributes, space);
-			writer.print(o.value.toString());
+			writer.print(Escape.forXML(o.value.toString()));
 			writer.println("</" + o.id + ">");
 		}
 		for (Bean.OD o : object.getChildren()) {

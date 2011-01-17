@@ -15,6 +15,9 @@ public class StringUtils extends org.apache.commons.lang.StringUtils {
 	 */
 	static public String pack(String s) {
 		
+		if (s == null)
+			return "";
+		
 		StringBuffer ret = new StringBuffer(s.length());
 		
 		s = s.trim();
