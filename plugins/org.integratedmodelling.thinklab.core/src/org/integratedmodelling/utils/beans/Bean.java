@@ -70,15 +70,25 @@ public class Bean implements Cloneable {
 		}
 		
 		for (OD od : fields) {
-			it.addField(od.id, (String)od.value, (HashMap<String, String>)od.attributes.clone());			
+			it.addField(od.id, (String)od.value, cloneAttributes(od));			
 		}
 		for (OD od : childr) {
-			it.addChild(od.id, (Bean)(((Bean)(od.value)).clone()), (HashMap<String, String>)od.attributes.clone());			
+			it.addChild(od.id, (Bean)(((Bean)(od.value)).clone()), cloneAttributes(od));			
 		}
 		
 		return it;
 	}
 	
+	protected HashMap<String, String> cloneAttributes(OD od) {
+		HashMap<String, String> ret = null;
+		if (od.attributes != null) {
+			ret = new HashMap<String, String>();
+			for (String k : od.attributes.keySet())
+				ret.put(k, od.attributes.get(k));
+		}
+		return ret;
+	}
+
 	private OD findOD(ArrayList<OD> list, String property, String attribute, String value) {
 
 		OD it = null;

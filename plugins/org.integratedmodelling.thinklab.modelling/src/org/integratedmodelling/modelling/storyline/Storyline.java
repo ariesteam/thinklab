@@ -289,8 +289,7 @@ public class Storyline extends DefaultMutableTreeNode {
 		return findStoryline(this, c);
 	}
 	
-	private Storyline findStoryline(Storyline sl,
-			IConcept concept) {
+	private Storyline findStoryline(Storyline sl, IConcept concept) {
 		
 		if (sl.getObservable().equals(concept))
 			return sl;
@@ -302,4 +301,36 @@ public class Storyline extends DefaultMutableTreeNode {
 		return null;
 	}
 
+	public Storyline findStoryline(String signature) {
+		return findStoryline(this, signature);
+	}
+	
+	private Storyline findStoryline(Storyline sl, String signature) {
+		
+		if (sl.getTemplateSignature().equals(signature))
+			return sl;
+		for (int i = 0; i < sl.getChildCount(); i++) {
+			Storyline ret = findStoryline((Storyline) sl.getChildAt(i), signature);
+			if (ret != null)
+				return ret;
+		}
+		return null;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return (obj instanceof Storyline) ?
+			((Storyline)obj).template.getSignature().equals(this.template.getSignature()) :
+			false;
+	}
+
+	@Override
+	public int hashCode() {
+		return template.getSignature().hashCode();
+	}
+
+	
+	public String getTemplateSignature() {
+		return template.getSignature();
+	}
 }

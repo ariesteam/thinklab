@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.modelling.interfaces.IModel;
@@ -15,6 +14,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.utils.Cast;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.beans.Bean;
 
@@ -25,8 +25,6 @@ import org.integratedmodelling.utils.beans.Bean;
  * 
  * Sequence and off-sequence pages can be defined (to be interpreted by the view). The 
  * off-sequence pages can be found by ID, the sequenced ones by sequence number.
- * 
- * TODO this shoud be simply implemented using javabeans 
  * 
  * @author ferdinando.villa
  *
@@ -135,21 +133,6 @@ public class StorylineTemplate extends Bean {
 			return content;
 		}
 	}
-
-	public static class Cast<B, T> {
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public Collection<T> cast(Collection<B> b) {
-			return (Collection<T>)(Collection)b;
-		}
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public ArrayList<T> cast(ArrayList<B> b) {
-			return (ArrayList<T>)(ArrayList)b;
-		}
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public HashSet<T> cast(HashSet<B> b) {
-			return (HashSet<T>)(HashSet)b;
-		}
-	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Collection<Page> getPages() {
@@ -182,22 +165,15 @@ public class StorylineTemplate extends Bean {
 				}
 				
 				for (Page p : t.getSinglePages()) {
-					
 					if (getObjectWith("page", "id", p.get("id")) == null) {
-						addChild("page", p, t.getAttributes("page","id",p.get("id")));
+						addChild("page", (Bean)(p.clone()), null);
 					}
-				
 				}
+				
 				for (Page p : t.getPages()) {
-					boolean hasIt = false;
-					for (Page op : getPages()) {
-						if (op.getConcept().equals(p.getConcept())) {
-							hasIt = true;
-							break;
-						}
+					if (getObjectWithField("page", "concept", p.get("concept")) == null) {
+						addChild("page", (Bean)(p.clone()), null);						
 					}
-					if (!hasIt)
-						pages.add(p);
 				}
 			}
 			
@@ -205,12 +181,9 @@ public class StorylineTemplate extends Bean {
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Collection<Page> getSinglePages() {
 		syncPages();
-		Collection<Bean> ret1 = getAllObjectsWithField("page", "id");
-		Collection<Page> ret = (Collection)ret1;
-		return ret;
+		return new Cast<Bean, Page>().cast(getAllObjectsWithField("page", "id"));
 	}
 	
 	public int getPagesCount() {
@@ -282,5 +255,14 @@ public class StorylineTemplate extends Bean {
 	
 	public void save() throws ThinklabException {
 		write(this.sourceFile.toString());
+	}
+	
+
+	public String getSignature() {
+		return
+			sourceFile == null ?
+				getId() :
+				sourceFile + getId();
+
 	}
 }

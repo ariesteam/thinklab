@@ -63,7 +63,7 @@ public class StorylineFactory {
 		 */
 		VisualConcept vc = TypeManager.get().getVisualConcept(concept);
 		
-		st.addField("id", pth, null);
+		st.addField("id", path, null);
 		st.addField("concept", concept.toString(), null);
 		st.addField("title", vc.getLabel(), null);
 		st.addField("runninghead", vc.getLabel(), null);

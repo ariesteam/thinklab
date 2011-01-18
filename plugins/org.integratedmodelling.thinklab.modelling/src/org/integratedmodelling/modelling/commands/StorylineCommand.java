@@ -4,15 +4,17 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.context.Context;
+import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
-import org.integratedmodelling.modelling.storyline.ModelStoryline;
 import org.integratedmodelling.modelling.storyline.Storyline;
 import org.integratedmodelling.modelling.storyline.StorylineFactory;
 import org.integratedmodelling.modelling.visualization.FileVisualization;
@@ -34,7 +36,6 @@ import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.exec.ITaskScheduler;
 import org.integratedmodelling.utils.exec.SerialTaskScheduler;
-import org.integratedmodelling.utils.xml.XML;
 
 /**
  * Driver for everything that can be done with storylines. Subcommands are
@@ -53,7 +54,7 @@ import org.integratedmodelling.utils.xml.XML;
 		argumentTypes="thinklab-core:Text,thinklab-core:Text",
 		argumentDescriptions="action {create|update|run|test|copy},storyline namespace",
 		optionalArgumentNames="arg0,arg1,arg2",
-		optionalArgumentDefaultValues="_,_,_",
+		optionalArgumentDefaultValues=" , , ",
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text,thinklab-core:Text",
 		optionalArgumentDescriptions=" , , ",
 		optionNames="c,extends",
@@ -261,6 +262,12 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			HashMap<String,String> attr1 = new HashMap<String, String>();
 			HashMap<String,String> attr2 = new HashMap<String, String>();
 			
+			IState state = states.get(c);
+			if (state instanceof DatasourceStateAdapter)
+				state = ((DatasourceStateAdapter)state).getOriginalState();
+			
+			String units = (String) state.getMetadata().get(Metadata.UNITS);
+			
 			pg.addField("concept", c.toString(), null);
 			pg.addField("name", vc.getLabel(), null);
 			pg.addField("title", vc.getLabel(), null);
@@ -273,7 +280,12 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			attr1.put("default", "true");
 			pg.addField("plot-type", "geosurface-2d", attr1);
 			pg.addField("plot-type", "geocontour-2d", null);
-		
+			
+			if (state instanceof CategoricalDistributionDatasource)
+				pg.addField("plot-type", "uncertainty-2d", null);
+			if (units != null) 
+				pg.addField("units", units, null);
+			
 			attr2.put("id", CamelCase.toLowerCase(c.getLocalName(), '-'));
 			sl.getTemplate().addChild("page", pg, attr2);
 		}

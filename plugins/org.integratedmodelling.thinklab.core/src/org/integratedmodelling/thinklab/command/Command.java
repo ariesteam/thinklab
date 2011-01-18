@@ -235,7 +235,7 @@ public class Command {
      * @return
      */
     public boolean hasArgument(String argName) {
-    	return args != null && args.get(argName) != null && !args.get(argName).equals("");
+    	return args != null && args.get(argName) != null && !args.get(argName).trim().equals("");
     }
     
     public boolean hasOption(String optName) {
