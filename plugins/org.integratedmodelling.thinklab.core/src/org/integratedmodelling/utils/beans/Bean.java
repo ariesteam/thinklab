@@ -14,6 +14,7 @@ import java.util.Properties;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -36,7 +37,7 @@ import org.integratedmodelling.utils.MiscUtilities;
  * @author Ferdinando
  *
  */
-public class Bean {
+public class Bean implements Cloneable {
 	
 	private Properties properties = null;
 	
@@ -58,6 +59,26 @@ public class Bean {
 		return childr;
 	}
 
+	@Override
+	public Object clone() {
+		
+		Bean it = null;
+		try {
+			it = this.getClass().newInstance();
+		} catch (Exception e) {
+			throw new ThinklabRuntimeException(e);
+		}
+		
+		for (OD od : fields) {
+			it.addField(od.id, (String)od.value, (HashMap<String, String>)od.attributes.clone());			
+		}
+		for (OD od : childr) {
+			it.addChild(od.id, (Bean)(((Bean)(od.value)).clone()), (HashMap<String, String>)od.attributes.clone());			
+		}
+		
+		return it;
+	}
+	
 	private OD findOD(ArrayList<OD> list, String property, String attribute, String value) {
 
 		OD it = null;
@@ -137,7 +158,7 @@ public class Bean {
 		return ret;
 	}
 
-	class OD implements Comparable<OD> {
+	static class OD implements Comparable<OD> {
 		
 		public String id;
 		public Object value;
