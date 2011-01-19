@@ -316,8 +316,11 @@ public class PostgisGazetteer implements IGazetteer {
 			fi = ((VectorCoverage) coverage).getFeatureIterator(null,
 					attributes);
 			boolean first = true;
+			int feature_index = 0;
 			while (fi.hasNext()) {
 
+				feature_index ++;
+				
 				SimpleFeature f = fi.next();
 				Geometry geometry = (Geometry) f.getDefaultGeometry();
 				ShapeValue shape = new ShapeValue(geometry, crs);
@@ -336,7 +339,9 @@ public class PostgisGazetteer implements IGazetteer {
 						"@{id}");
 				HashMap<String, Object> fields = new HashMap<String, Object>();
 
-				fields.put("id", f.getID());
+				fields.put("id", f.getID().toString());
+				
+				fields.put("feature_index", feature_index + "");
 
 				/*
 				 * retrieve all attributes for the shape.
@@ -349,7 +354,7 @@ public class PostgisGazetteer implements IGazetteer {
 					 */
 					if (attributes[i].equals("the_geom"))
 						continue;
-					fields.put(attributes[i], f.getAttribute(attributes[i]));
+					fields.put(attributes[i], f.getAttribute(attributes[i]).toString());
 				}
 
 				/*

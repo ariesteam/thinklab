@@ -169,10 +169,22 @@
 			<export prefix="*" />
 		</library>
 		
+		<!-- swt/jface support for occasional GUIs. Would be much nicer to 
+			 not have to suck in the Eclipse runtime and OSGI for a couple
+			 stupid dependencies. TODO check if that can be solved. -->
 		<library id="swt" path="lib/swt.jar" type="code">
 			<export prefix="*" />
 		</library>
-		<library id="jface" path="lib/org.eclipse.jface-3.6.0.jar" type="code">
+		<library id="jface" path="lib/jface-3.0m8.jar" type="code">
+			<export prefix="*" />
+		</library>
+		<library id="forms" path="lib/forms-3.0m8.jar" type="code">
+			<export prefix="*" />
+		</library>
+		<library id="osgi" path="lib/osgi-3.0m8.jar" type="code">
+			<export prefix="*" />
+		</library>
+		<library id="runtime" path="lib/runtime-3.0m8.jar" type="code">
 			<export prefix="*" />
 		</library>
 		

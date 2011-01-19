@@ -397,5 +397,7 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/textile-j-2.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.jface-3.6.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/swt.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.core.runtime_3.6.0.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.osgi_3.6.0.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

@@ -12,8 +12,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.integratedmodelling.modelling.storyline.Storyline;
 
 public class TemplateEditor extends ApplicationWindow {
@@ -30,7 +30,14 @@ public class TemplateEditor extends ApplicationWindow {
 	}
 
 	static public void run(Storyline storyline) {
-		new TemplateEditor().open();
+		try {
+			TemplateEditor window = new TemplateEditor();
+			window.setBlockOnOpen(true);
+			window.open();
+			Display.getCurrent().dispose();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
