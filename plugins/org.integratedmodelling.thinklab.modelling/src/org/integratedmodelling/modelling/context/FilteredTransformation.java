@@ -71,7 +71,11 @@ public class FilteredTransformation implements IContextTransformation {
 			return null;
 		
 		if (!_initialized)
-			initialize(context);
+			try {
+				initialize(context);
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
 		
 		if (match(original, context, stateIndex)) {
 			try {
@@ -117,21 +121,33 @@ public class FilteredTransformation implements IContextTransformation {
 		return true;
 	}
 
-	private void initialize(IContext context) {
+	private void initialize(IContext context) throws ThinklabException {
 		
 		/*
 		 * check out all filters and build something we can used when transform() is called.
 		 */
+		ShapeValue shape = null;
 		for (Object f : filters) {
 			if (f instanceof ShapeValue && context.getSpace() instanceof GridExtent) {
-				// if shape, rasterize in context to build mask
-				try {
-					this.activationLayer = ThinklabRasterizer.createMask((ShapeValue)f, (GridExtent)context.getSpace());
-				} catch (ThinklabException e) {
-					throw new ThinklabRuntimeException(e);
-				}			
+				
+				if (shape == null)
+					shape = (ShapeValue)f;
+				else 
+					shape = shape.union((ShapeValue)f);
 			} 
 		}
+
+		// union all shapes we got
+		if (shape != null) {
+			try {
+				this.activationLayer = 
+					ThinklabRasterizer.createMask(shape, 
+						(GridExtent)context.getSpace());
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}			
+		}
+		
 		_initialized = true;
 	}
 
