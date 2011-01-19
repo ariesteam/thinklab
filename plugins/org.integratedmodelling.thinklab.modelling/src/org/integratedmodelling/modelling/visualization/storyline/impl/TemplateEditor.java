@@ -13,6 +13,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Label;
+import org.integratedmodelling.modelling.storyline.Storyline;
 
 public class TemplateEditor extends ApplicationWindow {
 
@@ -27,6 +29,10 @@ public class TemplateEditor extends ApplicationWindow {
 		addStatusLine();
 	}
 
+	static public void run(Storyline storyline) {
+		new TemplateEditor().open();
+	}
+	
 	/**
 	 * Create contents of the application window.
 	 * @param parent
@@ -44,7 +50,9 @@ public class TemplateEditor extends ApplicationWindow {
 			leftFrame.setLayoutData(gd_leftFrame);
 			{
 				Composite picBar = new Composite(leftFrame, SWT.NONE);
-				picBar.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+				GridData gd_picBar = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+				gd_picBar.heightHint = 33;
+				picBar.setLayoutData(gd_picBar);
 				picBar.setBounds(0, 0, 64, 64);
 			}
 			{
@@ -58,13 +66,52 @@ public class TemplateEditor extends ApplicationWindow {
 			}
 			{
 				Composite composite = new Composite(leftFrame, SWT.NONE);
-				composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+				GridData gd_composite = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+				gd_composite.heightHint = 34;
+				composite.setLayoutData(gd_composite);
 				composite.setBounds(0, 0, 64, 64);
 			}
 		}
 		
 		Composite rightFrame = new Composite(container, SWT.NONE);
-		rightFrame.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1));
+		rightFrame.setLayout(new GridLayout(1, false));
+		rightFrame.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		Composite composite_1 = new Composite(rightFrame, SWT.NONE);
+		GridData gd_composite_1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gd_composite_1.heightHint = 28;
+		composite_1.setLayoutData(gd_composite_1);
+		composite_1.setBounds(0, 0, 64, 64);
+		
+		Composite composite_2 = new Composite(rightFrame, SWT.NONE);
+		composite_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		composite_2.setBounds(0, 0, 325, 64);
+		
+		Composite composite_3 = new Composite(rightFrame, SWT.NONE);
+		GridData gd_composite_3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gd_composite_3.widthHint = 68;
+		gd_composite_3.heightHint = 30;
+		composite_3.setLayoutData(gd_composite_3);
+		composite_3.setBounds(0, 0, 325, 64);
+		
+		Composite composite_4 = new Composite(rightFrame, SWT.NONE);
+		composite_4.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		composite_4.setBounds(0, 0, 325, 64);
+		
+		Composite composite_5 = new Composite(rightFrame, SWT.NONE);
+		GridData gd_composite_5 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gd_composite_5.heightHint = 31;
+		composite_5.setLayoutData(gd_composite_5);
+		composite_5.setBounds(0, 0, 325, 64);
+		
+		Composite composite_6 = new Composite(rightFrame, SWT.NONE);
+		composite_6.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		composite_6.setBounds(0, 0, 325, 64);
+		
+		Composite composite = new Composite(container, SWT.NONE);
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
 
 		return container;
 	}
@@ -93,10 +140,9 @@ public class TemplateEditor extends ApplicationWindow {
 	@Override
 	protected CoolBarManager createCoolBarManager(int style) {
 		CoolBarManager coolBarManager = new CoolBarManager(style);
-		{
-			ToolBarManager toolBarManager = new ToolBarManager();
-			coolBarManager.add(toolBarManager);
-		}
+		
+		ToolBarManager toolBarManager = new ToolBarManager();
+		coolBarManager.add(toolBarManager);
 		return coolBarManager;
 	}
 

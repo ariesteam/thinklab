@@ -169,6 +169,13 @@
 			<export prefix="*" />
 		</library>
 		
+		<library id="swt" path="lib/swt.jar" type="code">
+			<export prefix="*" />
+		</library>
+		<library id="jface" path="lib/org.eclipse.jface-3.6.0.jar" type="code">
+			<export prefix="*" />
+		</library>
+		
 	</runtime>
 
 	<!-- declare an ontology -->

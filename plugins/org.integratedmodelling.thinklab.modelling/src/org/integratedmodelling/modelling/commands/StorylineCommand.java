@@ -21,6 +21,7 @@ import org.integratedmodelling.modelling.visualization.FileVisualization;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
 import org.integratedmodelling.modelling.visualization.storyline.StorylineTemplate;
+import org.integratedmodelling.modelling.visualization.storyline.impl.TemplateEditor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.InteractiveCommandHandler;
@@ -177,6 +178,10 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			
 		} else if (action.equals("test")) {
 			
+			
+		}  else if (action.equals("view")) {
+			
+			TemplateEditor.run(StorylineFactory.getStoryline(path));
 			
 		} else if (action.equals("copy")) {
 			
