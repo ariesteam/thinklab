@@ -34,4 +34,9 @@ public abstract class DefaultStatefulAbstractModel extends DefaultAbstractModel 
 	public Object getState() {
 		return this.state;
 	}
+	
+	@Override
+	public boolean isStateful() {
+		return true;
+	}
 }

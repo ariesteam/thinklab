@@ -361,14 +361,14 @@ public class Compiler {
 	}
 
 	private ObsDesc buildObsDesc(Observation o,
-			HashMap<IObservation, ObsDesc> accessors, 
+			HashMap<IObservation, ObsDesc> descriptors, 
 			HashSet<IObservation> deactivatable, 
 			IObservationContext context, 
 			VMContextualizer<?> contextualizer, 
 			IConcept stateType) throws ThinklabException {
 		
-		if (accessors.containsKey(o))
-			return accessors.get(o);
+		if (descriptors.containsKey(o))
+			return descriptors.get(o);
 		
 		ObsDesc odesc = new ObsDesc();
 
@@ -378,7 +378,7 @@ public class Compiler {
 			 * no further.
 			 */
 			odesc.predefined = o.getPredefinedState();
-			accessors.put(o, odesc);
+			descriptors.put(o, odesc);
 			return odesc;
 		}
 		
@@ -396,7 +396,7 @@ public class Compiler {
 			// FIXME we just assume this for the time being; the datasource will be 
 			// automatically inserted and no code generated.
 			odesc.contextualized = true;
-			accessors.put(o, odesc);
+			descriptors.put(o, odesc);
 			return odesc;
 		}
 		
@@ -472,7 +472,7 @@ public class Compiler {
 			
 			IObservation dependent = e.getTargetObservation();
 			ObsDesc odsc = 
-				buildObsDesc((Observation)dependent, accessors, deactivatable, context, contextualizer, stateType);
+				buildObsDesc((Observation)dependent, descriptors, deactivatable, context, contextualizer, stateType);
 
 			/**
 			 * TODO -- check logics:
@@ -489,6 +489,25 @@ public class Compiler {
 				accessorsThatWantUs.add(odsc.accessor);
 				datasourcesThatWantUs.add(odsc.datasource);
 				odesc.needed = true;
+				
+//				/*
+//				 * if we are stateless we have no state, so what the accessor means is that it wants all of
+//				 * our direct dependencies. Of course this stateless bullshit should only exist at the top
+//				 * of an observation tree, but for now we have the f'ing bayesian things to make sure the
+//				 * kids can use Genie.
+//				 */
+//				for (MediatedDependencyEdge ed : dependencies.incomingEdgesOf(dependent)) {	
+//					
+//					IObservation adep = ed.getSourceObservation();
+//					System.out.println("fcy " + adep.getObservableClass() + " is wanted by " + dependent.getObservableClass());
+//					ObsDesc zio = descriptors.get(o);
+//					System.out.println("its descriptor is " + zio + "\n");
+//					
+//					
+//					//					ObsDesc aods = 
+////						buildObsDesc((Observation)adep, accessors, deactivatable, context, contextualizer, stateType);
+////					odsc.accessor.notifyDependencyObservable(adep, adep.getObservableClass(), ((Observation)adep).getFormalName());
+//				}
 			}
 
 		}
@@ -529,7 +548,7 @@ public class Compiler {
 			}
 		}
 			
-		accessors.put(o, odesc);
+		descriptors.put(o, odesc);
 		return odesc;
 	}
 

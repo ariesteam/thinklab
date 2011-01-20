@@ -170,7 +170,7 @@ public class ModelResult implements IQueryResult  {
 			 * very different for the two.
 			 */
 			for (IQueryResult mr : _contingents) {
-				if (((ModelResult)mr)._model instanceof DefaultStatefulAbstractModel) {
+				if (((DefaultAbstractModel)((ModelResult)mr)._model).isStateful()) {
 					hasStateful = true;
 				} else {
 					hasStateless = true;

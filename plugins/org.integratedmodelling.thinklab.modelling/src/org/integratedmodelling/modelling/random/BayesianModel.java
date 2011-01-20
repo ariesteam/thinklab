@@ -5,13 +5,16 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.interfaces.IContext;
+import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.corescience.ClassificationModel;
 import org.integratedmodelling.modelling.implementations.observations.BayesianTransformer;
 import org.integratedmodelling.modelling.interfaces.IContextOptional;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.model.DefaultAbstractModel;
+import org.integratedmodelling.modelling.model.DefaultStatefulAbstractModel;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -26,7 +29,7 @@ import org.integratedmodelling.utils.Polylist;
 
 import smile.Network;
 
-public class BayesianModel extends DefaultAbstractModel implements IContextOptional {
+public class BayesianModel extends DefaultStatefulAbstractModel implements IContextOptional {
 
 	String source = null;
 	String algorithm = null;
@@ -34,6 +37,7 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 	ArrayList<String> requiredIds = new ArrayList<String>();
 	ArrayList<IConcept> keepers = new ArrayList<IConcept>();
 	ArrayList<IConcept> required = new ArrayList<IConcept>();
+	IModel resultModel = null;
 	
 	@Override
 	protected void copy(DefaultAbstractModel model) {
@@ -43,6 +47,7 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 		requiredIds = ((BayesianModel)model).requiredIds;
 		keepers = ((BayesianModel)model).keepers;
 		source = ((BayesianModel)model).source;
+		resultModel = ((BayesianModel)model).resultModel;
 	}
 
 	@Override
@@ -65,10 +70,19 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 			for (Object c : p)
 				requiredIds.add(c.toString());
 
+		} else if (keyword.equals(":result")) {
+			
+			resultModel = (IModel)argument;
+			
 		} else super.applyClause(keyword, argument);
 			
 	}
 
+	@Override
+	public boolean isStateful() {
+		return resultModel != null;
+	}
+	
 	@Override
 	public void addObservedModel(IModel model) {
 		
@@ -113,6 +127,14 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 	public Polylist buildDefinition(IKBox kbox, ISession session, IContext context, int flags) throws ThinklabException {
 
 		ArrayList<Object> arr = new ArrayList<Object>();
+		IndirectObservation resultObservation = null;
+		
+		if (resultModel != null) {
+			Polylist ls = 
+				((Model)resultModel).getDefinition().buildDefinition(kbox, session, context, flags);
+			resultObservation = 
+				(IndirectObservation) ObservationFactory.getObservation(session.createObject(ls));	
+		}
 		
 		arr.add("modeltypes:BayesianTransformer");
 		
@@ -137,7 +159,7 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 						ModelFactory.REQUIRES_STATES, 
 						required.get(i).toString()));
 		}
-		
+				
 		/*
 		 * communicate how to model specific nodes that had their
 		 * model specified by passing a prototype observation.
@@ -154,7 +176,13 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 					((Model)c).getDefinition().buildDefinition(kbox, session, null, FORCE_OBSERVABLE)));
 		}
 
-		return Polylist.PolylistFromArrayList(arr);
+		Polylist ret = Polylist.PolylistFromArrayList(arr);
+		
+		if (resultObservation != null) {
+			ret = ObservationFactory.addReflectedField(ret, "outputObservation", resultObservation);
+		}
+		
+		return ret;
 	}
 
 	@Override
@@ -212,6 +240,13 @@ public class BayesianModel extends DefaultAbstractModel implements IContextOptio
 		/**
 		 * TODO validate any states defined inline (later)
 		 */
+	}
+
+	@Override
+	protected Object validateState(Object state)
+			throws ThinklabValidationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

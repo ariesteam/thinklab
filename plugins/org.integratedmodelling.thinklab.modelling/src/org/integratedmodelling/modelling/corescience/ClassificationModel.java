@@ -293,6 +293,10 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		ArrayList<Pair<GeneralClassifier,IConcept>> clsf = 
 			new ArrayList<Pair<GeneralClassifier,IConcept>>();
 		
+		// TODO only necessary in one special case, should be revised
+		if (concepts.size() < classifiers.size())
+			validateSemantics(session);
+		
 		for (int i = 0; i < classifiers.size(); i++) {
 			clsf.add(new Pair<GeneralClassifier,IConcept>(
 						classifiers.get(i), concepts.get(i)));

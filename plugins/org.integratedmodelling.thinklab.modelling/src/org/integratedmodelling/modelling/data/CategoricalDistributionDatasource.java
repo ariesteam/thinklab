@@ -277,7 +277,11 @@ public class CategoricalDistributionDatasource extends
 		
 		if (o == null)
 			super.setValue(idx, null);
-		else {
+		else if (o instanceof IndexedCategoricalDistribution) {
+			
+			super.setValue(idx, (IndexedCategoricalDistribution)o);
+			
+		} else {
 			
 			/*
 			 * reorder values according to sorted order before inserting the distribution
@@ -367,5 +371,15 @@ public class CategoricalDistributionDatasource extends
 		if (hashMap != null)
 			getMetadata().putAll(hashMap);
 	}
+
+	@Override
+	public Object getValue(int offset) {
+		Object ret = super.getValue(offset);
+		if (ret != null)
+			((IndexedCategoricalDistribution)ret).setRanges(distributionBreakpoints);
+		return ret;
+	}
+	
+	
 	
 }

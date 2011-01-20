@@ -56,6 +56,12 @@
 	[]
 	(new org.integratedmodelling.modelling.corescience.ClassificationModel))
 
+(defn j-make-probabilistic-measurement
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.ProbabilisticMeasurementModel))
+
+
 (defn j-make-observation
 	"Make a new instance of Model and return it."
 	[]
@@ -146,6 +152,7 @@
         (= option :value)       (.applyClause model ":value"       (eval val))
         (= option :context)     (.applyClause model ":context"     (map configure-model (tl/group-with-keywords val)))
         (= option :observed)    (.applyClause model ":observed"    (map configure-model (tl/group-with-keywords val)))
+        (= option :result)      (.applyClause model ":result"      (eval val))
         (= option :update)      (.applyClause model ":update"      (eval val))
         (= option :initialize)  (.applyClause model ":initialize"  (eval val))
         (= option :play)        (.applyClause model ":play"        (eval val))
@@ -398,6 +405,22 @@
 		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (eval (second classifier#)))))
  	   model#))
 
+(defmacro probabilistic-measurement
+	"The states of a classification model are concepts. All states must be direct children of the main observable
+	of the model."
+	[observable & specs]
+	`(let [model# (modelling/j-make-probabilistic-measurement)] 
+ 	   (.setObservable model# 
+	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
+ 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
+ 	   					(eval ~observable)))
+		 (doseq [classifier# (partition 2 '~specs)]
+		 	   (if  (and  (keyword? (first classifier#)) (not (= :otherwise (first classifier#)))) 
+		 	   		  (transform-model model# classifier#) 
+		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (eval (second classifier#)))))
+ 	   model#))
+
+
 (defmacro classification-cleaner
 	"The states of a classification model are concepts. All states
      must be direct children of the main observable of the model."
@@ -481,15 +504,15 @@
   ([observable units & body]
    `(measurement ~observable ~units :count true ~@body))) 	
 	
-(defmacro probabilistic-ranking
-   "Same as a numeric ranking but the states are distributions. Unimplemented."
-   [observable & body]
-   `(ranking ~observable :probabilistic true ~@body))
+;(defmacro probabilistic-ranking
+;   "Same as a numeric ranking but the states are distributions. Unimplemented."
+;   [observable & body]
+;   `(ranking ~observable :probabilistic true ~@body))
 
-(defmacro probabilistic-measurement   
-   "Same as a numeric measurement but the states are distributions. Unimplemented."
-   [observable units & body]
-   `(measurement ~observable ~units :probabilistic true ~@body)) 
+;(defmacro probabilistic-measurement   
+;   "Same as a numeric measurement but the states are distributions. Unimplemented."
+;   [observable units & body]
+;   `(measurement ~observable ~units :probabilistic true ~@body)) 
 
 (defmacro identification
 	"Create an identification model. The observable can only be a semantic object."

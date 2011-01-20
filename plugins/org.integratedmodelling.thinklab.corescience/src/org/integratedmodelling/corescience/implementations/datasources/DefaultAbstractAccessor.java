@@ -5,10 +5,8 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
-import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 /**
  * Adds a few useful methods to navigate the complexities of multidimensional contexts.

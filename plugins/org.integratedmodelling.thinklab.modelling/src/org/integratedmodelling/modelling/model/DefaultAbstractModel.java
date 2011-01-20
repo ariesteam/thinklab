@@ -134,6 +134,10 @@ public abstract class DefaultAbstractModel implements IModel {
 	public void setDescription(String desc) {
 		this.description = desc;
 	}
+	
+	public boolean isStateful() {
+		return false;
+	}
 
 	/**
 	 * This one is invoked once before any use is made of the model, and is

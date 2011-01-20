@@ -10,20 +10,26 @@ import java.util.HashSet;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.implementations.datasources.InlineAccessor;
+import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
+import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
+import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
+import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
@@ -46,7 +52,7 @@ import smile.Network;
 @InstanceImplementation(concept="modeltypes:BayesianTransformer")
 public class BayesianTransformer 
 	extends Observation 
-	implements  TransformingObservation {
+	implements IndirectObservation, TransformingObservation {
 	
 	public static final String HAS_NETWORK_SOURCE = "modeltypes:hasBayesianNetworkSource";
 	public static final String HAS_BAYESIAN_ALGORITHM = "modeltypes:hasBayesianAlgorithm";
@@ -67,6 +73,10 @@ public class BayesianTransformer
 	
 	HashSet<IConcept> outputStates = new HashSet<IConcept>();
 	HashSet<IConcept> requiredStates = new HashSet<IConcept>();
+	
+	
+	public IndirectObservation outputObservation = null;
+	private IState outputState = null;
 	
 	IConcept cSpace = null;
 	private Network bn = null;
@@ -403,7 +413,17 @@ public class BayesianTransformer
 		 * add states
 		 */
 		for (int s = 0; s < pstorage.length; s++) {
-			ret.addState(pstorage[s].data);
+			
+			if (
+				outputState != null &&
+				pstorage[s].data.getObservableClass().
+					equals(outputState.getObservableClass())) {
+				
+				for (int is = 0; is < pstorage[s].data.getValueCount(); is++)
+					outputState.setValue(is, pstorage[s].data.getValue(is));
+			} else {
+				ret.addState(pstorage[s].data);
+			}
 		}
 
 		return ret;
@@ -420,6 +440,37 @@ public class BayesianTransformer
 		return CoreScience.Observation();
 	}
 
+
+	@Override
+	public IConcept getStateType() {
+		return 
+			outputObservation == null ? 
+				cSpace : // or null?
+				outputObservation.getStateType();
+	}
+
+
+	@Override
+	public IState createState(int size, IObservationContext context) throws ThinklabException {
+		if (outputObservation != null && outputState == null) {
+			outputState = outputObservation.createState(size, context);
+		}
+		return outputState;
+	}
+
+	@Override
+	public IStateAccessor getAccessor(IObservationContext context) {
+		try {
+			/*
+			 * getAccessor is called before getState
+			 */
+			createState(context.getMultiplicity(), context);
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+		return outputState == null ? null : new InlineAccessor(outputState);
+	}
+	
 
 
 }

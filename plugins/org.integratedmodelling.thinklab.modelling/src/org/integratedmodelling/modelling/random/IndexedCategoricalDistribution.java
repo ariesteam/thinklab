@@ -10,6 +10,7 @@ import org.integratedmodelling.utils.Pair;
 public class IndexedCategoricalDistribution {
 
 	public double[] data = null;
+	private double[] ranges;
 	
 	public IndexedCategoricalDistribution(int n) {
 		data = new double[n];
@@ -51,17 +52,21 @@ public class IndexedCategoricalDistribution {
 	public String toString() {
 		return Arrays.toString(data);
 	}
+
+	public void setRanges(double[] distributionBreakpoints) {
+		this.ranges = distributionBreakpoints;
+	}
 	
-	/**
-	 * Pass the values of the distributed classified data (a double array of values at each
-	 * breakpoint, size n+1, or the actual values, size n) and return the mean and standard 
-	 * deviation. Takes values at midpoint if breakpoints are passed.
-	 */
-	public Pair<Double, Double> stats(double[] values) {
-		
-		double m = 0.0, std = 0.0;
-		
-		return new Pair<Double, Double>(m,std);
+	public double getMean() {
+
+		double ret = 0.0;
+		if (ranges != null) {
+			for (int i = 0; i < data.length; i++) {
+				double midpoint = (this.ranges[i] + (this.ranges[i+1] - this.ranges[i])/2);				
+				ret += midpoint * data[i];
+			}
+		}
+		return ret;
 	}
 	
 }
