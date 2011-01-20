@@ -11,7 +11,6 @@ import java.util.HashSet;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.InlineAccessor;
-import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
@@ -25,7 +24,6 @@ import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
-import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -46,6 +44,16 @@ import smile.Network;
 /**
  * Support for the modelling/bayesian form. 
  * TODO this only works with SMILE/Genie. Must be riskwiz-compatible, too.
+ * 
+ * TODO: in the model: pass full models for prototypes (unless that is already the 
+ * case - I can't check now);
+ * at init: create network and look for a node that has the same type as the
+ * model observable. If found, find a model in the prototypes with the same
+ * observable. If found, create an observation from it and use that to define
+ * the state as it is now - set it in outputObservation/outputState. If there is
+ * a model but no prototype, just set the output state to the obvious 
+ * categorical distribution.
+ * 
  * 
  * @author Ferdinando
  */
@@ -74,7 +82,7 @@ public class BayesianTransformer
 	HashSet<IConcept> outputStates = new HashSet<IConcept>();
 	HashSet<IConcept> requiredStates = new HashSet<IConcept>();
 	
-	
+	// these two should be phased out...
 	public IndirectObservation outputObservation = null;
 	private IState outputState = null;
 	
