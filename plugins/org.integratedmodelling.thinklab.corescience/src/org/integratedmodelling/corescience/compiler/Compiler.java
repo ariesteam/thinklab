@@ -382,10 +382,13 @@ public class Compiler {
 			/*
 			 * if context has a state for this observable, just use that state and compile
 			 * no further.
+			 * 
+			 * FIXME disabling until the fucking "undiscretizers" are not needed any more. Those are
+			 * predefined models that don't predefine anything, and confuse the hell out of it.
 			 */
-			odesc.predefined = o.getPredefinedState();
-			descriptors.put(o, odesc);
-			return odesc;
+//			odesc.predefined = o.getPredefinedState();
+//			descriptors.put(o, odesc);
+//			return odesc;
 		}
 		
 		if (((ObservationContext)context).getTransformation(o.getObservableClass()) != null) {

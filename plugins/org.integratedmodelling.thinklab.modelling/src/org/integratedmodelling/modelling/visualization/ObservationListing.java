@@ -97,7 +97,7 @@ public class ObservationListing {
 		Integer nlev = (Integer)state.getMetadata().get(Metadata.IMAGE_LEVELS);
 		HashMap<IConcept, Integer> ranks = Metadata.getClassMappings(state.getMetadata());
 
-		if (ranks != null || (nlev != null && nlev < 12)) {
+		if ((ranks != null && ranks.size() > 0) || (nlev != null && nlev > 0 && nlev < 12)) {
 			ndivs = nlev;
 		}
 		

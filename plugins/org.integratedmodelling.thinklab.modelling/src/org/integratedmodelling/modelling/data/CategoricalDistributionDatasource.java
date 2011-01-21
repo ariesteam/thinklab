@@ -7,8 +7,8 @@ import java.util.HashMap;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceInt;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
+import org.integratedmodelling.corescience.literals.IndexedCategoricalDistribution;
 import org.integratedmodelling.corescience.metadata.Metadata;
-import org.integratedmodelling.modelling.random.IndexedCategoricalDistribution;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
@@ -142,8 +142,6 @@ public class CategoricalDistributionDatasource extends
 		return ret;
 	}
 
-
-	
 	/**
 	 * TODO should return the mean, not the most likely class, except if requested.
 	 * @param probabilities

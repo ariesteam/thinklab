@@ -1,8 +1,6 @@
-package org.integratedmodelling.modelling.random;
+package org.integratedmodelling.corescience.literals;
 
 import java.util.Arrays;
-
-import org.integratedmodelling.utils.Pair;
 
 /*
  * nothing but a double array with appropriate hash methods

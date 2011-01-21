@@ -93,7 +93,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		}
 
 		// anything that is specifically modeled becomes a keeper automatically
-		keeperIds.add(((DefaultAbstractModel)model).getObservableId());
+		keeperIds.add(((DefaultAbstractModel)((Model)model).getDefinition()).getObservableId());
 		super.addObservedModel(model);
 	}
 	

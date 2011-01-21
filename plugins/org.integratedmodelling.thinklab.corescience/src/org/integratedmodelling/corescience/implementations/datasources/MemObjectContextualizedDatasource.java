@@ -40,6 +40,7 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.literals.IndexedCategoricalDistribution;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -133,12 +134,24 @@ public class MemObjectContextualizedDatasource
 		}
 		
 		if (prototype instanceof Number) {
+			
 			double[] ret = new double[data.length];
 			for (int i = 0; i < data.length; i++) {
 				ret[i] = (data[i] == null ? Double.NaN : ((Number)data[i]).doubleValue());
 			}
 			return ret;
+			
+		} else if (prototype instanceof IndexedCategoricalDistribution) {
+			
+			double[] ret = new double[data.length];
+			for (int i = 0; i < data.length; i++) {
+				ret[i] = (data[i] == null ? Double.NaN : ((IndexedCategoricalDistribution)data[i]).getMean());
+			}
+			return ret;
+			
+			
 		} else if (prototype instanceof IConcept && Metadata.getClassMappings(metadata) != null) {
+
 			double[] ret = new double[data.length];
 			HashMap<IConcept, Integer> rnk = Metadata.getClassMappings(metadata);
 			for (int i = 0; i < data.length; i++) {

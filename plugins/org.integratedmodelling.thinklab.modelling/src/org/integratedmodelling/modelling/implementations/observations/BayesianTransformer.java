@@ -137,10 +137,11 @@ public class BayesianTransformer
 				for (String s : bn.getAllNodeIds()) {
 					String cid = getObservableClass().getConceptSpace() + ":" + s;
 					if (getObservableClass().toString().equals(s)) {
+						
 						outputObservable = KnowledgeManager.getConcept(s);
 						
 						for (IModel m : observed) {
-							if (m.getObservableClass().equals(outputObservable)) {
+							if (((Model)m).getDefinition().getObservableClass().equals(outputObservable)) {
 								outputModel = m;
 							}
 						}
