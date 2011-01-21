@@ -323,7 +323,7 @@ public class GraphicalShell {
          *  is printed again.
          */
 		try {
-			Thread.sleep(200);
+			Thread.sleep(600);
 		} catch (InterruptedException e) {
 		}
 	}

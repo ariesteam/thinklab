@@ -255,8 +255,9 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		int yc = extent.getYCells();
 		
 		if (extent.getXCells() == 0 && extent.getYCells() == 0) {
-			xc = (int) ((extent.getEast() - extent.getWest())/this.xCellSize);
-			yc = (int) ((extent.getNorth() - extent.getSouth())/this.yCellSize);
+			
+			xc = (int)Math.ceil((extent.getEast() - extent.getWest())/this.xCellSize);
+			yc = (int)Math.ceil((extent.getNorth() - extent.getSouth())/this.yCellSize);
 			
 			System.out.println("computed raster size is " + xc + " x " + yc);
 			extent.setResolution(xc, yc);
@@ -291,7 +292,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			throw new ThinklabInternalErrorException(e);
 		}
 
-		// System.out.println("WCS URL: " + url);
+		System.out.println("WCS URL: " + url);
 
 		return url;
 	}

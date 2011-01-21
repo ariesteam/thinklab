@@ -174,10 +174,10 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 		int x = 0, y = 0;
 		if (env.getWidth() > env.getHeight()) {
 			x = maxLinearResolution;
-			y = (int)(maxLinearResolution * (env.getHeight()/env.getWidth()));
+			y = (int)Math.ceil(maxLinearResolution * (env.getHeight()/env.getWidth()));
 		} else {
 			y = maxLinearResolution;
-			x = (int)(maxLinearResolution * (env.getWidth()/env.getHeight()));			
+			x = (int)Math.ceil(maxLinearResolution * (env.getWidth()/env.getHeight()));			
 		}
 		
 		return new Pair<Integer, Integer>(x,y);
