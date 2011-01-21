@@ -176,7 +176,11 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 					((Model)c).getDefinition().buildDefinition(kbox, session, null, FORCE_OBSERVABLE)));
 		}
 
+		
+		
 		Polylist ret = Polylist.PolylistFromArrayList(arr);
+
+		ret = ObservationFactory.addReflectedField(ret, "observed", observed);
 		
 		if (resultObservation != null) {
 			ret = ObservationFactory.addReflectedField(ret, "outputObservation", resultObservation);

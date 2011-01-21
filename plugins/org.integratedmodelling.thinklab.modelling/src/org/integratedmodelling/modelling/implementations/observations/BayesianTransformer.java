@@ -24,6 +24,8 @@ import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
+import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -36,8 +38,10 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
+import org.integratedmodelling.utils.Polylist;
 
 import smile.Network;
 
@@ -45,8 +49,7 @@ import smile.Network;
  * Support for the modelling/bayesian form. 
  * TODO this only works with SMILE/Genie. Must be riskwiz-compatible, too.
  * 
- * TODO: in the model: pass full models for prototypes (unless that is already the 
- * case - I can't check now);
+ * TODO
  * at init: create network and look for a node that has the same type as the
  * model observable. If found, find a model in the prototypes with the same
  * observable. If found, create an observation from it and use that to define
@@ -82,9 +85,13 @@ public class BayesianTransformer
 	HashSet<IConcept> outputStates = new HashSet<IConcept>();
 	HashSet<IConcept> requiredStates = new HashSet<IConcept>();
 	
+	public ArrayList<IModel> observed = new ArrayList<IModel>();
+	
 	// these two should be phased out...
 	public IndirectObservation outputObservation = null;
 	private IState outputState = null;
+	private IConcept outputObservable = null;
+	private IModel outputModel = null;
 	
 	IConcept cSpace = null;
 	private Network bn = null;
@@ -115,6 +122,33 @@ public class BayesianTransformer
 					 */
 					
 				}
+				
+				/*
+				 * look for a node that has the same type as the
+				 * model observable. If found, find a model in the prototypes with the same
+				 * observable. If found, create an observation from it and use that to define
+				 * the state as it is now.
+				 */
+
+				/*
+				 * get an index of all node names from the network, to be used later
+				 */
+				HashSet<String> nodeIDs = new HashSet<String>();
+				for (String s : bn.getAllNodeIds()) {
+					String cid = getObservableClass().getConceptSpace() + ":" + s;
+					if (getObservableClass().toString().equals(s)) {
+						outputObservable = KnowledgeManager.getConcept(s);
+						
+						for (IModel m : observed) {
+							if (m.getObservableClass().equals(outputObservable)) {
+								outputModel = m;
+							}
+						}
+						
+						break;
+					}
+				}
+				
 				
 			} catch (Exception e) {
 				throw new ThinklabValidationException(
@@ -448,6 +482,11 @@ public class BayesianTransformer
 		return CoreScience.Observation();
 	}
 
+	public void checkOutputState() {
+		if (outputObservation != null && outputState == null) {
+//			outputState = outputObservation.createState(size, context);
+		}
+	}
 
 	@Override
 	public IConcept getStateType() {
@@ -457,25 +496,30 @@ public class BayesianTransformer
 				outputObservation.getStateType();
 	}
 
+	@Override
+	public void preContextualization(ObservationContext context,
+			ISession session) throws ThinklabException {
+		if (outputModel != null && outputObservation == null) {
+			Polylist ls = 
+				((Model)outputModel).getDefinition().buildDefinition(KBoxManager.get(), session, context, 0);
+			outputObservation = 
+				(IndirectObservation) ObservationFactory.getObservation(session.createObject(ls));	
+		}
+		if (outputObservation != null && outputState == null) {
+			outputState = outputObservation.createState(context.getMultiplicity(), context);
+		} else if (outputModel == null && outputObservation == null && outputObservable != null) {
+			// TODO must float the state of the given concept but it's work to get the
+			// parameters at this point
+		}
+	}
 
 	@Override
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
-		if (outputObservation != null && outputState == null) {
-			outputState = outputObservation.createState(size, context);
-		}
 		return outputState;
 	}
 
 	@Override
 	public IStateAccessor getAccessor(IObservationContext context) {
-		try {
-			/*
-			 * getAccessor is called before getState
-			 */
-			createState(context.getMultiplicity(), context);
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
 		return outputState == null ? null : new InlineAccessor(outputState);
 	}
 	

@@ -20,6 +20,7 @@ import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabCircularDependencyException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -105,7 +106,7 @@ public class Compiler {
 		}
 	}
 
-	public Contextualizer compile(ObservationContext context) throws ThinklabException {
+	public Contextualizer compile(ObservationContext context, ISession session) throws ThinklabException {
 		
 		context.validate();
 		
@@ -144,6 +145,11 @@ public class Compiler {
 			 * add to order of compilation for later, so we don't repeat the sorting.
 			 */
 			order.add(obs = ord.next());
+			
+			/*
+			 * callback to expose obs to the context before anything happens.
+			 */
+			((Observation)obs).preContextualization(context, session);
 			
 			/*
 			 * determine common stack type

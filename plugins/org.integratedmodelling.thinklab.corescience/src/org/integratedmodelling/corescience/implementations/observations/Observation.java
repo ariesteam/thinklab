@@ -3,6 +3,7 @@ package org.integratedmodelling.corescience.implementations.observations;
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
@@ -13,6 +14,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -369,5 +371,18 @@ public class Observation implements IObservation, IInstanceImplementation {
 
 	public void setMerged(boolean b) {
 		isMerged  = b;
+	}
+
+	/**
+	 * This is a callback used by the compiler - if there's anything that needs done
+	 * and depends on the context before getStateType() and createState() get called, 
+	 * put it here.
+	 * 
+	 * @param context
+	 * @param session
+	 * @throws ThinklabException 
+	 */
+	public void preContextualization(ObservationContext context,
+			ISession session) throws ThinklabException {
 	}
 }

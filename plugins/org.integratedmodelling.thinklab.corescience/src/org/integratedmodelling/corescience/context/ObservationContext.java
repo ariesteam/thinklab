@@ -670,7 +670,7 @@ public class ObservationContext implements IObservationContext, IContext {
 				 * may need their neighborhood anyway, or such.
 				 */
 				ObservationContext co = new ObservationContext(cont, originalContext);
-				Contextualizer ctx = new Compiler().compile(co);
+				Contextualizer ctx = new Compiler().compile(co, session);
 				IObservationContext cinst = ctx.run(session);
 				// set in order of declaration in the model, so the pairing with their
 				// conditionals is right and the order is respected
@@ -702,7 +702,7 @@ public class ObservationContext implements IObservationContext, IContext {
 					originalContext :
 					this;
 			
-			Contextualizer contextualizer = new Compiler().compile(ctx);
+			Contextualizer contextualizer = new Compiler().compile(ctx, session);
 			
 			ObservationContext inst = contextualizer.run(session);
 			
@@ -752,7 +752,7 @@ public class ObservationContext implements IObservationContext, IContext {
 			throw new ThinklabContextualizationException("the intersection of the dependent contexts is empty: an empty observation context cannot be run");
 		
 		processTransformations(session, listeners);
-		Contextualizer contextualizer = new Compiler().compile(this);		
+		Contextualizer contextualizer = new Compiler().compile(this, session);		
 		contextualizer.run(session);
 	
 		if (listeners != null) {
