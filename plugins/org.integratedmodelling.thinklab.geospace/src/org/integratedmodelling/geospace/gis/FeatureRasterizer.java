@@ -531,28 +531,28 @@ public class FeatureRasterizer {
                 	Polygon poly = (Polygon) geometry.getGeometryN(i);
                 	LinearRing lr = geoFactory.createLinearRing(poly.getExteriorRing().getCoordinates());
             		Polygon part = geoFactory.createPolygon(lr, null);
-                	drawGeometry(part);
+                	drawGeometry(part, false);
                 	for (int j = 0; j < poly.getNumInteriorRing(); j++) {
                 		lr = geoFactory.createLinearRing(poly.getInteriorRingN(j).getCoordinates());
                 		part = geoFactory.createPolygon(lr, null);
-        				drawGeometry(part);
+        				drawGeometry(part, true);
         			}
                 }
             }
             else if (geometry.getClass().equals(MultiLineString.class)) {
                 MultiLineString mp = (MultiLineString)geometry;
                 for (int n=0; n<mp.getNumGeometries(); n++) {
-                    drawGeometry(mp.getGeometryN(n));
+                    drawGeometry(mp.getGeometryN(n), false);
                 }
             }
             else if (geometry.getClass().equals(MultiPoint.class)) {
                 MultiPoint mp = (MultiPoint)geometry;
                 for (int n=0; n<mp.getNumGeometries(); n++) {
-                    drawGeometry(mp.getGeometryN(n));
+                    drawGeometry(mp.getGeometryN(n), false);
                 }
             }
             else {
-                drawGeometry(geometry);
+                drawGeometry(geometry, false);
             }
         }
 
@@ -606,9 +606,6 @@ public class FeatureRasterizer {
             return;	        
         }
         
-        int rgbVal = floatBitsToInt(value);
-        graphics.setColor(new Color(rgbVal, true));
-
         // Extract polygon and rasterize!
         Geometry geometry = (Geometry) feature.getDefaultGeometry();
                 
@@ -620,28 +617,28 @@ public class FeatureRasterizer {
                 	Polygon poly = (Polygon) geometry.getGeometryN(i);
                 	LinearRing lr = geoFactory.createLinearRing(poly.getExteriorRing().getCoordinates());
             		Polygon part = geoFactory.createPolygon(lr, null);
-                	drawGeometry(part);
+                	drawGeometry(part, false);
                 	for (int j = 0; j < poly.getNumInteriorRing(); j++) {
                 		lr = geoFactory.createLinearRing(poly.getInteriorRingN(j).getCoordinates());
                 		part = geoFactory.createPolygon(lr, null);
-        				drawGeometry(part);
+        				drawGeometry(part, true);
         			}
                 }
             }
             else if (geometry.getClass().equals(MultiLineString.class)) {
                 MultiLineString mp = (MultiLineString)geometry;
                 for (int n=0; n<mp.getNumGeometries(); n++) {
-                    drawGeometry(mp.getGeometryN(n));
+                    drawGeometry(mp.getGeometryN(n), false);
                 }
             }
             else if (geometry.getClass().equals(MultiPoint.class)) {
                 MultiPoint mp = (MultiPoint)geometry;
                 for (int n=0; n<mp.getNumGeometries(); n++) {
-                    drawGeometry(mp.getGeometryN(n));
+                    drawGeometry(mp.getGeometryN(n), false);
                 }
             }
             else {
-                drawGeometry(geometry);
+                drawGeometry(geometry, false);
             }
         }
     }
@@ -680,10 +677,13 @@ public class FeatureRasterizer {
         }
     }
 
-    private void drawGeometry(Geometry geometry) {
+    private void drawGeometry(Geometry geometry, boolean hole) {
 
         Coordinate[] coords = geometry.getCoordinates();
 
+        int rgbVal = floatBitsToInt(hole ? Float.NaN : value);
+        graphics.setColor(new Color(rgbVal, true));        
+        
         // enlarge if needed
         if (coords.length > coordGridX.length) {
             coordGridX = new int[coords.length];
