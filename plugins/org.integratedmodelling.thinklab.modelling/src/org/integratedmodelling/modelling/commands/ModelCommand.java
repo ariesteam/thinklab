@@ -221,7 +221,7 @@ public class ModelCommand implements ICommandHandler {
 			ret = res;
 		}
 			
-		return ret;
+		return null;
 	}
 
 }

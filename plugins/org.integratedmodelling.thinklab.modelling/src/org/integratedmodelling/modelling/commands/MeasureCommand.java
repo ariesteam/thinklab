@@ -1,27 +1,9 @@
 package org.integratedmodelling.modelling.commands;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
-
 import org.integratedmodelling.clojure.ClojureInterpreter;
-import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
-import org.integratedmodelling.corescience.listeners.IContextualizationListener;
-import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
-import org.integratedmodelling.geospace.interfaces.IGazetteer;
-import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.idv.IDV;
 import org.integratedmodelling.modelling.ModellingPlugin;
-import org.integratedmodelling.modelling.ObservationFactory;
-import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
@@ -29,19 +11,13 @@ import org.integratedmodelling.modelling.storage.NetCDFArchive;
 import org.integratedmodelling.modelling.visualization.ObservationListing;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 
 @ThinklabCommand(
 		name="measure",
@@ -63,22 +39,6 @@ public class MeasureCommand implements ICommandHandler {
 
 	IObservationContext ctx = null;
 	
-	class Listener implements IContextualizationListener {
-
-		@Override
-		public void onContextualization(IObservation original, ObservationContext context) {
-			ctx = context;
-		}
-
-		@Override
-		public void postTransformation(IObservation original, ObservationContext context) {
-		}
-
-		@Override
-		public void preTransformation(IObservation original, ObservationContext context) {
-		}
-	}
-	
 	@Override
 	public IValue execute(Command command, ISession session)
 			throws ThinklabException {
@@ -94,55 +54,23 @@ public class MeasureCommand implements ICommandHandler {
 		 * build ranking model for concept
 		 */
 		String clj = 
-			"(modelling/model \"mod" + 
-			UUID.randomUUID() + 
-			"\" '" + 
+			"(modelling/model '" + 
 			concept + 
 			" (modelling/measurement '" + concept + " \"" + units + "\"))";
 					
 		Model model = (Model) new ClojureInterpreter().evalRaw(clj, "user", null);
 		
-//		IInstance where = null;
 		IContext context = null;
 		
-		if (command.hasArgument("context")) {
-			
-			int res = 
-				(int)command.getOptionAsDouble("resolution", 256.0);	
-//			IQueryResult result = 
-//				Geospace.get().lookupFeature(
-//						command.getArgumentAsString("context"));
+		if (command.hasArgument("context")) {	
+			context = ModelFactory.get().requireContext(command.getArgumentAsString("context"));
+		}	
 
-			context = Context.getContext(command.getArgumentAsString("context"), res);
-			
-//			ShapeValue roi = null;
-//
-//			if (result.getTotalResultCount() > 0)
-//				roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
-//				
-//			if (roi != null) {
-//				where = 
-//					session.createObject(RasterGrid.createRasterGrid(roi, res));
-//				((RasterGrid) ObservationFactory.getObservation(where)).mask(roi);
-//			} else { 
-//				throw new ThinklabResourceNotFoundException(
-//						"region name " + 
-//						command.getArgumentAsString("context") +
-//						" cannot be resolved");
-//			}
-		}
-		
-		ArrayList<IContextualizationListener> listeners = 
-			new ArrayList<IContextualizationListener>();
-		if (command.hasOption("visualize") || command.hasOption("outfile")) {
-			listeners.add(new Listener());
-		}
-	
 		if (command.hasOption("clear")) {
 			ModelFactory.get().clearCache();
 		}
 		
-		IQueryResult r = ModelFactory.get().run(model, kbox, session, listeners, context);
+		IQueryResult r = ModelFactory.get().run(model, kbox, session, null, context);
 		
 		if (session.getOutputStream() != null) {
 			session.getOutputStream().println(
@@ -155,32 +83,20 @@ public class MeasureCommand implements ICommandHandler {
 			
 			IObservationContext result = ((ContextValue)r.getResult(0, session)).getObservationContext();
 
-			// check if a listener has set ctx, which means we're visualizing
-			if (this.ctx != null) {
+			if (command.hasOption("outfile")) {
 				
 				/*
 				 * save to netcdf
 				 */
-				String outfile = null;
-				try {
-					outfile = command.hasOption("outfile") ? command
-							.getOptionAsString("outfile") : File
-							.createTempFile("ncf", ".nc").toString();
-				} catch (IOException e) {
-					throw new ThinklabIOException(e);
-				}
+				String outfile = command.getOptionAsString("outfile");
 
 				NetCDFArchive out = new NetCDFArchive();
-				out.setContext(this.ctx);
+				out.setContext(result);
 				out.write(outfile);
 				ModellingPlugin.get().logger()
 						.info(
 							"result of " + concept + " model written to "
 										+ outfile);
-
-				if (command.hasOption("visualize")) {
-					IDV.visualize(outfile);
-				}
 			}
 			
 			if (command.hasOption("dump")) {
@@ -191,7 +107,7 @@ public class MeasureCommand implements ICommandHandler {
 			ret = new ContextValue(result);
 		}
 			
-		return ret;
+		return null;
 	}
 
 }

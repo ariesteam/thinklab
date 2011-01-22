@@ -29,7 +29,7 @@ import org.integratedmodelling.utils.Polylist;
  * more.
  * 
  * @author Ferdinando
- *
+ * @deprecated
  */
 public class IntegerClassifier extends Observation implements IndirectObservation {
 

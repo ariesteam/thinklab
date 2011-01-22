@@ -30,6 +30,7 @@ import org.integratedmodelling.utils.Polylist;
  * @author Ferdinando
  *
  * @param <ObjectType>
+ * @deprecated
  */
 public class IndexedContextualizedDatasourceByte<T> 
  	implements IState, IInstanceImplementation, IConceptualizable {

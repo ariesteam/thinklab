@@ -24,8 +24,8 @@ import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 
 @ThinklabCommand(
-		name="rank",
-		description="build a ranking observation of the given concept and return it",
+		name="categorize",
+		description="build a categorization observation of the given concept and return it",
 		argumentNames="model",
 		argumentTypes="thinklab-core:Text",
 		argumentDescriptions="the concept to build a model for or the model id",
@@ -39,7 +39,7 @@ import org.integratedmodelling.thinklab.kbox.KBoxManager;
 		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing",
 		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing",
 		returnType="observation:Observation")
-public class RankCommand implements ICommandHandler {
+public class CategorizeCommand implements ICommandHandler {
 
 	IObservationContext ctx = null;
 	HashMap<IConcept, IState> states = new HashMap<IConcept, IState>();
@@ -60,7 +60,7 @@ public class RankCommand implements ICommandHandler {
 		String clj = 
 			"(modelling/model '" + 
 			concept + 
-			" (modelling/ranking '" + concept + "))";
+			" (modelling/categorization '" + concept + "))";
 					
 		Model model = (Model) new ClojureInterpreter().evalRaw(clj, "user", null);
 		

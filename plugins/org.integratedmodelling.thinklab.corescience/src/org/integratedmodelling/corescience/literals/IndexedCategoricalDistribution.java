@@ -1,11 +1,12 @@
 package org.integratedmodelling.corescience.literals;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 
 /*
  * nothing but a double array with appropriate hash methods
  */
-public class IndexedCategoricalDistribution {
+public class IndexedCategoricalDistribution implements Comparable<IndexedCategoricalDistribution> {
 
 	public double[] data = null;
 	private double[] ranges;
@@ -48,7 +49,7 @@ public class IndexedCategoricalDistribution {
 	}
 	
 	public String toString() {
-		return Arrays.toString(data);
+		return "[m=" + NumberFormat.getInstance().format(getMean())+"]";
 	}
 
 	public void setRanges(double[] distributionBreakpoints) {
@@ -65,6 +66,11 @@ public class IndexedCategoricalDistribution {
 			}
 		}
 		return ret;
+	}
+
+	@Override
+	public int compareTo(IndexedCategoricalDistribution o) {
+		return ((Double)getMean()).compareTo(o.getMean());
 	}
 	
 }

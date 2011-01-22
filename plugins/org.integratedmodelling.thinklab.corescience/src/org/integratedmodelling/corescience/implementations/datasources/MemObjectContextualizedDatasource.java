@@ -194,27 +194,6 @@ public class MemObjectContextualizedDatasource
 	public int getValueCount() {
 		return data.length;
 	}
-//
-//	@Override
-//	public IDataSource<?> transform(IDatasourceTransformation transformation)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		return this;
-//	}
-//
-//	@Override
-//	public void postProcess(IObservationContext context)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public void preProcess(IObservationContext context)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		
-//	}
 
 	@Override
 	public IPersistentObject deserialize(InputStream fop)
