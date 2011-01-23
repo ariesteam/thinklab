@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.integratedmodelling.modelling.storyline.Storyline;
+import org.eclipse.swt.custom.CLabel;
 
 public class TemplateEditor extends ApplicationWindow {
 
@@ -57,10 +58,15 @@ public class TemplateEditor extends ApplicationWindow {
 			leftFrame.setLayoutData(gd_leftFrame);
 			{
 				Composite picBar = new Composite(leftFrame, SWT.NONE);
+				picBar.setBackground(SWTResourceManager.getColor(128, 128, 128));
+				picBar.setLayout(new GridLayout(1, false));
 				GridData gd_picBar = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 				gd_picBar.heightHint = 33;
 				picBar.setLayoutData(gd_picBar);
 				picBar.setBounds(0, 0, 64, 64);
+				
+				CLabel lblNewLabel_1 = new CLabel(picBar, SWT.NONE);
+				lblNewLabel_1.setText("New Label");
 			}
 			{
 				Composite image = new Composite(leftFrame, SWT.NONE);
@@ -70,9 +76,19 @@ public class TemplateEditor extends ApplicationWindow {
 				gd_image.heightHint = 540;
 				image.setLayoutData(gd_image);
 				image.setBounds(0, 0, 64, 64);
+				
+				Label spacer = new Label(image, SWT.NONE);
+				spacer.setBackground(SWTResourceManager.getColor(255, 255, 255));
+				spacer.setBounds(0, 0, 590, 17);
+				
+				Label lblNewLabel = new Label(image, SWT.BORDER | SWT.CENTER);
+				lblNewLabel.setBackground(SWTResourceManager.getColor(255, 255, 255));
+				lblNewLabel.setBounds(0, 16, 590, 489);
+				lblNewLabel.setText("New Label");
 			}
 			{
 				Composite composite = new Composite(leftFrame, SWT.NONE);
+				composite.setBackground(SWTResourceManager.getColor(128, 128, 128));
 				GridData gd_composite = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 				gd_composite.heightHint = 34;
 				composite.setLayoutData(gd_composite);
