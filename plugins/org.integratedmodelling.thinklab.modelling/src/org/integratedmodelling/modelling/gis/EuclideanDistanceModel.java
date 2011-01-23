@@ -1,9 +1,6 @@
-package org.integratedmodelling.modelling.geospace;
-
-import java.util.Collection;
+package org.integratedmodelling.modelling.gis;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

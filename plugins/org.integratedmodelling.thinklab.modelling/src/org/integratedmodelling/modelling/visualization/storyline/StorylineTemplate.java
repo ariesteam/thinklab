@@ -9,6 +9,8 @@ import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.modelling.storyline.StorylineFactory;
+import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
+import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
 import org.integratedmodelling.modelling.visualization.wiki.WikiFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -263,6 +265,27 @@ public class StorylineTemplate extends Bean {
 			sourceFile == null ?
 				getId() :
 				sourceFile + getId();
+
+	}
+
+	public void createInfoPage(String path, IConcept concept) {
+
+		VisualConcept vc = TypeManager.get().getVisualConcept(concept);
+		StorylineTemplate.Page pg = new StorylineTemplate.Page();
+
+		/*
+		 * basic info
+		 */
+		pg.addField("id", "info", null);
+		pg.addField("name", vc.getName(), null);
+		pg.addField("title", vc.getLabel(), null);
+		pg.addField("disabled", "false", null);
+		pg.addField("description", vc.getDescription(), null);
+		pg.addField("runninghead", vc.getLabel(), null);
+		pg.addField("see-also", "", null);
+		pg.addField("credits", "", null);
+		
+		addChild("page", pg, null);
 
 	}
 }

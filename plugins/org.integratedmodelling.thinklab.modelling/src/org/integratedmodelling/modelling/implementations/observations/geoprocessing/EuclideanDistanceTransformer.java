@@ -1,50 +1,35 @@
 package org.integratedmodelling.modelling.implementations.observations.geoprocessing;
 
-import org.integratedmodelling.corescience.implementations.observations.Measurement;
-import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.corescience.interfaces.internal.ContextTransformingObservation;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
+import org.integratedmodelling.corescience.interfaces.IState;
+
+import es.unex.sextante.core.GeoAlgorithm;
+import es.unex.sextante.rasterize.euclideanDistance.EuclideanDistanceAlgorithm;
 
 /**
- * Unless I find a Sextante algorithm for this, computes a 2-scan EDT on a
- * binary ranking, returning results in the requested unit (which must 
- * obviously be a length). Should be made dimensionally safe (callable on
- * any context with no error unless no space topology in context, but 1px
- * topology should be fine, and if context is vector should rasterize before
- * computing).
- * 
- * @author ferdinando.villa
  *
  */
-public class EuclideanDistanceTransformer extends Measurement implements
-		ContextTransformingObservation {
+public class EuclideanDistanceTransformer extends SextanteAlgorithmTransformer {
 
 	@Override
-	public IObservationContext getTransformedContext(IObservationContext context)
-			throws ThinklabException {
+	protected GeoAlgorithm getParameterizedAlgorithm() {
+
+		EuclideanDistanceAlgorithm alg = new EuclideanDistanceAlgorithm();
 		
-		/*
-		 * context becomes raster anyway.
-		 */
-		
-		// TODO Auto-generated method stub
-		return null;
+		return alg;
 	}
 
 	@Override
-	public IContext transform(IObservationContext sourceObs, ISession session,
-			IContext context) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+	protected String getResultID() {
+		return EuclideanDistanceAlgorithm.RESULT;
 	}
 
 	@Override
-	public IConcept getTransformedObservationClass() {
-		// TODO Auto-generated method stub
-		return null;
+	protected IState createOutputState(ObservationContext context) {
+		return 
+			new MemDoubleContextualizedDatasource(
+					getObservableClass(), context.getMultiplicity(), context);
 	}
 
 }

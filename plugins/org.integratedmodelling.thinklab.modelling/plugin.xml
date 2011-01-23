@@ -25,6 +25,9 @@
 		<!-- this is only so we can run clj -context modelling example.clj - may be removed --> 
 		<library type="resources" path="examples/" id="examples" />
 		
+		<!-- gis functionalities -->
+		<library type="code" id="sextante" path="lib/sextante.jar"/>
+		
 		<!-- modelling, visualization and netcdf libs -->
 		<library type="code" id="ascape" path="lib/Ascape_5.5.0.jar"/>
 		<library type="code" id="bufrTables" path="lib/bufrTables-1.5.jar"/>
@@ -67,6 +70,7 @@
 	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding" id="clj">
 		<parameter id="language" value="clojure"/>
 		<parameter id="resource" value="clojure/modelling.clj"/>
+		<parameter id="resource" value="clojure/gis.clj"/>
 	</extension>
 	
 </plugin>

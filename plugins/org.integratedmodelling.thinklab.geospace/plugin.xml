@@ -245,29 +245,6 @@
 		<library type="code" id="xsd" path="lib/xsd-2.2.2.jar"/>
 		<library type="code" id="xlink" path="lib/org.w3.xlink-2.6.5.jar"/>
 		
-		<library type="code" id="sextante-cmd" path="lib/sextante_cmd-0.3.jar"/>
-		<library type="code" id="sextante-gridAnalysis" path="lib/sextante_gridAnalysis-0.3.jar"/>
-		<library type="code" id="sextante-gridCalculus" path="lib/sextante_gridCalculus-0.3.jar"/>
-		<library type="code" id="sextante-gridCategorical" path="lib/sextante_gridCategorical-0.3.jar"/>
-		<library type="code" id="sextante-gridStatistics" path="lib/sextante_gridStatistics-0.3.jar"/>
-		<library type="code" id="sextante-gridTools" path="lib/sextante_gridTools-0.3.jar"/>
-		<library type="code" id="sextante-gt25_bindings" path="lib/sextante_gt25_bindings-0.3.jar"/>
-		<library type="code" id="sextante-gui" path="lib/sextante_gui-0.3.jar"/>
-		<library type="code" id="sextante-hydrology" path="lib/sextante_hydrology-0.3.jar"/>
-		<library type="code" id="sextante-imageAnalysis" path="lib/sextante_imageAnalysis-0.3.jar"/>
-		<library type="code" id="sextante-lighting" path="lib/sextante_lighting-0.3.jar"/>
-		<library type="code" id="sextante-locate" path="lib/sextante_locate-0.3.jar"/>
-		<library type="code" id="sextante-morphometry" path="lib/sextante_morphometry-0.3.jar"/>
-		<library type="code" id="sextante-pointAnalysis" path="lib/sextante_pointAnalysis-0.3.jar"/>
-		<library type="code" id="sextante-profiles" path="lib/sextante_-0.3.jar"/>
-		<library type="code" id="sextante-rasterize" path="lib/sextante_profiles-0.3.jar"/>
-		<library type="code" id="sextante-statisticalMethods" path="lib/sextante_statisticalMethods-0.3.jar"/>
-		<library type="code" id="sextante-tables" path="lib/sextante_tables-0.3.jar"/>
-		<library type="code" id="sextante-vectorize" path="lib/sextante_vectorize-0.3.jar"/>
-		<library type="code" id="sextante-vectorTools" path="lib/sextante_vectorTools-0.3.jar"/>
-		<library type="code" id="sextante-vegetationIndices" path="lib/sextante_vegetationIndices-0.3.jar"/>
-		<library type="code" id="sextante-wps" path="lib/sextante_wps-0.3.jar"/>
-		<library type="code" id="sextante" path="lib/sextante-0.3.jar"/>
 		<library type="code" id="commons-io" path="lib/commons-io-1.4.jar">
 			<export prefix="*"/>
 		</library>

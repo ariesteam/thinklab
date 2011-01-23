@@ -56,11 +56,7 @@ public class StorylineFactory {
 		File f = new File(d + File.separator + pnm + ".xml");
 		
 		StorylineTemplate st = new StorylineTemplate();
-		StorylineTemplate.Page pg = new StorylineTemplate.Page();
 		
-		/*
-		 * basic info
-		 */
 		VisualConcept vc = TypeManager.get().getVisualConcept(concept);
 		
 		st.addField("id", path, null);
@@ -69,16 +65,6 @@ public class StorylineFactory {
 		st.addField("runninghead", vc.getLabel(), null);
 		st.addField("description", pnm, null);
 
-		pg.addField("id", "info", null);
-		pg.addField("name", vc.getName(), null);
-		pg.addField("title", vc.getLabel(), null);
-		pg.addField("disabled", "false", null);
-		pg.addField("description", vc.getDescription(), null);
-		pg.addField("runninghead", vc.getLabel(), null);
-		pg.addField("see-also", "", null);
-		pg.addField("credits", "", null);
-		
-		st.addChild("page", pg, null);
 		st.setSourceFile(f);
 		
 		_cache.put(f, st);

@@ -123,6 +123,8 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			if (importd != null) {
 				st.addField("inherit", importd, null);
 				st.save();
+			} else {
+				st.createInfoPage(path, concept);
 			}
 
 			if (command.hasArgument("arg0")) {

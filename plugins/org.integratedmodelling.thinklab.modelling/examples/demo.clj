@@ -19,4 +19,7 @@
 			 	(('biomass:Low|'temp:Low -> [0.7 0.9]) ('biomass:Low|'temp:High -> [0.1 0.3])
 			 	 ('biomass:High|'temp:Low -> 0.017)    ('biomass:High|'temp:High -> 0.983))
 		 :when (is? biome 'landuse:Aquatic))
+
+(defmodel ziocan 'geophysics:Slope
+  (slope 'geophysics:Elevation "deg"))
 			 	 
