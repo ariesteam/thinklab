@@ -78,7 +78,6 @@ public class KMLExporter  {
 	}
 
 	private void exportLayers(File file) throws ThinklabException {
-		// TODO Auto-generated method stub
 
 		File tempdir = MiscUtilities.createTempDir();
 		
@@ -113,7 +112,7 @@ public class KMLExporter  {
 		}
 		
 		XML.document("xmlns=http://earth.google.com/kml/2.0",
-					XML.node("kml", XML.node("Document", XML.node("name", "ARIES results"), nodes))).
+				XML.node("kml", XML.node("Document", XML.node("name", "ARIES results"), nodes))).
 				writeToFile(new File(xmlFile));
 		
 		// zip the whole thing into the passed file, check extension is .kmz

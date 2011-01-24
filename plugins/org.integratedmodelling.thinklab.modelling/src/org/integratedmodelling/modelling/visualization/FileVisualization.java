@@ -7,8 +7,10 @@ import java.util.Properties;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
+import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.storage.FileArchive;
@@ -160,4 +162,25 @@ public class FileVisualization implements IVisualization {
 		}
 		return ret;
 	}
+	
+	public Pair<Double, Double> getGeoCoordinates(int x, int y) {
+		
+		IExtent sp = context.getSpace();
+		
+		if (!(sp instanceof GridExtent))
+			return null;
+		
+		GridExtent grid = (GridExtent) sp;
+		
+		double pcx = (double)(getXPlotSize())/(double)(grid.getXCells());
+		double pcy = (double)(getYPlotSize())/(double)(grid.getYCells());
+		
+		int dx = (int)((double)x/pcx);
+		int dy = (int)((double)(getYPlotSize() - y)/pcy);
+		
+		return new Pair<Double, Double>(
+				grid.getWest()  + grid.getEWResolution()*dx + grid.getEWResolution()/2,
+				grid.getSouth() + grid.getNSResolution()*dy + grid.getNSResolution()/2);
+	}
+
 }

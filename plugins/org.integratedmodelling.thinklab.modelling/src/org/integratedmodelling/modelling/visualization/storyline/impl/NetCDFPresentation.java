@@ -7,7 +7,7 @@ import org.integratedmodelling.modelling.storyline.Storyline;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
-public class HtmlPresentation implements IPresentation {
+public class NetCDFPresentation implements IPresentation {
 
 	@Override
 	public void render() throws ThinklabException {

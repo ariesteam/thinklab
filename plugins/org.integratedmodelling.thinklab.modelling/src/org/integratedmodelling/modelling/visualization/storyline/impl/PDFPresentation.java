@@ -7,7 +7,14 @@ import org.integratedmodelling.modelling.storyline.Storyline;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
-public class HtmlPresentation implements IPresentation {
+/**
+ * Integrates Jasper Reports by providing a thinklab datasource from a visualization
+ * and rendering the report with the passed options.
+ * 
+ * @author Ferdinando
+ *
+ */
+public class PDFPresentation implements IPresentation {
 
 	@Override
 	public void render() throws ThinklabException {
@@ -26,6 +33,5 @@ public class HtmlPresentation implements IPresentation {
 		// TODO Auto-generated method stub
 		
 	}
-	
 
 }

@@ -1,8 +1,6 @@
 package org.integratedmodelling.modelling.visualization;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -10,7 +8,6 @@ import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.Pair;
 
@@ -108,23 +105,4 @@ public class WebVisualization extends FileVisualization {
 		return null;
 	}
 
-	public Pair<Double, Double> getGeoCoordinates(int x, int y) {
-		
-		IExtent sp = context.getSpace();
-		
-		if (!(sp instanceof GridExtent))
-			return null;
-		
-		GridExtent grid = (GridExtent) sp;
-		
-		double pcx = (double)(getXPlotSize())/(double)(grid.getXCells());
-		double pcy = (double)(getYPlotSize())/(double)(grid.getYCells());
-		
-		int dx = (int)((double)x/pcx);
-		int dy = (int)((double)(getYPlotSize() - y)/pcy);
-		
-		return new Pair<Double, Double>(
-				grid.getWest()  + grid.getEWResolution()*dx + grid.getEWResolution()/2,
-				grid.getSouth() + grid.getNSResolution()*dy + grid.getNSResolution()/2);
-	}
 }

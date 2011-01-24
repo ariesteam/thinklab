@@ -335,25 +335,6 @@ public class StorylineFactory {
 	}
 	
 	/**
-	 * When the presentation applies to a visualization, this is all that needs to be called.
-	 * Create a presentation outside of the factory, use the factory to render it. If will find the
-	 * layout for the , initialize the presentation and call render() on it. 
-	 * 
-	 * @param visual
-	 * @param presentation
-	 * @return
-	 * @throws ThinklabException 
-	 */
-	public static IPresentation render(IVisualization visual, IPresentation presentation) throws ThinklabException {
-	
-		StorylineTemplate template = getPresentation(visual.getObservableClass());
-		presentation.initialize(visual, template);
-		presentation.render();
-		
-		return presentation;
-	}
-
-	/**
 	 * Return template by ID, provided it's been read.
 	 * 
 	 * @param inherited

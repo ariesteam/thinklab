@@ -1,8 +1,10 @@
 package org.integratedmodelling.modelling.storyline;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Properties;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -11,11 +13,18 @@ import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.geospace.visualization.GeoImageFactory;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.interfaces.IPresentation;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.visualization.storyline.StorylineTemplate;
+import org.integratedmodelling.modelling.visualization.storyline.impl.HtmlPresentation;
+import org.integratedmodelling.modelling.visualization.storyline.impl.KMLPresentation;
+import org.integratedmodelling.modelling.visualization.storyline.impl.PDFPresentation;
+import org.integratedmodelling.modelling.visualization.storyline.impl.TemplateEditor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.exec.ITaskScheduler;
 
@@ -74,7 +83,6 @@ public class Storyline extends DefaultMutableTreeNode {
 		new ArrayList<Pair<IModel,IContext>>();
 	
 
-	
 	public static interface Listener {
 		
 		/*
@@ -328,9 +336,39 @@ public class Storyline extends DefaultMutableTreeNode {
 	public int hashCode() {
 		return template.getSignature().hashCode();
 	}
-
 	
 	public String getTemplateSignature() {
 		return template.getSignature();
+	}
+
+	public void show() throws ThinklabException {
+		
+		IPresentation presentation = new TemplateEditor();
+		presentation.initialize(this, null);
+		presentation.render();
+	}
+	
+	public void export(String file) throws ThinklabException {
+
+		IPresentation presentation = null;
+		String ext = MiscUtilities.getFileExtension(file);
+		
+		if (ext.equals("kmz")) {
+			presentation = new KMLPresentation();
+		} else if (ext.equals("html")) {
+			presentation = new HtmlPresentation();
+		} else if (ext.equals("pdf")) {
+			presentation = new PDFPresentation();
+		} else {
+			throw new ThinklabValidationException(
+					"don't know how to create a storyline presentation with format " + ext);
+		}
+		
+		if (presentation != null) {
+			Properties properties = new Properties();
+			properties.setProperty("file", file);
+			presentation.initialize(this, properties);
+			presentation.render();
+		}
 	}
 }

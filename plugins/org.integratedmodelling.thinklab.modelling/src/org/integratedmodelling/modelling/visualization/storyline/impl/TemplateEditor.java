@@ -1,5 +1,7 @@
 package org.integratedmodelling.modelling.visualization.storyline.impl;
 
+import java.util.Properties;
+
 import org.eclipse.jface.action.CoolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.StatusLineManager;
@@ -14,10 +16,15 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.integratedmodelling.modelling.interfaces.IPresentation;
 import org.integratedmodelling.modelling.storyline.Storyline;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.eclipse.swt.custom.CLabel;
 
-public class TemplateEditor extends ApplicationWindow {
+public class TemplateEditor extends ApplicationWindow implements IPresentation {
+
+	private Storyline storyline;
 
 	/**
 	 * Create the application window,
@@ -33,6 +40,7 @@ public class TemplateEditor extends ApplicationWindow {
 	static public void run(Storyline storyline) {
 		try {
 			TemplateEditor window = new TemplateEditor();
+			window.initialize(storyline, null);
 			window.setBlockOnOpen(true);
 			window.open();
 			Display.getCurrent().dispose();
@@ -180,21 +188,6 @@ public class TemplateEditor extends ApplicationWindow {
 	}
 
 	/**
-	 * Launch the application.
-	 * @param args
-	 */
-	public static void main(String args[]) {
-		try {
-			TemplateEditor window = new TemplateEditor();
-			window.setBlockOnOpen(true);
-			window.open();
-			Display.getCurrent().dispose();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Configure the shell.
 	 * @param newShell
 	 */
@@ -210,5 +203,27 @@ public class TemplateEditor extends ApplicationWindow {
 	@Override
 	protected Point getInitialSize() {
 		return new Point(966, 802);
+	}
+
+	@Override
+	public void render() throws ThinklabException {
+		try {
+			this.setBlockOnOpen(true);
+			this.open();
+			Display.getCurrent().dispose();
+		} catch (Exception e) {
+			throw new ThinklabException(e);
+		}
+	}
+
+	@Override
+	public void render(IConcept concept) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initialize(Storyline storyline, Properties properties) {
+		this.storyline = storyline;
 	}
 }
