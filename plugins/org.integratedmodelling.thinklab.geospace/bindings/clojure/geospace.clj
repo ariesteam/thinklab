@@ -174,5 +174,7 @@
     (symbol? shape)
       (new org.integratedmodelling.geospace.extents.GridExtent (get-shape-from-name (str shape)) resolution) 
     (string? shape)
-      (new org.integratedmodelling.geospace.extents.GridExtent (make-shape shape) resolution))) 
+      (new org.integratedmodelling.geospace.extents.GridExtent (make-shape shape) resolution)
+    (instance? org.integratedmodelling.geospace.literals.ShapeValue shape) 
+      (new org.integratedmodelling.geospace.extents.GridExtent shape resolution)))
 
