@@ -210,7 +210,6 @@
           
        model#))
      
-       
 (defmacro context 
 	"Return a new context object that can be registered with a name and used to build matching contexts
    on demand."
