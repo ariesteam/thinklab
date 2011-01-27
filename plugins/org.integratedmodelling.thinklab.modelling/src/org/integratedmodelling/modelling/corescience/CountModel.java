@@ -15,6 +15,11 @@ import org.integratedmodelling.utils.Polylist;
 
 public class CountModel extends DefaultDynamicAbstractModel {
 
+	public CountModel(String namespace) {
+		super(namespace);
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public void validateMediatedModel(IModel model)
 			throws ThinklabValidationException {
@@ -39,7 +44,7 @@ public class CountModel extends DefaultDynamicAbstractModel {
 	@Override
 	public IModel getConfigurableClone() {
 		// TODO configure it
-		return new CountModel();
+		return new CountModel(namespace);
 	}
 
 	@Override

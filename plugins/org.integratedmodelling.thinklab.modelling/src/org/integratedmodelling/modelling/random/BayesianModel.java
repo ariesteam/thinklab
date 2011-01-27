@@ -31,10 +31,15 @@ import smile.Network;
 
 public class BayesianModel extends DefaultStatefulAbstractModel implements IContextOptional {
 
+	public BayesianModel(String namespace) {
+		super(namespace);
+		// TODO Auto-generated constructor stub
+	}
+
 	String source = null;
 	String algorithm = null;
-	ArrayList<String> keeperIds = new ArrayList<String>();
-	ArrayList<String> requiredIds = new ArrayList<String>();
+//	ArrayList<String> keeperIds = new ArrayList<String>();
+//	ArrayList<String> requiredIds = new ArrayList<String>();
 	ArrayList<IConcept> keepers = new ArrayList<IConcept>();
 	ArrayList<IConcept> required = new ArrayList<IConcept>();
 	IModel resultModel = null;
@@ -43,8 +48,8 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 	protected void copy(DefaultAbstractModel model) {
 		super.copy(model);
 		algorithm = ((BayesianModel)model).algorithm;
-		keeperIds = ((BayesianModel)model).keeperIds;
-		requiredIds = ((BayesianModel)model).requiredIds;
+//		keeperIds = ((BayesianModel)model).keeperIds;
+//		requiredIds = ((BayesianModel)model).requiredIds;
 		keepers = ((BayesianModel)model).keepers;
 		source = ((BayesianModel)model).source;
 		resultModel = ((BayesianModel)model).resultModel;
@@ -62,13 +67,13 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			
 			Collection<?> p = (Collection<?>) argument;
 			for (Object c : p)
-				keeperIds.add(c.toString());
+				keepers.add(ModelFactory.annotateConcept(namespace, c.toString()));
 
 		} else if (keyword.equals(":required")) {
 			
 			Collection<?> p = (Collection<?>) argument;
 			for (Object c : p)
-				requiredIds.add(c.toString());
+				required.add(ModelFactory.annotateConcept(namespace, c.toString()));
 
 		} else if (keyword.equals(":result")) {
 			
@@ -93,7 +98,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		}
 
 		// anything that is specifically modeled becomes a keeper automatically
-		keeperIds.add(((DefaultAbstractModel)((Model)model).getDefinition()).getObservableId());
+		keepers.add(((DefaultAbstractModel)((Model)model).getDefinition()).getObservableClass());
 		super.addObservedModel(model);
 	}
 	
@@ -113,11 +118,11 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 	@Override
 	public IModel getConfigurableClone() {
 		
-		BayesianModel ret = new BayesianModel();
+		BayesianModel ret = new BayesianModel(namespace);
 		ret.algorithm = algorithm;
-		ret.keeperIds = keeperIds;
+//		ret.keeperIds = keeperIds;
 		ret.required  = required;
-		ret.requiredIds = requiredIds;
+//		ret.requiredIds = requiredIds;
 		ret.source = source;
 		ret.copy(this);
 		return ret;
@@ -176,8 +181,6 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 					((Model)c).getDefinition().buildDefinition(kbox, session, null, FORCE_OBSERVABLE)));
 		}
 
-		
-		
 		Polylist ret = Polylist.PolylistFromArrayList(arr);
 
 		ret = ObservationFactory.addReflectedField(ret, "observed", observed);
@@ -198,48 +201,48 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 	@Override
 	protected void validateSemantics(ISession session) throws ThinklabException {
 		
-		for (String s : keeperIds) {
-			keepers.add(annotateConcept(s,session, null));
-		}
-		for (String s : requiredIds) {
-			required.add(annotateConcept(s,session, null));
-		}
+//		for (String s : keeperIds) {
+//			keepers.add(annotateConcept(s,session, null));
+//		}
+//		for (String s : requiredIds) {
+//			required.add(annotateConcept(s,session, null));
+//		}
 		
-		/*
-		 * This is fairly expensive so we only do it when annotating.
-		 */
-		if (session.getVariable(ModellingPlugin.ANNOTATION_UNDERWAY) != null) {
-
-			/**
-			 * if in annotation mode and loading a BN from a source,
-			 * we should annotate the BN contents in the observable's 
-			 * ontology (which also validates the source).
-			 */
-			Network bn = new Network();
-			HashSet<String> stt = new HashSet<String>();
-			
-			try {
-				bn.readFile(MiscUtilities.resolveUrlToFile(source).toString());
-			} catch (Exception e) {
-				throw new ThinklabIOException(e);
-			}
-		
-			String cspace = observable.getConceptSpace();
-			for (String s : bn.getAllNodeIds()) {
-				annotateConcept(cspace+":"+s, session, null);
-				for (String os : bn.getOutcomeIds(s)) {
-					if (stt.contains(os))
-						throw new ThinklabValidationException(
-								"you did it - state ID " + os + 
-								" is duplicated. Please use the node ID in "+ 
-								"all outcome: e.g. " + os + s +
-								" and avoid generic outcome IDs like High, Low");
-					
-					annotateConcept(cspace+":"+os, session, cspace+":"+s);	
-					stt.add(os);
-				}
-			}
-		}
+//		/*
+//		 * This is fairly expensive so we only do it when annotating.
+//		 */
+//		if (session.getVariable(ModellingPlugin.ANNOTATION_UNDERWAY) != null) {
+//
+//			/**
+//			 * if in annotation mode and loading a BN from a source,
+//			 * we should annotate the BN contents in the observable's 
+//			 * ontology (which also validates the source).
+//			 */
+//			Network bn = new Network();
+//			HashSet<String> stt = new HashSet<String>();
+//			
+//			try {
+//				bn.readFile(MiscUtilities.resolveUrlToFile(source).toString());
+//			} catch (Exception e) {
+//				throw new ThinklabIOException(e);
+//			}
+//		
+//			String cspace = observable.getConceptSpace();
+//			for (String s : bn.getAllNodeIds()) {
+//				annotateConcept(cspace+":"+s, session, null);
+//				for (String os : bn.getOutcomeIds(s)) {
+//					if (stt.contains(os))
+//						throw new ThinklabValidationException(
+//								"you did it - state ID " + os + 
+//								" is duplicated. Please use the node ID in "+ 
+//								"all outcome: e.g. " + os + s +
+//								" and avoid generic outcome IDs like High, Low");
+//					
+//					annotateConcept(cspace+":"+os, session, cspace+":"+s);	
+//					stt.add(os);
+//				}
+//			}
+//		}
 		
 		/**
 		 * TODO validate any states defined inline (later)

@@ -19,6 +19,11 @@ import org.integratedmodelling.utils.Polylist;
 
 public class MeasurementModel extends DefaultDynamicAbstractModel {
 
+	public MeasurementModel(String namespace) {
+		super(namespace);
+		// TODO Auto-generated constructor stub
+	}
+
 	String unitSpecs = null;
 	boolean isProbabilistic = false;
 	boolean isCount = false;
@@ -123,7 +128,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 	@Override
 	public IModel getConfigurableClone() {
 
-		MeasurementModel ret = new MeasurementModel();
+		MeasurementModel ret = new MeasurementModel(namespace);
 		ret.copy(this);
 		ret.unitSpecs = unitSpecs;
 		ret.isCount = isCount;

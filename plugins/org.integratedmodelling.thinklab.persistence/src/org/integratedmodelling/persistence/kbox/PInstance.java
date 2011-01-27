@@ -350,5 +350,10 @@ public class PInstance implements IInstance {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public void addAnnotation(String property, String value) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

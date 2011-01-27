@@ -20,6 +20,11 @@ import clojure.lang.IFn;
  */
 public abstract class DefaultDynamicAbstractModel extends DefaultStatefulAbstractModel {
 
+	public DefaultDynamicAbstractModel(String namespace) {
+		super(namespace);
+		// TODO Auto-generated constructor stub
+	}
+
 	protected Object dynSpecs = null;
 	public enum language {
 		CLOJURE,

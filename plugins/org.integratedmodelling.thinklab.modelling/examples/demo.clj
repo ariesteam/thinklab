@@ -23,3 +23,21 @@
 (defmodel ziocan 'geophysics:Slope
   (slope 'geophysics:Elevation "deg"))
 			 	 
+(ontology 'carbonService
+  (thinklab-core:OrdinalRangeMapping
+    (CarbonSequestration :units "kg/cm2" :description "" :label ""
+      (LowCarbonSequestration      :range [0 2])
+      (ModerateCarbonSequestration :range [2 5])
+      (HighCarbonSequestration     :range [5 9])
+      (VeryHighCarbonSequestration :range [9 20]))))
+
+(probabilistic-measurement CarbonSequestration "kg/cm2"
+  "Generated from a node of network BB"
+  [0 2] LowCarbonSequestration
+  [2 5] ModerateCarbonSequestration
+  [5 9] HighCarbonSequestration
+  [9 20] VeryHighCarbonSequestration
+  :context (biomass cn-ratio)
+  :cpt (HighBiomass HighCNRatio : .44933 .12234 .32554,
+        HighBiomass ModerateCNRatio: .44933 .12234 .32554))
+  

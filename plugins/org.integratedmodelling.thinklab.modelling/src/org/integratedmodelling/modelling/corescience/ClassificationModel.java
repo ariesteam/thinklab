@@ -11,6 +11,7 @@ import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.modelling.model.DefaultDynamicAbstractModel;
 import org.integratedmodelling.modelling.model.DefaultStatefulAbstractModel;
+import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
@@ -39,7 +40,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 
 	ArrayList<GeneralClassifier> classifiers = new ArrayList<GeneralClassifier>();	
 	ArrayList<IConcept> concepts = new ArrayList<IConcept>();
-	ArrayList<String> conceptIds = new ArrayList<String>();
+//	ArrayList<String> conceptIds = new ArrayList<String>();
 	private IConcept stateType;
 
 	@Override
@@ -47,11 +48,12 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		super.copy(model);
 		classifiers = ((ClassificationModel)model).classifiers;
 		concepts = ((ClassificationModel)model).concepts;
-		conceptIds = ((ClassificationModel)model).conceptIds;
+//		conceptIds = ((ClassificationModel)model).conceptIds;
 		stateType = ((ClassificationModel)model).stateType;
 	}
 
-	public ClassificationModel() {
+	public ClassificationModel(String namespace) {
+		super(namespace);
 		this.metadata.put(Metadata.CONTINUOUS, Boolean.FALSE);
 	}
 	
@@ -209,7 +211,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 
 		GeneralClassifier cl = getClassifier(classifier);
 		classifiers.add(cl);
-		conceptIds.add(concept.toString());
+		concepts.add(ModelFactory.annotateConcept(namespace, concept.toString()));
 	}
 
 	@Override
@@ -230,10 +232,10 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public IModel getConfigurableClone() {
-		ClassificationModel ret = new ClassificationModel();
+		ClassificationModel ret = new ClassificationModel(namespace);
 		ret.copy(this);
 		ret.classifiers = classifiers;
-		ret.conceptIds = conceptIds;
+		ret.concepts = concepts;
 		return ret;
 	}
 
@@ -316,11 +318,6 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	protected void validateSemantics(ISession session) throws ThinklabException {
-
-		for (String s : conceptIds) {
-			IConcept c = annotateConcept(s, session, observable);
-			concepts.add(c);
-		}
 	}
 
 	@Override

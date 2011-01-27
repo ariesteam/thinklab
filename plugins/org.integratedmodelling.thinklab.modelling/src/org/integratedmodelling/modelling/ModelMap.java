@@ -504,6 +504,6 @@ public class ModelMap {
 	
 	public static IOntology getNamespaceOntology(String ns) {
 		NamespaceEntry nse = (NamespaceEntry) getNamespace(ns);
-		return nse.ontology;
+		return nse.getOntology();
 	}
 }

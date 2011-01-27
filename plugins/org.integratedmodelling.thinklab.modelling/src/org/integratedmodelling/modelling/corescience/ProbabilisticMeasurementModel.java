@@ -7,7 +7,6 @@ import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.ObservationFactory;
-import org.integratedmodelling.modelling.model.DefaultDynamicAbstractModel.language;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -18,6 +17,11 @@ import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
 public class ProbabilisticMeasurementModel extends ClassificationModel {
+
+	public ProbabilisticMeasurementModel(String namespace) {
+		super(namespace);
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public Polylist buildDefinition(IKBox kbox, ISession session, IContext context, int flags) throws ThinklabException {

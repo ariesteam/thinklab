@@ -8,6 +8,12 @@ import umontreal.iro.lecuyer.probdist.Distribution;
 
 public abstract class DefaultStatefulAbstractModel extends DefaultAbstractModel {
 
+	public DefaultStatefulAbstractModel(String namespace) {
+		super(namespace);
+		// TODO Auto-generated constructor stub
+	}
+
+
 	@Override
 	public void applyClause(String keyword, Object argument) throws ThinklabException {
 		

@@ -19,13 +19,17 @@
 package org.integratedmodelling.thinklab.owlapi;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IResource;
 import org.semanticweb.owl.model.AddAxiom;
 import org.semanticweb.owl.model.OWLAnnotation;
@@ -130,6 +134,35 @@ public abstract class Knowledge implements IKnowledge, IResource {
 			OWLDataFactory df = FileKnowledgeRepository.df;
 			OWLConstant cns = df.getOWLTypedConstant(annotation);
 			OWLAnnotation<?> anno = df.getOWLConstantAnnotation(prop.getURI(), cns);
+			OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, anno);
+			// Add the axiom to the ontology
+			try {
+				FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
+					ontology, ax));
+			} catch (OWLOntologyChangeException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+	}
+
+	public void addAnnotation(String prop, String annotation) {
+	
+		OWLOntology ontology = getOWLOntology();
+		IProperty p;
+		try {
+			p = KnowledgeManager.get().requireProperty(prop);
+		} catch (ThinklabException e2) {
+			throw new ThinklabRuntimeException(e2);
+		}
+		synchronized (ontology) {
+			OWLDataFactory df = FileKnowledgeRepository.df;
+			OWLConstant cns = df.getOWLTypedConstant(annotation);
+			OWLAnnotation<?> anno;
+			try {
+				anno = df.getOWLConstantAnnotation(new URI(p.getURI()), cns);
+			} catch (URISyntaxException e1) {
+				throw new ThinklabRuntimeException(e1);
+			}
 			OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, anno);
 			// Add the axiom to the ontology
 			try {

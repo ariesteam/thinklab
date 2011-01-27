@@ -3,4 +3,4 @@
 
 (defn j-make-distance-model
 	[]
-	(new org.integratedmodelling.modelling.gis.EuclideanDistanceModel))
+	(new org.integratedmodelling.modelling.gis.EuclideanDistanceModel (str *ns*)))

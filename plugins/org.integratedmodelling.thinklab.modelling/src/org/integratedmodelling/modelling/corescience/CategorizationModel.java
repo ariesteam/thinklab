@@ -16,6 +16,12 @@ import org.integratedmodelling.utils.Polylist;
 
 public class CategorizationModel extends DefaultDynamicAbstractModel {
 
+	public CategorizationModel(String namespace) {
+		super(namespace);
+		// TODO Auto-generated constructor stub
+	}
+
+
 	@Override
 	public String toString() {
 		return ("categorization(" + getObservableClass() + ")");
@@ -50,7 +56,7 @@ public class CategorizationModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public IModel getConfigurableClone() {
-		CategorizationModel ret = new CategorizationModel();
+		CategorizationModel ret = new CategorizationModel(namespace);
 		ret.copy(this);
 		// TODO copy categories when we store them
 		return ret;

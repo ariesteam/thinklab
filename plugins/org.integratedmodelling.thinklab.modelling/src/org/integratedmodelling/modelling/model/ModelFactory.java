@@ -32,12 +32,16 @@ import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IModelForm;
 import org.integratedmodelling.modelling.knowledge.NamespaceOntology;
 import org.integratedmodelling.modelling.literals.ContextValue;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
@@ -312,6 +316,28 @@ public class ModelFactory {
 		return ret;
 	}
 
+	public static IConcept annotateConcept(String namespace, String conceptId) throws ThinklabException {
+		if (conceptId.contains(":"))
+			return KnowledgeManager.getConcept(conceptId);
+		IOntology o = ModelMap.getNamespaceOntology(namespace);
+		if (o == null)
+			throw new ThinklabInternalErrorException("no ontology for namespace " + namespace);
+		IConcept ret = o.getConcept(conceptId);
+		
+		if (ret == null) {
+			
+			/*
+			 * TODO - should we create it? I'd say not until the context can tell us which
+			 * specific parents it should have.
+			 */
+			throw new ThinklabInternalErrorException(
+					"no concept " + conceptId + 
+					" in namespace " + namespace + 
+					": add it in a namespace-ontology form");
+		}
+		
+		return ret;
+	}
 	
 	/**
 	 * Return a shape (usually a multipolygon) that describes the coverage of a

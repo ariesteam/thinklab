@@ -13,7 +13,7 @@
 	"Make a new instance of Model and return it. We need this because the class won't be visible when
 	the macro is expanded at runtime."
 	[]
-	(new org.integratedmodelling.modelling.model.Model))
+	(new org.integratedmodelling.modelling.model.Model (str *ns*)))
 	
 (defn j-make-nsontology
 	"Make a new instance of Model and return it. We need this because the class won't be visible when
@@ -25,7 +25,7 @@
 	"Make a new instance of Model and return it. We need this because the class won't be visible when
 	the macro is expanded at runtime."
 	[]
-	(new org.integratedmodelling.modelling.model.Scenario))
+	(new org.integratedmodelling.modelling.model.Scenario (str *ns*)))
 
 (defn j-make-context
 	"Make a new instance of Model and return it. We need this because the class won't be visible when
@@ -44,43 +44,43 @@
 (defn j-make-measurement
 	"Make a new instance of Model and return it."
 	[]
-	(new org.integratedmodelling.modelling.corescience.MeasurementModel))
+	(new org.integratedmodelling.modelling.corescience.MeasurementModel (str *ns*)))
 
 (defn j-make-spank
 	"Make a new instance of Model and return it."
 	[]
-	(new org.integratedmodelling.modelling.agents.SPANKModel))
+	(new org.integratedmodelling.modelling.agents.SPANKModel (str *ns*)))
 
 (defn j-make-classification
 	"Make a new instance of Model and return it."
 	[]
-	(new org.integratedmodelling.modelling.corescience.ClassificationModel))
+	(new org.integratedmodelling.modelling.corescience.ClassificationModel (str *ns*)))
 
 (defn j-make-probabilistic-measurement
 	"Make a new instance of Model and return it."
 	[]
-	(new org.integratedmodelling.modelling.corescience.ProbabilisticMeasurementModel))
+	(new org.integratedmodelling.modelling.corescience.ProbabilisticMeasurementModel (str *ns*)))
 
 
 (defn j-make-observation
 	"Make a new instance of Model and return it."
 	[]
-	(new org.integratedmodelling.modelling.corescience.ObservationModel))
+	(new org.integratedmodelling.modelling.corescience.ObservationModel (str *ns*)))
 
 (defn j-make-ranking
 	"Make a new instance of Model and return it."
 	[]
-	(new org.integratedmodelling.modelling.corescience.RankingModel))
+	(new org.integratedmodelling.modelling.corescience.RankingModel (str *ns*)))
 	
 (defn j-make-categorization
 	"Make a new instance of Model and return it."
 	[]
-	(new org.integratedmodelling.modelling.corescience.CategorizationModel))
+	(new org.integratedmodelling.modelling.corescience.CategorizationModel (str *ns*)))
 
 (defn j-make-bayesian
 	"Make a new instance of Model and return it."
 	[]
-	(new org.integratedmodelling.modelling.random.BayesianModel))
+	(new org.integratedmodelling.modelling.random.BayesianModel (str *ns*)))
 
 (defn j-make-transform
 	"Make a new instance of Model and return it."
@@ -143,9 +143,9 @@
   (cond (= option :when)        (.applyClause model ":when"        (eval val))
         (= option :as)          (.applyClause model ":as"          (str val))
         (= option :optional)    (.applyClause model ":optional"    (eval val))
-        (= option :keep)        (.applyClause model ":keep"        (map eval val))
-        (= option :required)    (.applyClause model ":required"    (map eval val))
-        (= option :discard)     (.applyClause model ":discard"     (map eval val))
+;        (= option :keep)        (.applyClause model ":keep"        (eval val))
+;        (= option :required)    (.applyClause model ":required"    (eval val))
+        (= option :discard)     (.applyClause model ":discard"     (eval val))
         (= option :probability) (.applyClause model ":probability" (eval val))
         (= option :rate)        (.applyClause model ":rate"        (eval val))
         (= option :state)       (.applyClause model ":state"       (eval val))
@@ -168,7 +168,7 @@
                               (first (drop (if (nil? desc#) 0 1) '~body)))
          definition#        (drop (tl/count-not-nil (list desc# contingency-model#)) '~body)
          model#             (modelling/j-make-model)]
-     (.setObservable  model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	   (.setObservable model# (process-observable '~observable))
      (.setDescription model# desc#)
      ;; process the contingency model - should be one model with possible qualifying clauses
      ;; 	     (doseq [mdef# contingency-model#]
@@ -199,8 +199,8 @@
  	        model# 
  	        	(modelling/j-make-scenario)]
  	      
- 	     (.setObservable  model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
- 	     (.setDescription model# desc#)
+ 	   (.setObservable model# (process-observable '~observable))
+     (.setDescription model# desc#)
  	      	     
         ; process the model definitions - one or more models or kw pairs
        (doseq [mdef# (tl/group-keywords definition#)]
@@ -238,7 +238,7 @@
  	        definition# 
  	        	(drop (tl/count-not-nil (list desc#)) '~body)
  	        nsonto# 
- 	        	(modelling/j-make-nsontology (str (eval '~concept-space)))]
+ 	        	(modelling/j-make-nsontology (str '~concept-space))]
      (.setDescription nsonto# desc#)
      (doseq [mdef# (tl/group-keywords definition#)] 
        (.add nsonto# (tl/listp mdef#) definition#))
@@ -278,17 +278,17 @@
 	  structure and conditional specifications, or the given unconditional model if no 
 	  contingency structure is supplied."
 		[model-name observable & body]
- 		`(def ~model-name (modelling/register-model (eval '(modelling/model ~observable ~@body)) (str '~model-name))))
+ 		`(def ~model-name (modelling/register-model (eval '(modelling/model '~observable ~@body)) (str '~model-name))))
        
 (defmacro defscenario
 	 "Define a scenario."
 		[model-name observable & body]
- 		`(def ~model-name (modelling/register-scenario (eval '(modelling/scenario ~observable ~@body)) (str '~model-name))))
+ 		`(def ~model-name (modelling/register-scenario (eval '(modelling/scenario '~observable ~@body)) (str '~model-name))))
  
 (defmacro defagent
 	 "Define an agent."
 		[model-name observable & body]
- 		`(def ~model-name (modelling/register-agent (eval '(modelling/tl-agent ~observable ~@body)) (str '~model-name))))
+ 		`(def ~model-name (modelling/register-agent (eval '(modelling/tl-agent '~observable ~@body)) (str '~model-name))))
   
 (defmacro defcontext
 	 "Define a context."
@@ -313,6 +313,25 @@
 		    nexten  (geospace/get-spatial-extent observ) 
 			]
 		nexten))
+
+;(defn process-observable
+;  [observable]
+;  (if (or (not (seq? observable)) (nil? (namespace (first observable)))) 
+; 	   	(if (seq? observable) (tl/listp observable) (str observable)) 
+; 	   	(eval observable)))
+
+(defn annotate-concept
+  [concept-id]
+  (if (nil? concept-id)
+    nil
+    (org.integratedmodelling.modelling.model.ModelFactory/annotateConcept (str *ns*) (str concept-id))))
+
+(defn process-observable
+  [observable] 
+  (if 
+    (or (seq? observable) (not (nil? (resolve observable)))) 
+    (eval observable) 
+    (str observable)))
 
 (defn get-native-topology-in-location 
 	"Return the spatial topology of the first observation found in the given location that
@@ -394,14 +413,11 @@
 	of the model."
 	[observable & specs]
 	`(let [model# (modelling/j-make-classification)] 
- 	   (.setObservable model# 
-	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
- 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
- 	   					(eval ~observable)))
+ 	   (.setObservable model# (process-observable '~observable))
 		 (doseq [classifier# (partition 2 '~specs)]
 		 	   (if  (and  (keyword? (first classifier#)) (not (= :otherwise (first classifier#)))) 
 		 	   		  (transform-model model# classifier#) 
-		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (eval (second classifier#)))))
+		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (second classifier#))))
  	   model#))
 
 (defmacro probabilistic-measurement
@@ -409,14 +425,11 @@
 	of the model."
 	[observable & specs]
 	`(let [model# (modelling/j-make-probabilistic-measurement)] 
- 	   (.setObservable model# 
-	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
- 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
- 	   					(eval ~observable)))
+ 	   (.setObservable model# (process-observable '~observable))
 		 (doseq [classifier# (partition 2 '~specs)]
 		 	   (if  (and  (keyword? (first classifier#)) (not (= :otherwise (first classifier#)))) 
 		 	   		  (transform-model model# classifier#) 
-		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (eval (second classifier#)))))
+		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (second classifier#))))
  	   model#))
 
 
@@ -443,10 +456,7 @@
 	[observable & body]
 	`(let [model# 
  	        	(modelling/j-make-ranking)] 
- 	   (.setObservable model# 
-	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
- 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
- 	   					(eval ~observable)))
+ 	   (.setObservable model# (process-observable '~observable))
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 
@@ -456,12 +466,12 @@
 (defmacro binary-coding
 	 "A binary coding is a numeric model that will mediate anything non-zero to 1."
    [observable & body]
-   `(ranking ~observable :binary true ~@body)) 
+   `(ranking '~observable :binary true ~@body)) 
 
 (defmacro numeric-coding
    "A numeric coding is like a numeric ranking but no ordinal assumption is made on the states."
    [observable & body]
-   `(ranking ~observable :numeric-classification true ~@body)) 
+   `(ranking '~observable :numeric-classification true ~@body)) 
 	
 (defmacro categorization
 	"Categorizations have string tags as states. They hold little semantics and should only be used to
@@ -469,10 +479,7 @@
 	[observable & categories]
 	`(let [model# 
  	        	(modelling/j-make-categorization)] 
- 	   (.setObservable model# 
-	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
- 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
- 	   					(eval ~observable)))
+ 	   (.setObservable model# (process-observable '~observable))
  	   (if (not (nil? '~categories)) (.setCategories model# (first '~categories))) 
  	   model#))
 	
@@ -481,10 +488,7 @@
 	[observable units & body]
 	`(let [model# 
  	        	(modelling/j-make-measurement)] 
- 	   (.setObservable model# 
-	   			(if (or (not (seq? ~observable)) (nil? (namespace (first '~observable)))) 
- 	   					(if (seq? ~observable) (tl/listp ~observable) ~observable) 
- 	   					(eval ~observable)))
+ 	   (.setObservable model# (process-observable '~observable))
  	   (.setUnits model# ~units)
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
@@ -499,9 +503,9 @@
     enumerations with no units cannot have other metadata in the form, i.e. they can only contain the 
     observable."
   ([observable]
-   `(ranking ~observable :count true))
+   `(ranking '~observable :count true))
   ([observable units & body]
-   `(measurement ~observable ~units :count true ~@body))) 	
+   `(measurement '~observable ~units :count true ~@body))) 	
 	
 ;(defmacro probabilistic-ranking
 ;   "Same as a numeric ranking but the states are distributions. Unimplemented."
@@ -518,7 +522,7 @@
 	[observable & body]
 	`(let [model# 
  	        	(modelling/j-make-observation)] 
- 	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	   (.setObservable model# (process-observable '~observable))
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 
@@ -534,7 +538,7 @@
 	[observable & body]
 	`(let [model# 
  	        	(modelling/j-make-spank)] 
- 	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	   (.setObservable model# (process-observable '~observable))
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 
@@ -547,7 +551,7 @@
 	[observable & body]
 	`(let [model# 
  	        	(modelling/j-make-bayesian)] 
- 	   (.setObservable model# (if (seq? ~observable) (tl/listp ~observable) ~observable))
+ 	   (.setObservable model# (process-observable '~observable))
  	   (if (not (nil? '~body)) 
 				(doseq [classifier# (partition 2 '~body)]
 		 	   	(if  (keyword? (first classifier#)) 

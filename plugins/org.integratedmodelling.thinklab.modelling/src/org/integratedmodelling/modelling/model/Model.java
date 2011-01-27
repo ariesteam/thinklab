@@ -45,11 +45,16 @@ public class Model extends DefaultAbstractModel {
 	String description = null;
 	Object state = null;
 	
-	public Model() {
-		// give it a default ID and namespace; if this is part of a defmodel, registering with
-		// the ModelFactory will change it to proper ID/Namespace
+//	public Model() {
+//		// give it a default ID and namespace; if this is part of a defmodel, registering with
+//		// the ModelFactory will change it to proper ID/Namespace
+//		this.id = NameGenerator.newName("mod");
+//		this.namespace = "thinklab.temp";
+//	}
+
+	public Model(String namespace) {
+		super(namespace);
 		this.id = NameGenerator.newName("mod");
-		this.namespace = "thinklab.temp";
 	}
 	
 	@Override
@@ -83,7 +88,7 @@ public class Model extends DefaultAbstractModel {
 		if (totres == 0) {
 			throw new ThinklabResourceNotFoundException(
 					"cannot observe " +
-					observableId +
+					observable +
 					" for any of " + 
 					models.size() + 
 					" contingencies of model " +
@@ -101,13 +106,13 @@ public class Model extends DefaultAbstractModel {
 
 		if (context != null) {
 
-			DefaultAbstractModel mod = new ObservationModel();
+			DefaultAbstractModel mod = new ObservationModel(namespace);
 			mod.setObservable(CoreScience.GENERIC_OBSERVABLE);
 			for (IModel m : context) {
 				mod.addDependentModel(m);
 			}
 			
-			ret = new Model();
+			ret = new Model(namespace);
 			ret.setObservable(CoreScience.GENERIC_OBSERVABLE);
 			ret.defModel(mod, null);
 		}
@@ -165,13 +170,13 @@ public class Model extends DefaultAbstractModel {
 			mdesc += (mdesc.length() == 1 ? "" : ",") + m ;
 		}
 		mdesc += "}";
-		return "model(" + observableId +") " + mdesc;
+		return "model(" + observable +") " + mdesc;
 	}
 
 	@Override
 	public IModel getConfigurableClone() {
 
-		Model ret = new Model();
+		Model ret = new Model(namespace);
 		ret.copy(this);
 		ret.context = context;
 		ret.contextIds = contextIds;
@@ -231,7 +236,7 @@ public class Model extends DefaultAbstractModel {
 	 */
 	public Scenario getDefaultScenario() {
 		
-		Scenario ret = new Scenario();
+		Scenario ret = new Scenario(namespace);
 		collectEditableModels(this, ret);
 		return ret;
 	}
@@ -251,7 +256,7 @@ public class Model extends DefaultAbstractModel {
 		 * context model. This is meant for applyScenario to use, and yes, it's an
 		 * ugly mess overall.
 		 */
-		Model ret = new Model();
+		Model ret = new Model(namespace);
 		ret.copy(this);
 		
 		return ret;

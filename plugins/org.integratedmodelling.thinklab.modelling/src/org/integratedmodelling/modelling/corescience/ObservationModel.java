@@ -20,6 +20,11 @@ import org.integratedmodelling.utils.Polylist;
  */
 public class ObservationModel extends DefaultAbstractModel {
 
+	public ObservationModel(String namespace) {
+		super(namespace);
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public void setObservable(Object observableOrModel)
 			throws ThinklabException {
@@ -29,7 +34,7 @@ public class ObservationModel extends DefaultAbstractModel {
 
 	@Override
 	public String toString() {
-		return ("identification(" + observableId + ")");
+		return ("identification(" + observable + ")");
 	}
 
 	@Override
@@ -52,7 +57,7 @@ public class ObservationModel extends DefaultAbstractModel {
 
 	@Override
 	public IModel getConfigurableClone() {
-		ObservationModel ret = new ObservationModel();
+		ObservationModel ret = new ObservationModel(namespace);
 		ret.copy(this);
 		return ret;
 	}

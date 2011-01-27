@@ -17,6 +17,11 @@ import org.integratedmodelling.modelling.interfaces.IModelForm;
  */
 public class Scenario extends ObservationModel implements IModelForm {
 
+	public Scenario(String namespace) {
+		super(namespace);
+		// TODO Auto-generated constructor stub
+	}
+
 	ArrayList<IModel> models = new ArrayList<IModel>();
 	ArrayList<Object> editableData = new ArrayList<Object>();
 

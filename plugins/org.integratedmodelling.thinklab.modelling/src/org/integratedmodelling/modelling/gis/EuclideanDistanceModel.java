@@ -11,6 +11,11 @@ import org.integratedmodelling.utils.Polylist;
 
 public class EuclideanDistanceModel extends DefaultAbstractModel {
 
+	public EuclideanDistanceModel(String namespace) {
+		super(namespace);
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public IConcept getCompatibleObservationType(ISession session) {
 		// TODO Auto-generated method stub

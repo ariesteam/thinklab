@@ -1,0 +1,1896 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<model xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:htm="http://www.w3.org/1999/xhtml">
+  <source>
+    <program>AME</program>
+    <version>9.7</version>
+    <edition>evaluation</edition>
+    <date>
+      <day>Thu</day>
+      <month>Jan</month>
+      <day_number>27</day_number>
+      <hour>07</hour>
+      <minute>15</minute>
+      <second>13</second>
+      <time_zone>GMT</time_zone>
+      <year>2011</year>
+    </date>
+  </source>
+  <roots>
+    <subnode>node00065</subnode>
+    <subnode>node00066</subnode>
+  </roots>
+  <properties>
+    <complete>true</complete>
+    <file_name>C:/Documents and Settings/jmm.KONTIKI/My Documents/Program Files/ExampleModels/iteration/BallBerry3.sml</file_name>
+    <fill_colour>#ffffff</fill_colour>
+    <fix_math_args>0</fix_math_args>
+    <image_posn>none</image_posn>
+    <multiplication_spec>
+      <count></count>
+    </multiplication_spec>
+    <name>BallBerry4a</name>
+    <separate>0</separate>
+    <step>1</step>
+  </properties>
+  <node id="node00065" type="submodel">
+    <subnodes>
+      <subnode>node00067</subnode>
+      <subnode>node00068</subnode>
+      <subnode>node00069</subnode>
+      <subnode>node00070</subnode>
+      <subnode>node00071</subnode>
+      <subnode>node00072</subnode>
+      <subnode>node00073</subnode>
+      <subnode>node00074</subnode>
+      <subnode>node00075</subnode>
+    </subnodes>
+    <nodespecs>
+      <complete>true</complete>
+      <enum_types></enum_types>
+      <fill_colour>#ffffff</fill_colour>
+      <image_posn>none</image_posn>
+      <multiplication_spec>
+        <count></count>
+      </multiplication_spec>
+      <name>Environment</name>
+      <separate>0</separate>
+    </nodespecs>
+    <nodegraphics>
+      <bounding_box>
+        <coords x="90" y="-331"></coords>
+        <coords x="281" y="-238"></coords>
+      </bounding_box>
+      <caption_offset>
+        <coords x="0" y="0"></coords>
+      </caption_offset>
+      <internal_extent>
+        <coords x="0" y="0"></coords>
+        <coords x="191" y="93"></coords>
+      </internal_extent>
+    </nodegraphics>
+  </node>
+  <links submodel="node00065">
+    <link arc1="arc00043" arc2="arc00050"></link>
+    <link arc1="arc00045" arc2="arc00049"></link>
+    <link arc1="arc00047" arc2="arc00051"></link>
+  </links>
+  <node id="node00067" type="border">
+    <nodespecs></nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="61" y="93"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00068" type="border">
+    <nodespecs></nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="0" y="72"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00069" type="border">
+    <nodespecs></nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="98" y="93"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00070" type="variable">
+    <nodespecs>
+      <comment>Typical diurnal graph (24 hour)</comment>
+      <complete>true</complete>
+      <description>Relative humidity (proportion)</description>
+      <name>H</name>
+    </nodespecs>
+    <nodegraphics>
+      <caption_offset>
+        <coords x="-2" y="-34"></coords>
+      </caption_offset>
+      <centre>
+        <coords x="90" y="45"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00071" type="function">
+    <nodespecs>
+      <complete>true</complete>
+      <name>fn3</name>
+      <table_data>
+        <file>/graph/</file>
+        <data_list>
+          <data>1</data>
+          <data>0.7</data>
+          <data>400</data>
+        </data_list>
+        <indices>
+          <data>0</data>
+          <data>24</data>
+          <data>400</data>
+          <data>2</data>
+        </indices>
+        <current>
+          <data>54</data>
+          <data>61</data>
+          <data>61</data>
+          <data>62</data>
+          <data>61</data>
+          <data>57</data>
+          <data>56</data>
+          <data>54</data>
+          <data>54</data>
+          <data>53</data>
+          <data>52</data>
+          <data>52</data>
+          <data>52</data>
+          <data>52</data>
+          <data>53</data>
+          <data>53</data>
+          <data>53</data>
+          <data>52</data>
+          <data>52</data>
+          <data>51</data>
+          <data>50</data>
+          <data>50</data>
+          <data>52</data>
+          <data>53</data>
+          <data>54</data>
+          <data>55</data>
+          <data>55</data>
+          <data>55</data>
+          <data>54</data>
+          <data>53</data>
+          <data>55</data>
+          <data>58</data>
+          <data>63</data>
+          <data>67</data>
+          <data>72</data>
+          <data>82</data>
+          <data>99</data>
+          <data>106</data>
+          <data>114</data>
+          <data>123</data>
+          <data>133</data>
+          <data>151</data>
+          <data>175</data>
+          <data>185</data>
+          <data>192</data>
+          <data>199</data>
+          <data>202</data>
+          <data>206</data>
+          <data>216</data>
+          <data>238</data>
+          <data>243</data>
+          <data>248</data>
+          <data>250</data>
+          <data>253</data>
+          <data>255</data>
+          <data>258</data>
+          <data>259</data>
+          <data>259</data>
+          <data>258</data>
+          <data>258</data>
+          <data>257</data>
+          <data>255</data>
+          <data>252</data>
+          <data>250</data>
+          <data>247</data>
+          <data>242</data>
+          <data>236</data>
+          <data>229</data>
+          <data>220</data>
+          <data>211</data>
+          <data>203</data>
+          <data>192</data>
+          <data>183</data>
+          <data>173</data>
+          <data>162</data>
+          <data>153</data>
+          <data>142</data>
+          <data>120</data>
+          <data>85</data>
+          <data>66</data>
+          <data>51</data>
+        </current>
+        <units>
+          <m:math>
+            <m:cn>1</m:cn>
+          </m:math>
+        </units>
+        <bounds>1</bounds>
+        <dims>81</dims>
+      </table_data>
+      <units>
+        <m:math>
+          <m:cn>1</m:cn>
+        </m:math>
+      </units>
+      <value>
+        <m:math>
+          <m:apply>
+            <m:csymbol encoding="text" definitionURL="http://www.simulistics.com/unknown_function">graph</m:csymbol>
+            <m:apply>
+              <m:csymbol encoding="text" definitionURL="http://www.simulistics.com/help/equations/functions/time.htm">time</m:csymbol>
+              <m:cn>1</m:cn>
+            </m:apply>
+          </m:apply>
+        </m:math>
+      </value>
+    </nodespecs>
+    <nodegraphics></nodegraphics>
+  </node>
+  <node id="node00072" type="variable">
+    <nodespecs>
+      <comment>Graph for a sunny day (24 hours)</comment>
+      <complete>true</complete>
+      <description>Photon flux density (umol m^-2 s^-1)</description>
+      <name>Q</name>
+    </nodespecs>
+    <nodegraphics>
+      <caption_offset>
+        <coords x="-1" y="-35"></coords>
+      </caption_offset>
+      <centre>
+        <coords x="44" y="45"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00073" type="function">
+    <nodespecs>
+      <complete>true</complete>
+      <name>fn5</name>
+      <table_data>
+        <file>/graph/</file>
+        <data_list>
+          <data>1500</data>
+          <data>0</data>
+          <data>400</data>
+        </data_list>
+        <indices>
+          <data>0</data>
+          <data>24</data>
+          <data>400</data>
+          <data>0</data>
+        </indices>
+        <current>
+          <data>395</data>
+          <data>395</data>
+          <data>395</data>
+          <data>388</data>
+          <data>319</data>
+          <data>167</data>
+          <data>119</data>
+          <data>103</data>
+          <data>85</data>
+          <data>75</data>
+          <data>71</data>
+          <data>74</data>
+          <data>83</data>
+          <data>100</data>
+          <data>135</data>
+          <data>191</data>
+          <data>374</data>
+          <data>394</data>
+          <data>395</data>
+          <data>394</data>
+          <data>398</data>
+        </current>
+        <units>
+          <m:math>
+            <m:cn>1</m:cn>
+          </m:math>
+        </units>
+        <bounds>1</bounds>
+        <dims>21</dims>
+      </table_data>
+      <units>
+        <m:math>
+          <m:cn>1</m:cn>
+        </m:math>
+      </units>
+      <value>
+        <m:math>
+          <m:apply>
+            <m:csymbol encoding="text" definitionURL="http://www.simulistics.com/unknown_function">graph</m:csymbol>
+            <m:apply>
+              <m:csymbol encoding="text" definitionURL="http://www.simulistics.com/help/equations/functions/time.htm">time</m:csymbol>
+              <m:cn>1</m:cn>
+            </m:apply>
+          </m:apply>
+        </m:math>
+      </value>
+    </nodespecs>
+    <nodegraphics></nodegraphics>
+  </node>
+  <node id="node00074" type="variable">
+    <nodespecs>
+      <comment>Typical diurnal curve in forest canopy</comment>
+      <complete>true</complete>
+      <description>Carbon dioxide concentration (umol CO2 (mol air)^-1)</description>
+      <name>C_a</name>
+    </nodespecs>
+    <nodegraphics>
+      <caption_offset>
+        <coords x="-2" y="-34"></coords>
+      </caption_offset>
+      <centre>
+        <coords x="136" y="44"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00075" type="function">
+    <nodespecs>
+      <complete>true</complete>
+      <name>fn8</name>
+      <table_data>
+        <file>/graph/</file>
+        <data_list>
+          <data>370</data>
+          <data>340</data>
+          <data>400</data>
+        </data_list>
+        <indices>
+          <data>0</data>
+          <data>23</data>
+          <data>400</data>
+          <data>0</data>
+        </indices>
+        <current>
+          <data>53</data>
+          <data>51</data>
+          <data>51</data>
+          <data>53</data>
+          <data>60</data>
+          <data>80</data>
+          <data>157</data>
+          <data>231</data>
+          <data>300</data>
+          <data>347</data>
+          <data>368</data>
+          <data>381</data>
+          <data>382</data>
+          <data>370</data>
+          <data>356</data>
+          <data>339</data>
+          <data>304</data>
+          <data>262</data>
+          <data>184</data>
+          <data>90</data>
+          <data>55</data>
+        </current>
+        <units>
+          <m:math>
+            <m:cn>1</m:cn>
+          </m:math>
+        </units>
+        <bounds>1</bounds>
+        <dims>21</dims>
+      </table_data>
+      <units>
+        <m:math>
+          <m:cn>1</m:cn>
+        </m:math>
+      </units>
+      <value>
+        <m:math>
+          <m:apply>
+            <m:csymbol encoding="text" definitionURL="http://www.simulistics.com/unknown_function">graph</m:csymbol>
+            <m:apply>
+              <m:csymbol encoding="text" definitionURL="http://www.simulistics.com/help/equations/functions/time.htm">time</m:csymbol>
+              <m:cn>1</m:cn>
+            </m:apply>
+          </m:apply>
+        </m:math>
+      </value>
+    </nodespecs>
+    <nodegraphics></nodegraphics>
+  </node>
+  <node id="node00066" type="submodel">
+    <subnodes>
+      <subnode>node00076</subnode>
+      <subnode>node00077</subnode>
+      <subnode>node00078</subnode>
+      <subnode>node00079</subnode>
+      <subnode>node00080</subnode>
+      <subnode>node00081</subnode>
+      <subnode>node00082</subnode>
+      <subnode>node00083</subnode>
+      <subnode>node00084</subnode>
+      <subnode>node00085</subnode>
+    </subnodes>
+    <nodespecs>
+      <complete>true</complete>
+      <enum_types></enum_types>
+      <fill_colour>#ffffff</fill_colour>
+      <image_posn>none</image_posn>
+      <multiplication_spec>
+        <count></count>
+      </multiplication_spec>
+      <name>Ball-Berry</name>
+      <separate>0</separate>
+    </nodespecs>
+    <nodegraphics>
+      <bounding_box>
+        <coords x="-259" y="-179"></coords>
+        <coords x="252" y="241"></coords>
+      </bounding_box>
+      <caption_offset>
+        <coords x="54" y="-2"></coords>
+      </caption_offset>
+      <internal_extent>
+        <coords x="0" y="24"></coords>
+        <coords x="511" y="444"></coords>
+      </internal_extent>
+    </nodegraphics>
+  </node>
+  <links submodel="node00066">
+    <link arc1="arc00049" arc2="arc00053"></link>
+    <link arc1="arc00050" arc2="arc00054"></link>
+    <link arc1="arc00051" arc2="arc00055"></link>
+  </links>
+  <node id="node00076" type="border">
+    <nodespecs></nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="376" y="24"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00077" type="variable">
+    <nodespecs>
+      <complete>true</complete>
+      <name>Gs_start</name>
+    </nodespecs>
+    <nodegraphics>
+      <caption_offset>
+        <coords x="0" y="0"></coords>
+      </caption_offset>
+      <centre>
+        <coords x="428" y="312"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00078" type="function">
+    <nodespecs>
+      <complete>true</complete>
+      <name>fn4</name>
+      <spec>if time()==0 then g_0 else last(Gs_0)</spec>
+      <units>
+        <m:math>
+          <m:cn>1</m:cn>
+        </m:math>
+      </units>
+      <value>
+        <m:math>
+          <m:piecewise>
+            <m:piece>
+              <m:ci>g_0</m:ci>
+              <m:apply>
+                <m:eq></m:eq>
+                <m:apply>
+                  <m:csymbol encoding="text" definitionURL="http://www.simulistics.com/help/equations/functions/time.htm">time</m:csymbol>
+                  <m:cn>1</m:cn>
+                </m:apply>
+                <m:cn>0</m:cn>
+              </m:apply>
+            </m:piece>
+            <m:otherwise>
+              <m:apply>
+                <m:csymbol encoding="text" definitionURL="http://www.simulistics.com/help/equations/functions/last.htm">last</m:csymbol>
+                <m:ci>Gs_0</m:ci>
+              </m:apply>
+            </m:otherwise>
+          </m:piecewise>
+        </m:math>
+      </value>
+    </nodespecs>
+    <nodegraphics></nodegraphics>
+  </node>
+  <node id="node00079" type="border">
+    <nodespecs></nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="402" y="24"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00080" type="border">
+    <nodespecs></nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="221" y="24"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00081" type="submodel">
+    <subnodes>
+      <subnode>node00086</subnode>
+      <subnode>node00087</subnode>
+      <subnode>node00088</subnode>
+      <subnode>node00089</subnode>
+      <subnode>node00090</subnode>
+      <subnode>node00091</subnode>
+      <subnode>node00092</subnode>
+      <subnode>node00093</subnode>
+      <subnode>node00094</subnode>
+      <subnode>node00095</subnode>
+      <subnode>node00096</subnode>
+      <subnode>node00097</subnode>
+      <subnode>node00098</subnode>
+      <subnode>node00099</subnode>
+      <subnode>node00100</subnode>
+      <subnode>node00101</subnode>
+    </subnodes>
+    <nodespecs>
+      <complete>true</complete>
+      <enum_types></enum_types>
+      <fill_colour>#ffffff</fill_colour>
+      <fix_math_args>0</fix_math_args>
+      <image_posn>none</image_posn>
+      <multiplication_spec>
+        <count></count>
+      </multiplication_spec>
+      <name>Iteration time step</name>
+      <separate>0</separate>
+    </nodespecs>
+    <nodegraphics>
+      <bounding_box>
+        <coords x="22" y="51"></coords>
+        <coords x="387" y="378"></coords>
+      </bounding_box>
+      <caption_offset>
+        <coords x="36" y="-1"></coords>
+      </caption_offset>
+      <internal_extent>
+        <coords x="0" y="0"></coords>
+        <coords x="365" y="327"></coords>
+      </internal_extent>
+    </nodegraphics>
+  </node>
+  <links submodel="node00081">
+    <link arc1="arc00053" arc2="arc00072"></link>
+    <link arc1="arc00054" arc2="arc00078"></link>
+    <link arc1="arc00055" arc2="arc00079"></link>
+    <link arc1="arc00057" arc2="arc00068"></link>
+    <link arc1="arc00075" arc2="arc00056"></link>
+    <link arc1="arc00082" arc2="arc00080"></link>
+    <link arc1="arc00085" arc2="arc00081"></link>
+  </links>
+  <node id="node00086" type="submodel">
+    <subnodes>
+      <subnode>node00102</subnode>
+      <subnode>node00103</subnode>
+      <subnode>node00104</subnode>
+      <subnode>node00105</subnode>
+      <subnode>node00106</subnode>
+      <subnode>node00107</subnode>
+      <subnode>node00108</subnode>
+    </subnodes>
+    <nodespecs>
+      <complete>true</complete>
+      <enum_types></enum_types>
+      <fill_colour>#ffffff</fill_colour>
+      <image_posn>none</image_posn>
+      <multiplication_spec>
+        <count></count>
+      </multiplication_spec>
+      <name>Assimilation</name>
+      <separate>0</separate>
+    </nodespecs>
+    <nodegraphics>
+      <bounding_box>
+        <coords x="32" y="32"></coords>
+        <coords x="215" y="182"></coords>
+      </bounding_box>
+      <caption_offset>
+        <coords x="0" y="0"></coords>
+      </caption_offset>
+      <internal_extent>
+        <coords x="0" y="0"></coords>
+        <coords x="182" y="150"></coords>
+      </internal_extent>
+    </nodegraphics>
+  </node>
+  <links submodel="node00086">
+    <link arc1="arc00058" arc2="arc00077"></link>
+    <link arc1="arc00065" arc2="arc00060"></link>
+    <link arc1="arc00072" arc2="arc00063"></link>
+  </links>
+  <node id="node00102" type="border">
+    <nodespecs></nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="72" y="0"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00103" type="border">
+    <nodespecs>
+      <name>var2</name>
+    </nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="182" y="82"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00104" type="border">
+    <nodespecs>
+      <name>var4</name>
+    </nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="101" y="150"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00105" type="variable">
+    <nodespecs>
+      <complete>true</complete>
+      <description>Assimation (umol CO2 m^-2 s^-1)</description>
+      <name>A</name>
+    </nodespecs>
+    <nodegraphics>
+      <caption_offset>
+        <coords x="-18" y="-2"></coords>
+      </caption_offset>
+      <centre>
+        <coords x="74" y="85"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00106" type="function">
+    <nodespecs>
+      <complete>true</complete>
+      <name>fn1</name>
+      <spec>A_Q*Gs</spec>
+      <units>
+        <m:math>
+          <m:cn>1</m:cn>
+        </m:math>
+      </units>
+      <value>
+        <m:math>
+          <m:apply>
+            <m:times></m:times>
+            <m:ci>A_Q</m:ci>
+            <m:ci>Gs</m:ci>
+          </m:apply>
+        </m:math>
+      </value>
+    </nodespecs>
+    <nodegraphics></nodegraphics>
+  </node>
+  <node id="node00107" type="variable">
+    <nodespecs>
+      <comment>Relationship of Assimilation with photon flux density (light) when stomatal conductance (Gs) is maximum</comment>
+      <complete>true</complete>
+      <description>Assimilation light response curve</description>
+      <name>A_Q</name>
+    </nodespecs>
+    <nodegraphics>
+      <caption_offset>
+        <coords x="-24" y="-14"></coords>
+      </caption_offset>
+      <centre>
+        <coords x="42" y="19"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00108" type="function">
+    <nodespecs>
+      <complete>true</complete>
+      <name>fn4</name>
+      <table_data>
+        <file>/graph/</file>
+        <data_list>
+          <data>15</data>
+          <data>0</data>
+          <data>400</data>
+        </data_list>
+        <indices>
+          <data>0</data>
+          <data>1600</data>
+          <data>400</data>
+          <data>0</data>
+        </indices>
+        <current>
+          <data>337</data>
+          <data>284</data>
+          <data>250</data>
+          <data>225</data>
+          <data>207</data>
+          <data>186</data>
+          <data>155</data>
+          <data>107</data>
+          <data>53</data>
+          <data>22</data>
+          <data>16</data>
+          <data>8</data>
+          <data>0</data>
+          <data>0</data>
+          <data>0</data>
+          <data>0</data>
+          <data>0</data>
+          <data>1</data>
+          <data>3</data>
+          <data>1</data>
+          <data>0</data>
+        </current>
+        <units>
+          <m:math>
+            <m:cn>1</m:cn>
+          </m:math>
+        </units>
+        <bounds>1</bounds>
+        <dims>21</dims>
+      </table_data>
+      <units>
+        <m:math>
+          <m:cn>1</m:cn>
+        </m:math>
+      </units>
+      <value>
+        <m:math>
+          <m:apply>
+            <m:csymbol encoding="text" definitionURL="http://www.simulistics.com/unknown_function">graph</m:csymbol>
+            <m:ci>Q</m:ci>
+          </m:apply>
+        </m:math>
+      </value>
+    </nodespecs>
+    <nodegraphics></nodegraphics>
+  </node>
+  <node id="node00087" type="alarm">
+    <nodespecs>
+      <complete>true</complete>
+      <name>al1</name>
+    </nodespecs>
+    <nodegraphics>
+      <caption_offset>
+        <coords x="0" y="0"></coords>
+      </caption_offset>
+      <centre>
+        <coords x="275" y="208"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00088" type="function">
+    <nodespecs>
+      <complete>true</complete>
+      <name>fn1</name>
+      <spec>abs(Gs-Gs_0)&lt;0.001</spec>
+      <units>
+        <m:math>
+          <m:ci>boolean</m:ci>
+        </m:math>
+      </units>
+      <value>
+        <m:math>
+          <m:apply>
+            <m:lt></m:lt>
+            <m:apply>
+              <m:abs></m:abs>
+              <m:apply>
+                <m:minus></m:minus>
+                <m:ci>Gs</m:ci>
+                <m:ci>Gs_0</m:ci>
+              </m:apply>
+            </m:apply>
+            <m:cn>0.001</m:cn>
+          </m:apply>
+        </m:math>
+      </value>
+    </nodespecs>
+    <nodegraphics></nodegraphics>
+  </node>
+  <node id="node00089" type="variable">
+    <nodespecs>
+      <complete>true</complete>
+      <name>Gs</name>
+    </nodespecs>
+    <nodegraphics>
+      <caption_offset>
+        <coords x="0" y="0"></coords>
+      </caption_offset>
+      <centre>
+        <coords x="174" y="280"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00090" type="function">
+    <nodespecs>
+      <complete>true</complete>
+      <name>fn3</name>
+      <spec>if loop_count==0 then Gs_start else Gs_0</spec>
+      <units>
+        <m:math>
+          <m:cn>1</m:cn>
+        </m:math>
+      </units>
+      <value>
+        <m:math>
+          <m:piecewise>
+            <m:piece>
+              <m:ci>Gs_start</m:ci>
+              <m:apply>
+                <m:eq></m:eq>
+                <m:ci>loop_count</m:ci>
+                <m:cn>0</m:cn>
+              </m:apply>
+            </m:piece>
+            <m:otherwise>
+              <m:ci>Gs_0</m:ci>
+            </m:otherwise>
+          </m:piecewise>
+        </m:math>
+      </value>
+    </nodespecs>
+    <nodegraphics></nodegraphics>
+  </node>
+  <node id="node00091" type="border">
+    <nodespecs>
+      <name>var8</name>
+    </nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="365" y="215"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00092" type="border">
+    <nodespecs>
+      <name>var9</name>
+    </nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="365" y="264"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00093" type="variable">
+    <nodespecs>
+      <complete>true</complete>
+      <name>loop_count</name>
+    </nodespecs>
+    <nodegraphics>
+      <caption_offset>
+        <coords x="-13" y="1"></coords>
+      </caption_offset>
+      <centre>
+        <coords x="322" y="234"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00094" type="function">
+    <nodespecs>
+      <complete>true</complete>
+      <name>fn5</name>
+      <spec>iterations(al1)</spec>
+      <units>
+        <m:math>
+          <m:ci>int</m:ci>
+        </m:math>
+      </units>
+      <value>
+        <m:math>
+          <m:apply>
+            <m:csymbol encoding="text" definitionURL="http://www.simulistics.com/unknown_function">iterations</m:csymbol>
+            <m:ci>al1</m:ci>
+          </m:apply>
+        </m:math>
+      </value>
+    </nodespecs>
+    <nodegraphics></nodegraphics>
+  </node>
+  <node id="node00095" type="border">
+    <nodespecs></nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="156" y="0"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00096" type="border">
+    <nodespecs></nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="337" y="2"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00097" type="border">
+    <nodespecs></nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="351" y="10"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00098" type="variable">
+    <nodespecs>
+      <comment>Ball-Berry equation</comment>
+      <complete>true</complete>
+      <description>Stomatal conductance (mol m^-2 s^-1)</description>
+      <name>Gs_0</name>
+    </nodespecs>
+    <nodegraphics>
+      <caption_offset>
+        <coords x="-21" y="-32"></coords>
+      </caption_offset>
+      <centre>
+        <coords x="272" y="112"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00099" type="function">
+    <nodespecs>
+      <complete>true</complete>
+      <name>Gs_0_0</name>
+      <spec>g_0+g_1*A*H/C_a</spec>
+      <units>
+        <m:math>
+          <m:cn>1</m:cn>
+        </m:math>
+      </units>
+      <value>
+        <m:math>
+          <m:apply>
+            <m:plus></m:plus>
+            <m:ci>g_0</m:ci>
+            <m:apply>
+              <m:divide></m:divide>
+              <m:apply>
+                <m:times></m:times>
+                <m:apply>
+                  <m:times></m:times>
+                  <m:ci>g_1</m:ci>
+                  <m:ci>A</m:ci>
+                </m:apply>
+                <m:ci>H</m:ci>
+              </m:apply>
+              <m:ci>C_a</m:ci>
+            </m:apply>
+          </m:apply>
+        </m:math>
+      </value>
+    </nodespecs>
+    <nodegraphics></nodegraphics>
+  </node>
+  <node id="node00100" type="border">
+    <nodespecs></nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="365" y="141"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00101" type="border">
+    <nodespecs></nodespecs>
+    <nodegraphics>
+      <centre>
+        <coords x="365" y="78"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00082" type="variable">
+    <nodespecs>
+      <complete>true</complete>
+      <description>Stomatal conductance in the dark (mol m^-2 s^-1)</description>
+      <name>g_0</name>
+    </nodespecs>
+    <nodegraphics>
+      <caption_offset>
+        <coords x="-1" y="-33"></coords>
+      </caption_offset>
+      <centre>
+        <coords x="467" y="217"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00083" type="function">
+    <nodespecs>
+      <complete>true</complete>
+      <name>fn6</name>
+      <spec>0.01</spec>
+      <units>
+        <m:math>
+          <m:cn>1</m:cn>
+        </m:math>
+      </units>
+      <value>
+        <m:math>
+          <m:cn>0.01</m:cn>
+        </m:math>
+      </value>
+    </nodespecs>
+    <nodegraphics></nodegraphics>
+  </node>
+  <node id="node00084" type="variable">
+    <nodespecs>
+      <complete>true</complete>
+      <description>Ball-Berry stomatal conductance coefficient</description>
+      <name>g_1</name>
+    </nodespecs>
+    <nodegraphics>
+      <caption_offset>
+        <coords x="-1" y="-34"></coords>
+      </caption_offset>
+      <centre>
+        <coords x="488" y="92"></coords>
+      </centre>
+    </nodegraphics>
+  </node>
+  <node id="node00085" type="function">
+    <nodespecs>
+      <complete>true</complete>
+      <name>fn7</name>
+      <spec>23</spec>
+      <units>
+        <m:math>
+          <m:cn>1</m:cn>
+        </m:math>
+      </units>
+      <value>
+        <m:math>
+          <m:cn>23</m:cn>
+        </m:math>
+      </value>
+    </nodespecs>
+    <nodegraphics></nodegraphics>
+  </node>
+  <arc id="arc00043" from="node00070" to="node00067" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i6</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>H</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="10" y="6"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00044" from="node00071" to="node00070" type="influence">
+    <arcspecs>
+      <name>i5</name>
+    </arcspecs>
+    <arcgraphics></arcgraphics>
+  </arc>
+  <arc id="arc00045" from="node00072" to="node00068" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i10</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>Q</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="6" y="10"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00046" from="node00073" to="node00072" type="influence">
+    <arcspecs>
+      <name>i9</name>
+    </arcspecs>
+    <arcgraphics></arcgraphics>
+  </arc>
+  <arc id="arc00047" from="node00074" to="node00069" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i16</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>C_a</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="10" y="8"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00048" from="node00075" to="node00074" type="influence">
+    <arcspecs>
+      <name>i15</name>
+    </arcspecs>
+    <arcgraphics></arcgraphics>
+  </arc>
+  <arc id="arc00049" from="node00065" to="node00066" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i10</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>Q</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="20" y="32"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00050" from="node00065" to="node00066" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i6</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>H</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="15" y="8"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00051" from="node00065" to="node00066" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i16</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>C_a</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="14" y="12"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00052" from="node00078" to="node00077" type="influence">
+    <arcspecs>
+      <name>i21</name>
+    </arcspecs>
+    <arcgraphics></arcgraphics>
+  </arc>
+  <arc id="arc00053" from="node00080" to="node00081" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i10</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>Q</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="6" y="12"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00054" from="node00076" to="node00081" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i6</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>H</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="6" y="4"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00055" from="node00079" to="node00081" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i16</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>C_a</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="10" y="7"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00056" from="node00081" to="node00078" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i23</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>Gs_0</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="10" y="-9"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00057" from="node00077" to="node00081" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i26</name>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="0" y="8"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00058" from="node00105" to="node00103" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i1_0</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <usr>A</usr>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="-1" y="-26"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00059" from="node00106" to="node00105" type="influence">
+    <arcspecs>
+      <name>i1</name>
+    </arcspecs>
+    <arcgraphics></arcgraphics>
+  </arc>
+  <arc id="arc00060" from="node00104" to="node00106" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i9</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>Gs</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="-15" y="6"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00061" from="node00107" to="node00106" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i8</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>A_Q</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="13" y="-6"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00062" from="node00108" to="node00107" type="influence">
+    <arcspecs>
+      <name>i7</name>
+    </arcspecs>
+    <arcgraphics></arcgraphics>
+  </arc>
+  <arc id="arc00063" from="node00102" to="node00108" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i10</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>Q</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="4" y="6"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00064" from="node00088" to="node00087" type="influence">
+    <arcspecs>
+      <name>i1</name>
+    </arcspecs>
+    <arcgraphics></arcgraphics>
+  </arc>
+  <arc id="arc00065" from="node00089" to="node00086" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i11</name>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="-22" y="9"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00066" from="node00089" to="node00088" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i20</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <usr>Gs</usr>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="-14" y="-20"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00067" from="node00090" to="node00089" type="influence">
+    <arcspecs>
+      <name>i7</name>
+    </arcspecs>
+    <arcgraphics></arcgraphics>
+  </arc>
+  <arc id="arc00068" from="node00092" to="node00090" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i25</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <usr>Gs_start</usr>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="3" y="46"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00069" from="node00093" to="node00090" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i2</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <usr>loop_count</usr>
+          </local_name>
+          <units>
+            <m:math>
+              <m:ci>int</m:ci>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="10" y="34"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00070" from="node00094" to="node00093" type="influence">
+    <arcspecs>
+      <name>i27</name>
+    </arcspecs>
+    <arcgraphics></arcgraphics>
+  </arc>
+  <arc id="arc00071" from="node00087" to="node00094" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i28</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>al1</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:ci>boolean</m:ci>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="2" y="-10"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00072" from="node00095" to="node00086" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i10</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>Q</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="8" y="13"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00073" from="node00098" to="node00090" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i8</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <usr>Gs_0</usr>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+      <use_sofar>1</use_sofar>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="38" y="23"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00074" from="node00098" to="node00088" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i16</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <usr>Gs_0</usr>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="27" y="-6"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00075" from="node00098" to="node00091" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i22</name>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="24" y="-22"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00076" from="node00099" to="node00098" type="influence">
+    <arcspecs>
+      <name>i2_0_0</name>
+    </arcspecs>
+    <arcgraphics></arcgraphics>
+  </arc>
+  <arc id="arc00077" from="node00086" to="node00099" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i1_0</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <usr>A</usr>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="-1" y="-12"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00078" from="node00096" to="node00099" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i6</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <usr>H</usr>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="26" y="15"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00079" from="node00097" to="node00099" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i2_0</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <usr>C_a</usr>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="24" y="19"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00080" from="node00100" to="node00099" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i14</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <usr>g_0</usr>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="-6" y="21"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00081" from="node00101" to="node00099" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i13</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <usr>g_1</usr>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="8" y="21"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00082" from="node00082" to="node00081" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i14</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>g_0</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="-6" y="18"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00083" from="node00082" to="node00078" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i24</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>g_0</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="20" y="8"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00084" from="node00083" to="node00082" type="influence">
+    <arcspecs>
+      <name>i11</name>
+    </arcspecs>
+    <arcgraphics></arcgraphics>
+  </arc>
+  <arc id="arc00085" from="node00084" to="node00081" type="influence">
+    <arcspecs>
+      <complete>true</complete>
+      <name>i13</name>
+      <role>
+        <use>
+          <role>none</role>
+          <way>in_hierarchy</way>
+          <local_name>
+            <text>g_1</text>
+          </local_name>
+          <units>
+            <m:math>
+              <m:cn>1</m:cn>
+            </m:math>
+          </units>
+        </use>
+      </role>
+    </arcspecs>
+    <arcgraphics>
+      <curve>
+        <coords x="9" y="23"></coords>
+      </curve>
+    </arcgraphics>
+  </arc>
+  <arc id="arc00086" from="node00085" to="node00084" type="influence">
+    <arcspecs>
+      <name>i12</name>
+    </arcspecs>
+    <arcgraphics></arcgraphics>
+  </arc>
+</model>
+

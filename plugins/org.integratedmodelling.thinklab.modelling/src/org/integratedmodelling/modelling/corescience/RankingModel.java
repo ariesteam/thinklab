@@ -63,7 +63,8 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 			super.applyClause(keyword, argument);
 	}
 
-	public RankingModel() {
+	public RankingModel(String namespace) {
+		super(namespace);
 		this.metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 	}
 
@@ -97,7 +98,7 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public IModel getConfigurableClone() {
-		RankingModel ret = new RankingModel();
+		RankingModel ret = new RankingModel(namespace);
 		ret.copy(this);
 		ret.isBinary = isBinary;
 		ret.isCategorical = isCategorical;

@@ -169,7 +169,26 @@ public class BayesianModelFactory {
 		String mname = CamelCase.toLowerCase(nodename, '-');
 		ArrayList<IModel> context = new ArrayList<IModel>();
 		
+		/*
+		 * concept for node must be there. If not, refuse to annotate.
+		 */
+		
+		/*
+		 * new node is:
+		 * 
+		 * ProbabilisticClassification by default;
+		 * if concept is a BooleanRanking or OrdinalRanking, remain P.C. but rank the 
+		 * 	concepts lexicographically.
+		 * if concept is OrdinalRangeMapping, create a ProbabilisticMeasurement if it's also a 
+		 * 	physical property, or a ProbabilisticRanking if not. Ensure coverage of 
+		 *  a distribution and finite boundaries.
+		 */
+		
 		for (BeliefNode o : bn.getChildren(node)) {
+			
+			/*
+			 * 
+			 */
 			
 		}
 		

@@ -18,6 +18,11 @@ import clojure.lang.Compiler;
 
 public class SPANKModel extends DefaultAbstractModel {
 
+	public SPANKModel(String namespace) {
+		super(namespace);
+		// TODO Auto-generated constructor stub
+	}
+
 	protected HashMap<String, Object> parameters = new HashMap<String, Object>();
 	
     @Override
@@ -28,7 +33,7 @@ public class SPANKModel extends DefaultAbstractModel {
     @Override
     public IModel getConfigurableClone() {
         
-        SPANKModel ret = new SPANKModel();
+        SPANKModel ret = new SPANKModel(namespace);
         ret.copy(this);
         return ret; 
     }
