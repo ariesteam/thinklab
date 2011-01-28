@@ -27,6 +27,7 @@ public class ModellingPlugin extends ThinklabPlugin {
 
 	public static final String UNITS_ANNOTATION = "modeltypes:hasUnitDescription";
 	public static final String RANGE_ANNOTATION = "modeltypes:hasRangeDescription";
+	public static final String EDITABLE_ANNOTATION = "modeltypes:isEditable";
 	
 	public static ModellingPlugin get() {
 		return (ModellingPlugin) getPlugin(PLUGIN_ID);

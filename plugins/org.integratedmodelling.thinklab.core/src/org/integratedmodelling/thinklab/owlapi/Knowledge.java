@@ -255,8 +255,8 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	 */
 	public String getDescription() {
 		String enDesc = getDescription(DEF_LANG);
-		if (enDesc.equals(""))
-			return getDescription("");
+		if (enDesc == null || enDesc.equals(""))
+			return getDescription(null);
 		else
 			return enDesc;
 	}
@@ -267,8 +267,9 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	 * @see org.integratedmodelling.thinklab.interfaces.IResource#getDescription(java.lang.String)
 	 */
 	public String getDescription(String languageCode) {
-		return getAnnotation(languageCode, OWLRDFVocabulary.RDFS_COMMENT
+		String ret = getAnnotation(languageCode, OWLRDFVocabulary.RDFS_COMMENT
 				.getURI());
+		return ret == null ? "" : ret;
 	}
 
 	/*
@@ -278,8 +279,8 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	 */
 	public String getLabel() {
 		String enLabel = getLabel(DEF_LANG);
-		if (enLabel.equals(""))
-			return getLabel("");
+		if (enLabel == null || enLabel.equals(""))
+			return getLabel(null);
 		else
 			return enLabel;
 	}
@@ -293,7 +294,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 						property)) {
 					if (annotation.isAnnotationByConstant()) {
 						OWLConstant val = annotation.getAnnotationValueAsConstant();
-						if (languageCode.equals("")) {
+						if (languageCode == null || languageCode.equals("")) {
 							return val.getLiteral();
 						} else {
 							if (!val.isTyped())
@@ -306,8 +307,23 @@ public abstract class Knowledge implements IKnowledge, IResource {
 				}
 			}
 		}
-		// Be gentle with annotations - if empty return ""
-		return "";
+
+		return null;
+	}
+	
+	@Override
+	public String getAnnotation(String property) {
+		IProperty p = null;
+		try {
+			p = KnowledgeManager.get().requireProperty(property);
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+		try {
+			return getAnnotation(null, new URI(p.getURI()));
+		} catch (URISyntaxException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 	/*
@@ -316,7 +332,8 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	 * @see org.integratedmodelling.thinklab.interfaces.IResource#getLabel(java.lang.String)
 	 */
 	public String getLabel(String languageCode) {
-		return getAnnotation(languageCode, OWLRDFVocabulary.RDFS_LABEL.getURI());
+		String ret = getAnnotation(languageCode, OWLRDFVocabulary.RDFS_LABEL.getURI());
+		return ret == null ? "" : ret;
 	}
 
 	/*

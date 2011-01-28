@@ -99,7 +99,6 @@ public class Metadata extends HashMap<String, Object> {
 	// classifiers are a list of pair<iconcept, genericclassifier>
 	public static final String CLASSIFIERS = "classifiers";
 
-
 	public Metadata(Metadata metadata) {
 		try {
 			merge(metadata);
@@ -221,7 +220,6 @@ public class Metadata extends HashMap<String, Object> {
 
 		state.getMetadata().put(HAS_NODATA_VALUES, new Boolean(hasNaNs));
 		state.getMetadata().put(HAS_DATA_VALUES, new Boolean(nodata));
-
 	}
 
 	public static class MetadataSerializer extends OutputSerializer {

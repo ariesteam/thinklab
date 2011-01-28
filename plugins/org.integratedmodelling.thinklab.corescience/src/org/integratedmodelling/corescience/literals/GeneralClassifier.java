@@ -132,9 +132,15 @@ public class GeneralClassifier {
 
 		} else if (closure != null) {
 		
-			/*
-			 * TODO - eval the IFn, but it needs a parameter map.
-			 */
+			try {
+				/*
+				 * TODO find an elegant way to communicate external
+				 * parameter maps, and set :self = o in it.
+				 */
+				//return (Boolean)closure.invoke(o);
+			} catch (Exception e) {
+				throw new ThinklabRuntimeException(e);
+			}
 		}
 		
 		return false;

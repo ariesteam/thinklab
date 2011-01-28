@@ -6,7 +6,6 @@ import javax.measure.unit.Dimension;
 import javax.measure.unit.ProductUnit;
 
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 

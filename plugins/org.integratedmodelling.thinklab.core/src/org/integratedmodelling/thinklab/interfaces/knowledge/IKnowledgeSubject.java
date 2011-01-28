@@ -104,11 +104,4 @@ public abstract interface IKnowledgeSubject extends IKnowledge {
 	 */
 	public abstract IValue get(String property) throws ThinklabException;
 	
-	/**
-	 * Set a specific annotation into this object.
-	 * 
-	 * @param property
-	 * @param value
-	 */
-	public abstract void addAnnotation(String property, String value);
 }

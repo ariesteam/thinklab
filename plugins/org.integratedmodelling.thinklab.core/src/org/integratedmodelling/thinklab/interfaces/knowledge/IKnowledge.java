@@ -71,4 +71,21 @@ public interface IKnowledge extends IResource {
      */
     public abstract boolean is(String semanticType);
     
+	/**
+	 * Set a specific annotation into this object.
+	 * 
+	 * @param property
+	 * @param value
+	 */
+	public abstract void addAnnotation(String property, String value);
+	
+	/**
+	 * Return value of said annotation property, or null if not 
+	 * existing.
+	 * 
+	 * @param property
+	 * @return
+	 */
+	public abstract String getAnnotation(String property);
+    
 }
