@@ -1,5 +1,6 @@
 package org.integratedmodelling.corescience.context;
 
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -118,13 +119,18 @@ public class DatasourceStateAdapter implements IDataSource<Object>, IState, IIns
 	}
 
 	@Override
-	public ObservationContext getObservationContext() {
+	public IContext getObservationContext() {
 		return _state.getObservationContext();
 	}
 	
 	@Override
 	public String toString() {
 		return _state.toString();
+	}
+
+	@Override
+	public IState aggregate(IConcept concept) throws ThinklabException {
+		return _state.aggregate(concept);
 	}
 
 }

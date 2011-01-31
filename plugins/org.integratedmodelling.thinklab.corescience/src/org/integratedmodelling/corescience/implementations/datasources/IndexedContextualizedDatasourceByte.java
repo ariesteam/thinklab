@@ -5,10 +5,8 @@ import java.util.HashMap;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.context.ObservationContext;
-import org.integratedmodelling.corescience.interfaces.IDataSource;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
@@ -32,7 +30,7 @@ import org.integratedmodelling.utils.Polylist;
  * @param <ObjectType>
  * @deprecated
  */
-public class IndexedContextualizedDatasourceByte<T> 
+public class IndexedContextualizedDatasourceByte<T> extends DefaultAbstractState
  	implements IState, IInstanceImplementation, IConceptualizable {
 
 	private static final long serialVersionUID = -6567783706189229920L;
@@ -153,7 +151,7 @@ public class IndexedContextualizedDatasourceByte<T>
 	}
 
 	@Override
-	public ObservationContext getObservationContext() {
+	public IContext getObservationContext() {
 		return context;
 	}
 

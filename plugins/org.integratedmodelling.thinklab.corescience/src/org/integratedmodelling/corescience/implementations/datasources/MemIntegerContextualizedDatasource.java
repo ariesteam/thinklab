@@ -35,10 +35,8 @@ package org.integratedmodelling.corescience.implementations.datasources;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.context.ObservationContext;
-import org.integratedmodelling.corescience.interfaces.IDataSource;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
@@ -47,7 +45,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.utils.Polylist;
 
-public class MemIntegerContextualizedDatasource 
+public class MemIntegerContextualizedDatasource  extends DefaultAbstractState
  	implements IState, IInstanceImplementation {
 
 	private static final long serialVersionUID = -6567783706189229920L;
@@ -159,7 +157,7 @@ public class MemIntegerContextualizedDatasource
 	}
 
 	@Override
-	public ObservationContext getObservationContext() {
+	public IContext getObservationContext() {
 		return this.context;
 	}	
 

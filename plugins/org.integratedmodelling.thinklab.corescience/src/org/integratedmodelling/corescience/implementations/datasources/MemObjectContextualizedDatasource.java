@@ -39,6 +39,7 @@ import java.util.HashMap;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.literals.IndexedCategoricalDistribution;
 import org.integratedmodelling.corescience.metadata.Metadata;
@@ -56,7 +57,7 @@ import org.integratedmodelling.utils.OutputSerializer;
 import org.integratedmodelling.utils.Polylist;
 
 @PersistentObject()
-public class MemObjectContextualizedDatasource 
+public class MemObjectContextualizedDatasource extends DefaultAbstractState
  	implements IState, IInstanceImplementation, IPersistentObject {
 
 	private static final long serialVersionUID = -6567783706189229920L;
@@ -250,7 +251,7 @@ public class MemObjectContextualizedDatasource
 	}
 
 	@Override
-	public ObservationContext getObservationContext() {
+	public IContext getObservationContext() {
 		return this.context;
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.integratedmodelling.corescience.context.ContextMapper;
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
@@ -455,7 +456,7 @@ public class VMContextualizer<T> {
 		this.contextRegister = new ContextRegister[context.getNumberOfDimensions()];
 	
 		int i = 0;
-		for (IConcept c : context.getDimensions()) {
+		for (IConcept c : ((ObservationContext)context).getDimensions()) {
 			
 			ContextRegister reg = new ContextRegister();
 			

@@ -2,6 +2,7 @@ package org.integratedmodelling.corescience.interfaces;
 
 import java.util.Collection;
 
+import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
@@ -28,6 +29,10 @@ public interface IContext {
 	 */
 	public abstract Collection<IExtent> getExtents();
 	
+	public abstract int getMultiplicity();
+
+	public abstract int getMultiplicity(IConcept concept) throws ThinklabException;
+
 	/**
 	 * Return the extent for a specific topology observable, or null if not there.
 	 * 
@@ -90,6 +95,8 @@ public interface IContext {
 	 * @throws ThinklabException 
 	 */
 	public abstract IContext cloneExtents() throws ThinklabException;
+
+	public abstract IContext collapse(IConcept dimension) throws ThinklabException;
 
 
 }

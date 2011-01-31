@@ -1,7 +1,7 @@
 package org.integratedmodelling.corescience.interfaces;
 
-import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
@@ -12,7 +12,6 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
  * @author Ferdinando
  *
  */
-@SuppressWarnings("unchecked")
 public interface IState  extends /* IDataSource, */ IConceptualizable {
 		
 	public IConcept getValueType();
@@ -80,6 +79,20 @@ public interface IState  extends /* IDataSource, */ IConceptualizable {
 	 * States exist within a context, and must be able to
 	 * return the context they are part of.
 	 */
-	public abstract ObservationContext getObservationContext();
+	public abstract IContext getObservationContext();
 
+	/**
+	 * Return a state with the given context dimension collapsed to one, and
+	 * the data appropriately aggregated. Return self if the dimension is not
+	 * in the context and throw an exception if data along that dimension cannot
+	 * be aggregated. It's expected to handle the metadata appropriately, e.g. 
+	 * modify the units if necessary.
+	 * 
+	 * @param concept
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public IState aggregate(IConcept concept) throws ThinklabException;
+	
+	
 }

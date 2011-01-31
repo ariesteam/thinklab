@@ -35,10 +35,8 @@ package org.integratedmodelling.corescience.implementations.datasources;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.context.ObservationContext;
-import org.integratedmodelling.corescience.interfaces.IDataSource;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
@@ -47,7 +45,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.utils.Polylist;
 
-public class MemLongContextualizedDatasource 
+public class MemLongContextualizedDatasource  extends DefaultAbstractState
  	implements IState, IInstanceImplementation {
 
 	private static final long serialVersionUID = -6567783706189229920L;
@@ -61,17 +59,6 @@ public class MemLongContextualizedDatasource
 		data = new long[size];
 		this.context = context;
 	}
-	
-//	@Override
-//	public Object getInitialValue() {
-//		return null;
-//	}
-//
-//	@Override
-//	public Object getValue(int index, Object[] parameters) {
-//		return data[index];
-//	}
-
 
 	@Override
 	public Object getValue(int offset) {
@@ -156,7 +143,7 @@ public class MemLongContextualizedDatasource
 	}
 
 	@Override
-	public ObservationContext getObservationContext() {
+	public IContext getObservationContext() {
 		return this.context;
 	}
 

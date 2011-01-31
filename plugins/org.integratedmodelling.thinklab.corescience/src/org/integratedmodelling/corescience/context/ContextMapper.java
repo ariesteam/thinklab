@@ -1,6 +1,7 @@
 package org.integratedmodelling.corescience.context;
 
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
@@ -22,8 +23,8 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
  */
 public class ContextMapper {
 	
-	private IObservationContext _from;
-	private IObservationContext _to;
+	private IContext _from;
+	private IContext _to;
 	MultidimensionalCursor fromCursor = 
 		new MultidimensionalCursor(StorageOrdering.ROW_FIRST);
 	MultidimensionalCursor toCursor = 
@@ -32,7 +33,7 @@ public class ContextMapper {
 	boolean identical = false;
 	private IState state;
 	
-	public ContextMapper(IState state, IObservationContext to) throws ThinklabException {
+	public ContextMapper(IState state, IContext to) throws ThinklabException {
 		this(state.getObservationContext(), to);
 		this.state = state;
 	}
@@ -51,17 +52,17 @@ public class ContextMapper {
 		return ret;
 	}
 	
-	public ContextMapper(IObservationContext from, IObservationContext to) throws ThinklabException {
+	public ContextMapper(IContext from, IContext to) throws ThinklabException {
 		
 		this._from = from;
 		this._to = to;
 		int td = 0;
-		int[] indexesFrom = from.getDimensionSizes();
+		int[] indexesFrom = ((IObservationContext)from).getDimensionSizes();
 		this.cdims = new int[indexesFrom.length];
 		int[] indexesTo = new int[indexesFrom.length];
 		int i = 0;
-		for (IConcept c : from.getDimensions()) {
-			IConcept theDim = to.getDimension(c);
+		for (IConcept c : ((ObservationContext)from).getDimensions()) {
+			IConcept theDim = ((IObservationContext)to).getDimension(c);
 			int dim = theDim == null ? 1 : to.getMultiplicity(theDim);
 			if (!(dim == 1 || dim == indexesFrom[i]))
 				throw new ThinklabContextualizationException(

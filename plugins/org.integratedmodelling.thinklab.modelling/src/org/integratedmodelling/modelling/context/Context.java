@@ -256,5 +256,23 @@ public class Context implements IContext, IModelForm {
 	public String toString() {
 		return getName();
 	}
+
+	@Override
+	public int getMultiplicity() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getMultiplicity(IConcept concept) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public IContext collapse(IConcept dimension) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

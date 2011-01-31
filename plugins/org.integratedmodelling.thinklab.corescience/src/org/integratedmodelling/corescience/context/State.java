@@ -3,6 +3,7 @@ package org.integratedmodelling.corescience.context;
 import java.util.Properties;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.multidimensional.Average;
@@ -101,7 +102,7 @@ public class State {
 	
 	public static IState aggregate(IState state, IConcept dimension) throws ThinklabException {
 		
-		ObservationContext actx = state.getObservationContext().collapse(dimension);
+		IContext actx = state.getObservationContext().collapse(dimension);
 		IAggregator agg = getAggregator(state.getObservableClass());
 		
 		return null;
@@ -109,7 +110,7 @@ public class State {
 
 	public static IState aggregate(IState state) throws ThinklabException {
 
-		ObservationContext actx = state.getObservationContext().collapse();
+		IContext actx = state.getObservationContext().collapse(null);
 		IAggregator agg = getAggregator(state.getObservableClass());
 
 		return null;

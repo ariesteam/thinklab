@@ -35,8 +35,9 @@ package org.integratedmodelling.time.extents;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.ITopologicallyComparable;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.metadata.Metadata;
@@ -390,13 +391,19 @@ public class RegularTimeGridExtent implements IExtent {
 	}
 
 	@Override
-	public ObservationContext getObservationContext() {
+	public IContext getObservationContext() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Restriction getConstraint(String operator) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IState aggregate(IConcept concept) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

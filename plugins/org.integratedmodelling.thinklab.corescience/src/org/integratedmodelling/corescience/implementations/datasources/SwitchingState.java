@@ -6,10 +6,9 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ContextMapper;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.context.ObservationContext;
-import org.integratedmodelling.corescience.interfaces.IDataSource;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -20,7 +19,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.utils.Polylist;
 
-public class SwitchingState implements IState {
+public class SwitchingState  extends DefaultAbstractState implements IState {
 	
 	private ObservationContext context;
 	private Metadata metadata = new Metadata();
@@ -164,7 +163,7 @@ public class SwitchingState implements IState {
 	}
 
 	@Override
-	public ObservationContext getObservationContext() {
+	public IContext getObservationContext() {
 		return this.context;
 	}
 

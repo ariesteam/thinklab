@@ -33,8 +33,9 @@
 package org.integratedmodelling.geospace.extents;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.integratedmodelling.corescience.context.ObservationContext;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.ITopologicallyComparable;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.Geospace;
@@ -389,8 +390,16 @@ public abstract class ArealExtent implements IExtent {
 	}
 
 	@Override
-	public ObservationContext getObservationContext() {
+	public IContext getObservationContext() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public IState aggregate(IConcept concept) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 }

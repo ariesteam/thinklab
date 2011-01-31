@@ -36,7 +36,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
-public class Metadata extends ThinklabPlugin {
+public class MetadataPlugin extends ThinklabPlugin {
 
 	static final String PLUGIN_ID = "org.integratedmodelling.thinklab.metadata";
 

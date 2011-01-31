@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.metadata" version="0.8.0" class="org.integratedmodelling.metadata.Metadata">
+<plugin id="org.integratedmodelling.thinklab.metadata" version="0.8.0" class="org.integratedmodelling.metadata.MetadataPlugin">
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
 		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
