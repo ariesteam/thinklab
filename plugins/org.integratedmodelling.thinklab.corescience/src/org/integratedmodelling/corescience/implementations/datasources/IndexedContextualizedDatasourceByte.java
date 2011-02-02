@@ -34,32 +34,19 @@ public class IndexedContextualizedDatasourceByte<T> extends DefaultAbstractState
  	implements IState, IInstanceImplementation, IConceptualizable {
 
 	private static final long serialVersionUID = -6567783706189229920L;
-	IConcept _type;
 	byte[] data = null;
 	private byte max = 1;
-	private ObservationContext context = null;
 	
-	Metadata metadata = new Metadata();
 	
 	HashMap<T, Integer> map = new HashMap<T, Integer>();
 	HashMap<Integer, T> inverseMap = new HashMap<Integer, T>();
 
-	public IndexedContextualizedDatasourceByte(IConcept type, int size, ObservationContext ctx) {
+	public IndexedContextualizedDatasourceByte(IConcept type, int size, IContext ctx) {
 		_type = type;
 		data = new byte[size];
 		this.context = ctx;
 	}
-//		
-//	@Override
-//	public Object getInitialValue() {
-//		return null;
-//	}
-//
-//	@Override
-//	public Object getValue(int index, Object[] parameters) {
-//		return inverseMap.get(new Integer(data[index]));
-//	}
-	
+
 	@Override
 	public Object getValue(int offset) {
 		return (offset >= 0 && offset < data.length) ? inverseMap.get(new Integer(data[offset])) : null;
@@ -145,15 +132,6 @@ public class IndexedContextualizedDatasourceByte<T> extends DefaultAbstractState
 //			throws ThinklabException {
 //	}
 
-	@Override
-	public IConcept getObservableClass() {
-		return _type;
-	}
-
-	@Override
-	public IContext getObservationContext() {
-		return context;
-	}
 
 	@Override
 	public double getDoubleValue(int index)

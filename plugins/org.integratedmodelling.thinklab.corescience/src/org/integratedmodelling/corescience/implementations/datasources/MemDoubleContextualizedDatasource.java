@@ -58,27 +58,20 @@ public class MemDoubleContextualizedDatasource  extends DefaultAbstractState
  	implements IState, IInstanceImplementation, IPersistentObject {
 
 	private static final long serialVersionUID = -6567783706189229920L;
-	private IConcept _type;
 	protected double[] data = null;
-	protected Metadata metadata = new Metadata();
-	private ObservationContext context;
 	
 	public MemDoubleContextualizedDatasource() {
 		// only to be used by the serializer
 	}
 	
-	public IConcept getType() {
-		return _type;
-	}
-	
-	public MemDoubleContextualizedDatasource(IConcept type, double[] data, ObservationContext context) {
+	public MemDoubleContextualizedDatasource(IConcept type, double[] data, IContext context) {
 		_type = type;
 		this.data = data;
 		metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 		this.context = context;
 	}
 	
-	public MemDoubleContextualizedDatasource(IConcept type, double[][] d, ObservationContext context) {
+	public MemDoubleContextualizedDatasource(IConcept type, double[][] d, IContext context) {
 		_type = type;
 		this.context = context;
 		this.data = new double[d.length*d[0].length];
@@ -90,22 +83,12 @@ public class MemDoubleContextualizedDatasource  extends DefaultAbstractState
 		}
 	}
 	
-	public MemDoubleContextualizedDatasource(IConcept type, int size, ObservationContext context) {
+	public MemDoubleContextualizedDatasource(IConcept type, int size, IContext context) {
 		_type = type;
 		data = new double[size];
 		this.context = context;
 	}
 	
-//	@Override
-//	public Object getInitialValue() {
-//		return null;
-//	}
-//
-//	@Override
-//	public Object getValue(int index, Object[] parameters) {
-//		return data[index];
-//	}
-
 	@Override
 	public Object getValue(int offset) {
 		return (offset >= 0 && offset < data.length) ? data[offset] : null;
@@ -153,35 +136,9 @@ public class MemDoubleContextualizedDatasource  extends DefaultAbstractState
 	}
 	
 	@Override
-	public Metadata getMetadata() {
-		return metadata;
-	}
-	
-	@Override
 	public int getValueCount() {
 		return data.length;
 	}
-//
-//	@Override
-//	public IDataSource<?> transform(IDatasourceTransformation transformation)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		return this;
-//	}
-//
-//	@Override
-//	public void postProcess(IObservationContext context)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public void preProcess(IObservationContext context)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		
-//	}
 
 	@Override
 	public IPersistentObject deserialize(InputStream fop) throws ThinklabException {
@@ -207,10 +164,7 @@ public class MemDoubleContextualizedDatasource  extends DefaultAbstractState
 		return _type;
 	}
 
-	@Override
-	public IContext getObservationContext() {
-		return this.context;
-	}
+
 
 	@Override
 	public double getDoubleValue(int index)

@@ -40,6 +40,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.interfaces.IEntifiable;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.feature.LazyShapeCollection;
@@ -338,6 +339,13 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 	@Override
 	public Restriction getConstraint(String operator) throws ThinklabException {
 		return new Restriction("boundingbox", operator, getFullExtentValue().toString());
+	}
+
+	@Override
+	public AggregationParameters getAggregationParameters(IConcept concept,
+			Unit unit) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 //	@Override

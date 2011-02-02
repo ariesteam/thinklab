@@ -99,6 +99,10 @@ public class Metadata extends HashMap<String, Object> {
 	// classifiers are a list of pair<iconcept, genericclassifier>
 	public static final String CLASSIFIERS = "classifiers";
 
+	// UNIT is the ACTUAL physical unit (Unit type), not the unit description
+	// stored in UNITS. 
+	public static final String UNIT = "unit";
+
 	public Metadata(Metadata metadata) {
 		try {
 			merge(metadata);

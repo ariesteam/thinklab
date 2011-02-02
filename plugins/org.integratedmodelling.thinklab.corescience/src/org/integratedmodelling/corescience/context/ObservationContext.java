@@ -156,7 +156,7 @@ public class ObservationContext implements IObservationContext, IContext {
 		 * switch to what we will be after transformation.
 		 */
 		if (observation instanceof ContextTransformingObservation) {
-			switchTo(((ContextTransformingObservation)observation).getTransformedContext(this));
+			switchTo((IObservationContext) ((ContextTransformingObservation)observation).getTransformedContext(this));
 		}
 		
 		
@@ -827,7 +827,7 @@ public class ObservationContext implements IObservationContext, IContext {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public ObservationContext collapse(IConcept dimension)
+	public IContext collapse(IConcept dimension)
 		throws ThinklabException {
 
 		ObservationContext ret = new ObservationContext();

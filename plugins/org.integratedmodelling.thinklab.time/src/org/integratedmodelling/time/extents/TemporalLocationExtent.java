@@ -41,6 +41,7 @@ import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.ITopologicallyComparable;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
@@ -264,6 +265,13 @@ public class TemporalLocationExtent implements IExtent {
 
 	@Override
 	public IState aggregate(IConcept concept) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AggregationParameters getAggregationParameters(IConcept concept,
+			Unit unit) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -7,9 +7,7 @@ import org.integratedmodelling.corescience.context.ContextMapper;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -21,15 +19,13 @@ import org.integratedmodelling.utils.Polylist;
 
 public class SwitchingState  extends DefaultAbstractState implements IState {
 	
-	private ObservationContext context;
-	private Metadata metadata = new Metadata();
 	private IInstance observable;
 	private SwitchLayer<ContextMapper> switchLayer;
 	private ContextMapper[] states;
 	private IConcept valueType;
 
 	public SwitchingState(ContextMapper[] states, IInstance observable,
-			SwitchLayer<ContextMapper> switchLayer, IObservationContext context) {
+			SwitchLayer<ContextMapper> switchLayer, IContext context) {
 		
 		this.context = (ObservationContext) context;
 		this.observable = observable;
@@ -98,12 +94,6 @@ public class SwitchingState  extends DefaultAbstractState implements IState {
 		return context.getMultiplicity();
 	}
 	
-//	@Override
-//	public Object getInitialValue() {
-//		return null;
-//	}
-//
-//	@Override
 	private Object switchValue(int index) {
 		
 		if (switchLayer != null) {
@@ -133,27 +123,6 @@ public class SwitchingState  extends DefaultAbstractState implements IState {
 		return this.valueType;
 	}
 
-//	@Override
-//	public void postProcess(IObservationContext context)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//
-//	}
-//
-//	@Override
-//	public void preProcess(IObservationContext context)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//
-//	}
-//
-//	@Override
-//	public IDataSource<?> transform(IDatasourceTransformation transformation)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
 		// TODO Auto-generated method stub
@@ -162,15 +131,6 @@ public class SwitchingState  extends DefaultAbstractState implements IState {
 				Polylist.list("@", new DatasourceStateAdapter(this)));
 	}
 
-	@Override
-	public IContext getObservationContext() {
-		return this.context;
-	}
-
-	@Override
-	public Metadata getMetadata() {
-		return this.metadata ;
-	}
 
 	@Override
 	public double getDoubleValue(int index)

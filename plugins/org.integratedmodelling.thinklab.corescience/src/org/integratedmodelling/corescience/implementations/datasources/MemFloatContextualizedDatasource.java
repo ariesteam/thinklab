@@ -34,7 +34,6 @@ package org.integratedmodelling.corescience.implementations.datasources;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
-import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
@@ -49,27 +48,14 @@ public class MemFloatContextualizedDatasource  extends DefaultAbstractState
  	implements IState, IInstanceImplementation {
 
 	private static final long serialVersionUID = -6567783706189229920L;
-	private IConcept _type;
 	private float[] data = null;
-	Metadata metadata = new Metadata();
-	private ObservationContext context;
 
-	public MemFloatContextualizedDatasource(IConcept type, int size, ObservationContext context) {
+	public MemFloatContextualizedDatasource(IConcept type, int size, IContext context) {
 		_type = type;
 		data = new float[size];
 		metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 		this.context = context;
 	}
-	
-//	@Override
-//	public Object getInitialValue() {
-//		return null;
-//	}
-//
-//	@Override
-//	public Object getValue(int index, Object[] parameters) {
-//		return data[index];
-//	}
 
 	@Override
 	public Object getValue(int offset) {
@@ -120,44 +106,8 @@ public class MemFloatContextualizedDatasource  extends DefaultAbstractState
 	}
 	
 	@Override
-	public Metadata getMetadata() {
-		return metadata;
-	}
-
-	@Override
 	public int getValueCount() {
 		return data.length;
-	}
-//
-//	@Override
-//	public IDataSource<?> transform(IDatasourceTransformation transformation)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		return this;
-//	}
-//
-//	@Override
-//	public void postProcess(IObservationContext context)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public void preProcess(IObservationContext context)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		
-//	}
-	
-	@Override
-	public IConcept getObservableClass() {
-		return _type;
-	}
-
-	@Override
-	public IContext getObservationContext() {
-		return this.context;
 	}
 
 	@Override

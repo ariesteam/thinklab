@@ -38,7 +38,6 @@ import java.util.HashMap;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
-import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.literals.IndexedCategoricalDistribution;
@@ -61,13 +60,10 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
  	implements IState, IInstanceImplementation, IPersistentObject {
 
 	private static final long serialVersionUID = -6567783706189229920L;
-	private IConcept _type;
 	private Object[] data = null;
 	private Object prototype = null;
-	Metadata metadata = new Metadata();
-	private ObservationContext context;
 	
-	public MemObjectContextualizedDatasource(IConcept type, int size, ObservationContext context) {
+	public MemObjectContextualizedDatasource(IConcept type, int size, IContext context) {
 		_type = type;
 		data = new Object[size];
 		this.context = context;
@@ -186,10 +182,6 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 		throw new ThinklabValueConversionException("can't convert a " + prototype.getClass() + " into a double");
 		 
 	}
-	@Override
-	public Metadata getMetadata() {
-		return metadata;
-	}
 
 	@Override
 	public int getValueCount() {
@@ -243,15 +235,5 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 		}
 		
 		return ret;
-	}
-
-	@Override
-	public IConcept getObservableClass() {
-		return _type;
-	}
-
-	@Override
-	public IContext getObservationContext() {
-		return this.context;
 	}
 }

@@ -34,7 +34,9 @@ package org.integratedmodelling.corescience.interfaces;
 
 import java.util.Collection;
 
+import org.integratedmodelling.corescience.implementations.observations.Measurement.PhysicalNature;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -54,6 +56,22 @@ import org.integratedmodelling.utils.Pair;
  */
 public abstract interface IExtent extends IState, ITopologicallyComparable {
 
+	public static interface Aggregator {
+		public abstract double getAggregationFactor(int granule, double value);
+	}
+	
+	/**
+	 * Returned by getAggregationParameters
+	 * @author ferdinando.villa
+	 *
+	 */
+	public static class AggregationParameters {
+		Aggregator     aggregator;
+		Unit           aggregatedUnit;
+		PhysicalNature aggregatedNature;
+		String         aggregationOperator;
+		String         uncertaintyOperator;
+	}
 	
 	/**
 	 * Return the value that is the union of all granules, aggregated in the way that makes
@@ -193,12 +211,25 @@ public abstract interface IExtent extends IState, ITopologicallyComparable {
 	 * Return an extent that is capable of representing the passed one 
 	 * exactly. If the passed one is of the same class, it can just return
 	 * the passed one, but it's provided to give the extent a chance of 
-	 * adjustments or raising errors. 
+	 * adjustments or of raising errors. 
 	 * 
 	 * @param extent
 	 * @return
 	 * @throws ThinklabException
 	 */
 	public IExtent force(IExtent extent) throws ThinklabException;
+
+	/**
+	 * Return a descriptor of how aggregation should be performed in this
+	 * extent for a value of the passed type. If a unit is associated, it
+	 * must be capable of creating the unit of the aggregated concept, which
+	 * will eliminate the dimension we represent if the concept is an
+	 * extensive one.
+	 * 
+	 * @param concept
+	 * @param unit
+	 * @return
+	 */
+	public abstract AggregationParameters getAggregationParameters(IConcept concept, Unit unit);
 	
 }

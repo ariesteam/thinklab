@@ -1,5 +1,6 @@
 package org.integratedmodelling.corescience.interfaces.internal;
 
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 
@@ -15,6 +16,6 @@ public interface ContextTransformingObservation extends TransformingObservation 
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public IObservationContext getTransformedContext(IObservationContext context)
+	public IContext getTransformedContext(IObservationContext context)
 		throws ThinklabException;
 }

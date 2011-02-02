@@ -33,31 +33,17 @@ public class IndexedContextualizedDatasourceLong<T>  extends DefaultAbstractStat
  	implements IState, IInstanceImplementation, IConceptualizable {
 
 	private static final long serialVersionUID = -6567783706189229920L;
-	IConcept _type;
 	long[] data = null;
 	private long max = 1L;
-	private ObservationContext context;
 	
-	Metadata metadata = new Metadata();
-
 	HashMap<T, Long> map = new HashMap<T, Long>();
 	HashMap<Long, T> inverseMap = new HashMap<Long, T>();
 
-	public IndexedContextualizedDatasourceLong(IConcept type, int size, ObservationContext context) {
+	public IndexedContextualizedDatasourceLong(IConcept type, int size, IContext context) {
 		_type = type;
 		data = new long[size];
 		this.context = context;
 	}
-	
-////	@Override
-////	public Object getInitialValue() {
-////		return null;
-////	}
-//
-//	@Override
-//	public Object getValue(int index, Object[] parameters) {
-//		return inverseMap.get(new Long(data[index]));
-//	}
 
 	@Override
 	public Object getValue(int offset) {
@@ -116,45 +102,10 @@ public class IndexedContextualizedDatasourceLong<T>  extends DefaultAbstractStat
 	}
 
 	@Override
-	public Metadata getMetadata() {
-		return metadata;
-	}
-	
-	@Override
 	public int getValueCount() {
 		return data.length;
 	}
-//
-//	@Override
-//	public IDataSource<?> transform(IDatasourceTransformation transformation)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		return this;
-//	}
-//
-//	@Override
-//	public void postProcess(IObservationContext context)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public void preProcess(IObservationContext context)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		
-//	}
 	
-	@Override
-	public IConcept getObservableClass() {
-		return _type;
-	}
-
-	@Override
-	public IContext getObservationContext() {
-		return this.context;
-	}
 
 	@Override
 	public double getDoubleValue(int index)

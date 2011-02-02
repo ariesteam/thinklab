@@ -1,6 +1,5 @@
 package org.integratedmodelling.corescience.implementations.observations;
 
-import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.ContextTransformingObservation;
@@ -22,13 +21,13 @@ public class Aggregator extends Observation implements ContextTransformingObserv
 	public IConcept[] dimensions = null;
 	
 	@Override
-	public IObservationContext getTransformedContext(IObservationContext context)
+	public IContext getTransformedContext(IObservationContext context)
 			throws ThinklabException {
 		if (dimensions == null) {
-			return ((ObservationContext)context).collapse();
+			return context.collapse(null);
 		}
 		
-		ObservationContext ctx = (ObservationContext)context;
+		IContext ctx = context;
 		for (IConcept c : dimensions)
 			ctx = ctx.collapse(c);
 		

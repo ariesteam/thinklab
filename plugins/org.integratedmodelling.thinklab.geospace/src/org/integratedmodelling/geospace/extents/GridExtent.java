@@ -42,6 +42,7 @@ import org.geotools.referencing.CRS;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.interfaces.lineage.ILineageTraceable;
+import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
@@ -878,6 +879,13 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 			x < getXCells() &&
 			y >= 0 &&
 			y < getYCells();
+	}
+
+	@Override
+	public AggregationParameters getAggregationParameters(IConcept concept,
+			Unit unit) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -34,10 +34,8 @@ package org.integratedmodelling.corescience.implementations.datasources;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
-import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -49,12 +47,9 @@ public class MemLongContextualizedDatasource  extends DefaultAbstractState
  	implements IState, IInstanceImplementation {
 
 	private static final long serialVersionUID = -6567783706189229920L;
-	private IConcept _type;
 	private long[] data = null;
-	Metadata metadata = new Metadata();
-	private ObservationContext context;
 
-	public MemLongContextualizedDatasource(IConcept type, int size, ObservationContext context) {
+	public MemLongContextualizedDatasource(IConcept type, int size, IContext context) {
 		_type = type;
 		data = new long[size];
 		this.context = context;
@@ -107,44 +102,8 @@ public class MemLongContextualizedDatasource  extends DefaultAbstractState
 	}
 
 	@Override
-	public Metadata getMetadata() {
-		return metadata;
-	}
-
-	@Override
 	public int getValueCount() {
 		return data.length;
-	}
-
-//	@Override
-//	public IDataSource<?> transform(IDatasourceTransformation transformation)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		return this;
-//	}
-//
-//	@Override
-//	public void postProcess(IObservationContext context)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public void preProcess(IObservationContext context)
-//			throws ThinklabException {
-//		// TODO Auto-generated method stub
-//		
-//	}
-	
-	@Override
-	public IConcept getObservableClass() {
-		return _type;
-	}
-
-	@Override
-	public IContext getObservationContext() {
-		return this.context;
 	}
 
 	@Override

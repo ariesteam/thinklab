@@ -226,12 +226,16 @@ public class Measurement extends Observation implements MediatingObservation {
 		 * and communicate to the conceptual model. 
 		 */
 		physicalNature = 
-			observable.is(CoreScience.EXTENSIVE_PHYSICAL_PROPERTY) ?
+			(
+				observable.is(CoreScience.EXTENSIVE_PHYSICAL_PROPERTY) ||
+				observable.is(CoreScience.EXTENSIVE_QUANTITY)
+			)?
 			PhysicalNature.EXTENSIVE :
 			PhysicalNature.INTENSIVE;
 		
 		metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 		metadata.put(Metadata.PHYSICAL_NATURE, physicalNature);
+		metadata.put(Metadata.UNIT, this.unit);
 		
 		/*
 		 * validate units against extents

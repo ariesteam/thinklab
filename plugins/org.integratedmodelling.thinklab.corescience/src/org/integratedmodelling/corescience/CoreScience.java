@@ -103,7 +103,12 @@ public class CoreScience extends ThinklabPlugin {
 	public static final String COLUMN_EXTRACTOR = "source:ColumnExtractor";
 	public static final String PHYSICAL_PROPERTY = "representation:PhysicalProperty";
 	public static final String EXTENSIVE_PHYSICAL_PROPERTY = "representation:ExtensivePhysicalProperty";
+	
+	// this is to tag things that are extensive in nature but are not physical properties, such as
+	// value.
+	public static final String EXTENSIVE_QUANTITY = "representation:ExtensiveQuantity";
 	public static final String INTENSIVE_PHYSICAL_PROPERTY = "representation:IntensivePhysicalProperty";
+	public static final String INTENSIVE_QUANTITY = "representation:IntensiveQuantity";
 	public static final String EXTENT_OBSERVATION = "observation:ExtentObservation";
 	public static final String DATASOURCE_FUNCTION_LITERAL = "source:hasFunctionLiteral";
 	public static final String CLASSIFICATION_MODEL = "observation:ClassificationSpace";
@@ -122,6 +127,7 @@ public class CoreScience extends ThinklabPlugin {
 	static final public String GENERIC_QUANTIFIABLE = "representation:GenericQuantifiable";
 
 	public static final String CONTINGENT_TO = "observation:isContingentTo";
+
 
 	public static CoreScience get() {
 		return (CoreScience) getPlugin(PLUGIN_ID );
