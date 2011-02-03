@@ -1,10 +1,7 @@
 package org.integratedmodelling.modelling.corescience;
 
-import java.util.Collection;
-
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.model.DefaultAbstractModel;
@@ -55,7 +52,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 
 	public void setUnits(Object unitSpecs) {
 		this.unitSpecs = unitSpecs.toString();
-		this.metadata.put(Metadata.UNITS, this.unitSpecs);
+		this.metadata.put(Metadata.UNIT_SPECS, this.unitSpecs);
 		this.metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 	}
 

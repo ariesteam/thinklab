@@ -273,7 +273,7 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			if (state instanceof DatasourceStateAdapter)
 				state = ((DatasourceStateAdapter)state).getOriginalState();
 			
-			String units = (String) state.getMetadata().get(Metadata.UNITS);
+			String units = (String) state.getMetadata().get(Metadata.UNIT_SPECS);
 			
 			pg.addField("concept", c.toString(), null);
 			pg.addField("name", vc.getLabel(), null);

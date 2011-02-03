@@ -417,7 +417,7 @@ public class VisualizationFactory {
 		throws ThinklabException {
 		
 		ColorMap cmap = (ColorMap) state.getMetadata().get(Metadata.COLORMAP);
-		String units  = (String) state.getMetadata().get(Metadata.UNITS);
+		String units  = (String) state.getMetadata().get(Metadata.UNIT_SPECS);
 		Integer offset = (Integer) state.getMetadata().get(Metadata.IMAGE_TO_CLASS_OFFSET);
 		
 		if (units == null)
@@ -481,7 +481,7 @@ public class VisualizationFactory {
 			throws ThinklabException {
 
 		ColorMap cmap = (ColorMap) state.getMetadata().get(Metadata.COLORMAP);
-		String units = (String) state.getMetadata().get(Metadata.UNITS);
+		String units = (String) state.getMetadata().get(Metadata.UNIT_SPECS);
 		Integer offset = (Integer) state.getMetadata().get(
 				Metadata.IMAGE_TO_CLASS_OFFSET);
 
@@ -559,7 +559,7 @@ public class VisualizationFactory {
 
 		double[] adr = (double[]) state.getMetadata().get(
 				Metadata.ACTUAL_DATA_RANGE);
-		String units = (String) state.getMetadata().get(Metadata.UNITS);
+		String units = (String) state.getMetadata().get(Metadata.UNIT_SPECS);
 
 		if (adr != null) {
 			ret = adr[0] + " to " + adr[1];
@@ -584,7 +584,7 @@ public class VisualizationFactory {
 		Double tot = null;
 		Double min = null;
 		Double max = null;
-		String units = (String) state.getMetadata().get(Metadata.UNITS);
+		String units = (String) state.getMetadata().get(Metadata.UNIT_SPECS);
 
 		if (tot != null)
 			ret += nf.format(tot);

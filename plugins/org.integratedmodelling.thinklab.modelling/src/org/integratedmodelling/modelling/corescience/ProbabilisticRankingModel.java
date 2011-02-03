@@ -10,7 +10,6 @@ import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.model.DefaultStatefulAbstractModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
@@ -18,26 +17,17 @@ import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
-public class ProbabilisticMeasurementModel extends ClassificationModel {
+public class ProbabilisticRankingModel extends ClassificationModel {
 
 	String unitSpecs;
 	
-	public ProbabilisticMeasurementModel(String namespace) {
+	public ProbabilisticRankingModel(String namespace) {
 		super(namespace);
-		// TODO Auto-generated constructor stub
 	}
 
-	
 	@Override
 	protected void copy(DefaultStatefulAbstractModel model) {
 		super.copy(model);
-		unitSpecs = ((ProbabilisticMeasurementModel)model).unitSpecs;
-	}
-		
-	public void setUnits(Object unitSpecs) {
-		this.unitSpecs = unitSpecs.toString();
-		this.metadata.put(Metadata.UNIT_SPECS, this.unitSpecs);
-		this.metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 	}
 
 	@Override
@@ -52,8 +42,8 @@ public class ProbabilisticMeasurementModel extends ClassificationModel {
 		ArrayList<Object> arr = new ArrayList<Object>();
 		
 		arr.add((dynSpecs == null && changeSpecs == null && derivativeSpecs == null) ?
-					"modeltypes:ProbabilisticMeasurement" : 
-					"modeltypes:DynamicProbabilisticMeasurement");
+					"modeltypes:ProbabilisticRanking" : 
+					"modeltypes:DynamicProbabilisticRanking");
 		
 		arr.add(Polylist.list(CoreScience.HAS_CONCEPTUAL_SPACE, Polylist.list(theState)));			
 		arr.add(Polylist.list(CoreScience.HAS_FORMAL_NAME, getLocalFormalName()));					
@@ -81,15 +71,7 @@ public class ProbabilisticMeasurementModel extends ClassificationModel {
 			arr.add(Polylist.list(
 					"modeltypes:encodesContinuousDistribution",
 					MiscUtilities.printVector(breakpoints)));
-		} else {
-			throw new ThinklabValidationException(
-					"probabilistic measurement " + 
-					getName() + 
-					" must discretize a continuous distribution with no numeric gaps and finite boundaries.");			
 		}
-		
-		// units!
-		arr.add(Polylist.list(CoreScience.HAS_UNIT, unitSpecs));
 		
 		if (!isMediating() || (flags & FORCE_OBSERVABLE) != 0)
 			arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, this.observableSpecs));

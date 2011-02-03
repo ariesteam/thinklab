@@ -36,7 +36,7 @@ public class Metadata extends HashMap<String, Object> {
 	private static final long serialVersionUID = 1265732119608093598L;
 
 	public static final String UNCERTAINTY = "uncertainty";
-	public static final String UNITS = "units";
+	public static final String UNIT_SPECS = "units";
 	public static final String LEGEND = "legend";
 	public static final String RANGES = "ranges";
 	public static final String BOOLEAN = "boolean";
@@ -607,7 +607,7 @@ public class Metadata extends HashMap<String, Object> {
 		// RANKING (hasmap<concept, integer>)
 
 		out.writeDoubles((double[]) metadata.get(UNCERTAINTY));
-		out.writeString((String) metadata.get(UNITS));
+		out.writeString((String) metadata.get(UNIT_SPECS));
 		out.writeInteger(metadata.get(BOOLEAN) == null ? -1
 				: ((Boolean) (metadata.get(BOOLEAN)) ? 1 : 0));
 		out.writeInteger(metadata.get(HASZERO) == null ? -1
@@ -639,7 +639,7 @@ public class Metadata extends HashMap<String, Object> {
 			ret.put(UNCERTAINTY, unc);
 		String units = in.readString();
 		if (units != null)
-			ret.put(UNITS, units);
+			ret.put(UNIT_SPECS, units);
 
 		int bool = in.readInteger();
 		if (bool >= 0)

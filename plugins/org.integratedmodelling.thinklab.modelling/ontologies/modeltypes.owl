@@ -254,6 +254,13 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/modelling/modeltypes.owl#ProbabilisticClassification -->
+
+    <owl:Class rdf:about="&modeltypes;ProbabilisticClassification">
+        <rdfs:subClassOf rdf:resource="&observation;Classification"/>
+    </owl:Class>
+
+
     <!-- http://www.integratedmodelling.org/ks/modelling/modeltypes.owl#ProbabilisticMeasurement -->
 
     <owl:Class rdf:about="&modeltypes;ProbabilisticMeasurement">

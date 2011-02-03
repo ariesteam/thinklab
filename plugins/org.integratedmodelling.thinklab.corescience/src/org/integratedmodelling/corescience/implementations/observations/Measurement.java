@@ -185,7 +185,7 @@ public class Measurement extends Observation implements MediatingObservation {
 		} 
 		
 		if (unitSpecs == null) {
-			v = i.get("measurement:unit");
+			v = i.get(CoreScience.HAS_UNIT);
 			if (v != null)
 				unitSpecs = v.toString().trim();
 		}

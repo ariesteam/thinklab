@@ -25,6 +25,7 @@ import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -274,14 +275,21 @@ public class BayesianTransformer
  				classf = ((ModeledClassification)gmodel).classifiers;
  			
  			/*
- 			 * TODO add metadata to ds. These come from the classifications: must know if 
+ 			 * add metadata to ds. These come from the classifications: must know if 
  			 * we're discretizing a continuous distribution or not. 
  			 */
-			st.data = new CategoricalDistributionDatasource(var, size, pcstates, classf, 
-					(ObservationContext) context);
-			st.data.addAllMetadata(modelMetadata.get(st.observable));
-			if (gmodel != null)
-				st.data.addAllMetadata(((Observation)gmodel).getMetadata());
+ 			if (gmodel != null) {
+ 				Polylist ls = 
+ 					((Model)gmodel).getDefinition().buildDefinition(KBoxManager.get(), session, context, 0);
+ 				IndirectObservation oob = 
+ 					(IndirectObservation) ObservationFactory.getObservation(session.createObject(ls));	
+ 				st.data = 
+ 					(CategoricalDistributionDatasource) oob.createState(context.getMultiplicity(), (IObservationContext) context);
+ 			} else {
+ 				st.data = new CategoricalDistributionDatasource(var, size, pcstates, classf, 
+ 						(ObservationContext) context);
+ 				st.data.addAllMetadata(modelMetadata.get(st.observable));
+ 			}
 			
 			pstorage[i++] = st;
 		}

@@ -100,7 +100,7 @@ public abstract class DefaultAbstractState implements IState {
 
 			// transfer metadata appropriately
 			ret.getMetadata().put(Metadata.UNIT, ap.aggregatedUnit);
-			ret.getMetadata().put(Metadata.UNITS, ap.aggregatedUnit.toString());
+			ret.getMetadata().put(Metadata.UNIT_SPECS, ap.aggregatedUnit.toString());
 			ret.getMetadata().put(Metadata.PHYSICAL_NATURE, ap.aggregatedNature);
 		}
 

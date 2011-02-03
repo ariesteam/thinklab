@@ -61,6 +61,15 @@
 	[]
 	(new org.integratedmodelling.modelling.corescience.ProbabilisticMeasurementModel (str *ns*)))
 
+(defn j-make-probabilistic-ranking
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.ProbabilisticRankingModel (str *ns*)))
+
+(defn j-make-probabilistic-classification
+	"Make a new instance of Model and return it."
+	[]
+	(new org.integratedmodelling.modelling.corescience.ProbabilisticClassificationModel (str *ns*)))
 
 (defn j-make-observation
 	"Make a new instance of Model and return it."
@@ -421,10 +430,19 @@
  	   model#))
 
 (defmacro probabilistic-measurement
-	"The states of a classification model are concepts. All states must be direct children of the main observable
-	of the model."
-	[observable & specs]
+	[observable units & specs]
 	`(let [model# (modelling/j-make-probabilistic-measurement)] 
+ 	   (.setObservable model# (process-observable '~observable))
+ 	   (.setUnits model# ~units)
+		 (doseq [classifier# (partition 2 '~specs)]
+		 	   (if  (and  (keyword? (first classifier#)) (not (= :otherwise (first classifier#)))) 
+		 	   		  (transform-model model# classifier#) 
+		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (second classifier#))))
+ 	   model#))
+
+(defmacro probabilistic-ranking
+	[observable & specs]
+	`(let [model# (modelling/j-make-probabilistic-ranking)] 
  	   (.setObservable model# (process-observable '~observable))
 		 (doseq [classifier# (partition 2 '~specs)]
 		 	   (if  (and  (keyword? (first classifier#)) (not (= :otherwise (first classifier#)))) 
@@ -432,6 +450,15 @@
 		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (second classifier#))))
  	   model#))
 
+(defmacro probabilistic-classification
+	[observable & specs]
+	`(let [model# (modelling/j-make-probabilistic-classification)] 
+ 	   (.setObservable model# (process-observable '~observable))
+		 (doseq [classifier# (partition 2 '~specs)]
+		 	   (if  (and  (keyword? (first classifier#)) (not (= :otherwise (first classifier#)))) 
+		 	   		  (transform-model model# classifier#) 
+		 	   		  (.addClassifier model# (tl/unquote-if-quoted (first classifier#)) (second classifier#))))
+ 	   model#))
 
 (defmacro classification-cleaner
 	"The states of a classification model are concepts. All states
