@@ -80,10 +80,6 @@ public class Metadata extends HashMap<String, Object> {
 	// if applicable.
 	public static final String RANGE_MIN = "range-min";
 	public static final String RANGE_MAX = "range-max";
-	public static final String AGGREGATED_MIN = "aggregated-min";
-	public static final String AGGREGATED_MAX = "aggregated-max";
-	public static final String AGGREGATED_TOTAL = "aggregated-total";
-	public static final String AGGREGATED_CV = "aggregated-coefficient-of-variation";
 	public static final String IMAGE_TO_CLASS_OFFSET = "image-to-class-offset";
 	public static final String DEFINING_MODEL = "defining-model"; // the model
 																	// that

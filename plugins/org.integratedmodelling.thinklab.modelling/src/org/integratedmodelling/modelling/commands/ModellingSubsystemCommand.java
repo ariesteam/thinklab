@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling.commands;
 
+import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.modelling.ModelMap;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.InteractiveCommandHandler;
@@ -37,6 +38,11 @@ public class ModellingSubsystemCommand extends InteractiveCommandHandler {
 		} else if (action.equals("import")) {
 			
 		} else if (action.equals("sync")) {
+			
+		} else if (action.equals("test")) {
+			
+			Unit u = new Unit("m^-2");
+			System.out.println(u.getUnit().inverse());
 			
 		}
 		

@@ -37,7 +37,6 @@ import java.io.OutputStream;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
-import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
@@ -91,7 +90,8 @@ public class MemDoubleContextualizedDatasource  extends DefaultAbstractState
 	
 	@Override
 	public Object getValue(int offset) {
-		return (offset >= 0 && offset < data.length) ? data[offset] : null;
+		Object ret = (offset >= 0 && offset < data.length) ? data[offset] : null;
+		return context.isCovered(offset) ? ret : null;
 	}
 	
 	@Override
@@ -169,7 +169,7 @@ public class MemDoubleContextualizedDatasource  extends DefaultAbstractState
 	@Override
 	public double getDoubleValue(int index)
 			throws ThinklabValueConversionException {
-		return data[index];
+		return context.isCovered(index) ? data[index] : Double.NaN;
 	}
 
 

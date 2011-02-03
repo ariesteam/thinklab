@@ -401,5 +401,14 @@ public abstract class ArealExtent implements IExtent {
 		return null;
 	}
 	
-	
+	@Override
+	public boolean isSpatiallyDistributed() {
+		return getValueCount() > 1;
+	}
+
+	@Override
+	public boolean isTemporallyDistributed() {
+		return false;
+	}
+
 }

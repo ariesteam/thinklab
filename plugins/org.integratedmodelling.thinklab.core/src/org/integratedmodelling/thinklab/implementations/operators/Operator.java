@@ -1,7 +1,5 @@
 package org.integratedmodelling.thinklab.implementations.operators;
 
-import java.util.HashMap;
-
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;

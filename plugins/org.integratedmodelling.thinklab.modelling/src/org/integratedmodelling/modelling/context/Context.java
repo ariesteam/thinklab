@@ -14,12 +14,12 @@ import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IModelForm;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.owlapi.Session;
@@ -273,6 +273,11 @@ public class Context implements IContext, IModelForm {
 	public IContext collapse(IConcept dimension) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean isCovered(int index) {
+		throw new ThinklabRuntimeException("isCovered() called on Context");
 	}
 	
 }

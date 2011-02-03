@@ -39,6 +39,8 @@ import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.CoreScience.PhysicalNature;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.interfaces.lineage.ILineageTraceable;
@@ -56,6 +58,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.literals.IOperator;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
@@ -882,10 +885,55 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	}
 
 	@Override
-	public AggregationParameters getAggregationParameters(IConcept concept,
-			Unit unit) {
-		// TODO Auto-generated method stub
-		return null;
+	public AggregationParameters getAggregationParameters(IConcept observable,
+			Unit unit) throws ThinklabException {
+		
+		AggregationParameters ret = new AggregationParameters(observable, unit);
+		ret.aggregationOperator = IOperator.AVG;
+		ret.aggregatedUnit = unit;
+		ret.aggregatedNature = PhysicalNature.INTENSIVE;
+		
+		if (CoreScience.isExtensive(observable)) {
+			
+			if (unit.isArealDensity()) {
+				
+				/*
+				 * determine cell area and conversion factor to 
+				 * turn density into quantity
+				 */
+				Unit sd = unit.getArealExtentUnit();
+				Unit rf = new Unit("m^2");
+				double um2 = rf.convert(1.0, sd);
+				final double cnv = getCellAreaMeters()/um2;
+				
+				ret.aggregatedNature = PhysicalNature.EXTENSIVE;
+				ret.aggregationOperator = IOperator.SUM;
+				ret.aggregator = new Aggregator() {
+					@Override
+					public double getAggregationFactor(int granule) {
+						return cnv;
+					}
+				};
+				
+				/*
+				 * eliminate the temporal term from the aggregated unit
+				 */
+				ret.aggregatedUnit = 
+					new Unit(unit.getUnit().times(sd.getUnit()));
+			}				
+		}
+
+		return ret;
+
+	}
+	
+	@Override
+	public boolean isCovered(int granule) {
+
+		if (activationLayer == null)
+			return true;
+		
+		return activationLayer.isActive(granule);
 	}
 
 }

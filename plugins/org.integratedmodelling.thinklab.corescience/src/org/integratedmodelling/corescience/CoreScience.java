@@ -43,6 +43,11 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
  */
 public class CoreScience extends ThinklabPlugin {
 
+	public static enum PhysicalNature {
+		EXTENSIVE,
+		INTENSIVE
+	}
+
 	private final static String PLUGIN_ID = "org.integratedmodelling.thinklab.corescience";
 	
 	private IConcept NumericRankingSpace;
@@ -202,6 +207,19 @@ public class CoreScience extends ThinklabPlugin {
 
 	public static IConcept Categorization() {
 		return get().CategorizationType;
+	}
+
+	public static boolean isExtensive(IConcept observable) {
+
+		return 
+			observable.is(EXTENSIVE_PHYSICAL_PROPERTY) ||
+			observable.is(EXTENSIVE_QUANTITY);
+	}
+	
+	public static PhysicalNature getPhysicalNature(IConcept observable) {
+		return isExtensive(observable) ? 
+				PhysicalNature.EXTENSIVE :
+				PhysicalNature.INTENSIVE;
 	}
 
 }

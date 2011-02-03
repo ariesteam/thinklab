@@ -18,7 +18,9 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 public interface IContext {
 
 	/**
-	 * Models must have an ID
+	 * Contexts have an ID, although that only matters for those that are
+	 * created using Clojure forms in the modelling plugin.
+	 * 
 	 * @return
 	 */
 	public abstract String getId();
@@ -41,6 +43,16 @@ public interface IContext {
 	 */
 	public abstract IExtent getExtent(IConcept observable);
 	
+	/**
+	 * True if all the extent states correspondent to the passed index are 
+	 * defined in all dimensions (meaning there is a correspondend topology
+	 * granule). If this is false for any extent, states using this context
+	 * will have a no-data value at that index.
+	 *  
+	 * @param index
+	 * @return
+	 */
+	public abstract boolean isCovered(int index);
 	
 	/**
 	 * Return the extent for a specific topology observable, or null if not there.
@@ -96,6 +108,17 @@ public interface IContext {
 	 */
 	public abstract IContext cloneExtents() throws ThinklabException;
 
+
+	/**
+	 * Return a new context with the given dimension collapsed to its 
+	 * total extent (1 state only), thereby eliminating the 
+	 * distribution in that dimension. IState has an aggregate() function that
+	 * will create the correspondent aggregated state.
+	 * 
+	 * @param dimension
+	 * @return
+	 * @throws ThinklabException
+	 */
 	public abstract IContext collapse(IConcept dimension) throws ThinklabException;
 
 

@@ -133,4 +133,14 @@ public class DatasourceStateAdapter implements IDataSource<Object>, IState, IIns
 		return _state.aggregate(concept);
 	}
 
+	@Override
+	public boolean isSpatiallyDistributed() {
+		return _state.isSpatiallyDistributed();
+	}
+
+	@Override
+	public boolean isTemporallyDistributed() {
+		return _state.isTemporallyDistributed();
+	}
+
 }

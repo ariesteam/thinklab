@@ -580,10 +580,10 @@ public class VisualizationFactory {
 			nf = NumberFormat.getCurrencyInstance();
 		}
 
-		Double max = (Double) state.getMetadata().get(Metadata.AGGREGATED_MAX);
-		Double min = (Double) state.getMetadata().get(Metadata.AGGREGATED_MIN);
-		Double tot = (Double) state.getMetadata()
-				.get(Metadata.AGGREGATED_TOTAL);
+		// TODO use the appropriate aggregator
+		Double tot = null;
+		Double min = null;
+		Double max = null;
 		String units = (String) state.getMetadata().get(Metadata.UNITS);
 
 		if (tot != null)

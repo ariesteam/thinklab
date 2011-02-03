@@ -276,4 +276,21 @@ public class TemporalLocationExtent implements IExtent {
 		return null;
 	}
 
+	@Override
+	public boolean isSpatiallyDistributed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isTemporallyDistributed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isCovered(int granule) {
+		// we have no gaps
+		return true;
+	}
 }

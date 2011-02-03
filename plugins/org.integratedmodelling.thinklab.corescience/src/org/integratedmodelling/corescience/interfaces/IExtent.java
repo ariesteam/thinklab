@@ -34,12 +34,14 @@ package org.integratedmodelling.corescience.interfaces;
 
 import java.util.Collection;
 
-import org.integratedmodelling.corescience.implementations.observations.Measurement.PhysicalNature;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.units.Unit;
+import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.CoreScience.PhysicalNature;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.literals.IOperator;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.Pair;
 
@@ -56,8 +58,15 @@ import org.integratedmodelling.utils.Pair;
  */
 public abstract interface IExtent extends IState, ITopologicallyComparable {
 
+	/**
+	 * One of these is set into AggregationParameters to properly return the
+	 * aggregation multiplier for each topology granule.
+	 * 
+	 * @author ferdinando.villa
+	 *
+	 */
 	public static interface Aggregator {
-		public abstract double getAggregationFactor(int granule, double value);
+		public abstract double getAggregationFactor(int granule);
 	}
 	
 	/**
@@ -66,11 +75,20 @@ public abstract interface IExtent extends IState, ITopologicallyComparable {
 	 *
 	 */
 	public static class AggregationParameters {
-		Aggregator     aggregator;
-		Unit           aggregatedUnit;
-		PhysicalNature aggregatedNature;
-		String         aggregationOperator;
-		String         uncertaintyOperator;
+		
+		public AggregationParameters(IConcept observable, Unit unit) {
+			/*
+			 * defaults are for a no-op
+			 */
+			aggregatedNature = CoreScience.getPhysicalNature(observable);
+			aggregatedUnit   = unit;
+		}
+		
+		public Aggregator     aggregator = null;
+		public Unit           aggregatedUnit;
+		public PhysicalNature aggregatedNature;
+		public String         aggregationOperator = IOperator.AVG;
+		public String         uncertaintyOperator = IOperator.CV; // unused
 	}
 	
 	/**
@@ -94,6 +112,16 @@ public abstract interface IExtent extends IState, ITopologicallyComparable {
 	 * @return
 	 */
 	public IExtent getExtent(int granule);
+	
+	/**
+	 * True if the i-th granule correspond to a concrete subdivision where
+	 * things can be observed. Determines the status of data or no-data
+	 * for any state defined over this extent.
+	 * 
+	 * @param granule
+	 * @return
+	 */
+	public abstract boolean isCovered(int granule);
 	
 	/**
 	 * merge with the passed extent of the same observable into a new extent and return it.
@@ -229,7 +257,8 @@ public abstract interface IExtent extends IState, ITopologicallyComparable {
 	 * @param concept
 	 * @param unit
 	 * @return
+	 * @throws ThinklabException 
 	 */
-	public abstract AggregationParameters getAggregationParameters(IConcept concept, Unit unit);
+	public abstract AggregationParameters getAggregationParameters(IConcept concept, Unit unit) throws ThinklabException;
 	
 }

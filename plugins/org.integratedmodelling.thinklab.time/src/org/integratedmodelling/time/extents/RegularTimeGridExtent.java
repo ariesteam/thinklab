@@ -35,6 +35,8 @@ package org.integratedmodelling.time.extents;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.CoreScience.PhysicalNature;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -48,6 +50,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.literals.IOperator;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.time.TimePlugin;
 import org.integratedmodelling.time.literals.PeriodValue;
@@ -410,9 +413,59 @@ public class RegularTimeGridExtent implements IExtent {
 	}
 
 	@Override
-	public AggregationParameters getAggregationParameters(IConcept concept,
-			Unit unit) {
+	public AggregationParameters getAggregationParameters(IConcept observable,
+			Unit unit) throws ThinklabException  {
+		
+		AggregationParameters ret = new AggregationParameters(observable, unit);
+		ret.aggregationOperator = IOperator.AVG;
+		ret.aggregatedUnit = unit;
+		ret.aggregatedNature = PhysicalNature.INTENSIVE;
+		
+		if (CoreScience.isExtensive(observable)) {
+			
+			/*
+			 * determine cell area and conversion factor to 
+			 * turn density into quantity
+			 */
+			Unit sd = unit.getTimeExtentUnit();
+			Unit rf = new Unit("sec");
+			double um2 = rf.convert(1.0, sd);
+			final double cnv = (double)getGranuleSize()/um2;
+			
+			ret.aggregatedNature = PhysicalNature.EXTENSIVE;
+			ret.aggregationOperator = IOperator.SUM;
+			ret.aggregator = new Aggregator() {
+				@Override
+				public double getAggregationFactor(int granule) {
+					return cnv;
+				}
+			};
+			
+			/*
+			 * eliminate the areal term from the aggregated unit
+			 */
+			ret.aggregatedUnit = 
+				new Unit(unit.getUnit().times(sd.getUnit().inverse()));
+			
+		}
+		
+		return ret;
+	}
+
+	@Override
+	public boolean isSpatiallyDistributed() {
 		// TODO Auto-generated method stub
-		return null;
+		return false;
+	}
+
+	@Override
+	public boolean isTemporallyDistributed() {
+		return getValueCount() > 1;
+	}
+
+	@Override
+	public boolean isCovered(int granule) {
+		// we have no gaps
+		return true;
 	}
 }

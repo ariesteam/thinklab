@@ -50,12 +50,7 @@ public class Measurement extends Observation implements MediatingObservation {
 	protected boolean isCount = false;
 	protected boolean isUnitless = false;
 	
-	public static enum PhysicalNature {
-		EXTENSIVE,
-		INTENSIVE
-	}
-	
-	PhysicalNature physicalNature = null;
+	CoreScience.PhysicalNature physicalNature = null;
 	
 	@Override
 	public String toString() {
@@ -230,8 +225,8 @@ public class Measurement extends Observation implements MediatingObservation {
 				observable.is(CoreScience.EXTENSIVE_PHYSICAL_PROPERTY) ||
 				observable.is(CoreScience.EXTENSIVE_QUANTITY)
 			)?
-			PhysicalNature.EXTENSIVE :
-			PhysicalNature.INTENSIVE;
+			CoreScience.PhysicalNature.EXTENSIVE :
+			CoreScience.PhysicalNature.INTENSIVE;
 		
 		metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
 		metadata.put(Metadata.PHYSICAL_NATURE, physicalNature);
@@ -249,7 +244,7 @@ public class Measurement extends Observation implements MediatingObservation {
 		// the unit must reflect all topologies if we have an extensive observable. We don't check
 		// the other way around; that is done when the overall context is defined, so we can provide
 		// what's missing from the outside.
-		if (isUnitless || physicalNature.equals(PhysicalNature.EXTENSIVE)) {
+		if (isUnitless || physicalNature.equals(CoreScience.PhysicalNature.EXTENSIVE)) {
 			for (Topology t : getTopologies()) {
 				t.checkUnitConformance(getObservableClass(), unit);
 			}

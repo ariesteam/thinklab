@@ -348,19 +348,13 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 		return null;
 	}
 
-//	@Override
-//	public Polylist conceptualize() throws ThinklabException {
-//
-//		// TODO this is wrong syntax for an ArealLocation
-//		return Polylist.list(
-//				Geospace.AREAL_LOCATION,
-//				Polylist.list(Geospace.LAT_LOWER_BOUND, "" + getSouth()),
-//				Polylist.list(Geospace.LON_LOWER_BOUND, "" + getWest()),
-//				Polylist.list(Geospace.LAT_UPPER_BOUND, "" + getNorth()),
-//				Polylist.list(Geospace.LON_UPPER_BOUND, "" + getEast()),
-//				Polylist.list(Geospace.CRS_CODE, 
-//						Geospace.getCRSIdentifier(getCRS(), false)));
-//		
-//	}
+	@Override
+	public boolean isCovered(int granule) {
+		
+		// TODO check - for now we assume all features are not null, and 
+		// if we iterate over features the n-th feature is always covered.
+		return true;
+	}
+	
 
 }

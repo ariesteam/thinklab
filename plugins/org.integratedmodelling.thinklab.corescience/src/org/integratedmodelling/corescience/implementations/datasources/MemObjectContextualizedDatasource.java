@@ -77,7 +77,8 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 
 	@Override
 	public Object getValue(int offset) {
-		return (offset >= 0 && offset < data.length) ? data[offset] : null;
+		Object ret = (offset >= 0 && offset < data.length) ? data[offset] : null;
+		return context.isCovered(offset) ? ret : null;
 	}
 
 	@Override
@@ -134,7 +135,11 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 			
 			double[] ret = new double[data.length];
 			for (int i = 0; i < data.length; i++) {
-				ret[i] = (data[i] == null ? Double.NaN : ((Number)data[i]).doubleValue());
+				Object dat = data[i];
+				if (dat != null && !context.isCovered(i))
+					dat = null;
+
+				ret[i] = (dat == null ? Double.NaN : ((Number)dat).doubleValue());
 			}
 			return ret;
 			
@@ -142,7 +147,12 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 			
 			double[] ret = new double[data.length];
 			for (int i = 0; i < data.length; i++) {
-				ret[i] = (data[i] == null ? Double.NaN : ((IndexedCategoricalDistribution)data[i]).getMean());
+
+				Object dat = data[i];
+				if (dat != null && !context.isCovered(i))
+					dat = null;
+
+				ret[i] = (dat == null ? Double.NaN : ((IndexedCategoricalDistribution)dat).getMean());
 			}
 			return ret;
 			
@@ -152,8 +162,10 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 			double[] ret = new double[data.length];
 			HashMap<IConcept, Integer> rnk = Metadata.getClassMappings(metadata);
 			for (int i = 0; i < data.length; i++) {
-				Object o = data[i];
-				ret[i] = (o == null ? Double.NaN : (double)(rnk.get((IConcept)o)));
+				Object dat = data[i];
+				if (dat != null && !context.isCovered(i))
+					dat = null;
+				ret[i] = (dat == null ? Double.NaN : (double)(rnk.get((IConcept)dat)));
 			}
 			return ret;			
 		}
@@ -170,17 +182,20 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 	@Override
 	public double getDoubleValue(int i) throws ThinklabValueConversionException {
 	
+		Object dat = data[i];
+		if (dat != null && !context.isCovered(i))
+			dat = null;
+		
 		if (prototype instanceof Number) {
-			return (data[i] == null ? Double.NaN : ((Number)data[i]).doubleValue());
+			return (dat == null? Double.NaN : ((Number)dat).doubleValue());
 		} else if (prototype instanceof IConcept && Metadata.getClassMappings(metadata) != null) {
 			HashMap<IConcept, Integer> rnk = Metadata.getClassMappings(metadata);
-			return (data[i] == null ? Double.NaN : (double)(rnk.get((IConcept)data[i])));
+			return (dat == null ? Double.NaN : (double)(rnk.get((IConcept)dat)));
+		} else if (prototype instanceof IndexedCategoricalDistribution) {
+			return (dat == null ? Double.NaN : ((IndexedCategoricalDistribution)dat).getMean());
 		}
 	
-		// TODO must accommodate distributions 
-		
-		throw new ThinklabValueConversionException("can't convert a " + prototype.getClass() + " into a double");
-		 
+		throw new ThinklabValueConversionException("can't convert a " + prototype.getClass() + " into a double");	 
 	}
 
 	@Override

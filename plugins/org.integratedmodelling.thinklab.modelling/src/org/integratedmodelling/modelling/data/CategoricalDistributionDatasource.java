@@ -82,13 +82,17 @@ public class CategoricalDistributionDatasource extends
 		double[] unc = new double[this.data.length];
 		IConcept truecase = (IConcept) getMetadata().get(Metadata.TRUECASE);
 		
-		double aggregatedMean = 0.0;
-		double aggregatedVariance = 0.0;
-		
 		for (int i = 0; i < this.data.length; i++) {
 
+			if (!context.isCovered(i)) {
+				ret[i] = Double.NaN;
+				unc[i] = Double.NaN;
+				continue;
+			}
+			
 			DistributionParameters val = 
 				getDistributionParameters(getProbabilities(i));
+			
 			
 			IConcept c = val.mostLikelyCategory;
 			if (c == null) {
@@ -118,10 +122,6 @@ public class CategoricalDistributionDatasource extends
 					
 					ret[i] = val.mean;
 					unc[i] = val.cv;
-
-					aggregatedMean += val.mean;
-					aggregatedVariance += val.var;
-
 					contp = true;
 				} else {
 					ret[i] = (double)ranks.get(c);
@@ -133,9 +133,6 @@ public class CategoricalDistributionDatasource extends
 		getMetadata().put(Metadata.UNCERTAINTY, unc);
 		if (contp) {
 			getMetadata().put(Metadata.CONTINUOUS, Boolean.TRUE);
-			getMetadata().put(Metadata.AGGREGATED_TOTAL, new Double(aggregatedMean));
-			getMetadata().put(Metadata.AGGREGATED_CV, 
-					new Double(Math.sqrt(aggregatedVariance)/aggregatedMean));
 			if (truecase != null)
 				getMetadata().put(Metadata.THEORETICAL_DATA_RANGE, new double[]{0.0, 1.0});
 		}

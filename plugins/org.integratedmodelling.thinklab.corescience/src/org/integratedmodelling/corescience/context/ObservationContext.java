@@ -27,6 +27,8 @@ import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransf
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
+import org.integratedmodelling.multidimensional.MultidimensionalCursor;
+import org.integratedmodelling.multidimensional.MultidimensionalCursor.StorageOrdering;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
@@ -64,6 +66,9 @@ public class ObservationContext implements IObservationContext, IContext {
 		new ArrayList<ObservationContext>();
 	ArrayList<IDatasourceTransformation> transformations = 
 		new ArrayList<IDatasourceTransformation>();
+	
+	// only used for the isCovered op
+	MultidimensionalCursor cursor = null;
 	
 	/**
 	 * Context accumulates conformant states from models, serving both as a 
@@ -158,7 +163,6 @@ public class ObservationContext implements IObservationContext, IContext {
 		if (observation instanceof ContextTransformingObservation) {
 			switchTo((IObservationContext) ((ContextTransformingObservation)observation).getTransformedContext(this));
 		}
-		
 		
 		_initialized = true;
 		
@@ -826,10 +830,14 @@ public class ObservationContext implements IObservationContext, IContext {
 	 * @param dimension
 	 * @return
 	 * @throws ThinklabException
+	 * @Override
 	 */
 	public IContext collapse(IConcept dimension)
 		throws ThinklabException {
 
+		if (dimension == null)
+			return collapse();
+		
 		ObservationContext ret = new ObservationContext();
 		for (IConcept dim : this.getDimensions()) {
 			IExtent ext = this.getExtent(dim);
@@ -838,6 +846,7 @@ public class ObservationContext implements IObservationContext, IContext {
 			}
 			ret.mergeExtent(dim, ext);
 		}
+		ret.initialize();
 		return ret;
 	}
 
@@ -854,6 +863,7 @@ public class ObservationContext implements IObservationContext, IContext {
 			IExtent ext = this.getExtent(dim).getAggregatedExtent();
 			ret.mergeExtent(dim, ext);
 		}
+		ret.initialize();
 		return ret;
 	}
 
@@ -1088,5 +1098,23 @@ public class ObservationContext implements IObservationContext, IContext {
 		ObservationContext ret = new ObservationContext(extents.values());
 		ret.ctransf = ctransf;
 		return ret;
+	}
+
+	@Override
+	public boolean isCovered(int index) {
+		
+		initialize();
+		if (this.cursor == null) {
+			this.cursor = 	
+				new MultidimensionalCursor(StorageOrdering.ROW_FIRST);
+			cursor.defineDimensions(getDimensionSizes());
+		}
+		
+		int i = 0;
+		for (IExtent e : getExtents())
+			if (!e.isCovered(this.cursor.getElementIndexes(index)[i++]))
+				return false;
+		
+		return true;
 	}
 }

@@ -14,11 +14,11 @@ import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.Pair;
 
@@ -77,7 +77,7 @@ public class ObservationListing {
 	}
 
 	private void listCategories(IState state,
-			PrintStream out) {
+			PrintStream out) throws ThinklabException {
 	
 		ArrayList<Pair<Object, Integer>> catalog = new ArrayList<Pair<Object,Integer>>();
 		int nulls = 0;
@@ -166,9 +166,20 @@ public class ObservationListing {
 								(i < ndivs ? catalog.get(i).getSecond() : nulls), 
 								8));
 		}
+		
+		if (state.isSpatiallyDistributed() && !state.isTemporallyDistributed()) {
+			
+			IState as = state.aggregate(Geospace.get().SubdividedSpaceObservable());
+			if (as != null) {
+				out.println("Spatially aggregated total: " + 
+						as.getDoubleValue(0) + 
+						" " +
+						as.getMetadata().get(Metadata.UNIT));
+			}
+		}
 	}
 
-	private void listHistogram(IState state, PrintStream out) throws ThinklabValueConversionException {
+	private void listHistogram(IState state, PrintStream out) throws ThinklabException {
 		
 		// throw away the result, but instantiate all metadata
 		Metadata.getImageData(state);
@@ -266,6 +277,17 @@ public class ObservationListing {
 		} else {	
 			out.println("Min = " + min+ "; max = " + max + "; " + nans + 
 						" no-data values out of " + data.length);
+		}
+		
+		if (state.isSpatiallyDistributed() && !state.isTemporallyDistributed()) {
+			
+			IState as = state.aggregate(Geospace.get().SubdividedSpaceObservable());
+			if (as != null) {
+				out.println("Spatially aggregated total: " + 
+						as.getDoubleValue(0) + 
+						" " +
+						as.getMetadata().get(Metadata.UNIT));
+			}
 		}
 	}
 	

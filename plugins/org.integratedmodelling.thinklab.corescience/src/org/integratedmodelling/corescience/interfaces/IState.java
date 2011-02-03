@@ -93,6 +93,20 @@ public interface IState  extends /* IDataSource, */ IConceptualizable {
 	 * @throws ThinklabException
 	 */
 	public IState aggregate(IConcept concept) throws ThinklabException;
+
+	/**
+	 * True if the state has more than one value over any spatial 
+	 * dimension. 
+	 * 
+	 * @return
+	 */
+	public abstract boolean isSpatiallyDistributed();
 	
-	
+	/**
+	 * True if the state has more than one value over any temporal
+	 * dimension.
+	 * 
+	 * @return
+	 */
+	public abstract boolean isTemporallyDistributed();
 }

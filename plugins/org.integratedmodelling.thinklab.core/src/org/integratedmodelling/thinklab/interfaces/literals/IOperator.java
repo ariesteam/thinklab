@@ -11,11 +11,26 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementa
  * Operators are declared in ontologies and the correspondent instance objects can be used in 
  * constraints.
  * 
+ * FIXME this whole thing is unnecessarily complicated and should be simplified.
+ * 
  * @author Ferdinando
  *
  */
 public interface IOperator extends IInstanceImplementation {
 
+	public static final String NO_OP = "nop";
+	public static final String SUM = "+";
+	public static final String MUL = "*";
+	public static final String SUB = "-";
+	public static final String DIV = "/";
+	public static final String MOD = "%";
+	
+	public static final String AVG = "mean";
+	public static final String STD = "std";
+	public static final String CV  = "cv";
+	public static final String VAR = "var";
+
+	
 	public abstract IValue eval(Object ... arg) throws ThinklabException;
 	public abstract String getOperatorId();
 
