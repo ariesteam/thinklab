@@ -33,10 +33,11 @@ public class ProbabilisticMeasurement extends ModeledClassification {
 
 		Unit unit = new Unit(unitSpecs);
 		ret.getMetadata().put(Metadata.UNIT, unit);
+		ret.getMetadata().put(Metadata.UNIT_SPECS, unitSpecs);
 		
 		PhysicalNature physicalNature = 
 			CoreScience.getPhysicalNature(getObservableClass());		
-		metadata.put(Metadata.PHYSICAL_NATURE, physicalNature);
+		ret.getMetadata().put(Metadata.PHYSICAL_NATURE, physicalNature);
 
 		return ret;
 	

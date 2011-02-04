@@ -25,7 +25,6 @@ import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.modelling.interfaces.IModel;
-import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -507,6 +506,7 @@ public class BayesianTransformer
 	@Override
 	public void preContextualization(ObservationContext context,
 			ISession session) throws ThinklabException {
+		
 		if (outputModel != null && outputObservation == null) {
 			Polylist ls = 
 				((Model)outputModel).getDefinition().buildDefinition(KBoxManager.get(), session, context, 0);

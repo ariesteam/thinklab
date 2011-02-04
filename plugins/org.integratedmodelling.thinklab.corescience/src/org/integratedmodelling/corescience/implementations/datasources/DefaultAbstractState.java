@@ -45,7 +45,6 @@ public abstract class DefaultAbstractState implements IState {
 
 		Unit unit = 
 			(Unit) this.getMetadata().get(Metadata.UNIT);
-
 		
 		IContext sourceC = this.context;
 		IContext finalC = this.context;
