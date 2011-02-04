@@ -78,7 +78,10 @@ public class ObservationListing {
 
 	private void listCategories(IState state,
 			PrintStream out) throws ThinklabException {
-	
+		
+		// throw away the result, but instantiate all metadata
+		Metadata.getImageData(state);
+		
 		ArrayList<Pair<Object, Integer>> catalog = new ArrayList<Pair<Object,Integer>>();
 		int nulls = 0;
 		
@@ -172,8 +175,15 @@ public class ObservationListing {
 			NumberFormat nf = NumberFormat.getInstance();
 			IState as = state.aggregate(Geospace.get().SubdividedSpaceObservable());
 			if (as != null) {
+				
+				double[] unc = 
+					(double[]) as.getMetadata().get(Metadata.UNCERTAINTY);
+							
 				out.println("Spatially aggregated total: " + 
 						nf.format(as.getDoubleValue(0)) + 
+						(unc == null ? 
+							"" :
+							" \u00B1 " + nf.format(unc[0])) +
 						" " +
 						as.getMetadata().get(Metadata.UNIT));
 			}
@@ -281,11 +291,19 @@ public class ObservationListing {
 		}
 		
 		if (state.isSpatiallyDistributed() && !state.isTemporallyDistributed()) {
-			
+		
 			IState as = state.aggregate(Geospace.get().SubdividedSpaceObservable());
 			if (as != null) {
+
+				double[] unc = 
+					(double[]) as.getMetadata().get(Metadata.UNCERTAINTY);
+				
 				out.println("Spatially aggregated total: " + 
 						nf.format(as.getDoubleValue(0)) + 
+						nf.format(as.getDoubleValue(0)) + 
+						(unc == null ? 
+							"" :
+							" \u00B1 " + nf.format(unc[0])) +
 						" " +
 						as.getMetadata().get(Metadata.UNIT));
 			}

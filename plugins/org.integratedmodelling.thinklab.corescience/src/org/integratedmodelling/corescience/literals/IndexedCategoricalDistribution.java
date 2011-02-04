@@ -72,5 +72,34 @@ public class IndexedCategoricalDistribution implements Comparable<IndexedCategor
 	public int compareTo(IndexedCategoricalDistribution o) {
 		return ((Double)getMean()).compareTo(o.getMean());
 	}
+
+	/*
+	 * return the coefficient of variation if we have ranges, or the shannon index if
+	 * we don't.
+	 */
+	public double getUncertainty() {
+		double ret = 0.0;
+		if (ranges != null) {
+			double mu = 0.0, mu2 = 0.0;
+			for (int i = 0; i < data.length; i++) {
+				double midpoint = (this.ranges[i] + (this.ranges[i+1] - this.ranges[i])/2);				
+				mu += midpoint * data[i];
+				mu2 += midpoint * midpoint * data[i]; 
+			}
+			ret = Math.sqrt(mu2 - (mu*mu));
+			ret = mu == 0.0 ? Double.NaN : (ret/mu);
+		} else {
+			double sh = 0.0;
+			int nst = 0;
+			for (int i = 0; i < data.length; i++) {
+				sh += 
+					data[i] *
+					Math.log(data[i]);
+				nst++;
+			}
+			ret = (sh/Math.log((double)nst)) * -1.0;
+		}
+		return ret;
+	}
 	
 }

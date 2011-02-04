@@ -93,7 +93,6 @@ public class CategoricalDistributionDatasource extends
 			DistributionParameters val = 
 				getDistributionParameters(getProbabilities(i));
 			
-			
 			IConcept c = val.mostLikelyCategory;
 			if (c == null) {
 				ret[i] = Double.NaN;

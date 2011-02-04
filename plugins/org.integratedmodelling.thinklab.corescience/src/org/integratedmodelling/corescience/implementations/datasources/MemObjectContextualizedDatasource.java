@@ -146,6 +146,8 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 		} else if (prototype instanceof IndexedCategoricalDistribution) {
 			
 			double[] ret = new double[data.length];
+			double[] unc = new double[data.length];
+			
 			for (int i = 0; i < data.length; i++) {
 
 				Object dat = data[i];
@@ -153,7 +155,10 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 					dat = null;
 
 				ret[i] = (dat == null ? Double.NaN : ((IndexedCategoricalDistribution)dat).getMean());
+				unc[i] = (dat == null ? Double.NaN : ((IndexedCategoricalDistribution)dat).getUncertainty());
 			}
+			
+			this.metadata.put(Metadata.UNCERTAINTY, unc);
 			return ret;
 			
 			
