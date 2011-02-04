@@ -100,7 +100,8 @@ public abstract class DefaultAbstractState implements IState {
 					 * aggregate uncertainty - if we get here it's a 
 					 * coeff. of variation, so the value is the mean. We
 					 * convert to variance and accumulate it, to be
-					 * reconverted into CV later.
+					 * reconverted into CV later. Must use the original
+					 * mean to reconvert.
 					 */
 					double var = srcUnc[i] * vl;
 					var *= var;

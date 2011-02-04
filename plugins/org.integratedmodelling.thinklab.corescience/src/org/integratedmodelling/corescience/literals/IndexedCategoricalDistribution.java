@@ -78,6 +78,7 @@ public class IndexedCategoricalDistribution implements Comparable<IndexedCategor
 	 * we don't.
 	 */
 	public double getUncertainty() {
+		
 		double ret = 0.0;
 		if (ranges != null) {
 			double mu = 0.0, mu2 = 0.0;
