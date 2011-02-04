@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IContext;
@@ -19,13 +20,11 @@ import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IModelForm;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -38,7 +37,6 @@ import org.integratedmodelling.thinklab.kbox.GroupingQueryResult;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Path;
 import org.integratedmodelling.utils.Polylist;
 
 import clojure.lang.IFn;
@@ -101,6 +99,15 @@ public abstract class DefaultAbstractModel implements IModel {
 		return mediated != null || mediatesExternal;
 	}
 
+	protected Polylist addDefaultFields(Polylist obs) {
+
+		Metadata md = new Metadata(metadata);
+		md.put(Metadata.DEFINING_MODEL, this);
+		obs = ObservationFactory.addReflectedField(obs, "additionalMetadata", md);
+
+		return obs;
+	}
+	
 //	public String getObservableId() {
 //		return observableId;
 //	}
@@ -791,6 +798,10 @@ public abstract class DefaultAbstractModel implements IModel {
 			return CamelCase.toLowerCase(getObservableClass().getLocalName(),
 					'-');
 		return localFormalName;
+	}
+
+	public Map<? extends String, ? extends Object> getMetadata() {
+		return metadata;
 	}
 
 }

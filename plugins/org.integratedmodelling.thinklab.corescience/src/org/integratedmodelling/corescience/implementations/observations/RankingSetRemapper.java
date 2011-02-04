@@ -140,8 +140,10 @@ public class RankingSetRemapper extends Ranking implements IndirectObservation {
 
 	@Override
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
-		return new MemDoubleContextualizedDatasource(
+		IState ret = new MemDoubleContextualizedDatasource(
 				getObservableClass(), size, (ObservationContext)context);
+		ret.getMetadata().merge(this.metadata);
+		return ret;
 	}
 
 

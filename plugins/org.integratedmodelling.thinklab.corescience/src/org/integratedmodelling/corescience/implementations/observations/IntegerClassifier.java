@@ -144,8 +144,10 @@ public class IntegerClassifier extends Observation implements IndirectObservatio
 
 	@Override
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
-		return new IndexedContextualizedDatasourceByte<IConcept>(observationSpace, size, 
+		IState ret = new IndexedContextualizedDatasourceByte<IConcept>(observationSpace, size, 
 				(ObservationContext)context);
+		ret.getMetadata().merge(this.metadata);
+		return ret;
 	}
 
 	@Override

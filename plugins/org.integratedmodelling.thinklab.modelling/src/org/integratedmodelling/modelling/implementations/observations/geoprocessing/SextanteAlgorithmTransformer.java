@@ -108,6 +108,7 @@ public abstract class SextanteAlgorithmTransformer extends Observation implement
 
 		this.context = context;
 		this.outputState = createOutputState(this.context);
+		this.outputState.getMetadata().merge(this.metadata);
 	}
 
 	@Override

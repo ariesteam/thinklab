@@ -31,6 +31,8 @@ public class ProbabilisticMeasurement extends ModeledClassification {
 		IState ret =
 			new CategoricalDistributionDatasource(cSpace, size, vmaps, classifiers, (ObservationContext) context);
 
+		ret.getMetadata().merge(this.metadata);
+		
 		Unit unit = new Unit(unitSpecs);
 		ret.getMetadata().put(Metadata.UNIT, unit);
 		ret.getMetadata().put(Metadata.UNIT_SPECS, unitSpecs);
@@ -38,7 +40,7 @@ public class ProbabilisticMeasurement extends ModeledClassification {
 		PhysicalNature physicalNature = 
 			CoreScience.getPhysicalNature(getObservableClass());		
 		ret.getMetadata().put(Metadata.PHYSICAL_NATURE, physicalNature);
-
+		
 		return ret;
 	
 	}

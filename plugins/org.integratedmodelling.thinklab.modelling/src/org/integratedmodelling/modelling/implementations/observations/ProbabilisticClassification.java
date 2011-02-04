@@ -25,8 +25,8 @@ public class ProbabilisticClassification extends ModeledClassification {
 		IState ret =
 			new CategoricalDistributionDatasource(cSpace, size, vmaps, classifiers, (ObservationContext) context);
 
+		ret.getMetadata().merge(this.metadata);
 		return ret;
-	
 	}
 
 	@Override

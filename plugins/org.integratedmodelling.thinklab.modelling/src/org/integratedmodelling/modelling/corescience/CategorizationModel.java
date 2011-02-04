@@ -77,7 +77,7 @@ public class CategorizationModel extends DefaultDynamicAbstractModel {
 								CoreScience.HAS_OBSERVABLE,
 								Polylist.list(getObservableClass()))));
 		
-		return def;
+		return addDefaultFields(def);
 	}
 
 	@Override

@@ -418,7 +418,6 @@ public class VMContextualizer<T> {
 		try {
 			
 			dds = o.createState(size, ownContext);	
-			dds.getMetadata().merge(((Observation)o).metadata);
 			
 			if (accessor != null)
 				accessor.notifyState(dds, overallContext, ownContext);

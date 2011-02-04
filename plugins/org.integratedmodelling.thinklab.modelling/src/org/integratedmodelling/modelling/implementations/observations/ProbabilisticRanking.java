@@ -26,6 +26,8 @@ public class ProbabilisticRanking extends ModeledClassification {
 		IState ret =
 			new CategoricalDistributionDatasource(cSpace, size, vmaps, classifiers, (ObservationContext) context);
 
+		ret.getMetadata().merge(this.metadata);
+		
 		PhysicalNature physicalNature = 
 			CoreScience.getPhysicalNature(getObservableClass());		
 		metadata.put(Metadata.PHYSICAL_NATURE, physicalNature);

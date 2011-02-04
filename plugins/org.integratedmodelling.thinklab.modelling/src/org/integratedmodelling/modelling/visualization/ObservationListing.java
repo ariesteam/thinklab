@@ -168,11 +168,12 @@ public class ObservationListing {
 		}
 		
 		if (state.isSpatiallyDistributed() && !state.isTemporallyDistributed()) {
-			
+
+			NumberFormat nf = NumberFormat.getInstance();
 			IState as = state.aggregate(Geospace.get().SubdividedSpaceObservable());
 			if (as != null) {
 				out.println("Spatially aggregated total: " + 
-						as.getDoubleValue(0) + 
+						nf.format(as.getDoubleValue(0)) + 
 						" " +
 						as.getMetadata().get(Metadata.UNIT));
 			}
@@ -284,7 +285,7 @@ public class ObservationListing {
 			IState as = state.aggregate(Geospace.get().SubdividedSpaceObservable());
 			if (as != null) {
 				out.println("Spatially aggregated total: " + 
-						as.getDoubleValue(0) + 
+						nf.format(as.getDoubleValue(0)) + 
 						" " +
 						as.getMetadata().get(Metadata.UNIT));
 			}

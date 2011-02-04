@@ -81,7 +81,7 @@ public class SPANKModel extends DefaultAbstractModel {
         Polylist ret = Polylist.PolylistFromArrayList(arr);
         ret = ObservationFactory.addReflectedField(ret, "parameters", parameters);
 
-        return ret;
+        return addDefaultFields(ret);
     }
 
     @Override

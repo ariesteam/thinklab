@@ -255,17 +255,6 @@ public class ModelResult implements IQueryResult  {
 		 */
 		ret = ObservationFactory.addFormalName(ret, ((DefaultAbstractModel)_model).getLocalFormalName());
 		
-		/*
-		 * add the model to the resulting observation
-		 */
-		Metadata metadata = new Metadata(((DefaultAbstractModel)_model).metadata);
-
-		// TODO anything else by default?
-		metadata.put(Metadata.DEFINING_MODEL, _model);
-		
-		// will be added to whatever the obs has already
-		ret = ObservationFactory.addReflectedField(ret, "additionalMetadata", metadata);
-
 		if (_mediated != null) {
 			
 			Polylist med = _mediated.getResultAsList(ofs[0], null);

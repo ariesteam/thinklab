@@ -3,13 +3,16 @@ package org.integratedmodelling.modelling.corescience;
 import java.util.ArrayList;
 
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.corescience.CoreScience.PhysicalNature;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.model.DefaultStatefulAbstractModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -34,10 +37,15 @@ public class ProbabilisticMeasurementModel extends ClassificationModel {
 		unitSpecs = ((ProbabilisticMeasurementModel)model).unitSpecs;
 	}
 		
-	public void setUnits(Object unitSpecs) {
+	public void setUnits(Object unitSpecs) throws ThinklabException {
+		
 		this.unitSpecs = unitSpecs.toString();
 		this.metadata.put(Metadata.UNIT_SPECS, this.unitSpecs);
+		this.metadata.put(Metadata.UNIT, new Unit(this.unitSpecs));
 		this.metadata.put(Metadata.CONTINUOUS, Boolean.TRUE);
+		PhysicalNature physicalNature = 
+			CoreScience.getPhysicalNature(getObservableClass());		
+		this.metadata.put(Metadata.PHYSICAL_NATURE, physicalNature);
 	}
 
 	@Override

@@ -227,14 +227,14 @@ public class VisualizationFactory {
 		Boolean zeroIsNodata = (Boolean) state.getMetadata().get(
 				Metadata.ZERO_IS_NODATA);
 
-		IGridMask mask = space.getActivationLayer();
-		if (mask != null) {
-			for (int i = 0; i < idata.length; i++) {
-				int[] xy = space.getXYCoordinates(i);
-				if (!mask.isActive(xy[0], xy[1]))
-					idata[i] = 0;
-			}
-		}
+//		IGridMask mask = space.getActivationLayer();
+//		if (mask != null) {
+//			for (int i = 0; i < idata.length; i++) {
+//				int[] xy = space.getXYCoordinates(i);
+//				if (!mask.isActive(xy[0], xy[1]))
+//					idata[i] = 0;
+//			}
+//		}
 
 		ColorMap cmap = getColormap(observable, nlevels, zeroIsNodata,
 				getDefaultColormap(observable, state, nlevels));
@@ -265,14 +265,14 @@ public class VisualizationFactory {
 		Boolean zeroIsNodata = (Boolean) state.getMetadata().get(
 				Metadata.ZERO_IS_NODATA);
 
-		IGridMask mask = space.getActivationLayer();
-		if (mask != null) {
-			for (int i = 0; i < idata.length; i++) {
-				int[] xy = space.getXYCoordinates(i);
-				if (!mask.isActive(xy[0], xy[1]))
-					idata[i] = -1;
-			}
-		}
+//		IGridMask mask = space.getActivationLayer();
+//		if (mask != null) {
+//			for (int i = 0; i < idata.length; i++) {
+//				int[] xy = space.getXYCoordinates(i);
+//				if (!mask.isActive(xy[0], xy[1]))
+//					idata[i] = -1;
+//			}
+//		}
 
 		ColorMap cmap = getColormap(observable, nlevels, zeroIsNodata,
 				getDefaultColormap(observable, state, nlevels));

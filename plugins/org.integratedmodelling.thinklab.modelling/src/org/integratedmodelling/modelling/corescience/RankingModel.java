@@ -145,7 +145,7 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 								CoreScience.HAS_OBSERVABLE, Polylist
 										.list(getObservableClass()))));
 
-		return addImplicitExtents(def, context);
+		return addDefaultFields(addImplicitExtents(def, context));
 	}
 
 	@Override

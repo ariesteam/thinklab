@@ -45,13 +45,6 @@ public class Model extends DefaultAbstractModel {
 	String description = null;
 	Object state = null;
 	
-//	public Model() {
-//		// give it a default ID and namespace; if this is part of a defmodel, registering with
-//		// the ModelFactory will change it to proper ID/Namespace
-//		this.id = NameGenerator.newName("mod");
-//		this.namespace = "thinklab.temp";
-//	}
-
 	public Model(String namespace) {
 		super(namespace);
 		this.id = NameGenerator.newName("mod");
@@ -146,6 +139,7 @@ public class Model extends DefaultAbstractModel {
 		
 		if (this.models == null) {
 			this.models = new ArrayList<IModel>();
+			this.metadata.putAll(((DefaultAbstractModel)model).getMetadata());
 		}
 		
 		this.models.add(model);

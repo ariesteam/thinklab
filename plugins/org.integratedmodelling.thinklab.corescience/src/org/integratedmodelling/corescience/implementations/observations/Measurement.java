@@ -288,6 +288,7 @@ public class Measurement extends Observation implements MediatingObservation {
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
 		IState ret = new MemDoubleContextualizedDatasource(
 				getObservableClass(), size, (ObservationContext)context);
+		ret.getMetadata().merge(this.metadata);
 		return ret;
 	}
 	

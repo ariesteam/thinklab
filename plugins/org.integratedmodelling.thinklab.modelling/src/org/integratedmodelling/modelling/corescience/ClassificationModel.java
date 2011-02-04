@@ -307,7 +307,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		Polylist ret = addImplicitExtents(Polylist.PolylistFromArrayList(arr), context);
 		ret = ObservationFactory.addReflectedField(ret, "classifiers", clsf);
 		
-		return ret;
+		return addDefaultFields(ret);
 	}
 
 	@Override

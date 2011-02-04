@@ -159,8 +159,10 @@ public class Categorization extends Observation implements MediatingObservation 
 
 	@Override
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
-		return new IndexedContextualizedDatasourceInt<String>(
+		IState ret = new IndexedContextualizedDatasourceInt<String>(
 				KnowledgeManager.Text(),size, (ObservationContext)context);
+		ret.getMetadata().merge(this.metadata);
+		return ret;
 	}
 
 	@Override

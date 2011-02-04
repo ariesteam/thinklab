@@ -97,7 +97,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 						Polylist.list(CoreScience.HAS_OBSERVABLE,
 								Polylist.list(getObservableClass()))));
 
-		return addImplicitExtents(def, context);
+		return addDefaultFields(addImplicitExtents(def, context));
 	}
 
 	@Override

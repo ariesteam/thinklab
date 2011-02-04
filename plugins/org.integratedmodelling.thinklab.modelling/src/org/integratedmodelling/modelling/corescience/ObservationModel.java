@@ -72,7 +72,7 @@ public class ObservationModel extends DefaultAbstractModel {
 					CoreScience.HAS_OBSERVABLE,
 					Polylist.list(getObservableClass())));
 
-		return def;
+		return addDefaultFields(def);
 	}
 
 	@Override

@@ -307,6 +307,7 @@ public class ModeledClassification
 //					Metadata.CONTINUOS_DISTRIBUTION_BREAKPOINTS, 
 //					continuousDistribution); 
 //		
+		ret.getMetadata().merge(this.metadata);
 		return ret;
 	}
 

@@ -134,8 +134,10 @@ public class RankingIntervalRemapper extends Observation implements IndirectObse
 
 	@Override
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
-		return new MemDoubleContextualizedDatasource(getObservableClass(), size,  
+		IState ret = new MemDoubleContextualizedDatasource(getObservableClass(), size,  
 				(ObservationContext)context);
+		ret.getMetadata().merge(this.metadata);
+		return ret;
 	}
 
 	@Override
