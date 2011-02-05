@@ -1,5 +1,7 @@
 package org.integratedmodelling.corescience.interfaces;
 
+import java.util.HashMap;
+
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -130,6 +132,13 @@ public interface IObservation extends IConceptualizable {
 	 * @return
 	 */
 	boolean acceptsDiscontinuousTopologies();
+
+	
+	/**
+	 * Observations have metadata, like models and every modeling object.
+	 * @return
+	 */
+	public abstract HashMap<String, Object> getMetadata();
 
 
 }

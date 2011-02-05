@@ -183,7 +183,7 @@ public class ObservationListing {
 						nf.format(as.getDoubleValue(0)) + 
 						(unc == null ? 
 							"" :
-							" \u00B1 " + nf.format(unc[0])) +
+							" \u00B1 " + nf.format(as.getDoubleValue(0) * unc[0] * 2)) +
 						" " +
 						as.getMetadata().get(Metadata.UNIT));
 			}
@@ -300,10 +300,9 @@ public class ObservationListing {
 				
 				out.println("Spatially aggregated total: " + 
 						nf.format(as.getDoubleValue(0)) + 
-						nf.format(as.getDoubleValue(0)) + 
 						(unc == null ? 
 							"" :
-							" \u00B1 " + nf.format(unc[0])) +
+							" \u00B1 " + nf.format(as.getDoubleValue(0) * unc[0] * 2)) +
 						" " +
 						as.getMetadata().get(Metadata.UNIT));
 			}

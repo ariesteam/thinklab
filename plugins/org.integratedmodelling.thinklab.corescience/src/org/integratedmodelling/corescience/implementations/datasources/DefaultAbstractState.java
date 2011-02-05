@@ -68,11 +68,13 @@ public abstract class DefaultAbstractState implements IState {
 			double[] trgUnc = null;
 			if (srcUnc != null)
 				trgUnc = new double[finalC.getMultiplicity()];
+			double[] origmn = new double[finalC.getMultiplicity()];
 			
 			ContextMapper cmap = new ContextMapper(sourceC, finalC);
 			
 			for (int  i = 0; i < finalC.getMultiplicity(); i++) {
 				ret.setValue(i, Double.NaN);
+				origmn[i] = Double.NaN;
 				if (trgUnc != null)
 					trgUnc[i] = Double.NaN;
 			}
@@ -89,11 +91,13 @@ public abstract class DefaultAbstractState implements IState {
 					vl * 
 					ap.aggregator.getAggregationFactor(i);
 				
-				if (Double.isNaN(ret.getDoubleValue(tind)))
+				if (Double.isNaN(ret.getDoubleValue(tind))) {
 					ret.setValue(tind, val);
-				else 
+					origmn[tind] = vl;
+				} else { 
 					ret.setValue(tind, ret.getDoubleValue(tind) + val);
-
+					origmn[tind] = origmn[tind] + vl;
+				}
 				if (trgUnc != null && !Double.isNaN(srcUnc[i])) {
 					
 					/*
@@ -127,7 +131,7 @@ public abstract class DefaultAbstractState implements IState {
 			// recompute CVs from sum of variance
 			if (trgUnc != null) {
 				for (int  i = 0; i < finalC.getMultiplicity(); i++) {
-					double dd = ret.getDoubleValue(i);
+					double dd = origmn[i];
 					if (dd == 0.0) {
 						trgUnc[i] = Double.NaN;
 					} else if (!Double.isNaN(trgUnc[i]) && !Double.isNaN(dd)) {

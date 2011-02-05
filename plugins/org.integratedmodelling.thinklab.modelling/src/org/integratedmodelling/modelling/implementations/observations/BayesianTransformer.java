@@ -21,10 +21,12 @@ import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -245,8 +247,7 @@ public class BayesianTransformer
 		/*
 		 * prepare storage for each observable in all retained states, using the state ID for speed
 		 */
-		class PStorage { int field; IConcept observable; 
-						CategoricalDistributionDatasource data; };
+		class PStorage { int field; IConcept observable; IState data; };
 		PStorage[] pstorage = new PStorage[outputStates.size()];
 		int i = 0;
 		for (IConcept var : outputStates) {
@@ -278,16 +279,24 @@ public class BayesianTransformer
  			 * we're discretizing a continuous distribution or not. 
  			 */
  			if (gmodel != null) {
- 				Polylist ls = 
- 					((Model)gmodel).getDefinition().buildDefinition(KBoxManager.get(), session, context, 0);
- 				IndirectObservation oob = 
- 					(IndirectObservation) ObservationFactory.getObservation(session.createObject(ls));	
- 				st.data = 
- 					(CategoricalDistributionDatasource) oob.createState(context.getMultiplicity(), (IObservationContext) context);
+ 				st.data =  
+ 					((IndirectObservation)gmodel).
+ 						createState(context.getMultiplicity(), (IObservationContext) context);
+ 				
+ 				if ( !(st.data instanceof CategoricalDistributionDatasource)) {
+ 					throw new ThinklabValidationException(
+ 							"model " +
+ 							((IModel)(gmodel.getMetadata().get(Metadata.DEFINING_MODEL))).getName() +
+ 							" in :observed clause for " +
+ 							st.observable +
+ 							"is not probabilistic");
+ 				}
+ 				
  			} else {
  				st.data = new CategoricalDistributionDatasource(var, size, pcstates, classf, 
  						(ObservationContext) context);
- 				st.data.addAllMetadata(modelMetadata.get(st.observable));
+ 				((CategoricalDistributionDatasource)(st.data)).
+ 					addAllMetadata(modelMetadata.get(st.observable));
  			}
 			
 			pstorage[i++] = st;

@@ -75,6 +75,16 @@ public class CategoricalDistributionDatasource extends
 	}
 	
 	@Override
+	public double getDoubleValue(int i) throws ThinklabValueConversionException {
+	
+		Object dat = getValue(i);
+		if (dat != null && !context.isCovered(i))
+			dat = null;
+		return (dat == null ? Double.NaN : ((IndexedCategoricalDistribution)dat).getMean());	
+	}
+
+	
+	@Override
 	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
 		
 		boolean contp = false; 
