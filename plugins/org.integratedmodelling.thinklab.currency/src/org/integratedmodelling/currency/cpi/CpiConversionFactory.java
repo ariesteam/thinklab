@@ -193,6 +193,12 @@ public class CpiConversionFactory {
 		return sql;
 	}
 	
+	/*
+	 * TODO should be
+	 * A@xxxx -> B@yyyy ->
+	 *   A@xxxx -> B@xxxx
+	 *   B@xxxx -> B@yyyy
+	 */
 	public double getConversionFactor(String currencyFrom, TimeValue dateFrom, String currencyTo, TimeValue dateTo) throws ThinklabInexactConversionException {
 		
 		double r = 1.0;
@@ -207,7 +213,7 @@ public class CpiConversionFactory {
 		r *= getDollarToCurrencyConversionFactor(currencyTo, dateTo);
 		
 		return r;
-
+		
 	}
 
 	public double getDollarInflationCorrection(TimeValue date, TimeValue dateTo) throws ThinklabInexactConversionException {

@@ -35,6 +35,7 @@ public class SPANKModel extends DefaultAbstractModel {
         
         SPANKModel ret = new SPANKModel(namespace);
         ret.copy(this);
+        ret.parameters = this.parameters;
         return ret; 
     }
 

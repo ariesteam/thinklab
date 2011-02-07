@@ -259,6 +259,7 @@
     <owl:Class rdf:about="&modeltypes;ProbabilisticClassification">
         <rdfs:subClassOf rdf:resource="&observation;Classification"/>
     </owl:Class>
+    
 
 
     <!-- http://www.integratedmodelling.org/ks/modelling/modeltypes.owl#ProbabilisticMeasurement -->
@@ -283,6 +284,20 @@
         <rdfs:subClassOf rdf:resource="&observation;Classification"/>
         <rdfs:comment>This one selects a SPANK agent model and computes it.</rdfs:comment>
     </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/modelling/modeltypes.owl#SlopeAlgorithm -->
+
+    <owl:Class rdf:about="&modeltypes;SlopeAlgorithm">
+        <rdfs:subClassOf rdf:resource="&measurement;IntensiveMeasurement"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/science/measurement.owl#IntensiveMeasurement -->
+
+    <owl:Class rdf:about="&measurement;IntensiveMeasurement"/>
     
 
 

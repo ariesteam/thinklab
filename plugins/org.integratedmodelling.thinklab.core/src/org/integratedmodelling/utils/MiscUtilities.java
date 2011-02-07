@@ -1829,8 +1829,12 @@ loop:		for(;;)
 
 
 	public static Pair<Double, String> splitNumberFromString(String s) {
-		// TODO Auto-generated method stub
-		return null;
+		String[] pp = s.split("\\ ");
+		if (pp.length == 2) {
+			return new Pair<Double, String>(
+					Double.parseDouble(pp[0].trim()), pp[1]);
+		}
+		return new Pair<Double,String>(null, s);
 	}
 
 	/**

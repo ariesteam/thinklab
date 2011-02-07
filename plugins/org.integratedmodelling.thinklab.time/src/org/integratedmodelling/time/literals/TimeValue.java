@@ -115,8 +115,7 @@ public class TimeValue extends ParsedLiteralValue {
 		value = new DateTime();
 	}
 
-	public TimeValue(String s) throws ThinklabValidationException,
-			ThinklabNoKMException {
+	public TimeValue(String s) throws ThinklabValidationException {
 		parseLiteral(s);
 	}
 

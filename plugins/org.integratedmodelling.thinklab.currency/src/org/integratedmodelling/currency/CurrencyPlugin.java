@@ -35,6 +35,7 @@ package org.integratedmodelling.currency;
 import java.net.URL;
 
 import org.integratedmodelling.currency.cpi.CpiConversionFactory;
+import org.integratedmodelling.currency.units.CurrencyUnit;
 import org.integratedmodelling.sql.SQLPlugin;
 import org.integratedmodelling.sql.SQLServer;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -50,6 +51,10 @@ public class CurrencyPlugin extends ThinklabPlugin  {
 	static final public String ID = "org.integratedmodelling.thinklab.currency";
 	public static final String MONETARY_VALUE_OBSERVATION = "currency:MonetaryValuation";
 	public static final String MONETARY_VALUE_OBSERVABLE = "economics:EconomicValue";
+	
+	public static CurrencyUnit USD = new CurrencyUnit("USD");
+	public static CurrencyUnit EUR = new CurrencyUnit("EUR");
+	public static CurrencyUnit GBP = new CurrencyUnit("GBP");
 	
 	public CpiConversionFactory getConverter() {
 		return convFactory;
