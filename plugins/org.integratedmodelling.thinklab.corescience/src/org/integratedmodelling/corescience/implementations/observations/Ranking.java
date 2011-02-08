@@ -142,7 +142,6 @@ public class Ranking extends Observation implements MediatingObservation {
 			return ret;
 		}
 		
-
 		@Override
 		public boolean isConstant() {
 			return isConstant;

@@ -45,9 +45,9 @@ public class Measurement extends Observation implements MediatingObservation {
     
 	// set through reflection
 	public DistributionValue distribution = null;
+	public    boolean isCount = false;
 
 	protected boolean isConstant = false;
-	protected boolean isCount = false;
 	protected boolean isUnitless = false;
 	
 	CoreScience.PhysicalNature physicalNature = null;
@@ -163,7 +163,10 @@ public class Measurement extends Observation implements MediatingObservation {
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 
-		isCount = i.getDirectType().is(CoreScience.COUNT);
+		// only check if not preset to true by reflection
+		if (!isCount) {
+			isCount = i.getDirectType().is(CoreScience.COUNT);
+		}
 		
 		// lookup defs - either unit and value or textual definition of both
 		IValue v = i.get(CoreScience.HAS_VALUE);
@@ -222,6 +225,7 @@ public class Measurement extends Observation implements MediatingObservation {
 		 */
 		physicalNature = 
 			(
+				isCount || 
 				observable.is(CoreScience.EXTENSIVE_PHYSICAL_PROPERTY) ||
 				observable.is(CoreScience.EXTENSIVE_QUANTITY)
 			)?
