@@ -534,16 +534,6 @@
   ([observable units & body]
    `(measurement '~observable ~units :count true ~@body))) 	
 	
-;(defmacro probabilistic-ranking
-;   "Same as a numeric ranking but the states are distributions. Unimplemented."
-;   [observable & body]
-;   `(ranking ~observable :probabilistic true ~@body))
-
-;(defmacro probabilistic-measurement   
-;   "Same as a numeric measurement but the states are distributions. Unimplemented."
-;   [observable units & body]
-;   `(measurement ~observable ~units :probabilistic true ~@body)) 
-
 (defmacro identification
 	"Create an identification model. The observable can only be a semantic object."
 	[observable & body]
