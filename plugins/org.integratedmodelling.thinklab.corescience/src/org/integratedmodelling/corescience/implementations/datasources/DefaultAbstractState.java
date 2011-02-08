@@ -89,7 +89,9 @@ public abstract class DefaultAbstractState implements IState {
 				int tind = cmap.getIndex(i);
 				double val = 
 					vl * 
-					ap.aggregator.getAggregationFactor(i);
+					(ap.aggregator == null ? 
+							1.0 : 
+							ap.aggregator.getAggregationFactor(i));
 				
 				if (Double.isNaN(ret.getDoubleValue(tind))) {
 					ret.setValue(tind, val);

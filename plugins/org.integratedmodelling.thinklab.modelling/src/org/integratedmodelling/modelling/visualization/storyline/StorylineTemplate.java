@@ -288,4 +288,18 @@ public class StorylineTemplate extends Bean {
 		addChild("page", pg, null);
 
 	}
+
+	/**
+	 * Like get() but returns the default if there is no given field.
+	 * @param string
+	 * @param string2
+	 * @return
+	 */
+	public String getDefault(String field, String defval) {
+
+		String ret = get(field);
+		if (ret == null)
+			ret = defval;
+		return ret;
+	}
 }
