@@ -60,9 +60,10 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 	public Polylist buildDefinition(IKBox kbox, ISession session, IContext context, int flags)
 			throws ThinklabException {
 		
-		if (id.equals("sky-emperor-harvest")) {
-			System.out.println("STOPHERE");
-		}
+		/*
+		 * TODO if count, predefine the physical nature as extensive and
+		 * ensure it doesn't get overwritten.
+		 */
 		
 		/*
 		 * choose observation class according to derivative, probability etc.
@@ -89,6 +90,9 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 				(this.state != null ? 
 						Polylist.list(CoreScience.HAS_VALUE, this.state) : 
 						null), 
+				(this.isCount ? 
+						Polylist.list(":isCount", new Boolean(true)) : 
+						null),
 				(this.distribution != null ? 
 						Polylist.list(":distribution", this.distribution) : 
 						null),
