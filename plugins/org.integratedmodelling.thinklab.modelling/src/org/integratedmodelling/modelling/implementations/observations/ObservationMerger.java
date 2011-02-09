@@ -44,7 +44,7 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 	public SwitchLayer<IState> switchLayer = null;
 	public ArrayList<Topology> contextExt = null;
 	public IObservation        contextObs = null;
-	public ArrayList<IFn> conditionals = null;
+	public ArrayList<IFn>      conditionals = null;
 
 	ContextMapper[] contextMappers = null;
 	int[] idxMap = null; 
