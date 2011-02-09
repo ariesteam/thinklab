@@ -124,9 +124,9 @@ public abstract class DefaultAbstractState implements IState {
 			if (ap.aggregationOperator.equals(IOperator.AVG)) {
 				for (int  i = 0; i < finalC.getMultiplicity(); i++)
 					if (!Double.isNaN(ret.getDoubleValue(i))) {
-						ret.setValue(i, ret.getDoubleValue(i)/(double)finalC.getMultiplicity());
+						ret.setValue(i, ret.getDoubleValue(i)/(double)sourceC.getMultiplicity());
 						if (trgUnc != null)
-							trgUnc[i] = trgUnc[i]/(double)finalC.getMultiplicity();
+							trgUnc[i] = trgUnc[i]/(double)sourceC.getMultiplicity();
 					}
 			}
 			
