@@ -62,6 +62,8 @@ public abstract class ArealExtent implements IExtent {
 
 	}
 
+	public abstract double getTotalAreaSquareMeters();
+	
 	@Override
 	public boolean intersects(ITopologicallyComparable o)
 			throws ThinklabException {

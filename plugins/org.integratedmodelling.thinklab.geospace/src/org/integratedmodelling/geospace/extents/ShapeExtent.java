@@ -355,6 +355,12 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 		// if we iterate over features the n-th feature is always covered.
 		return true;
 	}
+
+	@Override
+	public double getTotalAreaSquareMeters() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 
 }

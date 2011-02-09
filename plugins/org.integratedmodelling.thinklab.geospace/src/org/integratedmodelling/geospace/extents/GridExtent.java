@@ -269,6 +269,19 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		return this.cellAreaMeters ;
 	}
 
+	public double getTotalAreaSquareMeters() {
+		
+		double ret = getCellAreaMeters();
+		if (activationLayer != null) {
+			ret *= activationLayer.totalActiveCells();
+		} else {
+			ret *= (xDivs*yDivs);
+		}
+		
+		return ret;
+	}
+
+	
 	/**
 	 * Return a box in standard AWT coordinates. Useful for some graphical ops and rasterization.
 	 * 

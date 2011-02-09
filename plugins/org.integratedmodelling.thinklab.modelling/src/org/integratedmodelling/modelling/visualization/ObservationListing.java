@@ -15,6 +15,7 @@ import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.geospace.Geospace;
+import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
@@ -174,12 +175,15 @@ public class ObservationListing {
 
 			NumberFormat nf = NumberFormat.getInstance();
 			IState as = state.aggregate(Geospace.get().SubdividedSpaceObservable());
+			double sm = ((ArealExtent)(state.getObservationContext().getSpace())).
+				getTotalAreaSquareMeters();
+
 			if (as != null) {
 				
 				double[] unc = 
 					(double[]) as.getMetadata().get(Metadata.UNCERTAINTY);
 							
-				out.println("Spatially aggregated total: " + 
+				out.println("Aggregated over " + nf.format(sm) + " m²: " +
 						nf.format(as.getDoubleValue(0)) + 
 						(unc == null ? 
 							"" :
@@ -293,12 +297,15 @@ public class ObservationListing {
 		if (state.isSpatiallyDistributed() && !state.isTemporallyDistributed()) {
 		
 			IState as = state.aggregate(Geospace.get().SubdividedSpaceObservable());
+			double sm = ((ArealExtent)(state.getObservationContext().getSpace())).
+				getTotalAreaSquareMeters();
+
 			if (as != null) {
 
 				double[] unc = 
 					(double[]) as.getMetadata().get(Metadata.UNCERTAINTY);
 				
-				out.println("Spatially aggregated total: " + 
+				out.println("Aggregated over " + nf.format(sm) + " m²: " +
 						nf.format(as.getDoubleValue(0)) + 
 						(unc == null ? 
 							"" :
