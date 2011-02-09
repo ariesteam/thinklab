@@ -176,14 +176,14 @@ public class ObservationListing {
 			NumberFormat nf = NumberFormat.getInstance();
 			IState as = state.aggregate(Geospace.get().SubdividedSpaceObservable());
 			double sm = ((ArealExtent)(state.getObservationContext().getSpace())).
-				getTotalAreaSquareMeters();
+				getTotalAreaSquareMeters()  / 1000000.0;
 
 			if (as != null) {
 				
 				double[] unc = 
 					(double[]) as.getMetadata().get(Metadata.UNCERTAINTY);
 							
-				out.println("Aggregated over " + nf.format(sm) + " m²: " +
+				out.println("Aggregated over " + nf.format(sm) + " km²: " +
 						nf.format(as.getDoubleValue(0)) + 
 						(unc == null ? 
 							"" :
@@ -298,14 +298,14 @@ public class ObservationListing {
 		
 			IState as = state.aggregate(Geospace.get().SubdividedSpaceObservable());
 			double sm = ((ArealExtent)(state.getObservationContext().getSpace())).
-				getTotalAreaSquareMeters();
+				getTotalAreaSquareMeters() / 1000000.0;
 
 			if (as != null) {
 
 				double[] unc = 
 					(double[]) as.getMetadata().get(Metadata.UNCERTAINTY);
 				
-				out.println("Aggregated over " + nf.format(sm) + " m²: " +
+				out.println("Aggregated over " + nf.format(sm) + " km²: " +
 						nf.format(as.getDoubleValue(0)) + 
 						(unc == null ? 
 							"" :

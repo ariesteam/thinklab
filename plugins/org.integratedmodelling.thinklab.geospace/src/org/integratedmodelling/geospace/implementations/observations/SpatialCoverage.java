@@ -140,13 +140,14 @@ public class SpatialCoverage extends Observation implements Topology, IGeolocate
 	public void checkUnitConformance(IConcept concept, Unit unit)
 			throws ThinklabValidationException {
 		
-		if (!unit.isArealDensity())
-			throw new ThinklabValidationException(
-					"concept " + 
-					concept + 
-					" is observed in 2d-space but unit " + 
-					unit + 
-					" does not specify an areal density");
-
+		if (!unit.isArealDensity()) {
+			// TODO reintegrate when we do things like 	"mm of precipitation" properly
+//			throw new ThinklabValidationException(
+//					"concept " + 
+//					concept + 
+//					" is observed in 2d-space but unit " + 
+//					unit + 
+//					" does not specify an areal density");
+		}
 	}
 }

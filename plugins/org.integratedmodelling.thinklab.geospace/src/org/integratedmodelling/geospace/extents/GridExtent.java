@@ -908,6 +908,9 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		
 		if (CoreScience.isExtensive(observable)) {
 			
+			ret.aggregatedNature = PhysicalNature.EXTENSIVE;
+			ret.aggregationOperator = IOperator.SUM;
+
 			if (unit.isArealDensity()) {
 				
 				/*
@@ -919,8 +922,6 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 				double um2 = rf.convert(1.0, sd);
 				final double cnv = getCellAreaMeters()/um2;
 				
-				ret.aggregatedNature = PhysicalNature.EXTENSIVE;
-				ret.aggregationOperator = IOperator.SUM;
 				ret.aggregator = new Aggregator() {
 					@Override
 					public double getAggregationFactor(int granule) {

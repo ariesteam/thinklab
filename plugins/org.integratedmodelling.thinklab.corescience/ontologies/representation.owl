@@ -154,7 +154,7 @@
     </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="Length">
-    <rdfs:subClassOf rdf:resource="#IntensivePhysicalProperty"/>
+    <rdfs:subClassOf rdf:resource="#ExtensivePhysicalProperty"/>
   </owl:Class>
   <owl:Class rdf:ID="ElectricalCharge">
     <rdfs:subClassOf rdf:resource="#IntensivePhysicalProperty"/>
