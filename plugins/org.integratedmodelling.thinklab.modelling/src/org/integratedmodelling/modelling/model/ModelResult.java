@@ -1,15 +1,11 @@
 package org.integratedmodelling.modelling.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map.Entry;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.interfaces.IModel;
@@ -25,6 +21,7 @@ import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
 import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.kbox.GroupingQueryResult;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
@@ -242,7 +239,6 @@ public class ModelResult implements IQueryResult  {
 					if (cdata.size() > 0) {
 						ret = ObservationFactory.addReflectedField(ret, "contextStates", cdata);
 					}
-
 				}
 			}
 					
@@ -257,7 +253,23 @@ public class ModelResult implements IQueryResult  {
 		
 		if (_mediated != null) {
 			
-			Polylist med = _mediated.getResultAsList(ofs[0], null);
+			Polylist med = null;
+			
+//			if (_mediated instanceof GroupingQueryResult &&
+//				((GroupingQueryResult)_mediated).getResultMultiplicity(ofs[0]) > 1) {
+//				
+//				GroupingQueryResult gc = ((GroupingQueryResult)_mediated);
+//				IConcept c = null;
+//				for (int i = 0; i < gc.getResultMultiplicity(ofs[0]); i++) {
+//					
+//				}
+//					
+//				med = 
+//					ObservationFactory.createStatefulContingencyMerger(c);
+//					
+//			} else {
+				med = _mediated.getResultAsList(ofs[0], null);
+//			}
 			ret = ObservationFactory.addMediatedObservation(ret, med);
 			
 		} else if (_dependents.size() > 0) {
@@ -314,6 +326,22 @@ public class ModelResult implements IQueryResult  {
 		throw new ThinklabRuntimeException("moveTo called on ModelResult");
 	}
 
+	public int getAlternativeDependencyCount() {
+		return _dependents.size() + _contingents.size() + (contextModel == null ? 0 : 1);
+	}
+	
+	public int[] getAlternativeDependencyDimensions() {
+		int[] dims = new int[getAlternativeDependencyCount()];
+		int i = 0;
+		for (IQueryResult r : _dependents)
+			dims[i++] = r.getTotalResultCount();
+		if (contextModel != null) 
+			dims[i++] = contextModel.getTotalResultCount();
+		for (IQueryResult r : _contingents)
+			dims[i++] = r.getTotalResultCount();
+		return dims;
+	}
+	
 	@Override
 	public float setResultScore(int n, float score) {
 		throw new ThinklabRuntimeException("setResultScore called on ModelResult");
@@ -328,17 +356,9 @@ public class ModelResult implements IQueryResult  {
 		if (_mediated != null) {
 			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.ROW_FIRST);
 			ticker.defineDimensions(_mediated.getTotalResultCount());
-		} else if (_dependents.size() > 0 || _contingents.size() > 0 || contextModel != null) {
+		} else if (getAlternativeDependencyCount() > 0) {
 			ticker = new MultidimensionalCursor(MultidimensionalCursor.StorageOrdering.ROW_FIRST);
-			int[] dims = new int[_dependents.size() + _contingents.size() + (contextModel == null ? 0 : 1)];
-			int i = 0;
-			for (IQueryResult r : _dependents)
-				dims[i++] = r.getTotalResultCount();
-			if (contextModel != null) 
-				dims[i++] = contextModel.getTotalResultCount();
-			for (IQueryResult r : _contingents)
-				dims[i++] = r.getTotalResultCount();
-			ticker.defineDimensions(dims);
+			ticker.defineDimensions(getAlternativeDependencyDimensions());
 		}
 	}
 

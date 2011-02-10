@@ -168,6 +168,7 @@ public class GroupingQueryResult implements IQueryResult {
 	public Polylist getResultAsList(int n, HashMap<String, String> references)
 			throws ThinklabException {
 		if (_grouped.get(n).getSecond().size() > 1)
+			
 			/*
 			 * TODO return as array value
 			 */
@@ -178,8 +179,8 @@ public class GroupingQueryResult implements IQueryResult {
 
 	/**
 	 * 
-	 * @param n
-	 * @param idx
+	 * @param n index of result (group)
+	 * @param idx index within group
 	 * @param references
 	 * @return
 	 * @throws ThinklabException

@@ -523,7 +523,8 @@ public abstract class DefaultAbstractModel implements IModel {
 		 */
 		if (mediated != null) {
 
-			ModelResult res = ((DefaultAbstractModel) mediated)
+			ModelResult res = 
+				((DefaultAbstractModel) mediated)
 					.observeInternal(kbox, session, cp, context, acceptEmpty);
 
 			if (res == null || res.getTotalResultCount() == 0) {
