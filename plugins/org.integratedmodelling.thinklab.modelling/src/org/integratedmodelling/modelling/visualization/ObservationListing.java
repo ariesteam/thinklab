@@ -42,7 +42,9 @@ public class ObservationListing {
 		if (rgrid instanceof GridExtent) {
 			out.println("Spatially distributed on a " + 
 						((GridExtent)rgrid).getXCells() + " by " + ((GridExtent)rgrid).getYCells() + 
-						" raster grid");
+						" raster grid (cell area = " +
+						NumberFormat.getInstance().format(((GridExtent)rgrid).getCellAreaMeters()) + 
+						" m²)");
 		}
 		
 		for (IConcept c : ((IObservationContext)context).getStateObservables()) {

@@ -98,7 +98,7 @@ public class GeneralClassifier {
 	
 	public boolean classify(Object o) {
 
-		if (catchAll) {
+		if (catchAll && o != null && !(o instanceof Double && Double.isNaN((Double)o))) {
 			return true;
 		}
 

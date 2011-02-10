@@ -93,6 +93,8 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 		 * 	Vector  (numeric range, honoring :< :> :exclusive :inclusive keywords)
 		 *  List    (executable code, run after setting self to state)
 		 *  Set     (set of values to choose from: final match is an OR on the contents)
+		 *  :otherwise (matches everything but no-data)
+		 *  nil     (matches no-data only)
 		 */
 		if (classifier == null) {
 			
@@ -163,6 +165,17 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 				set = set.rest();
 			}
 
+		} else if (classifier.toString().equals(":otherwise")) {
+	
+			/*
+			 * ACHTUNG - this or ANY OTHER KEYWORD we will want to support
+			 * must be evaluated before the next, as keywords are instances
+			 * of IFn!
+			 * 
+			 * catch-all
+			 */
+			ret.setCatchAll();
+			
 		} else if (classifier instanceof IFn) {
 			
 			ret.setClosure((IFn)classifier);
@@ -171,13 +184,6 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 			 * 	clj
 			 * code to be execd, to be passed back to Clojure at runtime
 			 */
-			
-		} else if (classifier.toString().equals(":otherwise")) {
-	
-			/*
-			 * catch-all
-			 */
-			ret.setCatchAll();
 			
 		} else if (classifier instanceof String) {
 			
@@ -199,7 +205,7 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 						"invalid classifier " + 
 						classifier +
 						": should be a range vector, a number, matching closure, or a set of " +
-						"valid classifiers");
+						"valid classifiers (including nil and :otherwise)");
 			}	
 			ret.setConcept(c);
 		}

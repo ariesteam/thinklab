@@ -129,7 +129,7 @@ public class NamespaceOntology {
 			ret = getOntology().getConcept(string);
 			if (ret == null) {
 				IConcept[] p = null;
-				if (parent.size() > 0)
+				if (parent != null && parent.size() > 0)
 					p = parent.toArray(new IConcept[parent.size()]);
 				ret = getOntology().createConcept(string, p, false);
 			}
