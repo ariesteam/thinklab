@@ -91,7 +91,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * be non-null and they will specify how we can be edited (e.g. a range of
 	 * values for a state, or simply "true" for any edit).
 	 */
-	protected Object editable = null;
+	protected Boolean editable = null;
 	protected String namespace;
 	private String localFormalName = null;
 
@@ -99,6 +99,10 @@ public abstract class DefaultAbstractModel implements IModel {
 		return mediated != null || mediatesExternal;
 	}
 
+	public boolean isEditable() {
+		return editable == null ? false : editable;
+	}
+	
 	protected Polylist addDefaultFields(Polylist obs) {
 
 		Metadata md = new Metadata(metadata);
@@ -107,10 +111,6 @@ public abstract class DefaultAbstractModel implements IModel {
 
 		return obs;
 	}
-	
-//	public String getObservableId() {
-//		return observableId;
-//	}
 
 	public void setMetadata(String kw, Object value) {
 		metadata.put(kw.startsWith(":") ? kw.substring(1) : kw, value);
@@ -177,13 +177,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		} else if (observableOrModel instanceof IConcept) {
 			this.observable = (IConcept) observableOrModel;
 			this.observableSpecs = Polylist.list(this.observable);
-//			this.observableId = this.observable.toString();
-//		} else if (observableOrModel instanceof Polylist) {
-//			// TODO this shouldn't happen
-//			this.observableSpecs = (Polylist) observableOrModel;
-//			this.observableId = this.observableSpecs.first().toString();
 		} else {
-//			this.observableId = observableOrModel.toString();
 			this.observable = ModelFactory.annotateConcept(namespace, observableOrModel.toString());
 			this.observableSpecs = Polylist.list(this.observable);
 		}
@@ -213,7 +207,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		} else if (keyword.equals(":when")) {
 			whenClause = (IFn) argument;
 		} else if (keyword.equals(":editable")) {
-			editable = argument;
+			editable = (Boolean)argument;
 		} else if (keyword.equals(":optional")) {
 			isOptional = (Boolean) argument;
 		} else if (keyword.equals(":required")) {
@@ -232,23 +226,6 @@ public abstract class DefaultAbstractModel implements IModel {
 	public String getEntityType() {
 		return entityAgent;
 	}
-
-//	/**
-//	 * Pass a precontextualized state and get a model which is exactly like us,
-//	 * but will only produce one observation with a predefined state, only valid
-//	 * in the context that the state was generated for. Used to build scenarios
-//	 * based on precomputed information.
-//	 * 
-//	 * @param state
-//	 * @return
-//	 */
-//	public IModel getPrecontextualizedModel(IState state) {
-//		try {
-//			return new PrecontextualizedModelProxy((IModel) this.clone(), state);
-//		} catch (CloneNotSupportedException e) {
-//			throw new ThinklabRuntimeException(e);
-//		}
-//	}
 
 	/**
 	 * This is called for each model defined for us in a :context clause, after
@@ -302,14 +279,6 @@ public abstract class DefaultAbstractModel implements IModel {
 
 	@Override
 	public IConcept getObservableClass() {
-//		if (observable == null) {
-//			try {
-//				observable = KnowledgeManager.get()
-//						.requireConcept(observableId);
-//			} catch (Exception e) {
-//				throw new ThinklabRuntimeException(e);
-//			}
-//		}
 		return observable;
 	}
 
@@ -329,7 +298,6 @@ public abstract class DefaultAbstractModel implements IModel {
 		mediated = model.mediated;
 		observable = model.observable;
 		observableSpecs = model.observableSpecs;
-//		observableId = model.observableId;
 		editable = model.editable;
 		metadata = model.metadata;
 		name = model.name;
@@ -439,33 +407,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	public void validateConcepts(ISession session) throws ThinklabException {
 
 		if (!_validated) {
-
-//			/*
-//			 * resolve all concepts for the observable
-//			 */
-//			if (this.observable == null)
-//				this.observable = annotateConcept(observableId, session, null);
-//
-//			if (this.observableSpecs == null)
-//				this.observableSpecs = Polylist.list(this.observable);
-//
-//			/*
-//			 * notify annotation if we are unresolved, so we can find data in
-//			 * this phase.
-//			 */
-//			if (!isResolved() && (this instanceof DefaultStatefulAbstractModel)) {
-//				ModelAnnotation an = (ModelAnnotation) session
-//						.getVariable(ModellingPlugin.ANNOTATION_UNDERWAY);
-//				if (an != null) {
-//					an.addUnresolvedState(
-//							this.observableId,
-//							this.getCompatibleObservationType(session),
-//							observable == null ? null
-//									: generateObservableQuery(null, session,
-//											new Context()));
-//				}
-//			}
-
+			
 			validateSemantics(session);
 
 			/*

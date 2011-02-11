@@ -178,7 +178,6 @@ public class GroupingQueryResult implements IQueryResult {
 	}
 
 	/**
-	 * 
 	 * @param n index of result (group)
 	 * @param idx index within group
 	 * @param references

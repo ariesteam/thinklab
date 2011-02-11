@@ -11,6 +11,7 @@ import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.modelling.storyline.StorylineFactory;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
+import org.integratedmodelling.modelling.visualization.storyline.StorylineTemplate.Page;
 import org.integratedmodelling.modelling.visualization.wiki.WikiFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -301,5 +302,10 @@ public class StorylineTemplate extends Bean {
 		if (ret == null)
 			ret = defval;
 		return ret;
+	}
+
+	public Page getPage(IConcept c) {
+		syncPages();
+		return (Page)getObjectWithField("page", "concept", c.toString());
 	}
 }

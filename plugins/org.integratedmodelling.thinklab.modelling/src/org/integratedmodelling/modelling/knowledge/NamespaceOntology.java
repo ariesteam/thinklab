@@ -111,7 +111,9 @@ public class NamespaceOntology {
 					target.addAnnotation(ModellingPlugin.UNITS_ANNOTATION, arg);
 				} else if (kwd.equals(":range")) {
 					target.addAnnotation(ModellingPlugin.RANGE_ANNOTATION, arg);
-				}
+				} else if (kwd.equals(":editable")) {
+					target.addAnnotation(ModellingPlugin.EDITABLE_ANNOTATION, arg);
+				} 
 				
 			}  else {
 				root.add(annotateConcept(o.toString(), parent));
