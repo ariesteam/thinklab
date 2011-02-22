@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.context;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IContext;
@@ -278,6 +279,12 @@ public class Context implements IContext, IModelForm {
 	@Override
 	public boolean isCovered(int index) {
 		throw new ThinklabRuntimeException("isCovered() called on Context");
+	}
+
+	@Override
+	public Set<IConcept> getObservables() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

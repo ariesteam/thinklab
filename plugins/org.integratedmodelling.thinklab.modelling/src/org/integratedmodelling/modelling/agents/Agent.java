@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.agents;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -178,6 +179,12 @@ public class Agent extends DefaultMutableTreeNode implements IModelForm {
 	@Override
 	public int hashCode() {
 		return getName().hashCode();
+	}
+
+	@Override
+	public Set<IConcept> getObservables() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

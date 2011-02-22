@@ -1,5 +1,9 @@
 package org.integratedmodelling.modelling.interfaces;
 
+import java.util.Set;
+
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+
 /**
  * Tag interface for any object that can be stored in the model map. Currently that
  * means agents, models, contexts and scenarios. Hopefully it will stop at this, meaning
@@ -29,4 +33,10 @@ public interface IModelForm {
 	 * @return
 	 */
 	public abstract String getName();
+	
+	/**
+	 * Return the set of all concepts observed in this model object
+	 * @return
+	 */
+	public Set<IConcept> getObservables();
 }
