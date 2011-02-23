@@ -160,6 +160,7 @@ public class Measurement extends Observation implements MediatingObservation {
 		}
 
 	}
+	
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 
