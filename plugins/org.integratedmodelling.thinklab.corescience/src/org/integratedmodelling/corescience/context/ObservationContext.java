@@ -1092,6 +1092,10 @@ public class ObservationContext implements IObservationContext, IContext {
 		}
 	}
 
+	public void addTransformation(IContextTransformation transf) {
+		ctransf.put(transf.getObservableClass(), transf);
+	}
+
 	@Override
 	public IContext cloneExtents() throws ThinklabException {
 

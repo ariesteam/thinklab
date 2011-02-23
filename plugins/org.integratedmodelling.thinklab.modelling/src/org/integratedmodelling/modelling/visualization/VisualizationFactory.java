@@ -385,7 +385,6 @@ public class VisualizationFactory {
 	}
 
 	public Pair<File[], String[]> 
-	
 		getLegend(ColorMap cmap, int totalLength, int height, String desc, String fileBaseName) throws ThinklabIOException {
 
 			String ext = MiscUtilities.getFileExtension(fileBaseName);
