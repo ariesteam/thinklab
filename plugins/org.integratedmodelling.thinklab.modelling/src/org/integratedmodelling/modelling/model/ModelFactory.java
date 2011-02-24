@@ -6,7 +6,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -421,7 +423,10 @@ public class ModelFactory {
 		ArrayList<Scenario> ret = new ArrayList<Scenario>();
 		
 		for (Scenario s : scenariosById.values()) {
-			if (model.getObservableClass().is(s.getObservableClass())) {
+
+			Set<IConcept> intersec = new HashSet<IConcept>(model.getObservables());
+			intersec.retainAll(s.getObservables());
+			if (!intersec.isEmpty()) {
 				ret.add(s);
 			}
 		}

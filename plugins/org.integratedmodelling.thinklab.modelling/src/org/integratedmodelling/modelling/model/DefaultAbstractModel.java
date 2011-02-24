@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.model;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +48,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	protected IModel mediated = null;
 	protected ArrayList<IModel> dependents = new ArrayList<IModel>();
 	protected ArrayList<IModel> observed = new ArrayList<IModel>();
+	private HashSet<IConcept> observables;
 
 	public DefaultAbstractModel(String namespace) {
 		this.namespace = namespace;
@@ -54,8 +56,18 @@ public abstract class DefaultAbstractModel implements IModel {
 	
 	@Override
 	public Set<IConcept> getObservables() {
-		// TODO Auto-generated method stub
-		return null;
+		if (this.observables == null) {
+			this.observables = new HashSet<IConcept>();
+			this.collectObservables(this.observables);
+		}
+		return this.observables;
+	}
+
+	private void collectObservables(HashSet<IConcept> coll) {
+		for (IModel m : dependents) {
+			((DefaultAbstractModel)m).collectObservables(coll);
+		}
+		coll.add(getObservableClass());
 	}
 
 	/*
@@ -64,7 +76,6 @@ public abstract class DefaultAbstractModel implements IModel {
 	 */
 	protected Scenario scenario = null;
 	protected IConcept observable = null;
-//	protected String observableId = null;
 
 	// this is the defmodel <name>, complete with namespace (slash-separated)
 	protected String name = null;

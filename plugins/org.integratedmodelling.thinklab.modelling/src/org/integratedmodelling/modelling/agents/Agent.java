@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.agents;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,6 +58,7 @@ public class Agent extends DefaultMutableTreeNode implements IModelForm {
 	ISession session;
 	IKBox kbox;
 	private String namespace;
+	private HashSet<IConcept> observables;
 	
 	protected void copy(Agent agent) {
 		worldModel = agent.worldModel;
@@ -183,8 +185,10 @@ public class Agent extends DefaultMutableTreeNode implements IModelForm {
 
 	@Override
 	public Set<IConcept> getObservables() {
-		// TODO Auto-generated method stub
-		return null;
+		if (this.observables == null) {
+			this.observables = new HashSet<IConcept>();
+		}
+		return this.observables;
 	}
 
 

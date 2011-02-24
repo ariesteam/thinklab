@@ -193,10 +193,9 @@
      model#))
        
 (defmacro scenario 
-	"Return a new model for the given observable, defined using the given contingency 
-	 structure and conditional specifications, or the given unconditional model if no 
-	 contingency structure is supplied."
-	[observable & body]
+	"Scenarios are collections of model statements that will be intersected with 
+   another model, substituting the models for the same observables."
+	[& body]
 	 `(let [desc#  
 	 					(if (string? (first '~body)) (first '~body))
 	 				;; TODO unnecessary, remove
@@ -208,7 +207,6 @@
  	        model# 
  	        	(modelling/j-make-scenario)]
  	      
- 	   (.setObservable model# (process-observable '~observable))
      (.setDescription model# desc#)
  	      	     
         ; process the model definitions - one or more models or kw pairs
@@ -291,8 +289,8 @@
        
 (defmacro defscenario
 	 "Define a scenario."
-		[model-name observable & body]
- 		`(def ~model-name (modelling/register-scenario (eval '(modelling/scenario '~observable ~@body)) (str '~model-name))))
+		[model-name & body]
+ 		`(def ~model-name (modelling/register-scenario (eval '(modelling/scenario ~@body)) (str '~model-name))))
  
 (defmacro defagent
 	 "Define an agent."
