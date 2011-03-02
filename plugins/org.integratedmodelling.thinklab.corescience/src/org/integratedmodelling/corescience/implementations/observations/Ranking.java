@@ -36,6 +36,7 @@ package org.integratedmodelling.corescience.implementations.observations;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
+import org.integratedmodelling.corescience.interfaces.IMergingObservation;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -315,6 +316,13 @@ public class Ranking extends Observation implements MediatingObservation {
 			throws ThinklabException {
 
 		RankingMediator ret = null;
+		
+		/*
+		 * if we're mediating an observation that merges others, we assume that its first dependency will
+		 * describe all of them. 
+		 */
+		if (observation instanceof IMergingObservation)
+			observation = (IndirectObservation) observation.getDependencies()[0];
 		
 		if ( !(observation instanceof Ranking)) {
 				throw new ThinklabValidationException("can't mediate between " + this.getClass() +

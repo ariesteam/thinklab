@@ -5,6 +5,7 @@ import javax.measure.converter.UnitConverter;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
+import org.integratedmodelling.corescience.interfaces.IMergingObservation;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -274,6 +275,13 @@ public class Measurement extends Observation implements MediatingObservation {
 	public IStateAccessor getMediator(IndirectObservation observation, IObservationContext context)
 			throws ThinklabException {
 
+		/*
+		 * if we're mediating an observation that merges others, we assume that its first dependency will
+		 * describe all of them. 
+		 */
+		if (observation instanceof IMergingObservation)
+			observation = (IndirectObservation) observation.getDependencies()[0];
+		
 		if ( ! (observation instanceof Measurement))
 			throw new ThinklabValidationException("measurements can only mediate other measurements");
 		return new MeasurementMediator(((Measurement)observation));

@@ -8,6 +8,7 @@ import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemObjectContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
+import org.integratedmodelling.corescience.interfaces.IMergingObservation;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
@@ -38,7 +39,7 @@ import clojure.lang.PersistentArrayMap;
  * @author Ferdinando
  */
 @InstanceImplementation(concept=ModellingPlugin.STATEFUL_MERGER_OBSERVATION)
-public class ObservationMerger extends Observation implements IndirectObservation {
+public class ObservationMerger extends Observation implements IndirectObservation , IMergingObservation {
 
 	// reflected 
 	public SwitchLayer<IState> switchLayer = null;

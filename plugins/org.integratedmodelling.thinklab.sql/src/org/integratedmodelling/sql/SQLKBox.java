@@ -49,7 +49,6 @@ import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBoxCapabilities;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.MalformedListException;
 import org.integratedmodelling.utils.Pair;
@@ -219,7 +218,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		QueryResult res = server.query(query);
 
 		return new SQLQueryResult(res, total, offset, maxResults,
-				(Constraint) q, this);
+				(Constraint) q, metadata, metadataCatalog, this);
 	}
 
 	@Override

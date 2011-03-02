@@ -40,25 +40,25 @@ public class GroupingQueryResult implements IQueryResult {
 		for (int i = 0; i < result.getTotalResultCount(); i++) {
 
 			IValue ss = result.getResultField(i, metadataField);
+
 			String s  = ss == null ? "" : ss.toString();
-			int j = 0;
+			int j = -1;
 			
-			if (s.isEmpty()) {
-				j = _grouped.size() + 1;
-			} else {
-				for (Pair<String, ArrayList<Integer>> pp : _grouped) {
-					if (pp.getFirst().equals(s)) {
+			if (!s.isEmpty()) {
+				for (int jj = 0; jj < _grouped.size(); jj++) {
+					if (_grouped.get(jj).getFirst().equals(s)) {
+						j = jj;
 						break;
 					}
-					j++;
 				}
 			}
 			
-			if (j > _grouped.size()) {
+			if (j < 0) {
 				_grouped.add(new Pair<String,ArrayList<Integer>>(s, new ArrayList<Integer>()));
+				j = _grouped.size() - 1;
 			}
 			
-			_grouped.get(j-1).getSecond().add(i);
+			_grouped.get(j).getSecond().add(i);
 		}
 	}
 	

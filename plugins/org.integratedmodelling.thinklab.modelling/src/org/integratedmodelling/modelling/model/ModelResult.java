@@ -255,21 +255,24 @@ public class ModelResult implements IQueryResult  {
 			
 			Polylist med = null;
 			
-//			if (_mediated instanceof GroupingQueryResult &&
-//				((GroupingQueryResult)_mediated).getResultMultiplicity(ofs[0]) > 1) {
-//				
-//				GroupingQueryResult gc = ((GroupingQueryResult)_mediated);
-//				IConcept c = null;
-//				for (int i = 0; i < gc.getResultMultiplicity(ofs[0]); i++) {
-//					
-//				}
-//					
-//				med = 
-//					ObservationFactory.createStatefulContingencyMerger(c);
-//					
-//			} else {
+			if (_mediated instanceof GroupingQueryResult &&
+				((GroupingQueryResult)_mediated).getResultMultiplicity(ofs[0]) > 1) {
+				
+				GroupingQueryResult gc = ((GroupingQueryResult)_mediated);
+				IConcept c = _model.getObservableClass();
+				med = 
+					ObservationFactory.createStatefulContingencyMerger(Polylist.list(c));
+
+				for (int i = 0; i < gc.getResultMultiplicity(ofs[0]); i++) {
+					med = 
+						ObservationFactory.addDependency(
+							med, 
+							gc.getResultAsList(ofs[0], i, null));
+				}
+				
+			} else {
 				med = _mediated.getResultAsList(ofs[0], null);
-//			}
+			}
 			ret = ObservationFactory.addMediatedObservation(ret, med);
 			
 		} else if (_dependents.size() > 0) {

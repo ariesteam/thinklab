@@ -33,10 +33,12 @@
 package org.integratedmodelling.sql;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
@@ -55,15 +57,20 @@ public class SQLQueryResult implements IQueryResult {
 	private QueryResult qresult;
 	IValue[] instances = null;
 	float[] scores = null;
+	private String[] metadata;
+	private Map<String, IConcept> metadataCatalog;
 	
 	// create from results of successful query
 	public SQLQueryResult(QueryResult qres, int totalres, int offset,
-			int max, Constraint query, SQLKBox kbox) {
+			int max, Constraint query, String[] metadata, 
+			Map<String, IConcept> metadataCatalog, SQLKBox kbox) {
 		
 		this.kbox = kbox;
 		this.query = query;
 		nResults = totalres;
 		this.qresult = qres;
+		this.metadata = metadata;
+		this.metadataCatalog = metadataCatalog;
 		instances = new IValue[this.qresult.nRows()];
 	}
 
@@ -82,6 +89,22 @@ public class SQLQueryResult implements IQueryResult {
 	public IValue getResultField(int n, String schemaField) throws ThinklabException {
 		
 		IValue ret = null;
+		
+		if (metadata != null && qresult != null) {
+			int mind = -1;
+			for (int i = 0; i < metadata.length; i++) {
+				if (metadata[i].equals(schemaField)) {
+					mind = i + 1;
+					break;
+				}
+			}
+			if (mind > 0) {
+				ret = qresult.getValue(n, mind, metadataCatalog.get(metadata[mind -1]));
+			}
+		}
+		
+		if (ret != null)
+			return ret;
 		
 		if (instances[n] != null) {
 			/*
