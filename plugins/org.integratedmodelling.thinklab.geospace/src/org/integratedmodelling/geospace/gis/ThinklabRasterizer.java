@@ -10,7 +10,6 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
@@ -53,9 +52,6 @@ public class ThinklabRasterizer {
 			new FeatureRasterizer(
 					extent.getYCells(), extent.getXCells(), noData, 
 					vCoverage.getAttributeDescriptor(valueId));
-		
-		if (Geospace.isLongitudeX(vCoverage.getCoordinateReferenceSystem()))
-			rasterizer.swapAxes(true);
 		
 		FeatureIterator<SimpleFeature> iterator = null;
 		try {

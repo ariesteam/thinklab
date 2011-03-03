@@ -1,20 +1,5 @@
 package org.integratedmodelling.geospace.gis;
 
-/**
- * NOAA's National Climatic Data Center
- * NOAA/NESDIS/NCDC
- * 151 Patton Ave, Asheville, NC  28801
- * 
- * THIS SOFTWARE AND ITS DOCUMENTATION ARE CONSIDERED TO BE IN THE 
- * PUBLIC DOMAIN AND THUS ARE AVAILABLE FOR UNRESTRICTED PUBLIC USE.  
- * THEY ARE FURNISHED "AS IS." THE AUTHORS, THE UNITED STATES GOVERNMENT, ITS
- * INSTRUMENTALITIES, OFFICERS, EMPLOYEES, AND AGENTS MAKE NO WARRANTY,
- * EXPRESS OR IMPLIED, AS TO THE USEFULNESS OF THE SOFTWARE AND
- * DOCUMENTATION FOR ANY PURPOSE. THEY ASSUME NO RESPONSIBILITY (1)
- * FOR THE USE OF THE SOFTWARE AND DOCUMENTATION; OR (2) TO PROVIDE
- * TECHNICAL SUPPORT TO USERS.
- */
-
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -23,7 +8,6 @@ import java.awt.image.DataBuffer;
 import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import javax.media.jai.RasterFactory;
 
@@ -61,9 +45,9 @@ import com.vividsolutions.jts.geom.Polygon;
 /**
  *  Rasterize features onto a WritableRaster object using Java 2D Graphics/BufferedImage.
  *
- * @author     steve.ansari
- * @author Ferdinando Villa
- * @created    March 20, 2008
+ * @author  steve.ansari, NOAA (original code)
+ * @author  Ferdinando Villa  (extensive modifications)
+ * @created March 20, 2008
  */
 public class FeatureRasterizer {
 
@@ -290,29 +274,17 @@ public class FeatureRasterizer {
     	if (valueType != null) {
     		
     		if ( !(valueType.is(KnowledgeManager.Number()))) {
-    			/*
-    			 * default to classification, use short integers for parsimony
-    			 */
-    			ret = DataBuffer.TYPE_FLOAT;
     			if (classification == null) {
     				classification = new HashMap<String, Integer>();
     			}
-//    			/* force nodata to 0 */
-//    			noDataValue = 0.0;
     		}
     		
     	} else if (attributeDescriptor != null) {
     		
     		if ( !(attributeDescriptor.getType() instanceof NumericAttributeType)) {
-    			/*
-    			 * default to classification, use short integers for parsimony
-    			 */
-    			ret = DataBuffer.TYPE_FLOAT;
     			if (classification == null) {
     				classification = new HashMap<String, Integer>();
     			}
-//    			/* force nodata to 0 */
-//    			noDataValue = 0.0;
     		}
     	}
     	
@@ -652,9 +624,6 @@ public class FeatureRasterizer {
 			classification.put(string,ret);
 		}
 		
-//		if (ret != 0) 
-//			System.out.println("inserting a " + ret);
-		
 		return (float)ret;
 	}
 
@@ -665,15 +634,7 @@ public class FeatureRasterizer {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
         		float fval = Float.intBitsToFloat(bimage.getRGB(i, j));
-        		double val = fval;
-        		if (Float.isNaN(fval))
-        			val = Double.NaN;
-        		
-//            	if (classification != null) {
-//            		raster.setSample(i, j, 0, (int)val);
-//            	} else {
-            		raster.setSample(i, j, 0, fval);
-//            	}
+        		raster.setSample(i, j, 0, fval);
             }
         }
     }
@@ -776,8 +737,6 @@ public class FeatureRasterizer {
         xInterval = bounds.width / (double) width;
         yInterval = bounds.height / (double) height;
 
-        // System.out.println("xInterval: " + xInterval + "  yInterval: " + yInterval);
-
         if (xInterval > yInterval) {
             yInterval = xInterval;
         }
@@ -831,15 +790,9 @@ public class FeatureRasterizer {
             		inRegion = denv.contains(bounds.getMinX() + xc*i + xc/2.0, bounds.getMinY() + yc*j + yc/2);
             	}
             		
-            	float clear = inRegion ? noDataValue : Float.NaN;
-            	            	
-//            	if (classification != null) {
-//            		raster.setSample(i, j, 0, inRegion ? 0.0f : Float.NaN);
-//            		bimage.setRGB(i, j,  floatBitsToInt(inRegion? 0.0f : Float.NaN));	
-//            	} else {
-            		raster.setSample(i, j, 0, clear);
-            		bimage.setRGB(i, j, floatBitsToInt(clear));
-//            	}
+            	float clear = inRegion ? noDataValue : Float.NaN;            	
+            	raster.setSample(i, j, 0, clear);
+            	bimage.setRGB(i, j, floatBitsToInt(clear));
             }
         }
     }
@@ -918,10 +871,6 @@ public class FeatureRasterizer {
     public String toString() {
         return "FEATURE RASTERIZER: WIDTH="+width+" , HEIGHT="+height+" , NODATA=" + noDataValue;
     }
-
-	public void swapAxes(boolean b) {
-		// ZORK this.swapAxis = b;
-	}
     
 }
 

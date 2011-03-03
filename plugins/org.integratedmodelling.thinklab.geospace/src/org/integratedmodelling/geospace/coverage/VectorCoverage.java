@@ -412,6 +412,10 @@ public class VectorCoverage implements ICoverage {
 	 * Create a new raster coverage for the passed extent and return it. It even sounds 
 	 * easy.
 	 * 
+	 * TODO this sets the raster to 0 before burning the shapes in, except where
+	 * the bounding box is not covered. It may need to be changed to reflect some
+	 * parameters, specifically set to NaN if requested.
+	 * 
 	 * @param arealExtent
 	 * @return
 	 * @throws ThinklabException
