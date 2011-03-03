@@ -417,7 +417,7 @@ public class VectorCoverage implements ICoverage {
 	 * @throws ThinklabException
 	 */
 	public ICoverage convertToRaster(GridExtent arealExtent) throws ThinklabException {
-		return ThinklabRasterizer.rasterize(this, valueField, Float.NaN, arealExtent, valueType, valueDefault);
+		return ThinklabRasterizer.rasterize(this, valueField, 0.0f, arealExtent, valueType, valueDefault);
 	}
 
 	public void show() {

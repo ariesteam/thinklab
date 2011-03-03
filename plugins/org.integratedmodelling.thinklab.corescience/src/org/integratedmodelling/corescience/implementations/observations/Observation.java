@@ -159,6 +159,11 @@ public class Observation implements IObservation, IInstanceImplementation {
 		 */
 		for (IRelationship r : i.getRelationships()) {
 
+			// save metadata properties so we can recognize the observation 
+			if (r.getProperty().getConceptSpace().equals("metadata")) {
+				metadata.put(r.getProperty().toString(), r.getValue().toString());
+			}
+			
 			/* again, for speed */
 			if (!r.isClassification()) {
 				if (observable == null

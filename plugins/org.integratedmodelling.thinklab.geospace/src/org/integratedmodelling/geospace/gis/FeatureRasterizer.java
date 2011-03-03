@@ -23,6 +23,7 @@ import java.awt.image.DataBuffer;
 import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.media.jai.RasterFactory;
 
@@ -86,7 +87,7 @@ public class FeatureRasterizer {
 
     private int height;
     private int width;
-    private double noDataValue = Double.NaN;
+    private float noDataValue = Float.NaN;
     private WritableRaster raster = null;   
     private BufferedImage bimage = null;
     private Graphics2D graphics = null;
@@ -296,8 +297,8 @@ public class FeatureRasterizer {
     			if (classification == null) {
     				classification = new HashMap<String, Integer>();
     			}
-    			/* force nodata to 0 */
-    			noDataValue = 0.0;
+//    			/* force nodata to 0 */
+//    			noDataValue = 0.0;
     		}
     		
     	} else if (attributeDescriptor != null) {
@@ -310,8 +311,8 @@ public class FeatureRasterizer {
     			if (classification == null) {
     				classification = new HashMap<String, Integer>();
     			}
-    			/* force nodata to 0 */
-    			noDataValue = 0.0;
+//    			/* force nodata to 0 */
+//    			noDataValue = 0.0;
     		}
     	}
     	
@@ -487,9 +488,9 @@ public class FeatureRasterizer {
         checkReset(getRasterType(valueType));
         
         if (attributeName == null) {
-			// no attribute means use 1.0 for presence of feature, 0 otherwise
+			// no attribute means use 1.0 for presence of feature
 			value = 1.0f;
-			noDataValue = 0.0;
+//			noDataValue = 0.0;
         }
         
         // initialize raster to NoData value
@@ -821,7 +822,7 @@ public class FeatureRasterizer {
         	yc = bounds.height / height;
         }
         
-        // initialize raster to NoData value
+        // initialize raster to NoData value inside covered area, NaN outside
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
             	
@@ -830,13 +831,15 @@ public class FeatureRasterizer {
             		inRegion = denv.contains(bounds.getMinX() + xc*i + xc/2.0, bounds.getMinY() + yc*j + yc/2);
             	}
             		
-            	if (classification != null) {
-            		raster.setSample(i, j, 0, inRegion ? 0.0 : Double.NaN);
-            		bimage.setRGB(i, j,  floatBitsToInt(inRegion? 0.0f : Float.NaN));	
-            	} else {
-            		raster.setSample(i, j, 0, inRegion ? noDataValue : Double.NaN);
-            		bimage.setRGB(i, j, floatBitsToInt((float)(inRegion ? noDataValue : Double.NaN)));
-            	}
+            	float clear = inRegion ? noDataValue : Float.NaN;
+            	            	
+//            	if (classification != null) {
+//            		raster.setSample(i, j, 0, inRegion ? 0.0f : Float.NaN);
+//            		bimage.setRGB(i, j,  floatBitsToInt(inRegion? 0.0f : Float.NaN));	
+//            	} else {
+            		raster.setSample(i, j, 0, clear);
+            		bimage.setRGB(i, j, floatBitsToInt(clear));
+//            	}
             }
         }
     }
@@ -864,11 +867,11 @@ public class FeatureRasterizer {
         return cellsize;
     }
 
-    public double getNoDataValue() {
+    public float getNoDataValue() {
         return noDataValue;
     }
 
-    public void setNoDataValue(double noData) {
+    public void setNoDataValue(float noData) {
         if (noData != noDataValue) {
             resetRaster = true;
         }
@@ -913,7 +916,7 @@ public class FeatureRasterizer {
     }
 
     public String toString() {
-        return "FEATURE RASTERIZER: WIDTH="+width+" , HEIGHT="+height+" , NODATA="+noDataValue;
+        return "FEATURE RASTERIZER: WIDTH="+width+" , HEIGHT="+height+" , NODATA=" + noDataValue;
     }
 
 	public void swapAxes(boolean b) {

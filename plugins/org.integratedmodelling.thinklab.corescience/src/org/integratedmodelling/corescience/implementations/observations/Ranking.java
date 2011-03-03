@@ -204,10 +204,13 @@ public class Ranking extends Observation implements MediatingObservation {
 			else
 				ret = isConstant ? value : getNextValue(registers);
 			
+			if (ret == null ||
+				(ret instanceof Double && ((Double)ret).isNaN()) ||
+				(ret instanceof Float && ((Float)ret).isNaN()))
+				return ret;
+			
 			if (isBinary && ret != null && ret instanceof Number) {
-				ret = (((Number)ret).doubleValue() == 0.0 || 
-						(ret instanceof Double && ((Double)ret).isNaN()) ||
-						(ret instanceof Float && ((Float)ret).isNaN())) ? 0.0 : 1.0;
+				ret = (((Number)ret).doubleValue() == 0.0) ? 0.0 : 1.0;
 			}
 			
 			return ret;

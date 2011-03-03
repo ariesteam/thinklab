@@ -49,6 +49,9 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 
 	ContextMapper[] contextMappers = null;
 	int[] idxMap = null; 
+
+	// for debugging
+	IObservation[] cdesc = null;
 	
 	IConcept stateType = null;
 //	private IObservationContext ourContext;
@@ -64,7 +67,7 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 		public Object getValue(int idx, Object[] registers) {
 
 			Object ret = null;
-			
+
 			/*
 			 * scan the dependencies in priority order until one of them returns a non-null
 			 * value that satisfies its conditionals. A glorified, high-level logical expression
@@ -133,6 +136,11 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 			
 			// remember where in the registers we'll find the state in order of priority
 			idxMap[((Observation)observation).contingencyOrder] = register;
+			
+			// debug info - track the actual dependencies
+			if (cdesc == null)
+				cdesc = new IObservation[idxMap.length];
+			cdesc[((Observation)observation).contingencyOrder] = observation;
 			
 		}
 

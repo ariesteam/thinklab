@@ -260,14 +260,12 @@ public class ModelResult implements IQueryResult  {
 				
 				GroupingQueryResult gc = ((GroupingQueryResult)_mediated);
 				IConcept c = _model.getObservableClass();
-				med = 
-					ObservationFactory.createStatefulContingencyMerger(Polylist.list(c));
+				med = ObservationFactory.createStatefulContingencyMerger(Polylist.list(c));
 
 				for (int i = 0; i < gc.getResultMultiplicity(ofs[0]); i++) {
-					med = 
-						ObservationFactory.addDependency(
-							med, 
-							gc.getResultAsList(ofs[0], i, null));
+					Polylist dl = gc.getResultAsList(ofs[0], i, null);
+					dl = ObservationFactory.addReflectedField(dl, "contingencyOrder", new Integer(i));
+					med = ObservationFactory.addDependency(med, dl);
 				}
 				
 			} else {

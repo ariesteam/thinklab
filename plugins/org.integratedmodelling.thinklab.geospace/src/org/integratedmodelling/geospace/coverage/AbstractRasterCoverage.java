@@ -130,6 +130,8 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 		if (classMappings == null) {
 			
 		   Double r = itera.getSampleDouble(xy[0], xy[1], 0);
+		   if (Double.isNaN(r))
+			   return r;
 		   if (this.noData != null) {
 			   for (double nd : noData) 
 				   if (Double.compare(r, nd) == 0)
