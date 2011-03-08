@@ -45,6 +45,7 @@ test  - runs some tests
 	<target name="-build-plugins">
 		<mkdir dir="${build.home}/plugins" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.core" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.mca" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.opal" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.searchengine" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.agriculture" target="${target}" />
