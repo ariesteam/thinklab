@@ -4,6 +4,7 @@
 
 	<requires>
 		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
 	</requires>	
 
 	<runtime>

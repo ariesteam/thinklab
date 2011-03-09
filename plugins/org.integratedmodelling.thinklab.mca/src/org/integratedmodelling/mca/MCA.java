@@ -9,8 +9,6 @@ import org.integratedmodelling.mca.evamix.Evamix;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 
-import com.hp.hpl.jena.assembler.Mode;
-
 /**
  * Driver class to run a whole MCA analysis from definition to results. It makes using 
  * Evamix and PairwiseComparator very simple, but it is not required to use it if you
