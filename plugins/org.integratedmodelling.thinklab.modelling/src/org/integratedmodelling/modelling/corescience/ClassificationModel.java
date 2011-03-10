@@ -217,7 +217,10 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 
 		GeneralClassifier cl = getClassifier(classifier);
 		classifiers.add(cl);
-		concepts.add(ModelFactory.annotateConcept(namespace, concept.toString()));
+		if (concept != null)
+			concepts.add(ModelFactory.annotateConcept(namespace, concept.toString()));
+		else
+			concepts.add(null);
 	}
 
 	@Override

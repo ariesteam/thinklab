@@ -1103,8 +1103,9 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		if (ii.hasNext()) {		
 			
 		  ret = ii.next();
-		  while (ii.hasNext())
-		    {
+		  
+		  if (ret != null)
+			while (ii.hasNext()) {
 		      ret = ret.getLeastGeneralCommonConcept(ii.next());
 		      if (ret == null)
 		    	  break;

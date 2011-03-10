@@ -373,6 +373,8 @@ public class Concept extends Knowledge implements IConcept {
 	public IConcept getLeastGeneralCommonConcept(IConcept otherConcept) {
 		// should we use the class tree?
 		IConcept ret = null;
+		if (otherConcept == null)
+			return this;
 		if (is(otherConcept))
 			ret = otherConcept;
 		else if (otherConcept.is(this))

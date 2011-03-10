@@ -67,6 +67,7 @@ public class ModeledClassification
 		@Override
 		public Object getValue(int idx, Object[] registers) {
 			Object o = getDataSource().getValue(index++, registers);
+
 			for (Pair<GeneralClassifier, IConcept> p : classifiers) {
 				if (p.getFirst().classify(o))
 					return p.getSecond();
@@ -117,7 +118,7 @@ public class ModeledClassification
 			
 			if (o == null && !hasNilClassifier)
 				return null;
-			
+
 			for (Pair<GeneralClassifier, IConcept> p : classifiers) {
 				if (p.getFirst().classify(o))
 					return p.getSecond();
