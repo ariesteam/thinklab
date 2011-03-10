@@ -30,6 +30,9 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 
 	protected GridCoverage2D coverage = null;
 	protected CoordinateReferenceSystem crs = null;
+	// this one is only non-null if the layer was matched to a different extent; in that case we 
+	// keep the original data bbox here so we can check if data are outside its bounds. 
+	protected BoundingBox originalBoundingBox = null;
 	protected BoundingBox boundingBox = null;
 	protected GridGeometry2D gridGeometry = null;
 	protected GridSampleDimension dimension = null;
@@ -79,6 +82,29 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	}
 
 	/**
+	 * Check coverage of point within the ORIGINAL data source. Only meaningful for WCS coverages at the moment.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public boolean isCovered(int x, int y) {
+		
+		if (this.originalBoundingBox == null)
+			return true;
+		
+		double xx =
+			boundingBox.getMinX() + 
+			(xCellSize * x) +
+			(xCellSize/2.0);
+		double yy = 
+			boundingBox.getMinY() + 
+			(yCellSize * y) +
+			(yCellSize/2.0);
+				
+		return originalBoundingBox.contains(xx,yy);
+	}
+	
+	/**
 	 * Return the total number of cells in the coverage, including nodata ones.
 	 * @return
 	 */
@@ -126,6 +152,13 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	public Object getSubdivisionValue(int subdivisionOrder, ArealExtent extent) throws ThinklabValidationException {
 		
 		int[] xy = ((GridExtent)extent).getXYCoordinates(subdivisionOrder);
+
+		/**
+		 * force to NaN if outside of source data coverage. Geoserver does this wrong, so we need to take
+		 * over.
+		 */
+		if (!isCovered(xy[0],xy[1]))
+			return Double.NaN;
 		
 		if (classMappings == null) {
 			

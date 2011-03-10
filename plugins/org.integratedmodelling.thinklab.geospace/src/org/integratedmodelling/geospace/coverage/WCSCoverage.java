@@ -351,6 +351,12 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			GeoTiffReader reader = new GeoTiffReader(getCov, 
 					Geospace.get().getGeotoolsHints());	
 			this.coverage = (GridCoverage2D)reader.read(null);	
+			/*
+			 * if the bounding box was read from a wcs coverage, keep it in the 
+			 * originalBoundingBox field so that we can check coverage inside thinklab
+			 */
+			if (this.originalBoundingBox == null)
+				this.originalBoundingBox = this.boundingBox;
 			
 		} catch (IOException e) {
 			throw new ThinklabIOException(layerName + ": " + e.getMessage() + ": url = " + savUrl);
@@ -366,7 +372,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 	private void setExtent(GridExtent e) {
 
 		  this.xCellSize = e.getEWResolution();
-		  this.xCellSize = e.getNSResolution();
+		  this.yCellSize = e.getNSResolution();
 			
 		  this.boundingBox = e.getNormalizedEnvelope();
 		  
