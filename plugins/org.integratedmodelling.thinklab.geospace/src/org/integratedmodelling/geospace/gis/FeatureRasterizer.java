@@ -20,9 +20,11 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
+import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.utils.NameGenerator;
 import org.opengis.feature.simple.SimpleFeature;
@@ -50,24 +52,6 @@ import com.vividsolutions.jts.geom.Polygon;
  * @created March 20, 2008
  */
 public class FeatureRasterizer {
-
-	public class FeatureRasterizerException extends Exception {
-		   
-		private static final long serialVersionUID = 3481936169966009615L;
-
-		/**
-	     * Constructor with message argument.
-	     *
-	     * @param message Reason for the exception being thrown
-	     */
-	    public FeatureRasterizerException(String message) {
-	        super(message);
-	    }
-
-		public FeatureRasterizerException(Throwable e) {
-			super(e);
-		}	    
-	 }
 
     private int height;
     private int width;
@@ -112,6 +96,9 @@ public class FeatureRasterizer {
 	 */
 	private HashMap<String, Integer> classification = null;
 	private String valueDefault;
+	
+	private Geometry hullShape = null;
+	private GridExtent extent;
 	
     /**
      *Constructor for the FeatureRasterizer object
@@ -213,13 +200,14 @@ public class FeatureRasterizer {
      * @param attributeDescriptor
      */
     public FeatureRasterizer(int yCells, int xCells, float noData,
-			AttributeDescriptor attributeDescriptor) {
+			AttributeDescriptor attributeDescriptor, GridExtent extent) {
 		this(yCells, xCells, noData);
 		this.attributeDescriptor = attributeDescriptor;
-		
+		this.extent = extent;
 	}
 
-	public GridCoverage2D rasterize(String name, FeatureCollection<SimpleFeatureType, SimpleFeature> fc, String attributeName, IConcept valueType, ReferencedEnvelope env) throws FeatureRasterizerException {
+	public GridCoverage2D rasterize(String name, FeatureCollection<SimpleFeatureType, SimpleFeature> fc, String attributeName, IConcept valueType, ReferencedEnvelope env) 
+		throws ThinklabException {
     	
     	if (raster == null) {
     	
@@ -302,7 +290,7 @@ public class FeatureRasterizer {
      * @return
      * @throws FeatureRasterizerException
      */
-	public GridCoverage2D rasterize(ShapeValue shape, GridExtent grid, int value) throws FeatureRasterizerException {
+	public GridCoverage2D rasterize(ShapeValue shape, GridExtent grid, int value) throws ThinklabException {
     	
     	if (raster == null) {
     	
@@ -349,7 +337,7 @@ public class FeatureRasterizer {
 	
 	public GridCoverage2D rasterize(String name, FeatureIterator<SimpleFeature> fc, String attributeName, IConcept valueType, 
 			String valueDefault, ReferencedEnvelope env, ReferencedEnvelope normEnv,
-			ReferencedEnvelope dataEnvelope) throws FeatureRasterizerException {
+			ReferencedEnvelope dataEnvelope) throws ThinklabException {
     	
     	if (raster == null) {
     	
@@ -364,7 +352,7 @@ public class FeatureRasterizer {
 			setWritableRaster(raster);
     	} 
     	if (env == null) {
-    		throw new FeatureRasterizerException("rasterizer: envelope must be passed");
+    		throw new ThinklabValidationException("rasterizer: envelope must be passed");
     	} 
     	
     	/*
@@ -401,7 +389,7 @@ public class FeatureRasterizer {
      * @exception  FeatureRasterizerException  An error when rasterizing the data
      */
     public void rasterize(FeatureCollection<SimpleFeatureType, SimpleFeature> fc, String attributeName)
-    throws FeatureRasterizerException {
+    throws ThinklabException {
 
     	double edgeBuffer = 0.001;
         double x = fc.getBounds().getMinX() - edgeBuffer;
@@ -422,7 +410,7 @@ public class FeatureRasterizer {
      * @exception  FeatureRasterizerException  An error when rasterizing the data
      */
     public void rasterize(FeatureCollection<SimpleFeatureType, SimpleFeature> fc, java.awt.geom.Rectangle2D.Double bounds, String attributeName)
-    	throws FeatureRasterizerException {
+    	throws ThinklabException {
 
         this.attributeName = attributeName;
         checkReset(DataBuffer.TYPE_FLOAT);
@@ -452,7 +440,7 @@ public class FeatureRasterizer {
      */
     public void rasterize(FeatureIterator<SimpleFeature> fc, java.awt.geom.Rectangle2D.Double bounds, 
     		String attributeName, IConcept valueType, String valueDefault, ReferencedEnvelope denv)
-    	throws FeatureRasterizerException {
+    	throws ThinklabException {
     	
         this.attributeName = attributeName;
         this.valueDefault = valueDefault;
@@ -613,6 +601,11 @@ public class FeatureRasterizer {
             else {
                 drawGeometry(geometry, false);
             }
+            
+            if (hullShape == null)
+            	hullShape = geometry.convexHull();
+            else
+            	hullShape = hullShape.union(geometry.convexHull());
         }
     }
 
@@ -629,11 +622,23 @@ public class FeatureRasterizer {
 
 	/**
      * this copies values from BufferedImage RGB to WritableRaster of floats or integers.
+	 * @throws ThinklabException 
      */
-    public void close() {
+    public void close() throws ThinklabException {
+    	
+    	IGridMask mask = null;
+    	if (extent != null && hullShape != null) {
+    		mask = ThinklabRasterizer.createMask(
+    				new ShapeValue(hullShape,extent.getCRS()), extent);
+    	}
+    	
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-        		float fval = Float.intBitsToFloat(bimage.getRGB(i, j));
+            	
+        		float fval = Float.NaN;
+        		if (mask == null || mask.isActive(i, j)) {
+        			fval = Float.intBitsToFloat(bimage.getRGB(i, j));
+        		}
         		raster.setSample(i, j, 0, fval);
             }
         }
@@ -795,6 +800,12 @@ public class FeatureRasterizer {
             	bimage.setRGB(i, j, floatBitsToInt(clear));
             }
         }
+        
+        /*
+         * reset collection of coordinates or geometry to compute convex hull for
+         * activation
+         */
+        this.hullShape  = null;
     }
 
     /**

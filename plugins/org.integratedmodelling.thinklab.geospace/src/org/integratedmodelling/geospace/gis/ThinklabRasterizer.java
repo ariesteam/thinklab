@@ -13,9 +13,7 @@ import org.geotools.referencing.CRS;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
-import org.integratedmodelling.geospace.exceptions.ThinklabRasterizationException;
 import org.integratedmodelling.geospace.extents.GridExtent;
-import org.integratedmodelling.geospace.gis.FeatureRasterizer.FeatureRasterizerException;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -51,7 +49,7 @@ public class ThinklabRasterizer {
 		FeatureRasterizer rasterizer = 
 			new FeatureRasterizer(
 					extent.getYCells(), extent.getXCells(), noData, 
-					vCoverage.getAttributeDescriptor(valueId));
+					vCoverage.getAttributeDescriptor(valueId), extent);
 		
 		FeatureIterator<SimpleFeature> iterator = null;
 		try {
@@ -103,8 +101,6 @@ public class ThinklabRasterizer {
 					extent.getNormalizedEnvelope(),
 					dataEnvelope);
 			
-		} catch (FeatureRasterizerException e) {
-			throw new ThinklabRasterizationException(e);
 		} finally {
 			if (iterator != null)
 				iterator.close();
@@ -123,19 +119,14 @@ public class ThinklabRasterizer {
 		return ret;
 	}
 	
-	private static IGridMask rasterizeShape(ShapeValue shape, GridExtent grid, int value) throws ThinklabRasterizationException {
+	private static IGridMask rasterizeShape(ShapeValue shape, GridExtent grid, int value) throws ThinklabException {
 		
 		RasterActivationLayer ret = (RasterActivationLayer) createMask(grid);
 		GridCoverage2D coverage = null;
 		FeatureRasterizer rasterizer = 
-			new FeatureRasterizer(grid.getYCells(), grid.getXCells(), 0.0f, null);
+			new FeatureRasterizer(grid.getYCells(), grid.getXCells(), 0.0f, null, null);
 		
-		try {						
-			coverage = rasterizer.rasterize(shape, grid, value);
-			
-		} catch (FeatureRasterizerException e) {
-			throw new ThinklabRasterizationException(e);
-		} 
+		coverage = rasterizer.rasterize(shape, grid, value);
 		
 		/*
 		 * turn coverage into mask

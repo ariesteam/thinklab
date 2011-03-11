@@ -7,10 +7,12 @@ import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.modelling.ModellingPlugin;
+import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.modelling.storage.NetCDFArchive;
+import org.integratedmodelling.modelling.visualization.FileVisualization;
 import org.integratedmodelling.modelling.visualization.ObservationListing;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -102,6 +104,11 @@ public class RankCommand implements ICommandHandler {
 						.info(
 							"result of " + concept + " model written to "
 										+ outfile);
+			}
+			
+			if (command.hasOption("visualize")) {
+				IVisualization visualization = new FileVisualization(result);
+				visualization.visualize();
 			}
 			
 			if (command.hasOption("dump")) {

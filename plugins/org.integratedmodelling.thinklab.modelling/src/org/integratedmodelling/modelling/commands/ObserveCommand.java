@@ -94,7 +94,9 @@ public class ObserveCommand implements ICommandHandler {
 
 		for (int i = 0; i < r.getTotalResultCount(); i++) {
 			Polylist o = r.getResultAsList(i, null);
-			session.print(i + ": " + o);
+			session.print(" --- Observation " + i + " ----------------\n");
+			session.print(Polylist.prettyPrint(o));
+			session.print("\n");
 		}
 			
 		return null;
