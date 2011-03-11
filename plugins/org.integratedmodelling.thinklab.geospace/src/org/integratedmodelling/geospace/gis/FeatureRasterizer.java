@@ -602,10 +602,10 @@ public class FeatureRasterizer {
                 drawGeometry(geometry, false);
             }
             
-            if (hullShape == null)
-            	hullShape = geometry.convexHull();
-            else
-            	hullShape = hullShape.union(geometry.convexHull());
+//            if (hullShape == null)
+//            	hullShape = geometry.convexHull();
+//            else
+//            	hullShape = hullShape.union(geometry.convexHull());
         }
     }
 

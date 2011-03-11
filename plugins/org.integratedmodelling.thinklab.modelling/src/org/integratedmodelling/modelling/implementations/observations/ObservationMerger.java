@@ -2,12 +2,12 @@ package org.integratedmodelling.modelling.implementations.observations;
 
 import java.util.ArrayList;
 
-import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.context.ContextMapper;
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.MemDoubleContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.datasources.MemObjectContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IMergingObservation;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
@@ -19,12 +19,14 @@ import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.corescience.storage.SwitchLayer;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.Triple;
 
 import clojure.lang.IFn;
@@ -44,7 +46,7 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 	// reflected 
 	public SwitchLayer<IState> switchLayer = null;
 	public ArrayList<Topology> contextExt = null;
-	public IObservation        contextObs = null;
+	public IContext		       contextState = null;
 	public ArrayList<IFn>      conditionals = null;
 
 	ContextMapper[] contextMappers = null;
@@ -172,14 +174,18 @@ public class ObservationMerger extends Observation implements IndirectObservatio
 		for (String key : metadata.keySet())
 			ret.getMetadata().put(key, metadata.get(key));
 		
-		if (contextObs != null) {
+		if (contextState != null) {
 
 			// get all states of context and prepare for mediation at the corresponding
 			// state
-			for (IState s : ObservationFactory.getStates(contextObs)) {
+			for (IState s : contextState.getStates()) {
 				
 				IModel mod = (IModel) s.getMetadata().get(Metadata.DEFINING_MODEL);
-				String label = mod == null ? s.getObservableClass().getLocalName() : mod.getName();
+				String label = 
+					mod == null ? 
+						CamelCase.toLowerCase(s.getObservableClass().getLocalName(), '-') : 
+						((DefaultAbstractModel)mod).getLocalFormalName();
+						
 				ContextMapper cmap = new ContextMapper(s, context);
 				
 				pmap.add(new Triple<Keyword,IState,ContextMapper>(

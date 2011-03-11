@@ -239,6 +239,8 @@ public class ModelResult implements IQueryResult  {
 					if (cdata.size() > 0) {
 						ret = ObservationFactory.addReflectedField(ret, "contextStates", cdata);
 					}
+				} else {
+					ret = ObservationFactory.addReflectedField(ret, "contextState", cContext);
 				}
 			}
 					
