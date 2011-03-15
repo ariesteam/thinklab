@@ -35,6 +35,7 @@ import org.opengis.referencing.cs.AxisDirection;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -361,7 +362,7 @@ public class FeatureRasterizer {
     	if (env.getCoordinateReferenceSystem().getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH)) {
     		// ZORK swapAxis = true;
     	}
-    	
+    	    	
     	/*
     	 * TODO check if we need to use a buffer like in Steve's code above
     	 */
@@ -456,7 +457,7 @@ public class FeatureRasterizer {
         // initialize raster to NoData value
         clearRaster(bounds, denv);
         setBounds(bounds);
-
+        
         SimpleFeature feature; int n = 0;
         while (fc.hasNext()) {       
         	try {
@@ -601,11 +602,6 @@ public class FeatureRasterizer {
             else {
                 drawGeometry(geometry, false);
             }
-            
-//            if (hullShape == null)
-//            	hullShape = geometry.convexHull();
-//            else
-//            	hullShape = hullShape.union(geometry.convexHull());
         }
     }
 
@@ -628,11 +624,16 @@ public class FeatureRasterizer {
     	
     	IGridMask mask = null;
     	if (extent != null && hullShape != null) {
+    		
+    		System.out.println("HULLFUCK " + hullShape);
+    		
     		mask = ThinklabRasterizer.createMask(
     				new ShapeValue(hullShape,extent.getCRS()), extent);
+    		
+        	System.out.println("TOTAL ACTIVE CELLS: " + mask.totalActiveCells());
     	}
-    	
-        for (int i = 0; i < width; i++) {
+
+    	for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
             	
         		float fval = Float.NaN;
@@ -646,6 +647,10 @@ public class FeatureRasterizer {
 
     private void drawGeometry(Geometry geometry, boolean hole) {
 
+    	if (!hole) {
+ //       	collectConvexHull(geometry);
+    	}
+    	
         Coordinate[] coords = geometry.getCoordinates();
 
         int rgbVal = floatBitsToInt(hole ? Float.NaN : value);
@@ -694,7 +699,22 @@ public class FeatureRasterizer {
         }
     }
 
-    /**
+    private void collectConvexHull(Geometry geometry) {
+    	
+    	if (geometry instanceof GeometryCollection) {
+    		for (int i = 0; i < ((GeometryCollection)geometry).getNumGeometries(); i++)
+    			collectConvexHull(((GeometryCollection)geometry).getGeometryN(i));    		
+    	} else {
+    		if (hullShape == null)
+    			hullShape = geometry.convexHull().getBoundary();
+    		else
+    			hullShape = hullShape.union(geometry.convexHull().getBoundary()).getBoundary();
+    	}
+    	if (hullShape.isEmpty())
+    		hullShape = null;
+	}
+
+	/**
      *  Gets the emptyGrid attribute of the FeatureRasterizer object
      *
      * @return    The emptyGrid value

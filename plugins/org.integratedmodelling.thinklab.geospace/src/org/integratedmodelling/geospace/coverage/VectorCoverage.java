@@ -292,6 +292,7 @@ public class VectorCoverage implements ICoverage {
 				} catch (IOException e) {
 					throw new ThinklabIOException(e);
 				}
+				
 				ret = new DelegateFeatureIterator<SimpleFeature>(feat, feat.iterator());
 			}
 
