@@ -48,6 +48,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 
 public abstract class ArealExtent implements IExtent {
@@ -143,6 +144,10 @@ public abstract class ArealExtent implements IExtent {
 		return getBoundingBox().getCentroid();
 	}
 	
+	public boolean contains(Coordinate c) {
+		return envelope.contains(c);
+	}
+
 	/**
 	 * Get the envelope with the same axis order of the passed CRS.
 	 * @return

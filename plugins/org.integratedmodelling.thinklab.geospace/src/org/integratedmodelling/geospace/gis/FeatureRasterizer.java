@@ -7,6 +7,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 import javax.media.jai.RasterFactory;
@@ -32,6 +35,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.referencing.cs.AxisDirection;
 
+import com.vividsolutions.jts.algorithm.ConvexHull;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
@@ -625,12 +629,10 @@ public class FeatureRasterizer {
     	IGridMask mask = null;
     	if (extent != null && hullShape != null) {
     		
-    		System.out.println("HULLFUCK " + hullShape);
-    		
     		mask = ThinklabRasterizer.createMask(
-    				new ShapeValue(hullShape,extent.getCRS()), extent);
-    		
-        	System.out.println("TOTAL ACTIVE CELLS: " + mask.totalActiveCells());
+    				new ShapeValue(hullShape.buffer(
+    						Math.max(extent.getEWExtent(), extent.getNSExtent())), 
+    						extent.getCRS()), extent);
     	}
 
     	for (int i = 0; i < width; i++) {
@@ -647,12 +649,13 @@ public class FeatureRasterizer {
 
     private void drawGeometry(Geometry geometry, boolean hole) {
 
-    	if (!hole) {
- //       	collectConvexHull(geometry);
-    	}
     	
         Coordinate[] coords = geometry.getCoordinates();
 
+    	if (!hole) {
+    		 collectConvexHull(geometry);
+      	}
+        
         int rgbVal = floatBitsToInt(hole ? Float.NaN : value);
         graphics.setColor(new Color(rgbVal, true));        
         
@@ -701,17 +704,27 @@ public class FeatureRasterizer {
 
     private void collectConvexHull(Geometry geometry) {
     	
-    	if (geometry instanceof GeometryCollection) {
-    		for (int i = 0; i < ((GeometryCollection)geometry).getNumGeometries(); i++)
-    			collectConvexHull(((GeometryCollection)geometry).getGeometryN(i));    		
-    	} else {
-    		if (hullShape == null)
-    			hullShape = geometry.convexHull().getBoundary();
-    		else
-    			hullShape = hullShape.union(geometry.convexHull().getBoundary()).getBoundary();
-    	}
-    	if (hullShape.isEmpty())
-    		hullShape = null;
+//    	ConvexHull chull = null;
+//    	
+//    	/**
+//    	 * OK, this doesn't work either unless we clip the geometry to the
+//    	 * bbox every f'ing time.
+//    	 */
+//    	ArrayList<Coordinate> cac = new ArrayList<Coordinate>();
+//    	cac.ensureCapacity(
+//    			(hullShape == null ? 0 : hullShape.getNumPoints()) + 
+//    			geometry.getNumPoints());
+//    	if (hullShape != null) {
+//    		for (Coordinate c : hullShape.getCoordinates())
+//    			if (extent.contains(c))
+//    				cac.add(c);
+//    	}
+//    	for (Coordinate c : geometry.getCoordinates())
+//    		if (extent.contains(c))
+//    			cac.add(c);
+//    	
+//        chull = new ConvexHull(cac.toArray(new Coordinate[cac.size()]), geoFactory);
+//    	hullShape = chull.getConvexHull();
 	}
 
 	/**

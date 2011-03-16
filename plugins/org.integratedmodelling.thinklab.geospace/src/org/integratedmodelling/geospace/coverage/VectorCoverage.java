@@ -92,6 +92,20 @@ public class VectorCoverage implements ICoverage {
 	int attributeHandle = -1;
 	private FeatureSource<SimpleFeatureType, SimpleFeature> source;
 	private String valueDefault;
+	
+	/*
+	 * fill value between shapes when rasterizing
+	 * 
+	 * ACHTUNG
+	 * this one makes a big difference because if filled with 0s, the areas not
+	 * covered by shapes will be nodata, and whatever other layer set as 
+	 * lower priority will show through. Unfortunately none of the methods to
+	 * compute the convex hull of the shapes works acceptably unless each shape
+	 * is clipped to the region, so for now NaN is a compromise although 0.0 would 
+	 * be the right value.
+	 * 
+	 */
+	private float fillValue = Float.NaN;
 
 	
 	public VectorCoverage(URL url, String valueField, boolean validate) throws ThinklabException {
@@ -422,7 +436,7 @@ public class VectorCoverage implements ICoverage {
 	 * @throws ThinklabException
 	 */
 	public ICoverage convertToRaster(GridExtent arealExtent) throws ThinklabException {
-		return ThinklabRasterizer.rasterize(this, valueField, 0.0f, arealExtent, valueType, valueDefault);
+		return ThinklabRasterizer.rasterize(this, valueField, this.fillValue , arealExtent, valueType, valueDefault);
 	}
 
 	public void show() {
