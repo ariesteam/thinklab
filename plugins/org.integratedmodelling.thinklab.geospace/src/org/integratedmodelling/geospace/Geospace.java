@@ -195,13 +195,6 @@ public class Geospace extends ThinklabPlugin  {
 		
 		try {
 			
-//			Hints config = GeoTools.getDefaultHints();
-//			config.put( Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, true );
-//			config.put( Hints.FORCE_STANDARD_AXIS_DIRECTIONS, true );
-//
-//			Hints hints = new Hints( config );
-//			GeoTools.init( hints ); // Set FactoryUsingWKT as the default
-			
 			/*
 			 * TODO put all these class names into global strings
 			 */

@@ -97,12 +97,14 @@ public class VectorCoverage implements ICoverage {
 	 * fill value between shapes when rasterizing
 	 * 
 	 * ACHTUNG
-	 * this one makes a big difference because if filled with 0s, the areas not
+	 * this one makes a big difference because if not filled with 0s, the areas not
 	 * covered by shapes will be nodata, and whatever other layer set as 
-	 * lower priority will show through. Unfortunately none of the methods to
+	 * lower priority will show through. 0.0 would 
+	 * be the right value for the areas inside the features' convex hull. 
+	 * Unfortunately none of the methods to
 	 * compute the convex hull of the shapes works acceptably unless each shape
-	 * is clipped to the region, so for now NaN is a compromise although 0.0 would 
-	 * be the right value.
+	 * is clipped to the region, so for now NaN is the compromise that keeps
+	 * stacking layers working, with the possibility of error.
 	 * 
 	 */
 	private float fillValue = Float.NaN;

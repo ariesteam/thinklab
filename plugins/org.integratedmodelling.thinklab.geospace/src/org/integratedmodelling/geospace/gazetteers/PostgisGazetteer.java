@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.geotools.feature.FeatureIterator;
-import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.CoverageFactory;

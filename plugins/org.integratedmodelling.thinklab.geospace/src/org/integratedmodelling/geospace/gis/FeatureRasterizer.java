@@ -628,7 +628,7 @@ public class FeatureRasterizer {
     	
     	IGridMask mask = null;
     	if (extent != null && hullShape != null) {
-    		
+
     		mask = ThinklabRasterizer.createMask(
     				new ShapeValue(hullShape.buffer(
     						Math.max(extent.getEWExtent(), extent.getNSExtent())), 
