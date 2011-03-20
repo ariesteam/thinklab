@@ -26,7 +26,6 @@ import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.modelling.interfaces.IModel;
-import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -40,24 +39,14 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.thinklab.riskwiz.bn.BayesianFactory;
+import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianInference;
+import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianNetwork;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
-import smile.Network;
-
 /**
  * Support for the modelling/bayesian form. 
- * TODO this only works with SMILE/Genie. Must be riskwiz-compatible, too.
- * 
- * TODO
- * at init: create network and look for a node that has the same type as the
- * model observable. If found, find a model in the prototypes with the same
- * observable. If found, create an observation from it and use that to define
- * the state as it is now - set it in outputObservation/outputState. If there is
- * a model but no prototype, just set the output state to the obvious 
- * categorical distribution.
- * 
  * 
  * @author Ferdinando
  */
@@ -95,7 +84,7 @@ public class BayesianTransformer
 	private IModel outputModel = null;
 	
 	IConcept cSpace = null;
-	private Network bn = null;
+	private IBayesianNetwork bn = null;
 
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
@@ -110,53 +99,41 @@ public class BayesianTransformer
 			/*
 			 * read in the network
 			 */
-			this.bn = new Network();
+			this.bn = BayesianFactory.get().createBayesianNetwork(url.toString());
 			
-			try {
-				this.bn.readFile(
-						MiscUtilities.resolveUrlToFile(url.toString()).toString());
-				
-				if (alg != null) {
-
-					/*
-					 * TODO if a specific algorithm is requested, set it
-					 */
-					
-				}
-				
+			if (alg != null) {
 				/*
-				 * look for a node that has the same type as the
-				 * model observable. If found, find a model in the prototypes with the same
-				 * observable. If found, create an observation from it and use that to define
-				 * the state as it is now.
+				 * TODO if a specific algorithm is requested, set it
 				 */
-
-				/*
-				 * get an index of all node names from the network, to be used later
-				 */
-				HashSet<String> nodeIDs = new HashSet<String>();
-				for (String s : bn.getAllNodeIds()) {
-					String cid = getObservableClass().getConceptSpace() + ":" + s;
-					if (getObservableClass().toString().equals(s)) {
-						
-						outputObservable = KnowledgeManager.getConcept(s);
-						
-						for (IModel m : observed) {
-							if (((Model)m).getDefinition().getObservableClass().equals(outputObservable)) {
-								outputModel = m;
-							}
-						}
-						
-						break;
-					}
-				}
-				
-				
-			} catch (Exception e) {
-				throw new ThinklabValidationException(
-						"bayesian transformer: reading " + url +
-						": " + e.getMessage());
 			}
+				
+			/*
+			 * look for a node that has the same type as the
+			 * model observable. If found, find a model in the prototypes with the same
+			 * observable. If found, create an observation from it and use that to define
+			 * the state as it is now.
+			 */
+			
+			/*
+			 * get an index of all node names from the network, to be used later
+			 */
+//			HashSet<String> nodeIDs = new HashSet<String>();
+			for (String s : bn.getAllNodeIds()) {
+				String cid = getObservableClass().getConceptSpace() + ":" + s;
+				if (getObservableClass().toString().equals(cid)) {
+					
+					outputObservable = KnowledgeManager.getConcept(s);
+					
+					for (IModel m : observed) {
+						if (((Model)m).getDefinition().getObservableClass().equals(outputObservable)) {
+							outputModel = m;
+						}
+					}
+					
+					break;
+				}
+			}
+					
 			
 			/*
 			 * read the states we want
@@ -244,16 +221,18 @@ public class BayesianTransformer
 					"computed without producing useful results");
 		}
 		
+		IBayesianInference inference = bn.getInference();
+		
 		/*
 		 * prepare storage for each observable in all retained states, using the state ID for speed
 		 */
-		class PStorage { int field; IConcept observable; IState data; };
+		class PStorage { String field; IConcept observable; IState data; };
 		PStorage[] pstorage = new PStorage[outputStates.size()];
 		int i = 0;
 		for (IConcept var : outputStates) {
 			
 			PStorage st = new PStorage();
-			st.field = bn.getNode(var.getLocalName());
+			st.field = var.getLocalName();
 			st.observable = var;
 			
 			/*
@@ -307,8 +286,9 @@ public class BayesianTransformer
 		 * appropriately; use evidence state ID for speed.
 		 */
 		class Evidence { 
-			int field; IState data; String nodename;
-			Evidence(int f, IState d, String n) { field = f; data = d; nodename = n; }
+			// TODO check - at this point f == nodename unless nodeIDs does not contain it
+			String field; IState data; String nodename;
+			Evidence(String f, IState d, String n) { field = f; data = d; nodename = n; }
 
 			public IConcept getStateConcept(int state) throws ThinklabValidationException {
 			
@@ -341,7 +321,7 @@ public class BayesianTransformer
 			// allowing unneeded evidence to get there for other purposes, checking at setEvidence time.
 			IState cs = sourceCtx.getState(ec);
 			evdnc.add(new Evidence(
-						nodeIDs.contains(ec.getLocalName()) ? bn.getNode(ec.getLocalName()) : -1000, 
+						nodeIDs.contains(ec.getLocalName()) ? ec.getLocalName() : null, 
 						cs, ec.getLocalName()));
 		}		
 
@@ -350,8 +330,7 @@ public class BayesianTransformer
 		/*
 		 * you never know
 		 */
-		bn.clearAllEvidence();
-		
+		inference.clearEvidence();
 		
 		/*
 		 * run network, setting state. 
@@ -365,11 +344,7 @@ public class BayesianTransformer
 			
 			String ekey = debug ? "" : null;
 			
-			/*
-			 * TBC removing single node evidence when there is a null 
-			 * causes an exception (SMILE error -2), so we must do this OR understand why.
-			 */ 
-			bn.clearAllEvidence();
+			inference.clearEvidence();
 			
 			/*
 			 * submit evidence - we set the same values at each cycle, so we don't need to
@@ -385,8 +360,8 @@ public class BayesianTransformer
 					IConcept ev = evidence[e].getStateConcept(state);
 					try {
 						if (ev != null) {
-							if (evidence[e].field != -1000) {
-								bn.setEvidence(
+							if (evidence[e].field != null) {
+								inference.setEvidence(
 										evidence[e].field, 
 										ev.getLocalName());
 								if (ekey != null) {
@@ -422,7 +397,7 @@ public class BayesianTransformer
 			 * run inference unless crucial data not available
 			 */
 			if (!skip)
-				bn.updateBeliefs();
+				inference.run();
 						
 			if (ekey != null) {
 				if (keyset.containsKey(ekey)) {
@@ -442,11 +417,13 @@ public class BayesianTransformer
 				
 				pstorage[s].data.setValue(
 						state, 
-						skip ? null : bn.getNodeValue(pstorage[s].field));
+						skip ? null : inference.getMarginalValues(pstorage[s].field));
 				
 				if (ekey != null) {
 					rrs += 
-						pstorage[s].observable.getLocalName() + "=" + Arrays.toString(bn.getNodeValue(pstorage[s].field)) + 
+						pstorage[s].observable.getLocalName() + 
+						"=" + 
+						Arrays.toString(inference.getMarginalValues(pstorage[s].field)) + 
 						(s == (pstorage.length -1) ? "" : ", ");
 				}
 			}

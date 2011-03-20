@@ -8,6 +8,7 @@
 		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
 		<import plugin-id="org.integratedmodelling.thinklab.geospace"/>
 		<import plugin-id="org.integratedmodelling.thinklab.time"/>
+		<import plugin-id="org.integratedmodelling.thinklab.riskwiz"/>
 		<import plugin-id="org.integratedmodelling.thinklab.currency"/>
 		<import plugin-id="org.integratedmodelling.thinklab.dynamicmodelling"/>
 		<import plugin-id="org.integratedmodelling.thinklab.rules"/>

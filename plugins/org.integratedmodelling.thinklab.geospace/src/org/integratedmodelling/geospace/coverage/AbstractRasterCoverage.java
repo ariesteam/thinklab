@@ -13,6 +13,7 @@ import org.geotools.coverage.grid.GridCoverageFactory;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.geometry.DirectPosition2D;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
@@ -32,8 +33,8 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	protected CoordinateReferenceSystem crs = null;
 	// this one is only non-null if the layer was matched to a different extent; in that case we 
 	// keep the original data bbox here so we can check if data are outside its bounds. 
-	protected BoundingBox originalBoundingBox = null;
-	protected BoundingBox boundingBox = null;
+	protected ReferencedEnvelope originalBoundingBox = null;
+	protected ReferencedEnvelope boundingBox = null;
 	protected GridGeometry2D gridGeometry = null;
 	protected GridSampleDimension dimension = null;
 	protected double[] noData = null;

@@ -178,7 +178,7 @@ public class ModelCommand implements ICommandHandler {
 		
 		if (session.getOutputStream() != null) {
 			session.getOutputStream().println(
-					r.getTotalResultCount() + " possible model(s) found");
+					r.getTotalResultCount() + " possible observation(s) found");
 		}
 		
 		IValue ret = null;

@@ -170,7 +170,7 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/owlapi-rdfxmlrenderer.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/owlapi-util.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.clojure/lib/clojure.jar" sourcepath="/clojure"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/riskwiz.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/riskwiz.jar" sourcepath="/RiskWiz/src"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/Blas.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/jcommon-1.0.13.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/jfreechart-1.0.10.jar"/>

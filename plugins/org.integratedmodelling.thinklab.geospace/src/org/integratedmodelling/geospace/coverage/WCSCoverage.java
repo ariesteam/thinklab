@@ -45,6 +45,7 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
@@ -58,7 +59,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.xml.XMLDocument;
-import org.opengis.geometry.Envelope;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 import org.w3c.dom.Node;
 
 public class WCSCoverage extends AbstractRasterCoverage {
@@ -344,19 +346,32 @@ public class WCSCoverage extends AbstractRasterCoverage {
 
 			clsl = Geospace.get().swapClassloader();
 
-			
 			File f = File.createTempFile("geo", ".tiff");
 			CopyURL.copy(getCov, f);
 			getCov = f.toURI().toURL();
 			GeoTiffReader reader = new GeoTiffReader(getCov, 
 					Geospace.get().getGeotoolsHints());	
 			this.coverage = (GridCoverage2D)reader.read(null);	
+			
 			/*
 			 * if the bounding box was read from a wcs coverage, keep it in the 
 			 * originalBoundingBox field so that we can check coverage inside thinklab
 			 */
-			if (this.originalBoundingBox == null)
+			if (this.originalBoundingBox == null) {
 				this.originalBoundingBox = this.boundingBox;
+			}
+			
+			/*
+			 * we obviously want it in the same CRS as the new one.
+			 */
+			if (this.originalBoundingBox != null) {
+				try {
+					this.originalBoundingBox = 
+						this.originalBoundingBox.transform(arealExtent.getCRS(), true);
+				} catch (Exception e) {
+					throw new ThinklabValidationException(e);
+				}
+			}
 			
 		} catch (IOException e) {
 			throw new ThinklabIOException(layerName + ": " + e.getMessage() + ": url = " + savUrl);

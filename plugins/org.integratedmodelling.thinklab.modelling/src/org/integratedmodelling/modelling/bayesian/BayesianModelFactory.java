@@ -11,8 +11,8 @@ import java.util.Properties;
 
 import org.integratedmodelling.modelling.ModelMap;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.riskwiz.bn.BNNode;
 import org.integratedmodelling.riskwiz.bn.BeliefNetwork;
-import org.integratedmodelling.riskwiz.bn.BeliefNode;
 import org.integratedmodelling.riskwiz.io.genie.GenieReader;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -164,7 +164,7 @@ public class BayesianModelFactory {
 
 	private IModel createModel(BeliefNetwork bn, String nodename) {
 		
-		BeliefNode node = bn.getBeliefNode(nodename);
+		BNNode node = bn.getBeliefNode(nodename);
 		
 		String mname = CamelCase.toLowerCase(nodename, '-');
 		ArrayList<IModel> context = new ArrayList<IModel>();
@@ -184,7 +184,7 @@ public class BayesianModelFactory {
 		 *  a distribution and finite boundaries.
 		 */
 		
-		for (BeliefNode o : bn.getChildren(node)) {
+		for (BNNode o : bn.getChildren(node)) {
 			
 			/*
 			 * 
