@@ -85,7 +85,7 @@ public class RasterCoverage extends AbstractRasterCoverage {
 		xCellSize = coverage.getEnvelope2D().getWidth()/(double)getXCells();
 		yCellSize = coverage.getEnvelope2D().getHeight()/(double)getYCells();
 		
-		boundingBox = new ReferencedEnvelope(
+		this.boundingBox = new ReferencedEnvelope(
 				coverage.getEnvelope2D().getMinX(),
 				coverage.getEnvelope2D().getMaxX(),
 				coverage.getEnvelope2D().getMinY(),
@@ -164,7 +164,7 @@ public class RasterCoverage extends AbstractRasterCoverage {
 		xCellSize = coverage.getEnvelope2D().getWidth()/(double)getXCells();
 		yCellSize = coverage.getEnvelope2D().getHeight()/(double)getYCells();
 		
-		boundingBox = new ReferencedEnvelope(
+		this.boundingBox = new ReferencedEnvelope(
 				coverage.getEnvelope2D().getMinX(),
 				coverage.getEnvelope2D().getMaxX(),
 				coverage.getEnvelope2D().getMinY(),
@@ -187,7 +187,7 @@ public class RasterCoverage extends AbstractRasterCoverage {
 		xCellSize = coverage.getEnvelope2D().getWidth()/(double)getXCells();
 		yCellSize = coverage.getEnvelope2D().getHeight()/(double)getYCells();
 		
-		boundingBox = new ReferencedEnvelope(
+		this.boundingBox = new ReferencedEnvelope(
 				coverage.getEnvelope2D().getMinX(),
 				coverage.getEnvelope2D().getMaxX(),
 				coverage.getEnvelope2D().getMinY(),
