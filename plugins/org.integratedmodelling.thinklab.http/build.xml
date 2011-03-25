@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="org.integratedmodelling.thinkcap.core plug-in build file"
+         default="help"
+         basedir=".">
+	<jpf-info manifest="${basedir}/plugin.xml"
+	          propertyid="plugin.id"
+	          propertyversion="plugin.version" />
+	<property name="plugin.home"
+	          value="${basedir}/../../build/plugins/${plugin.id}" />
+
+	<path id="plugin.classpath">
+		<fileset dir="${basedir}/../../lib" includes="*.jar" />
+		<fileset dir="${basedir}/lib" includes="*.jar" />
+		<fileset dir="${plugin.home}/classes" includes="**/*.class" />
+	</path>
+
+	<jpf-path pathidref="plugin.classpath" pluginid="${plugin.id}">
+		<fileset dir="${plugin.home}/.."
+		         includes="*/plugin*.xml"
+		         excludes="${plugin.id}/**" />
+		<fileset dir="${env.THINKLAB_HOME}/plugins"
+		         includes="*/plugin*.xml"
+		         excludes="${plugin.id}/**" />
+		<fileset file="plugin.xml" />		
+	</jpf-path>
+
+	<target name="help">
+		<echo>
+			<![CDATA[
+${plugin.id} plug-in build file:
+Use top-level project build file to build application.
+]]>
+		</echo>
+	</target>
+
+	<target name="build-plugin">
+		<echo>Building plug-in ${plugin.id} to folder ${plugin.home}</echo>
+		<mkdir dir="${plugin.home}/classes" />
+		<javac destdir="${plugin.home}/classes"
+		       srcdir="${basedir}/src"
+			   classpathref="plugin.classpath"
+			   classpath="${thinklab.inst}/plugins/org.integratedmodelling.thinklab.core/classes;${plugin.home}/webapp/WEB-INF/classes"
+		       excludes=""
+		       target="1.5"
+		       debug="true"
+		       optimize="false">
+		</javac>
+		<copy todir="${plugin.home}/classes">
+			<fileset dir="${basedir}/src"
+			         includes="**/*"
+			         excludes="**/.*,**/*.java" />
+		</copy>
+	</target>
+
+
+	<target name="build-webapp" depends="build-plugin">
+		<echo>Building WEB-INF classes from ${plugin.id}/webapp-src to folder ${plugin.home}/webapp/WEB-INF/classes</echo>
+		<mkdir dir="${plugin.home}/webapp/WEB-INF/classes" />
+		<javac destdir="${plugin.home}/webapp/WEB-INF/classes"
+		       srcdir="${basedir}/webapp-src"
+			   classpathref="plugin.classpath"
+  			   classpath="${plugin.home}/classes;${thinklab.inst}/plugins/org.integratedmodelling.thinklab.core/classes"
+		       excludes=""
+		       target="1.5"
+		       debug="true"
+		       optimize="false">
+		</javac>
+		<copy todir="${plugin.home}/webapp/WEB-INF/classes">
+			<fileset dir="${basedir}/webapp-src"
+			         includes="**/*"
+			         excludes="**/.*,**/*.java" />
+		</copy>
+	</target>
+	
+	<target name="build" depends="build-webapp">
+		<copy todir="${plugin.home}" includeemptydirs="false">
+			<fileset dir="${basedir}"
+			         excludes="classes/,nbproject/,.*,*build*,src/" />
+		</copy>
+	</target>
+
+	<target name="docs">
+		<echo>Generating javadoc for plug-in ${plugin.id} to folder ${plugin.home}/docs/api</echo>
+		<javadoc destdir="${plugin.home}/docs/api"
+		         classpathref="plugin.classpath"
+		         sourcepath="${basedir}/src"
+		         packagenames="${plugin.id}.*">
+		</javadoc>
+	</target>
+</project>

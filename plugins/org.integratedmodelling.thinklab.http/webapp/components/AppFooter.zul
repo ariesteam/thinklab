@@ -1,0 +1,52 @@
+<!--
+	A component that creates a default footer for a Thinkcap application, showing author 
+	info, links and logos as in the application declaration.
+-->
+<window title="" border="none" width="100%">
+
+	<zscript><![CDATA[
+	import org.integratedmodelling.thinkcap.core.Thinkcap;
+	import org.integratedmodelling.thinkcap.core.ThinkcapSession;
+	import org.integratedmodelling.thinkcap.core.ThinkcapApplication;
+	import org.zkoss.zk.ui.Sessions;
+	
+	ThinkcapSession thisSession = Thinkcap.get().getThinkcapSession(Sessions.getCurrent());
+	ThinkcapApplication app = thisSession.getApplication();
+	
+	]]></zscript>
+	
+		<vbox width="100%" align="center">
+
+			<div align="center">
+				<separator bar="true" width="80%"/>
+			</div>
+	
+			<!-- copyright notice -->
+			<div align="center">
+				<hbox spacing="5px" align="center">
+					<label style="font-size: 10pt; color: #aaaaaa" value="${app.copyright}"/>
+					<hbox spacing="5px" if="${app.poweredByThinklab}">
+						<label value=":: Powered by" style="font-size: 10pt; color: #aaaaaa"/>
+						<toolbarbutton 
+							label="ThinkLab" 
+							href="http://www.integratedmodelling.org" 
+							style="font-size: 10pt; color: #000000"/>
+					</hbox>
+				</hbox>
+			</div>
+			<separator height="6px"/>
+
+			<!--  authors -->
+			<div align="center">
+				<hbox spacing="5px" align="center">
+					<toolbarbutton 
+						forEach="${app.authors}"
+  				    	image="${each.logo}" 
+			 			tooltip="${each.name}"
+			 			href="${each.url}"/>
+				</hbox>
+			</div>
+			
+			<separator height="6px"/>
+		</vbox>
+</window>

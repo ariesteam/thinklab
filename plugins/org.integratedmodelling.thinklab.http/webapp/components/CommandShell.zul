@@ -1,0 +1,89 @@
+<!--
+	Shell interpreter for Thinkcap.
+	@since Aug 27, 2007
+	@author fvilla
+	
+	@component thinkcapshell
+	
+-->
+<window border="none">
+
+  <zscript>
+	import org.integratedmodelling.thinkcap.core.Thinkcap;
+	import org.integratedmodelling.thinkcap.ThinkcapServlet;
+	import org.integratedmodelling.thinkcap.core.ThinkcapSession;
+	import org.zkoss.zk.ui.Component;
+	import org.zkoss.zk.ui.Sessions;
+	import org.zkoss.zk.ui.event.Events;
+	import org.zkoss.zk.ui.event.Event;
+	import org.zkoss.zul.Label;
+	import org.zkoss.zul.Window;
+	import org.integratedmodelling.thinklab.interfaces.IValue;
+	import org.integratedmodelling.thinklab.command.Command;
+	import org.integratedmodelling.thinklab.command.CommandParser;
+	import org.integratedmodelling.thinklab.interfaces.ICommandOutputReceptor;
+	import org.integratedmodelling.thinkcap.components.portal.ToggleComponent;
+
+	public class StringCommandOutputReceptor implements ICommandOutputReceptor {
+
+		public String output = "";
+		public void displayOutput(String output) {
+			this.output += output + "\n";
+		}
+	}
+	
+	ThinkcapSession thisSession = Thinkcap.get().getThinkcapSession(Sessions.getCurrent());
+
+	void execute(String cmd) {
+
+		IValue ret = null;
+	    ICommandOutputReceptor cout = new StringCommandOutputReceptor();
+		Command command = CommandParser.parse(cmd);
+
+		ret = ThinkCap.getThinkcap().submitCommand(command, cout, thisSession);
+	
+		/* append new component with command text, output, and result to result
+		   window. */
+		Window w = new Window();
+		w.setBorder("none");
+		w.setWidth("100%");
+		
+		Label l = new Label();
+		l.setMultiline(true);
+		l.setWidth("100%");
+		l.setValue(cout.output);
+		w.appendChild(l);
+		
+		if (ret != null) {
+		   Label res = new Label();
+		   res.setWidth("100%");
+		   res.setStyle("font-size: 9pt; color: red");
+		   res.setMultiline(true);
+		   res.setValue("-> " + ret.toString());
+		   w.appendChild(res);
+		}
+		
+		Component[] cc = new Component[1]; cc[0] = w;
+		
+		ToggleComponent tc = new ToggleComponent(cmd, cc);
+		tc.setWidth("100%");
+		
+		shell_output.appendChild(tc); 
+
+	}
+
+	
+  </zscript>
+ 
+   <vbox spacing="5px" width="100%">
+	 <window id="shell_output" border="normal" width="100%" height="220px" contentStyle="overflow:auto">
+	 </window>
+ 	 <textbox id="shell_input" width="100%">
+ 	 	<attribute name="onChange">
+ 	 		execute(self.getValue());
+ 	 		self.setValue("");
+ 	 	</attribute>
+ 	 </textbox>
+ 	</vbox>
+</window>
+  

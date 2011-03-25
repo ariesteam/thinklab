@@ -1,0 +1,123 @@
+<!--
+	Session authentication component.
+	@since Aug 27, 2007
+	@author fvilla
+	
+	@component authmenu
+	
+	If session contains an authenticated user, shows message "Logged in as xxx :: Log out";
+	otherwise, show "Not logged in :: Log in". Support both actions appropriately with a 
+	modal window and perform login as expected using whatever authentication manager is
+	installed. If no authorization manager is installed, the component will not be
+	visible.
+	
+	User login and logout for Thinklab sessions is handled transparently, so all is needed
+	is to put in the property without parameters, and the AuthorizationPlugin.USERID_PROPERTY
+	property in session properties will be set to a valid username once authorization is
+	successful. Also, AuthorizationPlugin.USER_PROPERTIES will be set to the user property
+	object if any. 
+	
+	In case further notification is necessary, this component sends the events onLogin and
+	onLogout. The event data contain the username after login or before logout.
+	
+	TODO implement optional, configurable registration component and link to unsuccessful
+	login.
+	
+-->
+<window id="authWindow">
+
+  <zscript>
+	import org.zkoss.zk.ui.Sessions;
+	import org.zkoss.zk.ui.event.Events;
+	import org.zkoss.zk.ui.event.Event;
+	import org.integratedmodelling.thinkcap.ThinkcapServlet;
+	import org.integratedmodelling.thinkcap.core.ThinkcapSession;
+	import org.integratedmodelling.authentication.AuthenticationPlugin;
+			
+	AuthenticationPlugin auth = AuthenticationPlugin.get();
+	boolean haveAuthentication = auth.haveAuthentication();
+	ThinkcapSession thisSession = Thinkcap.get().getThinkcapSession(Sessions.getCurrent());
+	String username = thisSession.getProperties().getProperty(auth.USERID_PROPERTY);
+	
+	void setupAuth() {
+		
+		if (username == null) {
+			authDesc.setValue("Not logged in");
+			loginButton.setVisible(true);
+			logoutButton.setVisible(false);
+		} else {
+			authDesc.setValue("Logged in as " + username);
+			loginButton.setVisible(false);
+			logoutButton.setVisible(true);
+		}
+	
+	}
+	
+	void doLogin () {
+	
+		loginError.setVisible(false);
+	
+		String usname = uname.getValue();
+		String uspass = upass.getValue();
+		boolean ok = auth.authenticateUser(usname, uspass, null);
+		
+		if (ok) {
+			thisSession.getProperties().setProperty(auth.USERID_PROPERTY, usname);	
+			//thisSession.getProperties().setProperty(auth.USER_PROPERTIES, auth.getUserProperties(usname));	
+			loginWindow.setVisible(false);
+			username = usname;
+			setupAuth();
+			Events.sendEvent(new Event("onLogin", authWindow, username));
+		} else {
+			loginError.setVisible(true);
+		}
+	}
+	
+	void doLogout() {
+		thisSession.getProperties().remove(auth.USERID_PROPERTY);
+		//thisSession.getProperties().remove(auth.USER_PROPERTIES);
+		String saveUser = username;	
+		username = null;
+		logoutWindow.setVisible(false);
+		setupAuth();
+		Events.sendEvent(new Event("onLogout", authWindow, saveUser));
+	}
+
+	
+  </zscript>
+  
+  <hbox if="${haveAuthentication}">
+  	<div id="authMenu" onCreate="setupAuth()">
+  	   <label id="authDesc"/>
+  	   :: 
+  	   <toolbarbutton id="loginButton"  label="Log in" onClick="loginWindow.doModal()" visible="false"/>
+  	   <toolbarbutton id="logoutButton" label="Log out" onClick="logoutWindow.doModal()" visible="false"/>
+	</div>
+  </hbox>
+  
+  <window id="loginWindow" border="normal" visible="false">
+  	<vbox>
+  		<separator />
+  		<hbox widths="70px,200px"><div align="right">Username: </div><textbox id="uname" constraint="no empty" width="180px"/></hbox>
+  		<hbox widths="70px,200px"><div align="right">Password: </div><textbox id="upass" type="password" width="180px"/></hbox>
+  		<div id="loginError" align="left" style="color: red" visible="false">Invalid login</div>
+  		<separator bar="true"/>
+		<div align="center"> 
+			<button label="Log in" onClick="doLogin()"/>
+			<button label="Cancel" onClick="loginWindow.setVisible(false)"/>
+		</div>
+	</vbox>	
+  </window>
+  
+  <window id="logoutWindow" border="normal" visible="false">
+	<vbox>
+	  	<div align="center">Click 'Log out' to confirm.</div>
+	  	<div align="center">
+			<button label="Log out" onClick="doLogout()"/>
+			<button label="Cancel" onClick="logoutWindow.setVisible(false)"/>
+		</div>
+ 	 </vbox>
+  </window>
+  
+</window>
+	

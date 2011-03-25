@@ -1,0 +1,30 @@
+<!-- A component that describes a concept, its properties and metadata -->
+<window border="none" width="100%">
+
+	<zscript>
+	
+	// instantiate concept from ID and retrieve all its required info into variables
+	
+	
+	</zscript>
+	
+	<vbox width="100%">
+	
+	<!-- header: image, concept label, short description if any -->
+
+	<!-- "menubar" of sorts, according to properties -->
+
+	<!-- description panel: long description if any, or message -->
+
+	<!-- location in ontology, (graphical) summary of restrictions -->
+
+	<!-- "attributes" (literal properties) -->
+	
+	<!-- "links" (object properties) -->
+
+	<!-- comment links -->
+	
+	</vbox>
+
+
+</window>

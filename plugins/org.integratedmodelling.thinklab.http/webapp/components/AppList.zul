@@ -1,0 +1,34 @@
+<!--
+	A component that lists all the Thinkcap applications registered and gives access to 	
+	each of them. 
+-->
+<window border="none">
+	<zscript>
+		import org.integratedmodelling.thinkcap.core.Thinkcap;
+		import org.integratedmodelling.thinkcap.core.ThinkcapApplication;
+		
+		Collection applications = Thinkcap.get().getApplications();		
+		boolean napps = applications.size() > 1;
+		
+	</zscript>
+	<vbox>
+		<groupbox if="${napps}">
+			<caption style="font-size: 11pt" label="Available Applications" />
+			<grid>
+				<rows>
+				<row forEach="${applications}">
+					<toolbarbutton
+						image="${each.logoURL}" 
+						href="${each.appUrl}"/>
+					<div style="font-size: 11pt; margin: 5px">${each.longDescription}</div>
+				</row>
+				</rows>
+			</grid>
+		</groupbox>
+		<div align="center" unless="${napps}">
+			Welcome to Thinkcap. No applications are installed. Please use the 
+			administration interface to locate and install plugins that implement
+			ThinkCap applications.
+		</div>
+	</vbox>
+</window>

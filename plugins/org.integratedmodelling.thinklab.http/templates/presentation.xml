@@ -1,0 +1,30 @@
+<presentation>
+	<title></title>
+	<description></description>
+	<style></style>
+	<!-- the concept of the main observation (the top-level model) -->
+	<concept></concept>
+	<page>
+		<id></id>
+		<!-- visible to user, for choices etc. -->
+		<name></name>
+		<concept></concept>
+		<title></title>
+		<description></description>
+		<runninghead></runninghead>
+		<group></group>
+		<type default="true"></type>
+		<type>tag</type>
+		<background>tag</background>
+		<!-- 
+			 Sequence number for presentation.
+			 
+			 Optional: if not present, the page is known to the view as a general one, 
+			 and it can end up in a menu or tabbed interface. The view also knows the
+			 order of declaration, so the first page declared may be the first presented
+		 -->
+		<sequence>n</sequence>
+		<!-- if present, class of component to visualize it -->
+		<view>...</view>
+	</page>
+</presentation>

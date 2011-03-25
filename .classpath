@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.corescience/classes" path="plugins/org.integratedmodelling.thinklab.corescience/src"/>
+	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.http/classes" path="plugins/org.integratedmodelling.thinklab.http/src"/>
+	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.http/webapp/WEB-INF/classes" path="plugins/org.integratedmodelling.thinklab.http/webapp-src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.agriculture/classes" path="plugins/org.integratedmodelling.thinklab.agriculture/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.idv/classes" path="plugins/org.integratedmodelling.thinklab.idv/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.modelling/classes" path="plugins/org.integratedmodelling.thinklab.modelling/src"/>
@@ -377,5 +379,32 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.core.runtime_3.6.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.osgi_3.6.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/sextante.jar" sourcepath="/Sextante"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/Filters.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/groovy.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/itext.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/jetty-6.1.3.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/jetty-util-6.1.3.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/jfreechart.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/js.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/jsp-api-2.0.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/jxl.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/servlet-api-2.5-6.1.3.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/slf4j-api-1.3.1.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/slf4j-simple-1.3.1.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/timelinez.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/timeplotz.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/urlrewrite-2.6.0.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zcommon.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zcommons-el.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zhtml.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zk.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zkdiagram.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zkex.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zkmax.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zkplus.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zkworkflow.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zml.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zul.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zweb.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

@@ -1,0 +1,19 @@
+<!--
+	Session authentication component - wraps authmenu to ensure that it can be used without 
+	an authentication plugin.
+	
+	@since Aug 27, 2007
+	@author fvilla
+	
+	@component authenticationmenu
+	
+	Simply a wrapper for authmenu that only uses it (and compiles it) if the Authentication
+	plug-in is installed.
+-->
+<window id="authWindow">
+  <zscript>
+  	import org.integratedmodelling.thinkcap.core.Thinkcap;
+  	boolean haveAuthentication = false; //(Thinkcap.get().getPluginManager().getPlugin("org.integratedmodelling.thinklab.authentication") != null);
+  </zscript>
+  <authmenu if="${haveAuthentication}"/>
+</window>

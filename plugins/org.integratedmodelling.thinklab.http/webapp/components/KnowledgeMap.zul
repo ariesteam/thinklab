@@ -1,0 +1,7 @@
+<!--
+	A component that creates a default header for a Thinkcap application, showing logo, title, basic links,
+	description if needed, and authorization information as configured in the application declaration.
+-->
+<window>
+	<flash src="BaseComponents/web/swf/visorFreeMind.swf" height="400" width="600"></flash>
+</window>
