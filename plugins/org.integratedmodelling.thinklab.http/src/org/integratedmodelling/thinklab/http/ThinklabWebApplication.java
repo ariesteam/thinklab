@@ -54,6 +54,7 @@ import org.integratedmodelling.utils.Pair;
 import org.java.plugin.Plugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
+import org.mortbay.jetty.Server;
 
 /**
  * Represents metadata and properties connected to a specific Thinkcap application.
@@ -103,6 +104,11 @@ public class ThinklabWebApplication {
 	
 	private boolean poweredByThinklab = false;
 	private boolean published = false;
+	
+	/*
+	 * the server that runs the app. The new paradigm is one server, one app, no cross-contaminations of apps.
+	 */
+	Server _server = null;
 	
 	// TEMPORARY files or directories to be skipped when copying the web contents. Should become
 	// a configured property.

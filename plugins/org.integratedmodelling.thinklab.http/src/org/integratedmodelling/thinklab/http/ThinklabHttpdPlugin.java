@@ -6,11 +6,13 @@ package org.integratedmodelling.thinklab.http;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.HashMap;
 
 import org.apache.commons.logging.Log;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
@@ -24,6 +26,11 @@ import org.mortbay.jetty.webapp.WebAppContext;
 public class ThinklabHttpdPlugin extends ThinklabPlugin {
 
 	private Server server = null;
+	
+	private HashMap<Integer, Server> servers = 
+		new HashMap<Integer, Server>();
+	
+	private int minPort = 8060, maxPort = 8079;
 	
 	public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.http";
 	
@@ -41,22 +48,36 @@ public class ThinklabHttpdPlugin extends ThinklabPlugin {
 	public Log logger() {
 		return log;
 	}
-	
 
-	public void stopServer() {
+	public void stopServer(int port) {
 
-		if (server != null)
+		if (servers.get(port) != null)
 			try {
-				log.info("stopping Jetty server");
-				server.stop();
+				log.info("stopping Jetty server on port " + port);
+				servers.get(port).stop();
 			} catch (Exception e) {
 				throw new ThinklabRuntimeException(e);
 			} finally {
-				server = null;
+				servers.remove(port);
 			}
 	}
 
 	public void startServer(String host, int port) throws ThinklabException {
+		
+		if (port < 0) {
+			for (int pp = minPort; pp <= maxPort; pp++) {
+				if (servers.get(pp) == null) {
+					port = pp;
+					break;
+				}
+			}
+		}
+		
+		if (port /* still */ < 0) {
+			throw new ThinklabResourceNotFoundException(
+					"no port available in range " + minPort + "-" + maxPort +
+					"; please use the -p switch");
+		}
 		
 		log.info("starting Jetty server on " + host + ":" + port);
 		
@@ -68,11 +89,11 @@ public class ThinklabHttpdPlugin extends ThinklabPlugin {
 		if (server != null)
 			throw new ThinklabException("thinkcap server is already active");
 		
-		server = new Server(); 
+		Server serv = new Server(); 
 		SelectChannelConnector connector = new SelectChannelConnector(); 
 		connector.setHost(host);
 		connector.setPort(port); 
-		server.setConnectors (new Connector[]{connector}); 
+		serv.setConnectors (new Connector[]{connector}); 
 		
 		WebAppContext wah = new WebAppContext(); 
 		wah.setContextPath("/"); 
@@ -83,15 +104,14 @@ public class ThinklabHttpdPlugin extends ThinklabPlugin {
 		try {
 			wacl = new WebAppClassLoader(cl, wah);
 			wah.setClassLoader(wacl); 
-			server.addHandler(wah); 
-			server.setStopAtShutdown(true);
-			server.start();
-//			server.join();
-			
+			serv.addHandler(wah); 
+			serv.setStopAtShutdown(true);
+			serv.start();		
 		} catch (Exception e) {
-			
 			throw new ThinklabInternalErrorException(e);
 		} 
+		
+		servers.put(port, serv);
 	}
 
 	@Override

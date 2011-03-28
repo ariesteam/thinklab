@@ -33,7 +33,7 @@ public class Http implements ICommandHandler {
 			throws ThinklabException {
 
 		String cmd = command.getArgumentAsString("cmd");
-		Integer port = 8182;
+		Integer port = -1;
 		
 		if (command.hasOption("port"))
 			port = Integer.parseInt(command.getOptionAsString("port"));
@@ -44,7 +44,10 @@ public class Http implements ICommandHandler {
 			
 		} else if (cmd.equals("stop")) {
 			
-			ThinklabHttpdPlugin.get().stopServer();
+			if (port == -1) {
+				port = 8060;
+			}
+			ThinklabHttpdPlugin.get().stopServer(port);
 			
 		}  else if (cmd.equals("status")) {
 		
@@ -52,13 +55,17 @@ public class Http implements ICommandHandler {
 			
 		}  else if (cmd.equals("restart")) {
 
+			if (port == -1) {
+				port = 8060;
+			}
+
 			ThinklabHttpdPlugin.get().startServer("localhost", port);
 			try {
 				Thread.sleep(1500);
 			} catch (InterruptedException e) {
 				// come on
 			}
-			ThinklabHttpdPlugin.get().stopServer();
+			ThinklabHttpdPlugin.get().stopServer(port);
 
 		} 
 		
