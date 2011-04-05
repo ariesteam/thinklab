@@ -5,6 +5,7 @@ package org.integratedmodelling.thinklab.http;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
 import java.net.URLDecoder;
 import java.util.HashMap;
 
@@ -15,6 +16,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.http.extensions.WebApplication;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.java.plugin.PluginLifecycleException;
 import org.mortbay.jetty.Connector;
@@ -24,6 +26,17 @@ import org.mortbay.jetty.webapp.WebAppClassLoader;
 import org.mortbay.jetty.webapp.WebAppContext;
 
 public class ThinklabHttpdPlugin extends ThinklabPlugin {
+
+	public class WebApplicationHandler implements AnnotatedClassHandler {
+
+		@Override
+		public void process(Annotation annotation, Class<?> cls)
+				throws ThinklabException {
+			// TODO Auto-generated method stub
+
+		}
+
+	}
 
 	private Server server = null;
 	
@@ -117,7 +130,6 @@ public class ThinklabHttpdPlugin extends ThinklabPlugin {
 	@Override
 	protected void load(KnowledgeManager km) throws ThinklabException {
 		
-		// TODO Auto-generated method stub
 		/*
 		 * we don't go very far without this, so do it anyway
 		 */
@@ -143,6 +155,13 @@ public class ThinklabHttpdPlugin extends ThinklabPlugin {
 		
 		ThinkWeb.get().setWebSpace(new File(lf + "/webapp"));
 
+		/*
+		 * set up things to register webapps through annotations
+		 */
+		registerAnnotatedClass(
+				ThinklabWebApplication.class, WebApplication.class, 
+				"webapps", new WebApplicationHandler());
+		
 	}
 
 	@Override

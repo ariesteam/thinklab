@@ -132,7 +132,7 @@ public class ThinklabWebApplication {
 		String logo;
 
 		public String getName() { return name; }
-		public String getUrl() { return url; }
+		public String getUrl()  { return url; }
 		public String getLogo() { return logo; }
 	}
 		
