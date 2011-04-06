@@ -307,6 +307,7 @@ public class StorylineFactory {
 		
 		for (File f : dir.listFiles()) {
 			if (f.toString().endsWith(".xml")) {
+				ModellingPlugin.get().logger().info("reading " + f + "...");
 				StorylineTemplate p = new StorylineTemplate();
 				p.read(f.toString());
 				p.setSourceFile(f);
