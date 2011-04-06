@@ -35,9 +35,7 @@ package org.integratedmodelling.thinklab.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
@@ -97,9 +95,9 @@ import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.Plugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
+import org.java.plugin.registry.Extension.Parameter;
 import org.java.plugin.registry.ExtensionPoint;
 import org.java.plugin.registry.Version;
-import org.java.plugin.registry.Extension.Parameter;
 
 
 /**
@@ -110,6 +108,27 @@ import org.java.plugin.registry.Extension.Parameter;
  */
 public abstract class ThinklabPlugin extends Plugin 
 {
+	
+	/**
+	 * register one of those using registerAnnotatedClass for each class
+	 * that extends the plugin through custom annotations.
+	 * 
+	 * @author ferdinando.villa
+	 */
+	protected interface AnnotatedClassHandler {
+		public void process(Annotation annotation, Class<?> cls) throws ThinklabException;
+	}
+	
+	class AnnotationExtension {
+		Class<?> objectClass;
+		Class<?> annotationClass;
+		String subpackage;
+		AnnotatedClassHandler handler;
+	}
+	
+	ArrayList<AnnotationExtension> extensions = 
+		new ArrayList<ThinklabPlugin.AnnotationExtension>();
+	
 	HashMap<String, URL> resources = new HashMap<String, URL>();
 	Properties properties = new Properties();
 	File propertySource = null;
@@ -250,6 +269,15 @@ public abstract class ThinklabPlugin extends Plugin
 		
 		for (IResourceLoader loader : resourceLoaders) {
 			loader.load(getThinklabPluginProperties(), getLoadDirectory());
+		}
+		
+		/*
+		 * load any extension defined through annotations
+		 */
+		for (AnnotationExtension ext : extensions) {
+			loadAnnotatedClass(
+					ext.subpackage, ext.objectClass, 
+					ext.annotationClass, ext.handler);
 		}
 	}
 
@@ -624,6 +652,39 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 		
 		return ret;
+	}
+
+	protected void loadAnnotatedClass(String subpackage, Class<?> objectClass, Class<?> annotationClass, AnnotatedClassHandler handler) throws ThinklabException {
+		
+		String ipack = this.getClass().getPackage().getName() + "." + subpackage;
+		
+		for (Class<?> cls : MiscUtilities.findSubclasses(objectClass, ipack, getClassLoader())) {	
+			
+			/*
+			 * lookup annotation, ensure we can use the class
+			 */
+			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+				continue;
+			
+			/*
+			 * find class with annotation and send back to plugin to process it
+			 */
+			for (Annotation annotation : cls.getAnnotations()) {
+				if (annotation.getClass().equals(annotationClass)) {
+					handler.process(annotation, cls);
+				}
+			}
+			
+		}
+	}
+	
+	protected void registerAnnotatedClass(Class<?> objectClass, Class<?> annotationClass, String subpackage, AnnotatedClassHandler handler) {
+		
+	}
+	
+	protected void processAnnotatedClass(Class<?> cls, Annotation annotation) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	protected void loadInstanceImplementationConstructors() throws ThinklabPluginException {
