@@ -50,6 +50,22 @@ public class Model extends DefaultAbstractModel {
 		this.id = NameGenerator.newName("mod");
 	}
 	
+	/*
+	 * wrap the passed model, which obviously should not be a Model
+	 */
+	public Model(DefaultAbstractModel model) {
+		
+		this(model.namespace);
+		
+		this.setLocalId(((DefaultAbstractModel)model).id);
+		this.observable = ((DefaultAbstractModel)model).observable;
+		this.name = ((DefaultAbstractModel)model).name;
+		this.observableSpecs = ((DefaultAbstractModel)model).observableSpecs;
+		this.models = new ArrayList<IModel>();
+		this.metadata = model.metadata;
+		this.models.add(model);
+	}
+
 	@Override
 	public ModelResult observeInternal(IKBox kbox, ISession session, IntelligentMap<IConformance> cp, IContext context, boolean acceptEmpty)  throws ThinklabException {
 	

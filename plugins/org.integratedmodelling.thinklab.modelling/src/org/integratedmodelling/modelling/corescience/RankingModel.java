@@ -1,10 +1,7 @@
 package org.integratedmodelling.modelling.corescience;
 
-import java.util.Collection;
-
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.model.DefaultAbstractModel;
@@ -166,7 +163,7 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 
 		IModel ret = null;
 
-		if (m instanceof RankingModel) {
+		if (/* m instanceof RankingModel*/ true) {
 			// FIXME mediate to substitute ranks and scale if necessary.
 			try {
 				ret = (IModel) ((DefaultAbstractModel) m).clone();

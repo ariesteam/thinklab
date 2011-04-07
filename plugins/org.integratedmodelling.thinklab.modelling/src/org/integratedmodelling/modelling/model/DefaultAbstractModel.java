@@ -249,13 +249,25 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * This is called for each model defined for us in a :context clause, after
 	 * the dependent has been completely specified.
 	 * 
+	 * All dependencies should be Models; if not, they're automatically wrapped into a
+	 * Model for consistency (so that the scenarios can work properly).
+	 * 
 	 * @param model
 	 */
 	public void addDependentModel(IModel model) {
 		// null-tolerant so we can deal with the silly "functional comments" in
 		// clojure
 		if (model != null)
-			dependents.add(model);
+			dependents.add(wrapModel(model));
+	}
+
+	private IModel wrapModel(IModel model) {
+
+		if (model instanceof Model)
+			return model;
+
+		// wrap into a Model
+		return new Model((DefaultAbstractModel)model);
 	}
 
 	public void addObservedModel(IModel model) {
@@ -608,78 +620,79 @@ public abstract class DefaultAbstractModel implements IModel {
 	protected IModel applyScenarioInternal(Scenario scenario, Session session)
 			throws ThinklabException {
 
-		DefaultAbstractModel ret = null;
-
-		IInstance match = session.createObject(observableSpecs);
 
 		/*
 		 * if I am in the scenario, clone the scenario's, not me, unless I am a
 		 * Model which requires to be preserved for functionality
 		 */
 		if (!(this instanceof Model)) {
-			for (IModel m : scenario.models) {
-
-				IInstance im = session
-						.createObject(((DefaultAbstractModel) m).observableSpecs);
-				if (im.isConformant(match, null)) {
-
-					/*
-					 * use the return value of a model function that
-					 * accepts/rejects/mediates the model, if null don't
-					 * substitute and continue.
-					 */
-					IModel mo = validateSubstitutionModel(m);
-					if (mo != null)
-						return mo;
-				}
-			}
-		} else {
-
-			/*
-			 * Substitute the contingencies. They should be substituted in toto
-			 * if the observable matches.
-			 * 
-			 * FIXME We just should not substitute two different contingencies
-			 * with the same model, which is possible right now.
-			 */
-			for (IModel m : ((Model) this).models) {
-
-				IModel con = ((DefaultAbstractModel) m).applyScenarioInternal(
-						scenario, session);
-				try {
-					if (ret == null)
-						ret = (Model) this.clone();
-				} catch (CloneNotSupportedException e) {
-				}
-				((Model) ret).defModel(con == null ? m : con, null);
-			}
+			throw new ThinklabValidationException("attempting to transform non-model " + getName() + " with a scenario");
 		}
 
 		/*
-		 * clone me if necessary and add the applyScenarios of the dependents as
-		 * dependents
+		 * if there is anything resembling self in the scenario, just return that.
 		 */
+		IInstance match = session.createObject(observableSpecs);
+		for (IModel scm : scenario.models) {
+			
+			IInstance im = session.createObject(((DefaultAbstractModel)scm).observableSpecs);			
+			if (im.isConformant(match, null)) {
+				return scm;
+			}
+		}
+		
+		/*
+		 * clone me as a return value
+		 */
+		Model ret = null;
 		try {
-			if (ret == null)
-				ret = (DefaultAbstractModel) this.clone();
+			ret = (Model) this.clone();
 		} catch (CloneNotSupportedException e) {
 			// yeah, right
 		}
-
-		if (mediated != null) {
-			IModel dep = ((DefaultAbstractModel) mediated)
-					.applyScenarioInternal(scenario, session);
-			ret.mediated = (dep == null ? mediated : dep);
-		}
-
-		for (IModel d : dependents) {
-			IModel dep = ((DefaultAbstractModel) d).applyScenarioInternal(
-					scenario, session);
-			ret.addDependentModel(dep == null ? d : dep);
+		
+		
+		/*
+		 * Scan contingencies. If any contingency matches a model in the scenario,
+		 * add the contingencies of that scenario model as our own and return. 
+		 */
+		for (IModel orm : ((Model)this).models) {
+			for (IModel scm : scenario.models) {
+			
+				IInstance om = session.createObject(((DefaultAbstractModel)orm).observableSpecs);				
+				IInstance im = session.createObject(((DefaultAbstractModel)scm).observableSpecs);
+			
+				if (im.isConformant(om, null)) {
+					for (IModel msc : ((Model)scm).models)
+						ret.defModel(msc, null);	
+					return ret;
+				}
+			}
 		}
 
 		/*
-		 * give the sucker our ID so it will work in references, and store the
+		 * Add models to the clone:
+		 * if we haven't found a matching contingency, just keep the original ones.
+		 */
+		for (IModel orm : ((Model)this).models) {
+			ret.defModel(transformDependencies(orm, scenario, session), null);
+		}
+		
+		/*
+		 * ...and add our mediated model if any	
+		 */
+		ret.mediated = transformDependencies(this.mediated, scenario, session);
+			
+		/*
+		 * Add as dependents the scenario-transformed versions of the original model.
+		 */
+		for (IModel d : dependents) {
+			ret.addDependentModel(
+				((Model) d).applyScenarioInternal(scenario, session));
+		}
+
+		/*
+		 * give the clone our ID so it will work in references, and store the
 		 * scenario to constrain queries as needed.
 		 */
 		if (ret != null) {
@@ -688,6 +701,124 @@ public abstract class DefaultAbstractModel implements IModel {
 			ret.scenario = scenario;
 		}
 
+		return ret;
+	}
+
+
+//	protected IModel applyScenarioInternal(Scenario scenario, Session session)
+//			throws ThinklabException {
+//
+//		DefaultAbstractModel ret = null;
+//
+//		IInstance match = session.createObject(observableSpecs);
+//
+//		/*
+//		 * if I am in the scenario, clone the scenario's, not me, unless I am a
+//		 * Model which requires to be preserved for functionality
+//		 */
+//		if (!(this instanceof Model)) {
+//			for (IModel m : scenario.models) {
+//
+//				IInstance im = session
+//						.createObject(((DefaultAbstractModel) m).observableSpecs);
+//				if (im.isConformant(match, null)) {
+//
+//					/*
+//					 * use the return value of a model function that
+//					 * accepts/rejects/mediates the model, if null don't
+//					 * substitute and continue.
+//					 */
+//					IModel mo = validateSubstitutionModel(m);
+//					if (mo != null)
+//						return mo;
+//				}
+//			}
+//		} else {
+//
+//			/*
+//			 * Substitute the contingencies. They should be substituted in toto
+//			 * if the observable matches.
+//			 * 
+//			 * FIXME We just should not substitute two different contingencies
+//			 * with the same model, which is possible right now.
+//			 */
+//			for (IModel m : ((Model) this).models) {
+//
+//				IModel con = ((DefaultAbstractModel) m).applyScenarioInternal(
+//						scenario, session);
+//				try {
+//					if (ret == null)
+//						ret = (Model) this.clone();
+//				} catch (CloneNotSupportedException e) {
+//				}
+//				((Model) ret).defModel(con == null ? m : con, null);
+//			}
+//		}
+//
+//		/*
+//		 * clone me if necessary and add the applyScenarios of the dependents as
+//		 * dependents
+//		 */
+//		try {
+//			if (ret == null)
+//				ret = (DefaultAbstractModel) this.clone();
+//		} catch (CloneNotSupportedException e) {
+//			// yeah, right
+//		}
+//
+//		if (mediated != null) {
+//			IModel dep = ((DefaultAbstractModel) mediated)
+//					.applyScenarioInternal(scenario, session);
+//			ret.mediated = (dep == null ? mediated : dep);
+//		}
+//
+//		for (IModel d : dependents) {
+//			IModel dep = ((DefaultAbstractModel) d).applyScenarioInternal(
+//					scenario, session);
+//			ret.addDependentModel(dep == null ? d : dep);
+//		}
+//
+//		/*
+//		 * give the sucker our ID so it will work in references, and store the
+//		 * scenario to constrain queries as needed.
+//		 */
+//		if (ret != null) {
+//			ret.id = id;
+//			ret.namespace = namespace;
+//			ret.scenario = scenario;
+//		}
+//
+//		return ret;
+//	}
+
+	/*
+	 * this one applies a scenario to a model used as mediated or contingency, which is not a
+	 * Model. It should leave everything as is but use the scenario to transform the dependencies.
+	 */
+	private DefaultAbstractModel transformDependencies(IModel model, Scenario scenario, Session session) throws ThinklabException {
+
+		if (model == null)
+			return null;
+		
+		/*
+		 * clone me as a return value
+		 */
+		DefaultAbstractModel ret = null;
+		try {
+			ret = (DefaultAbstractModel) ((DefaultAbstractModel) model).clone();
+		} catch (CloneNotSupportedException e) {
+			// yeah, right
+		}
+		
+		ret.mediated = transformDependencies(this.mediated, scenario, session);
+		
+		/*
+		 * Add as dependents the scenario-transformed versions of the original model.
+		 */
+		for (IModel d : ((DefaultAbstractModel)model).dependents) {
+			ret.addDependentModel(
+				((DefaultAbstractModel)d).applyScenarioInternal(scenario, session));
+		}
 		return ret;
 	}
 

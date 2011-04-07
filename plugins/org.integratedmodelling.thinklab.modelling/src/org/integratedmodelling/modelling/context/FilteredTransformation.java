@@ -90,11 +90,14 @@ public class FilteredTransformation implements IContextTransformation {
 
 	private boolean match(Object original, IContext context, int stateIndex) {
 		
+		if (this.activationLayer != null) {
+			if (!this.activationLayer.isActive(stateIndex))
+				return false;
+		} 
+		
 		for (Object filter : filters) {
-			if (filter instanceof ShapeValue) {
-				if (!this.activationLayer.isActive(stateIndex))
-					return false;
-			} else if (filter instanceof IFn) {
+			
+			if (filter instanceof IFn) {
 				Object o = null;
 				try {
 					o = ((IFn)filter).invoke(original);

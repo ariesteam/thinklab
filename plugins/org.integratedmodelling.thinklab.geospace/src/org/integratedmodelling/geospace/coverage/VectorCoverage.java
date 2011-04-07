@@ -406,7 +406,9 @@ public class VectorCoverage implements ICoverage {
 				 * WOW - we want a raster - rasterize it 
 				 * TODO implement some sort of caching mechanism
 				 */
-				System.out.println("rasterizing vector coverage " + layerName + " over " + arealExtent + " ...");
+				System.out.println("rasterizing vector coverage " + layerName + 
+						"#" + valueField + 
+						" over " + arealExtent + " ...");
 				ret = convertToRaster((GridExtent) arealExtent);
 				
 				/*
