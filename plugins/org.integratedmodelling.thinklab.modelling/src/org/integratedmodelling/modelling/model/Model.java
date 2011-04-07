@@ -57,7 +57,7 @@ public class Model extends DefaultAbstractModel {
 		
 		this(model.namespace);
 		
-		this.setLocalId(((DefaultAbstractModel)model).id);
+		this.setLocalFormalName(((DefaultAbstractModel)model).getLocalFormalName());
 		this.observable = ((DefaultAbstractModel)model).observable;
 		this.name = ((DefaultAbstractModel)model).name;
 		this.observableSpecs = ((DefaultAbstractModel)model).observableSpecs;

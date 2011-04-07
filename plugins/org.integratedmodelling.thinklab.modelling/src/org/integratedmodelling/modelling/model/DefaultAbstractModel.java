@@ -221,7 +221,7 @@ public abstract class DefaultAbstractModel implements IModel {
 				addObservedModel((IModel) o);
 			}
 		} else if (keyword.equals(":as")) {
-			setLocalId(argument.toString());
+			setLocalFormalName(argument.toString());
 		} else if (keyword.equals(":when")) {
 			whenClause = (IFn) argument;
 		} else if (keyword.equals(":editable")) {
@@ -294,7 +294,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * 
 	 * @param id
 	 */
-	public void setLocalId(String id) {
+	public void setLocalFormalName(String id) {
 		this.localFormalName = id;
 	}
 
