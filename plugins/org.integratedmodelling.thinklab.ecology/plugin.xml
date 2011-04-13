@@ -17,7 +17,11 @@
 		<parameter id="url" value="ecology.owl"/>
 		<parameter id="concept-space" value="ecology" />
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="habitat">
+	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="weather">
+		<parameter id="url" value="weather.owl"/>
+		<parameter id="concept-space" value="weather" />
+	</extension>
+		<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="habitat">
 		<parameter id="url" value="habitat.owl"/>
 		<parameter id="concept-space" value="habitat" />
 	</extension>
