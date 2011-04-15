@@ -2,6 +2,7 @@ package org.integratedmodelling.thinklab.http.commands;
 
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.http.ThinklabHttpdPlugin;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -21,6 +22,9 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 		argumentNames="cmd",
 		argumentTypes="thinklab-core:Text",
 		argumentDescriptions="command (start|stop|restart|status)",
+		optionalArgumentNames="application",
+		optionalArgumentTypes="thinklab-core:Text",
+		optionalArgumentDescriptions="application to start",
 		optionNames="p",
 		optionLongNames="port",
 		optionDescriptions="port",
@@ -39,6 +43,13 @@ public class Http implements ICommandHandler {
 			port = Integer.parseInt(command.getOptionAsString("port"));
 		
 		if (cmd.equals("start")) {
+			
+			if (!command.hasArgument("application"))
+				throw new ThinklabValidationException("application not specified");
+
+			String app = command.getArgumentAsString("application");
+			
+			
 			
 			ThinklabHttpdPlugin.get().startServer("localhost", port);
 			

@@ -16,6 +16,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 import org.integratedmodelling.thinklab.http.extensions.WebApplication;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.java.plugin.PluginLifecycleException;

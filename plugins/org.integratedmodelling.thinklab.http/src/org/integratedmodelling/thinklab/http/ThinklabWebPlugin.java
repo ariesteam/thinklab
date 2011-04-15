@@ -11,6 +11,7 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 import org.integratedmodelling.thinklab.http.utils.FileOps;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
@@ -225,7 +226,7 @@ public abstract class ThinklabWebPlugin extends ThinklabPlugin {
 		
 		registerQueryForms();
 		registerTypeDecorations();
-		registerApplications();
+//		registerApplications();
 //		registerPortlets();
 //		registerLayouts();
 		
@@ -329,16 +330,16 @@ public abstract class ThinklabWebPlugin extends ThinklabPlugin {
 		unregisterTypeDecorations();
 		unregisterQueryForms();
 	}
-
-	private void registerApplications() {
-
-		/*
-		 * publish all applications from loaded plugins.
-		 */
-		for (Extension ext : getOwnExtensions("org.integratedmodelling.thinkcap.core", "thinkcap-application")) {
-			ThinkWeb.get().registerThinkcapApplication(new ThinklabWebApplication(this, ext));
-		}
-	}
+//
+//	private void registerApplications() {
+//
+//		/*
+//		 * publish all applications from loaded plugins.
+//		 */
+//		for (Extension ext : getOwnExtensions("org.integratedmodelling.thinkcap.core", "thinkcap-application")) {
+//			ThinkWeb.get().registerThinkcapApplication(new ThinklabWebApplication(this, ext));
+//		}
+//	}
 	
 //	private void registerPortlets() {
 //

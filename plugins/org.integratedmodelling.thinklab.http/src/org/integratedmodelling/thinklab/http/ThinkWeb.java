@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
+import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.PluginManager;

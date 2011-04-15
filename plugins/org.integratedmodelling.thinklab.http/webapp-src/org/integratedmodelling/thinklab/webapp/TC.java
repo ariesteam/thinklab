@@ -1,6 +1,6 @@
 package org.integratedmodelling.thinklab.webapp;
 
-import org.integratedmodelling.thinklab.http.ThinklabWebApplication;
+import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 
 /**
  * Utility class with simple static methods

@@ -6,8 +6,8 @@ import javax.servlet.http.HttpSessionListener;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.http.ThinkWeb;
-import org.integratedmodelling.thinklab.http.ThinklabWebApplication;
 import org.integratedmodelling.thinklab.http.ThinklabWebSession;
+import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 
 public class SessionListener implements HttpSessionListener {
 

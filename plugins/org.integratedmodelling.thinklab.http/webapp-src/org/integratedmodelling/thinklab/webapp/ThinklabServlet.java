@@ -18,9 +18,9 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.http.ThinkWeb;
 import org.integratedmodelling.thinklab.http.ThinklabHttpdPlugin;
-import org.integratedmodelling.thinklab.http.ThinklabWebApplication;
 import org.integratedmodelling.thinklab.http.ThinklabWebModel;
 import org.integratedmodelling.thinklab.http.ThinklabWebSession;
+import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 import org.zkoss.zk.ui.http.DHtmlLayoutServlet;
 
 /**

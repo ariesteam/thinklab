@@ -30,7 +30,7 @@
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
  **/
-package org.integratedmodelling.thinklab.http;
+package org.integratedmodelling.thinklab.http.application;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +45,10 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.http.ThinkWeb;
+import org.integratedmodelling.thinklab.http.ThinklabWebModel;
+import org.integratedmodelling.thinklab.http.ThinklabWebPlugin;
+import org.integratedmodelling.thinklab.http.ThinklabWebSession;
 import org.integratedmodelling.thinklab.http.utils.FileOps;
 import org.integratedmodelling.thinklab.http.utils.JPFUtils;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
