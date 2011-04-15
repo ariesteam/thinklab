@@ -301,6 +301,7 @@ public class StorylineCommand extends InteractiveCommandHandler {
 	}
 
 	private void listStoryline(Storyline storyline, PrintStream out, int spaces) {
+		
 		out.println(MiscUtilities.spaces(spaces) + storyline.toString());
 		for (Storyline s : storyline.getChildren())
 			listStoryline(s, out, spaces + 2);
