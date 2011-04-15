@@ -198,6 +198,10 @@ public class StorylineCommand extends InteractiveCommandHandler {
 		}  else if (action.equals("list")) {
 			
 			Storyline storyline = StorylineFactory.getStorylines(path);
+			
+			if (storyline == null)
+				throw new ThinklabValidationException("storyline " + path + " not found");
+			
 			listStoryline(storyline, session.getOutputStream(), 0);
 			
 		} 
@@ -301,6 +305,7 @@ public class StorylineCommand extends InteractiveCommandHandler {
 	}
 
 	private void listStoryline(Storyline storyline, PrintStream out, int spaces) {
+		
 		out.println(MiscUtilities.spaces(spaces) + storyline.toString());
 		for (Storyline s : storyline.getChildren())
 			listStoryline(s, out, spaces + 2);
