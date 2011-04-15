@@ -116,6 +116,9 @@ public class ModeledClassification
 
 			Object o = registers[index];
 			
+			if (o instanceof Number && Double.isNaN(((Number)o).doubleValue()))
+				o = null;
+			
 			if (o == null && !hasNilClassifier)
 				return null;
 

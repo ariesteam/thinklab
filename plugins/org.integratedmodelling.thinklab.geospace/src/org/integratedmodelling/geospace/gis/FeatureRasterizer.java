@@ -341,7 +341,7 @@ public class FeatureRasterizer {
 	
 	
 	public GridCoverage2D rasterize(String name, FeatureIterator<SimpleFeature> fc, String attributeName, IConcept valueType, 
-			String valueDefault, ReferencedEnvelope env, ReferencedEnvelope normEnv,
+			String valueDefault, String valueExpression, ReferencedEnvelope env, ReferencedEnvelope normEnv,
 			ReferencedEnvelope dataEnvelope) throws ThinklabException {
     	
     	if (raster == null) {

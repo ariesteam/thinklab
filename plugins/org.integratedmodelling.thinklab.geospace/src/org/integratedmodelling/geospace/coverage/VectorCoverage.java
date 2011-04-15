@@ -80,6 +80,7 @@ public class VectorCoverage implements ICoverage {
 	private BoundingBox boundingBox = null;
 	private String layerName = null;
 	private String valueField = null;
+	private String valueExpression = null;
 	private String sourceUrl = null;
 	private IConcept valueType = null;
 	private String  filterExpression = null;
@@ -147,17 +148,19 @@ public class VectorCoverage implements ICoverage {
 	public VectorCoverage(
 			FeatureCollection<SimpleFeatureType, SimpleFeature> features,
 			CoordinateReferenceSystem crs, 
-			String valueField, 
+			String valueField, // may be null if valueExpression is not
 			String valueType, // concept - may be null
 			String valueDefault, // if the attribute is empty or null, use this instead - may be null
 			ReferencedEnvelope envelope,
 			FeatureSource<SimpleFeatureType, SimpleFeature> source, 
 			String filterExpression, // CQL rule or null
+			String valueExpression,
 			boolean validate) throws ThinklabException {
 		
 		this.features = features;
 		this.crs = crs;
 		this.valueField = valueField;
+		this.valueExpression = valueExpression;
 		this.source = source;
 		this.valueType = valueType == null ? null : KnowledgeManager.get().requireConcept(valueType);
 		this.valueDefault = valueDefault;
@@ -200,6 +203,7 @@ public class VectorCoverage implements ICoverage {
 			String valueType, // concept - may be null
 			String valueDefault, // if attribute is null or empty, use this - may be null
 			String filterExpression, // CQL rule or null
+			String valueExpression,
 			boolean validate) throws ThinklabException {
 		
 		this.features = features;
@@ -440,7 +444,7 @@ public class VectorCoverage implements ICoverage {
 	 * @throws ThinklabException
 	 */
 	public ICoverage convertToRaster(GridExtent arealExtent) throws ThinklabException {
-		return ThinklabRasterizer.rasterize(this, valueField, this.fillValue , arealExtent, valueType, valueDefault);
+		return ThinklabRasterizer.rasterize(this, valueField, this.fillValue , arealExtent, valueType, valueDefault, valueExpression);
 	}
 
 	public void show() {
