@@ -42,6 +42,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		keepers = ((BayesianModel)model).keepers;
 		source = ((BayesianModel)model).source;
 		resultModel = ((BayesianModel)model).resultModel;
+		required = ((BayesianModel)model).required;
 	}
 
 	@Override
@@ -111,6 +112,8 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		BayesianModel ret = new BayesianModel(namespace);
 		ret.algorithm = algorithm;
 		ret.required  = required;
+		ret.keepers = keepers;
+		ret.resultModel = resultModel;
 		ret.source = source;
 		ret.copy(this);
 		return ret;

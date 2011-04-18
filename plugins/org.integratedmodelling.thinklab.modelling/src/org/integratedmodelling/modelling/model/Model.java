@@ -96,9 +96,7 @@ public class Model extends DefaultAbstractModel {
 		
 		if (totres == 0) {
 			throw new ThinklabResourceNotFoundException(
-					"cannot observe " +
-					observable +
-					" for any of " + 
+					"cannot observe any of the " + 
 					models.size() + 
 					" contingencies of model " +
 					getName());	
@@ -176,9 +174,10 @@ public class Model extends DefaultAbstractModel {
 	public String toString() {
 		// add the different possible incarnations of the model after the closed parenthesis
 		String mdesc = "{";
-		for (IModel m : models) {
-			mdesc += (mdesc.length() == 1 ? "" : ",") + m ;
-		}
+		if (models != null)
+			for (IModel m : models) {
+				mdesc += (mdesc.length() == 1 ? "" : ",") + m ;
+			}
 		mdesc += "}";
 		return "model(" + observable +") " + mdesc;
 	}
