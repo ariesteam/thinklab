@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.corescience/classes" path="plugins/org.integratedmodelling.thinklab.corescience/src"/>
+	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.http.geospace/classes" path="plugins/org.integratedmodelling.thinklab.http.geospace/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.http/classes" path="plugins/org.integratedmodelling.thinklab.http/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.http/webapp/WEB-INF/classes" path="plugins/org.integratedmodelling.thinklab.http/webapp-src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.agriculture/classes" path="plugins/org.integratedmodelling.thinklab.agriculture/src"/>
@@ -406,5 +407,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zml.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zul.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/zweb.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http.geospace/lib/olmapsz.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>
