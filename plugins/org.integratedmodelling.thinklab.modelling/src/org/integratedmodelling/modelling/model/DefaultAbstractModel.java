@@ -681,8 +681,13 @@ public abstract class DefaultAbstractModel implements IModel {
 		/*
 		 * ...and add our mediated model if any	
 		 */
-		ret.mediated = transformDependencies(this.mediated, scenario, session);
-			
+		DefaultAbstractModel elMediated = (DefaultAbstractModel) this.mediated;
+		if (this.mediated != null)
+			ret.mediated = 
+				elMediated instanceof Model ?
+					elMediated.applyScenarioInternal(scenario, session) :
+					transformDependencies(elMediated, scenario, session);
+					
 		/*
 		 * Add as dependents the scenario-transformed versions of the original model.
 		 */
@@ -810,7 +815,13 @@ public abstract class DefaultAbstractModel implements IModel {
 			// yeah, right
 		}
 		
-		ret.mediated = transformDependencies(((DefaultAbstractModel)model).mediated, scenario, session);
+		
+		DefaultAbstractModel elMediated = (DefaultAbstractModel) ((DefaultAbstractModel)model).mediated;
+		if (elMediated != null)
+			ret.mediated = 
+				elMediated instanceof Model ?
+					elMediated.applyScenarioInternal(scenario, session) :
+					transformDependencies(elMediated, scenario, session);
 		
 		/*
 		 * Add as dependents the scenario-transformed versions of the original model.
@@ -863,7 +874,7 @@ public abstract class DefaultAbstractModel implements IModel {
 
 		}
 
-		if (this instanceof Model && ((Model) this).models.size() > 0) {
+		if (this instanceof Model && ((Model)this).models != null && ((Model) this).models.size() > 0) {
 			out.println(prefix + "Contingent on:");
 			for (IModel m : ((Model) this).models)
 				((DefaultAbstractModel) m).dumpInternal(out, i + 3);
