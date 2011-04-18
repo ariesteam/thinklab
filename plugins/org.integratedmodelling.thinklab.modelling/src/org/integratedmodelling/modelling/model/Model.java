@@ -96,9 +96,7 @@ public class Model extends DefaultAbstractModel {
 		
 		if (totres == 0) {
 			throw new ThinklabResourceNotFoundException(
-					"cannot observe " +
-					observable +
-					" for any of " + 
+					"cannot observe any of the " + 
 					models.size() + 
 					" contingencies of model " +
 					getName());	

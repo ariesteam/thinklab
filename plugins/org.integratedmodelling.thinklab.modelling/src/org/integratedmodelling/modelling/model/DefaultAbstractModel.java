@@ -387,7 +387,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		 * in the specs
 		 */
 		mediatesExternal = true;
-
+		
 		return c;
 	}
 
@@ -519,7 +519,7 @@ public abstract class DefaultAbstractModel implements IModel {
 
 			ModelResult d = ((DefaultAbstractModel) dep).observeInternal(kbox,
 					session, cp, context,
-					((DefaultAbstractModel) dep).isOptional);
+					/*((DefaultAbstractModel) dep).isOptional*/false);
 
 			// can only return null if optional is true for the dependent
 			if (d != null)
@@ -810,7 +810,7 @@ public abstract class DefaultAbstractModel implements IModel {
 			// yeah, right
 		}
 		
-		ret.mediated = transformDependencies(this.mediated, scenario, session);
+		ret.mediated = transformDependencies(((DefaultAbstractModel)model).mediated, scenario, session);
 		
 		/*
 		 * Add as dependents the scenario-transformed versions of the original model.
