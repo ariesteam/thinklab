@@ -50,14 +50,18 @@ public class Http implements ICommandHandler {
 				throw new ThinklabValidationException("application not specified");
 
 			String app = command.getArgumentAsString("application");
-			Server server = ThinklabHttpdPlugin.get().startServer("localhost", port);
+			
+			ThinklabHttpdPlugin.get().publishCommonResources();
+			
+			Server server = 
+				ThinklabHttpdPlugin.get().startServer("localhost", port);
 			ThinklabWebApplication webapp =
 				ThinklabHttpdPlugin.get().publishApplication(app, server);
 			
 			session.getOutputStream().println(
 					"application " + app + 
 					" published at " +
-					webapp.getAppUrl());
+					webapp.getUrl());
 			
 			
 		} else if (cmd.equals("stop")) {

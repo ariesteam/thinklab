@@ -38,27 +38,21 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.http.ThinkWeb;
 import org.integratedmodelling.thinklab.http.ThinklabWebModel;
-import org.integratedmodelling.thinklab.http.ThinklabWebPlugin;
 import org.integratedmodelling.thinklab.http.ThinklabWebSession;
 import org.integratedmodelling.thinklab.http.extensions.WebApplication;
 import org.integratedmodelling.thinklab.http.utils.FileOps;
-import org.integratedmodelling.thinklab.http.utils.JPFUtils;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 import org.java.plugin.Plugin;
-import org.java.plugin.PluginLifecycleException;
-import org.java.plugin.registry.Extension;
 import org.mortbay.jetty.Server;
 
 /**
@@ -71,7 +65,7 @@ import org.mortbay.jetty.Server;
  */
 public class ThinklabWebApplication {
 
-	private Plugin registeringPlugin = null;
+	private ThinklabPlugin registeringPlugin = null;
 	
 	volatile int currentUserCount = 0;
 	
@@ -96,11 +90,7 @@ public class ThinklabWebApplication {
 	 * the server that runs the app. The new paradigm is one server, one app, no cross-contaminations of apps.
 	 */
 	Server _server = null;
-	
-	// TEMPORARY files or directories to be skipped when copying the web contents. Should become
-	// a configured property.
-	private String[] skipped ={  "site" };
-	
+		
 	/**
 	 * Application descriptor; properties are read from the plugin manifest through the
 	 * thinklab-application extension point.
@@ -227,18 +217,21 @@ public class ThinklabWebApplication {
 		if (published)
 			return;
 		
+		if (location == null || location.isEmpty()) {
+			location = id;
+		}
+		
 		this._server = server;
 		
 		/*
 		 * look for location dir in registering plugin
 		 */
-		URL uloc = registeringPlugin.getManager().getPluginClassLoader(
-					registeringPlugin.getDescriptor()).
-						getResource("web" + File.separator + location);
-		
-		File fsource = null;
-		if (uloc != null)
-			 fsource = FileOps.getFileFromUrl(uloc);
+		File fsource = 
+			new File(
+				registeringPlugin.getLoadDirectory() + 
+				File.separator + 
+				"web" + 
+				File.separator + location);
 		
 		if (fsource == null || !fsource.exists() || !fsource.isDirectory()) {
 			throw new ThinklabException(
@@ -249,32 +242,17 @@ public class ThinklabWebApplication {
 		}
 		
 		File fdest = 
-			new File(
-					ThinkWeb.get().getWebSpace() + 
-					"/" + id);
+			new File(serverWebSpace + File.separator + id);
 		
 		this.webPath = fdest;
 		
-		// TODO create symlink, deleting anything already present
-							
-//		try {
-//			
-//			FileOps.copyFilesCached(fsource, fdest, skipped);
-//			
-//			/*
-//			 * FIXME
-//			 * TODO 
-//			 * symlink fdest to fdest + id + tc. That requires nio and the Path class, 
-//			 * standard in Java 7. For now just copy all resources we believe useful.
-//			 */
-//			FileOps.copyFilesCached(
-//					new File(ThinkWeb.get().getWebSpace()  + "/images"),
-//					new File(fdest  + "/tc/images"));
-//			
-//		
-//		} catch (IOException e) {
-//			throw new ThinklabException(e);
-//		}
+		// TODO create symlink, deleting anything already present, as soon as
+		// we can switch to JDK 7		
+		try {
+			FileOps.copyFilesCached(fsource, fdest, null);		
+		} catch (IOException e) {
+			throw new ThinklabException(e);
+		}
 		
 		try {
 			appURL = new URL(

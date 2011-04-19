@@ -12,8 +12,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 
 public class FileOps {
 
-	public static void copyFiles(File src, File dest) throws IOException {
-		copyFiles(src, dest, null);
+	public static int copyFiles(File src, File dest) throws IOException {
+		return copyFiles(src, dest, null);
 	}
 	
 	/**
@@ -25,7 +25,9 @@ public class FileOps {
 	 * @param dest -- A File object that represnts the destination for the copy.
 	 * @throws IOException if unable to copy.
 	 */
-	public static void copyFiles(File src, File dest, String[] skipped) throws IOException {
+	public static int copyFiles(File src, File dest, String[] skipped) throws IOException {
+		
+		int ret = 0;
 		
 		//Check to ensure that the source is valid...
 		if (!src.exists()) {
@@ -37,7 +39,7 @@ public class FileOps {
 		if (skipped != null) {
 			for (String sk : skipped)
 				if (src.toString().endsWith(sk)) {
-					return;
+					return ret;
 				}
 		}
 		
@@ -58,7 +60,7 @@ public class FileOps {
 			{				
 				File dest1 = new File(dest, list[i]);
 				File src1 = new File(src, list[i]);
-				copyFiles(src1 , dest1);
+				ret += copyFiles(src1 , dest1);
 			}
 		} else { 
 			
@@ -84,8 +86,10 @@ public class FileOps {
 			} finally { //Ensure that the files are closed (if they were open).
 				if (fin != null) { fin.close(); }
 				if (fout != null) { fin.close(); }
+				ret ++;
 			}
 		}
+		return ret;
 	}
 	
 	public static void copyFilesCached(File src, File dest) throws IOException {
@@ -103,8 +107,10 @@ public class FileOps {
 	 * @param dest -- A File object that represents the destination for the copy.
 	 * @throws IOException if unable to copy.
 	 */
-	public static void copyFilesCached(File src, File dest, String[] skipped) throws IOException {
+	public static int  copyFilesCached(File src, File dest, String[] skipped) throws IOException {
 
+		int ret = 0;
+		
 		if (!src.exists()) {
 			throw new IOException("copyFiles: Can not find source: " + src.getAbsolutePath());
 		} else if (!src.canRead()) { //check to ensure we have rights to the source...
@@ -126,7 +132,7 @@ public class FileOps {
 
 				File dest1 = new File(dest, list[i]);
 				File src1 = new File(src, list[i]);
-				copyFiles(src1 , dest1, skipped);
+				ret += copyFilesCached(src1 , dest1, skipped);
 			}
 		} else if (!dest.exists() || (src.lastModified() > dest.lastModified())) { 
 			
@@ -152,8 +158,11 @@ public class FileOps {
 			} finally { 
 				if (fin != null) { fin.close(); }
 				if (fout != null) { fin.close(); }
+				ret++;
 			}
 		}
+		
+		return ret;
 	}
 
 	public static File getFileFromUrl(URL url) {

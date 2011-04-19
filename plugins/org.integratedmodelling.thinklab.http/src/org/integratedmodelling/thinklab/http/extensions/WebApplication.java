@@ -22,6 +22,6 @@ public @interface WebApplication {
 	public String logoLarge() default "";
 	public String runningHead() default "";
 	public String banner() default "";
-	public String entryPoint() default "";
+	public String entryPoint() default "zul/main.zhtml";
 	public String webLocation() default "";
 }
