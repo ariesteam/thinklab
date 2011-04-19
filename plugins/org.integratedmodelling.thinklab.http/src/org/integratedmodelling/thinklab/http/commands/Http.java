@@ -4,10 +4,12 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.http.ThinklabHttpdPlugin;
+import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.mortbay.jetty.Server;
 
 /**
  * Start and stop the HTTP service formerly known as Thinkcap. Should be 
@@ -48,10 +50,15 @@ public class Http implements ICommandHandler {
 				throw new ThinklabValidationException("application not specified");
 
 			String app = command.getArgumentAsString("application");
+			Server server = ThinklabHttpdPlugin.get().startServer("localhost", port);
+			ThinklabWebApplication webapp =
+				ThinklabHttpdPlugin.get().publishApplication(app, server);
 			
+			session.getOutputStream().println(
+					"application " + app + 
+					" published at " +
+					webapp.getAppUrl());
 			
-			
-			ThinklabHttpdPlugin.get().startServer("localhost", port);
 			
 		} else if (cmd.equals("stop")) {
 			

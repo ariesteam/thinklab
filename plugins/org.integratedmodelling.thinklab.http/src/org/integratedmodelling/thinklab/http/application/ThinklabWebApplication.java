@@ -49,6 +49,7 @@ import org.integratedmodelling.thinklab.http.ThinkWeb;
 import org.integratedmodelling.thinklab.http.ThinklabWebModel;
 import org.integratedmodelling.thinklab.http.ThinklabWebPlugin;
 import org.integratedmodelling.thinklab.http.ThinklabWebSession;
+import org.integratedmodelling.thinklab.http.extensions.WebApplication;
 import org.integratedmodelling.thinklab.http.utils.FileOps;
 import org.integratedmodelling.thinklab.http.utils.JPFUtils;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -74,24 +75,6 @@ public class ThinklabWebApplication {
 	
 	volatile int currentUserCount = 0;
 	
-	/*
-	 * these are properties in user config that users can override with respect
-	 * to defaults set in the plugin configuration. The corresponding property
-	 * in the plugin must have the name <appid>.<propertyname>.
-	 */
-	private final static String BANNER_PROPERTY = "banner";
-	private final static String PLUGINS_PROPERTY = "plugins";
-	private final static String STYLE_PROPERTY = "style";
-	private final static String SKIN_PROPERTY = "skin";
-	
-	/*
-	 * and these are the corresponding values. Their setters will write the
-	 * properties file, making the change permanent.
-	 */
-	private String banner = null;
-	private String plugins = null;
-	private String style = null;
-	private String skin = null;
 	
 	protected String id = null;
 	protected String version = null;
@@ -128,6 +111,8 @@ public class ThinklabWebApplication {
 		new ArrayList<ThinkcapAuthor>();
 
 	private File webPath;
+
+	private String banner;
 	
 	public class ThinkcapAuthor {
 		
@@ -140,124 +125,35 @@ public class ThinklabWebApplication {
 		public String getLogo() { return logo; }
 	}
 		
-	public ThinklabWebApplication(Plugin plugin, Extension ext) {
+	public void initialize(ThinklabPlugin plugin, WebApplication wdesc) {
 
 		registeringPlugin = plugin;	
 	
-		this.id = ext.getParameter("name").valueAsString();
-		this.location = ext.getParameter("location").valueAsString();
-		this.entryPoint = ext.getParameter("entry-point").valueAsString();
-		this.shortDescription = ext.getParameter("short-description").valueAsString();
-		this.longDescription = ext.getParameter("long-description").valueAsString();
-		this.runningHead = JPFUtils.getParameter(ext, "running-head", "");
-		this.copyright = JPFUtils.getParameter(ext, "copyright", "");
-		this.logoSmall = JPFUtils.getParameter(ext, "logo-small");
-		this.logoLarge = JPFUtils.getParameter(ext, "logo-large");
-		this.banner = JPFUtils.getParameter(ext, "banner");
-		this.skin = JPFUtils.getParameter(ext, "skin");
-		this.style = JPFUtils.getParameter(ext, "style");
-		this.modelClass = JPFUtils.getParameter(ext, "model-class");
-		
-		for (Extension.Parameter aext : ext.getParameters("author")) {
-			
-			ThinkcapAuthor author = new ThinkcapAuthor();
-			
-			author.name = aext.getSubParameter("name").valueAsString();
-			author.url = aext.getSubParameter("url").valueAsString();
-			author.logo = aext.getSubParameter("logo").valueAsString();
-			
-			authors.add(author);
-		}
-				
+		this.id = wdesc.name();
+		this.location = wdesc.webLocation();
+		this.entryPoint = wdesc.entryPoint();
+		this.shortDescription = wdesc.shortDescription();
+		this.longDescription = wdesc.longDescription();
+		this.runningHead = wdesc.runningHead();
+		this.copyright = wdesc.copyright();
+		this.logoSmall = wdesc.logoSmall();
+		this.logoLarge = wdesc.logoLarge();
+		this.banner = wdesc.banner();
+		this.modelClass = wdesc.modelClass();
+						
 		/*
 		 * TODO authentication
 		 */
-	}
-	
-	public void setAdditionalPlugins(String pl) throws ThinklabIOException {
-		
-		System.out.println(pl);
-		
-		if (this.plugins != null) {
-
-			/*
-			 * unload those that we don't want anymore
-			 */
-			for (String p : pl.split(",")) {
-				if (!pl.contains(p)) {
-					Thinklab.get().getManager().deactivatePlugin(p);
-				}
-			}
-		}
-		
-		String actp = "";
-		
-		for (String p : pl.split(",")) {
-			try {
-				Thinklab.get().getManager().activatePlugin(p);
-				
-				if (!actp.equals(""))
-					actp += ",";
-				actp += p;
-				
-			} catch (PluginLifecycleException e) {
-				Thinklab.get().logger().warn(
-						"application " + id + 
-						" failed to activate requested plugin " +
-						p);
-			}
-		}
-		
-		this.plugins = actp;
-		
-		writeProperties();
 	}
 	
 	public synchronized void notifyUserConnected(ThinklabWebSession session) {
 		this.currentUserCount ++;
 	}
 	
-	
 	public synchronized void notifyUserDisconnected(ThinklabWebSession session) {
 		this.currentUserCount --;
 	}
 	
-	/*
-	 * write only the modified application-specific properties to user
-	 * config file.
-	 */
-	private void writeProperties() throws ThinklabIOException {
-	
-		Properties p = ((ThinklabPlugin)registeringPlugin).getProperties();
-		
-		if (this.plugins != null)
-			p.setProperty(id + "." + PLUGINS_PROPERTY, this.plugins);
-		if (this.banner != null)
-			p.setProperty(id + "." + BANNER_PROPERTY, this.plugins);
-		if (this.style != null)
-			p.setProperty(id + "." + STYLE_PROPERTY, this.plugins);
-		if (this.skin != null)
-			p.setProperty(id + "." + SKIN_PROPERTY, this.plugins);
-		
-		((ThinklabPlugin)registeringPlugin).writeConfiguration();
-		
-	}
-
-	public void setBanner(String banner) throws ThinklabIOException {
-		this.banner = banner;
-		((ThinklabPlugin)registeringPlugin).writeConfiguration();
-	}
-	
-	public void setStyle(String style) throws ThinklabIOException {
-		this.style = style;
-		((ThinklabPlugin)registeringPlugin).writeConfiguration();
-	}
-	
-	public void setSkin(String skin) throws ThinklabIOException {
-		this.skin = skin;
-		((ThinklabPlugin)registeringPlugin).writeConfiguration();
-	}
-
 	public String getId() {
 		return id;
 	}
@@ -326,52 +222,19 @@ public class ThinklabWebApplication {
 	 * an HTTP request that ends in .app
 	 * copy files to web space; define redirection URL
 	 */
-	public void publish(File serverWebSpace) throws ThinklabException {
+	public void publish(File serverWebSpace, Server server) throws ThinklabException {
 
 		if (published)
 			return;
 		
-		/*
-		 * first of all, make sure the registering plugin is activated
-		 */
-		try {
-			ThinkWeb.get().getPluginManager().activatePlugin(
-					registeringPlugin.getDescriptor().getId());
-		} catch (PluginLifecycleException e) {
-			throw new ThinklabException(e);
-		}
-		
-		/*
-		 * override any application-specific configurations from plugin 
-		 * user config.
-		 */
-		if (registeringPlugin instanceof ThinklabPlugin)
-			for (Entry<Object, Object> eset : 
-				((ThinklabPlugin)registeringPlugin).getProperties().entrySet()) {
-			
-				String pname = eset.getKey().toString();
-				String pvalu = eset.getValue().toString();
-			
-				if (pname.startsWith(this.id + ".")) {
-				
-					if (pname.equals(this.id + "." + PLUGINS_PROPERTY))	{
-						setAdditionalPlugins(pvalu);
-					} else 	if (pname.equals(this.id + "." + BANNER_PROPERTY))	{
-						setBanner(pvalu);
-					} else 	if (pname.equals(this.id + "." + STYLE_PROPERTY))	{
-						setStyle(pvalu);
-					} else 	if (pname.equals(this.id + "." + SKIN_PROPERTY))	{
-						setSkin(pvalu);
-					}
-				}
-		}
+		this._server = server;
 		
 		/*
 		 * look for location dir in registering plugin
 		 */
 		URL uloc = registeringPlugin.getManager().getPluginClassLoader(
 					registeringPlugin.getDescriptor()).
-						getResource(location);
+						getResource("web" + File.separator + location);
 		
 		File fsource = null;
 		if (uloc != null)
@@ -391,25 +254,27 @@ public class ThinklabWebApplication {
 					"/" + id);
 		
 		this.webPath = fdest;
-							
-		try {
-			
-			FileOps.copyFilesCached(fsource, fdest, skipped);
-			
-			/*
-			 * FIXME
-			 * TODO 
-			 * symlink fdest to fdest + id + tc. That requires nio and the Path class, 
-			 * standard in Java 7. For now just copy all resources we believe useful.
-			 */
-			FileOps.copyFilesCached(
-					new File(ThinkWeb.get().getWebSpace()  + "/images"),
-					new File(fdest  + "/tc/images"));
-			
 		
-		} catch (IOException e) {
-			throw new ThinklabException(e);
-		}
+		// TODO create symlink, deleting anything already present
+							
+//		try {
+//			
+//			FileOps.copyFilesCached(fsource, fdest, skipped);
+//			
+//			/*
+//			 * FIXME
+//			 * TODO 
+//			 * symlink fdest to fdest + id + tc. That requires nio and the Path class, 
+//			 * standard in Java 7. For now just copy all resources we believe useful.
+//			 */
+//			FileOps.copyFilesCached(
+//					new File(ThinkWeb.get().getWebSpace()  + "/images"),
+//					new File(fdest  + "/tc/images"));
+//			
+//		
+//		} catch (IOException e) {
+//			throw new ThinklabException(e);
+//		}
 		
 		try {
 			appURL = new URL(
@@ -428,8 +293,8 @@ public class ThinklabWebApplication {
 
 		ThinklabWebModel ret = null;
 		
-		if (modelClass != null && registeringPlugin != null && registeringPlugin instanceof ThinklabWebPlugin) {
-			ret = (ThinklabWebModel) ((ThinklabWebPlugin)registeringPlugin).createInstance(modelClass);
+		if (modelClass != null && registeringPlugin != null) {
+			ret = (ThinklabWebModel) ((ThinklabPlugin)registeringPlugin).createInstance(modelClass);
 		}
 		return ret;
 	}

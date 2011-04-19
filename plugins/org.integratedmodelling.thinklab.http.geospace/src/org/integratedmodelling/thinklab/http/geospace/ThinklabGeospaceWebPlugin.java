@@ -4,7 +4,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
-public class ThinkcapGeospace extends ThinklabPlugin {
+public class ThinklabGeospaceWebPlugin extends ThinklabPlugin {
 
 	@Override
 	protected void load(KnowledgeManager km) throws ThinklabException {
@@ -12,7 +12,6 @@ public class ThinkcapGeospace extends ThinklabPlugin {
 		requirePlugin("org.integratedmodelling.thinklab.core");
 		requirePlugin("org.integratedmodelling.thinklab.geospace");
 		requirePlugin("org.integratedmodelling.thinklab.http");
-
 	}
 
 	@Override

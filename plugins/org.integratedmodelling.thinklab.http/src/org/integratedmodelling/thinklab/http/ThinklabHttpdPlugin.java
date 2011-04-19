@@ -19,6 +19,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 import org.integratedmodelling.thinklab.http.extensions.WebApplication;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.PluginLifecycleException;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
@@ -31,9 +32,29 @@ public class ThinklabHttpdPlugin extends ThinklabPlugin {
 	public class WebApplicationHandler implements AnnotatedClassHandler {
 
 		@Override
-		public void process(Annotation annotation, Class<?> cls)
+		public void process(Annotation annotation, Class<?> cls, ThinklabPlugin plugin)
 				throws ThinklabException {
-			// TODO Auto-generated method stub
+			
+			
+			ThinklabWebApplication webapp = null;
+			WebApplication wdesc = (WebApplication) annotation;
+
+			try {
+				webapp = (ThinklabWebApplication) cls.newInstance();
+			} catch (Exception e) {
+				throw new ThinklabInternalErrorException(e);
+			}
+			
+			webapp.initialize(plugin, wdesc);
+			
+			/*
+			 * store webapp with plugin. Do not publish until started.
+			 */
+			applications.put(wdesc.name(), webapp);
+
+			logger().info(
+					"registered web application " + wdesc.name() +
+					" from plugin " + plugin.getDescriptor().getId());
 
 		}
 
@@ -43,6 +64,9 @@ public class ThinklabHttpdPlugin extends ThinklabPlugin {
 	
 	private HashMap<Integer, Server> servers = 
 		new HashMap<Integer, Server>();
+	
+	private HashMap<String, ThinklabWebApplication> applications = 
+		new HashMap<String, ThinklabWebApplication>();
 	
 	private int minPort = 8060, maxPort = 8079;
 	
@@ -76,7 +100,21 @@ public class ThinklabHttpdPlugin extends ThinklabPlugin {
 			}
 	}
 
-	public void startServer(String host, int port) throws ThinklabException {
+	public ThinklabWebApplication publishApplication(String name, Server server) 
+		throws ThinklabException {
+
+		ThinklabWebApplication webapp = applications.get(name);
+		
+		if (webapp == null)
+			throw new ThinklabResourceNotFoundException(
+					"application " + name + " has not been registered");
+		
+		webapp.publish(ThinkWeb.get().getWebSpace(), server);
+		
+		return webapp;
+	}
+	
+	public Server startServer(String host, int port) throws ThinklabException {
 		
 		if (port < 0) {
 			for (int pp = minPort; pp <= maxPort; pp++) {
@@ -126,6 +164,8 @@ public class ThinklabHttpdPlugin extends ThinklabPlugin {
 		} 
 		
 		servers.put(port, serv);
+		
+		return serv;
 	}
 
 	@Override
@@ -169,5 +209,10 @@ public class ThinklabHttpdPlugin extends ThinklabPlugin {
 	protected void unload() throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public ThinklabWebApplication getApplicationForURL(String requestURI) {
+		String appName = MiscUtilities.getURLBaseName(requestURI);
+		return applications.get(appName);
 	}
 }

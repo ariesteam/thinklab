@@ -66,16 +66,16 @@ public class ThinkWeb {
 		return pluginManager;
 	}
 	
-	public ThinklabWebApplication getApplication(String appname) {
-		return applications.get(appname);
-	}
-	
-	public Collection<ThinklabWebApplication> getApplications() {
-		/*
-		 * TODO these would be nice sorted, as they're mostly used for display
-		 */
-		return applications.values();
-	}
+//	public ThinklabWebApplication getApplication(String appname) {
+//		return applications.get(appname);
+//	}
+//	
+//	public Collection<ThinklabWebApplication> getApplications() {
+//		/*
+//		 * TODO these would be nice sorted, as they're mostly used for display
+//		 */
+//		return applications.values();
+//	}
 	
 	public ThinklabWebSession instrumentSession(HttpSession session) throws ThinklabException {
 		
@@ -109,9 +109,7 @@ public class ThinkWeb {
 	 * @return
 	 */
 	static public ThinklabWebSession getThinkcapSession(Session zSession) {
-
 		return getThinkcapSessionFromHttpSession((HttpSession) zSession.getNativeSession());
-		
 	}
 	
 	/**
@@ -126,59 +124,5 @@ public class ThinkWeb {
 		return baseUrl;
 	}
 
-	public ThinklabWebApplication publishApplication(String requestURI) throws ThinklabException {
-
-		String appName = MiscUtilities.getURLBaseName(requestURI);
-		ThinklabWebApplication app = applications.get(appName);
-		
-		if (app == null) {
-			throw new ThinklabException("no application named " + appName + " has been registered");	
-		}
-		
-		app.publish(getWebSpace());
-		
-		return app;
-	}
-	
-	/**
-	 * Ensure that all plugins declaring applications are activated before the server starts.
-	 * 
-	 * @throws PluginLifecycleException
-	 */
-	public void publishApplications() throws ThinklabException {
-		
-		ExtensionPoint toolExtPoint = 
-			pluginManager.getRegistry().
-				getExtensionPoint("org.integratedmodelling.thinkcap.core", "thinkcap-application");
-		
-		for (Iterator<Extension> it =  toolExtPoint.getConnectedExtensions().iterator(); it.hasNext(); ) {
-			Extension ext = it.next();
-			try {
-				pluginManager.activatePlugin(ext.getDeclaringPluginDescriptor().getId());
-			} catch (Exception e) {
-				throw new ThinklabPluginException(e);
-			}
-		}
-	}
-
-	/**
-	 * Bypass ZK's rigid handling of resource finding by
-	 * making sure that all plugins that declare ZK resources are activated before the
-	 * server is started. Activation will make all the ZK resources available by creating
-	 * appropriate jars in the WEB-INF/lib directory.
-	 * 
-	 * @throws PluginLifecycleException 
-	 */
-	public void publishZKResources() throws PluginLifecycleException {
-		
-		ExtensionPoint toolExtPoint = 
-			pluginManager.getRegistry().
-				getExtensionPoint("org.integratedmodelling.thinkcap.core", "zk");
-		
-		for (Iterator<Extension> it =  toolExtPoint.getConnectedExtensions().iterator(); it.hasNext(); ) {
-			Extension ext = it.next();
-			pluginManager.activatePlugin(ext.getDeclaringPluginDescriptor().getId());
-		}
-	}
 
 }
