@@ -169,7 +169,7 @@ public class StorylineCommand extends InteractiveCommandHandler {
 					null);
 			sl.getTemplate().save();
 			
-		}else if (action.equals("run")) {
+		} else if (action.equals("run")) {
 			
 			context = 
 				ModelFactory.get().requireContext(command.getArgumentAsString("arg0"));
@@ -183,7 +183,12 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			
 		}  else if (action.equals("view")) {
 			
-			TemplateEditor.run(StorylineFactory.getStoryline(path));
+			Storyline storyline = StorylineFactory.getStoryline(path);
+			
+			if (storyline == null)
+				throw new ThinklabValidationException("storyline " + path + " not found");
+			
+			TemplateEditor.run(storyline);
 			
 		} else if (action.equals("copy")) {
 			
