@@ -52,7 +52,6 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
-import org.java.plugin.Plugin;
 import org.mortbay.jetty.Server;
 
 /**
@@ -104,6 +103,7 @@ public class ThinklabWebApplication {
 
 	private String banner;
 	
+	// unused
 	public class ThinkcapAuthor {
 		
 		String name;
@@ -137,11 +137,21 @@ public class ThinklabWebApplication {
 	}
 	
 	public synchronized void notifyUserConnected(ThinklabWebSession session) {
+		
 		this.currentUserCount ++;
+		
+		/*
+		 * TODO call session start hook
+		 */
 	}
 	
 	public synchronized void notifyUserDisconnected(ThinklabWebSession session) {
+		
 		this.currentUserCount --;
+		
+		/*
+		 * TODO call session end hook
+		 */
 	}
 	
 	public String getId() {
@@ -263,6 +273,10 @@ public class ThinklabWebApplication {
 			throw new ThinklabException(e);
 		}
 		
+		/*
+		 * TODO call publish hook
+		 */
+		
 		published = true;
 			
 	}
@@ -289,7 +303,7 @@ public class ThinklabWebApplication {
 		return ret;
 	}
 	
-	/*
+	/**
 	 * return a pair <file, url> for a new resource file in the web space of the current application
 	 * and session
 	 */
@@ -306,6 +320,12 @@ public class ThinklabWebApplication {
 		return new Pair<String, String>(folder.toString(), url);
 	}
 	
+	/**
+	 * return a pair <file, url> for a new web-accessible and writable directory
+	 * @param session
+	 * @return
+	 * @throws ThinklabIOException
+	 */
 	public synchronized Pair<String, String> getNewDirectoryUrl(ISession session) throws ThinklabIOException {
 		
 		String dir = "aimg" + MiscUtilities.getDateSuffix();
