@@ -63,6 +63,9 @@ public class WFSCoverageDataSource extends VectorCoverageDataSource {
 		attr = i.get("geospace:hasValueType");
 		if (attr != null)
 			p.put(CoverageFactory.VALUE_TYPE_PROPERTY, attr.toString());
+		attr = i.get("geospace:hasValueExpression");
+		if (attr != null)
+			p.put(CoverageFactory.VALUE_EXPRESSION_PROPERTY, attr.toString());
 		attr = i.get("geospace:hasValueDefault");
 		if (attr != null)
 			p.put(CoverageFactory.VALUE_DEFAULT_PROPERTY, attr.toString());

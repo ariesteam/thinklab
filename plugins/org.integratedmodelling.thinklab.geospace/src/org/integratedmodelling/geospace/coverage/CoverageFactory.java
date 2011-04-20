@@ -19,17 +19,14 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
-import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gce.arcgrid.ArcGridReader;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.feature.AttributeTable;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
-import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -62,6 +59,7 @@ public class CoverageFactory {
 	// these are used as property keys to influence the way coverages are read from vector files.
 	public static final String VALUE_ATTRIBUTE_PROPERTY = "geospace.internal.value-attribute";
 	public static final String VALUE_TYPE_PROPERTY = "geospace.internal.value-type";
+	public static final String VALUE_EXPRESSION_PROPERTY = "geospace.internal.value-expression";
 	public static final String VALUE_DEFAULT_PROPERTY = "geospace.internal.value-default";
 	public static final String SOURCE_LINK_ATTRIBUTE_PROPERTY = "geospace.internal.source-link-attribute";
 	public static final String TARGET_LINK_ATTRIBUTE_PROPERTY = "geospace.internal.target-link-attribute";
@@ -226,6 +224,7 @@ public class CoverageFactory {
 		String valDef = properties.getProperty(VALUE_DEFAULT_PROPERTY);
 		String covId = properties.getProperty(COVERAGE_ID_PROPERTY);
 		String filter = properties.getProperty(CQL_FILTER_PROPERTY);
+		String valexpr = properties.getProperty(VALUE_EXPRESSION_PROPERTY);
 		
 		Map<Object,Object> connectionParameters = new HashMap<Object,Object>();
 		connectionParameters.put(
@@ -256,6 +255,7 @@ public class CoverageFactory {
 					bounds,
 					source, 
 					filter,
+					valexpr,
 					false);
 			
 			((VectorCoverage)coverage).setSourceUrl(url.toString());
@@ -303,6 +303,7 @@ public class CoverageFactory {
 
 		String valAttr = properties.getProperty(VALUE_ATTRIBUTE_PROPERTY);
 		String valType = properties.getProperty(VALUE_TYPE_PROPERTY);
+		String valExpr = properties.getProperty(VALUE_EXPRESSION_PROPERTY);
 		String valDef = properties.getProperty(VALUE_DEFAULT_PROPERTY);
 		String srcAttr = properties.getProperty(SOURCE_LINK_ATTRIBUTE_PROPERTY);
 		String lnkAttr = properties.getProperty(TARGET_LINK_ATTRIBUTE_PROPERTY);
@@ -328,6 +329,7 @@ public class CoverageFactory {
 							valType,
 							valDef,
 							filter,
+							valExpr,
 							false);
 				
 				((VectorCoverage)coverage).setSourceUrl(url.toString());
@@ -342,7 +344,7 @@ public class CoverageFactory {
 					fc.getSchema().getCoordinateReferenceSystem(), 
 					valAttr, valType, valDef, 
 					envelope,
-					fc1, filter, false);
+					fc1, filter, valExpr, false);
 			((VectorCoverage)coverage).setSourceUrl(url.toString());
 		}
 		

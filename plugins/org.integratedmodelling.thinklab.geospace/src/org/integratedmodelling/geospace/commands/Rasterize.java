@@ -77,7 +77,7 @@ public class Rasterize implements ICommandHandler {
 				vCoverage.getLatUpperBound(), xCells, yCells);
 
 		RasterCoverage rCoverage = ThinklabRasterizer.rasterize(vCoverage,
-				attrName, nodata, extent, null, null);
+				attrName, nodata, extent, null, null, null);
 
 		// TODO we should obviously endeavor to save it if an output arg is
 		// passed.

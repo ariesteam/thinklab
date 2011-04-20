@@ -39,7 +39,8 @@ public class ThinklabRasterizer {
 	 * @return
 	 */
 	public static RasterCoverage rasterize(VectorCoverage vCoverage, String valueId, float noData, 
-			GridExtent extent, IConcept valueType, String valueDefault)  throws ThinklabException  {
+			GridExtent extent, IConcept valueType, String valueDefault, String valueExpression)  
+		throws ThinklabException  {
 		
 		
 		if (extent.getCRS() != null)
@@ -55,7 +56,7 @@ public class ThinklabRasterizer {
 		try {
 			
 			/*
-			 * determine the fucking extent of the data, so we can set to no-data for areas outside (and this will
+			 * determine the extent of the data, so we can set to no-data for areas outside (and this will
 			 * not mask any composed results) and 0 for no-polygons inside the data range. I can't believe it takes 
 			 * all this code to ensure a CRS match.
 			 */
@@ -97,6 +98,7 @@ public class ThinklabRasterizer {
 					valueId,
 					valueType,
 					valueDefault,
+					valueExpression,
 					extent.getDefaultEnvelope(),
 					extent.getNormalizedEnvelope(),
 					dataEnvelope);
