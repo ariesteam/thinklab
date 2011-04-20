@@ -24,6 +24,7 @@ import org.integratedmodelling.utils.MiscUtilities;
 
 public class RasterCoverage extends AbstractRasterCoverage {
 
+	
 	static GridCoverageFactory rasterFactory = new GridCoverageFactory();
 	
 	/**

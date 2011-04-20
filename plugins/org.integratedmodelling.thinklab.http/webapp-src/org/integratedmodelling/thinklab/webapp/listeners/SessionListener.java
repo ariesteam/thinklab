@@ -13,7 +13,6 @@ public class SessionListener implements HttpSessionListener {
 
 	@Override
 	public void sessionCreated(HttpSessionEvent sessionEvent) {
-
 		/*
 		 * register session with Thinkcap
 		 */
@@ -34,10 +33,11 @@ public class SessionListener implements HttpSessionListener {
 			ThinkWeb.getThinkcapSessionFromHttpSession(sessionEvent.getSession());		
 
 		ThinklabWebApplication app = sess.getApplication();
-//		if (app != null)
-//			app.notifyUserDisconnected(sess);
+		if (app != null)
+			app.notifyUserDisconnected(sess);
 
 		if (sess.getUserModel() != null ) {
+			
 			/*
 			 * TODO notify user model 
 			 */

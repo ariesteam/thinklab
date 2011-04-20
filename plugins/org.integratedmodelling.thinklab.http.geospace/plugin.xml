@@ -13,7 +13,6 @@
 			<export prefix="*" />
 		</library>
 		<library type="resources" path="config/" id="config" />
-		
 	</runtime>
 	
 </plugin>
