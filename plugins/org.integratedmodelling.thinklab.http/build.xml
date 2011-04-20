@@ -18,9 +18,9 @@
 		<fileset dir="${plugin.home}/.."
 		         includes="*/plugin*.xml"
 		         excludes="${plugin.id}/**" />
-		<fileset dir="${env.THINKLAB_HOME}/plugins"
+<!--		<fileset dir="${env.THINKLAB_HOME}/plugins"
 		         includes="*/plugin*.xml"
-		         excludes="${plugin.id}/**" />
+		         excludes="${plugin.id}/**" /> -->
 		<fileset file="plugin.xml" />		
 	</jpf-path>
 
