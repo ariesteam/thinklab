@@ -69,6 +69,8 @@ test  - runs some tests
 		<ant dir="plugins/org.integratedmodelling.thinklab.thinkscape" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.workflow" target="${target}" />
 		<ant dir="plugins/org.integratedmodelling.thinklab.tclj" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.http" target="${target}" />
+		<ant dir="plugins/org.integratedmodelling.thinklab.http.geospace" target="${target}" />
 	</target>
 
 	<target name="build" depends="-init" description="Builds entire project">
