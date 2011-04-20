@@ -61,7 +61,7 @@ public class Http implements ICommandHandler {
 			session.getOutputStream().println(
 					"application " + app + 
 					" published at " +
-					webapp.getUrl());
+					webapp.getApplicationUrl());
 			
 			
 		} else if (cmd.equals("stop")) {

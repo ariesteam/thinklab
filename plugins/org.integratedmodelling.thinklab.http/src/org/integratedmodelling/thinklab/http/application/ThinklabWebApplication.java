@@ -68,7 +68,6 @@ public class ThinklabWebApplication {
 	
 	volatile int currentUserCount = 0;
 	
-	
 	protected String id = null;
 	protected String version = null;
 	private String modelClass = null;
@@ -100,8 +99,6 @@ public class ThinklabWebApplication {
 		new ArrayList<ThinkcapAuthor>();
 
 	private File webPath;
-
-	private String banner;
 	
 	// unused
 	public class ThinkcapAuthor {
@@ -128,7 +125,6 @@ public class ThinklabWebApplication {
 		this.copyright = wdesc.copyright();
 		this.logoSmall = wdesc.logoSmall();
 		this.logoLarge = wdesc.logoLarge();
-		this.banner = wdesc.banner();
 		this.modelClass = wdesc.modelClass();
 						
 		/*
@@ -277,10 +273,15 @@ public class ThinklabWebApplication {
 		 * TODO call publish hook
 		 */
 		
+		
 		published = true;
 			
 	}
 
+	public String getApplicationUrl() {
+		return ThinkWeb.get().getBaseUrl() + "/" + id + ".app";
+	}
+	
 	public ThinklabWebModel createModelInstance() throws ThinklabException {
 
 		ThinklabWebModel ret = null;
