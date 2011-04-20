@@ -14,8 +14,6 @@
 		</library>
 		<library type="resources" path="config/" id="config" />
 		
-		<library type="code" id="olmaps" path="lib/olmapsz.jar"/>
-		
 	</runtime>
 	
 </plugin>
