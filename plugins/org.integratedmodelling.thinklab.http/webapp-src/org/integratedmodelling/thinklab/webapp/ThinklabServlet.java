@@ -18,9 +18,9 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.http.ThinkWeb;
 import org.integratedmodelling.thinklab.http.ThinklabHttpdPlugin;
-import org.integratedmodelling.thinklab.http.ThinklabWebApplication;
 import org.integratedmodelling.thinklab.http.ThinklabWebModel;
 import org.integratedmodelling.thinklab.http.ThinklabWebSession;
+import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 import org.zkoss.zk.ui.http.DHtmlLayoutServlet;
 
 /**
@@ -158,44 +158,22 @@ public class ThinklabServlet extends DHtmlLayoutServlet implements Servlet {
 		
 		if (request.getRequestURI().endsWith(".app")) {
         	
-    		/* switch to application */
-    		ThinklabWebApplication app;
-    		
-			try {
-				
-				app = ThinkWeb.get().publishApplication(request.getRequestURI());
-				
-				ThinklabHttpdPlugin.get().logger().info(
-						request.getRemoteAddr() +
-						": publishing application: " +
-						app.getId());
-				
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
-			}; 	
-    		
-			
-			
-			/* 
-			 * TODO if we have an active application, we may need to
-			 * save state or warn - possibly according to preferences or
-			 * configuration. THIS SHOULD BE ITS OWN checkCurrentApplication(app) function.
-			 */
-			if (tkSession.getApplication() != null) {
-				
-				// TODO - redirect to confirmation page, setting new application as link for
-				// proceed to
-			}
-			
+    		ThinklabWebApplication app = 
+    			ThinklabHttpdPlugin.get().getApplicationForURL(request.getRequestURI());
+
+    		if (app == null)
+    			throw new ServletException(
+    					"no web application registered to handle request: " 
+    					+ request.getRequestURI());
+    					
     		/* 
            	 * set application into session 
            	 */	
            	tkSession.setApplication(app);
-//			tkSession.getApplication().notifyUserConnected(tkSession);
+           	tkSession.getApplication().notifyUserConnected(tkSession);
 			
 			session.setAttribute("bindings.listener",
                      new ApplicationCleanupListener(tkSession, app));
-
            	
            	/*
            	 * if application has an associated model, create it and restore any persistent state

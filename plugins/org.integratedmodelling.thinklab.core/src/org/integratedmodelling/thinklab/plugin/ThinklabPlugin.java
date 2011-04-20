@@ -116,7 +116,7 @@ public abstract class ThinklabPlugin extends Plugin
 	 * @author ferdinando.villa
 	 */
 	protected interface AnnotatedClassHandler {
-		public void process(Annotation annotation, Class<?> cls) throws ThinklabException;
+		public void process(Annotation annotation, Class<?> cls, ThinklabPlugin plugin) throws ThinklabException;
 	}
 	
 	class AnnotationExtension {
@@ -126,7 +126,10 @@ public abstract class ThinklabPlugin extends Plugin
 		AnnotatedClassHandler handler;
 	}
 	
-	ArrayList<AnnotationExtension> extensions = 
+	/*
+	 * these are global so that all plugins can install and publish extensions
+	 */
+	static ArrayList<AnnotationExtension> extensions = 
 		new ArrayList<ThinklabPlugin.AnnotationExtension>();
 	
 	HashMap<String, URL> resources = new HashMap<String, URL>();
@@ -670,21 +673,31 @@ public abstract class ThinklabPlugin extends Plugin
 			 * find class with annotation and send back to plugin to process it
 			 */
 			for (Annotation annotation : cls.getAnnotations()) {
-				if (annotation.getClass().equals(annotationClass)) {
-					handler.process(annotation, cls);
+				if (annotation.annotationType().equals(annotationClass)) {
+					handler.process(annotation, cls, this);
 				}
-			}
-			
+			}	
 		}
 	}
 	
+	/**
+	 * Call it in the plugin's load() to register a subpackage where annotated classes
+	 * will be looked up and the handler that will process them at plugin startup.
+	 * 
+	 * @param objectClass
+	 * @param annotationClass
+	 * @param subpackage
+	 * @param handler
+	 */
 	protected void registerAnnotatedClass(Class<?> objectClass, Class<?> annotationClass, String subpackage, AnnotatedClassHandler handler) {
+
+		AnnotationExtension ext = new AnnotationExtension();
+		ext.annotationClass = annotationClass;
+		ext.objectClass = objectClass;
+		ext.handler = handler;
+		ext.subpackage = subpackage;
 		
-	}
-	
-	protected void processAnnotatedClass(Class<?> cls, Annotation annotation) {
-		// TODO Auto-generated method stub
-		
+		extensions.add(ext);
 	}
 
 	protected void loadInstanceImplementationConstructors() throws ThinklabPluginException {
@@ -973,6 +986,7 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 
 	}
+
 	protected void loadTransformations() throws ThinklabException {
 		
 		String ipack = this.getClass().getPackage().getName() + ".transformations";
@@ -1002,6 +1016,7 @@ public abstract class ThinklabPlugin extends Plugin
 
 	}
 
+	@Deprecated
 	protected void loadSessionListeners() throws ThinklabException {
 		
 		for (Extension ext : getOwnThinklabExtensions("session-listener")) {
@@ -1024,6 +1039,7 @@ public abstract class ThinklabPlugin extends Plugin
 	
 
 	
+	@Deprecated
 	protected void loadLanguageInterpreters() throws ThinklabException {
 		
 		for (Extension ext : getOwnThinklabExtensions("language-interpreter")) {
@@ -1064,6 +1080,7 @@ public abstract class ThinklabPlugin extends Plugin
 
 	}
 	
+	@Deprecated
 	protected String getParameter(Extension ext, String field) {
 		
 		String ret = null;
@@ -1074,6 +1091,7 @@ public abstract class ThinklabPlugin extends Plugin
 	}
 	
 
+	@Deprecated
 	protected String[] getParameters(Extension ext, String field) {
 		
 		String[] ret = null;
@@ -1088,6 +1106,7 @@ public abstract class ThinklabPlugin extends Plugin
 		return ret;
 	}
 
+	@Deprecated
 	protected String getParameter(Extension ext, String field, String defValue) {
 		
 		String ret = null;
@@ -1150,6 +1169,7 @@ public abstract class ThinklabPlugin extends Plugin
 	}
 
 	
+	@Deprecated
 	protected void loadKnowledgeLoaders() throws ThinklabException {
 		
 		for (Extension ext : getOwnThinklabExtensions("knowledge-loader")) {
@@ -1165,6 +1185,7 @@ public abstract class ThinklabPlugin extends Plugin
 		
 	}
 	
+	@Deprecated
 	protected void loadKBoxHandlers() throws ThinklabNoKMException, ThinklabPluginException {
 		
 		for (Extension ext : getOwnThinklabExtensions("kbox-handler")) {
@@ -1260,6 +1281,7 @@ public abstract class ThinklabPlugin extends Plugin
 		ontologies.clear();
 	}
 
+	@Deprecated
 	protected void loadCommands() throws ThinklabException {
 
 		for (Extension ext : getOwnThinklabExtensions("command-handler")) {
@@ -1339,13 +1361,6 @@ public abstract class ThinklabPlugin extends Plugin
 	public File getScratchPath() throws ThinklabException  {
 		return dataFolder;
 	}
-	
-//	/* (non-Javadoc)
-//	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getLoadPath()
-//	 */
-//	public File getLoadPath() throws ThinklabException  {
-//		return plugFolder;	
-//	}
 	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getVersion()

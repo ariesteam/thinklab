@@ -22,6 +22,32 @@
 		<library id="servlet-api" path="lib/servlet-api-2.5-6.1.3.jar" type="code"> 
 			<export prefix="*"/> 
 		</library> 
+
+		<!-- <library id="bnedit" path="lib/bnedit.jar" type="code">
+			<export prefix="*" />
+		</library> -->
+		 
+		<library id="bsh" path="lib/bsh.jar" type="code"/> 
+		<library id="commons-collections" path="lib/commons-collections.jar" type="code"/> 
+		<library id="commons-el" path="lib/commons-el-1.0.jar" type="code"/> 
+		<library id="commons-fileupload" path="lib/commons-fileupload.jar" type="code"/> 
+		<library id="commons-io" path="lib/commons-io.jar" type="code"/> 
+		<library id="commons-logging" path="lib/commons-logging.jar" type="code"/> 
+		<library id="dojoz" path="lib/dojoz.jar" type="code"/> 
+		<library id="fckez" path="lib/fckez.jar" type="code"/> 
+
+		<library id="jasper-compiler" path="lib/jasper-compiler-5.5.15.jar" type="code"/> 
+		<library id="jasper-compiler-jdt" path="lib/jasper-compiler-jdt-5.5.15.jar" type="code"/> 
+		<library id="jasperreports" path="lib/jasperreports.jar" type="code"/> 
+		<library id="jasper-runtime" path="lib/jasper-runtime-5.5.15.jar" type="code"/> 
+		
+		<library id="jcl104-over-slf4j" path="lib/jcl104-over-slf4j-1.3.1.jar" type="code"/> 
+		<library id="jcommon" path="lib/jcommon.jar" type="code"/>		
+		<library id="jruby" path="lib/jruby.jar" type="code"/> 
+		<library id="jython" path="lib/jasper-runtime-5.5.15.jar" type="code"/> 
+		<library id="mvel" path="lib/mvel.jar" type="code"/> 
+		<library id="ognl" path="lib/ognl.jar" type="code"/> 
+		<library id="poi" path="lib/poi.jar" type="code"/> 
 		
 		<library id="Filters" path="lib/Filters.jar" type="code"/> 
 		<library id="groovy" path="lib/groovy.jar" type="code"/> 
@@ -35,6 +61,10 @@
 		<library id="timelinez" path="lib/timelinez.jar" type="code">
 			<export prefix="*"/>
 		</library> 
+		
+		<library type="code" id="olmaps" path="lib/olmapsz.jar">
+			<export prefix="*" />
+		</library>
 		
 		<library id="zcommon" path="lib/zcommon.jar" type="code">
 			<export prefix="*"/>
@@ -51,6 +81,10 @@
 		<library id="zk" path="lib/zk.jar" type="code">
 			<export prefix="*"/>
 		</library>
+
+		<library id="zkdiagram" path="lib/zkdiagram.jar" type="code">
+			<export prefix="*"/>
+		</library>
  
 		<library id="zkex" path="lib/zkex.jar" type="code">
 			<export prefix="*"/>
@@ -60,7 +94,9 @@
 			<export prefix="*"/>
 		</library>
  
-		<library id="zkplus" path="lib/zkplus.jar" type="code"/>
+		<library id="zkplus" path="lib/zkplus.jar" type="code">
+			<export prefix="*"/>
+		</library>
  
 		<library id="zml" path="lib/zml.jar" type="code">
 			<export prefix="*"/>
@@ -106,72 +142,5 @@
 			</parameter-def>
 		</parameter-def>
 	</extension-point> 
-	
-	<extension-point id="type-decoration">
-		<parameter-def id="type"/>
-	</extension-point>
-	
-	<extension-point id="search-form">
-		<parameter-def id="type"/>
-	</extension-point>
-	
-	<extension-point id="query-result-form" >
-		<parameter-def id="type"/>
-	</extension-point>
-		
-	<extension-point id="zk">
-		<!-- TODO use this stuff, even declare classes and components and build lang-addon.xml
-			automatically -->
-		<parameter-def id="manifest"/>
-		<parameter-def id="component" type="null" multiplicity="any">
-			<parameter-def id="id" />
-			<parameter-def id="class" multiplicity="none-or-one" />
-			<parameter-def id="component-macro-definition" multiplicity="none-or-one" />
-			<parameter-def id="mold" multiplicity="none-or-one"/>
-			<parameter-def id="extends" multiplicity="none-or-one"/>
-		</parameter-def>
-	</extension-point>
-
-	<!--
-		layouts are used in the portal component, using the layout parameter to
-		specify the id defined here. The layout defined in this extension is the
-		initial layout; if persistent is true and there is authentication information
-		in sessions, the layout is automatically persisted between sessions.
-	-->
-	<extension-point id="layout">
-		<parameter-def id="id"/>
-		<parameter-def id="persistent" type="boolean"/>
-		<parameter-def id="column" type="null" multiplicity="one-or-more">
-			<parameter-def id="width" type="number"/>
-			<parameter-def id="heigth" type="number"/>
-			<parameter-def id="portlet" type="null" multiplicity="any" >
-				<parameter-def id="id"/>
-				<parameter-def id="title" multiplicity="none-or-one" />
-				<parameter-def id="state" multiplicity="none-or-one" />
-				<parameter-def id="closable" multiplicity="none-or-one" type="boolean" />
-				<parameter-def id="collapsible" multiplicity="none-or-one" type="boolean" />
-				<parameter-def id="open" multiplicity="none-or-one" type="boolean" />
-				<parameter-def id="moveable" multiplicity="none-or-one" type="boolean" />
-			</parameter-def>
-		</parameter-def>
-	</extension-point>
-	
-	<!--
-	-->
-	<extension-point id="portlet">
-		<parameter-def id="id"/>
-		<parameter-def id="view" type="null">
-			<parameter-def id="class"/>
-		</parameter-def>
-		<parameter-def id="model" type="null">
-			<parameter-def id="class"/>
-		</parameter-def>
-		<parameter-def id="state" type="null" multiplicity="one-or-more">
-			<parameter-def id="id"/>
-			<parameter-def id="width" type="number"/>
-			<parameter-def id="heigth" type="number"/>
-		</parameter-def>
-	</extension-point>
-	
 	
 </plugin>

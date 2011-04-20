@@ -2,11 +2,14 @@ package org.integratedmodelling.thinklab.http.commands;
 
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.http.ThinklabHttpdPlugin;
+import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.mortbay.jetty.Server;
 
 /**
  * Start and stop the HTTP service formerly known as Thinkcap. Should be 
@@ -21,6 +24,9 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 		argumentNames="cmd",
 		argumentTypes="thinklab-core:Text",
 		argumentDescriptions="command (start|stop|restart|status)",
+		optionalArgumentNames="application",
+		optionalArgumentTypes="thinklab-core:Text",
+		optionalArgumentDescriptions="application to start",
 		optionNames="p",
 		optionLongNames="port",
 		optionDescriptions="port",
@@ -40,7 +46,23 @@ public class Http implements ICommandHandler {
 		
 		if (cmd.equals("start")) {
 			
-			ThinklabHttpdPlugin.get().startServer("localhost", port);
+			if (!command.hasArgument("application"))
+				throw new ThinklabValidationException("application not specified");
+
+			String app = command.getArgumentAsString("application");
+			
+			ThinklabHttpdPlugin.get().publishCommonResources();
+			
+			Server server = 
+				ThinklabHttpdPlugin.get().startServer("localhost", port);
+			ThinklabWebApplication webapp =
+				ThinklabHttpdPlugin.get().publishApplication(app, server);
+			
+			session.getOutputStream().println(
+					"application " + app + 
+					" published at " +
+					webapp.getApplicationUrl());
+			
 			
 		} else if (cmd.equals("stop")) {
 			

@@ -37,10 +37,9 @@ import java.util.ArrayList;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.http.ThinkWeb;
 import org.integratedmodelling.thinklab.http.ThinklabHttpdPlugin;
-import org.integratedmodelling.thinklab.http.ThinklabWebApplication;
 import org.integratedmodelling.thinklab.http.ThinklabWebSession;
+import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.thinklab.webapp.TC;
 import org.integratedmodelling.utils.Pager;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
@@ -176,11 +175,11 @@ public class ResultPagerComponent extends Vbox {
 			
 			/* First: label if we're there, toolbar button otherwise */
 			if (pager.getCurrentPage(1) == 1) {
-				Image ll = new Image(TC.url(application, "/images/icons/first16d.png"));
+				Image ll = new Image("/images/icons/first16d.png");
 				pgr.appendChild(ll);	
 			} else {
 				Toolbarbutton tbr = new Toolbarbutton(); 
-				tbr.setImage(TC.url(application, "/images/icons/first16.png"));
+				tbr.setImage("/images/icons/first16.png");
 				tbr.addEventListener("onClick", new SwitchPage(0));
 				pgr.appendChild(tbr);
 			}
@@ -193,11 +192,11 @@ public class ResultPagerComponent extends Vbox {
 			/* Prev: toolbar button if we're not 1 */
 			if (pager.getCurrentPage(1) > 1) {
 				Toolbarbutton tbr = new Toolbarbutton(); 
-				tbr.setImage(TC.url(application, "/images/icons/previous16.png"));
+				tbr.setImage("/images/icons/previous16.png");
 				tbr.addEventListener("onClick", new SwitchPage(pager.getCurrentPage(0) - 1));
 				pgr.appendChild(tbr);				
 			} else {
-				Image ll = new Image(TC.url(application, "/images/icons/previous16d.png"));
+				Image ll = new Image("/images/icons/previous16d.png");
 				pgr.appendChild(ll);	
 			}
 				
@@ -209,11 +208,11 @@ public class ResultPagerComponent extends Vbox {
 			/* Next: button unless we're at end */
 			if (pager.getCurrentPage(1) < pager.getLastPage(1)) {
 				Toolbarbutton tbr = new Toolbarbutton(); 
-				tbr.setImage(TC.url(application, "/images/icons/next16.png"));
+				tbr.setImage("/images/icons/next16.png");
 				tbr.addEventListener("onClick", new SwitchPage(pager.getCurrentPage(0)+1));
 				pgr.appendChild(tbr);								
 			} else {
-				Image ll = new Image(TC.url(application, "/images/icons/next16d.png"));
+				Image ll = new Image("/images/icons/next16d.png");
 				pgr.appendChild(ll);	
 			}
 			
@@ -225,15 +224,14 @@ public class ResultPagerComponent extends Vbox {
 			/* Last: button unless we're at last page */
 			if (pager.getCurrentPage(1) < pager.getLastPage(1)) {
 				Toolbarbutton tbr = new Toolbarbutton(); 
-				tbr.setImage(TC.url(application, "/images/icons/last16.png"));
+				tbr.setImage("/images/icons/last16.png");
 				tbr.addEventListener("onClick", new SwitchPage(pager.getLastPage(0)));
 				pgr.appendChild(tbr);								
 			} else {
-				Image ll = new Image(TC.url(application, "/images/icons/last16d.png"));
+				Image ll = new Image("/images/icons/last16d.png");
 				ll.setStyle("color: #cccccc");
 				pgr.appendChild(ll);	
 			}
-			
 		}
 		
 		/* make top element in vbox */

@@ -35,6 +35,7 @@ package org.integratedmodelling.thinklab.http;
 import javax.servlet.http.HttpSession;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 import org.integratedmodelling.thinklab.owlapi.Session;
 
 /**

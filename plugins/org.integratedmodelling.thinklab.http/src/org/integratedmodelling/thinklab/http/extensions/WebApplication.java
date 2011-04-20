@@ -14,5 +14,13 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface WebApplication {
 	public String name();
-	public String description();
+	public String modelClass();
+	public String shortDescription() default "";
+	public String longDescription() default "";
+	public String copyright() default "";
+	public String logoSmall() default "";
+	public String logoLarge() default "";
+	public String runningHead() default "";
+	public String entryPoint() default "zul/main.zhtml";
+	public String webLocation() default "";
 }

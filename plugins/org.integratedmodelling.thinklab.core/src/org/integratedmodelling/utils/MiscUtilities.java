@@ -1665,8 +1665,14 @@ loop:		for(;;)
 		
 	}
 
+	/**
+	 * Return the path leading to file without the file itself.
+	 * 
+	 * @param lf
+	 * @return
+	 */
 	public static File getPath(String lf) {
-		// TODO Auto-generated method stub
+
 		int n = lf.lastIndexOf(File.separator);
 		String s = lf;
 		if (n > -1) {

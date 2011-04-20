@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.integratedmodelling.thinklab.http.geospace" version="0.8.0" class="org.integratedmodelling.thinklab.http.geospace.ThinklabGeospaceWebPlugin">
+
+	<requires>
+		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import plugin-id="org.integratedmodelling.thinklab.geospace"/>
+		<import plugin-id="org.integratedmodelling.thinklab.http"/>
+	</requires>
+
+	<runtime>
+		<library id="classes" path="classes/" type="code">
+			<export prefix="*" />
+		</library>
+		<library type="resources" path="config/" id="config" />
+	</runtime>
+	
+</plugin>

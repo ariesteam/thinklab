@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="org.integratedmodelling.thinkcap.core plug-in build file"
+<project name="org.integratedmodelling.thinklab.http plug-in build file"
          default="help"
          basedir=".">
 	<jpf-info manifest="${basedir}/plugin.xml"
