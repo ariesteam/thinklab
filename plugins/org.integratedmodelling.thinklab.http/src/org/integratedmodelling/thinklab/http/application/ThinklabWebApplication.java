@@ -347,5 +347,9 @@ public class ThinklabWebApplication {
 	public synchronized int getCurrentUserCount() {
 		return currentUserCount;
 	}
+
+	public Server getServer() {
+		return _server;
+	}
 	
 }

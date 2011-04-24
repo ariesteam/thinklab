@@ -48,7 +48,6 @@ public abstract class DefaultAbstractModel implements IModel {
 	protected IModel mediated = null;
 	protected ArrayList<IModel> dependents = new ArrayList<IModel>();
 	protected ArrayList<IModel> observed = new ArrayList<IModel>();
-	private HashSet<IConcept> observables;
 
 	public DefaultAbstractModel(String namespace) {
 		this.namespace = namespace;
@@ -56,17 +55,27 @@ public abstract class DefaultAbstractModel implements IModel {
 	
 	@Override
 	public Set<IConcept> getObservables() {
-		if (this.observables == null) {
-			this.observables = new HashSet<IConcept>();
-			this.collectObservables(this.observables);
-		}
-		return this.observables;
+		
+		HashSet<IConcept> ret = new HashSet<IConcept>();
+		this.collectObservables(ret);
+		return ret;
 	}
 
 	private void collectObservables(HashSet<IConcept> coll) {
+
+		if (mediated != null)
+			((DefaultAbstractModel)mediated).collectObservables(coll);
+		
+		if (this instanceof Model) {
+			for (IModel m : ((Model)this).models) {
+				((DefaultAbstractModel)m).collectObservables(coll);
+			}
+		}
+		
 		for (IModel m : dependents) {
 			((DefaultAbstractModel)m).collectObservables(coll);
 		}
+		
 		coll.add(getObservableClass());
 	}
 

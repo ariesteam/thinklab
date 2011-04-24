@@ -417,13 +417,23 @@ public class ModelFactory {
 	 * 
 	 * @param model
 	 * @return
+	 * @throws ThinklabException 
 	 */
-	public Collection<Scenario> getApplicableScenarios(Model model) {
+	public Collection<Scenario> getApplicableScenarios(Model model, IContext context, boolean isPublic) throws ThinklabException {
 		
 		ArrayList<Scenario> ret = new ArrayList<Scenario>();
 		
 		for (Scenario s : scenariosById.values()) {
 
+			if (isPublic && !s.isPublic())
+				continue;
+			
+			if (context != null && s.getContext() != null) {
+				if (!s.getContext().intersects(context)) {
+					continue;
+				}
+			}
+			
 			Set<IConcept> intersec = new HashSet<IConcept>(model.getObservables());
 			intersec.retainAll(s.getObservables());
 			if (!intersec.isEmpty()) {

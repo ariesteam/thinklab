@@ -59,10 +59,12 @@ package org.integratedmodelling.utils;
 //{{{ Imports
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -1861,6 +1863,24 @@ loop:		for(;;)
 		}
 		
 		return ret;
+	}
+
+	public static String[] readFileIntoStrings(String filename) throws ThinklabIOException {
+		
+        FileReader fileReader;
+        List<String> lines = new ArrayList<String>();
+        try {
+			fileReader = new FileReader(filename);
+	        BufferedReader bufferedReader = new BufferedReader(fileReader);
+	        String line = null;
+	        while ((line = bufferedReader.readLine()) != null) {
+	            lines.add(line);
+	        }
+	        bufferedReader.close();
+		} catch (Exception e) {
+			throw new ThinklabIOException(e);
+		}
+        return lines.toArray(new String[lines.size()]);
 	} 
 
 }

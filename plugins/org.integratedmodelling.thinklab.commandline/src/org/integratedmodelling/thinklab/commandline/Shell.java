@@ -38,6 +38,7 @@ import java.io.IOException;
 import jline.ConsoleReader;
 import jline.Terminal;
 
+import org.apache.commons.logging.Log;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
@@ -47,6 +48,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.owlapi.Session;
+import org.integratedmodelling.utils.MiscUtilities;
 
 /**
  * A simple command-line driven interface. Just attach to a session, startConsole() and type 'help'.
@@ -115,6 +117,37 @@ public class Shell {
 				} catch (ThinklabException e) {
 					e.printStackTrace();
 					console.printString(" error: " + e.getMessage() + "\n");
+				}
+			}
+		}
+		
+	}
+
+	public static void runScript(String s, ISession session, Log log) throws ThinklabException {
+
+		for (String input : MiscUtilities.readFileIntoStrings(s)) {
+			
+			input = input.trim();
+			if (input == null || input.isEmpty() || input.startsWith("#"))
+				continue;
+			
+			if ("exit".equals(input)) {
+				break;
+			} else {
+				
+				try {
+					
+					Command cmd = CommandParser.parse(input);
+					
+					if (cmd == null)
+						continue;
+					
+					IValue result = CommandManager.get().submitCommand(cmd, session);
+                    if (result != null)
+                    	log.info(cmd + " -> " + result.toString());
+
+				} catch (ThinklabException e) {
+					log.error("executing " + input, e);
 				}
 			}
 		}

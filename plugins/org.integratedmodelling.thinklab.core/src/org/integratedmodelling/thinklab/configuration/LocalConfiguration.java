@@ -37,9 +37,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.utils.MiscUtilities;
 
 /**
  * 
@@ -243,6 +246,18 @@ public class LocalConfiguration {
 	public static boolean strictValidation() {
 		String validation = getProperties().getProperty("thinklab.validation", "strict");
 		return validation.equals("strict");
+	}
+
+	public static Collection<? extends String> getProfileScripts() {
+
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		for (File f : userConfigPath.listFiles()) {
+			if (f.isFile() && MiscUtilities.getFileName(f.toString()).startsWith("."))
+				ret.add(f.toString());
+		}
+		
+		return ret;
 	}
 	
 	

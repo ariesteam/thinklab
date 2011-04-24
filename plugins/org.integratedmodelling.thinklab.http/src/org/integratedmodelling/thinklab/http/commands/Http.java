@@ -2,6 +2,7 @@ package org.integratedmodelling.thinklab.http.commands;
 
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.http.ThinklabHttpdPlugin;
 import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
@@ -27,10 +28,11 @@ import org.mortbay.jetty.Server;
 		optionalArgumentNames="application",
 		optionalArgumentTypes="thinklab-core:Text",
 		optionalArgumentDescriptions="application to start",
-		optionNames="p",
-		optionLongNames="port",
-		optionDescriptions="port",
-		optionTypes="thinklab-core:Integer"
+		optionNames="p,b",
+		optionLongNames="port,block",
+		optionDescriptions="port,join server thread (never return)",
+		optionTypes="thinklab-core:Integer,owl:Nothing",
+		optionArgumentLabels="port number, "
 		)
 public class Http implements ICommandHandler {
 	
@@ -40,9 +42,13 @@ public class Http implements ICommandHandler {
 
 		String cmd = command.getArgumentAsString("cmd");
 		Integer port = -1;
+		boolean block = false;
 		
 		if (command.hasOption("port"))
 			port = Integer.parseInt(command.getOptionAsString("port"));
+		
+		if (command.hasOption("block")) 
+			block = true;
 		
 		if (cmd.equals("start")) {
 			
@@ -63,6 +69,16 @@ public class Http implements ICommandHandler {
 					" published at " +
 					webapp.getApplicationUrl());
 			
+			if (block) {
+				session.getOutputStream().println(
+						"joining server thread - command will not return");
+				try {
+					webapp.getServer().join();
+				} catch (InterruptedException e) {
+					throw new ThinklabRuntimeException(e);
+				}
+			}
+				
 			
 		} else if (cmd.equals("stop")) {
 			

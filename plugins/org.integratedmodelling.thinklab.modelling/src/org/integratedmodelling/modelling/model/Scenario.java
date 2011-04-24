@@ -6,10 +6,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.modelling.corescience.ObservationModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IModelForm;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+
+import clojure.lang.IFn;
 
 /**
  * A scenario is an identification model containing observables that can be
@@ -33,11 +37,42 @@ public class Scenario implements IModelForm {
 	private String id;
 	private String description;
 	private HashSet<IConcept> observables;
-
-	public void addModel(IModel model, Map<?,?> metadata, Object editableDesc) {
+	private IContext context;
+	private boolean isPublic;
+	
+	public void addModel(Object model, Map<?,?> metadata, Object editableDesc) {
 		
-		models.add(model);
+		if (model instanceof IModel) {
+			models.add((IModel)model);
+		} else if (model instanceof IContext) {
+			this.context = (IContext)model;
+		}
 		editableData.add(editableDesc);
+	}
+	
+	public IContext getContext() {
+		return context;
+	}
+	
+	public boolean isPublic() {
+		return isPublic;
+	}
+	
+	public void applyClause(String keyword, Object argument)
+			throws ThinklabException {
+
+		// System.out.println(this + "processing clause " + keyword + " -> " +
+		// argument);
+
+		if (keyword.equals(":as")) {
+		} else if (keyword.equals(":when")) {
+		} else if (keyword.equals(":public")) {
+			this.isPublic = (Boolean)argument;
+		} else if (keyword.equals(":optional")) {
+		} else if (keyword.equals(":required")) {
+		} else if (keyword.equals(":agent")) {
+		} else {
+		}
 	}
 	
 	/**

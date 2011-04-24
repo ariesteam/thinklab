@@ -33,11 +33,16 @@
  **/
 package org.integratedmodelling.thinklab.shell;
 
+import java.util.ArrayList;
+
 import org.integratedmodelling.thinklab.commandline.CommandLine;
 import org.integratedmodelling.thinklab.commandline.GraphicalShell;
 import org.integratedmodelling.thinklab.commandline.Shell;
+import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
+import org.integratedmodelling.thinklab.owlapi.Session;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.boot.Application;
 import org.java.plugin.boot.ApplicationPlugin;
 import org.java.plugin.util.ExtendedProperties;
@@ -51,6 +56,9 @@ public class ShellApplication extends ApplicationPlugin implements Application {
     public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.shell";
 	private static final String GRAPHICAL_SHELL_PROPERTY = "commandline.graphical.shell";
 	
+	private ArrayList<String> scriptFiles = 
+		new ArrayList<String>();
+	
 	public ISession session;
 	
 	@Override
@@ -60,6 +68,12 @@ public class ShellApplication extends ApplicationPlugin implements Application {
 		getManager().activatePlugin("org.integratedmodelling.thinklab.core");
 		getManager().activatePlugin("org.integratedmodelling.thinklab.commandline");
 	
+		scriptFiles.addAll(LocalConfiguration.getProfileScripts());
+		
+		for (String s : arg1) {
+			scriptFiles.add(s);
+		}
+		
 		return this;
 	}
 
@@ -78,6 +92,24 @@ public class ShellApplication extends ApplicationPlugin implements Application {
 			BooleanValue.parseBoolean(
 					CommandLine.get().getProperties().getProperty(
 							GRAPHICAL_SHELL_PROPERTY, "true"));
+		
+		boolean hasScript = false;
+		ISession session = null;
+		for (String s : scriptFiles) {
+			
+
+			if (session == null)
+				session = new Session();
+			
+			if (!hasScript && MiscUtilities.getFileName(s).startsWith("."))
+				hasScript = true;
+			
+			Shell.runScript(s, session, log);
+		}
+		
+		if (hasScript)
+			return;
+		
 		if (isGraphical) {			
 			GraphicalShell shell = new GraphicalShell();
 			shell.startConsole();
