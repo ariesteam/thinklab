@@ -76,6 +76,10 @@ public class ModelStoryline extends Storyline {
 
 				}
 				
+				status = COMPUTED;
+				if (listener != null)
+					listener.onStatusChange(ModelStoryline.this, COMPUTING, COMPUTED);
+
 				/*
 				 * create visualization and notify the browsers
 				 */
@@ -85,18 +89,18 @@ public class ModelStoryline extends Storyline {
 					vis.visualize();
 					visualization = vis;
 				}
-				
-				status = COMPUTED;
+
 				if (listener != null)
-					listener.onStatusChange(ModelStoryline.this, COMPUTING, COMPUTED);
+					listener.notifyVisualization( ModelStoryline.this, model, visualization);
 
 				
 			} catch (Exception e) {
 				
-				e.printStackTrace();
 				status = ERROR;
-				if (listener != null)
+				if (listener != null) {
+					listener.notifyError(ModelStoryline.this, model, e);
 					listener.onStatusChange(ModelStoryline.this, COMPUTING, ERROR);
+				}
 				ModellingPlugin.get().logger().error(e.getMessage());
 				errors = true;
 				
@@ -224,6 +228,24 @@ public class ModelStoryline extends Storyline {
 		}
 	}
 
+	@Override
+	public void test(Listener listener) throws ThinklabException {
+					
+		this.session = listener.getSession();
+		
+		for (Pair<IModel, IContext> mc : models) {
+
+			setContext(mc.getSecond());
+			
+			ModelThread process = 
+				new ModelThread(KBoxManager.get(), session, listener);
+			
+			if (process != null) {
+				listener.getScheduler().enqueue(process);
+			}
+		}
+	}
+	
 	@Override
 	protected void processTemplate(StorylineTemplate template) {
 

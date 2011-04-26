@@ -1,7 +1,6 @@
 package org.integratedmodelling.modelling.storyline;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
@@ -81,6 +80,8 @@ public class Storyline extends DefaultMutableTreeNode {
 	 */
 	protected ArrayList<Pair<IModel,IContext>> models = 
 		new ArrayList<Pair<IModel,IContext>>();
+
+	private String path;
 	
 
 	public static interface Listener {
@@ -111,6 +112,18 @@ public class Storyline extends DefaultMutableTreeNode {
 		 * 
 		 */
 		public ISession getSession();
+
+		/*
+		 * 
+		 */
+		public void notifyVisualization(Storyline modelStoryline,
+				IModel model, IVisualization visualization);
+
+		/*
+		 * 
+		 */
+		public void notifyError(ModelStoryline modelStoryline, IModel model,
+				Exception e);
 	}
 	
 	public Storyline(StorylineTemplate template) {
@@ -119,6 +132,10 @@ public class Storyline extends DefaultMutableTreeNode {
 
 	public StorylineTemplate getTemplate() {
 		return template;
+	}
+	
+	public String getStorylinePath() {
+		return path;
 	}
 	
 	protected void setTemplate(StorylineTemplate presentation) {
@@ -249,9 +266,15 @@ public class Storyline extends DefaultMutableTreeNode {
 		}
 	}
 	
+	public void test(Listener listener) throws ThinklabException {
+		for (int i = 0; i < getChildCount(); i++) {
+			((Storyline)getChildAt(i)).test(listener);
+		}
+	}
+	
 	@Override
 	public String toString() {
-		return template.getTitle() + " [" + template.getConcept() + "]";
+		return getStorylinePath() + " [" + template.getConcept() + "]";
 	}
 
 	/**
@@ -370,5 +393,12 @@ public class Storyline extends DefaultMutableTreeNode {
 			presentation.initialize(this, properties);
 			presentation.render();
 		}
+	}
+
+	/*
+	 * only to be used by factory.
+	 */
+	public void setPath(String path) {
+		this.path = path;
 	}
 }

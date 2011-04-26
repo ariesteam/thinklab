@@ -127,7 +127,7 @@ public class StorylineFactory {
 		List<File> pth = getTemplatePath(path);
 		if (pth == null)
 			return null;
-		return getStoryline(pth, false);
+		return getStoryline(pth, path, false);
 	}
 	
 	/**
@@ -143,7 +143,7 @@ public class StorylineFactory {
 		List<File> pth = getTemplatePath(path);
 		if (pth == null)
 			return null;
-		return getStoryline(pth, true);
+		return getStoryline(pth, path, true);
 	}
 	
 	public static Storyline createStoryline(File f) throws ThinklabException {
@@ -163,7 +163,7 @@ public class StorylineFactory {
 		return ret;
 	}
 	
-	public static Storyline getStoryline(List<File> templates, boolean getChildren) throws ThinklabException {
+	public static Storyline getStoryline(List<File> templates, String path, boolean getChildren) throws ThinklabException {
 		
 		Storyline ret = null;
 		Storyline prev = null;
@@ -183,15 +183,16 @@ public class StorylineFactory {
 
 		// add all child storylines if requested
 		if (getChildren && templates.size() > 0) {
-			for (Storyline s : getChildStorylines(templates.get(templates.size() - 1), true)) {
+			for (Storyline s : getChildStorylines(templates.get(templates.size() - 1), path, true)) {
 				prev.add(s);
 			}
 		}
 		
+		ret.setPath(path);
 		return ret;
 	}
 	
-	private static Collection<Storyline> getChildStorylines(File file, boolean isRoot) throws ThinklabException {
+	private static Collection<Storyline> getChildStorylines(File file, String rootPath, boolean isRoot) throws ThinklabException {
 		
 		/*
 		 *  in order to have children, the directory containing the file must have
@@ -208,8 +209,9 @@ public class StorylineFactory {
 		for (File d : new File(ps).listFiles()) {
 			File sf = getStorylineFile(d);
 			if (sf != null) {
+				String rp = rootPath + "." + MiscUtilities.getFileBaseName(sf.toString());
 				Storyline s = createStoryline(sf);
-				for (Storyline ss : getChildStorylines(sf, false)) {
+				for (Storyline ss : getChildStorylines(sf, rp, false)) {
 					s.add(ss);
 				}
 				ret.add(s);
@@ -217,7 +219,10 @@ public class StorylineFactory {
 						d.toString().endsWith(".xml") && 
 						!d.equals(file) && 
 						!d.equals(pfile)) {
-				ret.add(createStoryline(d));
+				rootPath += "." + MiscUtilities.getFileBaseName(file.toString());
+				Storyline ssl = createStoryline(d);
+				ssl.setPath(rootPath);
+				ret.add(ssl);
 			}
 		}
 		

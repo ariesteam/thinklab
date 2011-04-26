@@ -1,6 +1,7 @@
 package org.integratedmodelling.modelling.commands;
 
 import java.io.PrintStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -15,6 +16,7 @@ import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
+import org.integratedmodelling.modelling.storyline.ModelStoryline;
 import org.integratedmodelling.modelling.storyline.Storyline;
 import org.integratedmodelling.modelling.storyline.StorylineFactory;
 import org.integratedmodelling.modelling.visualization.FileVisualization;
@@ -37,6 +39,7 @@ import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.exec.ITaskScheduler;
 import org.integratedmodelling.utils.exec.SerialTaskScheduler;
+import org.joda.time.Duration;
 
 /**
  * Driver for everything that can be done with storylines. Subcommands are
@@ -65,6 +68,11 @@ import org.integratedmodelling.utils.exec.SerialTaskScheduler;
 		optionTypes="thinklab-core:Text,thinklab-core:Text")
 public class StorylineCommand extends InteractiveCommandHandler {
 
+	protected void log(ISession session, String s) {
+		
+		session.getOutputStream().println(s);
+	}
+	
 	@Override
 	protected IValue doInteractive(final Command command, final ISession session)
 			throws ThinklabException {
@@ -77,16 +85,24 @@ public class StorylineCommand extends InteractiveCommandHandler {
 		String   importd = null;
 		IModel model = null;
 		IContext context = null;
-
+		
 		if (command.hasOption("concept")) {
 			concept = KnowledgeManager.getConcept(command.getOptionAsString("concept"));
 		}
+		
 		if (command.hasOption("extends")) {
 			importd = command.getOptionAsString("extends");
 		}
 		
 		class Listener implements Storyline.Listener {
 
+			boolean isTesting = false;
+			long time = 0l;
+
+			public Listener(boolean isTesting) {
+				this.isTesting = isTesting;
+			}
+			
 			@Override
 			public IVisualization createVisualization(IModel model,
 					IContext iContext) {
@@ -95,12 +111,47 @@ public class StorylineCommand extends InteractiveCommandHandler {
 
 			@Override
 			public void onStatusChange(Storyline storyline, int original, int newstatus) {
-				session.print(
+
+				if (isTesting) {
+					if (original == Storyline.COMPUTING && newstatus == Storyline.COMPUTED) {
+						
+						/*
+						 * log timing
+						 */
+						long interval = new Date().getTime() - this.time;
+						Duration duration = new Duration(interval);
+						
+						ModelStoryline sl = (ModelStoryline) storyline;
+						IModel model     = sl.getModel();
+						IContext context = sl.getContext();
+						
+						log(session, model + " computed in " + duration + " in context " + context);
+						
+					
+					} else if (original == Storyline.IDLE && newstatus == Storyline.COMPUTING) {
+						
+						/*
+						 * log, reset counter
+						 */
+						this.time = new Date().getTime();
+
+						ModelStoryline sl = (ModelStoryline) storyline;
+						IModel model     = sl.getModel();
+						IContext context = sl.getContext();
+						
+						log(session, model + " started computing in " + context);
+
+					}
+
+				} else {
+				
+					session.print(
 						storyline +
 						" changed status from " + 
 						Storyline.statusLabels[original] + 
 						" to " + 
-						Storyline.statusLabels[newstatus]);			
+						Storyline.statusLabels[newstatus]);
+				}
 			}
 
 			@Override
@@ -111,6 +162,31 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			@Override
 			public ISession getSession() {
 				return session;
+			}
+
+			@Override
+			public void notifyVisualization(Storyline modelStoryline,
+					IModel model, IVisualization visualization) {
+
+				/*
+				 * log location of visualization
+				 */
+				log(session, model + " visualized in " + visualization);
+
+			}
+
+			@Override
+			public void notifyError(ModelStoryline modelStoryline,
+					IModel model, Exception e) {
+
+				/*
+				 * log everything, reset counter
+				 */
+				long interval = new Date().getTime() - this.time;
+				Duration duration = new Duration(interval);
+
+				log(session, model + " ended with errors after " + duration);
+
 			}
 		}
 		
@@ -175,13 +251,16 @@ public class StorylineCommand extends InteractiveCommandHandler {
 				ModelFactory.get().requireContext(command.getArgumentAsString("arg0"));
 			Storyline storyline = StorylineFactory.getStorylines(path);
 			storyline.setContext(context);
-			storyline.compute(new Listener());
+			storyline.compute(new Listener(false));
 			scheduler.start();
 			
 		} else if (action.equals("test")) {
 			
+			Storyline storyline = StorylineFactory.getStorylines(path);
+			storyline.test(new Listener(true));
+			scheduler.start();
 			
-		}  else if (action.equals("view")) {
+		} else if (action.equals("view")) {
 			
 			Storyline storyline = StorylineFactory.getStoryline(path);
 			
