@@ -33,6 +33,7 @@
  **/
 package org.integratedmodelling.thinklab.shell;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.integratedmodelling.thinklab.commandline.CommandLine;
@@ -71,6 +72,14 @@ public class ShellApplication extends ApplicationPlugin implements Application {
 		scriptFiles.addAll(LocalConfiguration.getProfileScripts());
 		
 		for (String s : arg1) {
+			
+			// FIXME?
+			// temporary fix - the first arg in cl is the main class name, but
+			// that doesn't apply when running through the JVM API so just 
+			// starting from 1 would require some inelegant CL hacks.
+			if (s.startsWith("org.") && !new File(s).exists())
+				continue;
+			
 			scriptFiles.add(s);
 		}
 		
@@ -97,7 +106,6 @@ public class ShellApplication extends ApplicationPlugin implements Application {
 		ISession session = null;
 		for (String s : scriptFiles) {
 			
-
 			if (session == null)
 				session = new Session();
 			
