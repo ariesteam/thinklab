@@ -27,6 +27,11 @@ public class FileArchive implements IDataset {
 	 */
 	private File directory;
 
+	@Override
+	public String toString() {
+		return "[" + getLocation() + "]";
+	}
+	
 	/* 
 	 * the name of the file directory under the main dir. If not set it will be set
 	 * from the name of the main observable and given a date suffix.

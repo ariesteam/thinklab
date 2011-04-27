@@ -211,6 +211,7 @@ public class StorylineFactory {
 			if (sf != null) {
 				String rp = rootPath + "." + MiscUtilities.getFileBaseName(sf.toString());
 				Storyline s = createStoryline(sf);
+				s.setPath(rp);
 				for (Storyline ss : getChildStorylines(sf, rp, false)) {
 					s.add(ss);
 				}
@@ -219,9 +220,9 @@ public class StorylineFactory {
 						d.toString().endsWith(".xml") && 
 						!d.equals(file) && 
 						!d.equals(pfile)) {
-				rootPath += "." + MiscUtilities.getFileBaseName(file.toString());
+				String pth = rootPath + "." + MiscUtilities.getFileBaseName(d.toString());
 				Storyline ssl = createStoryline(d);
-				ssl.setPath(rootPath);
+				ssl.setPath(pth);
 				ret.add(ssl);
 			}
 		}

@@ -106,7 +106,7 @@ public class Storyline extends DefaultMutableTreeNode {
 		/*
 		 * called any time the computation status changes.
 		 */
-		public void onStatusChange(Storyline storyline, int original, int newstatus);
+		public void onStatusChange(Storyline storyline, IModel model, IContext context, int original, int newstatus);
 
 		/*
 		 * 
@@ -117,13 +117,13 @@ public class Storyline extends DefaultMutableTreeNode {
 		 * 
 		 */
 		public void notifyVisualization(Storyline modelStoryline,
-				IModel model, IVisualization visualization);
+				IModel model, IContext context, IVisualization visualization);
 
 		/*
 		 * 
 		 */
 		public void notifyError(ModelStoryline modelStoryline, IModel model,
-				Exception e);
+				IContext context, Exception e);
 	}
 	
 	public Storyline(StorylineTemplate template) {

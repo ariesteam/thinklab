@@ -32,6 +32,11 @@ public class FileVisualization implements IVisualization {
 	protected IContext context;
 	boolean visualized = false;
 	
+	@Override
+	public String toString() {
+		return archive.toString();
+	}
+	
 	/**
 	 * largest edge of plot in pixels, used to define the dimensions of any visual 
 	 * unless the max viewport is given.

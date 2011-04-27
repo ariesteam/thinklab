@@ -1,10 +1,15 @@
 package org.integratedmodelling.modelling.storyline;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.modelling.ModellingPlugin;
+import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.literals.ContextValue;
@@ -38,11 +43,15 @@ public class ModelStoryline extends Storyline {
 	public class ModelThread extends Thread {
 
 		IKBox  kbox = null;
+		IModel model = null;
+		IContext context = null;
 		ISession session = null;
 		Listener listener = null;
 		
-		public ModelThread(IKBox kbox, ISession session, Listener listener) {
+		public ModelThread(IKBox kbox, IModel model, IContext context, ISession session, Listener listener) {
 			this.kbox = kbox;
+			this.model = model;
+			this.context = context;
 			this.session = session;
 			this.listener = listener;
 		}
@@ -55,7 +64,7 @@ public class ModelStoryline extends Storyline {
 			
 			status = COMPUTING;
 			if (listener != null)
-				listener.onStatusChange(ModelStoryline.this, IDLE, COMPUTING);
+				listener.onStatusChange(ModelStoryline.this, this.model, this.context, IDLE, COMPUTING);
 			
 			boolean errors = false;
 			
@@ -65,41 +74,53 @@ public class ModelStoryline extends Storyline {
 			 */			
 			try {
 
-				ModellingPlugin.get().logger().info("computation of " + model + " started");					
+				ModellingPlugin.get().logger().info("computation of " + 
+						((Model)model).getNamespace() + "/" + ((Model)model).getId() + 
+						" started in " + 
+						((Context)context).getNamespace() + "/" + ((Context)context).getId());	
+				
+				ArrayList<IContextualizationListener> lst = null;
+				if (listener instanceof IContextualizationListener) {
+					lst = new ArrayList<IContextualizationListener>();
+					lst.add((IContextualizationListener)listener);
+				}
+				
 				IQueryResult r = 
-					ModelFactory.get().run((Model) model, kbox, session, null, context);					
+					ModelFactory.get().run((Model) this.model, kbox, session, lst, this.context);					
 				
 				if (r.getTotalResultCount() > 0) {
 					
 					IValue res = r.getResult(0, session);
-					context = (IContext) ((ContextValue)res).getObservationContext();
+					ModelStoryline.this.context = (IContext) ((ContextValue)res).getObservationContext();
 
 				}
 				
 				status = COMPUTED;
 				if (listener != null)
-					listener.onStatusChange(ModelStoryline.this, COMPUTING, COMPUTED);
+					listener.onStatusChange(ModelStoryline.this, this.model, this.context, COMPUTING, COMPUTED);
 
 				/*
 				 * create visualization and notify the browsers
 				 */
 				if (listener != null) {
-					IVisualization vis = listener.createVisualization(model, getContext());
+					IVisualization vis = listener.createVisualization(this.model, getContext());
 					vis.initialize(getContext(), template.getProperties());
 					vis.visualize();
 					visualization = vis;
 				}
 
 				if (listener != null)
-					listener.notifyVisualization( ModelStoryline.this, model, visualization);
+					listener.notifyVisualization(
+							ModelStoryline.this, this.model, this.context,
+							visualization);
 
 				
 			} catch (Exception e) {
 				
 				status = ERROR;
 				if (listener != null) {
-					listener.notifyError(ModelStoryline.this, model, e);
-					listener.onStatusChange(ModelStoryline.this, COMPUTING, ERROR);
+					listener.notifyError(ModelStoryline.this, model, this.context, e);
+					listener.onStatusChange(ModelStoryline.this, this.model, this.context, COMPUTING, ERROR);
 				}
 				ModellingPlugin.get().logger().error(e.getMessage());
 				errors = true;
@@ -221,7 +242,7 @@ public class ModelStoryline extends Storyline {
 		status = PENDING;
 		
 		ModelThread process = 
-			new ModelThread(KBoxManager.get(), session, listener);
+			new ModelThread(KBoxManager.get(), model, context, session, listener);
 			
 		if (process != null) {
 			listener.getScheduler().enqueue(process);
@@ -234,11 +255,9 @@ public class ModelStoryline extends Storyline {
 		this.session = listener.getSession();
 		
 		for (Pair<IModel, IContext> mc : models) {
-
-			setContext(mc.getSecond());
 			
 			ModelThread process = 
-				new ModelThread(KBoxManager.get(), session, listener);
+				new ModelThread(KBoxManager.get(), mc.getFirst(), mc.getSecond(), session, listener);
 			
 			if (process != null) {
 				listener.getScheduler().enqueue(process);
