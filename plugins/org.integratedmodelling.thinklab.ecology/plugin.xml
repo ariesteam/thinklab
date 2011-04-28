@@ -1,71 +1,71 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.ecology" version="0.8.0" class="org.integratedmodelling.ecology.Ecology">
+<plugin class="org.integratedmodelling.ecology.Ecology" id="org.integratedmodelling.thinklab.ecology" version="0.8.1.20110428103733">
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core"/>
-		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
-		<import plugin-id="org.integratedmodelling.thinklab.dolce"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.corescience" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.dolce" reverse-lookup="false"/>
 	</requires>	
 	<runtime>
 		<library id="core" path="classes/" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
-		<library type="resources" path="ontologies/eco/" id="eco-ontologies" />
-		<library type="resources" path="ontologies/lulc/" id="lulc-ontologies" />
+		<library id="eco-ontologies" path="ontologies/eco/" type="resources"/>
+		<library id="lulc-ontologies" path="ontologies/lulc/" type="resources"/>
 	</runtime>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="ecology">
+	<extension id="ecology" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="ecology.owl"/>
-		<parameter id="concept-space" value="ecology" />
+		<parameter id="concept-space" value="ecology"/>
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="weather">
+	<extension id="weather" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="weather.owl"/>
-		<parameter id="concept-space" value="weather" />
+		<parameter id="concept-space" value="weather"/>
 	</extension>
-		<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="habitat">
+		<extension id="habitat" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="habitat.owl"/>
-		<parameter id="concept-space" value="habitat" />
+		<parameter id="concept-space" value="habitat"/>
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="lulc">
+	<extension id="lulc" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="lulc.owl"/>
-		<parameter id="concept-space" value="lulc" />
+		<parameter id="concept-space" value="lulc"/>
 	</extension>
-    <extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="anderson1">
+    <extension id="anderson1" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="anderson1.owl"/>
-		<parameter id="concept-space" value="anderson1" />
+		<parameter id="concept-space" value="anderson1"/>
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="anderson2">
+	<extension id="anderson2" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="anderson2.owl"/>
-		<parameter id="concept-space" value="anderson2" />
+		<parameter id="concept-space" value="anderson2"/>
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="apa">
+	<extension id="apa" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="apa.owl"/>
-		<parameter id="concept-space" value="apa" />
+		<parameter id="concept-space" value="apa"/>
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="nlcd">
+	<extension id="nlcd" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="nlcd.owl"/>
-		<parameter id="concept-space" value="nlcd" />
+		<parameter id="concept-space" value="nlcd"/>
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="infrastructure">
+	<extension id="infrastructure" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="infrastructure.owl"/>
 		<parameter id="concept-space" value="infrastructure"/>
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="corine">
+	<extension id="corine" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="corine.owl"/>
 		<parameter id="concept-space" value="corine"/>
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="mglulc">
+	<extension id="mglulc" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="mglulc.owl"/>
 		<parameter id="concept-space" value="mglulc"/>
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="domlulc">
+	<extension id="domlulc" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="domlulc.owl"/>
 		<parameter id="concept-space" value="domlulc"/>
 	</extension>	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="glc">
+	<extension id="glc" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="glc.owl"/>
 		<parameter id="concept-space" value="glc"/>
 	</extension>	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="veracruz">
+	<extension id="veracruz" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="veracruz-lulc.owl"/>
 		<parameter id="concept-space" value="veracruz-lulc"/>
 	</extension>	

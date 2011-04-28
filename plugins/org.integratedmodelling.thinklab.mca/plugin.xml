@@ -1,23 +1,23 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.mca" version="0.8.0" class="org.integratedmodelling.mca.MCAPlugin">
+<plugin class="org.integratedmodelling.mca.MCAPlugin" id="org.integratedmodelling.thinklab.mca" version="0.8.1.20110428103708">
 
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core"/>
-		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.corescience" reverse-lookup="false"/>
 	</requires>	
 
 	<runtime>
-		<library type="resources" path="ontologies/" id="ontologies" />
+		<library id="ontologies" path="ontologies/" type="resources"/>
 		<library id="mca" path="classes/" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 	</runtime>
 	
 	<!-- ontologies -->
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="mca">
+	<extension id="mca" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="mca.owl"/>
-		<parameter id="concept-space" value="mca" />
+		<parameter id="concept-space" value="mca"/>
 	</extension>
 	
 </plugin>

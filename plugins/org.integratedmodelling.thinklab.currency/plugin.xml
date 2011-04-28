@@ -1,22 +1,22 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.currency" version="0.8.0" class="org.integratedmodelling.currency.CurrencyPlugin">
+<plugin class="org.integratedmodelling.currency.CurrencyPlugin" id="org.integratedmodelling.thinklab.currency" version="0.8.1.20110428103721">
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core"/>
-		<import plugin-id="org.integratedmodelling.thinklab.sql"/>
-		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
-		<import plugin-id="org.integratedmodelling.thinklab.time"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.sql" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.corescience" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.time" reverse-lookup="false"/>
 	</requires>
 	<runtime>
 		<library id="core" path="classes/" type="code">
 			<export prefix="*"/>
 		</library>
 		<!-- make currency data available -->
-		<library type="resources" path="data/" id="data" />
-		<library type="resources" path="ontologies/" id="ontologies" />
+		<library id="data" path="data/" type="resources"/>
+		<library id="ontologies" path="ontologies/" type="resources"/>
 	</runtime>
 
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="cconvert">
+	<extension id="cconvert" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.currency.commands.CConvert"/>
 		<parameter id="command-name" value="cconvert"/>
 		<parameter id="command-description" value="convert currencies and adjust for inflation"/>
@@ -26,13 +26,13 @@
 	</extension>
 	
 	<!-- ontologies -->
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="economics">
+	<extension id="economics" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="economics.owl"/>
-		<parameter id="concept-space" value="economics" />
+		<parameter id="concept-space" value="economics"/>
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="currency">
+	<extension id="currency" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="currency.owl"/>
-		<parameter id="concept-space" value="currency" />
+		<parameter id="concept-space" value="currency"/>
 	</extension>
 
 </plugin>

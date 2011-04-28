@@ -1,3 +1,5 @@
 build
 plugins/versions.properties
 /logs
+classes
+jpf-boot-error.txt

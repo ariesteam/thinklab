@@ -1,18 +1,18 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.dynamicmodelling" version="0.8.0" class="org.integratedmodelling.dynamicmodelling.DynamicModellingPlugin">
+<plugin class="org.integratedmodelling.dynamicmodelling.DynamicModellingPlugin" id="org.integratedmodelling.thinklab.dynamicmodelling" version="0.8.1.20110428103723">
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core"/>
-		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.corescience" reverse-lookup="false"/>
 	</requires>	
 	<runtime>
 		<library id="core" path="classes/" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 	</runtime>
 	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="knowledge-loader" id="model-loader">
+	<extension id="model-loader" plugin-id="org.integratedmodelling.thinklab.core" point-id="knowledge-loader">
 		<parameter id="class" value="org.integratedmodelling.dynamicmodelling.ModelKnowledgeLoader"/>
-		<parameter id="format" value="sml,simile" />
+		<parameter id="format" value="sml,simile"/>
 	</extension>
 </plugin>

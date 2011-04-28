@@ -1,20 +1,20 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.time" version="0.8.0" class="org.integratedmodelling.time.TimePlugin">
+<plugin class="org.integratedmodelling.time.TimePlugin" id="org.integratedmodelling.thinklab.time" version="0.8.1.20110428103719">
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core"/>
-		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
-		<import plugin-id="org.integratedmodelling.thinklab.geospace"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.corescience" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.geospace" reverse-lookup="false"/>
 	</requires>
 	<runtime>
 		<library id="core" path="classes/" type="code">
 			<export prefix="*"/>
 		</library>
 		
-		<library type="resources" path="ontologies/" id="ontologies" />
-		<library type="resources" path="config/" id="config" />
+		<library id="ontologies" path="ontologies/" type="resources"/>
+		<library id="config" path="config/" type="resources"/>
 		
-		<library type="code" id="time" path="lib/joda-time-1.4.jar">
+		<library id="time" path="lib/joda-time-1.4.jar" type="code">
 			<export prefix="*"/>
 		</library>
 
@@ -23,9 +23,9 @@
 
 
 	<!-- ontologies -->
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="time">
+	<extension id="time" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="time.owl"/>
-		<parameter id="concept-space" value="time" />
+		<parameter id="concept-space" value="time"/>
 	</extension>
 
 

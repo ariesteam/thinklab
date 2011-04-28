@@ -1,27 +1,27 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.sql" version="0.8.0" class="org.integratedmodelling.sql.SQLPlugin">
+<plugin class="org.integratedmodelling.sql.SQLPlugin" id="org.integratedmodelling.thinklab.sql" version="0.8.1.20110428103654">
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="true"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="true"/>
 	</requires>	
 	<runtime>
 		<library id="opal" path="classes/" type="code">
-			<export prefix="*" />
-		</library>
-		
-		<library type="resources" path="config/" id="config" />
-		
-		<library type="code" id="hsqldb" path="lib/hsqldb.jar">
 			<export prefix="*"/>
 		</library>
-		<library type="code" id="postgresql" path="lib/postgresql-8.2dev-503.jdbc3.jar">
+		
+		<library id="config" path="config/" type="resources"/>
+		
+		<library id="hsqldb" path="lib/hsqldb.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="postgresql" path="lib/postgresql-8.2dev-503.jdbc3.jar" type="code">
 			<export prefix="*"/>
 		</library>
 	</runtime>
 
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="kbox-handler" id="sql-kbox-handler">
+	<extension id="sql-kbox-handler" plugin-id="org.integratedmodelling.thinklab.core" point-id="kbox-handler">
 		<parameter id="class" value="org.integratedmodelling.sql.SQLKBoxHandler"/>
-		<parameter id="protocol" value="pg,mysql,hsql" />
+		<parameter id="protocol" value="pg,mysql,hsql"/>
 	</extension>
 
 </plugin>

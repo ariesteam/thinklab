@@ -1,45 +1,45 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.searchengine" version="0.8.0" class="org.integratedmodelling.searchengine.SearchEnginePlugin">
+<plugin class="org.integratedmodelling.searchengine.SearchEnginePlugin" id="org.integratedmodelling.thinklab.searchengine" version="0.8.1.20110428103653">
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="false"/>
 	</requires>	
 	<runtime>
 		<library id="core" path="classes/" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
-		<library id="config" type="resources" path="config/"/>
-		<library type="code" id="jericho" path="lib/jericho-html-2.5.jar"/>
-		<library type="code" id="lucene" path="lib/lucene-core-2.2.0.jar"/>
-		<library type="code" id="pdfbox" path="lib/PDFBox-0.7.3.jar"/>
+		<library id="config" path="config/" type="resources"/>
+		<library id="jericho" path="lib/jericho-html-2.5.jar" type="code"/>
+		<library id="lucene" path="lib/lucene-core-2.2.0.jar" type="code"/>
+		<library id="pdfbox" path="lib/PDFBox-0.7.3.jar" type="code"/>
 	</runtime>
 	
-	<extension-point  id="search-engine">
+	<extension-point extension-multiplicity="any" id="search-engine">
 		<!-- id of the search engine -->
-		<parameter-def id="id" />
+		<parameter-def id="id" multiplicity="one" type="string"/>
 		<!-- one or more kboxes separated by commas -->
-		<parameter-def id="kbox" multiplicity="none-or-one" />
+		<parameter-def id="kbox" multiplicity="none-or-one" type="string"/>
 		<!-- one or more ontologies separated by commas -->
-		<parameter-def id="ontology" multiplicity="none-or-one" />
+		<parameter-def id="ontology" multiplicity="none-or-one" type="string"/>
 		<!-- if true, index those objects that have no annotations; default is false -->
-		<parameter-def id="index-uncommented" multiplicity="none-or-one" /> 
+		<parameter-def id="index-uncommented" multiplicity="none-or-one" type="string"/> 
 		<!-- only index objects of this type or subtypes; default is everything -->
-		<parameter-def id="select-classes" multiplicity="none-or-one" />
+		<parameter-def id="select-classes" multiplicity="none-or-one" type="string"/>
 		<!-- customization of the way each individual property value is indexed --> 
-		<parameter-def id="index" type="null" multiplicity="any" >
+		<parameter-def id="index" multiplicity="any" type="null">
 			<!-- the property linking to what must be indexed -->
-			<parameter-def id="property" />
+			<parameter-def id="property" multiplicity="one" type="string"/>
 			<!-- can be "text", "download", "link", or "store" for now -->
-			<parameter-def id="type" />
+			<parameter-def id="type" multiplicity="one" type="string"/>
 			<!-- floating point weight, 1.0 is default for "normal"; ignored 
 				and unnecessary if the type is "store" -->
-			<parameter-def id="weight" multiplicity="none-or-one"/>
+			<parameter-def id="weight" multiplicity="none-or-one" type="string"/>
 		</parameter-def>
 	</extension-point>
 	
 	<!-- get a nice search engine so we can use it right away. A reindex command will
 	     index all ontologies currently loaded. -->
-	<extension plugin-id="org.integratedmodelling.thinklab.searchengine" point-id="search-engine" id="thinklab-knowledge-index">
+	<extension id="thinklab-knowledge-index" plugin-id="org.integratedmodelling.thinklab.searchengine" point-id="search-engine">
 		<parameter id="id" value="thinkcap-knowledge-index"/>
 		<parameter id="ontology" value="thinklab-core"/>
 		<parameter id="index">

@@ -1,18 +1,18 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.thinkscape" version="0.8.0" class="org.integratedmodelling.thinkscape.ThinkscapePlugin">
+<plugin class="org.integratedmodelling.thinkscape.ThinkscapePlugin" id="org.integratedmodelling.thinklab.thinkscape" version="0.8.1.20110428103742">
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="false"/>
 	</requires>
 	<runtime>
 		<library id="core" path="classes/" type="code">
 			<export prefix="*"/>
 		</library>				
-		<library type="code" id="prefuse"  path="lib/prefuse.jar"/>
-		<library type="code" id="growl"  path="lib/growl.jar"/>
+		<library id="prefuse" path="lib/prefuse.jar" type="code"/>
+		<library id="growl" path="lib/growl.jar" type="code"/>
 	</runtime>
 
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="thinkscape">
+	<extension id="thinkscape" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinkscape.commands.Thinkscape"/>
 		<parameter id="command-name" value="thinkscape"/>
 		<parameter id="command-description" value="create a thinkscape monitor"/>

@@ -1,8 +1,8 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.commandline" version="0.8.0" class="org.integratedmodelling.thinklab.commandline.CommandLine">
+<plugin class="org.integratedmodelling.thinklab.commandline.CommandLine" id="org.integratedmodelling.thinklab.commandline" version="0.8.1.20110428103700">
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="false"/>
 	</requires>
 	<runtime>
 		<library id="core" path="classes/" type="code">
@@ -11,7 +11,7 @@
 	</runtime>
 
 	<!-- base commands (experimental and free-format ones not included) -->
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="load">
+	<extension id="load" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Load"/>
 		<parameter id="command-name" value="load"/>
 		<parameter id="command-description" value="load knowledge from external sources into current session"/>
@@ -24,7 +24,7 @@
 		<parameter id="option-descriptions" value="knowledge box"/>
 	</extension>
 
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="clear">
+	<extension id="clear" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Clear"/>
 		<parameter id="command-name" value="clear"/>
 		<parameter id="command-description" value="clear current session or specified ontology from knowledge base"/>
@@ -34,7 +34,7 @@
 		<parameter id="optional-argument-default-values" value="__all__"/>
 	</extension>
 	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="cmap">
+	<extension id="cmap" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.CMap"/>
 		<parameter id="command-name" value="cmap"/>
 		<parameter id="command-description" value="show a concept map for a concept or for the whole repository"/>
@@ -44,7 +44,7 @@
 		<parameter id="optional-argument-default-values" value="__none"/>
 	</extension>
 	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="find">
+	<extension id="find" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Find"/>
 		<parameter id="command-name" value="find"/>
 		<parameter id="command-description" value="find a concept in the loaded ontologies"/>
@@ -53,7 +53,7 @@
 		<parameter id="argument-descriptions" value="concept name"/>
 	</extension>
 	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="help">
+	<extension id="help" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Help"/>
 		<parameter id="command-name" value="help"/>
 		<parameter id="command-description" value="get help on usage and commands"/>
@@ -63,7 +63,7 @@
 		<parameter id="optional-argument-default-values" value="__none"/>
 	</extension>
 	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="list">
+	<extension id="list" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.List"/>
 		<parameter id="command-name" value="list"/>
 		<parameter id="command-description" value="list resources and their contents"/>
@@ -77,7 +77,7 @@
 		<parameter id="option-descriptions" value="list format"/>
 	</extension>
 	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="hierarchy">
+	<extension id="hierarchy" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Hierarchy"/>
 		<parameter id="command-name" value="hierarchy"/>
 		<parameter id="command-description" value="show the class hierarchy for a concept or for the whole repository"/>
@@ -87,7 +87,7 @@
 		<parameter id="optional-argument-default-values" value="__none"/>
 	</extension>
 	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="import">
+	<extension id="import" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Import"/>
 		<parameter id="command-name" value="import"/>
 		<parameter id="command-description" value="import external ontologies into permanent repository"/>
@@ -100,7 +100,7 @@
 		<parameter id="option-descriptions" value="short concept space name"/>
 	</extension>
 	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="kcopy">
+	<extension id="kcopy" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.KCopy"/>
 		<parameter id="command-name" value="kcopy"/>
 		<parameter id="command-description" value="copy the contents of a kbox into another"/>
@@ -109,7 +109,7 @@
 		<parameter id="argument-descriptions" value="ID or URL of the source kbox,ID or URL of the destination kbox"/>
 	</extension>
 	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="is">
+	<extension id="is" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Is"/>
 		<parameter id="command-name" value="is"/>
 		<parameter id="command-description" value="use the reasoner to determine if a concept is subsumed by another"/>
@@ -118,7 +118,7 @@
 		<parameter id="argument-descriptions" value="semantic type of child concept,semantic type of parent concept"/>
 	</extension>
 	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="kexport">
+	<extension id="kexport" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.KExport"/>
 		<parameter id="command-name" value="kexport"/>
 		<parameter id="command-description" value="export knowledge from a kbox or the current session into an external file"/>
@@ -131,7 +131,7 @@
 		<parameter id="option-descriptions" value="a supported output format (file extension is used if not specified"/>
 	</extension>
 	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="kimport">
+	<extension id="kimport" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.KImport"/>
 		<parameter id="command-name" value="kimport"/>
 		<parameter id="command-description" value="import knowledge into a kbox from external sources"/>
@@ -140,7 +140,7 @@
 		<parameter id="argument-descriptions" value="filename or URL to load from,ID or URL of the destination kbox"/>
 	</extension>
 	
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="pload">
+	<extension id="pload" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.PLoad"/>
 		<parameter id="command-name" value="pload"/>
 		<parameter id="command-description" value="load an installed plugin"/>
@@ -149,7 +149,7 @@
 		<parameter id="argument-descriptions" value="the plugin to load"/>
 	</extension>
 
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="punload">
+	<extension id="punload" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.PUnload"/>
 		<parameter id="command-name" value="punload"/>
 		<parameter id="command-description" value="unload an installed plugin"/>
@@ -158,7 +158,7 @@
 		<parameter id="argument-descriptions" value="the plugin to unload"/>
 	</extension>
 
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="preload">
+	<extension id="preload" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.PReload"/>
 		<parameter id="command-name" value="preload"/>
 		<parameter id="command-description" value="reload an installed and loaded plugin"/>
@@ -167,7 +167,7 @@
 		<parameter id="argument-descriptions" value="the plugin to reload"/>
 	</extension>
 	
-		<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler" id="run">
+		<extension id="run" plugin-id="org.integratedmodelling.thinklab.core" point-id="command-handler">
 		<parameter id="class" value="org.integratedmodelling.thinklab.commandline.commands.Run"/>
 		<parameter id="command-name" value="run"/>
 		<parameter id="command-description" value="run an installed application and return its final result"/>

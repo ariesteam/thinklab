@@ -1,25 +1,25 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.metadata" version="0.8.0" class="org.integratedmodelling.metadata.MetadataPlugin">
+<plugin class="org.integratedmodelling.metadata.MetadataPlugin" id="org.integratedmodelling.thinklab.metadata" version="0.8.1.20110428103739">
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core"/>
-		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
-		<import plugin-id="org.integratedmodelling.thinklab.geospace"/>
-		<import plugin-id="org.integratedmodelling.thinklab.time"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.corescience" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.geospace" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.time" reverse-lookup="false"/>
 	</requires>	
 	<runtime>
 		<library id="core" path="classes/" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
-		<library type="resources" path="ontologies/" id="ontologies" />
+		<library id="ontologies" path="ontologies/" type="resources"/>
 	</runtime>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="metadata">
+	<extension id="metadata" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="metadata.owl"/>
-		<parameter id="concept-space" value="metadata" />
+		<parameter id="concept-space" value="metadata"/>
 	</extension>
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="bibtex">
+	<extension id="bibtex" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="bibtex.owl"/>
-		<parameter id="concept-space" value="bibtex" />
+		<parameter id="concept-space" value="bibtex"/>
 	</extension>
 	
 </plugin>

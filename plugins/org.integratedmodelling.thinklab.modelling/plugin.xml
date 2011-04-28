@@ -1,74 +1,74 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.modelling" version="0.8.0" class="org.integratedmodelling.modelling.ModellingPlugin">
+<plugin class="org.integratedmodelling.modelling.ModellingPlugin" id="org.integratedmodelling.thinklab.modelling" version="0.8.1.20110428103732">
 
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core"/>
-		<import plugin-id="org.integratedmodelling.thinklab.clojure"/>
-		<import plugin-id="org.integratedmodelling.thinklab.corescience"/>
-		<import plugin-id="org.integratedmodelling.thinklab.geospace"/>
-		<import plugin-id="org.integratedmodelling.thinklab.time"/>
-		<import plugin-id="org.integratedmodelling.thinklab.riskwiz"/>
-		<import plugin-id="org.integratedmodelling.thinklab.currency"/>
-		<import plugin-id="org.integratedmodelling.thinklab.dynamicmodelling"/>
-		<import plugin-id="org.integratedmodelling.thinklab.rules"/>
-		<import plugin-id="org.integratedmodelling.thinklab.idv"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.clojure" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.corescience" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.geospace" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.time" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.riskwiz" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.currency" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.dynamicmodelling" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.rules" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.idv" reverse-lookup="false"/>
 		<!-- <import plugin-id="org.integratedmodelling.thinklab.mca"/> -->
 	</requires>
 
 	<runtime>
 		<library id="classes" path="classes/" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
-		<library type="resources" path="config/" id="config" />
-		<library type="resources" path="ontologies/" id="ontologies" />
-		<library type="resources" path="bindings/" id="bindings" />
+		<library id="config" path="config/" type="resources"/>
+		<library id="ontologies" path="ontologies/" type="resources"/>
+		<library id="bindings" path="bindings/" type="resources"/>
 		<!-- this is only so we can run clj -context modelling example.clj - may be removed --> 
-		<library type="resources" path="examples/" id="examples" />
+		<library id="examples" path="examples/" type="resources"/>
 		
 		<!-- gis functionalities -->
-		<library type="code" id="sextante" path="lib/sextante.jar"/>
+		<library id="sextante" path="lib/sextante.jar" type="code"/>
 		
 		<!-- modelling, visualization and netcdf libs -->
-		<library type="code" id="ascape" path="lib/Ascape_5.5.0.jar"/>
-		<library type="code" id="bufrTables" path="lib/bufrTables-1.5.jar"/>
-		<library type="code" id="commons-codec" path="lib/commons-codec-1.3.jar"/>
-		<library type="code" id="commons-httpclient" path="lib/commons-httpclient-3.1.jar"/>
-		<library type="code" id="commons-logging" path="lib/commons-logging-1.1.jar"/>
-		<library type="code" id="ehcache" path="lib/ehcache-16.0-beta3.jar"/>
-		<library type="code" id="forms" path="lib/forms-1.0.7.jar"/>
-		<library type="code" id="grib" path="lib/grib-6.0.jar"/>
-		<library type="code" id="jdom" path="lib/jdom.jar"/>
-		<library type="code" id="jpeg2000" path="lib/jpeg2000.jar"/>
-		<library type="code" id="netcdf" path="lib/netcdf-4.0.jar"/>
-		<library type="code" id="netcdfUI" path="lib/netcdfUI-4.0.jar"/>
-		<library type="code" id="slf4j-api" path="lib/slf4j-api-1.5.6.jar"/>
-		<library type="code" id="slf4j-jdk4" path="lib/slf4j-jdk4-1.5.6.jar"/>
-		<library type="code" id="slf4j-log4j12" path="lib/slf4j-log4j12-1.5.6.jar"/>
-		<library type="code" id="spring" path="lib/spring-2.5.jar"/>
-		<library type="code" id="stax-api" path="lib/stax-api-1.0.1.jar"/>
-		<library type="code" id="visad" path="lib/visad.jar"/>
-		<library type="code" id="gnuplot" path="lib/gnuplot.jar"/>
+		<library id="ascape" path="lib/Ascape_5.5.0.jar" type="code"/>
+		<library id="bufrTables" path="lib/bufrTables-1.5.jar" type="code"/>
+		<library id="commons-codec" path="lib/commons-codec-1.3.jar" type="code"/>
+		<library id="commons-httpclient" path="lib/commons-httpclient-3.1.jar" type="code"/>
+		<library id="commons-logging" path="lib/commons-logging-1.1.jar" type="code"/>
+		<library id="ehcache" path="lib/ehcache-16.0-beta3.jar" type="code"/>
+		<library id="forms" path="lib/forms-1.0.7.jar" type="code"/>
+		<library id="grib" path="lib/grib-6.0.jar" type="code"/>
+		<library id="jdom" path="lib/jdom.jar" type="code"/>
+		<library id="jpeg2000" path="lib/jpeg2000.jar" type="code"/>
+		<library id="netcdf" path="lib/netcdf-4.0.jar" type="code"/>
+		<library id="netcdfUI" path="lib/netcdfUI-4.0.jar" type="code"/>
+		<library id="slf4j-api" path="lib/slf4j-api-1.5.6.jar" type="code"/>
+		<library id="slf4j-jdk4" path="lib/slf4j-jdk4-1.5.6.jar" type="code"/>
+		<library id="slf4j-log4j12" path="lib/slf4j-log4j12-1.5.6.jar" type="code"/>
+		<library id="spring" path="lib/spring-2.5.jar" type="code"/>
+		<library id="stax-api" path="lib/stax-api-1.0.1.jar" type="code"/>
+		<library id="visad" path="lib/visad.jar" type="code"/>
+		<library id="gnuplot" path="lib/gnuplot.jar" type="code"/>
 	
 		<!-- wiki subsystem  -->
-		<library type="code" id="textile" path="lib/textile-j-2.2.jar"/>
+		<library id="textile" path="lib/textile-j-2.2.jar" type="code"/>
 		
 	</runtime>
 	
 	<!-- ontologies -->
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="modeltypes">
+	<extension id="modeltypes" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="modeltypes.owl"/>
-		<parameter id="concept-space" value="modeltypes" /> 
+		<parameter id="concept-space" value="modeltypes"/> 
 	</extension>
 	
 	<!-- FIXME test ontology - remove -->
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology" id="test">
+	<extension id="test" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="test.owl"/>
-		<parameter id="concept-space" value="test" /> 
+		<parameter id="concept-space" value="test"/> 
 	</extension>
 	
 	<!-- bindings -->
-	<extension plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding" id="clj">
+	<extension id="clj" plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding">
 		<parameter id="language" value="clojure"/>
 		<parameter id="resource" value="clojure/modelling.clj"/>
 		<parameter id="resource" value="clojure/gis.clj"/>

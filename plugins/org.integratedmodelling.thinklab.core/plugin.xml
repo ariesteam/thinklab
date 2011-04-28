@@ -1,78 +1,75 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin
-   id="org.integratedmodelling.thinklab.core"
-   version="0.8.0"
-   class="org.integratedmodelling.thinklab.Thinklab">
+<plugin class="org.integratedmodelling.thinklab.Thinklab" id="org.integratedmodelling.thinklab.core" version="0.8.1.20110428103647">
 	<runtime>
 		<library id="core" path="classes/" type="code">
-			<export prefix="*" />
-		</library>
-		<library type="resources" path="ontologies/" id="ontologies" />
-		<library type="resources" path="config/" id="config" />
-		<library type="code" id="agg_classes" path="lib/agg_V1622_classes.jar"/>
-		<library type="code" id="ant" path="lib/ant-1.6.5.jar"/>
-		<library type="code" id="antlr"  path="lib/antlr-2.7.6.jar"/>
-		<library type="code" id="amtlr-runtime"  path="lib/antlr-runtime-3.0.jar"/>
-		<library type="code" id="ant-nodeps"  path="lib/ant-nodeps-1.6.5.jar"/>
-		<library type="code" id="ant-optional"  path="lib/ant-optional-1.5.1.jar"/>
-		<library type="code" id="asm"  path="lib/asm.jar"/>
-		<library type="code" id="asm-attris"  path="lib/asm-attrs.jar"/>
-		<library type="code" id="aterm"  path="lib/aterm-java-1.6.jar"/>
-		<library type="code" id="bsf"  path="lib/bsf.jar"/>
-		<library type="code" id="bsh"  path="lib/bsh_custom.jar">
-			<export prefix="*" />
-		</library>
-		<library type="code" id="common"  path="lib/common-2.2.1.jar">
-			<export prefix="*" />
-		</library>
-		<library type="code" id="commons-beanutils"  path="lib/commons-beanutils-1.7.0.jar">
-			<export prefix="*" />
-		</library>
-		<library type="code" id="commons-codec"  path="lib/commons-codec-1.3.jar"/>
-		<library type="code" id="commons-collections"  path="lib/commons-collections-3.2.jar">
 			<export prefix="*"/>
 		</library>
-		<library type="code" id="commons-collections-testframework"  path="lib/commons-collections-testframework-3.2.jar"/>
-		<library type="code" id="commons-dbcp"  path="lib/commons-dbcp-1.2.2.jar">
-			<export prefix="*" />
+		<library id="ontologies" path="ontologies/" type="resources"/>
+		<library id="config" path="config/" type="resources"/>
+		<library id="agg_classes" path="lib/agg_V1622_classes.jar" type="code"/>
+		<library id="ant" path="lib/ant-1.6.5.jar" type="code"/>
+		<library id="antlr" path="lib/antlr-2.7.6.jar" type="code"/>
+		<library id="amtlr-runtime" path="lib/antlr-runtime-3.0.jar" type="code"/>
+		<library id="ant-nodeps" path="lib/ant-nodeps-1.6.5.jar" type="code"/>
+		<library id="ant-optional" path="lib/ant-optional-1.5.1.jar" type="code"/>
+		<library id="asm" path="lib/asm.jar" type="code"/>
+		<library id="asm-attris" path="lib/asm-attrs.jar" type="code"/>
+		<library id="aterm" path="lib/aterm-java-1.6.jar" type="code"/>
+		<library id="bsf" path="lib/bsf.jar" type="code"/>
+		<library id="bsh" path="lib/bsh_custom.jar" type="code">
+			<export prefix="*"/>
 		</library>
-		<library type="code" id="commons-httpclient"  path="lib/commons-httpclient-3.0.1.jar"/>
-		<library type="code" id="commons-jxpath"  path="lib/commons-jxpath-1.2.jar">
-			<export prefix="*" />
+		<library id="common" path="lib/common-2.2.1.jar" type="code">
+			<export prefix="*"/>
 		</library>
-		<library type="code" id="commons-io"  path="lib/commons-io-1.4.jar">
-			<export prefix="*" />
+		<library id="commons-beanutils" path="lib/commons-beanutils-1.7.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="commons-codec" path="lib/commons-codec-1.3.jar" type="code"/>
+		<library id="commons-collections" path="lib/commons-collections-3.2.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="commons-collections-testframework" path="lib/commons-collections-testframework-3.2.jar" type="code"/>
+		<library id="commons-dbcp" path="lib/commons-dbcp-1.2.2.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="commons-httpclient" path="lib/commons-httpclient-3.0.1.jar" type="code"/>
+		<library id="commons-jxpath" path="lib/commons-jxpath-1.2.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="commons-io" path="lib/commons-io-1.4.jar" type="code">
+			<export prefix="*"/>
 		</library>		
-		<library type="code" id="commons-lang"  path="lib/commons-lang-2.2.jar">
-			<export prefix="*" />
+		<library id="commons-lang" path="lib/commons-lang-2.2.jar" type="code">
+			<export prefix="*"/>
 		</library>
-		<library type="code" id="commons-logging"  path="lib/commons-logging-1.1.1.jar"/>
-		<library type="code" id="commons-math"  path="lib/commons-math-2.1.jar">
-			<export prefix="*" />
+		<library id="commons-logging" path="lib/commons-logging-1.1.1.jar" type="code"/>
+		<library id="commons-math" path="lib/commons-math-2.1.jar" type="code">
+			<export prefix="*"/>
 		</library>
-		<library type="code" id="commons-pool"  path="lib/commons-pool-1.3.jar">
-			<export prefix="*" />
+		<library id="commons-pool" path="lib/commons-pool-1.3.jar" type="code">
+			<export prefix="*"/>
 		</library>
-		<library type="code" id="concurrent"  path="lib/concurrent-1.3.4.jar"/>
-		<library type="code" id="http"  path="lib/http.jar"/>
-		<library type="code" id="icu4j" path="lib/icu4j_3_4.jar"/>
-		<library type="code" id="iri"   path="lib/iri.jar"/>
-		<library type="code" id="jena"  path="lib/jena.jar"/>
-		<library type="code" id="jep"   path="lib/jep-2.4.1.jar"/>
-		<library type="code" id="jgrapht"  path="lib/jgrapht.jar">
-			<export prefix="*" />
+		<library id="concurrent" path="lib/concurrent-1.3.4.jar" type="code"/>
+		<library id="http" path="lib/http.jar" type="code"/>
+		<library id="icu4j" path="lib/icu4j_3_4.jar" type="code"/>
+		<library id="iri" path="lib/iri.jar" type="code"/>
+		<library id="jena" path="lib/jena.jar" type="code"/>
+		<library id="jep" path="lib/jep-2.4.1.jar" type="code"/>
+		<library id="jgrapht" path="lib/jgrapht.jar" type="code">
+			<export prefix="*"/>
 		</library>
-		<library type="code" id="jline"  path="lib/jline-0.9.94.jar">
-			<export prefix="*" />
+		<library id="jline" path="lib/jline-0.9.94.jar" type="code">
+			<export prefix="*"/>
 		</library>
-		<library type="code" id="jopt-simple"  path="lib/jopt-simple-2.4-beta2.jar"/>
-		<library type="code" id="junit"  path="lib/junit.jar">
-			<export prefix="*" />
+		<library id="jopt-simple" path="lib/jopt-simple-2.4-beta2.jar" type="code"/>
+		<library id="junit" path="lib/junit.jar" type="code">
+			<export prefix="*"/>
 		</library>
-		<library type="code" id="kazuki"  path="lib/kazuki.jar"/>
-		<library type="code" id="mvel"  path="lib/mvel2-2.0.7.jar">
-				<export prefix="*" />
+		<library id="kazuki" path="lib/kazuki.jar" type="code"/>
+		<library id="mvel" path="lib/mvel2-2.0.7.jar" type="code">
+				<export prefix="*"/>
 		</library>
 
 		<!-- <library type="code" id="owlapi-api"  path="lib/owlapi-api.jar"/>
@@ -95,191 +92,191 @@
 		<library type="code" id="owlapi-rdfxmlrenderer"  path="lib/owlapi-rdfxmlrenderer.jar"/>
 		<library type="code" id="owlapi-util"  path="lib/owlapi-util.jar"/> -->
 
-		<library type="code" id="owlapi"  path="lib/owlapi-bin.jar"/>
-		<library type="code" id="owlsyntax"  path="lib/owlsyntax.jar"/>
-		<library type="code" id="pellet"  path="lib/pellet.jar"/>
-		<library type="code" id="protege"  path="lib/protege.jar">
-				<export prefix="*" />
+		<library id="owlapi" path="lib/owlapi-bin.jar" type="code"/>
+		<library id="owlsyntax" path="lib/owlsyntax.jar" type="code"/>
+		<library id="pellet" path="lib/pellet.jar" type="code"/>
+		<library id="protege" path="lib/protege.jar" type="code">
+				<export prefix="*"/>
 		</library>
-		<library type="code" id="protege-owl"  path="lib/protege-owl.jar">
-				<export prefix="*" />
+		<library id="protege-owl" path="lib/protege-owl.jar" type="code">
+				<export prefix="*"/>
 		</library>
-		<library type="code" id="rdf-api"  path="lib/rdf-api-2001-01-19.jar"/>
-		<library type="code" id="relaxngDatatype"  path="lib/relaxngDatatype.jar"/>
-		<library type="code" id="resolver"  path="lib/resolver.jar"/>
-		<library type="code" id="serializer"  path="lib/serializer.jar"/>
-		<library type="code" id="stax-api"  path="lib/stax-api-1.0.jar"/>
-		<library type="code" id="swrl-jess-bridge"  path="lib/swrl-jess-bridge.jar"/>
-		<library type="code" id="wstx-asl"  path="lib/wstx-asl-3.0.0.jar"/>
-		<library type="code" id="xercesImpl"  path="lib/xercesImpl-2.7.1.jar">
-				<export prefix="*" />
+		<library id="rdf-api" path="lib/rdf-api-2001-01-19.jar" type="code"/>
+		<library id="relaxngDatatype" path="lib/relaxngDatatype.jar" type="code"/>
+		<library id="resolver" path="lib/resolver.jar" type="code"/>
+		<library id="serializer" path="lib/serializer.jar" type="code"/>
+		<library id="stax-api" path="lib/stax-api-1.0.jar" type="code"/>
+		<library id="swrl-jess-bridge" path="lib/swrl-jess-bridge.jar" type="code"/>
+		<library id="wstx-asl" path="lib/wstx-asl-3.0.0.jar" type="code"/>
+		<library id="xercesImpl" path="lib/xercesImpl-2.7.1.jar" type="code">
+				<export prefix="*"/>
 		</library>
-		<library type="code" id="xml-apis"  path="lib/xml-apis-1.0.b2.jar">
-				<export prefix="*" />
+		<library id="xml-apis" path="lib/xml-apis-1.0.b2.jar" type="code">
+				<export prefix="*"/>
 		</library>
-		<library type="code" id="xml-apis-xerces"  path="lib/xml-apis-xerces-2.7.1.jar">
-				<export prefix="*" />
+		<library id="xml-apis-xerces" path="lib/xml-apis-xerces-2.7.1.jar" type="code">
+				<export prefix="*"/>
 		</library>
-		<library type="code" id="xmlParserAPIs"  path="lib/xmlParserAPIs.jar">
-				<export prefix="*" />
+		<library id="xmlParserAPIs" path="lib/xmlParserAPIs.jar" type="code">
+				<export prefix="*"/>
 		</library>
-		<library type="code" id="xsd"  path="lib/xsd-2.2.2.jar">
-				<export prefix="*" />
+		<library id="xsd" path="lib/xsd-2.2.2.jar" type="code">
+				<export prefix="*"/>
 		</library>
-		<library type="code" id="xsdlib"  path="lib/xsdlib-20050614.jar"/>	
+		<library id="xsdlib" path="lib/xsdlib-20050614.jar" type="code"/>	
 		
 		
 		<library id="restlet" path="lib/org.restlet.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 
 		<library id="restlet.ext.json" path="lib/org.restlet.ext.json.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		
 		<library id="restlet.ext.jetty" path="lib/org.restlet.ext.jetty.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 
 		<library id="javax.servlet" path="lib/javax.servlet.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		
 		<!-- following libs support core REST services -->
 		<library id="jetty.server" path="lib/org.eclipse.jetty.server.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		<library id="jetty.io" path="lib/org.eclipse.jetty.io.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		<library id="jetty.ajp" path="lib/org.eclipse.jetty.ajp.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		<library id="jetty.http" path="lib/org.eclipse.jetty.http.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		<library id="jetty.continuations" path="lib/org.eclipse.jetty.continuations.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		<library id="jetty.util" path="lib/org.eclipse.jetty.util.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		
 		<library id="json" path="lib/org.json.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		
 		<!-- swt/jface support for occasional GUIs. Would be much nicer to 
 			 not have to suck in the Eclipse runtime and OSGI for a couple
 			 stupid dependencies. TODO check if that can be solved. -->
 		<library id="swt" path="lib/swt.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		<library id="jface" path="lib/jface-3.0m8.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		<library id="forms" path="lib/forms-3.0m8.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		<library id="osgi" path="lib/osgi-3.0m8.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		<library id="runtime" path="lib/runtime-3.0m8.jar" type="code">
-			<export prefix="*" />
+			<export prefix="*"/>
 		</library>
 		
 	</runtime>
 
 	<!-- declare an ontology -->
-	<extension-point id="ontology">
-		<parameter-def id="url" />
-		<parameter-def id="concept-space" />
-		<parameter-def id="description" multiplicity="none-or-one" />
+	<extension-point extension-multiplicity="any" id="ontology">
+		<parameter-def id="url" multiplicity="one" type="string"/>
+		<parameter-def id="concept-space" multiplicity="one" type="string"/>
+		<parameter-def id="description" multiplicity="none-or-one" type="string"/>
 	</extension-point>
 
 	<!-- declare a kbox, optionally loading initial content if it's empty -->
-	<extension-point id="kbox">
-		<parameter-def id="protocol" />
-		<parameter-def id="url" />
-		<parameter-def id="id" />
-		<parameter-def id="initial-content" multiplicity="none-or-one" />
-		<parameter-def id="metadata-schema" multiplicity="none-or-one" />
-		<parameter-def id="description" multiplicity="none-or-one" />
+	<extension-point extension-multiplicity="any" id="kbox">
+		<parameter-def id="protocol" multiplicity="one" type="string"/>
+		<parameter-def id="url" multiplicity="one" type="string"/>
+		<parameter-def id="id" multiplicity="one" type="string"/>
+		<parameter-def id="initial-content" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="metadata-schema" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="description" multiplicity="none-or-one" type="string"/>
 	</extension-point>
 
 	<!-- declare a kbox handler -->
-	<extension-point id="kbox-handler">
-		<parameter-def id="class" />
-		<parameter-def id="protocol"  />
-		<parameter-def id="description" multiplicity="none-or-one" />
+	<extension-point extension-multiplicity="any" id="kbox-handler">
+		<parameter-def id="class" multiplicity="one" type="string"/>
+		<parameter-def id="protocol" multiplicity="one" type="string"/>
+		<parameter-def id="description" multiplicity="none-or-one" type="string"/>
 	</extension-point>
 
-	<extension-point id="session-listener">
-		<parameter-def id="class" />
-		<parameter-def id="description" multiplicity="none-or-one" />
+	<extension-point extension-multiplicity="any" id="session-listener">
+		<parameter-def id="class" multiplicity="one" type="string"/>
+		<parameter-def id="description" multiplicity="none-or-one" type="string"/>
 	</extension-point>
 
-	<extension-point id="knowledge-loader">
-		<parameter-def id="class" />
-		<parameter-def id="format" />
-		<parameter-def id="description" multiplicity="none-or-one" />
+	<extension-point extension-multiplicity="any" id="knowledge-loader">
+		<parameter-def id="class" multiplicity="one" type="string"/>
+		<parameter-def id="format" multiplicity="one" type="string"/>
+		<parameter-def id="description" multiplicity="none-or-one" type="string"/>
 	</extension-point>
 
-	<extension-point id="knowledge-listener">
-		<parameter-def id="class" />
-		<parameter-def id="description" multiplicity="none-or-one" />
+	<extension-point extension-multiplicity="any" id="knowledge-listener">
+		<parameter-def id="class" multiplicity="one" type="string"/>
+		<parameter-def id="description" multiplicity="none-or-one" type="string"/>
 	</extension-point>
 
-	<extension-point id="knowledge-importer">
-		<parameter-def id="class" />
-		<parameter-def id="format"  />
-		<parameter-def id="description" multiplicity="none-or-one" />
+	<extension-point extension-multiplicity="any" id="knowledge-importer">
+		<parameter-def id="class" multiplicity="one" type="string"/>
+		<parameter-def id="format" multiplicity="one" type="string"/>
+		<parameter-def id="description" multiplicity="none-or-one" type="string"/>
 	</extension-point>
 
-	<extension-point id="language-binding">
-		<parameter-def id="language" multiplicity="one" />
-		<parameter-def id="task-package" multiplicity="any" />
-		<parameter-def id="classpath" multiplicity="any" />
-		<parameter-def id="resource" multiplicity="one-or-more"/>
+	<extension-point extension-multiplicity="any" id="language-binding">
+		<parameter-def id="language" multiplicity="one" type="string"/>
+		<parameter-def id="task-package" multiplicity="any" type="string"/>
+		<parameter-def id="classpath" multiplicity="any" type="string"/>
+		<parameter-def id="resource" multiplicity="one-or-more" type="string"/>
 	</extension-point>
 
-	<extension-point id="language-interpreter">
-		<parameter-def id="class" />
-		<parameter-def id="language" />
-		<parameter-def id="description" multiplicity="none-or-one" />
-		<parameter-def id="example" multiplicity="any" />
+	<extension-point extension-multiplicity="any" id="language-interpreter">
+		<parameter-def id="class" multiplicity="one" type="string"/>
+		<parameter-def id="language" multiplicity="one" type="string"/>
+		<parameter-def id="description" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="example" multiplicity="any" type="string"/>
 	</extension-point>
 
-	<extension-point id="application">
-		<parameter-def id="id" />
-		<parameter-def id="main-task-class" multiplicity="none-or-one"/>
-		<parameter-def id="session-class" multiplicity="none-or-one" />
-		<parameter-def id="declaration" multiplicity="none-or-one">
-			<parameter-def id="language" multiplicity="one" />
-			<parameter-def id="code" multiplicity="none-or-one" />
-			<parameter-def id="script" multiplicity="one-or-more" />
+	<extension-point extension-multiplicity="any" id="application">
+		<parameter-def id="id" multiplicity="one" type="string"/>
+		<parameter-def id="main-task-class" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="session-class" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="declaration" multiplicity="none-or-one" type="string">
+			<parameter-def id="language" multiplicity="one" type="string"/>
+			<parameter-def id="code" multiplicity="none-or-one" type="string"/>
+			<parameter-def id="script" multiplicity="one-or-more" type="string"/>
 		</parameter-def>
-		<parameter-def id="description" multiplicity="none-or-one" />
+		<parameter-def id="description" multiplicity="none-or-one" type="string"/>
 	</extension-point>
 
-	<extension-point id="command-handler">
-		<parameter-def id="class" />
-		<parameter-def id="command-name" />
-		<parameter-def id="command-description" />
-		<parameter-def id="return-type" multiplicity="none-or-one" />
-		<parameter-def id="argument-names" multiplicity="none-or-one" />
-		<parameter-def id="argument-types" multiplicity="none-or-one" />
-		<parameter-def id="argument-descriptions" multiplicity="none-or-one" />
-		<parameter-def id="optional-argument-names" multiplicity="none-or-one" />
-		<parameter-def id="optional-argument-types" multiplicity="none-or-one" />
-		<parameter-def id="optional-argument-descriptions" multiplicity="none-or-one" />
-		<parameter-def id="optional-argument-default-values" multiplicity="none-or-one" />
-		<parameter-def id="option-names" multiplicity="none-or-one" />
-		<parameter-def id="option-long-names" multiplicity="none-or-one" />
-		<parameter-def id="option-types" multiplicity="none-or-one" />	
-		<parameter-def id="option-argument-labels" multiplicity="none-or-one" />	
-		<parameter-def id="option-descriptions" multiplicity="none-or-one" />	
-		<parameter-def id="example" multiplicity="any" />
+	<extension-point extension-multiplicity="any" id="command-handler">
+		<parameter-def id="class" multiplicity="one" type="string"/>
+		<parameter-def id="command-name" multiplicity="one" type="string"/>
+		<parameter-def id="command-description" multiplicity="one" type="string"/>
+		<parameter-def id="return-type" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="argument-names" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="argument-types" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="argument-descriptions" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="optional-argument-names" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="optional-argument-types" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="optional-argument-descriptions" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="optional-argument-default-values" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="option-names" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="option-long-names" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="option-types" multiplicity="none-or-one" type="string"/>	
+		<parameter-def id="option-argument-labels" multiplicity="none-or-one" type="string"/>	
+		<parameter-def id="option-descriptions" multiplicity="none-or-one" type="string"/>	
+		<parameter-def id="example" multiplicity="any" type="string"/>
 	</extension-point>
 
 </plugin>

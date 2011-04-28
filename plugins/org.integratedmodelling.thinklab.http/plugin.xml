@@ -1,9 +1,9 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0" "http://jpf.sourceforge.net/plugin_1_0.dtd">
-<plugin id="org.integratedmodelling.thinklab.http" version="0.8.0" class="org.integratedmodelling.thinklab.http.ThinklabHttpdPlugin">
+<plugin class="org.integratedmodelling.thinklab.http.ThinklabHttpdPlugin" id="org.integratedmodelling.thinklab.http" version="0.8.1.20110428103759">
 	
 	<requires>
-		<import plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="true" />
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="true"/>
 	</requires>
 	
 	<runtime>
@@ -62,8 +62,8 @@
 			<export prefix="*"/>
 		</library> 
 		
-		<library type="code" id="olmaps" path="lib/olmapsz.jar">
-			<export prefix="*" />
+		<library id="olmaps" path="lib/olmapsz.jar" type="code">
+			<export prefix="*"/>
 		</library>
 		
 		<library id="zcommon" path="lib/zcommon.jar" type="code">
@@ -112,33 +112,33 @@
  
 	</runtime>
 	 
-	<extension-point id="thinkcap-application"> 
-		<parameter-def id="name" />
-		<parameter-def id="entry-point" />
-		<parameter-def id="location" />
-		<parameter-def id="model-class"  multiplicity="none-or-one" />
-		<parameter-def id="short-description" />
-		<parameter-def id="long-description" />
-		<parameter-def id="running-head" multiplicity="none-or-one" />
-		<parameter-def id="copyright" multiplicity="none-or-one" />
-		<parameter-def id="logo-small" multiplicity="none-or-one" />
-		<parameter-def id="logo-large"  multiplicity="none-or-one" />
-		<parameter-def id="banner"  multiplicity="none-or-one" />
-		<parameter-def id="style"  multiplicity="none-or-one" />
-		<parameter-def id="skin"  multiplicity="none-or-one" />
-		<parameter-def id="author" type="null" multiplicity="any"> 
-			<parameter-def id="name" />
-			<parameter-def id="logo" />
-			<parameter-def id="url" />
-			<parameter-def id="description" multiplicity="none-or-one"/> 
-			<parameter-def id="icon" multiplicity="none-or-one"/> 
+	<extension-point extension-multiplicity="any" id="thinkcap-application"> 
+		<parameter-def id="name" multiplicity="one" type="string"/>
+		<parameter-def id="entry-point" multiplicity="one" type="string"/>
+		<parameter-def id="location" multiplicity="one" type="string"/>
+		<parameter-def id="model-class" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="short-description" multiplicity="one" type="string"/>
+		<parameter-def id="long-description" multiplicity="one" type="string"/>
+		<parameter-def id="running-head" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="copyright" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="logo-small" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="logo-large" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="banner" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="style" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="skin" multiplicity="none-or-one" type="string"/>
+		<parameter-def id="author" multiplicity="any" type="null"> 
+			<parameter-def id="name" multiplicity="one" type="string"/>
+			<parameter-def id="logo" multiplicity="one" type="string"/>
+			<parameter-def id="url" multiplicity="one" type="string"/>
+			<parameter-def id="description" multiplicity="none-or-one" type="string"/> 
+			<parameter-def id="icon" multiplicity="none-or-one" type="string"/> 
 		</parameter-def> 
-		<parameter-def id="authentication" type="null" multiplicity="none-or-one">
-			<parameter-def id="authentication-manager-class" />
-			<parameter-def id="user" type="null" multiplicity="any">
-				<parameter-def id="user-id"/>
-				<parameter-def id="user-password"  />
-				<parameter-def id="user-domain" multiplicity="none-or-one" />
+		<parameter-def id="authentication" multiplicity="none-or-one" type="null">
+			<parameter-def id="authentication-manager-class" multiplicity="one" type="string"/>
+			<parameter-def id="user" multiplicity="any" type="null">
+				<parameter-def id="user-id" multiplicity="one" type="string"/>
+				<parameter-def id="user-password" multiplicity="one" type="string"/>
+				<parameter-def id="user-domain" multiplicity="none-or-one" type="string"/>
 			</parameter-def>
 		</parameter-def>
 	</extension-point> 
