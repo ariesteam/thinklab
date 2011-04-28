@@ -70,7 +70,7 @@ import org.integratedmodelling.utils.exec.SerialTaskScheduler;
 		optionNames="c,extends,log,alog",
 		optionLongNames="concept,extends,log,append-log",
 		optionDescriptions="concept to use in storyline,storyline to derive from,log file,log file to append to",
-		optionArgumentLabels="concept,storyline path,logfile",
+		optionArgumentLabels="concept,storyline path,logfile,logfile",
 		optionTypes="thinklab-core:Text,thinklab-core:Text,thinklab-core:Text,thinklab-core:Text")
 public class StorylineCommand extends InteractiveCommandHandler {
 
