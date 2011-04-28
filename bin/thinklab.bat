@@ -1,2 +1,2 @@
-START javaw -jar lib\im-boot.jar
-REM pause
+cd %THINKLAB_HOME%
+java %THINKLAB_OPTS%
