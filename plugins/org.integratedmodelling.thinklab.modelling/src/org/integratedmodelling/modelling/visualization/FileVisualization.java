@@ -37,6 +37,12 @@ public class FileVisualization implements IVisualization {
 		return archive.toString();
 	}
 	
+	public File getMainDirectory() {
+		// a bit of acrobatics as archive may still be null when this is called
+		return this.directory == null ? 
+				FileArchive.getDefaultDirectory() : this.directory;
+	}
+	
 	/**
 	 * largest edge of plot in pixels, used to define the dimensions of any visual 
 	 * unless the max viewport is given.

@@ -401,4 +401,22 @@ public class Storyline extends DefaultMutableTreeNode {
 	public void setPath(String path) {
 		this.path = path;
 	}
+
+	/*
+	 * return the total number of model/context pairs in this storyline and
+	 * all children.
+	 */
+	public int getModelCount() {
+		
+		int ret = 0;
+		
+		if (this instanceof ModelStoryline) {
+			ret += ((ModelStoryline)this).models.size();
+		}
+		
+		for (Storyline s : getChildren())
+			ret += s.getModelCount();
+		
+		return ret;
+	}
 }

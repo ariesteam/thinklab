@@ -33,6 +33,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.InteractiveCommandHandler;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -41,6 +42,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.CamelCase;
+import org.integratedmodelling.utils.LogAppender;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.exec.ITaskScheduler;
 import org.integratedmodelling.utils.exec.SerialTaskScheduler;
@@ -65,11 +67,11 @@ import org.integratedmodelling.utils.exec.SerialTaskScheduler;
 		optionalArgumentDefaultValues=" , , ",
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text,thinklab-core:Text",
 		optionalArgumentDescriptions=" , , ",
-		optionNames="c,extends",
-		optionLongNames="concept,extends",
-		optionDescriptions="concept to use in storyline,storyline to derive from",
-		optionArgumentLabels="concept,storyline path",
-		optionTypes="thinklab-core:Text,thinklab-core:Text")
+		optionNames="c,extends,log,alog",
+		optionLongNames="concept,extends,log,append-log",
+		optionDescriptions="concept to use in storyline,storyline to derive from,log file,log file to append to",
+		optionArgumentLabels="concept,storyline path,logfile",
+		optionTypes="thinklab-core:Text,thinklab-core:Text,thinklab-core:Text,thinklab-core:Text")
 public class StorylineCommand extends InteractiveCommandHandler {
 
 	class OutcomeDesc {
@@ -79,6 +81,8 @@ public class StorylineCommand extends InteractiveCommandHandler {
 		String messages;
 		public long time;
 		public Date date;
+		public long freemem;
+		public long usedmem;
 		
 		@Override 
 		public String toString() {
@@ -103,11 +107,6 @@ public class StorylineCommand extends InteractiveCommandHandler {
 	}
 	
 	
-	protected void log(ISession session, String s) {
-		
-		session.getOutputStream().println(s);
-	}
-	
 	@Override
 	protected IValue doInteractive(final Command command, final ISession session)
 			throws ThinklabException {
@@ -120,6 +119,8 @@ public class StorylineCommand extends InteractiveCommandHandler {
 		String   importd = null;
 		IModel model = null;
 		IContext context = null;
+		String logfile = null;
+		boolean append = false;
 		
 		if (command.hasOption("concept")) {
 			concept = KnowledgeManager.getConcept(command.getOptionAsString("concept"));
@@ -129,14 +130,32 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			importd = command.getOptionAsString("extends");
 		}
 		
+		if (command.hasOption("log")) {
+			logfile = command.getOptionAsString("log");
+		} else if (command.hasOption("append-log")) {
+			logfile = command.getOptionAsString("append-log");
+			append = true;
+		}
+
+		
 		class Listener implements Storyline.Listener, IContextualizationListener {
 
 			boolean isTesting = false;
 			long time = 0l;
-
+			FileVisualization visualization = new FileVisualization();
+			
 			ArrayList<OutcomeDesc> outcomes =
 				new ArrayList<OutcomeDesc>();
+			private long memory;
+			LogAppender logfile = null;
 			
+			protected void log(ISession session, String s) {	
+				session.getOutputStream().println(s);
+				if (logfile != null) {
+					logfile.print(s);
+				}
+			}
+
 			public Listener(boolean isTesting) {
 				this.isTesting = isTesting;
 			}
@@ -144,7 +163,7 @@ public class StorylineCommand extends InteractiveCommandHandler {
 			@Override
 			public IVisualization createVisualization(IModel model,
 					IContext iContext) {
-				return new FileVisualization();
+				return visualization;
 			}
 
 			@Override
@@ -160,11 +179,11 @@ public class StorylineCommand extends InteractiveCommandHandler {
 						
 						ModelStoryline sl = (ModelStoryline) storyline;						
 						log(session, 
-								model.getName() + 
-								" computed in " + 
+								"   finished " + 
+								new Date() +
+								" (" + 
 								((float)interval)/1000.0 + 
-								"s @ " + 
-								((Context)context).getName());
+								"s)");
 						
 						OutcomeDesc desc = new OutcomeDesc();
 						desc.model = model;
@@ -172,6 +191,10 @@ public class StorylineCommand extends InteractiveCommandHandler {
 						desc.status = 0;
 						desc.time = interval;
 						desc.date = new Date();
+						desc.freemem = this.memory;
+						desc.usedmem = desc.freemem - Runtime.getRuntime().freeMemory();
+						
+						log(session, "   memory used " + desc.usedmem);
 						
 						outcomes.add(desc);
 					
@@ -181,10 +204,13 @@ public class StorylineCommand extends InteractiveCommandHandler {
 						 * log, reset counter
 						 */
 						this.time = new Date().getTime();
+						this.memory = Runtime.getRuntime().freeMemory();
 
 						ModelStoryline sl = (ModelStoryline) storyline;
 						
-						log(session, model.getName() + " started computing in " + ((Context)context).getName());
+						log(session, model.getName() + " @ " + ((Context)context).getName());
+						log(session, "   started " + new Date());
+						log(session, "   free memory " + this.memory + " of " + Runtime.getRuntime().totalMemory());
 
 					}
 
@@ -216,7 +242,7 @@ public class StorylineCommand extends InteractiveCommandHandler {
 				/*
 				 * log location of visualization
 				 */
-				log(session, model.getName() + " visualized in " + visualization);
+				log(session, "   visualized " + visualization);
 				
 			}
 
@@ -228,15 +254,18 @@ public class StorylineCommand extends InteractiveCommandHandler {
 				 * log everything, reset counter
 				 */
 				long interval = new Date().getTime() - this.time;
-				log(session, model.getName() + " ended with errors after " +
-					((float)interval)/1000.0 + "s");
+				log(session, "   ERRORS " +
+						new Date() + 
+						" (" +
+						((float)interval)/1000.0 + 
+						"s)");
 			
 				String st = MiscUtilities.getExceptionPrintout(e);
 
 				OutcomeDesc desc = new OutcomeDesc();
 				desc.model = model;
 				desc.context = context;
-				desc.status = 0;
+				desc.status = 1;
 				desc.time = interval;
 				desc.date = new Date();
 				
@@ -267,6 +296,13 @@ public class StorylineCommand extends InteractiveCommandHandler {
 					ObservationContext context) {
 				// TODO Auto-generated method stub
 				
+			}
+
+
+			public void setLogFile(String logfile, boolean append) throws ThinklabIOException {
+				if (logfile != null) {
+					this.logfile = new LogAppender(logfile, append);
+				}
 			}
 		}
 		
@@ -337,20 +373,30 @@ public class StorylineCommand extends InteractiveCommandHandler {
 		} else if (action.equals("test")) {
 			
 			Listener listener = new Listener(true);
+			listener.setLogFile(logfile, append);
 			Storyline storyline = StorylineFactory.getStorylines(path);
+			
+			// header
+			session.print("Testing storyline " + path + " (" + storyline.getModelCount() + " models)");
+			session.print("Visualization dir " + listener.visualization.getMainDirectory());
+			if (logfile != null)
+				session.print((append ? "Appending log to " : "Logging to ") + logfile);
+			session.print(StringUtils.repeat("-", 78));
+			
+			// go for it
 			storyline.test(listener);
 			scheduler.start();
 			
 			/*
 			 * print summary report
 			 */
-			session.print("Test report");
-			session.print(StringUtils.repeat("-", 78));
+			listener.log(session, "Test report");
+			listener.log(session, StringUtils.repeat("-", 78));
 			for (OutcomeDesc od : listener.outcomes) {
-				session.print(od.toString());
+				listener.log(session, od.toString());
 			}
-			session.print(StringUtils.repeat("-", 78));
-			session.print("Test report finished");
+			listener.log(session, StringUtils.repeat("-", 78));
+			listener.log(session, "Test report finished");
 			
 		} else if (action.equals("view")) {
 			

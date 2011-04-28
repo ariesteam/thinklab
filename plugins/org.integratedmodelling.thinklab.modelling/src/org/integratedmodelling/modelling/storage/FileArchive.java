@@ -12,6 +12,7 @@ import org.integratedmodelling.modelling.interfaces.IDataset;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -39,20 +40,7 @@ public class FileArchive implements IDataset {
 	private String location = null;
 	
 	public FileArchive() throws ThinklabException {
-		
-		String fenv = System.getenv("THINKLAB_ARCHIVE_DIR");
-		if (fenv != null) {
-			this.directory = new File(fenv);			
-		}
-		
-		if (this.directory == null) {
-			this.directory = 
-				new File(
-					ModellingPlugin.get().getScratchPath() + 
-					File.separator +
-					"archive");			
-		}
-		this.directory.mkdirs();
+		directory = getMainDirectory();
 	}
 	
 	public FileArchive(File directory) throws ThinklabException {
@@ -201,6 +189,38 @@ public class FileArchive implements IDataset {
 			getLocation() + 
 			"/" +
 			c.toString().replaceAll(":",".").toLowerCase();
+	}
+	
+	public static File getDefaultDirectory() {
+		
+		File ret = null;
+		String fenv = System.getenv("THINKLAB_ARCHIVE_DIR");
+		if (fenv != null) {
+			ret = new File(fenv);			
+		}
+	
+		if (ret == null) {
+			try {
+				ret = 
+					new File(
+						ModellingPlugin.get().getScratchPath() + 
+						File.separator +
+						"archive");
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}			
+		}
+		ret.mkdirs();
+		return ret;
+	}
+	
+	public File getMainDirectory() {
+		
+		File ret = directory;
+		if (ret == null) {
+			ret = getDefaultDirectory();
+		}
+		return ret;
 	}
 
 	public File getDirectory() {
