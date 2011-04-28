@@ -3,6 +3,7 @@ package org.integratedmodelling.corescience.units;
 import java.io.PrintStream;
 
 import javax.measure.converter.UnitConverter;
+import javax.measure.quantity.Quantity;
 import javax.measure.unit.Dimension;
 import javax.measure.unit.ProductUnit;
 
@@ -222,14 +223,16 @@ public class Unit {
 			for (int i = 0; i < pu.getUnitCount(); i++) {
 				javax.measure.unit.Unit<?> su = pu.getUnit(i);
 				int power = pu.getUnitPow(i);
-				if ((su.getDimension().equals(Dimension.LENGTH.pow(2)) && power == -1) ||
-					(su.getDimension().equals(Dimension.LENGTH) && power == -2)) {
+				if (su.getDimension().equals(Dimension.LENGTH.pow(2)) && power == -1) {
 					return new Unit(su);
+				} else if (su.getDimension().equals(Dimension.LENGTH) && power == -2) {
+					return new Unit(su.pow(2));
 				}
 			}
 		}
 		return null;
 	}
+	
 	
 	public boolean isVolumeDensity() {
 		boolean ret = false;
