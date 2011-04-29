@@ -1,0 +1,153 @@
+THINKLAB & ARIES Installation Instructions for Windows machines:
+
+* Software to install:
+
+|---------------+-----------------------------------------------------------------------------|
+| ClojureBox    | contains Emacs, clojure-mode, and XML-mode for editing model and kbox files |
+| Protege       | for editing ontologies                                                      |
+| GeNIe         | for editing Bayesian networks                                               |
+| Git           | installed via msysgit; for managing code repositories                       |
+| Apache Ant    | java build tool; for compiling thinklab and aries                           |
+| JDK1.6 64-bit | java development suite; used by ant and needed to run aries                 |
+| Java Libs     | Java3D, JAI, JAI-ImageIO; installed in jre/lib/ext under JDK1.6             |
+|---------------+-----------------------------------------------------------------------------|
+
+
+* Repository management:
+
+1) Create an account on http://github.com.
+
+2) Make two new empty repositories on GitHub, called thinklab and
+   aries.
+
+3) Setup SSH public/private keys between your Git program and GitHub.
+
+4) From Git Bash, run these global Git configuration commands:
+
+   $ git config --global user.name  "Your Name"
+   $ git config --global user.email "your.email@server.com"
+
+5) Make a directory called repository on your computer to hold the
+   thinklab and aries code.
+
+6) Use Git to clone git://github.com/lambdatronic/thinklab.git and
+   git://github.com/lambdatronic/aries.git into repository/thinklab
+   and repository/aries respectively.  Note: This automatically
+   creates a local master branch in your thinklab and aries
+   repositories.
+
+7) Configure your Git remotes with these Git Bash commands:
+
+   First in the thinklab directory:
+   $ git remote rename origin gary
+   $ git remote add ferd git://github.com/fvilla/thinklab.git
+   $ git remote add ken git://github.com/kbagstad/thinklab.git
+   $ git remote add brian git@github.com:bvoigt/thinklab.git
+
+   Then in the aries directory:
+   $ git remote rename origin gary
+   $ git remote add ferd git://github.com/fvilla/aries.git
+   $ git remote add ken git://github.com/kbagstad/aries.git
+   $ git remote add brian git@github.com:bvoigt/aries.git
+
+8) Use Git to fetch the latest updates from each of these repositories
+   (gary, ferd, and ken, NOT brian).
+
+9) Create and checkout a local dev branch in each of the thinklab and
+   aries repositories based off of gary/dev, using Git Bash like so:
+
+   First in the thinklab directory:
+   $ git checkout -b dev gary/dev
+
+   Then in the aries directory:
+   $ git checkout -b dev gary/dev
+
+10) Use Git to push your thinklab and aries repos to the brian
+    remotes, which copies everything up to your GitHub account.
+
+
+* Java and Ant configuration:
+
+1) Setup the following system-wide environment variables:
+
+  JAVA_HOME=<JDK1.6 installation directory>
+  JAVA_OPTS=-Xms512M -Xmx3072M
+  ANT_HOME=<Apache Ant installation directory>
+  THINKLAB_SRC=<thinklab repository directory>
+  THINKLAB_HOME=<thinklab installation directory>
+  THINKLAB_PLUGINS=%ARIES_HOME%\plugins
+  ARIES_SRC=<aries repository directory>
+  ARIES_HOME=<aries installation directory>
+  ARIES_GAZETTEERS_HOME=%HOMEPATH%\.thinklab
+  PATH=%PATH%;%JAVA_HOME%\bin;%ANT_HOME%\bin
+
+2) Test that this configuration works by opening a terminal and
+   running:
+
+  $ java -version
+  $ ant -version
+
+  Both commands should simply print out the version information for
+  the JDK1.6 and Apache Ant programs that you have installed.
+
+3) You can now compile thinklab and aries by running the
+   %THINKLAB_HOME%\bin\build_thinklab.bat and
+   %ARIES_HOME%\bin\build_aries.bat scripts.  To make this easier, put
+   shortcuts to these two files on your desktop.
+
+4) You can start aries by running the %THINKLAB_HOME%\bin\thinklab.bat
+   script.  This will give you the familiar Thinklab prompt.
+
+5) Remember to recompile and restart aries if you make any changes to
+   its files.
+
+
+* ClojureBox configuration:
+
+Since we really just want to run Emacs with an installed clojure-mode
+and paredit-mode, using ClojureBox makes this setup totally painless
+(since it's the default).  However, running the ClojureBox program
+puts us in Emacs at a SLIME REPL for testing Clojure code dynamically.
+This isn't our goal here, so we have to tweak the program so it just
+fires up a properly setup Emacs instance.
+
+1) Edit C:\Program
+   Files(x86)\ClojureBox\emacs\emacs\site-lisp\default.el by
+   commenting out the last three lines in the file (prefix each one
+   with ;;) and adding a single right-paren on a line by itself at the
+   end of the file.
+
+2) Save default.el and run ClojureBox.  You should see a plain Emacs
+   *scratch* buffer.  If so, you're in business!
+
+3) Using Windows Explorer, navigate to
+   %ARIES_SRC%\plugins\org.integratedmodelling.aries.core\models.
+
+4) Check to make sure that all *.clj files in this directory are
+   automatically associated with ClojureBox.  If not associate the
+   *.clj file extension with this program.
+
+5) Using Windows Explorer, navigate to
+   %ARIES_SRC%\plugins\org.integratedmodelling.aries.administration\data.
+
+6) Check to make sure that all *.xml files in this directory are
+   automatically associated with ClojureBox.  If not associate the
+   *.xml file extension with this program.
+
+Please note that when you open a file for editing with ClojureBox, the
+Emacs instance that pops up is a server.  When you are finished
+editing the file, save it and press the X button in the Emacs toolbar,
+NOT the X button on the top right corner of the window.  This will
+close the file, but leave Emacs running.  When you click on other
+files to edit, they will automatically appear in the running Emacs
+window.  Please note that you can open any number of files in Emacs at
+the same time.  To switch between the different files you have open,
+use the Emacs Buffers menu.  Note that Save Buffer is C-x C-s.  Also
+note that Emacs is an extremely versatile and adaptable editor.  If
+you want Windows-style cut-and-paste keybindings (C-z, C-x, C-c, C-v),
+these are very easy to setup.  Just ask Gary.  If you want to see tabs
+for the different files you have open instead of having to use the
+Buffers menu, this is also very easy to setup.  Just ask Gary.  Etc,
+etc.  If you have something you want it to do, there is probably an
+easy way to make Emacs do that for you.  Just ask Gary.  He knows
+everything about Emacs.
