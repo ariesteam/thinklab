@@ -95,8 +95,9 @@ THINKLAB & ARIES Installation Instructions for Windows machines:
    %ARIES_HOME%\bin\build_aries.bat scripts.  To make this easier, put
    shortcuts to these two files on your desktop.
 
-4) You can start aries by running the %THINKLAB_HOME%\bin\thinklab.bat
-   script.  This will give you the familiar Thinklab prompt.
+4) You can start aries by running the
+   %THINKLAB_HOME%\bin\run_thinklab.bat script.  This will give you
+   the familiar Thinklab prompt.
 
 5) Remember to recompile and restart aries if you make any changes to
    its files.
@@ -111,8 +112,7 @@ puts us in Emacs at a SLIME REPL for testing Clojure code dynamically.
 This isn't our goal here, so we have to tweak the program so it just
 fires up a properly setup Emacs instance.
 
-1) Edit C:\Program
-   Files(x86)\ClojureBox\emacs\emacs\site-lisp\default.el by
+1) Edit C:\Program Files(x86)\ClojureBox\emacs\site-lisp\default.el by
    commenting out the last three lines in the file (prefix each one
    with ;;) and adding a single right-paren on a line by itself at the
    end of the file.
@@ -145,9 +145,35 @@ the same time.  To switch between the different files you have open,
 use the Emacs Buffers menu.  Note that Save Buffer is C-x C-s.  Also
 note that Emacs is an extremely versatile and adaptable editor.  If
 you want Windows-style cut-and-paste keybindings (C-z, C-x, C-c, C-v),
-these are very easy to setup.  Just ask Gary.  If you want to see tabs
-for the different files you have open instead of having to use the
-Buffers menu, this is also very easy to setup.  Just ask Gary.  Etc,
-etc.  If you have something you want it to do, there is probably an
-easy way to make Emacs do that for you.  Just ask Gary.  He knows
-everything about Emacs.
+these are very easy to setup.  Simply check "Use CUA Bindings" under
+the Options menu.  If you want to see tabs for the different files you
+have open instead of having to use the Buffers menu, this is also very
+easy to setup.  Download tabbar.el
+(http://www.emacswiki.org/emacs/download/tabbar.el) and place it in a
+directory called %HOMEPATH%\elisp.  Create a file called
+%HOMEPATH%\.emacs and add these lines to it:
+
+;; Begin Emacs Configuration
+
+(add-to-list 'load-path "C:/Users/yourusername/elisp")
+(require 'tabbar)
+
+(tabbar-mode 1)
+
+(define-key global-map [(ctrl left)] 'tabbar-backward)
+(define-key global-map [(ctrl right)] 'tabbar-forward)
+
+(setq-default tab-width 4)
+(setq-default indent-tabs-mode nil)
+
+(setq make-backup-files nil)
+
+;; End Emacs Configuration
+
+Once you've done this, save the .emacs file and restart ClojureBox.
+You can now use Ctrl Left-Arrow and Ctrl Right-Arrow to cycle between
+the currently opened buffers in your Emacs session.
+
+This configuration will also prevent Emacs from creating backup files
+like foo.clj~ whenever you save a file and will standardize tabstops
+at 4 spaces, thereby keeping your code nice and clean.
