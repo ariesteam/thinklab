@@ -2,15 +2,17 @@ THINKLAB & ARIES Installation Instructions for Windows machines:
 
 * Software to install:
 
-|---------------+-----------------------------------------------------------------------------|
-| ClojureBox    | contains Emacs, clojure-mode, and XML-mode for editing model and kbox files |
-| Protege       | for editing ontologies                                                      |
-| GeNIe         | for editing Bayesian networks                                               |
-| Git           | installed via msysgit; for managing code repositories                       |
-| Apache Ant    | java build tool; for compiling thinklab and aries                           |
-| JDK1.6 64-bit | java development suite; used by ant and needed to run aries                 |
-| Java Libs     | Java3D, JAI, JAI-ImageIO; installed in jre/lib/ext under JDK1.6             |
-|---------------+-----------------------------------------------------------------------------|
+|------------+-----------------------------------------------------------------------------|
+| ClojureBox | contains Emacs, clojure-mode, and XML-mode for editing model and kbox files |
+| Protege    | for editing ontologies                                                      |
+| GeNIe      | for editing Bayesian networks                                               |
+| Git        | installed via msysgit; for managing code repositories                       |
+| Apache Ant | java build tool; for compiling thinklab and aries                           |
+| JDK1.6     | java development suite; used by ant and needed to run aries                 |
+| Java Libs  | Java3D, JAI (platform independent version w/o native acceleration)          |
+| PostgreSQL | object-relational database system for mapping modelling concepts to data    |
+| PostGIS    | spatial extension to PostgreSQL; enables spatial data storage and querying  |
+|------------+-----------------------------------------------------------------------------|
 
 
 * Repository management:
@@ -68,18 +70,25 @@ THINKLAB & ARIES Installation Instructions for Windows machines:
 
 * Java and Ant configuration:
 
+IMPORTANT: If you have any JREs installed (excluding the ones which
+           come with your JDKs), uninstall them now, or they will
+           cause you no end of headaches as you go through this
+           process.
+
 1) Setup the following system-wide environment variables:
 
-  JAVA_HOME=<JDK1.6 installation directory>
-  JAVA_OPTS=-Xms512M -Xmx3072M
   ANT_HOME=<Apache Ant installation directory>
+  JAVA_HOME=<JDK1.6 installation directory>
+  JAVA_OPTS=-Xms512M -Xmx2048M              <-- or however much memory you can spare
+  PATH=%PATH%;%JAVA_HOME%\bin;%ANT_HOME%\bin
+  HOME=%HOMEDRIVE%%HOMEPATH%
+
+  ARIES_SRC=<aries repository directory>
+  ARIES_HOME=<aries installation directory>
+  ARIES_GAZETTEERS_HOME=%HOME%\.thinklab
   THINKLAB_SRC=<thinklab repository directory>
   THINKLAB_HOME=<thinklab installation directory>
   THINKLAB_PLUGINS=%ARIES_HOME%\plugins
-  ARIES_SRC=<aries repository directory>
-  ARIES_HOME=<aries installation directory>
-  ARIES_GAZETTEERS_HOME=%HOMEPATH%\.thinklab
-  PATH=%PATH%;%JAVA_HOME%\bin;%ANT_HOME%\bin
 
 2) Test that this configuration works by opening a terminal and
    running:
@@ -142,16 +151,20 @@ close the file, but leave Emacs running.  When you click on other
 files to edit, they will automatically appear in the running Emacs
 window.  Please note that you can open any number of files in Emacs at
 the same time.  To switch between the different files you have open,
-use the Emacs Buffers menu.  Note that Save Buffer is C-x C-s.  Also
-note that Emacs is an extremely versatile and adaptable editor.  If
-you want Windows-style cut-and-paste keybindings (C-z, C-x, C-c, C-v),
-these are very easy to setup.  Simply check "Use CUA Bindings" under
-the Options menu.  If you want to see tabs for the different files you
-have open instead of having to use the Buffers menu, this is also very
-easy to setup.  Download tabbar.el
-(http://www.emacswiki.org/emacs/download/tabbar.el) and place it in a
-directory called %HOMEPATH%\elisp.  Create a file called
-%HOMEPATH%\.emacs and add these lines to it:
+use the Emacs Buffers menu.  Note that Save Buffer is C-x C-s.
+
+Also note that Emacs is an extremely versatile and adaptable editor.
+
+If you want Windows-style cut-and-paste keybindings (C-z, C-x, C-c,
+C-v), these are very easy to setup.  Simply check "Use CUA Bindings"
+under the Options menu.
+
+If you want to see tabs for the different files you have open instead
+of having to use the Buffers menu, this is also very easy to setup.
+Download tabbar.el (http://www.emacswiki.org/emacs/download/tabbar.el)
+and place it in a directory called %HOME%\elisp.  Create a file called
+%HOME%\.emacs and add these lines to it (obviously replacing
+yourusername with your actual user name):
 
 ;; Begin Emacs Configuration
 
@@ -177,3 +190,65 @@ the currently opened buffers in your Emacs session.
 This configuration will also prevent Emacs from creating backup files
 like foo.clj~ whenever you save a file and will standardize tabstops
 at 4 spaces, thereby keeping your code nice and clean.
+
+
+* PostgreSQL/PostGIS configuration
+
+In order to run models, Thinklab/ARIES needs access to a local
+database where it can store mappings between its modelling concepts
+and the (possibly remote) datasources that will supply them with
+values as needed.  We'll use PostgreSQL with the PostGIS extensions to
+set this up.
+
+1) Start up your PostgreSQL server as a background service.  You might
+   want to configure this to startup automatically whenever you login.
+
+2) Run pgAdminIII to get a graphical PostgreSQL client running.
+
+3) Connect to your database server and create two new databases with
+   these settings:
+
+   Name: ariesdata
+   Encoding: UTF8
+   Template: template_postgis (you did remember to install PostGIS, right?)
+   Owner: postgres (this is the default PostgreSQL administrator account)
+
+   Name: <your_username>
+   Encoding: UTF8
+   Template: template_postgis
+   Owner: postgres
+
+4) To populate the ariesdata database, start up ARIES with the
+   %THINKLAB_HOME%\bin\run_thinklab.bat script.  At the prompt, type:
+
+   > pload aries
+   > pload administration
+   > run aries.initdb
+
+   If everything runs without errors, you are ready to go!  Note that
+   you will need an internet connection for this procedure to work as
+   ARIES must connect to one or more remote geoservers to build up its
+   datasource mappings.
+
+5) Next open
+   %HOME%.thinklab/data/org.integratedmodelling.thinklab.sql/config/sql.properties
+   with ClojureBox and add these lines at the end:
+
+   thinklab.sql.user=postgres
+   thinklab.sql.password=<your_database_administrator_password>
+   thinklab.sql.host=localhost
+
+6) Save the file and exit.
+
+7) Back at your aries prompt:
+
+   > gazetteer create
+
+   This creates and initializes your gazetteer database, so that you
+   can construct model contexts from WFS-accessible Shapefiles.
+
+8) Exit ARIES like so:
+
+   > exit
+
+9) Done!  Now get to modelling!
