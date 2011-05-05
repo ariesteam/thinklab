@@ -112,6 +112,17 @@ IMPORTANT: If you have any JREs installed (excluding the ones which
    its files.
 
 
+* RiskWiz configuration
+
+1) Edit this file:
+
+  %HOME%\.thinklab\data\org.integratedmodelling.thinklab.riskwiz\config\riskwiz.config
+
+2) Uncomment this line:
+
+  thinklab.bayesian.engine = riskwiz
+
+
 * ClojureBox configuration:
 
 Since we really just want to run Emacs with an installed clojure-mode
