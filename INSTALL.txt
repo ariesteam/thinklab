@@ -232,7 +232,6 @@ set this up.
 4) To populate the ariesdata database, start up ARIES with the
    %THINKLAB_HOME%\bin\run_thinklab.bat script.  At the prompt, type:
 
-   > pload aries
    > pload administration
    > run aries.initdb
 
@@ -258,8 +257,20 @@ set this up.
    This creates and initializes your gazetteer database, so that you
    can construct model contexts from WFS-accessible Shapefiles.
 
-8) Exit ARIES like so:
+8) To use the GUI version of ARIES if desired (e.g. to test the graphical appearance
+   of storylines), start the web server by issuing
+
+	> pload explorer
+	> http start aries
+	
+	Then connect to the address that is printed as a response 
+	(usually http://localhost:8060/aries.app) using Google Chrome,
+	Mozilla Firefox, or Safari. You can keep working in the command
+	line while the server is active, just keep in mind that your machine may
+	be taxed excessively by running models simultaneously.
+
+9) Exit ARIES like so:
 
    > exit
 
-9) Done!  Now get to modelling!
+10) Done!  Now get to modelling!
