@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 
+
 <!DOCTYPE rdf:RDF [
     <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
     <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
@@ -13,6 +14,7 @@
     <!ENTITY lulc "http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#" >
 ]>
 
+
 <rdf:RDF xmlns="http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#"
      xml:base="http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl"
      xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -25,9 +27,31 @@
      xmlns:landuse="http://www.integratedmodelling.org/ks/landuse/landuse.owl#"
      xmlns:nlcd="http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#"
      xmlns:lulc="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl#">
-    <owl:Ontology rdf:about="">
+    <owl:Ontology rdf:about="http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl">
         <owl:imports rdf:resource="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl"/>
     </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Datatypes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
     
 
 
@@ -56,95 +80,103 @@
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#BareRockSandClay -->
 
-    <owl:Class rdf:about="#BareRockSandClay">
-        <rdfs:subClassOf rdf:resource="#NLCD_Barren"/>
+    <owl:Class rdf:about="&nlcd;BareRockSandClay">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Barren"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#CommercialIndustrialTransportation -->
 
-    <owl:Class rdf:about="#CommercialIndustrialTransportation">
-        <rdfs:subClassOf rdf:resource="#NLCD_Developed"/>
+    <owl:Class rdf:about="&nlcd;CommercialIndustrialTransportation">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Developed"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#Deciduous -->
 
-    <owl:Class rdf:about="#Deciduous">
-        <rdfs:subClassOf rdf:resource="#NLCD_Forested_upland"/>
+    <owl:Class rdf:about="&nlcd;Deciduous">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Forested_upland"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#EmergentHerbaceousWetlands -->
 
-    <owl:Class rdf:about="#EmergentHerbaceousWetlands">
-        <rdfs:subClassOf rdf:resource="#NLCD_Wetlands"/>
+    <owl:Class rdf:about="&nlcd;EmergentHerbaceousWetlands">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Wetlands"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#Evergreen -->
 
-    <owl:Class rdf:about="#Evergreen">
-        <rdfs:subClassOf rdf:resource="#NLCD_Forested_upland"/>
+    <owl:Class rdf:about="&nlcd;Evergreen">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Forested_upland"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#Fallow -->
 
-    <owl:Class rdf:about="#Fallow">
-        <rdfs:subClassOf rdf:resource="#NLCD_Herbaceous_planted"/>
+    <owl:Class rdf:about="&nlcd;Fallow">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Herbaceous_planted"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#Grasses -->
 
-    <owl:Class rdf:about="#Grasses">
-        <rdfs:subClassOf rdf:resource="#NLCD_Herbaceous_planted"/>
+    <owl:Class rdf:about="&nlcd;Grasses">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Herbaceous_planted"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#GrasslandsHerbaceous -->
 
-    <owl:Class rdf:about="#GrasslandsHerbaceous">
-        <rdfs:subClassOf rdf:resource="#NLCD_Herbaceous_upland"/>
+    <owl:Class rdf:about="&nlcd;GrasslandsHerbaceous">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Herbaceous_upland"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#HighIintensityResidential -->
 
-    <owl:Class rdf:about="#HighIintensityResidential">
-        <rdfs:subClassOf rdf:resource="#NLCD_Developed"/>
+    <owl:Class rdf:about="&nlcd;HighIintensityResidential">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Developed"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#LowIntensityResidential -->
 
-    <owl:Class rdf:about="#LowIntensityResidential">
-        <rdfs:subClassOf rdf:resource="#NLCD_Developed"/>
+    <owl:Class rdf:about="&nlcd;LowIntensityResidential">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Developed"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#Mixed -->
 
-    <owl:Class rdf:about="#Mixed">
-        <rdfs:subClassOf rdf:resource="#NLCD_Forested_upland"/>
+    <owl:Class rdf:about="&nlcd;Mixed">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Forested_upland"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#NLCD -->
+
+    <owl:Class rdf:about="&nlcd;NLCD">
+        <rdfs:subClassOf rdf:resource="&lulc;LandClassificationNumericMapping"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#NLCD1992Typology -->
 
-    <owl:Class rdf:about="#NLCD1992Typology">
+    <owl:Class rdf:about="&nlcd;NLCD1992Typology">
         <rdfs:label rdf:datatype="&xsd;string">NLCD 1992 class</rdfs:label>
         <rdfs:subClassOf rdf:resource="&lulc;LandUseTypology"/>
     </owl:Class>
@@ -153,7 +185,7 @@
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#NLCDNumeric -->
 
-    <owl:Class rdf:about="#NLCDNumeric">
+    <owl:Class rdf:about="&nlcd;NLCDNumeric">
         <rdfs:subClassOf rdf:resource="&lulc;LandClassificationNumericMapping"/>
     </owl:Class>
     
@@ -161,164 +193,164 @@
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#NLCD_Barren -->
 
-    <owl:Class rdf:about="#NLCD_Barren">
-        <rdfs:subClassOf rdf:resource="#NLCD1992Typology"/>
+    <owl:Class rdf:about="&nlcd;NLCD_Barren">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD1992Typology"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#NLCD_Developed -->
 
-    <owl:Class rdf:about="#NLCD_Developed">
-        <rdfs:subClassOf rdf:resource="#NLCD1992Typology"/>
+    <owl:Class rdf:about="&nlcd;NLCD_Developed">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD1992Typology"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#NLCD_Forested_upland -->
 
-    <owl:Class rdf:about="#NLCD_Forested_upland">
-        <rdfs:subClassOf rdf:resource="#NLCD1992Typology"/>
+    <owl:Class rdf:about="&nlcd;NLCD_Forested_upland">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD1992Typology"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#NLCD_Herbaceous_planted -->
 
-    <owl:Class rdf:about="#NLCD_Herbaceous_planted">
-        <rdfs:subClassOf rdf:resource="#NLCD1992Typology"/>
+    <owl:Class rdf:about="&nlcd;NLCD_Herbaceous_planted">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD1992Typology"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#NLCD_Herbaceous_upland -->
 
-    <owl:Class rdf:about="#NLCD_Herbaceous_upland">
-        <rdfs:subClassOf rdf:resource="#NLCD1992Typology"/>
+    <owl:Class rdf:about="&nlcd;NLCD_Herbaceous_upland">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD1992Typology"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#NLCD_Non-natural_woody -->
 
-    <owl:Class rdf:about="#NLCD_Non-natural_woody">
-        <rdfs:subClassOf rdf:resource="#NLCD1992Typology"/>
+    <owl:Class rdf:about="&nlcd;NLCD_Non-natural_woody">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD1992Typology"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#NLCD_Shrubland -->
 
-    <owl:Class rdf:about="#NLCD_Shrubland">
-        <rdfs:subClassOf rdf:resource="#NLCD1992Typology"/>
+    <owl:Class rdf:about="&nlcd;NLCD_Shrubland">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD1992Typology"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#NLCD_Water -->
 
-    <owl:Class rdf:about="#NLCD_Water">
-        <rdfs:subClassOf rdf:resource="#NLCD1992Typology"/>
+    <owl:Class rdf:about="&nlcd;NLCD_Water">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD1992Typology"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#NLCD_Wetlands -->
 
-    <owl:Class rdf:about="#NLCD_Wetlands">
-        <rdfs:subClassOf rdf:resource="#NLCD1992Typology"/>
+    <owl:Class rdf:about="&nlcd;NLCD_Wetlands">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD1992Typology"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#OpenWater -->
 
-    <owl:Class rdf:about="#OpenWater">
-        <rdfs:subClassOf rdf:resource="#NLCD_Water"/>
+    <owl:Class rdf:about="&nlcd;OpenWater">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Water"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#OrchardsVineyards -->
 
-    <owl:Class rdf:about="#OrchardsVineyards">
-        <rdfs:subClassOf rdf:resource="#NLCD_Non-natural_woody"/>
+    <owl:Class rdf:about="&nlcd;OrchardsVineyards">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Non-natural_woody"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#Pasture_hay -->
 
-    <owl:Class rdf:about="#Pasture_hay">
-        <rdfs:subClassOf rdf:resource="#NLCD_Herbaceous_planted"/>
+    <owl:Class rdf:about="&nlcd;Pasture_hay">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Herbaceous_planted"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#PerenniaIceOrSnow -->
 
-    <owl:Class rdf:about="#PerenniaIceOrSnow">
-        <rdfs:subClassOf rdf:resource="#NLCD_Water"/>
+    <owl:Class rdf:about="&nlcd;PerenniaIceOrSnow">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Water"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#QuarriesStripMines -->
 
-    <owl:Class rdf:about="#QuarriesStripMines">
-        <rdfs:subClassOf rdf:resource="#NLCD_Barren"/>
+    <owl:Class rdf:about="&nlcd;QuarriesStripMines">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Barren"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#RowCrops -->
 
-    <owl:Class rdf:about="#RowCrops">
-        <rdfs:subClassOf rdf:resource="#NLCD_Herbaceous_planted"/>
+    <owl:Class rdf:about="&nlcd;RowCrops">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Herbaceous_planted"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#Shrubland -->
 
-    <owl:Class rdf:about="#Shrubland">
-        <rdfs:subClassOf rdf:resource="#NLCD_Shrubland"/>
+    <owl:Class rdf:about="&nlcd;Shrubland">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Shrubland"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#SmallGrains -->
 
-    <owl:Class rdf:about="#SmallGrains">
-        <rdfs:subClassOf rdf:resource="#NLCD_Herbaceous_planted"/>
+    <owl:Class rdf:about="&nlcd;SmallGrains">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Herbaceous_planted"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#Transitional -->
 
-    <owl:Class rdf:about="#Transitional">
-        <rdfs:subClassOf rdf:resource="#NLCD_Barren"/>
+    <owl:Class rdf:about="&nlcd;Transitional">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Barren"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#UrbanRecreational -->
 
-    <owl:Class rdf:about="#UrbanRecreational">
-        <rdfs:subClassOf rdf:resource="#NLCD_Herbaceous_planted"/>
+    <owl:Class rdf:about="&nlcd;UrbanRecreational">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Herbaceous_planted"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl#WoodyWetlands -->
 
-    <owl:Class rdf:about="#WoodyWetlands">
-        <rdfs:subClassOf rdf:resource="#NLCD_Wetlands"/>
+    <owl:Class rdf:about="&nlcd;WoodyWetlands">
+        <rdfs:subClassOf rdf:resource="&nlcd;NLCD_Wetlands"/>
     </owl:Class>
 </rdf:RDF>
 
 
 
-<!-- Generated by the OWL API (version 2.2.1.1042) http://owlapi.sourceforge.net -->
+<!-- Generated by the OWL API (version 3.2.3.1799) http://owlapi.sourceforge.net -->
 
