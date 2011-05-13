@@ -646,3 +646,15 @@
 		(.setObservation observation)
 		(.write filename)))
 
+;; ---------------------------------------------------------------------------------
+;; utils
+;; ---------------------------------------------------------------------------------
+
+(defn no-data?
+  "True if the passed value is either nil or NaN, both of which stand for no-data
+   in model states."
+   [value]
+  (or 
+    (nil? value)
+    (and (instance? Double value) (Double/isNaN value)) 
+    (and (instance? Float value) (Float/isNaN value)))) 
