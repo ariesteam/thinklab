@@ -428,5 +428,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/ognl.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/olmapsz.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/poi.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/jai_core.jar"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>
