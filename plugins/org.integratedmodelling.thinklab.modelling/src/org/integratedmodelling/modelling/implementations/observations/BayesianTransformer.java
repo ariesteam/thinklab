@@ -177,12 +177,26 @@ public class BayesianTransformer
 
 	}
 	
+	/*
+	 * Return the order of the states in the marginal array
+	 */
+	public IConcept[] getOrdering(IConcept c) throws ThinklabException {
+		String[] pstates    = bn.getOutcomeIds(c.getLocalName());
+		IConcept[] pcstates = new IConcept[pstates.length];
+		for (int j = 0; j < pstates.length; j++) {
+			if (! (pstates[j].contains(":")))
+				pstates[j] = c.getConceptSpace() + ":" + pstates[j];
+			pcstates[j] = KnowledgeManager.get().requireConcept(pstates[j]);
+		}
+		return pcstates;
+	}
+	
 	@Override
 	public IContext transform(IObservationContext sourceCtx, ISession session, IContext context) 
 		throws ThinklabException {
 
-		// set to false unless you really want it
-		boolean debug = false;
+		// if in debug mode, produce debug.txt file with BN outputs
+		boolean debug = (session.getVariable(ISession.DEBUG) != null);
 		// only log errors once
 		boolean logged = false;
 		
@@ -235,48 +249,21 @@ public class BayesianTransformer
 			st.field = var.getLocalName();
 			st.observable = var;
 			
-			/*
-			 * determine all possible states and their IDs in the net;
-			 * map each to its concept (same concept space as var) and set
-			 * value key in datasource.
-			 */
-			String[] pstates    = bn.getOutcomeIds(st.field);
-			IConcept[] pcstates = new IConcept[pstates.length];
- 			for (int j = 0; j < pstates.length; j++) {
-				if (! (pstates[j].contains(":")))
-					pstates[j] = var.getConceptSpace() + ":" + pstates[j];
-				pcstates[j] = KnowledgeManager.get().requireConcept(pstates[j]);
-			}
+			IConcept[] pcstates = getOrdering(var);
  			
  			ArrayList<Pair<GeneralClassifier, IConcept>> classf = new ArrayList<Pair<GeneralClassifier, IConcept>>();
- 			IObservation gmodel = modelPrototypes.get(var);
+ 			IObservation gmodel = 
+ 				(outputObservation != null && var.equals(outputObservation.getObservableClass())) ?
+ 						outputObservation :
+ 						modelPrototypes.get(var);
+ 			
  			if (gmodel instanceof ModeledClassification) 
  				classf = ((ModeledClassification)gmodel).classifiers;
  			
- 			/*
- 			 * add metadata to ds. These come from the classifications: must know if 
- 			 * we're discretizing a continuous distribution or not. 
- 			 */
- 			if (gmodel != null) {
- 				st.data =  
- 					((IndirectObservation)gmodel).
- 						createState(context.getMultiplicity(), (IObservationContext) context);
- 				
- 				if ( !(st.data instanceof CategoricalDistributionDatasource)) {
- 					throw new ThinklabValidationException(
- 							"model " +
- 							((IModel)(gmodel.getMetadata().get(Metadata.DEFINING_MODEL))).getName() +
- 							" in :observed clause for " +
- 							st.observable +
- 							"is not probabilistic");
- 				}
- 				
- 			} else {
- 				st.data = new CategoricalDistributionDatasource(var, size, pcstates, classf, 
+ 			st.data = new CategoricalDistributionDatasource(var, size, pcstates, classf, 
  						(ObservationContext) context);
- 				((CategoricalDistributionDatasource)(st.data)).
+ 			((CategoricalDistributionDatasource)(st.data)).
  					addAllMetadata(modelMetadata.get(st.observable));
- 			}
 			
 			pstorage[i++] = st;
 		}
@@ -500,7 +487,25 @@ public class BayesianTransformer
 				(IndirectObservation) ObservationFactory.getObservation(session.createObject(ls));	
 		}
 		if (outputObservation != null && outputState == null) {
-			outputState = outputObservation.createState(context.getMultiplicity(), context);
+			
+			/*
+			 * FIXME: problem: value mappings are the classifiers and not from the BN (which orders
+			 * them in the opposite way).
+			 */
+//			outputState = outputObservation.createState(context.getMultiplicity(), context);
+			IConcept var = outputObservation.getObservableClass();
+			IConcept[] pcstates = getOrdering(var);
+ 			
+ 			ArrayList<Pair<GeneralClassifier, IConcept>> classf = 
+ 				((ModeledClassification)outputObservation).classifiers;
+ 			
+ 			outputState = 
+ 				new CategoricalDistributionDatasource(var, context.getMultiplicity(), pcstates, classf, 
+ 						(ObservationContext) context);
+ 			
+ 			((CategoricalDistributionDatasource)(outputState)).
+ 					addAllMetadata(outputObservation.getMetadata());
+			
 		} else if (outputModel == null && outputObservation == null && outputObservable != null) {
 			// TODO must float the state of the given concept but it's work to get the
 			// parameters at this point
