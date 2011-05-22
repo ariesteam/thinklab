@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
 import org.integratedmodelling.utils.NameGenerator;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.restlet.Request;
 import org.restlet.data.CharacterSet;
+import org.restlet.data.Form;
 import org.restlet.data.Method;
+import org.restlet.data.Parameter;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
@@ -131,10 +135,25 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	
 	private void processRequest() {
 		
-		// TODO Auto-generated method stub
+		Request request = getRequest();
+		
 		if (getRequest().getMethod().equals(Method.GET)) {
-			
+			Form form = request.getResourceRef().getQueryAsForm();
+			for (Parameter parameter : form) {
+				_query.put(parameter.getName(), parameter.getValue());
+			}
+		} else {
+			Form form = request.getEntityAsForm();
+			for (Parameter parameter : form) {
+				_query.put(parameter.getName(), parameter.getValue());
+			}
 		}
+
+		Map<String, Object> attrs = getRequest().getAttributes();
+
+		for (String key : attrs.keySet()) {
+		}
+		
 		_processed = true;
 	}
 

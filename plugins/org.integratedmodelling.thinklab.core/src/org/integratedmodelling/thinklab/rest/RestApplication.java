@@ -1,5 +1,6 @@
 package org.integratedmodelling.thinklab.rest;
 
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.rest.resources.Authenticate;
 import org.integratedmodelling.thinklab.rest.resources.Capabilities;
 import org.integratedmodelling.thinklab.rest.resources.JSONCommandResource;
@@ -49,6 +50,7 @@ public class RestApplication extends Application {
 		 */
 		for (String path : RESTManager.get().getPaths()) {
 			router.attach(path, RESTManager.get().getResourceForPath(path), Template.MODE_STARTS_WITH);
+			Thinklab.get().logger().info("REST command " + path + " registered");
 		}
 		
 		return router;

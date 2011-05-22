@@ -12,6 +12,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
 
 public class CommandManager {
 	
@@ -48,6 +49,12 @@ public class CommandManager {
 		// TODO throw exception if command is installed
 		commands.put(command.ID, command);
 		actions.put(command.ID, action);
+		
+		// TODO register a REST service for the command if the command also implements IRESTHandler
+		if (action instanceof IRESTHandler) {
+			
+		}
+			
 	}
 
 	public void registerListingProvider(String label, String itemlabel, IListingProvider provider) {

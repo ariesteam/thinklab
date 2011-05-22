@@ -95,12 +95,12 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 		
 		double xx =
 			boundingBox.getMinX() + 
-			(xCellSize * x) +
-			(xCellSize/2.0);
+			(xCellSize * x) /*+
+			(xCellSize/2.0)*/;
 		double yy = 
 			boundingBox.getMinY() + 
-			(yCellSize * y) +
-			(yCellSize/2.0);
+			(yCellSize * y) /*+
+			(yCellSize/2.0)*/;
 				
 		return originalBoundingBox.contains(xx,yy);
 	}
@@ -154,6 +154,9 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 		
 		int[] xy = ((GridExtent)extent).getXYCoordinates(subdivisionOrder);
 
+//		if (xy[0] == 358 && xy[1] == 201 || xy[0] == 201 && xy[1] == 358)
+//			System.out.println("");
+//		
 		/**
 		 * force to NaN if outside of source data coverage. Geoserver does this wrong, so we need to take
 		 * over.
@@ -166,6 +169,7 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 		   Double r = itera.getSampleDouble(xy[0], xy[1], 0);
 		   if (Double.isNaN(r))
 			   return r;
+		   
 		   if (this.noData != null) {
 			   for (double nd : noData) 
 				   if (Double.compare(r, nd) == 0)
