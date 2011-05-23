@@ -3,8 +3,9 @@ package org.integratedmodelling.thinklab.rest;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.rest.resources.Authenticate;
 import org.integratedmodelling.thinklab.rest.resources.Capabilities;
-import org.integratedmodelling.thinklab.rest.resources.JSONCommandResource;
-import org.integratedmodelling.thinklab.rest.resources.Status;
+import org.integratedmodelling.thinklab.rest.resources.CheckWaiting;
+import org.integratedmodelling.thinklab.rest.resources.GetResource;
+import org.integratedmodelling.thinklab.rest.resources.Ping;
 import org.restlet.Application;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
@@ -25,7 +26,7 @@ public class RestApplication extends Application {
 		/*
 		 * root entry point is a "ping" service that returns Thinklab and server stats.
 		 */
-		router.attach("/", Status.class);
+		router.attach("/", Ping.class);
 		
 		/*
 		 * register authentication service, which gives you a session with privileges depending on
@@ -34,18 +35,22 @@ public class RestApplication extends Application {
 		router.attach("/auth", Authenticate.class);
 
 		/*
-		 * register "capabilities" service - returns array of services if no further context, or 
+		 * register service to access status of enqueued task.
+		 */
+		router.attach("/status", CheckWaiting.class);
+
+		/*
+		 * retriever of named resource from returned URN
+		 */
+		router.attach("/get", GetResource.class);
+		
+		/*
+		 * returns array of services if no further context, or 
 		 * service description etc if context is given. Use wiki/html if html requested.
 		 */
 		router.attach("/capabilities", Capabilities.class, Template.MODE_STARTS_WITH);
 		
-		/**
-		 * send service exposes all registered Thinklab commands as REST services.
-		 */
-		router.attach("/send", JSONCommandResource.class, Template.MODE_STARTS_WITH);
-
 		/*
-		 * TODO
 		 * configure an entry point per installed command
 		 */
 		for (String path : RESTManager.get().getPaths()) {

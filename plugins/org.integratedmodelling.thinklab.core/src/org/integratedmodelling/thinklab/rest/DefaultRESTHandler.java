@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
-import org.integratedmodelling.utils.NameGenerator;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.Request;
@@ -45,8 +48,8 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	
 	// codes for getStatus()
 	static public final int DONE = 0;
-	static public final int FAIL = 0;
-	static public final int WAIT = 0;
+	static public final int FAIL = 1;
+	static public final int WAIT = 2;
 
 	ArrayList<String> _context = new ArrayList<String>();
 	HashMap<String, String> _query = new HashMap<String, String>();
@@ -55,40 +58,46 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	int resultStatus = DONE;
 	private ResultHolder rh = new ResultHolder();
 
-	boolean _processed = false;
+	String error = null, info = null, warn = null;
 	
-	/**
-	 * The thread used to enqueue any non-instantaneous work.
-	 * 
-	 * @author Ferdinando
-	 *
-	 */
-	protected abstract class TaskThread extends Thread  {
+	boolean _processed = false;
 
-		private volatile boolean isException = false;
-		private String error = null;
+	static RESTTaskScheduler _scheduler = null;
+	
+	protected static RESTTaskScheduler getScheduler() {
 		
-		protected abstract void execute() throws Exception;
-		protected abstract void cleanup();
-		
-		
-		@Override
-		public void run() {
-
-			try {
-				execute();
-			} catch (Exception e) {
-				error = e.getMessage();
-				isException = true;
-			} finally {
-				cleanup();
-			}
+		if (_scheduler == null) {
+			
+			int ntasks = 
+				Integer.parseInt(
+						Thinklab.get().getProperties().getProperty(
+								RESTTaskScheduler.N_TASKS_PROPERTY, "8"));
+			_scheduler = new RESTTaskScheduler(ntasks);
 		}
-		
-		public boolean error() {
-			return isException;
-		}
+		return _scheduler;
 	}
+	
+	public void enqueue(Thread thread) {
+		getScheduler().enqueue(thread);
+		put("enqueued", thread.getId()+"");
+		resultStatus = WAIT;
+	}
+
+	/**
+	 * Takes the session from the session parameter, which must be in all
+	 * commands that request a session.
+	 * 
+	 * @throws ThinklabInternalErrorException
+	 */
+	public ISession getSession() throws ThinklabException {
+
+		String id = getArgument("session");
+		if (id == null)
+			throw new ThinklabInternalErrorException("REST command did not specify required session ID");
+		
+		return RESTManager.get().getSession(id);
+	}
+	
 	
 	/**
 	 * Return the elements of the request path after the service identifier, in the same
@@ -120,6 +129,15 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	public String getArgument(String id) throws ThinklabException {
 		return getArguments().get(id);
 	}
+
+	// only used in CheckWaiting for now - set the result object directly
+	protected void setResult(ResultHolder result) {
+		rh = result;
+	}
+	
+	protected void keepWaiting(String taskId) {
+		resultStatus = WAIT;
+	}
 	
 	/**
 	 * Return the string correspondent to the MIME type that was selected by the URL
@@ -148,15 +166,10 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 				_query.put(parameter.getName(), parameter.getValue());
 			}
 		}
-
-		Map<String, Object> attrs = getRequest().getAttributes();
-
-		for (String key : attrs.keySet()) {
-		}
 		
 		_processed = true;
 	}
-
+	
 	@Override
 	protected void doInit() throws ResourceException {
 		// TODO Auto-generated method stub
@@ -230,26 +243,27 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	protected void fail() {
 		resultStatus = FAIL;
 	}
-	
-	/**
-	 * TODO pass a thread of a subclass that can be checked for finish, so we 
-	 * can rely on this uniformly.
-	 * 
-	 * Postpone result to next call. Sets task and returns taskId. If possible pass
-	 * a number of milliseconds before which it's not worth trying again. If not, pass
-	 * -1L to tell client that it's on its own figuring it out.
-	 * 
-	 * @return
-	 */
-	protected String postpone(long howLong) {
 
-		String taskId = NameGenerator.newName("task");
-		
-		resultStatus = WAIT;
-		
-		return taskId;
+	protected void fail(String message) {
+		resultStatus = FAIL;
+		error = message;
+	}
+
+	protected void fail(Throwable e) {
+		resultStatus = FAIL;
+		error = e.getMessage();
+		rh.put("exception-class", e.getClass().getCanonicalName());
+		rh.put("stack-trace", MiscUtilities.getStackTrace(e));
 	}
 	
+	protected void warn(String s) {
+		warn = s;
+	}
+
+	protected void info(String s) {
+		info = s;
+	}
+
 	/**
 	 * Return this if you have used any of the put() or setResult() functions. Will create and 
 	 * wrap a suitable JSON object automatically.
@@ -259,7 +273,26 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		
 		JSONObject jsonObject = new JSONObject();
 		rh.toJSON(jsonObject);
-	    JsonRepresentation jr = new JsonRepresentation(jsonObject);   
+
+		try {
+			
+			jsonObject.put("status", resultStatus);
+	
+			if (warn != null) {
+				jsonObject.put("warn", warn);
+			}
+			if (info != null) {
+				jsonObject.put("info", info);
+			}
+			if (error != null) {
+				jsonObject.put("error", error);
+			}
+			
+		} catch (JSONException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+		
+		JsonRepresentation jr = new JsonRepresentation(jsonObject);   
 	    jr.setCharacterSet(CharacterSet.UTF_8);
 	    return jr;
 	}

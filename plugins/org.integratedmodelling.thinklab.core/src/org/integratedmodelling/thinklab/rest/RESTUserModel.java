@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 public class RESTUserModel implements IUserModel {
 
@@ -44,6 +45,12 @@ public class RESTUserModel implements IUserModel {
 	@Override
 	public Properties getProperties() {
 		return this.properties;
+	}
+
+	@Override
+	public IInstance getUserInstance() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

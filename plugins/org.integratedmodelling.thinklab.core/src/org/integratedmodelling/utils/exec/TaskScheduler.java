@@ -50,6 +50,7 @@ public class TaskScheduler implements ITaskScheduler {
 			 * check if we have anything to remove
 			 */
 			for (Thread t : _current) {
+
 				if (!t.isAlive()) {
 					_current.remove(t);
 					for (Listener l : _listeners) {

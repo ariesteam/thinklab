@@ -28,6 +28,9 @@ public class RESTManager {
 	
 	int sessionCount;
 	
+	HashMap<String, ISession> _sessions = 
+		new HashMap<String, ISession>();
+	
 	public static RESTManager _this = null;
 	
 	/**
@@ -37,9 +40,8 @@ public class RESTManager {
 	 * @param hashMap
 	 * @return
 	 */
-	public ISession getSessionForCommand(HashMap<String, String> hashMap) {
-		// TODO Auto-generated method stub
-		return null;
+	public ISession getSession(String id) {
+		return _sessions.get(id);
 	}
 	
 	public ISession initiateSession() {
@@ -62,8 +64,13 @@ public class RESTManager {
 
 		// TODO pass and store all further documentation.
 		_resources.put(path, handlerClass);
+		
+		// update any existing servers
+		for (Component p : _components.values()) {
+			p.getInternalRouter().attach(path, handlerClass);
+		}
 	}
-	
+		
 	/**
 	 * Start the server on specified port. Bound to "rest start" command.
 	 * 
@@ -80,7 +87,7 @@ public class RESTManager {
 		
 		component.getServers().add(Protocol.HTTP, port);
 		component.getDefaultHost().attach("/rest", new RestApplication());
-
+		
 		/*
 		 * TODO attach all registered services
 		 */
@@ -126,6 +133,11 @@ public class RESTManager {
 			}
 			
 		};
+		
+		synchronized (_sessions) {
+			_sessions.put(ret.getSessionID(), ret);
+		}
+		
 		return ret;
 	}
 
