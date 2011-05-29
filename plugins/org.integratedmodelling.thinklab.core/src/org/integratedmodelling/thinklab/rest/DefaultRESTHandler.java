@@ -45,6 +45,9 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	static public final int DOUBLES = 6;
 	static public final int TEXTS = 7;
 	static public final int URNS = 8;
+	 // this one means "you're on your own figuring it out" and is only used for internal
+	// hand-shaking commands where the result structure is known to the client.
+	static public final int OBJECT = 9;
 	
 	// codes for getStatus()
 	static public final int DONE = 0;
@@ -222,6 +225,10 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	 * @param o
 	 */
 	protected void put(String key, Object... o) {
+	}
+	
+	public void setResult(Object o) {
+		rh.setResult(o);
 	}
 	
 	protected void setResult(int... iResult) {

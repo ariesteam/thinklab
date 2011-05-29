@@ -25,7 +25,7 @@ import org.restlet.resource.Get;
  * @author ferdinando.villa
  * 
  */
-@RESTResourceHandler(path="/pload", description="load plugin",  arguments="arg")
+@RESTResourceHandler(id="pload", description="load plugin",  arguments="arg")
 public class Pload extends DefaultRESTHandler {
 
 	@Get

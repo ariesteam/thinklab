@@ -14,7 +14,7 @@ import java.lang.annotation.RetentionPolicy;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RESTResourceHandler {
-	public String path();
+	public String id();
 	public String description();
 	public String arguments() default "";
 	public String options() default "";

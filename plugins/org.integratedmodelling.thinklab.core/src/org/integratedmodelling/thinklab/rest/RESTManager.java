@@ -19,7 +19,8 @@ public class RESTManager {
 
 	HashMap<Integer, Component> _components = 
 		new HashMap<Integer, Component>(); 
-
+	HashMap<String, RestCommand> _commands = 
+		new HashMap<String, RestCommand>(); 
 	/*
 	 * resource classes harvested from plugin code.
 	 */
@@ -32,6 +33,27 @@ public class RESTManager {
 		new HashMap<String, ISession>();
 	
 	public static RESTManager _this = null;
+	
+	public static class RestCommand {
+
+		public String[] options;
+		public String[] arguments;
+		public String id;
+		public String description;
+		
+		public RestCommand(String path, String description, String argument,
+				String options) {
+			
+			this.id = path;
+			this.description = description;
+			this.options = options.isEmpty() ? null : options.split(",");
+			this.arguments = argument.isEmpty()? null : argument.split(",");
+		}
+
+		public Object asArray() {
+			return new Object[]{id, description, options, arguments};
+		}	
+	}
 	
 	/**
 	 * If query contains the ID of a valid user session, return the ISession 
@@ -60,14 +82,16 @@ public class RESTManager {
 		return _components;
 	}
 
-	public void registerService(String path, Class<?> handlerClass) {
+	public void registerService(String path, Class<?> handlerClass, 
+			String description, String argument, String options) {
 
 		// TODO pass and store all further documentation.
 		_resources.put(path, handlerClass);
+		_commands.put(path, new RestCommand(path, description, argument, options));
 		
 		// update any existing servers
 		for (Component p : _components.values()) {
-			p.getInternalRouter().attach(path, handlerClass);
+			p.getInternalRouter().attach("/" + path, handlerClass);
 		}
 	}
 		
@@ -147,5 +171,13 @@ public class RESTManager {
 
 	public Class<?> getResourceForPath(String path) {
 		return _resources.get(path);
+	}
+	
+	public Collection<RestCommand> getCommandDescriptors() {
+		return _commands.values();
+	}
+	
+	public RestCommand getCommandDescriptor(String id) {
+		return _commands.get(id);
 	}
 }

@@ -23,9 +23,10 @@ public class ResultHolder {
 	ArrayList<Integer> _intResult = null;
 	ArrayList<Double> _dblResult = null;
 	ArrayList<String> _txtResult = null;
+	Object            _objResult = null;
 	ArrayList<String> _urnResult = null;
 	ArrayList<String> _urnTypes  = null;
-
+	
 	
 	/**
 	 * If this is used, "return wrap()" should be the last call in your handler function. Any 
@@ -70,6 +71,11 @@ public class ResultHolder {
 		for (double i : dResult)
 			_dblResult.add(i);		
 		resultType = _dblResult.size() > 1 ? DefaultRESTHandler.DOUBLES : DefaultRESTHandler.DOUBLE;
+	}
+	
+	public void setResult(Object o) {
+		_objResult = o;
+		resultType = DefaultRESTHandler.OBJECT;
 	}
 
 	public void setResult(String... tResult) {
@@ -125,6 +131,9 @@ public class ResultHolder {
 				break;
 			case DefaultRESTHandler.URNS:
 				jsonObject.put("result", _urnResult);
+				break;
+			case DefaultRESTHandler.OBJECT:
+				jsonObject.put("result", _objResult);
 				break;
 			}
 			

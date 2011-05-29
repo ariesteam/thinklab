@@ -28,6 +28,7 @@ public class Ping extends DefaultRESTHandler {
 			oret.put("memory.max", runtime.maxMemory());
 			oret.put("memory.free", runtime.freeMemory());
 			oret.put("processors", runtime.availableProcessors());
+			oret.put("status", DefaultRESTHandler.DONE);
 			
 			/*
 			 * TODO add anything interesting: plugins loaded, kboxes online, sessions

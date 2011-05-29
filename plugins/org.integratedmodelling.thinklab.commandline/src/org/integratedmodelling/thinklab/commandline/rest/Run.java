@@ -29,7 +29,7 @@ import org.restlet.resource.Get;
  * @author ferdinando.villa
  * 
  */
-@RESTResourceHandler(path="/run", description="run application",  arguments="application")
+@RESTResourceHandler(id="run", description="run application",  arguments="application")
 public class Run extends DefaultRESTHandler {
 
 	class AppThread extends RESTTask {

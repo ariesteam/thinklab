@@ -8,7 +8,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.integratedmodelling.thinklab.rest.RESTManager;
 import org.restlet.representation.Representation;
-import org.restlet.resource.Post;
+import org.restlet.resource.Get;
 
 /**
  * Authenticate creates a session for the calling service and returns a descriptor 
@@ -23,11 +23,22 @@ import org.restlet.resource.Post;
  */
 public class Authenticate extends DefaultRESTHandler {
 
-	@Post
+	@Get
 	public Representation authenticate() {
 				
 		try {
-		
+	
+			String sess = this.getArgument("session");
+			if (sess != null) {
+				ISession s = RESTManager.get().getSession(sess);
+				if (s != null) {
+					info("session is already established");
+				} else {
+					fail("session is already active but does not exist");
+				}
+				return wrap();
+			}
+			
 			String user = this.getArgument("user");
 			String pass = this.getArgument("password");
 			Properties uprop = null;
