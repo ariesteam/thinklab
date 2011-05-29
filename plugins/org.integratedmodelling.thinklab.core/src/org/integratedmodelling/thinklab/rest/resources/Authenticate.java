@@ -29,7 +29,7 @@ public class Authenticate extends DefaultRESTHandler {
 		try {
 	
 			String sess = this.getArgument("session");
-			if (sess != null) {
+			if (sess != null && !sess.equals("null")) {
 				ISession s = RESTManager.get().getSession(sess);
 				if (s != null) {
 					info("session is already established");

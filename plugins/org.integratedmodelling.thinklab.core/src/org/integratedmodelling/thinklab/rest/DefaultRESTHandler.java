@@ -225,6 +225,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	 * @param o
 	 */
 	protected void put(String key, Object... o) {
+		rh.put(key, o);
 	}
 	
 	public void setResult(Object o) {
