@@ -1,19 +1,14 @@
 package org.integratedmodelling.thinklab.rest.resources;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
-import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 import org.restlet.data.MediaType;
 import org.restlet.ext.fileupload.RestletFileUpload;
@@ -67,28 +62,4 @@ public class Receive extends DefaultRESTHandler {
 		 return wrap();
 	  }
 
-	 /*
-	  * return file path and "handle" for the client to use to refer to uploaded file in further
-	  * requests.
-	  */
-	private Pair<File,String> getFileName(String fieldName, ISession session) throws ThinklabException {
-
-		Pair<File,String> ret = null;
-		String workspace = session.getSessionWorkspace();		
-		File sdir = new File(Thinklab.get().getScratchPath() + File.separator + "rest/tmp" + 
-					File.separator + workspace);
-		sdir.mkdirs();
-		
-		String ext = MiscUtilities.getFileExtension(fieldName);
-		ext = (ext == null || ext.isEmpty()) ? ".tmp" : ("." + ext); 
-		try {
-			File out = File.createTempFile("upl", ext, sdir);
-			String handle = workspace + File.separator + MiscUtilities.getFileName(out.toString());
-			ret = new Pair<File, String>(out, handle);
-		} catch (IOException e) {
-			throw new ThinklabIOException(e);
-		}
-		
-		return ret;
-	}
 }

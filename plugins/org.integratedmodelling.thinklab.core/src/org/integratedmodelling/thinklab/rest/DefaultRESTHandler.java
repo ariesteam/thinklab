@@ -1,5 +1,7 @@
 package org.integratedmodelling.thinklab.rest;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,12 +9,14 @@ import java.util.List;
 
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.Request;
@@ -62,6 +66,9 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	Date start = null;
 	int resultStatus = DONE;
 	private ResultHolder rh = new ResultHolder();
+	
+	private ArrayList<Pair<String,String>> _downloads = 
+		new ArrayList<Pair<String,String>>();
 
 	String error = null, info = null, warn = null;
 	
@@ -87,6 +94,10 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		put("enqueued", thread.getId()+"");
 		resultStatus = WAIT;
 	}
+	
+	protected void addDownload(String handle, String filename) {
+		_downloads.add(new Pair<String, String>(filename, handle));
+	}
 
 	/**
 	 * Takes the session from the session parameter, which must be in all
@@ -103,6 +114,36 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		return RESTManager.get().getSession(id);
 	}
 	
+	/**
+	 * Return a file path and "handle" for a file that will be created and returned to the 
+	 * client to retrieve through receive(handle).
+
+	 * @param fileName the file the user wants us to create
+	 * @param session current session
+	 * @return pair<file, handle> - create file in File, return handle to client using 
+	 * 		   addDownload(handle, fileName)
+	 * @throws ThinklabException
+	 */
+	protected Pair<File,String> getFileName(String fileName, ISession session) throws ThinklabException {
+
+		Pair<File,String> ret = null;
+		String workspace = session.getSessionWorkspace();		
+		File sdir = new File(Thinklab.get().getScratchPath() + File.separator + "rest/tmp" + 
+					File.separator + workspace);
+		sdir.mkdirs();
+		
+		String ext = MiscUtilities.getFileExtension(fileName);
+		ext = (ext == null || ext.isEmpty()) ? ".tmp" : ("." + ext); 
+		try {
+			File out = File.createTempFile("upl", ext, sdir);
+			String handle = workspace + File.separator + MiscUtilities.getFileName(out.toString());
+			ret = new Pair<File, String>(out, handle);
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}
+		
+		return ret;
+	}
 	
 	/**
 	 * Return the elements of the request path after the service identifier, in the same
@@ -287,6 +328,15 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 			}
 			if (error != null) {
 				jsonObject.put("error", error);
+			}
+			
+			if (_downloads.size() > 0) {
+				Object[] oj = new Object[_downloads.size()];
+				int i = 0;
+				for (Pair<String, String> dl : _downloads) {
+					oj[i++] = new String[]{dl.getFirst(), dl.getSecond()};
+				}
+				jsonObject.put("downloads", oj);
 			}
 			
 		} catch (JSONException e) {
