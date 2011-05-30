@@ -12,6 +12,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.restlet.Component;
 import org.restlet.data.Protocol;
+import org.restlet.resource.ServerResource;
 
 public class RESTManager {
 
@@ -24,8 +25,8 @@ public class RESTManager {
 	/*
 	 * resource classes harvested from plugin code.
 	 */
-	HashMap<String, Class<?>> _resources =
-		new HashMap<String, Class<?>>();
+	HashMap<String, Class<? extends ServerResource>> _resources =
+		new HashMap<String, Class<? extends ServerResource>>();
 	
 	int sessionCount;
 	
@@ -82,7 +83,7 @@ public class RESTManager {
 		return _components;
 	}
 
-	public void registerService(String path, Class<?> handlerClass, 
+	public void registerService(String path, Class<? extends ServerResource> handlerClass, 
 			String description, String argument, String options) {
 
 		// TODO pass and store all further documentation.
@@ -169,7 +170,7 @@ public class RESTManager {
 		return _resources.keySet();
 	}
 
-	public Class<?> getResourceForPath(String path) {
+	public Class<? extends ServerResource> getResourceForPath(String path) {
 		return _resources.get(path);
 	}
 	

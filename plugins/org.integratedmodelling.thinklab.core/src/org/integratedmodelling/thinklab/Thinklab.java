@@ -4,12 +4,14 @@ import java.net.URL;
 
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.PluginDescriptor;
+import org.restlet.service.MetadataService;
 
 /**
  * Activating this plugin means loading the knowledge manager, effectively initializing the
@@ -27,6 +29,8 @@ public class Thinklab extends ThinklabPlugin {
 	}
 	
 	KnowledgeManager _km = null;
+
+	private MetadataService _metadataService;
 
 	// only for this plugin, very ugly, but we need to access logging etc. before doStart() has
 	// finished and the plugin has been published.
@@ -149,6 +153,19 @@ public class Thinklab extends ThinklabPlugin {
 
 	public static boolean debug(ISession session) {
 		return session.getVariable(ISession.DEBUG) != null;
+	}
+
+	public MetadataService getMetadataService() throws ThinklabException {
+		
+		if (this._metadataService == null) {
+			this._metadataService = new MetadataService();
+			try {
+				this._metadataService.start();
+			} catch (Exception e) {
+				throw new ThinklabInternalErrorException(e);
+			}
+		}
+		return _metadataService;
 	}
 
 }

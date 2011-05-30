@@ -98,6 +98,7 @@ import org.java.plugin.registry.Extension;
 import org.java.plugin.registry.Extension.Parameter;
 import org.java.plugin.registry.ExtensionPoint;
 import org.java.plugin.registry.Version;
+import org.restlet.resource.ServerResource;
 
 
 /**
@@ -979,10 +980,8 @@ public abstract class ThinklabPlugin extends Plugin
 					String description = ((RESTResourceHandler)annotation).description();
 					String argument = ((RESTResourceHandler)annotation).arguments();
 					String options = ((RESTResourceHandler)annotation).options();
-					RESTManager.get().registerService(path, (Class<?>) cls,
-							description, argument, options);
-
-					
+					RESTManager.get().registerService(path, (Class<? extends ServerResource>) cls,
+							description, argument, options);	
 					break;
 				}
 			}

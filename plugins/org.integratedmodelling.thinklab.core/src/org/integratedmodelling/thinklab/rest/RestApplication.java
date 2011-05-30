@@ -6,6 +6,8 @@ import org.integratedmodelling.thinklab.rest.resources.Capabilities;
 import org.integratedmodelling.thinklab.rest.resources.CheckWaiting;
 import org.integratedmodelling.thinklab.rest.resources.GetResource;
 import org.integratedmodelling.thinklab.rest.resources.Ping;
+import org.integratedmodelling.thinklab.rest.resources.Receive;
+import org.integratedmodelling.thinklab.rest.resources.Send;
 import org.restlet.Application;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
@@ -43,7 +45,17 @@ public class RestApplication extends Application {
 		 * retriever of named resource from returned URN
 		 */
 		router.attach("/get", GetResource.class);
+
+		/*
+		 * receive uploaded files, return handle
+		 */
+		router.attach("/receive", Receive.class);
 		
+		/*
+		 * send uploaded files to client using download handle
+		 */
+		router.attach("/send", Send.class);
+
 		/*
 		 * returns array of services if no further context, or 
 		 * service description etc if context is given. Use wiki/html if html requested.

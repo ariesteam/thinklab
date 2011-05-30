@@ -11,6 +11,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
+import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +20,7 @@ import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
 import org.restlet.data.Method;
 import org.restlet.data.Parameter;
+import org.restlet.engine.util.FormUtils;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
@@ -156,19 +158,10 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	
 	private void processRequest() {
 		
-		Request request = getRequest();
-		
-		if (getRequest().getMethod().equals(Method.GET)) {
-			Form form = request.getResourceRef().getQueryAsForm();
+			Form form = getRequest().getResourceRef().getQueryAsForm();
 			for (Parameter parameter : form) {
-				_query.put(parameter.getName(), parameter.getValue());
+				_query.put(parameter.getName(), Escape.fromURL(parameter.getValue()));
 			}
-		} else {
-			Form form = request.getEntityAsForm();
-			for (Parameter parameter : form) {
-				_query.put(parameter.getName(), parameter.getValue());
-			}
-		}
 		
 		_processed = true;
 	}
