@@ -52,7 +52,7 @@ public class RESTManager {
 		}
 
 		public Object asArray() {
-			return new Object[]{id, description, options, arguments};
+			return new Object[]{id, description, arguments, options};
 		}	
 	}
 	

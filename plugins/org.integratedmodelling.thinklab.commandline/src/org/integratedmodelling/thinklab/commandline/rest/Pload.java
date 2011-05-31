@@ -29,8 +29,10 @@ import org.restlet.resource.Get;
 public class Pload extends DefaultRESTHandler {
 
 	@Get
-	public Representation authenticate() {
+	public Representation pload() throws ThinklabException {
 
+		checkPrivileges("user:Administrator");
+		
 		try {
 			String plugin 	= this.getArgument("arg");
 			plugin = Thinklab.resolvePluginName(plugin, true);

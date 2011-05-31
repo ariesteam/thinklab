@@ -1,9 +1,15 @@
 package org.integratedmodelling.thinklab.rest.resources;
 
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
+/**
+ * Pass taskid, see if it has completed, if so return result.
+ * @author ferdinando.villa
+ *
+ */
 public class CheckWaiting extends DefaultRESTHandler {
 
 	@Get
@@ -11,8 +17,16 @@ public class CheckWaiting extends DefaultRESTHandler {
 
 		try {
 			
-			String cmd = getArgument("resource");
-		
+			String cmd = getArgument("taskid");
+			if (getScheduler().finished(cmd)) {
+				setResult(getScheduler().getResult(cmd));
+			} else if (getScheduler().started(cmd) || getScheduler().enqueued(cmd)) {
+				keepWaiting(cmd);
+			} else {
+				throw new ThinklabInternalErrorException(
+						"rest: status: task ID " + cmd + " unknown");
+			}
+			
 		} catch (Exception e) {
 			fail(e);
 		}

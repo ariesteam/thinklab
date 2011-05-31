@@ -7,12 +7,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.exception.ThinklabAuthenticationException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -75,6 +78,28 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	boolean _processed = false;
 
 	static RESTTaskScheduler _scheduler = null;
+
+	
+	/**
+	 * Call this one to ensure that a restricted command is allowed for the
+	 * current user.
+	 * 
+	 * @param concept the user role required for the command. Must resolve to a 
+	 *        valid concept.
+	 * @throws ThinklabException if the user is not allowed to run the command or 
+	 * 		   is undefined
+	 */
+	protected void checkPrivileges(String concept) throws ThinklabException {
+		
+		if (getSession() == null)
+			throw new ThinklabAuthenticationException("no user privileges for command");
+		
+		IInstance user = getSession().getUserModel().getUserInstance();
+		if (user == null || !user.is(KnowledgeManager.getConcept(concept)))
+			throw new ThinklabAuthenticationException(
+					"not enough user privileges for command");
+
+	}
 	
 	protected static RESTTaskScheduler getScheduler() {
 		
@@ -89,10 +114,38 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		return _scheduler;
 	}
 	
-	public void enqueue(Thread thread) {
-		getScheduler().enqueue(thread);
-		put("enqueued", thread.getId()+"");
-		resultStatus = WAIT;
+	public Representation enqueue(final Thread thread) {
+		
+		Thread torun = null;
+		getScheduler().enqueue(
+				torun = new RESTTask() {
+					
+					Thread _thread = thread;
+					
+					@Override
+					public ResultHolder getResult() {
+						return this.getResult();
+					}
+					
+					@Override
+					protected void execute() throws Exception {
+						_thread.run();
+					}
+					
+					@Override
+					protected void cleanup() {
+						// TODO
+					}
+				});
+		
+		JSONObject ret = new JSONObject();
+		try {
+			ret.put("taskid", torun.getId()+"");
+			ret.put("status", WAIT);
+		} catch (JSONException e) {
+			// come on
+		}
+		return new JsonRepresentation(ret);
 	}
 	
 	protected void addDownload(String handle, String filename) {
@@ -182,6 +235,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	}
 	
 	protected void keepWaiting(String taskId) {
+		put("taskid", taskId);
 		resultStatus = WAIT;
 	}
 	

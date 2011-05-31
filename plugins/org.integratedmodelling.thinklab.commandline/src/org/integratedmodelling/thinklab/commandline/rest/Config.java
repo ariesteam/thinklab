@@ -3,17 +3,15 @@ package org.integratedmodelling.thinklab.commandline.rest;
 import java.util.Collection;
 
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.application.Application;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.commandline.CommandLine;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
-import org.integratedmodelling.thinklab.rest.RESTTask;
-import org.integratedmodelling.thinklab.rest.ResultHolder;
+import org.java.plugin.Plugin;
 import org.java.plugin.PluginLifecycleException;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
@@ -29,44 +27,42 @@ import org.restlet.resource.Get;
  * @author ferdinando.villa
  * 
  */
-@RESTResourceHandler(id="run", description="run application",  arguments="application")
-public class Run extends DefaultRESTHandler {
+@RESTResourceHandler(id="config", description="load plugin",  
+					 arguments="plugin,variable,value",
+					 options="keep")
+public class Config extends DefaultRESTHandler {
 
-	class AppThread extends RESTTask {
-
-		String app;
-		IValue result = null;
-		
-		AppThread(String app) {
-			this.app = app;
-		}
-		
-		@Override
-		protected void execute() throws Exception {
-			result = Application.run(app);
-		}
-
-		@Override
-		protected void cleanup() {
-		}
-
-		@Override
-		public ResultHolder getResult() {
-			ResultHolder rh = new ResultHolder();
-			if (this.result != null)
-				rh.setResult(result.toString());
-			return rh;
-		}
-	}
-	
 	@Get
-	public Representation run() throws ThinklabException {
+	public Representation pload() throws ThinklabException {
 
 		checkPrivileges("user:Administrator");
 		
 		try {
-			String app = this.getArgument("application");
-			enqueue(new AppThread(app));
+			String plugin 	= this.getArgument("plugin");
+			plugin = Thinklab.resolvePluginName(plugin, true);
+			Plugin zio = CommandLine.get().getManager().getPlugin(plugin);
+			if (zio instanceof ThinklabPlugin) {
+				
+				String var = this.getArgument("variable");
+				String val = this.getArgument("value");
+				String kep = this.getArgument("keep");
+				
+				/*
+				 * change value 
+				 */
+				String previous = ((ThinklabPlugin)zio).getProperties().getProperty(var);
+				((ThinklabPlugin)zio).getProperties().setProperty(var, val);
+				
+				/*
+				 * persist if requested
+				 */
+				if (kep != null && kep.equals("true")) {
+					((ThinklabPlugin)zio).persistProperty(var, val);
+				}
+				
+				if (previous != null)
+					put("previous", previous);
+			}
 		} catch (Exception e) {
 			fail(e);
 		}

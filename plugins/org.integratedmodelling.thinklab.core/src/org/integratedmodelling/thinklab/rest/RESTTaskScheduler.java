@@ -13,6 +13,8 @@ public class RESTTaskScheduler extends TaskScheduler {
 		new HashMap<Long, ResultHolder>();
 	HashSet<Long> _enqueued = new HashSet<Long>();
 	HashSet<Long> _started = new HashSet<Long>();
+	HashMap<String,DefaultRESTHandler> _waiting = 
+		new HashMap<String, DefaultRESTHandler>();
 	
 	public class RESTListener implements Listener {
 

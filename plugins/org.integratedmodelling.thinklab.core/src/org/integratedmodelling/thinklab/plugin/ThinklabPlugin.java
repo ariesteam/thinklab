@@ -1377,4 +1377,31 @@ public abstract class ThinklabPlugin extends Plugin
 	public File getConfigPath() {
 		return confFolder;
 	}
+
+	public void persistProperty(String var, String val) throws ThinklabIOException {
+		
+		String configFile = getPluginBaseName() + ".properties";
+		File pfile = new File(confFolder + File.separator + configFile);
+
+		// load custom properties, overriding any in system folder.
+		Properties props = new Properties();
+		if (pfile.exists()) {
+			try {
+				FileInputStream inp = new FileInputStream(pfile);
+				props.load(inp);
+				inp.close();
+			} catch (Exception e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+		props.setProperty(var, val);
+		try {
+			FileOutputStream out = new FileOutputStream(pfile);
+			props.store(out, null);
+			out.close();
+		} catch (Exception e) {
+			throw new ThinklabIOException(e);
+		}
+
+	}
 }

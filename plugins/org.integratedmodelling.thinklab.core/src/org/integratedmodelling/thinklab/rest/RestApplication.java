@@ -4,7 +4,6 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.rest.resources.Authenticate;
 import org.integratedmodelling.thinklab.rest.resources.Capabilities;
 import org.integratedmodelling.thinklab.rest.resources.CheckWaiting;
-import org.integratedmodelling.thinklab.rest.resources.GetResource;
 import org.integratedmodelling.thinklab.rest.resources.Ping;
 import org.integratedmodelling.thinklab.rest.resources.Receive;
 import org.integratedmodelling.thinklab.rest.resources.Send;
@@ -37,14 +36,10 @@ public class RestApplication extends Application {
 		router.attach("/auth", Authenticate.class);
 
 		/*
-		 * register service to access status of enqueued task.
+		 * register service to access status of enqueued task, returning the 
+		 * result if the task has finished.
 		 */
-		router.attach("/status", CheckWaiting.class);
-
-		/*
-		 * retriever of named resource from returned URN
-		 */
-		router.attach("/get", GetResource.class);
+		router.attach("/check", CheckWaiting.class);
 
 		/*
 		 * receive uploaded files, return handle
