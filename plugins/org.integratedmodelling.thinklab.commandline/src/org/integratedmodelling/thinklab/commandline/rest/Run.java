@@ -62,7 +62,8 @@ public class Run extends DefaultRESTHandler {
 	@Get
 	public Representation run() throws ThinklabException {
 
-		checkPrivileges("user:Administrator");
+		if (!checkPrivileges("user:Administrator"))
+			return wrap();
 		
 		try {
 			String app = this.getArgument("application");

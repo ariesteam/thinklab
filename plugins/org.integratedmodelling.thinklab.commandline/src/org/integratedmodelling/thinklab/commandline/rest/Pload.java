@@ -31,7 +31,8 @@ public class Pload extends DefaultRESTHandler {
 	@Get
 	public Representation pload() throws ThinklabException {
 
-		checkPrivileges("user:Administrator");
+		if (!checkPrivileges("user:Administrator"))
+			return wrap();
 		
 		try {
 			String plugin 	= this.getArgument("arg");

@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.exception.ThinklabAuthenticationException;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
@@ -22,12 +21,9 @@ import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.restlet.Request;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
-import org.restlet.data.Method;
 import org.restlet.data.Parameter;
-import org.restlet.engine.util.FormUtils;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
@@ -82,34 +78,46 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	
 	/**
 	 * Call this one to ensure that a restricted command is allowed for the
-	 * current user.
+	 * current user. Currently this is always true if the server is the local
+	 * host. Otherwise the actual session user is checked against the requested
+	 * privilege.
 	 * 
 	 * @param concept the user role required for the command. Must resolve to a 
 	 *        valid concept.
 	 * @throws ThinklabException if the user is not allowed to run the command or 
 	 * 		   is undefined
 	 */
-	protected void checkPrivileges(String concept) throws ThinklabException {
+	protected boolean checkPrivileges(String concept) throws ThinklabException {
+	
+		String domain = getRequest().getResourceRef().getHostDomain();
+		boolean isLocal = 
+			(domain != null && (domain.equals("127.0.0.1") || domain.equals("localhost")));
 		
-		if (getSession() == null)
-			throw new ThinklabAuthenticationException("no user privileges for command");
+		if (isLocal)
+			return true;
+		
+		if (getSession() == null) {
+			fail("no user privileges for command");
+			return false;
+		}
 		
 		IInstance user = getSession().getUserModel().getUserInstance();
-		if (user == null || !user.is(KnowledgeManager.getConcept(concept)))
-			throw new ThinklabAuthenticationException(
-					"not enough user privileges for command");
-
+		if (user == null || !user.is(KnowledgeManager.getConcept(concept))) {
+			fail("not enough user privileges for command");
+			return false;
+		}
+		return true;
 	}
 	
 	protected static RESTTaskScheduler getScheduler() {
 		
 		if (_scheduler == null) {
-			
 			int ntasks = 
 				Integer.parseInt(
 						Thinklab.get().getProperties().getProperty(
 								RESTTaskScheduler.N_TASKS_PROPERTY, "8"));
 			_scheduler = new RESTTaskScheduler(ntasks);
+			_scheduler.start();
 		}
 		return _scheduler;
 	}

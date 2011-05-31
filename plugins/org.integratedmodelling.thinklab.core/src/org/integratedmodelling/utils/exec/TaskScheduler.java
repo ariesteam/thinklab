@@ -65,11 +65,13 @@ public class TaskScheduler implements ITaskScheduler {
 			if (_queue.size() > 0) {
 				while (_current.size() < maxConcurrentTasks) {
 					try {
-						Thread t = _queue.remove();
-						t.start();
-						_current.add(t);
-						for (Listener l : _listeners) {
-							l.notifyTaskStarted(t, _current.size(), _queue.size());
+						if (_queue.size() > 0) {
+							Thread t = _queue.remove();
+							t.start();
+							_current.add(t);
+							for (Listener l : _listeners) {
+								l.notifyTaskStarted(t, _current.size(), _queue.size());
+							}
 						}
 					} catch (Exception e) {
 						throw new ThinklabInternalErrorException(e);

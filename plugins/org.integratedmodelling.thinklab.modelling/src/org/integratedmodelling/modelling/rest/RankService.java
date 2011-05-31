@@ -1,5 +1,7 @@
 package org.integratedmodelling.modelling.rest;
 
+import org.integratedmodelling.clojure.ClojureInterpreter;
+import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
@@ -18,9 +20,12 @@ public class RankService extends DefaultAbstractModelService {
 			throw new ThinklabValidationException("rank: model or context are null");
 		}
 		
-		/*
-		 * TODO create model for concept
-		 */
+		String clj = 
+			"(modelling/model '" + 
+			_concept + 
+			" (modelling/ranking '" + _concept + "))";
+					
+		_model = (Model) new ClojureInterpreter().evalRaw(clj, "user", null);
 		
 		return enqueue(new ModelThread(_kbox, _model, _context, getSession(), null));	
 	}

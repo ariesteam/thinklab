@@ -16,15 +16,15 @@ public class CheckWaiting extends DefaultRESTHandler {
 	public Representation getResource() {
 
 		try {
-			
+			// don't change the ordering in the if 
 			String cmd = getArgument("taskid");
-			if (getScheduler().finished(cmd)) {
-				setResult(getScheduler().getResult(cmd));
-			} else if (getScheduler().started(cmd) || getScheduler().enqueued(cmd)) {
+			if (getScheduler().started(cmd) || getScheduler().enqueued(cmd)) {
 				keepWaiting(cmd);
+			} else if (getScheduler().finished(cmd)) {
+				setResult(getScheduler().getResult(cmd));
 			} else {
 				throw new ThinklabInternalErrorException(
-						"rest: status: task ID " + cmd + " unknown");
+						"rest: status: task " + cmd + " unknown");
 			}
 			
 		} catch (Exception e) {

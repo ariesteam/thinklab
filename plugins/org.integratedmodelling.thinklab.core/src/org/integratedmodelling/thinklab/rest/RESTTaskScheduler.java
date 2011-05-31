@@ -46,6 +46,7 @@ public class RESTTaskScheduler extends TaskScheduler {
 	
 	public RESTTaskScheduler(int maxConcurrentTasks) {
 		super(maxConcurrentTasks);
+		addListener(new RESTListener());
 	}
 	
 	/**
@@ -53,7 +54,7 @@ public class RESTTaskScheduler extends TaskScheduler {
 	 * @param id
 	 * @return
 	 */
-	public boolean finished(String id) {
+	public synchronized boolean finished(String id) {
 		long iid = Long.parseLong(id);
 		synchronized (_finished) {
 			return _finished.containsKey(iid);
@@ -67,7 +68,7 @@ public class RESTTaskScheduler extends TaskScheduler {
 	 * @param id
 	 * @return
 	 */
-	public ResultHolder getResult(String id) {
+	public synchronized ResultHolder getResult(String id) {
 		long iid = Long.parseLong(id);
 		ResultHolder ret = _finished.get(iid);
 		synchronized (_started) {

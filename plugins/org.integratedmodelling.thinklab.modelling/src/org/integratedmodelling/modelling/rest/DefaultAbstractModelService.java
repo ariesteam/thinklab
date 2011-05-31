@@ -18,6 +18,7 @@ import org.integratedmodelling.modelling.model.Scenario;
 import org.integratedmodelling.modelling.storage.NetCDFArchive;
 import org.integratedmodelling.modelling.storyline.Storyline.Listener;
 import org.integratedmodelling.modelling.visualization.ObservationListing;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -185,6 +186,10 @@ public abstract class DefaultAbstractModelService extends DefaultRESTHandler {
 		
 		if (getArgument("kbox") != null) {
 			_kbox = KBoxManager.get().requireGlobalKBox(getArgument("kbox"));
+		}
+
+		if (getArgument("concept") != null) {
+			_concept = KnowledgeManager.getConcept(getArgument("concept"));
 		}
 
 		if (getArgument("scenario") != null) {
