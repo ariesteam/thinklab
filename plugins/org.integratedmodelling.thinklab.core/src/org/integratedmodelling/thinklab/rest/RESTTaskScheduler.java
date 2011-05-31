@@ -29,6 +29,7 @@ public class RESTTaskScheduler extends TaskScheduler {
 				int currentlyScheduled) {
 
 			ResultHolder result = null;
+			System.out.println("FINITO CAZZO");
 			if (task instanceof RESTTask) {
 				result = ((RESTTask)task).getResult();
 			}
@@ -41,7 +42,6 @@ public class RESTTaskScheduler extends TaskScheduler {
 			_enqueued.remove(task.getId());
 			_started.add(task.getId());
 		}
-		
 	}
 	
 	public RESTTaskScheduler(int maxConcurrentTasks) {
