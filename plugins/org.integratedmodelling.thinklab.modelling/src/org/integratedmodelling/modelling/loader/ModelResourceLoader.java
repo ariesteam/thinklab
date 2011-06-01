@@ -31,4 +31,10 @@ public class ModelResourceLoader implements IResourceLoader {
 			StorylineFactory.addSourceDirectory(fmod);
 		}
 	}
+
+	@Override
+	public void unload(Properties properties, File loadDir) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -1,14 +1,22 @@
 package org.integratedmodelling.thinklab;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
+import java.util.Map;
+import java.util.Properties;
 
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.utils.Escape;
+import org.integratedmodelling.utils.MiscUtilities;
+import org.java.plugin.Plugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.PluginDescriptor;
 import org.restlet.service.MetadataService;
@@ -168,11 +176,13 @@ public class Thinklab extends ThinklabPlugin {
 		return _metadataService;
 	}
 
-	public void shutdown(String hook, final int seconds) {
+	public void shutdown(String hook, final int seconds, Map<String, String> params) {
 
 		if (hook != null) {
 			/*
-			 * TODO copy given hook to /tmp/thinklab/hooks
+			 * TODO copy given hook to ${thinklab.inst}/etc/hooks
+			 * TODO should also set parameters as variables at the top of the 
+			 *      copied hook
 			 */
 			
 		}
@@ -198,4 +208,41 @@ public class Thinklab extends ThinklabPlugin {
 		}.start();
 	}
 
+	public static File getPluginLoadDirectory(Plugin plugin) {
+
+		String lf = new File(plugin.getDescriptor().getLocation().getFile()).getAbsolutePath();
+		return new File(Escape.fromURL(MiscUtilities.getPath(lf).toString()));
+	}
+	
+	/**
+	 * Get the content of THINKLAB-INF/thinklab.properties if the plugin contains that
+	 * directory, or null if it doesn't. Can be used to check if a plugin is a 
+	 * thinklab plugin based on the null return value.
+	 * 
+	 * @param plugin
+	 * @return
+	 * @throws ThinklabIOException
+	 */
+	public static Properties getThinklabPluginProperties(Plugin plugin) throws ThinklabIOException {
+		
+			Properties ret = null;
+			File pfile = 
+				new File(
+					getPluginLoadDirectory(plugin) + 
+					File.separator + 
+					"THINKLAB-INF" +
+					File.separator + 
+					"thinklab.properties");
+			
+			if (pfile.exists()) {
+				try {
+					ret = new Properties();
+					ret.load(new FileInputStream(pfile));
+				} catch (Exception e) {
+					throw new ThinklabIOException(e);
+				}
+			}
+			
+			return ret;
+		}
 }

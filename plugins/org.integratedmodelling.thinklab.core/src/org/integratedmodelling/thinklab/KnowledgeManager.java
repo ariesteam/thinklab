@@ -73,6 +73,7 @@ import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
+import org.integratedmodelling.thinklab.plugin.ThinklabPluginRegister;
 import org.integratedmodelling.thinklab.session.SingleSessionManager;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
@@ -199,14 +200,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
      */
 	private boolean typesInitialized = false;
 
-//	@Deprecated
-//	private HashMap<String, InstanceImplementationConstructor> instanceConstructors =
-//		new HashMap<String, InstanceImplementationConstructor>();
-//
-//	@Deprecated
-//	private HashMap<String, LiteralValidator> literalValidators =
-//		new HashMap<String, LiteralValidator>();
-//
 	@Deprecated
 	private HashMap<String, KnowledgeLoader> knowledgeLoaders =
 		new HashMap<String, KnowledgeLoader>();
@@ -236,6 +229,11 @@ public class KnowledgeManager implements IKnowledgeProvider {
         /* create stuff */
         this.knowledgeRepository = kr;
 		this.sessionManager  = ki;
+		
+		/*
+		 * install listener to handle non-java plugins with THINKLAB-INF resources 
+		 */
+		Thinklab.get().getManager().registerListener(new ThinklabPluginRegister());
 	}
 	
 	/**

@@ -16,5 +16,9 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
  *
  */
 public interface IResourceLoader {
+	
 	public void load(Properties properties, File loadDir) throws ThinklabException;
+
+	public void unload(Properties properties, File loadDir);
+	
 }
