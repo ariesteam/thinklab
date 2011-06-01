@@ -21,7 +21,7 @@ public class CheckWaiting extends DefaultRESTHandler {
 			if ((getScheduler().started(cmd) && !getScheduler().finished(cmd)) || getScheduler().enqueued(cmd)) {
 				keepWaiting(cmd);
 			} else if (getScheduler().finished(cmd)) {
-				setResult(getScheduler().getResult(cmd));
+				return getScheduler().getResult(cmd);
 			} else {
 				throw new ThinklabInternalErrorException(
 						"rest: status: task " + cmd + " unknown");

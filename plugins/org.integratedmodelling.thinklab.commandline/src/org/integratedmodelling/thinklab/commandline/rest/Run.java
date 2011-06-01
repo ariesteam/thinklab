@@ -32,30 +32,37 @@ import org.restlet.resource.Get;
 @RESTResourceHandler(id="run", description="run application",  arguments="application")
 public class Run extends DefaultRESTHandler {
 
-	class AppThread extends RESTTask {
+	class AppThread extends Thread implements RESTTask {
 
 		String app;
 		IValue result = null;
+		boolean _done = false;
 		
 		AppThread(String app) {
 			this.app = app;
 		}
 		
 		@Override
-		protected void execute() throws Exception {
-			result = Application.run(app);
+		public void run() {
+			try {
+				result = Application.run(app);
+			} catch (ThinklabException e) {
+				fail(e);
+			} finally {
+				_done = true;
+			}
 		}
 
 		@Override
-		protected void cleanup() {
-		}
-
-		@Override
-		public ResultHolder getResult() {
-			ResultHolder rh = new ResultHolder();
+		public Representation getResult() {
 			if (this.result != null)
-				rh.setResult(result.toString());
-			return rh;
+				setResult(result.toString());
+			return wrap();
+		}
+
+		@Override
+		public boolean isFinished() {
+			return _done;
 		}
 	}
 	
@@ -67,7 +74,7 @@ public class Run extends DefaultRESTHandler {
 		
 		try {
 			String app = this.getArgument("application");
-			enqueue(new AppThread(app));
+			return enqueue(new AppThread(app));
 		} catch (Exception e) {
 			fail(e);
 		}

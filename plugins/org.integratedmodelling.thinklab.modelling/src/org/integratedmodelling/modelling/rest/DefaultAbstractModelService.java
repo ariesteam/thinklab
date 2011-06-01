@@ -27,6 +27,7 @@ import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
+import org.integratedmodelling.thinklab.rest.RESTTask;
 import org.integratedmodelling.utils.Pair;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
@@ -73,7 +74,7 @@ public abstract class DefaultAbstractModelService extends DefaultRESTHandler {
 		PrintStream ps = new PrintStream(os);
 		ObservationListing lister = new ObservationListing(mresult);
 		lister.dump(ps);
-		info(ps.toString());
+		info(os.toString());
 	}
 	
 	/*
@@ -82,7 +83,7 @@ public abstract class DefaultAbstractModelService extends DefaultRESTHandler {
 	public void visualize() {
 		
 	}
-	
+
 	/*
 	 * create NC file from context and set it as download with requested filename
 	 */
@@ -95,13 +96,15 @@ public abstract class DefaultAbstractModelService extends DefaultRESTHandler {
 		addDownload(outf.getSecond(), _ncout);
 	}
 	
-	public class ModelThread extends Thread {
+	public class ModelThread extends Thread implements RESTTask {
 
 		IKBox  kbox = null;
 		IModel model = null;
 		IContext context = null;
 		ISession session = null;
 		Listener listener = null;
+		
+		boolean _done = false;
 		
 		public ModelThread(IKBox kbox, IModel model, IContext context, ISession session, Listener listener) {
 			this.kbox = kbox;
@@ -151,6 +154,10 @@ public abstract class DefaultAbstractModelService extends DefaultRESTHandler {
 					makeDump();
 				}
 				
+				if (_ncout != null) {
+					makeNCOutput();
+				}
+				
 			} catch (Exception e) {
 				
 				status = ERROR;
@@ -158,12 +165,24 @@ public abstract class DefaultAbstractModelService extends DefaultRESTHandler {
 				errors = true;
 				
 			} finally {
+
+				_done = true;
 				
 				// TODO log user and possibly run time for billing
 				ModellingPlugin.get().logger().info(
 						"computation of " + model.getName() + " finished" + 
 						(errors ? " with errors" : " successfully"));
 			}
+		}
+
+		@Override
+		public Representation getResult() {
+			return wrap();
+		}
+
+		@Override
+		public boolean isFinished() {
+			return _done;
 		}
 	}
 	
@@ -207,8 +226,8 @@ public abstract class DefaultAbstractModelService extends DefaultRESTHandler {
 		if (getArgument("visualize") != null && getArgument("visualize").equals("true"))
 			_dump = true;
 		
-		if (getArgument("ncoutput") != null)
-			_ncout = getArgument("ncoutput");
+		if (getArgument("output") != null)
+			_ncout = getArgument("output");
 		
 	}
 

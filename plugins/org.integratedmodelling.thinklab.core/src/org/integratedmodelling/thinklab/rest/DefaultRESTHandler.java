@@ -124,31 +124,11 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	
 	public Representation enqueue(final Thread thread) {
 		
-		Thread torun = null;
-		getScheduler().enqueue(
-				torun = new RESTTask() {
-					
-					Thread _thread = thread;
-					
-					@Override
-					public ResultHolder getResult() {
-						return this.getResult();
-					}
-					
-					@Override
-					protected void execute() throws Exception {
-						_thread.run();
-					}
-					
-					@Override
-					protected void cleanup() {
-						// TODO
-					}
-				});
+		getScheduler().enqueue(thread);
 		
 		JSONObject ret = new JSONObject();
 		try {
-			ret.put("taskid", torun.getId()+"");
+			ret.put("taskid", thread.getId()+"");
 			ret.put("status", WAIT);
 		} catch (JSONException e) {
 			// come on

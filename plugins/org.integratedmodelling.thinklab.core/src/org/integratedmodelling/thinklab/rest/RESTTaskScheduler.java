@@ -4,13 +4,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.integratedmodelling.utils.exec.TaskScheduler;
+import org.restlet.representation.Representation;
 
 public class RESTTaskScheduler extends TaskScheduler {
 
 	public static final String N_TASKS_PROPERTY = "rest.scheduler.ntasks";
 
-	HashMap<Long, ResultHolder> _finished = 
-		new HashMap<Long, ResultHolder>();
+	HashMap<Long, Representation> _finished = 
+		new HashMap<Long, Representation>();
 	HashSet<Long> _enqueued = new HashSet<Long>();
 	HashSet<Long> _started = new HashSet<Long>();
 	HashMap<String,DefaultRESTHandler> _waiting = 
@@ -28,8 +29,7 @@ public class RESTTaskScheduler extends TaskScheduler {
 		public void notifyTaskFinished(Thread task, int currentlyExecuting,
 				int currentlyScheduled) {
 
-			ResultHolder result = null;
-			System.out.println("FINITO CAZZO");
+			Representation result = null;
 			if (task instanceof RESTTask) {
 				result = ((RESTTask)task).getResult();
 			}
@@ -68,9 +68,9 @@ public class RESTTaskScheduler extends TaskScheduler {
 	 * @param id
 	 * @return
 	 */
-	public synchronized ResultHolder getResult(String id) {
+	public synchronized Representation getResult(String id) {
 		long iid = Long.parseLong(id);
-		ResultHolder ret = _finished.get(iid);
+		Representation ret = _finished.get(iid);
 		synchronized (_started) {
 			_started.remove(iid);
 		}
