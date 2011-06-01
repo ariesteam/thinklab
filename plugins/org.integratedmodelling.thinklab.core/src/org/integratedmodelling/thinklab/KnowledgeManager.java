@@ -591,7 +591,9 @@ public class KnowledgeManager implements IKnowledgeProvider {
         			DEFAULT_CORE_ONTOLOGY);
 
         	URL tco = Thinklab.get().getResourceURL(cont);  	
+        	URL tcu = Thinklab.get().getResourceURL("user.owl");  	
             knowledgeRepository.refreshOntology(tco, MiscUtilities.getNameFromURL(cont), true);
+            knowledgeRepository.refreshOntology(tcu, "user", true);
         
         /* initialize types before we register plugins */
         initializeThinklabTypes();

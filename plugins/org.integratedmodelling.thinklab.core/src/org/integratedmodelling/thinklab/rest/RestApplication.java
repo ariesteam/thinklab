@@ -6,6 +6,7 @@ import org.integratedmodelling.thinklab.rest.resources.Capabilities;
 import org.integratedmodelling.thinklab.rest.resources.CheckWaiting;
 import org.integratedmodelling.thinklab.rest.resources.Ping;
 import org.integratedmodelling.thinklab.rest.resources.Receive;
+import org.integratedmodelling.thinklab.rest.resources.Restart;
 import org.integratedmodelling.thinklab.rest.resources.Send;
 import org.restlet.Application;
 import org.restlet.Restlet;
@@ -56,6 +57,12 @@ public class RestApplication extends Application {
 		 * service description etc if context is given. Use wiki/html if html requested.
 		 */
 		router.attach("/capabilities", Capabilities.class, Template.MODE_STARTS_WITH);
+
+		/*
+		 * remote shutdown and restart
+		 */
+		router.attach("/shutdown", Restart.class);
+
 		
 		/*
 		 * configure an entry point per installed command

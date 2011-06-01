@@ -168,4 +168,34 @@ public class Thinklab extends ThinklabPlugin {
 		return _metadataService;
 	}
 
+	public void shutdown(String hook, final int seconds) {
+
+		if (hook != null) {
+			/*
+			 * TODO copy given hook to /tmp/thinklab/hooks
+			 */
+			
+		}
+		
+		/*
+		 * schedule shutdown
+		 */
+		new Thread() {
+			
+			@Override
+			public void run() {
+			
+				int status = 0;
+				try {
+					sleep(seconds * 1000);
+				} catch (InterruptedException e) {
+					status = 255;
+				}
+				getManager().shutdown();
+				System.exit(status);
+				
+			}
+		}.start();
+	}
+
 }

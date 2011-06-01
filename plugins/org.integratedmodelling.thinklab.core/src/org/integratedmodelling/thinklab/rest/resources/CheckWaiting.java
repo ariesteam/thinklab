@@ -13,7 +13,7 @@ import org.restlet.resource.Get;
 public class CheckWaiting extends DefaultRESTHandler {
 
 	@Get
-	public Representation getResource() {
+	public Representation checkTask() {
 
 		try {
 			// don't change the ordering in the if 
@@ -23,8 +23,7 @@ public class CheckWaiting extends DefaultRESTHandler {
 			} else if (getScheduler().finished(cmd)) {
 				return getScheduler().getResult(cmd);
 			} else {
-				throw new ThinklabInternalErrorException(
-						"rest: status: task " + cmd + " unknown");
+				throw new ThinklabInternalErrorException("task " + cmd + " unknown");
 			}
 			
 		} catch (Exception e) {

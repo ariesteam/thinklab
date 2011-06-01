@@ -1,27 +1,34 @@
 package org.integratedmodelling.thinklab.rest.resources;
 
+import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
-import org.json.JSONObject;
-import org.restlet.data.CharacterSet;
-import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
 public class Restart extends DefaultRESTHandler {
 
 	@Get
-	public Representation getCapabilities() {
-		
-		JSONObject oret = new JSONObject();
+	public Representation shutdown() throws ThinklabException {
+
+		if (!checkPrivileges("user:Administrator"))
+			return wrap();
+				
+		int seconds = 5;
+		String hook = getArgument("hook");
 		
 		/*
-		 * TODO
+		 * TODO hook parameters
 		 */
 		
-		JsonRepresentation ret = new JsonRepresentation(oret);
-	    ret.setCharacterSet(CharacterSet.UTF_8);
-
-		return ret;
+		if (getArgument("time") != null) {
+			seconds = Integer.parseInt(getArgument("time"));
+		}
+		
+		Thinklab.get().shutdown(hook, seconds);
+		info((hook == null ? "shutdown" : hook) + " scheduled in " + seconds + " seconds"); 
+		
+		return wrap();
 	}
 	
 }

@@ -42,6 +42,7 @@ import java.util.Properties;
 import org.integratedmodelling.sql.QueryResult;
 import org.integratedmodelling.sql.SQLPlugin;
 import org.integratedmodelling.sql.SQLServer;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.authentication.AuthenticationManager;
 import org.integratedmodelling.thinklab.authentication.EncryptionManager;
@@ -51,7 +52,9 @@ import org.integratedmodelling.thinklab.exception.ThinklabDuplicateUserException
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInvalidUserException;
 import org.integratedmodelling.thinklab.interfaces.IThinklabAuthenticationProvider;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
+import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
 
@@ -68,6 +71,7 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationProvid
 
 	private SQLServer database = null;
 	private EncryptionManager encryptionManager = null;
+	private Session session;
 	
 	static Hashtable<String, Properties> userProperties = 
 		new Hashtable<String, Properties>();
@@ -166,6 +170,8 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationProvid
 
 
 	public void initialize(Properties properties) throws ThinklabException {
+		
+		this.session = new Session();
 		
 		String db = 
 			properties.getProperty(
@@ -322,6 +328,19 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationProvid
 		QueryResult qr  = database.query("SELECT username, userpass FROM tluser;");
 		for (int i = 0; i < qr.nRows(); i++)
 			ret.add(qr.get(i,0));
+		return ret;
+	}
+
+	@Override
+	public IInstance getUserInstance(String user) throws ThinklabException {
+		
+		IInstance ret = session.retrieveObject(user);
+		
+		if (ret == null) {
+			String role = getUserProperty(user, "role", "user:UnprivilegedUser");
+			ret = session.createObject(user, KnowledgeManager.getConcept(role));
+		}
+		
 		return ret;
 	}
 

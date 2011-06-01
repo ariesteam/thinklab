@@ -78,9 +78,10 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	
 	/**
 	 * Call this one to ensure that a restricted command is allowed for the
-	 * current user. Currently this is always true if the server is the local
-	 * host. Otherwise the actual session user is checked against the requested
-	 * privilege.
+	 * current user. The actual session user is checked against the requested
+	 * privilege. If RESTManager returns true to allowPrivilegedLocalConnection
+	 * (currently always false) any connection coming from localhost is allowed
+	 * privileged access.
 	 * 
 	 * @param concept the user role required for the command. Must resolve to a 
 	 *        valid concept.
@@ -93,7 +94,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		boolean isLocal = 
 			(domain != null && (domain.equals("127.0.0.1") || domain.equals("localhost")));
 		
-		if (isLocal)
+		if (isLocal && RESTManager.get().allowPrivilegedLocalConnections())
 			return true;
 		
 		if (getSession() == null) {

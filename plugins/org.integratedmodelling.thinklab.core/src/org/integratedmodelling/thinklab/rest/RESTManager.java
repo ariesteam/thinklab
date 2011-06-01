@@ -181,4 +181,8 @@ public class RESTManager {
 	public RestCommand getCommandDescriptor(String id) {
 		return _commands.get(id);
 	}
+
+	public boolean allowPrivilegedLocalConnections() {
+		return false;
+	}
 }
