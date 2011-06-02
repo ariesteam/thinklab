@@ -1,5 +1,6 @@
-package org.integratedmodelling.thinklab.plugin;
+package org.integratedmodelling.thinklab.project;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +9,8 @@ import java.util.Properties;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.IResourceLoader;
-import org.integratedmodelling.thinklab.project.ThinklabProject;
+import org.integratedmodelling.thinklab.project.interfaces.IProjectLoader;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.Plugin;
 import org.java.plugin.PluginManager;
 import org.java.plugin.registry.PluginDescriptor;
@@ -25,32 +27,44 @@ import org.java.plugin.registry.PluginDescriptor;
  * @author ferdinando.villa
  *
  */
-public class ThinklabPluginRegister implements PluginManager.EventListener {
+public class ThinklabProjectInstaller implements PluginManager.EventListener {
 
-	HashMap<String, List<IResourceLoader>> _loaders = 
-		new HashMap<String, List<IResourceLoader>>();
+	HashMap<String, List<IProjectLoader>> _loaders = 
+		new HashMap<String, List<IProjectLoader>>();
 	
 	@Override
 	public void pluginActivated(Plugin plugin) {
+		
 		
 		try {
 			
 			Properties prop = ThinklabProject.getThinklabPluginProperties(plugin);
 			if (prop != null) {
 
-				List<IResourceLoader> loaders = 
-					new ArrayList<IResourceLoader>();	
+				ArrayList<IProjectLoader> loaders = 
+					new ArrayList<IProjectLoader>();	
+				
 				/*
 				 * find loader classes and instantiate them from installed
 				 * instances (don't use classloader).
 				 */
-				
-				
-				for (IResourceLoader rl : loaders) {
-					/*
-					 * load content from each plugin
-					 */
-					rl.load(prop, Thinklab.getPluginLoadDirectory(plugin));
+				for (IProjectLoader rl : loaders) {
+					
+					for (File f : Thinklab.getPluginLoadDirectory(plugin).listFiles()) {
+						
+						if (!f.isDirectory())
+							continue;
+						
+						String folder = MiscUtilities.getFileName(f.toString());
+						Class<?> plc = Thinklab.get().getProjectLoader(folder);
+						
+						if (plc != null) {
+							IProjectLoader pl = (IProjectLoader) plc.newInstance();
+							loaders.add(pl);
+							pl.load(f);
+						}
+						
+					}
 				}
 				
 				/*
@@ -70,13 +84,13 @@ public class ThinklabPluginRegister implements PluginManager.EventListener {
 	@Override
 	public void pluginDeactivated(Plugin plugin) {
 	
-		List<IResourceLoader> ls = _loaders.get(plugin.getDescriptor().getId());
+		List<IProjectLoader> ls = _loaders.get(plugin.getDescriptor().getId());
 		if (ls != null) {
 			
-			for (IResourceLoader rl : ls) {
+			for (IProjectLoader rl : ls) {
 				try {
-					rl.unload(ThinklabProject.getThinklabPluginProperties(plugin),
-							  Thinklab.getPluginLoadDirectory(plugin));
+					rl.unload(Thinklab.getPluginLoadDirectory(plugin));
+					
 				} catch (Exception e) {
 					throw new ThinklabRuntimeException(e);
 				}

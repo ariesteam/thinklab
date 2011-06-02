@@ -48,13 +48,15 @@ public class AuthenticateService extends DefaultRESTHandler {
 			
 				if (AuthenticationManager.get().authenticateUser(user, pass, null)) {
 					uprop = AuthenticationManager.get().getUserProperties(user);			
+					uprop.setProperty("authenticated-user", user);
 				} else {
 					throw new ThinklabAuthenticationException("failed to authenticate user " + user);
 				}
 			}
 			
-			ISession session = RESTManager.get().createRESTSession(this.getArguments(), uprop);
-			session.getUserModel().setProperties(uprop);
+			ISession session = 
+				RESTManager.get().createRESTSession(this.getArguments(), uprop);
+//			session.getUserModel().setProperties(uprop);
 		
 			put("session", session.getSessionID());
 		

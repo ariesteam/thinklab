@@ -52,6 +52,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabDuplicateUserException
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInvalidUserException;
 import org.integratedmodelling.thinklab.interfaces.IThinklabAuthenticationProvider;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.owlapi.Session;
@@ -71,7 +72,6 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationProvid
 
 	private SQLServer database = null;
 	private EncryptionManager encryptionManager = null;
-	private Session session;
 	
 	static Hashtable<String, Properties> userProperties = 
 		new Hashtable<String, Properties>();
@@ -170,8 +170,6 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationProvid
 
 
 	public void initialize(Properties properties) throws ThinklabException {
-		
-		this.session = new Session();
 		
 		String db = 
 			properties.getProperty(
@@ -332,7 +330,7 @@ public class LocalAuthenticationManager implements IThinklabAuthenticationProvid
 	}
 
 	@Override
-	public IInstance getUserInstance(String user) throws ThinklabException {
+	public IInstance getUserInstance(String user, ISession session) throws ThinklabException {
 		
 		IInstance ret = session.retrieveObject(user);
 		

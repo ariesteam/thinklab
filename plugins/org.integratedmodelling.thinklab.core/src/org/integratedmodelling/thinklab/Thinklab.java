@@ -3,6 +3,7 @@ package org.integratedmodelling.thinklab;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -14,6 +15,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.thinklab.project.ThinklabProjectInstaller;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.Plugin;
@@ -37,6 +39,8 @@ public class Thinklab extends ThinklabPlugin {
 	}
 	
 	KnowledgeManager _km = null;
+	private HashMap<String, Class<?>> _projectLoaders = 
+		new HashMap<String, Class<?>>();
 
 	private MetadataService _metadataService;
 
@@ -68,6 +72,11 @@ public class Thinklab extends ThinklabPlugin {
 			_km.setPluginManager(getManager());
 			_km.initialize();
 		}
+		
+		/*
+		 * install listener to handle non-code Thinklab projects
+		 */
+		getManager().registerListener(new ThinklabProjectInstaller());
 
 	}
 
@@ -213,5 +222,12 @@ public class Thinklab extends ThinklabPlugin {
 		String lf = new File(plugin.getDescriptor().getLocation().getFile()).getAbsolutePath();
 		return new File(Escape.fromURL(MiscUtilities.getPath(lf).toString()));
 	}
+
+	public void registerProjectLoader(String folder, Class<?> cls) {
+		_projectLoaders.put(folder, cls);
+	}
 	
+	public Class<?> getProjectLoader(String folder) {
+		return _projectLoaders.get(folder);
+	}
 }

@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Properties;
 
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 /**
@@ -53,7 +54,9 @@ public interface IUserModel {
 	 * if a user is logged in, this method must return a valid instance that
 	 * describes it. We use the instance for authentication (checking subsumption
 	 * by roles).
+	 * 
 	 * @return
+	 * @throws ThinklabException 
 	 */
-	public abstract IInstance getUserInstance();
+	public abstract IInstance getUserInstance() throws ThinklabException;
 }

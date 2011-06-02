@@ -5,9 +5,12 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.integratedmodelling.thinklab.authentication.AuthenticationManager;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.owlapi.Session;
 
 public class RESTUserModel implements IUserModel {
 
@@ -16,8 +19,9 @@ public class RESTUserModel implements IUserModel {
 	
 	public RESTUserModel(
 			HashMap<String, String> arguments,
-			Properties p) {
+			Properties p, Session session) {
 		this.properties = p;
+		this.session = session;
 	}
 
 	@Override
@@ -48,9 +52,19 @@ public class RESTUserModel implements IUserModel {
 	}
 
 	@Override
-	public IInstance getUserInstance() {
-		// TODO Auto-generated method stub
-		return null;
+	public IInstance getUserInstance() throws ThinklabException {
+		
+		IInstance ret = session.retrieveObject("user");
+		
+		if (ret == null) {
+
+			String user = properties.getProperty("authenticated-user");
+			if (user == null)	
+				return null;
+			
+			ret = AuthenticationManager.get().getUserInstance(user, session);
+		}
+		return ret;
 	}
 
 }

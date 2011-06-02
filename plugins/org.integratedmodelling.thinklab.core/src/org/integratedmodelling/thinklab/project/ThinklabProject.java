@@ -5,22 +5,31 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.project.interfaces.IProjectLoader;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.utils.FolderZiper;
+import org.java.plugin.JpfException;
 import org.java.plugin.Plugin;
+import org.java.plugin.PluginManager;
 
 public class ThinklabProject {
 	
-	public ThinklabProject(String pluginId, String[] dependencies) {
-		
-		/*
-		 * check if there, load if so; if dependencies != null, ensure 
-		 * they're all there or recreate plugin manifest.
-		 */
+	static HashMap<String, ThinklabProject> _projects = 
+		new HashMap<String, ThinklabProject>();
+	
+	Plugin _plugin;
+	
+	public ThinklabProject(Plugin plugin) {
+		this._plugin = plugin;
 	}
 	
 	/**
@@ -57,64 +66,102 @@ public class ThinklabProject {
 			return ret;
 		}
 
-	public static ThinklabProject create(String id) {
-		
-		ThinklabProject ret = new ThinklabProject(id, null);
-
-		return ret;
-	}
-
-	public static ThinklabProject load(String id, boolean createIfAbsent)  throws ThinklabException {
-		
-		ThinklabProject ret = new ThinklabProject(id, null);
-
-		return ret;
-	}
-
-	public boolean exists(String id) {
-		return false;
-	}
-	
-	public void addLoader(Class<? extends IProjectLoader> cls)  throws ThinklabException { 
-		
-	}
-	
-	public static String deploy(File archive, String pluginId, boolean activate) throws ThinklabException {
+	/**
+	 * If plugin exists, stop it if active, undeploy and delete its contents. Then
+	 * redeploy the plugin from given archive, deploy, activate if requested, register
+	 * the correspondent ThinklabProject, and return it.
+	 * 
+	 * @param archive
+	 * @param pluginId
+	 * @param activate
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public static ThinklabProject deploy(File archive, final String pluginId, boolean activate)
+		throws ThinklabException {
 		
 		String instDir = System.getProperty("thinklab.inst");
+
+		/*
+		 * undeploy first
+		 */
+		undeploy(pluginId);
 		
-		System.out.println(instDir);
+		/*
+		 * do it
+		 */
+		final File deployDir = new File(instDir + File.separator + "plugins");
+		final File pluginDir = 
+			new File(instDir + File.separator + "plugins" + 
+				File.separator + pluginId);
+		pluginDir.mkdirs();
+		
+		FolderZiper.unzip(archive, deployDir);
+		
+		try {
+			Thinklab.get().getManager().publishPlugins(
+					new PluginManager.PluginLocation[]{
+							new PluginManager.PluginLocation() {
+								
+								@Override
+								public URL getManifestLocation() {
+									File f = 
+										new File(
+											deployDir + File.separator + 
+											pluginId + File.separator +
+											"plugin.xml");
+									try {
+										return f.toURI().toURL();
+									} catch (MalformedURLException e) {
+										throw new ThinklabRuntimeException(e);
+									}
+								}
+								
+								@Override
+								public URL getContextLocation() {
+									File f = new File(deployDir + File.separator + pluginId);
+									try {
+										return f.toURI().toURL();
+									} catch (MalformedURLException e) {
+										throw new ThinklabRuntimeException(e);
+									}
+								}
+							}
+					});
+			
+			Thinklab.get().getManager().activatePlugin(pluginId);
+			ThinklabProject.addProject(Thinklab.get().getManager().getPlugin(pluginId));
+			
+		} catch (JpfException e) {
+			throw new ThinklabPluginException(e);
+		}
+		
 		
 		return null;
 	}
 
+	/**
+	 * Stop if active, disable and delete files for plugin. Do nothing if not there.
+	 * 
+	 * @param id
+	 * @throws ThinklabException
+	 */
 	public static void undeploy(String id)  throws ThinklabException  {
-		
 		
 	}
 	
-	public void createManifest(File pluginDir) throws ThinklabIOException {
-
-		try {
-			FileOutputStream fout = 
-				new FileOutputStream(new File(pluginDir + File.separator + "plugin.xml"));
-			PrintStream out = new PrintStream(fout);
-			String header = 
-				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\r\n" + 
-				"<!DOCTYPE plugin PUBLIC \"-//JPF//Java Plug-in Manifest 1.0\" \"http://jpf.sourceforge.net/plugin_1_0.dtd\">\r\n" + 
-				"<plugin id=\"org.integratedmodelling.thinklab.ecology\" version=\"0.8.1.20110428103733\">\r\n" + 
-				"   <requires>\r\n";
-
-//		"	<import exported=\"false\" match=\"compatible\" optional=\"false\" plugin-id=\"org.integratedmodelling.thinklab.core\" reverse-lookup=\"false\"/>\r\n" + 
-			out.print(
-				"   </requires>\r\n" + 
-				"</plugin>");
-		
-			fout.close();
-			
-		} catch (IOException e) {
-			throw new ThinklabIOException(e);
-		}
+	public static ThinklabProject addProject(Plugin plugin) {
+		ThinklabProject ret = new ThinklabProject(plugin);
+		_projects.put(plugin.getDescriptor().getId(), ret);
+		return ret;
 	}
-
+	
+	public static ThinklabProject getProject(String id) {
+		return _projects.get(id);
+	}
+	
+	public static void removeProject(String id) {
+		_projects.remove(id);
+	}
+	
 }

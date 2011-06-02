@@ -71,6 +71,7 @@ import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplement
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.PersistentObject;
+import org.integratedmodelling.thinklab.interfaces.annotations.ProjectLoader;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
@@ -85,6 +86,7 @@ import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.owlapi.Session;
+import org.integratedmodelling.thinklab.project.interfaces.IProjectLoader;
 import org.integratedmodelling.thinklab.rest.RESTManager;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
 import org.integratedmodelling.thinklab.transformations.ITransformation;
@@ -961,6 +963,32 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 
+	protected void loadProjectLoaders() throws ThinklabException {
+		
+		String ipack = this.getClass().getPackage().getName() + ".ploaders";
+		
+		for (Class<?> cls : MiscUtilities.findSubclasses(IProjectLoader.class, ipack, getClassLoader())) {	
+			
+			/*
+			 * lookup annotation, ensure we can use the class
+			 */
+			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+				continue;
+			
+			for (Annotation annotation : cls.getAnnotations()) {
+				if (annotation instanceof ProjectLoader) {
+					
+					String folder = ((ProjectLoader)annotation).folder();
+					String description = ((RESTResourceHandler)annotation).description();
+					Thinklab.get().registerProjectLoader(folder, (Class<?>) cls);	
+					break;
+				}
+			}
+		}
+
+	}
+
+	
 	protected void loadRESTHandlers() throws ThinklabException {
 		
 		String ipack = this.getClass().getPackage().getName() + ".rest";

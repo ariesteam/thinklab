@@ -24,12 +24,12 @@ public class ProjectService extends DefaultRESTHandler {
 			if (!checkPrivileges("user:Administrator"))
 				return wrap();
 			
-			String cmd = getArgument("taskid");
+			String cmd = getArgument("cmd");
 			String pluginId = getArgument("plugin");
 			
 			if (cmd.equals("deploy")) {
 
-				File archive = this.getFileForHandle(getArgument("archive"), true);
+				File archive = this.getFileForHandle(getArgument("handle"), true);
 				ThinklabProject.deploy(archive, pluginId, true);
 				
 			} else if (cmd.equals("undeploy")) {

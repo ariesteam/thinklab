@@ -153,8 +153,7 @@ public class RESTManager {
 			
 			@Override
 			protected IUserModel createUserModel() {
-				// TODO Auto-generated method stub
-				return new RESTUserModel(arguments, properties);
+				return new RESTUserModel(arguments, properties, this);
 			}
 			
 		};

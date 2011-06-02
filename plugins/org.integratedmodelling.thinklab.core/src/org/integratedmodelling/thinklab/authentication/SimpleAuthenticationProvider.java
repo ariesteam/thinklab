@@ -66,19 +66,10 @@ import org.w3c.dom.Node;
 public class SimpleAuthenticationProvider implements IThinklabAuthenticationProvider {
 
 	private EncryptionManager encryptionManager = null;
-	private ISession session = null;
 	
 	Hashtable<String, Properties> userProperties = new Hashtable<String, Properties>();
 	HashMap<String, String> passwords = new HashMap<String, String>();
-	
-	public SimpleAuthenticationProvider() {
-		 try {
-			session = new Session();
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
-	}
-	
+		
 	public boolean authenticateUser(String username, String password,
 			Properties userProperties)  throws ThinklabException {
 		
@@ -103,6 +94,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 			if (!haveUser(username))
 				throw new ThinklabInvalidUserException(username);	
 			obj = new Properties();
+			userProperties.put(username, obj);
 		}
 		
 		return obj;
@@ -243,13 +235,13 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 	}
 
 	@Override
-	public IInstance getUserInstance(String user) throws ThinklabException {
+	public IInstance getUserInstance(String user, ISession session) throws ThinklabException {
 		
-		IInstance ret = session.retrieveObject(user);
+		IInstance ret = session.retrieveObject("user");
 		
 		if (ret == null) {
 			String role = getUserProperty(user, "role", "user:UnprivilegedUser");
-			ret = session.createObject(user, KnowledgeManager.getConcept(role));
+			ret = session.createObject("user", KnowledgeManager.getConcept(role));
 		}
 		
 		return ret;
