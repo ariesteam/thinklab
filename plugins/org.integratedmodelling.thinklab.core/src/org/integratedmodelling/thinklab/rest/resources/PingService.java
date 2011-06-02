@@ -10,10 +10,17 @@ import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
-public class Ping extends DefaultRESTHandler {
+/**
+ * Returns server status information. Bound to the root service URL and used as an
+ * handshaking command ("ping") to ensure that server is alive and well.
+ * 
+ * @author ferdinando.villa
+ *
+ */
+public class PingService extends DefaultRESTHandler {
 
 	@Get
-	public Representation getThinklabStatus() {
+	public Representation service() {
 		
 		JSONObject oret = new JSONObject();
 		Runtime runtime = Runtime.getRuntime();

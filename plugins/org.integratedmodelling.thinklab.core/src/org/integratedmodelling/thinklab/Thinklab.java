@@ -214,35 +214,4 @@ public class Thinklab extends ThinklabPlugin {
 		return new File(Escape.fromURL(MiscUtilities.getPath(lf).toString()));
 	}
 	
-	/**
-	 * Get the content of THINKLAB-INF/thinklab.properties if the plugin contains that
-	 * directory, or null if it doesn't. Can be used to check if a plugin is a 
-	 * thinklab plugin based on the null return value.
-	 * 
-	 * @param plugin
-	 * @return
-	 * @throws ThinklabIOException
-	 */
-	public static Properties getThinklabPluginProperties(Plugin plugin) throws ThinklabIOException {
-		
-			Properties ret = null;
-			File pfile = 
-				new File(
-					getPluginLoadDirectory(plugin) + 
-					File.separator + 
-					"THINKLAB-INF" +
-					File.separator + 
-					"thinklab.properties");
-			
-			if (pfile.exists()) {
-				try {
-					ret = new Properties();
-					ret.load(new FileInputStream(pfile));
-				} catch (Exception e) {
-					throw new ThinklabIOException(e);
-				}
-			}
-			
-			return ret;
-		}
 }

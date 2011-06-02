@@ -12,6 +12,7 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -154,6 +155,25 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 			throw new ThinklabInternalErrorException("REST command did not specify required session ID");
 		
 		return RESTManager.get().getSession(id);
+	}
+	
+	/**
+	 * Return the file correspondent to the handle previously returned by 
+	 * getFileName() and supposedly uploaded by a client.
+	 * 
+	 * @param argument
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	protected File getFileForHandle(String handle, boolean mustExist) throws ThinklabException {
+
+		File ret = new File(Thinklab.get().getScratchPath() + File.separator + "rest/tmp" + 
+				File.separator + handle);
+
+		if (mustExist && !ret.exists())
+			throw new ThinklabResourceNotFoundException(handle);
+			
+		return ret;	
 	}
 	
 	/**

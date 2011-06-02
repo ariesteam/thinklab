@@ -7,10 +7,16 @@ import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
-public class Capabilities extends DefaultRESTHandler {
+/**
+ * Return extensive server capabilities information. Does nothing at the moment.
+ * 
+ * @author ferdinando.villa
+ *
+ */
+public class CapabilitiesService extends DefaultRESTHandler {
 
 	@Get
-	public Representation getCapabilities() {
+	public Representation service() {
 		
 		JSONObject oret = new JSONObject();
 		

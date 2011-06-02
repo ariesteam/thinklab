@@ -34,11 +34,18 @@
 package org.integratedmodelling.utils;
 
 import java.io.File;
+import java.util.Enumeration;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.util.zip.ZipEntry;
+
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 
 /**
  * FolderZiper provide a static method to zip a folder.
@@ -173,18 +180,46 @@ public class FolderZiper {
 	}
 
 
-static private void addFolderToZip(String path, String srcFolder,
-		ZipOutputStream zip, FilenameFilter filter) {
-	File folder = new File(srcFolder);
-	String fileListe[] = folder.list(filter);
-	try {
-		int i = 0;
-		while (true) {
-			addToZip(path + "/" + folder.getName(), srcFolder + "/" + fileListe[i], zip);
-			i++;
+	static private void addFolderToZip(String path, String srcFolder,
+				ZipOutputStream zip, FilenameFilter filter) {
+			File folder = new File(srcFolder);
+			String fileListe[] = folder.list(filter);
+			try {
+				int i = 0;
+				while (true) {
+					addToZip(path + "/" + folder.getName(), srcFolder + "/"
+							+ fileListe[i], zip);
+					i++;
+				}
+			} catch (Exception ex) {
+			}
 		}
-	} catch (Exception ex) {
+	
+	static public void unzip(File zipfile, File outputDir) throws ThinklabIOException {
+		
+		try {
+		   ZipFile zipFile = new ZipFile(zipfile);
+		    Enumeration<?> enumeration = zipFile.entries();
+		    while (enumeration.hasMoreElements()) {
+		      ZipEntry zipEntry = (ZipEntry) enumeration.nextElement();
+		      BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(zipEntry));
+		      int size;
+		      byte[] buffer = new byte[2048];
+		      BufferedOutputStream bos;
+				bos = new BufferedOutputStream(
+				         new FileOutputStream(
+				    		  outputDir + File.separator + zipEntry.getName()),
+				      	      buffer.length);
+		      while ((size = bis.read(buffer, 0, buffer.length)) != -1) {
+		        bos.write(buffer, 0, size);
+		      }
+		      bos.flush();
+		      bos.close();
+		      bis.close();
+		    }
+		} catch (Exception e) {
+			throw new ThinklabIOException(e);
+		}
 	}
-}
 }
 

@@ -8,6 +8,7 @@ import java.util.Properties;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.IResourceLoader;
+import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.java.plugin.Plugin;
 import org.java.plugin.PluginManager;
 import org.java.plugin.registry.PluginDescriptor;
@@ -34,7 +35,7 @@ public class ThinklabPluginRegister implements PluginManager.EventListener {
 		
 		try {
 			
-			Properties prop = Thinklab.getThinklabPluginProperties(plugin);
+			Properties prop = ThinklabProject.getThinklabPluginProperties(plugin);
 			if (prop != null) {
 
 				List<IResourceLoader> loaders = 
@@ -74,7 +75,7 @@ public class ThinklabPluginRegister implements PluginManager.EventListener {
 			
 			for (IResourceLoader rl : ls) {
 				try {
-					rl.unload(Thinklab.getThinklabPluginProperties(plugin),
+					rl.unload(ThinklabProject.getThinklabPluginProperties(plugin),
 							  Thinklab.getPluginLoadDirectory(plugin));
 				} catch (Exception e) {
 					throw new ThinklabRuntimeException(e);

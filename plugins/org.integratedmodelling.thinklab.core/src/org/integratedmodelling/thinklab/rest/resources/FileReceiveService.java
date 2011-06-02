@@ -15,10 +15,17 @@ import org.restlet.ext.fileupload.RestletFileUpload;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Post;
 
-public class Receive extends DefaultRESTHandler {
+/**
+ * Receive a file from the client and return an handle that can be used later
+ * to communicate the file location for services that will use it.
+ * 
+ * @author ferdinando.villa
+ *
+ */
+public class FileReceiveService extends DefaultRESTHandler {
 
 	 @Post
-	 public Representation accept(Representation entity) throws Exception {
+	 public Representation service(Representation entity) throws Exception {
 
 		 ISession session = getSession();
 		 

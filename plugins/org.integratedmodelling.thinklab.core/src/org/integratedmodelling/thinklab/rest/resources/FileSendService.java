@@ -15,10 +15,17 @@ import org.restlet.representation.FileRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
-public class Send extends DefaultRESTHandler {
+/**
+ * Send a file to the server using a valid handle returned previously. Only
+ * files created in the workspace of the same session will be sent.
+ * 
+ * @author ferdinando.villa
+ *
+ */
+public class FileSendService extends DefaultRESTHandler {
 
 	@Get
-	public Representation getFile() throws ThinklabException {
+	public Representation service() throws ThinklabException {
 		
 		File file = retrieveFile(getArgument("handle"), getSession()); 
 		String extension = MiscUtilities.getFileExtension(file.toString());

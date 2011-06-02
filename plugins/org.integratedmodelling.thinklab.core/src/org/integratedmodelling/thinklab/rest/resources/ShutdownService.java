@@ -8,10 +8,17 @@ import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
-public class Restart extends DefaultRESTHandler {
+/**
+ * Manages shutdown of the server, allowing to insert "hooks" for the top-level 
+ * shell script to trigger restart, upgrade and the like.
+ * 
+ * @author ferdinando.villa
+ *
+ */
+public class ShutdownService extends DefaultRESTHandler {
 
 	@Get
-	public Representation shutdown() throws ThinklabException {
+	public Representation service() throws ThinklabException {
 
 		if (!checkPrivileges("user:Administrator"))
 			return wrap();

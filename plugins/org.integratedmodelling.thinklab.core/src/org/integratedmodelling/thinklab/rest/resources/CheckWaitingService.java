@@ -6,14 +6,17 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
 /**
- * Pass taskid, see if it has completed, if so return result.
+ * Pass taskid, see if it has completed, if so return result and status, otherwise
+ * return taskid and status = WAIT. Used to implement background processing on 
+ * the client side.
+ * 
  * @author ferdinando.villa
  *
  */
-public class CheckWaiting extends DefaultRESTHandler {
+public class CheckWaitingService extends DefaultRESTHandler {
 
 	@Get
-	public Representation checkTask() {
+	public Representation service() {
 
 		try {
 			// don't change the ordering in the if 

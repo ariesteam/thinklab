@@ -111,7 +111,7 @@ public class RESTManager {
 		Component component = new Component();
 		
 		component.getServers().add(Protocol.HTTP, port);
-		component.getDefaultHost().attach("/rest", new RestApplication());
+		component.getDefaultHost().attach("/rest", new RESTApplication());
 		
 		/*
 		 * TODO attach all registered services
