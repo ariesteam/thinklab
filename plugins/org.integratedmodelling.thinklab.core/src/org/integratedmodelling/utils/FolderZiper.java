@@ -199,7 +199,7 @@ public class FolderZiper {
 			}
 		}
 	
-	static public void unzip(File zipfile, File outputDir) throws ThinklabIOException {
+	static public void unzip2(File zipfile, File outputDir) throws ThinklabIOException {
 		
 		try {
 		   ZipFile zipFile = new ZipFile(zipfile);
@@ -226,8 +226,8 @@ public class FolderZiper {
 		}
 	}
 	
-	public void doUnzip(String inputZip, String destinationDirectory)
-			throws IOException {
+	public static void unzip(String inputZip, String destinationDirectory)
+			throws ThinklabIOException {
 		
 		int BUFFER = 2048;
 		List<String> zipFiles = new ArrayList<String>();
@@ -237,8 +237,11 @@ public class FolderZiper {
 		unzipDestinationDirectory.mkdir();
 
 		ZipFile zipFile;
-		// Open Zip file for reading
-		zipFile = new ZipFile(sourceZipFile, ZipFile.OPEN_READ);
+		try {
+			zipFile = new ZipFile(sourceZipFile, ZipFile.OPEN_READ);
+		} catch (IOException e1) {
+			throw new ThinklabIOException(e1);
+		}
 
 		// Create an enumeration of the entries in the zip file
 		Enumeration<?> zipFileEntries = zipFile.entries();
@@ -248,10 +251,8 @@ public class FolderZiper {
 			// grab a zip file entry
 			ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
 
-			String currentEntry = entry.getName();
-
+			String currentEntry = entry.getName();			
 			File destFile = new File(unzipDestinationDirectory, currentEntry);
-			destFile = new File(unzipDestinationDirectory, destFile.getName());
 
 			if (currentEntry.endsWith(".zip")) {
 				zipFiles.add(destFile.getAbsolutePath());
@@ -286,14 +287,18 @@ public class FolderZiper {
 					is.close();
 				}
 			} catch (IOException ioe) {
-				ioe.printStackTrace();
+				throw new ThinklabIOException(ioe);
 			}
 		}
-		zipFile.close();
+		try {
+			zipFile.close();
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}
 
 		for (Iterator<String> iter = zipFiles.iterator(); iter.hasNext();) {
 			String zipName = iter.next();
-			doUnzip(zipName, destinationDirectory + File.separatorChar
+			unzip(zipName, destinationDirectory + File.separatorChar
 					+ zipName.substring(0, zipName.lastIndexOf(".zip")));
 		}
 

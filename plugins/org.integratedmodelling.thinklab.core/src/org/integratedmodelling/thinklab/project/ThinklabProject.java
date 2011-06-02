@@ -2,9 +2,6 @@ package org.integratedmodelling.thinklab.project;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -13,12 +10,13 @@ import java.util.Properties;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.utils.FolderZiper;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.JpfException;
 import org.java.plugin.Plugin;
+import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.PluginManager;
 
 public class ThinklabProject {
@@ -90,13 +88,8 @@ public class ThinklabProject {
 		/*
 		 * do it
 		 */
-		final File deployDir = new File(instDir + File.separator + "plugins");
-		final File pluginDir = 
-			new File(instDir + File.separator + "plugins" + 
-				File.separator + pluginId);
-		pluginDir.mkdirs();
-		
-		FolderZiper.unzip(archive, deployDir);
+		final File deployDir = new File(instDir + File.separator + "plugins");		
+		FolderZiper.unzip(archive.toString(), deployDir.toString());
 		
 		try {
 			Thinklab.get().getManager().publishPlugins(
@@ -136,7 +129,6 @@ public class ThinklabProject {
 			throw new ThinklabPluginException(e);
 		}
 		
-		
 		return null;
 	}
 
@@ -148,6 +140,35 @@ public class ThinklabProject {
 	 */
 	public static void undeploy(String id)  throws ThinklabException  {
 		
+		Plugin plugin;
+		try {
+			
+			plugin = Thinklab.get().getManager().getPlugin(id);
+		
+			if (plugin != null) {
+				Thinklab.get().getManager().deactivatePlugin(id);
+				Thinklab.get().getManager().disablePlugin(plugin.getDescriptor());
+			}
+			
+			plugin = null;
+			File pdir = new File(
+					System.getProperty("thinklab.inst") + File.separator + "plugins" + 
+					id);
+
+			if (pdir.exists())
+				MiscUtilities.deleteDirectory(pdir);
+			
+
+		} catch (PluginLifecycleException e) {
+			throw new ThinklabPluginException(e);	
+		}
+
+	}
+	
+	public static File getPath(String id) {
+		
+		String instDir = System.getProperty("thinklab.inst");
+		return new File(instDir + File.separator + "plugins" + File.separator + id);		
 	}
 	
 	public static ThinklabProject addProject(Plugin plugin) {

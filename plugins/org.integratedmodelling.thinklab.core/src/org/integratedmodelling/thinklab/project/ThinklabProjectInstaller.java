@@ -8,7 +8,6 @@ import java.util.Properties;
 
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.interfaces.IResourceLoader;
 import org.integratedmodelling.thinklab.project.interfaces.IProjectLoader;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.Plugin;
@@ -35,7 +34,6 @@ public class ThinklabProjectInstaller implements PluginManager.EventListener {
 	@Override
 	public void pluginActivated(Plugin plugin) {
 		
-		
 		try {
 			
 			Properties prop = ThinklabProject.getThinklabPluginProperties(plugin);
@@ -44,29 +42,21 @@ public class ThinklabProjectInstaller implements PluginManager.EventListener {
 				ArrayList<IProjectLoader> loaders = 
 					new ArrayList<IProjectLoader>();	
 				
-				/*
-				 * find loader classes and instantiate them from installed
-				 * instances (don't use classloader).
-				 */
-				for (IProjectLoader rl : loaders) {
+				for (File f : Thinklab.getPluginLoadDirectory(plugin).listFiles()) {
 					
-					for (File f : Thinklab.getPluginLoadDirectory(plugin).listFiles()) {
-						
-						if (!f.isDirectory())
-							continue;
-						
-						String folder = MiscUtilities.getFileName(f.toString());
-						Class<?> plc = Thinklab.get().getProjectLoader(folder);
-						
-						if (plc != null) {
-							IProjectLoader pl = (IProjectLoader) plc.newInstance();
-							loaders.add(pl);
-							pl.load(f);
-						}
-						
-					}
+					if (!f.isDirectory())
+						continue;
+							
+					String folder = MiscUtilities.getFileName(f.toString());
+					Class<?> plc = Thinklab.get().getProjectLoader(folder);
+					
+					if (plc != null) {
+						IProjectLoader pl = (IProjectLoader) plc.newInstance();
+						loaders.add(pl);
+						pl.load(f);
+					}	
 				}
-				
+
 				/*
 				 * store loader for the plugin so we can call unload()
 				 * at shutdown.
@@ -95,6 +85,11 @@ public class ThinklabProjectInstaller implements PluginManager.EventListener {
 					throw new ThinklabRuntimeException(e);
 				}
 			}
+			
+			/*
+			 * clean up
+			 */
+			_loaders.remove(plugin.getDescriptor().getId());
 		}
 		
 	}

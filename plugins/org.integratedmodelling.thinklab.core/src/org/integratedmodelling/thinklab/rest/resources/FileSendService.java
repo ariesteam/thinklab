@@ -52,7 +52,6 @@ public class FileSendService extends DefaultRESTHandler {
 			throw new ThinklabResourceNotFoundException(
 					"send: trying to access nonexistent file " + string);
 
-		
 		return sdir;
 	}
 	

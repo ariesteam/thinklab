@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
+import org.integratedmodelling.utils.FolderZiper;
+import org.integratedmodelling.utils.Pair;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
@@ -33,7 +35,18 @@ public class ProjectService extends DefaultRESTHandler {
 				ThinklabProject.deploy(archive, pluginId, true);
 				
 			} else if (cmd.equals("undeploy")) {
-			
+
+				ThinklabProject.undeploy(pluginId);
+
+			} else if (cmd.equals("pack")) {
+				
+				/*
+				 * make an archive from the project and return the handle
+				 */
+				Pair<File, String> fname = this.getFileName("project.zip", getSession());
+				FolderZiper.zipFolder(ThinklabProject.getPath(pluginId).toString(), 
+						fname.getFirst().toString());
+				put("handle", fname.getSecond());
 			}
 			
 		} catch (Exception e) {
