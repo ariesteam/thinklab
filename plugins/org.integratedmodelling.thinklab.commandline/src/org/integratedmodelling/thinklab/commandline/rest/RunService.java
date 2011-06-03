@@ -3,13 +3,17 @@ package org.integratedmodelling.thinklab.commandline.rest;
 import java.util.Collection;
 
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.application.Application;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.commandline.CommandLine;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
+import org.integratedmodelling.thinklab.rest.RESTTask;
+import org.integratedmodelling.thinklab.rest.ResultHolder;
 import org.java.plugin.PluginLifecycleException;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
@@ -25,19 +29,52 @@ import org.restlet.resource.Get;
  * @author ferdinando.villa
  * 
  */
-@RESTResourceHandler(id="pload", description="load plugin",  arguments="arg")
-public class Pload extends DefaultRESTHandler {
+@RESTResourceHandler(id="run", description="run application",  arguments="application")
+public class RunService extends DefaultRESTHandler {
 
+	class AppThread extends Thread implements RESTTask {
+
+		String app;
+		IValue result = null;
+		boolean _done = false;
+		
+		AppThread(String app) {
+			this.app = app;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				result = Application.run(app);
+			} catch (ThinklabException e) {
+				fail(e);
+			} finally {
+				_done = true;
+			}
+		}
+
+		@Override
+		public Representation getResult() {
+			if (this.result != null)
+				setResult(result.toString());
+			return wrap();
+		}
+
+		@Override
+		public boolean isFinished() {
+			return _done;
+		}
+	}
+	
 	@Get
-	public Representation pload() throws ThinklabException {
+	public Representation service() throws ThinklabException {
 
 		if (!checkPrivileges("user:Administrator"))
 			return wrap();
 		
 		try {
-			String plugin 	= this.getArgument("arg");
-			plugin = Thinklab.resolvePluginName(plugin, true);
-			CommandLine.get().getManager().activatePlugin(plugin);
+			String app = this.getArgument("application");
+			return enqueue(new AppThread(app));
 		} catch (Exception e) {
 			fail(e);
 		}

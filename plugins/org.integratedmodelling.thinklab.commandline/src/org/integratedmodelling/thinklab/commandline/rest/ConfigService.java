@@ -30,10 +30,10 @@ import org.restlet.resource.Get;
 @RESTResourceHandler(id="config", description="load plugin",  
 					 arguments="plugin,variable,value",
 					 options="keep")
-public class Config extends DefaultRESTHandler {
+public class ConfigService extends DefaultRESTHandler {
 
 	@Get
-	public Representation pload() throws ThinklabException {
+	public Representation service() throws ThinklabException {
 
 		if (!checkPrivileges("user:Administrator"))
 			return wrap();

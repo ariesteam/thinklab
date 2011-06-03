@@ -48,7 +48,6 @@ public class ModelMap {
 	 * boring node/edge types start. An OWL ontology would be simpler.
 	 * ---------------------------------------------------------------------
 	 */
-	
 	public abstract static class Entry {
 		
 		private boolean modified = false;
@@ -535,5 +534,14 @@ public class ModelMap {
 
 	public static void releaseNamespace(NamespaceEntry ns) {
 		ns.unlink();
+	}
+
+	public static Collection<Entry> getNamespaces() {
+		return namespaces.values();
+	}
+	
+	public static Collection<IModelForm> listNamespace(String ns) {
+		NamespaceEntry nse = (NamespaceEntry) getNamespace(ns);
+		return nse.getAllModelObjects();
 	}
 }

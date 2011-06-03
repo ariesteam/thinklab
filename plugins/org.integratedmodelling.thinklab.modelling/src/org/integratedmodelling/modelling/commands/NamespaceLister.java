@@ -5,20 +5,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.integratedmodelling.modelling.model.ModelFactory;
+import org.integratedmodelling.modelling.ModelMap;
+import org.integratedmodelling.modelling.interfaces.IModelForm;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 
-@ListingProvider(label="models")
-public class ModelLister implements IListingProvider {
+@ListingProvider(label="namespaces",itemlabel="namespace")
+public class NamespaceLister implements IListingProvider {
 
 	@Override
 	public Collection<String> getListing() throws ThinklabException {
 		
 		ArrayList<String> ret = new ArrayList<String>();
-		for (Object o : ModelFactory.get().modelsById.keySet()) {
-			ret.add(o.toString());
+
+		for (ModelMap.Entry e : ModelMap.getNamespaces()) {
+			ret.add(e.toString());
 		}
 		Collections.sort(ret);
 		return ret;
@@ -26,7 +28,10 @@ public class ModelLister implements IListingProvider {
 
 	@Override
 	public void listItem(String item, PrintStream out) throws ThinklabException {
-		// TODO implement listing of single model
+		
+		for (IModelForm f : ModelMap.listNamespace(item)) {
+			out.println("   " + f.getId());
+		}
 	}
 
 }

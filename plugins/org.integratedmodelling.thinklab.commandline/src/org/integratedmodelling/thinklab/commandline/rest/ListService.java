@@ -1,10 +1,12 @@
 package org.integratedmodelling.thinklab.commandline.rest;
 
+import java.util.Collection;
+
+import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
+import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
-import org.integratedmodelling.thinklab.rest.RESTManager;
-import org.integratedmodelling.thinklab.rest.RESTManager.RestCommand;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
@@ -19,20 +21,23 @@ import org.restlet.resource.Get;
  * @author ferdinando.villa
  * 
  */
-@RESTResourceHandler(id="getCommands", description="get command descriptors",  arguments="")
-public class GetCommands extends DefaultRESTHandler {
+@RESTResourceHandler(id="list", description="list service",  arguments="arg")
+public class ListService extends DefaultRESTHandler {
 
 	@Get
-	public Representation getCommands() throws ThinklabException {
+	public Representation service() throws ThinklabException {
 
-		Object[] res = new Object[RESTManager.get().getCommandDescriptors().size()];
+		String arg 	= this.getArgument("arg");
 		
-		int i = 0;
-		for (RestCommand rc : RESTManager.get().getCommandDescriptors()) {
-			res[i++] = rc.asArray();
+		IListingProvider prov = 
+				CommandManager.get().getListingProvider(arg);
+		
+		if (prov != null) {
+			Collection<String> ps = prov.getListing();
+			setResult(ps.toArray(new String[ps.size()]));
+		} else {
+			fail("list: don't know how to list " + arg);
 		}
-		
-		setResult(res);
 		
 		return wrap();
 	}

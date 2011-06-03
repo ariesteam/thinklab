@@ -109,16 +109,16 @@ public class ResultHolder {
 			
 			switch (resultType) {
 			case DefaultRESTHandler.DOUBLE:
-				jsonObject.put("result", _dblResult.get(0));
+				jsonObject.put("result", _dblResult.size() == 0 ? JSONObject.NULL : _dblResult.get(0));
 				break;
 			case DefaultRESTHandler.INT:
-				jsonObject.put("result", _intResult.get(0));
+				jsonObject.put("result", _intResult.size() == 0 ? JSONObject.NULL : _intResult.get(0));
 				break;
 			case DefaultRESTHandler.TEXT:
-				jsonObject.put("result", _txtResult.get(0));
+				jsonObject.put("result", _txtResult.size() == 0 ? JSONObject.NULL : _txtResult.get(0));
 				break;
 			case DefaultRESTHandler.URN:
-				jsonObject.put("result", _urnResult.get(0));
+				jsonObject.put("result", _urnResult.size() == 0 ? JSONObject.NULL : _urnResult.get(0));
 				break;
 			case DefaultRESTHandler.DOUBLES:
 				jsonObject.put("result", _dblResult);
