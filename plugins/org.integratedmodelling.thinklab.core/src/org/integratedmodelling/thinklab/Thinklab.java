@@ -12,9 +12,11 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.project.ThinklabProjectInstaller;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -77,6 +79,39 @@ public class Thinklab extends ThinklabPlugin {
 		 * install listener to handle non-code Thinklab projects
 		 */
 		getManager().registerListener(new ThinklabProjectInstaller());
+		
+		/*
+		 * scan all plugins and initialize thinklab projects from them if they
+		 * have the thinklab admin directories
+		 */
+		for (PluginDescriptor pd : getManager().getRegistry().getPluginDescriptors()) {
+			
+			String lf = 
+				Escape.fromURL(new File(pd.getLocation().getFile()).getAbsolutePath());
+			File ploc = MiscUtilities.getPath(lf);
+			
+			File loc = 
+				new File(
+						ploc +
+						File.separator +
+						"THINKLAB-INF" +
+						File.separator +
+						"thinklab.properties");
+		
+			if (loc.exists()) {
+			
+				/*
+				 * install project wrapper in global register
+				 */
+				try {
+					ThinklabProject.addProject(ploc);
+				} catch (ThinklabException e) {
+					throw new ThinklabRuntimeException(e);
+				}
+			
+				Thinklab.get().logger().info("thinklab project " + pd.getId() + " registered");
+			}
+		}
 
 	}
 

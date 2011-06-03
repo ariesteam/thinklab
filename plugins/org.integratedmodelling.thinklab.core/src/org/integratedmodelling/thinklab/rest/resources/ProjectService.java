@@ -2,6 +2,7 @@ package org.integratedmodelling.thinklab.rest.resources;
 
 import java.io.File;
 
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.integratedmodelling.utils.FolderZiper;
@@ -43,9 +44,12 @@ public class ProjectService extends DefaultRESTHandler {
 				/*
 				 * make an archive from the project and return the handle
 				 */
+				ThinklabProject tp = ThinklabProject.getProject(pluginId);
+				if (tp == null)
+					throw new ThinklabResourceNotFoundException("project " + pluginId + " does not exist");
+
 				Pair<File, String> fname = this.getFileName("project.zip", getSession());
-				FolderZiper.zipFolder(ThinklabProject.getPath(pluginId).toString(), 
-						fname.getFirst().toString());
+				FolderZiper.zipFolder(tp.getPath().toString(), fname.getFirst().toString());
 				put("handle", fname.getSecond());
 			}
 			

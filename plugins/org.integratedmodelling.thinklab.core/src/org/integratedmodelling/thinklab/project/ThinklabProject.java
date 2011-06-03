@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -24,10 +25,56 @@ public class ThinklabProject {
 	static HashMap<String, ThinklabProject> _projects = 
 		new HashMap<String, ThinklabProject>();
 	
-	Plugin _plugin;
+	/*
+	 * CAUTION: this may stay null if the plugin was found before activation.
+	 */
+	Plugin _plugin = null;
+	File   _location;
+	Properties _properties = null;
+	String _id;
 	
-	public ThinklabProject(Plugin plugin) {
+	public ThinklabProject(Plugin plugin) throws ThinklabException {
 		this._plugin = plugin;
+		this._location = Thinklab.getPluginLoadDirectory(plugin);
+		this._id = plugin.getDescriptor().getId();
+		_properties = getThinklabPluginProperties(_location);
+	}
+
+	public ThinklabProject(File location) throws ThinklabException {
+		this._location = location;
+		this._id = MiscUtilities.getFileName(location.toString());
+		_properties = getThinklabPluginProperties(_location);
+	}
+
+	public String getId() {
+		return _id;
+	}
+	
+	public static Properties getThinklabPluginProperties(File location) throws ThinklabException {
+		Properties ret = null;
+		File pfile = 
+			new File(
+				location + 
+				File.separator + 
+				"THINKLAB-INF" +
+				File.separator + 
+				"thinklab.properties");
+		
+		if (pfile.exists()) {
+			try {
+				ret = new Properties();
+				ret.load(new FileInputStream(pfile));
+			} catch (Exception e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+		
+		return ret;
+
+	}
+
+	public Properties getProperties() {
+		return _properties;
 	}
 	
 	/**
@@ -41,28 +88,9 @@ public class ThinklabProject {
 	 * @return
 	 * @throws ThinklabIOException
 	 */
-	public static Properties getThinklabPluginProperties(Plugin plugin) throws ThinklabIOException {
-		
-			Properties ret = null;
-			File pfile = 
-				new File(
-					Thinklab.getPluginLoadDirectory(plugin) + 
-					File.separator + 
-					"THINKLAB-INF" +
-					File.separator + 
-					"thinklab.properties");
-			
-			if (pfile.exists()) {
-				try {
-					ret = new Properties();
-					ret.load(new FileInputStream(pfile));
-				} catch (Exception e) {
-					throw new ThinklabIOException(e);
-				}
-			}
-			
-			return ret;
-		}
+	public static Properties getThinklabPluginProperties(Plugin plugin) throws ThinklabException {
+		return getThinklabPluginProperties(Thinklab.getPluginLoadDirectory(plugin));
+	}
 
 	/**
 	 * If plugin exists, stop it if active, undeploy and delete its contents. Then
@@ -89,7 +117,7 @@ public class ThinklabProject {
 		 * do it
 		 */
 		final File deployDir = new File(instDir + File.separator + "plugins");		
-		FolderZiper.unzip(archive.toString(), deployDir.toString());
+		FolderZiper.unzip(archive, deployDir);
 		
 		try {
 			Thinklab.get().getManager().publishPlugins(
@@ -123,6 +151,7 @@ public class ThinklabProject {
 					});
 			
 			Thinklab.get().getManager().activatePlugin(pluginId);
+			// create or refresh existing descriptor
 			ThinklabProject.addProject(Thinklab.get().getManager().getPlugin(pluginId));
 			
 		} catch (JpfException e) {
@@ -165,15 +194,19 @@ public class ThinklabProject {
 
 	}
 	
-	public static File getPath(String id) {
-		
-		String instDir = System.getProperty("thinklab.inst");
-		return new File(instDir + File.separator + "plugins" + File.separator + id);		
+	public File getPath() {		
+		return _location;
 	}
 	
-	public static ThinklabProject addProject(Plugin plugin) {
+	public static ThinklabProject addProject(Plugin plugin) throws ThinklabException {
 		ThinklabProject ret = new ThinklabProject(plugin);
 		_projects.put(plugin.getDescriptor().getId(), ret);
+		return ret;
+	}
+	
+	public static ThinklabProject addProject(File plugin) throws ThinklabException {
+		ThinklabProject ret = new ThinklabProject(plugin);
+		_projects.put(MiscUtilities.getFileName(plugin.toString()), ret);
 		return ret;
 	}
 	
@@ -183,6 +216,10 @@ public class ThinklabProject {
 	
 	public static void removeProject(String id) {
 		_projects.remove(id);
+	}
+
+	public static Collection<ThinklabProject> getProjects() {
+		return _projects.values();
 	}
 	
 }

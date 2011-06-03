@@ -199,41 +199,12 @@ public class FolderZiper {
 			}
 		}
 	
-	static public void unzip2(File zipfile, File outputDir) throws ThinklabIOException {
-		
-		try {
-		   ZipFile zipFile = new ZipFile(zipfile);
-		    Enumeration<?> enumeration = zipFile.entries();
-		    while (enumeration.hasMoreElements()) {
-		      ZipEntry zipEntry = (ZipEntry) enumeration.nextElement();
-		      BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(zipEntry));
-		      int size;
-		      byte[] buffer = new byte[2048];
-		      BufferedOutputStream bos;
-				bos = new BufferedOutputStream(
-				         new FileOutputStream(
-				    		  outputDir + File.separator + zipEntry.getName()),
-				      	      buffer.length);
-		      while ((size = bis.read(buffer, 0, buffer.length)) != -1) {
-		        bos.write(buffer, 0, size);
-		      }
-		      bos.flush();
-		      bos.close();
-		      bis.close();
-		    }
-		} catch (Exception e) {
-			throw new ThinklabIOException(e);
-		}
-	}
-	
-	public static void unzip(String inputZip, String destinationDirectory)
+	public static void unzip(File sourceZipFile, File unzipDestinationDirectory)
 			throws ThinklabIOException {
 		
 		int BUFFER = 2048;
 		List<String> zipFiles = new ArrayList<String>();
 		
-		File sourceZipFile = new File(inputZip);
-		File unzipDestinationDirectory = new File(destinationDirectory);
 		unzipDestinationDirectory.mkdir();
 
 		ZipFile zipFile;
@@ -298,8 +269,8 @@ public class FolderZiper {
 
 		for (Iterator<String> iter = zipFiles.iterator(); iter.hasNext();) {
 			String zipName = iter.next();
-			unzip(zipName, destinationDirectory + File.separatorChar
-					+ zipName.substring(0, zipName.lastIndexOf(".zip")));
+			unzip(new File(zipName), new File(unzipDestinationDirectory + File.separator
+					+ zipName.substring(0, zipName.lastIndexOf(".zip"))));
 		}
 
 	}
