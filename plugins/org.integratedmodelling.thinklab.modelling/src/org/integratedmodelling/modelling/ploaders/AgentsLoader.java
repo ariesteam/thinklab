@@ -1,6 +1,7 @@
 package org.integratedmodelling.modelling.ploaders;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -10,15 +11,18 @@ import org.integratedmodelling.thinklab.project.interfaces.IProjectLoader;
 @ProjectLoader(folder="agents")
 public class AgentsLoader implements IProjectLoader {
 
+	Collection<String> _namespaces;
+
 	@Override
 	public void load(File directory) throws ThinklabException {
-		ModelFactory.get().loadModelFiles(directory);
+		_namespaces = ModelFactory.get().loadModelFiles(directory);
 	}
 
 	@Override
 	public void unload(File directory) throws ThinklabException {
-		// TODO Auto-generated method stub
-
+		for (String ns : _namespaces) {
+			ModelFactory.get().releaseNamespace(ns);
+		}
 	}
 
 }

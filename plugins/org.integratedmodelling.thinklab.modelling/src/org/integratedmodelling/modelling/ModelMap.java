@@ -1,6 +1,8 @@
 package org.integratedmodelling.modelling;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
@@ -51,6 +53,14 @@ public class ModelMap {
 		
 		private boolean modified = false;
 		public long lastModification;
+		
+		public void unlink() {
+			for (DepEdge e : map.outgoingEdgesOf(this)) {
+				map.getEdgeTarget(e).unlink();
+			}
+			map.removeVertex(this);
+			ModelMap.dirty = true;
+		}
 		
 		public void setDirty() {
 			modified = true;
@@ -204,6 +214,22 @@ public class ModelMap {
 		public NamespaceEntry(String namespace, long lastModification) {
 			this.namespace = namespace;
 			this.lastModification = lastModification;
+		}
+		
+		public Collection<IModelForm> getAllModelObjects() {
+			ArrayList<IModelForm> ret = new ArrayList<IModelForm>();
+		
+			for (DepEdge e : map.outgoingEdgesOf(this)) {
+				if (e instanceof HasNamespaceEdge) {
+					Entry ee = e.getTargetObservation();
+					if (ee instanceof FormObjectEntry && 
+							((FormObjectEntry)ee).form instanceof IModel) {
+						ret.add(((FormObjectEntry)ee).form);
+					}
+				}
+			}
+			
+			return ret;
 		}
 
 		// this is lazy also to avoid issues with the annotator
@@ -496,7 +522,7 @@ public class ModelMap {
 		
 		stream.println(src.getSource());
 	}
-
+	
 	public static long getNamespaceLastModification(String ns) {
 		NamespaceEntry nse = (NamespaceEntry) getNamespace(ns);
 		return nse.lastModification;
@@ -505,5 +531,9 @@ public class ModelMap {
 	public static IOntology getNamespaceOntology(String ns) {
 		NamespaceEntry nse = (NamespaceEntry) getNamespace(ns);
 		return nse.getOntology();
+	}
+
+	public static void releaseNamespace(NamespaceEntry ns) {
+		ns.unlink();
 	}
 }

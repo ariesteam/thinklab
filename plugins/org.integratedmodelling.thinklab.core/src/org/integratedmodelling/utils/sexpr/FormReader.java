@@ -56,9 +56,6 @@ public class FormReader {
 			if (wasInDquote && ch == '"') {
 				inDquote = false;
 			}
-//			if (wasInSquote && ch == '\'') {
-//				inSquote = false;
-//			}
 		}
 		
 		return wasInDquote || wasInSquote || wasEscape || wasComment;

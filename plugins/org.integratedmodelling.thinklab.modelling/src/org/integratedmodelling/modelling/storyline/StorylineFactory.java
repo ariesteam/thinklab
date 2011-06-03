@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.integratedmodelling.modelling.ModellingPlugin;
-import org.integratedmodelling.modelling.interfaces.IPresentation;
-import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
 import org.integratedmodelling.modelling.visualization.storyline.StorylineTemplate;
@@ -28,6 +26,10 @@ public class StorylineFactory {
 	static HashMap<File, StorylineTemplate> _cache = new HashMap<File, StorylineTemplate>();
 	static HashMap<String, StorylineTemplate> _templatesByID = 
 		new HashMap<String, StorylineTemplate>();
+	
+	static HashMap<File, Collection<StorylineTemplate>> _catalog = 
+		new HashMap<File, Collection<StorylineTemplate>>();
+	
 	
 	public static StorylineTemplate getPresentation(IConcept concept) {
 		return get()._presentations.get(concept);
@@ -297,13 +299,36 @@ public class StorylineFactory {
 		return ret;
 	}
 	
-	public static synchronized void addSourceDirectory(File dir) throws ThinklabException {
+	public static synchronized Collection<StorylineTemplate> addSourceDirectory(File dir) throws ThinklabException {
 		_directories.add(dir);
-		scanDirectory(dir);
+		Collection<StorylineTemplate> ret = scanDirectory(dir);
+		_catalog.put(dir, ret);
+		return ret;
+	}
+	
+	/**
+	 * Remove all templates coming from the source directory
+	 * 
+	 * @param dir
+	 */
+	public static synchronized void removeSourceDirectory(File dir) {
+		
+		Collection<StorylineTemplate> slines = _catalog.get(dir);
+		if (slines != null) {
+			for (StorylineTemplate st : slines) {
+				_templatesByID.remove(st.getId());
+				_cache.remove(st.getSourceFile());
+			}
+		}
+		_directories.remove(dir);
+		_catalog.remove(dir);
 	}
 		
-	public static synchronized void scanDirectory(File dir) throws ThinklabException {
-		scanDirectoryInternal(dir, null);
+	public static synchronized Collection<StorylineTemplate>  scanDirectory(File dir) 
+		throws ThinklabException {
+		ArrayList<StorylineTemplate> ret = new ArrayList<StorylineTemplate>();
+		scanDirectoryInternal(dir, ret);
+		return ret;
 	}
 	
 	private static void scanDirectoryInternal(File dir, Collection<StorylineTemplate> roots) throws ThinklabException {
@@ -321,6 +346,7 @@ public class StorylineFactory {
 					get()._presentations.put(p.getConcept(), p);
 					_cache.put(f, p);
 					_templatesByID.put(p.getId(), p);
+					roots.add(p);
 					ModellingPlugin.get().logger().info("presentation template " + p + " read successfully");
 				}
 			} 
@@ -328,7 +354,7 @@ public class StorylineFactory {
 		
 		for (File f : dir.listFiles()) {
 			if (f.isDirectory()) {
-				scanDirectory(f);
+				scanDirectoryInternal(f, roots);
 			}
 		}
 	}

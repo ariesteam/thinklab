@@ -578,7 +578,5 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	    return o.createConcept(t.getLocalName(), parents, persist);	
 	}
 
-	
-
 
 }
