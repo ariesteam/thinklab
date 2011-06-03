@@ -207,7 +207,7 @@ public class ModelFactory {
 					}
 				}
 				
-				ModelMap.addForm(toRegister, codeFrag, deps);
+				ModelMap.addForm(toRegister, codeFrag, nsentry, deps);
 
 			}
 		}

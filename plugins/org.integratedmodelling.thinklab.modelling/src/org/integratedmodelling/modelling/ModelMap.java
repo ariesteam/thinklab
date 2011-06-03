@@ -218,11 +218,10 @@ public class ModelMap {
 		public Collection<IModelForm> getAllModelObjects() {
 			ArrayList<IModelForm> ret = new ArrayList<IModelForm>();
 		
-			for (DepEdge e : map.outgoingEdgesOf(this)) {
+			for (DepEdge e : map.incomingEdgesOf(this)) {
 				if (e instanceof HasNamespaceEdge) {
-					Entry ee = e.getTargetObservation();
-					if (ee instanceof FormObjectEntry && 
-							((FormObjectEntry)ee).form instanceof IModel) {
+					Entry ee = e.getSourceObservation();
+					if (ee instanceof FormObjectEntry) {
 						ret.add(((FormObjectEntry)ee).form);
 					}
 				}
@@ -417,6 +416,7 @@ public class ModelMap {
 	public static Entry addForm(
 			IModelForm form, 
 			Entry source,
+			Entry nsEntry,
 			Entry ... dependsOn) 
 		throws ThinklabException {
 		
@@ -425,6 +425,7 @@ public class ModelMap {
 		Entry ret = new FormObjectEntry(form);
 		map.addVertex(ret);
 		map.addEdge(ret, source, new HasSourceEdge());
+		map.addEdge(ret, nsEntry, new HasNamespaceEdge());
 		
 		if (dependsOn != null)	
 			for (Entry dep : dependsOn) {
