@@ -4,25 +4,33 @@ import java.util.Set;
 
 import org.integratedmodelling.modelling.interfaces.IModelForm;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.utils.NameGenerator;
 
 public class Annotation implements IModelForm {
 
+	String _namespace;
+	String _id;
+	String _description;
+	
+	public Annotation(String namespace) {
+		this._namespace = namespace;
+		this._id = NameGenerator.newName("ann");
+	}
+	
+	
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return _id;
 	}
 
 	@Override
 	public String getNamespace() {
-		// TODO Auto-generated method stub
-		return null;
+		return _namespace;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return _namespace + "/" + _id;
 	}
 
 	@Override

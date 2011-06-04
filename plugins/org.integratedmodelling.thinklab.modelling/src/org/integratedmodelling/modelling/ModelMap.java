@@ -53,13 +53,7 @@ public class ModelMap {
 		private boolean modified = false;
 		public long lastModification;
 		
-		public void unlink() {
-			for (DepEdge e : map.outgoingEdgesOf(this)) {
-				map.getEdgeTarget(e).unlink();
-			}
-			map.removeVertex(this);
-			ModelMap.dirty = true;
-		}
+		public abstract void unlink();
 		
 		public void setDirty() {
 			modified = true;
@@ -174,8 +168,14 @@ public class ModelMap {
 		public String toString() {
 			return form.getId();
 		}
-		
+
+		@Override
+		public void unlink() {
+			map.removeVertex(this);
+			ModelMap.dirty = true;
+		}	
 	}
+	
 	public static class CodeFragmentEntry extends Entry {
 
 		public String source;
@@ -187,6 +187,12 @@ public class ModelMap {
 		@Override
 		public String toString() {
 			return "CF";// StringUtils.abbreviate(source, 8);
+		}
+
+		@Override
+		public void unlink() {
+			map.removeVertex(this);
+			ModelMap.dirty = true;
 		}
 	}
 	public static class ResourceEntry extends Entry {
@@ -202,6 +208,25 @@ public class ModelMap {
 		public String toString() {
 			return MiscUtilities.getNameFromURL(resource);
 		}
+		
+		@Override
+		public void unlink() {
+
+			ArrayList<Entry> el =  new ArrayList<ModelMap.Entry>();
+
+			for (DepEdge e : map.incomingEdgesOf(this)) {
+				if (e instanceof HasSourceEdge) {
+					el.add(e.getSourceObservation());
+				}
+			}
+			
+			for (Entry e : el)
+				e.unlink();
+			
+			map.removeVertex(this);
+			ModelMap.dirty = true;
+		}
+
 	}
 	public static class NamespaceEntry extends Entry {
 
@@ -215,6 +240,30 @@ public class ModelMap {
 			this.lastModification = lastModification;
 		}
 		
+		@Override
+		public void unlink() {
+			
+			ArrayList<Entry> el =  new ArrayList<ModelMap.Entry>();
+			
+			for (DepEdge e : map.outgoingEdgesOf(this)) {
+				if (e instanceof HasResourceEdge) {
+					el.add(e.getTargetObservation());
+				}
+			}
+			
+			for (DepEdge e : map.incomingEdgesOf(this)) {
+				if (e instanceof HasNamespaceEdge) {
+					el.add(e.getSourceObservation());
+				}
+			}
+			
+			for (Entry e : el)
+				e.unlink();
+
+			map.removeVertex(this);
+			ModelMap.dirty = true;
+		}
+
 		public Collection<IModelForm> getAllModelObjects() {
 			ArrayList<IModelForm> ret = new ArrayList<IModelForm>();
 		
@@ -235,9 +284,9 @@ public class ModelMap {
 			
 			if (modelsByObservable == null) {
 				modelsByObservable = new HashMap<IConcept, IModel>();
-				for (DepEdge e : map.outgoingEdgesOf(this)) {
+				for (DepEdge e : map.incomingEdgesOf(this)) {
 					if (e instanceof HasNamespaceEdge) {
-						Entry ee = e.getTargetObservation();
+						Entry ee = e.getSourceObservation();
 						if (ee instanceof FormObjectEntry && 
 								((FormObjectEntry)ee).form instanceof IModel) {
 							IModel m = (IModel) ((FormObjectEntry)ee).form;

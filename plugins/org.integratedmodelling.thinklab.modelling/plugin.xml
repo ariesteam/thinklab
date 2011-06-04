@@ -4,6 +4,7 @@
 
 	<requires>
 		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="false"/>
+		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.opal" reverse-lookup="false"/>
 		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.clojure" reverse-lookup="false"/>
 		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.corescience" reverse-lookup="false"/>
 		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.geospace" reverse-lookup="false"/>

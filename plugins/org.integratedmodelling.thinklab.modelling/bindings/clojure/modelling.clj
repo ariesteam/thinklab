@@ -14,6 +14,12 @@
 	the macro is expanded at runtime."
 	[]
 	(new org.integratedmodelling.modelling.model.Model (str *ns*)))
+
+(defn j-make-annotation
+	"Make a new instance of Annotation and return it. We need this because the class won't be visible when
+	the macro is expanded at runtime."
+	[]
+	(new org.integratedmodelling.modelling.annotation.Annotation (str *ns*)))
 	
 (defn j-make-nsontology
 	"Make a new instance of Model and return it. We need this because the class won't be visible when
