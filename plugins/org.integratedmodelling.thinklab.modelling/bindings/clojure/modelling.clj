@@ -107,6 +107,14 @@
 	 with it."
 	[model name]
 	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerModel model (str *ns* "/" name))))
+
+
+(defn register-annotation
+	"Get the single instance of the model manager from the modelling plugin and register the passed model
+	 with it."
+	[model name]
+	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerAnnotation model (str *ns* "/" name))))
+
 	
 (defn register-scenario
 	"Get the single instance of the model manager from the modelling plugin and register the passed model
@@ -198,6 +206,25 @@
          (.defModel model# (eval mdef#) (meta definition#))))  
      model#))
        
+(defmacro object 
+  "Return a new annotation for the given observable, defined using the
+   given contingency structure and conditional specifications, or the
+   given unconditional model if no contingency structure is supplied."
+  [observable & body]
+  `(let [desc#  
+	 					(if (string? (first '~body)) (first '~body))
+ 	        definition# 
+ 	        	(drop (tl/count-not-nil (list desc#)) '~body)
+ 	        model# 
+ 	        	(modelling/j-make-annotation)]
+ 	   (.setObservable model# (process-observable '~observable))
+     (.setDescription model# desc#)
+     ; process the model definitions - one or more models or kw pairs
+     (doseq [mdef# (tl/group-keywords definition#)] 
+       (.add model# (tl/listp mdef#) definition#))
+
+     model#))
+
 (defmacro scenario 
 	"Scenarios are collections of model statements that will be intersected with 
    another model, substituting the models for the same observables."
@@ -292,6 +319,14 @@
 	  contingency structure is supplied."
 		[model-name observable & body]
  		`(def ~model-name (modelling/register-model (eval '(modelling/model '~observable ~@body)) (str '~model-name))))
+
+(defmacro defobject
+	 "Define a model for the given observable, using the given contingency 
+	  structure and conditional specifications, or the given unconditional model if no 
+	  contingency structure is supplied."
+		[model-name observable & body]
+ 		`(def ~model-name (modelling/register-annotation (eval '(modelling/object '~observable ~@body)) (str '~model-name))))
+
        
 (defmacro defscenario
 	 "Define a scenario."

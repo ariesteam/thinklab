@@ -401,6 +401,31 @@ public class ModelFactory {
 		return model;
 	}
 	
+	/*
+	 * called by the defagent macro. Creates a prototype agent that we will use to
+	 * cloned agents from.
+	 */
+	public Annotation registerAnnotation(Annotation model, String name) throws ThinklabException {
+		
+		model.setName(name);
+		annotationsById.put(model.getName(), model);
+		lastRegistered = model;
+		return model;
+	}
+	
+	public Annotation retrieveAnnotation(String s) {
+		return annotationsById.get(s);
+	}
+
+	public Annotation requireAnnotation(String s) throws ThinklabException {
+
+		Annotation ret = retrieveAnnotation(s);
+		if (ret == null)
+			throw new ThinklabResourceNotFoundException("no annotation found for "
+					+ s);
+		return ret;
+	}
+	
 	public Model retrieveModel(String s) {
 		return modelsById.get(s);
 	}
