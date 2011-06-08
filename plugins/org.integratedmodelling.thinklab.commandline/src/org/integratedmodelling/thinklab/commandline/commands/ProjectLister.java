@@ -32,12 +32,10 @@
  **/
 package org.integratedmodelling.thinklab.commandline.commands;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.authentication.AuthenticationManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
@@ -47,9 +45,9 @@ import org.integratedmodelling.thinklab.project.ThinklabProject;
 public class ProjectLister implements IListingProvider {
 
 	@Override
-	public Collection<String> getListing() throws ThinklabException {
+	public Collection<Object> getListing() throws ThinklabException {
 		
-		ArrayList<String> ret = new ArrayList<String>();
+		ArrayList<Object> ret = new ArrayList<Object>();
 		for (ThinklabProject proj : ThinklabProject.getProjects()) {
 			ret.add(proj.getId());
 		}
@@ -57,19 +55,26 @@ public class ProjectLister implements IListingProvider {
 	}
 
 	@Override
-	public void listItem(String id, PrintStream out) throws ThinklabException {
+	public Collection<Object> getSpecificListing(String id) throws ThinklabException {
 
+		ArrayList<Object> ret = new ArrayList<Object>();
 		ThinklabProject proj = ThinklabProject.getProject(id);
 		if (proj != null) {
 			Properties props = proj.getProperties();
-			out.println("properties for project " + id + ":");
+			ret.add("properties for project " + id + ":");
 			for (Object s : props.keySet()) {
-				out.println("  " + s + " = " + props.getProperty(s.toString()));				
+				ret.add("  " + s + " = " + props.getProperty(s.toString()));				
 			}
 		} else {
-			out.println("project " + id + " does not exist");			
+			ret.add("project " + id + " does not exist");			
 		}
+		return ret;
+	}
 
+	@Override
+	public void notifyParameter(String parameter, String value) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

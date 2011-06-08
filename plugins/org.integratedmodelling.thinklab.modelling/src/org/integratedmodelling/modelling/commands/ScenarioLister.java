@@ -1,6 +1,5 @@
 package org.integratedmodelling.modelling.commands;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,7 +13,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 public class ScenarioLister implements IListingProvider {
 
 	@Override
-	public Collection<String> getListing() throws ThinklabException {
+	public Collection<?> getListing() throws ThinklabException {
 		
 		ArrayList<String> ret = new ArrayList<String>();
 		for (Object o : ModelFactory.get().scenariosById.keySet()) {
@@ -25,8 +24,15 @@ public class ScenarioLister implements IListingProvider {
 	}
 
 	@Override
-	public void listItem(String item, PrintStream out) throws ThinklabException {
+	public Collection<?> getSpecificListing(String item) throws ThinklabException {
 		// TODO implement listing of single model
+		return null;
+	}
+
+	@Override
+	public void notifyParameter(String parameter, String value) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

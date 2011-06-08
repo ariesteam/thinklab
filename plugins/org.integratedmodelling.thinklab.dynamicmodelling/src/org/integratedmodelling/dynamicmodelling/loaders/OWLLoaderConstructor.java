@@ -32,7 +32,6 @@
  **/
 package org.integratedmodelling.dynamicmodelling.loaders;
 
-import org.integratedmodelling.dynamicmodelling.DynamicModellingPlugin;
 import org.integratedmodelling.dynamicmodelling.interfaces.IModelLoader;
 import org.integratedmodelling.dynamicmodelling.interfaces.IModelLoaderConstructor;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

@@ -34,10 +34,10 @@ package org.integratedmodelling.corescience.interfaces;
 
 import java.util.Collection;
 
-import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
-import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.CoreScience.PhysicalNature;
+import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;

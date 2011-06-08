@@ -9,7 +9,6 @@ import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.utils.Pair;
 
 /**
  * Just like a FileVisualization, but takes an additional urlPrefix argument and allows

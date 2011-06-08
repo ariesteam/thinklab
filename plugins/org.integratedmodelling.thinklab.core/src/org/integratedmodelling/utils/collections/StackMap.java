@@ -1,10 +1,8 @@
 package org.integratedmodelling.utils.collections;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A normal Java Map, but with Set behavior (objects can be in no more than once) and iterates its keys like

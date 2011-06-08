@@ -1,25 +1,5 @@
 package org.integratedmodelling.geospace.incubator;
 
-import java.util.ArrayList;
-import java.util.Map;
-
-import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.corescience.implementations.observations.Measurement;
-import org.integratedmodelling.corescience.implementations.observations.Ranking;
-import org.integratedmodelling.corescience.literals.DistributionValue;
-import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.districting.algorithms.ISODATAAlgorithm;
-import org.integratedmodelling.geospace.districting.algorithms.KMeansAlgorithm;
-import org.integratedmodelling.geospace.districting.utils.DistrictingResults;
-import org.integratedmodelling.geospace.exceptions.ThinklabDistrictingException;
-import org.integratedmodelling.geospace.extents.GridExtent;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * The conceptual model that implements a transformation between a contextualized multiple

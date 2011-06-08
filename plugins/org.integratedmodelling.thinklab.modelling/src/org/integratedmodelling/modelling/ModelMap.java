@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -174,6 +175,33 @@ public class ModelMap {
 			map.removeVertex(this);
 			ModelMap.dirty = true;
 		}	
+		
+		/**
+		 * get the list of forms that depend on this one.
+		 */
+		public DefaultDirectedGraph<IModelForm, DepEdge> getDependencies() {
+			
+			DefaultDirectedGraph<IModelForm, DepEdge> ret = 
+				new DefaultDirectedGraph<IModelForm, DepEdge>(DepEdge.class);
+			getDependenciesInternal(ret);
+			return ret;
+			
+		}
+
+		private void getDependenciesInternal(
+				DefaultDirectedGraph<IModelForm, DepEdge> map) {
+
+			map.addVertex(this.form);
+			for (DepEdge e : map.outgoingEdgesOf(this.form)) {
+				if (e instanceof DependsOnEdge) {
+					Entry ee = e.getTargetObservation();
+					if (ee instanceof FormObjectEntry) {
+						((FormObjectEntry)ee).getDependenciesInternal(map);
+						map.addEdge(this.form, ((FormObjectEntry)ee).form);
+					}
+				}
+			}
+		}
 	}
 	
 	public static class CodeFragmentEntry extends Entry {
@@ -557,6 +585,25 @@ public class ModelMap {
 		gviz.show();
 	}
 
+	public static String getSource(String object) throws ThinklabException {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		PrintStream ps = new PrintStream(os);
+		printSource(object, ps);
+		return os.toString();
+	}
+	
+	public static DefaultDirectedGraph<IModelForm, DepEdge> getDependencies(String object) 
+		throws ThinklabException {
+		
+		FormObjectEntry src = (FormObjectEntry) getFormObject(object);
+		if (src == null) {
+			throw new ThinklabResourceNotFoundException(
+					object + 
+					" does not identify a model, context, scenario or agent");
+		}
+		return src.getDependencies();
+	}
+	
 	public static void printSource(String object, PrintStream stream) throws ThinklabException {
 		
 		Entry src = getNamespace(object);
@@ -593,5 +640,16 @@ public class ModelMap {
 	public static Collection<IModelForm> listNamespace(String ns) {
 		NamespaceEntry nse = (NamespaceEntry) getNamespace(ns);
 		return nse.getAllModelObjects();
+	}
+
+	public static IModelForm getModelForm(String model) throws ThinklabException {
+
+		FormObjectEntry src = (FormObjectEntry) getFormObject(model);
+		if (src == null) {
+			throw new ThinklabResourceNotFoundException(
+					model + 
+					" does not identify a model, context, scenario or agent");
+		}
+		return src.form;
 	}
 }

@@ -9,14 +9,16 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 
-@ListingProvider(label="contexts")
-public class ContextLister implements IListingProvider {
+@ListingProvider(label="annotations")
+public class AnnotationLister implements IListingProvider {
+
+	private boolean _source;
 
 	@Override
 	public Collection<?> getListing() throws ThinklabException {
 		
 		ArrayList<String> ret = new ArrayList<String>();
-		for (Object o : ModelFactory.get().contextsById.keySet()) {
+		for (Object o : ModelFactory.get().annotationsById.keySet()) {
 			ret.add(o.toString());
 		}
 		Collections.sort(ret);
@@ -31,7 +33,9 @@ public class ContextLister implements IListingProvider {
 
 	@Override
 	public void notifyParameter(String parameter, String value) {
-		// TODO Auto-generated method stub
+		
+		if (parameter.equals("source") && value.equals("true")) 
+			this._source = true;
 		
 	}
 

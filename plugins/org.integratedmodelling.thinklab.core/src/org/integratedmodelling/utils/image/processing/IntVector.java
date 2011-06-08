@@ -1,7 +1,6 @@
 package org.integratedmodelling.utils.image.processing ;
 
-import java.lang.* ;
-import java.io.* ;
+import java.io.Serializable;
 
 /**
  * A fast dynamic array of primitive integers

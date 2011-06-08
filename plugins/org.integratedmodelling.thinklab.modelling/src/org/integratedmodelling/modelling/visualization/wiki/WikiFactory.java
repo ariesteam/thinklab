@@ -2,14 +2,14 @@ package org.integratedmodelling.modelling.visualization.wiki;
 
 import java.io.StringWriter;
 
-import org.integratedmodelling.utils.StringUtils;
-
 import net.java.textilej.parser.MarkupParser;
 import net.java.textilej.parser.builder.HtmlDocumentBuilder;
 import net.java.textilej.parser.markup.Dialect;
 import net.java.textilej.parser.markup.confluence.ConfluenceDialect;
 import net.java.textilej.parser.markup.mediawiki.MediaWikiDialect;
 import net.java.textilej.parser.markup.textile.TextileDialect;
+
+import org.integratedmodelling.utils.StringUtils;
 
 
 public class WikiFactory {

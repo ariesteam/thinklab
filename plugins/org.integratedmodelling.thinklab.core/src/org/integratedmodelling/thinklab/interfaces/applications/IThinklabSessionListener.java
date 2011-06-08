@@ -33,7 +33,6 @@
  **/
 package org.integratedmodelling.thinklab.interfaces.applications;
 
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 

@@ -47,7 +47,6 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.modelling.ObservationFactory;
-import org.integratedmodelling.opal.OPALValidationException;
 import org.integratedmodelling.opal.OPALValidator;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;

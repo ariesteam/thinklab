@@ -1,7 +1,17 @@
 package org.integratedmodelling.mca.promethee;
 
-import org.integratedmodelling.mca.promethee.intensity.*;
-import org.integratedmodelling.mca.promethee.ranking.*;
+import org.integratedmodelling.mca.promethee.intensity.GaussianHFunction;
+import org.integratedmodelling.mca.promethee.intensity.HFunctionContext;
+import org.integratedmodelling.mca.promethee.intensity.IntensityCalculator;
+import org.integratedmodelling.mca.promethee.intensity.LevelHFunction;
+import org.integratedmodelling.mca.promethee.intensity.LinearHFunction;
+import org.integratedmodelling.mca.promethee.intensity.QuasiHFunction;
+import org.integratedmodelling.mca.promethee.intensity.QuasiLinearHFunction;
+import org.integratedmodelling.mca.promethee.intensity.UsualHFunction;
+import org.integratedmodelling.mca.promethee.ranking.PrometheeIIRanking;
+import org.integratedmodelling.mca.promethee.ranking.PrometheeIRanking;
+import org.integratedmodelling.mca.promethee.ranking.RankCalculator;
+import org.integratedmodelling.mca.promethee.ranking.RankingContext;
 
 /**
  *

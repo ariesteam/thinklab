@@ -1,7 +1,6 @@
 package org.integratedmodelling.modelling.interfaces;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 
 /**

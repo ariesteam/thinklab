@@ -1,6 +1,5 @@
 package org.integratedmodelling.modelling.commands;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,7 +18,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 public class NamespaceLister implements IListingProvider {
 
 	@Override
-	public Collection<String> getListing() throws ThinklabException {
+	public Collection<?> getListing() throws ThinklabException {
 		
 		ArrayList<String> ret = new ArrayList<String>();
 
@@ -31,8 +30,10 @@ public class NamespaceLister implements IListingProvider {
 	}
 
 	@Override
-	public void listItem(String item, PrintStream out) throws ThinklabException {
+	public Collection<?> getSpecificListing(String item) throws ThinklabException {
 		
+		ArrayList<Object> ret = new ArrayList<Object>();
+
 		for (IModelForm f : ModelMap.listNamespace(item)) {
 			
 			String prefix = "";
@@ -45,8 +46,16 @@ public class NamespaceLister implements IListingProvider {
 			else if (f instanceof Annotation)
 				prefix = "O";
 			
-			out.println("   " + prefix + " " + f.getId());
+			ret.add("   " + prefix + " " + f.getId());
 		}
+		
+		return ret;
+	}
+
+	@Override
+	public void notifyParameter(String parameter, String value) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

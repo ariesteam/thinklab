@@ -9,14 +9,14 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 
-@ListingProvider(label="contexts")
-public class ContextLister implements IListingProvider {
+@ListingProvider(label="agents")
+public class AgentLister implements IListingProvider {
 
 	@Override
 	public Collection<?> getListing() throws ThinklabException {
 		
 		ArrayList<String> ret = new ArrayList<String>();
-		for (Object o : ModelFactory.get().contextsById.keySet()) {
+		for (Object o : ModelFactory.get().agentsById.keySet()) {
 			ret.add(o.toString());
 		}
 		Collections.sort(ret);

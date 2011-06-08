@@ -1,11 +1,5 @@
 package org.integratedmodelling.geospace.incubator;
 
-import org.integratedmodelling.corescience.implementations.observations.Observation;
-import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
  * A districting observation transforms a gridded context into a spatial classification, and

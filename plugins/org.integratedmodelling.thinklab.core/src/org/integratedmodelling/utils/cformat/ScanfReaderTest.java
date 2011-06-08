@@ -34,8 +34,6 @@
 package org.integratedmodelling.utils.cformat;
 
 import java.io.StringReader;
-import java.io.IOException;
-import java.io.EOFException;
 
 /** Testing class for ScanfReader. Run the <code>main</code>
   * method to test the class.

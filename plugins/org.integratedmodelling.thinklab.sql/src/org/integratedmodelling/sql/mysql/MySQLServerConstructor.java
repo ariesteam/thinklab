@@ -8,7 +8,6 @@ import java.util.Properties;
 
 import org.integratedmodelling.sql.SQLServer;
 import org.integratedmodelling.sql.SQLServerConstructor;
-import org.integratedmodelling.sql.mysql.MySQLServer;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 
 public class MySQLServerConstructor implements SQLServerConstructor {

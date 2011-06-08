@@ -32,11 +32,20 @@
  **/
         package org.integratedmodelling.dynamicmodelling.simile;
 
-        import org.integratedmodelling.dynamicmodelling.model.*;
-        import edu.uci.ics.jung.graph.impl.SimpleDirectedSparseVertex;
-        import java.util.Vector;
-        import java.util.Hashtable;
         import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import org.integratedmodelling.dynamicmodelling.model.Flow;
+import org.integratedmodelling.dynamicmodelling.model.FlowEdge;
+import org.integratedmodelling.dynamicmodelling.model.InfluenceEdge;
+import org.integratedmodelling.dynamicmodelling.model.Model;
+import org.integratedmodelling.dynamicmodelling.model.Stock;
+import org.integratedmodelling.dynamicmodelling.model.Submodel;
+import org.integratedmodelling.dynamicmodelling.model.SubmodelEdge;
+import org.integratedmodelling.dynamicmodelling.model.Variable;
+
+import edu.uci.ics.jung.graph.impl.SimpleDirectedSparseVertex;
 
         public class SimilePrologReader implements SimilePrologReaderConstants {
                 // These are populated during the parsing phase and used

@@ -1,5 +1,10 @@
 package org.integratedmodelling.utils;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class StringUtils extends org.apache.commons.lang.StringUtils {
 	
 	
@@ -38,5 +43,26 @@ public class StringUtils extends org.apache.commons.lang.StringUtils {
 		}
 		
 		return ret.toString();
+	}
+	
+	/**
+	 * Divide up a string into tokens, correctly handling double quotes.
+	 * 
+	 * @param s
+	 * @return
+	 */
+	static public Collection<String> tokenize(String s) {
+		
+		ArrayList<String> ret = new ArrayList<String>();
+	    String regex = "\"([^\"]*)\"|(\\S+)";
+	    Matcher m = Pattern.compile(regex).matcher(s);
+	    while (m.find()) {
+	        if (m.group(1) != null) {
+	        	ret.add(m.group(1));
+	        } else {
+	        	ret.add(m.group(2));
+	        }
+	    }
+	    return ret;
 	}
 }

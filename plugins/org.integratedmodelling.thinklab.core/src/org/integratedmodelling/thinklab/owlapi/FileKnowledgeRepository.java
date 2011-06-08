@@ -24,12 +24,13 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -70,10 +71,8 @@ import uk.ac.manchester.cs.owl.inference.dig11.DIGReasoner;
 public class FileKnowledgeRepository implements IKnowledgeRepository {
 	
 	public static final String DEFAULT_TEMP_URI = "http://www.integratedmodelling.org/temporary/";
-	private static Logger log = Logger.getLogger(FileKnowledgeRepository.class);
 	protected OWLOntologyManager manager;
 	private File repositoryDirectory = null;
-	private File backupDirectory;
 	private File tempDirectory;
 	protected Hashtable<String, IOntology> ontologies = new Hashtable<String, IOntology>();
 	protected Hashtable<String, String> ontologyfn = new Hashtable<String, String>();
@@ -139,8 +138,6 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 			KR = this;
 			repositoryDirectory = LocalConfiguration
 					.getDataDirectory("ontology/repository");
-			backupDirectory = LocalConfiguration
-					.getDataDirectory("ontology/backup");
 			tempDirectory = LocalConfiguration.getDataDirectory("ontology/tmp");
 			manager = OWLManager.createOWLOntologyManager();
 			registry = Registry.get();
@@ -566,7 +563,6 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	// there
 	private IConcept createIfAbsent(SemanticType t, boolean persist, IConcept[] parents) throws ThinklabException {
 
-		IConcept cr = null;
 		IOntology o = retrieveOntology(t.getConceptSpace());
 	    if (o == null)
 	    	throw new ThinklabResourceNotFoundException(
@@ -578,5 +574,29 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	    return o.createConcept(t.getLocalName(), parents, persist);	
 	}
 
+	@Override
+	public List<IConcept> getAllRootConcepts() {
+		
+		ArrayList<IConcept> ret = new ArrayList<IConcept>();
+		for (IOntology onto : ontologies.values()) {
+			for (IConcept c : onto.getConcepts()){
+				Collection<IConcept> pp = c.getParents();
+				if (pp.size() == 0 || (pp.size() == 1 && pp.iterator().next().is(rootConcept)))
+					ret.add(c);
+			}
+		}
+		return ret;
+	}
 
+	@Override
+	public List<IConcept> getAllConcepts() {
+		
+		ArrayList<IConcept> ret = new ArrayList<IConcept>();
+		for (IOntology onto : ontologies.values()) {
+			for (IConcept c : onto.getConcepts()){
+				ret.add(c);
+			}
+		}
+		return ret;
+	}
 }

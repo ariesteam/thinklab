@@ -33,8 +33,8 @@
 
 package org.integratedmodelling.clojure.rfib;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RemoteComponentRegistry
 {

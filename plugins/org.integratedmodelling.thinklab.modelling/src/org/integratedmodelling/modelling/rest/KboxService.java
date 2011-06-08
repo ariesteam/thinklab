@@ -6,10 +6,11 @@ import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
-@RESTResourceHandler(id="kbox",
-		 arguments="arg0,arg1,arg2",
-		 description="manage kboxes and load annotations in them")
-public class CoverageService extends DefaultRESTHandler {
+@RESTResourceHandler(id="coverage",
+		 arguments="model,storyline,context,scenario",
+		 options="format,output",
+		 description="check the spatial coverage of a given model, storyline or concept")
+public class KboxService extends DefaultRESTHandler {
 
 	@Get
 	public Representation service() throws ThinklabException {

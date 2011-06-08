@@ -32,8 +32,8 @@
  **/
 package org.integratedmodelling.geospace.districting.interfaces;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.geospace.districting.utils.DistrictingResults;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 
 /**
  * Interface for a districting algorithm to implement.  The only

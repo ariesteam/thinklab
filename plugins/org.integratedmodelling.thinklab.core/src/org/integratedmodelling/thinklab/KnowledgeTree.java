@@ -42,7 +42,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 
 /**
  * A simple to use class tree that allows fast subsumption checking and handles
@@ -88,7 +87,7 @@ public class KnowledgeTree {
 	 */
 	private ClassNode getClassStructure(IConcept root, HashSet<String> catalog) {
 		
-		String cid = root.getSemanticType().toString();
+		String cid = root.toString();
 		
 		ClassNode ret = new ClassNode(root);
 
@@ -101,7 +100,6 @@ public class KnowledgeTree {
 				if (cn != null)
 					ret.add(cn);
 			}
-
 		}
 		/* put class node into hash */
 		ArrayList<ClassNode> r = map.get(cid);

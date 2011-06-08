@@ -19,10 +19,7 @@
 package org.integratedmodelling.thinklab.owlapi;
 
 import java.util.Collections;
-import java.util.Properties;
 
-import org.integratedmodelling.thinklab.SemanticType;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.semanticweb.owl.model.OWLIndividual;

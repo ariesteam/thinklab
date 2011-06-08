@@ -32,8 +32,8 @@
  **/
 package org.integratedmodelling.persistence.kbox;
 
-import org.hibernate.*;
-import org.hibernate.cfg.*;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 /**
  * Startup Hibernate and provide access to the singleton SessionFactory

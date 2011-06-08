@@ -33,8 +33,17 @@ public class ListService extends DefaultRESTHandler {
 				CommandManager.get().getListingProvider(arg);
 		
 		if (prov != null) {
-			Collection<String> ps = prov.getListing();
-			setResult(ps.toArray(new String[ps.size()]));
+			
+			for (String key : getArguments().keySet()) {
+				String val = getArgument(key);
+				
+				if (!val.equals("arg")) {
+					prov.notifyParameter(key, val);
+				}
+			}
+			
+			Collection<?> ps = prov.getListing();
+			setResult(ps.toArray(new Object[ps.size()]));
 		} else {
 			fail("list: don't know how to list " + arg);
 		}

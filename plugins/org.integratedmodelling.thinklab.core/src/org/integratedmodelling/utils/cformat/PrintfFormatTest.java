@@ -33,7 +33,8 @@
  **/
 package org.integratedmodelling.utils.cformat;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 /** Testing class for PrintfFormat. Run the <code>main</code>
   * method to test the class.

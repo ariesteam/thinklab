@@ -31,11 +31,6 @@
  * @link      http://www.integratedmodelling.org
  **/
 package org.integratedmodelling.dynamicmodelling.simile;
-import org.integratedmodelling.dynamicmodelling.model.*;
-import edu.uci.ics.jung.graph.impl.SimpleDirectedSparseVertex;
-import java.util.Vector;
-import java.util.Hashtable;
-import java.util.Enumeration;
 
 public class SimilePrologReaderTokenManager implements SimilePrologReaderConstants
 {

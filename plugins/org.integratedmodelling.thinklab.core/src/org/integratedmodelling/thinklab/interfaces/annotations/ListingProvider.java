@@ -1,6 +1,8 @@
 package org.integratedmodelling.thinklab.interfaces.annotations;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * Tagging a class with this will notify the command system that the class provides a

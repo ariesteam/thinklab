@@ -3,7 +3,6 @@ package org.integratedmodelling.corescience.units;
 import java.io.PrintStream;
 
 import javax.measure.converter.UnitConverter;
-import javax.measure.quantity.Quantity;
 import javax.measure.unit.Dimension;
 import javax.measure.unit.ProductUnit;
 

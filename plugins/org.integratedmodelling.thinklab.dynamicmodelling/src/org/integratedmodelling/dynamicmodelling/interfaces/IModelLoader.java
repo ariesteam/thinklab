@@ -34,7 +34,6 @@ package org.integratedmodelling.dynamicmodelling.interfaces;
 
 import java.util.Collection;
 
-import org.integratedmodelling.dynamicmodelling.model.Model;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.utils.Polylist;
 

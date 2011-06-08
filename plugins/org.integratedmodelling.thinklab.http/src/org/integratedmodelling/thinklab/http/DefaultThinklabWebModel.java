@@ -5,7 +5,6 @@ import java.io.PrintStream;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 
 public class DefaultThinklabWebModel extends ThinklabWebModel {
