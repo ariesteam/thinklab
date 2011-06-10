@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.utils.Polylist;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +27,7 @@ public class ResultHolder {
 	Object            _objResult = null;
 	ArrayList<String> _urnResult = null;
 	ArrayList<String> _urnTypes  = null;
+	private Polylist _lstResult;
 	
 	
 	/**
@@ -135,6 +137,10 @@ public class ResultHolder {
 			case DefaultRESTHandler.OBJECT:
 				jsonObject.put("result", _objResult);
 				break;
+			case DefaultRESTHandler.LIST:
+				// TODO check appropriate representations
+				jsonObject.put("result", _lstResult.toString());
+				break;
 			}
 			
 			/*
@@ -147,5 +153,10 @@ public class ResultHolder {
 			throw new ThinklabRuntimeException(e);
 		}
 
+	}
+
+	public void setList(Polylist o) {
+		_lstResult = o;
+		resultType = DefaultRESTHandler.LIST;
 	}
 }

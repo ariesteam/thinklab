@@ -7,6 +7,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
@@ -16,8 +17,8 @@ import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
 
 public class CommandManager {
 	
-	HashMap<String, IListingProvider> listingProviders = new HashMap<String, IListingProvider>();
-	HashMap<String, IListingProvider> itemListingProviders = new HashMap<String, IListingProvider>();
+	HashMap<String, Class<?>> listingProviders = new HashMap<String, Class<?>>();
+	HashMap<String, Class<?>> itemListingProviders = new HashMap<String, Class<?>>();
 	
 	/**
 	 * command declarations are kept in a hash, indexed by command ID
@@ -57,18 +58,34 @@ public class CommandManager {
 			
 	}
 
-	public void registerListingProvider(String label, String itemlabel, IListingProvider provider) {
+	public void registerListingProvider(String label, String itemlabel, Class<?> provider) {
 		listingProviders.put(label, provider);
 		if (!itemlabel.equals(""))
 			itemListingProviders.put(itemlabel, provider);
 	}
 	
 	public IListingProvider getListingProvider(String label) {
-		return listingProviders.get(label);
+		Class<?> cls = listingProviders.get(label);
+		if (cls == null)
+			return null;
+		
+		try {
+			return (IListingProvider)cls.newInstance();
+		} catch (Exception e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 	
 	public IListingProvider getItemListingProvider(String label) {
-		return itemListingProviders.get(label);
+		Class<?> cls = itemListingProviders.get(label);
+		if (cls == null)
+			return null;
+		
+		try {
+			return (IListingProvider)cls.newInstance();
+		} catch (Exception e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 	
 	public CommandDeclaration getDeclarationForCommand(String tok) {

@@ -20,6 +20,7 @@ import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
+import org.integratedmodelling.utils.Polylist;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.CharacterSet;
@@ -54,6 +55,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	 // this one means "you're on your own figuring it out" and is only used for internal
 	// hand-shaking commands where the result structure is known to the client.
 	static public final int OBJECT = 9;
+	static public final int LIST = 10;
 	
 	// codes for getStatus()
 	static public final int DONE = 0;
@@ -326,6 +328,8 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	}
 	
 	public void setResult(Object o) {
+		if (o instanceof Polylist)
+			rh.setList((Polylist)o);
 		rh.setResult(o);
 	}
 	

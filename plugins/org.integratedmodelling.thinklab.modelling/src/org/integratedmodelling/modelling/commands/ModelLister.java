@@ -5,17 +5,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
-import org.integratedmodelling.corescience.compiler.Compiler.MediatedDependencyEdge;
-import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.modelling.ModelMap;
 import org.integratedmodelling.modelling.ModelMap.DepEdge;
-import org.integratedmodelling.modelling.ModelMap.Entry;
-import org.integratedmodelling.modelling.ModelMap.FormObjectEntry;
 import org.integratedmodelling.modelling.interfaces.IModelForm;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
+import org.integratedmodelling.utils.StringUtils;
 import org.integratedmodelling.utils.WildcardMatcher;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -77,10 +74,11 @@ public class ModelLister implements IListingProvider {
 				TopologicalOrderIterator<IModelForm, DepEdge> ord =
 					new TopologicalOrderIterator<IModelForm, DepEdge>(deps);
 				while (ord.hasNext()) {
-					s += getModelDescription(((IModelForm)ord.next()).getName()) + "\n";
+					s = getModelDescription(((IModelForm)ord.next()).getName()) + "\n" + s;
 				}
+				return s;
 			} else {
-				return listStructure(mod, deps);
+				return listStructure(mod, deps, 0);
 			}
 		} 
 		
@@ -88,9 +86,14 @@ public class ModelLister implements IListingProvider {
 	}
 
 	private String listStructure(IModelForm mod,
-			DefaultDirectedGraph<IModelForm, DepEdge> deps) {
-		// TODO Auto-generated method stub
-		String ret = "";
+			DefaultDirectedGraph<IModelForm, DepEdge> deps,
+			int level) {
+
+		String ret = StringUtils.repeat(" ", level*2) + mod.getName() + "\n";
+		
+		for (DepEdge e : deps.outgoingEdgesOf(mod)) {
+			ret += listStructure(deps.getEdgeTarget(e), deps, level + 1);
+		}
 		
 		return ret;
 	}

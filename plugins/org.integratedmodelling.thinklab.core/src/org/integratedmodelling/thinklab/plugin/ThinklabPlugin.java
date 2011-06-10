@@ -952,7 +952,7 @@ public abstract class ThinklabPlugin extends Plugin
 					String name = ((ListingProvider)annotation).label();
 					String sname = ((ListingProvider)annotation).itemlabel();
 					try {
-						CommandManager.get().registerListingProvider(name, sname, (IListingProvider) cls.newInstance());
+						CommandManager.get().registerListingProvider(name, sname, cls);
 					} catch (Exception e) {
 						throw new ThinklabValidationException(e);
 					}

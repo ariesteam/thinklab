@@ -189,15 +189,15 @@ public class ModelMap {
 		}
 
 		private void getDependenciesInternal(
-				DefaultDirectedGraph<IModelForm, DepEdge> map) {
+				DefaultDirectedGraph<IModelForm, DepEdge> mep) {
 
-			map.addVertex(this.form);
-			for (DepEdge e : map.outgoingEdgesOf(this.form)) {
+			mep.addVertex(this.form);
+			for (DepEdge e : map.outgoingEdgesOf(this)) {
 				if (e instanceof DependsOnEdge) {
 					Entry ee = e.getTargetObservation();
 					if (ee instanceof FormObjectEntry) {
-						((FormObjectEntry)ee).getDependenciesInternal(map);
-						map.addEdge(this.form, ((FormObjectEntry)ee).form);
+						((FormObjectEntry)ee).getDependenciesInternal(mep);
+						mep.addEdge(this.form, ((FormObjectEntry)ee).form);
 					}
 				}
 			}
@@ -506,7 +506,9 @@ public class ModelMap {
 		
 		if (dependsOn != null)	
 			for (Entry dep : dependsOn) {
-				map.addEdge(ret, dep, new DependsOnEdge());
+				if (dep != null) {
+					map.addEdge(ret, dep, new DependsOnEdge());
+				}
 			}
 		
 		forms.put(form.getName(), ret);

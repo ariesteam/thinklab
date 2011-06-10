@@ -68,8 +68,6 @@ public class UserLister implements IListingProvider {
 
 	@Override
 	public void notifyParameter(String parameter, String value) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

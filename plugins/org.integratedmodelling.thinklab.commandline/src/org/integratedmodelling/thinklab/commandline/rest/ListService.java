@@ -28,22 +28,37 @@ public class ListService extends DefaultRESTHandler {
 	public Representation service() throws ThinklabException {
 
 		String arg 	= this.getArgument("arg");
+		boolean isItem = false;
 		
 		IListingProvider prov = 
 				CommandManager.get().getListingProvider(arg);
 		
+		if (prov == null) {
+			prov = CommandManager.get().getItemListingProvider(arg);
+			isItem = true;
+		}
+		
 		if (prov != null) {
+			
+			String theItem = null;
 			
 			for (String key : getArguments().keySet()) {
 				String val = getArgument(key);
 				
-				if (!val.equals("arg")) {
+				if (key.equals("match") && isItem) {
+					theItem = val;
+				} else if (!key.equals("arg")) {
 					prov.notifyParameter(key, val);
 				}
 			}
 			
-			Collection<?> ps = prov.getListing();
+			Collection<?> ps = 
+				isItem ? 
+					prov.getSpecificListing(theItem) : 
+					prov.getListing();
+					
 			setResult(ps.toArray(new Object[ps.size()]));
+			
 		} else {
 			fail("list: don't know how to list " + arg);
 		}
