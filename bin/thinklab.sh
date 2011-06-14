@@ -47,16 +47,56 @@ if [ -z "$THINKLAB_INST" ] ; then
   THINKLAB_INST=$THINKLAB_HOME
 fi
 
-cd $THINKLAB_HOME
-
 THINKLAB_CMD="$JAVACMD $JAVA_OPTS -Djava.library.path=$THINKLAB_HOME/plugins/org.integratedmodelling.thinklab.riskwiz/common -Djpf.boot.config=$THINKLAB_HOME/boot.properties -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH -Dthinklab.plugins=$THINKLAB_PLUGINS -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_HOME/lib/endorsed -jar $THINKLAB_HOME/lib/im-boot.jar org.java.plugin.boot.Boot"
 
-if [ "$1" = "start" ] ; then
-  cd $THINKLAB_INST
-  mkdir -p $THINKLAB_INST/var/log
-  sh -c "exec $THINKLAB_CMD $@ $THINKLAB_ARGS >> $THINKLAB_INST/var/log/thinklab.out 2>&1"
-else
-  exec $THINKLAB_CMD $@ $THINKLAB_ARGS
-fi
+while true; do
+
+cd $THINKLAB_HOME
+
+  if [ "$1" = "start" ] ; then
+    cd $THINKLAB_INST
+    mkdir -p $THINKLAB_INST/var/log
+    sh -c "exec $THINKLAB_CMD $@ $THINKLAB_ARGS >> $THINKLAB_INST/var/log/thinklab.out 2>&1"
+  else
+    exec $THINKLAB_CMD $@ $THINKLAB_ARGS
+  fi
+
+  # 
+  # check if shutdown command has inserted hooks for us to run
+  #
+  if [ -d hooks ] ; then
+    shopt -s nullglob
+    for i in tmp/hooks/*
+    do
+  	  . $i
+    done
+    rm -f hooks/*
+  fi
+
+  #
+  # these may have been set by hooks
+  #
+  if [ -n "$THINKLAB_UPGRADE_BRANCH" ] ; then
+	cd $HOME/thinklab
+	git checkout $1
+	git pull
+	ant build install
+	cd $HOME/aries
+	git checkout $1
+	git pull
+	ant build install
+	unset THINKLAB_UPGRADE_BRANCH
+  fi
+
+  #
+  # exit loop unless THINKLAB_RESTART was defined by a hook
+  #
+  if [ -z "$THINKLAB_RESTART" ] ; then
+	break
+  else
+    unset THINKLAB_RESTART
+  fi
+  
+done
 
 cd $CWD
