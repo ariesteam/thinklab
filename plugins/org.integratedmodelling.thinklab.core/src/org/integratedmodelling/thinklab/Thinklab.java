@@ -17,6 +17,7 @@ import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.project.ThinklabProjectInstaller;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.template.MVELTemplate;
 import org.java.plugin.Plugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.PluginDescriptor;
@@ -217,7 +218,7 @@ public class Thinklab extends ThinklabPlugin {
 		return _metadataService;
 	}
 
-	public void shutdown(String hook, final int seconds, Map<String, String> params) {
+	public void shutdown(String hook, final int seconds, Map<String, String> params) throws ThinklabException {
 
 		if (hook != null) {
 			/*
@@ -226,6 +227,28 @@ public class Thinklab extends ThinklabPlugin {
 			 *      copied hook
 			 */
 			
+			String inst = System.getenv("THINKLAB_INST");
+			String home = System.getenv("THINKLAB_HOME");
+			
+			if (inst == null || home == null) {
+				throw new ThinklabRuntimeException(
+						"can't use the hook system: thinklab home and installation directories not defined");
+			}
+			
+			File hdest = 
+				new File(inst + File.separator + "tmp" + File.separator + "hooks");
+			File hsour = new File(home + File.separator + "hooks" + File.separator + hook + ".hook");
+			
+			if (!hsour.exists()) {
+				throw new ThinklabRuntimeException(
+					"shutdown hook " + hook + " not installed");				
+			}
+			
+			hdest.mkdirs();
+			hdest = new File(hdest + File.separator + hook);
+			
+			MVELTemplate tmpl = new MVELTemplate(hsour);
+			tmpl.write(hdest, params);
 		}
 		
 		/*
