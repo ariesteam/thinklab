@@ -19,10 +19,11 @@ import org.integratedmodelling.thinklab.rest.RESTManager;
 		argumentNames="cmd",
 		argumentTypes="thinklab-core:Text",
 		argumentDescriptions="command (start|stop|restart|status)",
-		optionNames="p",
-		optionLongNames="port",
-		optionDescriptions="port",
-		optionTypes="thinklab-core:Integer"
+		optionNames="p,server",
+		optionLongNames="port,server",
+		optionDescriptions="port,do not return",
+		optionTypes="thinklab-core:Integer,owl:Nothing",
+		optionArgumentLabels="port, "
 		)
 public class Rest implements ICommandHandler {
 	
@@ -39,6 +40,16 @@ public class Rest implements ICommandHandler {
 		if (cmd.equals("start")) {
 			
 			RESTManager.get().start(port);
+			
+			if (command.hasOption("server")) {
+				while (true) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						break;
+					}
+				}
+			}
 			
 		} else if (cmd.equals("stop")) {
 			
