@@ -81,7 +81,7 @@ test  - runs some tests
 			<fileset dir="lib" includes="*.jar" />
 		</copy>
 		<copy todir="${build.home}">
-			<fileset dir="." includes="bin/*.*,*.*" excludes=".*,todo*" />
+			<fileset dir="." includes="bin/*.*,hooks/*.*,*.*" excludes=".*,todo*" />
 		</copy>
 		<jpf-version basedir="${build.home}/plugins"
 		             includes="*/plugin.xml,*/plugin-fragment.xml"
@@ -130,20 +130,6 @@ test  - runs some tests
 	<target name="dist"
 	        depends="clean,build,docs"
 	        description="Prepares distribution packages">
-		<!-- comment out the next two tasks, which would create zip archives for each
-		     plugin and delete the original unpacked distribution. If that is done,
-		     the core plugin needs a much more sophisticated strategy to read 
-		     the protege support files. Can be put back in when we phase out
-		     protege and switch to OWLAPI. -->
-		<!-- <jpf-zip basedir="${build.home}/plugins"
-		         includes="*/plugin.xml,*/plugin-fragment.xml"
-		         destdir="${build.home}/plugins" />
-		<delete includeemptydirs="true">
-			<fileset dir="${build.home}/plugins">
-				<include name="**/*" />
-				<exclude name="*.zip" />
-			</fileset>
-		</delete> -->
 		<zip destfile="${build.home}/${app.name}-bin-${app.version}.zip"
 		     duplicate="fail"
 		     update="false">
