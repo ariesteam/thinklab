@@ -64,6 +64,9 @@ while true; do
   # just checking
   echo "Thinklab exited" 
 
+  # just checking
+  echo "Thinklab exited" 
+
   # 
   # check if shutdown service has inserted hooks for us to run
   #
