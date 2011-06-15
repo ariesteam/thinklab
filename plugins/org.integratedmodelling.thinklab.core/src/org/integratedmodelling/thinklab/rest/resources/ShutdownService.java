@@ -30,11 +30,25 @@ public class ShutdownService extends DefaultRESTHandler {
 		/*
 		 * hook parameters
 		 */
-		for (int i = 1; ; i++) {
-			if (getArgument("hookarg" + i) == null)
-				break;
-			parms.put("ARG"+i, getArgument("hookarg"+i));
+		if (hook != null) {
+			for (int i = 1; ; i++) {
+				if (getArgument("hookarg" + i) == null)
+					break;
+			
+				/*
+				 * translate arguments appropriately for template in .hook files
+				 */
+				String pname = "ARG" + i;
+				if (hook.equals("update") && i == 1)
+					pname = "branch";
+				
+				/*
+				 * this is used by the template engine in the hooks
+				 */
+				parms.put(pname, getArgument("hookarg"+i));
+			}
 		}
+		
 		if (getArgument("time") != null) {
 			seconds = Integer.parseInt(getArgument("time"));
 		}
