@@ -220,16 +220,12 @@ public class Thinklab extends ThinklabPlugin {
 
 	public void shutdown(String hook, final int seconds, Map<String, String> params) throws ThinklabException {
 
+		
+		String inst = System.getenv("THINKLAB_INST");
+		String home = System.getenv("THINKLAB_HOME");
+		
 		if (hook != null) {
-			
-			/*
-			 * copy given hook to ${thinklab.inst}/etc/hooks; substitute
-			 * parameters using MVEL2 template mechanism
-			 */
-			
-			String inst = System.getenv("THINKLAB_INST");
-			String home = System.getenv("THINKLAB_HOME");
-			
+						
 			if (inst == null || home == null) {
 				throw new ThinklabRuntimeException(
 						"can't use the hook system: thinklab home and installation directories not defined");

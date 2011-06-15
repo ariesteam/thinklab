@@ -33,6 +33,7 @@
  **/
 package org.integratedmodelling.thinklab.shell;
 
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -101,6 +102,9 @@ public class ShellApplication extends ApplicationPlugin implements Application {
 			BooleanValue.parseBoolean(
 					CommandLine.get().getProperties().getProperty(
 							GRAPHICAL_SHELL_PROPERTY, "true"));
+		
+		if (isGraphical && GraphicsEnvironment.isHeadless())
+			isGraphical = false;
 		
 		boolean hasScript = false;
 		ISession session = null;
