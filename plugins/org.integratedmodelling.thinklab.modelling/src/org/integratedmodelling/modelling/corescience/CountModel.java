@@ -1,9 +1,6 @@
 package org.integratedmodelling.modelling.corescience;
 
-import java.util.Collection;
-
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.model.DefaultDynamicAbstractModel;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

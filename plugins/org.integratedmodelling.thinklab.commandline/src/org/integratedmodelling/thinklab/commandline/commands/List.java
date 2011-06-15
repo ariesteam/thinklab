@@ -38,7 +38,6 @@ import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.commandline.CommandLine;
-import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabUnknownResourceException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -161,8 +160,6 @@ public class List implements ICommandHandler {
 		
 		IQueryResult result = kbox.query(null, 0, -1);
 
-//		outputWriter.getOutputStream().println("\tID\tClass\tLabel\tDescription");
-
 		if (result.getResultCount() > 0) {
 
 			for (int i = 0; i < result.getResultCount(); i++) {
@@ -171,19 +168,6 @@ public class List implements ICommandHandler {
 						i  +
 						". " + 
 						result.getResultAsList(i, null));
-				
-//				outputWriter.getOutputStream().println("\t"
-//						+ result.getResultField(i, IQueryResult.ID_FIELD_NAME)
-//						+ "\t"
-//						+ result.getResultField(i,
-//								IQueryResult.CLASS_FIELD_NAME)
-//						+ "\t"
-//						+ result.getResultField(i,
-//								IQueryResult.LABEL_FIELD_NAME)
-//						+ "\t"
-//						+ result.getResultField(i,
-//								IQueryResult.DESCRIPTION_FIELD_NAME));
-
 			}
 		}
 
@@ -223,14 +207,16 @@ public class List implements ICommandHandler {
 			
 			if (item == null) {
 				int n = 0;
-				for (String o : prov.getListing()) {
+				for (Object o : prov.getListing()) {
 					session.getOutputStream().println("  " + o);
 					n++;
 				}
 				session.getOutputStream().println(n + " " + subject);
 				
 			} else {
-				prov.listItem(item, session.getOutputStream());
+				for (Object o : prov.getSpecificListing(item)) {
+					session.getOutputStream().println(o);
+				}
 			}
 			
 			return null;

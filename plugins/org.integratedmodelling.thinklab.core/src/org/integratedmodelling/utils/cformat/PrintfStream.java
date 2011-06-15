@@ -34,7 +34,8 @@
 
 package org.integratedmodelling.utils.cformat;
 
-import java.io.*;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 /**
   * PrintStream which outputs primitive types using C <code>printf</code>

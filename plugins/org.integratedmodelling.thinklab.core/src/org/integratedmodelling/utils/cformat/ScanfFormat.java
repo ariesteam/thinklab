@@ -34,7 +34,6 @@
 
 package org.integratedmodelling.utils.cformat;         
 
-import java.util.Vector;
 
 /**
   * Format object for scanning input in the same way as the 

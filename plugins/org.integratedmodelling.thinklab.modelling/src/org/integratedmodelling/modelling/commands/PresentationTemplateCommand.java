@@ -4,13 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.modelling.interfaces.IModel;
-import org.integratedmodelling.modelling.literals.ContextValue;
-import org.integratedmodelling.modelling.model.Model;
-import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.modelling.storyline.StorylineFactory;
 import org.integratedmodelling.modelling.visualization.knowledge.TypeManager;
 import org.integratedmodelling.modelling.visualization.knowledge.VisualConcept;
@@ -24,12 +19,8 @@ import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.xml.XML;
-import org.integratedmodelling.utils.xml.XMLDocument;
-import org.w3c.dom.Node;
 
 @ThinklabCommand(
 		name="ptemplate",

@@ -1,7 +1,11 @@
 package org.integratedmodelling.geospace.kmeans;
 
-import java.io.*;
-import java.util.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Same as BasicKMeans, but with the addition of 

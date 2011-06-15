@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.integratedmodelling.corescience.CoreScience;
@@ -50,6 +51,23 @@ public class Model extends DefaultAbstractModel {
 		this.id = NameGenerator.newName("mod");
 	}
 	
+	
+	
+	@Override
+	public Collection<IModel> getDependencies() {
+		
+		HashSet<IModel> ret = new HashSet<IModel>();
+		
+		for (IModel m : models) {
+			for (IModel d : m.getDependencies())
+				if (d != null)
+					ret.add(d);
+		}
+		return ret;
+	}
+
+
+
 	/*
 	 * wrap the passed model, which obviously should not be a Model
 	 */

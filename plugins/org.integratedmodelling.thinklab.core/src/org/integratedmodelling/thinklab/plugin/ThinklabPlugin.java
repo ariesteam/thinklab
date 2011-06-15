@@ -71,6 +71,7 @@ import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplement
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.PersistentObject;
+import org.integratedmodelling.thinklab.interfaces.annotations.ProjectLoader;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
@@ -85,6 +86,7 @@ import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.owlapi.Session;
+import org.integratedmodelling.thinklab.project.interfaces.IProjectLoader;
 import org.integratedmodelling.thinklab.rest.RESTManager;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
 import org.integratedmodelling.thinklab.transformations.ITransformation;
@@ -98,6 +100,7 @@ import org.java.plugin.registry.Extension;
 import org.java.plugin.registry.Extension.Parameter;
 import org.java.plugin.registry.ExtensionPoint;
 import org.java.plugin.registry.Version;
+import org.restlet.resource.ServerResource;
 
 
 /**
@@ -949,7 +952,7 @@ public abstract class ThinklabPlugin extends Plugin
 					String name = ((ListingProvider)annotation).label();
 					String sname = ((ListingProvider)annotation).itemlabel();
 					try {
-						CommandManager.get().registerListingProvider(name, sname, (IListingProvider) cls.newInstance());
+						CommandManager.get().registerListingProvider(name, sname, cls);
 					} catch (Exception e) {
 						throw new ThinklabValidationException(e);
 					}
@@ -960,6 +963,32 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 
+	protected void loadProjectLoaders() throws ThinklabException {
+		
+		String ipack = this.getClass().getPackage().getName() + ".ploaders";
+		
+		for (Class<?> cls : MiscUtilities.findSubclasses(IProjectLoader.class, ipack, getClassLoader())) {	
+			
+			/*
+			 * lookup annotation, ensure we can use the class
+			 */
+			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+				continue;
+			
+			for (Annotation annotation : cls.getAnnotations()) {
+				if (annotation instanceof ProjectLoader) {
+					
+					String folder = ((ProjectLoader)annotation).folder();
+					String description = ((RESTResourceHandler)annotation).description();
+					Thinklab.get().registerProjectLoader(folder, (Class<?>) cls);	
+					break;
+				}
+			}
+		}
+
+	}
+
+	
 	protected void loadRESTHandlers() throws ThinklabException {
 		
 		String ipack = this.getClass().getPackage().getName() + ".rest";
@@ -975,11 +1004,12 @@ public abstract class ThinklabPlugin extends Plugin
 			for (Annotation annotation : cls.getAnnotations()) {
 				if (annotation instanceof RESTResourceHandler) {
 					
-					String path = ((RESTResourceHandler)annotation).path();
+					String path = ((RESTResourceHandler)annotation).id();
 					String description = ((RESTResourceHandler)annotation).description();
-					RESTManager.get().registerService(path, (Class<?>) cls);
-
-					
+					String argument = ((RESTResourceHandler)annotation).arguments();
+					String options = ((RESTResourceHandler)annotation).options();
+					RESTManager.get().registerService(path, (Class<? extends ServerResource>) cls,
+							description, argument, options);	
 					break;
 				}
 			}
@@ -1374,5 +1404,32 @@ public abstract class ThinklabPlugin extends Plugin
 	 */
 	public File getConfigPath() {
 		return confFolder;
+	}
+
+	public void persistProperty(String var, String val) throws ThinklabIOException {
+		
+		String configFile = getPluginBaseName() + ".properties";
+		File pfile = new File(confFolder + File.separator + configFile);
+
+		// load custom properties, overriding any in system folder.
+		Properties props = new Properties();
+		if (pfile.exists()) {
+			try {
+				FileInputStream inp = new FileInputStream(pfile);
+				props.load(inp);
+				inp.close();
+			} catch (Exception e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+		props.setProperty(var, val);
+		try {
+			FileOutputStream out = new FileOutputStream(pfile);
+			props.store(out, null);
+			out.close();
+		} catch (Exception e) {
+			throw new ThinklabIOException(e);
+		}
+
 	}
 }

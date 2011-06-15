@@ -124,7 +124,14 @@
 				<export prefix="*"/>
 		</library>
 		<library id="xsdlib" path="lib/xsdlib-20050614.jar" type="code"/>	
+
+		<library id="org.apache.commons.fileupload" path="lib/org.apache.commons.fileupload.jar" type="code">
+			<export prefix="*"/>
+		</library>
 		
+		<library id="org.apache.httpclient" path="lib/org.apache.httpclient.jar" type="code">
+			<export prefix="*"/>
+		</library>
 		
 		<library id="restlet" path="lib/org.restlet.jar" type="code">
 			<export prefix="*"/>
@@ -133,7 +140,11 @@
 		<library id="restlet.ext.json" path="lib/org.restlet.ext.json.jar" type="code">
 			<export prefix="*"/>
 		</library>
-		
+
+		<library id="restlet.ext.fileupload" path="lib/org.restlet.ext.fileupload.jar" type="code">
+			<export prefix="*"/>
+		</library>
+
 		<library id="restlet.ext.jetty" path="lib/org.restlet.ext.jetty.jar" type="code">
 			<export prefix="*"/>
 		</library>

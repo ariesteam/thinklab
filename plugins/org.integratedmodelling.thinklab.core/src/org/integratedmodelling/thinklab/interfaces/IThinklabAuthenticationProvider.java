@@ -36,6 +36,8 @@ import java.util.Collection;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 /**
  * Simply manages identification, authentication and storage/retrieval of user properties.
@@ -69,6 +71,8 @@ public interface IThinklabAuthenticationProvider {
 	public abstract void setUserPassword(String user, String password) throws ThinklabException;
 	
 	public abstract Collection<String> listUsers() throws ThinklabException;
+
+	public abstract IInstance getUserInstance(String user, ISession session) throws ThinklabException;
 }
 
 

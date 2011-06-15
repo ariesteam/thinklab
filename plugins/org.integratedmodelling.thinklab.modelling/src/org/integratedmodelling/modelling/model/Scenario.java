@@ -1,19 +1,15 @@
 package org.integratedmodelling.modelling.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
-import org.integratedmodelling.modelling.corescience.ObservationModel;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IModelForm;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-
-import clojure.lang.IFn;
 
 /**
  * A scenario is an identification model containing observables that can be

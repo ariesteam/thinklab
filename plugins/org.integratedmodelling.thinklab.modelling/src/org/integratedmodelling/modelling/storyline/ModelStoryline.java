@@ -1,7 +1,6 @@
 package org.integratedmodelling.modelling.storyline;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;

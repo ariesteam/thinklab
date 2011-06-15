@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.thinklab.commandline.commands;
 
-import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -45,23 +45,29 @@ import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 public class UserLister implements IListingProvider {
 
 	@Override
-	public Collection<String> getListing() throws ThinklabException {
+	public Collection<?> getListing() throws ThinklabException {
 		return AuthenticationManager.get().listUsers();
 	}
 
 	@Override
-	public void listItem(String username, PrintStream out) throws ThinklabException {
+	public Collection<?> getSpecificListing(String username) throws ThinklabException {
+
+		ArrayList<Object> ret = new ArrayList<Object>();
 
 		if (AuthenticationManager.get().haveUser(username)) {
 			Properties props = AuthenticationManager.get().getUserProperties(username);
-			out.println("properties for user " + username + ":");
+			ret.add("properties for user " + username + ":");
 			for (Object s : props.keySet()) {
-				out.println("  " + s + " = " + props.getProperty(s.toString()));				
+				ret.add("  " + s + " = " + props.getProperty(s.toString()));				
 			}
 		} else {
-			out.println("user " + username + " does not exist");			
+			ret.add("user " + username + " does not exist");			
 		}
+		return ret;
+	}
 
+	@Override
+	public void notifyParameter(String parameter, String value) {
 	}
 
 }

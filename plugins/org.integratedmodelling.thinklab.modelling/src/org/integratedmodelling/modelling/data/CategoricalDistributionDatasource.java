@@ -9,6 +9,7 @@ import org.integratedmodelling.corescience.implementations.datasources.IndexedCo
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.literals.IndexedCategoricalDistribution;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;

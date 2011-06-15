@@ -12,6 +12,7 @@ import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.restlet.Component;
 import org.restlet.data.Protocol;
+import org.restlet.resource.ServerResource;
 
 public class RESTManager {
 
@@ -19,16 +20,41 @@ public class RESTManager {
 
 	HashMap<Integer, Component> _components = 
 		new HashMap<Integer, Component>(); 
-
+	HashMap<String, RestCommand> _commands = 
+		new HashMap<String, RestCommand>(); 
 	/*
 	 * resource classes harvested from plugin code.
 	 */
-	HashMap<String, Class<?>> _resources =
-		new HashMap<String, Class<?>>();
+	HashMap<String, Class<? extends ServerResource>> _resources =
+		new HashMap<String, Class<? extends ServerResource>>();
 	
 	int sessionCount;
 	
+	HashMap<String, ISession> _sessions = 
+		new HashMap<String, ISession>();
+	
 	public static RESTManager _this = null;
+	
+	public static class RestCommand {
+
+		public String[] options;
+		public String[] arguments;
+		public String id;
+		public String description;
+		
+		public RestCommand(String path, String description, String argument,
+				String options) {
+			
+			this.id = path;
+			this.description = description;
+			this.options = options.isEmpty() ? null : options.split(",");
+			this.arguments = argument.isEmpty()? null : argument.split(",");
+		}
+
+		public Object asArray() {
+			return new Object[]{id, description, arguments, options};
+		}	
+	}
 	
 	/**
 	 * If query contains the ID of a valid user session, return the ISession 
@@ -37,9 +63,8 @@ public class RESTManager {
 	 * @param hashMap
 	 * @return
 	 */
-	public ISession getSessionForCommand(HashMap<String, String> hashMap) {
-		// TODO Auto-generated method stub
-		return null;
+	public ISession getSession(String id) {
+		return _sessions.get(id);
 	}
 	
 	public ISession initiateSession() {
@@ -58,12 +83,19 @@ public class RESTManager {
 		return _components;
 	}
 
-	public void registerService(String path, Class<?> handlerClass) {
+	public void registerService(String path, Class<? extends ServerResource> handlerClass, 
+			String description, String argument, String options) {
 
 		// TODO pass and store all further documentation.
 		_resources.put(path, handlerClass);
+		_commands.put(path, new RestCommand(path, description, argument, options));
+		
+		// update any existing servers
+		for (Component p : _components.values()) {
+			p.getInternalRouter().attach("/" + path, handlerClass);
+		}
 	}
-	
+		
 	/**
 	 * Start the server on specified port. Bound to "rest start" command.
 	 * 
@@ -79,8 +111,8 @@ public class RESTManager {
 		Component component = new Component();
 		
 		component.getServers().add(Protocol.HTTP, port);
-		component.getDefaultHost().attach("/rest", new RestApplication());
-
+		component.getDefaultHost().attach("/rest", new RESTApplication());
+		
 		/*
 		 * TODO attach all registered services
 		 */
@@ -121,11 +153,15 @@ public class RESTManager {
 			
 			@Override
 			protected IUserModel createUserModel() {
-				// TODO Auto-generated method stub
-				return new RESTUserModel(arguments, properties);
+				return new RESTUserModel(arguments, properties, this);
 			}
 			
 		};
+		
+		synchronized (_sessions) {
+			_sessions.put(ret.getSessionID(), ret);
+		}
+		
 		return ret;
 	}
 
@@ -133,7 +169,19 @@ public class RESTManager {
 		return _resources.keySet();
 	}
 
-	public Class<?> getResourceForPath(String path) {
+	public Class<? extends ServerResource> getResourceForPath(String path) {
 		return _resources.get(path);
+	}
+	
+	public Collection<RestCommand> getCommandDescriptors() {
+		return _commands.values();
+	}
+	
+	public RestCommand getCommandDescriptor(String id) {
+		return _commands.get(id);
+	}
+
+	public boolean allowPrivilegedLocalConnections() {
+		return false;
 	}
 }

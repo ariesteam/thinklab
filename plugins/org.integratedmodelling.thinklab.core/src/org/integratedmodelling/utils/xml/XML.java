@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.Pair;

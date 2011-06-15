@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabAuthenticationException;
@@ -46,6 +47,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabDuplicateUserException
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInvalidUserException;
 import org.integratedmodelling.thinklab.interfaces.IThinklabAuthenticationProvider;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
@@ -64,7 +67,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 	
 	Hashtable<String, Properties> userProperties = new Hashtable<String, Properties>();
 	HashMap<String, String> passwords = new HashMap<String, String>();
-	
+		
 	public boolean authenticateUser(String username, String password,
 			Properties userProperties)  throws ThinklabException {
 		
@@ -89,6 +92,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 			if (!haveUser(username))
 				throw new ThinklabInvalidUserException(username);	
 			obj = new Properties();
+			userProperties.put(username, obj);
 		}
 		
 		return obj;
@@ -137,7 +141,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 		 * there.
 		 */
 		File userfile = new File(
-				LocalConfiguration.getUserConfigDirectory(Thinklab.PLUGIN_ID) +
+				LocalConfiguration.getUserConfigDirectory() +
 				File.separator + 
 				"users.xml");
 		
@@ -228,4 +232,17 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 	public void saveUserProperties(String user) throws ThinklabException {
 	}
 
+	@Override
+	public IInstance getUserInstance(String user, ISession session) throws ThinklabException {
+		
+		IInstance ret = session.retrieveObject("user");
+		
+		if (ret == null) {
+			String role = getUserProperty(user, "role", "user:UnprivilegedUser");
+			ret = session.createObject("user", KnowledgeManager.getConcept(role));
+		}
+		
+		return ret;
+	}
+	
 }

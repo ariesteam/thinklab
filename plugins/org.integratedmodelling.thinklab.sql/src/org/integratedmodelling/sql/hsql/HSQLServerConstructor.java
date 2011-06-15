@@ -8,9 +8,6 @@ import java.util.Properties;
 
 import org.integratedmodelling.sql.SQLServer;
 import org.integratedmodelling.sql.SQLServerConstructor;
-import org.integratedmodelling.sql.hsql.HSQLFileServer;
-import org.integratedmodelling.sql.hsql.HSQLMemServer;
-import org.integratedmodelling.sql.hsql.HSQLServer;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 
 public class HSQLServerConstructor implements SQLServerConstructor {

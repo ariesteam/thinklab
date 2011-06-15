@@ -42,6 +42,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.IThinklabAuthenticationProvider;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 /**
  * The singleton authentication manager is an authentication provider that
@@ -206,6 +208,11 @@ public class AuthenticationManager implements IThinklabAuthenticationProvider {
 
 	@Override
 	public void initialize(Properties properties) throws ThinklabException {
+	}
+
+	@Override
+	public IInstance getUserInstance(String user, ISession session) throws ThinklabException {
+		return authManager == null ? null : authManager.getUserInstance(user, session);
 	}
 
 }

@@ -32,7 +32,6 @@
  **/
 package org.integratedmodelling.opal;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,13 +43,11 @@ import org.integratedmodelling.opal.profile.OPALProfile;
 import org.integratedmodelling.opal.profile.OPALProfileFactory;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.KeyValueMap;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
@@ -59,7 +56,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
-import org.xml.sax.SAXException;
 
 /**
  * Validator normalizes instances defined in an XML document into list representations, which are later 

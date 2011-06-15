@@ -47,7 +47,6 @@ import org.integratedmodelling.thinklab.interfaces.query.IQuery;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBoxCapabilities;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.MalformedListException;
 import org.integratedmodelling.utils.Polylist;
 

@@ -1,6 +1,9 @@
 package org.integratedmodelling.modelling;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
@@ -46,11 +49,12 @@ public class ModelMap {
 	 * boring node/edge types start. An OWL ontology would be simpler.
 	 * ---------------------------------------------------------------------
 	 */
-	
 	public abstract static class Entry {
 		
 		private boolean modified = false;
 		public long lastModification;
+		
+		public abstract void unlink();
 		
 		public void setDirty() {
 			modified = true;
@@ -165,8 +169,41 @@ public class ModelMap {
 		public String toString() {
 			return form.getId();
 		}
+
+		@Override
+		public void unlink() {
+			map.removeVertex(this);
+			ModelMap.dirty = true;
+		}	
 		
+		/**
+		 * get the list of forms that depend on this one.
+		 */
+		public DefaultDirectedGraph<IModelForm, DepEdge> getDependencies() {
+			
+			DefaultDirectedGraph<IModelForm, DepEdge> ret = 
+				new DefaultDirectedGraph<IModelForm, DepEdge>(DepEdge.class);
+			getDependenciesInternal(ret);
+			return ret;
+			
+		}
+
+		private void getDependenciesInternal(
+				DefaultDirectedGraph<IModelForm, DepEdge> mep) {
+
+			mep.addVertex(this.form);
+			for (DepEdge e : map.outgoingEdgesOf(this)) {
+				if (e instanceof DependsOnEdge) {
+					Entry ee = e.getTargetObservation();
+					if (ee instanceof FormObjectEntry) {
+						((FormObjectEntry)ee).getDependenciesInternal(mep);
+						mep.addEdge(this.form, ((FormObjectEntry)ee).form);
+					}
+				}
+			}
+		}
 	}
+	
 	public static class CodeFragmentEntry extends Entry {
 
 		public String source;
@@ -178,6 +215,12 @@ public class ModelMap {
 		@Override
 		public String toString() {
 			return "CF";// StringUtils.abbreviate(source, 8);
+		}
+
+		@Override
+		public void unlink() {
+			map.removeVertex(this);
+			ModelMap.dirty = true;
 		}
 	}
 	public static class ResourceEntry extends Entry {
@@ -193,6 +236,25 @@ public class ModelMap {
 		public String toString() {
 			return MiscUtilities.getNameFromURL(resource);
 		}
+		
+		@Override
+		public void unlink() {
+
+			ArrayList<Entry> el =  new ArrayList<ModelMap.Entry>();
+
+			for (DepEdge e : map.incomingEdgesOf(this)) {
+				if (e instanceof HasSourceEdge) {
+					el.add(e.getSourceObservation());
+				}
+			}
+			
+			for (Entry e : el)
+				e.unlink();
+			
+			map.removeVertex(this);
+			ModelMap.dirty = true;
+		}
+
 	}
 	public static class NamespaceEntry extends Entry {
 
@@ -205,15 +267,54 @@ public class ModelMap {
 			this.namespace = namespace;
 			this.lastModification = lastModification;
 		}
+		
+		@Override
+		public void unlink() {
+			
+			ArrayList<Entry> el =  new ArrayList<ModelMap.Entry>();
+			
+			for (DepEdge e : map.outgoingEdgesOf(this)) {
+				if (e instanceof HasResourceEdge) {
+					el.add(e.getTargetObservation());
+				}
+			}
+			
+			for (DepEdge e : map.incomingEdgesOf(this)) {
+				if (e instanceof HasNamespaceEdge) {
+					el.add(e.getSourceObservation());
+				}
+			}
+			
+			for (Entry e : el)
+				e.unlink();
+
+			map.removeVertex(this);
+			ModelMap.dirty = true;
+		}
+
+		public Collection<IModelForm> getAllModelObjects() {
+			ArrayList<IModelForm> ret = new ArrayList<IModelForm>();
+		
+			for (DepEdge e : map.incomingEdgesOf(this)) {
+				if (e instanceof HasNamespaceEdge) {
+					Entry ee = e.getSourceObservation();
+					if (ee instanceof FormObjectEntry) {
+						ret.add(((FormObjectEntry)ee).form);
+					}
+				}
+			}
+			
+			return ret;
+		}
 
 		// this is lazy also to avoid issues with the annotator
 		private synchronized HashMap<IConcept, IModel> getAllModels() {
 			
 			if (modelsByObservable == null) {
 				modelsByObservable = new HashMap<IConcept, IModel>();
-				for (DepEdge e : map.outgoingEdgesOf(this)) {
+				for (DepEdge e : map.incomingEdgesOf(this)) {
 					if (e instanceof HasNamespaceEdge) {
-						Entry ee = e.getTargetObservation();
+						Entry ee = e.getSourceObservation();
 						if (ee instanceof FormObjectEntry && 
 								((FormObjectEntry)ee).form instanceof IModel) {
 							IModel m = (IModel) ((FormObjectEntry)ee).form;
@@ -392,6 +493,7 @@ public class ModelMap {
 	public static Entry addForm(
 			IModelForm form, 
 			Entry source,
+			Entry nsEntry,
 			Entry ... dependsOn) 
 		throws ThinklabException {
 		
@@ -400,10 +502,13 @@ public class ModelMap {
 		Entry ret = new FormObjectEntry(form);
 		map.addVertex(ret);
 		map.addEdge(ret, source, new HasSourceEdge());
+		map.addEdge(ret, nsEntry, new HasNamespaceEdge());
 		
 		if (dependsOn != null)	
 			for (Entry dep : dependsOn) {
-				map.addEdge(ret, dep, new DependsOnEdge());
+				if (dep != null) {
+					map.addEdge(ret, dep, new DependsOnEdge());
+				}
 			}
 		
 		forms.put(form.getName(), ret);
@@ -482,6 +587,25 @@ public class ModelMap {
 		gviz.show();
 	}
 
+	public static String getSource(String object) throws ThinklabException {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		PrintStream ps = new PrintStream(os);
+		printSource(object, ps);
+		return os.toString();
+	}
+	
+	public static DefaultDirectedGraph<IModelForm, DepEdge> getDependencies(String object) 
+		throws ThinklabException {
+		
+		FormObjectEntry src = (FormObjectEntry) getFormObject(object);
+		if (src == null) {
+			throw new ThinklabResourceNotFoundException(
+					object + 
+					" does not identify a model, context, scenario or agent");
+		}
+		return src.getDependencies();
+	}
+	
 	public static void printSource(String object, PrintStream stream) throws ThinklabException {
 		
 		Entry src = getNamespace(object);
@@ -496,7 +620,7 @@ public class ModelMap {
 		
 		stream.println(src.getSource());
 	}
-
+	
 	public static long getNamespaceLastModification(String ns) {
 		NamespaceEntry nse = (NamespaceEntry) getNamespace(ns);
 		return nse.lastModification;
@@ -505,5 +629,29 @@ public class ModelMap {
 	public static IOntology getNamespaceOntology(String ns) {
 		NamespaceEntry nse = (NamespaceEntry) getNamespace(ns);
 		return nse.getOntology();
+	}
+
+	public static void releaseNamespace(NamespaceEntry ns) {
+		ns.unlink();
+	}
+
+	public static Collection<Entry> getNamespaces() {
+		return namespaces.values();
+	}
+	
+	public static Collection<IModelForm> listNamespace(String ns) {
+		NamespaceEntry nse = (NamespaceEntry) getNamespace(ns);
+		return nse.getAllModelObjects();
+	}
+
+	public static IModelForm getModelForm(String model) throws ThinklabException {
+
+		FormObjectEntry src = (FormObjectEntry) getFormObject(model);
+		if (src == null) {
+			throw new ThinklabResourceNotFoundException(
+					model + 
+					" does not identify a model, context, scenario or agent");
+		}
+		return src.form;
 	}
 }

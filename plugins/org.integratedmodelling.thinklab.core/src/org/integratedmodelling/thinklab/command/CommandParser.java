@@ -6,8 +6,6 @@ import java.util.List;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
-import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 

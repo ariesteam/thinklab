@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
-@RESTResourceHandler(path="/ucheck", description="")
+@RESTResourceHandler(id="/ucheck", description="")
 public class UnitCheck extends DefaultRESTHandler {
 
 	@Get

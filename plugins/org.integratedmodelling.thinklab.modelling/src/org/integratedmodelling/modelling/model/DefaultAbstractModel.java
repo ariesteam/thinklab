@@ -345,7 +345,6 @@ public abstract class DefaultAbstractModel implements IModel {
 		state = model.state;
 		mediatesExternal = model.mediatesExternal;
 		distribution = model.distribution;
-
 	}
 
 	/**

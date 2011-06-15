@@ -1,17 +1,31 @@
 package org.integratedmodelling.thinklab.rest;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
-import org.integratedmodelling.utils.NameGenerator;
+import org.integratedmodelling.utils.Escape;
+import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.Pair;
+import org.integratedmodelling.utils.Polylist;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.CharacterSet;
-import org.restlet.data.Method;
+import org.restlet.data.Form;
+import org.restlet.data.Parameter;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
@@ -38,11 +52,15 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	static public final int DOUBLES = 6;
 	static public final int TEXTS = 7;
 	static public final int URNS = 8;
+	 // this one means "you're on your own figuring it out" and is only used for internal
+	// hand-shaking commands where the result structure is known to the client.
+	static public final int OBJECT = 9;
+	static public final int LIST = 10;
 	
 	// codes for getStatus()
 	static public final int DONE = 0;
-	static public final int FAIL = 0;
-	static public final int WAIT = 0;
+	static public final int FAIL = 1;
+	static public final int WAIT = 2;
 
 	ArrayList<String> _context = new ArrayList<String>();
 	HashMap<String, String> _query = new HashMap<String, String>();
@@ -50,40 +68,145 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	Date start = null;
 	int resultStatus = DONE;
 	private ResultHolder rh = new ResultHolder();
+	
+	private ArrayList<Pair<String,String>> _downloads = 
+		new ArrayList<Pair<String,String>>();
 
+	String error = null, info = null, warn = null;
+	
 	boolean _processed = false;
+
+	static RESTTaskScheduler _scheduler = null;
+
 	
 	/**
-	 * The thread used to enqueue any non-instantaneous work.
+	 * Call this one to ensure that a restricted command is allowed for the
+	 * current user. The actual session user is checked against the requested
+	 * privilege. If RESTManager returns true to allowPrivilegedLocalConnection
+	 * (currently always false) any connection coming from localhost is allowed
+	 * privileged access.
 	 * 
-	 * @author Ferdinando
-	 *
+	 * @param concept the user role required for the command. Must resolve to a 
+	 *        valid concept.
+	 * @throws ThinklabException if the user is not allowed to run the command or 
+	 * 		   is undefined
 	 */
-	protected abstract class TaskThread extends Thread  {
-
-		private volatile boolean isException = false;
-		private String error = null;
+	protected boolean checkPrivileges(String concept) throws ThinklabException {
+	
+		String domain = getRequest().getResourceRef().getHostDomain();
+		boolean isLocal = 
+			(domain != null && (domain.equals("127.0.0.1") || domain.equals("localhost")));
 		
-		protected abstract void execute() throws Exception;
-		protected abstract void cleanup();
+		if (isLocal && RESTManager.get().allowPrivilegedLocalConnections())
+			return true;
 		
-		
-		@Override
-		public void run() {
-
-			try {
-				execute();
-			} catch (Exception e) {
-				error = e.getMessage();
-				isException = true;
-			} finally {
-				cleanup();
-			}
+		if (getSession() == null) {
+			fail("no user privileges for command");
+			return false;
 		}
 		
-		public boolean error() {
-			return isException;
+		IInstance user = getSession().getUserModel().getUserInstance();
+		if (user == null || !user.is(KnowledgeManager.getConcept(concept))) {
+			fail("not enough user privileges for command");
+			return false;
 		}
+		return true;
+	}
+	
+	protected static RESTTaskScheduler getScheduler() {
+		
+		if (_scheduler == null) {
+			int ntasks = 
+				Integer.parseInt(
+						Thinklab.get().getProperties().getProperty(
+								RESTTaskScheduler.N_TASKS_PROPERTY, "8"));
+			_scheduler = new RESTTaskScheduler(ntasks);
+			_scheduler.start();
+		}
+		return _scheduler;
+	}
+	
+	public Representation enqueue(final Thread thread) {
+		
+		getScheduler().enqueue(thread);
+		
+		JSONObject ret = new JSONObject();
+		try {
+			ret.put("taskid", thread.getId()+"");
+			ret.put("status", WAIT);
+		} catch (JSONException e) {
+			// come on
+		}
+		return new JsonRepresentation(ret);
+	}
+	
+	protected void addDownload(String handle, String filename) {
+		_downloads.add(new Pair<String, String>(filename, handle));
+	}
+
+	/**
+	 * Takes the session from the session parameter, which must be in all
+	 * commands that request a session.
+	 * 
+	 * @throws ThinklabInternalErrorException
+	 */
+	public ISession getSession() throws ThinklabException {
+
+		String id = getArgument("session");
+		if (id == null)
+			throw new ThinklabInternalErrorException("REST command did not specify required session ID");
+		
+		return RESTManager.get().getSession(id);
+	}
+	
+	/**
+	 * Return the file correspondent to the handle previously returned by 
+	 * getFileName() and supposedly uploaded by a client.
+	 * 
+	 * @param argument
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	protected File getFileForHandle(String handle, boolean mustExist) throws ThinklabException {
+
+		File ret = new File(Thinklab.get().getScratchPath() + File.separator + "rest/tmp" + 
+				File.separator + handle);
+
+		if (mustExist && !ret.exists())
+			throw new ThinklabResourceNotFoundException(handle);
+			
+		return ret;	
+	}
+	
+	/**
+	 * Return a file path and "handle" for a file that will be created and returned to the 
+	 * client to retrieve through receive(handle).
+
+	 * @param fileName the file the user wants us to create
+	 * @param session current session
+	 * @return pair<file, handle> - create file in File, return handle to client using 
+	 * 		   addDownload(handle, fileName)
+	 * @throws ThinklabException
+	 */
+	protected Pair<File,String> getFileName(String fileName, ISession session) throws ThinklabException {
+
+		Pair<File,String> ret = null;
+		String workspace = session.getSessionWorkspace();		
+		File sdir = new File(Thinklab.get().getScratchPath() + File.separator + "rest/tmp" + 
+					File.separator + workspace);
+		sdir.mkdirs();
+		
+		String ext = MiscUtilities.getFileExtension(fileName);
+		ext = (ext == null || ext.isEmpty()) ? ".tmp" : ("." + ext); 
+		try {
+			File out = File.createTempFile("upl", ext, sdir);
+			String handle = workspace + File.separator + MiscUtilities.getFileName(out.toString());
+			ret = new Pair<File, String>(out, handle);
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}
+		
+		return ret;
 	}
 	
 	/**
@@ -116,6 +239,16 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	public String getArgument(String id) throws ThinklabException {
 		return getArguments().get(id);
 	}
+
+	// only used in CheckWaiting for now - set the result object directly
+	protected void setResult(ResultHolder result) {
+		rh = result;
+	}
+	
+	protected void keepWaiting(String taskId) {
+		put("taskid", taskId);
+		resultStatus = WAIT;
+	}
 	
 	/**
 	 * Return the string correspondent to the MIME type that was selected by the URL
@@ -131,13 +264,14 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	
 	private void processRequest() {
 		
-		// TODO Auto-generated method stub
-		if (getRequest().getMethod().equals(Method.GET)) {
-			
-		}
+			Form form = getRequest().getResourceRef().getQueryAsForm();
+			for (Parameter parameter : form) {
+				_query.put(parameter.getName(), Escape.fromURL(parameter.getValue()));
+			}
+		
 		_processed = true;
 	}
-
+	
 	@Override
 	protected void doInit() throws ResourceException {
 		// TODO Auto-generated method stub
@@ -190,6 +324,13 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	 * @param o
 	 */
 	protected void put(String key, Object... o) {
+		rh.put(key, o);
+	}
+	
+	public void setResult(Object o) {
+		if (o instanceof Polylist)
+			rh.setList((Polylist)o);
+		rh.setResult(o);
 	}
 	
 	protected void setResult(int... iResult) {
@@ -211,26 +352,27 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	protected void fail() {
 		resultStatus = FAIL;
 	}
-	
-	/**
-	 * TODO pass a thread of a subclass that can be checked for finish, so we 
-	 * can rely on this uniformly.
-	 * 
-	 * Postpone result to next call. Sets task and returns taskId. If possible pass
-	 * a number of milliseconds before which it's not worth trying again. If not, pass
-	 * -1L to tell client that it's on its own figuring it out.
-	 * 
-	 * @return
-	 */
-	protected String postpone(long howLong) {
 
-		String taskId = NameGenerator.newName("task");
-		
-		resultStatus = WAIT;
-		
-		return taskId;
+	protected void fail(String message) {
+		resultStatus = FAIL;
+		error = message;
+	}
+
+	protected void fail(Throwable e) {
+		resultStatus = FAIL;
+		error = e.getMessage();
+		rh.put("exception-class", e.getClass().getCanonicalName());
+		rh.put("stack-trace", MiscUtilities.getStackTrace(e));
 	}
 	
+	protected void warn(String s) {
+		warn = s;
+	}
+
+	protected void info(String s) {
+		info = s;
+	}
+
 	/**
 	 * Return this if you have used any of the put() or setResult() functions. Will create and 
 	 * wrap a suitable JSON object automatically.
@@ -240,7 +382,35 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		
 		JSONObject jsonObject = new JSONObject();
 		rh.toJSON(jsonObject);
-	    JsonRepresentation jr = new JsonRepresentation(jsonObject);   
+
+		try {
+			
+			jsonObject.put("status", resultStatus);
+	
+			if (warn != null) {
+				jsonObject.put("warn", warn);
+			}
+			if (info != null) {
+				jsonObject.put("info", info);
+			}
+			if (error != null) {
+				jsonObject.put("error", error);
+			}
+			
+			if (_downloads.size() > 0) {
+				Object[] oj = new Object[_downloads.size()];
+				int i = 0;
+				for (Pair<String, String> dl : _downloads) {
+					oj[i++] = new String[]{dl.getFirst(), dl.getSecond()};
+				}
+				jsonObject.put("downloads", oj);
+			}
+			
+		} catch (JSONException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+		
+		JsonRepresentation jr = new JsonRepresentation(jsonObject);   
 	    jr.setCharacterSet(CharacterSet.UTF_8);
 	    return jr;
 	}

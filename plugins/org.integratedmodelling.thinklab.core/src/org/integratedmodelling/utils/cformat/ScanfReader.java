@@ -34,10 +34,9 @@
 
 package org.integratedmodelling.utils.cformat;
 
-import java.io.Reader;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.EOFException;
+import java.io.IOException;
+import java.io.Reader;
 
 /**
   * A Reader which implements C <code>scanf</code> functionality.

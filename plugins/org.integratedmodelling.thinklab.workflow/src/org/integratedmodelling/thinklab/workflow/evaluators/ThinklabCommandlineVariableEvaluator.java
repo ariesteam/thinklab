@@ -32,12 +32,9 @@
  **/
 package org.integratedmodelling.thinklab.workflow.evaluators;
 
-import java.util.Collection;
 import java.util.Map;
 
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.exception.ThinklabException;

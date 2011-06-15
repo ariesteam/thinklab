@@ -29,6 +29,7 @@ import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationCache;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.agents.ThinkAgent;
+import org.integratedmodelling.modelling.annotation.Annotation;
 import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IModelForm;
@@ -40,6 +41,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
@@ -81,16 +83,140 @@ public class ModelFactory {
 	public Hashtable<String, Scenario> scenariosById = new Hashtable<String, Scenario>();
 	public Hashtable<String, Context> contextsById = new Hashtable<String, Context>();
 	public Hashtable<String, ThinkAgent> agentsById = new Hashtable<String, ThinkAgent>();
+	public Hashtable<String, Annotation> annotationsById = new Hashtable<String, Annotation>();
 
 	// relevant properties from ontology
 	public static final String RETAINS_STATES  = "modeltypes:retainsState";
 	public static final String REQUIRES_STATES = "modeltypes:requiresState";
 	
-	
 	// used only during registration to recognize what was built by the last code
 	// evaluated.
 	public IModelForm lastRegistered = null;
 
+	class FormNotifier implements FormListener {
+
+		String namespace = null;
+		ModelMap.Entry previousFragment = null;
+		ModelMap.Entry resource = null;
+		ModelMap.NamespaceEntry nsentry = null;
+		private String resourceId;
+		private ClojureInterpreter intp;
+		String nsret = null;
+		private long lmo;
+		
+		public FormNotifier(String resourceId, ClojureInterpreter intp, long lmo) {
+			this.resourceId = resourceId;
+			this.intp = intp;
+			this.lmo = lmo;
+		}
+
+		String checkNamespace(String code) {
+			
+			String ret = null;
+			String pattern = ".*\\(ns ([a-z\\-\\_\\.]+)\\s*.*";
+			Pattern p = Pattern.compile(pattern);
+			Matcher m = p.matcher(code.trim());
+			if (m.find()) {
+				ret = code.substring(m.start(1), m.end(1));
+			}
+			return ret;
+		}
+		
+		@Override
+		public void onFormRead(String s) throws ThinklabException {
+
+			s = s.trim();
+			
+			boolean wasunk = false;
+			
+			/*
+			 * get entry for resource
+			 */
+			if (resource == null) {
+				resource = ModelMap.addResource(resourceId, lmo);
+			}					
+
+			if (namespace == null) {
+				namespace = checkNamespace(s);
+				if (namespace != null) {
+					intp.eval(s);	
+					wasunk = true;
+					nsentry = 
+						(NamespaceEntry) ModelMap.addNamespace(namespace, resource);
+					nsret = namespace;
+				}
+			}
+			
+			/*
+			 * create source node and add to source map
+			 */
+			ModelMap.Entry codeFrag = ModelMap.addSource(s, resource, previousFragment);
+			previousFragment = codeFrag;
+
+			/*
+			 * if namespace is still null or this code chunk defined it,
+			 * there was nothing else here we care about.
+			 */
+			if (wasunk || namespace == null)
+				return;
+			
+			IModelForm prev = lastRegistered;
+			IModelForm toRegister = null;
+			
+			/*
+			 * eval form in given namespace. This may change lastRegistered
+			 * and the associated ontology if a (namespace-ontology) form is
+			 * encountered.
+			 */
+			Object ret = intp.eval("(in-ns '"  + namespace + ")\n" + s);
+			
+			if (ret instanceof NamespaceOntology) {
+				nsentry.defineOntology((NamespaceOntology)ret);
+			}
+			
+			String newName = 
+				lastRegistered == null ? 
+					null : 
+					lastRegistered.getName();
+			
+			if (prev == null && newName != null || 
+				(prev != null && newName != null && 
+					!prev.getName().equals(newName))) {
+				/*
+				 * code has produced new model object, need to register it
+				 */
+				toRegister = lastRegistered;
+			}
+			
+			if (toRegister != null) {
+			
+				/*
+				 * if it's a model, check dependencies and add
+				 * dependency statements
+				 */
+				ModelMap.Entry[] deps = null;
+				if (toRegister instanceof IModel) {
+					
+					int i = 0;
+					Collection<IModel> deeps = ((IModel)toRegister).getDependencies();
+					if (deeps.size() > 0) {
+						deps = new ModelMap.Entry[deeps.size()];
+						for (IModel dep : deeps) {
+							deps[i++] = ModelMap.getFormObject(dep.getName());
+						}
+					}
+				}
+				
+				ModelMap.addForm(toRegister, codeFrag, nsentry, deps);
+
+			}
+		}
+
+		public String getNamespace() {
+			return nsret;
+		}
+	}
+	
 	class ContextualizingModelResult implements IQueryResult {
 
 		IQueryResult mres = null;
@@ -236,7 +362,6 @@ public class ModelFactory {
 		
 		modelsById.put(name, model);
 		model.setName(name);
-		ModellingPlugin.get().logger().info("model " + model + " registered as " + name);
 		lastRegistered = model;
 		return model;
 	}
@@ -248,7 +373,6 @@ public class ModelFactory {
 		
 		model.setName(name);
 		scenariosById.put(model.getName(), model);
-		ModellingPlugin.get().logger().info("scenario " + model + " registered");
 		lastRegistered = model;
 		return model;
 	}
@@ -260,7 +384,6 @@ public class ModelFactory {
 		
 		model.setName(name);
 		contextsById.put(model.getName(), model);
-		ModellingPlugin.get().logger().info("context " + model + " registered");
 		lastRegistered = model;
 		return model;
 	}
@@ -274,9 +397,33 @@ public class ModelFactory {
 		// FIXME same ID and name
 		model.setName(name);
 		agentsById.put(model.getName(), model);
-		ModellingPlugin.get().logger().info("scenario " + model + " registered");
 		lastRegistered = model;
 		return model;
+	}
+	
+	/*
+	 * called by the defagent macro. Creates a prototype agent that we will use to
+	 * cloned agents from.
+	 */
+	public Annotation registerAnnotation(Annotation model, String name) throws ThinklabException {
+		
+		model.setName(name);
+		annotationsById.put(model.getName(), model);
+		lastRegistered = model;
+		return model;
+	}
+	
+	public Annotation retrieveAnnotation(String s) {
+		return annotationsById.get(s);
+	}
+
+	public Annotation requireAnnotation(String s) throws ThinklabException {
+
+		Annotation ret = retrieveAnnotation(s);
+		if (ret == null)
+			throw new ThinklabResourceNotFoundException("no annotation found for "
+					+ s);
+		return ret;
 	}
 	
 	public Model retrieveModel(String s) {
@@ -339,6 +486,26 @@ public class ModelFactory {
 		}
 		
 		return ret;
+	}
+	
+	public synchronized void releaseNamespace(String namespace) {
+		
+		NamespaceEntry ns = (NamespaceEntry) ModelMap.getNamespace(namespace);
+		for (IModelForm m : ns.getAllModelObjects()) {
+			
+			if (m instanceof IModel) {
+				modelsById.remove(m.getId());
+			} else if (m instanceof Scenario) {
+				scenariosById.remove(m.getId());
+			} else if (m instanceof ThinkAgent) {
+				agentsById.remove(m.getId());
+			} else if (m instanceof Annotation) {
+				annotationsById.remove(m.getId());
+			}
+		}
+		ModelMap.releaseNamespace(ns);
+		
+		ModellingPlugin.get().logger().info("namespace " + namespace + " released");
 	}
 	
 	/**
@@ -503,7 +670,17 @@ public class ModelFactory {
 		return ret;
 	}
 	
-	public void loadModelFiles(File dir) throws ThinklabException {
+	/**
+	 * Load models or other constructs by parsing the clojure files in the passed dir.
+	 * Return all the namespaces defined.
+	 * 
+	 * @param dir
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public Collection<String> loadModelFiles(File dir) throws ThinklabException {
+
+		ArrayList<String> ret = new ArrayList<String>();
 		
 		/*
 		 * load all recognized model files 
@@ -512,13 +689,18 @@ public class ModelFactory {
 			if (f.isDirectory()) {
 				loadModelFiles(f);
 			} else if (f.toString().endsWith(".clj")) {
-				loadModelFile(f.toString());
+				
+				String namespace = loadModelFile(f.toString());
+				if (namespace == null) {
+					throw new ThinklabValidationException("file " + f + " does not define a namespace");
+				}
+				
+				ModellingPlugin.get().logger().info("model namespace " + namespace + " registered");
+				ret.add(namespace);
 			}
 		}
-	}
-
-	public void loadStorylines(File dir) {
 		
+		return ret;
 	}
 	
 	
@@ -528,9 +710,10 @@ public class ModelFactory {
 	 * the source can be reconstructed exactly.
 	 *  
 	 * @param resourceId
+	 * @return the namespace defined
 	 * @throws ThinklabIOException 
 	 */
-	public void loadModelFile(final String resourceId) throws ThinklabException {
+	public String loadModelFile(final String resourceId) throws ThinklabException {
 		
 		ModellingPlugin.get().logger().info("model subsystem reading " + resourceId);
 		
@@ -538,6 +721,7 @@ public class ModelFactory {
 		final long lmo = MiscUtilities.getLastModificationForResource(resourceId);
 		FormReader f;
 		lastRegistered = null;
+		final String nsret;
 		
 		/*
 		 * create entry for resource in source map
@@ -546,122 +730,19 @@ public class ModelFactory {
 		try {
 
 			final ClojureInterpreter intp = new ClojureInterpreter();
-			
+			FormNotifier fn = new FormNotifier(resourceId, intp, lmo);
 			f = new FormReader(rurl.openStream());
-			f.read(new FormListener() {
-
-				String namespace = null;
-				ModelMap.Entry previousFragment = null;
-				ModelMap.Entry resource = null;
-				ModelMap.NamespaceEntry nsentry = null;
-				
-				String checkNamespace(String code) {
-					
-					String ret = null;
-					String pattern = ".*\\(ns ([a-z\\-\\_\\.]+)\\s*.*";
-					Pattern p = Pattern.compile(pattern);
-					Matcher m = p.matcher(code.trim());
-					if (m.find()) {
-						ret = code.substring(m.start(1), m.end(1));
-					}
-					return ret;
-				}
-				
-				@Override
-				public void onFormRead(String s) throws ThinklabException {
-
-					s = s.trim();
-					
-					boolean wasunk = false;
-					
-					/*
-					 * get entry for resource
-					 */
-					if (resource == null) {
-						resource = ModelMap.addResource(resourceId, lmo);
-					}					
-
-					if (namespace == null) {
-						namespace = checkNamespace(s);
-						if (namespace != null) {
-							intp.eval(s);	
-							wasunk = true;
-							nsentry = 
-								(NamespaceEntry) ModelMap.addNamespace(namespace, resource);
-						}
-					}
-					
-					/*
-					 * create source node and add to source map
-					 */
-					ModelMap.Entry codeFrag = ModelMap.addSource(s, resource, previousFragment);
-					previousFragment = codeFrag;
-
-					/*
-					 * if namespace is still null or this code chunk defined it,
-					 * there was nothing else here we care about.
-					 */
-					if (wasunk || namespace == null)
-						return;
-					
-					IModelForm prev = lastRegistered;
-					IModelForm toRegister = null;
-					
-					/*
-					 * eval form in given namespace. This may change lastRegistered
-					 * and the associated ontology if a (namespace-ontology) form is
-					 * encountered.
-					 */
-					Object ret = intp.eval("(in-ns '"  + namespace + ")\n" + s);
-					
-					if (ret instanceof NamespaceOntology) {
-						nsentry.defineOntology((NamespaceOntology)ret);
-					}
-					
-					String newName = 
-						lastRegistered == null ? 
-							null : 
-							lastRegistered.getName();
-					
-					if (prev == null && newName != null || 
-						(prev != null && newName != null && 
-							!prev.getName().equals(newName))) {
-						/*
-						 * code has produced new model object, need to register it
-						 */
-						toRegister = lastRegistered;
-					}
-					
-					if (toRegister != null) {
-					
-						/*
-						 * if it's a model, check dependencies and add
-						 * dependency statements
-						 */
-						ModelMap.Entry[] deps = null;
-						if (toRegister instanceof IModel) {
-							
-							int i = 0;
-							Collection<IModel> deeps = ((IModel)toRegister).getDependencies();
-							if (deeps.size() > 0) {
-								deps = new ModelMap.Entry[deeps.size()];
-								for (IModel dep : deeps) {
-									deps[i++] = ModelMap.getFormObject(dep.getName());
-								}
-							}
-						}
-						
-						ModelMap.addForm(toRegister, codeFrag, deps);
-
-					}
-				}
-			});
+			f.read(fn);
+			nsret = fn.getNamespace();
+			
 		} catch (IOException e) {
 			throw new ThinklabIOException(e);
 		}
 		
 		
 		f.close();
+		
+		return nsret;
 	}
 	
 	

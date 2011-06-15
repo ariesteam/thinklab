@@ -64,6 +64,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.owlapi.Session;
 
@@ -115,6 +116,12 @@ public class GraphicalShell {
 				properties = new Properties();
 			
 			return properties;
+		}
+
+		@Override
+		public IInstance getUserInstance() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 	}

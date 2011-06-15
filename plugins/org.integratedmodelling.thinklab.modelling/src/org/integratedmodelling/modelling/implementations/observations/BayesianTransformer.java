@@ -21,7 +21,6 @@ import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
-import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;

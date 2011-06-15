@@ -8,7 +8,6 @@ import java.util.Properties;
 
 import org.integratedmodelling.sql.SQLServer;
 import org.integratedmodelling.sql.SQLServerConstructor;
-import org.integratedmodelling.sql.postgres.PostgreSQLServer;
 import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 
 public class PostgresSQLServerConstructor implements SQLServerConstructor {

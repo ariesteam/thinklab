@@ -1,6 +1,9 @@
 package org.integratedmodelling.geospace.kmeans;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Basic implementation of K-means clustering.  Since it's a Runnable, it's 

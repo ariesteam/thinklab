@@ -42,7 +42,6 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ShapeExtent;
 import org.integratedmodelling.geospace.interfaces.IGeolocatedObject;
 import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;

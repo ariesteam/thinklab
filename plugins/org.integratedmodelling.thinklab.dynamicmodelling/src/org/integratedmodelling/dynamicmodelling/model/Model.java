@@ -32,9 +32,10 @@
  **/
 package org.integratedmodelling.dynamicmodelling.model;
 
-import edu.uci.ics.jung.graph.impl.DirectedSparseGraph;
-import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Vector;
+
+import edu.uci.ics.jung.graph.impl.DirectedSparseGraph;
 
 public class Model extends DirectedSparseGraph {
 	

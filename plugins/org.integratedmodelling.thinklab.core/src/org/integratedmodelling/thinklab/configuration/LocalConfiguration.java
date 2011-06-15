@@ -254,7 +254,10 @@ public class LocalConfiguration {
 		
 		for (File f : userConfigPath.listFiles()) {
 			if (f.isFile() && MiscUtilities.getFileName(f.toString()).startsWith("."))
-				ret.add(f.toString());
+				
+				// TODO add other system files
+				if (!MiscUtilities.getFileName(f.toString()).equals(".history"))
+					ret.add(f.toString());
 		}
 		
 		return ret;

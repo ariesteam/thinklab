@@ -1,7 +1,8 @@
 package org.integratedmodelling.modelling.commands;
 
-import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.modelling.ModelMap;
+import org.integratedmodelling.modelling.annotation.OPALAnnotationImporter;
+import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.InteractiveCommandHandler;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -37,12 +38,26 @@ public class ModellingSubsystemCommand extends InteractiveCommandHandler {
 			
 		} else if (action.equals("import")) {
 			
+			String s = command.getArgumentAsString("arg0");
+			
+			/*
+			 * 2nd arg decides what to import from where
+			 * TODO modularize this
+			 */
+			if (s.equals("opal")) {
+				/*
+				 * import annotations from XML
+				 */
+				OPALAnnotationImporter.importAnnotations(
+						command.getArgumentAsString("arg1"), command.getArgumentAsString("arg2"));
+			}
+			
 		} else if (action.equals("sync")) {
 			
-		} else if (action.equals("test")) {
+		} else if (action.equals("release")) {
 			
-			Unit u = new Unit("m^-2");
-			System.out.println(u.getUnit().inverse());
+			String s = command.getArgumentAsString("arg0");
+			ModelFactory.get().releaseNamespace(s);
 			
 		}
 		

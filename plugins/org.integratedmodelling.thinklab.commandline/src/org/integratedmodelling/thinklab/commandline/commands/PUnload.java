@@ -3,11 +3,9 @@ package org.integratedmodelling.thinklab.commandline.commands;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.commandline.CommandLine;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.java.plugin.PluginLifecycleException;
 
 /**
  * Just activate the named plugin.

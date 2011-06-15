@@ -37,6 +37,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
+import java.util.List;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -183,5 +184,17 @@ public interface IKnowledgeRepository {
 	 * @throws ThinklabException 
 	 */
 	public abstract IConcept checkSelfAnnotation(String conc) throws ThinklabException;
+
+	/**
+	 * Return all concepts whose parent is the root concept (e.g. owl:Thing).
+	 * 
+	 * @return
+	 */
+	public abstract List<IConcept> getAllRootConcepts();
+
+	/**
+	 * 
+	 */
+	public abstract List<IConcept> getAllConcepts();
 
 }

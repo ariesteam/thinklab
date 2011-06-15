@@ -8,6 +8,7 @@ import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -20,7 +21,6 @@ import org.integratedmodelling.modelling.interfaces.IPresentation;
 import org.integratedmodelling.modelling.storyline.Storyline;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.eclipse.swt.custom.CLabel;
 
 public class TemplateEditor extends ApplicationWindow implements IPresentation {
 

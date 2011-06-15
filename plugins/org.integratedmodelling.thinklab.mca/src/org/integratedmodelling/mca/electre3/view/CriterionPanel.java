@@ -8,6 +8,7 @@ package org.integratedmodelling.mca.electre3.view;
 
 import java.awt.Color;
 import java.text.NumberFormat;
+
 import javax.swing.table.DefaultTableModel;
 
 import org.integratedmodelling.mca.electre3.model.Criterion;

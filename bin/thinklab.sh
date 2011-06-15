@@ -44,19 +44,66 @@ if [ ! -x "$JAVACMD" ] ; then
 fi
 
 if [ -z "$THINKLAB_INST" ] ; then
-  THINKLAB_INST=$THINKLAB_HOME
+  export THINKLAB_INST=$THINKLAB_HOME
 fi
 
-cd $THINKLAB_HOME
+THINKLAB_CMD="$JAVACMD $JAVA_OPTS -Djava.library.path=$THINKLAB_INST/plugins/org.integratedmodelling.thinklab.riskwiz/common -Djpf.boot.config=$THINKLAB_INST/boot.properties -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH -Dthinklab.plugins=$THINKLAB_PLUGINS -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_INST/lib/endorsed -jar $THINKLAB_INST/lib/im-boot.jar org.java.plugin.boot.Boot"
 
-THINKLAB_CMD="$JAVACMD $JAVA_OPTS -Djava.library.path=$THINKLAB_HOME/plugins/org.integratedmodelling.thinklab.riskwiz/common -Djpf.boot.config=$THINKLAB_HOME/boot.properties -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH -Dthinklab.plugins=$THINKLAB_PLUGINS -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_HOME/lib/endorsed -jar $THINKLAB_HOME/lib/im-boot.jar org.java.plugin.boot.Boot"
+while true; do
 
-if [ "$1" = "start" ] ; then
   cd $THINKLAB_INST
-  mkdir -p $THINKLAB_INST/var/log
-  sh -c "exec $THINKLAB_CMD $@ $THINKLAB_ARGS >> $THINKLAB_INST/var/log/thinklab.out 2>&1"
-else
-  exec $THINKLAB_CMD $@ $THINKLAB_ARGS
-fi
+
+#  if [ "$1" = "start" ] ; then
+#    cd $THINKLAB_INST
+#    mkdir -p $THINKLAB_INST/var/log
+#    sh -c "exec $THINKLAB_CMD $@ $THINKLAB_ARGS >> $THINKLAB_INST/var/log/thinklab.out 2>&1"
+#  else
+    $THINKLAB_CMD $@ $THINKLAB_ARGS
+#  fi
+
+  # just checking
+  echo "Thinklab exited" 
+
+  # just checking
+  echo "Thinklab exited" 
+
+  # 
+  # check if shutdown service has inserted hooks for us to run
+  #
+  if [ -d $THINKLAB_INST/tmp/hooks ] ; then
+    shopt -s nullglob
+    for i in $THINKLAB_INST/tmp/hooks/*
+    do
+      echo "executing shutdown hook $i"
+  	  . $i
+    done
+    rm -f $THINKLAB_INST/tmp/hooks/*
+  fi
+
+  #
+  # these may have been set by hooks
+  #
+  if [ -n "$THINKLAB_UPGRADE_BRANCH" ] ; then
+	cd $HOME/thinklab/thinklab
+	git checkout $1
+	git pull
+	ant build install
+	cd $HOME/thinklab/aries
+	git checkout $1
+	git pull
+	ant build install
+	unset THINKLAB_UPGRADE_BRANCH
+  fi
+
+  #
+  # exit loop unless THINKLAB_RESTART was defined by a hook
+  #
+  if [ -z "$THINKLAB_RESTART" ] ; then
+	break
+  fi
+
+  unset THINKLAB_RESTART
+  
+done
 
 cd $CWD

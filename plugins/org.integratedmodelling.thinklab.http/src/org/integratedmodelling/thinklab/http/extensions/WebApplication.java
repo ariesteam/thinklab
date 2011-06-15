@@ -1,6 +1,8 @@
 package org.integratedmodelling.thinklab.http.extensions;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * This one is used on classes implementing ITask to define the namespace that the correspondent

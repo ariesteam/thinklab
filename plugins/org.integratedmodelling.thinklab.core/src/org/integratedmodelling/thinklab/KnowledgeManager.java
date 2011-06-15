@@ -199,14 +199,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
      */
 	private boolean typesInitialized = false;
 
-//	@Deprecated
-//	private HashMap<String, InstanceImplementationConstructor> instanceConstructors =
-//		new HashMap<String, InstanceImplementationConstructor>();
-//
-//	@Deprecated
-//	private HashMap<String, LiteralValidator> literalValidators =
-//		new HashMap<String, LiteralValidator>();
-//
 	@Deprecated
 	private HashMap<String, KnowledgeLoader> knowledgeLoaders =
 		new HashMap<String, KnowledgeLoader>();
@@ -236,6 +228,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
         /* create stuff */
         this.knowledgeRepository = kr;
 		this.sessionManager  = ki;
+		
 	}
 	
 	/**
@@ -591,7 +584,9 @@ public class KnowledgeManager implements IKnowledgeProvider {
         			DEFAULT_CORE_ONTOLOGY);
 
         	URL tco = Thinklab.get().getResourceURL(cont);  	
+        	URL tcu = Thinklab.get().getResourceURL("user.owl");  	
             knowledgeRepository.refreshOntology(tco, MiscUtilities.getNameFromURL(cont), true);
+            knowledgeRepository.refreshOntology(tcu, "user", true);
         
         /* initialize types before we register plugins */
         initializeThinklabTypes();

@@ -1,10 +1,14 @@
 package org.integratedmodelling.utils.image.processing ;
 
-import java.lang.* ;
-import java.io.* ;
-import java.awt.* ;
-import java.awt.image.* ;
-import java.util.* ;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * Binary mask of a region/object<br>

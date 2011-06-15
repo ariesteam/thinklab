@@ -32,14 +32,6 @@ public class SerialTaskScheduler extends TaskScheduler {
 		
 		_queue.clear();
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.utils.exec.ITaskScheduler#stop()
-	 */
-	@Override
-	public void stop() {
-		_stopped = true;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.utils.exec.ITaskScheduler#idle()

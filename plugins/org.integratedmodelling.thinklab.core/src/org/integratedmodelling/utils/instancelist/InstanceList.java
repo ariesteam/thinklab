@@ -38,9 +38,6 @@ import java.util.Collection;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
@@ -82,6 +79,13 @@ public class InstanceList {
 		return KnowledgeManager.get().requireConcept(ss[0]);
 	}
 
+	public String getId() throws ThinklabException {
+		String s = array[0].toString();
+		String[] ss = s.split("#");		
+		return ss.length > 1 ? ss[1] : null;
+	}
+
+	
 	public String getLabel() {
 		
 		String ret = null;

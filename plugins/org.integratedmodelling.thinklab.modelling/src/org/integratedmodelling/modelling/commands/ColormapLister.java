@@ -1,6 +1,5 @@
 package org.integratedmodelling.modelling.commands;
 
-import java.io.PrintStream;
 import java.util.Collection;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -12,13 +11,20 @@ import org.integratedmodelling.utils.image.ColorMap;
 public class ColormapLister implements IListingProvider {
 
 	@Override
-	public Collection<String> getListing() throws ThinklabException {
+	public Collection<?> getListing() throws ThinklabException {
 		return ColorMap.paletteNames;
 	}
 
 	@Override
-	public void listItem(String item, PrintStream out) throws ThinklabException {
+	public Collection<?> getSpecificListing(String item) throws ThinklabException {
 		// TODO implement listing of single colormap
+		return null;
+	}
+
+	@Override
+	public void notifyParameter(String parameter, String value) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

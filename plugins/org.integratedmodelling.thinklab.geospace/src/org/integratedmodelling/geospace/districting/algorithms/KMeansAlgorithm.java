@@ -32,14 +32,13 @@
  **/
 package org.integratedmodelling.geospace.districting.algorithms;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.geospace.districting.interfaces.IDistrictingAlgorithm;
-import org.integratedmodelling.geospace.districting.utils.DistrictingResults;
-
-import java.util.Random;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.lang.Math;
+import java.util.Random;
+
+import org.integratedmodelling.geospace.districting.interfaces.IDistrictingAlgorithm;
+import org.integratedmodelling.geospace.districting.utils.DistrictingResults;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 
 public class KMeansAlgorithm implements IDistrictingAlgorithm
 {

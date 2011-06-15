@@ -34,7 +34,9 @@
 
 package org.integratedmodelling.utils.cformat;
 
-import java.io.*;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
 
 /**
   * Writer class to output primitive types using C <code>printf</code> style

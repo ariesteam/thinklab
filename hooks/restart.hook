@@ -1,0 +1,3 @@
+# script to force update, install and restart with specified git branch
+export THINKLAB_RESTART=true
+echo Server restart scheduled

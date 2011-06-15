@@ -7,6 +7,7 @@
 package org.integratedmodelling.mca.electre3.view;
 
 import java.awt.Color;
+
 import javax.swing.JOptionPane;
 
 import org.integratedmodelling.mca.electre3.model.Criterion;

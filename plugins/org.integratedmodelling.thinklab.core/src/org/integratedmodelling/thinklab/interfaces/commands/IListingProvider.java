@@ -1,6 +1,5 @@
 package org.integratedmodelling.thinklab.interfaces.commands;
 
-import java.io.PrintStream;
 import java.util.Collection;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -22,15 +21,25 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 public interface IListingProvider {
 	
 	/**
+	 * If list command is specifying parameters, 
+	 * @param parameter
+	 * @param value
+	 */
+	public void notifyParameter(String parameter, String value);
+	
+	/**
+	 * Respond to the plural form of the list object, if any. Objects returned are
+	 * supposed to be printable, although they may have different roles too.
 	 * 
 	 * @return
 	 */
-	public Collection<String> getListing() throws ThinklabException;
+	public Collection<?> getListing() throws ThinklabException;
 	
 	/**
+	 * Respond to the singular form of the list object, if any. Return type as per
+	 * getListing().
 	 * 
 	 * @param item
-	 * @param out
 	 */
-	public void listItem(String item, PrintStream out) throws ThinklabException;
+	public Collection<?> getSpecificListing(String item) throws ThinklabException;
 }

@@ -1,15 +1,27 @@
 package org.integratedmodelling.thinklab;
 
+import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.thinklab.project.ThinklabProject;
+import org.integratedmodelling.thinklab.project.ThinklabProjectInstaller;
+import org.integratedmodelling.utils.Escape;
+import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.template.MVELTemplate;
+import org.java.plugin.Plugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.PluginDescriptor;
+import org.restlet.service.MetadataService;
 
 /**
  * Activating this plugin means loading the knowledge manager, effectively initializing the
@@ -27,6 +39,10 @@ public class Thinklab extends ThinklabPlugin {
 	}
 	
 	KnowledgeManager _km = null;
+	private HashMap<String, Class<?>> _projectLoaders = 
+		new HashMap<String, Class<?>>();
+
+	private MetadataService _metadataService;
 
 	// only for this plugin, very ugly, but we need to access logging etc. before doStart() has
 	// finished and the plugin has been published.
@@ -55,6 +71,44 @@ public class Thinklab extends ThinklabPlugin {
 			_km = new KnowledgeManager();
 			_km.setPluginManager(getManager());
 			_km.initialize();
+		}
+		
+		/*
+		 * install listener to handle non-code Thinklab projects
+		 */
+		getManager().registerListener(new ThinklabProjectInstaller());
+		
+		/*
+		 * scan all plugins and initialize thinklab projects from them if they
+		 * have the thinklab admin directories
+		 */
+		for (PluginDescriptor pd : getManager().getRegistry().getPluginDescriptors()) {
+			
+			String lf = 
+				Escape.fromURL(new File(pd.getLocation().getFile()).getAbsolutePath());
+			File ploc = MiscUtilities.getPath(lf);
+			
+			File loc = 
+				new File(
+						ploc +
+						File.separator +
+						"THINKLAB-INF" +
+						File.separator +
+						"thinklab.properties");
+		
+			if (loc.exists()) {
+			
+				/*
+				 * install project wrapper in global register
+				 */
+				try {
+					ThinklabProject.addProject(ploc);
+				} catch (ThinklabException e) {
+					throw new ThinklabRuntimeException(e);
+				}
+			
+				Thinklab.get().logger().info("thinklab project " + pd.getId() + " registered");
+			}
 		}
 
 	}
@@ -151,4 +205,80 @@ public class Thinklab extends ThinklabPlugin {
 		return session.getVariable(ISession.DEBUG) != null;
 	}
 
+	public MetadataService getMetadataService() throws ThinklabException {
+		
+		if (this._metadataService == null) {
+			this._metadataService = new MetadataService();
+			try {
+				this._metadataService.start();
+			} catch (Exception e) {
+				throw new ThinklabInternalErrorException(e);
+			}
+		}
+		return _metadataService;
+	}
+
+	public void shutdown(String hook, final int seconds, Map<String, String> params) throws ThinklabException {
+
+		
+		String inst = System.getenv("THINKLAB_INST");
+		String home = System.getenv("THINKLAB_HOME");
+		
+		if (hook != null) {
+						
+			if (inst == null || home == null) {
+				throw new ThinklabRuntimeException(
+						"can't use the hook system: thinklab home and/or installation directories not defined");
+			}
+			
+			File hdest = 
+				new File(inst + File.separator + "tmp" + File.separator + "hooks");
+			File hsour = new File(home + File.separator + "hooks" + File.separator + hook + ".hook");
+			
+			if (!hsour.exists()) {
+				throw new ThinklabRuntimeException(
+					"shutdown hook " + hook + " not installed");				
+			}
+			
+			hdest.mkdirs();
+			hdest = new File(hdest + File.separator + hook);
+			
+			MVELTemplate tmpl = new MVELTemplate(hsour);
+			tmpl.write(hdest, params);
+		}
+		
+		/*
+		 * schedule shutdown
+		 */
+		new Thread() {
+			
+			@Override
+			public void run() {
+			
+				int status = 0;
+				try {
+					sleep(seconds * 1000);
+				} catch (InterruptedException e) {
+					status = 255;
+				}
+				getManager().shutdown();
+				System.exit(status);
+				
+			}
+		}.start();
+	}
+
+	public static File getPluginLoadDirectory(Plugin plugin) {
+
+		String lf = new File(plugin.getDescriptor().getLocation().getFile()).getAbsolutePath();
+		return new File(Escape.fromURL(MiscUtilities.getPath(lf).toString()));
+	}
+
+	public void registerProjectLoader(String folder, Class<?> cls) {
+		_projectLoaders.put(folder, cls);
+	}
+	
+	public Class<?> getProjectLoader(String folder) {
+		return _projectLoaders.get(folder);
+	}
 }

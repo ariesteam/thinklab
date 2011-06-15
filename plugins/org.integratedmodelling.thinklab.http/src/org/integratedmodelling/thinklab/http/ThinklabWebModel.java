@@ -5,6 +5,7 @@ import java.util.Properties;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 /**
  * Helper class to build persistent MVC models for thinkcap. Any ThinkcapModel works with Portlets and portals in the view
@@ -45,6 +46,12 @@ public abstract class ThinklabWebModel implements IUserModel {
 			properties = new Properties();
 		
 		return properties;
+	}
+	
+	@Override
+	public IInstance getUserInstance() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -45,7 +45,6 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
@@ -59,8 +58,6 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.xml.XMLDocument;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
 import org.w3c.dom.Node;
 
 public class WCSCoverage extends AbstractRasterCoverage {

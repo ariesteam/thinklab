@@ -21,13 +21,13 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabScriptException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 
+import clojure.lang.Compiler;
 import clojure.lang.DynamicClassLoader;
 import clojure.lang.LineNumberingPushbackReader;
 import clojure.lang.LispReader;
 import clojure.lang.RT;
 import clojure.lang.Symbol;
 import clojure.lang.Var;
-import clojure.lang.Compiler;
 
 public class REPL {
 

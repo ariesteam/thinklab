@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.rest.RESTTask;
 
 /**
  * A simple scheduler that can be fed tasks and guarantees that at most a given
@@ -20,7 +21,7 @@ public class TaskScheduler implements ITaskScheduler {
 	int maxConcurrentTasks = 1;
 	int _delay = 200;
 	
-	volatile protected boolean _stopped = true;
+	volatile private boolean _stopped = true;
 	public ArrayList<Listener> _listeners = new ArrayList<Listener>();
 
 	protected class TaskThread extends Thread {
@@ -33,8 +34,9 @@ public class TaskScheduler implements ITaskScheduler {
 						sleep(_delay);
 						try {
 							checkNext();
+						} catch (Exception e) {
+							throw new ThinklabRuntimeException(e);
 						} finally {
-							
 						}
 					} catch (Throwable ex) {
 						throw new ThinklabRuntimeException(ex);
@@ -45,12 +47,13 @@ public class TaskScheduler implements ITaskScheduler {
 		}
 		
 		private void checkNext() throws ThinklabException {
-			
+						
 			/*
 			 * check if we have anything to remove
 			 */
 			for (Thread t : _current) {
-				if (!t.isAlive()) {
+
+				if (!t.isAlive() || (t instanceof RESTTask && ((RESTTask)t).isFinished())) {
 					_current.remove(t);
 					for (Listener l : _listeners) {
 						l.notifyTaskFinished(t, _current.size(), _queue.size());
@@ -62,13 +65,15 @@ public class TaskScheduler implements ITaskScheduler {
 			 * start as many tasks as we can afford
 			 */
 			if (_queue.size() > 0) {
-				while (_current.size() < maxConcurrentTasks) {
+				while (_current.size() < maxConcurrentTasks && _queue.size() > 0) {
 					try {
-						Thread t = _queue.remove();
-						t.start();
-						_current.add(t);
-						for (Listener l : _listeners) {
-							l.notifyTaskStarted(t, _current.size(), _queue.size());
+						if (_queue.size() > 0) {
+							Thread t = _queue.remove();
+							_current.add(t);
+							t.start();
+							for (Listener l : _listeners) {
+								l.notifyTaskStarted(t, _current.size(), _queue.size());
+							}
 						}
 					} catch (Exception e) {
 						throw new ThinklabInternalErrorException(e);

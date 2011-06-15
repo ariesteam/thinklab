@@ -5,6 +5,6 @@
 			with node name = property name, node content = property value. Interpretation
 			is left to the application.
 		 -->
-		<role>administrator</role>
+		<role>user:Administrator</role>
 	</user>
 </users>

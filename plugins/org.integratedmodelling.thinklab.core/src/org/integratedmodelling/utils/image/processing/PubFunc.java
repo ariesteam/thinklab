@@ -1,11 +1,8 @@
 package org.integratedmodelling.utils.image.processing ;
 
-import java.lang.* ;
-import java.awt.Polygon ;
-import java.awt.Point ;
-import java.util.Vector ;
-import java.util.Random ;
-import java.util.Enumeration ;
+import java.util.Enumeration;
+import java.util.Random;
+import java.util.Vector;
 
 /**
  * Some common image processing, clustering, sorting functions
