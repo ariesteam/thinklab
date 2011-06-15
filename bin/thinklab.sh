@@ -61,6 +61,9 @@ while true; do
     exec $THINKLAB_CMD $@ $THINKLAB_ARGS
   fi
 
+  # just checking
+  echo "Thinklab exited" 
+
   # 
   # check if shutdown service has inserted hooks for us to run
   #
@@ -68,6 +71,7 @@ while true; do
     shopt -s nullglob
     for i in $THINKLAB_INST/tmp/hooks/*
     do
+      echo "executing shutdown hook $i"
   	  . $i
     done
     rm -f $THINKLAB_INST/tmp/hooks/*
