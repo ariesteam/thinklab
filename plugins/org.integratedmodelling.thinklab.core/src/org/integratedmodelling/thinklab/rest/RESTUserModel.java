@@ -56,7 +56,7 @@ public class RESTUserModel implements IUserModel {
 		
 		IInstance ret = session.retrieveObject("user");
 		
-		if (ret == null) {
+		if (ret == null && properties != null) {
 
 			String user = properties.getProperty("authenticated-user");
 			if (user == null)	
