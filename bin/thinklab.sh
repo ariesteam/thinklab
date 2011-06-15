@@ -53,16 +53,13 @@ while true; do
 
   cd $THINKLAB_INST
 
-#  if [ "$1" = "start" ] ; then
-#    cd $THINKLAB_INST
-#    mkdir -p $THINKLAB_INST/var/log
-#    sh -c "exec $THINKLAB_CMD $@ $THINKLAB_ARGS >> $THINKLAB_INST/var/log/thinklab.out 2>&1"
-#  else
+  if [ "$1" = "start" ] ; then
+    cd $THINKLAB_INST
+    mkdir -p $THINKLAB_INST/var/log
+    sh -c "exec $THINKLAB_CMD $@ $THINKLAB_ARGS >> $THINKLAB_INST/var/log/thinklab.out 2>&1"
+  else
     $THINKLAB_CMD $@ $THINKLAB_ARGS
-#  fi
-
-  # just checking
-  echo "Thinklab exited" 
+  fi
 
   # just checking
   echo "Thinklab exited" 
@@ -85,14 +82,15 @@ while true; do
   #
   if [ -n "$THINKLAB_UPGRADE_BRANCH" ] ; then
 	cd $HOME/thinklab/thinklab
-	git checkout $1
+	git checkout $THINKLAB_UPGRADE_BRANCH
 	git pull
 	ant build install
 	cd $HOME/thinklab/aries
-	git checkout $1
+	git checkout $THINKLAB_UPGRADE_BRANCH
 	git pull
 	ant build install
 	unset THINKLAB_UPGRADE_BRANCH
+	THINKLAB_RESTART = "true"
   fi
 
   #
