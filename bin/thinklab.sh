@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 case "`uname`" in
   Darwin*) if [ -z "$JAVA_HOME" ] ; then
              JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
