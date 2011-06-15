@@ -44,7 +44,7 @@ if [ ! -x "$JAVACMD" ] ; then
 fi
 
 if [ -z "$THINKLAB_INST" ] ; then
-  THINKLAB_INST=$THINKLAB_HOME
+  export THINKLAB_INST=$THINKLAB_HOME
 fi
 
 THINKLAB_CMD="$JAVACMD $JAVA_OPTS -Djava.library.path=$THINKLAB_HOME/plugins/org.integratedmodelling.thinklab.riskwiz/common -Djpf.boot.config=$THINKLAB_HOME/boot.properties -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH -Dthinklab.plugins=$THINKLAB_PLUGINS -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_HOME/lib/endorsed -jar $THINKLAB_HOME/lib/im-boot.jar org.java.plugin.boot.Boot"
