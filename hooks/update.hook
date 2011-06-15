@@ -1,3 +1,4 @@
 # script to force update, install and restart with specified git branch
 export THINKLAB_UPGRADE_BRANCH=@{branch}
+echo Server upgrade to branch @{branch} scheduled
 

@@ -47,19 +47,22 @@ if [ -z "$THINKLAB_INST" ] ; then
   export THINKLAB_INST=$THINKLAB_HOME
 fi
 
-THINKLAB_CMD="$JAVACMD $JAVA_OPTS -Djava.library.path=$THINKLAB_HOME/plugins/org.integratedmodelling.thinklab.riskwiz/common -Djpf.boot.config=$THINKLAB_HOME/boot.properties -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH -Dthinklab.plugins=$THINKLAB_PLUGINS -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_HOME/lib/endorsed -jar $THINKLAB_HOME/lib/im-boot.jar org.java.plugin.boot.Boot"
+THINKLAB_CMD="$JAVACMD $JAVA_OPTS -Djava.library.path=$THINKLAB_INST/plugins/org.integratedmodelling.thinklab.riskwiz/common -Djpf.boot.config=$THINKLAB_INST/boot.properties -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH -Dthinklab.plugins=$THINKLAB_PLUGINS -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_INST/lib/endorsed -jar $THINKLAB_INST/lib/im-boot.jar org.java.plugin.boot.Boot"
 
 while true; do
 
-  cd $THINKLAB_HOME
+  cd $THINKLAB_INST
 
-  if [ "$1" = "start" ] ; then
-    cd $THINKLAB_INST
-    mkdir -p $THINKLAB_INST/var/log
-    sh -c "exec $THINKLAB_CMD $@ $THINKLAB_ARGS >> $THINKLAB_INST/var/log/thinklab.out 2>&1"
-  else
-    exec $THINKLAB_CMD $@ $THINKLAB_ARGS
-  fi
+#  if [ "$1" = "start" ] ; then
+#    cd $THINKLAB_INST
+#    mkdir -p $THINKLAB_INST/var/log
+#    sh -c "exec $THINKLAB_CMD $@ $THINKLAB_ARGS >> $THINKLAB_INST/var/log/thinklab.out 2>&1"
+#  else
+    $THINKLAB_CMD $@ $THINKLAB_ARGS
+#  fi
+
+  # just checking
+  echo "Thinklab exited" 
 
   # 
   # check if shutdown service has inserted hooks for us to run
@@ -68,6 +71,7 @@ while true; do
     shopt -s nullglob
     for i in $THINKLAB_INST/tmp/hooks/*
     do
+      echo "executing shutdown hook $i"
   	  . $i
     done
     rm -f $THINKLAB_INST/tmp/hooks/*
