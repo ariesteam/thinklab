@@ -91,7 +91,7 @@ while true; do
 	git pull
 	ant build install
 	unset THINKLAB_UPGRADE_BRANCH
-	THINKLAB_RESTART = "true"
+	THINKLAB_RESTART="true"
   fi
 
   #
