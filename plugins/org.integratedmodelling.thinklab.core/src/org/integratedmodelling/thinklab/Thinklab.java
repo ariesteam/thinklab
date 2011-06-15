@@ -228,7 +228,7 @@ public class Thinklab extends ThinklabPlugin {
 						
 			if (inst == null || home == null) {
 				throw new ThinklabRuntimeException(
-						"can't use the hook system: thinklab home and installation directories not defined");
+						"can't use the hook system: thinklab home and/or installation directories not defined");
 			}
 			
 			File hdest = 

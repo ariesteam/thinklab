@@ -51,7 +51,7 @@ THINKLAB_CMD="$JAVACMD $JAVA_OPTS -Djava.library.path=$THINKLAB_HOME/plugins/org
 
 while true; do
 
-cd $THINKLAB_HOME
+  cd $THINKLAB_HOME
 
   if [ "$1" = "start" ] ; then
     cd $THINKLAB_INST
@@ -62,26 +62,26 @@ cd $THINKLAB_HOME
   fi
 
   # 
-  # check if shutdown command has inserted hooks for us to run
+  # check if shutdown service has inserted hooks for us to run
   #
-  if [ -d hooks ] ; then
+  if [ -d $THINKLAB_INST/tmp/hooks ] ; then
     shopt -s nullglob
-    for i in tmp/hooks/*
+    for i in $THINKLAB_INST/tmp/hooks/*
     do
   	  . $i
     done
-    rm -f hooks/*
+    rm -f $THINKLAB_INST/tmp/hooks/*
   fi
 
   #
   # these may have been set by hooks
   #
   if [ -n "$THINKLAB_UPGRADE_BRANCH" ] ; then
-	cd $HOME/thinklab
+	cd $HOME/thinklab/thinklab
 	git checkout $1
 	git pull
 	ant build install
-	cd $HOME/aries
+	cd $HOME/thinklab/aries
 	git checkout $1
 	git pull
 	ant build install
@@ -93,9 +93,9 @@ cd $THINKLAB_HOME
   #
   if [ -z "$THINKLAB_RESTART" ] ; then
 	break
-  else
-    unset THINKLAB_RESTART
   fi
+
+  unset THINKLAB_RESTART
   
 done
 
