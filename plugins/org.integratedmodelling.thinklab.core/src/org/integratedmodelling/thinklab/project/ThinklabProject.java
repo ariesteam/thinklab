@@ -113,10 +113,13 @@ public class ThinklabProject {
 		 */
 		undeploy(pluginId);
 		
+		
 		/*
 		 * do it
 		 */
 		final File deployDir = new File(instDir + File.separator + "plugins");		
+		Thinklab.get().logger().info("deploying " + pluginId + " in " + deployDir);
+
 		FolderZiper.unzip(archive, deployDir);
 		
 		try {
@@ -170,7 +173,13 @@ public class ThinklabProject {
 	public static void undeploy(String id)  throws ThinklabException  {
 		
 		Plugin plugin;
+		File pdir = new File(
+				System.getProperty("thinklab.inst") + File.separator + "plugins" + 
+				id);
+
 		try {
+			
+			Thinklab.get().logger().info("undeploying " + id + " from " + pdir);
 			
 			plugin = Thinklab.get().getManager().getPlugin(id);
 		
@@ -180,9 +189,6 @@ public class ThinklabProject {
 			}
 			
 			plugin = null;
-			File pdir = new File(
-					System.getProperty("thinklab.inst") + File.separator + "plugins" + 
-					id);
 
 			if (pdir.exists())
 				MiscUtilities.deleteDirectory(pdir);
