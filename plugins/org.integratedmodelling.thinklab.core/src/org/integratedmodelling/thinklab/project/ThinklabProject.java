@@ -177,6 +177,9 @@ public class ThinklabProject {
 				System.getProperty("thinklab.inst") + File.separator + "plugins" + 
 				id);
 
+		if (!Thinklab.get().getManager().getRegistry().isPluginDescriptorAvailable(id))
+			return;
+		
 		try {
 			
 			Thinklab.get().logger().info("undeploying " + id + " from " + pdir);
