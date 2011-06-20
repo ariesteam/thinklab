@@ -1,10 +1,10 @@
-mkdir -f ~/logs
-mkdir -f ~/opt
-mkdir -f ~/thinklab
+mkdir -p ~/logs
+mkdir -p ~/opt
+mkdir -p ~/thinklab
 
 cd ~/thinklab
 
-if [ -d thinklab ] ; then
+if [ ! -d thinklab ] ; then
 	git clone https://github.com/ariesteam/thinklab.git
 fi
 
@@ -14,7 +14,7 @@ git pull
 ant build install
 
 cd ~/thinklab
-if [ -d aries ] ; then
+if [ ! -d aries ] ; then
 	git clone https://github.com/ariesteam/aries.git
 fi
 

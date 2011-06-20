@@ -2,6 +2,7 @@ PATH=$HOME/opt/thinklab/bin:$PATH:$HOME/bin
 export THINKLAB_HOME=$HOME/opt/thinklab
 export ARIES_HOME=$HOME/opt/aries
 export THINKLAB_PLUGINS=$ARIES_HOME/plugins
+alias update.sh='sh $HOME/bin/update.sh'
 alias startup.sh='thinklab.sh $THINKLAB_STARTUP_SCRIPT >> $HOME/logs/thinklab.log 2>&1 &'
 
 # ------------------------------------------------------------------------
