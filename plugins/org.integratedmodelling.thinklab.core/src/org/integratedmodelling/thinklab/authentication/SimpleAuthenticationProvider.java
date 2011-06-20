@@ -257,32 +257,34 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 	}
 	
 	public void write() throws ThinklabException {
-		
-		if (userFile == null) {
-			userFile = 
-				new File(LocalConfiguration.getUserConfigDirectory() + 
-						File.separator + "users.xml");
-		}
-		
-		ArrayList<XML.XmlNode> nodes = new ArrayList<XML.XmlNode>();
-		for (String user : passwords.keySet()) {
-			
-			Properties prop = userProperties.get(user);
-			ArrayList<XML.XmlNode> pnodes = null;
-			
-			if (prop != null && prop.size() > 0) {
-				pnodes = new ArrayList<XML.XmlNode>();
-				for (Object o : prop.keySet()) {
-					pnodes.add(XML.node(o.toString(), prop.getProperty(o.toString())));
-				}
-			}
-			
-			nodes.add(XML.node("user", pnodes).
-						attr("name", user).
-						attr("password", passwords.get(user)));
-		}
-		
-		XML.document(nodes).writeToFile(userFile);
+	
+// disable temporarily for debugging
+//		
+//		if (userFile == null) {
+//			userFile = 
+//				new File(LocalConfiguration.getUserConfigDirectory() + 
+//						File.separator + "users.xml");
+//		}
+//		
+//		ArrayList<XML.XmlNode> nodes = new ArrayList<XML.XmlNode>();
+//		for (String user : passwords.keySet()) {
+//			
+//			Properties prop = userProperties.get(user);
+//			ArrayList<XML.XmlNode> pnodes = null;
+//			
+//			if (prop != null && prop.size() > 0) {
+//				pnodes = new ArrayList<XML.XmlNode>();
+//				for (Object o : prop.keySet()) {
+//					pnodes.add(XML.node(o.toString(), prop.getProperty(o.toString())));
+//				}
+//			}
+//			
+//			nodes.add(XML.node("user", pnodes).
+//						attr("name", user).
+//						attr("password", passwords.get(user)));
+//		}
+//		
+//		XML.document(nodes).writeToFile(userFile);
 	}
 	
 }
