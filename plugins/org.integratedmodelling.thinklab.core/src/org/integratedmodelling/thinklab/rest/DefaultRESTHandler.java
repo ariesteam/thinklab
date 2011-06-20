@@ -239,6 +239,15 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	public String getArgument(String id) throws ThinklabException {
 		return getArguments().get(id);
 	}
+	
+	public String requireArgument(String id) throws ThinklabException {
+		String ret = getArguments().get(id);
+		if (ret == null)
+			throw new ThinklabResourceNotFoundException(
+					"required argument " + id + 
+					" not passed in REST request");
+		return ret;
+	}
 
 	// only used in CheckWaiting for now - set the result object directly
 	protected void setResult(ResultHolder result) {

@@ -1,0 +1,10 @@
+<users>
+	<user name="admin" password="thinklab">
+		<!--  
+			any node can be inserted here, it will become part of the user properties,
+			with node name = property name, node content = property value. Interpretation
+			is left to the application.
+		 -->
+		<role>user:Administrator</role>
+	</user>
+</users>

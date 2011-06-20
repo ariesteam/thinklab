@@ -33,6 +33,7 @@
 package org.integratedmodelling.thinklab.authentication;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,6 +51,8 @@ import org.integratedmodelling.thinklab.interfaces.IThinklabAuthenticationProvid
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
+import org.integratedmodelling.utils.xml.XML;
+import org.integratedmodelling.utils.xml.XML.XmlNode;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
 
@@ -64,6 +67,8 @@ import org.w3c.dom.Node;
 public class SimpleAuthenticationProvider implements IThinklabAuthenticationProvider {
 
 	private EncryptionManager encryptionManager = null;
+	
+	private File userFile = null;
 	
 	Hashtable<String, Properties> userProperties = new Hashtable<String, Properties>();
 	HashMap<String, String> passwords = new HashMap<String, String>();
@@ -109,7 +114,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 
 		Properties upr = getUserProperties(user);
 		upr.setProperty(property, value);
-		// save();
+		write();
 	}
 
 	public void initialize(Properties properties) throws ThinklabException {
@@ -158,6 +163,8 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 
 	private void loadUsers(File userfile) throws ThinklabException {
 
+		this.userFile = userfile;
+		
 		XMLDocument xml = new XMLDocument(userfile);
 		
 		for (XMLDocument.NodeIterator it = xml.iterator(); it.hasNext(); ) {
@@ -196,6 +203,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 		}
 		String ew = encryptionManager == null ? password : encryptionManager.encrypt(password);
 		passwords.put(user, ew);
+		write();
 	}
 
 	public boolean haveUser(String user)  {
@@ -212,6 +220,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 		
 		String ew = encryptionManager == null ? password : encryptionManager.encrypt(password);
 		passwords.put(user, ew);
+		write();
 	}
 
 
@@ -220,6 +229,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 
 		userProperties.remove(user);
 		passwords.remove(user);
+		write();
 	}
 
 
@@ -230,6 +240,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 
 	@Override
 	public void saveUserProperties(String user) throws ThinklabException {
+		write();
 	}
 
 	@Override
@@ -243,6 +254,35 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 		}
 		
 		return ret;
+	}
+	
+	public void write() throws ThinklabException {
+		
+		if (userFile == null) {
+			userFile = 
+				new File(LocalConfiguration.getUserConfigDirectory() + 
+						File.separator + "users.xml");
+		}
+		
+		ArrayList<XML.XmlNode> nodes = new ArrayList<XML.XmlNode>();
+		for (String user : passwords.keySet()) {
+			
+			Properties prop = userProperties.get(user);
+			ArrayList<XML.XmlNode> pnodes = null;
+			
+			if (prop != null && prop.size() > 0) {
+				pnodes = new ArrayList<XML.XmlNode>();
+				for (Object o : prop.keySet()) {
+					pnodes.add(XML.node(o.toString(), prop.getProperty(o.toString())));
+				}
+			}
+			
+			nodes.add(XML.node("user", pnodes).
+						attr("name", user).
+						attr("password", passwords.get(user)));
+		}
+		
+		XML.document(nodes).writeToFile(userFile);
 	}
 	
 }

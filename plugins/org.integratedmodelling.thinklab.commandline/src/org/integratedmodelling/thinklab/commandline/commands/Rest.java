@@ -32,7 +32,9 @@ public class Rest implements ICommandHandler {
 			throws ThinklabException {
 
 		String cmd = command.getArgumentAsString("cmd");
-		Integer port = 8182;
+		String ept = System.getProperty("THINKLAB_REST_PORT", "8182");
+		
+		Integer port = Integer.parseInt(ept);
 		
 		if (command.hasOption("port"))
 			port = Integer.parseInt(command.getOptionAsString("port"));

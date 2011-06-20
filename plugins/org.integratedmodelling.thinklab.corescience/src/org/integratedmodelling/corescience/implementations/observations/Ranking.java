@@ -198,6 +198,7 @@ public class Ranking extends Observation implements MediatingObservation {
 
 		@Override
 		public Object getValue(int idx, Object[] registers) {
+			
 			Object ret = null;
 			if (distribution != null)
 				ret = distribution.draw();

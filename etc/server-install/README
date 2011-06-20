@@ -1,0 +1,54 @@
+----------------------------------------------------------------------------------------
+INSTALLING A THINKLAB SERVER 
+----------------------------------------------------------------------------------------
+(Linux only!)
+
+1. Create a new user directory on intended server. If remote publishing actions
+   are desired, ensure it can write on publish directory (see below).
+   
+2. Unzip all content of install-package into home directory of said user.
+
+3. Edit environment vars in provided .bashrc as follows:
+
+	THINKLAB_STARTUP_SCRIPT=~/etc/rest.tl
+	
+		set xxx to ~/etc/aries.tl for ARIES web server OR
+		leave default ~/etc/rest.tl for REST development server
+		
+		otherwise write your own thinklab script in etc/ and refer to it. Ensure it 
+		ends with a server command which does not return control to the command line,
+		otherwise it will block the server waiting for input.
+		
+	THINKLAB_REST_PORT=8182
+	
+		change 8182 to the port you want - if there are other servers on the same machine
+		they need to use different ports. The default is OK for the first server, you
+		can add 1 incrementally after that.
+		
+	THINKLAB_PUBLISH_DIRECTORY=dir
+	
+		if you want to enable --publish <file> commands in the remote shell, set this
+		variable to a directory to publish to. The user needs to have write access to
+		it, so if it's e.g. on the RAID make sure to setup group permissions 
+		appropriately.
+	
+4. Ensure the admin user and password in .thinklab/users.xml are OK, change as required
+
+5. Logoff and login again or source the bash scripts to enable settings
+
+6. Run update.sh to clone, checkout and build the system.
+
+7. Run startup.sh to start the server. From this point on everything should be controllable 
+   from the remote shell, using the appropriate URL (a proxy must be established in the 
+   http configuration of ecoinformatics if you're running on huginn and want to access from
+   outside UVM). You should be able to rebuild and upgrade remotely - if things go wrong and
+   the service stop being accessible, log back to huginn and run startup.sh again.
+   
+   Logs are written in logs/thinklab.log. Web directory is in .thinklab/.... Note: no more
+   than one web app server should be active on one machine, so running 'pload explorer' and
+   'http start aries' is a bad idea. Even if the port can be changed for the http server,
+   ZK uses another port for Ajax communication whose address is in the web.xml file and
+   changing that is nontrivial, so there will be conflicts if you run it. Best to connect
+   to the actual ARIES instance and upgrade through the remote.
+   
+   
