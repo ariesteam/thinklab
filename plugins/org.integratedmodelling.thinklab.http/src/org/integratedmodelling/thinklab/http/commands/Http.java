@@ -60,7 +60,7 @@ public class Http implements ICommandHandler {
 			ThinklabHttpdPlugin.get().publishCommonResources();
 			
 			Server server = 
-				ThinklabHttpdPlugin.get().startServer("localhost", port);
+				ThinklabHttpdPlugin.get().startServer("0.0.0.0", port);
 			ThinklabWebApplication webapp =
 				ThinklabHttpdPlugin.get().publishApplication(app, server);
 			
