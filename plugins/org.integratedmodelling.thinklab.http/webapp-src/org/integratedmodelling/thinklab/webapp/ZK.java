@@ -7,8 +7,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -30,6 +32,7 @@ import org.integratedmodelling.thinklab.webapp.view.components.ThinkcapComponent
 import org.integratedmodelling.thinklab.webapp.view.components.ToggleComponent;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
+import org.integratedmodelling.utils.Path;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
@@ -91,22 +94,12 @@ import org.zkoss.zul.impl.api.InputElement;
 public class ZK {
 
 	/*
-	 * this is a configured prefix for relative images/* URLs, to allow
-	 * adding a prefix to access proxied resources. Bound to resource.url.prefix
-	 * configuration variable.
+	 * this is a configured prefix for relative <prefix>/* URLs, to allow
+	 * swapping a prefix to access proxied resources. Bound to <prefix>.url.prefix
+	 * configuration variables.
 	 */
-	static private String _url_prefix = null;
-	
-	static String urlPrefix() {
-		if (_url_prefix == null) {
-			_url_prefix = 
-				ThinklabHttpdPlugin.get().getProperties().getProperty(
-					"resource.url.prefix",
-					"");
-		}
-		return _url_prefix;
-	}
-	
+	static HashMap<String,String> _up = null;
+
 	static public interface RowRenderer {
 		public void render(Object content, Row row);
 	}
@@ -129,7 +122,6 @@ public class ZK {
 			style += s;
 			c.setStyle(style);
 		}
-		
 		
 		private void removeStyle(String s) {
 			
@@ -1183,12 +1175,30 @@ public class ZK {
 		return new ZKComponent(b);
 	}
 
-	private static String fixUrl(String image) {
-		// TODO should be applied to all resources in main thinklab dir
-		if (image.startsWith("/images/")) {
-			image = "/" + urlPrefix() + image;
+	private static String fixUrl(String url) {
+		
+		if (_up == null) {
+			
+			_up = new HashMap<String, String>();
+			
+			Properties prop = ThinklabHttpdPlugin.get().getProperties();
+			
+			for (Object p : prop.keySet()) {
+				if (p.toString().endsWith(".url.prefix")) {
+					String prefix = Path.getFirst(p.toString(), ".");
+					_up.put(prefix, prop.getProperty(p.toString()));
+				}
+			}
 		}
-		return image;
+		
+		for (String prf : _up.keySet()) {
+			if (url.startsWith("/" + prf)) {
+				url = "/" + prf + url.substring(prf.length() + 1);
+				break;
+			}			
+		}
+		
+		return url;
 	}
 
 	static public ComboComponent combobox(String ... itemlabels) {

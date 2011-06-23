@@ -31,6 +31,15 @@ public class Path {
 				pth[i];
 		return ret;
 	}
+
+	public static String getFirst(String path, String separator) {
+		int n = path.indexOf(separator);
+		String ret = path;
+		if (n >= 0) {
+			ret = path.substring(0,n);
+		}
+		return ret;
+	}
 	
 	
 
