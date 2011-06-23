@@ -170,7 +170,15 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 				Object dat = data[i];
 				if (dat != null && !context.isCovered(i))
 					dat = null;
-				ret[i] = (dat == null ? Double.NaN : (double)(rnk.get((IConcept)dat)));
+				
+				double dd = Double.NaN;
+				
+				if (dat != null && rnk != null) {
+					Integer di = rnk.get((IConcept)dat);
+					dd = di == null ? Double.NaN : (double)di;
+				}
+			
+				ret[i] = (dat == null ? Double.NaN : dd);
 			}
 			return ret;			
 		}

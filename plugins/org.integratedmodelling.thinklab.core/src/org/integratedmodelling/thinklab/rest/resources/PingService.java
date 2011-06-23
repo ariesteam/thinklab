@@ -1,5 +1,7 @@
 package org.integratedmodelling.thinklab.rest.resources;
 
+import java.util.Date;
+
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Version;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
@@ -32,7 +34,8 @@ public class PingService extends DefaultRESTHandler {
 			oret.put("thinklab.status", Version.STATUS);
 			oret.put("thinklab.inst", System.getenv("THINKLAB_INST"));
 			oret.put("thinklab.home", System.getenv("THINKLAB_HOME"));
-			oret.put("boot.time", KnowledgeManager.get().activeSince().toString());
+			oret.put("boot.time", KnowledgeManager.get().activeSince().getTime());
+			oret.put("current.time", new Date().getTime());
 			oret.put("memory.total", runtime.totalMemory());
 			oret.put("memory.max", runtime.maxMemory());
 			oret.put("memory.free", runtime.freeMemory());
