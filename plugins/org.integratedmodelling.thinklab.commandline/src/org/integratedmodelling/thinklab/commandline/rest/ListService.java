@@ -38,6 +38,9 @@ public class ListService extends DefaultRESTHandler {
 			isItem = true;
 		}
 		
+		// communicate if this was a single item display, just in case.
+		this.put("is-item", isItem ? "true" : "false");
+		
 		if (prov != null) {
 			
 			String theItem = null;

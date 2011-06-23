@@ -1175,7 +1175,7 @@ public class ZK {
 		return new ZKComponent(b);
 	}
 
-	private static String fixUrl(String url) {
+	public static String fixUrl(String url) {
 		
 		if (_up == null) {
 			
