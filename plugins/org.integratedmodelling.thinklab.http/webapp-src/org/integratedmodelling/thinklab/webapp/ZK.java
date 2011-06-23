@@ -18,6 +18,7 @@ import java.util.jar.Manifest;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.http.ThinkWeb;
+import org.integratedmodelling.thinklab.http.ThinklabHttpdPlugin;
 import org.integratedmodelling.thinklab.http.ThinklabWebPlugin;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.webapp.view.TypeManager;
@@ -89,6 +90,23 @@ import org.zkoss.zul.impl.api.InputElement;
  */
 public class ZK {
 
+	/*
+	 * this is a configured prefix for relative images/* URLs, to allow
+	 * adding a prefix to access proxied resources. Bound to resource.url.prefix
+	 * configuration variable.
+	 */
+	static private String _url_prefix = null;
+	
+	static String urlPrefix() {
+		if (_url_prefix == null) {
+			_url_prefix = 
+				ThinklabHttpdPlugin.get().getProperties().getProperty(
+					"resource.url.prefix",
+					"");
+		}
+		return _url_prefix;
+	}
+	
 	static public interface RowRenderer {
 		public void render(Object content, Row row);
 	}
@@ -1049,7 +1067,7 @@ public class ZK {
 	}
 	
 	static public ZKComponent image(String image) {
-		return new ZKComponent(new Image(image));
+		return new ZKComponent(new Image(fixUrl(image)));
 	}
 	
 	static public ZKComponent separator(boolean bar) {
@@ -1138,7 +1156,7 @@ public class ZK {
 			return new ZKComponent(null);
 		
 		Toolbarbutton b = new Toolbarbutton();
-		b.setImage(image);
+		b.setImage(fixUrl(image));
 		b.setHref(link);
 		return new ZKComponent(b);
 	}
@@ -1149,19 +1167,28 @@ public class ZK {
 			return new ZKComponent(null);
 		
 		Toolbarbutton b = new Toolbarbutton();
-		b.setImage(image);
+		b.setImage(fixUrl(image));
 		b.setHref(link);
 		b.setTarget(target);
 		return new ZKComponent(b);
 	}
+	
 	static public ZKComponent imagebutton(String image) {
 		
 		if (image == null)
 			return new ZKComponent(null);
 
 		Toolbarbutton b = new Toolbarbutton();
-		b.setImage(image);
+		b.setImage(fixUrl(image));
 		return new ZKComponent(b);
+	}
+
+	private static String fixUrl(String image) {
+		// TODO should be applied to all resources in main thinklab dir
+		if (image.startsWith("/images")) {
+			image = "/"  + urlPrefix() + image;
+		}
+		return image;
 	}
 
 	static public ComboComponent combobox(String ... itemlabels) {
