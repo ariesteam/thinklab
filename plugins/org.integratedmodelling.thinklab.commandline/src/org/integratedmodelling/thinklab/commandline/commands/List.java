@@ -234,21 +234,6 @@ public class List implements ICommandHandler {
 						+ o.getURI());
 			}
 
-		} else if ("plugins".equals(subject)) {
-
-			for (PluginDescriptor pd :
-					CommandLine.get().getManager().getRegistry().getPluginDescriptors()) {
-
-				session.getOutputStream().println(
-						pd.getId() + 
-						" (" +
-						pd.getVersion() + 
-						")\t" +
-						(CommandLine.get().getManager().isPluginActivated(pd) ?
-								"activated" :
-								"inactive"));
-			}
-
 		} else if ("kboxes".equals(subject)) {
 
 			for (String kb : KBoxManager.get().getInstalledKboxes()) {

@@ -1185,8 +1185,8 @@ public class ZK {
 
 	private static String fixUrl(String image) {
 		// TODO should be applied to all resources in main thinklab dir
-		if (image.startsWith("/images")) {
-			image = "/"  + urlPrefix() + image;
+		if (image.startsWith("images/")) {
+			image = urlPrefix() + "/" + image;
 		}
 		return image;
 	}
