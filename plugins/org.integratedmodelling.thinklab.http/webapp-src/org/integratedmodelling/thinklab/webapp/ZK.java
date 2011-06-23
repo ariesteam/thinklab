@@ -1193,7 +1193,7 @@ public class ZK {
 		
 		for (String prf : _up.keySet()) {
 			if (url.startsWith("/" + prf)) {
-				url = "/" + prf + url.substring(prf.length() + 1);
+				url = "/" + _up.get(prf) + url.substring(prf.length() + 1);
 				break;
 			}			
 		}
