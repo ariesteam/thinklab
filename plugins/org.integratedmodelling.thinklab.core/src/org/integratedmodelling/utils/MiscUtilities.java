@@ -406,6 +406,65 @@ public class MiscUtilities{
 	    	  fOut.close();    	  
 	      }
 	  }
+	  
+	  /**
+	   * Read the last N lines of file into string and return it. Emulates Unix's tail
+	   * command. 
+	   * 
+	   * Unsophisticated about EOL encodings - I'm pretty sure it will create artificial
+	   * empty lines on Win.
+	   * 
+	   * @param fileName
+	   * @param n
+	   * @return
+	   * @throws ThinklabIOException
+	   */
+	  public String tail(String fileName, int n) throws ThinklabIOException {
+		  
+		    try {
+		        java.io.File file = new java.io.File( fileName );
+		        java.io.RandomAccessFile fileHandler = new java.io.RandomAccessFile( file, "r" );
+		        long fileLength = file.length() - 1;
+		        StringBuilder sb = new StringBuilder();
+		 
+		        // backward line counter
+		        int l = 0;
+		        
+		        for( long filePointer = fileLength; filePointer != -1; filePointer-- ) {
+		        	
+		        	boolean lineread = false;
+		        	
+		            fileHandler.seek( filePointer );
+		            int readByte = fileHandler.readByte();                
+		 
+		            if( readByte == 0xA ) {
+		                if( filePointer == fileLength ) {
+		                    continue;
+		                } else {
+		                	l ++;
+		                	lineread = true;
+		                }
+		            } else if( readByte == 0xD ) {
+		                if( filePointer == fileLength - 1 ) {
+		                    continue;
+		                } else {
+		                   l ++;
+		                   lineread = true;
+		                }                    
+		            }
+
+		            if (lineread && l == n)
+		            	break;
+		 
+		            sb.append( ( char ) readByte );
+		        }
+		 
+		        String lastLine = sb.reverse().toString();
+		        return lastLine;
+		    } catch(Exception e) {
+		    	throw new ThinklabIOException(e);
+		    }
+		}
 	
 	  /**
 	   * Closes InputStream and/or OutputStream.
