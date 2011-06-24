@@ -412,7 +412,8 @@ public class MiscUtilities{
 	   * command. 
 	   * 
 	   * Unsophisticated about EOL encodings - I'm pretty sure it will create artificial
-	   * empty lines on Win.
+	   * empty lines on Win. On the other hand, all the uses I have for it are a joke on
+	   * anything but unix.
 	   * 
 	   * @param fileName
 	   * @param n

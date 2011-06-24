@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
@@ -35,6 +36,9 @@ public class Metadata extends HashMap<String, Object> {
 
 	private static final long serialVersionUID = 1265732119608093598L;
 
+	private static HashMap<IConcept,String> orderMap =
+		new HashMap<IConcept, String>();
+	
 	public static final String UNCERTAINTY = "uncertainty";
 	public static final String UNIT_SPECS = "units";
 	public static final String LEGEND = "legend";
@@ -340,6 +344,31 @@ public class Metadata extends HashMap<String, Object> {
 		if (Value.isPOD(type))
 			return null;
 
+		/*
+		 * check if we have any predefined ordering
+		 */
+		if (orderMap.containsKey(type)) {
+			
+			String[] order = orderMap.get(type).split(",");
+			int start = 
+				(order[0].startsWith("No") || order[0].endsWith("Absent")) ?
+				0 : 1;
+			
+			HashMap<IConcept, Integer> ret = new HashMap<IConcept, Integer>();
+			int n = start;
+			for (String s : order) {
+				String c = type.getConceptSpace() + ":" + s;
+				ret.put(KnowledgeManager.getConcept(c), n++);
+			}
+			
+			if (metadata != null) {
+				metadata.put(RANKING, ret);
+				metadata.put(HASZERO, new Boolean(start == 0));
+			}
+			
+			return ret;
+		}
+		
 		/*
 		 * if presence-absence, map the "No*" or "notpresent" to 0 and the other
 		 * to 1, then return. Must be two concepts at most.
@@ -776,6 +805,20 @@ public class Metadata extends HashMap<String, Object> {
 		for (String key : metadata.keySet())
 			if (!containsKey(key))
 				this.put(key, metadata.get(key));
+	}
+
+	public static void loadPredefinedOrderings(Properties properties) throws ThinklabException {
+		
+		String propertyPrefix = "thinklab.ordering.";
+		int ln = propertyPrefix.length();
+		for (Object k : properties.keySet()) {
+			if (k.toString().startsWith(propertyPrefix)) {
+				String cString = k.toString().substring(ln);
+				cString = cString.replaceAll("-",":");
+				IConcept kconc = KnowledgeManager.get().requireConcept(cString);
+				orderMap.put(kconc, properties.getProperty(k.toString()));
+			}
+		}
 	}
 
 }
