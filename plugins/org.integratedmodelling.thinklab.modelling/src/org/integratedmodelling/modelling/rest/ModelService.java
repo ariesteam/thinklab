@@ -6,8 +6,8 @@ import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandl
 import org.restlet.representation.Representation;
 
 @RESTResourceHandler(id="model",
-					 arguments="model,context,scenario",
-					 options="output,visualize,dump",
+					 arguments="model,context",
+					 options="output,visualize,dump,scenario",
 					 description="run a model in a given context")
 public class ModelService extends DefaultAbstractModelService {
 
