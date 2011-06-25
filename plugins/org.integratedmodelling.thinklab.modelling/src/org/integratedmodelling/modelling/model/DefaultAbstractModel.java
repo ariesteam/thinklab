@@ -120,7 +120,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	 */
 	protected Boolean editable = null;
 	protected String namespace;
-	private String localFormalName = null;
+	protected String localFormalName = null;
 
 	protected boolean isMediating() {
 		return mediated != null || mediatesExternal;
@@ -712,6 +712,7 @@ public abstract class DefaultAbstractModel implements IModel {
 			ret.id = id;
 			ret.namespace = namespace;
 			ret.scenario = scenario;
+			ret.localFormalName = localFormalName;
 		}
 
 		return ret;

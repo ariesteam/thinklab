@@ -43,7 +43,6 @@ public class NetCDFArchive {
 	GridExtent space         = null;
 	RegularTimeGridExtent time = null;
 	
-//	Map<IConcept,IState> variables;
 	Map<String,IState> auxVariables = 
 	new Hashtable<String, IState>();
 	IContext context = null;
@@ -53,54 +52,7 @@ public class NetCDFArchive {
 	 * container for variables to write
 	 */
 	ArrayList<Pair<String, String>> attributes;
-//	private RasterGrid grid;
-	
-//	/**
-//	 * Add a contextualized observation and we do the rest.
-//	 * @param obs
-//	 * @throws ThinklabException 
-//	 * @deprecated create from computed context, not observation.
-//	 */
-//	public void setObservation(IObservation o) throws ThinklabException {
-//		
-//		// FIXME this should start with the context, not the obs
-//		this.context = new ObservationContext(o, null);
-//		IObservation spc = ObservationFactory.findTopology(o, Geospace.get().SubdividedSpaceObservable());
-//		
-//		if (spc == null || !(spc instanceof RasterGrid))
-//			throw new ThinklabUnimplementedFeatureException(
-//					"only raster grid data are supported in NetCDF exporter for now");
-//
-//		//time  = (RasterGrid) Obs.findObservation(o, TimePlugin.GridObservable());
-//		this.space = (GridExtent) ((RasterGrid)spc).getExtent(); 
-//		this.variables = ObservationFactory.getStateMap(o);
-//	}
-	
-//	/**
-//	 * Alternative to SetObservation, just pass a context and a map of
-//	 * states.
-//	 * 
-//	 * TODO context should contain all states.
-//	 * 
-//	 * @param obs
-//	 * @throws ThinklabException
-//	 * @deprecated create from computed context, don't pass states.
-//	 */
-//	public void setStates(Map<IConcept, IState> states, IObservationContext context) throws ThinklabException {
-//		
-//		this.grid =
-//			(RasterGrid) 
-//			ObservationFactory.findTopology(context.getObservation(), Geospace.get().SubdividedSpaceObservable());
-//		
-//		IExtent spc = context.getExtent(Geospace.get().SubdividedSpaceObservable());
-//		IExtent tim = context.getExtent(TimePlugin.get().TimeObservable());
-//
-//		if (tim != null && tim instanceof RegularTimeGridExtent)
-//			this.time = (RegularTimeGridExtent) tim;
-//		
-//		space = (GridExtent)spc; 
-//		variables = states;
-//	}
+
 	
 	public void setContext(IContext context) throws ThinklabUnimplementedFeatureException {
 
@@ -119,13 +71,6 @@ public class NetCDFArchive {
 		
 	}
 	
-//	public void setSpaceGrid(RasterGrid grid) {
-//		this.grid = grid;
-//	}
-	
-//	public void setTimeGrid() {
-//	}
-//	
 	/**
 	 * Add another variable passing the data array directly. Must have called 
 	 * setObservation first to set the context.
@@ -206,6 +151,10 @@ public class NetCDFArchive {
 					continue;
 				
 				IState state = context.getState(obs);
+				
+				// ensure that all metadata are defined. FIXME: review the logics of all this BS and ensure it's
+				// done propertly and automatically.
+				Metadata.rankConcepts(state);
 				
 				ncfile.addVariable(varname, DataType.FLOAT, new Dimension[]{latDim,lonDim});
 				

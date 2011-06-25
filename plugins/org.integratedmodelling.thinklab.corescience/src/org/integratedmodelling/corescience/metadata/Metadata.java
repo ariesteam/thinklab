@@ -324,6 +324,17 @@ public class Metadata extends HashMap<String, Object> {
 	}
 
 	/**
+	 * Produce the lexical ranking of the immediate children of the passed
+	 * concept, which must be a ranking according to the core ontology.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	static public void rankConcepts(IState state) {
+		state.getMetadata().put(RANKING, rankConcepts(state.getObservableClass(), null));
+	}
+	
+	/**
 	 * Produce the lexical ranking of the concept passed and add metadata to the
 	 * datasource
 	 * 
