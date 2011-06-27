@@ -420,7 +420,7 @@ public class MiscUtilities{
 	   * @return
 	   * @throws ThinklabIOException
 	   */
-	  public String tail(String fileName, int n) throws ThinklabIOException {
+	  public static String tail(String fileName, int n) throws ThinklabIOException {
 		  
 		    try {
 		        java.io.File file = new java.io.File( fileName );

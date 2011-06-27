@@ -13,6 +13,7 @@
 		
 		<library id="ontologies" path="ontologies/" type="resources"/>
 		<library id="config" path="config/" type="resources"/>
+		<library id="bindings" path="bindings/" type="resources"/>
 		
 		<library id="time" path="lib/joda-time-1.4.jar" type="code">
 			<export prefix="*"/>
@@ -20,53 +21,15 @@
 
 	</runtime>
 
-
-
 	<!-- ontologies -->
 	<extension id="time" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="time.owl"/>
 		<parameter id="concept-space" value="time"/>
 	</extension>
-
-
-	<!-- instance constructors 
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
-		id="time-record-constructor">
-		<parameter id="class" value="org.integratedmodelling.time.constructors.TimeRecordConstructor"/>
-		<parameter id="semantic-type" value="time:TemporalLocationRecord"/>
+	
+	<!-- bindings -->
+	<extension id="clj" plugin-id="org.integratedmodelling.thinklab.core" point-id="language-binding">
+		<parameter id="language" value="clojure"/>
+		<parameter id="resource" value="clojure/time.clj"/>
 	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="instance-constructor" 
-		id="temporal-grid-coverage-constructor">
-		<parameter id="class" value="org.integratedmodelling.time.constructors.TemporalGridConstructor"/>
-		<parameter id="semantic-type" value="time:RegularTemporalGrid"/>
-	</extension> -->
-
-	<!-- literal validators 
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
-		id="datetime-validator">
-		<parameter id="class" value="org.integratedmodelling.time.constructors.TimeValidator"/>
-		<parameter id="semantic-type" value="time:DateTimeValue"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
-		id="period-validator">
-		<parameter id="class" value="org.integratedmodelling.time.constructors.PeriodValidator"/>
-		<parameter id="semantic-type" value="time:PeriodValue"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
-		id="duration-validator">
-		<parameter id="class" value="org.integratedmodelling.time.constructors.DurationValidator"/>
-		<parameter id="semantic-type" value="time:DurationValue"/>
-	</extension>
-	<extension 
-		plugin-id="org.integratedmodelling.thinklab.core" point-id="literal-validator" 
-		id="time-record-validator">
-		<parameter id="class" value="org.integratedmodelling.time.constructors.TimeRecordValidator"/>
-		<parameter id="semantic-type" value="time:TemporalLocationRecord"/>
-	</extension> -->
-
 </plugin>

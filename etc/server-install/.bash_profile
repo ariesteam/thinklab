@@ -2,11 +2,13 @@ PATH=$HOME/opt/thinklab/bin:$PATH:$HOME/bin
 export THINKLAB_HOME=$HOME/opt/thinklab
 export ARIES_HOME=$HOME/opt/aries
 export THINKLAB_PLUGINS=$ARIES_HOME/plugins
+export THINKLAB_LOG_FILE=$HOME/logs/thinklab.log
+
 alias update.sh='sh $HOME/bin/update.sh'
-alias startup.sh='thinklab.sh $THINKLAB_STARTUP_SCRIPT >> $HOME/logs/thinklab.log 2>&1 &'
+alias startup.sh='thinklab.sh $THINKLAB_STARTUP_SCRIPT >> $THINKLAB_LOG_FILE 2>&1 &'
 
 # ------------------------------------------------------------------------
-# only change the following three instructions
+# only change the following instructions
 # ------------------------------------------------------------------------
 export THINKLAB_REST_PORT=8182
 export THINKLAB_STARTUP_SCRIPT=$HOME/etc/rest.tl
@@ -26,6 +28,8 @@ echo     THINKLAB_REST_PORT = $THINKLAB_REST_PORT
 echo     THINKLAB_STARTUP_SCRIPT = $THINKLAB_STARTUP_SCRIPT
 echo     THINKLAB_DEFAULT_BRANCH = $THINKLAB_DEFAULT_BRANCH
 echo     THINKLAB_PUBLISH_DIRECTORY = $THINKLAB_PUBLISH_DIRECTORY
+echo
+echo The thinklab log file is $THINKLAB_LOG_FILE
 echo
 echo Change environmental variables in .bash_profile to modify the default 
 echo thinklab branch, ports, startup scripts etc.

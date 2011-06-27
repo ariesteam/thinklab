@@ -80,61 +80,6 @@ public class ModelCommand implements ICommandHandler {
 		}
 	}
 
-	// TODO use elsewhere to create contexts from strings
-	private IContext getTopology(Command command, String argid, ISession session) throws ThinklabException {
-		
-		IContext ret = null;
-		
-		String arg = command.getArgumentAsString(argid);
-		if (arg != null && !arg.equals("_NONE_")) {
-			
-			if (Character.isDigit(arg.charAt(0))) {
-				
-				Polylist pls = TimeFactory.parseTimeTopology(arg);
-				
-				if (pls == null) {
-					throw new ThinklabValidationException(
-							"temporal extent specification invalid or unsupported: " + 
-							arg);
-				}
-				IInstance when = 
-					session.createObject(pls);
-				ret = Context.getContext(((Topology)ObservationFactory.getObservation(when)).getExtent());
-				
-			} else {
-				
-				int res = 
-					(int)command.getOptionAsDouble("resolution", 256.0);	
-				ShapeValue roi = null;
-				IQueryResult result = 
-					Geospace.get().lookupFeature(arg);
-				
-				if (result.getTotalResultCount() > 0)
-					roi = (ShapeValue) result.getResultField(0, IGazetteer.SHAPE_FIELD);
-					
-				if (roi != null) {
-				
-					IInstance where = 
-						session.createObject(RasterGrid.createRasterGrid(roi, res));
-					ret = Context.getContext(((Topology)ObservationFactory.getObservation(where)).getExtent());
-					
-					// TODO this should be part of the instance definition but it's very expensive
-					((RasterGrid) ObservationFactory.getObservation(where)).mask(roi);
-
-				} else { 
-					throw new ThinklabResourceNotFoundException(
-							"region name " + 
-							arg +
-							" cannot be resolved");
-				}
-				
-			}
-			
-		}
-		
-		return ret;
-	}
-	
 	@Override
 	public IValue execute(Command command, ISession session)
 			throws ThinklabException {
@@ -164,7 +109,6 @@ public class ModelCommand implements ICommandHandler {
 			// remove
 			((DefaultAbstractModel)model).dump(System.out);
 
-			
 			String sc = command.getOptionAsString("scenario");
 			Scenario scenario = ModelFactory.get().requireScenario(sc);
 			model = (Model) model.applyScenario(scenario);

@@ -32,7 +32,7 @@ public interface IContextualizationListener {
 	 * Called before a TransformerObservation is transformed. The contextualized obs
 	 * (the one passed to transform()) is the second parameter; the first is the original one that produced it, and
 	 * the third is the context of contextualization (pre-transformation, i.e. the original
-	 * context set in the source obsevation).
+	 * context set in the source observation).
 	 * 
 	 * @param obs
 	 * @param iObservation

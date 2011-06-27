@@ -58,6 +58,7 @@ public class TimePlugin extends ThinklabPlugin {
     public static String ENDS_AT_PROPERTY_ID;
     public static String STEP_SIZE_PROPERTY_ID;
     
+    static private IConcept timeGridConcept;
     static private IConcept timeRecordConcept;
     static private IConcept dateTimeConcept;
     static private IConcept durationConcept;
@@ -92,6 +93,7 @@ public class TimePlugin extends ThinklabPlugin {
     	
     	try {
     		
+			timeGridConcept = km.requireConcept(TEMPORALGRID_TYPE_ID);
 			timeRecordConcept = km.requireConcept(TIMERECORD_TYPE_ID);
 			dateTimeConcept = km.requireConcept(DATETIME_TYPE_ID);
 			durationConcept = km.requireConcept(DURATION_TYPE_ID);
@@ -109,6 +111,10 @@ public class TimePlugin extends ThinklabPlugin {
         // TODO Auto-generated method stub
 
     }
+
+	public static IConcept TimeGrid() {
+		return timeGridConcept;
+	}
 
 	public static IConcept TimeRecord() {
 		return timeRecordConcept;

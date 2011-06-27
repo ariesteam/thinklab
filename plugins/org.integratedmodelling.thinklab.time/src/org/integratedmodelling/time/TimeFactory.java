@@ -1,5 +1,6 @@
 package org.integratedmodelling.time;
 
+import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
@@ -8,7 +9,6 @@ import org.integratedmodelling.time.extents.TemporalLocationExtent;
 import org.integratedmodelling.time.literals.DurationValue;
 import org.integratedmodelling.time.literals.TimeValue;
 import org.integratedmodelling.utils.Pair;
-import org.integratedmodelling.utils.Polylist;
 
 
 /**
@@ -39,7 +39,7 @@ public class TimeFactory {
 	 * @throws ThinklabNoKMException 
 	 * @throws ThinklabValidationException 
 	 */
-	public static Polylist parseTimeTopology(String s) throws ThinklabException {
+	public static IExtent parseTimeTopology(String s) throws ThinklabException {
 		
 		String ext = null;
 		String res = null;
@@ -90,16 +90,15 @@ public class TimeFactory {
 		}
 		
 		
-		Polylist ret = null;
+		IExtent ret = null;
 		if (res == null) {
-			ret = new TemporalLocationExtent(start).conceptualize();
+			ret = new TemporalLocationExtent(start);
 		} else {
 			ret = 
 				new RegularTimeGridExtent(
 						start.getTimeData(), 
 						end.getTimeData(), 
-						step.getMilliseconds()).
-					conceptualize();
+						step.getMilliseconds());
 		}
 		
 		return ret;

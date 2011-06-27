@@ -126,6 +126,9 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		return _scheduler;
 	}
 	
+	/*
+	 * TODO pass command for info, record time, track listeners for task-specific logging
+	 */
 	public Representation enqueue(final Thread thread) {
 		
 		getScheduler().enqueue(thread);

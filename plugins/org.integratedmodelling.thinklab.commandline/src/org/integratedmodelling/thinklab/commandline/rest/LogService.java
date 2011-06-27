@@ -5,7 +5,6 @@ import org.integratedmodelling.thinklab.commandline.CommandLine;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
-import org.integratedmodelling.utils.MiscUtilities;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
@@ -20,8 +19,8 @@ import org.restlet.resource.Get;
  * @author ferdinando.villa
  * 
  */
-@RESTResourceHandler(id="log", description="retrieve logged information",  arguments="lines")
-public class PloadService extends DefaultRESTHandler {
+@RESTResourceHandler(id="pload", description="load plugin",  arguments="arg")
+public class LogService extends DefaultRESTHandler {
 
 	@Get
 	public Representation service() throws ThinklabException {
@@ -30,15 +29,9 @@ public class PloadService extends DefaultRESTHandler {
 			return wrap();
 		
 		try {
-		
-			String logfile = System.getenv("THINKLAB_LOG_FILE");
-			
-			if (logfile != null) {
-				int lines 	= Integer.parseInt(this.getArgument("lines"));
-				String rr = MiscUtilities.tail(logfile, lines);
-				setResult(rr);
-			}
-		
+			String plugin 	= this.getArgument("arg");
+			plugin = Thinklab.resolvePluginName(plugin, true);
+			CommandLine.get().getManager().activatePlugin(plugin);
 		} catch (Exception e) {
 			fail(e);
 		}

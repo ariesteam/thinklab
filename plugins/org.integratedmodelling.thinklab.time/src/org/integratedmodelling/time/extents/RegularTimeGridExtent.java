@@ -390,8 +390,7 @@ public class RegularTimeGridExtent implements IExtent {
 
 	@Override
 	public IConcept getObservableClass() {
-		// TODO Auto-generated method stub
-		return null;
+		return TimePlugin.TimeGrid();
 	}
 
 	@Override
@@ -454,7 +453,6 @@ public class RegularTimeGridExtent implements IExtent {
 
 	@Override
 	public boolean isSpatiallyDistributed() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

@@ -15,8 +15,6 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.literals.DistributionValue;
 import org.integratedmodelling.corescience.metadata.Metadata;
-import org.integratedmodelling.modelling.ModellingPlugin;
-import org.integratedmodelling.modelling.ObservationCache;
 import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
@@ -540,40 +538,17 @@ public abstract class DefaultAbstractModel implements IModel {
 		 */
 		if (mediated == null && dependents.size() == 0) {
 
-			ObservationCache cache = ModellingPlugin.get().getCache();
-
 			if (Thinklab.debug(session)) {
 				session.print("---  " + getName()
 						+ ": looking up observations for: " + observable);
 			}
 
-			if (kbox == null && cache == null) {
+			if (kbox == null) {
 				if (acceptEmpty)
 					return null;
 				else
 					throw new ThinklabModelException("model: cannot observe "
 							+ observable + ": no kbox given");
-			}
-
-			// TODO must use the context here, before the "cache" - context
-			// should be
-			// primed with a cache if it's there
-			if (cache != null) {
-				//
-				// /*
-				// * build context from extent array
-				// */
-				// IObservationContext ctx =
-				// ((Context)context).getObservationContext(o);
-				//
-				// /*
-				// * lookup in cache, if existing, return it
-				// */
-				// Polylist res = cache.getObservation(observable, ctx,
-				// (String) session
-				// .getVariable(ModelFactory.AUX_VARIABLE_DESC));
-				// if (res != null)
-				// return new ModelResult(res);
 			}
 
 			Constraint query = generateObservableQuery(cp, session, context);
@@ -717,94 +692,7 @@ public abstract class DefaultAbstractModel implements IModel {
 
 		return ret;
 	}
-
-
-//	protected IModel applyScenarioInternal(Scenario scenario, Session session)
-//			throws ThinklabException {
-//
-//		DefaultAbstractModel ret = null;
-//
-//		IInstance match = session.createObject(observableSpecs);
-//
-//		/*
-//		 * if I am in the scenario, clone the scenario's, not me, unless I am a
-//		 * Model which requires to be preserved for functionality
-//		 */
-//		if (!(this instanceof Model)) {
-//			for (IModel m : scenario.models) {
-//
-//				IInstance im = session
-//						.createObject(((DefaultAbstractModel) m).observableSpecs);
-//				if (im.isConformant(match, null)) {
-//
-//					/*
-//					 * use the return value of a model function that
-//					 * accepts/rejects/mediates the model, if null don't
-//					 * substitute and continue.
-//					 */
-//					IModel mo = validateSubstitutionModel(m);
-//					if (mo != null)
-//						return mo;
-//				}
-//			}
-//		} else {
-//
-//			/*
-//			 * Substitute the contingencies. They should be substituted in toto
-//			 * if the observable matches.
-//			 * 
-//			 * FIXME We just should not substitute two different contingencies
-//			 * with the same model, which is possible right now.
-//			 */
-//			for (IModel m : ((Model) this).models) {
-//
-//				IModel con = ((DefaultAbstractModel) m).applyScenarioInternal(
-//						scenario, session);
-//				try {
-//					if (ret == null)
-//						ret = (Model) this.clone();
-//				} catch (CloneNotSupportedException e) {
-//				}
-//				((Model) ret).defModel(con == null ? m : con, null);
-//			}
-//		}
-//
-//		/*
-//		 * clone me if necessary and add the applyScenarios of the dependents as
-//		 * dependents
-//		 */
-//		try {
-//			if (ret == null)
-//				ret = (DefaultAbstractModel) this.clone();
-//		} catch (CloneNotSupportedException e) {
-//			// yeah, right
-//		}
-//
-//		if (mediated != null) {
-//			IModel dep = ((DefaultAbstractModel) mediated)
-//					.applyScenarioInternal(scenario, session);
-//			ret.mediated = (dep == null ? mediated : dep);
-//		}
-//
-//		for (IModel d : dependents) {
-//			IModel dep = ((DefaultAbstractModel) d).applyScenarioInternal(
-//					scenario, session);
-//			ret.addDependentModel(dep == null ? d : dep);
-//		}
-//
-//		/*
-//		 * give the sucker our ID so it will work in references, and store the
-//		 * scenario to constrain queries as needed.
-//		 */
-//		if (ret != null) {
-//			ret.id = id;
-//			ret.namespace = namespace;
-//			ret.scenario = scenario;
-//		}
-//
-//		return ret;
-//	}
-
+	
 	/*
 	 * this one applies a scenario to a model used as mediated or contingency, which is not a
 	 * Model. It should leave everything as is but use the scenario to transform the dependencies.

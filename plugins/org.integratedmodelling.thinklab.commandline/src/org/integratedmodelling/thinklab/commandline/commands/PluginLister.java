@@ -37,7 +37,6 @@ import java.util.Collection;
 import java.util.Properties;
 
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.authentication.AuthenticationManager;
 import org.integratedmodelling.thinklab.commandline.CommandLine;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
