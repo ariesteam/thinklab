@@ -1177,6 +1177,9 @@ public class ZK {
 
 	public static String fixUrl(String url) {
 		
+		if (url == null)
+			return null;
+		
 		if (_up == null) {
 			
 			_up = new HashMap<String, String>();
