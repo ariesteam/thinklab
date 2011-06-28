@@ -55,6 +55,14 @@ public class IndexedCategoricalDistribution implements Comparable<IndexedCategor
 	public void setRanges(double[] distributionBreakpoints) {
 		this.ranges = distributionBreakpoints;
 	}
+
+    public double[] getData() {
+        return this.data;
+    }
+
+    public double[] getRanges() {
+        return this.ranges;
+    }
 	
 	public double getMean() {
 
