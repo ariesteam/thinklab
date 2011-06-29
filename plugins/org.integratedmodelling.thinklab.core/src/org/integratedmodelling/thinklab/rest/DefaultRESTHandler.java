@@ -17,6 +17,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
+import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
@@ -211,6 +212,25 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		
 		return ret;
 	}
+	
+	/**
+	 * Publish given file in default publish directory
+	 * 
+	 * @param first
+	 * @param _publish2
+	 * @throws ThinklabIOException 
+	 */
+	protected void publish(File file, String publish) throws ThinklabIOException {
+		
+		String pdir = System.getenv("THINKLAB_PUBLISH_DIRECTORY");
+		if (pdir == null) 
+			pdir = "./publish";
+		File out = new File(pdir + File.separator + publish);
+		File dir = MiscUtilities.getPath(out.toString());
+		dir.mkdirs();
+		CopyURL.copy(file, out);
+	}
+
 	
 	/**
 	 * Return the elements of the request path after the service identifier, in the same

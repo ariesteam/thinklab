@@ -56,6 +56,7 @@ public abstract class DefaultAbstractModelService extends DefaultRESTHandler {
 	boolean   _visualize = false;
 	boolean   _dump = false;
 	String    _ncout = null;
+	String    _publish = null;
 	
 	protected int status = IDLE;
 	
@@ -89,13 +90,16 @@ public abstract class DefaultAbstractModelService extends DefaultRESTHandler {
 	 */
 	public void makeNCOutput() throws ThinklabException {
 
-		Pair<File, String> outf = this.getFileName(_ncout, getSession());
+		Pair<File, String> outf = this.getFileName(_ncout == null ? "temp.nc" : _ncout, getSession());
 		NetCDFArchive out = new NetCDFArchive();
 		out.setContext(mresult);
 		out.write(outf.getFirst().toString());
-		addDownload(outf.getSecond(), _ncout);
+		addDownload(outf.getSecond(), _ncout == null ? "temp.nc" : _ncout);
+		
+		if (_publish != null)
+			this.publish(outf.getFirst(), _publish);
 	}
-	
+
 	public class ModelThread extends Thread implements RESTTask {
 
 		IKBox  kbox = null;
@@ -154,9 +158,10 @@ public abstract class DefaultAbstractModelService extends DefaultRESTHandler {
 					makeDump();
 				}
 				
-				if (_ncout != null) {
+				if (_ncout != null || _publish != null) {
 					makeNCOutput();
 				}
+
 				
 			} catch (Exception e) {
 				
@@ -229,6 +234,8 @@ public abstract class DefaultAbstractModelService extends DefaultRESTHandler {
 		if (getArgument("output") != null)
 			_ncout = getArgument("output");
 		
+		if (getArgument("publish") != null)
+			_ncout = getArgument("publish");
 	}
 
 	

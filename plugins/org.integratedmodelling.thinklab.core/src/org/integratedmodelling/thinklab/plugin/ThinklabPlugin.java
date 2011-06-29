@@ -264,6 +264,7 @@ public abstract class ThinklabPlugin extends Plugin
 		loadKboxes();
 		loadApplications();
 		loadLanguageBindings();
+		loadProjectLoaders();
 		
 		load(KnowledgeManager.get());
 
@@ -979,7 +980,7 @@ public abstract class ThinklabPlugin extends Plugin
 				if (annotation instanceof ProjectLoader) {
 					
 					String folder = ((ProjectLoader)annotation).folder();
-					String description = ((RESTResourceHandler)annotation).description();
+					String description = ((ProjectLoader)annotation).description();
 					Thinklab.get().registerProjectLoader(folder, (Class<?>) cls);	
 					break;
 				}

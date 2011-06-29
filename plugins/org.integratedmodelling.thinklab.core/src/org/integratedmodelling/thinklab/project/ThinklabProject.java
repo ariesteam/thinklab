@@ -19,6 +19,7 @@ import org.java.plugin.JpfException;
 import org.java.plugin.Plugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.PluginManager;
+import org.java.plugin.registry.PluginDescriptor;
 
 public class ThinklabProject {
 	
@@ -153,7 +154,9 @@ public class ThinklabProject {
 							}
 					});
 			
-			Thinklab.get().getManager().activatePlugin(pluginId);
+			PluginDescriptor pd = Thinklab.get().getManager().getRegistry().getPluginDescriptor(pluginId);
+			Thinklab.get().getManager().enablePlugin(pd, true);			
+
 			// create or refresh existing descriptor
 			ThinklabProject.addProject(Thinklab.get().getManager().getPlugin(pluginId));
 			
@@ -172,34 +175,27 @@ public class ThinklabProject {
 	 */
 	public static void undeploy(String id)  throws ThinklabException  {
 		
-		Plugin plugin;
-		File pdir = new File(
-				System.getProperty("thinklab.inst") + File.separator + "plugins" + 
-				id);
-
 		if (!Thinklab.get().getManager().getRegistry().isPluginDescriptorAvailable(id))
 			return;
+			
+		PluginDescriptor pd = Thinklab.get().getManager().getRegistry().getPluginDescriptor(id);
 		
-		try {
-			
-			Thinklab.get().logger().info("undeploying " + id + " from " + pdir);
-			
-			plugin = Thinklab.get().getManager().getPlugin(id);
-		
-			if (plugin != null) {
-				Thinklab.get().getManager().deactivatePlugin(id);
-				Thinklab.get().getManager().disablePlugin(plugin.getDescriptor());
-			}
-			
-			plugin = null;
+		File pdir = new File(
+				System.getProperty("thinklab.inst") + File.separator + "plugins" + File.separator +
+				id);
 
-			if (pdir.exists())
-				MiscUtilities.deleteDirectory(pdir);
+		Thinklab.get().logger().info("undeploying " + id + " from " + pdir);
 			
-
-		} catch (PluginLifecycleException e) {
-			throw new ThinklabPluginException(e);	
-		}
+		if (Thinklab.get().getManager().isPluginActivated(pd))
+			Thinklab.get().getManager().deactivatePlugin(id);
+			
+		if (Thinklab.get().getManager().isPluginEnabled(pd))
+			Thinklab.get().getManager().disablePlugin(pd);
+						
+		Thinklab.get().getManager().getRegistry().unregister(new String[]{id});
+			
+		if (pdir.exists())
+			MiscUtilities.deleteDirectory(pdir);
 
 	}
 	

@@ -272,9 +272,10 @@ public class ModelMap {
 		public void unlink() {
 			
 			ArrayList<Entry> el =  new ArrayList<ModelMap.Entry>();
-			
+			ArrayList<String> rl = new ArrayList<String>();
 			for (DepEdge e : map.outgoingEdgesOf(this)) {
 				if (e instanceof HasResourceEdge) {
+					rl.add(((ResourceEntry)(e.getTargetObservation())).resource);
 					el.add(e.getTargetObservation());
 				}
 			}
@@ -288,6 +289,10 @@ public class ModelMap {
 			for (Entry e : el)
 				e.unlink();
 
+			for (String r : rl) {
+				resources.remove(r);
+			}
+			
 			map.removeVertex(this);
 			ModelMap.dirty = true;
 		}
@@ -631,8 +636,18 @@ public class ModelMap {
 		return nse.getOntology();
 	}
 
-	public static void releaseNamespace(NamespaceEntry ns) {
+	public static void releaseNamespace(String namespace) {
+		NamespaceEntry ns = (NamespaceEntry) ModelMap.getNamespace(namespace);
+		
+		for (IModelForm m : ns.getAllModelObjects()) {	
+			forms.remove(m.getName());
+		}
+		
+		/*
+		 * this also removes the resource and all source nodes
+		 */
 		ns.unlink();
+		namespaces.remove(namespace);
 	}
 
 	public static Collection<Entry> getNamespaces() {

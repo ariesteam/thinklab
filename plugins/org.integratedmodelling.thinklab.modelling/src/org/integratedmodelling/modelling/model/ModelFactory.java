@@ -491,19 +491,23 @@ public class ModelFactory {
 	public synchronized void releaseNamespace(String namespace) {
 		
 		NamespaceEntry ns = (NamespaceEntry) ModelMap.getNamespace(namespace);
+
+		/*
+		 * update all internal indexes
+		 */
 		for (IModelForm m : ns.getAllModelObjects()) {
 			
 			if (m instanceof IModel) {
-				modelsById.remove(m.getId());
+				modelsById.remove(m.getName());
 			} else if (m instanceof Scenario) {
-				scenariosById.remove(m.getId());
+				scenariosById.remove(m.getName());
 			} else if (m instanceof ThinkAgent) {
-				agentsById.remove(m.getId());
+				agentsById.remove(m.getName());
 			} else if (m instanceof Annotation) {
-				annotationsById.remove(m.getId());
+				annotationsById.remove(m.getName());
 			}
 		}
-		ModelMap.releaseNamespace(ns);
+		ModelMap.releaseNamespace(namespace);
 		
 		ModellingPlugin.get().logger().info("namespace " + namespace + " released");
 	}
