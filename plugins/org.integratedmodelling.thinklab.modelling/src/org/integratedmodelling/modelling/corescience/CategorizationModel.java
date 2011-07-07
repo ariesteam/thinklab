@@ -21,7 +21,7 @@ public class CategorizationModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public String toString() {
-		return ("categorization(" + getObservableClass() + ")");
+		return ("categorization");
 	}
 
 	

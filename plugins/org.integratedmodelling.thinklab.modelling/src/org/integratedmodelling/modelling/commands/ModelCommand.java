@@ -106,11 +106,16 @@ public class ModelCommand implements ICommandHandler {
 			
 		if (command.hasOption("scenario")) {
 
-			// remove
-			((DefaultAbstractModel)model).dump(System.out);
-
 			String sc = command.getOptionAsString("scenario");
 			Scenario scenario = ModelFactory.get().requireScenario(sc);
+
+			// remove
+			scenario.dump(System.out);
+			
+			// remove
+			((DefaultAbstractModel)model).dump(System.out);
+			
+
 			model = (Model) model.applyScenario(scenario);
 			
 			// remove

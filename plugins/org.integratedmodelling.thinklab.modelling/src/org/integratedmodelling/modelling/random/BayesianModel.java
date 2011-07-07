@@ -46,6 +46,11 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 	}
 
 	@Override
+	public String toString() {
+		return ("bayesian");
+	}
+	
+	@Override
 	public void applyClause(String keyword, Object argument)
 			throws ThinklabException {
 		

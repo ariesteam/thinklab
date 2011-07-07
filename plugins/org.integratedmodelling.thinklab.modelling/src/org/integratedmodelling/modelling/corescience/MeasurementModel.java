@@ -47,7 +47,7 @@ public class MeasurementModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public String toString() {
-		return ("measurement(" + getObservableClass() + "," + unitSpecs + ")");
+		return ("measurement[" + unitSpecs + "]");
 	}
 
 	public void setUnits(Object unitSpecs) {

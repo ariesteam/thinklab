@@ -750,32 +750,44 @@ public abstract class DefaultAbstractModel implements IModel {
 	}
 
 	public void dump(PrintStream out) {
-		dumpInternal(out, 0);
-
+		dumpInternal(out, 0, "", null);
 	}
 
-	protected void dumpInternal(PrintStream out, int i) {
-		String prefix = MiscUtilities.spaces(i);
-		out.println(prefix + this + " (" + getName() + ")");
-		out.println(prefix + this.metadata);
+	public void dump(PrintStream out, int level) {
+		dumpInternal(out, level, "", null);
+	}
 
+	protected void dumpInternal(PrintStream out, int i, String role, IConcept obs) {
+
+		boolean singlemod = 
+			this instanceof Model && ((Model)this).models != null && ((Model) this).models.size() ==1;
+		
+		if (singlemod) {
+			((DefaultAbstractModel)(((Model) this).models.get(0))).
+				dumpInternal(out, i, role, this.getObservableClass());
+		
+		} else {
+			
+			if (obs == null)
+				obs = this.getObservableClass();
+			
+			out.println(MiscUtilities.spaces(i) + role + this + "(" + obs + ")");
+		}
+		
 		if (mediated != null) {
-			out.println(prefix + "Mediates:");
-			((DefaultAbstractModel) mediated).dumpInternal(out, i + 3);
+			((DefaultAbstractModel) mediated).dumpInternal(out, i + 3, "M ", null);
 		}
 
 		if (dependents.size() > 0) {
-			out.println(prefix + "Depends on:");
 			for (IModel m : dependents)
-				((DefaultAbstractModel) m).dumpInternal(out, i + 3);
-
+				((DefaultAbstractModel) m).dumpInternal(out, i + 3, "D ", null);
 		}
 
-		if (this instanceof Model && ((Model)this).models != null && ((Model) this).models.size() > 0) {
-			out.println(prefix + "Contingent on:");
+		if (this instanceof Model && ((Model)this).models != null && ((Model) this).models.size() > 1) {
 			for (IModel m : ((Model) this).models)
-				((DefaultAbstractModel) m).dumpInternal(out, i + 3);
+				((DefaultAbstractModel) m).dumpInternal(out, i + 3, "* ", null);
 		}
+
 	}
 
 	public void setMediatedModel(IModel m) {

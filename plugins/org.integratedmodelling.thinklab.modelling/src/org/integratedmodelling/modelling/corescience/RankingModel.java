@@ -67,7 +67,7 @@ public class RankingModel extends DefaultDynamicAbstractModel {
 
 	@Override
 	public String toString() {
-		return ("ranking(" + getObservableClass() + ")");
+		return ("ranking");
 	}
 
 	@Override

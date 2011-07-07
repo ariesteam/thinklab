@@ -999,6 +999,10 @@ public class ObservationContext implements IObservationContext, IContext {
 	 * @param state
 	 */
 	public void addState(IState state) {
+		
+//		if (states.containsKey(state.getObservableClass()))
+//			throw new ThinklabRuntimeException("state " + state.getObservableClass() + " already present in context");
+		
 		states.put(state.getObservableClass(), state);
 	}
 

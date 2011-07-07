@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling.model;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
@@ -35,6 +36,13 @@ public class Scenario implements IModelForm {
 	private HashSet<IConcept> observables;
 	private IContext context;
 	private boolean isPublic;
+	
+	public void dump(PrintStream out) {
+		out.println("scenario " + getId());
+		for (IModel m : models) {
+			((DefaultAbstractModel)m).dump(out, 3);
+		}
+	}
 	
 	public void addModel(Object model, Map<?,?> metadata, Object editableDesc) {
 		

@@ -190,14 +190,7 @@ public class Model extends DefaultAbstractModel {
 	
 	@Override
 	public String toString() {
-		// add the different possible incarnations of the model after the closed parenthesis
-		String mdesc = "{";
-		if (models != null)
-			for (IModel m : models) {
-				mdesc += (mdesc.length() == 1 ? "" : ",") + m ;
-			}
-		mdesc += "}";
-		return "model(" + observable +") " + mdesc;
+		return "model";
 	}
 
 	@Override

@@ -34,7 +34,7 @@ public class ObservationModel extends DefaultAbstractModel {
 
 	@Override
 	public String toString() {
-		return ("identification(" + observable + ")");
+		return ("identification");
 	}
 
 	@Override
