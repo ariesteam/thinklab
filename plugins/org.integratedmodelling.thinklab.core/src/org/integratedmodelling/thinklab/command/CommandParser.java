@@ -6,8 +6,8 @@ import java.util.List;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 
 /**
  * Use a Jopt-simple parser to parse POSIX-style command line into a command.

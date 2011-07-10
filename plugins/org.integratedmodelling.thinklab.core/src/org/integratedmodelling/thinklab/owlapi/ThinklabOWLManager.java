@@ -47,22 +47,25 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.collections.Triple;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.IParseable;
+import org.integratedmodelling.lang.LogicalConnector;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.exception.ThinklabConstraintValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IParseable;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.literals.NumberValue;
@@ -70,11 +73,6 @@ import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.thinklab.owlapi.Ontology.ReferenceRecord;
-import org.integratedmodelling.utils.LogicalConnector;
-import org.integratedmodelling.utils.MalformedListException;
-import org.integratedmodelling.utils.Pair;
-import org.integratedmodelling.utils.Polylist;
-import org.integratedmodelling.utils.Triple;
 import org.semanticweb.owl.model.OWLAnnotation;
 import org.semanticweb.owl.model.OWLConstant;
 import org.semanticweb.owl.model.OWLDataAllRestriction;
@@ -338,25 +336,19 @@ public class ThinklabOWLManager {
 	public IInstanceImplementation getInstanceImplementation(Instance instance) throws ThinklabException {
 
 		IInstanceImplementation ret = null;
-		boolean isVolatile = instance instanceof VolatileInstance;
 		
-		boolean hasIt = isVolatile ?
-				instance._initialized :
-				instanceImplementations.containsKey(instance.getURI());
+		boolean hasIt = instanceImplementations.containsKey(instance.getURI());
 		
 		// check if this uri passed here before
 		if (!hasIt) {
 
 			ret = KnowledgeManager.get().newInstanceImplementation(instance.getDirectType());
-			
-			if (isVolatile)
-				((VolatileInstance)instance).implementation = ret;
-			else
-				/*
-				 * use a synchronized function because this is a singleton and hashmap isn't
-				 * synchronized.
-				 */
-				addImpl(instance.getURI(), ret);
+
+			/*
+			 * use a synchronized function because this is a singleton and hashmap isn't
+			 * synchronized.
+			 */
+			addImpl(instance.getURI(), ret);
 
 			if (ret != null) {
 
@@ -369,10 +361,7 @@ public class ThinklabOWLManager {
 
 		} else {
 		
-			ret = 
-				isVolatile ?
-						((VolatileInstance)instance).implementation :
-						instanceImplementations.get(instance.getURI()); 
+			ret = instanceImplementations.get(instance.getURI()); 
 		}
 		
 		instance._initialized = true;
@@ -400,12 +389,7 @@ public class ThinklabOWLManager {
 
 
 	public void setInstanceImplementation(Instance instance, IInstanceImplementation impl) {
-
-		if (instance instanceof VolatileInstance) {
-			((VolatileInstance)instance).implementation = impl;
-		} else {
 			addImpl(instance.getURI(), impl);
-		}
 	}
 	
 

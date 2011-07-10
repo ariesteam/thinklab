@@ -33,16 +33,13 @@
  **/
 package org.integratedmodelling.thinklab.literals;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 
 public class ObjectReferenceValue extends Value {
 
 	IInstance val;
 	
-    public ObjectReferenceValue() throws ThinklabNoKMException {
+    public ObjectReferenceValue() {
         super();
     }
 
@@ -51,18 +48,8 @@ public class ObjectReferenceValue extends Value {
     	val = c;
     }
 
-    public ObjectValue asObject() throws ThinklabValueConversionException {
-        ObjectValue ret = null;
-        try {
-            ret = new ObjectValue(val);
-        } catch (ThinklabException e) {
-            throw new ThinklabValueConversionException(e);
-        }
-        return ret;
-    }
-
-    public ObjectReferenceValue asObjectReference() throws ThinklabValueConversionException {
-        return this;
+    public IInstance asObject() {
+        return val;
     }
 
     

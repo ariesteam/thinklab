@@ -6,11 +6,11 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Map;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.CompiledTemplate;
+import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRuntime;
 
 public class MVELTemplate {

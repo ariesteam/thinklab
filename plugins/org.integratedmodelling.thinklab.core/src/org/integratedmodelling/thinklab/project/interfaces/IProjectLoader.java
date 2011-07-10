@@ -2,7 +2,7 @@ package org.integratedmodelling.thinklab.project.interfaces;
 
 import java.io.File;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 /**
  * Each resource loader installed will be passed the parsed content of the

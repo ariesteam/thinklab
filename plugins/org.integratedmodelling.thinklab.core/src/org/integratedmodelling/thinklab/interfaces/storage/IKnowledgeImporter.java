@@ -2,8 +2,8 @@ package org.integratedmodelling.thinklab.interfaces.storage;
 
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.list.Polylist;
 
 /**
  * Recognize a source of objects from a URL and allows retrieval of object definitions

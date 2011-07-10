@@ -3,9 +3,9 @@ package org.integratedmodelling.thinklab.transformations;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 public class TransformationFactory {
 

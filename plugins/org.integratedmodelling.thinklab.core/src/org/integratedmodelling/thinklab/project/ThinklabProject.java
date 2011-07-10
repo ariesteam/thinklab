@@ -8,16 +8,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.utils.FolderZiper;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.JpfException;
 import org.java.plugin.Plugin;
-import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.PluginManager;
 import org.java.plugin.registry.PluginDescriptor;
 
@@ -161,7 +160,7 @@ public class ThinklabProject {
 			ThinklabProject.addProject(Thinklab.get().getManager().getPlugin(pluginId));
 			
 		} catch (JpfException e) {
-			throw new ThinklabPluginException(e);
+			throw new ThinklabInternalErrorException(e);
 		}
 		
 		return null;

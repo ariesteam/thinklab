@@ -34,7 +34,7 @@ package org.integratedmodelling.multidimensional;
 
 import java.util.ArrayList;
 
-import org.integratedmodelling.utils.Triple;
+import org.integratedmodelling.collections.Triple;
 
 public class MultidimensionalCursor {
 

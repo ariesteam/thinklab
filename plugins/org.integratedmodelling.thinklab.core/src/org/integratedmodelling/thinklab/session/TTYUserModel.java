@@ -4,9 +4,9 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
+import org.integratedmodelling.thinklab.api.runtime.IUserModel;
 
 public class TTYUserModel implements IUserModel {
 

@@ -3,8 +3,8 @@ package org.integratedmodelling.thinklab.rest;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.list.Polylist;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

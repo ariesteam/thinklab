@@ -21,8 +21,8 @@ package org.integratedmodelling.thinklab.owlapi;
 import java.net.URI;
 import java.util.Hashtable;
 
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.SemanticType;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLOntology;
@@ -107,10 +107,10 @@ public class Registry {
 		return cs2uri.get(conceptSpace);
 	}
 	
-	protected URI getURI(SemanticType st) throws ThinklabMalformedSemanticTypeException{
+	protected URI getURI(SemanticType st) throws ThinklabValidationException{
 		if(cs2uri.containsKey(st.getConceptSpace())){
 			return URI.create(getURI(st.getConceptSpace()).toString()+"#"+st.getLocalName());
-		} else throw new ThinklabMalformedSemanticTypeException("Malformed Semantic Type" + st);
+		} else throw new ThinklabValidationException("Malformed Semantic Type" + st);
 	}
 	
 	protected String getConceptSpace(URI uri){

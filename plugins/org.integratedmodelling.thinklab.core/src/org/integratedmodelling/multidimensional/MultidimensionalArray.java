@@ -35,7 +35,7 @@ package org.integratedmodelling.multidimensional;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.integratedmodelling.utils.Triple;
+import org.integratedmodelling.collections.Triple;
 
 public class MultidimensionalArray<T> {
 

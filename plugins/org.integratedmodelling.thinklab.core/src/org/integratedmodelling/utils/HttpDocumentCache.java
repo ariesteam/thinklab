@@ -38,7 +38,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Time;
 
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 
 /**
  * 

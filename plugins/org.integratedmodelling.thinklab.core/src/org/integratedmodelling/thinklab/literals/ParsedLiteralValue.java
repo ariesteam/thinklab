@@ -33,9 +33,8 @@
  **/
 package org.integratedmodelling.thinklab.literals;
 
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 public abstract class ParsedLiteralValue extends Value {
 
@@ -47,7 +46,7 @@ public abstract class ParsedLiteralValue extends Value {
         super(c);
     }
     
-    public ParsedLiteralValue(String s) throws ThinklabValidationException, ThinklabNoKMException {
+    public ParsedLiteralValue(String s) throws ThinklabValidationException {
         parseLiteral(s);
     }
     

@@ -2,11 +2,11 @@ package org.integratedmodelling.thinklab.rest.resources;
 
 import java.io.File;
 
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.integratedmodelling.utils.FolderZiper;
-import org.integratedmodelling.utils.Pair;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 

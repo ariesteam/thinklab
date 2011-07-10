@@ -32,8 +32,8 @@
  **/
 package org.integratedmodelling.thinklab.graph;
 
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.jgrapht.DirectedGraph;
 
 /**

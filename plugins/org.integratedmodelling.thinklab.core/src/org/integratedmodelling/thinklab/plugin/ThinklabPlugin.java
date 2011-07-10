@@ -49,19 +49,20 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.PersistenceManager;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.application.ApplicationDescriptor;
 import org.integratedmodelling.thinklab.application.ApplicationManager;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.extensions.KBoxHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
@@ -74,15 +75,10 @@ import org.integratedmodelling.thinklab.interfaces.annotations.PersistentObject;
 import org.integratedmodelling.thinklab.interfaces.annotations.ProjectLoader;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
-import org.integratedmodelling.thinklab.interfaces.applications.ITask;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.interfaces.storage.IKnowledgeImporter;
 import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
-import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.owlapi.Session;
@@ -101,6 +97,8 @@ import org.java.plugin.registry.Extension.Parameter;
 import org.java.plugin.registry.ExtensionPoint;
 import org.java.plugin.registry.Version;
 import org.restlet.resource.ServerResource;
+
+import ucar.util.prefs.ui.PersistenceManager;
 
 
 /**
@@ -157,12 +155,12 @@ public abstract class ThinklabPlugin extends Plugin
 	 * @param pluginId
 	 * @throws ThinklabPluginException
 	 */
-	protected void requirePlugin(String pluginId) throws ThinklabPluginException {
+	protected void requirePlugin(String pluginId) throws ThinklabException {
 
 		try {
 			getManager().activatePlugin(pluginId);
 		} catch (PluginLifecycleException e) {
-			throw new ThinklabPluginException(e);
+			throw new ThinklabInternalErrorException(e);
 		}
 	}
 	
@@ -249,20 +247,13 @@ public abstract class ThinklabPlugin extends Plugin
 		
 		loadOntologies();
 		loadLiteralValidators();
-		loadKBoxHandlers();
 		loadKnowledgeImporters();
-		loadKnowledgeLoaders();
-		loadLanguageInterpreters();
 		loadCommandHandlers();
 		loadListingProviders();
 		loadRESTHandlers();
 		loadTransformations();
-		loadCommands();
 		loadInstanceImplementationConstructors();
-		loadPersistentClasses();
-		loadSessionListeners();
 		loadKboxes();
-		loadApplications();
 		loadLanguageBindings();
 		loadProjectLoaders();
 		
@@ -347,14 +338,7 @@ public abstract class ThinklabPlugin extends Plugin
 				continue;
 			
 			Interpreter intp = InterpreterManager.get().newInterpreter(language);
-			
-			/*
-			 * automatically declare tasks included in package if supplied. These can't possibly
-			 * use the language bindings, so do it first.
-			 */
-			for (String pk : tpacks)
-				declareTasks(pk, intp);
-			
+
 			for (String r : resource) {
 				
 				logger().info("loading " + language + " binding file: " + r);
@@ -363,12 +347,6 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 
-	private void declareTasks(String taskPackage, Interpreter intp) throws ThinklabException {
-		
-		for (Class<?> cls : MiscUtilities.findSubclasses(ITask.class, taskPackage, getClassLoader())) {
-			intp.defineTask(cls, getClassLoader());
-		}
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#swapClassloader()
@@ -400,80 +378,6 @@ public abstract class ThinklabPlugin extends Plugin
 					KBoxManager.get().requireGlobalKBox(pfile.toURI().toURL().toString());
 				} catch (Exception e) {
 					throw new ThinklabIOException(e);
-				}
-			}
-		}
-		
-		
-		/*
-		 * from plugins
-		 */
-		for (Extension ext : getOwnThinklabExtensions("kbox")) {
-			
-			String protocol = getParameter(ext, "protocol");
-			String url = getParameter(ext, "url");
-			String id = getParameter(ext, "id");
-			String schema  = getParameter(ext, "schema");
-//			// TODO modernize handling of metadata
-//			String mschema = getParameter(ext, "metadata-schema");
-			
-			File pfile = new File(
-					getScratchPath() + File.separator + id + ".kbox");
-			
-			boolean isnew = !pfile.exists();
-			
-			Properties kpro = new Properties();
-			kpro.setProperty(IKBox.KBOX_PROTOCOL_PROPERTY, protocol);
-			kpro.setProperty(IKBox.KBOX_URI_PROPERTY, url);
-			
-			if (schema != null) {
-				kpro.setProperty(IKBox.KBOX_SCHEMA_PROPERTY, schema);
-			}
-
-			// TODO should list pairs of field, concept to store as kbox.metadata.fieldname=concept
-//			if (mschema != null ) {
-//				kpro.setProperty(IKBox.KBOX_METADATA_SCHEMA_PROPERTY, mschema);
-//			}
-			
-			try {
-				kpro.store(new FileOutputStream(pfile), 
-						"Generated by thinklab based on plugin manifest - do not modify");
-			} catch (Exception e) {
-				throw new ThinklabIOException(e);
-			}
-
-			IKBox kbox = null;
-			
-			try {
-				kbox = 
-					KBoxManager.get().requireGlobalKBox(pfile.toURI().toURL().toString());
-			} catch (Exception e) {
-				throw new ThinklabIOException(e);
-			}
-
-			String content = getParameter(ext, "initial-content");
-
-			if (content != null && isnew) {
-				
-				URL curl = getResourceURL(content);
-				
-				if (curl == null) {
-					throw new ThinklabIOException(
-							"resource " + content + 
-							" named for initial contents of kbox " + id + 
-							"could not be resolved");
-				}
-				
-				/*
-				 * load content into kbox
-				 */
-				Session session = new Session();
-				Collection<IInstance> objs = session.loadObjects(curl);
-				
-				HashMap<String, String> references = new HashMap<String, String>();
-
-				for (IInstance obj : objs) {
-					kbox.storeObject(obj, null, null, session, references);
 				}
 			}
 		}
@@ -704,7 +608,7 @@ public abstract class ThinklabPlugin extends Plugin
 		extensions.add(ext);
 	}
 
-	protected void loadInstanceImplementationConstructors() throws ThinklabPluginException {
+	protected void loadInstanceImplementationConstructors() throws ThinklabException {
 		
 		String ipack = this.getClass().getPackage().getName() + ".implementations";
 		
@@ -739,36 +643,6 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 	
-	protected void loadPersistentClasses() throws ThinklabPluginException {
-		
-		String ipack = this.getClass().getPackage().getName() + ".implementations";
-		
-		for (Class<?> cls : MiscUtilities.findSubclasses(IPersistentObject.class, ipack, getClassLoader())) {	
-			
-			String ext = null;
-
-			/*
-			 * lookup annotation, ensure we can use the class
-			 */
-			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
-				continue;
-			
-			/*
-			 * lookup implemented concept
-			 */
-			for (Annotation annotation : cls.getAnnotations()) {
-				if (annotation instanceof PersistentObject) {
-					ext = ((PersistentObject)annotation).extension();
-					if (ext.equals("__NOEXT__"))
-						ext = null;
-					break;
-				}
-			}
-
-			PersistenceManager.get().registerSerializableClass(cls, ext);
-		}
-	}
-
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getResourceURL(java.lang.String)
 	 */
@@ -1047,44 +921,6 @@ public abstract class ThinklabPlugin extends Plugin
 
 	}
 
-	@Deprecated
-	protected void loadSessionListeners() throws ThinklabException {
-		
-		for (Extension ext : getOwnThinklabExtensions("session-listener")) {
-
-			Class<?> lv = getHandlerClass(ext, "class");
-			KnowledgeManager.get().registerSessionListenerClass(lv);
-		}
-
-	}
-	
-	private void loadApplications() throws ThinklabIOException {
-
-		/*
-		 * publish all applications from loaded plugins.
-		 */
-		for (Extension ext : getOwnThinklabExtensions("application")) {
-			ApplicationManager.get().registerApplication(new ApplicationDescriptor(this, ext));
-		}
-	}
-	
-
-	
-	@Deprecated
-	protected void loadLanguageInterpreters() throws ThinklabException {
-		
-		for (Extension ext : getOwnThinklabExtensions("language-interpreter")) {
-
-			String icl =  ext.getParameter("class").valueAsString();
-			String csp = ext.getParameter("language").valueAsString();
-			
-			InterpreterManager.get().registerInterpreter(csp, icl);
-			
-			logger().info("language interpreter registered for " + csp);
-		}
-		
-	}
-
 	protected void loadKnowledgeImporters() {
 	
 		String ipack = this.getClass().getPackage().getName() + ".importers";
@@ -1150,7 +986,7 @@ public abstract class ThinklabPlugin extends Plugin
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#createInstance(java.lang.String)
 	 */
-	public Object createInstance(String clazz) throws ThinklabPluginException {
+	public Object createInstance(String clazz) throws ThinklabException {
 		
 		Object ret = null;
 		
@@ -1162,13 +998,13 @@ public abstract class ThinklabPlugin extends Plugin
 			ret = cls.newInstance();
 			
 		} catch (Exception e) {
-			throw new ThinklabPluginException(e);
+			throw new ThinklabInternalErrorException(e);
 		}
 		return ret;
 	}
 
 	
-	protected Object getHandlerInstance(Extension ext, String field) throws ThinklabPluginException {
+	protected Object getHandlerInstance(Extension ext, String field) throws ThinklabException {
 		
 		Object ret = null;
 		
@@ -1180,12 +1016,12 @@ public abstract class ThinklabPlugin extends Plugin
 			ret = cls.newInstance();
 			
 		} catch (Exception e) {
-			throw new ThinklabPluginException(e);
+			throw new ThinklabValidationException(e);
 		}
 		return ret;
 	}
 
-	protected Class<?> getHandlerClass(Extension ext, String field) throws ThinklabPluginException {
+	protected Class<?> getHandlerClass(Extension ext, String field) throws ThinklabException {
 		
 		ClassLoader classLoader = getManager().getPluginClassLoader(getDescriptor());
 		Class<?> cls = null;
@@ -1194,44 +1030,12 @@ public abstract class ThinklabPlugin extends Plugin
 			cls = classLoader.loadClass(ext.getParameter(field).valueAsString());
 			
 		} catch (Exception e) {
-			throw new ThinklabPluginException(e);
+			throw new ThinklabValidationException(e);
 		}
 		return cls;
 	}
 
 	
-	@Deprecated
-	protected void loadKnowledgeLoaders() throws ThinklabException {
-		
-		for (Extension ext : getOwnThinklabExtensions("knowledge-loader")) {
-
-			String[] format = getParameter(ext, "format").split(",");	
-			
-			for (String f : format) {
-				KnowledgeManager.get().registerKnowledgeLoader(
-					f, 
-					(KnowledgeLoader) getHandlerInstance(ext, "class"));
-			}
-		}
-		
-	}
-	
-	@Deprecated
-	protected void loadKBoxHandlers() throws ThinklabNoKMException, ThinklabPluginException {
-		
-		for (Extension ext : getOwnThinklabExtensions("kbox-handler")) {
-
-			String[] format = getParameter(ext, "protocol").split(",");	
-			
-			for (String f : format) {
-				KBoxManager.get().registerKBoxProtocol(
-					f, 
-					(KBoxHandler) getHandlerInstance(ext, "class"));
-			}
-		}	
-		
-	}
-
 	@Override
 	protected final void doStop() throws Exception {
 		

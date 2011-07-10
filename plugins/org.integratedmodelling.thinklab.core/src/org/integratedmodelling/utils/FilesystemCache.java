@@ -37,8 +37,8 @@ import java.io.File;
 import java.sql.Time;
 import java.util.Hashtable;
 
+import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.utils.xml.XMLDocument;
 
 /**

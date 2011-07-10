@@ -41,13 +41,11 @@ import java.util.Map;
 import joptsimple.OptionParser;
 import joptsimple.OptionSpecBuilder;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 
 /**
@@ -85,7 +83,7 @@ public class CommandDeclaration {
 	
 	private boolean freeForm = false;
 
-	public boolean admitsOption(String option) throws ThinklabMalformedCommandException {
+	public boolean admitsOption(String option) throws ThinklabValidationException {
 		return findOption(option) != null;
 	}
 	
@@ -97,16 +95,16 @@ public class CommandDeclaration {
 		return returnType;
 	}
 	
-	private argDescriptor findOption(String id) throws ThinklabMalformedCommandException {
+	private argDescriptor findOption(String id) throws ThinklabValidationException {
 		
 		for (argDescriptor d : options) {
 			if (d.id.equals(id))
 				return d;
 		}
-		throw new ThinklabMalformedCommandException(id + ": option " + id + " undefined");
+		throw new ThinklabValidationException(id + ": option " + id + " undefined");
 	}
 	
-	private argDescriptor findArgument(String id) throws ThinklabMalformedCommandException {
+	private argDescriptor findArgument(String id) throws ThinklabValidationException {
 
 		for (argDescriptor d : mandatoryArguments) {
 			if (d.id.equals(id))
@@ -116,7 +114,7 @@ public class CommandDeclaration {
 			if (d.id.equals(id))
 				return d;
 		}
-		throw new ThinklabMalformedCommandException(id + ": argument " + id + " undefined");
+		throw new ThinklabValidationException(id + ": argument " + id + " undefined");
 	}
 	
 	public CommandDeclaration(String id, String description) {
@@ -139,7 +137,7 @@ public class CommandDeclaration {
 
     	/* command must have the total number of args by now. */
     	if (command.args.size() != (mandatoryArguments.size() + optionalArguments.size()) )
-    		throw new ThinklabMalformedCommandException(
+    		throw new ThinklabValidationException(
     				"wrong number of argument. Run 'help " +
     				ID + 
     				"'.");
@@ -159,7 +157,7 @@ public class CommandDeclaration {
 			}
 
 			if (!ok || validator == null)
-				throw new ThinklabMalformedCommandException(
+				throw new ThinklabValidationException(
 						"cannot find validator for " + 
 						ad.type + 
 						" to validate input '" +
@@ -170,7 +168,7 @@ public class CommandDeclaration {
 				validator.parseLiteral(e.getValue());
 				command.setArgumentValue(e.getKey(), validator);
 			} catch (ThinklabValidationException e1) {
-				throw new ThinklabMalformedCommandException(
+				throw new ThinklabValidationException(
 						"cannot validate input '" + 
 						e.getValue() + 
 						"' as " +
@@ -200,7 +198,7 @@ public class CommandDeclaration {
 			}
 
 			if (!ok || validator == null)
-				throw new ThinklabMalformedCommandException(
+				throw new ThinklabValidationException(
 						"cannot find validator for " + 
 						ad.type + 
 						" to validate input '" +
@@ -211,7 +209,7 @@ public class CommandDeclaration {
 				validator.parseLiteral(e.getValue());
 				command.setOptionValue(e.getKey(), validator);
 			} catch (ThinklabValidationException e1) {
-				throw new ThinklabMalformedCommandException(
+				throw new ThinklabValidationException(
 						"cannot validate input '" + 
 						e.getValue() + 
 						"' as " +
@@ -381,21 +379,21 @@ public class CommandDeclaration {
     	return getLongSynopsis();
     }
 
-	public String getArgumentNameAtIndex(int idx) throws ThinklabMalformedCommandException {
+	public String getArgumentNameAtIndex(int idx) throws ThinklabValidationException {
 		
 		if (idx < mandatoryArguments.size())
 			return mandatoryArguments.get(idx).id;
 		else if ((idx - mandatoryArguments.size()) < optionalArguments.size())
 			return optionalArguments.get(idx - mandatoryArguments.size()).id;
 		
-		throw new ThinklabMalformedCommandException("command " + ID + " does not have " + (idx+1) + " parameters");
+		throw new ThinklabValidationException("command " + ID + " does not have " + (idx+1) + " parameters");
 	}
     
-	public IConcept getOptionType(String option) throws ThinklabMalformedCommandException {
+	public IConcept getOptionType(String option) throws ThinklabValidationException {
 		return findOption(option).type;
 	}
 
-	public IConcept getArgumentType(String arg) throws ThinklabMalformedCommandException {
+	public IConcept getArgumentType(String arg) throws ThinklabValidationException {
 		return findArgument(arg).type;
 	}
 	

@@ -1,9 +1,9 @@
 package org.integratedmodelling.thinklab.kbox;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.utils.LogicalConnector;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.LogicalConnector;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 
 /**
  * A kbox that implements ConstrainedKBox constrains its queries with one overall

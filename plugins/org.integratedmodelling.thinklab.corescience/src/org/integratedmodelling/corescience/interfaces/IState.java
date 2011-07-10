@@ -12,7 +12,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
  * @author Ferdinando
  *
  */
-public interface IState  extends /* IDataSource, */ IConceptualizable {
+public interface IState extends IConceptualizable {
 		
 	public IConcept getValueType();
 	

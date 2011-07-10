@@ -1,8 +1,8 @@
 package org.integratedmodelling.thinklab.implementations.operators;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 @InstanceImplementation(concept="thinklab-core:GreaterOrEqual")
 public class Ge extends Operator {

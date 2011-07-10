@@ -33,13 +33,11 @@
  **/
 package org.integratedmodelling.thinklab.literals;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 /**
  * <p>A specialized Value that holds numbers and has all math operations with automatic unit conversion.</p>
@@ -53,7 +51,7 @@ public class NumberValue extends ParsedLiteralValue {
 	
     public double value;
     
-    private NumberValue(IConcept c) throws ThinklabNoKMException {
+    private NumberValue(IConcept c)  {
     	super(c);
     }
     
@@ -112,7 +110,7 @@ public class NumberValue extends ParsedLiteralValue {
         return false;
     }
     
-    public NumberValue asNumber() throws ThinklabValueConversionException {
+    public NumberValue asNumber() {
         return this;
     }
 
@@ -168,12 +166,9 @@ public class NumberValue extends ParsedLiteralValue {
     @Override
     public Object clone() {
     	NumberValue ret = null;
-    	try {
-			ret = new NumberValue(concept);
-			ret.value = value;
-			
-    	} catch (ThinklabNoKMException e) {
-		}
+    	ret = new NumberValue(concept);
+    	ret.value = value;
+
     	return ret;
     }
     

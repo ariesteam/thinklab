@@ -34,7 +34,7 @@ package org.integratedmodelling.multidimensional;
 
 import java.util.Iterator;
 
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 
 public class ArrayMultidimensionalArray {
 

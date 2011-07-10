@@ -69,7 +69,7 @@ import org.integratedmodelling.utils.sexpr.FormReader.FormListener;
  * @author Ferdinando Villa
  * 
  */
-public class ModelFactory {
+public class ModelFactory implements IModelFactory {
 
 	// var ID for auxiliary cache information to differentiate signatures of
 	// same context;
@@ -354,6 +354,9 @@ public class ModelFactory {
 	/*
 	 * called by the defmodel macro.
 	 */
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#registerModel(org.integratedmodelling.modelling.model.Model, java.lang.String)
+	 */
 	public Model registerModel(Model model, String name) throws ThinklabException {
 		
 		if (modelsById.containsKey(name))
@@ -369,6 +372,9 @@ public class ModelFactory {
 	/*
 	 * called by the defscenario macro.
 	 */
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#registerScenario(org.integratedmodelling.modelling.model.Scenario, java.lang.String)
+	 */
 	public Scenario registerScenario(Scenario model, String name) throws ThinklabException {
 		
 		model.setName(name);
@@ -379,6 +385,9 @@ public class ModelFactory {
 	
 	/*
 	 * called by the defcontext macro.
+	 */
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#registerContext(org.integratedmodelling.modelling.context.Context, java.lang.String)
 	 */
 	public Context registerContext(Context model, String name) throws ThinklabException {
 		
@@ -391,6 +400,9 @@ public class ModelFactory {
 	/*
 	 * called by the defagent macro. Creates a prototype agent that we will use to
 	 * cloned agents from.
+	 */
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#registerAgent(org.integratedmodelling.modelling.agents.ThinkAgent, java.lang.String)
 	 */
 	public ThinkAgent registerAgent(ThinkAgent model, String name) throws ThinklabException {
 		
@@ -405,6 +417,9 @@ public class ModelFactory {
 	 * called by the defagent macro. Creates a prototype agent that we will use to
 	 * cloned agents from.
 	 */
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#registerAnnotation(org.integratedmodelling.modelling.annotation.Annotation, java.lang.String)
+	 */
 	public Annotation registerAnnotation(Annotation model, String name) throws ThinklabException {
 		
 		model.setName(name);
@@ -413,10 +428,16 @@ public class ModelFactory {
 		return model;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#retrieveAnnotation(java.lang.String)
+	 */
 	public Annotation retrieveAnnotation(String s) {
 		return annotationsById.get(s);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#requireAnnotation(java.lang.String)
+	 */
 	public Annotation requireAnnotation(String s) throws ThinklabException {
 
 		Annotation ret = retrieveAnnotation(s);
@@ -426,10 +447,16 @@ public class ModelFactory {
 		return ret;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#retrieveModel(java.lang.String)
+	 */
 	public Model retrieveModel(String s) {
 		return modelsById.get(s);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#requireModel(java.lang.String)
+	 */
 	public Model requireModel(String s) throws ThinklabException {
 
 		Model ret = retrieveModel(s);
@@ -439,10 +466,16 @@ public class ModelFactory {
 		return ret;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#retrieveScenario(java.lang.String)
+	 */
 	public Scenario retrieveScenario(String s) {
 		return scenariosById.get(s);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#requireScenario(java.lang.String)
+	 */
 	public Scenario requireScenario(String s) throws ThinklabException {
 
 		Scenario ret = retrieveScenario(s);
@@ -452,10 +485,16 @@ public class ModelFactory {
 		return ret;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#retrieveContext(java.lang.String)
+	 */
 	public Context retrieveContext(String s) {
 		return contextsById.get(s);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#requireContext(java.lang.String)
+	 */
 	public Context requireContext(String s) throws ThinklabException {
 
 		Context ret = retrieveContext(s);
@@ -488,6 +527,9 @@ public class ModelFactory {
 		return ret;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#releaseNamespace(java.lang.String)
+	 */
 	public synchronized void releaseNamespace(String namespace) {
 		
 		NamespaceEntry ns = (NamespaceEntry) ModelMap.getNamespace(namespace);
@@ -567,28 +609,16 @@ public class ModelFactory {
 		return ret;
 	}
 
-	/**
-	 * Return a temporal extent that describes the time coverage of a particular
-	 * model in a given kbox. It will be the union of the temporal contexts of
-	 * all the realized models found in that kbox. Same disclaimers as
-	 * getSpatialCoverage.
-	 * 
-	 * TODO unimplemented
-	 * 
-	 * @param model
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#getTemporalCoverage(org.integratedmodelling.modelling.model.Model, org.integratedmodelling.thinklab.interfaces.storage.IKBox, org.integratedmodelling.thinklab.interfaces.applications.ISession)
 	 */
 	public TemporalExtentValue getTemporalCoverage(Model model, IKBox kbox,
 			ISession session) {
 		return null;
 	}
 
-	/**
-	 * Get all scenarios that apply to the passed model.
-	 * 
-	 * @param model
-	 * @return
-	 * @throws ThinklabException 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#getApplicableScenarios(org.integratedmodelling.modelling.model.Model, org.integratedmodelling.corescience.interfaces.IContext, boolean)
 	 */
 	public Collection<Scenario> getApplicableScenarios(Model model, IContext context, boolean isPublic) throws ThinklabException {
 		
@@ -634,6 +664,9 @@ public class ModelFactory {
 		return run(model, kbox, session, null, context);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#run(org.integratedmodelling.modelling.model.Model, org.integratedmodelling.thinklab.interfaces.storage.IKBox, org.integratedmodelling.thinklab.interfaces.applications.ISession, java.util.Collection, org.integratedmodelling.corescience.interfaces.IContext)
+	 */
 	public IQueryResult run(Model model, IKBox kbox, ISession session,
 			Collection<IContextualizationListener> listeners,
 			IContext context) throws ThinklabException {
@@ -674,13 +707,8 @@ public class ModelFactory {
 		return ret;
 	}
 	
-	/**
-	 * Load models or other constructs by parsing the clojure files in the passed dir.
-	 * Return all the namespaces defined.
-	 * 
-	 * @param dir
-	 * @return
-	 * @throws ThinklabException
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#loadModelFiles(java.io.File)
 	 */
 	public Collection<String> loadModelFiles(File dir) throws ThinklabException {
 
@@ -708,14 +736,8 @@ public class ModelFactory {
 	}
 	
 	
-	/**
-	 * Load all models passed in the given Clojure file, creating a source code map
-	 * and associating each model and namespace to its node in the source map so that
-	 * the source can be reconstructed exactly.
-	 *  
-	 * @param resourceId
-	 * @return the namespace defined
-	 * @throws ThinklabIOException 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.modelling.model.IModelFactory#loadModelFile(java.lang.String)
 	 */
 	public String loadModelFile(final String resourceId) throws ThinklabException {
 		

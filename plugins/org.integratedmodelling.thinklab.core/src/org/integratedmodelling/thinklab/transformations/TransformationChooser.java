@@ -1,7 +1,6 @@
 package org.integratedmodelling.thinklab.transformations;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.ConfigurableIntelligentMap;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 /**
  * Maps concepts to data transformations to apply when data in states are returned as doubles. 

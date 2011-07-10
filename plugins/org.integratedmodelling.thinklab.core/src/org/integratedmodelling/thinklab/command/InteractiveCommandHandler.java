@@ -6,12 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
  * Something to derive from to implement a sub-command system. Provides functions to ask questions
@@ -89,7 +89,7 @@ public abstract class InteractiveCommandHandler implements ICommandHandler {
 		this.in = new BufferedReader(new InputStreamReader(this.inp));
 		
 		if (this.inp == null || this.out == null)
-			throw new ThinklabInappropriateOperationException(
+			throw new ThinklabValidationException(
 					"command " + command.getName() + " must be executed interactively");
 		
 		return doInteractive(command, session);

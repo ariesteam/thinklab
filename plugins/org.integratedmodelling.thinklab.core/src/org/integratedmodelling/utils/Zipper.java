@@ -2,8 +2,8 @@ package org.integratedmodelling.utils;
 
 import java.io.File;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 
 /**
  * The only purpose of this is to add existing files to a zip archive easily.

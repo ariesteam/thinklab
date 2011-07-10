@@ -35,9 +35,9 @@ package org.integratedmodelling.thinklab.interfaces;
 import java.util.Collection;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 /**
  * Simply manages identification, authentication and storage/retrieval of user properties.

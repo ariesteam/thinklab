@@ -45,37 +45,29 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeFactory;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
-import org.integratedmodelling.thinklab.exception.ThinklabMissingResourceException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeProvider;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.applications.ISessionManager;
-import org.integratedmodelling.thinklab.interfaces.applications.IThinklabSessionListener;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
-import org.integratedmodelling.thinklab.session.SingleSessionManager;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Polylist;
 import org.java.plugin.PluginManager;
 import org.semanticweb.owl.vocab.XSDVocabulary;
 
@@ -104,7 +96,7 @@ import org.semanticweb.owl.vocab.XSDVocabulary;
  * @see CommandDeclaration
  * @see Command
  */
-public class KnowledgeManager implements IKnowledgeProvider {
+public class KnowledgeManager implements IKnowledgeFactory {
 
 	private boolean adminPrivileges = false;
 	
@@ -160,7 +152,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	private SemanticType ordinalRangeMappingTypeID;
 
 	protected IKnowledgeRepository knowledgeRepository;
-	protected ISessionManager  sessionManager = null;
+
 
 	protected PluginManager pluginManager = null;
 	
@@ -218,7 +210,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 
 	private Date start;
 
-	public KnowledgeManager(IKnowledgeRepository kr, ISessionManager ki) {
+	public KnowledgeManager(IKnowledgeRepository kr) {
 
         /* set KM */
         KM = this;
@@ -227,18 +219,9 @@ public class KnowledgeManager implements IKnowledgeProvider {
         
         /* create stuff */
         this.knowledgeRepository = kr;
-		this.sessionManager  = ki;
 		
 	}
 	
-	/**
-	 * If the km is only meant to be used within an application, use this one.
-	 * @param fileKnowledgeRepository
-	 * @throws ThinklabIOException
-	 */
-	public KnowledgeManager(IKnowledgeRepository knowledgeRepository) throws ThinklabException {
-		this(knowledgeRepository, new SingleSessionManager());
-	}
 
 	/**
 	 * This should become the default constructor: the class of knowledge repository and session
@@ -262,13 +245,11 @@ public class KnowledgeManager implements IKnowledgeProvider {
 				"org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository");
 		
 		IKnowledgeRepository kr = null;
-		ISessionManager sm = null;
 		
 		Class<?> cls = null;
 		try {
 
 			cls = Thinklab.get().getClassLoader().loadClass(smClass);
-			sm = (ISessionManager) cls.newInstance();
 
 			cls = Thinklab.get().getClassLoader().loadClass(krClass);
 			kr =  (IKnowledgeRepository) cls.newInstance();
@@ -278,7 +259,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		}
 		
 		knowledgeRepository = kr;
-		sessionManager = sm;
         
         this.start = new Date();
 	}
@@ -296,9 +276,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		return knowledgeRepository;
 	}
 	
-	public ISessionManager getSessionManager() {
-		return sessionManager;
-	}
 	
     /* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#getRootConcept()
@@ -652,7 +629,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	public static KnowledgeManager get() {
 		
 		if (KM == null)
-		   throw new ThinklabNoKMException();
+		   throw new ThinklabRuntimeException("no knowledge manager!");
 		return KM;
 	}
 	
@@ -674,36 +651,14 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		sessionListeners.remove(className);
 	}
 
-	@Deprecated
-	public void registerKnowledgeLoader(String format, KnowledgeLoader loader) {
-		knowledgeLoaders.put(format, loader);
-	}
-
-	@Deprecated
-	public void unregisterKnowledgeLoader(String format) {
-		knowledgeLoaders.remove(format);
-	}
 	
     /* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#requireConcept(java.lang.String)
 	 */
     public IConcept requireConcept(String id) throws ThinklabException {
     	
-		IConcept ret = null;
-		if (adminPrivileges) {
-			try {
-				ret = knowledgeRepository.checkSelfAnnotation(id);
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
-			}
-		}
-		
-		if (ret == null) {
-			SemanticType st = new SemanticType(id);
-			return requireConcept(st);
-		}
-		
-		return ret;
+    	SemanticType st = new SemanticType(id);
+    	return requireConcept(st);
     }
     
     /* (non-Javadoc)
@@ -799,7 +754,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
             }
             
             public boolean match(IConcept c) {
-                ret = coll.get(c.getSemanticType().toString());
+                ret = coll.get(c.toString());
                 return(ret != null);	
             }    
         }
@@ -840,7 +795,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
             }
             
             public boolean match(IConcept c) {
-                Class<?> cc = coll.get(c.getSemanticType().toString());
+                Class<?> cc = coll.get(c.toString());
                 return (cc != null);
             }    
         }
@@ -959,7 +914,7 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#retrieveInstance(java.lang.String)
 	 */
-	public IInstance retrieveInstance(String resultID) throws ThinklabMalformedSemanticTypeException {
+	public IInstance retrieveInstance(String resultID) throws ThinklabValidationException {
 		return retrieveInstance(new SemanticType(resultID));
 	}
 
@@ -1034,49 +989,9 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#getInstanceFromURI(java.lang.String, org.integratedmodelling.thinklab.interfaces.ISession)
-	 */
-	public IInstance getInstanceFromURI(String uri, ISession session) throws ThinklabException {
-		
-			IInstance ret = null;
-		
-	        String[] ss = uri.split("#");
-	        if (ss.length != 2)
-	           return ret;
-	        
-	        IOntology o = null;
-
-	        String csp = getConceptSpaceFromURI(ss[0] + "#");
-
-	        if (csp != null) {
-	        	o = knowledgeRepository.retrieveOntology(csp);
-	        	if (o != null) {
-	        		
-	        		ret = o.getInstance(ss[1]);
-	        		if (ret != null) {
-	        			ret = session.createObject(ret);
-	            	}
-	        	}	
-	        }
-	        
-	        /* not an ontology, so must be a kbox */
-	        if (ret == null) {
-	        	
-	        	IKBox kbox = session.retrieveKBox(ss[0]);
-	        	
-	        	if (kbox != null) {
-	        		ret = kbox.getObjectFromID(ss[1], session);
-	        	}
-	        }
-	        return ret;
-	}
-
-
-	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#getLeastGeneralCommonConcept(org.integratedmodelling.thinklab.SemanticType, org.integratedmodelling.thinklab.SemanticType)
 	 */
-	public IConcept getLeastGeneralCommonConcept(SemanticType semanticType, SemanticType otherConcept) 
-		throws ThinklabResourceNotFoundException {
+	public IConcept getLeastGeneralCommonConcept(String semanticType, String otherConcept) throws ThinklabException {
 		return getLeastGeneralCommonConcept(requireConcept(semanticType), requireConcept(otherConcept));
 	}
 
@@ -1124,41 +1039,8 @@ public class KnowledgeManager implements IKnowledgeProvider {
 
 		return ret;
 	}
-	
-	/**
-	 * Request a user session to put stuff into. You can later make the session permanent by adding it to the
-	 * knowledge base. Note that all operations on sessions are typically synchronized. 
-	 */
-	public ISession requestNewSession() throws ThinklabException {
-		
-		ISession session = sessionManager.createNewSession();
 
-		for (Class<?> lcl : sessionListeners.values()) {
-			
-			IThinklabSessionListener listener = null;
-			
-			try {
-				listener = (IThinklabSessionListener) lcl.newInstance();
-			} catch (Exception e) {
-				throw new ThinklabMissingResourceException("cannot create requested session listener: " + lcl + ": error during creation");
-			}
-			listener.sessionCreated(session);
-			session.addListener(listener);
-		}
-		
-		return session;
-	}
 
-	public void notifySessionDeletion(ISession session) throws ThinklabException {
-		
-		Collection<IThinklabSessionListener> listeners = session.getListeners();
-		
-		if (listeners != null)
-			for (IThinklabSessionListener listener : listeners)
-				listener.sessionDeleted(session);
-		
-		sessionManager.notifySessionDeletion(session);
-	}
 
 	/**
 	 * Provided to simplify access to core types when we are sure that we have a knowledge
@@ -1349,14 +1231,6 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	
 	public void setPluginManager(PluginManager pman) {
 		pluginManager = pman;
-	}
-
-	/**
-	 * Set a new session manager to redefine the types of sessions you want created.
-	 * @param sessionManager
-	 */
-	public void setSessionManager(ISessionManager sessionManager) {
-		this.sessionManager = sessionManager;
 	}
 
 	public void registerXSDTypeMapping(String xsd, String type) {

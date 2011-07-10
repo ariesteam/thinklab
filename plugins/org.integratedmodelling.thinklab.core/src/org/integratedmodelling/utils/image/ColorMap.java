@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.utils.MiscUtilities;
 
 /**

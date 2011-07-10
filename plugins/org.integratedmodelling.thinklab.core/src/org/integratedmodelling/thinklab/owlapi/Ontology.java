@@ -44,24 +44,23 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.exception.ThinklabDuplicateNameException;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.utils.NameGenerator;
-import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Path;
-import org.integratedmodelling.utils.Polylist;
 import org.semanticweb.owl.io.OWLXMLOntologyFormat;
 import org.semanticweb.owl.model.AddAxiom;
 import org.semanticweb.owl.model.OWLAxiom;
@@ -279,7 +278,7 @@ public class Ontology implements IOntology {
 			
 			if (!acceptDuplicateIDs) {
 				
-				throw new ThinklabDuplicateNameException("instance with name " + ID
+				throw new ThinklabValidationException("instance with name " + ID
 						+ " already exists in concept space " + conceptSpace);
 			}
 			
@@ -309,12 +308,9 @@ public class Ontology implements IOntology {
 		
 		Instance inst = null;
 		
-		if (this.storeInstances ) {
-			inst = new Instance(ind);
-			instances.put(new SemanticType(cs, ID), inst); 
-		} else {
-			inst = new VolatileInstance(ind);
-		}
+		inst = new Instance(ind);
+		instances.put(new SemanticType(cs, ID), inst); 
+		
 		return inst;
 	}
 
@@ -327,7 +323,7 @@ public class Ontology implements IOntology {
 		IInstance inst = getInstance(i.getLocalName());
 		if (inst != null)
 			return inst;
-		return createInstance(i.toList(null));
+		return createInstance(i.asList(null));
 	}
 
 

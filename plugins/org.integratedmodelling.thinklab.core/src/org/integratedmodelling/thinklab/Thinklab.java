@@ -5,13 +5,13 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.project.ThinklabProjectInstaller;
@@ -170,7 +170,7 @@ public class Thinklab extends ThinklabPlugin {
 		}
 		
 		if (ret == null && complain)
-			throw new ThinklabPluginException("plugin name " + name + " unresolved or ambiguous");
+			throw new ThinklabResourceNotFoundException("plugin name " + name + " unresolved or ambiguous");
 		
 		return ret;
 	}
@@ -185,7 +185,7 @@ public class Thinklab extends ThinklabPlugin {
 			try {
 				ret = (ThinklabPlugin)get().getManager().getPlugin(pid);
 			} catch (PluginLifecycleException e) {
-				throw new ThinklabPluginException(e);
+				throw new ThinklabInternalErrorException(e);
 			}
 			
 		return ret;

@@ -36,17 +36,16 @@ package org.integratedmodelling.thinklab.constraint;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.LogicalConnector;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabConstraintValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIncompatibleConstraintException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
-import org.integratedmodelling.utils.LogicalConnector;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+
 
 /**
  *    <p>A constraint is a generalized set of restrictions on the type and properties of an instance or
@@ -167,7 +166,7 @@ public class Constraint implements IQuery {
 				
 				/* can't have it twice */
 				if (concept != null)
-					throw new ThinklabConstraintValidationException(
+					throw new ThinklabValidationException(
 							"constraint: invalid token " + def[i] + "; concept has been already specified");
 				
 				if (def[i] instanceof IConcept)
@@ -310,7 +309,7 @@ public class Constraint implements IQuery {
 			return this;
 		
 		if (! (query instanceof Constraint)) {
-			throw new ThinklabIncompatibleConstraintException("constraints are incompatible");
+			throw new ThinklabValidationException("constraints are incompatible");
 		}
 		
 		Constraint constraint = (Constraint)query;		
@@ -328,7 +327,7 @@ public class Constraint implements IQuery {
             else if (c2.is(c1))
                 ck = c2;
             else 
-                throw new ThinklabIncompatibleConstraintException("constraints can't be merged: scope " +
+                throw new ThinklabValidationException("constraints can't be merged: scope " +
                         c1 +
                         " is incompatible with " +
                         c2);
@@ -525,5 +524,7 @@ public class Constraint implements IQuery {
 		
 		return null;
 	}
+
+
     
 }

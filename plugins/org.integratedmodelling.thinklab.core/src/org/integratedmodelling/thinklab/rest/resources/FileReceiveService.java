@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
-import org.integratedmodelling.utils.Pair;
 import org.restlet.data.MediaType;
 import org.restlet.ext.fileupload.RestletFileUpload;
 import org.restlet.representation.Representation;

@@ -21,16 +21,15 @@ package org.integratedmodelling.thinklab.owlapi;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IResource;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IResource;
 import org.semanticweb.owl.model.AddAxiom;
 import org.semanticweb.owl.model.OWLAnnotation;
 import org.semanticweb.owl.model.OWLAxiom;
@@ -396,7 +395,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	public boolean is(SemanticType st) {
 		try {
 			return is(Registry.get().getURI(st));
-		} catch (ThinklabMalformedSemanticTypeException e) {
+		} catch (Exception e) {
 			return false;
 		}
 	}

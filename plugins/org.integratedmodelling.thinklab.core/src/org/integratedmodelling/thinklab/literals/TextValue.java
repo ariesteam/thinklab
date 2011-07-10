@@ -33,11 +33,10 @@
  **/
 package org.integratedmodelling.thinklab.literals;
 
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 @LiteralImplementation(concept="thinklab-core:Text")
 public class TextValue extends ParsedLiteralValue {
@@ -89,8 +88,8 @@ public class TextValue extends ParsedLiteralValue {
         return false;
     }
     
-    public TextValue asText() throws ThinklabValueConversionException {
-        return this;
+    public String asText()  {
+        return value;
     }
 
     public String toString() {

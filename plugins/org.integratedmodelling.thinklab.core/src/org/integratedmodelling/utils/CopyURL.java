@@ -42,7 +42,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 
 
 

@@ -37,8 +37,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.integratedmodelling.thinklab.exception.ThinklabCircularDependencyException;
-
 /**
  * <p>Generic topological sorter. Sorts installed content by dependency. 
  * Not the most efficient or convenient, but will do for now.</p>

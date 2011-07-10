@@ -3,10 +3,10 @@ package org.integratedmodelling.thinklab.graph;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 
 public class PropertyGraph extends KnowledgeGraph {
 

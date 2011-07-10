@@ -37,13 +37,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 
 /**
  * <p>A Relationship connects a "source" concept to another Concept, object (Instance), or Literal through a Property.
@@ -82,7 +82,7 @@ public class Relationship implements IRelationship {
      * @see org.integratedmodelling.ima.core.IRelationship#isObject()
      */
     public boolean isObject() {
-        return literal != null && literal.isObjectReference();
+        return literal != null && literal.isObject();
     }
     
     /* (non-Javadoc)
@@ -92,16 +92,16 @@ public class Relationship implements IRelationship {
     	
     	Collection<IConcept> domain = property.getDomain();
     	
-        String ret = property.getSemanticType().toString();
+        String ret = property.toString();
         ret += 
         	" [" +
         	domain + 
         	" -> {";
         if (isLiteral()) {
-        	ret += literal.getConcept().getSemanticType().toString();
+        	ret += literal.getConcept().toString();
         } else {
         	for (IConcept c : property.getRange())
-        		ret += c.getSemanticType().toString() + " ";
+        		ret += c + " ";
         }        	
     	ret += "}]";
 
@@ -134,7 +134,7 @@ public class Relationship implements IRelationship {
 		
 		if (isObject()) {
 		
-			IInstance oo = literal.asObjectReference().getObject();
+			IInstance oo = literal.asObject();
 			alist.add(((Instance)oo).toListInternal(null, references));
 
 		} else if (isLiteral()) {
@@ -147,7 +147,7 @@ public class Relationship implements IRelationship {
 				
 				/* extended literal: store concept and ID, if any, as well */
 				String cid = literal.getConcept().toString();
-				String lid = literal.getID();
+				String lid = null; // literal.toString();
 				if (lid != null && !lid.equals(""))
 					cid += "#" + lid;
 				

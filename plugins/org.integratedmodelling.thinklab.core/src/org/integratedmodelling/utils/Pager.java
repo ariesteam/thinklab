@@ -33,8 +33,8 @@
  **/
 package org.integratedmodelling.utils;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 
 
 /** 

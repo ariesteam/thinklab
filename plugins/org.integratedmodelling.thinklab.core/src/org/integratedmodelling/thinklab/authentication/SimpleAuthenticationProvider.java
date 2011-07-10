@@ -33,26 +33,22 @@
 package org.integratedmodelling.thinklab.authentication;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabAuthenticationException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
-import org.integratedmodelling.thinklab.exception.ThinklabAuthenticationException;
-import org.integratedmodelling.thinklab.exception.ThinklabDuplicateUserException;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInvalidUserException;
 import org.integratedmodelling.thinklab.interfaces.IThinklabAuthenticationProvider;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
-import org.integratedmodelling.utils.xml.XML;
-import org.integratedmodelling.utils.xml.XML.XmlNode;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
 
@@ -79,7 +75,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 		String passwd = passwords.get(username);
 		
 		if (passwd == null) {
-			throw new ThinklabInvalidUserException(username);
+			throw new ThinklabValidationException(username);
 		}
 		
 		String ew = encryptionManager == null ?
@@ -95,7 +91,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 		
 		if (obj == null) {
 			if (!haveUser(username))
-				throw new ThinklabInvalidUserException(username);	
+				throw new ThinklabValidationException(username);	
 			obj = new Properties();
 			userProperties.put(username, obj);
 		}

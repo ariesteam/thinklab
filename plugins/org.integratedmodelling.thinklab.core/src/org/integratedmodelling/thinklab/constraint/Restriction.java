@@ -36,25 +36,21 @@ package org.integratedmodelling.thinklab.constraint;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.IOperator;
+import org.integratedmodelling.lang.LogicalConnector;
+import org.integratedmodelling.lang.Quantifier;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
-import org.integratedmodelling.thinklab.exception.ThinklabConstraintValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.interfaces.literals.IOperator;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.utils.LogicalConnector;
-import org.integratedmodelling.utils.MalformedLogicalConnectorException;
-import org.integratedmodelling.utils.MalformedQuantifierException;
-import org.integratedmodelling.utils.Polylist;
-import org.integratedmodelling.utils.Quantifier;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 
 /**
  * Constraints are made up of restrictions. The Restriction class provides an API to easily build constraints
@@ -382,7 +378,7 @@ public class Restriction  {
 		}
 		
 		if (ret == null) {
-			throw new ThinklabConstraintValidationException("operator " + op + " has not been declared");
+			throw new ThinklabValidationException("operator " + op + " has not been declared");
 		}
 		
 		return ret;
@@ -476,15 +472,11 @@ public class Restriction  {
 				(content.first() instanceof String && 
 						LogicalConnector.isLogicalConnector(content.first().toString()))) {
 
-				try {
-					ret.connector = LogicalConnector.parseLogicalConnector(content.first().toString());
-				} catch (MalformedLogicalConnectorException e) {
-					/* won't happen */
-				}
+			ret.connector = LogicalConnector.parseLogicalConnector(content.first().toString());
 				
 				if (!ret.connector.equals(LogicalConnector.INTERSECTION) &&
 						!ret.connector.equals(LogicalConnector.UNION))
-						throw new ThinklabConstraintValidationException(
+						throw new ThinklabValidationException(
 								content + 
 								"restrictions can only be connected in AND and OR; please use quantifiers for remaining cases");
 						
@@ -493,7 +485,7 @@ public class Restriction  {
 					for (int i = 1; i < def.length; i++) {
 						
 						if (! (def[i] instanceof Polylist)) {
-							throw new ThinklabConstraintValidationException(
+							throw new ThinklabValidationException(
 									"restriction: " +
 									def[i] + 
 									": all elements in  " + 
@@ -510,14 +502,11 @@ public class Restriction  {
 			
 			if (objs[0] instanceof Quantifier || Quantifier.isQuantifier(objs[0].toString())) {
 				
-				try {
-					ret.quantifier = 
-						objs[0] instanceof Quantifier ? 
-							(Quantifier)objs[0] :
-							Quantifier.parseQuantifier(objs[0].toString());
-				} catch (MalformedQuantifierException e) {
-					// won't happen
-				}
+				ret.quantifier = 
+					objs[0] instanceof Quantifier ? 
+						(Quantifier)objs[0] :
+						Quantifier.parseQuantifier(objs[0].toString());
+
 				
 				start = 1;
 			}
@@ -643,7 +632,7 @@ public class Restriction  {
 
         	} else if (constraint != null && ipc.isObject()) {
 
-        		if (constraint.match(ipc.getValue().asObjectReference().getObject()))
+        		if (constraint.match(ipc.getValue().asObject()))
         			match++;	
         
         	} else {
@@ -687,7 +676,7 @@ public class Restriction  {
 			Once this is done, we should validate anything that's not an IValue to the
 			appropriate parameter type, and pass ALL parameters to op()
 		 */	
-		return operator.eval(opArgs).asBoolean().value;
+		return operator.eval(opArgs).asBoolean();
 	}
 
 	public boolean match(IKnowledgeSubject c) throws ThinklabException {

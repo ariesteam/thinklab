@@ -3,15 +3,15 @@ package org.integratedmodelling.thinklab.kbox;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.utils.Pair;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 /**
  * Query result that wraps another and presents sets of results with a common value for one 
@@ -120,7 +120,7 @@ public class GroupingQueryResult implements IQueryResult {
 			/*
 			 * TODO return as array value
 			 */
-			throw new ThinklabInappropriateOperationException(
+			throw new ThinklabValidationException(
 					"grouped result: result is multiple: cannot return through getResult");
 		return _result.getResult(_grouped.get(n).getSecond().get(0), session);
 	}
@@ -145,7 +145,7 @@ public class GroupingQueryResult implements IQueryResult {
 			/*
 			 * TODO return as array value
 			 */
-			throw new ThinklabInappropriateOperationException(
+			throw new ThinklabValidationException(
 					"grouped result: result is multiple: cannot return through getResultField");
 		return _result.getResultField(_grouped.get(n).getSecond().get(0), schemaField);
 	}
@@ -172,7 +172,7 @@ public class GroupingQueryResult implements IQueryResult {
 			/*
 			 * TODO return as array value
 			 */
-			throw new ThinklabInappropriateOperationException(
+			throw new ThinklabValidationException(
 					"grouped result: result is multiple: cannot return through getResult");
 		return _result.getResultAsList(_grouped.get(n).getSecond().get(0), references);
 	}

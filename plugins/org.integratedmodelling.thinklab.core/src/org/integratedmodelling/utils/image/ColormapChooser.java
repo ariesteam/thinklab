@@ -1,8 +1,7 @@
 package org.integratedmodelling.utils.image;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.ConfigurableIntelligentMap;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 
 /**
  * Maps concepts to colormaps. The modelling plugin has one of these and an API + commands to access it.

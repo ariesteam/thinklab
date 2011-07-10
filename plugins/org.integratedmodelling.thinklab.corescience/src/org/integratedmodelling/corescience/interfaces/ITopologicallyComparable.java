@@ -6,6 +6,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabException;
  * A topological object can be compared with topological operators to another of a 
  * compatible class.
  * 
+ * TODO implement remaining contract from SFS or other
+ * 
  * @author Ferdinando Villa
  *
  */

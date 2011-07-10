@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.project.interfaces.IProjectLoader;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.Plugin;

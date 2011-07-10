@@ -36,14 +36,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabAuthenticationException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.exception.ThinklabAuthenticationException;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.interfaces.IThinklabAuthenticationProvider;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 /**
  * The singleton authentication manager is an authentication provider that
@@ -139,7 +139,7 @@ public class AuthenticationManager implements IThinklabAuthenticationProvider {
 	public void saveUserProperties(String user) throws ThinklabException {
 
 		if (authManager == null) {
-			throw new ThinklabPluginException(
+			throw new ThinklabInternalErrorException(
 					"no authentication scheme selected: can't save user properties");
 		}
 
@@ -151,7 +151,7 @@ public class AuthenticationManager implements IThinklabAuthenticationProvider {
 			throws ThinklabException {
 
 		if (authManager == null) {
-			throw new ThinklabPluginException(
+			throw new ThinklabInternalErrorException(
 					"no authentication scheme selected: can't save user properties");
 		}
 
@@ -162,7 +162,7 @@ public class AuthenticationManager implements IThinklabAuthenticationProvider {
 			throws ThinklabException {
 
 		if (authManager == null) {
-			throw new ThinklabPluginException(
+			throw new ThinklabInternalErrorException(
 					"no authentication scheme selected: can't add user");
 		}
 		authManager.createUser(user, password);
@@ -181,7 +181,7 @@ public class AuthenticationManager implements IThinklabAuthenticationProvider {
 			throws ThinklabException {
 
 		if (authManager == null) {
-			throw new ThinklabPluginException(
+			throw new ThinklabInternalErrorException(
 					"no authentication scheme selected: can't set user password");
 		}
 
@@ -192,7 +192,7 @@ public class AuthenticationManager implements IThinklabAuthenticationProvider {
 	public void deleteUser(String user) throws ThinklabException {
 
 		if (authManager == null) {
-			throw new ThinklabPluginException(
+			throw new ThinklabInternalErrorException(
 					"no authentication scheme selected: can't set user password");
 		}
 		authManager.deleteUser(user);

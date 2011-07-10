@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 /** 
  * A helper class providing patterns to retrieve concepts that match conditions or have
@@ -52,7 +52,7 @@ public class ConceptVisitor<T> {
     }
 
     private void allMatchesDownwards(Collection<T> coll, Map<String, T> where, ConceptMatcher matcher, IConcept start) {
-        T obj = matcher.match(start) ? where.get(start.getSemanticType().toString()) : null;
+        T obj = matcher.match(start) ? where.get(start.toString()) : null;
         if (obj != null)
             coll.add(obj); 
         synchronized (start) {
@@ -62,7 +62,7 @@ public class ConceptVisitor<T> {
     }
 
     private void allMatchesUpwards(Collection<T> coll, Map<String, T> where, ConceptMatcher matcher, IConcept start) {
-        T obj = matcher.match(start) ? where.get(start.getSemanticType().toString()) : null;
+        T obj = matcher.match(start) ? where.get(start.toString()) : null;
         if (obj != null)
             coll.add(obj);
         synchronized (start) {
@@ -129,7 +129,7 @@ public class ConceptVisitor<T> {
      */
     public T findInMapUpwards(Map<String, T> where, IConcept start) {
     	
-        T ret = where.get(start.getSemanticType().toString());
+        T ret = where.get(start.toString());
         
         if (ret == null) {
             for (IConcept c : start.getParents())
@@ -149,7 +149,7 @@ public class ConceptVisitor<T> {
      */
     public T findInMapDownwards(Map<String, T> where, IConcept start) {
     	
-        T ret = where.get(start.getSemanticType().toString());
+        T ret = where.get(start.toString());
         
         if (ret == null) {
             for (IConcept c : start.getChildren())
@@ -170,7 +170,7 @@ public class ConceptVisitor<T> {
      */
     public T findMatchingInMapUpwards(Map<String, T> where, ConceptMatcher matcher, IConcept start) {
 
-        T ret = matcher.match(start) ? where.get(start.getSemanticType().toString()) : null;
+        T ret = matcher.match(start) ? where.get(start.toString()) : null;
         
         if (ret == null) {
             for (IConcept c : start.getParents())
@@ -190,7 +190,7 @@ public class ConceptVisitor<T> {
      */
     public T findMatchingInMapDownwards(Map<String, T> where, ConceptMatcher matcher, IConcept start) {
 
-        T ret = matcher.match(start) ? where.get(start.getSemanticType().toString()) : null;
+        T ret = matcher.match(start) ? where.get(start.toString()) : null;
         
         if (ret == null) {
             for (IConcept c : start.getChildren())

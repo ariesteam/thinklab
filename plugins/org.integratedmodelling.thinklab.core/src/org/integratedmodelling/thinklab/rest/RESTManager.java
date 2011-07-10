@@ -4,11 +4,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
+import org.integratedmodelling.thinklab.api.runtime.IUserModel;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.restlet.Component;
 import org.restlet.data.Protocol;

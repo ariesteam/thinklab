@@ -2,7 +2,7 @@ package org.integratedmodelling.thinklab.interfaces.commands;
 
 import java.util.Collection;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 /**
  * These provide a collection to be listed with the list command. In order

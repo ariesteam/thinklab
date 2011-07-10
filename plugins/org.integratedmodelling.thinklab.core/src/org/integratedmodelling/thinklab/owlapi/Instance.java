@@ -25,24 +25,25 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IConformance;
+import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.utils.NameGenerator;
-import org.integratedmodelling.utils.Pair;
-import org.integratedmodelling.utils.Polylist;
 import org.semanticweb.owl.model.OWLIndividual;
 import org.semanticweb.owl.model.OWLOntology;
 
@@ -196,7 +197,7 @@ public class Instance extends Knowledge implements IInstance {
 		if (conformance == null)
 			conformance = new DefaultConformance();
 		
-		return conformance.getConstraint(this).match(otherInstance);
+		return ((Constraint)(conformance.getQuery(this))).match(otherInstance);
 	}
 
 	/* (non-Javadoc)
@@ -248,7 +249,7 @@ public class Instance extends Knowledge implements IInstance {
 			
 			if (p.isObject()) {
 				
-				Instance inst = (Instance)p.getValue().asObjectReference().getObject();
+				Instance inst = (Instance)p.getValue().asObject();
 				if (!refs.contains(inst.getURI())) {
 					refs.add(inst.getURI());
 					inst.validateInternal(implementations, refs);
@@ -375,7 +376,6 @@ public class Instance extends Knowledge implements IInstance {
 		return getDirectType().is(c);
 	}
 	
-	@Override
 	public void setImplementation(IInstanceImplementation impl)
 			throws ThinklabException {
 		ThinklabOWLManager.get().setInstanceImplementation(this, impl);	

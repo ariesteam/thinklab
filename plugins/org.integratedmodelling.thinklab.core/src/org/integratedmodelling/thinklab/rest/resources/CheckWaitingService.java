@@ -1,6 +1,6 @@
 package org.integratedmodelling.thinklab.rest.resources;
 
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;

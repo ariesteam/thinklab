@@ -36,12 +36,11 @@ package org.integratedmodelling.thinklab.command;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedCommandException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.literals.Value;
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * Commands are passed back and forth between the Knowledge Interface and the Knowledge Manager. 
@@ -92,7 +91,7 @@ public class Command {
     	
     	if (declaration == null)
     		// shouldn't happen
-    		throw new ThinklabMalformedCommandException("unknown command");
+    		throw new ThinklabValidationException("unknown command");
  
     	declaration.validateCommand(this);
     }

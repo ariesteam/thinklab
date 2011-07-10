@@ -2,9 +2,9 @@ package org.integratedmodelling.thinklab.rest.resources;
 
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabAuthenticationException;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.authentication.AuthenticationManager;
-import org.integratedmodelling.thinklab.exception.ThinklabAuthenticationException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.integratedmodelling.thinklab.rest.RESTManager;
 import org.restlet.representation.Representation;

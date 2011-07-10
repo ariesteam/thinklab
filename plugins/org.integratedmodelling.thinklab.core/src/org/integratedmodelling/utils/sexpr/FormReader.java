@@ -3,8 +3,8 @@ package org.integratedmodelling.utils.sexpr;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 
 /**
  * Wraps an InputStream and reads s-expr by s-expr, using Clojure (and I guess any 

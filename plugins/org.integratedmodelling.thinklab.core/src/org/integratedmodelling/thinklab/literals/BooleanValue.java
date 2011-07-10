@@ -33,19 +33,17 @@
  **/
 package org.integratedmodelling.thinklab.literals;
 
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 @LiteralImplementation(concept="thinklab-core:Boolean")
 public class BooleanValue extends ParsedLiteralValue {
 
     public boolean value;
     
-    private BooleanValue(IConcept c) throws ThinklabNoKMException {
+    private BooleanValue(IConcept c)  {
     	super(c);
     }
     
@@ -59,19 +57,14 @@ public class BooleanValue extends ParsedLiteralValue {
         value = c;
     }
 
-    public BooleanValue(String s) throws ThinklabValidationException,
-            ThinklabNoKMException {
+    public BooleanValue(String s) throws ThinklabValidationException {
         super(s);
     }
     
     @Override
     public Object clone() {
-    	BooleanValue ret = null;
-		try {
-			ret = new BooleanValue(concept);
-	    	ret.value = value;
-		} catch (ThinklabNoKMException e) {
-		}
+    	BooleanValue ret = new BooleanValue(concept);
+    	ret.value = value;
     	return ret;
     }
     
@@ -122,7 +115,7 @@ public class BooleanValue extends ParsedLiteralValue {
     }
 
     @Override
-    public BooleanValue asBoolean() throws ThinklabValueConversionException {
+    public BooleanValue asBoolean() {
         return this;
     }
 

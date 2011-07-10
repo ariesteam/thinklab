@@ -1,6 +1,6 @@
 package org.integratedmodelling.utils.xml;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 /**
  * @author Ferdinando Villa

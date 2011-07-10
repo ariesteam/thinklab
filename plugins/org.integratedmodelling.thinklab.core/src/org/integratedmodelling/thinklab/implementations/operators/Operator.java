@@ -1,10 +1,8 @@
 package org.integratedmodelling.thinklab.implementations.operators;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.literals.IOperator;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.IOperator;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.literals.NumberValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 
@@ -27,10 +25,10 @@ public abstract class Operator implements IOperator {
 			o instanceof String;
 	}
 	
-	static double asDouble(Object arg) throws ThinklabValueConversionException {
+	static double asDouble(Object arg) throws ThinklabValidationException {
 		
 		if (arg instanceof IValue)
-			return ((IValue)arg).asNumber().asDouble();
+			return ((IValue)arg).asDouble();
 		else if (arg instanceof Double)
 			return (Double)arg;
 		else if (arg instanceof Float)
@@ -40,29 +38,29 @@ public abstract class Operator implements IOperator {
 		else if (arg instanceof Integer)
 			return (double)(Integer)arg;	
 		
-		throw new ThinklabValueConversionException("operator value type mismatch");
+		throw new ThinklabValidationException("operator value type mismatch");
 
 	}
 	
-	static int asInt(Object arg) throws ThinklabValueConversionException {
+	static int asInt(Object arg) throws ThinklabValidationException {
 		
 		if (arg instanceof IValue)
-			return ((IValue)arg).asNumber().asInteger();
+			return ((IValue)arg).asInteger();
 		else if (arg instanceof Integer)
 			return (Integer)arg;
 		
-		throw new ThinklabValueConversionException("operator value type mismatch");
+		throw new ThinklabValidationException("operator value type mismatch");
 
 	}
 	
-	static String asText(Object arg) throws ThinklabValueConversionException {
+	static String asText(Object arg) throws ThinklabValidationException {
 		
 		if (arg instanceof IValue)
-			return ((IValue)arg).asText().toString();
+			return ((IValue)arg).asText();
 		else if (arg instanceof String)
 			return (String)arg;
 
-		throw new ThinklabValueConversionException("operator value type mismatch");
+		throw new ThinklabValidationException("operator value type mismatch");
 	}
 	
 	@Override
@@ -75,13 +73,5 @@ public abstract class Operator implements IOperator {
 		return getOperatorId();
 	}
 
-	@Override
-	public void initialize(IInstance i) throws ThinklabException {
-		this.id = i.getLocalName();
-	}
-
-	@Override
-	public void validate(IInstance i) throws ThinklabException {
-	}
 
 }

@@ -2,8 +2,8 @@ package org.integratedmodelling.thinklab.interfaces.storage;
 
 import java.util.Map;
 
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 
 /**
  * An object that can be passed to a kbox to define and compute fields that will be accessible for query at the object

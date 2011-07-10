@@ -432,5 +432,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.restlet.ext.fileupload.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.apache.commons.fileupload.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.apache.httpclient.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/thinklab-api"/>
 	<classpathentry kind="output" path="null"/>
 </classpath>

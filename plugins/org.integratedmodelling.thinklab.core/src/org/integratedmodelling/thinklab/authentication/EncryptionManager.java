@@ -46,7 +46,7 @@ import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.integratedmodelling.thinklab.exception.ThinklabEncryptionException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -69,17 +69,17 @@ public class EncryptionManager {
 
 	private static final String UNICODE_FORMAT = "UTF8";
 
-	public EncryptionManager() throws ThinklabEncryptionException {
+	public EncryptionManager() throws ThinklabValidationException {
 		this(AES_ENCRYPTION_SCHEME, DEFAULT_ENCRYPTION_KEY);
 	}
 	
 	public EncryptionManager(String encryptionScheme)
-			throws ThinklabEncryptionException {
+			throws ThinklabValidationException {
 		this(encryptionScheme, DEFAULT_ENCRYPTION_KEY);
 	}
 
 	public EncryptionManager(String encryptionScheme, String encryptionKey)
-			throws ThinklabEncryptionException {
+			throws ThinklabValidationException {
 
 		Security.addProvider(new com.sun.crypto.provider.SunJCE());
 		
@@ -108,18 +108,18 @@ public class EncryptionManager {
 			cipher = Cipher.getInstance(encryptionScheme);
 
 		} catch (InvalidKeyException e) {
-			throw new ThinklabEncryptionException(e);
+			throw new ThinklabValidationException(e);
 		} catch (UnsupportedEncodingException e) {
-			throw new ThinklabEncryptionException(e);
+			throw new ThinklabValidationException(e);
 		} catch (NoSuchAlgorithmException e) {
-			throw new ThinklabEncryptionException(e);
+			throw new ThinklabValidationException(e);
 		} catch (NoSuchPaddingException e) {
-			throw new ThinklabEncryptionException(e);
+			throw new ThinklabValidationException(e);
 		}
 
 	}
 
-	public String encrypt(String unencryptedString) throws ThinklabEncryptionException {
+	public String encrypt(String unencryptedString) throws ThinklabValidationException {
 		if (unencryptedString == null || unencryptedString.trim().length() == 0)
 			throw new IllegalArgumentException(
 					"unencrypted string was null or empty");
@@ -133,11 +133,11 @@ public class EncryptionManager {
 			BASE64Encoder base64encoder = new BASE64Encoder();
 			return base64encoder.encode(ciphertext);
 		} catch (Exception e) {
-			throw new ThinklabEncryptionException(e);
+			throw new ThinklabValidationException(e);
 		}
 	}
 
-	public String decrypt(String encryptedString) throws ThinklabEncryptionException {
+	public String decrypt(String encryptedString) throws ThinklabValidationException {
 		if (encryptedString == null || encryptedString.trim().length() <= 0)
 			throw new IllegalArgumentException(
 					"encrypted string was null or empty");
@@ -151,7 +151,7 @@ public class EncryptionManager {
 
 			return bytes2String(ciphertext);
 		} catch (Exception e) {
-			throw new ThinklabEncryptionException(e);
+			throw new ThinklabValidationException(e);
 		}
 	}
 

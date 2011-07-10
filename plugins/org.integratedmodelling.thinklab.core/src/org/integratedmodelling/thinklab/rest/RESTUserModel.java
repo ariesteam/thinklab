@@ -5,11 +5,11 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
+import org.integratedmodelling.thinklab.api.runtime.IUserModel;
 import org.integratedmodelling.thinklab.authentication.AuthenticationManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.owlapi.Session;
 
 public class RESTUserModel implements IUserModel {

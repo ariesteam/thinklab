@@ -1,6 +1,6 @@
 package org.integratedmodelling.utils.xml;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 /**
  * Who knew you could have fun writing html.

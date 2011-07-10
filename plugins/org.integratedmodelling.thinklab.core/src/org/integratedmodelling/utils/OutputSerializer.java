@@ -9,9 +9,9 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 
 /**
  * Simple object to read and write stuff to file. Just call the write() functions in the

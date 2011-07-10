@@ -39,9 +39,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 
 /**
  * A lookup table that can be initialized from a string using PERL syntax, extended to support numeric ranges for

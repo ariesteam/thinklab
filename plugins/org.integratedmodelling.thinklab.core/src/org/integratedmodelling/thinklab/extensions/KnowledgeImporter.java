@@ -33,9 +33,9 @@
  **/
 package org.integratedmodelling.thinklab.extensions;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 /**
  * Objects of this kind will import knowledge from a source to a destination. Both are identified

@@ -46,29 +46,28 @@ import java.util.Properties;
 import java.util.Stack;
 import java.util.UUID;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabUnknownResourceException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.listeners.IThinklabSessionListener;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
+import org.integratedmodelling.thinklab.api.runtime.IUserModel;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.applications.IThinklabSessionListener;
-import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.interfaces.storage.IMetadataExtractor;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.kbox.VirtualSessionKBox;
 import org.integratedmodelling.thinklab.session.TTYUserModel;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.NameGenerator;
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * The basic Thinklab session, implemented on top of an Ontology.
@@ -108,16 +107,15 @@ public class Session implements ISession {
 		/* create the new Ontology with a temp name */
 		ontology = KnowledgeManager.get().getKnowledgeRepository().createTemporaryOntology(NameGenerator.newName("ses"));
 		/* we want to be able to reload stuff fresh and give it different names if so */
-		ontology.allowDuplicateInstanceIDs();
 		userModel = createUserModel();
 	}
 
 	public void finalize() {
 		/* notify KM just in case, so it can keep track and log if requested */
-		try {
-			KnowledgeManager.get().notifySessionDeletion(this);
-		} catch (ThinklabException e) {
-		}
+//		try {
+//			KnowledgeManager.get().notifySessionDeletion(this);
+//		} catch (ThinklabException e) {
+//		}
 	}
 	
 	public IOntology getOntology() {
@@ -138,28 +136,6 @@ public class Session implements ISession {
 	
 	public void setUserModel(IUserModel model) {
 		userModel = model;
-	}
-	
-	/**
-	 * Used internally to find concepts: can see the internal concepts in the session as well
-	 * as the KM public ones.
-	 * 
-	 * @return
-	 * @throws ThinklabResourceNotFoundException
-	 */
-	private IConcept getConcept(String id) throws ThinklabException {
-		
-		IConcept ret = null;
-		if (id.startsWith(ontology.getConceptSpace()))
-			ret = ontology.getConcept(id.substring(id.indexOf(":") + 1));
-		
-		if (ret == null)
-			ret = KnowledgeManager.get().requireConcept(id);
-		
-		if (ret == null)
-			throw new ThinklabResourceNotFoundException("concept " + id + " unknown to session");
-		
-		return ret;
 	}
 	
 	/* (non-Javadoc)
@@ -394,7 +370,7 @@ public class Session implements ISession {
 	}
 
     public  IInstance createObject(IInstance ii) throws ThinklabException {
-        return createObject(ii.toList(null));
+        return createObject(ii.asList(null));
     }
 
 	public IInstance importObject(String kboxURI) throws ThinklabException {
@@ -412,7 +388,7 @@ public class Session implements ISession {
 			}
 	
 			if (id == null)
-				throw new ThinklabUnknownResourceException(kboxURI + " does not specify an object in a kbox");
+				throw new ThinklabResourceNotFoundException(kboxURI + " does not specify an object in a kbox");
 		
 			/*
 			 * use the same ref table every time, so we never have to duplicate stuff.
@@ -435,7 +411,8 @@ public class Session implements ISession {
 		return listeners;
 	}
 
-	public Properties getProperties() {
+	@Override
+	public Properties getSessionProperties() {
 		return properties;
 	}
 
@@ -518,10 +495,10 @@ public class Session implements ISession {
 	}
 
 	@Override
-	public Object popVariable(String varname) throws ThinklabInappropriateOperationException {
+	public Object popVariable(String varname) throws ThinklabValidationException {
 		Stack<Object> s = vars.get(varname);
 		if (s == null || s.size() < 1)
-			throw new ThinklabInappropriateOperationException("session: can't pop non-existing variable " + varname);
+			throw new ThinklabValidationException("session: can't pop non-existing variable " + varname);
 		return s.pop();
 	}
 

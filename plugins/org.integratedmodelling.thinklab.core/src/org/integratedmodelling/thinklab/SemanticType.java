@@ -35,13 +35,13 @@ package org.integratedmodelling.thinklab;
 
 import java.io.Serializable;
 
-import org.integratedmodelling.thinklab.exception.ThinklabMalformedSemanticTypeException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IResource;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IResource;
 
 /**
  * <p>All relevant knowledge objects accessed through the Knowledge Manager are identified by a semantic type, whose form is 
@@ -67,10 +67,10 @@ public final class SemanticType implements Serializable{
 	String conceptSpace;
 	String localName;
 	
-	private void assign(String s) throws ThinklabMalformedSemanticTypeException {
+	private void assign(String s) throws ThinklabValidationException {
 		String[] ss = s.split(":");
 		if (ss.length != 2 || ss[0].trim().equals("") || ss[1].trim().equals(""))
-			throw new ThinklabMalformedSemanticTypeException(s);
+			throw new ThinklabValidationException(s);
 		
 		conceptSpace = ss[0];
 		localName = ss[1];
@@ -108,13 +108,12 @@ public final class SemanticType implements Serializable{
 	 */
 	public SemanticType(IKnowledge res) {
 		 try {
-			this.assign(res.getSemanticType().toString());
+			this.assign(res.toString());
 		} 
 		 // supposedly the IResource should be correct. 
 		 // if something goes wrong send it to the log
-		 catch (ThinklabMalformedSemanticTypeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		 catch (ThinklabValidationException e) {
+			throw new ThinklabRuntimeException(e);
 		}
 	}
 
@@ -127,7 +126,7 @@ public final class SemanticType implements Serializable{
 	public SemanticType(String s) {
 		try {
 			assign(s);
-		} catch (ThinklabMalformedSemanticTypeException e) {
+		} catch (ThinklabValidationException e) {
 			throw new ThinklabRuntimeException(e);
 		}
 	}

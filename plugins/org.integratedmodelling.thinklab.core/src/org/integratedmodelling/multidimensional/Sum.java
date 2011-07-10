@@ -3,7 +3,7 @@
  */
 package org.integratedmodelling.multidimensional;
 
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 
 public class Sum implements IAggregator {
 

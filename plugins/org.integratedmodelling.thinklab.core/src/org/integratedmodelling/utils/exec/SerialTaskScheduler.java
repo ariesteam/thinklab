@@ -1,6 +1,6 @@
 package org.integratedmodelling.utils.exec;
 
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 
 /**
  * This one will simply run all the tasks when started, waiting for them to finish, 

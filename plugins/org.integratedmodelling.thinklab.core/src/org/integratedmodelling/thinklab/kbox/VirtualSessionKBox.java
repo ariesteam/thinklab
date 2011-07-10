@@ -38,19 +38,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBoxCapabilities;
-import org.integratedmodelling.utils.MalformedListException;
-import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.instancelist.InstanceList;
 
 /**
@@ -70,21 +68,16 @@ public class VirtualSessionKBox implements IKBox {
 	
 	public VirtualSessionKBox(ISession session) {
 		this.session = session;
-		this.properties.putAll(session.getProperties());
+		this.properties.putAll(session.getSessionProperties());
 	}
 	
 	public IQuery parseQuery(String toEval) throws ThinklabException {
 
-		Polylist l = null;
-		try {
-			l = Polylist.parse(toEval);
-		} catch (MalformedListException e) {
-			throw new ThinklabValidationException(e);
-		}
+		Polylist l = Polylist.parse(toEval);
 		return new Constraint(l);
 	}
 	
-	public IKBoxCapabilities getKBoxCapabilities() {
+	public Capabilities getCapabilities() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -1,9 +1,9 @@
-package org.integratedmodelling.thinklab.interfaces.storage;
+ackage org.integratedmodelling.thinklab.interfaces.storage;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 /**
  * Objects implementing this one have a poor-man persistence mechanism that is recognized

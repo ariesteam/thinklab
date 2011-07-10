@@ -33,14 +33,13 @@
  **/
 package org.integratedmodelling.thinklab.literals;
 
+import org.apache.batik.css.engine.value.ListValue;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 
 /**
  * <p>A generalized container for a value that always has a concept associated. The value may be defined from a literal or a basic
@@ -75,23 +74,6 @@ import org.integratedmodelling.utils.Polylist;
  * @author Ferdinando Villa
  */
 public class Value implements IValue {
-	
-	
-	/* (non-Javadoc)
-     * @see org.integratedmodelling.ima.core.value.IValue#setToCommonConcept(org.integratedmodelling.ima.core.IConcept, org.integratedmodelling.ima.core.IConcept)
-     */
-	public void setToCommonConcept(IConcept setTo, IConcept mustBe) throws ThinklabValueConversionException {
-		IConcept cc = null;
-		try {
-			cc = KnowledgeManager.get().getLeastGeneralCommonConcept(getConcept(), setTo);
-		} catch (ThinklabNoKMException e) {
-		}
-		if (cc == null || !cc.is(mustBe)) {
-			throw new ThinklabValueConversionException("concept " + concept.getSemanticType().toString() + 
-												  " can't be set to " + setTo.getSemanticType().toString());
-		}
-		concept = cc;
-	}
 	
 	public IConcept concept;
 	public String ID = null;
@@ -158,45 +140,13 @@ public class Value implements IValue {
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see org.integratedmodelling.ima.core.value.IValue#asNumber()
-     */
-    public NumberValue asNumber() throws ThinklabValueConversionException {
-        throw new ThinklabValueConversionException("value " + toString() + " cannot be converted to a number");
-    }
-    
-    /* (non-Javadoc)
-     * @see org.integratedmodelling.ima.core.value.IValue#asText()
-     */
-    public TextValue asText() throws ThinklabValueConversionException {
-        throw new ThinklabValueConversionException("value " + toString() + " cannot be converted to text");
-    }
 
-    /* (non-Javadoc)
-     * @see org.integratedmodelling.ima.core.value.IValue#asObject()
-     */
-    public ObjectValue asObject() throws ThinklabValueConversionException {
-        throw new ThinklabValueConversionException("value " + toString() + " cannot be converted to an object");
-    }
-    
-    /* (non-Javadoc)
-     * @see org.integratedmodelling.ima.core.value.IValue#asBoolean()
-     */
-    public BooleanValue asBoolean() throws ThinklabValueConversionException {
-        throw new ThinklabValueConversionException("value " + toString() + " cannot be converted to a boolean");
-    }
-
-    public ObjectReferenceValue asObjectReference() throws ThinklabValueConversionException {
-        throw new ThinklabValueConversionException("value " + toString() + " cannot be converted to an object reference");
-    }
-
-    
     /* (non-Javadoc)
      * @see org.integratedmodelling.ima.core.value.IValue#toString()
      */
     @Override
 	public String toString() {
-		return concept.getSemanticType().toString();
+		return concept.toString();
 	}
 
     /** 
@@ -226,8 +176,6 @@ public class Value implements IValue {
             ret = new TextValue((String)value);
         } else if (value instanceof Boolean) {
             ret = new BooleanValue((Boolean)value);
-        }  else if (value instanceof Polylist) {
-            ret = new ListValue((Polylist)value);
         } else 
 
         	/*
@@ -280,7 +228,7 @@ public class Value implements IValue {
         	// throw new ThinklabValidationException("No automatic value generation for class " + value.getClass().toString());
 
         if (ret != null)
-            ret.setConceptWithValidation(concept);
+            ((Value)ret).setConcept(concept);
         
         return ret;
 
@@ -317,28 +265,17 @@ public class Value implements IValue {
             throw new ThinklabValidationException("No automatic value generation for class " + value.getClass().toString());
 
         if (ret != null)
-            ret.setConceptWithoutValidation(concept);
+            ((Value)ret).setConcept(concept);
         
         return ret;
 
     }
 
-    /* (non-Javadoc)
-     * @see org.integratedmodelling.ima.core.value.IValue#setConceptWithValidation(org.integratedmodelling.ima.core.IConcept)
-     */
-    public void setConceptWithValidation(IConcept concept) throws ThinklabValidationException {
-
-    	// FIXME USE CLASSTREE?
-        if (!concept.is(this.concept)) 
-            throw new ThinklabValidationException("concept " + concept.getSemanticType().toString() + 
-                                         " is not a " + this.concept.getSemanticType().toString());            
-        this.concept = concept;
-    }
 
     /* (non-Javadoc)
      * @see org.integratedmodelling.ima.core.value.IValue#setConceptWithoutValidation(org.integratedmodelling.ima.core.IConcept)
      */
-    public void setConceptWithoutValidation(IConcept concept) {
+    public void setConcept(IConcept concept) {
         this.concept = concept;
     }
     

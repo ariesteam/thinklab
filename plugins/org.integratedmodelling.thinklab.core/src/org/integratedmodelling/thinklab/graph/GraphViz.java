@@ -71,11 +71,11 @@ import java.io.InputStreamReader;
 import java.util.Hashtable;
 import java.util.Set;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.utils.DisplayImage;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.cformat.PrintfFormat;
