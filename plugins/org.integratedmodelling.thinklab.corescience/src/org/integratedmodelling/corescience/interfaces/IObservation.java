@@ -3,10 +3,10 @@ package org.integratedmodelling.corescience.interfaces;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 
 public interface IObservation extends IConceptualizable {
 	

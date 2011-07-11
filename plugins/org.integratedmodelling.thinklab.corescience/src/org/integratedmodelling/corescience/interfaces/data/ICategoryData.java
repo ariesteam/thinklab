@@ -2,7 +2,7 @@ package org.integratedmodelling.corescience.interfaces.data;
 
 import java.util.Collection;
 
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 /**
  * Anything that implements this is capable of returning the concept corresponding to the i-th 

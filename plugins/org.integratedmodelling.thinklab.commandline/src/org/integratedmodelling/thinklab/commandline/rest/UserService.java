@@ -1,10 +1,7 @@
 package org.integratedmodelling.thinklab.commandline.rest;
 
-import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.authentication.AuthenticationManager;
-import org.integratedmodelling.thinklab.commandline.CommandLine;
-import org.integratedmodelling.thinklab.exception.ThinklabAuthenticationException;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.restlet.representation.Representation;

@@ -1,8 +1,8 @@
 package org.integratedmodelling.corescience.interfaces.internal;
 
 import org.integratedmodelling.corescience.interfaces.IDataSource;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 public interface ComputedDataSource {
     /**

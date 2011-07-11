@@ -36,14 +36,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.opal.OPALValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.utils.Pair;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.utils.xml.XMLDocument;
 
 public class OPALProfile {
@@ -284,7 +285,7 @@ public class OPALProfile {
      * @return
      * @throws ThinklabException 
      */
-    public String getOPALConceptID(SemanticType semanticType, XMLDocument document) throws ThinklabException {
+    public String getOPALConceptID(IKnowledge semanticType, XMLDocument document) throws ThinklabException {
     	
     	/* first of all, check that we are not aliasing it to something */
     	String syn = getDefaultSynonim(semanticType.toString());

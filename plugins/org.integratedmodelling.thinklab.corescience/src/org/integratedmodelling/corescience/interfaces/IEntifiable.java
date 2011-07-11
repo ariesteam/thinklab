@@ -2,8 +2,8 @@ package org.integratedmodelling.corescience.interfaces;
 
 import java.util.Collection;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 
 /**
  * Implemented by anything which is a physical entity or can produce one or more physical entities.

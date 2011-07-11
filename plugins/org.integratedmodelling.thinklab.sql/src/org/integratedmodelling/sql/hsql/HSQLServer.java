@@ -36,9 +36,9 @@ import java.net.URI;
 import java.util.Properties;
 
 import org.hsqldb.Server;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabStorageException;
 import org.integratedmodelling.sql.SQLServer;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 
 /**
  * An HSQLDB server that is started on a thread if local, or is supposed to be somewhere

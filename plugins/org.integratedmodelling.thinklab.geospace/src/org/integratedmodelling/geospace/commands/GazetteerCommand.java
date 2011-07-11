@@ -4,20 +4,19 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.CoverageFactory;
 import org.integratedmodelling.geospace.gazetteers.PostgisGazetteer;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.sql.postgres.PostgreSQLServer;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.InteractiveCommandHandler;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 /**
  * Driver for everything that can be done with storylines. Subcommands are

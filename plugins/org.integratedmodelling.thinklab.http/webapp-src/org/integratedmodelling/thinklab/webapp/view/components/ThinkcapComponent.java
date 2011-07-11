@@ -1,7 +1,7 @@
 package org.integratedmodelling.thinklab.webapp.view.components;
 
 import org.apache.commons.collections.MultiHashMap;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.webapp.ZK;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;

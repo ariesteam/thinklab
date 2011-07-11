@@ -32,8 +32,8 @@
  **/
 package org.integratedmodelling.corescience.implementations.datasources;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 
 /**

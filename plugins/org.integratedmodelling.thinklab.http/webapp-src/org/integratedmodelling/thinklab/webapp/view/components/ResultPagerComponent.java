@@ -34,12 +34,12 @@ package org.integratedmodelling.thinklab.webapp.view.components;
 
 import java.util.ArrayList;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.http.ThinkWeb;
 import org.integratedmodelling.thinklab.http.ThinklabHttpdPlugin;
 import org.integratedmodelling.thinklab.http.ThinklabWebSession;
 import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.utils.Pager;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;

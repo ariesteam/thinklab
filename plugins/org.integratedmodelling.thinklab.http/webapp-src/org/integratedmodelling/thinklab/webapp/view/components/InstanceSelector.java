@@ -35,11 +35,11 @@ package org.integratedmodelling.thinklab.webapp.view.components;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.webapp.view.QueryFormStructure;
 import org.integratedmodelling.thinklab.webapp.view.TypeManager;

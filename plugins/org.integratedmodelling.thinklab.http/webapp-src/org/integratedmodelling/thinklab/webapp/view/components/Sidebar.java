@@ -2,7 +2,7 @@ package org.integratedmodelling.thinklab.webapp.view.components;
 
 import java.util.ArrayList;
 
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.http.ThinkWeb;
 import org.integratedmodelling.thinklab.http.ThinklabWebSession;
 import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;

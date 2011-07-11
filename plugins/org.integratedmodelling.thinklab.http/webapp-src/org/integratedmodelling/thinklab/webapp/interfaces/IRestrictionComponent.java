@@ -32,8 +32,8 @@
  **/
 package org.integratedmodelling.thinklab.webapp.interfaces;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.constraint.Restriction;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 
 public interface IRestrictionComponent {
 	

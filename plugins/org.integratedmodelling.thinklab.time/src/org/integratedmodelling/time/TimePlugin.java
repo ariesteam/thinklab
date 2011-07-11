@@ -32,11 +32,10 @@
  **/
 package org.integratedmodelling.time;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 public class TimePlugin extends ThinklabPlugin {
@@ -71,7 +70,7 @@ public class TimePlugin extends ThinklabPlugin {
 		return (TimePlugin) getPlugin(PLUGIN_ID);
 	}
 	
-    public void load(KnowledgeManager km) throws ThinklabPluginException {
+    public void load(KnowledgeManager km) throws ThinklabException {
 
     	DATETIME_TYPE_ID = 
     		getProperties().getProperty("DateTimeTypeID", "time:DateTimeValue");
@@ -90,24 +89,19 @@ public class TimePlugin extends ThinklabPlugin {
     		getProperties().getProperty("EndsAtPropertyID", "time:endsAt");
     	STEP_SIZE_PROPERTY_ID = 
     		getProperties().getProperty("StepSizePropertyID", "time:inStepsOf");
+
+    	timeGridConcept = km.requireConcept(TEMPORALGRID_TYPE_ID);
+    	timeRecordConcept = km.requireConcept(TIMERECORD_TYPE_ID);
+    	dateTimeConcept = km.requireConcept(DATETIME_TYPE_ID);
+    	durationConcept = km.requireConcept(DURATION_TYPE_ID);
+    	timeObservable = km.requireConcept(TIME_OBSERVABLE_ID);
     	
-    	try {
-    		
-			timeGridConcept = km.requireConcept(TEMPORALGRID_TYPE_ID);
-			timeRecordConcept = km.requireConcept(TIMERECORD_TYPE_ID);
-			dateTimeConcept = km.requireConcept(DATETIME_TYPE_ID);
-			durationConcept = km.requireConcept(DURATION_TYPE_ID);
-			timeObservable = km.requireConcept(TIME_OBSERVABLE_ID);
-			
-			absoluteTimeInstance = km.requireInstance(ABSOLUTE_TIME_OBSERVABLE_INSTANCE);
-			continuousTimeInstance = km.requireInstance(CONTINUOUS_TIME_OBSERVABLE_INSTANCE);
-			
-		} catch (ThinklabException e) {
-			throw new ThinklabPluginException(e);
-		}
+    	absoluteTimeInstance = km.requireInstance(ABSOLUTE_TIME_OBSERVABLE_INSTANCE);
+    	continuousTimeInstance = km.requireInstance(CONTINUOUS_TIME_OBSERVABLE_INSTANCE);
+
     }
 
-    public void unload() throws ThinklabPluginException {
+    public void unload() throws ThinklabException {
         // TODO Auto-generated method stub
 
     }

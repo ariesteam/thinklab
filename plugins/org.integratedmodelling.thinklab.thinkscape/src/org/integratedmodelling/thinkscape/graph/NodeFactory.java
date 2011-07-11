@@ -2,19 +2,18 @@ package org.integratedmodelling.thinkscape.graph;
 
 import java.util.Collection;
 
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.ograph.OEdge;
 import org.integratedmodelling.ograph.OGraph;
 import org.integratedmodelling.ograph.ONode;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.api.knowledge.IResource;
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledge;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IResource;
-import org.integratedmodelling.utils.Pair;
 
 public class NodeFactory {
 		
@@ -170,17 +169,9 @@ public class NodeFactory {
 
 		if(r.isObject()) {
 
-			IInstance obj = null;
-			
-			try {
-				
-				obj = r.getValue().asObjectReference().getObject();
-				valNode = getInstanceNode(obj);
-				
-			} catch (ThinklabValueConversionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
+			IInstance obj = r.getValue().asObject();
+			valNode = getInstanceNode(obj);
+
 
 		} else if(r.isLiteral()){
 

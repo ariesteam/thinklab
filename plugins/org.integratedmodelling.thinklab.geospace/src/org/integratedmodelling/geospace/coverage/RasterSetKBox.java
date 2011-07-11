@@ -36,16 +36,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBoxCapabilities;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 /**
  * A KBox that wraps one or more rasters, mapping them to different observations or 

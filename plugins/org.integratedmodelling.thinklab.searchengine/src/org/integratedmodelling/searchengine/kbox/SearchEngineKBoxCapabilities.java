@@ -32,18 +32,18 @@
  **/
 package org.integratedmodelling.searchengine.kbox;
 
+import org.integratedmodelling.lang.Quantifier;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.searchengine.QueryString;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBoxCapabilities;
-import org.integratedmodelling.utils.Polylist;
-import org.integratedmodelling.utils.Quantifier;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 
-public class SearchEngineKBoxCapabilities implements IKBoxCapabilities {
+public class SearchEngineKBoxCapabilities implements IKBox.Capabilities {
 	
-	IKBoxCapabilities orig;
+	IKBox.Capabilities orig;
 	
-	public SearchEngineKBoxCapabilities(IKBoxCapabilities original) {
+	public SearchEngineKBoxCapabilities(IKBox.Capabilities original) {
 		orig = original;
 	}
 

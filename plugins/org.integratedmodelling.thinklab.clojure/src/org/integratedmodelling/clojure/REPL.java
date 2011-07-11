@@ -17,9 +17,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabScriptException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 import clojure.lang.Compiler;
 import clojure.lang.DynamicClassLoader;

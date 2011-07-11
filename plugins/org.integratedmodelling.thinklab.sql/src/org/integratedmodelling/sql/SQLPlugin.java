@@ -39,14 +39,13 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabStorageException;
 import org.integratedmodelling.sql.hsql.HSQLServerConstructor;
 import org.integratedmodelling.sql.mysql.MySQLServerConstructor;
 import org.integratedmodelling.sql.postgres.PostgresSQLServerConstructor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 /**
@@ -84,7 +83,7 @@ public class SQLPlugin extends ThinklabPlugin {
 
 	
 	@Override
-	public void load(KnowledgeManager km) throws ThinklabPluginException {
+	public void load(KnowledgeManager km) throws ThinklabException {
 				
 		/* register server types to be returned by createSQLServer() */
 		registerServerConstructor("hsql", new HSQLServerConstructor());
@@ -97,7 +96,7 @@ public class SQLPlugin extends ThinklabPlugin {
 	}
 
 	@Override
-	public void unload() throws ThinklabPluginException {
+	public void unload() throws ThinklabException {
 		// TODO Auto-generated method stub
 	}
 

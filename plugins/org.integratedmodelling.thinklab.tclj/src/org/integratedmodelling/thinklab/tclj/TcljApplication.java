@@ -38,8 +38,8 @@ import java.util.Properties;
 
 import org.integratedmodelling.clojure.REPL;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.java.plugin.boot.Application;
 import org.java.plugin.boot.ApplicationPlugin;

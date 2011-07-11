@@ -8,7 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 
 public class FileOps {
 

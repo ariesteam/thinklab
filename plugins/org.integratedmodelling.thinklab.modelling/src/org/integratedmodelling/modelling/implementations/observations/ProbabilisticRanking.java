@@ -6,11 +6,11 @@ import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 
 @InstanceImplementation(concept="modeltypes:ProbabilisticRanking")
 public class ProbabilisticRanking extends ModeledClassification {

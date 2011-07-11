@@ -34,10 +34,10 @@ package org.integratedmodelling.opal.utils;
 
 import java.util.HashSet;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.opal.profile.OPALProfile;
 import org.integratedmodelling.opal.profile.OPALProfileFactory;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.instancelist.InstanceList;
 import org.integratedmodelling.utils.instancelist.RelationshipList;
 import org.integratedmodelling.utils.xml.XMLDocument;
@@ -113,7 +113,7 @@ public class OPALListWriter {
 		/* have profile determine node name, ID etc. appropriately */
 		Node ret = 
 			document.createNode(
-					profile.getOPALConceptID(instance.getDirectType().getSemanticType(),document),
+					profile.getOPALConceptID(instance.getDirectType(),document),
 					parentNode);
 		
 		document.addAttribute(
@@ -147,7 +147,7 @@ public class OPALListWriter {
 			 * see the relationship id, and ignore the whole thing if it's one of those 
 			 * that don't appear in the KM, such as protege metadata.
 			 */
-			String cid = profile.getOPALConceptID(r.getProperty().getSemanticType(), document);
+			String cid = profile.getOPALConceptID(r.getProperty(), document);
 			
 			if (cid == null)
 				continue;

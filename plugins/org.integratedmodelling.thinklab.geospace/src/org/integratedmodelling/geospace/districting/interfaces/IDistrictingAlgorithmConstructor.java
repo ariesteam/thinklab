@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.geospace.districting.interfaces;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 
 /**

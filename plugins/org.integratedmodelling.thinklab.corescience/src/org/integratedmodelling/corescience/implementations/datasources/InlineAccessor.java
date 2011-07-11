@@ -2,8 +2,8 @@ package org.integratedmodelling.corescience.implementations.datasources;
 
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 public class InlineAccessor extends DefaultAbstractAccessor {
 

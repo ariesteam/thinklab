@@ -6,12 +6,11 @@ import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
 import org.integratedmodelling.corescience.metadata.Metadata;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 
 /**
  * Use when a IState must be seen as a Datasource and be inserted in an observation. It can

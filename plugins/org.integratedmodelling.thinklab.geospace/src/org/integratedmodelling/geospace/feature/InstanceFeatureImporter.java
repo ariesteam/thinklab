@@ -38,11 +38,11 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.utils.Pair;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.utils.PropertiesTemplateAdapter;
 
 /**

@@ -5,12 +5,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.geospace.coverage.WCSCoverage;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.interfaces.annotations.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.storage.IKnowledgeImporter;
-import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

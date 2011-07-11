@@ -35,8 +35,8 @@ package org.integratedmodelling.sql.mysql;
 import java.net.URI;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabStorageException;
 import org.integratedmodelling.sql.SQLServer;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 
 public class MySQLServer extends SQLServer {
 	

@@ -2,8 +2,8 @@ package org.integratedmodelling.corescience.interfaces;
 
 import java.util.Collection;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 /**
  * A IContext is a named template to build an IObservationContext for an observation 

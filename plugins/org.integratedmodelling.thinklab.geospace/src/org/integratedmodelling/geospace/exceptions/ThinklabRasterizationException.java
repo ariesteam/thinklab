@@ -1,6 +1,6 @@
 package org.integratedmodelling.geospace.exceptions;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 public class ThinklabRasterizationException extends ThinklabException {
 	

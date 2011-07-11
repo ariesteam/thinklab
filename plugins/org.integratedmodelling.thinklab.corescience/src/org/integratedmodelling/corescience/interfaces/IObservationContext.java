@@ -4,10 +4,9 @@ import java.io.PrintStream;
 import java.util.Collection;
 
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 
 public interface IObservationContext extends IContext, IConceptualizable {
 

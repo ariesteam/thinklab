@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.Envelope2D;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.geospace.coverage.AbstractRasterCoverage;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.extents.GridExtent;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 

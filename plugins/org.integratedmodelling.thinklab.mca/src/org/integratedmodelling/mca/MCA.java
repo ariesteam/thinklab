@@ -3,11 +3,11 @@ package org.integratedmodelling.mca;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.mca.ahp.AHP;
 import org.integratedmodelling.mca.electre3.model.E3Model;
 import org.integratedmodelling.mca.evamix.Evamix;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 
 /**
  * Driver class to run a whole MCA analysis from definition to results. It makes using 

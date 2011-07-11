@@ -5,12 +5,12 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabStorageException;
 import org.integratedmodelling.geospace.feature.ShapefileKBox;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.extensions.KBoxHandler;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.MiscUtilities;
 
 public class GeospaceKboxHandler implements KBoxHandler {

@@ -37,17 +37,17 @@ import java.util.Properties;
 import org.integratedmodelling.corescience.interfaces.IDataSource;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.AbstractRasterCoverage;
 import org.integratedmodelling.geospace.coverage.WCSCoverage;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.transformations.Resample;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 
 @InstanceImplementation(concept="geospace:WCSDataSource")

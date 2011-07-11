@@ -37,20 +37,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.exception.ThinklabAmbiguousResultException;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
-import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBoxCapabilities;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabStorageException;
+import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 /**
  * A simple kbox that gives access to a shapefile that is semantically annotated with a kbox file.
@@ -79,7 +78,7 @@ public class ShapefileKBox extends InstanceShapefileHandler implements IKBox {
 			throw new ThinklabResourceNotFoundException(
 					"resource " + id + " not found in kbox " + super.getLayerName());
 		} else if (observations.size() > 1) {
-			throw new ThinklabAmbiguousResultException(
+			throw new ThinklabValidationException(
 					"resource " + id + " matches multiple objects in kbox " + super.getLayerName());
 		}
 		
@@ -107,7 +106,7 @@ public class ShapefileKBox extends InstanceShapefileHandler implements IKBox {
 		// nothing to do, we're not going to call process()
 	}
 
-	public IKBoxCapabilities getKBoxCapabilities() {
+	public Capabilities getCapabilities() {
 		// TODO Auto-generated method stub
 		return null;
 	}

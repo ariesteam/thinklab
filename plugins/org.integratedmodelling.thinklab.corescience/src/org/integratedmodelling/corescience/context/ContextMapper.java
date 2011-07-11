@@ -4,11 +4,10 @@ import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationE
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor.StorageOrdering;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 /**
  * A helper object that maps state indexes from a context to a compatible other. The "to" context

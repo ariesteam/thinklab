@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 
 public class DefaultThinklabWebModel extends ThinklabWebModel {

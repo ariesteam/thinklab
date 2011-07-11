@@ -36,10 +36,10 @@ import java.net.URL;
 
 import org.integratedmodelling.currency.cpi.CpiConversionFactory;
 import org.integratedmodelling.currency.units.CurrencyUnit;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.sql.SQLPlugin;
 import org.integratedmodelling.sql.SQLServer;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 public class CurrencyPlugin extends ThinklabPlugin  {

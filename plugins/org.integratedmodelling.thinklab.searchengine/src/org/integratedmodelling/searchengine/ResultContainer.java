@@ -38,17 +38,17 @@ import java.util.HashMap;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Polylist;
 
 
 /*
@@ -155,25 +155,25 @@ public class ResultContainer implements IQueryResult {
 		
 		return new ObjectReferenceValue(getObjectFromDocument(results.get(n), session));
 	}
-
-	@Override
-	public IValue getBestResult(ISession session) throws ThinklabException {
-
-		int max = -1;
-		float maxScore = -1.0f;
-		
-		for (int i = 0; i < getTotalResultCount(); i++)
-			if (getResultScore(i) > maxScore) {
-				max = i;
-				maxScore = getResultScore(i);
-			}
-		
-		if (max >= 0)
-			return getResult(max, session);
-		
-		return null;
-		
-	}
+//
+//	@Override
+//	public IValue getBestResult(ISession session) throws ThinklabException {
+//
+//		int max = -1;
+//		float maxScore = -1.0f;
+//		
+//		for (int i = 0; i < getTotalResultCount(); i++)
+//			if (getResultScore(i) > maxScore) {
+//				max = i;
+//				maxScore = getResultScore(i);
+//			}
+//		
+//		if (max >= 0)
+//			return getResult(max, session);
+//		
+//		return null;
+//		
+//	}
 
 	@Override
 	public float setResultScore(int n, float score) {

@@ -2,7 +2,7 @@ package org.integratedmodelling.thinkscape.graph;
 
 import org.integratedmodelling.ograph.OGraph;
 import org.integratedmodelling.ograph.ONode;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinkscape.Options;
 
 public class GraphFactory {

@@ -34,12 +34,12 @@ package org.integratedmodelling.metadata;
 
 import java.util.Collection;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.time.literals.TimeValue;
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * A helper class with methods to simplify accessing and creating standard

@@ -3,13 +3,13 @@
  */
 package org.integratedmodelling.thinkscape.listeners;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.ograph.OGraph;
 import org.integratedmodelling.ograph.ONode;
 import org.integratedmodelling.policy.ApplicationFrame;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.applications.IThinklabSessionListener;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.listeners.IThinklabSessionListener;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinkscape.ThinkScapeGUI;
 import org.integratedmodelling.thinkscape.graph.GraphFactory;
 

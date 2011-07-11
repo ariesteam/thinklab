@@ -32,9 +32,9 @@
  **/
 package org.integratedmodelling.searchengine;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.utils.LogicalConnector;
 
 /**

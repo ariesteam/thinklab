@@ -3,7 +3,7 @@ package org.integratedmodelling.corescience.literals;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 
 /**

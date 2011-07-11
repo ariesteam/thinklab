@@ -32,8 +32,8 @@
  **/
 package org.integratedmodelling.thinklab.webapp.interfaces;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.zkoss.zk.ui.Component;
 
 public interface IRestrictionComponentConstructor {

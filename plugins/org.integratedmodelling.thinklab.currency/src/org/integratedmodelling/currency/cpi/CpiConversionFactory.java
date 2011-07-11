@@ -38,10 +38,10 @@ import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.integratedmodelling.corescience.exceptions.ThinklabInexactConversionException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabStorageException;
 import org.integratedmodelling.sql.SQLServer;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 import org.integratedmodelling.time.literals.TemporalPrecision;
 import org.integratedmodelling.time.literals.TimeValue;
 

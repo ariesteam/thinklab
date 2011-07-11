@@ -2,8 +2,8 @@ package org.integratedmodelling.thinklab.commandline.rest;
 
 import java.util.Collection;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.command.CommandManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;

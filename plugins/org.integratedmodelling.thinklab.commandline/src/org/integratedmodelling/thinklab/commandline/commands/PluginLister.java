@@ -36,9 +36,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.commandline.CommandLine;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;

@@ -1,7 +1,7 @@
 package org.integratedmodelling.corescience.interfaces.internal;
 
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 public interface MediatingObservation extends IndirectObservation {
 

@@ -1,9 +1,9 @@
 package org.integratedmodelling.thinklab.commandline.rest;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.application.Application;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.integratedmodelling.thinklab.rest.RESTTask;
 import org.restlet.representation.Representation;

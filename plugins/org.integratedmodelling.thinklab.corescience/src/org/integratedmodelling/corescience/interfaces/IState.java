@@ -1,10 +1,9 @@
 package org.integratedmodelling.corescience.interfaces;
 
 import org.integratedmodelling.corescience.metadata.Metadata;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConceptualizable;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 /**
  * A State is the result of contextualizing a stateful observation. It can conceptualize back to the
  * semantic annotation for the observation it represents. States live in IContexts.

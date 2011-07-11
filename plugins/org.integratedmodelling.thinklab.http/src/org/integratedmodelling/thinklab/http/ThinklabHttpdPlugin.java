@@ -9,12 +9,12 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 
 import org.apache.commons.logging.Log;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 import org.integratedmodelling.thinklab.http.extensions.WebApplication;
 import org.integratedmodelling.thinklab.http.utils.FileOps;

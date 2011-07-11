@@ -1,7 +1,7 @@
 package org.integratedmodelling.agriculture;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 public class AgriculturePlugin extends ThinklabPlugin {

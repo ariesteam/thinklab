@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.thinklab.webapp.view;
 
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 
 public class VisualInstance extends VisualKnowledge {
 

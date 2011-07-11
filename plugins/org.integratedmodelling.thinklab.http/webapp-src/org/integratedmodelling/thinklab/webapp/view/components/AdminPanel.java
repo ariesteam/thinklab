@@ -37,7 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.webapp.ZK;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zul.Window;

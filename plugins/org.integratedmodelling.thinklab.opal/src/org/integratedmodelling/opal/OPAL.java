@@ -3,11 +3,10 @@ package org.integratedmodelling.opal;
 import java.net.URL;
 import java.util.ArrayList;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.opal.profile.OPALProfileFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.java.plugin.registry.Extension;
 
 public class OPAL extends ThinklabPlugin {
 
@@ -15,15 +14,15 @@ public class OPAL extends ThinklabPlugin {
 	
 	ArrayList<URL> profiles = new ArrayList<URL>();
 	
-	@Override
-	protected void loadExtensions() throws Exception {
-
-		super.loadExtensions();
-		
-		for (Extension ext : this.getOwnExtensions(PLUGIN_ID, "opal-profile")) {
-			addProfile(this.getResourceURL(ext.getParameter("url").valueAsString()));
-		}
-	}
+//	@Override
+//	protected void loadExtensions() throws Exception {
+//
+//		super.loadExtensions();
+//		
+//		for (Extension ext : this.getOwnExtensions(PLUGIN_ID, "opal-profile")) {
+//			addProfile(this.getResourceURL(ext.getParameter("url").valueAsString()));
+//		}
+//	}
 
 	private void addProfile(URL profile) {
 		profiles.add(profile);
@@ -37,7 +36,7 @@ public class OPAL extends ThinklabPlugin {
 	}
 
 	@Override
-	protected void unload() {
+	protected void unload()  throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}

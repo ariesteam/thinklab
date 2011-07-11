@@ -32,8 +32,8 @@
  **/
 package org.integratedmodelling.thinkscape;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 public class ThinkscapePlugin extends ThinklabPlugin  {
@@ -49,11 +49,11 @@ public class ThinkscapePlugin extends ThinklabPlugin  {
 	}
 
 	@Override
-	public void load(KnowledgeManager km) throws ThinklabPluginException {
+	public void load(KnowledgeManager km) throws ThinklabException {
 	}
 
 	@Override
-	public void unload() throws ThinklabPluginException {
+	public void unload() throws ThinklabException {
 	}
 
 	

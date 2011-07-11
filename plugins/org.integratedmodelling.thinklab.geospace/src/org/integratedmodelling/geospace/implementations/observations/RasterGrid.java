@@ -39,28 +39,27 @@ import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.geospace.interfaces.IGeolocatedObject;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
-import org.integratedmodelling.utils.MalformedListException;
-import org.integratedmodelling.utils.Pair;
-import org.integratedmodelling.utils.Polylist;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**

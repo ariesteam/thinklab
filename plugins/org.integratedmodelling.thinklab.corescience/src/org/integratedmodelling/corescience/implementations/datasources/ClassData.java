@@ -11,14 +11,12 @@ import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
 import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
-import org.integratedmodelling.utils.Pair;
 
 public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> implements
 		ICategoryData, IPersistentObject {

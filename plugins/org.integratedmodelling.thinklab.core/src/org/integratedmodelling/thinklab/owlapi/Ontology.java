@@ -43,7 +43,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
@@ -84,16 +83,13 @@ public class Ontology implements IOntology {
 	
 	private String conceptSpace; // i.e. owl or xml or fs
 	protected FileKnowledgeRepository kr;
-	
-	private Logger log = Logger.getLogger(Ontology.class);
-	private long lastModified;
+
 	private boolean acceptDuplicateIDs = false;
 	protected OWLOntology ont;
 	private Map<SemanticType,IConcept> concepts;
 	private Map<SemanticType,IProperty> properties;
 	private Map<SemanticType,IInstance> instances;
 	private String cs;
-	private boolean storeInstances = true;
 	
 	// set to false if the ontology is a temporary knowledge RAM for the system - e.g. 
 	// sessions.
@@ -131,20 +127,6 @@ public class Ontology implements IOntology {
 		this.concepts = new Hashtable<SemanticType, IConcept>();
 		this.properties = new Hashtable<SemanticType, IProperty>();
 		this.instances = new Hashtable<SemanticType, IInstance>();
-	}
-	
-	/**
-	 * If this is true (the default), instances created from that point on are stored and indexed 
-	 * by URI in the ontology, so they can be retrieved. If false, instances will 
-	 * retract their axioms when they are garbage collected, and won't be retrievable -
-	 * i.e. when the Instance object is lost, they're gone, behaving like standard
-	 * Java objects. You'll want to set this to false when programming in functional
-	 * style. 
-	 * 
-	 * @param b
-	 */
-	public void setInstanceStorage(boolean b) {
-		storeInstances = b;
 	}
 	
 	protected void initialize(String cs){

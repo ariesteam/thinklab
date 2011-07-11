@@ -34,7 +34,7 @@ package org.integratedmodelling.geospace.districting.utils;
 
 import java.util.ArrayList;
 
-import org.integratedmodelling.geospace.exceptions.ThinklabDistrictingException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 
 public class DistrictingResults {
 
@@ -81,9 +81,9 @@ public class DistrictingResults {
 	}
 
 	public void setVariableNames(String[] v)
-			throws ThinklabDistrictingException {
+			throws ThinklabValidationException {
 		if (v.length != centroids.length) {
-			throw new ThinklabDistrictingException(
+			throw new ThinklabValidationException(
 					"Invalid variable names list: must have same length "
 							+ "as number of variables in districting results.");
 		}

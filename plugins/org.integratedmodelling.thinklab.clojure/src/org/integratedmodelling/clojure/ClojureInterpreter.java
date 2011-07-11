@@ -14,15 +14,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.exception.ThinklabScriptException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Escape;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.interfaces.annotations.TaskNamespace;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.utils.CamelCase;
-import org.integratedmodelling.utils.Escape;
 import org.integratedmodelling.utils.MiscUtilities;
 
 import clojure.lang.Compiler;
@@ -328,7 +327,7 @@ public class ClojureInterpreter implements Interpreter {
 				}
 			}
 		} catch (Exception e) {
-			throw new ThinklabScriptException(e);
+			throw new ThinklabValidationException(e);
 		} finally {
 			Var.popThreadBindings();
 		}

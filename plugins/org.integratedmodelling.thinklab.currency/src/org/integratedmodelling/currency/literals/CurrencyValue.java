@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.currency.literals;
 
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 
 public class CurrencyValue extends ParsedLiteralValue {

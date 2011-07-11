@@ -34,7 +34,7 @@ package org.integratedmodelling.thinklab.webapp.view.components;
 
 import java.util.ArrayList;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;

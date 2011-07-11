@@ -35,15 +35,13 @@ package org.integratedmodelling.searchengine.kbox;
 import java.util.Map;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.searchengine.QueryString;
 import org.integratedmodelling.searchengine.SearchEngine;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBoxCapabilities;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.kbox.KBoxWrapper;
-import org.integratedmodelling.thinklab.kbox.RankingKBox;
 
 /**
  * Adds textual search capabilities to a kbox by expanding it with a search engine.
@@ -54,13 +52,13 @@ import org.integratedmodelling.thinklab.kbox.RankingKBox;
  * @author Ferdinando Villa
  *
  */
-public class SearchEngineKBoxWrapper extends KBoxWrapper implements RankingKBox {
+public class SearchEngineKBoxWrapper extends KBoxWrapper {
 
 	SearchEngine searchEngine = null;
 	
 	@Override
-	public IKBoxCapabilities getKBoxCapabilities() {
-		return new SearchEngineKBoxCapabilities(super.getKBoxCapabilities());
+	public Capabilities getCapabilities() {
+		return new SearchEngineKBoxCapabilities(super.getCapabilities());
 	}
 
 	@Override

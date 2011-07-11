@@ -36,12 +36,11 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 
 public class MemIntegerContextualizedDatasource  extends DefaultAbstractState
  	implements IState, IInstanceImplementation {

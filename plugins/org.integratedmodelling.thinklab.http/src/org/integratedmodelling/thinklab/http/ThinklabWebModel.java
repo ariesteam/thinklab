@@ -2,10 +2,10 @@ package org.integratedmodelling.thinklab.http;
 
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.applications.IUserModel;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
+import org.integratedmodelling.thinklab.api.runtime.IUserModel;
 
 /**
  * Helper class to build persistent MVC models for thinkcap. Any ThinkcapModel works with Portlets and portals in the view

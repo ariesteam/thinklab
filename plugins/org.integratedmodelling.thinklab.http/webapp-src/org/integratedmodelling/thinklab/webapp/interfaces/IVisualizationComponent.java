@@ -32,8 +32,8 @@
  **/
 package org.integratedmodelling.thinklab.webapp.interfaces;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 
 public interface IVisualizationComponent {	
 	

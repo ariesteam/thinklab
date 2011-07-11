@@ -4,9 +4,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.zkoss.lang.Threads;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;

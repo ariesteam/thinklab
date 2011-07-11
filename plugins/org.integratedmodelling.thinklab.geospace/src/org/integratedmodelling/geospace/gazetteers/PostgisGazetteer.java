@@ -15,31 +15,30 @@ import java.util.Properties;
 
 import org.geotools.feature.FeatureIterator;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.CoverageFactory;
 import org.integratedmodelling.geospace.coverage.ICoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.list.Escape;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.searchengine.QueryString;
 import org.integratedmodelling.searchengine.ResultContainer;
 import org.integratedmodelling.searchengine.SearchEngine;
 import org.integratedmodelling.searchengine.SearchEnginePlugin;
 import org.integratedmodelling.sql.QueryResult;
 import org.integratedmodelling.sql.postgres.PostgreSQLServer;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.utils.Escape;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Path;
-import org.integratedmodelling.utils.Polylist;
 import org.mvel2.templates.TemplateRuntime;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -72,11 +71,6 @@ public class PostgisGazetteer implements IGazetteer {
 
 		public GazetteerResult(ResultContainer res) {
 			this.res = res;
-		}
-
-		@Override
-		public IValue getBestResult(ISession session) throws ThinklabException {
-			return res.getBestResult(session);
 		}
 
 		@Override

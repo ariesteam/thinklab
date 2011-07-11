@@ -1,15 +1,15 @@
 package org.integratedmodelling.searchengine.commands;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.searchengine.SearchEngine;
 import org.integratedmodelling.searchengine.SearchEnginePlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 
 @ThinklabCommand(
 		name="reindex",

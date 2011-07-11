@@ -37,16 +37,15 @@ import static javax.measure.unit.SI.SECOND;
 
 import javax.measure.quantity.Duration;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.time.TimePlugin;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Pair;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.jscience.physics.amount.Amount;
@@ -120,7 +119,7 @@ public class DurationValue extends ParsedLiteralValue {
         value = 0l;
     }
     
-    public DurationValue(String s) throws ThinklabValidationException, ThinklabNoKMException {
+    public DurationValue(String s) throws ThinklabValidationException {
         parseLiteral(s);
     }
     

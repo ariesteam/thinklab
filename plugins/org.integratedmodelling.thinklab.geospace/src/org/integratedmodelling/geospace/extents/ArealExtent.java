@@ -38,13 +38,12 @@ import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.ITopologicallyComparable;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 
@@ -373,14 +372,13 @@ public abstract class ArealExtent implements IExtent {
 	}
 
 	@Override
-	public double[] getDataAsDoubles() throws ThinklabValueConversionException {
+	public double[] getDataAsDoubles() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public double getDoubleValue(int index)
-			throws ThinklabValueConversionException {
+	public double getDoubleValue(int index) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

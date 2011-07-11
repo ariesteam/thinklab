@@ -35,8 +35,8 @@ package org.integratedmodelling.sql.hsql;
 import java.net.URI;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabStorageException;
 import org.integratedmodelling.sql.SQLServer;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 
 /**
  * An HSQLDB server that only operates in memory.

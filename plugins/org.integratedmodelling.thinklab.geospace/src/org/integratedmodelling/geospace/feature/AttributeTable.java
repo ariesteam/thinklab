@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 
 import com.Ostermiller.util.CSVParse;
 import com.Ostermiller.util.CSVParser;

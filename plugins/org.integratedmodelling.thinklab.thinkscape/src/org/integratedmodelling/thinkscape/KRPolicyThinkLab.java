@@ -9,22 +9,21 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.growl.GraphUtil;
 import org.integratedmodelling.growl.OWLMetadata;
 import org.integratedmodelling.ograph.OEdge;
 import org.integratedmodelling.ograph.OGraph;
 import org.integratedmodelling.ograph.ONode;
 import org.integratedmodelling.policy.KRPolicy;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.ISessionManager;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinkscape.interfaces.ICommandReceptor;
 
 public class KRPolicyThinkLab implements KRPolicy, ISessionManager,
@@ -235,9 +234,6 @@ public class KRPolicyThinkLab implements KRPolicy, ISessionManager,
 					session);
 			if (result != null)
 				session.getOutputStream().println(result.toString());
-		} catch (ThinklabNoKMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (ThinklabException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

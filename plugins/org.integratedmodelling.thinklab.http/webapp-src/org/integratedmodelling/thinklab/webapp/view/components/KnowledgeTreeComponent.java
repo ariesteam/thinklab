@@ -33,11 +33,11 @@
 package org.integratedmodelling.thinklab.webapp.view.components;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.KnowledgeTree;
-import org.integratedmodelling.thinklab.KnowledgeTree.ClassNode;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.http.ThinkWeb;
 import org.integratedmodelling.thinklab.http.ThinklabWebSession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.webapp.KnowledgeTree;
+import org.integratedmodelling.thinklab.webapp.KnowledgeTree.ClassNode;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.AbstractTreeModel;
 import org.zkoss.zul.Tree;

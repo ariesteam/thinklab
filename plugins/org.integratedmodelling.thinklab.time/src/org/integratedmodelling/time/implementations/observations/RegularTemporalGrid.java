@@ -37,16 +37,16 @@ import org.integratedmodelling.corescience.implementations.observations.Observat
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.units.Unit;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.time.TimePlugin;
 import org.integratedmodelling.time.extents.RegularTimeGridExtent;
 import org.integratedmodelling.time.literals.DurationValue;
 import org.integratedmodelling.time.literals.TimeValue;
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * @author UVM Affiliate

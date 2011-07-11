@@ -35,15 +35,15 @@ package org.integratedmodelling.geospace.commands;
 import java.io.File;
 import java.net.URL;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.geospace.coverage.RasterCoverage;
 import org.integratedmodelling.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.MiscUtilities;
 
 /**
@@ -57,8 +57,8 @@ public class Rasterize implements ICommandHandler {
 
 		String toload = command.getArgumentAsString("resource");
 		// String output = command.getArgumentAsString("output");
-		int xCells = command.getArgument("xCells").asNumber().asInteger();
-		int yCells = command.getArgument("yCells").asNumber().asInteger();
+		int xCells = command.getArgument("xCells").asInteger();
+		int yCells = command.getArgument("yCells").asInteger();
 
 		String attrName = command.getOptionAsString("attribute", "the_value");
 		String output = command.getOptionAsString("output", null);

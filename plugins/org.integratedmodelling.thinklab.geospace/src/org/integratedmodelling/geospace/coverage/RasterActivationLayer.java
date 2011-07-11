@@ -2,10 +2,10 @@ package org.integratedmodelling.geospace.coverage;
 
 import java.util.BitSet;
 
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.utils.Pair;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**

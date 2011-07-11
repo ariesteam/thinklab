@@ -7,11 +7,11 @@ import java.io.File;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.growl.RenderGrowl;
 import org.integratedmodelling.policy.ApplicationFrame;
 import org.integratedmodelling.policy.RTPolicy;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinkscape.listeners.ThinkscapeSessionListener;
 
 public class ThinkScape extends JFrame implements RTPolicy {

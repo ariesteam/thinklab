@@ -39,12 +39,12 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.geospace.ISpatialDataImporter;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Pair;
-import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.PropertiesTemplateAdapter;
 
 public abstract class CoverageHandler  implements ISpatialDataImporter {

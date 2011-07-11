@@ -33,28 +33,25 @@
  **/
 package org.integratedmodelling.thinklab.commandline.commands;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
-import org.integratedmodelling.thinklab.commandline.CommandLine;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabUnknownResourceException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Polylist;
-import org.java.plugin.registry.PluginDescriptor;
 
 public class List implements ICommandHandler {
 
@@ -69,17 +66,17 @@ public class List implements ICommandHandler {
 
 		session.getOutputStream().println("\nConcepts:");
 		for (IConcept i : ont.getConcepts()) {
-			session.getOutputStream().println("\t" + i.getSemanticType().toString()
+			session.getOutputStream().println("\t" + i.toString()
 					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
 		}
 		session.getOutputStream().println("\nProperties:");
 		for (IProperty i : ont.getProperties()) {
-			session.getOutputStream().println("\t" + i.getSemanticType().toString()
+			session.getOutputStream().println("\t" + i.toString()
 					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
 		}
 		session.getOutputStream().println("\nInstances:");
 		for (IInstance i : ont.getInstances()) {
-			session.getOutputStream().println("\t" + i.getSemanticType().toString()
+			session.getOutputStream().println("\t" + i.toString()
 					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
 		}
 
@@ -92,7 +89,7 @@ public class List implements ICommandHandler {
 			session.getOutputStream().println("Instance URI is " + c.getURI());
 
 			session.getOutputStream().println("list representation:\n"
-					+ Polylist.prettyPrint(c.toList(null)));
+					+ Polylist.prettyPrint(c.asList(null)));
 
 			session.getOutputStream().println(c.getDescription());
 
@@ -108,7 +105,7 @@ public class List implements ICommandHandler {
 			}
 
 		} else if (mode == listmode.LIST) {
-			session.getOutputStream().println(Polylist.prettyPrint(c.toList(null)));
+			session.getOutputStream().println(Polylist.prettyPrint(c.asList(null)));
 		}
 	}
 
@@ -123,19 +120,6 @@ public class List implements ICommandHandler {
 		for (IProperty r : c.getAllProperties()) {
 			session.getOutputStream().println("    " + r);
 		}
-
-		session.getOutputStream().println("  Direct Instances:");
-		for (IInstance r : c.getInstances()) {
-			session.getOutputStream().println("    " + r);
-		}
-
-		session.getOutputStream().println("  Restrictions:");
-		session.getOutputStream().println(Polylist.prettyPrint(c.getRestrictions()
-				.asList(), 2));
-
-		session.getOutputStream().println("  Definition:");
-		session.getOutputStream().println(Polylist.prettyPrint(c.getDefinition()
-				.asList(), 2));
 
 	}
 

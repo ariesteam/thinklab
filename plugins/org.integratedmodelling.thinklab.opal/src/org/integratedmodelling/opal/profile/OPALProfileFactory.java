@@ -37,8 +37,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.xml.XMLDocument;

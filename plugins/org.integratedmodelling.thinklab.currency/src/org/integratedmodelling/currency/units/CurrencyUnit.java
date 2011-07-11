@@ -7,7 +7,7 @@ import org.integratedmodelling.corescience.exceptions.ThinklabInexactConversionE
 import org.integratedmodelling.corescience.interfaces.literals.IModifiableUnit;
 import org.integratedmodelling.currency.CurrencyPlugin;
 import org.integratedmodelling.currency.cpi.CpiConversionFactory;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.time.literals.TimeValue;
 
 public class CurrencyUnit extends BaseUnit<Dimensionless> implements IModifiableUnit { 

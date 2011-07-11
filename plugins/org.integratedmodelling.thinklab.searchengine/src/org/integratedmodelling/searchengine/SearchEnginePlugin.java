@@ -36,9 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;

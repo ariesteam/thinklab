@@ -1,15 +1,15 @@
 package org.integratedmodelling.geospace.commands;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 
 @ThinklabCommand(
 		name="locate",
@@ -39,11 +39,11 @@ public class Locate implements ICommandHandler {
 		if (command.hasOption("import")) {
 			
 			if (gaz == null) {
-				throw new ThinklabInappropriateOperationException(
+				throw new ThinklabInternalErrorException(
 					"a gazetteer to import to must be specified with the -g option");
 			}
 			if (gaz.isReadOnly()) {
-				throw new ThinklabInappropriateOperationException(
+				throw new ThinklabInternalErrorException(
 					"gazetteer " + gname + " is read-only: cannot import");				
 			}
 			

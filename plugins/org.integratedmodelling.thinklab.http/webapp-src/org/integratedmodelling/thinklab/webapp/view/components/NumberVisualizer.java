@@ -32,8 +32,8 @@
  **/
 package org.integratedmodelling.thinklab.webapp.view.components;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.webapp.interfaces.IVisualizationComponentConstructor;
 import org.zkoss.zk.ui.Component;
 

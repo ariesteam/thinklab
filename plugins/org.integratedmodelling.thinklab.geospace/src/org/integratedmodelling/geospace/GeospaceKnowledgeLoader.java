@@ -4,14 +4,14 @@ import java.io.File;
 import java.net.URL;
 import java.util.Collection;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.geospace.coverage.InstanceCoverageLoader;
 import org.integratedmodelling.geospace.feature.InstanceShapefileLoader;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.utils.MiscUtilities;
 
 public class GeospaceKnowledgeLoader implements KnowledgeLoader {

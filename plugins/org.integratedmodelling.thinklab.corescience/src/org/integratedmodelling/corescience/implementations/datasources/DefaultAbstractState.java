@@ -8,10 +8,10 @@ import org.integratedmodelling.corescience.interfaces.IExtent.AggregationParamet
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.corescience.units.Unit;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.literals.IOperator;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.lang.IOperator;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 public abstract class DefaultAbstractState implements IState {
 

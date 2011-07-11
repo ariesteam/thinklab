@@ -6,13 +6,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.WildcardMatcher;
 
 @ListingProvider(label="concepts",itemlabel="concept")

@@ -60,26 +60,26 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.store.FSDirectory;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.searchengine.exceptions.ThinklabInvalidIndexException;
 import org.integratedmodelling.searchengine.exceptions.ThinklabInvalidQueryException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IKnowledgeSubject;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
@@ -579,7 +579,7 @@ public final class SearchEngine implements IQueriable {
 			l = object.getLocalName();
 		}
 		
-		String id = object.getSemanticType().toString();
+		String id = object.toString();
 		if (kbox != null) {
 			id = kbox.getUri() + "#" + object.getLocalName();
 		}
@@ -761,7 +761,7 @@ public final class SearchEngine implements IQueriable {
 
 					/* create document for linked object and link it to main document, multiplying the
 					 * intrinsic weight of the fields by the weigth factor. */
-					IInstance inst = r.getValue().asObjectReference().getObject();
+					IInstance inst = r.getValue().asObject();
 					
 					if (inst != null) {
 						Document ld = submitIndividual(kbox, inst);

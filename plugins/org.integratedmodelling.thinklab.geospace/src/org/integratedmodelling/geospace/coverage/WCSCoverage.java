@@ -46,17 +46,15 @@ import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.corescience.CoreScience;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.utils.CopyURL;
-import org.integratedmodelling.utils.Polylist;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
 
@@ -322,7 +320,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			 * from the net, so the case with coverage == null is normally an error - no specification
 			 * of a subrange has been asked. For now let's just throw an error.
 			 */
-			throw new ThinklabInappropriateOperationException(
+			throw new ThinklabValidationException(
 					"WCS coverage " + layerName + " being read in its entirety without subsetting: " +
 					"this is most likely an error causing extremely long download times.");
 		}

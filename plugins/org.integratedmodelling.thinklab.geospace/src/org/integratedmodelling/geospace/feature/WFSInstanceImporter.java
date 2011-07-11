@@ -39,8 +39,8 @@ import java.util.Properties;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.wfs.WFSDataStore;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.list.Polylist;
 
 /**
  * Convert a shapefile into an ontology of observations of a given class, converting the

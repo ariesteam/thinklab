@@ -34,15 +34,15 @@ package org.integratedmodelling.geospace.commands;
 
 import java.io.File;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.geospace.coverage.InstanceCoverageExporter;
 import org.integratedmodelling.geospace.feature.InstanceShapefileExporter;
 import org.integratedmodelling.opal.utils.OPALListWriter;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.xml.XMLDocument;
 

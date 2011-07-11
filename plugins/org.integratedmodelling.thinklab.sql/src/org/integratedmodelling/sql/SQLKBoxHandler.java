@@ -3,10 +3,10 @@ package org.integratedmodelling.sql;
 import java.net.URI;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabStorageException;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.extensions.KBoxHandler;
-import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 
 public class SQLKBoxHandler implements KBoxHandler {
 

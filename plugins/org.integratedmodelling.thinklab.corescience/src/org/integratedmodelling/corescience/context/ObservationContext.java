@@ -27,19 +27,18 @@ import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransf
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.interfaces.internal.TransformingObservation;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor.StorageOrdering;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabUnimplementedFeatureException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.NameGenerator;
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * An observation context is produced by a context when applied to an observation. In a twist of

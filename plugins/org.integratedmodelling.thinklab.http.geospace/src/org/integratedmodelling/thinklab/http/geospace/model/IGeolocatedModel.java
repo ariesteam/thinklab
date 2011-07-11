@@ -1,8 +1,8 @@
 package org.integratedmodelling.thinklab.http.geospace.model;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 
 /**
  * Any ThinkcapModel adopting this interface can be used directly as the model for any of the view

@@ -1,8 +1,8 @@
 package org.integratedmodelling.corescience.interfaces;
 
 import org.integratedmodelling.corescience.interfaces.internal.IDatasourceTransformation;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 public interface IDataSource<T> {
 	

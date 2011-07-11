@@ -1,8 +1,8 @@
 package org.integratedmodelling.thinklab.commandline.rest;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.commandline.CommandLine;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
@@ -33,6 +33,7 @@ public class ConfigService extends DefaultRESTHandler {
 			return wrap();
 		
 		try {
+			
 			String plugin 	= this.getArgument("plugin");
 			plugin = Thinklab.resolvePluginName(plugin, true);
 			Plugin zio = CommandLine.get().getManager().getPlugin(plugin);

@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.corescience.exceptions;
 
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 
 public class ThinklabInconsistentContextException extends ThinklabValidationException {
 

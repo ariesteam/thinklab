@@ -32,9 +32,9 @@
  **/
 package org.integratedmodelling.thinklab.webapp.view.components;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.constraint.Restriction;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
 import org.integratedmodelling.thinklab.webapp.interfaces.IRestrictionComponent;
 import org.integratedmodelling.thinklab.webapp.view.TypeManager;
 import org.integratedmodelling.thinklab.webapp.view.VisualProperty;

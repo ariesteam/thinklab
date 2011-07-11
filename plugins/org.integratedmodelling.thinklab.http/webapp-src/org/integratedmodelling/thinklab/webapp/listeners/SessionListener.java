@@ -3,8 +3,8 @@ package org.integratedmodelling.thinklab.webapp.listeners;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.http.ThinkWeb;
 import org.integratedmodelling.thinklab.http.ThinklabWebSession;
 import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;

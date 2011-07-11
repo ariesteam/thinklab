@@ -40,18 +40,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.http.ThinkWeb;
 import org.integratedmodelling.thinklab.http.ThinklabWebModel;
 import org.integratedmodelling.thinklab.http.ThinklabWebSession;
 import org.integratedmodelling.thinklab.http.extensions.WebApplication;
 import org.integratedmodelling.thinklab.http.utils.FileOps;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Pair;
 import org.mortbay.jetty.Server;
 
 /**

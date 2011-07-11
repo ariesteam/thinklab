@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.http.application.ThinklabWebApplication;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;

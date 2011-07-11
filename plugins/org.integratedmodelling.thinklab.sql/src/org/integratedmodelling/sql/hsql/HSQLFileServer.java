@@ -36,11 +36,11 @@ import java.io.File;
 import java.net.URI;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabStorageException;
 import org.integratedmodelling.sql.SQLPlugin;
 import org.integratedmodelling.sql.SQLServer;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
 
 /**
  * An HSQLDB server that operates on a local filesystem directory.

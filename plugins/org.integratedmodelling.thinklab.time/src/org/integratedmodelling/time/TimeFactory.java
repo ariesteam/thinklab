@@ -1,14 +1,13 @@
 package org.integratedmodelling.time;
 
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.corescience.interfaces.IExtent;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabNoKMException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.time.extents.RegularTimeGridExtent;
 import org.integratedmodelling.time.extents.TemporalLocationExtent;
 import org.integratedmodelling.time.literals.DurationValue;
 import org.integratedmodelling.time.literals.TimeValue;
-import org.integratedmodelling.utils.Pair;
 
 
 /**

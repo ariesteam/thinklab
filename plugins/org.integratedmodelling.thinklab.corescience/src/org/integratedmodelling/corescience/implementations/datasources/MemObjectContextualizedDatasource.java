@@ -42,18 +42,17 @@ import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.literals.IndexedCategoricalDistribution;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.PersistentObject;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
 import org.integratedmodelling.utils.InputSerializer;
 import org.integratedmodelling.utils.OutputSerializer;
-import org.integratedmodelling.utils.Polylist;
 
 @PersistentObject()
 public class MemObjectContextualizedDatasource extends DefaultAbstractState

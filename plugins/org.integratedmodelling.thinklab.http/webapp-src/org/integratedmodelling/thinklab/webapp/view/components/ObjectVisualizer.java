@@ -32,10 +32,10 @@
  **/
 package org.integratedmodelling.thinklab.webapp.view.components;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.webapp.interfaces.IVisualizationComponent;
 import org.integratedmodelling.thinklab.webapp.view.VisualProperty;
 import org.zkoss.zk.ui.Component;
@@ -146,10 +146,7 @@ public class ObjectVisualizer extends DynamicToggleComponent implements IVisuali
 
 	@Override
 	public void setValue(IValue value) throws ThinklabException {
-		try {
-			object = value.asObjectReference().getObject();
-		} catch (ThinklabValueConversionException e) {
-		}
+		object = value.asObject();
 		os_setup();
 	}
 

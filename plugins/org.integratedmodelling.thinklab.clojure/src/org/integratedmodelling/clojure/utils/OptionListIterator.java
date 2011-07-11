@@ -3,8 +3,8 @@ package org.integratedmodelling.clojure.utils;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.utils.Pair;
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 
 /**
  * Pass a collection (e.g. a clojure list of :kw value pairs) and retrieve pairs of key/value with the key 

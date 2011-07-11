@@ -2,8 +2,8 @@ package org.integratedmodelling.thinklab.webapp.view.components;
 
 import java.util.Hashtable;
 
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.thinklab.webapp.ZK;
-import org.integratedmodelling.utils.Pair;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Div;
 

@@ -1,6 +1,6 @@
 package org.integratedmodelling.corescience.interfaces;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 /**
  * A topological object can be compared with topological operators to another of a 

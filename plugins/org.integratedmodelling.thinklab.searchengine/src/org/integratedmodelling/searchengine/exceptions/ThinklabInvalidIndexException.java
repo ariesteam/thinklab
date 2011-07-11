@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.searchengine.exceptions;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 public class ThinklabInvalidIndexException extends ThinklabException {
 

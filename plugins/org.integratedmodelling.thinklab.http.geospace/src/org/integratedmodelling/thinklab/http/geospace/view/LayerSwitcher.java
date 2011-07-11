@@ -5,8 +5,8 @@ import java.util.HashSet;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.olmaps.OLmaps;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.webapp.ZK;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;

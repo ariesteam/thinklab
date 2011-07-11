@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.geotools.feature.FeatureIterator;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 

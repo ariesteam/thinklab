@@ -38,15 +38,15 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.ConceptVisitor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.webapp.interfaces.IRestrictionComponentConstructor;
 import org.integratedmodelling.thinklab.webapp.interfaces.IVisualizationComponentConstructor;
@@ -431,7 +431,7 @@ public class TypeManager {
             public boolean match(IConcept c) {
             	
             	boolean ret = false;
-                TypeResultVisualizer td = coll.get(c.getSemanticType().toString());
+                TypeResultVisualizer td = coll.get(c.toString());
                 if (td != null) {
                 	result =  td;
                 	ret = (result != null);
@@ -480,7 +480,7 @@ public class TypeManager {
             public boolean match(IConcept c) {
             	
             	boolean ret = false;
-                TypeResultVisualizer td = coll.get(c.getSemanticType().toString());
+                TypeResultVisualizer td = coll.get(c.toString());
                 if (td != null) {
                 	result =  td;
                 	ret = (result != null);
@@ -517,7 +517,7 @@ public class TypeManager {
             public boolean match(IConcept c) {
             	
             	boolean ret = false;
-                TypeDecoration td = coll.get(c.getSemanticType().toString());
+                TypeDecoration td = coll.get(c.toString());
                 if (td != null) {
                 	result =  td;
                 	ret = (result != null);
@@ -550,7 +550,7 @@ public class TypeManager {
             }
             
             public boolean match(IConcept c) {            	
-            	return coll.get(c.getSemanticType().toString()) != null;
+            	return coll.get(c.toString()) != null;
             }    
         }
         
@@ -588,7 +588,7 @@ public class TypeManager {
 	            public boolean match(IConcept c) {
 	            	
 	            	boolean ret = false;
-	                TypeDecoration td = coll.get(c.getSemanticType().toString());
+	                TypeDecoration td = coll.get(c.toString());
 	                if (td != null) {
 	                	try {
 							result =  td.getRestrictionConstructor(parm);
@@ -647,7 +647,7 @@ public class TypeManager {
 	            public boolean match(IConcept c) {
 	            	
 	            	boolean ret = false;
-	                TypeDecoration td = coll.get(c.getSemanticType().toString());
+	                TypeDecoration td = coll.get(c.toString());
 	                if (td != null) {
 	                	try {
 							result =  td.getVisualizerConstructor(parm);

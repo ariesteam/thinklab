@@ -5,10 +5,8 @@
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.http/classes" path="plugins/org.integratedmodelling.thinklab.http/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.http/webapp/WEB-INF/classes" path="plugins/org.integratedmodelling.thinklab.http/webapp-src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.agriculture/classes" path="plugins/org.integratedmodelling.thinklab.agriculture/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.idv/classes" path="plugins/org.integratedmodelling.thinklab.idv/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.modelling/classes" path="plugins/org.integratedmodelling.thinklab.modelling/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.riskwiz/classes" path="plugins/org.integratedmodelling.thinklab.riskwiz/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.scheduler/classes" path="plugins/org.integratedmodelling.thinklab.scheduler/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.tclj/classes" path="plugins/org.integratedmodelling.thinklab.tclj/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.clojure/classes" path="plugins/org.integratedmodelling.thinklab.clojure/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.mca/classes" path="plugins/org.integratedmodelling.thinklab.mca/src"/>
@@ -18,19 +16,13 @@
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.shell/classes" path="plugins/org.integratedmodelling.thinklab.shell/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.geospace/classes" path="plugins/org.integratedmodelling.thinklab.geospace/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.searchengine/classes" path="plugins/org.integratedmodelling.thinklab.searchengine/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.groovy/classes" path="plugins/org.integratedmodelling.thinklab.groovy/src"/>
 	<classpathentry excluding="org/integratedmodelling/thinklab/impl/owlapi/" kind="src" output="plugins/org.integratedmodelling.thinklab.core/classes" path="plugins/org.integratedmodelling.thinklab.core/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.currency/classes" path="plugins/org.integratedmodelling.thinklab.currency/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.sql/classes" path="plugins/org.integratedmodelling.thinklab.sql/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.dynamicmodelling/classes" path="plugins/org.integratedmodelling.thinklab.dynamicmodelling/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.persistence/classes" path="plugins/org.integratedmodelling.thinklab.persistence/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.metadata/classes" path="plugins/org.integratedmodelling.thinklab.metadata/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.opal/classes" path="plugins/org.integratedmodelling.thinklab.opal/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.workflow/classes" path="plugins/org.integratedmodelling.thinklab.workflow/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.thinkscape/classes" path="plugins/org.integratedmodelling.thinklab.thinkscape/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.time/classes" path="plugins/org.integratedmodelling.thinklab.time/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.authentication/classes" path="plugins/org.integratedmodelling.thinklab.authentication/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.rules/classes" path="plugins/org.integratedmodelling.thinklab.rules/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/colt.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/ext-1.1.1.jar"/>
@@ -113,29 +105,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/slf4j-api-1.4.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/slf4j-jdk14-1.4.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/vecmath-1.3.1.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.groovy/lib/groovy-all-1.0-JSR-06.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.persistence/lib/c3p0-0.9.0.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.persistence/lib/cglib-2.1.3.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.persistence/lib/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.persistence/lib/ejb3-persistence.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.persistence/lib/hibernate3.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.persistence/lib/hibernate-tools.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.persistence/lib/jboss-ejb3x.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.persistence/lib/jta.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.persistence/lib/tools.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rules/lib/core-3.2.3.v_686_R32x.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rules/lib/drools-analytics-4.0.7.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rules/lib/drools-ant-4.0.7.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rules/lib/drools-compiler-4.0.7.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rules/lib/drools-core-4.0.7.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rules/lib/drools-decisiontables-4.0.7.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rules/lib/drools-jsr94-4.0.7.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rules/lib/janino-2.5.10.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rules/lib/jess.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rules/lib/jsr94-1.1.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rules/lib/jxl-2.4.2.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rules/lib/xpp3_min-1.1.3.4.O.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.rules/lib/xstream-1.2.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.searchengine/lib/jericho-html-2.5.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.searchengine/lib/lucene-core-2.2.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.searchengine/lib/PDFBox-0.7.3.jar"/>
@@ -144,11 +113,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.thinkscape/lib/growl.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.thinkscape/lib/prefuse.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.time/lib/joda-time-1.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.workflow/lib/oscore-2.2.5.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.workflow/lib/osuser-1.0-dev-2Feb05.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.workflow/lib/osworkflow-2.8.0-im.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.workflow/lib/propertyset-1.4.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.workflow/lib/quartz-1.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/im-boot.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/commons-lang-2.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/owlapi-bin.jar" sourcepath="owlapi-src.jar"/>
@@ -261,14 +225,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/xsd-2.2.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/kxml2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/TableLayout-bin-jdk1.5-2007-04-21.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/auxdata.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/external.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/idv.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/jython.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/local-visad.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/ncIdv.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/simpleidv.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/visad.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/jline-0.9.94.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/gnuplot.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/Ascape_5.5.0.jar"/>

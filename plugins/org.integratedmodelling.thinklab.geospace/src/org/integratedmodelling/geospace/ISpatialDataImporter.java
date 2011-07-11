@@ -35,7 +35,7 @@ package org.integratedmodelling.geospace;
 import java.net.URL;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 public interface ISpatialDataImporter {
 

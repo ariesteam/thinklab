@@ -32,9 +32,9 @@
  **/
 package org.integratedmodelling.corescience;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 /**
@@ -141,31 +141,25 @@ public class CoreScience extends ThinklabPlugin {
 	 * @see org.integratedmodelling.ima.core.plugin.Plugin#load(org.integratedmodelling.ima.core.KnowledgeManager, java.io.File, java.io.File)
 	 */
 	@Override
-	public void load(KnowledgeManager km) throws ThinklabPluginException {
+	public void load(KnowledgeManager km) throws ThinklabException {
 		
-		try {
-			NumericRankingSpace = km.requireConcept(RANKING_MODEL);
-			DiscreteNumericRankingSpace = km.requireConcept(DISCRETE_RANKING_MODEL);
-			MeasurementSpace = km.requireConcept(UNIT);
-			RandomValueType = km.requireConcept(RANDOM_VALUE);
-			ContinuousDistributionType = km.requireConcept(CONTINUOUS_DISTRIBUTION);
-			DiscreteDistributionType = km.requireConcept(DISCRETE_DISTRIBUTION);
-			ObservationType = km.requireConcept(OBSERVATION);
-			MeasurementType = km.requireConcept(MEASUREMENT);
-			RankingType = km.requireConcept(RANKING);
-			CategorizationType = km.requireConcept(CATEGORIZATION);
-			
-		} catch (Exception e) {
-			throw new ThinklabPluginException(e);
-		}
-		
+		NumericRankingSpace = km.requireConcept(RANKING_MODEL);
+		DiscreteNumericRankingSpace = km.requireConcept(DISCRETE_RANKING_MODEL);
+		MeasurementSpace = km.requireConcept(UNIT);
+		RandomValueType = km.requireConcept(RANDOM_VALUE);
+		ContinuousDistributionType = km.requireConcept(CONTINUOUS_DISTRIBUTION);
+		DiscreteDistributionType = km.requireConcept(DISCRETE_DISTRIBUTION);
+		ObservationType = km.requireConcept(OBSERVATION);
+		MeasurementType = km.requireConcept(MEASUREMENT);
+		RankingType = km.requireConcept(RANKING);
+		CategorizationType = km.requireConcept(CATEGORIZATION);		
 	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.ima.core.plugin.Plugin#unload(org.integratedmodelling.ima.core.KnowledgeManager)
 	 */
 	@Override
-	public void unload() throws ThinklabPluginException {
+	public void unload() throws ThinklabException {
 	}
 
 	public static IConcept RankingModel() {

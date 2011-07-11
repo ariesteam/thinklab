@@ -1,6 +1,6 @@
 package org.integratedmodelling.corescience.interfaces.literals;
 
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 
 public interface IModifiableUnit {
 

@@ -36,17 +36,15 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.integratedmodelling.corescience.interfaces.ITopologicallyComparable;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
-import org.integratedmodelling.thinklab.literals.TextValue;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 
@@ -80,33 +78,33 @@ public class ShapeValue extends ParsedLiteralValue implements ITopologicallyComp
 	CoordinateReferenceSystem crs = null;
 	
 	public ShapeValue() {
-    	setConceptWithoutValidation(Geospace.get().Shape());
+    	setConcept(Geospace.get().Shape());
 	}
 	
     public ShapeValue(String s) throws ThinklabValidationException {
     	parseLiteral(s);
-    	setConceptWithoutValidation(Geospace.get().Shape());
+    	setConcept(Geospace.get().Shape());
     }
 
 	public ShapeValue(String s, IConcept c) throws ThinklabValidationException {
     	parseLiteral(s);
-    	setConceptWithValidation(c);
+    	setConcept(c);
     }
 
     protected ShapeValue(Geometry shape, IConcept c)  {
     	this.shape = shape;
-    	setConceptWithoutValidation(c);
+    	setConcept(c);
     }
     
     public ShapeValue(Geometry geometry) {
     	this.shape = geometry;
-    	setConceptWithoutValidation(null);
+    	setConcept(null);
 	}
     
     public ShapeValue(Geometry geometry, CoordinateReferenceSystem crs) {
     	this.shape = geometry;
     	this.crs = crs;
-    	setConceptWithoutValidation(null);
+    	setConcept(null);
 	}
 
     /**
@@ -118,13 +116,13 @@ public class ShapeValue extends ParsedLiteralValue implements ITopologicallyComp
      */
     public ShapeValue(double x1, double y1, double x2, double y2) {
     	this.shape = makeCell(x1,y1,x2,y2);
-    	setConceptWithoutValidation(null);
+    	setConcept(null);
     }
     
     public ShapeValue(String s, CoordinateReferenceSystem crs) throws ThinklabValidationException {
     	parseLiteral(s);
     	this.crs = crs;
-    	setConceptWithoutValidation(Geospace.get().Shape());
+    	setConcept(Geospace.get().Shape());
 	}
 
     /* create a polygon from the passed envelope */ 
@@ -189,8 +187,8 @@ public class ShapeValue extends ParsedLiteralValue implements ITopologicallyComp
     }
 
 	@Override
-	public TextValue asText() throws ThinklabValueConversionException {
-		return new TextValue(new WKTWriter().write(shape));
+	public String asText() {
+		return new WKTWriter().write(shape);
 	}
 
 	@Override
@@ -203,78 +201,78 @@ public class ShapeValue extends ParsedLiteralValue implements ITopologicallyComp
 		// definitely not
 		return false;
 	}
-
-	public IValue op(String op, IValue other) throws ThinklabInappropriateOperationException, ThinklabValueConversionException {
-
-		/**
-		 * Implements:
-		 * 
-		 * + -> union
-		 * - -> difference
-		 * * -> intersection
-		 * overlaps
-		 * contains
-		 * ...
-		 */
-		
-	   	IValue ret = null;
-    	if (op.equals("=")) {
-    		try {
-        		ret = clone();
-				ret.setToCommonConcept(other.getConcept(), KnowledgeManager.get().getNumberType());
-			} catch (ThinklabException e) {
-			}
-    	} else {
-    		
-    		if (other != null && !(other instanceof ShapeValue) )
-    			throw new ThinklabValueConversionException("shape value operator applied to non-shape " + other.getConcept());
-    		
-    		ShapeValue onum = (ShapeValue)other;
-    		
-    		if (op.equals("+")) {
-    			
-    			// union
-    			Geometry newgeo = this.shape.union(onum.shape);
-    			/* 
-    			 * TODO can be any shape, so we should use something that finds out the
-    			 * proper "minimum" concept for the new shape
-    			 */
-    			ret = new ShapeValue(newgeo, this.getConcept());
-
-    		} else if (op.equals("*")) {
-    			
-    			// intersection
-    			Geometry newgeo = this.shape.intersection(onum.shape);
-    			ret = new ShapeValue(newgeo, this.getConcept());
-
-    		} else if (op.equals("-")) {
-
-    			// difference
-    			Geometry newgeo = this.shape.difference(onum.shape);
-    			ret = new ShapeValue(newgeo, this.getConcept());
-
-    			// TODO all other special ops
-    		
-    		} else {
-    			throw new ThinklabInappropriateOperationException("number values do not support operator " + op);
-    		}
-    		
-    		if (other != null)
-    			ret.setToCommonConcept(other.getConcept(), KnowledgeManager.Number());
-    	}
-    	
-    	return ret;
-	}
-
+//
+//	public IValue op(String op, IValue other) throws ThinklabInappropriateOperationException, ThinklabValueConversionException {
+//
+//		/**
+//		 * Implements:
+//		 * 
+//		 * + -> union
+//		 * - -> difference
+//		 * * -> intersection
+//		 * overlaps
+//		 * contains
+//		 * ...
+//		 */
+//		
+//	   	IValue ret = null;
+//    	if (op.equals("=")) {
+//    		try {
+//        		ret = clone();
+//				ret.setToCommonConcept(other.getConcept(), KnowledgeManager.get().getNumberType());
+//			} catch (ThinklabException e) {
+//			}
+//    	} else {
+//    		
+//    		if (other != null && !(other instanceof ShapeValue) )
+//    			throw new ThinklabValueConversionException("shape value operator applied to non-shape " + other.getConcept());
+//    		
+//    		ShapeValue onum = (ShapeValue)other;
+//    		
+//    		if (op.equals("+")) {
+//    			
+//    			// union
+//    			Geometry newgeo = this.shape.union(onum.shape);
+//    			/* 
+//    			 * TODO can be any shape, so we should use something that finds out the
+//    			 * proper "minimum" concept for the new shape
+//    			 */
+//    			ret = new ShapeValue(newgeo, this.getConcept());
+//
+//    		} else if (op.equals("*")) {
+//    			
+//    			// intersection
+//    			Geometry newgeo = this.shape.intersection(onum.shape);
+//    			ret = new ShapeValue(newgeo, this.getConcept());
+//
+//    		} else if (op.equals("-")) {
+//
+//    			// difference
+//    			Geometry newgeo = this.shape.difference(onum.shape);
+//    			ret = new ShapeValue(newgeo, this.getConcept());
+//
+//    			// TODO all other special ops
+//    		
+//    		} else {
+//    			throw new ThinklabInappropriateOperationException("number values do not support operator " + op);
+//    		}
+//    		
+//    		if (other != null)
+//    			ret.setToCommonConcept(other.getConcept(), KnowledgeManager.Number());
+//    	}
+//    	
+//    	return ret;
+//	}
+//
 	@Override
-	public void setConceptWithValidation(IConcept concept) throws ThinklabValidationException {
+	public void setConcept(IConcept concept) {
 		
 		boolean ok = false;
 		
 		/* if that's all we ask for, let it have it */
 		if (concept.equals(KnowledgeManager.Thing()) ||
 			concept.equals(Geospace.get().Shape())) {
-			setConceptWithoutValidation(Geospace.get().Shape());
+			super.setConcept(Geospace.get().Shape());
 			return;
 		}
 		
@@ -293,44 +291,44 @@ public class ShapeValue extends ParsedLiteralValue implements ITopologicallyComp
 			ok = concept.is(Geospace.get().MultiPolygon());
 		
 		if (!ok)
-			throw new ThinklabValidationException(
+			throw new ThinklabRuntimeException(
 					"shapevalue: shape is not consistent with concept: " +
 					concept + 
 					" != " + 
 					shape);
 		
-		setConceptWithoutValidation(concept);
+		super.setConcept(concept);
 	}
-
-	@Override
-	public void setConceptWithoutValidation(IConcept concept) {
-		
-		IConcept c = concept;
-		
-		if (c == null) {
-			
-			if (shape instanceof Point)
-				c = Geospace.get().Point();
-			else if (shape instanceof LineString)
-				c = Geospace.get().LineString();
-			else if (shape instanceof Polygon)
-				c = Geospace.get().Polygon();
-			else if (shape instanceof MultiPoint)
-				c = Geospace.get().MultiPoint();
-			else if (shape instanceof MultiLineString)
-				c = Geospace.get().MultiLineString();
-			else if (shape instanceof MultiPolygon)
-				c = Geospace.get().MultiPolygon();
-		}
-		
-		/*
-		 * happens with empty collection shapes
-		 */
-		if (c == null)
-			c = Geospace.get().Shape();
-			
-		super.setConceptWithoutValidation(c);
-	}
+//
+//	@Override
+//	public void setConcept(IConcept concept) {
+//		
+//		IConcept c = concept;
+//		
+//		if (c == null) {
+//			
+//			if (shape instanceof Point)
+//				c = Geospace.get().Point();
+//			else if (shape instanceof LineString)
+//				c = Geospace.get().LineString();
+//			else if (shape instanceof Polygon)
+//				c = Geospace.get().Polygon();
+//			else if (shape instanceof MultiPoint)
+//				c = Geospace.get().MultiPoint();
+//			else if (shape instanceof MultiLineString)
+//				c = Geospace.get().MultiLineString();
+//			else if (shape instanceof MultiPolygon)
+//				c = Geospace.get().MultiPolygon();
+//		}
+//		
+//		/*
+//		 * happens with empty collection shapes
+//		 */
+//		if (c == null)
+//			c = Geospace.get().Shape();
+//			
+//		super.setConcept(c);
+//	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.ima.core.value.Value#clone()

@@ -1,8 +1,8 @@
 package org.integratedmodelling.geospace.interfaces;
 
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.geospace.extents.GridExtent;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.utils.Pair;
 
 public interface IGridMask {
 

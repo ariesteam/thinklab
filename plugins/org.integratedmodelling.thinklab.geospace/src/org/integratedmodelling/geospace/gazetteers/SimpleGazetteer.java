@@ -6,19 +6,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.geospace.literals.ShapeValue;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.searchengine.QueryString;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.literals.IValue;
-import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
-import org.integratedmodelling.thinklab.interfaces.query.IQuery;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.literals.TextValue;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Polylist;
 
 /**
  * The most trivial of gazetteers - configured through properties. Good to insert a few important
@@ -53,11 +53,6 @@ public class SimpleGazetteer implements IGazetteer {
 		SingleResult(String id, ShapeValue shape) {
 			this.id = id;
 			this.shape = shape;
-		}
-		
-		@Override
-		public IValue getBestResult(ISession session) throws ThinklabException {
-			return shape;
 		}
 
 		@Override

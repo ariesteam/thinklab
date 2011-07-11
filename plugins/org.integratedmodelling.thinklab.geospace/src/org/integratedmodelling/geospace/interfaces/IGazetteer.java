@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.query.IQueriable;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
 
 /**
  * A gazetteer is a queriable so it can be serched with whatever query its method parseQuery will

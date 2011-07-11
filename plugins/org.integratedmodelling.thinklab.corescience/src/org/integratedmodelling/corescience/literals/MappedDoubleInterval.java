@@ -1,7 +1,7 @@
 package org.integratedmodelling.corescience.literals;
 
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 

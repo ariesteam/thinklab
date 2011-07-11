@@ -32,7 +32,7 @@
  **/
 package org.integratedmodelling.corescience.exceptions;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 /**
  * This one is thrown when a mediation that is supposed to be exact generates nonzero

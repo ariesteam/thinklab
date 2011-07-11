@@ -7,10 +7,9 @@ import javax.measure.unit.Dimension;
 import javax.measure.unit.ProductUnit;
 
 import org.integratedmodelling.corescience.interfaces.literals.IModifiableUnit;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Pair;
 
 public class Unit {
 

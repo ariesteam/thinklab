@@ -34,8 +34,8 @@ package org.integratedmodelling.thinklab.webapp.view;
 
 import java.util.Iterator;
 
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 
 public class VisualProperty extends VisualKnowledge {
 

@@ -1,8 +1,8 @@
 package org.integratedmodelling.clojure;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabPluginException;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 import clojure.lang.RT;
@@ -26,7 +26,7 @@ public class ClojurePlugin extends ThinklabPlugin {
 			RT.loadResourceScript("knowledge.clj");			
 			logger().info("Clojure initialized successfully");
 		} catch (Exception e) {
-			throw new ThinklabPluginException(e);
+			throw new ThinklabInternalErrorException(e);
 		}
 	}
 

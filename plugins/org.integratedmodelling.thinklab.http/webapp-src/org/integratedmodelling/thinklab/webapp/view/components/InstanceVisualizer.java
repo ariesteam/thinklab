@@ -35,8 +35,8 @@ package org.integratedmodelling.thinklab.webapp.view.components;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.webapp.view.QueryFormStructure;
 import org.integratedmodelling.thinklab.webapp.view.TypeManager;
 import org.integratedmodelling.thinklab.webapp.view.VisualInstance;

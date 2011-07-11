@@ -3,7 +3,7 @@
  */
 package org.integratedmodelling.time.literals;
 
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 
 public class TemporalPrecision {
 	

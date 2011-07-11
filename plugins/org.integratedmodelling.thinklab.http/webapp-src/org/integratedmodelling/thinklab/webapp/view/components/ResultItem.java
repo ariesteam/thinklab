@@ -34,9 +34,9 @@ package org.integratedmodelling.thinklab.webapp.view.components;
 
 import java.util.ArrayList;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.webapp.view.TypeManager;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Hbox;

@@ -36,16 +36,17 @@ import org.integratedmodelling.corescience.implementations.observations.Observat
 import org.integratedmodelling.corescience.interfaces.IExtent;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.units.Unit;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.extents.ShapeExtent;
 import org.integratedmodelling.geospace.interfaces.IGeolocatedObject;
 import org.integratedmodelling.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.lang.IParseable;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IParseable;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IParseableKnowledge;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -56,7 +57,7 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  */
 @InstanceImplementation(concept="geospace:ArealLocation")
-public class ArealLocation extends Observation implements Topology, IParseable, IGeolocatedObject {
+public class ArealLocation extends Observation implements Topology, IParseableKnowledge, IGeolocatedObject {
 
 	ShapeValue boundingBox = null;
 	ShapeValue shape = null;

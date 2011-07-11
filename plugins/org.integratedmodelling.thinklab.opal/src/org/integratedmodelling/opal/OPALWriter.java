@@ -35,12 +35,12 @@ package org.integratedmodelling.opal;
 import java.io.File;
 import java.util.HashSet;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.opal.profile.OPALProfile;
 import org.integratedmodelling.opal.profile.OPALProfileFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
@@ -91,7 +91,7 @@ public class OPALWriter {
 		/* have profile determine node name, ID etc. appropriately */
 		Node ret = 
 			document.createNode(
-					profile.getOPALConceptID(instance.getDirectType().getSemanticType(),document),
+					profile.getOPALConceptID(instance.getDirectType(), document),
 					parent);
 		
 		document.addAttribute(
@@ -119,7 +119,7 @@ public class OPALWriter {
 			 * see the relationship id, and ignore the whole thing if it's one of those 
 			 * that don't appear in the KM, such as protege metadata.
 			 */
-			String cid = profile.getOPALConceptID(r.getProperty().getSemanticType(), document);
+			String cid = profile.getOPALConceptID(r.getProperty(), document);
 			
 			if (cid == null)
 				continue;
@@ -138,14 +138,14 @@ public class OPALWriter {
 				/* see if we can default the relationship */
 				if (profile.getDefaultRelationship(
 						instance.getDirectType(),
-						r.getValue().asObjectReference().getObject().getDirectType())
+						r.getValue().asObject().getDirectType())
 						== null) {
 				
 					/* nope, write it up as is */
 					Node reln = document.createNode(cid, ret);
 				
 					writeInstanceInternal(
-						r.getValue().asObjectReference().getObject(),
+						r.getValue().asObject(),
 						document,
 						reln,
 						profile,
@@ -158,7 +158,7 @@ public class OPALWriter {
 					 * within the main instance.
 					 */
 					writeInstanceInternal(
-							r.getValue().asObjectReference().getObject(),
+							r.getValue().asObject(),
 							document,
 							ret,
 							profile,
