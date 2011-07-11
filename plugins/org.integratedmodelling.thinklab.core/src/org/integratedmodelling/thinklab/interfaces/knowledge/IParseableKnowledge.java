@@ -11,7 +11,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IInstance;
  * @author Ferdinando
  *
  */
-public interface IParseable {
+public interface IParseableKnowledge {
 
 	/**
 	 * Called when the instance is being create, after the IParseable has been set as an implementation.

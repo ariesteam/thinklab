@@ -97,6 +97,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 

@@ -62,6 +62,8 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.utils.xml.XML.XmlNode;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -481,5 +483,16 @@ public class XMLDocument {
 			}
 		}
 		return ret;
+	}
+
+	public static XmlNode createXmlNode(Polylist l) {
+		XmlNode n = new XmlNode(l.first().toString());
+		for (Object o : l.rest().array()) {
+			if (o instanceof Polylist)
+				n.add(createXmlNode((Polylist)o));
+			else 
+				n.text(o.toString());
+		}
+		return n;
 	}
 }

@@ -38,7 +38,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
-import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.list.Polylist;
 import org.mvel2.MVEL;
 
@@ -113,7 +114,7 @@ public class PropertiesTemplateAdapter {
 	
 	public ArrayList<Pair<String, Polylist>> computeListsFromTemplates(
 			String templatePrefix, Hashtable<String, Object> context)
-			throws ThinklabValidationException {
+			throws ThinklabException {
 
 		ArrayList<Pair<String, Polylist>> ret = new ArrayList<Pair<String, Polylist>>();
 
@@ -128,17 +129,9 @@ public class PropertiesTemplateAdapter {
 				String tname = pn.substring(pn.lastIndexOf(".")+1);
 
 				Polylist l;
-				try {
 					l = Polylist.parseWithTemplate(properties.getProperty(pn),
 							context);
 					ret.add(new Pair<String, Polylist>(tname, l));
-
-				} catch (MalformedListException e) {
-
-					throw new ThinklabValidationException(
-							"geospace: invalid list template specification: "
-									+ e.getMessage());
-				}
 			}
 		}
 		

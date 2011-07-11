@@ -66,6 +66,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.constraint.Constraint;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IParseableKnowledge;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.literals.NumberValue;
@@ -73,7 +74,6 @@ import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.thinklab.owlapi.Ontology.ReferenceRecord;
-import org.integratedmodelling.utils.MalformedListException;
 import org.semanticweb.owl.model.OWLAnnotation;
 import org.semanticweb.owl.model.OWLConstant;
 import org.semanticweb.owl.model.OWLDataAllRestriction;
@@ -589,7 +589,7 @@ public class ThinklabOWLManager {
 					inst.addLabel(l.second().toString());
 					return;
 				} else if (o1.toString().equals("@")) {
-					inst.setImplementation((IInstanceImplementation) l.second());
+					((Instance)inst).setImplementation((IInstanceImplementation) l.second());
 					((Instance)inst)._initialized = true;
 					return;
 				} else if (o1.toString().equals("#")) {
@@ -607,7 +607,7 @@ public class ThinklabOWLManager {
 					}
 					
 					setInstanceImplementation((Instance) inst, impl);	
-					((IParseable)impl).parseSpecifications(inst, l.second().toString());
+					((IParseableKnowledge)impl).parseSpecifications(inst, l.second().toString());
 					((Instance)inst)._initialized = true;
 					return;
 				} else if (o1.toString().startsWith(":")) {
@@ -941,8 +941,8 @@ public class ThinklabOWLManager {
 				IValue val = KnowledgeManager.get().validateLiteral(r, o2.toString());
 				
 				if (val != null) {
-					if (val.isObjectReference()) {
-						inst.addObjectRelationship(property, val.asObjectReference().getObject());
+					if (val.isObject()) {
+						inst.addObjectRelationship(property, val.asObject());
 					} else {
 						inst.addLiteralRelationship(property, val);
 					}
@@ -1030,15 +1030,7 @@ public class ThinklabOWLManager {
 					null);
 		
 		if (cn != null)
-			try {
-				ret.add(new Constraint(Polylist.parse(cn)));
-			} catch (MalformedListException e) {
-				throw new ThinklabConstraintValidationException(
-						"invalid constraint \"" +
-						cn +
-						"\" specified in ontology for class " + 
-						c);
-			}
+			ret.add(new Constraint(Polylist.parse(cn)));
 	}
 	
 	/*

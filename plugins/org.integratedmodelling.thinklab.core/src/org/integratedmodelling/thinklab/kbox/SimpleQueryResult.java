@@ -45,6 +45,7 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
+import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 
 
 public class SimpleQueryResult implements IQueryResult {

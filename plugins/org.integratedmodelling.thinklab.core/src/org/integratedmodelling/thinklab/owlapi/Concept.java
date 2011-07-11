@@ -31,6 +31,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
@@ -131,7 +132,6 @@ public class Concept extends Knowledge implements IConcept {
 		for (OWLIndividual ind : this.entity.asOWLClass().getIndividuals(ontologies)) {
 			ret.add(new Instance(ind));
 		}
-		
 		return ret;
 	}
 
@@ -527,7 +527,7 @@ public class Concept extends Knowledge implements IConcept {
 		return ret;
 	}
 
-	public int getNumberOfRelationships(String property) throws ThinklabException {
+	public int getRelationshipsCount(String property) throws ThinklabException {
 		return getProperties().size();
 	}
 
@@ -825,16 +825,21 @@ public class Concept extends Knowledge implements IConcept {
 	}
 
 
-
-	protected boolean is(Concept c) {
+	@Override
+	public boolean is(IKnowledge c) {
 		
-		if (c.equals(this))
+		if (! (c instanceof Concept))
+			return false;
+		
+		Concept cc = (Concept)c;
+		
+		if (cc.equals(this))
 			return true;
 		
 		try {
 			if (FileKnowledgeRepository.get().classReasoner != null) {
 				return FileKnowledgeRepository.get().classReasoner.
-					isSubClassOf(this.entity.asOWLClass(), c.entity.asOWLClass());
+					isSubClassOf(this.entity.asOWLClass(), cc.entity.asOWLClass());
 			}
 		} catch (OWLReasonerException e) {
 			// just proceed with the dumb method

@@ -4,7 +4,7 @@ package org.integratedmodelling.thinklab.application;
 import java.net.URL;
 import java.util.ArrayList;
 
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.JPFUtils;

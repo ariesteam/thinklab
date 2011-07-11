@@ -112,7 +112,7 @@ public class XML {
 						if (no instanceof XmlNode) {
 							self.appendChild(((XmlNode)no).create(self, doc));
 						} else if (no instanceof Polylist) {
-							self.appendChild(((Polylist)no).createXmlNode().create(self, doc));
+							self.appendChild(XMLDocument.createXmlNode((Polylist)no).create(self, doc));
 						} else {
 							throw new ThinklabValidationException(
 								"XML.node: collections must be of XmlNode or Polylist");	
@@ -121,7 +121,7 @@ public class XML {
 				} else if (o instanceof XmlNode) {
 					self.appendChild(((XmlNode)o).create(self, doc));
 				} else if (o instanceof Polylist) {
-					self.appendChild(((Polylist)o).createXmlNode().create(self, doc));					
+					self.appendChild(XMLDocument.createXmlNode((Polylist)o).create(self, doc));					
 				}
 			}			
 		}

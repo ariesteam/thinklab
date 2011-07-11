@@ -152,7 +152,7 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public IInstance clone(IOntology ontology) throws ThinklabException {
 		
-		Polylist list = this.toList(getLocalName());
+		Polylist list = this.asList(getLocalName());
 		return ontology.createInstance(list);
 	}
 
@@ -435,7 +435,7 @@ public class Instance extends Knowledge implements IInstance {
 	@Override
 	public String toString() {
 		try {
-			return getLocalName() + ": " + toList(null);
+			return getLocalName() + ": " + asList(null);
 		} catch (ThinklabException e) {
 			throw new ThinklabRuntimeException(e);
 		}

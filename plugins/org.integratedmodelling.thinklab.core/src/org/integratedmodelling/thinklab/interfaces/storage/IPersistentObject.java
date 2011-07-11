@@ -1,4 +1,4 @@
-ackage org.integratedmodelling.thinklab.interfaces.storage;
+package org.integratedmodelling.thinklab.interfaces.storage;
 
 import java.io.InputStream;
 import java.io.OutputStream;

@@ -2,7 +2,7 @@ package org.integratedmodelling.thinklab.application;
 
 import java.util.Hashtable;
 
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 
 public class ApplicationManager {
 
