@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.integratedmodelling.thinklab.ConceptVisitor;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 /**
  * A map indexed by concepts, whose get() method will select the entry that best corresponds to the passed

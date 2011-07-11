@@ -55,33 +55,25 @@ import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
-import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
-import org.integratedmodelling.thinklab.application.ApplicationDescriptor;
-import org.integratedmodelling.thinklab.application.ApplicationManager;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.extensions.Interpreter;
-import org.integratedmodelling.thinklab.extensions.KBoxHandler;
-import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.IResourceLoader;
 import org.integratedmodelling.thinklab.interfaces.annotations.DataTransformation;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
-import org.integratedmodelling.thinklab.interfaces.annotations.PersistentObject;
 import org.integratedmodelling.thinklab.interfaces.annotations.ProjectLoader;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 import org.integratedmodelling.thinklab.interfaces.storage.IKnowledgeImporter;
-import org.integratedmodelling.thinklab.interfaces.storage.IPersistentObject;
+import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
-import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.project.interfaces.IProjectLoader;
 import org.integratedmodelling.thinklab.rest.RESTManager;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
@@ -97,8 +89,6 @@ import org.java.plugin.registry.Extension.Parameter;
 import org.java.plugin.registry.ExtensionPoint;
 import org.java.plugin.registry.Version;
 import org.restlet.resource.ServerResource;
-
-import ucar.util.prefs.ui.PersistenceManager;
 
 
 /**
@@ -947,7 +937,6 @@ public abstract class ThinklabPlugin extends Plugin
 
 	}
 	
-	@Deprecated
 	protected String getParameter(Extension ext, String field) {
 		
 		String ret = null;
@@ -958,7 +947,6 @@ public abstract class ThinklabPlugin extends Plugin
 	}
 	
 
-	@Deprecated
 	protected String[] getParameters(Extension ext, String field) {
 		
 		String[] ret = null;
@@ -973,7 +961,6 @@ public abstract class ThinklabPlugin extends Plugin
 		return ret;
 	}
 
-	@Deprecated
 	protected String getParameter(Extension ext, String field, String defValue) {
 		
 		String ret = null;

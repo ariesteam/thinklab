@@ -33,12 +33,11 @@
  **/
 package org.integratedmodelling.thinklab.literals;
 
-import org.apache.batik.css.engine.value.ListValue;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 
 /**
@@ -321,6 +320,36 @@ public class Value implements IValue {
 	@Override
 	public Object demote() {
 		return concept;
+	}
+
+	@Override
+	public IInstance asObject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean asBoolean() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public double asDouble() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int asInteger() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String asText() {
+		// TODO Auto-generated method stub
+		return null;
 	}
    
     

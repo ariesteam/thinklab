@@ -33,7 +33,9 @@
  **/
 package org.integratedmodelling.thinklab.interfaces.applications;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
+
 
 
 /**

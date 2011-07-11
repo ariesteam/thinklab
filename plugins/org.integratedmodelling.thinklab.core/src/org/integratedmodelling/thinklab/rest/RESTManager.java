@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.api.runtime.IUserModel;
 import org.integratedmodelling.thinklab.owlapi.Session;
@@ -104,7 +105,7 @@ public class RESTManager {
 	public void start(int port) throws ThinklabException {
 
 		if (_components.containsKey(port))
-			throw new ThinklabInappropriateOperationException(
+			throw new ThinklabValidationException(
 					"a REST service is already running on port " + port);
 		
 		Component component = new Component();
@@ -135,7 +136,7 @@ public class RESTManager {
 	
 		Component component = _components.get(port);
 		if (component == null) 
-			throw new ThinklabInappropriateOperationException(
+			throw new ThinklabValidationException(
 					"no REST service running on port " + port);
 		try {
 			component.stop();

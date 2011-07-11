@@ -1,6 +1,7 @@
 package org.integratedmodelling.thinklab.interfaces.knowledge;
 
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 
 
 /**

@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 /**
  * Can be used to create intelligent maps that are configured through properties and

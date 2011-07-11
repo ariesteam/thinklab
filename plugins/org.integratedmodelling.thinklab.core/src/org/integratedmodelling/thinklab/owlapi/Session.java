@@ -62,7 +62,6 @@ import org.integratedmodelling.thinklab.api.listeners.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.api.runtime.IUserModel;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
-import org.integratedmodelling.thinklab.interfaces.storage.IMetadataExtractor;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.kbox.VirtualSessionKBox;
 import org.integratedmodelling.thinklab.session.TTYUserModel;
@@ -82,7 +81,6 @@ public class Session implements ISession {
 	String workspace = null;
 	
 	private IKBox withKbox = null;
-	private IMetadataExtractor withMetadataExtractor = null;
 
 	HashMap<String, IInstance> importedObjects = new HashMap<String, IInstance>();
 	HashMap<String, String> refs = new HashMap<String, String>();
@@ -120,18 +118,6 @@ public class Session implements ISession {
 	
 	public IOntology getOntology() {
 		return ontology;
-	}
-	
-	/**
-	 * Called by reflection, not published in ISession interface. Users should not know this one.
-	 * When set, kboxes will receive a copy of each object created in the session.
-	 * 
-	 * @param kbox
-	 * @param metadataExtractor
-	 */
-	public void setWithKbox(IKBox kbox, IMetadataExtractor metadataExtractor) {
-		withKbox = kbox;
-		withMetadataExtractor = metadataExtractor;
 	}
 	
 	public void setUserModel(IUserModel model) {
@@ -249,18 +235,6 @@ public class Session implements ISession {
 					+ format);
 		}
 		
-		if (this.withKbox != null) {
-			
-			HashMap<String, String> refes = new HashMap<String, String>();
-			for (IInstance object : ret) {
-				Map<String,IValue> metadata = null;
-				if (this.withMetadataExtractor  != null) {
-					metadata = this.withMetadataExtractor.extractMetadata(object);
-				}
-
-				this.withKbox.storeObject(object, null, metadata, this, refes);
-			}
-		}
 		return ret;
 	}
 
@@ -330,19 +304,19 @@ public class Session implements ISession {
     }
 
 	public  IInstance createObject(String concept) throws ThinklabException {
-		return createObject(ontology.getUniqueObjectName("jis"), getConcept(concept));
+		return createObject(ontology.getUniqueObjectName("jis"), KnowledgeManager.getConcept(concept));
 	}
 
 	public  IInstance createObject(SemanticType concept) throws ThinklabException {
-		return createObject(ontology.getUniqueObjectName("jis"), getConcept(concept.toString()));
+		return createObject(ontology.getUniqueObjectName("jis"), KnowledgeManager.getConcept(concept.toString()));
 	}
 
 	public  IInstance createObject(String name, String concept) throws ThinklabException {
-		return createObject(name, getConcept(concept));
+		return createObject(name, KnowledgeManager.getConcept(concept));
 	}
 
 	public  IInstance createObject(String name, SemanticType concept) throws ThinklabException {
-		return createObject(name, getConcept(concept.toString()));
+		return createObject(name, KnowledgeManager.getConcept(concept.toString()));
 	}
 
 	public Collection<IInstance> loadObjects(String source) throws ThinklabException {

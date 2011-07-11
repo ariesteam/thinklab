@@ -33,10 +33,9 @@
  **/
 package org.integratedmodelling.thinklab.literals;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 public class AlgorithmValue extends Value {
     
@@ -87,8 +86,8 @@ public class AlgorithmValue extends Value {
         return false;
     }
     
-    public TextValue asText() throws ThinklabValueConversionException {
-			return new TextValue(this.value);
+    public String asText()  {
+		return this.value;
     }
 
     public String toString() {

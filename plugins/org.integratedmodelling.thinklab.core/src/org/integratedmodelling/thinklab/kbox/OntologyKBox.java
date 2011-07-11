@@ -52,7 +52,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
-import org.integratedmodelling.thinklab.api.knowledge.storage.IKBoxCapabilities;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.utils.MalformedListException;
 import org.integratedmodelling.utils.NameGenerator;

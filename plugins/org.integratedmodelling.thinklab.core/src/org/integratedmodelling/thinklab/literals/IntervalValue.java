@@ -60,7 +60,7 @@ public class IntervalValue extends ParsedLiteralValue {
 	
 	public IntervalValue() {
 		try {
-			setConceptWithoutValidation(KnowledgeManager.get().requireConcept("thinklab-core:NumericInterval"));
+			setConcept(KnowledgeManager.get().requireConcept("thinklab-core:NumericInterval"));
 		} catch (ThinklabException e) {
 			throw new ThinklabRuntimeException(e);
 		}

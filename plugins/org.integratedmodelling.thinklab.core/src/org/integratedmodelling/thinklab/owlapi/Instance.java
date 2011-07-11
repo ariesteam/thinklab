@@ -280,7 +280,7 @@ public class Instance extends Knowledge implements IInstance {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject#getNumberOfRelationships(java.lang.String)
 	 */
-	public int getNumberOfRelationships(String property)
+	public int getRelationshipsCount(String property)
 			throws ThinklabException {
 
 		IProperty p = KnowledgeManager.get().requireProperty(property);
@@ -413,7 +413,7 @@ public class Instance extends Knowledge implements IInstance {
 
 	}
 
-	public Polylist toList(String name) throws ThinklabException {
+	public Polylist asList(String name) throws ThinklabException {
 		return toListInternal(name, null);
 	}
 

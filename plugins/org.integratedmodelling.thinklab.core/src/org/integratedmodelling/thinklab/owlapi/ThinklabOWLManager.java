@@ -73,6 +73,7 @@ import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.thinklab.owlapi.Ontology.ReferenceRecord;
+import org.integratedmodelling.utils.MalformedListException;
 import org.semanticweb.owl.model.OWLAnnotation;
 import org.semanticweb.owl.model.OWLConstant;
 import org.semanticweb.owl.model.OWLDataAllRestriction;
@@ -272,10 +273,10 @@ public class ThinklabOWLManager {
 							val = new Value(cin.getDirectType());
 
 							/* retain ID in value */
-							val.setID(ind.getURI().toString());
+							((Value)val).setID(ind.getURI().toString());
 
 							/* cache value */
-							reifiedLiterals.put(val.getID(), val);
+							reifiedLiterals.put(((Value)val).getID(), val);
 
 							/* remember instance created for this type */
 							classLiterals.put(val.getConcept().toString(), cin);
@@ -300,10 +301,10 @@ public class ThinklabOWLManager {
 										cc, literAnnotation);
 
 								/* retain ID */
-								val.setID(ind.getURI().toString());
+								((Value)val).setID(ind.getURI().toString());
 
 								/* cache value */
-								reifiedLiterals.put(val.getID(), val);
+								reifiedLiterals.put(((Value)val).getID(), val);
 
 								/* return */
 								ret.add(val);
@@ -519,7 +520,7 @@ public class ThinklabOWLManager {
 		IValue io    = null;
 		
 		if (id == null)
-			id = literal.getID();
+			id = ((Value)literal).getID();
 		
 		if (id != null)	
 			io = reifiedLiterals.get(id);
@@ -700,8 +701,8 @@ public class ThinklabOWLManager {
 				 * If the validator creates an object, we set this as an object reference and the property must
 				 * be an object property.
 				 */
-				if (value.isObjectReference()) {
-					inst.addObjectRelationship(property, value.asObjectReference().getObject());
+				if (value.isObject()) {
+					inst.addObjectRelationship(property, value.asObject());
 				} else {
 					inst.addLiteralRelationship(property, value);
 				}

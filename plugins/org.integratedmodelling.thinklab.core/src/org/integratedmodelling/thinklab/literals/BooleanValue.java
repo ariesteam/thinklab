@@ -115,8 +115,8 @@ public class BooleanValue extends ParsedLiteralValue {
     }
 
     @Override
-    public BooleanValue asBoolean() {
-        return this;
+    public boolean asBoolean() {
+        return value;
     }
 
     @Override
