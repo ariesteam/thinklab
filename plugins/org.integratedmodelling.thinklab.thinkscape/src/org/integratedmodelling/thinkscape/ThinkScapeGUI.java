@@ -70,8 +70,8 @@ import org.integratedmodelling.ograph.ONode;
 import org.integratedmodelling.ograph.ONodeLib;
 import org.integratedmodelling.policy.ApplicationFrame;
 import org.integratedmodelling.policy.KRPolicyWrite;
-import org.integratedmodelling.thinklab.interfaces.applications.ISession;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinkscape.interfaces.IPopupMenuContainer;
 
 import prefuse.Display;

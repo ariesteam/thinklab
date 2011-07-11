@@ -34,6 +34,7 @@
 package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
@@ -260,7 +261,7 @@ public class List implements ICommandHandler {
 				else if ((prop = KnowledgeManager.get().retrieveProperty(t)) != null)
 					listProperty(prop, mode, session);
 				else
-					throw new ThinklabUnknownResourceException(subject);
+					throw new ThinklabValidationException(subject);
 
 			} else {
 

@@ -39,6 +39,7 @@ import org.integratedmodelling.clojure.ClojureInterpreter;
 import org.integratedmodelling.clojure.ClojurePlugin;
 import org.integratedmodelling.clojure.REPL;
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
@@ -106,7 +107,7 @@ public class Clojure implements ICommandHandler {
 			}
 			
 		} catch (Exception e) {
-			throw new ThinklabScriptException(e);
+			throw new ThinklabValidationException(e);
 		}
 		
 		return ret;

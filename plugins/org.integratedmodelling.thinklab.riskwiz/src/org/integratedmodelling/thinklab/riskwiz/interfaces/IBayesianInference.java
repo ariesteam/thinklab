@@ -35,7 +35,7 @@ package org.integratedmodelling.thinklab.riskwiz.interfaces;
 
 import java.util.Map;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 
 public interface IBayesianInference {
 	

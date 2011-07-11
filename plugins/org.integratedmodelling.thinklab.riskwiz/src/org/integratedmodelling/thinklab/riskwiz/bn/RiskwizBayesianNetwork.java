@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Vector;
 
+import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.riskwiz.bn.BeliefNetwork;
 import org.integratedmodelling.riskwiz.domain.Domain;
 import org.integratedmodelling.riskwiz.domain.LabelDomain;
 import org.integratedmodelling.riskwiz.io.genie.GenieReader;
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianInference;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianNetwork;
 

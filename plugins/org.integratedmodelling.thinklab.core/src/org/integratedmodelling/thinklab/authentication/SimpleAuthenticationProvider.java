@@ -195,7 +195,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 	public synchronized void createUser(String user, String password) throws ThinklabException {
 		
 		if (haveUser(user)) {
-			throw new ThinklabDuplicateUserException(user);
+			throw new ThinklabValidationException(user);
 		}
 		String ew = encryptionManager == null ? password : encryptionManager.encrypt(password);
 		passwords.put(user, ew);
@@ -211,7 +211,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 			throws ThinklabException {
 		
 		if (!haveUser(user)) {
-			throw new ThinklabInvalidUserException(user);
+			throw new ThinklabValidationException(user);
 		}
 		
 		String ew = encryptionManager == null ? password : encryptionManager.encrypt(password);

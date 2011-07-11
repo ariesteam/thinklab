@@ -109,12 +109,6 @@ public class GroupingQueryResult implements IQueryResult {
 	}
 
 	@Override
-	public IValue getBestResult(ISession session) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public IValue getResult(int n, ISession session) throws ThinklabException {
 		if (_grouped.get(n).getSecond().size() > 1)
 			/*

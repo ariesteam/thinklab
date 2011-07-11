@@ -94,25 +94,6 @@ public class ListQueryResult implements IQueryResult {
 	}
 
 	@Override
-	public IValue getBestResult(ISession session) throws ThinklabException {
-		
-		int max = -1;
-		float maxScore = -1.0f;
-		
-		for (int i = 0; i < getTotalResultCount(); i++)
-			
-			if (getResultScore(i) > maxScore) {
-				max = i;
-				maxScore = getResultScore(i);
-			}
-		
-		if (max >= 0)
-			return getResult(max, session);
-		
-		return null;
-	}
-
-	@Override
 	public float setResultScore(int n, float score) {
 		
 		float prev = getResultScore(n);

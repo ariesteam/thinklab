@@ -93,7 +93,7 @@ public class SimpleQueryResult implements IQueryResult {
 	}
 
 	public Polylist getResultAsList(int n, HashMap<String, String> references) throws ThinklabException {
-		return getObject(n).toList(null, references);
+		return getObject(n).asList(null);
 	}
 
 	public int getResultCount() {
@@ -123,12 +123,6 @@ public class SimpleQueryResult implements IQueryResult {
 
 	public IValue getResult(int n, ISession session) throws ThinklabException {
 		return new ObjectReferenceValue(results.get(n));
-	}
-
-	@Override
-	public IValue getBestResult(ISession session) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

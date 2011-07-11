@@ -34,6 +34,7 @@
 package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
@@ -63,7 +64,7 @@ public class Help implements ICommandHandler {
 					.getDeclarationForCommand(topic);
 
 			if (cd == null)
-				throw new ThinklabMalformedCommandException("command " + topic
+				throw new ThinklabValidationException("command " + topic
 						+ " undefined");
 
 			if (session.getOutputStream() != null)

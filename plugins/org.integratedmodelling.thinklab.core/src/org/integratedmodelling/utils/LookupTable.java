@@ -39,6 +39,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;

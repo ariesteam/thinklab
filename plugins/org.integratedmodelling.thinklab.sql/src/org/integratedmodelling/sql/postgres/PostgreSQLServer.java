@@ -35,11 +35,11 @@ package org.integratedmodelling.sql.postgres;
 import java.net.URI;
 import java.util.Properties;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabStorageException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.sql.SQLPlugin;
 import org.integratedmodelling.sql.SQLServer;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabStorageException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 
 public class PostgreSQLServer extends SQLServer {
 

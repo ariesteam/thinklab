@@ -86,7 +86,7 @@ public class VirtualSessionKBox implements IKBox {
 			HashMap<String, String> refTable) throws ThinklabException {
 		
 		IInstance inst = session.requireObject(id);
-		return inst.toList(null, refTable);
+		return inst.asList(null);
 	}
 
 	public IInstance getObjectFromID(String id, ISession session)

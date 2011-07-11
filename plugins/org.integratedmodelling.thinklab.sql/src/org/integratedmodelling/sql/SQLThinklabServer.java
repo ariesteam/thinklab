@@ -52,6 +52,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabStorageException;
 import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.list.Polylist;
@@ -70,7 +71,6 @@ import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.thinklab.literals.Value;
-import org.integratedmodelling.utils.LogicalConnector;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.xml.XMLDocument;
@@ -405,7 +405,7 @@ public abstract class SQLThinklabServer {
         public TypeTranslator translator;
         
         public boolean match(IConcept c) {
-            translator = hash.get(c.getSemanticType().toString());
+            translator = hash.get(c.toString());
             return translator != null;
         }
         
@@ -527,7 +527,7 @@ public abstract class SQLThinklabServer {
 			 */
 			theClass = ((IInstance) c).getDirectType().toString();
 		} else {
-			theClass = c.getSemanticType().toString();
+			theClass = c.toString();
 		}
 
 		Long iid = type2ID.get(theClass);
@@ -570,7 +570,7 @@ public abstract class SQLThinklabServer {
 		 * it. If concept is not an instance, use c, else do the same for all
 		 * parents (generate or use a temp class if more than one).
 		 */
-		String theClass = c.getSemanticType().toString();
+		String theClass = c.toString();
 
 		/** see if class is there */
 		Long ll = type2ID.get(theClass);
@@ -1376,7 +1376,7 @@ public abstract class SQLThinklabServer {
 
 		IValue priorityV = c.get(PRIORITY_PROPERTY);
 		int priority = 
-			priorityV == null ? 0 : priorityV.asNumber().asInteger();
+			priorityV == null ? 0 : priorityV.asInteger();
 		
 		/*
 		 * 1. check if object has already been put in abox. If so, success with
@@ -1529,7 +1529,7 @@ public abstract class SQLThinklabServer {
 				 */
 				int tot = 0;
 				try {
-					tot = c.getNumberOfRelationships(rel.getProperty()
+					tot = c.getRelationshipsCount(rel.getProperty()
 							.toString());
 				} catch (ThinklabException e) {
 					throw new ThinklabStorageException(e);

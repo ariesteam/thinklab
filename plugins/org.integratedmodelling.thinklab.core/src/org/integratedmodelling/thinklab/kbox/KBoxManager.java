@@ -278,10 +278,6 @@ public class KBoxManager implements IKBox {
 		
 		if (ret == null && kboxURI.contains(":")) {
 			
-			if (MiscUtilities.getFileExtension(kboxURI).equals("owl")) {
-				return retrieveOntologyKBox(kboxURI);
-			} 
-			
 			String protocol;
 			
 			try {
@@ -309,30 +305,6 @@ public class KBoxManager implements IKBox {
 		}
 		
 		return ret;
-	}
-
-	/**
-	 * Create an ontology kbox from a .owl file.
-	 * TODO move to KBoxManager
-	 * @param kboxURI
-	 * @return
-	 * @throws ThinklabException 
-	 */
-	private IKBox retrieveOntologyKBox(String kboxURI) throws ThinklabException {
-
-		String kURI = 
-			MiscUtilities.changeProtocol(kboxURI, "owl");
-
-		IKBox ret = kBoxes.get(kURI); 
-		
-		if (ret == null) {
-
-			ret = new OntologyKBox(kboxURI);
-			kBoxes.put(kURI, ret);
-		}
-		
-		return ret;
-	
 	}
 
 	/**
@@ -403,12 +375,7 @@ public class KBoxManager implements IKBox {
 		
 		if (protocol == null || protocol.equals(""))
 			throw new ThinklabValidationException("kbox metadata for " + kboxURI + " don't specify a protocol");
-		
-		/* handle "internal" protocol for OWL kboxes separately */
-		if (protocol.equals("owl")) {
-			return new OntologyKBox(dataUri);
-		}
-		
+
 		/* load plugin for protocol; create kbox */
 		KBoxHandler plu = kboxPlugins.get(protocol);
 		if (plu == null)

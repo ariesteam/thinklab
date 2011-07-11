@@ -314,7 +314,7 @@ public class RegularTimeGridExtent implements IExtent {
 	}
 
 	@Override
-	public Collection<Pair<String, Integer>> getStateLocators(int index) {
+	public  Collection<org.integratedmodelling.corescience.interfaces.Pair<String, Integer>> getStateLocators(int index) {
 
 		ArrayList<Pair<String,Integer>> ret = null;
 		

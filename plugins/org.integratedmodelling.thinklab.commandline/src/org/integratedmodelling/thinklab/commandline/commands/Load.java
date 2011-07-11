@@ -62,24 +62,6 @@ public class Load implements ICommandHandler {
 		Collection<IInstance> objs = null;
 		ArrayList<String> kids = null;
 
-		if (toload.contains("#")) {
-
-			/* kbox or other, load from wherever KM figures out */
-			objs = new ArrayList<IInstance>();
-
-			IInstance i = KnowledgeManager.get().getInstanceFromURI(toload, session);
-			if (i != null) {
-				objs.add(i);
-			}
-
-		} else {
-			// FIXME
-			// objs = session.loadObjects(toload);
-		}
-
-		// TODO move these functionalities to kimport; implement the virtual
-		// kbox for
-		// loaded sources.
 		if (kbox != null && objs.size() > 0) {
 
 			IKBox kb = session.retrieveKBox(kbox);

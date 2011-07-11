@@ -46,6 +46,7 @@ import java.util.Set;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
@@ -137,7 +138,7 @@ public abstract class KnowledgeGraph extends
 			throws ThinklabException {
 
 		if (refs == null && forceTreeGeometry && this.vertexSet().size() > 0)
-			throw new ThinklabUserErrorException(
+			throw new ThinklabValidationException(
 					"knowledge graph: tree geometry requested, cannot add a new root concept");
 
 		String uri = rootConcept.getURI();
@@ -246,8 +247,7 @@ public abstract class KnowledgeGraph extends
 
 				if (r.isObject()) {
 
-					IInstance inst = r.getValue().asObjectReference()
-							.getObject();
+					IInstance inst = r.getValue().asObject();
 					boolean isThere = refs.contains(inst.getURI());
 
 					/*

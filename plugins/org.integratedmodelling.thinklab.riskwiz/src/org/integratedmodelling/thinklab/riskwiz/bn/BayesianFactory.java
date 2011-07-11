@@ -2,7 +2,7 @@ package org.integratedmodelling.thinklab.riskwiz.bn;
 
 import java.io.File;
 
-import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.riskwiz.RiskWizPlugin;
 import org.integratedmodelling.thinklab.riskwiz.genie.GenieBayesianNetwork;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianNetwork;

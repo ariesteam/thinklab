@@ -25,11 +25,6 @@ public class ProxyQueryResult implements IQueryResult {
 	public ProxyQueryResult(IQueryResult r) {
 		_proxy = r;
 	}
-	
-	@Override
-	public IValue getBestResult(ISession session) throws ThinklabException {
-		return _proxy.getBestResult(session);
-	}
 
 	@Override
 	public IQueriable getQueriable() {

@@ -319,7 +319,7 @@ public class OPALValidator {
 		}
 		
 		if (name != null) {
-			String cname = c.getSemanticType() + "#" + name;
+			String cname = c + "#" + name;
 			alist.set(mainIdx, cname);
 		}
 		

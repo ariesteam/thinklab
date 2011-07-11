@@ -2,12 +2,12 @@ package org.integratedmodelling.thinklab.riskwiz.bn;
 
 import java.util.Map;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.riskwiz.bn.BeliefNetwork;
 import org.integratedmodelling.riskwiz.inference.ls.JoinTree;
 import org.integratedmodelling.riskwiz.inference.ls.JoinTreeCompiler;
 import org.integratedmodelling.riskwiz.jtree.JTInference;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianInference;
 
 public class RiskwizBayesianInference implements IBayesianInference {

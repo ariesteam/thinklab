@@ -72,12 +72,6 @@ public class MultipleQueryResult implements IQueryResult {
 		
 		return new Pair<Integer,IQueryResult>(nr, q);
 	}
-	
-	@Override
-	public IValue getBestResult(ISession session) throws ThinklabException {
-		// TODO this can't really be done properly
-		return getResult(0, session);
-	}
 
 	@Override
 	public IQueriable getQueriable() {

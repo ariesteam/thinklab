@@ -39,7 +39,7 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 public class Ecology extends ThinklabPlugin {
 
 	@Override
-	public void load(KnowledgeManager km)	throws ThinklabPluginException {
+	public void load(KnowledgeManager km) throws ThinklabException {
 	}
 
 	@Override

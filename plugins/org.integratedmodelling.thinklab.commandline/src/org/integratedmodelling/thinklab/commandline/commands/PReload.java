@@ -1,6 +1,7 @@
 package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
@@ -34,7 +35,7 @@ public class PReload implements ICommandHandler {
 		try {
 			CommandLine.get().getManager().activatePlugin(plugin);
 		} catch (PluginLifecycleException e) {
-			throw new ThinklabPluginException(e);
+			throw new ThinklabValidationException(e);
 		}
 		
 		return null;

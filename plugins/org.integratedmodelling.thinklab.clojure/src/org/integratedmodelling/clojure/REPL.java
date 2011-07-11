@@ -18,6 +18,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 import clojure.lang.Compiler;
@@ -141,7 +142,7 @@ public class REPL {
 		try {
 			RT.loadResourceScript(script);
 		} catch (Exception e) {
-			throw new ThinklabScriptException(e);
+			throw new ThinklabValidationException(e);
 		}
 	}
 

@@ -32,9 +32,6 @@
  **/
 package org.integratedmodelling.time.extents;
 
-import java.util.Collection;
-
-import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IExtent;
@@ -178,7 +175,7 @@ public class TemporalLocationExtent implements IExtent {
 	}
 
 	@Override
-	public Collection<Pair<String, Integer>> getStateLocators(int index) {
+	public  getStateLocators(int index) {
 		// TODO Auto-generated method stub
 		return null;
 	}

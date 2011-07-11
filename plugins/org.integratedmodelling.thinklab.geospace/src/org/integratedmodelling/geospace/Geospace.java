@@ -56,6 +56,7 @@ import org.geotools.referencing.factory.PropertyAuthorityFactory;
 import org.geotools.referencing.factory.ReferencingFactoryContainer;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
@@ -185,10 +186,8 @@ public class Geospace extends ThinklabPlugin  {
 	}
 	
 	@Override
-	public void load(KnowledgeManager km) throws ThinklabPluginException {
-		
-		try {
-			
+	public void load(KnowledgeManager km) throws ThinklabException {
+
 			/*
 			 * TODO put all these class names into global strings
 			 */
@@ -212,10 +211,7 @@ public class Geospace extends ThinklabPlugin  {
 			
 			hasBoundingBoxPropertyID = "geospace:hasBoundingBox";
 			hasCentroidPropertyID = "geospace:hasCentroid";
-						
-		} catch (ThinklabException e) {
-			throw new ThinklabPluginException(e);
-		}
+
 
 		try {
 			registerAdditionalCRS();
@@ -228,7 +224,7 @@ public class Geospace extends ThinklabPlugin  {
 			geoCRSstraight = factory.createCoordinateReferenceSystem("EPSG:4326");
 			
 		} catch (Exception e) {
-			throw new ThinklabPluginException(e);
+			throw new ThinklabInternalErrorException(e);
 		} 
 		
 		/*
@@ -236,11 +232,7 @@ public class Geospace extends ThinklabPlugin  {
 		 * are used.
 		 */
 		if (getProperties().containsKey(PREFERRED_CRS_PROPERTY)) {	
-			try {
-				preferredCRS = getCRSFromID(getProperties().getProperty(PREFERRED_CRS_PROPERTY));
-			} catch (ThinklabValidationException e) {
-				throw new ThinklabPluginException(e);
-			}
+			preferredCRS = getCRSFromID(getProperties().getProperty(PREFERRED_CRS_PROPERTY));	
 		}
 	}
 

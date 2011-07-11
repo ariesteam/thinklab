@@ -2,8 +2,8 @@ package org.integratedmodelling.thinklab.riskwiz.genie;
 
 import java.io.File;
 
-import org.integratedmodelling.thinklab.exception.ThinklabIOException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianInference;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianNetwork;
 

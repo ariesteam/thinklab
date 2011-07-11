@@ -34,8 +34,8 @@ package org.integratedmodelling.searchengine;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.utils.LogicalConnector;
 
 /**
  * A textual query that is initialized from a string. We may want to preprocess it and

@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.integratedmodelling.clojure.ClojurePlugin;
-import org.integratedmodelling.clojure.knowledge.KBoxHandler.ReferenceRecord;
 import org.integratedmodelling.clojure.utils.OptionListIterator;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;

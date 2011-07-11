@@ -49,7 +49,7 @@ public class InstanceHandler {
 		
 			if (SemanticType.validate(concept)) {
 				_type = KnowledgeManager.get().requireConcept(concept);
-					_instance = _session.createObject(_type.getSemanticType());
+					_instance = _session.createObject(_type.toString());
 			} else {
 				if (_handler == null)
 					throw new ThinklabValidationException(
