@@ -51,18 +51,18 @@ fi
 # this is only set by hooks
 export THINKLAB_DEBUG=""
 
-THINKLAB_CMD="$JAVACMD $JAVA_OPTS -Djava.library.path=$THINKLAB_INST/plugins/org.integratedmodelling.thinklab.riskwiz/common -Djpf.boot.config=$THINKLAB_INST/boot.properties -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH -Dthinklab.plugins=$THINKLAB_PLUGINS -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_INST/lib/endorsed -jar $THINKLAB_INST/lib/im-boot.jar org.java.plugin.boot.Boot"
-
 while true; do
+
+  THINKLAB_CMD="$JAVACMD $JAVA_OPTS $THINKLAB_DEBUG -Djava.library.path=$THINKLAB_INST/plugins/org.integratedmodelling.thinklab.riskwiz/common -Djpf.boot.config=$THINKLAB_INST/boot.properties -Dthinklab.library.path=$THINKLAB_LIBRARY_PATH -Dthinklab.plugins=$THINKLAB_PLUGINS -Dthinklab.inst=$THINKLAB_INST -Djava.endorsed.dirs=$THINKLAB_INST/lib/endorsed -jar $THINKLAB_INST/lib/im-boot.jar org.java.plugin.boot.Boot"
 
   cd $THINKLAB_INST
 
   if [ "$1" = "start" ] ; then
     cd $THINKLAB_INST
     mkdir -p $THINKLAB_INST/var/log
-    sh -c "exec $THINKLAB_CMD $@ $THINKLAB_DEBUG $THINKLAB_ARGS >> $THINKLAB_INST/var/log/thinklab.out 2>&1"
+    sh -c "exec $THINKLAB_CMD $@ $THINKLAB_ARGS >> $THINKLAB_INST/var/log/thinklab.out 2>&1"
   else
-    $THINKLAB_CMD $@ $THINKLAB_DEBUG $THINKLAB_ARGS 
+    $THINKLAB_CMD $@ $THINKLAB_ARGS 
   fi
 
   # just checking
