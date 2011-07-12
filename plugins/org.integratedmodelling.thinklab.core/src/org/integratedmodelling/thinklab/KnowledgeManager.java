@@ -99,8 +99,6 @@ import org.semanticweb.owl.vocab.XSDVocabulary;
  */
 public class KnowledgeManager implements IKnowledgeFactory {
 
-	private boolean adminPrivileges = false;
-	
     /** default core ontology URL. It really is small - just some POD data types and a couple properties. */
 	private static final String DEFAULT_CORE_ONTOLOGY = "thinklab-core.owl";
 
@@ -634,10 +632,6 @@ public class KnowledgeManager implements IKnowledgeFactory {
 		return KM;
 	}
 	
-	public static boolean exists() {
-		return KM != null;
-	}
-	
 	/**
 	 * Register the class of a session listener that we want to pass to any new session. We store
 	 * classes directly because plugins use private classloaders. 
@@ -953,13 +947,6 @@ public class KnowledgeManager implements IKnowledgeFactory {
 	public IConcept retrieveConcept(String conc) {
 				
 		IConcept ret = null;
-		if (adminPrivileges) {
-			try {
-				ret = knowledgeRepository.checkSelfAnnotation(conc);
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
-			}
-		}
 
 		return 
 			ret == null ?
@@ -1286,14 +1273,6 @@ public class KnowledgeManager implements IKnowledgeFactory {
 	public static IConcept OrderedRangeMapping() {
 		// TODO Auto-generated method stub
 		return KM.ordinalRangeMappingType;
-	}
-
-	public void setAdminPrivileges(boolean b) {
-		adminPrivileges = b;
-	}
-	
-	public boolean getAdminPrivileges() {
-		return adminPrivileges;
 	}
 	
 	/**

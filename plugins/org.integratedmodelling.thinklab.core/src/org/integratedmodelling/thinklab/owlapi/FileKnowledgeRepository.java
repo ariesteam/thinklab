@@ -522,59 +522,6 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	}
 
 	@Override
-	public IConcept checkSelfAnnotation(String conc) throws ThinklabException {
-
-		/*
-		 * syntax for self-annotations:
-		 * 
-		 * <ontology>:<concept>$[[<ontology>:<concept>[&<ontology>:<concept>]*]$]
-		 * 
-		 * First $ sign means create if absent (ontology must exist)
-		 * Semantic types after $ are superclasses (also created and persisted
-		 * 	if not existing, according to same rules of main concept)
-		 * Second $ sign (at the end) means persist (ontology must exist)
-		 * 
-		 */
-		if (!conc.contains("$"))
-			return null;
-		
-		String[] cc = conc.trim().split("\\$", -1);
-		boolean persist = cc.length == 3;
-		
-		SemanticType st = new SemanticType(cc[0]);
-		String parents = cc[1].trim();
-		IConcept[] pars = null;
-		
-		if (parents != null && !parents.equals("")) {
-		
-			int i = 0;
-			String[] pp =  parents.split("&");
-			pars = new IConcept[pp.length];
-			for (String p : pp) {
-				pars[i++] = createIfAbsent(new SemanticType(p), persist, null);
-			}
-		}
-		
-		return createIfAbsent(st, persist, pars);
-	}
-
-	
-	// create concept and return it if not present in ontology; check that all parents are
-	// there
-	private IConcept createIfAbsent(SemanticType t, boolean persist, IConcept[] parents) throws ThinklabException {
-
-		IOntology o = retrieveOntology(t.getConceptSpace());
-	    if (o == null)
-	    	throw new ThinklabResourceNotFoundException(
-	    			"concept space " + t.getConceptSpace() + 
-	    			" unknown in checking concept " + 
-	    			t.getLocalName() +
-	    			" for self-annotation"); 
-	    
-	    return o.createConcept(t.getLocalName(), parents, persist);	
-	}
-
-	@Override
 	public List<IConcept> getAllRootConcepts() {
 		
 		ArrayList<IConcept> ret = new ArrayList<IConcept>();

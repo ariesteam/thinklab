@@ -42,7 +42,7 @@ import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 
@@ -458,9 +458,9 @@ public class Constraint implements IQuery {
      * @return true if match is positive.
      * @throws ThinklabException 
      */
-    public boolean match(IKnowledgeSubject i) throws ThinklabException {
+    public boolean match(IInstance i) throws ThinklabException {
         
-    	boolean ok = concept.is(i.getType());
+    	boolean ok = concept.is(i.getDirectType());
     	
     	if (ok && body != null) {
     		ok = body.match(i);

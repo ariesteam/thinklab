@@ -25,17 +25,16 @@ import java.util.Set;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.semanticweb.owl.inference.OWLReasonerAdapter;
@@ -63,8 +62,6 @@ import org.semanticweb.owl.model.OWLObjectValueRestriction;
 import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLRestriction;
 
-
-
 /**
  * @author Ioannis N. Athanasiadis
  * @author Ferdinando Villa
@@ -91,15 +88,6 @@ public class Concept extends Knowledge implements IConcept {
 		} catch (Exception e) {
 			return false;
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeSubject#getType()
-	 */
-	public IConcept getType() {
-		return this;
 	}
 
 	/*
@@ -499,79 +487,12 @@ public class Concept extends Knowledge implements IConcept {
 		return ret;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public Collection<IRelationship> getRelationships() throws ThinklabException {
-		ArrayList<IRelationship> ret = new ArrayList<IRelationship>();
-//		Collection<RDFProperty> props = entity.getRDFProperties();
-//		for (RDFProperty p : props) {
-//			Collection<IValue> rrel = ThinklabOWLManager.get().translateRelationship(concept, p);
-//			for (IValue v : rrel) {
-//				ret.add(new Relationship(new Property(p),v));
-//			}
-//		}
-		Thinklab.get().logger().warn("deprecated getRelationships() called on Concept; returning empty result");
-
-		return ret;		
-	}
-
-	public Collection<IRelationship> getRelationships(String property) throws ThinklabException {
-		ArrayList<IRelationship> ret = new ArrayList<IRelationship>();
-		IProperty p = KnowledgeManager.get().requireProperty(property);
-//		Collection<IValue> rrel = 
-//			ThinklabOWLManager.get().translateRelationship(concept, ((Property)p).property);
-//		for (IValue v : rrel) {
-//			ret.add(new Relationship(p,v));
-//		}
-		Thinklab.get().logger().warn("deprecated getRelationships() called on Concept; returning empty result");
-
-		return ret;
-	}
-
-	public int getRelationshipsCount(String property) throws ThinklabException {
-		return getProperties().size();
-	}
-
-	public IValue get(String property) throws ThinklabException {
-		
-		Thinklab.get().logger().warn("deprecated get() called on Concept; returning empty result");
-
-		Collection<IRelationship> cr = getRelationshipsTransitive(property);
-		if (cr.size() == 1)
-			return cr.iterator().next().getValue();
-		/* TODO return a ListValue if more than one result */
-		return null;
-	}
-
-	public Collection<IRelationship> getRelationshipsTransitive(String property) throws ThinklabException {
-
-		ArrayList<IRelationship> ret = new ArrayList<IRelationship>();
-		
-		Thinklab.get().logger().warn("deprecated getRelationshipsTransitive called on Concept; returning empty result");
-//		IProperty p = KnowledgeManager.get().requireProperty(property);
-//
-//		
-//		
-//		Collection<IProperty> pp = p.getParents();
-//		pp.add(p);
-//
-//		for (IProperty prop : pp) {
-//			Collection<IValue> rrel = 
-//				ThinklabOWLManager.get().translateRelationship(entity, ((Property)prop).entity);
-//
-//			for (IValue v : rrel) {
-//				ret.add(new Relationship(prop,v));
-//			}
-//		}
-		return ret;	
-	}
-
-
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getRestrictions()
 	 */
-	public Constraint getRestrictions() throws ThinklabException {
+	public IQuery getRestrictions() throws ThinklabException {
 
 		/*
 		 * This accumulates all restrictions from parents as well.
@@ -672,119 +593,133 @@ public class Concept extends Knowledge implements IConcept {
 		
 	}
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @Override
+	 * 
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getDefinition()
 	 */
-	public Constraint getDefinition() throws ThinklabException {
-		
+	public IQuery getDefinition() {
+
+		Constraint ret = null;
 		ArrayList<OWLRestriction<?>> rs = new ArrayList<OWLRestriction<?>>();
-		
-		Constraint ret = getDefinitionInternal(this, rs);
-		Ontology ont = getThinklabOntology();
-		
-		if (rs != null)
-			for (OWLRestriction<?> r : rs) {
 
-				IProperty p = new Property(r.getProperty());
-				Quantifier q = null;
-				
-				if (r instanceof OWLDataAllRestriction ||
-					r instanceof OWLObjectAllRestriction) {
+		try {
 
-					q = new Quantifier("all");
+			ret = getDefinitionInternal(this, rs);
+			Ontology ont = getThinklabOntology();
 
-					IConcept c = 
-						ThinklabOWLManager.get().getRestrictionFiller(r, ont);
-					
-					if (c != null)
-						ret.restrict(new Restriction(q, p, new Constraint(c)));
+			if (rs != null)
+				for (OWLRestriction<?> r : rs) {
 
-				} else if (r instanceof OWLDataSomeRestriction || 
-						   r instanceof OWLObjectSomeRestriction) {
+					IProperty p = new Property(r.getProperty());
+					Quantifier q = null;
 
-					q = new Quantifier("any");
-					
-					IConcept c = 
-						ThinklabOWLManager.get().getRestrictionFiller(r, ont);
-					
-					if (c != null)
-						ret.restrict(new Restriction(q, p, new Constraint(c)));
+					if (r instanceof OWLDataAllRestriction
+							|| r instanceof OWLObjectAllRestriction) {
 
-				} else if (r instanceof OWLDataExactCardinalityRestriction) {
-											
-					int card = ((OWLDataExactCardinalityRestriction)r).getCardinality();
-					q = new Quantifier(Integer.toString(card));
-					ret.restrict(new Restriction(q, p));
+						q = new Quantifier("all");
 
-				}  else if (r instanceof OWLObjectExactCardinalityRestriction) {
-											
-					int card = ((OWLObjectExactCardinalityRestriction)r).getCardinality();
-					q = new Quantifier(Integer.toString(card));
-					ret.restrict(new Restriction(q, p));
+						IConcept c = ThinklabOWLManager.get()
+								.getRestrictionFiller(r, ont);
 
-				} else if (r instanceof OWLDataMinCardinalityRestriction) {
+						if (c != null)
+							ret.restrict(new Restriction(q, p,
+									new Constraint(c)));
 
-					int card = ((OWLDataMinCardinalityRestriction)r).getCardinality();			
-					q = new Quantifier(card+":");
-					ret.restrict(new Restriction(q, p));
+					} else if (r instanceof OWLDataSomeRestriction
+							|| r instanceof OWLObjectSomeRestriction) {
 
-				} else if (r instanceof OWLObjectMinCardinalityRestriction) {
-					
-					int card = ((OWLObjectMinCardinalityRestriction)r).getCardinality();
-					q = new Quantifier(card+":");
-					ret.restrict(new Restriction(q, p));
+						q = new Quantifier("any");
 
-				} else if (r instanceof OWLDataMaxCardinalityRestriction) {
+						IConcept c = ThinklabOWLManager.get()
+								.getRestrictionFiller(r, ont);
 
-					int card = ((OWLDataMaxCardinalityRestriction)r).getCardinality();
-					q = new Quantifier(":" + card);
-					ret.restrict(new Restriction(q, p));
+						if (c != null)
+							ret.restrict(new Restriction(q, p,
+									new Constraint(c)));
 
-				} else if (r instanceof OWLObjectMaxCardinalityRestriction) {
-					
-					int card = ((OWLObjectMaxCardinalityRestriction)r).getCardinality();
-					q = new Quantifier(":" + card);
-					ret.restrict(new Restriction(q, p));
-					
-				} else if (r instanceof OWLDataValueRestriction) {
+					} else if (r instanceof OWLDataExactCardinalityRestriction) {
 
-					ret.restrict(
-							new Restriction(
-									new Quantifier("all"),
-									p, 
-									"=", 
-									(((OWLDataValueRestriction)r).getValue().toString())));
-					
-				}  else if (r instanceof OWLObjectValueRestriction) {
+						int card = ((OWLDataExactCardinalityRestriction) r)
+								.getCardinality();
+						q = new Quantifier(Integer.toString(card));
+						ret.restrict(new Restriction(q, p));
 
-//										ret.restrict(
-//												new Restriction(
-//														new Quantifier("all"),
-//														p, 
-//														"=", 
-//														((OWLHasValue)r).getHasValue().toString()));
-									}
-				/*
-				 * TODO there are more restrictions in OWL > 1.0; must check which ones
-				 * go into a constraint
-				 */
+					} else if (r instanceof OWLObjectExactCardinalityRestriction) {
+
+						int card = ((OWLObjectExactCardinalityRestriction) r)
+								.getCardinality();
+						q = new Quantifier(Integer.toString(card));
+						ret.restrict(new Restriction(q, p));
+
+					} else if (r instanceof OWLDataMinCardinalityRestriction) {
+
+						int card = ((OWLDataMinCardinalityRestriction) r)
+								.getCardinality();
+						q = new Quantifier(card + ":");
+						ret.restrict(new Restriction(q, p));
+
+					} else if (r instanceof OWLObjectMinCardinalityRestriction) {
+
+						int card = ((OWLObjectMinCardinalityRestriction) r)
+								.getCardinality();
+						q = new Quantifier(card + ":");
+						ret.restrict(new Restriction(q, p));
+
+					} else if (r instanceof OWLDataMaxCardinalityRestriction) {
+
+						int card = ((OWLDataMaxCardinalityRestriction) r)
+								.getCardinality();
+						q = new Quantifier(":" + card);
+						ret.restrict(new Restriction(q, p));
+
+					} else if (r instanceof OWLObjectMaxCardinalityRestriction) {
+
+						int card = ((OWLObjectMaxCardinalityRestriction) r)
+								.getCardinality();
+						q = new Quantifier(":" + card);
+						ret.restrict(new Restriction(q, p));
+
+					} else if (r instanceof OWLDataValueRestriction) {
+
+						ret.restrict(new Restriction(new Quantifier("all"), p,
+								"=", (((OWLDataValueRestriction) r).getValue()
+										.toString())));
+
+					} else if (r instanceof OWLObjectValueRestriction) {
+
+						// ret.restrict(
+						// new Restriction(
+						// new Quantifier("all"),
+						// p,
+						// "=",
+						// ((OWLHasValue)r).getHasValue().toString()));
+					}
+					/*
+					 * TODO there are more restrictions in OWL > 1.0; must check
+					 * which ones go into a constraint
+					 */
+				}
+
+			// merge in any further constraints from Thinklab-specific
+			// annotations
+			Constraint tlc = ThinklabOWLManager.get().getAdditionalConstraints(
+					this);
+
+			if (tlc != null) {
+				ret.merge(tlc, LogicalConnector.INTERSECTION);
 			}
-		
-		// merge in any further constraints from Thinklab-specific annotations
-		Constraint tlc = 
-			ThinklabOWLManager.get().getAdditionalConstraints(this);
-		
-		if (tlc != null) {
-			ret.merge(tlc, LogicalConnector.INTERSECTION);
+
+		} catch (Exception e) {
+			throw new ThinklabRuntimeException(e);
 		}
-		
+
 		return ret;
 
 	}
-	
+
 	/* 
 	 * accumulate suitable restrictions recursively until no more restrictions on
 	 * inherited properties are found; return constraint initialized with stop concept, or null if we must

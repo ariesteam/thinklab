@@ -47,7 +47,6 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IKnowledgeSubject;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
@@ -584,7 +583,7 @@ public class Restriction  {
 		return Polylist.PolylistFromArray(ret.toArray());
 	}
 	
-	private boolean matchConnector(IKnowledgeSubject c) throws ThinklabException {
+	private boolean matchConnector(IInstance c) throws ThinklabException {
 		
 		boolean ret = false;
 		
@@ -612,7 +611,7 @@ public class Restriction  {
     	return ret;
 	}
 	
-	private boolean matchRelationships(IKnowledgeSubject c) throws ThinklabException {
+	private boolean matchRelationships(IInstance c) throws ThinklabException {
 		
 		boolean ret = false;
         int tot = 0;
@@ -679,7 +678,7 @@ public class Restriction  {
 		return operator.eval(opArgs).asBoolean();
 	}
 
-	public boolean match(IKnowledgeSubject c) throws ThinklabException {
+	public boolean match(IInstance c) throws ThinklabException {
 
 		boolean ok = false;
 		if (isConnector()) {

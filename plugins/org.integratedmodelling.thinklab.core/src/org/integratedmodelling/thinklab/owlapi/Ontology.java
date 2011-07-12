@@ -814,12 +814,11 @@ public class Ontology implements IOntology {
 	}
 
 	@Override
-	public IConcept createConcept(String localName, IConcept[] parents, boolean persist) throws ThinklabException {
+	public IConcept createConcept(String localName, IConcept[] parents) throws ThinklabException {
 
 		OWLOntologyManager manager = FileKnowledgeRepository.get().manager;
 		OWLDataFactory factory = FileKnowledgeRepository.get().manager.getOWLDataFactory();		
 		IConcept ret = getConcept(localName);
-		boolean changed = false;
 		
 		if (ret == null) {
 			
@@ -829,7 +828,6 @@ public class Ontology implements IOntology {
 			
 			try {
 				manager.addAxiom(ont, axiom);
-				changed = true;
 			} catch (OWLOntologyChangeException e) {
 				throw new ThinklabValidationException(e);
 			}
@@ -855,19 +853,11 @@ public class Ontology implements IOntology {
 		
 			try {
 				manager.addAxiom(ont,axiom);
-				changed = true;
 			} catch (OWLOntologyChangeException e) {
 				throw new ThinklabValidationException(e);
 			}
 		}
 		
-    	if (persist && changed && !this.write(null)) {
-    		Thinklab.get().logger().warn(
-    				"attempt to persist ontology " + 
-    				getConceptSpace() +
-    				" failed: ontology does not come from a filesystem resource");
-    	}
-    	
 		return ret;
 	}
 

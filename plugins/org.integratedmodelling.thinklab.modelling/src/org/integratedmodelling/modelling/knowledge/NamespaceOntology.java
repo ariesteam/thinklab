@@ -2,13 +2,13 @@ package org.integratedmodelling.modelling.knowledge;
 
 import java.util.ArrayList;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
-import org.integratedmodelling.utils.Polylist;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 
 import clojure.lang.Keyword;
 
@@ -133,7 +133,7 @@ public class NamespaceOntology {
 				IConcept[] p = null;
 				if (parent != null && parent.size() > 0)
 					p = parent.toArray(new IConcept[parent.size()]);
-				ret = getOntology().createConcept(string, p, false);
+				ret = getOntology().createConcept(string, p);
 			}
 		}
 		return ret;
