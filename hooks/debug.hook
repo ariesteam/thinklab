@@ -1,4 +1,4 @@
 # script to force restart with debug server options on port 8998
 export THINKLAB_RESTART=true
-export THINKLAB_DEBUG="-Xdebug -Xrunjdwp:transport=dt_socket,address=8998,server=y"
+export THINKLAB_DEBUG='-Xdebug -Xrunjdwp:transport=dt_socket,address=8998,server=y'
 echo Server restart scheduled with debug
