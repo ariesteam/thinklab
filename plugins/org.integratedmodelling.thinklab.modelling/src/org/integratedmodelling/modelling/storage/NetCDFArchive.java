@@ -67,7 +67,7 @@ public class NetCDFArchive {
 		this.context = context;
 		
 		// FIXME remove eventually
-		((ObservationContext)context).collectStates();
+		 ((ObservationContext)context).collectStates();
 		
 	}
 	
@@ -354,7 +354,7 @@ public class NetCDFArchive {
 	 */
 	private String getVarname(IConcept obs) {
 		
-		String ret = obs.getLocalName();
+		String ret = obs.getConceptSpace()+ "_" + obs.getLocalName();
 		if (obs.is("geophysics:Altitude")) {
 			ret = "Altitude";
 		}

@@ -301,7 +301,7 @@ public class ModeledClassification
 	@Override
 	public IState createState(int size, IObservationContext context) throws ThinklabException {
 		
-		IState ret = new ClassData(cSpace, size, classifiers, (ObservationContext)context);
+		IState ret = new ClassData(getObservableClass(), size, classifiers, (ObservationContext)context);
 //
 //		/*
 //		 * TODO other metadata

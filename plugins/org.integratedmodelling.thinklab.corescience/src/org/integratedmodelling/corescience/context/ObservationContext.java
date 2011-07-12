@@ -1000,10 +1000,12 @@ public class ObservationContext implements IObservationContext, IContext {
 	 */
 	public void addState(IState state) {
 		
-//		if (states.containsKey(state.getObservableClass()))
-//			throw new ThinklabRuntimeException("state " + state.getObservableClass() + " already present in context");
-		
-		states.put(state.getObservableClass(), state);
+		if (!states.containsKey(state.getObservableClass())) {
+			states.put(state.getObservableClass(), state);
+		} else {
+			CoreScience.get().logger().
+				warn("state " + state.getObservableClass() + " is duplicated");		 
+		}
 	}
 
 	@Override
