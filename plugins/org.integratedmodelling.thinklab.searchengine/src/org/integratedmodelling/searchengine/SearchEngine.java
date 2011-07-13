@@ -70,7 +70,7 @@ import org.integratedmodelling.searchengine.exceptions.ThinklabInvalidQueryExcep
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
@@ -567,7 +567,7 @@ public final class SearchEngine implements IQueriable {
     	
     }
     
-    private Document indexMetadata(IKnowledgeSubject object, IKBox kbox) {
+    private Document indexMetadata(IKnowledge object, IKBox kbox) {
     	
     	Document d = null;
     	

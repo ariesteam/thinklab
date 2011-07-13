@@ -50,7 +50,7 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -66,7 +66,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 public abstract class KnowledgeGraph extends
 		DefaultDirectedGraph<Object, Object> {
 	
-	IKnowledgeSubject root = null;
+	IKnowledge root = null;
 
 	private static final long serialVersionUID = 9151878779989532686L;
 
@@ -119,22 +119,22 @@ public abstract class KnowledgeGraph extends
 	 * 
 	 * @param root
 	 */
-	public void setRoot(IKnowledgeSubject root) {
+	public void setRoot(IKnowledge root) {
 		this.root = root;
 	}
 	
-	public IKnowledgeSubject getRoot() {
+	public IKnowledge getRoot() {
 		return this.root;
 	}
 	
-	protected void buildGraph(IKnowledgeSubject root) throws ThinklabException {
+	protected void buildGraph(IKnowledge root) throws ThinklabException {
 		buildGraph(root, null);
 	}
 
 	/*
 	 * can be called as many times as you want unless forceTreeGeometry is true.
 	 */
-	private void buildGraph(IKnowledgeSubject rootConcept, Set<String> refs)
+	private void buildGraph(IKnowledge rootConcept, Set<String> refs)
 			throws ThinklabException {
 
 		if (refs == null && forceTreeGeometry && this.vertexSet().size() > 0)
@@ -238,51 +238,54 @@ public abstract class KnowledgeGraph extends
 
 		/**
 		 * Follow relationships
+		 * FIXME
+		 * TODO
+		 * ehm - only instances should have relationships. Ensure this is for instances only
 		 */
-		for (IRelationship r : rootConcept.getRelationships()) {
-
-			boolean doit = followRelationship(rootConcept, r, null);
-
-			if (doit) {
-
-				if (r.isObject()) {
-
-					IInstance inst = r.getValue().asObject();
-					boolean isThere = refs.contains(inst.getURI());
-
-					/*
-					 * follow the object if it's not there
-					 */
-					if (!isThere && (!rootIsConcept || followInstances)) {
-						buildGraph(inst, refs);
-					}
-
-					/*
-					 * add edge unless we want a tree and it's there already
-					 */
-					if (!(isThere && forceTreeGeometry)) {
-						((PropertyEdge) this.addEdge(rootConcept, inst)).setProperty(
-								r.getProperty());
-					}
-
-					isThere = refs.contains(inst.getURI());
-
-				} else if (r.isClassification()) {
-
-					IConcept conc = r.getValue().getConcept();
-
-					/*
-					 * follow concept if we are allowed
-					 */
-					if (rootIsConcept || followClassLevel > 0) {
-
-						buildGraph(conc, refs);
-						this.addEdge(rootConcept, conc);
-
-					}
-				}
-			}
-		}
+//		for (IRelationship r : ((IConcept)rootConcept).getRelationships()) {
+//
+//			boolean doit = followRelationship(rootConcept, r, null);
+//
+//			if (doit) {
+//
+//				if (r.isObject()) {
+//
+//					IInstance inst = r.getValue().asObject();
+//					boolean isThere = refs.contains(inst.getURI());
+//
+//					/*
+//					 * follow the object if it's not there
+//					 */
+//					if (!isThere && (!rootIsConcept || followInstances)) {
+//						buildGraph(inst, refs);
+//					}
+//
+//					/*
+//					 * add edge unless we want a tree and it's there already
+//					 */
+//					if (!(isThere && forceTreeGeometry)) {
+//						((PropertyEdge) this.addEdge(rootConcept, inst)).setProperty(
+//								r.getProperty());
+//					}
+//
+//					isThere = refs.contains(inst.getURI());
+//
+//				} else if (r.isClassification()) {
+//
+//					IConcept conc = r.getValue().getConcept();
+//
+//					/*
+//					 * follow concept if we are allowed
+//					 */
+//					if (rootIsConcept || followClassLevel > 0) {
+//
+//						buildGraph(conc, refs);
+//						this.addEdge(rootConcept, conc);
+//
+//					}
+//				}
+//			}
+//		}
 		
 	}
 
@@ -452,7 +455,7 @@ public abstract class KnowledgeGraph extends
 	 *            processing a direct type and relationship is null.
 	 * @return
 	 */
-	protected abstract boolean followRelationship(IKnowledgeSubject source,
+	protected abstract boolean followRelationship(IKnowledge source,
 			IRelationship relationship, IConcept type);
 
 	/**

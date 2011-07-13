@@ -2,7 +2,7 @@ package org.integratedmodelling.thinklab.graph;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 
@@ -22,7 +22,7 @@ public class ConceptMap extends KnowledgeGraph {
 	}
 
 	@Override
-	protected boolean followRelationship(IKnowledgeSubject source,
+	protected boolean followRelationship(IKnowledge source,
 			IRelationship relationship, IConcept type) {
 		// TODO Auto-generated method stub
 		return false;

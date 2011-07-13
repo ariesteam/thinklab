@@ -218,13 +218,6 @@ public class GraphicalShell {
 			}
 		}
 		
-		/*
-		 * TODO
-		 * privileged shell by default. We may want to condition this
-		 * to authentication. For now all a privileged shell can do
-		 * is to auto-annotate concepts. 
-		 */
-		KnowledgeManager.get().setAdminPrivileges(true);
 		
 		/* greet user */
 		printStatusMessage();

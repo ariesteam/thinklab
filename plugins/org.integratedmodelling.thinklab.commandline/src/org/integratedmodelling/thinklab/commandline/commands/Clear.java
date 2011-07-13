@@ -53,9 +53,10 @@ public class Clear implements ICommandHandler {
 		// TODO we want arguments and warnings
 
 		if (command.getArgumentAsString("ontology").equals("__all__")) {
-			if (KnowledgeManager.get().getSessionManager() instanceof SingleSessionManager) {
-				((SingleSessionManager) KnowledgeManager.get().getSessionManager()).clear();
-			}
+// FIXME
+			//			if (KnowledgeManager.get().getSessionManager() instanceof SingleSessionManager) {
+//				((SingleSessionManager) KnowledgeManager.get().getSessionManager()).clear();
+//			}
 		} else
 			KnowledgeManager.get().clear(command.getArgumentAsString("ontology"));
 

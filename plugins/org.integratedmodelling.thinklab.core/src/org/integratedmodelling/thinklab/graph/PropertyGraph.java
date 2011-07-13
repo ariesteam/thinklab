@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 
@@ -12,11 +12,11 @@ public class PropertyGraph extends KnowledgeGraph {
 
 	Set<String> properties = new HashSet<String>();
 	
-	public PropertyGraph(IKnowledgeSubject root, String property) {
+	public PropertyGraph(IKnowledge root, String property) {
 		
 	}
 	
-	public PropertyGraph(IKnowledgeSubject root, String[] property) {
+	public PropertyGraph(IKnowledge root, String[] property) {
 		
 	}
 	
@@ -35,7 +35,7 @@ public class PropertyGraph extends KnowledgeGraph {
 	}
 	
 	@Override
-	protected boolean followRelationship(IKnowledgeSubject source, IRelationship relationship, IConcept target) {
+	protected boolean followRelationship(IKnowledge source, IRelationship relationship, IConcept target) {
 		// TODO Auto-generated method stub
 		return false;
 	}

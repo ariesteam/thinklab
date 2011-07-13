@@ -60,7 +60,7 @@ import org.integratedmodelling.thinklab.ConceptVisitor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IKnowledgeSubject;
+import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
@@ -506,7 +506,7 @@ public abstract class SQLThinklabServer {
 		return ts;
 	}
 
-	private Triple<String, Long, String> getClassID(IKnowledgeSubject c, String sql, String id) {
+	private Triple<String, Long, String> getClassID(IKnowledge c, String sql, String id) {
 
 		long conceptID = 0;
 		String objectID = null;
@@ -839,7 +839,7 @@ public abstract class SQLThinklabServer {
 			(useRestrictions == UseRestrictions.PARTIAL && 
 					!type2ID.containsKey(constraint.getConcept().toString()))) {
 			
-			Constraint c = constraint.getConcept().getDefinition();
+			Constraint c = (Constraint) constraint.getConcept().getDefinition();
 			constraint.merge(c, LogicalConnector.INTERSECTION);
 			constraint.setConcept(c.getConcept());
 		}
