@@ -155,13 +155,25 @@ public class NetCDFArchive {
 				// ensure that all metadata are defined. FIXME: review the logics of all this BS and ensure it's
 				// done propertly and automatically.
 				Metadata.rankConcepts(state);
+				Metadata.getImageData(state);
 				
 				ncfile.addVariable(varname, DataType.FLOAT, new Dimension[]{latDim,lonDim});
 				
-				// do this now, so we have the uncertainty info in the metadata. Save for later. 
-				// FIXME the logics of this is a little on the perverse side but the IState
-				// contract does not mandate caching so for now it's good as is.
-				dataCatalog.put(obs, state.getDataAsDoubles());
+				double zum = 0.0; double[] dio = state.getDataAsDoubles();
+				if (dio != null) {
+					for (int zi = 0; zi < dio.length; zi++) {
+						if (!Double.isNaN(dio[zi]))
+							zum += dio[zi];
+					}
+				
+//					System.out.println("STORING " + obs + " WITH SUM " + zum);
+
+					// do this now, so we have the uncertainty info in the metadata. Save for later. 
+					// FIXME the logics of this is a little on the perverse side but the IState
+					// contract does not mandate caching so for now it's good as is.
+					dataCatalog.put(obs, dio);
+				}
+				
 
 				varnames.add(varname);
 				
@@ -269,7 +281,7 @@ public class NetCDFArchive {
 				
 				// this can now happen for stuff like categories, eventually it will be removed
 				if (dd == null)
-					return;
+					continue;
 				
 				double[] uu = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
 				ArrayDouble unce = null;
@@ -285,6 +297,7 @@ public class NetCDFArchive {
 						
 						double val = dd[i];
 						double uvl = uu == null ? 0 : uu[i];
+						
 						
 						if (mask != null) {
 							int[] xy = space.getXYCoordinates(i);
@@ -317,6 +330,7 @@ public class NetCDFArchive {
 			
 				ArrayDouble data = new ArrayDouble.D2(latDim.getLength(), lonDim.getLength());
 				Index ind = data.getIndex();
+				Metadata.getImageData(auxVariables.get(varname));
 				double[] dd = auxVariables.get(varname).getDataAsDoubles();
 				int i = 0;
 				for (int lat = 0; lat < latDim.getLength(); lat++) {
