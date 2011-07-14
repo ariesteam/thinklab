@@ -283,4 +283,8 @@ public class ModelStoryline extends Storyline {
 	public String toString() {
 		return super.toString() + " [" + models.size() + " models]";
 	}
+
+	public void setVisualization(IVisualization visualization) {
+		this.visualization = visualization;
+	}
 }
