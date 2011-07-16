@@ -1003,8 +1003,8 @@ public class ObservationContext implements IObservationContext, IContext {
 		if (!states.containsKey(state.getObservableClass())) {
 			states.put(state.getObservableClass(), state);
 		} else {
-			CoreScience.get().logger().
-				warn("state " + state.getObservableClass() + " is duplicated");		 
+//			CoreScience.get().logger().
+//				warn("state " + state.getObservableClass() + " is duplicated");		 
 		}
 	}
 
