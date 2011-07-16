@@ -27,9 +27,14 @@ public class BayesianFactory {
 	
 	private BayesianFactory() {
 		
-		String engine = 
-			RiskWizPlugin.get().getProperties().getProperty(RiskWizPlugin.BAYESIAN_ENGINE_PROPERTY);
+		// check if the bayesian engine was set in startup options first - these override plugin options
+		String engine = System.getProperty(RiskWizPlugin.BAYESIAN_ENGINE_PROPERTY);
 	
+		// then in plugin config, which takes over
+		if (engine == null) {
+			engine = RiskWizPlugin.get().getProperties().getProperty(RiskWizPlugin.BAYESIAN_ENGINE_PROPERTY);
+		}
+		
 		if (engine != null) {
 		
 			if (engine.equals("riskwiz")) {
