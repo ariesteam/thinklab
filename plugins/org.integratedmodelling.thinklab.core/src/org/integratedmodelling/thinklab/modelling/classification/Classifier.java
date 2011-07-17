@@ -104,10 +104,12 @@ public class Classifier implements IClassifier {
 		}
 	}
 
+	@Override
 	public boolean isUniversal() {
 		return catchAll;
 	}
 	
+	@Override
 	public boolean classify(Object o) {
 
 		if (catchAll && o != null && !(o instanceof Double && Double.isNaN((Double)o))) {
@@ -241,6 +243,7 @@ public class Classifier implements IClassifier {
 		this.isNil = true;
 	}
 
+	@Override
 	public boolean isInterval() {
 		return interval != null;
 	}
@@ -249,8 +252,8 @@ public class Classifier implements IClassifier {
 		return interval;
 	}
 
+	@Override
 	public boolean isNil() {
-		// TODO Auto-generated method stub
 		return this.isNil;
 	}
 

@@ -44,7 +44,6 @@ public class Observation implements IObservation {
 	protected IConcept  _type = null;
 	
 	
-
 	// public API below
 	
 	@Override

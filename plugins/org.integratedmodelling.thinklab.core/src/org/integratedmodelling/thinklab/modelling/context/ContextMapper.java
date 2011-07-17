@@ -7,6 +7,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor.StorageOrdering;
+import org.integratedmodelling.multidimensional.Ticker;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContextMapper;
@@ -38,7 +39,7 @@ public class ContextMapper implements IContextMapper {
 	int currentOverall = 0;
 	int current = 0;
 	ArrayList<IConcept> changed = null;
-	org.integratedmodelling.multidimensional.Ticker ticker = null;
+	org.integratedmodelling.multidimensional.Ticker ticker = new Ticker();
 	
 	/**
 	 * When a cursor over the dimensions of a context is needed, this one should be used
@@ -75,6 +76,7 @@ public class ContextMapper implements IContextMapper {
 			indexesTo[i] = dim;	
 			cdims[i] =  (indexesFrom[i] == indexesTo[i]) ? 0 : 1;
 			td += cdims[i];
+			ticker.addDimension(dim);
 			i++;
 		}
 		
@@ -107,13 +109,6 @@ public class ContextMapper implements IContextMapper {
 		return toCursor.getElementOffset(ofss);
 	}
 
-	public Object getValue(IState state, int index) {
-		return state.getValue(map(index));
-	}
-
-	public double getDoubleValue(IState state, int i) throws ThinklabException {
-		return state.getDoubleValue(map(i));
-	}	
 	
 	@Override
 	public Collection<IConcept> increment() {

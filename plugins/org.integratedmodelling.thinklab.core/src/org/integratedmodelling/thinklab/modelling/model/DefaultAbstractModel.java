@@ -12,9 +12,12 @@ import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
 import org.integratedmodelling.thinklab.api.modelling.observation.IObservationIterator;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
+import org.integratedmodelling.thinklab.metadata.Metadata;
 import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
-public class DefaultAbstractModel extends NamespaceQualified implements IModel {
+public abstract class DefaultAbstractModel extends NamespaceQualified implements IModel {
+
+	protected IMetadata _metadata = new Metadata();
 
 	
 	// --- internal API below ------------------------------------------------
@@ -30,8 +33,7 @@ public class DefaultAbstractModel extends NamespaceQualified implements IModel {
 
 	@Override
 	public IMetadata getMetadata() {
-		// TODO Auto-generated method stub
-		return null;
+		return _metadata;
 	}
 
 	@Override

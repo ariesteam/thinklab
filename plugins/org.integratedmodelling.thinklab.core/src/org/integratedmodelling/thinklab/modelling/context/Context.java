@@ -64,13 +64,6 @@ public class Context extends NamespaceQualified implements IContext {
 	}
 
 	@Override
-	public IContext getObservationContext(IObservation observation)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean intersects(IContext context) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return false;

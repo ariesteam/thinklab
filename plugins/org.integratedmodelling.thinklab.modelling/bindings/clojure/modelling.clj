@@ -108,7 +108,6 @@
 	[model name]
 	(.. org.integratedmodelling.modelling.ModellingPlugin (get) (getModelManager) (registerModel model (str *ns* "/" name))))
 
-
 (defn register-annotation
 	"Get the single instance of the model manager from the modelling plugin and register the passed model
 	 with it."

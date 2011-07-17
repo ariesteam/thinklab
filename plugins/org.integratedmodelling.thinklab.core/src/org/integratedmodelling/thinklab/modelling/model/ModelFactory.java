@@ -140,8 +140,7 @@ public class ModelFactory implements IModelFactory {
 	}
 
 	@Override
-	public IContext run(IModel model, IKBox kbox, ISession session,
-			Collection<IContextualizationListener> listeners, IContext context)
+	public IContext run(IModel model, IKBox kbox, ISession session, IContext context)
 			throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;

@@ -163,44 +163,10 @@
 	"True if the observation depends on an observation of the passed concept."
 	[observation concept]
 	false)
-	
-(defn contingent-to?
-	"True if the observation is contingent to an observation of the passed concept."
-	[observation concept]
-	false)
 
 (defn collect-states
   [context]
   (.collectStates context))
 
-(defn get-state-map
-	[observation] 
-	(if (nil? observation)
-		{}
-	 (if (instance? org.integratedmodelling.corescience.context.ObservationContext observation)
-    (.getStateMap observation)
-    (org.integratedmodelling.corescience.ObservationFactory/getStateMap (get-obs observation)))))
 
-(defn get-dependent-states-map 
-  "Use on a context only to retrieve the state of a particular observation and all its dependents."
-  [observation concept]
-  (.getStateMap observation concept))
-
-;; ================================================================================================
-;; utils
-;; ================================================================================================
-
-(defn map-dependent-states 
-    "Given a contextualized observation, return a map associating the states of all dependencies 
-     to the concept they observe"
-    [observation]
-    (loop [observations (get-dependencies observation)
-           state-map {}]
-          (if (empty? observations)
-              state-map
-              (let [obs (first observations)]
-                 (recur (rest observations) 
-                          (assoc state-map
-                             (get-observable-class obs)
-                             (get-state obs)))))))
                              
