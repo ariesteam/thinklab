@@ -81,13 +81,6 @@ public interface Interpreter {
 	 */
 	public abstract void loadBindings(URL source, ClassLoader cloader) throws ThinklabException;
 
-	/**
-	 * Automatically define a binding for the given ITask class, discovered at initialization.
-	 * 
-	 * @param taskClass
-	 * @throws ThinklabException 
-	 */
-	public abstract void defineTask(Class<?> taskClass, ClassLoader cloader) throws ThinklabException;
 
 	/**
 	 * Plugins will add their classpath to this before they load their bindings.

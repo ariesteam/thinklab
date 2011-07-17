@@ -13,6 +13,7 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.utils.FolderZiper;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.JpfException;
@@ -20,7 +21,7 @@ import org.java.plugin.Plugin;
 import org.java.plugin.PluginManager;
 import org.java.plugin.registry.PluginDescriptor;
 
-public class ThinklabProject {
+public class ThinklabProject implements IProject {
 	
 	static HashMap<String, ThinklabProject> _projects = 
 		new HashMap<String, ThinklabProject>();
@@ -73,6 +74,7 @@ public class ThinklabProject {
 
 	}
 
+	@Override
 	public Properties getProperties() {
 		return _properties;
 	}

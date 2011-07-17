@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
@@ -22,6 +23,8 @@ import org.java.plugin.Plugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.PluginDescriptor;
 import org.restlet.service.MetadataService;
+
+import clojure.lang.RT;
 
 /**
  * Activating this plugin means loading the knowledge manager, effectively initializing the
@@ -119,8 +122,17 @@ public class Thinklab extends ThinklabPlugin {
 
 	@Override
 	protected void load(KnowledgeManager km) throws ThinklabException {
-		// TODO Auto-generated method stub
 		
+		// initialize the Clojure runtime
+		try {
+			logger().info("initializing Clojure runtime");
+			RT.loadResourceScript("thinklab.clj");			
+			RT.loadResourceScript("utils.clj");			
+			RT.loadResourceScript("knowledge.clj");			
+			logger().info("Clojure initialized successfully");
+		} catch (Exception e) {
+			throw new ThinklabIOException(e);
+		}
 	}
 
 	@Override

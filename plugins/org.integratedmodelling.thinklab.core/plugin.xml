@@ -7,6 +7,7 @@
 		</library>
 		<library id="ontologies" path="ontologies/" type="resources"/>
 		<library id="config" path="config/" type="resources"/>
+		<library id="clj" path="clj/" type="resources"/>
 		<library id="agg_classes" path="lib/agg_V1622_classes.jar" type="code"/>
 		<library id="ant" path="lib/ant-1.6.5.jar" type="code"/>
 		<library id="antlr" path="lib/antlr-2.7.6.jar" type="code"/>
