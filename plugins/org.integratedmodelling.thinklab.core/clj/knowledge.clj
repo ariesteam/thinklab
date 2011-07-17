@@ -1,19 +1,19 @@
 (ns tl)
 
 ;; root binding for kbox variable
-(def *_kbox_* nil)
+(def ^:dynamic *_kbox_* nil)
 
 (defn j-make-concept-handler
 	[concept]
-	(new org.integratedmodelling.clojure.knowledge.ConceptHandler (tl/get-session) concept))
+	(new org.integratedmodelling.thinklab.clojure.knowledge.ConceptHandler (tl/get-session) concept))
 
 (defn j-make-kbox-handler
 	[]
-	(new org.integratedmodelling.clojure.knowledge.KBoxHandler (tl/get-session)))
+	(new org.integratedmodelling.thinklab.clojure.knowledge.KBoxHandler (tl/get-session)))
 	
 (defn j-make-object-handler
 	[concept kbox]
-	(new org.integratedmodelling.clojure.knowledge.InstanceHandler (tl/get-session) concept kbox))
+	(new org.integratedmodelling.thinklab.clojure.knowledge.InstanceHandler (tl/get-session) concept kbox))
 
 (defmacro defconcept
 	"Define an instance. Forward references (InstanceHandler) may also be returned, but will only 
@@ -33,7 +33,7 @@
 	[fnmap]
 	(proxy [org.integratedmodelling.thinklab.interfaces.storage.IMetadataExtractor] []
 		(extractMetadata [instance] 
-			(org.integratedmodelling.clojure.knowledge.KBoxHandler/fixMetadata 
+			(org.integratedmodelling.thinklab.clojure.knowledge.KBoxHandler/fixMetadata 
 				(tl/map-keyed-functions fnmap instance)))))
 
 (defmacro defobject

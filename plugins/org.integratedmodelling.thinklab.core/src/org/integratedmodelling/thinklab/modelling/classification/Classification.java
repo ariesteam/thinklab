@@ -14,6 +14,8 @@ public class Classification implements IClassification {
 
 	ArrayList<IClassifier> _classifiers = new ArrayList<IClassifier>();
 	
+	// --- public API below -----------------------------------------
+	
 	@Override
 	public Polylist conceptualize() throws ThinklabException {
 		// TODO Auto-generated method stub

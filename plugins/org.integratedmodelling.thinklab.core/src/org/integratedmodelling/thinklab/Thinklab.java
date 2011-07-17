@@ -125,11 +125,18 @@ public class Thinklab extends ThinklabPlugin {
 		
 		// initialize the Clojure runtime
 		try {
+
+			ClassLoader cls = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader ()); 
+
 			logger().info("initializing Clojure runtime");
 			RT.loadResourceScript("thinklab.clj");			
 			RT.loadResourceScript("utils.clj");			
 			RT.loadResourceScript("knowledge.clj");			
 			logger().info("Clojure initialized successfully");
+			
+			Thread.currentThread().setContextClassLoader(cls); 
+
 		} catch (Exception e) {
 			throw new ThinklabIOException(e);
 		}

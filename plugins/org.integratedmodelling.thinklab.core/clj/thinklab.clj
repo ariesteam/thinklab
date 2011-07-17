@@ -6,12 +6,12 @@
 ;; ------------------------------------------------------------------------------------------
 (ns tl
    (:import 
-   		(org.integratedmodelling.clojure  Clojure)
+   		(org.integratedmodelling.thinklab.clojure  Clojure)
    		(org.integratedmodelling.thinklab.kbox KBoxManager)
-   		(org.integratedmodelling.thinklab.exception ThinklabValidationException)
+   		(org.integratedmodelling.exceptions ThinklabValidationException)
     	(org.integratedmodelling.thinklab Thinklab KnowledgeManager)))
 
-(def *session* nil)
+(def ^:dynamic *session* nil)
 
 (defn load-bindings
 	"Load the Clojure bindings for the passed plugin (can use a partial name if not
@@ -70,7 +70,7 @@
 	[stype]
 	(if (nil? stype) 
 		nil
-		(if (instance? org.integratedmodelling.thinklab.interfaces.knowledge.IConcept stype)
+		(if (instance? org.integratedmodelling.thinklab.api.knowledge.IConcept stype)
 			stype
 			(if (list? stype)
 				(.createConcept (tl/get-session) (tl/listp stype)) 
@@ -81,7 +81,7 @@
 	value is taken to be a semantic type and the correspondent concept is returned. If no concept
 	exists for that object, nil is returned without complaint."
 	[stype]
-	(if (instance? org.integratedmodelling.thinklab.interfaces.knowledge.IConcept stype)
+	(if (instance? org.integratedmodelling.thinklab.api.knowledge.IConcept stype)
 		stype
 		(.. KnowledgeManager (get) (retrieveConcept (str stype)))))
 

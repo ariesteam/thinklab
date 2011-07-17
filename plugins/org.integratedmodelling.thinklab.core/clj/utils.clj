@@ -13,6 +13,7 @@
 	[string]
 	(. javax.swing.JOptionPane (showMessageDialog nil string)))
 	
+
 (defn uninterleave [coll]
   (loop [odds  []
          evens []
@@ -20,14 +21,15 @@
     (if (seq rem)
       (recur (conj odds  (first rem))
              (conj evens (second rem))
-             (rrest rem))
+             (next (next rem)))
       [odds evens])))
       
 (defn assoc-map 
   "Turns a seq into the map it wanted to be: (assoc-map '(:one 1 :two 2)) -> {:one 1, :two 2}."
   [aseq]
   (into {} (map vec (partition 2 aseq)))) 
-      
+
+
 (defn take-pair-while
   "Returns a lazy seq of successive pairs of items from coll
    while (pred item) returns true for the first item in the pair. pred
@@ -35,14 +37,14 @@
   [pred coll]
   (when (and (seq coll) (pred (first coll)))
     (lazy-cat (list (first coll) (second coll))
-	      (take-pair-while pred (rrest coll)))))
+	      (take-pair-while pred (next (next coll))))))
 
 (defn drop-pair-while
   "Returns a lazy seq of the items in coll starting from the first
    item for which (pred item) returns nil."
   [pred coll]
   (if (and (seq coll) (pred (first coll)))
-    (recur pred (rrest coll))
+    (recur pred (next (next coll)))
     (seq coll)))
 
 (defn split-pair-with
@@ -57,8 +59,8 @@
   [pred coll]
   (if (nil? coll) nil
       (if (pred (first coll)) 
-        (cons  (list (first coll) (second coll)) (group-if pred (rrest coll))) 
-        (cons  (first coll) (group-if pred (rest coll)))))) 
+        (cons  (list (first coll) (second coll)) (group-if pred (next (next coll)))) 
+        (cons  (first coll) (group-if pred (next coll)))))) 
 
 (defn group-keywords
   "Return a list where all keywords have been paired with the following element"
@@ -75,7 +77,7 @@
         (empty? dropped) (list taken)
         (empty? taken)
         (lazy-cat (list (first dropped))
-          (group-while pred (rest dropped)))
+          (group-while pred (next dropped)))
         :otherwise 
         (lazy-cat (list taken)
           (group-while pred dropped))))))
@@ -88,14 +90,14 @@
   	(empty? coll)   coll
 		(empty? (rest coll)) (list (list (first coll) filler))
 		:otherwise 
-			(if (pred (second coll))
-		     (lazy-cons 
+		(lazy-seq
+				(if (pred (second coll))
+		     (cons 
 		     		(take 2 coll)
-						(group-with-following pred (rrest coll) filler))
-		     (lazy-cons 
+						(group-with-following pred (next (next coll)) filler))
+		     (cons 
 		     		(list (first coll) filler)
-						(group-with-following pred (rest coll) filler)))))
-
+						(group-with-following pred (next coll) filler))))))
 
 (defn group-with-keywords
   "Take a seq where each element may be followed by a keyword, value

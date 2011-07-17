@@ -99,8 +99,9 @@ import org.semanticweb.owl.vocab.XSDVocabulary;
  */
 public class KnowledgeManager implements IKnowledgeFactory {
 
-    /** default core ontology URL. It really is small - just some POD data types and a couple properties. */
-	private static final String DEFAULT_CORE_ONTOLOGY = "thinklab-core.owl";
+    /** default core ontologies loaded at startup. Can be changed using thinklab.ontology.default property, but don't. */
+	private static final String DEFAULT_CORE_ONTOLOGIES = 
+		"thinklab-core.owl,user.owl,observation.owl,measurement.owl,representation.owl,source.owl,modelling.owl";
 
     /** 
 	 * <p>The Knowledge Manager is a singleton. This is created by the initializer and an exception 
@@ -158,11 +159,6 @@ public class KnowledgeManager implements IKnowledgeFactory {
 	protected CommandManager commandManager;
 	
 	public static final String EXCLUDE_ONTOLOGY_PROPERTY = "thinklab.ontology.exclude";
-	
-	// this one in any config file will add properties to the blacklist.
-	public static final String IGNORE_PROPERTY_PROPERTY = "thinklab.property.ignore";
-
-	public static final String IGNORE_CONCEPT_PROPERTY = "thinklab.concept.ignore";
 	
 	/**
 	 * colon-separated path to find resources
@@ -557,35 +553,16 @@ public class KnowledgeManager implements IKnowledgeFactory {
         String cont = 
         	LocalConfiguration.getProperties().getProperty(
         			"thinklab.ontology.core", 
-        			DEFAULT_CORE_ONTOLOGY);
+        			DEFAULT_CORE_ONTOLOGIES);
 
-        	URL tco = Thinklab.get().getResourceURL(cont);  	
-        	URL tcu = Thinklab.get().getResourceURL("user.owl");  	
-            knowledgeRepository.refreshOntology(tco, MiscUtilities.getNameFromURL(cont), true);
-            knowledgeRepository.refreshOntology(tcu, "user", true);
+        for (String ccont : cont.split(",")) {
+        	URL tco = Thinklab.get().getResourceURL(ccont);  	
+            knowledgeRepository.refreshOntology(tco, MiscUtilities.getNameFromURL(ccont), true);
+        }
         
         /* initialize types before we register plugins */
         initializeThinklabTypes();
                 
-        /* initialize default blacklists */
-		String blk = LocalConfiguration.getProperties().getProperty(IGNORE_PROPERTY_PROPERTY);
-
-		if (blk != null) {
-			String[] bk = blk.trim().split(",");
-			for (String s : bk) {
-				KnowledgeManager.get().blacklistProperty(s);
-			}
-		}
-
-		blk = LocalConfiguration.getProperties().getProperty(IGNORE_CONCEPT_PROPERTY);
-
-		if (blk != null) {
-			String[] bk = blk.trim().split(",");
-			for (String s : bk) {
-				KnowledgeManager.get().blacklistConcept(s);
-			}
-		}
-
         commandManager = new CommandManager();
         				
 		Thinklab.get().logger().info("knowledge manager initialized successfully");
@@ -595,10 +572,10 @@ public class KnowledgeManager implements IKnowledgeFactory {
 	
 	public void shutdown() {
 	
-		/* finalize all plug-ins */
-		
-		/* flush knowledge repository */
-        
+		/* TODO flush knowledge repository */
+
+		/* TODO any other cleanup actions */
+
 	}
 
 	
