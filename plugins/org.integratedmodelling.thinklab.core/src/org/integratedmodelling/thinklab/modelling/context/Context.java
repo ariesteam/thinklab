@@ -107,7 +107,26 @@ public class Context extends NamespaceQualified implements IContext {
 	}
 
 	@Override
-	public IContextMapper map(IContext context) throws ThinklabException {
+	public IContextMapper mapContext(IObservation observation) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int[] getDimensionSizes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IConcept getDimension(IConcept c) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Collection<IConcept> getDimensions() {
+		return null;
+	}
+
+	public IConcept getDimension(int i) {
 		// TODO Auto-generated method stub
 		return null;
 	}
