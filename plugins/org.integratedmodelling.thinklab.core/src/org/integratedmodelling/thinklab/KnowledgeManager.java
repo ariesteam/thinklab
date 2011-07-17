@@ -153,7 +153,6 @@ public class KnowledgeManager implements IKnowledgeFactory {
 
 	protected IKnowledgeRepository knowledgeRepository;
 
-
 	protected PluginManager pluginManager = null;
 	
 	protected CommandManager commandManager;
@@ -193,9 +192,6 @@ public class KnowledgeManager implements IKnowledgeFactory {
 	private HashMap<String, Class<?>> sessionListeners = 
 		new HashMap<String, Class<?>>();
 
-	private HashSet<String> propertyBlacklist = new HashSet<String>();
-	private HashSet<String> conceptBlacklist = new HashSet<String>();
-
 	/*
 	 * maps XSD URIs to thinklab types for translation of literals.
 	 */
@@ -204,19 +200,6 @@ public class KnowledgeManager implements IKnowledgeFactory {
 	private Hashtable<String, Class<?>> literalImplementationClasses = new Hashtable<String, Class<?>>();
 
 	private Date start;
-
-	public KnowledgeManager(IKnowledgeRepository kr) {
-
-        /* set KM */
-        KM = this;
-        
-        this.start = new Date();
-        
-        /* create stuff */
-        this.knowledgeRepository = kr;
-		
-	}
-	
 
 	/**
 	 * This should become the default constructor: the class of knowledge repository and session
@@ -1006,75 +989,6 @@ public class KnowledgeManager implements IKnowledgeFactory {
 	}
 
 
-
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Double() {
-		return KM.doubleType;
-	}
-
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Boolean() {
-		return KM.booleanType;
-	}
-
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Text() {
-		return KM.textType;
-	}
-
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Long() {
-		return KM.longType;
-	}
-
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Integer() {
-		return KM.integerType;
-	}
-	
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Float() {
-		return KM.floatType;
-	}
-
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Number() {
-		return KM.numberType;
-	}
-	
-	public static IConcept Thing() {
-		return KM.knowledgeRepository.getRootConceptType();
-	}
-
-	
 	/**
 	 * Provided to simplify access to core types when we are sure that we have a knowledge
 	 * manager.
@@ -1157,34 +1071,7 @@ public class KnowledgeManager implements IKnowledgeFactory {
 
 		return knowledgeLoaders.get(format);
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#blacklistProperty(java.lang.String)
-	 */
-	public void blacklistProperty(String semType) {
-		propertyBlacklist.add(semType);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#blacklistConcept(java.lang.String)
-	 */
-	public void blacklistConcept(String semType) {
-		conceptBlacklist.add(semType);
-	}
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#isConceptBlacklisted(java.lang.String)
-	 */
-	public boolean isConceptBlacklisted(String c) {
-		return conceptBlacklist.contains(c);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#isPropertyBlacklisted(java.lang.String)
-	 */
-	public boolean isPropertyBlacklisted(String c) {
-		return propertyBlacklist.contains(c);
-	}
 	
 	public CommandManager getCommandManager() {
 		return commandManager;
@@ -1214,11 +1101,6 @@ public class KnowledgeManager implements IKnowledgeFactory {
 		return KM.operatorType;
 	}
 
-	public static IConcept Nothing() {
-		// TODO Auto-generated method stub
-		return KM.knowledgeRepository.getNothingType();
-	}
-
 	public void registerInstanceImplementationClass(String concept, Class<?> cls) {
 		instanceImplementationClasses.put(concept, cls);
 		
@@ -1239,6 +1121,74 @@ public class KnowledgeManager implements IKnowledgeFactory {
 		return importedProperty;
 	}
 
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Double() {
+		return KM.doubleType;
+	}
+
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Boolean() {
+		return KM.booleanType;
+	}
+
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Text() {
+		return KM.textType;
+	}
+
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Long() {
+		return KM.longType;
+	}
+
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Integer() {
+		return KM.integerType;
+	}
+	
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Float() {
+		return KM.floatType;
+	}
+
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Number() {
+		return KM.numberType;
+	}
+	
+	public static IConcept Thing() {
+		return KM.knowledgeRepository.getRootConceptType();
+	}
+
+
 	public static IConcept BooleanRanking() {
 		return KM.booleanRankingType;
 	}
@@ -1252,6 +1202,12 @@ public class KnowledgeManager implements IKnowledgeFactory {
 		return KM.ordinalRangeMappingType;
 	}
 	
+
+	public static IConcept Nothing() {
+		// TODO Auto-generated method stub
+		return KM.knowledgeRepository.getNothingType();
+	}
+
 	/**
 	 * Return the literal concept that represents the POD type of the
 	 * object passed. Anything non-POD will return null.

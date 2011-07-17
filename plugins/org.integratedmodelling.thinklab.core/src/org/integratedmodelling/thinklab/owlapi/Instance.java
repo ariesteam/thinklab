@@ -405,8 +405,7 @@ public class Instance extends Knowledge implements IInstance {
 			alist.add(Polylist.list("rdfs:label", label));
 
 		for (IRelationship r : getRelationships()) {
-			if (!KnowledgeManager.get().isPropertyBlacklisted(r.getProperty().toString()))
-				alist.add(((Relationship)r).asList(references));
+			alist.add(((Relationship)r).asList(references));
 		}		
 		
 		return Polylist.PolylistFromArray(alist.toArray());

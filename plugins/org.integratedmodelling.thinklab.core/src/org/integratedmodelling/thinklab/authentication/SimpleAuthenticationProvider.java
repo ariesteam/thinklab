@@ -33,6 +33,7 @@
 package org.integratedmodelling.thinklab.authentication;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,6 +50,7 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IThinklabAuthenticationProvider;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
+import org.integratedmodelling.utils.xml.XML;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
 
@@ -254,33 +256,32 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 	
 	public void write() throws ThinklabException {
 	
-// disable temporarily for debugging
-//		
-//		if (userFile == null) {
-//			userFile = 
-//				new File(LocalConfiguration.getUserConfigDirectory() + 
-//						File.separator + "users.xml");
-//		}
-//		
-//		ArrayList<XML.XmlNode> nodes = new ArrayList<XML.XmlNode>();
-//		for (String user : passwords.keySet()) {
-//			
-//			Properties prop = userProperties.get(user);
-//			ArrayList<XML.XmlNode> pnodes = null;
-//			
-//			if (prop != null && prop.size() > 0) {
-//				pnodes = new ArrayList<XML.XmlNode>();
-//				for (Object o : prop.keySet()) {
-//					pnodes.add(XML.node(o.toString(), prop.getProperty(o.toString())));
-//				}
-//			}
-//			
-//			nodes.add(XML.node("user", pnodes).
-//						attr("name", user).
-//						attr("password", passwords.get(user)));
-//		}
-//		
-//		XML.document(nodes).writeToFile(userFile);
+		// disable temporarily for debugging
+		if (userFile == null) {
+			userFile = 
+				new File(LocalConfiguration.getUserConfigDirectory() + 
+						File.separator + "users.xml");
+		}
+		
+		ArrayList<XML.XmlNode> nodes = new ArrayList<XML.XmlNode>();
+		for (String user : passwords.keySet()) {
+			
+			Properties prop = userProperties.get(user);
+			ArrayList<XML.XmlNode> pnodes = null;
+			
+			if (prop != null && prop.size() > 0) {
+				pnodes = new ArrayList<XML.XmlNode>();
+				for (Object o : prop.keySet()) {
+					pnodes.add(XML.node(o.toString(), prop.getProperty(o.toString())));
+				}
+			}
+			
+			nodes.add(XML.node("user", pnodes).
+						attr("name", user).
+						attr("password", passwords.get(user)));
+		}
+		
+		XML.document(nodes).writeToFile(userFile);
 	}
 	
 }

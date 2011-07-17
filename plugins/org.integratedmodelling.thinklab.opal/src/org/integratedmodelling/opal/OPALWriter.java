@@ -123,12 +123,6 @@ public class OPALWriter {
 			
 			if (cid == null)
 				continue;
-
-			/*
-			 * honor anything that has been blacklisted in the knowledge manager
-			 */
-			if (KnowledgeManager.get().isPropertyBlacklisted(r.getProperty().toString()))
-				continue;
 			
 			/*
 			 * object relationship: write rel node unless implicit, and recurse
