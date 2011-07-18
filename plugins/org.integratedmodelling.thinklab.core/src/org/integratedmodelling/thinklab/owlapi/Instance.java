@@ -21,8 +21,10 @@ package org.integratedmodelling.thinklab.owlapi;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.integratedmodelling.collections.Pair;
@@ -44,6 +46,7 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IConformance;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.utils.NameGenerator;
+import org.semanticweb.owl.model.OWLDescription;
 import org.semanticweb.owl.model.OWLIndividual;
 import org.semanticweb.owl.model.OWLOntology;
 
@@ -54,6 +57,11 @@ import org.semanticweb.owl.model.OWLOntology;
 public class Instance extends Knowledge implements IInstance {
 
 	boolean _initialized = false;
+	
+	/*
+	 * this enables us to compare instances efficiently
+	 */
+	String  _signature = null;
 	
 	/**
 	 * @param i
@@ -163,6 +171,17 @@ public class Instance extends Knowledge implements IInstance {
 		// cross fingers
 		return new Concept(
 			this.entity.asOWLIndividual().getTypes(this.getOWLOntology()).iterator().next().asOWLClass());
+	}
+	
+	public ArrayList<IConcept> getParents() {
+
+		ArrayList<IConcept> ret = new ArrayList<IConcept>();
+		for (Iterator<OWLDescription> it = 
+				this.entity.asOWLIndividual().getTypes(getOWLOntology()).iterator(); 
+			    it.hasNext(); )	{
+			ret.add(new Concept(it.next().asOWLClass()));
+		}
+		return ret;
 	}
 
 	/* (non-Javadoc)
@@ -439,5 +458,56 @@ public class Instance extends Knowledge implements IInstance {
 			throw new ThinklabRuntimeException(e);
 		}
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		
+		boolean ret = false;
+		if (o instanceof Instance) {
+			String s = ((Instance)o)._signature;
+			if (_signature != null && s != null)
+				ret = _signature.equals(s);
+			else {
+				throw new ThinklabRuntimeException("internal: comparing two instances before initialization");
+			}
+		}
+		return ret;
+	}
+	
+	@Override
+	public int hashCode() {
+		if (_signature == null)
+			throw new ThinklabRuntimeException("internal: requesting hashcode from uninitialized instance");
+		return _signature.hashCode();
+	}
+
+	public String computeSignature() throws ThinklabException {
+
+		ArrayList<String> p = new ArrayList<String>();
+		
+		for (IConcept c : getParents()) {
+			p.add(c.toString());
+		}
+		
+		for (IRelationship rel : getRelationships()) {
+			p.add(((Relationship)rel).getSignature());
+		}
+		
+		Collections.sort(p);
+
+		String ret = "";
+		for (String s : p)
+			ret += s;
+				
+		return ret;
+	}
+
+	public String getSignature() {
+		if (_signature == null)
+			throw new ThinklabRuntimeException("internal: requesting hashcode from uninitialized instance");
+		return _signature;
+	}
+	
+	
 	
 }

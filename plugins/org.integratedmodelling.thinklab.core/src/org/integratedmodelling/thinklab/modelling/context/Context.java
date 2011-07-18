@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContextMapper;
@@ -16,7 +17,7 @@ import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 public class Context extends NamespaceQualified implements IContext {
 
 	@Override
-	public Set<IConcept> getObservables() {
+	public Set<IInstance> getObservables() {
 		// TODO Auto-generated method stub
 		return null;
 	}

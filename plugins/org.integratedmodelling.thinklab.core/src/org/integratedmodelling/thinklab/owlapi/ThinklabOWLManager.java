@@ -365,6 +365,9 @@ public class ThinklabOWLManager {
 			ret = instanceImplementations.get(instance.getURI()); 
 		}
 		
+		if (instance._signature == null)
+			instance._signature = instance.computeSignature();
+		
 		instance._initialized = true;
 
 		return ret;

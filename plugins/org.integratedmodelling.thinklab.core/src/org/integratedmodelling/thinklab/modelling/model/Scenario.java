@@ -2,7 +2,7 @@ package org.integratedmodelling.thinklab.modelling.model;
 
 import java.util.Set;
 
-import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
@@ -10,7 +10,7 @@ import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 public class Scenario extends NamespaceQualified implements IScenario {
 
 	@Override
-	public Set<IConcept> getObservables() {
+	public Set<IInstance> getObservables() {
 		// TODO Auto-generated method stub
 		return null;
 	}

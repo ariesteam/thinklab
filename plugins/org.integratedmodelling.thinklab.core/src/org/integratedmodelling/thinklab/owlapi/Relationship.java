@@ -159,4 +159,32 @@ public class Relationship implements IRelationship {
 		}
 		return Polylist.PolylistFromArray(alist.toArray());
 	}
+	
+	public String getSignature() {
+		
+		String ret = "{" + property;
+		
+		if (isObject()) {
+			
+			ret += ((Instance)literal.asObject()).getSignature();
+			
+		} else if (isLiteral()) {
+			
+			// FIXME could be annotation property, too, not sure it gets here
+			if (((Property)property).entity.isOWLDataProperty()) {
+				ret += "," + literal.toString();
+			
+			} else {
+				
+				/* extended literal */
+				String cid = literal.getConcept().toString();
+				ret += ",[" + cid+ "|" + literal.toString() + "]";
+			}
+		} else if (isClassification()) {
+			ret += ",{" + literal.getConcept() + "}";
+		}
+		
+		return ret + "}";
+		
+	}
 }
