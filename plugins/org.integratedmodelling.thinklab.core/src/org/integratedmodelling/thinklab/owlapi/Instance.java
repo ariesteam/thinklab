@@ -452,11 +452,14 @@ public class Instance extends Knowledge implements IInstance {
 
 	@Override
 	public String toString() {
+		
 		try {
-			return getLocalName() + ": " + asList(null);
+			return _signature == null ? 
+					"(uninitialized: " + asList(null).toString() + ")" :
+					_signature;
 		} catch (ThinklabException e) {
 			throw new ThinklabRuntimeException(e);
-		}
+		} 
 	}
 	
 	@Override
