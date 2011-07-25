@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.Hashtable;
 
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.thinklab.SemanticType;
+import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLOntology;

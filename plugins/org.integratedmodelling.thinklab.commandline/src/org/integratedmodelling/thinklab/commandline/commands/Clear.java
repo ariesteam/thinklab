@@ -39,7 +39,6 @@ import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.session.SingleSessionManager;
 
 /**
  * admin command to clear knowledge base (totally or selectively)

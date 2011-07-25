@@ -7,6 +7,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.commandline.CommandLine;
+import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.java.plugin.PluginLifecycleException;
 
@@ -16,6 +17,10 @@ import org.java.plugin.PluginLifecycleException;
  * @author Ferdinando
  *
  */
+@ThinklabCommand(name="pload",description="load the named plugin",
+                 argumentNames="plugin", 
+                 argumentDescriptions="plugin to load (partial names allowed)", 
+                 argumentTypes="thinklab-core:Text")	
 public class PLoad implements ICommandHandler {
 
 	@Override
