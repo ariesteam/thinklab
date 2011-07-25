@@ -9,9 +9,7 @@
 		<library id="config" path="config/" type="resources"/>
 		<library id="clj" path="clj/" type="resources"/>
 		<library id="agg_classes" path="lib/agg_V1622_classes.jar" type="code"/>
-		<library id="ant" path="lib/ant-1.6.5.jar" type="code"/>
-		<library id="antlr" path="lib/antlr-2.7.6.jar" type="code"/>
-		<library id="amtlr-runtime" path="lib/antlr-runtime-3.0.jar" type="code"/>
+
 		<library id="ant-nodeps" path="lib/ant-nodeps-1.6.5.jar" type="code"/>
 		<library id="ant-optional" path="lib/ant-optional-1.5.1.jar" type="code"/>
 		<library id="asm" path="lib/asm.jar" type="code"/>
@@ -21,9 +19,7 @@
 		<library id="bsh" path="lib/bsh_custom.jar" type="code">
 			<export prefix="*"/>
 		</library>
-		<library id="common" path="lib/common-2.2.1.jar" type="code">
-			<export prefix="*"/>
-		</library>
+
 		<library id="commons-beanutils" path="lib/commons-beanutils-1.7.0.jar" type="code">
 			<export prefix="*"/>
 		</library>
@@ -52,6 +48,8 @@
 		<library id="commons-pool" path="lib/commons-pool-1.3.jar" type="code">
 			<export prefix="*"/>
 		</library>
+		
+		
 		<library id="concurrent" path="lib/concurrent-1.3.4.jar" type="code"/>
 		<library id="http" path="lib/http.jar" type="code"/>
 		<library id="icu4j" path="lib/icu4j_3_4.jar" type="code"/>
@@ -66,6 +64,102 @@
 		</library>
 		<library id="jopt-simple" path="lib/jopt-simple-2.4-beta2.jar" type="code"/>
 		<library id="junit" path="lib/junit.jar" type="code">
+			<export prefix="*"/>
+		</library>
+
+		<library id="google.collect" path="lib/com.google.collect_1.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+
+		
+		<library id="guice" path="lib/guice-3.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="javax.inject" path="lib/javax.inject.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="aopalliance" path="lib/aopalliance.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		
+		
+		<library id="emf.common" path="lib/org.eclipse.emf.common_2.7.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="emf.core" path="lib/org.eclipse.emf.ecore_2.7.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="emf.xmi" path="lib/org.eclipse.emf.ecore.xmi_2.7.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="xtext" path="lib/org.eclipse.xtext_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="xbase" path="lib/org.eclipse.xtext.xbase_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="xbase.lib" path="lib/org.eclipse.xtext.xbase.lib_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="xtext.types" path="lib/org.eclipse.xtext.common.types_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="xtext.types.shared" path="lib/org.eclipse.xtext.common.types.shared_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="xtext.ecore" path="lib/org.eclipse.xtext.ecore_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="emf.codegen" path="lib/org.eclipse.emf.codegen_2.6.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="emf.codegen.ecore" path="lib/org.eclipse.emf.codegen.ecore_2.7.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="mwe.core" path="lib/org.eclipse.mwe.core_1.1.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="mwe.utils" path="lib/org.eclipse.mwe.utils_1.1.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="mwe2.language" path="lib/org.eclipse.mwe2.language_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="mwe2.launch" path="lib/org.eclipse.mwe2.launch_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="mwe2.lib" path="lib/org.eclipse.mwe2.lib_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="mwe2.runtime" path="lib/org.eclipse.mwe2.runtime_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="xpand" path="lib/org.eclipse.xpand_1.1.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="xtend" path="lib/org.eclipse.xtend_1.1.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="xtend.typesystem" path="lib/org.eclipse.xtend.typesystem.emf_1.0.1.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="xtext.generator" path="lib/org.eclipse.xtext.generator_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="xtext.util" path="lib/org.eclipse.xtext.util_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="xtext.xtend2" path="lib/org.eclipse.xtext.xtend2_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="xtext.xtend2.lib" path="lib/org.eclipse.xtext.xtend2.lib_2.0.0.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="antlr.runtime" path="lib/org.antlr.runtime_3.2.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		
+		<library id="icu" path="lib/com.ibm.icu_4.4.2.jar" type="code">
 			<export prefix="*"/>
 		</library>
 		<library id="kazuki" path="lib/kazuki.jar" type="code"/>
@@ -94,6 +188,9 @@
 		<library type="code" id="owlapi-util"  path="lib/owlapi-util.jar"/> -->
 
 		<library id="thinklab-api" path="lib/thinklab-api.jar" type="code">
+				<export prefix="*"/>
+		</library>
+		<library id="thinkql" path="lib/thinkql.jar" type="code">
 				<export prefix="*"/>
 		</library>
 		<library id="clojure" path="lib/clojure-1.3.0-beta1.jar" type="code">

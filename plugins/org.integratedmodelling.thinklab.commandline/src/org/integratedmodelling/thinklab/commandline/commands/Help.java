@@ -40,9 +40,15 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
+import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 
-/** the help command for the command-line interface */
+@ThinklabCommand(
+	name="help", description="list commands and their options", 
+	optionalArgumentNames="topic", optionalArgumentDefaultValues="__none", 
+	optionalArgumentDescriptions="command to get help on",
+	optionalArgumentTypes="thinklab-core:Text",
+	optionArgumentLabels="command")
 public class Help implements ICommandHandler {
 
 	public IValue execute(Command command, ISession session) throws ThinklabException {

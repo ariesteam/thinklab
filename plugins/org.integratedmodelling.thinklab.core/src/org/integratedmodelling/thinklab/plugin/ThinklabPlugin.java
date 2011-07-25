@@ -624,7 +624,7 @@ public abstract class ThinklabPlugin extends Plugin
 				
 				for (String ccc : cc) {
 					logger().info("registering class " + cls + " as implementation for instances of type " + ccc);				
-					KnowledgeManager.get().registerInstanceImplementationClass(ccc, cls);
+					Thinklab.get().registerInstanceImplementationClass(ccc, cls);
 				}
 			}
 		}
@@ -708,11 +708,10 @@ public abstract class ThinklabPlugin extends Plugin
 				
 				logger().info("registering class " + cls + " as implementation for literals of type " + concept);
 				
-				KnowledgeManager.get().registerLiteralImplementationClass(concept, cls);
+				Thinklab.get().registerLiteralImplementationClass(concept, cls);
 				if (!xsd.equals(""))
-					
 					logger().info("registering XSD type mapping: " + xsd + " -> " + concept);
-					KnowledgeManager.get().registerXSDTypeMapping(xsd, concept);
+					Thinklab.get().registerXSDTypeMapping(xsd, concept);
 			}
 			
 		}

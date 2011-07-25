@@ -2,7 +2,11 @@ package org.integratedmodelling.thinklab;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
@@ -10,10 +14,17 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.list.Escape;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
+import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.project.ThinklabProjectInstaller;
@@ -33,7 +44,7 @@ import clojure.lang.RT;
  * @author Ferdinando Villa
  *
  */
-public class Thinklab extends ThinklabPlugin {
+public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 
 	public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.core";
 	
@@ -47,6 +58,14 @@ public class Thinklab extends ThinklabPlugin {
 
 	private MetadataService _metadataService;
 
+	/*
+	 * maps XSD URIs to thinklab types for translation of literals.
+	 */
+	private Hashtable<String, String> xsdMappings = new Hashtable<String, String>();
+
+	private Hashtable<String, Class<?>> instanceImplementationClasses = new Hashtable<String, Class<?>>();
+	private Hashtable<String, Class<?>> literalImplementationClasses = new Hashtable<String, Class<?>>();
+	
 	// only for this plugin, very ugly, but we need to access logging etc. before doStart() has
 	// finished and the plugin has been published.
 	static Thinklab _this = null;
@@ -287,6 +306,77 @@ public class Thinklab extends ThinklabPlugin {
 		}.start();
 	}
 
+    /**
+     * Return a new parsed literal of the proper type to handle the passed concept.
+     * The returned literal will need to be initialized by making it parse a 
+     * string value.
+     * 
+     * @param type the concept
+     * @return a raw literal or null if none is configured to handle the concept
+     * @throws ThinklabException if there is ambiguity
+     * 
+     * TODO make it use the declared classes, abolish validators
+     */
+    public ParsedLiteralValue getRawLiteral(IConcept type) throws ThinklabValidationException {
+
+        class vmatch implements ConceptVisitor.ConceptMatcher {
+
+            private Hashtable<String, Class<?>> coll;
+
+            public Class<?> ret = null;
+            
+            public vmatch(Hashtable<String, Class<?>> c) {
+                coll = c;
+            }
+            
+            public boolean match(IConcept c) {
+                ret = coll.get(c.toString());
+                return(ret != null);	
+            }    
+        }
+        
+        vmatch matcher = new vmatch(literalImplementationClasses);
+        
+        IConcept cms = 
+            ConceptVisitor.findMatchUpwards(matcher, type);
+
+        ParsedLiteralValue ret = null;
+        
+        if (cms != null) {
+        	try {
+				ret = (ParsedLiteralValue) matcher.ret.newInstance();
+			} catch (Exception e) {
+				throw new ThinklabValidationException("cannot create literal: " + e.getMessage());
+			}
+        }
+        
+        return ret;
+    }
+
+    
+	/**
+	 * If a mapping between the URI of an XSD type and a thinklab semantic type has been
+	 * defined, return the correspondent type; otherwise return null.
+	 * 
+	 * @param XSDUri
+	 * @return
+	 */
+	public String getXSDMapping(String XSDUri) {
+		return xsdMappings.get(XSDUri);
+	}
+
+	public void registerInstanceImplementationClass(String concept, Class<?> cls) {
+		instanceImplementationClasses.put(concept, cls);
+	}
+	
+	public void registerLiteralImplementationClass(String concept, Class<?> cls) {
+		literalImplementationClasses.put(concept, cls);	
+	}
+	
+	public void registerXSDTypeMapping(String xsd, String type) {
+		xsdMappings.put(xsd, type);	
+	}
+	
 	public static File getPluginLoadDirectory(Plugin plugin) {
 
 		String lf = new File(plugin.getDescriptor().getLocation().getFile()).getAbsolutePath();
@@ -299,5 +389,63 @@ public class Thinklab extends ThinklabPlugin {
 	
 	public Class<?> getProjectLoader(String folder) {
 		return _projectLoaders.get(folder);
+	}
+
+	@Override
+	public IProperty getProperty(String prop) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getConcept(String prop) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getConceptForClass(Class<?> cls) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Class<?> getClassForConcept(IConcept type) {
+		
+        class vmatch implements ConceptVisitor.ConceptMatcher {
+
+            private Hashtable<String, Class<?>> coll;
+            
+            public vmatch(Hashtable<String, Class<?>> c) {
+                coll = c;
+            }
+            
+            public boolean match(IConcept c) {
+                Class<?> cc = coll.get(c.toString());
+                return (cc != null);
+            }    
+        }
+        
+        /*
+         * I may be wrong, but there's no problem finding more than one constructor - just return the
+         * least general one... 
+         * There IS a problem if the ambiguity comes from a logical union - this should be checked, but
+         * not now.
+         */
+        return
+    	  new ConceptVisitor<Class<?>>().findMatchingInMapUpwards(
+    			  instanceImplementationClasses, 
+    			  new vmatch(instanceImplementationClasses), type);
+	}
+
+	@Override
+	public IConcept getLeastGeneralCommonConcept(IConcept... cc) {
+		return _km.getLeastGeneralCommonConcept(Arrays.asList(cc));
+	}
+
+	@Override
+	public IValue validateLiteral(IConcept c, String literal)
+			throws ThinklabException {
+		return _km.validateLiteral(c, literal);
 	}
 }

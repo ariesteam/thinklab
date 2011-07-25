@@ -56,6 +56,7 @@ import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
@@ -206,7 +207,7 @@ public class ThinklabOWLManager {
 					if (cn.isTyped()) {
 
 						OWLDataType dtype = cn.asOWLTypedConstant().getDataType();
-						String tltype = KnowledgeManager.get().getXSDMapping(dtype.getURI().toString());
+						String tltype = Thinklab.get().getXSDMapping(dtype.getURI().toString());
 						
 						if (tltype != null) {
 							val = 
@@ -1149,7 +1150,7 @@ public class ThinklabOWLManager {
 				((OWLDataAllRestriction)r).getFiller();
 			if (range.isDataType()) {
 				OWLDataType dtype = (OWLDataType) range;
-				String tltype = KnowledgeManager.get().getXSDMapping(dtype.getURI().toString());
+				String tltype = Thinklab.get().getXSDMapping(dtype.getURI().toString());
 				if (tltype != null) {
 					try {
 						ret = 
@@ -1168,7 +1169,7 @@ public class ThinklabOWLManager {
 				((OWLDataSomeRestriction)r).getFiller();
 			if (range.isDataType()) {
 				OWLDataType dtype = (OWLDataType) range;
-				String tltype = KnowledgeManager.get().getXSDMapping(dtype.getURI().toString());
+				String tltype = Thinklab.get().getXSDMapping(dtype.getURI().toString());
 				if (tltype != null) {
 					try {
 						ret =

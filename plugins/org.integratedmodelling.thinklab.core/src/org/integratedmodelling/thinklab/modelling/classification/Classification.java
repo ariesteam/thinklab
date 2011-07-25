@@ -350,7 +350,8 @@ public class Classification implements IClassification {
 		boolean isBoolean = false;
 		boolean isInterval = false;
 		boolean isRanking = false;
-		IConcept truecase = null;
+
+		this._trueCategory = null;
 
 		if (Value.isPOD(type))
 			return null;
@@ -402,11 +403,10 @@ public class Classification implements IClassification {
 			// wasn't a no, insert as a higher value.
 			if (i == booleanNarrative.length) {
 				lexicalRank.add(new Pair<IConcept, Integer>(c, i + 1));
-				truecase = c;
+				this._trueCategory = c;
 			}
 
 			isBoolean = true;
-
 		}
 			
 		} else if ( typeIs(Type.ORDERED_RANKING) ||
@@ -492,9 +492,7 @@ public class Classification implements IClassification {
 		this._hasZeroCategory = gotNo || lexicalRank.get(0).getFirst().getLocalName().startsWith("No");
 		if (isBoolean) {
 			_type = Type.BOOLEAN_RANKING;
-		}
-		this._trueCategory = truecase;
-		
+		}		
 
 		return ret;
 }

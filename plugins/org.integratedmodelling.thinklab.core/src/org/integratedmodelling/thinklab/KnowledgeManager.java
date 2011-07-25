@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
@@ -57,7 +56,6 @@ import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
-import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeFactory;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
@@ -97,7 +95,7 @@ import org.semanticweb.owl.vocab.XSDVocabulary;
  * @see CommandDeclaration
  * @see Command
  */
-public class KnowledgeManager implements IKnowledgeFactory {
+public class KnowledgeManager {
 
     /** default core ontologies loaded at startup. Can be changed using thinklab.ontology.default property, but don't. */
 	private static final String DEFAULT_CORE_ONTOLOGIES = 
@@ -192,12 +190,6 @@ public class KnowledgeManager implements IKnowledgeFactory {
 	private HashMap<String, Class<?>> sessionListeners = 
 		new HashMap<String, Class<?>>();
 
-	/*
-	 * maps XSD URIs to thinklab types for translation of literals.
-	 */
-	private Hashtable<String, String> xsdMappings = new Hashtable<String, String>();
-	private Hashtable<String, Class<?>> instanceImplementationClasses = new Hashtable<String, Class<?>>();
-	private Hashtable<String, Class<?>> literalImplementationClasses = new Hashtable<String, Class<?>>();
 
 	private Date start;
 
@@ -408,16 +400,6 @@ public class KnowledgeManager implements IKnowledgeFactory {
 	}
 	
 	
-	/**
-	 * If a mapping between the URI of an XSD type and a thinklab semantic type has been
-	 * defined, return the correspondent type; otherwise return null.
-	 * 
-	 * @param XSDUri
-	 * @return
-	 */
-	public String getXSDMapping(String XSDUri) {
-		return xsdMappings.get(XSDUri);
-	}
 
 	private void initializeThinklabTypes() throws ThinklabValidationException {
 
@@ -484,15 +466,15 @@ public class KnowledgeManager implements IKnowledgeFactory {
 			 * TODO we should also have additional IValue types with validation for negative and 
 			 * positive numbers, URL, ID etc, just like in XSD.
 			 */
-			xsdMappings.put(XSDVocabulary.STRING.toString(),  textTypeID.toString());
-			xsdMappings.put(XSDVocabulary.FLOAT.toString(),   floatTypeID.toString());
-			xsdMappings.put(XSDVocabulary.DOUBLE.toString(),  doubleTypeID.toString());
-			xsdMappings.put(XSDVocabulary.LONG.toString(),    longTypeID.toString());
-			xsdMappings.put(XSDVocabulary.INT.toString(),     integerTypeID.toString());
-			xsdMappings.put(XSDVocabulary.INTEGER.toString(), integerTypeID.toString());
-			xsdMappings.put(XSDVocabulary.SHORT.toString(),   integerTypeID.toString());
-			xsdMappings.put(XSDVocabulary.STRING.toString(),  textTypeID.toString());
-			xsdMappings.put(XSDVocabulary.BOOLEAN.toString(), booleanTypeID.toString());
+			Thinklab.get().registerXSDTypeMapping(XSDVocabulary.STRING.toString(),  textTypeID.toString());
+			Thinklab.get().registerXSDTypeMapping(XSDVocabulary.FLOAT.toString(),   floatTypeID.toString());
+			Thinklab.get().registerXSDTypeMapping(XSDVocabulary.DOUBLE.toString(),  doubleTypeID.toString());
+			Thinklab.get().registerXSDTypeMapping(XSDVocabulary.LONG.toString(),    longTypeID.toString());
+			Thinklab.get().registerXSDTypeMapping(XSDVocabulary.INT.toString(),     integerTypeID.toString());
+			Thinklab.get().registerXSDTypeMapping(XSDVocabulary.INTEGER.toString(), integerTypeID.toString());
+			Thinklab.get().registerXSDTypeMapping(XSDVocabulary.SHORT.toString(),   integerTypeID.toString());
+			Thinklab.get().registerXSDTypeMapping(XSDVocabulary.STRING.toString(),  textTypeID.toString());
+			Thinklab.get().registerXSDTypeMapping(XSDVocabulary.BOOLEAN.toString(), booleanTypeID.toString());
 			
 		} catch (ThinklabRuntimeException e1) {
 			throw new ThinklabValidationException("configuration error: " + e1.getMessage());
@@ -685,96 +667,21 @@ public class KnowledgeManager implements IKnowledgeFactory {
         return ret;
     }
     
-    /**
-     * Return a new parsed literal of the proper type to handle the passed concept.
-     * The returned literal will need to be initialized by making it parse a 
-     * string value.
-     * 
-     * @param type the concept
-     * @return a raw literal or null if none is configured to handle the concept
-     * @throws ThinklabException if there is ambiguity
-     * 
-     * TODO make it use the declared classes, abolish validators
-     */
-    public ParsedLiteralValue getRawLiteral(IConcept type) throws ThinklabValidationException {
 
-        class vmatch implements ConceptVisitor.ConceptMatcher {
-
-            private Hashtable<String, Class<?>> coll;
-
-            public Class<?> ret = null;
-            
-            public vmatch(Hashtable<String, Class<?>> c) {
-                coll = c;
-            }
-            
-            public boolean match(IConcept c) {
-                ret = coll.get(c.toString());
-                return(ret != null);	
-            }    
-        }
-        
-        vmatch matcher = new vmatch(literalImplementationClasses);
-        
-        IConcept cms = 
-            ConceptVisitor.findMatchUpwards(matcher, type);
-
-        ParsedLiteralValue ret = null;
-        
-        if (cms != null) {
-        	try {
-				ret = (ParsedLiteralValue) matcher.ret.newInstance();
-			} catch (Exception e) {
-				throw new ThinklabValidationException("cannot create literal: " + e.getMessage());
-			}
-        }
-        
-        return ret;
-    }
-
-    /**
-     * Return the concept manager that provides instance implementation
-     * @param type
-     * @return
-     * @throws ThinklabException
-     * TODO make it use classes directly, defined through annotations
-     */
     public IInstanceImplementation newInstanceImplementation(IConcept type) throws ThinklabException{
 
-        class vmatch implements ConceptVisitor.ConceptMatcher {
-
-            private Hashtable<String, Class<?>> coll;
-            
-            public vmatch(Hashtable<String, Class<?>> c) {
-                coll = c;
-            }
-            
-            public boolean match(IConcept c) {
-                Class<?> cc = coll.get(c.toString());
-                return (cc != null);
-            }    
-        }
-              
-        IInstanceImplementation ret = null;
-        
-        /*
-         * I may be wrong, but there's no problem finding more than one constructor - just return the
-         * least general one... 
-         * There IS a problem if the ambiguity comes from a logical union - this should be checked, but
-         * not now.
-         */
         Class<?> cms = 
-    	  new ConceptVisitor<Class<?>>().findMatchingInMapUpwards(instanceImplementationClasses, new vmatch(instanceImplementationClasses), type);
+    	  Thinklab.get().getClassForConcept(type);
         
         if (cms != null) {
         	try {
-				ret = (IInstanceImplementation) cms.newInstance();
+				return (IInstanceImplementation) cms.newInstance();
 			} catch (Exception e) {
 				throw new ThinklabValidationException("cannot create implementation: " + e.getMessage());
 			}        	
         }
         
-        return ret;
+        return null;
     }
     
     /* (non-Javadoc)
@@ -978,7 +885,7 @@ public class KnowledgeManager implements IKnowledgeFactory {
 	 */
 	public IValue validateLiteral(IConcept c, String literal) throws ThinklabException {
 		
-		ParsedLiteralValue ret = getRawLiteral(c);
+		ParsedLiteralValue ret = Thinklab.get().getRawLiteral(c);
 		if (ret != null)
 			ret.parseLiteral(literal);
 		else 
@@ -1085,10 +992,7 @@ public class KnowledgeManager implements IKnowledgeFactory {
 		pluginManager = pman;
 	}
 
-	public void registerXSDTypeMapping(String xsd, String type) {
-		xsdMappings.put(xsd, type);	
-	}
-	
+
 	public static void registerPluginListener(IPluginLifecycleListener listener) {
 		pluginListeners.add(listener);
 	}
@@ -1099,15 +1003,6 @@ public class KnowledgeManager implements IKnowledgeFactory {
 
 	public static IConcept OperatorType() {
 		return KM.operatorType;
-	}
-
-	public void registerInstanceImplementationClass(String concept, Class<?> cls) {
-		instanceImplementationClasses.put(concept, cls);
-		
-	}
-	
-	public void registerLiteralImplementationClass(String concept, Class<?> cls) {
-		literalImplementationClasses.put(concept, cls);	
 	}
 
 	public static IConcept LiteralValue() {
