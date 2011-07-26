@@ -44,10 +44,11 @@ import joptsimple.OptionSpecBuilder;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.IParseable;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 
 /**
  * Defines the interface for a command. A CommandDeclaration passed to the KnowledgeManager declares a command that
@@ -147,7 +148,7 @@ public class CommandDeclaration {
 		for (Map.Entry<String, String> e :   command.args.entrySet()) {
             
             argDescriptor ad = findArgument(e.getKey());
-            ParsedLiteralValue validator = null;
+            IValue validator = null;
             boolean ok = true;
             
             try {
@@ -157,7 +158,7 @@ public class CommandDeclaration {
 				ok = false;
 			}
 
-			if (!ok || validator == null)
+			if (!ok || validator == null || !(validator instanceof IParseable))
 				throw new ThinklabValidationException(
 						"cannot find validator for " + 
 						ad.type + 
@@ -166,7 +167,7 @@ public class CommandDeclaration {
 						"'");
 			
 			try {
-				validator.parseLiteral(e.getValue());
+				((IParseable)validator).parse(e.getValue());
 				command.setArgumentValue(e.getKey(), validator);
 			} catch (ThinklabValidationException e1) {
 				throw new ThinklabValidationException(
@@ -188,7 +189,7 @@ public class CommandDeclaration {
             if (ad.type == null)
             	continue;
             
-            ParsedLiteralValue validator = null;
+            IValue validator = null;
             boolean ok = true;
             
             try {
@@ -207,7 +208,7 @@ public class CommandDeclaration {
 						"'");
 			
 			try {
-				validator.parseLiteral(e.getValue());
+				((IParseable)validator).parse(e.getValue());
 				command.setOptionValue(e.getKey(), validator);
 			} catch (ThinklabValidationException e1) {
 				throw new ThinklabValidationException(

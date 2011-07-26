@@ -53,14 +53,15 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.IParseable;
 import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
+import org.integratedmodelling.thinklab.api.runtime.IInterpreter;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
-import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.interfaces.IResourceLoader;
 import org.integratedmodelling.thinklab.interfaces.annotations.DataTransformation;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
@@ -74,7 +75,6 @@ import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 import org.integratedmodelling.thinklab.interfaces.storage.IKnowledgeImporter;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.project.interfaces.IProjectLoader;
 import org.integratedmodelling.thinklab.rest.RESTManager;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
@@ -318,13 +318,12 @@ public abstract class ThinklabPlugin extends Plugin
 		for (Extension ext : getOwnThinklabExtensions("language-binding")) {
 
 			String lang = getParameter(ext, "language");
-			String[] tpacks = getParameters(ext, "task-package");
 			String[] resource = getParameters(ext, "resource");
 			
 			if (!language.equals(lang))
 				continue;
 			
-			Interpreter intp = InterpreterManager.get().newInterpreter(language);
+			IInterpreter intp = InterpreterManager.get().newInterpreter(language);
 
 			for (String r : resource) {
 				
@@ -683,7 +682,7 @@ public abstract class ThinklabPlugin extends Plugin
 		
 		String ipack = this.getClass().getPackage().getName() + ".literals";
 		
-		for (Class<?> cls : MiscUtilities.findSubclasses(ParsedLiteralValue.class, ipack, getClassLoader())) {	
+		for (Class<?> cls : MiscUtilities.findSubclasses(IParseable.class, ipack, getClassLoader())) {	
 			
 			String concept = null;
 			String xsd = null;

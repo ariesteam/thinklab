@@ -48,6 +48,7 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.IParseable;
 import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
@@ -64,7 +65,6 @@ import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.applications.ISessionManager;
-import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.PluginManager;
@@ -885,9 +885,9 @@ public class KnowledgeManager {
 	 */
 	public IValue validateLiteral(IConcept c, String literal) throws ThinklabException {
 		
-		ParsedLiteralValue ret = Thinklab.get().getRawLiteral(c);
-		if (ret != null)
-			ret.parseLiteral(literal);
+		IValue ret = Thinklab.get().getRawLiteral(c);
+		if (ret != null && ret instanceof IParseable)
+			((IParseable)ret).parse(literal);
 		else 
 			throw 
 				new ThinklabValidationException("don't know how to validate a literal of type " + c.toString());

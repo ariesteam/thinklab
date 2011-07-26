@@ -40,36 +40,41 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.ConceptVisitor;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.IExpression;
+import org.integratedmodelling.thinklab.api.runtime.IInterpreter;
+import org.integratedmodelling.thinklab.api.runtime.IInterpreterManager;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.extensions.Interpreter;
 
-public class InterpreterManager {
+public class InterpreterManager implements IInterpreterManager {
 
-	private static InterpreterManager AIF = null;
+	private static IInterpreterManager _this = null;
 
 	// binds a language type to an interpreter
-	Hashtable<String, Interpreter> interpreterFactory = new Hashtable<String, Interpreter>();
+	Hashtable<String, IInterpreter> interpreterFactory = new Hashtable<String, IInterpreter>();
 
 	Hashtable<String, String> interpreterClass = new Hashtable<String, String>();
 	
 	// binds a session ID to an interpreter
-	Hashtable<String, Interpreter> interpreters = new Hashtable<String, Interpreter>();
+	Hashtable<String, IInterpreter> interpreters = new Hashtable<String, IInterpreter>();
 	
-	private Interpreter getInterpreter(IValue algorithm) throws ThinklabResourceNotFoundException {
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.interpreter.IInterpreterManager#getInterpreter(org.integratedmodelling.thinklab.literals.Expression)
+	 */
+	@Override
+	public IInterpreter getInterpreter(IExpression algorithm) throws ThinklabResourceNotFoundException {
 		
 		class AlgMatcher implements ConceptVisitor.ConceptMatcher {
 
-			Hashtable<String, Interpreter> hash;
+			Hashtable<String, IInterpreter> hash;
 
-			public Interpreter plugin = null;
+			public IInterpreter plugin = null;
 
 			public boolean match(IConcept c) {
 				plugin = hash.get(c.toString());
 				return plugin != null;
 			}
 
-			public AlgMatcher(Hashtable<String, Interpreter> h) {
+			public AlgMatcher(Hashtable<String, IInterpreter> h) {
 				hash = h;
 			}
 		}
@@ -84,7 +89,7 @@ public class InterpreterManager {
 					"no language interpreter can be identified for " + c);
 		}
 
-		Interpreter plu = matcher.plugin;
+		IInterpreter plu = matcher.plugin;
 		
 		if (plu == null) {
 			throw new ThinklabResourceNotFoundException(
@@ -94,7 +99,11 @@ public class InterpreterManager {
 		return plu;
 	}
 	
-	public Interpreter newInterpreter(String language) throws ThinklabException {
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.interpreter.IInterpreterManager#newInterpreter(java.lang.String)
+	 */
+	@Override
+	public IInterpreter newInterpreter(String language) throws ThinklabException {
 		
 		String iclass = interpreterClass.get(language);
 		
@@ -110,10 +119,10 @@ public class InterpreterManager {
 			throw new ThinklabValidationException(e);
 		}
 		
-		Interpreter ret = null;
+		IInterpreter ret = null;
 		
 		try {
-			ret = (Interpreter) clazz.newInstance();
+			ret = (IInterpreter) clazz.newInstance();
 		} catch (Exception e) {
 			throw new ThinklabValidationException(e);
 		}
@@ -131,25 +140,17 @@ public class InterpreterManager {
 	 * @param semanticType The class of the algorithm (language interpreted).
 	 * @param pluginID the name of the InterpreterPlugin that handles it.
 	 */
-	public void registerInterpreter(String semanticType, Interpreter interpreter) {
+	public void registerInterpreter(String semanticType, IInterpreter interpreter) {
 		interpreters.put(semanticType, interpreter);			
 	}
 	
-	/**
-	 * Retrieve interpreter for given algorithm, using interpreter registry and class
-	 * of algorithm. The same interpreter may be returned for the same session, as it is
-	 * a Thinklab requirement that operations in the same session are synchronized.
-	 * The IValue containing the algorithm as a string. May have been
-	 * validated or not. The specific IConcept linked to the string will be used to
-	 * select the interpreter.
-	 * @param algorithm 
-	 * @param session
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.interpreter.IInterpreterManager#getInterpreter(org.integratedmodelling.thinklab.literals.Expression, org.integratedmodelling.thinklab.api.runtime.ISession)
 	 */
-	public Interpreter getInterpreter(IValue algorithm,
-			ISession session) throws ThinklabResourceNotFoundException {
+	@Override
+	public IInterpreter getInterpreter(IExpression algorithm, ISession session) throws ThinklabResourceNotFoundException {
 
-		Interpreter ret = interpreters.get(session.getSessionID());
+		IInterpreter ret = interpreters.get(session.getSessionID());
 		
 		if (ret != null)
 			return ret;
@@ -166,25 +167,13 @@ public class InterpreterManager {
 		return ret;
 	}
 	
-	/**
-	 * Call this if you want the interpreter to be renewed within the same
-	 * session.
-	 * 
-	 * @param session
-	 */
-	public void deleteInterpreter(ISession session) {
-		
-		if (interpreters.containsKey(session.getSessionID())) {
-			interpreters.remove(session.getSessionID());
-		}
-	}
 
-	public static InterpreterManager get() {
+	public static IInterpreterManager get() {
 
-		if (AIF == null) {
-			AIF = new InterpreterManager();
+		if (_this == null) {
+			_this = new InterpreterManager();
 		}
-		return AIF;
+		return _this;
 		
 	}
 }

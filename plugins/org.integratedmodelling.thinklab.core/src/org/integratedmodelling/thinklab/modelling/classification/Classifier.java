@@ -8,7 +8,7 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassifier;
-import org.integratedmodelling.thinklab.literals.AlgorithmValue;
+import org.integratedmodelling.thinklab.literals.Expression;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
 
 import clojure.lang.IFn;
@@ -24,7 +24,7 @@ public class Classifier implements IClassifier {
 	Double number = null;
 	IntervalValue interval = null;
 	IConcept concept = null;
-	AlgorithmValue code = null;
+	Expression code = null;
 	String string = null;
 	
 	/*

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.runtime.IInterpreter;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
 import org.integratedmodelling.thinklab.literals.Value;
@@ -41,7 +41,7 @@ public class RunScript implements ITask {
 		/*
 		 * retrieve interpreter for language
 		 */
-		Interpreter intp = InterpreterManager.get().newInterpreter(language);
+		IInterpreter intp = InterpreterManager.get().newInterpreter(language);
 		
 		intp.setSession(session);
 		intp.setInput(session.getInputStream());

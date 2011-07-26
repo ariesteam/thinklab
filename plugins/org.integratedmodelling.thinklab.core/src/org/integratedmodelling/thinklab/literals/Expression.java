@@ -1,5 +1,5 @@
 /**
- * ParsedLiteralValue.java
+ * AlgorithmValue.java
  * ----------------------------------------------------------------------------------
  * 
  * Copyright (C) 2008 www.integratedmodelling.org
@@ -33,31 +33,54 @@
  **/
 package org.integratedmodelling.thinklab.literals;
 
-import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 
-public abstract class ParsedLiteralValue extends Value {
-
-    public ParsedLiteralValue() {
-        super();
+public abstract class Expression extends Value implements IExpression {
+    
+    public String value;
+    
+    protected Expression(IConcept c) {
+    	super(c);
     }
-
-    public ParsedLiteralValue(IConcept c) {
+    
+    public Expression() throws ThinklabException {
+        super(KnowledgeManager.get().getTextType());
+        value = "";
+    }
+    
+    public Expression(IConcept c, String s) throws ThinklabException {
         super(c);
+        value = s;
     }
     
-    public ParsedLiteralValue(String s) throws ThinklabValidationException {
-        parseLiteral(s);
+    @Override
+    public Object clone() {
+    	Expression ret;
+		try {
+			ret = this.getClass().newInstance();
+	    	ret.parse(this.value);
+		} catch (Exception e) {
+			throw new ThinklabRuntimeException(e);
+		}
+    	ret.setConcept(concept);
+    	ret.value = value;
+    	return ret;
     }
-    
-    public abstract void parseLiteral(String s) throws ThinklabValidationException;
-    
-    public boolean isNumber() {
+
+	public boolean isNumber() {
         return false;
     }
 
     public boolean isText() {
-        return false;
+        return true;
+    }
+    
+    public boolean isLiteral() {
+        return true;
     }
 
     public boolean isBoolean() {
@@ -72,8 +95,17 @@ public abstract class ParsedLiteralValue extends Value {
         return false;
     }
     
-    public boolean isLiteral() {
-        return true;
+    public String asText()  {
+		return this.value;
     }
+
+    public String toString() {
+        return value;
+    }
+
+	@Override
+	public Object demote() {
+		return value;
+	}
 
 }

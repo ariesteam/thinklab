@@ -33,13 +33,14 @@
  **/
 package org.integratedmodelling.thinklab.literals;
 
-import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.IParseable;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 
 @LiteralImplementation(concept="thinklab-core:Boolean")
-public class BooleanValue extends ParsedLiteralValue {
+public class BooleanValue extends Value implements IParseable {
 
     public boolean value;
     
@@ -57,8 +58,8 @@ public class BooleanValue extends ParsedLiteralValue {
         value = c;
     }
 
-    public BooleanValue(String s) throws ThinklabValidationException {
-        super(s);
+    public BooleanValue(String s) throws ThinklabException {
+        parse(s);
     }
     
     @Override
@@ -69,7 +70,7 @@ public class BooleanValue extends ParsedLiteralValue {
     }
     
     @Override
-    public void parseLiteral(String s) throws ThinklabValidationException {
+    public void parse(String s) throws ThinklabException {
       value = parseBoolean(s);
     }
     

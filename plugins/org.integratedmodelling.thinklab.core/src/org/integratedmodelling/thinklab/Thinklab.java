@@ -2,9 +2,7 @@ package org.integratedmodelling.thinklab;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -17,14 +15,12 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
-import org.integratedmodelling.thinklab.literals.ParsedLiteralValue;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.project.ThinklabProjectInstaller;
@@ -307,9 +303,9 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	}
 
     /**
-     * Return a new parsed literal of the proper type to handle the passed concept.
+     * Return a new (parseable) literal of the proper type to handle the passed concept.
      * The returned literal will need to be initialized by making it parse a 
-     * string value.
+     * string value. It will implement IParseable, but best to check just in case.
      * 
      * @param type the concept
      * @return a raw literal or null if none is configured to handle the concept
@@ -317,7 +313,7 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
      * 
      * TODO make it use the declared classes, abolish validators
      */
-    public ParsedLiteralValue getRawLiteral(IConcept type) throws ThinklabValidationException {
+    public IValue getRawLiteral(IConcept type) throws ThinklabValidationException {
 
         class vmatch implements ConceptVisitor.ConceptMatcher {
 
@@ -340,11 +336,11 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
         IConcept cms = 
             ConceptVisitor.findMatchUpwards(matcher, type);
 
-        ParsedLiteralValue ret = null;
+        IValue ret = null;
         
         if (cms != null) {
         	try {
-				ret = (ParsedLiteralValue) matcher.ret.newInstance();
+				ret = (IValue) matcher.ret.newInstance();
 			} catch (Exception e) {
 				throw new ThinklabValidationException("cannot create literal: " + e.getMessage());
 			}

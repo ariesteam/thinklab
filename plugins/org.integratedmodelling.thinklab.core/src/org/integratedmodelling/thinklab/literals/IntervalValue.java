@@ -40,6 +40,7 @@ import java.io.StringReader;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.IParseable;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 
@@ -49,7 +50,7 @@ import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementa
  *
  */
 @LiteralImplementation(concept="thinklab-core:NumericInterval")
-public class IntervalValue extends ParsedLiteralValue {
+public class IntervalValue extends Value implements IParseable {
 
 	double lowerBound = 0.0;
 	double upperBound = 0.0;
@@ -66,8 +67,8 @@ public class IntervalValue extends ParsedLiteralValue {
 		}
 	}
 	
-	public IntervalValue(String intvs) throws ThinklabValidationException {
-		parseLiteral(intvs);
+	public IntervalValue(String intvs) throws ThinklabException {
+		parse(intvs);
 	}
 
 	public IntervalValue(Double left, Double right, boolean leftOpen, boolean rightOpen) {
@@ -82,7 +83,7 @@ public class IntervalValue extends ParsedLiteralValue {
 	}
 	
 	@Override
-	public void parseLiteral(String s) throws ThinklabValidationException {
+	public void parse(String s) throws ThinklabException {
 
 		StreamTokenizer scanner = new StreamTokenizer(new StringReader(s));
 		int token = 0;

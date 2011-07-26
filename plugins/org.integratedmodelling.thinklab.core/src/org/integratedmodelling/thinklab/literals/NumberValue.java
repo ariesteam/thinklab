@@ -35,6 +35,7 @@ package org.integratedmodelling.thinklab.literals;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.IParseable;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
@@ -47,7 +48,7 @@ import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementa
  * @author Ferdinando Villa
  */
 @LiteralImplementation(concept="thinklab-core:Number")
-public class NumberValue extends ParsedLiteralValue {	
+public class NumberValue extends Value implements IParseable {	
 	
     public double value;
     
@@ -82,7 +83,7 @@ public class NumberValue extends ParsedLiteralValue {
      * @throws ThinklabNoKMException
      */
     public NumberValue(String s) throws ThinklabException {
-        super(s);
+        parse(s);
     }
     
     public NumberValue (long l) {
@@ -173,7 +174,7 @@ public class NumberValue extends ParsedLiteralValue {
     }
     
     @Override
-    public void parseLiteral(String s) throws ThinklabValidationException {
+    public void parse(String s) throws ThinklabException {
     	
     	Double v = null;
 		try {
