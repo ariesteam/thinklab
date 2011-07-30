@@ -1,14 +1,14 @@
 package org.integratedmodelling.thinklab.modelling.model;
 
 import java.util.Collection;
+import java.util.Map;
 
-import org.eclipse.emf.ecore.EFactory;
-import org.eclipse.emf.ecore.EPackage;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.interpreter.ModelGenerator;
+import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.list.Polylist;
-import org.integratedmodelling.thinkQL.impl.ThinkQLFactoryImpl;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
 import org.integratedmodelling.thinklab.api.modelling.IAnnotation;
@@ -28,6 +28,7 @@ import com.google.inject.Injector;
 public class ModelManager implements IModelManager, IModelFactory {
 
 	private static ModelManager _this = null;
+	private static Namespace _defaultNS = null;
 	
 	/**
 	 * Return the singleton model manager. Use injection to modularize the
@@ -128,7 +129,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 		return null;
 	}
 
-
 	@Override
 	public IContext getCoverage(IModel model, IKBox kbox, ISession session) {
 		// TODO Auto-generated method stub
@@ -149,26 +149,25 @@ public class ModelManager implements IModelManager, IModelFactory {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public INamespace loadFile(String resourceId) throws ThinklabException {
 
-//	    <package 
-//	       uri = "http://www.integratedmodelling.org/ThinkQL" 
-//	       class = "org.integratedmodelling.thinkQL.ThinkQLPackage"
-//	       genModel = "org/integratedmodelling/ThinkQL.genmodel" /> 
-//		EPackage.Registry.INSTANCE.put(
-//				"http://www.integratedmodelling.org/ThinkQL", 
-//				new EPackageDescriptor.Dynamic(element, ATT_LOCATION));
-
+		INamespace ret = null;
 		
-		Injector injector = Guice.createInjector(new ModellingModule());
-		ModelGenerator mg = injector.getInstance(ModelGenerator.class);
-
+		if (resourceId.endsWith(".tql")) {
 		
-		INamespace ns = mg.load(resourceId);
+			// TODO separate into expressions with form reader, read one by one,
+			// store everything in model map.
+			
+			Injector injector = Guice.createInjector(new ModellingModule());
+			ModelGenerator mg = injector.getInstance(ModelGenerator.class);
+			ret = mg.load(resourceId);
+			
+		} else if (resourceId.endsWith(".clj")) {
+			
+		}
 		
-		return ns;
+		return ret;
 	}
 
 	@Override
@@ -215,21 +214,53 @@ public class ModelManager implements IModelManager, IModelFactory {
 
 	
 	@Override
-	public INamespace createNamespace(String namespace, Polylist ontology) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public INamespace createNamespace(String namespace, String ontologyId, Polylist ontology) {
 
-	@Override
-	public IModel createModel(String namespace, Polylist ontology) {
-		// TODO Auto-generated method stub
-		return null;
+		Namespace ret = new Namespace(namespace, ontologyId);
+		
+		if (ontology != null) {
+			ret.defineOntology(ontology);
+		}
+		
+		try {
+			ret.initialize();
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+
+		return ret;
 	}
 
 	@Override
 	public INamespace getDefaultNamespace() {
+		
+		// TODO/FIXME this should be linked to the current session; at this point no 
+		// concurrent runtime should use the default namespace, but there is
+		// no way to check.
+		if (_defaultNS == null) {
+			_defaultNS = new Namespace("user", "user.cspace");
+		}
+		return _defaultNS;
+	}
+
+	@Override
+	public void register(IModelObject arg, String arg1, INamespace arg2) {
 		// TODO Auto-generated method stub
-		return null;
+		
+	}
+
+	@Override
+	public IModel createModel(INamespace ns, SemanticType modelType, Map<String, Object> def) {
+
+		IModel ret = null;
+		
+		if (modelType.equals(IModelFactory.C_MODEL)) {
+			
+		} else if (modelType.equals(IModelFactory.C_MEASUREMENT)) {
+			
+		}
+		
+		return ret;
 	}
 
 }

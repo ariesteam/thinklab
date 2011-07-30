@@ -39,6 +39,9 @@ import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
+/**
+ * @deprecated there's a newer version in thinklab-api that needs to be integrated
+ */
 public class ValueList {
 
 	String sValue = null;

@@ -34,7 +34,7 @@ import org.restlet.service.MetadataService;
 import clojure.lang.RT;
 
 /**
- * Activating this plugin means loading the knowledge manager, effectively initializing the
+ * Activating this plugin means loading the knowledge manager, effectively booting the
  * Thinklab system.
  * 
  * @author Ferdinando Villa
@@ -389,14 +389,12 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 
 	@Override
 	public IProperty getProperty(String prop) {
-		// TODO Auto-generated method stub
-		return null;
+		return _km.retrieveProperty(prop);
 	}
 
 	@Override
 	public IConcept getConcept(String prop) {
-		// TODO Auto-generated method stub
-		return null;
+		return _km.retrieveConcept(prop);
 	}
 
 	@Override

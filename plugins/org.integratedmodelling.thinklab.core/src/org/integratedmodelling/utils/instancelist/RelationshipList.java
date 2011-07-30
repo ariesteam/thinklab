@@ -30,6 +30,7 @@
  * @date      Jan 17, 2008
  * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License v3
  * @link      http://www.integratedmodelling.org
+
  **/
 package org.integratedmodelling.utils.instancelist;
 
@@ -39,6 +40,9 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 
+/**
+ * @deprecated there's a newer version in thinklab-api that needs to be integrated
+ */
 public class RelationshipList {
 
 	IProperty property;

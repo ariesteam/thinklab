@@ -11,7 +11,7 @@ import com.google.inject.AbstractModule;
  * 
  * Will bind all Thinklab managers and factories referenced in other
  * external implementations to their implementations here. All factories
- * that are singletons are proxied by deferring objects.
+ * that are singletons are proxied by delegated objects.
  * 
  * @author Ferd
  *

@@ -51,6 +51,7 @@ import org.integratedmodelling.utils.NameGenerator;
  * provides a styled translator to XML.
  * 
  * @author Ferdinando Villa
+ * @deprecated there's a newer version in thinklab-api that needs to be integrated
  *
  */
 public class InstanceList {
