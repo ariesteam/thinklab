@@ -166,8 +166,12 @@ public class Namespace implements INamespace {
 
 	@Override
 	public long getLastModification() {
-		// TODO Auto-generated method stub
-		return 0;
+		long r1 = ontology.getLastModificationDate();
+		/*
+		 * TODO
+		 */
+		long r2 = /* resource.getLastModificationDate(); */0;
+		return r1 < r2 ? r1 : r2;
 	}
 
 	@Override

@@ -40,7 +40,6 @@ import jline.Terminal;
 
 import org.apache.commons.logging.Log;
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
@@ -64,11 +63,7 @@ public class Shell {
 	}
 	
 	public Shell() {
-		try {
-			this.session = new Session();
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
+		this.session = new Session();
 	}
 	
 	public void printStatusMessage() throws IOException {

@@ -1,11 +1,13 @@
 package org.integratedmodelling.thinklab.modelling.model;
 
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.interpreter.ModelGenerator;
 import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.list.Polylist;
@@ -16,10 +18,17 @@ import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
+import org.integratedmodelling.thinklab.api.modelling.classification.IClassification;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelManager;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
+import org.integratedmodelling.thinklab.api.modelling.observation.IUnit;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
+import org.integratedmodelling.thinklab.modelling.model.implementation.ClassificationModel;
+import org.integratedmodelling.thinklab.modelling.model.implementation.MeasurementModel;
+import org.integratedmodelling.thinklab.modelling.model.implementation.Model;
+import org.integratedmodelling.thinklab.modelling.model.implementation.RankingModel;
+import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 
 import com.google.inject.Guice;
@@ -29,6 +38,20 @@ public class ModelManager implements IModelManager, IModelFactory {
 
 	private static ModelManager _this = null;
 	private static Namespace _defaultNS = null;
+	
+	private Hashtable<String, IModel> modelsById = new Hashtable<String, IModel>();
+	private Hashtable<String, IScenario> scenariosById = new Hashtable<String, IScenario>();
+	private Hashtable<String, IContext> contextsById = new Hashtable<String, IContext>();
+	private Hashtable<String, IAgentModel> agentsById = new Hashtable<String, IAgentModel>();
+	private Hashtable<String, IAnnotation> annotationsById = new Hashtable<String, IAnnotation>();
+	private Hashtable<String, INamespace> namespacesById = new Hashtable<String, INamespace>();
+
+	/*
+	 * we put all model observable instances here.
+	 */
+	ISession _session = null;
+	ModelMap _map = null;
+	
 	
 	/**
 	 * Return the singleton model manager. Use injection to modularize the
@@ -45,15 +68,10 @@ public class ModelManager implements IModelManager, IModelFactory {
 	}
 	
 	private ModelManager() {
+		_session = new Session();
+		_map = new ModelMap();
 	}
 	
-	
-	
-	public IAnnotation retrieveAnnotation(String s) {
-		// TODO Auto-generated method stub
-		return getAnnotation(s);
-	}
-
 	public IAnnotation requireAnnotation(String s) throws ThinklabException {
 		IAnnotation ret = getAnnotation(s);
 		if (ret == null)
@@ -172,38 +190,32 @@ public class ModelManager implements IModelManager, IModelFactory {
 
 	@Override
 	public IAnnotation getAnnotation(String s) {
-		// TODO Auto-generated method stub
-		return null;
+		return annotationsById.get(s);
 	}
 
 	@Override
 	public IModel getModel(String s) {
-		// TODO Auto-generated method stub
-		return null;
+		return modelsById.get(s);
 	}
 
 	@Override
 	public IAgentModel getAgentModel(String s) {
-		// TODO Auto-generated method stub
-		return null;
+		return agentsById.get(s);
 	}
 
 	@Override
 	public IScenario getScenario(String s) {
-		// TODO Auto-generated method stub
-		return null;
+		return scenariosById.get(s);
 	}
 
 	@Override
 	public IContext getContext(String s) {
-		// TODO Auto-generated method stub
-		return null;
+		return contextsById.get(s);
 	}
 
 	@Override
 	public INamespace getNamespace(String ns) {
-		// TODO Auto-generated method stub
-		return null;
+		return namespacesById.get(ns);
 	}
 
 	@Override
@@ -246,7 +258,15 @@ public class ModelManager implements IModelManager, IModelFactory {
 	@Override
 	public void register(IModelObject arg, String arg1, INamespace arg2) {
 		// TODO Auto-generated method stub
-		
+		if (arg instanceof IModel) {
+			modelsById.put(arg2.getNamespace() + "/" + arg1, (IModel) arg);
+		} else if (arg instanceof IAgentModel) {
+			agentsById.put(arg2.getNamespace() + "/" + arg1, (IAgentModel) arg);
+		} else if (arg instanceof IContext) {
+			contextsById.put(arg2.getNamespace() + "/" + arg1, (IContext) arg);
+		} else if (arg instanceof IScenario) {
+			scenariosById.put(arg2.getNamespace() + "/" + arg1, (IScenario) arg);			
+		}
 	}
 
 	@Override
@@ -255,12 +275,27 @@ public class ModelManager implements IModelManager, IModelFactory {
 		IModel ret = null;
 		
 		if (modelType.equals(IModelFactory.C_MODEL)) {
-			
-		} else if (modelType.equals(IModelFactory.C_MEASUREMENT)) {
-			
+			ret = new Model(ns).define(def);
+		} else if (modelType.equals(IModelFactory.C_MEASUREMENT)) {			
+			ret = new MeasurementModel(ns, (IUnit) def.get(K_UNIT)).define(def);
+		} else if (modelType.equals(IModelFactory.C_RANKING)) {			
+			ret = new RankingModel(ns).define(def);
+		} else if (modelType.equals(IModelFactory.C_CLASSIFICATION)) {			
+			ret = new ClassificationModel(ns, createClassification(def.get(K_CLASSIFICATION))).define(def);
 		}
 		
 		return ret;
+	}
+
+	private IClassification createClassification(Object object) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IUnit parseUnit(String unit) throws ThinklabValidationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

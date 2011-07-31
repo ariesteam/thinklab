@@ -48,6 +48,7 @@ import java.util.UUID;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.list.Polylist;
@@ -98,10 +99,14 @@ public class Session implements ISession {
 
 	private IUserModel userModel;
 	
-	public Session() throws ThinklabException {
+	public Session()  {
 		
 		/* create the new Ontology with a temp name */
-		ontology = KnowledgeManager.get().getKnowledgeRepository().createTemporaryOntology(NameGenerator.newName("ses"));
+		try {
+			ontology = KnowledgeManager.get().getKnowledgeRepository().createTemporaryOntology(NameGenerator.newName("ses"));
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 		/* we want to be able to reload stuff fresh and give it different names if so */
 		userModel = createUserModel();
 	}

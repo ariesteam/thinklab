@@ -61,6 +61,10 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 
 	private Hashtable<String, Class<?>> instanceImplementationClasses = new Hashtable<String, Class<?>>();
 	private Hashtable<String, Class<?>> literalImplementationClasses = new Hashtable<String, Class<?>>();
+
+	// reverse - implementation to (declared) concept. One day I'll start using those delicious
+	// bidirectional maps and get it over with.
+	private Hashtable<Class<?>, String> instanceImplementationConcepts = new Hashtable<Class<?>, String>();
 	
 	// only for this plugin, very ugly, but we need to access logging etc. before doStart() has
 	// finished and the plugin has been published.
