@@ -6,10 +6,10 @@ import java.util.Collection;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 
@@ -29,7 +29,7 @@ public class Namespace implements INamespace {
 	public static final String RANGE_ANNOTATION = "modeltypes:hasRangeDescription";
 	public static final String EDITABLE_ANNOTATION = "modeltypes:isEditable";
 	
-	private ArrayList<Polylist> body = new ArrayList<Polylist>();
+	private ArrayList<IList> body = new ArrayList<IList>();
 	private String description;
 	private IOntology ontology;
 
@@ -46,7 +46,7 @@ public class Namespace implements INamespace {
 	 * this should be capable of adding new concept hierarchies and instances
 	 * defined in Clojure.
 	 */
-	public void defineOntology(Polylist o) {
+	public void defineOntology(IList o) {
 		body.add(o);
 	}
 
@@ -68,7 +68,7 @@ public class Namespace implements INamespace {
 		/*
 		 * add any concept definition we have in the form.
 		 */
-		for (Polylist o : body) {
+		for (IList o : body) {
 			createConcept(o, null);
 		}
 	}
@@ -78,7 +78,7 @@ public class Namespace implements INamespace {
 		return "[" + namespace + " -> " + ontology + "]";
 	}
 
-	private void createConcept(Polylist list, ArrayList<IConcept> parent) throws ThinklabException {
+	private void createConcept(IList list, ArrayList<IConcept> parent) throws ThinklabException {
 
 		ArrayList<IConcept> root = new ArrayList<IConcept>();
 		Object[] objs = list.array();
@@ -88,8 +88,8 @@ public class Namespace implements INamespace {
 			Object o = objs[i];
 
 				// must be a concept
-			if (o instanceof Polylist) {
-				createConcept((Polylist)o, root);
+			if (o instanceof IList) {
+				createConcept((IList)o, root);
 			} else if (o.toString().startsWith(":")) {
 
 				/*

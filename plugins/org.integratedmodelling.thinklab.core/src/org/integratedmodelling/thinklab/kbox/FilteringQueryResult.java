@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 /**
@@ -45,7 +45,7 @@ public abstract class FilteringQueryResult extends ProxyQueryResult {
 	}
 
 	@Override
-	public Polylist getResultAsList(int n, HashMap<String, String> references)
+	public IList getResultAsList(int n, HashMap<String, String> references)
 			throws ThinklabException {
 		return super.getResultAsList(_keep.get(n), references);
 	}

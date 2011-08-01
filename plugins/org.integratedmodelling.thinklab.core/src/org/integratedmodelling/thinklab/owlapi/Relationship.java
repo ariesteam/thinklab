@@ -38,12 +38,13 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.lang.IList;
 
 /**
  * <p>A Relationship connects a "source" concept to another Concept, object (Instance), or Literal through a Property.
@@ -126,7 +127,7 @@ public class Relationship implements IRelationship {
 		return literal.getConcept();
 	}
 
-	public Polylist asList(HashMap<String, String> references) throws ThinklabException {
+	public IList asList(HashMap<String, String> references) throws ThinklabException {
 
 		ArrayList<Object> alist = new ArrayList<Object>();
 		
@@ -152,12 +153,12 @@ public class Relationship implements IRelationship {
 					cid += "#" + lid;
 				
 				Object[] llist ={ cid, literal.toString() };
-				alist.add(Polylist.PolylistFromArray(llist));
+				alist.add(PolyList.fromArray(llist));
 			}
 		} else if (isClassification()) {
 			alist.add(literal.getConcept());
 		}
-		return Polylist.PolylistFromArray(alist.toArray());
+		return PolyList.fromArray(alist.toArray());
 	}
 	
 	public String getSignature() {

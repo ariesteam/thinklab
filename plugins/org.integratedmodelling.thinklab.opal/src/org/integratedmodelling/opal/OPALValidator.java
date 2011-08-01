@@ -41,7 +41,7 @@ import java.util.Stack;
 import org.apache.log4j.Logger;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.opal.profile.OPALProfile;
 import org.integratedmodelling.opal.profile.OPALProfileFactory;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -49,6 +49,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.utils.KeyValueMap;
 import org.integratedmodelling.utils.xml.XMLDocument;
@@ -72,11 +73,11 @@ public class OPALValidator {
 
     
 	/* table of references between ID and instances to resolve internal references */
-	HashMap<String, Polylist> reftable;
+	 HashMap<String, IList> reftable;
 	
 	public OPALValidator() {
 
-		reftable = new HashMap<String, Polylist>();
+		reftable = new HashMap<String, IList>();
 	}
 	
 	private boolean contextMatch(String currentContext, String contextToMatch) {
@@ -205,9 +206,9 @@ public class OPALValidator {
 	 * @throws OPALValidationException
 	 * @throws ThinklabException
 	 */
-	public Collection<Polylist> validateToLists(URL opalDocument) throws OPALValidationException, ThinklabException {
+	public Collection<IList> validateToLists(URL opalDocument) throws OPALValidationException, ThinklabException {
 		
-		ArrayList<Polylist> ret = new ArrayList<Polylist>();
+		ArrayList<IList> ret = new ArrayList<IList>();
 
 		// loop through child nodes
 		Node child;
@@ -240,7 +241,7 @@ public class OPALValidator {
 	 * @return
 	 * @throws ThinklabException mostly if there are validation errors or others
 	 */
-	private Polylist validateInstanceToList(Node n, Stack<String> contextStack)  throws ThinklabException {
+	private IList validateInstanceToList(Node n, Stack<String> contextStack)  throws ThinklabException {
 
 		ArrayList<Object> alist = new ArrayList<Object>();
 
@@ -324,11 +325,11 @@ public class OPALValidator {
 		}
 		
 		if (label != null) {
-			alist.add(Polylist.list("rdfs:label", label));
+			alist.add(PolyList.list("rdfs:label", label));
 		}
 		
 		if (description != null) {
-			alist.add(Polylist.list("rdfs:comment", label));
+			alist.add(PolyList.list("rdfs:comment", label));
 		}
 		
 		/* scan subnodes. Must identify properties, either data or other. 
@@ -345,12 +346,12 @@ public class OPALValidator {
 				 /* filter out annotations */
 				 if (profile.isLabelTag(child.getNodeName())) {
 					 
-					 alist.add(Polylist.list("rdfs:label", child.getTextContent()));
+					 alist.add(PolyList.list("rdfs:label", child.getTextContent()));
 					 continue;
 					 
 				 } else if (profile.isDescriptionTag(child.getNodeName())) {
 					 
-					alist.add(Polylist.list("rdfs:comment", child.getTextContent()));
+					alist.add(PolyList.list("rdfs:comment", child.getTextContent()));
 					continue;
 				 }
 				 
@@ -372,13 +373,13 @@ public class OPALValidator {
 					 contextStack.push(contextStack.peek() + "/" + conc.toString());
 					 					 
 					 /* validate instance */
-					 Polylist linst = validateInstanceToList(child, contextStack);
+					 IList linst = validateInstanceToList(child, contextStack);
 
 					 contextStack.pop();
 					 contextStack.pop();
 					 
 					 /* add to results */
-					 alist.add(Polylist.list(prop, linst));
+					 alist.add(PolyList.list(prop, linst));
 
 				 } else {
 
@@ -398,7 +399,7 @@ public class OPALValidator {
                      if (child.getFirstChild() != null) {
                          
 					    /* must link to instances or references */
-                        ArrayList<Polylist> aa = new ArrayList<Polylist>();
+                        ArrayList<IList> aa = new ArrayList<IList>();
                         Node cchild;
                         Node nnext = (Node)child.getFirstChild();
                         while ((cchild = nnext) != null) {
@@ -410,8 +411,8 @@ public class OPALValidator {
                         	}
                         }
                         
-                        for (Polylist l : aa) {
-                            alist.add(Polylist.list(prop, l));
+                        for (IList l : aa) {
+                            alist.add(PolyList.list(prop, l));
                         }
                      }
 				 }
@@ -437,17 +438,17 @@ http://ecoinformatics.uvm.edu/jira/browse/TLC-23
 
 		 contextStack.pop();
 			 
-		return Polylist.PolylistFromArray(alist.toArray());
+		return PolyList.fromArray(alist.toArray());
 	}
 	
-	private Polylist validateLiteralProperty(IProperty p, String value) {
+	private IList validateLiteralProperty(IProperty p, String value) {
 		ArrayList<Object> alist = new ArrayList<Object>();
 
         // no validation at all actually. We let the list validator do the rest.
 		alist.add(p);
 		alist.add(value);
 				
-		return Polylist.PolylistFromArray(alist.toArray());
+		return PolyList.fromArray(alist.toArray());
 	}
 	
 	private IInstance validateInstance(Node inst, ISession sess, IKBox kbox) throws ThinklabException {
@@ -458,7 +459,7 @@ http://ecoinformatics.uvm.edu/jira/browse/TLC-23
 		
 		contextStack.push("");
 		
-		Polylist ls = validateInstanceToList(inst, contextStack);
+		IList ls = validateInstanceToList(inst, contextStack);
 
         if (sess != null) {
         	ret = sess.createObject(ls);

@@ -40,13 +40,14 @@ import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.utils.instancelist.InstanceList;
@@ -73,7 +74,7 @@ public class VirtualSessionKBox implements IKBox {
 	
 	public IQuery parseQuery(String toEval) throws ThinklabException {
 
-		Polylist l = Polylist.parse(toEval);
+		IList l = PolyList.parse(toEval);
 		return new Constraint(l);
 	}
 	
@@ -82,7 +83,7 @@ public class VirtualSessionKBox implements IKBox {
 		return null;
 	}
 
-	public Polylist getObjectAsListFromID(String id,
+	public IList getObjectAsListFromID(String id,
 			HashMap<String, String> refTable) throws ThinklabException {
 		
 		IInstance inst = session.requireObject(id);
@@ -100,7 +101,7 @@ public class VirtualSessionKBox implements IKBox {
 		return session.requireObject(id);
 	}
 
-	public String storeObject(Polylist list, String id, Map<String, IValue> metadata, ISession s) throws ThinklabException {
+	public String storeObject(IList list, String id, Map<String, IValue> metadata, ISession s) throws ThinklabException {
 
 		IInstance ninst = session.createObject(list);
 		instances.add(ninst);
@@ -114,7 +115,7 @@ public class VirtualSessionKBox implements IKBox {
 		return object.getLocalName();
 	}
 
-	public String storeObject(Polylist list, String iid, Map<String, IValue> metadata,
+	public String storeObject(IList list, String iid, Map<String, IValue> metadata,
 			ISession session, HashMap<String, String> refTable) throws ThinklabException {
 
 		/*

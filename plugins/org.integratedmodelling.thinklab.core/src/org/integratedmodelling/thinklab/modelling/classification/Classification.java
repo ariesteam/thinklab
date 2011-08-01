@@ -13,9 +13,9 @@ import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassification;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassifier;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
@@ -74,7 +74,7 @@ public class Classification implements IClassification {
 	// --- public API below -----------------------------------------
 	
 	@Override
-	public Polylist conceptualize() throws ThinklabException {
+	public IList conceptualize() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

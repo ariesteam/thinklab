@@ -7,10 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 import org.integratedmodelling.utils.WildcardMatcher;
@@ -64,14 +65,14 @@ public class ConceptLister implements IListingProvider {
 				ArrayList<Object> list = new ArrayList<Object>();
 				
 				for (Object conc : ret) {
-					Polylist pl = 
+					IList pl = 
 						getHierarchyList((IConcept) conc, new HashSet<IConcept>());
 
 					if (pl != null)
 						list.add(pl);
 				}
 				
-				Polylist ls = Polylist.PolylistFromArrayList(list);
+				IList ls = PolyList.fromCollection(list);
 				ret = Collections.singletonList(ls);
 				
 			} else {
@@ -97,7 +98,7 @@ public class ConceptLister implements IListingProvider {
 		return list;
 	}
 
-	private Polylist getHierarchyList(IConcept conc, HashSet<IConcept> hs) {
+	private IList getHierarchyList(IConcept conc, HashSet<IConcept> hs) {
 
 		ArrayList<Object> list = new ArrayList<Object>();
 		
@@ -121,7 +122,7 @@ public class ConceptLister implements IListingProvider {
 		}
 		
 		
-		return Polylist.PolylistFromArrayList(list);
+		return PolyList.fromCollection(list);
 	}
 
 

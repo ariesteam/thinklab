@@ -33,12 +33,13 @@
  **/
 package org.integratedmodelling.utils;
 
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.lang.IList;
 
 /**
- * Holds a polylist and facilitates creation of objects in list representation. Nothing fancy but
- * saves time. For the way polylist is implemented, I can't make it a list itself, so it's a 
+ * Holds a PolyList and facilitates creation of objects in list representation. Nothing fancy but
+ * saves time. For the way PolyList is implemented, I can't make it a list itself, so it's a 
  * little messier than it could be.
  * 
  * @author Ferdinando Villa
@@ -46,55 +47,55 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
  */
 public class KList {
 
-	Polylist list = null;
+	IList list = null;
 
 	public KList(String type) {
-		list = Polylist.list(type);
+		list = PolyList.list(type);
 	}
 
 	public KList(String type, String name) {
-		list = Polylist.list(type + "#" + name);
+		list = PolyList.list(type + "#" + name);
 	}
 
 	public void addLiteralProperty(IProperty p, String literal) {
-		list = list.append(Polylist.list(Polylist.list(p, literal)));
+		list = list.append(PolyList.list(PolyList.list(p, literal)));
 	}
 	
-	public void addObjectProperty(IProperty p, Polylist object) {
-		list = list.append(Polylist.list(Polylist.list(p, object)));
+	public void addObjectProperty(IProperty p, PolyList object) {
+		list = list.append(PolyList.list(PolyList.list(p, object)));
 	}
 		
 	public void addReference(IProperty p, String id) {
-		 list = list.append(Polylist.list(Polylist.list(p, Polylist.list("#" + id))));
+		 list = list.append(PolyList.list(PolyList.list(p, PolyList.list("#" + id))));
 	}
 	
-	public Polylist list() {
+	public IList list() {
 		return list;
 	}
 
-	public void addObjectProperty(String property, Polylist object) {
-		list = list.append(Polylist.list(Polylist.list(property, object)));
+	public void addObjectProperty(String property, PolyList object) {
+		list = list.append(PolyList.list(PolyList.list(property, object)));
 	}
 
 	public void addReference(String property, String name) {
-		list = list.append(Polylist.list(Polylist.list(property, Polylist.list("#" + name))));
+		list = list.append(PolyList.list(PolyList.list(property, PolyList.list("#" + name))));
 		
 	}
 
 	public void addLiteralProperty(String property, String literal) {
-		list = list.append(Polylist.list(Polylist.list(property, literal)));
+		list = list.append(PolyList.list(PolyList.list(property, literal)));
 	}
 
-	public void addElement(Polylist ccl) {
-		list = list.append(Polylist.list(ccl));
+	public void addElement(PolyList ccl) {
+		list = list.append(PolyList.list(ccl));
 	}
 
 	public void addDescription(String comment) {
-		list = list.append(Polylist.list("rdfs:comment", comment));
+		list = list.append(PolyList.list("rdfs:comment", comment));
 	}
 	
 	public void addLabel(String label) {
-		list = list.append(Polylist.list("rdfs:label", label));
+		list = list.append(PolyList.list("rdfs:label", label));
 	}
 
 }

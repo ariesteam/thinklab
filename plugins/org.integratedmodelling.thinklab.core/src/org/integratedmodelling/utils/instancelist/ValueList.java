@@ -35,9 +35,9 @@ package org.integratedmodelling.utils.instancelist;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.lang.IList;
 
 /**
  * @deprecated there's a newer version in thinklab-api that needs to be integrated
@@ -45,13 +45,13 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 public class ValueList {
 
 	String sValue = null;
-	Polylist lValue = null;
+	IList lValue = null;
 	IConcept cValue = null;
 	
 	public ValueList(Object o) throws ThinklabException {
 		
-		if (o instanceof Polylist) {
-			lValue = (Polylist)o;
+		if (o instanceof IList) {
+			lValue = (IList)o;
 		} else if (o instanceof IConcept) {
 			cValue = (IConcept)o;
 		} else {

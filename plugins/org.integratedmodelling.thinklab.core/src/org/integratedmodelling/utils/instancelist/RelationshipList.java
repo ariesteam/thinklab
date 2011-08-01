@@ -35,10 +35,10 @@
 package org.integratedmodelling.utils.instancelist;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.lang.IList;
 
 /**
  * @deprecated there's a newer version in thinklab-api that needs to be integrated
@@ -48,7 +48,7 @@ public class RelationshipList {
 	IProperty property;
 	ValueList value;
 	
-	public RelationshipList(Polylist polylist) throws ThinklabException {
+	public RelationshipList(IList polylist) throws ThinklabException {
 		
 		Object o = polylist.first();
 		if (o instanceof IProperty)
@@ -56,7 +56,7 @@ public class RelationshipList {
 		else
 			property = KnowledgeManager.get().requireProperty(o.toString());
 		
-		value = new ValueList(polylist.second());
+		value = new ValueList(polylist.nth(1));
 		
 	}
 

@@ -40,8 +40,8 @@ import java.io.StringReader;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.IParseable;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 
 /**

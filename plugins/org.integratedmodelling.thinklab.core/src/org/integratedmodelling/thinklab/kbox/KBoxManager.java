@@ -48,7 +48,7 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabStorageException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
@@ -57,6 +57,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.extensions.KBoxHandler;
@@ -165,19 +166,19 @@ public class KBoxManager implements IKBox {
 		}
 	}
 	
-	public void validateSchema(Polylist schema) {
+	public void validateSchema(IList schema) {
 		
 	}
 	
-	public Polylist getDefaultSchema() {
-		return Polylist.list(
+	public IList getDefaultSchema() {
+		return PolyList.list(
 				IQueryResult.ID_FIELD_NAME, 
 				IQueryResult.ID_FIELD_NAME, 
 				IQueryResult.LABEL_FIELD_NAME, 
 				IQueryResult.DESCRIPTION_FIELD_NAME);
 	}
 	
-	public HashMap<String, IValue> createResult(Polylist schema, Polylist results) throws ThinklabException {
+	public HashMap<String, IValue> createResult(IList schema, IList results) throws ThinklabException {
 		
 		HashMap<String, IValue> ret = new HashMap<String, IValue>();
 
@@ -209,9 +210,9 @@ public class KBoxManager implements IKBox {
 		return ret;
 	}
 
-	public Polylist parseSchema(Properties properties) throws ThinklabValidationException {
+	public IList parseSchema(Properties properties) throws ThinklabValidationException {
 		
-		Polylist ret = getDefaultSchema();
+		IList ret = getDefaultSchema();
 		
 		if (properties != null) {
 
@@ -447,10 +448,10 @@ public class KBoxManager implements IKBox {
 	}
 
 	@Override
-	public Polylist getObjectAsListFromID(String id,
+	public IList getObjectAsListFromID(String id,
 			HashMap<String, String> refTable) throws ThinklabException {
 		
-		Polylist ret = null;
+		IList ret = null;
 		for (IKBox k : kBoxes.values()) {
 			ret = k.getObjectAsListFromID(id, refTable);
 			if (ret != null)
@@ -511,14 +512,14 @@ public class KBoxManager implements IKBox {
 	}
 
 	@Override
-	public String storeObject(Polylist list, String id,
+	public String storeObject(IList list, String id,
 			Map<String, IValue> metadata, ISession session)
 			throws ThinklabException {
 		throw new ThinklabStorageException("global kbox is read only");
 	}
 
 	@Override
-	public String storeObject(Polylist list, String id,
+	public String storeObject(IList list, String id,
 			Map<String, IValue> metadata, ISession session,
 			HashMap<String, String> refTable) throws ThinklabException {
 		throw new ThinklabStorageException("global kbox is read only");

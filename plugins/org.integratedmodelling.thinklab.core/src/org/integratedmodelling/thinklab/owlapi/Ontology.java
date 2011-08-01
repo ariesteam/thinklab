@@ -50,13 +50,13 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.Path;
 import org.semanticweb.owl.io.OWLXMLOntologyFormat;
@@ -309,9 +309,9 @@ public class Ontology implements IOntology {
 
 
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#createInstance(java.lang.String, org.integratedmodelling.utils.Polylist)
+	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#createInstance(java.lang.String, org.integratedmodelling.utils.IList)
 	 */
-	public IInstance createInstance(String ID, Polylist list)
+	public IInstance createInstance(String ID, IList list)
 			throws ThinklabException {
 		
 		ArrayList<ReferenceRecord> reftable = new ArrayList<ReferenceRecord>();	
@@ -323,9 +323,9 @@ public class Ontology implements IOntology {
 
 
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#createInstance(org.integratedmodelling.utils.Polylist)
+	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#createInstance(org.integratedmodelling.utils.IList)
 	 */
-	public IInstance createInstance(Polylist list) throws ThinklabException {
+	public IInstance createInstance(IList list) throws ThinklabException {
 		
 		ArrayList<ReferenceRecord> reftable = new ArrayList<ReferenceRecord>();	
 		IInstance ret  = createInstanceInternal(list, reftable);
@@ -334,7 +334,7 @@ public class Ontology implements IOntology {
 		return ret;
 	}
 	
-	IInstance createInstanceInternal(String ID, Polylist list,
+	IInstance createInstanceInternal(String ID, IList list,
 			Collection<ReferenceRecord> reftable) throws ThinklabException {
 
 		IInstance ret = null;
@@ -347,8 +347,8 @@ public class Ontology implements IOntology {
 						.getConceptFromListObject(o, this);
 				ret = createInstance(ID, cc.getFirst());
 
-			} else if (o instanceof Polylist) {
-				ThinklabOWLManager.get().interpretPropertyList((Polylist) o,
+			} else if (o instanceof IList) {
+				ThinklabOWLManager.get().interpretPropertyList((IList) o,
 						this, ret, reftable);
 			} 
 		}
@@ -543,7 +543,7 @@ public class Ontology implements IOntology {
 		else return null;
 	}
 
-	public IInstance createInstanceInternal(Polylist list,
+	public IInstance createInstanceInternal(IList list,
 			Collection<ReferenceRecord> reftable) throws ThinklabException {
 		
 		IInstance ret = null;
@@ -565,8 +565,8 @@ public class Ontology implements IOntology {
 						cc.getSecond() == null ? getUniqueObjectName("ins") : cc.getSecond(),  
 						cc.getFirst());		
 				
-			} else if (o instanceof Polylist) {
-				ThinklabOWLManager.get().interpretPropertyList((Polylist)o, this, ret, reftable);
+			} else if (o instanceof IList) {
+				ThinklabOWLManager.get().interpretPropertyList((IList)o, this, ret, reftable);
 			}
 			
 		}
@@ -615,7 +615,7 @@ public class Ontology implements IOntology {
 	}
 	
 	@Override
-	public IConcept createConcept(Polylist list) throws ThinklabException {
+	public IConcept createConcept(IList list) throws ThinklabException {
 		
 		Concept ret = null;
 		String id = null;
@@ -625,7 +625,7 @@ public class Ontology implements IOntology {
 		
 		for (Object o : list.array()) {
 			
-			if (o instanceof Polylist) {
+			if (o instanceof IList) {
 			} else {
 			
 				String s = o.toString();
@@ -684,9 +684,9 @@ public class Ontology implements IOntology {
 //				}				
 //				ret = new Concept(newcl);
 //
-//			} else if (o instanceof Polylist) {
+//			} else if (o instanceof IList) {
 //				
-//				Polylist pl = (Polylist)o;
+//				IList pl = (IList)o;
 //				
 //				/*
 //				 * must be a property and a value, instance list, or list of values to restrict it with.
@@ -767,8 +767,8 @@ public class Ontology implements IOntology {
 //					 * pl.second should be an instance or a list that specifies an instance.
 //					 */
 //					Instance inst = null;
-//					if (pl.second() instanceof Polylist) {
-//						inst = (Instance) this.createInstance((Polylist) pl.second());
+//					if (pl.second() instanceof IList) {
+//						inst = (Instance) this.createInstance((IList) pl.second());
 //					} else if (pl.second() instanceof Instance) {
 //						inst = (Instance)pl.second();
 //					} else {

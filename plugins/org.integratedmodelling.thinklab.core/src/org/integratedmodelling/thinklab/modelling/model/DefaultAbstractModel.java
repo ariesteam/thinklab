@@ -2,6 +2,7 @@ package org.integratedmodelling.thinklab.modelling.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -118,7 +119,16 @@ public abstract class DefaultAbstractModel extends NamespaceQualified implements
 	}
 	
 	// --- private methods ---------------------------------------------------
-
+	public IModel define(Object ... objects) {
+		
+		HashMap<String, Object> def= new HashMap<String, Object>();
+		for (int i = 0; i < objects.length; i += 2) {
+			def.put(objects[i].toString(), objects[i+1]);
+		}		
+		return define(def);
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public IModel define(Map<String, Object> def) {
 

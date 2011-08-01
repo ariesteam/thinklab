@@ -1,8 +1,8 @@
 package org.integratedmodelling.thinklab.implementations.operators;
 
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.lang.IOperator;
 import org.integratedmodelling.thinklab.literals.NumberValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 

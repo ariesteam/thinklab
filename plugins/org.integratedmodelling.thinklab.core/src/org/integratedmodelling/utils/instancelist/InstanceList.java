@@ -37,11 +37,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.utils.NameGenerator;
 
 /**
@@ -58,7 +59,7 @@ public class InstanceList {
 
 	Object[] array = null;
 	
-	public InstanceList(Polylist list) {
+	public InstanceList(IList list) {
 		array = list.array();
 	}
 
@@ -70,8 +71,8 @@ public class InstanceList {
 		return ss.length == 2 ? ss[1] : NameGenerator.newName("inst");
 	}
 
-	public Polylist asList() {
-		return Polylist.PolylistFromArray(array);
+	public IList asList() {
+		return PolyList.fromArray(array);
 	}
 	
 	public IConcept getDirectType() throws ThinklabException {
@@ -92,9 +93,9 @@ public class InstanceList {
 		String ret = null;
 		
 		for (int i = 1; i < array.length; i++) {
-			if (array[i] instanceof Polylist && 
-					((Polylist)array[i]).first().toString().equals("rdfs:label") ) {
-				ret = ((Polylist)array[i]).second().toString();
+			if (array[i] instanceof IList && 
+					((IList)array[i]).first().toString().equals("rdfs:label") ) {
+				ret = ((IList)array[i]).nth(1).toString();
 				break;
 			}	
 		}
@@ -106,9 +107,9 @@ public class InstanceList {
 		IInstanceImplementation ret = null;
 		
 		for (int i = 1; i < array.length; i++) {
-			if (array[i] instanceof Polylist && 
-					((Polylist)array[i]).first().toString().equals("#") ) {
-				ret = (IInstanceImplementation) ((Polylist)array[i]).second();
+			if (array[i] instanceof IList && 
+					((IList)array[i]).first().toString().equals("#") ) {
+				ret = (IInstanceImplementation) ((IList)array[i]).nth(1);
 				break;
 			}	
 		}
@@ -120,9 +121,9 @@ public class InstanceList {
 		String ret = null;
 		
 		for (int i = 1; i < array.length; i++) {
-			if (array[i] instanceof Polylist && 
-					((Polylist)array[i]).first().toString().equals("rdfs:comment") ) {
-				ret = ((Polylist)array[i]).second().toString();
+			if (array[i] instanceof IList && 
+					((IList)array[i]).first().toString().equals("rdfs:comment") ) {
+				ret = ((IList)array[i]).nth(1).toString();
 				break;
 			}	
 		}
@@ -134,12 +135,12 @@ public class InstanceList {
 		ArrayList<RelationshipList> ret = new ArrayList<RelationshipList>();
 		
 		for (int i = 1; i < array.length; i++) {
-			if (array[i] instanceof Polylist) {
-				String s = ((Polylist)array[i]).first().toString();
+			if (array[i] instanceof IList) {
+				String s = ((IList)array[i]).first().toString();
 				
 				if (!(s.equals("rdsf:label") || 
 					  s.equals("rdfs.comment"))) {
-					ret.add(new RelationshipList((Polylist)array[i]));
+					ret.add(new RelationshipList((IList)array[i]));
 				}
 				
 			}
@@ -150,7 +151,7 @@ public class InstanceList {
 	public boolean hasLiteralContent() {
 
 		for (int i = 1; i < array.length; i++)
-			if (!(array[i] instanceof Polylist))
+			if (!(array[i] instanceof IList))
 				return true;
 		return false;
 	}
@@ -158,7 +159,7 @@ public class InstanceList {
 	public Object getLiteralContent() {
 
 		for (int i = 1; i < array.length; i++)
-			if (!(array[i] instanceof Polylist))
+			if (!(array[i] instanceof IList))
 				return array[i];
 		return null;
 
@@ -176,18 +177,18 @@ public class InstanceList {
 		IConcept ret = null;
 		
 		for (int i = 1; i < array.length; i++) {
-			if (array[i] instanceof Polylist) {
-				String s = ((Polylist)array[i]).first().toString();
+			if (array[i] instanceof IList) {
+				String s = ((IList)array[i]).first().toString();
 				
 				if (s.equals(relationship)) {
 					
-					Object o = ((Polylist)array[i]).second();
+					Object o = ((IList)array[i]).nth(1);
 					
 					if (o instanceof IValue) {
 						ret = ((IValue)o).getConcept();
-					} else if (o instanceof Polylist) {
+					} else if (o instanceof IList) {
 						/* instance specification */
-						ret = resolveToConcept(((Polylist)o).first());
+						ret = resolveToConcept(((IList)o).first());
 					} else {
 						ret = resolveToConcept(o);
 					}

@@ -39,6 +39,7 @@ public class FormReader {
 			throw new ThinklabIOException(e);
 		}
 	}
+	
 	private boolean quoted(int ch) {
 		
 		boolean wasEscape = inEscape;

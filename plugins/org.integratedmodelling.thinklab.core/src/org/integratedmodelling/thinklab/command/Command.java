@@ -38,7 +38,6 @@ import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.literals.Value;
 
@@ -199,12 +198,7 @@ public class Command {
         
         validate();
     }
-    
-    public Polylist asList() {
-        Polylist ret = new Polylist();
-        return ret;
-    }
-    
+
     public IValue getOption(String option) {
     	return opts == null ? null : optValues.get(option);
     }

@@ -51,10 +51,9 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.IParseable;
 import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
@@ -65,6 +64,8 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IParseableKnowledge;
@@ -559,7 +560,7 @@ public class ThinklabOWLManager {
 	}
 
 	
-	public void interpretPropertyList (Polylist l, Ontology ont, IInstance inst, Collection<ReferenceRecord> reftable) throws ThinklabException {
+	public void interpretPropertyList (IList l, Ontology ont, IInstance inst, Collection<ReferenceRecord> reftable) throws ThinklabException {
 		
 		/*
 		 * List must contain exactly two elements
@@ -585,15 +586,15 @@ public class ThinklabOWLManager {
 				/* filter out comment and label without looking for the annotation */
 				if (o1.toString().equals("rdfs:comment")) {
 					
-					inst.addDescription(l.second().toString());
+					inst.addDescription(l.nth(1).toString());
 					return;
 					
 				} else if (o1.toString().equals("rdfs:label")) {
 					
-					inst.addLabel(l.second().toString());
+					inst.addLabel(l.nth(1).toString());
 					return;
 				} else if (o1.toString().equals("@")) {
-					((Instance)inst).setImplementation((IInstanceImplementation) l.second());
+					((Instance)inst).setImplementation((IInstanceImplementation) l.nth(1));
 					((Instance)inst)._initialized = true;
 					return;
 				} else if (o1.toString().equals("#")) {
@@ -611,7 +612,7 @@ public class ThinklabOWLManager {
 					}
 					
 					setInstanceImplementation((Instance) inst, impl);	
-					((IParseableKnowledge)impl).parseSpecifications(inst, l.second().toString());
+					((IParseableKnowledge)impl).parseSpecifications(inst, l.nth(1).toString());
 					((Instance)inst)._initialized = true;
 					return;
 				} else if (o1.toString().startsWith(":")) {
@@ -622,7 +623,7 @@ public class ThinklabOWLManager {
 					 * same thread where we created the description.
 					 */
 					String fieldName = o1.toString().substring(1);
-					addReflectedField(inst.getURI(), fieldName, l.second());
+					addReflectedField(inst.getURI(), fieldName, l.nth(1));
 					return;
 				}
 				
@@ -639,11 +640,11 @@ public class ThinklabOWLManager {
 		 * second element can either be a list, or something that evaluates to a
 		 * valid string - a String, Concept, or IValue
 		 */
-		Object o2 = l.second();
+		Object o2 = l.nth(1);
 		
-		if (o2 instanceof Polylist) {
+		if (o2 instanceof IList) {
 			
-			Polylist lvalue = (Polylist)o2;
+			IList lvalue = (IList)o2;
 			
 			/* 
 			 * must have at least one element or we don't know what to do
@@ -661,7 +662,7 @@ public class ThinklabOWLManager {
 			}
 			
 			if (lvalue.length() < 2 || 
-				(lvalue.length() >= 2 && lvalue.second() instanceof Polylist)) {
+				(lvalue.length() >= 2 && lvalue.nth(1) instanceof IList)) {
 
 				/* 
 				 * it's an object definition: create the object and set it as value. 
@@ -679,7 +680,7 @@ public class ThinklabOWLManager {
 				/*
 				 * second element must be a string or an IValue
 				 */
-				Object second = lvalue.second();
+				Object second = lvalue.nth(1);
 				
 				if (!(second instanceof String || second instanceof IValue)) {
 					throw new ThinklabValidationException("invalid literal specification in list: " + second);
@@ -731,7 +732,7 @@ public class ThinklabOWLManager {
 			}
 			
 			IKBox kbox = KBoxManager.get().requireGlobalKBox(up[0]);
-			Polylist list = kbox.getObjectAsListFromID(up[1], null);
+			IList list = kbox.getObjectAsListFromID(up[1], null);
 			IInstance linked = ont.createInstance(list); 
 			// add a marker to notify where we come from, so we can serialize back to a URI
 			linked.addLiteralRelationship(KnowledgeManager.get().getImportedProperty(), uri);
@@ -1034,7 +1035,7 @@ public class ThinklabOWLManager {
 					null);
 		
 		if (cn != null)
-			ret.add(new Constraint(Polylist.parse(cn)));
+			ret.add(new Constraint(PolyList.parse(cn)));
 	}
 	
 	/*

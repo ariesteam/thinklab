@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +27,7 @@ public class ResultHolder {
 	Object            _objResult = null;
 	ArrayList<String> _urnResult = null;
 	ArrayList<String> _urnTypes  = null;
-	private Polylist _lstResult;
+	private IList _lstResult;
 	
 	
 	/**
@@ -155,7 +155,7 @@ public class ResultHolder {
 
 	}
 
-	public void setList(Polylist o) {
+	public void setList(IList o) {
 		_lstResult = o;
 		resultType = DefaultRESTHandler.LIST;
 	}

@@ -34,7 +34,7 @@
 package org.integratedmodelling.thinklab.extensions;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 /**
@@ -47,9 +47,9 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
  */
 public interface KnowledgeImporter {
 	
-	public abstract Polylist exportKnowledge(String sourceURL, ISession session) throws ThinklabException;
+	public abstract IList exportKnowledge(String sourceURL, ISession session) throws ThinklabException;
 
-	public abstract void importKnowledge(String targetURL, Polylist knowledge) throws ThinklabException;
+	public abstract void importKnowledge(String targetURL, IList knowledge) throws ThinklabException;
 	
 //	public abstract void transferKnowledge(String sourceURL, String targetURL, ISession session) throws ThinklabException;
 

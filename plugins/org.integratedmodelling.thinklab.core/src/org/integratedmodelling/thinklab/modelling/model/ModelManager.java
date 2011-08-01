@@ -10,8 +10,8 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.interpreter.ModelGenerator;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
 import org.integratedmodelling.thinklab.api.modelling.IAnnotation;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
@@ -226,7 +226,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 
 	
 	@Override
-	public INamespace createNamespace(String namespace, String ontologyId, Polylist ontology) {
+	public INamespace createNamespace(String namespace, String ontologyId, IList ontology) {
 
 		Namespace ret = new Namespace(namespace, ontologyId);
 		

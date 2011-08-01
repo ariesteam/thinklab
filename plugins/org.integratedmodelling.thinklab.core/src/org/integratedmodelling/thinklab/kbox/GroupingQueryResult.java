@@ -6,11 +6,11 @@ import java.util.HashMap;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 /**
@@ -159,7 +159,7 @@ public class GroupingQueryResult implements IQueryResult {
 	}
 
 	@Override
-	public Polylist getResultAsList(int n, HashMap<String, String> references)
+	public IList getResultAsList(int n, HashMap<String, String> references)
 			throws ThinklabException {
 		if (_grouped.get(n).getSecond().size() > 1)
 			
@@ -178,7 +178,7 @@ public class GroupingQueryResult implements IQueryResult {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public Polylist getResultAsList(int n, int idx, HashMap<String, String> references)
+	public IList getResultAsList(int n, int idx, HashMap<String, String> references)
 			throws ThinklabException {
 		int oid = _grouped.get(n).getSecond().get(idx);
 		return _result.getResultAsList(oid, references);

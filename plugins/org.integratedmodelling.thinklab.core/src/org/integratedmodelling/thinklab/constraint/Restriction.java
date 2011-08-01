@@ -39,17 +39,18 @@ import java.util.Collection;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.IOperator;
 import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.lang.IOperator;
 
 /**
  * Constraints are made up of restrictions. The Restriction class provides an API to easily build constraints
@@ -463,7 +464,7 @@ public class Restriction  {
 		return ret;
 	}
 
-	public static Restriction parseList(Polylist content) throws ThinklabException {
+	public static Restriction parseList(IList content) throws ThinklabException {
 
 		Restriction ret = new Restriction();
 
@@ -483,7 +484,7 @@ public class Restriction  {
 					Object[] def = content.array();
 					for (int i = 1; i < def.length; i++) {
 						
-						if (! (def[i] instanceof Polylist)) {
+						if (! (def[i] instanceof IList)) {
 							throw new ThinklabValidationException(
 									"restriction: " +
 									def[i] + 
@@ -491,7 +492,7 @@ public class Restriction  {
 									ret.connector + " " +
 									"list must be restrictions");
 						}
-						ret.siblings.add(parseList((Polylist)def[i]));
+						ret.siblings.add(parseList((IList)def[i]));
 					}
 		} else {
 			
@@ -524,8 +525,8 @@ public class Restriction  {
 				start ++;
 				Object rest = objs[start];
 
-				if (rest instanceof Polylist) {
-					ret.constraint = new Constraint((Polylist)rest);
+				if (rest instanceof IList) {
+					ret.constraint = new Constraint((IList)rest);
 				} else {
 					
 					/*
@@ -551,7 +552,7 @@ public class Restriction  {
 		return ret;
 	}
 
-	public Polylist asList() {
+	public IList asList() {
 
 		ArrayList<Object> ret = new ArrayList<Object>();
 		
@@ -580,7 +581,7 @@ public class Restriction  {
 			}
 		}
 		
-		return Polylist.PolylistFromArray(ret.toArray());
+		return PolyList.fromArray(ret.toArray());
 	}
 	
 	private boolean matchConnector(IInstance c) throws ThinklabException {

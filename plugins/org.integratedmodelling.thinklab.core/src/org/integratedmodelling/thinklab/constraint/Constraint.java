@@ -39,12 +39,13 @@ import java.util.Collection;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.LogicalConnector;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.lang.IList;
 
 
 /**
@@ -115,7 +116,7 @@ public class Constraint implements IQuery {
 	 * Create a constraint from a list.
 	 * @param l
 	 */
-	public Constraint(Polylist l)  throws ThinklabException {
+	public Constraint(IList l)  throws ThinklabException {
 		createFromList(l);
 	}
 	
@@ -138,10 +139,10 @@ public class Constraint implements IQuery {
    
 	/** 
 	 * Define constraint from a list. 
-	 * @param l a Polylist with the constraint definition.
+	 * @param l a IList with the constraint definition.
 	 * @throws ThinklabConstraintValidationException 
 	 */
-	private void createFromList(Polylist l) throws ThinklabException {
+	private void createFromList(IList l) throws ThinklabException {
 		
 		/* just in case */
 		
@@ -149,16 +150,16 @@ public class Constraint implements IQuery {
 		ArrayList<Restriction> restrictions = new ArrayList<Restriction>();
 		
 		for (int i = 0; i < def.length; i++) {
-			if (def[i] instanceof Polylist) {
+			if (def[i] instanceof IList) {
 
-				Polylist content = (Polylist)def[i];
+				IList content = (IList)def[i];
 				
 				if (content.length() == 2 && content.first().toString().toLowerCase().equals("id")) {
-					id = content.second().toString();
+					id = content.nth(1).toString();
 				} else if (content.length() == 2 && content.first().toString().toLowerCase().equals("description")) {
-					description = content.second().toString();
+					description = content.nth(1).toString();
 				} else if (content.length() == 2 && content.first().toString().toLowerCase().equals("kbox")) {
-					kbox = content.second().toString();
+					kbox = content.nth(1).toString();
 				} else {
 					restrictions.add(Restriction.parseList(content));
 				}
@@ -186,7 +187,7 @@ public class Constraint implements IQuery {
 		}
 	}
 
-	public Polylist asList() {
+	public IList asList() {
 		
 		ArrayList<Object> def = new ArrayList<Object>();
 		
@@ -194,19 +195,19 @@ public class Constraint implements IQuery {
 		
 		
 		if (id != null) {
-			def.add(Polylist.list("id", description));
+			def.add(PolyList.list("id", description));
 		}
 		if (description != null) {
-			def.add(Polylist.list("description", description));
+			def.add(PolyList.list("description", description));
 		}
 		if (kbox != null) {
-			def.add(Polylist.list("kBox", description));
+			def.add(PolyList.list("kBox", description));
 		}
 		
 		if (body != null)
 			def.add(body.asList());
 		
-		return Polylist.PolylistFromArray(def.toArray());
+		return PolyList.fromArray(def.toArray());
 	}
 	
 	/**
@@ -484,7 +485,7 @@ public class Constraint implements IQuery {
 
 	public void parse(String query) throws ThinklabValidationException {
 		try {
-			createFromList(Polylist.parse(query));
+			createFromList(PolyList.parse(query));
 		} catch (Exception e) {
 			throw new ThinklabValidationException(e);
 		}
@@ -494,7 +495,7 @@ public class Constraint implements IQuery {
 
 		Constraint ret = new Constraint();
 		try {
-			ret.createFromList(Polylist.parse(query));
+			ret.createFromList(PolyList.parse(query));
 		} catch (Exception e) {
 			throw new ThinklabValidationException(e);
 		}

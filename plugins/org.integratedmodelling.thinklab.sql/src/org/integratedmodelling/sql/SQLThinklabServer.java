@@ -55,7 +55,7 @@ import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.list.Escape;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.ConceptVisitor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
@@ -65,6 +65,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
@@ -1648,9 +1649,9 @@ public abstract class SQLThinklabServer {
 	 * @return a list that defines the instance, or null.
 	 * @throws ThinklabStorageException
 	 */
-	public Polylist retrieveObjectAsList(String id) throws ThinklabStorageException {
+	public IList retrieveObjectAsList(String id) throws ThinklabStorageException {
 		
-		Polylist ret = null;
+		IList ret = null;
 	
 		HashMap<String, String> refs = new HashMap<String, String>();
 	
@@ -1678,10 +1679,10 @@ public abstract class SQLThinklabServer {
 	 * @return a list that defines the instance, or null.
 	 * @throws ThinklabStorageException
 	 */
-	public Polylist retrieveObjectAsList(String id, HashMap<String, String> references) 
+	public IList retrieveObjectAsList(String id, HashMap<String, String> references) 
 	throws ThinklabStorageException {	
 
-		Polylist ret = null;
+		IList ret = null;
 	
 		try {
 			ret = retrieveObjectAsListInternal(id, references);
@@ -1692,14 +1693,14 @@ public abstract class SQLThinklabServer {
 		return ret;
 	}
 	
-	public Polylist retrieveObjectAsListInternal(String id, HashMap<String, String> refs) 
+	public IList retrieveObjectAsListInternal(String id, HashMap<String, String> refs) 
 	throws ThinklabStorageException, SQLException {	
 		
 		ArrayList<Object> alist = new ArrayList<Object>();
 
 		if (refs != null && refs.get(databaseIDString + "#" + id) != null) {
 			/* just return the reference */
-			return Polylist.list("#" + id);
+			return PolyList.list("#" + id);
 		} 
 
 		/*
@@ -1724,7 +1725,7 @@ public abstract class SQLThinklabServer {
 			 * communicate the external reference to the outer level
 			 */
 			try {
-				return Polylist.list(new URI(extUri));
+				return PolyList.list(new URI(extUri));
 			} catch (URISyntaxException e) {
 				throw new ThinklabStorageException("sql: stored URI is invalid: " + extUri);
 			}
@@ -1757,10 +1758,10 @@ public abstract class SQLThinklabServer {
 			String descr = res.getString(0, 4);
 			
 			if (!label.equals(""))
-				alist.add(Polylist.list("rdfs:label", label));
+				alist.add(PolyList.list("rdfs:label", label));
 
 			if (!descr.equals(""))
-				alist.add(Polylist.list("rdfs:comment", descr));
+				alist.add(PolyList.list("rdfs:comment", descr));
 			
 			
 			/* use catalog to determine which literals to look into */
@@ -1787,13 +1788,13 @@ public abstract class SQLThinklabServer {
 							+ id + "';");
 
 					for (int drow = 0; drow < rsq.nRows(); drow++) {
-						alist.add(Polylist.list(pr, 
-								Polylist.list(rsq.getString(drow, 2), rsq.getString(drow, 1))));
+						alist.add(PolyList.list(pr, 
+								PolyList.list(rsq.getString(drow, 2), rsq.getString(drow, 1))));
 						/* 
 						 * just the property and the value seem to work with the improved
 						 * list reader.
 						 */
-						//alist.add(Polylist.list(pr, rsq.getString(drow, 1)));
+						//alist.add(IList.list(pr, rsq.getString(drow, 1)));
 					}
 				}
 
@@ -1807,17 +1808,17 @@ public abstract class SQLThinklabServer {
 							+ rst.getString(row, 1) + ";");
 
 					for (int drow = 0; drow < rsq.nRows(); drow++) {
-						Polylist ppl = retrieveObjectAsListInternal(rsq.getString(drow, 1), refs);
+						IList ppl = retrieveObjectAsListInternal(rsq.getString(drow, 1), refs);
 						
 						/*
 						 * URI of external object should only be at the inner level, so this
 						 * should suffice.
 						 */
 						if (ppl.length() == 1 && ppl.first() instanceof URI) {
-							ppl = Polylist.list(pr, ppl.first());
+							ppl = PolyList.list(pr, ppl.first());
 						}
 						
-						alist.add(Polylist.list(pr, ppl));
+						alist.add(PolyList.list(pr, ppl));
 					}
 				}
 
@@ -1830,7 +1831,7 @@ public abstract class SQLThinklabServer {
 							+ rst.getString(row, 1) + ";");
 
 					for (int drow = 0; drow < rsq.nRows(); drow++) {
-						alist.add(Polylist.list(pr, retrieveClassFromID(rsq.getLong(drow, 2))));
+						alist.add(PolyList.list(pr, retrieveClassFromID(rsq.getLong(drow, 2))));
 					}
 				}
 			}
@@ -1844,7 +1845,7 @@ public abstract class SQLThinklabServer {
 			}
 		}
 
-		return Polylist.PolylistFromArray(alist.toArray());
+		return PolyList.fromArray(alist.toArray());
 	}
 
 		

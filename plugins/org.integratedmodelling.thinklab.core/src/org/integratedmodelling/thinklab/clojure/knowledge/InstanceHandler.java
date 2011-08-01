@@ -6,12 +6,12 @@ import java.net.URISyntaxException;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.utils.NameGenerator;
@@ -113,7 +113,7 @@ public class InstanceHandler {
 					}
 					
 					IKBox kbox = KBoxManager.get().requireGlobalKBox(up[0]);
-					Polylist list = kbox.getObjectAsListFromID(up[1], null);
+					IList list = kbox.getObjectAsListFromID(up[1], null);
 					IInstance linked = _session.createObject(list);  
 					_instance.addObjectRelationship(property, linked);
 				}

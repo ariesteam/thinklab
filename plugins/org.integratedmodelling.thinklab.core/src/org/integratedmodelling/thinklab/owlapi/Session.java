@@ -51,12 +51,12 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.listeners.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.api.runtime.IUserModel;
@@ -180,7 +180,7 @@ public class Session implements ISession {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.ima.core.ISession#createObject(java.lang.String, org.integratedmodelling.utils.Polylist)
 	 */
-	public  IInstance createObject(String name, Polylist definition) throws ThinklabException {
+	public  IInstance createObject(String name, IList definition) throws ThinklabException {
 	    return ontology.createInstance(name, definition);
     }
         
@@ -331,7 +331,7 @@ public class Session implements ISession {
 		return null;
 	}
 
-	public  IInstance createObject(Polylist polylist) throws ThinklabException {
+	public  IInstance createObject(IList polylist) throws ThinklabException {
 
 		IInstance ret = ontology.createInstance(polylist);
 
@@ -459,7 +459,7 @@ public class Session implements ISession {
 	}
 
 	@Override
-	public  IConcept createConcept(Polylist list) throws ThinklabException {
+	public  IConcept createConcept(IList list) throws ThinklabException {
 		return ontology.createConcept(list);
 	}
 

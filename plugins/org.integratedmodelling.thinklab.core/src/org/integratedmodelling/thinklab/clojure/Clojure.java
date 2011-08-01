@@ -7,10 +7,11 @@ import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.lang.IList;
 
 import clojure.lang.IPersistentMap;
 import clojure.lang.ISeq;
@@ -24,13 +25,13 @@ import clojure.lang.RT;
 public class Clojure {
 	
 
-	private static Polylist list2pInternal(ISeq list, Polylist plist) {
+	private static IList list2pInternal(ISeq list, IList plist) {
 	
 		if (plist == null)
-			plist = new Polylist();
+			plist = PolyList.list();
 		
 		plist = 
-			plist.appendElement(list.first() instanceof ISeq ? 
+			plist.append(list.first() instanceof ISeq ? 
 					list2pInternal(((ISeq)list.first()), null) : 
 					list.first());
 		
@@ -41,19 +42,19 @@ public class Clojure {
 		
 	}
 	
-	public static Polylist list2p(ISeq list) {
+	public static IList list2p(ISeq list) {
 		return list2pInternal(list, null);
 	}
 
-	public static ISeq p2list(Polylist list) throws ThinklabException {
+	public static ISeq p2list(IList list) throws ThinklabException {
 
 		Object[] arr = new Object[list.length()];
 		
 		Object[] al = list.array();
 		
 		for (int i = 0; i < al.length; i++) {
-			if (al[i] instanceof Polylist)
-				arr[i] = p2list((Polylist)al[i]);
+			if (al[i] instanceof IList)
+				arr[i] = p2list((IList)al[i]);
 			else
 				arr[i] = al[i];
 		}

@@ -18,9 +18,11 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
+import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.project.ThinklabProjectInstaller;
@@ -445,5 +447,10 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	public IValue validateLiteral(IConcept c, String literal)
 			throws ThinklabException {
 		return _km.validateLiteral(c, literal);
+	}
+
+	@Override
+	public IKBox getDefaultKbox() {
+		return KBoxManager.get();
 	}
 }

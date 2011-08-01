@@ -38,12 +38,12 @@ import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 
@@ -92,7 +92,7 @@ public class SimpleQueryResult implements IQueryResult {
 		return results.get(n);
 	}
 
-	public Polylist getResultAsList(int n, HashMap<String, String> references) throws ThinklabException {
+	public IList getResultAsList(int n, HashMap<String, String> references) throws ThinklabException {
 		return getObject(n).asList(null);
 	}
 
@@ -104,7 +104,7 @@ public class SimpleQueryResult implements IQueryResult {
 		return offset;
 	}
 
-	public Polylist getResultSchema() {
+	public IList getResultSchema() {
 		return null;
 	}
 

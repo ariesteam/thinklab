@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
@@ -15,7 +15,7 @@ import org.integratedmodelling.thinklab.modelling.model.ModelManager;
 public class ProxyModelFactory implements IModelFactory {
 
 	@Override
-	public INamespace createNamespace(String namespace, String ontoid, Polylist ontology) {
+	public INamespace createNamespace(String namespace, String ontoid, IList ontology) {
 		return ModelManager.get().createNamespace(namespace, ontoid, ontology);
 	}
 

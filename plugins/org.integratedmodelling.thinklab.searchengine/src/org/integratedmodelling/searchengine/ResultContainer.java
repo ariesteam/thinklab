@@ -39,12 +39,12 @@ import java.util.HashMap;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
@@ -130,7 +130,7 @@ public class ResultContainer implements IQueryResult {
 		
 	}
 
-	public Polylist getResultAsList(int n, HashMap<String, String> references) {
+	public IList getResultAsList(int n, HashMap<String, String> references) {
 
 //		try {
 //			return getObjectFromDocument(results.get(n)).toList(null, references);

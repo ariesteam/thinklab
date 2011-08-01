@@ -6,7 +6,16 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 
+/**
+ * Just a delegate knowledge manager that uses the singleton for 
+ * all operations. This allows us to use dependency injection in external
+ * libraries that only depend on the API.
+ * 
+ * @author Ferd
+ *
+ */
 public class ProxyKnowledgeManager implements IKnowledgeManager {
 
 	@Override
@@ -38,6 +47,11 @@ public class ProxyKnowledgeManager implements IKnowledgeManager {
 	public IValue validateLiteral(IConcept c, String literal)
 			throws ThinklabException {
 		return Thinklab.get().validateLiteral(c, literal);
+	}
+
+	@Override
+	public IKBox getDefaultKbox() {
+		return Thinklab.get().getDefaultKbox();
 	}
 
 }

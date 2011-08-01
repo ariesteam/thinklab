@@ -40,14 +40,14 @@ import java.util.Properties;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabStorageException;
-import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.owlapi.Session;
@@ -75,21 +75,21 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 
 	public IQuery parseQuery(String toEval) throws ThinklabException {
 
-		Polylist l = Polylist.parse(toEval);
+		IList l = PolyList.parse(toEval);
 		return new Constraint(l);
 	}
 	
 	public IInstance getObjectFromID(String id, ISession session)
 			throws ThinklabException {
 
-		Polylist list = this.retrieveObjectAsList(id);
+		IList list = this.retrieveObjectAsList(id);
 		return session.createObject(list);
 	}
 
 	public IInstance getObjectFromID(String id, ISession session,
 			HashMap<String, String> refTable) throws ThinklabException {
 
-		Polylist list = this.retrieveObjectAsList(id, refTable);
+		IList list = this.retrieveObjectAsList(id, refTable);
 		return session.createObject(list);
 	}
 
@@ -215,7 +215,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 	}
 
 	@Override
-	public String storeObject(Polylist list, String id, Map<String, IValue> metadata, ISession session) throws ThinklabException {
+	public String storeObject(IList list, String id, Map<String, IValue> metadata, ISession session) throws ThinklabException {
 
 		String ret = null;
 		/*
@@ -240,7 +240,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 	}
 	
 	@Override
-	public String storeObject(Polylist list, String id, Map<String, IValue> metadata,
+	public String storeObject(IList list, String id, Map<String, IValue> metadata,
 			ISession session, HashMap<String, String> refTable) throws ThinklabException {
 
 		String ret = null;
@@ -269,7 +269,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		return query(q, null, 0, -1);
 	}
 
-	public Polylist getObjectAsListFromID(String id,
+	public IList getObjectAsListFromID(String id,
 			HashMap<String, String> refTable) throws ThinklabException {
 		return retrieveObjectAsList(id, refTable);
 	}

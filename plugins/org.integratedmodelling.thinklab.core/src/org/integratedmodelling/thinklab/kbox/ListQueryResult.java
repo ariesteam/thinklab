@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
 
@@ -23,25 +23,25 @@ import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
  */
 public class ListQueryResult implements IQueryResult {
 
-	ArrayList<Polylist> lists = new ArrayList<Polylist>();
+	ArrayList<IList> lists = new ArrayList<IList>();
 	IQuery query = null;
 	IQueriable queriable = null;
 	float[] scores = null;
 	Properties properties;
 	
-	public ListQueryResult(IQuery query, IQueriable queriable, Collection<Polylist> lists, Properties properties) {
+	public ListQueryResult(IQuery query, IQueriable queriable, Collection<IList> lists, Properties properties) {
 		
 		this.query = query;
 		this.queriable = queriable;
 		this.properties = properties;
 		
 		if (lists != null)
-			for (Polylist l : lists) {
+			for (IList l : lists) {
 				this.lists.add(l);
 			}
 	}
 	
-	public void addList(Polylist l) {
+	public void addList(IList l) {
 		lists.add(l);
 	}
 	
@@ -55,12 +55,12 @@ public class ListQueryResult implements IQueryResult {
 
 	public IValue getResult(int n, ISession session) throws ThinklabException {
 		
-		Polylist l = lists.get(n);
+		IList l = lists.get(n);
 		IInstance i = session.createObject(l);
 		return new ObjectReferenceValue(i);
 	}
 
-	public Polylist getResultAsList(int n, HashMap<String, String> references)
+	public IList getResultAsList(int n, HashMap<String, String> references)
 			throws ThinklabException {
 		return lists.get(n);
 	}
@@ -77,7 +77,7 @@ public class ListQueryResult implements IQueryResult {
 		return 0;
 	}
 
-	public Polylist getResultSchema() {
+	public IList getResultSchema() {
 		return null;
 	}
 

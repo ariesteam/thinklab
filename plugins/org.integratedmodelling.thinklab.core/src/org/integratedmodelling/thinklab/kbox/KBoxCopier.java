@@ -37,9 +37,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.instancelist.InstanceList;
@@ -72,7 +73,7 @@ public class KBoxCopier  {
 	 * @param refs2 
 	 * @return true if the object should be stored
 	 */
-	protected boolean filterObject(Polylist object) {
+	protected boolean filterObject(IList object) {
 		return true;
 	}
 
@@ -101,10 +102,10 @@ public class KBoxCopier  {
 
 		for (int i = 0; i < res.getTotalResultCount(); i++) {
 			
-			Polylist l = res.getResultAsList(i, refl);
+			IList l = res.getResultAsList(i, refl);
 			InstanceList il = new InstanceList(l);
 			
-			System.out.println(Polylist.prettyPrint(l));
+			System.out.println(PolyList.prettyPrint(l));
 
 			String id = il.getLocalName();
 			
@@ -118,9 +119,9 @@ public class KBoxCopier  {
 	 * Use with caution, nobody wants a 5000 element list. Uses the existing ref
 	 * table, so it will not export things that have been exported before.
 	 */
-	public Polylist exportKnowledge(String sourceURL, ISession session) throws ThinklabException {
+	public IList exportKnowledge(String sourceURL, ISession session) throws ThinklabException {
 
-		ArrayList<Polylist> ret = new ArrayList<Polylist>();
+		ArrayList<IList> ret = new ArrayList<IList>();
 		HashMap<String, String> refs = new HashMap<String, String>();
 
 		sourceKB = resolveURL(sourceURL, session);
@@ -128,18 +129,18 @@ public class KBoxCopier  {
 		IQueryResult res = sourceKB.query(null);
 
 		for (int i = 0; i < res.getTotalResultCount(); i++) {
-			Polylist l = res.getResultAsList(i, refs);
+			IList l = res.getResultAsList(i, refs);
 			if (l != null && !l.isEmpty() && !refs.containsKey(new InstanceList(l).getLocalName()))
 				ret.add(l);
 		}
 
-		return Polylist.PolylistFromArray(ret.toArray());
+		return PolyList.fromArray(ret.toArray());
 	}
 
 	/**
-	 * Input must be a polylist of lists, each specifying an object.
+	 * Input must be a IList of lists, each specifying an object.
 	 */
-	public void importKnowledge(String targetURL, Polylist knowledge)
+	public void importKnowledge(String targetURL, IList knowledge)
 			throws ThinklabException {
 
 		HashMap<String, String> refs = new HashMap<String, String>();
@@ -151,7 +152,7 @@ public class KBoxCopier  {
 		ISession session = new Session();
 		
 		for (int i = 0; i < os.length; i++) {
-			targetKB.storeObject((Polylist) os[i], null, null, session, refs);
+			targetKB.storeObject((IList) os[i], null, null, session, refs);
 		}
 
 	}

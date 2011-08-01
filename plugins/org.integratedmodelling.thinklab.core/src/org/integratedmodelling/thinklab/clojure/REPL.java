@@ -54,7 +54,7 @@ public class REPL {
 		final Var star2 = RT.var("clojure.core", "*2");
 		final Var star3 = RT.var("clojure.core", "*3");
 		final Var stare = RT.var("clojure.core", "*e");
-		final Var exit = RT.var("clojure.core", "exit");
+		final Var exit = RT.var("clojure.core", "exit").setDynamic();
 		final Var sess  = RT.var("tl", "*session*");
 
 		try {
@@ -66,7 +66,7 @@ public class REPL {
 					warn_on_reflection.get(), print_meta, print_meta.get(),
 					print_length, print_length.get(), print_level, print_level
 							.get(), compile_path, "classes", star1, null,
-					star2, null, star3, null, stare, null, sess, this.session, exit, EXIT));
+					star2, null, star3, null, stare, null, sess, this.session/*, exit, EXIT*/));
 
 			// create and move into the user namespace
 			in_ns.invoke(USER);

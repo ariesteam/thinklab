@@ -33,7 +33,7 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
@@ -43,6 +43,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IConformance;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.utils.NameGenerator;
@@ -160,7 +161,7 @@ public class Instance extends Knowledge implements IInstance {
 	 */
 	public IInstance clone(IOntology ontology) throws ThinklabException {
 		
-		Polylist list = this.asList(getLocalName());
+		IList list = this.asList(getLocalName());
 		return ontology.createInstance(list);
 	}
 
@@ -230,7 +231,7 @@ public class Instance extends Knowledge implements IInstance {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IInstance#toList(java.lang.String, java.util.HashMap)
 	 */
-	public Polylist toList(String oref, HashMap<String, String> refTable)
+	public IList toList(String oref, HashMap<String, String> refTable)
 			throws ThinklabException {
 		return convertToList(refTable, oref);
 	}
@@ -401,12 +402,12 @@ public class Instance extends Knowledge implements IInstance {
 	}
 
 
-	private Polylist convertToList(HashMap<String, String> references, String name) throws ThinklabException {
+	private IList convertToList(HashMap<String, String> references, String name) throws ThinklabException {
 
 		String iname = name == null ? getLocalName() : name;
 		
 		if (references.containsKey(iname)) {
-			return Polylist.list("#" + iname);
+			return PolyList.list("#" + iname);
 		}
 		references.put(iname, getURI());
 		
@@ -418,24 +419,24 @@ public class Instance extends Knowledge implements IInstance {
 		String label = getLabel();
 
 		if (comment != null && !comment.equals(""))
-			alist.add(Polylist.list("rdfs:comment", comment));
+			alist.add(PolyList.list("rdfs:comment", comment));
 
 		if (label != null && !label.equals(""))
-			alist.add(Polylist.list("rdfs:label", label));
+			alist.add(PolyList.list("rdfs:label", label));
 
 		for (IRelationship r : getRelationships()) {
 			alist.add(((Relationship)r).asList(references));
 		}		
 		
-		return Polylist.PolylistFromArray(alist.toArray());
+		return PolyList.fromArray(alist.toArray());
 
 	}
 
-	public Polylist asList(String name) throws ThinklabException {
+	public IList asList(String name) throws ThinklabException {
 		return toListInternal(name, null);
 	}
 
-	public Polylist toListInternal(String name, HashMap<String, String> refs) throws ThinklabException {
+	public IList toListInternal(String name, HashMap<String, String> refs) throws ThinklabException {
 
 		if (refs == null)
 			refs = new HashMap<String, String>();

@@ -36,13 +36,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
@@ -125,7 +125,7 @@ public class SQLQueryResult implements IQueryResult {
 		return ret;
 	}
 
-	public Polylist getResultAsList(int n, HashMap<String, String> references) throws ThinklabException {
+	public IList getResultAsList(int n, HashMap<String, String> references) throws ThinklabException {
 		return kbox.getObjectAsListFromID(qresult.get(n, 0), references);
 	}
 

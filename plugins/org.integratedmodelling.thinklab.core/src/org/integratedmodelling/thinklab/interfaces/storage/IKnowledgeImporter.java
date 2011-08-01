@@ -3,7 +3,7 @@ package org.integratedmodelling.thinklab.interfaces.storage;
 import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.lang.IList;
 
 /**
  * Recognize a source of objects from a URL and allows retrieval of object definitions
@@ -39,5 +39,5 @@ public interface IKnowledgeImporter {
 	 * @param properties
 	 * @return
 	 */
-	public Polylist getObjectDefinition(int i, Properties properties) throws ThinklabException ;
+	public IList getObjectDefinition(int i, Properties properties) throws ThinklabException ;
 }

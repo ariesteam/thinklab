@@ -48,20 +48,18 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.IParseable;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
-import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.applications.ISessionManager;
@@ -543,24 +541,6 @@ public class KnowledgeManager {
 
 	}
 
-	
-	/**
-	 * Launch a query in a separate thread for each installed kbox, unless the constraint contains a target kbox
-     * specification. Merge results. The set of different kboxes is seen
-	 * by the user as a single knowledge base.
-	 * @param query
-	 * @param format
-	 * @param offset
-	 * @param maxResults
-	 * @return A list describing the result, with a sublist containing the URI of the resulting instance and 
-	 * all the informations required in the schema (with nulls where the information requested could not be
-	 * found).
-	 */
-	public Polylist query(Constraint query, Polylist resultSchema, int offset, int maxResults) {
-		// TODO	
-		Polylist ret = new Polylist();
-		return ret;
-	}
 	
 	/** 
 	 * This one is used by all classes to access the knowledge manager.

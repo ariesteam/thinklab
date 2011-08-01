@@ -33,11 +33,11 @@
 package org.integratedmodelling.searchengine.kbox;
 
 import org.integratedmodelling.lang.Quantifier;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.searchengine.QueryString;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 
 public class SearchEngineKBoxCapabilities implements IKBox.Capabilities {
 	
@@ -95,7 +95,7 @@ public class SearchEngineKBoxCapabilities implements IKBox.Capabilities {
 		return orig.supportsQuery(query);
 	}
 
-	public boolean supportsSchema(Polylist schema) {
+	public boolean supportsSchema(IList schema) {
 		return orig.supportsSchema(schema);
 	}
 }

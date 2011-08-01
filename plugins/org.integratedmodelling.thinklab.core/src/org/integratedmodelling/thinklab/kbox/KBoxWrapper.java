@@ -38,13 +38,13 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 
@@ -68,17 +68,17 @@ public abstract class KBoxWrapper implements IKBox {
 		return kbox.getCapabilities();
 	}
 
-	public Polylist getObjectAsListFromID(String id,
+	public IList getObjectAsListFromID(String id,
 			HashMap<String, String> refTable) throws ThinklabException {
 		return kbox.getObjectAsListFromID(id, refTable);
 	}
 
-	public String storeObject(Polylist list, String id, Map<String, IValue> metadata,
+	public String storeObject(IList list, String id, Map<String, IValue> metadata,
 			ISession session, HashMap<String, String> refTable) throws ThinklabException {
 		return kbox.storeObject(list, id, null, session, refTable);
 	}
 
-	public String storeObject(Polylist list, String id, Map<String, IValue> metadata, ISession session)
+	public String storeObject(IList list, String id, Map<String, IValue> metadata, ISession session)
 			throws ThinklabException {
 		return kbox.storeObject(list, id, null, session);
 	}

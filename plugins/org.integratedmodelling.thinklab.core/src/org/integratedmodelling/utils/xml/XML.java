@@ -9,7 +9,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -111,8 +111,8 @@ public class XML {
 						Object no = it.next();
 						if (no instanceof XmlNode) {
 							self.appendChild(((XmlNode)no).create(self, doc));
-						} else if (no instanceof Polylist) {
-							self.appendChild(XMLDocument.createXmlNode((Polylist)no).create(self, doc));
+						} else if (no instanceof IList) {
+							self.appendChild(XMLDocument.createXmlNode((IList)no).create(self, doc));
 						} else {
 							throw new ThinklabValidationException(
 								"XML.node: collections must be of XmlNode or Polylist");	
@@ -120,8 +120,8 @@ public class XML {
 					}
 				} else if (o instanceof XmlNode) {
 					self.appendChild(((XmlNode)o).create(self, doc));
-				} else if (o instanceof Polylist) {
-					self.appendChild(XMLDocument.createXmlNode((Polylist)o).create(self, doc));					
+				} else if (o instanceof IList) {
+					self.appendChild(XMLDocument.createXmlNode((IList)o).create(self, doc));					
 				}
 			}			
 		}

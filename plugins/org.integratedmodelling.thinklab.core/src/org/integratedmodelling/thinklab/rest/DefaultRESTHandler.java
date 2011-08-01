@@ -14,10 +14,10 @@ import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.list.Escape;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
 import org.integratedmodelling.utils.CopyURL;
@@ -360,8 +360,8 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	}
 	
 	public void setResult(Object o) {
-		if (o instanceof Polylist)
-			rh.setList((Polylist)o);
+		if (o instanceof IList)
+			rh.setList((IList)o);
 		rh.setResult(o);
 	}
 	

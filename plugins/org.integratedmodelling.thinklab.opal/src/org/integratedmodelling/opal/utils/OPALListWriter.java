@@ -35,9 +35,9 @@ package org.integratedmodelling.opal.utils;
 import java.util.HashSet;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
 import org.integratedmodelling.opal.profile.OPALProfile;
 import org.integratedmodelling.opal.profile.OPALProfileFactory;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.utils.instancelist.InstanceList;
 import org.integratedmodelling.utils.instancelist.RelationshipList;
 import org.integratedmodelling.utils.xml.XMLDocument;
@@ -76,7 +76,7 @@ public class OPALListWriter {
 	 * @param profile the name of an existing OPAL profile, or null for the default profile
 	 * @throws ThinklabException
 	 */
-	public static void appendOPAL(Polylist list, XMLDocument document, String profile) throws ThinklabException {
+	public static void appendOPAL(IList list, XMLDocument document, String profile) throws ThinklabException {
 		
 		OPALProfile prof = OPALProfileFactory.get().getProfile(profile, true);
 		appendOPALInternal(new InstanceList(list), document, document.root(), prof, new HashSet<String>());
@@ -90,7 +90,7 @@ public class OPALListWriter {
 	 * @param profile the name of an existing OPAL profile, or null for the default profile
 	 * @throws ThinklabException
 	 */
-	public static void appendOPAL(Polylist list, XMLDocument document, Node parentNode, String profile) throws ThinklabException {
+	public static void appendOPAL(IList list, XMLDocument document, Node parentNode, String profile) throws ThinklabException {
 		
 		OPALProfile prof = OPALProfileFactory.get().getProfile(profile, true);
 		appendOPALInternal(new InstanceList(list), document, parentNode, prof, new HashSet<String>());

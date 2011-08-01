@@ -11,7 +11,6 @@ import org.integratedmodelling.multidimensional.Ticker;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContextMapper;
-import org.integratedmodelling.thinklab.api.modelling.observation.IState;
 
 /**
  * A helper object that maps state indexes from a context to a compatible other. The "to" context

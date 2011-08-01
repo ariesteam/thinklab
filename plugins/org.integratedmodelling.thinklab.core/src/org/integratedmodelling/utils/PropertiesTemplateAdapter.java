@@ -40,7 +40,8 @@ import java.util.Properties;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.mvel2.MVEL;
 
 /**
@@ -112,11 +113,11 @@ public class PropertiesTemplateAdapter {
 		return null;
 	}
 	
-	public ArrayList<Pair<String, Polylist>> computeListsFromTemplates(
+	public ArrayList<Pair<String, IList>> computeListsFromTemplates(
 			String templatePrefix, Hashtable<String, Object> context)
 			throws ThinklabException {
 
-		ArrayList<Pair<String, Polylist>> ret = new ArrayList<Pair<String, Polylist>>();
+		ArrayList<Pair<String, IList>> ret = new ArrayList<Pair<String, IList>>();
 
 		computeVariables(context);
 
@@ -128,10 +129,10 @@ public class PropertiesTemplateAdapter {
 
 				String tname = pn.substring(pn.lastIndexOf(".")+1);
 
-				Polylist l;
-					l = Polylist.parseWithTemplate(properties.getProperty(pn),
+				IList l;
+					l = PolyList.parseWithTemplate(properties.getProperty(pn),
 							context);
-					ret.add(new Pair<String, Polylist>(tname, l));
+					ret.add(new Pair<String, IList>(tname, l));
 			}
 		}
 		

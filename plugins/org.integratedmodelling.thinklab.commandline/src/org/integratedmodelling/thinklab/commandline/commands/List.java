@@ -36,7 +36,7 @@ package org.integratedmodelling.thinklab.commandline.commands;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.list.Polylist;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
@@ -90,7 +90,7 @@ public class List implements ICommandHandler {
 			session.getOutputStream().println("Instance URI is " + c.getURI());
 
 			session.getOutputStream().println("list representation:\n"
-					+ Polylist.prettyPrint(c.asList(null)));
+					+ PolyList.prettyPrint(c.asList(null)));
 
 			session.getOutputStream().println(c.getDescription());
 
@@ -106,7 +106,7 @@ public class List implements ICommandHandler {
 			}
 
 		} else if (mode == listmode.LIST) {
-			session.getOutputStream().println(Polylist.prettyPrint(c.asList(null)));
+			session.getOutputStream().println(PolyList.prettyPrint(c.asList(null)));
 		}
 	}
 
