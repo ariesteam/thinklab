@@ -25,6 +25,7 @@ import org.integratedmodelling.thinklab.api.modelling.IAnnotation;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
+import org.integratedmodelling.thinklab.api.modelling.observation.IObservationList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.modelling.context.Context;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
@@ -82,7 +83,14 @@ public class REPL {
 						 * model using the current context; 
 						 */
 						IModel model = (IModel)obj;
-						((IModel) obj).observe(context, Thinklab.get().getDefaultKbox(), session);
+						IObservationList res = ((IModel) obj).observe(context, Thinklab.get().getDefaultKbox(), session);
+						
+						if (res.size() > 0) {
+							w.println("Model can be observed in " + res.size() + " different ways");
+							this.context = res.resolve(0);
+						} else {
+							w.println("There is no way to observe this model in the current context.");
+						}
 					}
 					
 					w.println(obj + " returned");
