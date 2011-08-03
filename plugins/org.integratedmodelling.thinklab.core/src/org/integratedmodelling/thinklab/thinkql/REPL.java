@@ -79,6 +79,7 @@ public class REPL {
 						 * add to current context
 						 */
 					} else if (obj instanceof IModel) {
+						
 						/*
 						 * model using the current context; 
 						 */
@@ -87,7 +88,11 @@ public class REPL {
 						
 						if (res.size() > 0) {
 							w.println("Model can be observed in " + res.size() + " different ways");
-							this.context = res.resolve(0);
+							
+							/*
+							 * TODO extract, run and visualize n-th observation
+							 */
+							
 						} else {
 							w.println("There is no way to observe this model in the current context.");
 						}

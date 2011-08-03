@@ -12,7 +12,6 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.list.InstanceList;
-import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
@@ -24,13 +23,16 @@ import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
+import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.observation.IObservationList;
+import org.integratedmodelling.thinklab.api.modelling.observation.IState;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.metadata.Metadata;
 import org.integratedmodelling.thinklab.modelling.context.Context;
 import org.integratedmodelling.thinklab.modelling.context.ObservationList;
 import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 import org.integratedmodelling.thinklab.modelling.model.ModelManager;
+import org.integratedmodelling.thinklab.modelling.observation.Observation;
 
 
 public abstract class DefaultAbstractModel extends NamespaceQualified implements IModel {
@@ -170,6 +172,7 @@ public abstract class DefaultAbstractModel extends NamespaceQualified implements
 		ArrayList<Pair<IModel, IQueryResult>> deps = new ArrayList<Pair<IModel, IQueryResult>>();
 		ArrayList<IModel> notfound   = new ArrayList<IModel>();
 		Context context = (Context)ctx;
+		
 		/*
 		 * Extract all unresolved dependencies and query them all. Complain only
 		 * for mandatory dependencies that remain unresolved.
@@ -185,7 +188,7 @@ public abstract class DefaultAbstractModel extends NamespaceQualified implements
 			}
 			
 			boolean found = false;
-			IQuery q = model.generateObservableQuery(null, session, context);
+			IQuery q = model.generateObservableQuery(session.getConformancePolicy(), session, context);
 			IQueryResult r = null;
 			if (!q.isEmpty()) {
 				r = kbox.query(q);
@@ -217,7 +220,7 @@ public abstract class DefaultAbstractModel extends NamespaceQualified implements
 			throw new ThinklabResourceNotFoundException("required observations of " + s + " not found in context"); 
 		}
 		
-		return new ObservationList(deps);
+		return new ObservationList(this, deps, session);
 	}
 
 	@Override
@@ -280,6 +283,42 @@ public abstract class DefaultAbstractModel extends NamespaceQualified implements
 		
 		return this;
 	}
+
+	protected int addDependencies(IObservation o, HashMap<IInstance, IState> known) {
+
+		for (Dependency d : _dependencies) {
+			
+			IObservation dep = null;
+			
+			if (known.containsKey(d.model.getObservable())) {
+				dep = known.get(d.model.getObservable());
+			} else {
+				dep = ((DefaultAbstractModel)d.model).createObservation(known);
+			}
+			
+			if (dep != null) {
+				((Observation)dep).setFormalName(d.localName);
+				((Observation)o).addDependency(dep);
+			}
+		}
+		
+		return 0;
+	}
+	
+	
+	/**
+	 * Create the appropriate observations using those in the 'known' states when
+	 * the observable matches.
+	 * 
+	 * If an observation is unresolved and missing from the known ones but optional
+	 * is true, do not complain and ignore the dependency because it is optional.
+	 * 
+	 * If there's nothing to compute because all states are known, return null.
+	 * 
+	 * @param known
+	 * @return
+	 */
+	public abstract IObservation createObservation(HashMap<IInstance, IState> known);
 
 
 	

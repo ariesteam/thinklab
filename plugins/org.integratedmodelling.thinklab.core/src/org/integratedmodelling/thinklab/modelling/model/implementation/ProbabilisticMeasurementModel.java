@@ -2,7 +2,7 @@ package org.integratedmodelling.thinklab.modelling.model.implementation;
 
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassification;
-import org.integratedmodelling.thinklab.api.modelling.observation.IUnit;
+import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 
 
 public class ProbabilisticMeasurementModel extends MeasurementModel {

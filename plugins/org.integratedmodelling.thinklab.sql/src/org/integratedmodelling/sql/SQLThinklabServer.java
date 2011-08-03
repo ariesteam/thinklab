@@ -71,7 +71,7 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
-import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.ObjectValue;
 import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.NameGenerator;
@@ -1573,7 +1573,7 @@ public abstract class SQLThinklabServer {
 
 					/* it's a concept: retrieve its ID (store if necessary) */
 					Pair<String, String> iid = storeInstanceSQLInternal(
-							((ObjectReferenceValue) rel.getValue()).getObject(),
+							((ObjectValue) rel.getValue()).getObject(),
 							sql, rid, cid.getFirst(), tot, references, session, id, metadata);
 
 					sql = iid.getSecond();

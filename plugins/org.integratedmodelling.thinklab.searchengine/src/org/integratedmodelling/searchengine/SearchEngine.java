@@ -82,7 +82,7 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
-import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.ObjectValue;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.CopyURL;
@@ -453,8 +453,8 @@ public final class SearchEngine implements IQueriable {
 			IValue val = qr.getResult(i, session);
 			IInstance ii = null;
 			
-			if (val instanceof ObjectReferenceValue) {
-				ii = ((ObjectReferenceValue)val).getObject();
+			if (val instanceof ObjectValue) {
+				ii = ((ObjectValue)val).getObject();
 				try {
 					index.addDocument(submitIndividual(kb, ii));
 				} catch (Exception e) {

@@ -13,7 +13,7 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.ObjectValue;
 
 /**
  * Results that are initialized with lists only. Very incomplete.
@@ -57,7 +57,7 @@ public class ListQueryResult implements IQueryResult {
 		
 		IList l = lists.get(n);
 		IInstance i = session.createObject(l);
-		return new ObjectReferenceValue(i);
+		return new ObjectValue(i);
 	}
 
 	public IList getResultAsList(int n, HashMap<String, String> references)

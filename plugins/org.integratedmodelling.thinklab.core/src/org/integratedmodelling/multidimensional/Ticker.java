@@ -45,7 +45,7 @@ import java.util.ArrayList;
 public class Ticker {
 
 	/** total number of states (product of dimension sizes) */
-	long states;
+	int states;
 
 	/** total number of dimensions */
 	int dims;
@@ -54,10 +54,10 @@ public class Ticker {
 	int[] current = null;
 	boolean[] changed = null;
 
-	private long currentIndex = 0L;
+	private int currentIndex = 0;
 
 	public Ticker() {
-		states = 1L;
+		states = 1;
 		dims = 0;
 	}
 
@@ -75,9 +75,9 @@ public class Ticker {
 	}
 
 	/** reset ticker to 0  */
-	public long reset() {
-		states = 1L;
-		currentIndex = 0L;
+	public int reset() {
+		states = 1;
+		currentIndex = 0;
 
 		/* create 'current' vector, set all initial states as changed
 		 and calculate total number of states */
@@ -95,7 +95,7 @@ public class Ticker {
 	 * Total number of possible states
 	 * @return
 	 */
-	public long size() {
+	public int size() {
 		return states;
 	}
 	
@@ -168,7 +168,7 @@ public class Ticker {
 	 * Current overall state;
 	 * @return
 	 */
-	public long current() {
+	public int current() {
 		return currentIndex ;
 	}
 	
@@ -176,8 +176,8 @@ public class Ticker {
 	 * Index of last overall state
 	 * @return
 	 */
-	public long last() {
-		return states - 1L;
+	public int last() {
+		return states - 1;
 	}
 
 	public boolean[] changedStates() {

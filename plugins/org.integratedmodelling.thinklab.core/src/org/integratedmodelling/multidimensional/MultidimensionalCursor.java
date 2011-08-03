@@ -81,6 +81,10 @@ public class MultidimensionalCursor {
     	storageOrderType = order;
     }
     
+    public MultidimensionalCursor() {
+    	this(StorageOrdering.ROW_FIRST);
+    }
+    
     public MultidimensionalCursor(MultidimensionalCursor cursor) {
     	multiplicity = cursor.multiplicity;
     	dimensions = cursor.dimensions;

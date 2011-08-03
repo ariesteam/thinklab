@@ -35,15 +35,15 @@ package org.integratedmodelling.thinklab.literals;
 
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 
-public class ObjectReferenceValue extends Value {
+public class ObjectValue extends Value {
 
 	IInstance val;
 	
-    public ObjectReferenceValue() {
+    public ObjectValue() {
         super();
     }
 
-    public ObjectReferenceValue(IInstance c) {
+    public ObjectValue(IInstance c) {
     	super(c.getDirectType());
     	val = c;
     }

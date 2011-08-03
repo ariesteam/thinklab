@@ -1,14 +1,17 @@
 package org.integratedmodelling.thinklab.modelling.model.implementation;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
+import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
+import org.integratedmodelling.thinklab.api.modelling.observation.IState;
 
 /**
  * The reference implementation of the model object created by defmodel. It holds one
@@ -62,6 +65,13 @@ public class Model extends DefaultAbstractModel {
 		}
 		
 		return this;
+	}
+
+
+	@Override
+	public IObservation createObservation(HashMap<IInstance, IState> known) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

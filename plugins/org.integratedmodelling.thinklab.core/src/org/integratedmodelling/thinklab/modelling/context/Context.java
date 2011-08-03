@@ -8,7 +8,6 @@ import java.util.Set;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.listeners.IContextualizationListener;
 import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
@@ -16,13 +15,14 @@ import org.integratedmodelling.thinklab.api.modelling.observation.IContextMapper
 import org.integratedmodelling.thinklab.api.modelling.observation.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.observation.IState;
+import org.integratedmodelling.thinklab.metadata.Metadata;
 import org.integratedmodelling.thinklab.modelling.internal.ListenerSet;
 import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
 public class Context extends NamespaceQualified implements IContext {
 
 	private ArrayList<IListener> _listeners = new ArrayList<IListener>();
-
+	private Metadata _metadata = new Metadata();	
 	private HashMap<IInstance, IState> _states = new HashMap<IInstance, IState>();
 	
 	public Context(IContext context) {
@@ -35,14 +35,12 @@ public class Context extends NamespaceQualified implements IContext {
 
 	@Override
 	public Set<IInstance> getObservables() {
-		// TODO Auto-generated method stub
-		return null;
+		return _states.keySet();
 	}
 
 	@Override
 	public IMetadata getMetadata() {
-		// TODO Auto-generated method stub
-		return null;
+		return _metadata;
 	}
 
 	@Override
@@ -105,11 +103,6 @@ public class Context extends NamespaceQualified implements IContext {
 		return null;
 	}
 
-	@Override
-	public IContext cloneExtents() throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public IContext collapse(IConcept dimension) throws ThinklabException {
@@ -159,6 +152,30 @@ public class Context extends NamespaceQualified implements IContext {
 
 	public boolean containsState(IInstance observable) {
 		return _states.containsKey(observable);
+	}
+
+	@Override
+	public IContext intersection(IContext other) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IContext union(IContext other) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean contains(IContext o) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean overlaps(IContext o) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

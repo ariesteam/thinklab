@@ -46,7 +46,7 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.ObjectValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 import org.integratedmodelling.utils.MiscUtilities;
 
@@ -153,7 +153,7 @@ public class ResultContainer implements IQueryResult {
 	@Override
 	public IValue getResult(int n, ISession session) throws ThinklabException {
 		
-		return new ObjectReferenceValue(getObjectFromDocument(results.get(n), session));
+		return new ObjectValue(getObjectFromDocument(results.get(n), session));
 	}
 //
 //	@Override

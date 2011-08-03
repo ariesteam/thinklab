@@ -72,7 +72,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IParseableKnowledge
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.literals.NumberValue;
-import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.ObjectValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.thinklab.owlapi.Ontology.ReferenceRecord;
@@ -313,7 +313,7 @@ public class ThinklabOWLManager {
 							} else {
 
 								/* it's just a stupid object property */
-								val = new ObjectReferenceValue(
+								val = new ObjectValue(
 										new Instance(ind));
 								ret.add(val);
 

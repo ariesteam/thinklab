@@ -48,7 +48,7 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.ObjectValue;
 import org.integratedmodelling.utils.MiscUtilities;
 
 /**
@@ -102,9 +102,9 @@ public class KExport implements ICommandHandler {
 
 					IValue r = res.getResult(i, session);
 
-					if (r instanceof ObjectReferenceValue) {
+					if (r instanceof ObjectValue) {
 
-						IInstance ii = ((ObjectReferenceValue) r).getObject();
+						IInstance ii = ((ObjectValue) r).getObject();
 						objs.add(ii);
 					}
 				}

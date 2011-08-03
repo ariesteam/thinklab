@@ -45,7 +45,7 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.ObjectValue;
 
 
 public class SimpleQueryResult implements IQueryResult {
@@ -122,7 +122,7 @@ public class SimpleQueryResult implements IQueryResult {
 	}
 
 	public IValue getResult(int n, ISession session) throws ThinklabException {
-		return new ObjectReferenceValue(results.get(n));
+		return new ObjectValue(results.get(n));
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
-import org.integratedmodelling.thinklab.api.modelling.observation.IUnit;
+import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 import org.integratedmodelling.thinklab.modelling.model.ModelManager;
 
 public class ProxyModelFactory implements IModelFactory {

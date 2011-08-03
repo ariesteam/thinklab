@@ -45,7 +45,7 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.literals.ObjectReferenceValue;
+import org.integratedmodelling.thinklab.literals.ObjectValue;
 
 public class SQLQueryResult implements IQueryResult {
 
@@ -153,7 +153,7 @@ public class SQLQueryResult implements IQueryResult {
 
 	public IValue getResult(int n, ISession session) throws ThinklabException {
 		if (instances[n] == null)
-			instances[n] = new ObjectReferenceValue(
+			instances[n] = new ObjectValue(
 					kbox.getObjectFromID(qresult.get(n, 0), session));
 		return instances[n];
 	}

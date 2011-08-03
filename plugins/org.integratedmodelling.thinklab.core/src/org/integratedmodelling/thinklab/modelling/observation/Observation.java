@@ -8,6 +8,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.observation.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
+import org.integratedmodelling.thinklab.api.modelling.observation.IState;
 import org.integratedmodelling.thinklab.metadata.Metadata;
 
 /**
@@ -43,6 +44,7 @@ public class Observation implements IObservation {
 	// cached for speed - it's just _observable.getDirectType()
 	protected IConcept  _type = null;
 	
+	protected String formalName = null;
 	
 	// public API below
 	
@@ -71,6 +73,16 @@ public class Observation implements IObservation {
 	@Override
 	public Collection<IExtent> getExtents() {
 		return _extents;
+	}
+
+	// --- internal API -----------------------------------
+	
+	public void addDependency(IObservation obs) {
+		_dependencies.add(obs);
+	}
+
+	public void setFormalName(String localName) {
+		formalName = localName;
 	}
 
 }

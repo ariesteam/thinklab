@@ -25,7 +25,7 @@ import org.integratedmodelling.thinklab.api.modelling.classification.IClassifica
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelManager;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
-import org.integratedmodelling.thinklab.api.modelling.observation.IUnit;
+import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.modelling.model.implementation.ClassificationModel;
 import org.integratedmodelling.thinklab.modelling.model.implementation.MeasurementModel;

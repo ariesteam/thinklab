@@ -55,12 +55,14 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.query.IConformance;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.listeners.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.api.runtime.IUserModel;
+import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.kbox.VirtualSessionKBox;
@@ -99,6 +101,8 @@ public class Session implements ISession {
 	ArrayList<IThinklabSessionListener> listeners = new ArrayList<IThinklabSessionListener>();
 
 	private IUserModel userModel;
+
+	private IConformance _conformance = new DefaultConformance();
 	
 	public Session()  {
 		
@@ -513,6 +517,11 @@ public class Session implements ISession {
 				addListener((IThinklabSessionListener) l);
 			}
 		}
+	}
+
+	@Override
+	public IConformance getConformancePolicy() {
+		return _conformance;
 	}
 
 }

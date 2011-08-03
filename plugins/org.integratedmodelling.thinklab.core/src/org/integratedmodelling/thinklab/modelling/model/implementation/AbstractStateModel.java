@@ -10,12 +10,11 @@ import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.ModelTypes;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
 import org.integratedmodelling.thinklab.api.modelling.observation.IExtent;
+import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.implementations.operators.Operator;
-import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.thinklab.modelling.internal.StateModel;
 
 public abstract class AbstractStateModel extends DefaultAbstractModel implements StateModel {
@@ -42,18 +41,13 @@ public abstract class AbstractStateModel extends DefaultAbstractModel implements
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public Constraint generateObservableQuery(
-			IntelligentMap<IConformance> conformancePolicies, ISession session,
+	public Constraint generateObservableQuery(IConformance conformance, ISession session,
 			IContext context) throws ThinklabException {
 
 		Constraint c = new Constraint(this.getCompatibleObservationType());
-
-		IConformance conf = conformancePolicies == null ? new DefaultConformance()
-				: conformancePolicies.get(_observable.getDirectType());
-
 		c = c.restrict(new Restriction(
 							ModelTypes.P_HAS_OBSERVABLE.getProperty(Thinklab.get()), 
-							conf.getQuery(_observable)));
+							conformance.getQuery(_observable)));
 
 		if (context.getExtents().size() > 0) {
 
@@ -73,5 +67,12 @@ public abstract class AbstractStateModel extends DefaultAbstractModel implements
 		
 		return c;
 	}
+	
+
+	protected int addMediated(IObservation o) {
+
+		return 0;
+	}
+	
 	
 }

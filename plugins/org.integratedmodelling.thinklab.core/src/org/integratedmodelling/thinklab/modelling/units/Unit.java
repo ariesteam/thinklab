@@ -10,8 +10,8 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.thinklab.api.modelling.observation.IModifiableUnit;
-import org.integratedmodelling.thinklab.api.modelling.observation.IUnit;
+import org.integratedmodelling.thinklab.api.modelling.units.IModifiableUnit;
+import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 import org.integratedmodelling.utils.MiscUtilities;
 
 public class Unit implements IUnit {
