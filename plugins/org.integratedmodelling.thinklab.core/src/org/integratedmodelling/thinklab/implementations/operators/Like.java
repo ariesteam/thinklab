@@ -13,4 +13,9 @@ public class Like extends Operator {
 		return null;
 	}
 
+	@Override
+	public String getName() {
+		return "like";
+	}
+
 }

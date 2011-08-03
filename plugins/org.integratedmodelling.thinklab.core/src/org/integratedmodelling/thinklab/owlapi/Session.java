@@ -57,6 +57,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.listeners.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.api.runtime.IUserModel;
@@ -380,7 +381,7 @@ public class Session implements ISession {
 		return ret;
 	}
 
-	public void addListener(IThinklabSessionListener listener) throws ThinklabException {
+	public void addListener(IThinklabSessionListener listener) {
 		listeners.add(listener);
 	}
 
@@ -502,6 +503,16 @@ public class Session implements ISession {
 	public void print(String s) {
 		if (getOutputStream() != null)
 			getOutputStream().println(s);
+	}
+
+	@Override
+	public void listen(IListener... listeners) {
+		// TODO Auto-generated method stub
+		for (IListener l : listeners) {
+			if (l instanceof IThinklabSessionListener) {
+				addListener((IThinklabSessionListener) l);
+			}
+		}
 	}
 
 }

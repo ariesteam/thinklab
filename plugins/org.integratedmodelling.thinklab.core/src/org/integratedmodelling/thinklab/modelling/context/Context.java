@@ -1,20 +1,37 @@
 package org.integratedmodelling.thinklab.modelling.context;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Set;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.listeners.IContextualizationListener;
+import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContextMapper;
 import org.integratedmodelling.thinklab.api.modelling.observation.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.observation.IState;
+import org.integratedmodelling.thinklab.modelling.internal.ListenerSet;
 import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
 public class Context extends NamespaceQualified implements IContext {
+
+	private ArrayList<IListener> _listeners = new ArrayList<IListener>();
+
+	private HashMap<IInstance, IState> _states = new HashMap<IInstance, IState>();
+	
+	public Context(IContext context) {
+		// TODO copy every state and extent from the passed one, then initialize
+	}
+
+	public Context() {
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public Set<IInstance> getObservables() {
@@ -123,6 +140,25 @@ public class Context extends NamespaceQualified implements IContext {
 	public IConcept getDimension(int i) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void addState(IState s) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public ListenerSet getListenerSet() {
+		return new ListenerSet(_listeners);
+	}
+
+	@Override
+	public void listen(IListener... listeners) {
+		for (IListener l : listeners)
+			_listeners.add(l);
+	}
+
+	public boolean containsState(IInstance observable) {
+		return _states.containsKey(observable);
 	}
 
 }

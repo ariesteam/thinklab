@@ -13,4 +13,9 @@ public class Gt extends Operator {
 		return null;
 	}
 
+	@Override
+	public String getName() {
+		return ">";
+	}
+
 }

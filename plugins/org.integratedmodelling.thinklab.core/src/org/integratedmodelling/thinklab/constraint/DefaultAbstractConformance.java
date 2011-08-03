@@ -40,6 +40,8 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IConformance;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 
 public abstract class DefaultAbstractConformance implements IConformance {
 
@@ -64,10 +66,10 @@ public abstract class DefaultAbstractConformance implements IConformance {
 
 
 	@Override
-	public Constraint getQuery(IInstance instance) throws ThinklabException {
+	public IQuery getQuery(IInstance instance) throws ThinklabException {
 
 		Constraint constraint = new Constraint(getMatchingConcept(instance.getDirectType()));
-		Restriction res = null;
+		IRestriction res = null;
 		
 		for (IRelationship r : instance.getRelationships()) {
 

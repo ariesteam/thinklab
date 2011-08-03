@@ -323,7 +323,7 @@ public class ModelMap {
 						if (ee instanceof FormObjectEntry && 
 								((FormObjectEntry)ee).form instanceof IModel) {
 							IModel m = (IModel) ((FormObjectEntry)ee).form;
-							modelsByObservable.put(m.getObservableClass(), m);
+							modelsByObservable.put(m.getObservable().getDirectType(), m);
 						}
 					}
 				}

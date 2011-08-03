@@ -12,5 +12,10 @@ public class Le extends Operator {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	@Override
+	public String getName() {
+		return "-";
+	}
+	
 }

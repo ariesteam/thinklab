@@ -35,7 +35,11 @@ package org.integratedmodelling.searchengine;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.LogicalConnector;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
+import org.integratedmodelling.thinklab.api.lang.IList;
 
 /**
  * A textual query that is initialized from a string. We may want to preprocess it and
@@ -43,6 +47,9 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
  * 
  * If the query goes to a kbox, we may direct those fields to an actual Constraint query
  * to intersect results with, according to the kbox's capabilities.
+ * 
+ * TODO find a smart way to implement the full contract of IQuery while preserving
+ * the fuzzy search capabilities.
  * 
  * @author Ferdinando Villa
  *
@@ -82,6 +89,59 @@ public class QueryString implements IQuery {
 		}
 		
 		return new QueryString(txt);
+	}
+
+	@Override
+	public IList asList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IQuery restrict(LogicalConnector connector,
+			IRestriction... restrictions) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addObjectRestriction(String propertyType, IQuery objectQuery)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addClassificationRestriction(String propertyType, String classID)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addLiteralRestriction(String propertyType, String operator,
+			String value) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addLiteralRestriction(String propertyType, String operator,
+			IValue value) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public IRestriction getRestrictions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean match(IInstance i) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -304,7 +304,7 @@ public class Unit implements IUnit {
 	
 	@Override
 	public String toString() {
-		return _unit.toString();
+		return _unit.toString() + (_modifier == null ? "" : "@" + _modifier);
 	}
 	
 	/* (non-Javadoc)
@@ -344,6 +344,12 @@ public class Unit implements IUnit {
 		out.println("is" + (isLengthDensity() ? " " : " not ") +  "a lenght density");
 		out.println("is" + (isArealDensity() ? " " : " not ") +  "an areal density");
 		out.println("is" + (isVolumeDensity() ? " " : " not ") +  "a volumetric density");
+	}
+
+
+	@Override
+	public String asText() {
+		return toString();
 	}
 
 }

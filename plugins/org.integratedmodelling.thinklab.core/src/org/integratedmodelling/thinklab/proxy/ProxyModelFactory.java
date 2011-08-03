@@ -2,6 +2,7 @@ package org.integratedmodelling.thinklab.proxy;
 
 import java.util.Map;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.thinklab.api.lang.IList;
@@ -26,7 +27,7 @@ public class ProxyModelFactory implements IModelFactory {
 
 	@Override
 	public IModel createModel(INamespace arg0, SemanticType arg1,
-			Map<String, Object> arg2) {
+			Map<String, Object> arg2) throws ThinklabException {
 		return ModelManager.get().createModel(arg0, arg1, arg2);
 	}
 

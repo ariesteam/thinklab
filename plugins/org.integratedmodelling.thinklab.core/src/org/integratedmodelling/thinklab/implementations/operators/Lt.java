@@ -13,4 +13,9 @@ public class Lt extends Operator {
 		return null;
 	}
 
+	@Override
+	public String getName() {
+		return "<";
+	}
+
 }

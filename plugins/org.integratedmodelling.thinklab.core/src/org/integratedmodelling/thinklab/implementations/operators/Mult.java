@@ -13,4 +13,9 @@ public class Mult extends Operator {
 		return new NumberValue(asDouble(arg[0])*asDouble(arg[1]));
 	}
 
+	@Override
+	public String getName() {
+		return "*";
+	}
+
 }

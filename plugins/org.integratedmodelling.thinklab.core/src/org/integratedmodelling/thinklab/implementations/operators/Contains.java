@@ -13,4 +13,9 @@ public class Contains extends Operator {
 		return new BooleanValue(asText(arg[0]).contains(asText(arg[1])));
 	}
 
+	@Override
+	public String getName() {
+		return "contains";
+	}
+
 }

@@ -27,4 +27,10 @@ public class Between extends Operator {
 		return new BooleanValue(ret);
 		
 	}
+
+	@Override
+	public String getName() {
+		return "between";
+	}
+
 }

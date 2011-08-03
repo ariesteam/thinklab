@@ -13,4 +13,9 @@ public class Ge extends Operator {
 		return null;
 	}
 
+	@Override
+	public String getName() {
+		return ">=";
+	}
+
 }

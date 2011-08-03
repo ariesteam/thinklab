@@ -14,4 +14,9 @@ public class Plus extends Operator {
 	}
 
 
+	@Override
+	public String getName() {
+		return "+";
+	}
+
 }

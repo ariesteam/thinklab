@@ -12,4 +12,10 @@ public class Minus extends Operator {
 	public IValue eval(Object... arg) throws ThinklabException {
 		return new NumberValue(asDouble(arg[0])-asDouble(arg[1]));
 	}
+
+	@Override
+	public String getName() {
+		return "-";
+	}
+
 }

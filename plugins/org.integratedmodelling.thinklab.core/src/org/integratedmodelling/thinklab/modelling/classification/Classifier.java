@@ -260,5 +260,10 @@ public class Classifier implements IClassifier {
 	public void setClosure(IFn closure) {
 		this.closure = closure;
 	}
+
+	@Override
+	public String asText() {
+		return toString();
+	}
 	
 }

@@ -13,4 +13,9 @@ public class Eq extends Operator {
 		return new BooleanValue(arg[0].equals(arg[1]));
 	}
 
+	@Override
+	public String getName() {
+		return "=";
+	}
+
 }

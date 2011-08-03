@@ -1,14 +1,48 @@
 package org.integratedmodelling.thinklab.implementations.operators;
 
+import java.util.HashMap;
+
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.lang.IOperator;
 import org.integratedmodelling.thinklab.literals.NumberValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 
+/**
+ * Serves as an extensible factory for operators, provides a way to
+ * register their translation in various languages. Should also provide
+ * an extensible polymorphic eval (also TODO) so we can translate
+ * "foreign" language in models or other bindings to their Java calls.
+ * 
+ * @author Ferd
+ *
+ */
 public abstract class Operator implements IOperator {
 
 	String id = null;
+	
+	static HashMap<String,String> _translations = new HashMap<String, String>();
+	
+	public static final IOperator SUM = new Plus();
+	public static final IOperator MUL = new Mult();
+	public static final IOperator SUB = new Minus();
+	public static final IOperator DIV = new Div();
+	public static final IOperator MOD = new Mod();
+	
+	// TODO complete
+//	public static final IOperator AVG = "mean";
+//	public static final IOperator STD = "std";
+//	public static final IOperator CV  = "cv";
+//	public static final IOperator VAR = "var";
+//	
+	public static final IOperator INTERSECTION = new Intersection();
+	public static final IOperator UNION = new Union();
+	public static final IOperator INTERSECTS = new Intersects();
+
+//	public static final IOperator AND = "and";
+//	public static final IOperator OR = "or";
+//	public static final IOperator NOT = "not";
+//	public static final IOperator XOR = "xor";
 	
 	static boolean isNumeric(Object o) {
 		return 
@@ -63,15 +97,25 @@ public abstract class Operator implements IOperator {
 		throw new ThinklabValidationException("operator value type mismatch");
 	}
 	
+
 	@Override
-	public String getOperatorId() {
-		return id;
+	public String toString() {
+		return getName();
+	}
+
+	/**
+	 * Register translation in given language for given operator
+	 * 
+	 * @param op
+	 * @param language
+	 * @param translation
+	 */
+	public static void registerTranslation(IOperator op, String language, String translation) {
+		_translations.put(op.getName() + "|" + language, translation);
 	}
 	
 	@Override
-	public String toString() {
-		return getOperatorId();
+	public final String getName(String language) {
+		return _translations.get(getName() + "|" + language);
 	}
-
-
 }

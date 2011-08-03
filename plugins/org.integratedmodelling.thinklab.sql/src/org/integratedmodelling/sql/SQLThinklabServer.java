@@ -64,6 +64,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
@@ -846,7 +847,7 @@ public abstract class SQLThinklabServer {
 		}
 	}
 
-	private String translateMetadataRestriction(Restriction restriction) throws ThinklabException {
+	private String translateMetadataRestriction(IRestriction restriction) throws ThinklabException {
 
 		if (restriction == null)
 			return "";
@@ -857,7 +858,7 @@ public abstract class SQLThinklabServer {
 			
 			LogicalConnector connector = restriction.getConnector();
 			
-			for (Restriction r : restriction.getChildren()) {
+			for (IRestriction r : restriction.getChildren()) {
 				
 				String sql = translateMetadataRestriction(r);
 				
@@ -885,7 +886,7 @@ public abstract class SQLThinklabServer {
 			ret += ")";
 						
 		} else {
-			ret = translateOperator(restriction);			
+			ret = translateOperator((Restriction)restriction);			
 		}
 		return ret;
 		
@@ -915,9 +916,9 @@ public abstract class SQLThinklabServer {
 			
 			LogicalConnector connector = restriction.getConnector();
 			
-			for (Restriction r : restriction.getChildren()) {
+			for (IRestriction r : restriction.getChildren()) {
 				
-				String sql = translateRestriction(r);
+				String sql = translateRestriction((Restriction)r);
 				
 				/* if any of the ANDed queries has no context, the whole thing has no context. */
 				if (sql == null && connector.equals(LogicalConnector.INTERSECTION))
@@ -1019,7 +1020,7 @@ public abstract class SQLThinklabServer {
         		 * select the domain objects of the object relationships that link to the
         		 * objects that satisfy the subconstraint.
         		 */
-        		ret = translateConstraint(restriction.getSubConstraint());
+        		ret = translateConstraint(restriction.getSubQuery());
 
         		if (ret == null)
         			return null;
@@ -1150,7 +1151,7 @@ public abstract class SQLThinklabServer {
 	     TypeTranslator tt = getTypeTranslator(rcls);
 	     
 	     /* translate the operator and the arguments */
-	     OpTranslator op = tt.getOperator(restriction.getOperator().getOperatorId());
+	     OpTranslator op = tt.getOperator(restriction.getOperator().getName());
 	     
 	     if (op == null) {
 	    	 throw new ThinklabStorageException("sql: operator " +

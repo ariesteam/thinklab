@@ -45,6 +45,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IList;
 
 
@@ -180,13 +181,17 @@ public class Constraint implements IQuery {
 		if (restrictions.size() == 1) 
 			body = restrictions.get(0);
 		else if (restrictions.size() > 1)
-			body = Restriction.AND(restrictions.toArray(new Restriction[restrictions.size()]));
+			body = (Restriction)Restriction.AND(restrictions.toArray(new Restriction[restrictions.size()]));
 		
 		if (concept == null) {
 			concept = KnowledgeManager.Thing();
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#asList()
+	 */
+	@Override
 	public IList asList() {
 		
 		ArrayList<Object> def = new ArrayList<Object>();
@@ -226,41 +231,39 @@ public class Constraint implements IQuery {
 	 * @returns self, not a new constraint; it's done only to enable shorter idioms when creating
 	 * a constraint like new Constraint(..).restrict(...);
 	 */
-	public Constraint restrict(Restriction ... restrictions) {
+	public Constraint restrict(IRestriction ... restrictions) {
 		return restrict(LogicalConnector.INTERSECTION, restrictions);
 	}
 	
-	public Constraint restrict(Collection<Restriction> restrictions) {
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#restrict(java.util.Collection)
+	 */
+	public Constraint restrict(Collection<IRestriction> restrictions) {
 		return restrict(
 				restrictions.toArray(
 						new Restriction[restrictions.size()]));
 	}
 	
-	/**
-	 * Restrict the current constraint by properly merging in the passed connections using the passed
-	 * mode. Don't even think about passing anything but AND and OR, although no check is made.
-	 * @param connector LogicalConnector.INTERSECTION or UNION. Nothing else please.
-	 * @param restrictions as many new restrictions as you want. NULLs are accepted and will be ignored for
-	 *        convenience.
-	 * @returns this, not a new constraint; it's done only to enable shorter idioms when creating
-	 *    a constraint like new Constraint(..).restrict(...);
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#restrict(org.integratedmodelling.lang.LogicalConnector, org.integratedmodelling.thinklab.constraint.Restriction)
 	 */
-	public Constraint restrict(LogicalConnector connector, Restriction ... restrictions) {
+	@Override
+	public Constraint restrict(LogicalConnector connector, IRestriction ... restrictions) {
 		
 		/*
 		 * remove all NULLs from the restriction array. A bit messy but the convenience is 
 		 * priceless.
 		 */
 		int nulls = 0;
-		for (Restriction r: restrictions) 
+		for (IRestriction r: restrictions) 
 			if (r == null)
 				nulls++;
 		if (nulls > 0) {
 			Restriction[] repl = new Restriction[restrictions.length - nulls];
 			int i = 0;
-			for (Restriction r : restrictions) {
+			for (IRestriction r : restrictions) {
 				if (r != null)
-					repl[i++] = r;
+					repl[i++] = (Restriction)r;
 			}
 			restrictions = repl;
 		}
@@ -268,13 +271,13 @@ public class Constraint implements IQuery {
 		/* empty body, just add the AND of the restrictions, or if it's just one make it the body. */
 		if (body == null) {
 			if (restrictions.length > 1) {
-				body = Restriction.AND(restrictions);
+				body = (Restriction)Restriction.AND(restrictions);
 			} else {
-				body = restrictions[0];
+				body = (Restriction)restrictions[0];
 			}				
 		} else if (body.isConnector() && body.connector.equals(connector)) {
 			/* we're a compatible connector, merge our restrictions directly as siblings */
-			for (Restriction restriction : restrictions)
+			for (IRestriction restriction : restrictions)
 				body.siblings.add(restriction);
 		} else {
 			
@@ -284,25 +287,22 @@ public class Constraint implements IQuery {
 			 */
 			Restriction bd = body;
 			if (connector.equals(LogicalConnector.INTERSECTION)) {
-				body = Restriction.AND(bd);
+				body = (Restriction)Restriction.AND(bd);
 			} else if (connector.equals(LogicalConnector.UNION)) {
-				body = Restriction.OR(bd);
+				body = (Restriction)Restriction.OR(bd);
 			} 
 			
-			for (Restriction restriction : restrictions)
+			for (IRestriction restriction : restrictions)
 				body.siblings.add(restriction);
 		}
 		
 		return this;
 	}
 	
-	/**
-	 * 
-	 * @param constraint
-	 * @param connector
-	 * @throws ThinklabIncompatibleConstraintException
-	 * @Override
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#merge(org.integratedmodelling.thinklab.api.knowledge.query.IQuery, org.integratedmodelling.lang.LogicalConnector)
 	 */
+	@Override
 	public IQuery merge(IQuery query, LogicalConnector connector) throws ThinklabException {
 
 		if (query == null)
@@ -352,62 +352,42 @@ public class Constraint implements IQuery {
 		return ret;
 	}
 	
-	/**
-	 * Add a restriction as a constraint on a linked object. If any other restriction exist, AND them. If
-	 * another connector is wanted, use the restriction class directly or the list format.
-	 * 
-	 * @param propertyType
-	 * @param objectConstraint
-	 * @throws ThinklabException 
-	 * @throws ThinklabIncompatibleConstraintException 
-	 * @category Creation API
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#addObjectRestriction(java.lang.String, org.integratedmodelling.thinklab.constraint.Constraint)
 	 */
-	public void addObjectRestriction(String propertyType, Constraint objectConstraint) throws ThinklabException {
-		restrict(new Restriction(propertyType, objectConstraint));
+	@Override
+	public void addObjectRestriction(String propertyType, IQuery objectConstraint) throws ThinklabException {
+		restrict(new Restriction(propertyType, (Constraint)objectConstraint));
 	}
 	
-	/**
-	 * Add a restriction as a constraining class on a classification property. If any other restriction exist, AND them. If
-	 * another connector is wanted, use the restriction class directly or the list format.
-	 * 
-	 * @param propertyType
-	 * @param classID
-	 * @category Creation API
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#addClassificationRestriction(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void addClassificationRestriction(String propertyType, String classID)  throws ThinklabException {
 		restrict(new Restriction(propertyType, classID));
 	}
 	
-	/**
-	 * Add a restriction as the result of an operator on a linked literal. If any other restriction exist, AND them. If
-	 * another connector is wanted, use the restriction class directly or the list format.
-	 * 
-	 * @param propertyType
-	 * @param operator
-	 * @param value
-	 * @category Creation API
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#addLiteralRestriction(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void addLiteralRestriction(String propertyType, String operator, String value)  throws ThinklabException  {
 		restrict(new Restriction(propertyType, operator, value));
 	}
 
-	/**
-	 * Add a restriction as the result of an operator on a linked literal. If any other restriction exist, AND them. If
-	 * another connector is wanted, use the restriction class directly or the list format.
-	 * 
-	 * @param propertyType
-	 * @param operator
-	 * @param value
-	 * @category Creation API
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#addLiteralRestriction(java.lang.String, java.lang.String, org.integratedmodelling.thinklab.api.knowledge.IValue)
 	 */
+	@Override
 	public void addLiteralRestriction(String propertyType, String operator, IValue value) throws ThinklabException {
 		restrict(new Restriction(propertyType, operator, value.toString()));
 	}
 
-	/**
-	 * Return the restriction objects
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#getRestrictions()
 	 */
+	@Override
 	public Restriction getRestrictions() {
 		return body == null ? null : body.getRestrictions();
 	}
@@ -453,13 +433,11 @@ public class Constraint implements IQuery {
 		return !concept.equals(KnowledgeManager.Thing());
 	}
 	
-    /**
-     * Validate passed object for conditions expressed in constraint. 
-     * @param i a concept or instance to validate.
-     * @return true if match is positive.
-     * @throws ThinklabException 
-     */
-    public boolean match(IInstance i) throws ThinklabException {
+    /* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#match(org.integratedmodelling.thinklab.api.knowledge.IInstance)
+	 */
+    @Override
+	public boolean match(IInstance i) throws ThinklabException {
         
     	boolean ok = concept.is(i.getDirectType());
     	
@@ -479,6 +457,10 @@ public class Constraint implements IQuery {
 		concept = c;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#asText()
+	 */
+	@Override
 	public String asText() {
 		return toString();
 	}
@@ -502,6 +484,10 @@ public class Constraint implements IQuery {
 		return ret;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#isEmpty()
+	 */
+	@Override
 	public boolean isEmpty() {
 		return empty();
 	}
@@ -513,12 +499,12 @@ public class Constraint implements IQuery {
 	 * @param property
 	 * @return
 	 */
-	public Restriction findRestriction(String property) {
+	public IRestriction findRestriction(String property) {
 
 		if (getRestrictions().getProperty().toString().equals(property))
 			return getRestrictions();
 
-		for (Restriction r : getRestrictions().getChildren()) {
+		for (IRestriction r : getRestrictions().getChildren()) {
 			if (r.getProperty().toString().equals(property))
 				return r;
 		}

@@ -13,4 +13,9 @@ public class Neq extends Operator {
 		return null;
 	}
 
+	@Override
+	public String getName() {
+		return "!=";
+	}
+
 }

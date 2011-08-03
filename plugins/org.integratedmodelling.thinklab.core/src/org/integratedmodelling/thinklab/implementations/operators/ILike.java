@@ -12,4 +12,10 @@ public class ILike extends Operator {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getName() {
+		return "ilike";
+	}
+
 }

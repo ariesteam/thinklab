@@ -10,6 +10,8 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.interpreter.ModelGenerator;
 import org.integratedmodelling.lang.SemanticType;
+import org.integratedmodelling.list.InstanceList;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
@@ -18,6 +20,7 @@ import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
+import org.integratedmodelling.thinklab.api.modelling.ModelTypes;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassification;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelManager;
@@ -270,17 +273,23 @@ public class ModelManager implements IModelManager, IModelFactory {
 	}
 
 	@Override
-	public IModel createModel(INamespace ns, SemanticType modelType, Map<String, Object> def) {
+	public IModel createModel(INamespace ns, SemanticType modelType, Map<String, Object> def) 
+			throws ThinklabException {
 
 		IModel ret = null;
+
+//      TODO use class from the concept, instantiate and define
+//		Thinklab.get().getClassForConcept(modelType.getConcept(Thinklab.get()));
+//		
+//		if ()
 		
-		if (modelType.equals(IModelFactory.C_MODEL)) {
+		if (modelType.equals(ModelTypes.C_MODEL)) {
 			ret = new Model(ns).define(def);
-		} else if (modelType.equals(IModelFactory.C_MEASUREMENT)) {			
+		} else if (modelType.equals(ModelTypes.C_MEASUREMENT)) {			
 			ret = new MeasurementModel(ns, (IUnit) def.get(K_UNIT)).define(def);
-		} else if (modelType.equals(IModelFactory.C_RANKING)) {			
+		} else if (modelType.equals(ModelTypes.C_RANKING)) {			
 			ret = new RankingModel(ns).define(def);
-		} else if (modelType.equals(IModelFactory.C_CLASSIFICATION)) {			
+		} else if (modelType.equals(ModelTypes.C_CLASSIFICATION)) {			
 			ret = new ClassificationModel(ns, createClassification(def.get(K_CLASSIFICATION))).define(def);
 		}
 		
@@ -296,6 +305,10 @@ public class ModelManager implements IModelManager, IModelFactory {
 	public IUnit parseUnit(String unit) throws ThinklabValidationException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public IInstance createObservable(InstanceList inst) throws ThinklabException {
+		return _session.createObject(inst.asList());
 	}
 
 }
