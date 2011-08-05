@@ -240,6 +240,8 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 		
 		if (self != null) {
 			parms = (PersistentArrayMap) parms.assoc(Keyword.intern(null, selfLabel), self);			
+			// for convenience
+			parms = (PersistentArrayMap) parms.assoc(Keyword.intern(null, "this"), self);			
 		}
 		
 		if (kwList == null) {
