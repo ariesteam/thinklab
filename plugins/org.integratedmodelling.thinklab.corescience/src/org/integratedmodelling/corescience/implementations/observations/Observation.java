@@ -65,6 +65,8 @@ public class Observation implements IObservation, IInstanceImplementation {
 	// look mediated and our state isn't stored, to ensure unique observables
 	// in the final context.
 	private boolean isMerged = false;
+
+	private boolean _secondary;
 	
 	public IDataSource<?> getDataSource()  {
 
@@ -389,5 +391,13 @@ public class Observation implements IObservation, IInstanceImplementation {
 	 */
 	public void preContextualization(ObservationContext context,
 			ISession session) throws ThinklabException {
+	}
+
+	public void setSecondary(boolean b) {
+		_secondary = b;
+	}
+	
+	public boolean isSecondary() {
+		return _secondary;
 	}
 }

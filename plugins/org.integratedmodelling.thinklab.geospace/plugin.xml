@@ -51,9 +51,6 @@
 			<export prefix="*"/>
 		</library>
 		<library id="gt2-arcgrid" path="lib/gt-arcgrid-2.6.5.jar" type="code"/>
-		<library id="gt2-arcsde" path="lib/gt-arcsde-2.6.5.jar" type="code">
-			<export prefix="*"/>
-		</library>
 		<library id="gt2-brewer" path="lib/gt-brewer-2.6.5.jar" type="code">
 			<export prefix="*"/>
 		</library>
@@ -74,9 +71,6 @@
 			<export prefix="*"/>
 		</library>
 		<library id="gt2-data" path="lib/gt-data-2.6.5.jar" type="code">
-			<export prefix="*"/>
-		</library>
-		<library id="gt2-db2" path="lib/gt-db2-2.6.5.jar" type="code">
 			<export prefix="*"/>
 		</library>
 		<library id="gt2-directory" path="lib/gt-directory-2.6.5.jar" type="code">

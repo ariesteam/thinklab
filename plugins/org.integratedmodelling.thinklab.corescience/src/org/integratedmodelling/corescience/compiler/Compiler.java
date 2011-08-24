@@ -198,7 +198,14 @@ public class Compiler {
 		
 		Observation ret = (Observation) context.getObservation();
 
-		contexts.put(ret.getObservableClass(), context);
+		boolean isthere = contexts.get(ret.getObservableClass()) != null;
+		
+		if (isthere)
+			// do not store the state - just the outermost one with this concept
+			ret.setSecondary(true);
+		else
+			contexts.put(ret.getObservableClass(), context);
+
 		addObservation(ret);
 
 		if (context.getState(ret.getObservableClass()) != null) {
@@ -443,6 +450,7 @@ public class Compiler {
 		}
 		
 		boolean storeState = 
+			!o.isSecondary() &&
 			o instanceof IndirectObservation && 
 			((IndirectObservation)o).getStateType() != null && 
 			isStored(o.getObservableClass());
