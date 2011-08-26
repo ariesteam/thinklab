@@ -261,7 +261,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/xsd-2.2.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/kxml2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/TableLayout-bin-jdk1.5-2007-04-21.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/auxdata.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/external.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/idv.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/jython.jar"/>
