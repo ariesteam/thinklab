@@ -7,15 +7,8 @@ import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
-import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
-import org.integratedmodelling.geospace.Geospace;
-import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
-import org.integratedmodelling.geospace.interfaces.IGazetteer;
-import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.modelling.ModelMap;
-import org.integratedmodelling.modelling.ObservationFactory;
-import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.interfaces.IDataset;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.literals.ContextValue;
@@ -24,24 +17,20 @@ import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.modelling.model.Scenario;
 import org.integratedmodelling.modelling.storage.FileArchive;
+import org.integratedmodelling.modelling.storage.GISArchive;
 import org.integratedmodelling.modelling.storage.NetCDFArchive;
 import org.integratedmodelling.modelling.visualization.FileVisualization;
 import org.integratedmodelling.modelling.visualization.ObservationListing;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
-import org.integratedmodelling.thinklab.exception.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.time.TimeFactory;
-import org.integratedmodelling.utils.Polylist;
 
 @ThinklabCommand(
 		name="model",
@@ -53,11 +42,11 @@ import org.integratedmodelling.utils.Polylist;
 		optionalArgumentDefaultValues="_NONE_,_NONE_",
 		optionalArgumentDescriptions="spatial or temporal context,spatial or temporal context",
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text",
-		optionArgumentLabels="all kboxes,,,none,256, , , , ",
-		optionLongNames="kbox,visualize,dump,outfile,resolution,clear,scenario,write,map",
-		optionNames="k,v,d,o,r,c,s,w,map",
-		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing,thinklab-core:Text,owl:Nothing,owl:Nothing",
-		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing,scenario to apply before computing,store results to standard workspace,show the model map (required dot installed)",
+		optionArgumentLabels="all kboxes,,,none,256, , , , , ",
+		optionLongNames="kbox,visualize,dump,outfile,resolution,clear,scenario,write,map,tiff",
+		optionNames="k,v,d,o,r,c,s,w,map,t",
+		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing,thinklab-core:Text,owl:Nothing,owl:Nothing,owl:Nothing",
+		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing,scenario to apply before computing,store results to standard workspace,show the model map (required dot installed),write geotiff coverages",
 		returnType="observation:Observation")
 public class ModelCommand implements ICommandHandler {
 
@@ -160,6 +149,17 @@ public class ModelCommand implements ICommandHandler {
 				out.write(outfile);
 				session.print(
 					"result of " + concept + " model written to " + outfile);
+			}
+			
+			if (command.hasOption("tiff")) {
+
+				/*
+				 * save to netcdf
+				 */
+				GISArchive out = new GISArchive(result);
+				String outdir = out.persist();
+				session.print(
+					"GeoTIFF files " + concept + " written to " + outdir);
 			}
 			
 			if (command.hasOption("dump")) {

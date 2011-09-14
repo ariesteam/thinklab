@@ -13,6 +13,9 @@ import org.geotools.coverage.grid.GridCoverageFactory;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.processing.Operations;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.integratedmodelling.corescience.interfaces.IContext;
+import org.integratedmodelling.corescience.interfaces.IExtent;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.geospace.extents.ArealExtent;
 import org.integratedmodelling.geospace.extents.GridExtent;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
@@ -24,16 +27,21 @@ import org.integratedmodelling.utils.MiscUtilities;
 
 public class RasterCoverage extends AbstractRasterCoverage {
 
-	
 	static GridCoverageFactory rasterFactory = new GridCoverageFactory();
 	
-	/**
-	 * Produce a new raster coverage from a cell extent and a vector of values that follow the
-	 * activation model in the extent. Used after external transformation of spatial data.
-	 * @throws ThinklabException 
-	 */
-	public RasterCoverage(String name, GridExtent extent, Object data) throws ThinklabException {
+	public RasterCoverage(IContext context, IState state) throws ThinklabException {
 		
+		double[] data = state.getDataAsDoubles();
+		IExtent space = context.getSpace();
+		
+		if (data == null || space == null || !(space instanceof GridExtent)) {
+			throw new ThinklabValidationException("cannot create a coverage from a non-spatial state");
+		}
+		
+		buildFromData(state.getObservableClass().getLocalName(), (GridExtent)space, data);
+	}
+	
+	private void buildFromData(String name, GridExtent extent, Object data)  throws ThinklabException {
 		/* 
 		 * build a coverage 
 		 * 
@@ -91,6 +99,16 @@ public class RasterCoverage extends AbstractRasterCoverage {
 				coverage.getEnvelope2D().getMaxX(),
 				coverage.getEnvelope2D().getMinY(),
 				coverage.getEnvelope2D().getMaxY(), crs);
+
+	}
+	
+	/**
+	 * Produce a new raster coverage from a cell extent and a vector of values that follow the
+	 * activation model in the extent. Used after external transformation of spatial data.
+	 * @throws ThinklabException 
+	 */
+	public RasterCoverage(String name, GridExtent extent, Object data) throws ThinklabException {
+		buildFromData(name, extent, data);
 	}
 	
 	/**
