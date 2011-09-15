@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
-    <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=1" prefer="public" xml:base="">
-        <uri id="Automatically generated entry, Timestamp=1307744348174" name="http://www.integratedmodelling.org/ks/ecology/lulc/anderson1.owl" uri="anderson1.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1307744348174" name="http://www.integratedmodelling.org/ks/ecology/lulc/anderson2.owl" uri="anderson2.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1307744348174" name="http://www.integratedmodelling.org/ks/ecology/lulc/apa.owl" uri="apa.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1307744348174" name="http://www.integratedmodelling.org/ks/ecology/lulc/corine.owl" uri="corine.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1307744348174" name="http://www.integratedmodelling.org/ks/ecology/lulc/domlulc.owl" uri="domlulc.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1307744348174" name="http://www.integratedmodelling.org/ks/ecology/lulc/glc.owl" uri="glc.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1307744348174" name="http://www.integratedmodelling.org/ks/ecology/lulc/landclassification.owl" uri="lulcobservation.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1307744348174" name="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl" uri="lulc.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1307744348174" name="http://www.integratedmodelling.org/ks/ecology/lulc/mglulc.owl" uri="mglulc.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1307744348174" name="http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl" uri="nlcd.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1307744348174" name="http://www.integratedmodelling.org/ks/ecology/lulc/veracruz-lulc.owl" uri="veracruz-lulc.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1307744348174" name="http://www.integratedmodelling.org/ks/lulc/infrastructure.owl" uri="infrastructure.owl"/>
+    <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
+        <uri id="Automatically generated entry, Timestamp=1315680638114" name="http://www.integratedmodelling.org/ks/ecology/lulc/anderson1.owl" uri="anderson1.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1315680638114" name="http://www.integratedmodelling.org/ks/ecology/lulc/anderson2.owl" uri="anderson2.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1315680638114" name="http://www.integratedmodelling.org/ks/ecology/lulc/apa.owl" uri="apa.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1315680638114" name="http://www.integratedmodelling.org/ks/ecology/lulc/corine.owl" uri="corine.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1315680638114" name="http://www.integratedmodelling.org/ks/ecology/lulc/domlulc.owl" uri="domlulc.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1315680638114" name="http://www.integratedmodelling.org/ks/ecology/lulc/glc.owl" uri="glc.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1315680638114" name="http://www.integratedmodelling.org/ks/ecology/lulc/landclassification.owl" uri="lulcobservation.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1315680638114" name="http://www.integratedmodelling.org/ks/ecology/lulc/lulc.owl" uri="lulc.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1315680638114" name="http://www.integratedmodelling.org/ks/ecology/lulc/mglulc.owl" uri="mglulc.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1315680638114" name="http://www.integratedmodelling.org/ks/ecology/lulc/nlcd.owl" uri="nlcd.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1315680638114" name="http://www.integratedmodelling.org/ks/ecology/lulc/tanzania-lulc.owl" uri="tanzania-lulc.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1315680638114" name="http://www.integratedmodelling.org/ks/ecology/lulc/veracruz-lulc.owl" uri="veracruz-lulc.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1315680638114" name="http://www.integratedmodelling.org/ks/lulc/infrastructure.owl" uri="infrastructure.owl"/>
     </group>
 </catalog>

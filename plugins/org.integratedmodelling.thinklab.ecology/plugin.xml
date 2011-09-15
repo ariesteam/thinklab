@@ -68,5 +68,9 @@
 	<extension id="veracruz" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
 		<parameter id="url" value="veracruz-lulc.owl"/>
 		<parameter id="concept-space" value="veracruz-lulc"/>
+	</extension>
+    <extension id="tanzania-lulc" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
+		<parameter id="url" value="tanzania-lulc.owl"/>
+		<parameter id="concept-space" value="tanzania-lulc"/>
 	</extension>	
 </plugin>
