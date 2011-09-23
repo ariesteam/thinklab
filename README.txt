@@ -1,24 +1,55 @@
-In order to install Thinklab, you must first install JAI and JAI-ImageIO, which 
-you can download from here:
+         _____  _   _  _____  _   _  _   _  _       ___   _____
+        |_   _|| | | ||_   _|| \ | || | / /| |     / _ \ |  _  \
+          | |  | |_| |  | |  |  \| || |/ / | |    | |_| || |_| /
+          | |  |  _  |  | |  |     ||   (  | |    |  _  ||  _ (
+          | |  | | | | _| |_ | |\  || |\ \ | |___ | | | || |_| \
+          |_|  |_| |_||_____||_| \_||_| \_\|_____||_| |_||_____/
 
-JAI         => https://jai.dev.java.net/binary-builds.html
-JAI-ImageIO => https://jai-imageio.dev.java.net/binary-builds.html
+Thinklab (Semantic Modelling Platform)
+======================================
 
-Then cd into the toplevel Thinklab directory (which contains this README) and...
+Version 1.0-beta (23-09-2011)
+-----------------------------
 
-1) Set the THINKLAB_HOME variable to a directory where you have write 
-   permission and want to install Thinklab.
+Introduction
+------------
 
-2) Run 'ant install' to build the core distribution and plugins and install
-   them in THINKLAB_HOME.
+Thinklab is a semantic modelling platform that uses a framework of
+Observations and Observables to link ontologies to runnable code.
 
-3) Change directory to THINKLAB_HOME
+*It is highly complex. Seriously. Not for the faint of heart.*
 
-4) Either use the scripts in bin/ (thinklab.sh or thinklab.bat) to start the 
-   shell, or from the command line, run:
 
-   java -jar lib\im-boot.jar        [windows]
-   java -jar lib/im-boot.jar        [unix/linux]
+License
+-------
 
-That's it.  Enjoy.
+This program is distributed under the GNU General Public License - see
+the accompanying COPYING file for more details.
 
+
+Software updates
+----------------
+
+The most recent version of Thinklab can be found on our Github repo:
+https://github.com/ariesteam/thinklab
+
+
+Reporting Bugs
+--------------
+
+If you find any bugs in the system, please report them to the
+development team at aries@green-compass.org and/or make an issue on
+our Github repo: https://github.com/ariesteam/thinklab/issues
+
+
+Website
+-------
+
+For more information on the context and application of this work, see
+http://ariesonline.org
+
+
+Installation
+------------
+
+For installation instructions, see the accompanying INSTALL file.

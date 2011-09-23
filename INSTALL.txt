@@ -1,276 +1,89 @@
-THINKLAB & ARIES Installation Instructions for Windows machines:
+THINKLAB Installation Instructions
+==================================
 
-* Software to install:
+Get a JDK
+---------
 
-|------------+-----------------------------------------------------------------------------|
-| ClojureBox | contains Emacs, clojure-mode, and XML-mode for editing model and kbox files |
-| Protege    | for editing ontologies                                                      |
-| GeNIe      | for editing Bayesian networks                                               |
-| Git        | installed via msysgit; for managing code repositories                       |
-| Apache Ant | java build tool; for compiling thinklab and aries                           |
-| JDK1.6     | java development suite; used by ant and needed to run aries                 |
-| Java Libs  | Java3D, JAI (platform independent version w/o native acceleration)          |
-| PostgreSQL | object-relational database system for mapping modelling concepts to data    |
-| PostGIS    | spatial extension to PostgreSQL; enables spatial data storage and querying  |
-|------------+-----------------------------------------------------------------------------|
+Thinklab is a Java application released as source code, so you will
+need a JDK in order to compile and run it. If you don't already have
+one installed, you can download one from Oracle's website here:
+http://www.oracle.com/us/technologies/java/index.html
 
+If you know what you are doing and would prefer to use a JDK by a
+different vendor, have at it. We have not tested the three native
+libraries below with JDK's other than Oracle's, so buyer beware and
+all that.
 
-* Repository management:
 
-1) Create an account on http://github.com.
+Install some Java libraries
+---------------------------
 
-2) Make two new empty repositories on GitHub, called thinklab and
-   aries.
+Because Thinklab makes heavy use of geospatial functions and produces
+quite a few maps and images in different formats, you'll need to
+install three platform native libraries (i.e. C code with Java
+wrappers) into your JVM in order to run it:
 
-3) Setup SSH public/private keys between your Git program and GitHub.
+- Java3d      http://www.oracle.com/technetwork/java/javase/tech/index-jsp-138252.html
+- JAI         http://www.oracle.com/us/technologies/java/install-1-1-2-01-140526.html
+- JAI-ImageIO http://www.oracle.com/us/technologies/java/install-jai-imageio-1-0-01-139659.html
 
-4) From Git Bash, run these global Git configuration commands:
 
-   $ git config --global user.name  "Your Name"
-   $ git config --global user.email "your.email@server.com"
+Install Ant
+-----------
 
-5) Make a directory called repository on your computer to hold the
-   thinklab and aries code.
+Now that your JDK and native Java libraries are installed, you'll need
+a build tool to actually compile Thinklab for execution. Grab the
+Apache Ant build tool here: http://ant.apache.org.
 
-6) Use Git to clone git://github.com/lambdatronic/thinklab.git and
-   git://github.com/lambdatronic/aries.git into repository/thinklab
-   and repository/aries respectively.  Note: This automatically
-   creates a local master branch in your thinklab and aries
-   repositories.
 
-7) Configure your Git remotes with these Git Bash commands:
+Set your Environment Variables
+------------------------------
 
-   First in the thinklab directory:
-   $ git remote rename origin gary
-   $ git remote add ferd git://github.com/fvilla/thinklab.git
-   $ git remote add ken git://github.com/kbagstad/thinklab.git
-   $ git remote add brian git@github.com:bvoigt/thinklab.git
+|-------------------+-----------------------------------------------------------------------|
+| JAVA_HOME         | directory where you installed your JDK                                |
+| JAVA_OPTS         | options to your JVM (like min/max memory settings, server mode, etc.) |
+| ANT_HOME          | directory where you installed Ant                                     |
+| PATH              | make sure to add JAVA_HOME/bin and ANT_HOME/bin to this               |
+| THINKLAB_JRE      | directory containing the JRE you want to run Thinklab with            |
+| THINKLAB_MEMORY   | megabytes of RAM to allocate to your running Thinklab instance        |
+| THINKLAB_PERMSIZE | megabytes of RAM to allocate to your JVM for Java class caching       |
+| THINKLAB_SRC      | directory containing this INSTALL file                                |
+| THINKLAB_HOME     | directory where you want to install the compiled version of Thinklab  |
+|-------------------+-----------------------------------------------------------------------|
 
-   Then in the aries directory:
-   $ git remote rename origin gary
-   $ git remote add ferd git://github.com/fvilla/aries.git
-   $ git remote add ken git://github.com/kbagstad/aries.git
-   $ git remote add brian git@github.com:bvoigt/aries.git
 
-8) Use Git to fetch the latest updates from each of these repositories
-   (gary, ferd, and ken, NOT brian).
+Build Thinklab
+--------------
 
-9) Create and checkout a local dev branch in each of the thinklab and
-   aries repositories based off of gary/dev, using Git Bash like so:
+On Windows, simply run the build_thinklab.bat script in the bin/
+directory of this repository.
 
-   First in the thinklab directory:
-   $ git checkout -b dev gary/dev
+On MacOS X or Linux/FreeBSD/PickYourNix, open up a command prompt and:
 
-   Then in the aries directory:
-   $ git checkout -b dev gary/dev
+  $ cd $THINKLAB_SRC
+  $ ant install
 
-10) Use Git to push your thinklab and aries repos to the brian
-    remotes, which copies everything up to your GitHub account.
 
+Run Thinklab
+------------
 
-* Java and Ant configuration:
+On Windows, run the run_thinklab.bat script in the bin/ directory of
+this repository.
 
-IMPORTANT: If you have any JREs installed (excluding the ones which
-           come with your JDKs), uninstall them now, or they will
-           cause you no end of headaches as you go through this
-           process.
+On MacOS X or Linux/FreeBSD/PickYourNix, open up a command prompt and:
 
-1) Setup the following system-wide environment variables:
+  $ cd $THINKLAB_HOME
+  $ ./bin/thinklab.sh
 
-  ANT_HOME=<Apache Ant installation directory>
-  JAVA_HOME=<JDK1.6 installation directory>
-  JAVA_OPTS=-Xms512M -Xmx2048M              <-- or however much memory you can spare
-  PATH=%PATH%;%JAVA_HOME%\bin;%ANT_HOME%\bin
-  HOME=%HOMEDRIVE%%HOMEPATH%
+Alternatively, you could open a command prompt on any of these
+systems, change directory to THINKLAB_HOME, and run java directly:
 
-  ARIES_SRC=<aries repository directory>
-  ARIES_HOME=<aries installation directory>
-  ARIES_GAZETTEERS_HOME=%HOME%\.thinklab
-  THINKLAB_SRC=<thinklab repository directory>
-  THINKLAB_HOME=<thinklab installation directory>
-  THINKLAB_PLUGINS=%ARIES_HOME%\plugins
+  $ java -jar lib\im-boot.jar   [windows]
+  $ java -jar lib/im-boot.jar   [macosx/unix/linux]
 
-2) Test that this configuration works by opening a terminal and
-   running:
+In either case, you will be presented with a window containing a
+command prompt. Type 'help' to see a list of the commands
+available. Type 'help <command-name>' to see information about a
+particular command. To quit the application, type 'exit'.
 
-  $ java -version
-  $ ant -version
-
-  Both commands should simply print out the version information for
-  the JDK1.6 and Apache Ant programs that you have installed.
-
-3) You can now compile thinklab and aries by running the
-   %THINKLAB_HOME%\bin\build_thinklab.bat and
-   %ARIES_HOME%\bin\build_aries.bat scripts.  To make this easier, put
-   shortcuts to these two files on your desktop.
-
-4) You can start aries by running the
-   %THINKLAB_HOME%\bin\run_thinklab.bat script.  This will give you
-   the familiar Thinklab prompt.
-
-5) Remember to recompile and restart aries if you make any changes to
-   its files.
-
-
-* RiskWiz configuration
-
-1) Edit this file:
-
-  %HOME%\.thinklab\data\org.integratedmodelling.thinklab.riskwiz\config\riskwiz.config
-
-2) Uncomment this line:
-
-  thinklab.bayesian.engine = riskwiz
-
-
-* ClojureBox configuration:
-
-Since we really just want to run Emacs with an installed clojure-mode
-and paredit-mode, using ClojureBox makes this setup totally painless
-(since it's the default).  However, running the ClojureBox program
-puts us in Emacs at a SLIME REPL for testing Clojure code dynamically.
-This isn't our goal here, so we have to tweak the program so it just
-fires up a properly setup Emacs instance.
-
-1) Edit C:\Program Files(x86)\ClojureBox\emacs\site-lisp\default.el by
-   commenting out the last three lines in the file (prefix each one
-   with ;;) and adding a single right-paren on a line by itself at the
-   end of the file.
-
-2) Save default.el and run ClojureBox.  You should see a plain Emacs
-   *scratch* buffer.  If so, you're in business!
-
-3) Using Windows Explorer, navigate to
-   %ARIES_SRC%\plugins\org.integratedmodelling.aries.core\models.
-
-4) Check to make sure that all *.clj files in this directory are
-   automatically associated with ClojureBox.  If not associate the
-   *.clj file extension with this program.
-
-5) Using Windows Explorer, navigate to
-   %ARIES_SRC%\plugins\org.integratedmodelling.aries.administration\data.
-
-6) Check to make sure that all *.xml files in this directory are
-   automatically associated with ClojureBox.  If not associate the
-   *.xml file extension with this program.
-
-Please note that when you open a file for editing with ClojureBox, the
-Emacs instance that pops up is a server.  When you are finished
-editing the file, save it and press the X button in the Emacs toolbar,
-NOT the X button on the top right corner of the window.  This will
-close the file, but leave Emacs running.  When you click on other
-files to edit, they will automatically appear in the running Emacs
-window.  Please note that you can open any number of files in Emacs at
-the same time.  To switch between the different files you have open,
-use the Emacs Buffers menu.  Note that Save Buffer is C-x C-s.
-
-Also note that Emacs is an extremely versatile and adaptable editor.
-
-If you want Windows-style cut-and-paste keybindings (C-z, C-x, C-c,
-C-v), these are very easy to setup.  Simply check "Use CUA Bindings"
-under the Options menu.
-
-If you want to see tabs for the different files you have open instead
-of having to use the Buffers menu, this is also very easy to setup.
-Download tabbar.el (http://www.emacswiki.org/emacs/download/tabbar.el)
-and place it in a directory called %HOME%\elisp.  Create a file called
-%HOME%\.emacs and add these lines to it (obviously replacing
-yourusername with your actual user name):
-
-;; Begin Emacs Configuration
-
-(add-to-list 'load-path "C:/Users/yourusername/elisp")
-(require 'tabbar)
-
-(tabbar-mode 1)
-
-(define-key global-map [(ctrl left)] 'tabbar-backward)
-(define-key global-map [(ctrl right)] 'tabbar-forward)
-
-(setq-default tab-width 4)
-(setq-default indent-tabs-mode nil)
-
-(setq make-backup-files nil)
-
-;; End Emacs Configuration
-
-Once you've done this, save the .emacs file and restart ClojureBox.
-You can now use Ctrl Left-Arrow and Ctrl Right-Arrow to cycle between
-the currently opened buffers in your Emacs session.
-
-This configuration will also prevent Emacs from creating backup files
-like foo.clj~ whenever you save a file and will standardize tabstops
-at 4 spaces, thereby keeping your code nice and clean.
-
-
-* PostgreSQL/PostGIS configuration
-
-In order to run models, Thinklab/ARIES needs access to a local
-database where it can store mappings between its modelling concepts
-and the (possibly remote) datasources that will supply them with
-values as needed.  We'll use PostgreSQL with the PostGIS extensions to
-set this up.
-
-1) Start up your PostgreSQL server as a background service.  You might
-   want to configure this to startup automatically whenever you login.
-
-2) Run pgAdminIII to get a graphical PostgreSQL client running.
-
-3) Connect to your database server and create two new databases with
-   these settings:
-
-   Name: ariesdata
-   Encoding: UTF8
-   Template: template_postgis (you did remember to install PostGIS, right?)
-   Owner: postgres (this is the default PostgreSQL administrator account)
-
-   Name: <your_username>
-   Encoding: UTF8
-   Template: template_postgis
-   Owner: postgres
-
-4) To populate the ariesdata database, start up ARIES with the
-   %THINKLAB_HOME%\bin\run_thinklab.bat script.  At the prompt, type:
-
-   > pload administration
-   > run aries.initdb
-
-   If everything runs without errors, you are ready to go!  Note that
-   you will need an internet connection for this procedure to work as
-   ARIES must connect to one or more remote geoservers to build up its
-   datasource mappings.
-
-5) Next open
-   %HOME%.thinklab/data/org.integratedmodelling.thinklab.sql/config/sql.properties
-   with ClojureBox and add these lines at the end:
-
-   thinklab.sql.user=postgres
-   thinklab.sql.password=<your_database_administrator_password>
-   thinklab.sql.host=localhost
-
-6) Save the file and exit.
-
-7) Back at your aries prompt:
-
-   > gazetteer create
-
-   This creates and initializes your gazetteer database, so that you
-   can construct model contexts from WFS-accessible Shapefiles.
-
-8) To use the GUI version of ARIES if desired (e.g. to test the graphical appearance
-   of storylines), start the web server by issuing
-
-	> pload explorer
-	> http start aries
-	
-	Then connect to the address that is printed as a response 
-	(usually http://localhost:8060/aries.app) using Google Chrome,
-	Mozilla Firefox, or Safari. You can keep working in the command
-	line while the server is active, just keep in mind that your machine may
-	be taxed excessively by running models simultaneously.
-
-9) Exit ARIES like so:
-
-   > exit
-
-10) Done!  Now get to modelling!
+That's it. Enjoy.
