@@ -81,7 +81,7 @@ test  - runs some tests
 			<fileset dir="lib" includes="*.jar" />
 		</copy>
 		<copy todir="${build.home}">
-			<fileset dir="." includes="bin/*.*,hooks/*.*,*.*" excludes=".*,todo*" />
+			<fileset dir="." includes="bin/*.*,etc/**.*,hooks/*.*,*.*" excludes=".*,todo*" />
 		</copy>
 		<jpf-version basedir="${build.home}/plugins"
 		             includes="*/plugin.xml,*/plugin-fragment.xml"
