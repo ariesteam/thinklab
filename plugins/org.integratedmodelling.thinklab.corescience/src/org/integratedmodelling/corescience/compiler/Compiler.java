@@ -450,10 +450,10 @@ public class Compiler {
 		}
 		
 		boolean storeState = 
-			!o.isSecondary() &&
+			/* !o.isSecondary() && */
 			o instanceof IndirectObservation && 
-			((IndirectObservation)o).getStateType() != null && 
-			isStored(o.getObservableClass());
+			((IndirectObservation)o).getStateType() != null /* && 
+			isStored(o.getObservableClass()) */;
 
 		boolean isExtent = o instanceof Topology;
 

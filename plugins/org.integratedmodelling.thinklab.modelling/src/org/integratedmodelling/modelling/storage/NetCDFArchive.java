@@ -368,7 +368,7 @@ public class NetCDFArchive {
 	 */
 	private String getVarname(IConcept obs) {
 		
-		String ret = obs.getConceptSpace()+ "_" + obs.getLocalName();
+		String ret =  obs.getLocalName() + "_" + obs.getConceptSpace();
 		if (obs.is("geophysics:Altitude")) {
 			ret = "Altitude";
 		}
