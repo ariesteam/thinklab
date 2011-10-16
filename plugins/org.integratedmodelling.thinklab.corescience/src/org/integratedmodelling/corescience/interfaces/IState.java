@@ -109,4 +109,14 @@ public interface IState  extends /* IDataSource, */ IConceptualizable {
 	 * @return
 	 */
 	public abstract boolean isTemporallyDistributed();
+	
+	public abstract boolean isProbabilistic();
+	
+	public abstract boolean isContinuous();
+	
+	public abstract boolean isNumeric();
+	
+	public abstract boolean isCategorical();
+	
+	public abstract boolean isBoolean();
 }

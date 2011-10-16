@@ -139,6 +139,13 @@ public class Metadata extends HashMap<String, Object> {
 		Boolean ret = (Boolean) state.get(CONTINUOUS);
 		return (ret != null) && ret;
 	}
+	
+	public static boolean isBoolean(Metadata state) {
+		Boolean ret = (Boolean) state.get(BOOLEAN);
+		Boolean rnk = (Boolean) state.get(BOOLEAN_RANKING);
+		return ((ret != null) && ret) || ((rnk != null) && rnk);
+	}
+
 
 	public static boolean hasZeroCategory(Metadata state) {
 		Boolean ret = (Boolean) state.get(HASZERO);

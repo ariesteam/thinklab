@@ -138,5 +138,31 @@ public class IndexedContextualizedDatasourceByte<T> extends DefaultAbstractState
 		throw new ThinklabValueConversionException("can't convert concepts into doubles");
 	}
 
+	
+	@Override
+	public boolean isProbabilistic() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
+	@Override
+	public boolean isContinuous() {
+		return Metadata.isContinuous(metadata);
+	}
+
+	@Override
+	public boolean isNumeric() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isCategorical() {
+		return Metadata.isUnorderedClassification(metadata);
+	}
+
+	@Override
+	public boolean isBoolean() {
+		return Metadata.isBoolean(metadata);
+	}
 }

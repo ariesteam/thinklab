@@ -74,7 +74,7 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 		 */
 		Metadata.rankConcepts(type,  metadata);
 	}
-
+	
 	@Override
 	public Object getValue(int offset) {
 		Object ret = (offset >= 0 && offset < data.length) ? data[offset] : null;
@@ -263,5 +263,32 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 		}
 		
 		return ret;
+	}
+	
+	@Override
+	public boolean isProbabilistic() {
+		// TODO Auto-generated method stub
+		return prototype != null && prototype instanceof IndexedCategoricalDistribution;
+	}
+
+	@Override
+	public boolean isContinuous() {
+		return Metadata.isContinuous(metadata);
+	}
+
+	@Override
+	public boolean isNumeric() {
+		// TODO Auto-generated method stub
+		return prototype != null && prototype instanceof Number;
+	}
+
+	@Override
+	public boolean isCategorical() {
+		return Metadata.isUnorderedClassification(metadata);
+	}
+
+	@Override
+	public boolean isBoolean() {
+		return Metadata.isBoolean(metadata);
 	}
 }

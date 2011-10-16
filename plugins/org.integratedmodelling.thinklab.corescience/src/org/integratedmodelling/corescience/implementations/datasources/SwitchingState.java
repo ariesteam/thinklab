@@ -139,4 +139,50 @@ public class SwitchingState  extends DefaultAbstractState implements IState {
 		throw new ThinklabRuntimeException("unsupported getDoubleValue called on a switching datasource");
 	}
 
+	public IState getFirstState() {
+		for (ContextMapper c : states)
+			return c.getState();
+		return null;
+	}
+	
+	@Override
+	public boolean isProbabilistic() {
+		IState s = getFirstState();
+		if (s != null)
+			return s.isProbabilistic();
+		return false;
+	}
+
+	@Override
+	public boolean isContinuous() {
+		IState s = getFirstState();
+		if (s != null)
+			return s.isContinuous();
+		return false;
+	}
+
+	@Override
+	public boolean isNumeric() {
+		IState s = getFirstState();
+		if (s != null)
+			return s.isNumeric();
+		return false;
+	}
+
+	@Override
+	public boolean isCategorical() {
+		IState s = getFirstState();
+		if (s != null)
+			return s.isCategorical();
+		return false;
+	}
+
+	@Override
+	public boolean isBoolean() {
+		IState s = getFirstState();
+		if (s != null)
+			return s.isBoolean();
+		return false;
+	}
+
 }

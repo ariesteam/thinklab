@@ -172,5 +172,35 @@ public class MemDoubleContextualizedDatasource  extends DefaultAbstractState
 		return context.isCovered(index) ? data[index] : Double.NaN;
 	}
 
+	@Override
+	public boolean isProbabilistic() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isContinuous() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isNumeric() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCategorical() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isBoolean() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 }

@@ -27,7 +27,7 @@ import org.integratedmodelling.utils.Polylist;
  *
  * @param <ObjectType>
  */
-public class IndexedContextualizedDatasourceLong<T>  extends DefaultAbstractState
+public abstract class IndexedContextualizedDatasourceLong<T>  extends DefaultAbstractState
  	implements IState, IInstanceImplementation, IConceptualizable {
 
 	private static final long serialVersionUID = -6567783706189229920L;

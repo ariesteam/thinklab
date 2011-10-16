@@ -146,4 +146,29 @@ public class ClassData extends IndexedContextualizedDatasourceInt<IConcept> impl
 		return true;
 	}
 
+	@Override
+	public boolean isProbabilistic() {
+		return false;
+	}
+
+	@Override
+	public boolean isContinuous() {
+		return false;
+	}
+
+	@Override
+	public boolean isNumeric() {
+		return false;
+	}
+
+	@Override
+	public boolean isCategorical() {
+		return true;
+	}
+
+	@Override
+	public boolean isBoolean() {
+		return Metadata.isBoolean(metadata);
+	}
+
 }

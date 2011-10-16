@@ -143,4 +143,29 @@ public class DatasourceStateAdapter implements IDataSource<Object>, IState, IIns
 		return _state.isTemporallyDistributed();
 	}
 
+	@Override
+	public boolean isProbabilistic() {
+		return _state.isProbabilistic();
+	}
+
+	@Override
+	public boolean isContinuous() {
+		return _state.isContinuous();
+	}
+
+	@Override
+	public boolean isNumeric() {
+		return _state.isNumeric();
+	}
+
+	@Override
+	public boolean isCategorical() {
+		return _state.isCategorical();
+	}
+
+	@Override
+	public boolean isBoolean() {
+		return _state.isBoolean();
+	}
+
 }
