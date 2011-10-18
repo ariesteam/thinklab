@@ -36,6 +36,11 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 	IModel resultModel = null;
 	
 	@Override
+	public boolean isTrainable() {
+		return true;
+	}
+	
+	@Override
 	protected void copy(DefaultAbstractModel model) {
 		super.copy(model);
 		algorithm = ((BayesianModel)model).algorithm;
