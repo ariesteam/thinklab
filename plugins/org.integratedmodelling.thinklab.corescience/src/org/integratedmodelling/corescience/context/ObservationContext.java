@@ -908,6 +908,14 @@ public class ObservationContext implements IObservationContext, IContext {
 
 	@Override
 	public IState getState(IConcept concept) {
+
+//		if (!states.containsKey(concept)) {
+//			System.out.println("diocan, manca " + concept);
+//			for (IConcept k : states.keySet()) {
+//				System.out.println("celo: " + k);
+//			}
+//		}
+//		
 		return states.get(concept);
 	}
 

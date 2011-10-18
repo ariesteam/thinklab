@@ -293,4 +293,34 @@ public class TemporalLocationExtent implements IExtent {
 		// we have no gaps
 		return true;
 	}
+
+	@Override
+	public boolean isProbabilistic() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isContinuous() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isNumeric() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isCategorical() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isBoolean() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

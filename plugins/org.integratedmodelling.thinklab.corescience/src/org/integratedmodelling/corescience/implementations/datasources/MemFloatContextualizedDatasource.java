@@ -115,5 +115,37 @@ public class MemFloatContextualizedDatasource  extends DefaultAbstractState
 			throws ThinklabValueConversionException {
 		return data[index];
 	}
+	
+
+	@Override
+	public boolean isProbabilistic() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isContinuous() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isNumeric() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCategorical() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isBoolean() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 }

@@ -417,5 +417,35 @@ public abstract class ArealExtent implements IExtent {
 	public boolean isTemporallyDistributed() {
 		return false;
 	}
+	
+	@Override
+	public boolean isProbabilistic() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isContinuous() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isNumeric() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isCategorical() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isBoolean() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

@@ -6,6 +6,8 @@ import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.DatasourceStateAdapter;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.literals.IndexedCategoricalDistribution;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabValueConversionException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
@@ -114,6 +116,32 @@ public class IndexedContextualizedDatasourceInt<T>  extends DefaultAbstractState
 			throws ThinklabValueConversionException {
 		throw new ThinklabValueConversionException("can't convert concepts into doubles");
 	}
+	
+	@Override
+	public boolean isProbabilistic() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
+	@Override
+	public boolean isContinuous() {
+		return Metadata.isContinuous(metadata);
+	}
+
+	@Override
+	public boolean isNumeric() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isCategorical() {
+		return Metadata.isUnorderedClassification(metadata);
+	}
+
+	@Override
+	public boolean isBoolean() {
+		return Metadata.isBoolean(metadata);
+	}
 
 }

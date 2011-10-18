@@ -386,5 +386,30 @@ public class CategoricalDistributionDatasource extends
 	}
 	
 	
+	@Override
+	public boolean isProbabilistic() {
+		return true;
+	}
+
+	@Override
+	public boolean isContinuous() {
+		return Metadata.isContinuous(metadata);
+	}
+
+	@Override
+	public boolean isNumeric() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCategorical() {
+		return Metadata.isUnorderedClassification(metadata);
+	}
+
+	@Override
+	public boolean isBoolean() {
+		return Metadata.isBoolean(metadata);
+	}
 	
 }

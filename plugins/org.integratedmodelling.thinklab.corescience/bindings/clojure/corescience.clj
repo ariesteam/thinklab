@@ -55,15 +55,21 @@
      [observation]
      (.. (get-obs observation)(getDataSource)))
 
+;(defn find-state
+;	"Return the state of the observation of the specified observable if it can be found in the passed
+;	observation tree, or nil"
+;	[observation concept]
+;  (if (instance? org.integratedmodelling.corescience.interfaces.IObservationContext observation)
+;    (.getState observation concept)
+;    (let [o (find-observation observation concept)]
+;      (if (not (nil? o)) (get-state o)))))
+			
 (defn find-state
 	"Return the state of the observation of the specified observable if it can be found in the passed
 	observation tree, or nil"
 	[observation concept]
-  (if (instance? org.integratedmodelling.corescience.interfaces.IObservationContext observation)
-    (.getState observation concept)
-    (let [o (find-observation observation concept)]
-      (if (not (nil? o)) (get-state o)))))
-			
+  (.getState observation concept))
+
 (defn get-extent
 	"Retrieve and return the extent that observes the given concept (e.g. space) or nil. Note:
      this returns Java implementations of instances (IObservation), not IInstances."
