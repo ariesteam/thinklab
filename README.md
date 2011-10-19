@@ -53,3 +53,9 @@ Installation
 ------------
 
 For installation instructions, see the accompanying INSTALL file.
+
+
+Donate
+------
+
+[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=ariesteam&url=http://github.com/ariesteam/thinklab&title=Thinklab&language=en_GB&tags=github&category=software)

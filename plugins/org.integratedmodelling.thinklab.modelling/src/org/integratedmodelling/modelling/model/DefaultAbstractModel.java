@@ -51,6 +51,16 @@ public abstract class DefaultAbstractModel implements IModel {
 		this.namespace = namespace;
 	}
 	
+	/**
+	 * Flag trainability. Method, not tag interface, because in general
+	 * trainability may depend on state.
+	 * 
+	 * @return
+	 */
+	public boolean isTrainable() {
+		return false;
+	}
+	
 	@Override
 	public Set<IConcept> getObservables() {
 		
