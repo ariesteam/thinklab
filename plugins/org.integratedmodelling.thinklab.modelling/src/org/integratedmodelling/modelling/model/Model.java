@@ -248,6 +248,10 @@ public class Model extends DefaultAbstractModel {
 		return models.get(0);
 	}
 	
+	public Collection<IModel> getObservers() {
+		return models;
+	}
+	
 	/**
 	 * Return a scenario with all the observables that were declared
 	 * editable in the defmodel form.
