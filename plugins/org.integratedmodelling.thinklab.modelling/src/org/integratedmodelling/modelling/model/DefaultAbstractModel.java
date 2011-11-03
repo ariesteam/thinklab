@@ -484,12 +484,26 @@ public abstract class DefaultAbstractModel implements IModel {
 	}
 
 	@Override
-	public Model train(IKBox kbox, ISession session, Object... params)
+	public IModel train(IKBox kbox, ISession session, Object... params)
 			throws ThinklabException {
 		// TODO! Needs to observe everything (including the observed) and invoke
 		// a virtual
 		return null;
 	}
+	
+
+	/**
+	 * Return the model for the passed observable if it is in any dependency. If not, 
+	 * return null.
+	 * 
+	 * @param obs
+	 * @return
+	 */
+	public IModel findDependencyFor(IConcept obs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	/*
 	 * this should be protected, but...

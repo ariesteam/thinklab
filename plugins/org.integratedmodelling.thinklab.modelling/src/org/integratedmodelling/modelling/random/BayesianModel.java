@@ -1,7 +1,9 @@
 package org.integratedmodelling.modelling.random;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.ObservationFactory;
@@ -15,12 +17,15 @@ import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.modelling.model.DefaultStatefulAbstractModel;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
+import org.integratedmodelling.thinklab.riskwiz.bn.BayesianFactory;
+import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianNetwork;
 import org.integratedmodelling.utils.Polylist;
 
 public class BayesianModel extends DefaultStatefulAbstractModel implements IContextOptional {
@@ -210,4 +215,74 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		return null;
 	}
 
+	@Override
+	public IModel train(IKBox kbox, ISession session, Object... params)
+			throws ThinklabException {
+
+		IModel ret = null;
+		
+		/*
+		 * open the model and build a list of all the observables. Count the 
+		 * leaves (from model dependencies) and the total. If total - leaves > 0, we can train.
+		 */
+		 IBayesianNetwork bn = BayesianFactory.get().createBayesianNetwork(source);
+		 ArrayList<IConcept> observers = new ArrayList<IConcept>();
+		 
+		 HashSet<IConcept> nondeps = new HashSet<IConcept>();
+		 
+		 for (String c : bn.getAllNodeIds()) {
+			 IConcept obs = 
+					KnowledgeManager.getConcept(getObservableClass().getConceptSpace() + ":" + c);
+			 if (findDependencyFor(obs) == null) {
+				 nondeps.add(obs);
+			 }
+			 observers.add(obs);
+		 }
+		
+		 if (nondeps.size() == 0)
+			 return null;
+		 
+		/*
+		 * collect context and training directory from parameters; complain if
+		 * not found.
+		 */
+		IContext context = null;
+		File trainingDir = null;
+		for (Object p : params) {
+			if (p instanceof IContext) {
+				context = (IContext)p;
+			} else if (p instanceof File) {
+				trainingDir = (File)p;
+			}
+		}
+		
+		
+		/*
+		 * build and contextualize an ID of all the dependencies and observables
+		 * using the correspondent models.
+		 */
+		for (IConcept c : observers) {
+			IModel m = findDependencyFor(c);
+			if (m == null) {
+				/*
+				 * look it up in the observed
+				 */
+				for (IModel o : observed) {
+					if (o.getObservableClass().equals(c)) {
+						
+					}
+				}
+			}
+			if (m != null) {
+				
+			}
+		}
+		
+	
+		return ret;
+	
+	}
+
+	
+	
 }
