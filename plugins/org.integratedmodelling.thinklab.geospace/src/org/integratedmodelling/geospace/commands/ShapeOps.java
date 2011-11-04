@@ -1,5 +1,6 @@
 package org.integratedmodelling.geospace.commands;
 
+import java.io.File;
 import java.net.URL;
 
 import org.geotools.data.shapefile.ShapefileDataStore;
@@ -28,10 +29,11 @@ import com.vividsolutions.jts.geom.Geometry;
 		argumentNames="source",
 		argumentTypes="thinklab-core:Text",
 		argumentDescriptions="source of shapes (file)",
-		optionNames="op",
-		optionLongNames="operation",
-		optionTypes="thinklab-core:Text",
-		optionDescriptions="operation to perform")
+		optionNames="op,s",
+		optionLongNames="operation,simplify",
+		optionTypes="thinklab-core:Text,owl:Nothing",
+		optionArgumentLabels="operation,simplify flag",
+		optionDescriptions="operation to perform,simplify result")
 public class ShapeOps implements ICommandHandler {
 
 	CoordinateReferenceSystem crs = null;
@@ -43,7 +45,7 @@ public class ShapeOps implements ICommandHandler {
 		
 		ShapefileDataStore sds;
 		try {
-			URL sourceUrl  = new URL(command.getArgumentAsString("source"));
+			URL sourceUrl  = new File(command.getArgumentAsString("source")).toURI().toURL();
 			sds = new ShapefileDataStore(sourceUrl);
 //			String layerName = MiscUtilities.getNameFromURL(sourceUrl.toString());
 			FeatureCollection<SimpleFeatureType, SimpleFeature> features = sds.getFeatureSource(sds.getTypeNames()[0]).getFeatures();
@@ -60,6 +62,9 @@ public class ShapeOps implements ICommandHandler {
 			} else if (op.equals("union")) {
 				
 				ShapeValue union = performUnion(features);
+				if (command.hasOption("simplify"))
+					union.simplify(0.1);
+				
 				session.print("Union:\n" + union);
 				
 			}
