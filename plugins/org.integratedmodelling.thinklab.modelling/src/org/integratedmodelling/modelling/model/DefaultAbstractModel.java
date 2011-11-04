@@ -20,6 +20,7 @@ import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IModelForm;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
@@ -29,6 +30,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.thinklab.interfaces.query.IConformance;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
@@ -621,7 +623,75 @@ public abstract class DefaultAbstractModel implements IModel {
 	 */
 	@Override
 	public IModel applyScenario(Scenario scenario) throws ThinklabException {
-		return applyScenarioInternal(scenario, new Session());
+		return fixDependencies(applyScenarioInternal(scenario, new Session()));
+	}
+
+	/**
+	 * A temporary hack that turns those models that depend on their same concepts into others that
+	 * depend on derived ones. These models should just be illegal and the same thing implemented as
+	 * a transformation with dependencies, but we don't have that yet.
+	 * 
+	 * Changes the passed model - should be called on a clone. Only used in scenarios as those
+	 * transformations are not good programming otherwise.
+	 * 
+	 * @param applyScenarioInternal
+	 * @return
+	 * @throws ThinklabException 
+	 */
+	private IModel fixDependencies(IModel model) throws ThinklabException {
+		HashSet<IConcept> deps = new HashSet<IConcept>();
+		fixDependenciesInternal(model, deps);
+		return model;
+	}
+
+	private void fixDependenciesInternal(IModel model, HashSet<IConcept> deps) throws ThinklabException {
+
+		if (model instanceof Model && deps.contains(model.getObservableClass())) {
+			
+			IOntology o = model.getObservableClass().getOntology();
+
+			String label = model.getObservableClass().toString();
+			
+			// remove concept adjustments from duplicated concepts in scenarios
+			if (label.contains("___")) {
+				int lc = label.indexOf("___");
+				label = label.substring(0, lc);
+			}
+			
+			IConcept c = null;
+			for (int i = 1; ; i++) {
+				c = KnowledgeManager.get().retrieveConcept(label + "___" + i);
+				boolean ok = c == null;
+				if (!ok)
+					ok = !deps.contains(c);
+				
+				if (ok) {
+					if (c == null) {
+						c = o.createConcept(model.getObservableClass().getLocalName() + "___" + i, 
+								new IConcept[]{model.getObservableClass()}, false);
+					}
+					break;
+				}
+			}
+			
+			((DefaultAbstractModel)model).setObservable(c);
+		}
+
+		deps.add(model.getObservableClass());
+		
+		if (model instanceof Model) {
+			for (IModel m : ((Model)model).getObservers()) {
+				fixDependenciesInternal(m, deps);
+			}
+
+			/*
+			 * TODO see if we need to do the same with context models - hopefully not.
+			 */
+		} else {
+			for (IModel m : model.getDependencies()) {
+				fixDependenciesInternal(m, deps);
+			}
+		}
 	}
 
 	protected IModel applyScenarioInternal(Scenario scenario, Session session)
