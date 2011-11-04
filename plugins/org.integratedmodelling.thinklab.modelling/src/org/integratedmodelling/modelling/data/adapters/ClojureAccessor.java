@@ -316,9 +316,16 @@ public abstract class ClojureAccessor extends DefaultAbstractAccessor {
 			} else {
 				
 				String label = ((Observation)observation).getFormalName();
-				if (label == null)
+				if (label == null) {
 					label = CamelCase.toLowerCase(observation.getObservableClass().getLocalName(), '-');
-
+				}
+				
+				// remove concept adjustments from duplicated concepts in scenarios
+				if (label.contains("___")) {
+					int lc = label.indexOf("___");
+					label = label.substring(0, lc);
+				}
+				
 				parmList.add(new Pair<String, Integer>(label, register));
 			}
 		}
