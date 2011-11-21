@@ -78,8 +78,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/log4j-1.2.13.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/owlsyntax.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/pellet.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/protege.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/protege-owl.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/rdf-api-2001-01-19.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/resolver.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/serializer.jar"/>
@@ -258,7 +256,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/xml-commons-resolver-1.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/xmlgraphics-commons-1.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/xpp3-1.1.3.4.O.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/xsd-2.2.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/kxml2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/TableLayout-bin-jdk1.5-2007-04-21.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.idv/lib/external.jar"/>

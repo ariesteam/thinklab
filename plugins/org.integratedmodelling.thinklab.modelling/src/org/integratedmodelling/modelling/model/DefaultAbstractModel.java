@@ -502,7 +502,24 @@ public abstract class DefaultAbstractModel implements IModel {
 	 * @return
 	 */
 	public IModel findDependencyFor(IConcept obs) {
-		// TODO Auto-generated method stub
+
+		if (getObservableClass().equals(obs))
+			return this;
+		
+		if (this instanceof Model) {
+			for (IModel md : ((Model)this).models) {
+				IModel m = ((DefaultAbstractModel)md).findDependencyFor(obs);
+				if (m != null)
+					return m;
+			}
+		}
+		
+		for (IModel md : this.dependents) {
+			IModel m = ((DefaultAbstractModel)md).findDependencyFor(obs);
+			if (m != null)
+				return m;
+		}
+
 		return null;
 	}
 

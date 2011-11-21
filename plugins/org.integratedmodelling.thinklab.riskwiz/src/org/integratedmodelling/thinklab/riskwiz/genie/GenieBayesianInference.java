@@ -1,12 +1,15 @@
 package org.integratedmodelling.thinklab.riskwiz.genie;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianInference;
+import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianNetwork;
 
 import smile.Network;
+import smile.learning.DataSet;
 
 public class GenieBayesianInference implements IBayesianInference {
 
@@ -62,6 +65,18 @@ public class GenieBayesianInference implements IBayesianInference {
 	@Override
 	public double[] getMarginalValues(String node) {
 		return network.getNodeValue(node);
+	}
+
+	@Override
+	public IBayesianNetwork train(File observations) throws ThinklabException {
+		
+		// TODO Auto-generated method stub
+		DataSet dset = new DataSet();
+		dset.readFile(observations.toString(), "*");
+		
+		
+		
+		return null;
 	}
 
 }

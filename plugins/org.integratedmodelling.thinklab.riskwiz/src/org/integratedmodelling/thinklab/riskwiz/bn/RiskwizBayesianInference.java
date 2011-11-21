@@ -1,5 +1,6 @@
 package org.integratedmodelling.thinklab.riskwiz.bn;
 
+import java.io.File;
 import java.util.Map;
 
 import org.integratedmodelling.riskwiz.bn.BeliefNetwork;
@@ -9,6 +10,7 @@ import org.integratedmodelling.riskwiz.jtree.JTInference;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianInference;
+import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianNetwork;
 
 public class RiskwizBayesianInference implements IBayesianInference {
 
@@ -52,5 +54,11 @@ public class RiskwizBayesianInference implements IBayesianInference {
 	@Override
 	public double[] getMarginalValues(String node) {
 		return inference.getMarginal(node).getValues();
+	}
+
+	@Override
+	public IBayesianNetwork train(File observations) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

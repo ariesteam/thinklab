@@ -10,9 +10,11 @@ import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.modelling.corescience.ClassificationModel;
+import org.integratedmodelling.modelling.corescience.ObservationModel;
 import org.integratedmodelling.modelling.implementations.observations.BayesianTransformer;
 import org.integratedmodelling.modelling.interfaces.IContextOptional;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.modelling.model.DefaultStatefulAbstractModel;
 import org.integratedmodelling.modelling.model.Model;
@@ -23,6 +25,8 @@ import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.riskwiz.bn.BayesianFactory;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianNetwork;
@@ -261,24 +265,59 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		 * build and contextualize an ID of all the dependencies and observables
 		 * using the correspondent models.
 		 */
+		ObservationModel idnt = new ObservationModel(this.getNamespace());
+		idnt.setObservable(this.getObservableClass());
+		
 		for (IConcept c : observers) {
 			IModel m = findDependencyFor(c);
 			if (m == null) {
+				
 				/*
 				 * look it up in the observed
 				 */
 				for (IModel o : observed) {
 					if (o.getObservableClass().equals(c)) {
-						
+						m = o;
+						break;
 					}
 				}
 			}
 			if (m != null) {
-				
+				idnt.addDependentModel(m);
 			}
 		}
 		
-	
+		session.print("computing available evidence... ");
+		IQueryResult r = 
+				ModelFactory.get().run(new Model(idnt), kbox, session, null, context);
+			
+		if (r.getTotalResultCount() > 0) {
+			
+			IValue res = r.getResult(0, session);
+			IContext result = ((ContextValue)res).getObservationContext();
+			session.print("done. Creating training dataset... ");
+			
+			/*
+			 * create training datafile
+			 */
+			
+			/*
+			 * write out headers
+			 */
+			
+			for (int i = 0; i < result.getMultiplicity(); i++) {
+				/*
+				 * only write row if there is at least one output non-nil and 
+				 * one input observation. 
+				 */
+			}
+			
+			
+		} else {
+			session.print("no results. Exiting.");
+			return null;
+		}
+		
 		return ret;
 	
 	}
