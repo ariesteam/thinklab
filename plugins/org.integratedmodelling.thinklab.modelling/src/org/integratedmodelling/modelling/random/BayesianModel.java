@@ -1,6 +1,9 @@
 package org.integratedmodelling.modelling.random;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -21,6 +24,7 @@ import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -295,11 +299,20 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			
 			IValue res = r.getResult(0, session);
 			IContext result = ((ContextValue)res).getObservationContext();
-			session.print("done. Creating training dataset... ");
+			session.print("done.\nCreating training dataset... ");
+			PrintWriter out = null;
 			
 			/*
 			 * create training datafile
 			 */
+			try {
+				out = 
+					new PrintWriter(
+							new FileOutputStream(
+									getObservableClass().getLocalName() + ".txt", true));
+			} catch (FileNotFoundException e) {
+				throw new ThinklabIOException(e);
+			}
 			
 			/*
 			 * write out headers
@@ -312,6 +325,14 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 				 */
 			}
 			
+			out.close();
+			session.print("done.\nTraining... ");
+			
+			
+			session.print("done.\nWriting out trained model... ");
+			
+			
+			session.print("all done.");
 			
 		} else {
 			session.print("no results. Exiting.");
