@@ -81,9 +81,7 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/rdf-api-2001-01-19.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/resolver.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/serializer.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/stax-api-1.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/swrl-jess-bridge.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/wstx-asl-2.8.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/wstx-asl-3.0.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/xercesImpl-2.7.1.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/xml-apis.jar"/>
@@ -108,10 +106,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/picocontainer-1.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/postgis-driver-1.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/relaxngDatatype-X.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/slf4j-api-1.4.0.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/slf4j-jdk14-1.4.0.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/vecmath-1.3.1.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.groovy/lib/groovy-all-1.0-JSR-06.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.persistence/lib/c3p0-0.9.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.persistence/lib/cglib-2.1.3.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.persistence/lib/dom4j-1.6.1.jar"/>
@@ -196,11 +190,8 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/netcdfUI-4.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/opendap-2.1.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/slf4j-api-1.5.6.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/slf4j-jdk14-1.5.6.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/slf4j-log4j12-1.5.6.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/spring-2.5.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/stax-api-1.0.1.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/visad.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.riskwiz/lib/smile.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-mappane-2.5-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/h2-1.1.104.jar"/>
@@ -383,7 +374,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/jsp-api-2.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/jxl.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/servlet-api-2.5-6.1.3.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/slf4j-api-1.3.1.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/slf4j-simple-1.3.1.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/timelinez.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.http/lib/timeplotz.jar"/>

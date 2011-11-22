@@ -89,7 +89,7 @@ public class TrainingManager {
 
 		if (trainable.size() > 0) {
 			
-			id = NameGenerator.newName(model.getId());
+			id = NameGenerator.newID();
 			
 			/*
 			 * setup dirs for serialization
@@ -100,10 +100,15 @@ public class TrainingManager {
 			tdir.mkdirs();
 			
 			/*
+			 * TODO write property file with all info - date, model name, model last mod/version etc.
+			 */
+			
+			/*
 			 * proceed
 			 */
 			for (IModel m : trainable) {
-				File mdir = new File(tdir + File.separator + m.getId());
+				
+				File mdir = new File(tdir + File.separator + m.getId().replaceAll(":", "_"));
 				mdir.mkdir();
 				
 				session.print("training " + m.getName());

@@ -60,4 +60,9 @@ public class NameGenerator {
 		return name.startsWith("urn:uuid:");
 	}
 	
+	static public String newID() {
+		String uuid = UUID.randomUUID().toString();
+		return Path.getLast(uuid, '-');
+	}
+	
 }

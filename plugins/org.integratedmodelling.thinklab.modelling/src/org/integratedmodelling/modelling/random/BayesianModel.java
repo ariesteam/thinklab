@@ -10,10 +10,14 @@ import java.util.HashSet;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.ObservationFactory;
+import org.integratedmodelling.corescience.implementations.datasources.MemObjectContextualizedDatasource;
 import org.integratedmodelling.corescience.interfaces.IContext;
+import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
+import org.integratedmodelling.corescience.metadata.Metadata;
 import org.integratedmodelling.modelling.corescience.ClassificationModel;
 import org.integratedmodelling.modelling.corescience.ObservationModel;
+import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.modelling.implementations.observations.BayesianTransformer;
 import org.integratedmodelling.modelling.interfaces.IContextOptional;
 import org.integratedmodelling.modelling.interfaces.IModel;
@@ -236,18 +240,21 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		 IBayesianNetwork bn = BayesianFactory.get().createBayesianNetwork(source);
 		 ArrayList<IConcept> observers = new ArrayList<IConcept>();
 		 
-		 HashSet<IConcept> nondeps = new HashSet<IConcept>();
+		 HashSet<IConcept> outputs = new HashSet<IConcept>();
+		 HashSet<IConcept> inputs = new HashSet<IConcept>();
 		 
 		 for (String c : bn.getAllNodeIds()) {
 			 IConcept obs = 
 					KnowledgeManager.getConcept(getObservableClass().getConceptSpace() + ":" + c);
 			 if (findDependencyFor(obs) == null) {
-				 nondeps.add(obs);
+				 outputs.add(obs);
+			 } else {
+				 inputs.add(obs);
 			 }
 			 observers.add(obs);
 		 }
 		
-		 if (nondeps.size() == 0)
+		 if (outputs.size() == 0)
 			 return null;
 		 
 		/*
@@ -309,20 +316,78 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 				out = 
 					new PrintWriter(
 							new FileOutputStream(
-									getObservableClass().getLocalName() + ".txt", true));
+									trainingDir + 
+									File.separator +
+									"traindata.txt", true));
 			} catch (FileNotFoundException e) {
 				throw new ThinklabIOException(e);
 			}
 			
 			/*
+			 * remove non-classification dependencies and check what's left
+			 */
+			for (IConcept c : observers) {
+				
+				IState state = result.getState(c);
+				
+				if (! (state instanceof MemObjectContextualizedDatasource) &&
+					! (state instanceof CategoricalDistributionDatasource)) {
+					outputs.remove(c);
+					inputs.remove(c);
+				} else {
+					// throw away the result, but instantiate all metadata
+					Metadata.getImageData(state);
+				}
+			}
+			
+			if (outputs.isEmpty()) {
+				session.print("no usable evidence for any of the outputs. Exiting.");
+				return null;
+			}
+			if (inputs.isEmpty()) {
+				session.print("no usable evidence for any of the inputs. Exiting.");
+				return null;
+			}
+			
+			/*
 			 * write out headers
 			 */
+			boolean first = false;
+			for (IConcept o : outputs) {
+				out.print((first ? "" : "\t") + o.getLocalName());
+				first = false;
+			}
+			for (IConcept o : inputs) {
+				out.print((first ? "" : "\t") + o.getLocalName());				
+				first = false;
+			}
+			out.println();
 			
 			for (int i = 0; i < result.getMultiplicity(); i++) {
 				/*
 				 * only write row if there is at least one output non-nil and 
 				 * one input observation. 
 				 */
+				first = false;
+				for (IConcept o : outputs) {
+					IState state = result.getState(o);
+					IConcept val = null;
+					Object v = state.getValue(i);
+					out.print((first ? "" : "\t") + (val == null ? "*" : val.getLocalName()));
+					first = false;
+				}
+				for (IConcept o : inputs) {
+					IState state = result.getState(o);
+					IConcept val = null;
+					Object v = state.getValue(i);
+					if (v instanceof IConcept) {
+						val = (IConcept)v;
+					}
+					
+					out.print((first ? "" : "\t") + (val == null ? "*" : val.getLocalName()));
+					first = false;
+				}
+				out.println();
 			}
 			
 			out.close();
