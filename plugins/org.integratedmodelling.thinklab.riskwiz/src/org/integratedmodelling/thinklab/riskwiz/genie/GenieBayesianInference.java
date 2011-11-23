@@ -67,16 +67,4 @@ public class GenieBayesianInference implements IBayesianInference {
 		return network.getNodeValue(node);
 	}
 
-	@Override
-	public IBayesianNetwork train(File observations) throws ThinklabException {
-		
-		// TODO Auto-generated method stub
-		DataSet dset = new DataSet();
-		dset.readFile(observations.toString(), "*");
-		
-		
-		
-		return null;
-	}
-
 }

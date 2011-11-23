@@ -33,7 +33,6 @@
 
 package org.integratedmodelling.thinklab.riskwiz.interfaces;
 
-import java.io.File;
 import java.util.Map;
 
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -52,5 +51,4 @@ public interface IBayesianInference {
 	
 	public void clearEvidence();
 	
-	public IBayesianNetwork train(File observations) throws ThinklabException;
 }

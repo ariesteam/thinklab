@@ -56,9 +56,5 @@ public class RiskwizBayesianInference implements IBayesianInference {
 		return inference.getMarginal(node).getValues();
 	}
 
-	@Override
-	public IBayesianNetwork train(File observations) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 }

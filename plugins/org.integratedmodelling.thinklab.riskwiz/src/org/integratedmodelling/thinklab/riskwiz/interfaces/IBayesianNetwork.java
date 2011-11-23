@@ -1,5 +1,10 @@
 package org.integratedmodelling.thinklab.riskwiz.interfaces;
 
+import java.io.File;
+
+import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+
 public interface IBayesianNetwork {
 
 	public int getNodeCount();
@@ -19,5 +24,9 @@ public interface IBayesianNetwork {
 	public IBayesianInference getInference();
 
 	public String getName();
+	
+	public IBayesianNetwork train(File observations, String method) throws ThinklabException;
+
+	public void write(File modelFile) throws ThinklabIOException;
 
 }

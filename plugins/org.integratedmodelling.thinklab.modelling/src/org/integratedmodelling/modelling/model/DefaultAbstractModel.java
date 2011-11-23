@@ -52,17 +52,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	public DefaultAbstractModel(String namespace) {
 		this.namespace = namespace;
 	}
-	
-	/**
-	 * Flag trainability. Method, not tag interface, because in general
-	 * trainability may depend on state.
-	 * 
-	 * @return
-	 */
-	public boolean isTrainable() {
-		return false;
-	}
-	
+
 	@Override
 	public Set<IConcept> getObservables() {
 		
@@ -483,14 +473,6 @@ public abstract class DefaultAbstractModel implements IModel {
 
 			_validated = true;
 		}
-	}
-
-	@Override
-	public IModel train(IKBox kbox, ISession session, Object... params)
-			throws ThinklabException {
-		// TODO! Needs to observe everything (including the observed) and invoke
-		// a virtual
-		return null;
 	}
 	
 

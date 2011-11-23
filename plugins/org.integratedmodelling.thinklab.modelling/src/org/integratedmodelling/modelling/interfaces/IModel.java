@@ -116,18 +116,6 @@ public interface IModel extends IConceptualizable, IModelForm {
 	 */
 	public IQueryResult observe(IKBox kbox, ISession session, Object ... arguments) throws ThinklabException;
 
-	/**
-	 * Train the model to match any specified output observation (in the :observed
-	 * clause, if any). Not all models may be trainable. Returns a new trained model
-	 * that has learned to reproduce the models observed on the passed kbox.
-	 * 
-	 * @param kbox
-	 * @param session
-	 * @param params
-	 * @return
-	 * @throws ThinklabException
-	 */
-	IModel train(IKBox kbox, ISession session, Object ... params) throws ThinklabException;
 
 	/**
 	 * A scenario is a model modifier, containing alternative models for given observables.

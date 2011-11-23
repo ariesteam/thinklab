@@ -2,12 +2,18 @@ package org.integratedmodelling.thinklab.riskwiz.genie;
 
 import java.io.File;
 
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianInference;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianNetwork;
 
 import smile.Network;
+import smile.SMILEException;
+import smile.learning.DataMatch;
+import smile.learning.DataSet;
+import smile.learning.EM;
 
 public class GenieBayesianNetwork implements IBayesianNetwork {
 
@@ -32,6 +38,14 @@ public class GenieBayesianNetwork implements IBayesianNetwork {
 		}
 	}
 	
+
+	public GenieBayesianNetwork(Network network, IConcept observable,
+			String input) {
+		this.prototype = network;
+		this.observable = observable;
+		this.input = input;
+	}
+
 	@Override
 	public IBayesianInference getInference() {
 		// TODO Auto-generated method stub
@@ -87,6 +101,52 @@ public class GenieBayesianNetwork implements IBayesianNetwork {
 	@Override
 	public String getName() {
 		return prototype.getName();
+	}
+
+	@Override
+	public IBayesianNetwork train(File observations, String method) throws ThinklabException {
+		
+		Network network = new Network();
+		try {
+			network.readFile(this.input);			
+		} catch (Exception e) {
+			throw new ThinklabIOException(
+					"GENIE import: reading " + input + ": " + e.getMessage());
+		}
+		
+		DataSet dset = new DataSet();
+		dset.readFile(observations.toString(), "*");
+		dset.matchNetwork(network);
+
+		DataMatch[] dm = new DataMatch[dset.getVariableCount()];
+		
+		for (int i = 0; i < dset.getVariableCount(); i++) {
+			String nodeId = dset.getVariableId(i);
+			int node = network.getNode(nodeId);
+			
+			// TODO check this bizarre slice parameter
+			dm[i] = new DataMatch(i, node, 0);
+		}
+		
+		try {
+			if (method.equals("EM")) {
+				EM em = new EM();
+				em.learn(dset, network, dm);
+			} // TODO remaining methods
+		} catch (SMILEException e) {
+			throw new ThinklabValidationException(e);
+		}
+		
+		return new GenieBayesianNetwork(network, observable, input);
+	}
+
+	@Override
+	public void write(File modelFile) throws ThinklabIOException {
+		try {
+			this.prototype.writeFile(modelFile.toString());
+		} catch (SMILEException e) {
+			throw new ThinklabIOException(e);
+		}
 	}
 
 }

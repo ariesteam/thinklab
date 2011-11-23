@@ -7,7 +7,7 @@ import java.util.Collection;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.modelling.ModellingPlugin;
 import org.integratedmodelling.modelling.interfaces.IModel;
-import org.integratedmodelling.modelling.model.DefaultAbstractModel;
+import org.integratedmodelling.modelling.interfaces.ITrainableModel;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
@@ -37,7 +37,7 @@ public class TrainingManager {
 			for (IModel m : ((Model)model).getObservers()) {
 				findTrainableInternal(m, ret);
 			}
-		} else if (((DefaultAbstractModel)model).isTrainable()) {
+		} else if (model instanceof ITrainableModel) {
 			ret.add(model);
 		} else {
 			for (IModel m : model.getDependencies()) {
@@ -113,7 +113,7 @@ public class TrainingManager {
 				
 				session.print("training " + m.getName());
 				
-				IModel trained = m.train(kbox, session, context, mdir);
+				IModel trained = ((ITrainableModel)m).train(kbox, session, context, mdir);
 				if (trained != null) {
 					
 				} else {

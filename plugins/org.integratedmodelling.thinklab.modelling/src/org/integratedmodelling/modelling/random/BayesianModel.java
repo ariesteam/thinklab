@@ -21,6 +21,7 @@ import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.modelling.implementations.observations.BayesianTransformer;
 import org.integratedmodelling.modelling.interfaces.IContextOptional;
 import org.integratedmodelling.modelling.interfaces.IModel;
+import org.integratedmodelling.modelling.interfaces.ITrainableModel;
 import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.modelling.model.DefaultStatefulAbstractModel;
@@ -38,9 +39,10 @@ import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.riskwiz.bn.BayesianFactory;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianNetwork;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Polylist;
 
-public class BayesianModel extends DefaultStatefulAbstractModel implements IContextOptional {
+public class BayesianModel extends DefaultStatefulAbstractModel implements IContextOptional, ITrainableModel {
 
 	public BayesianModel(String namespace) {
 		super(namespace);
@@ -51,11 +53,6 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 	ArrayList<IConcept> keepers = new ArrayList<IConcept>();
 	ArrayList<IConcept> required = new ArrayList<IConcept>();
 	IModel resultModel = null;
-	
-	@Override
-	public boolean isTrainable() {
-		return true;
-	}
 	
 	@Override
 	protected void copy(DefaultAbstractModel model) {
@@ -231,6 +228,9 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 	public IModel train(IKBox kbox, ISession session, Object... params)
 			throws ThinklabException {
 
+		// TODO parameterize
+		String method = "EM";
+		
 		IModel ret = null;
 		
 		/*
@@ -309,16 +309,20 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			session.print("done.\nCreating training dataset... ");
 			PrintWriter out = null;
 			
+			File trainData = new File(trainingDir + 
+					File.separator +
+					"traindata.txt");
+
+			File trainedModel = new File(trainingDir + File.separator + 
+					MiscUtilities.getFileName(MiscUtilities.resolveUrlToFile(source).toString()));
+			
 			/*
 			 * create training datafile
 			 */
 			try {
 				out = 
 					new PrintWriter(
-							new FileOutputStream(
-									trainingDir + 
-									File.separator +
-									"traindata.txt", true));
+							new FileOutputStream(trainData, true));
 			} catch (FileNotFoundException e) {
 				throw new ThinklabIOException(e);
 			}
@@ -352,14 +356,17 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			/*
 			 * write out headers
 			 */
-			boolean first = false;
+			ArrayList<IConcept> states = new ArrayList<IConcept>();
+			boolean first = true;
 			for (IConcept o : outputs) {
 				out.print((first ? "" : "\t") + o.getLocalName());
 				first = false;
+				states.add(o);
 			}
 			for (IConcept o : inputs) {
 				out.print((first ? "" : "\t") + o.getLocalName());				
 				first = false;
+				states.add(o);
 			}
 			out.println();
 			
@@ -368,22 +375,14 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 				 * only write row if there is at least one output non-nil and 
 				 * one input observation. 
 				 */
-				first = false;
-				for (IConcept o : outputs) {
-					IState state = result.getState(o);
-					IConcept val = null;
-					Object v = state.getValue(i);
-					out.print((first ? "" : "\t") + (val == null ? "*" : val.getLocalName()));
-					first = false;
-				}
-				for (IConcept o : inputs) {
+				first = true;
+				for (IConcept o : states) {
 					IState state = result.getState(o);
 					IConcept val = null;
 					Object v = state.getValue(i);
 					if (v instanceof IConcept) {
 						val = (IConcept)v;
 					}
-					
 					out.print((first ? "" : "\t") + (val == null ? "*" : val.getLocalName()));
 					first = false;
 				}
@@ -393,9 +392,18 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			out.close();
 			session.print("done.\nTraining... ");
 			
+			/*
+			 * create BN - for now only supported if imported
+			 */
+			if (source == null) {
+				throw new ThinklabValidationException(
+						"model contains no source URL for the bayesian model: only imported models are supported");
+			}
 			
+			bn = BayesianFactory.get().createBayesianNetwork(source.toString());
+			IBayesianNetwork trainedBN = bn.train(trainData, method);
 			session.print("done.\nWriting out trained model... ");
-			
+			trainedBN.write(trainedModel);
 			
 			session.print("all done.");
 			
@@ -406,6 +414,12 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		
 		return ret;
 	
+	}
+
+	@Override
+	public void applyTraining(String trainedInstanceID) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

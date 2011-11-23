@@ -8,6 +8,7 @@ import org.integratedmodelling.riskwiz.bn.BeliefNetwork;
 import org.integratedmodelling.riskwiz.domain.Domain;
 import org.integratedmodelling.riskwiz.domain.LabelDomain;
 import org.integratedmodelling.riskwiz.io.genie.GenieReader;
+import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianInference;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianNetwork;
@@ -83,6 +84,18 @@ public class RiskwizBayesianNetwork implements IBayesianNetwork {
 	@Override
 	public String getName() {
 		return bn.getName();
+	}
+	
+	@Override
+	public IBayesianNetwork train(File observations, String method) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void write(File modelFile) throws ThinklabIOException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
