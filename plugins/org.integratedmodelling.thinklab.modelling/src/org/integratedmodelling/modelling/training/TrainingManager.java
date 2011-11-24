@@ -110,15 +110,13 @@ public class TrainingManager {
 				
 				File mdir = new File(tdir + File.separator + m.getId().replaceAll(":", "_"));
 				mdir.mkdir();
-				
-				session.print("training " + m.getName());
-				
+								
 				IModel trained = ((ITrainableModel)m).train(kbox, session, context, mdir);
 				if (trained != null) {
-					
-				} else {
-					session.print("not enough evidence in kbox to train " + m.getName());
-				}
+					/*
+					 * write out the model, but that should have been done already by train().
+					 */
+				} 
 			}
 		}
 		

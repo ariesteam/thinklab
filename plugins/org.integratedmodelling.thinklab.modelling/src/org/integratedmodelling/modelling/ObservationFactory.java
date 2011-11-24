@@ -44,14 +44,17 @@ import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.constraint.Constraint;
+import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
+import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
+import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.time.TimePlugin;
 import org.integratedmodelling.utils.Polylist;
 
@@ -341,4 +344,43 @@ public class ObservationFactory extends org.integratedmodelling.corescience.Obse
 						observable));
 	}
 	
+
+	/**
+	 * Find whatever observations of a concept are available in all linked kboxes and optionally
+	 * a context; return the result of querying the kbox.
+	 * 
+	 * @param concept
+	 * @param context
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public static IQueryResult findObservations(IConcept concept, IContext context) throws ThinklabException {
+
+		Session session = new Session();
+		
+		IKBox kbox = KBoxManager.get();
+		Constraint c = new Constraint(CoreScience.Observation());
+
+		IInstance inst = session.createObject(Polylist.list(concept));
+		c = c.restrict(new Restriction(
+				CoreScience.HAS_OBSERVABLE,
+				new DefaultConformance().getConstraint(inst)));
+
+		if (context != null) {
+			
+			ArrayList<Restriction> er = new ArrayList<Restriction>();
+			for (IExtent o : context.getExtents()) {
+				Restriction r = o.getConstraint("intersects");
+				if (r != null)
+					er.add(r);
+			}
+
+			if (er.size() > 0) {
+				c = c.restrict(er.size() == 1 ? er.get(0) : Restriction.AND(er
+						.toArray(new Restriction[er.size()])));
+			}
+		}
+
+		return kbox.query(c);
+	}
 }
