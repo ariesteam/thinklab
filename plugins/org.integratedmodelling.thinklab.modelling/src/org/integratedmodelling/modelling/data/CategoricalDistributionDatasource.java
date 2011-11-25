@@ -251,7 +251,7 @@ public class CategoricalDistributionDatasource extends
 			this.ranks = Metadata.rankConcepts(_type, rnk, metadata);
 		}
 		
-		// GARY GARY GARY - please change this back into offset = 0 if you get errors from BayesianTransformer
+		// TODO check - change this back into offset = 0 if errors from BayesianTransformer
 		int offset = 1; 
 		if (getMetadata().get(Metadata.HASZERO) != null)
 			offset = ((Boolean)getMetadata().get(Metadata.HASZERO)) ? 0 : 1;
@@ -299,6 +299,10 @@ public class CategoricalDistributionDatasource extends
 		}
 	}
 	
+	
+	public void setEvidence(int idx, IConcept rank) {
+		
+	}
 	
 	/**
 	 * If the distribution encoded in the states is the discretization of a continuous distribution,
