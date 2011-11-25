@@ -97,5 +97,12 @@ public class RiskwizBayesianNetwork implements IBayesianNetwork {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public boolean isLeaf(String nodeId) {
+		// TODO Auto-generated method stub
+		String[] ids = getChildIds(nodeId);
+		return ids == null || ids.length == 0;
+	}
 
 }

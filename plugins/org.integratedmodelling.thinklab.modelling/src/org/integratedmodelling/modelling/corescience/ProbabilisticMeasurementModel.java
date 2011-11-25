@@ -98,7 +98,7 @@ public class ProbabilisticMeasurementModel extends ClassificationModel {
 		// units!
 		arr.add(Polylist.list(CoreScience.HAS_UNIT, unitSpecs));
 		
-		if (!isMediating() || (flags & FORCE_OBSERVABLE) != 0)
+//		if (!isMediating() || (flags & FORCE_OBSERVABLE) != 0)
 			arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, this.observableSpecs));
 		
 		ArrayList<Pair<GeneralClassifier,IConcept>> clsf = 

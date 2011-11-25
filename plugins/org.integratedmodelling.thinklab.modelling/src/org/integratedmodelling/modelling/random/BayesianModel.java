@@ -316,7 +316,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 
 			 IModel omod = lookupModelFor(obs, session);
 			 if (omod == null) {
-				 session.print(obs + ": no model available to observe");
+				 session.print(obs + (bn.isLeaf(obs.getLocalName()) ? " (INPUT)" : " (OUTPUT)") + ": no model available to observe");
 				 continue;
 			 }
 			 
@@ -332,12 +332,15 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 				 continue;
 			 }
 			 
-			 if (findDependencyFor(obs) == null) {
-				 session.print(obs + ": " + qr.getResultCount() + " observations in context");
-				 outputs.add(obs);
-			 } else {
-				 session.print(obs + ": " + qr.getResultCount() + " observations in context");
+			 /*
+			  * FIXME use the BN directly (isLeaf(id))
+			  */
+			 if (bn.isLeaf(obs.getLocalName())) {
+				 session.print(obs + " (INPUT): " + qr.getResultCount() + " observations");
 				 inputs.add(obs);
+			 } else {
+				 session.print(obs + " (OUTPUT): " + qr.getResultCount() + " observations");
+				 outputs.add(obs);
 			 }
 			 observers.add(obs);
 		 }
@@ -352,7 +355,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		 * using the correspondent models.
 		 */
 		ObservationModel idnt = new ObservationModel(this.getNamespace());
-		idnt.setObservable(this.getObservableClass());
+		idnt.setObservable(KnowledgeManager.getConcept("representation:GenericObservable"));
 		
 		for (IConcept c : observers) {
 			IModel m = lookupModelFor(c, session);

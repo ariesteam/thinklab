@@ -149,4 +149,12 @@ public class GenieBayesianNetwork implements IBayesianNetwork {
 		}
 	}
 
+
+	@Override
+	public boolean isLeaf(String nodeId) {
+		// TODO Auto-generated method stub
+		String[] ids = getParentIds(nodeId);
+		return ids == null || ids.length == 0;
+	}
+
 }

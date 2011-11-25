@@ -28,5 +28,7 @@ public interface IBayesianNetwork {
 	public IBayesianNetwork train(File observations, String method) throws ThinklabException;
 
 	public void write(File modelFile) throws ThinklabIOException;
+	
+	public boolean isLeaf(String nodeId);
 
 }
