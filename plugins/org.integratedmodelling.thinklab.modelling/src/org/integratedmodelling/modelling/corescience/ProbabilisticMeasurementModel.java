@@ -29,6 +29,15 @@ public class ProbabilisticMeasurementModel extends ClassificationModel {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public String toString() {
+		return ("probabilistic-measurement");
+	}
+
+	@Override
+	public IConcept getCompatibleObservationType(ISession session) {		
+		return CoreScience.Measurement();
+	}
 	
 	@Override
 	protected void copy(DefaultStatefulAbstractModel model) {
@@ -98,7 +107,7 @@ public class ProbabilisticMeasurementModel extends ClassificationModel {
 		// units!
 		arr.add(Polylist.list(CoreScience.HAS_UNIT, unitSpecs));
 		
-//		if (!isMediating() || (flags & FORCE_OBSERVABLE) != 0)
+		if (!isMediating() || (flags & FORCE_OBSERVABLE) != 0)
 			arr.add(Polylist.list(CoreScience.HAS_OBSERVABLE, this.observableSpecs));
 		
 		ArrayList<Pair<GeneralClassifier,IConcept>> clsf = 

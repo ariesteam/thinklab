@@ -20,6 +20,8 @@ import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.exceptions.ThinklabModelException;
 import org.integratedmodelling.modelling.interfaces.IModel;
 import org.integratedmodelling.modelling.interfaces.IModelForm;
+import org.integratedmodelling.modelling.interfaces.ITrainableModel;
+import org.integratedmodelling.modelling.training.TrainingManager;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.constraint.Constraint;
@@ -477,27 +479,28 @@ public abstract class DefaultAbstractModel implements IModel {
 	
 
 	/**
-	 * Return the model for the passed observable if it is in any dependency. If not, 
-	 * return null.
+	 * Return the model for the passed observable if it is in any dependency. Must be 
+	 * a model capable of being used for evidence, i.e. get to data directly or through
+	 * mediation only. If not found, return null.
 	 * 
 	 * @param obs
 	 * @return
 	 */
-	public IModel findDependencyFor(IConcept obs) {
+	public IModel findEvidenceDependencyFor(IConcept obs) {
 
-		if (getObservableClass().equals(obs))
+		if (getObservableClass().equals(obs) && TrainingManager.get().isEvidenceModel(this))
 			return this;
 		
 		if (this instanceof Model) {
 			for (IModel md : ((Model)this).models) {
-				IModel m = ((DefaultAbstractModel)md).findDependencyFor(obs);
+				IModel m = ((DefaultAbstractModel)md).findEvidenceDependencyFor(obs);
 				if (m != null)
 					return m;
 			}
 		}
 		
 		for (IModel md : this.dependents) {
-			IModel m = ((DefaultAbstractModel)md).findDependencyFor(obs);
+			IModel m = ((DefaultAbstractModel)md).findEvidenceDependencyFor(obs);
 			if (m != null)
 				return m;
 		}
@@ -693,9 +696,67 @@ public abstract class DefaultAbstractModel implements IModel {
 		}
 	}
 
-	protected IModel applyScenarioInternal(Scenario scenario, Session session)
+	public IModel createTrainedClone(String trainingId, ISession session)
 			throws ThinklabException {
 
+		/*
+		 * clone me as a return value
+		 */
+		DefaultAbstractModel ret = null;
+		try {
+			ret = (DefaultAbstractModel) this.clone();
+		} catch (CloneNotSupportedException e) {
+			// yeah, right
+		}
+		
+		/*
+		 * if I am trainable, apply the training, then proceed adding dependencies
+		 */
+		if (this instanceof ITrainableModel) {
+			((ITrainableModel)this).applyTraining(trainingId);
+		}
+
+		/*
+		 * Add models to the clone:
+		 * if we haven't found a matching contingency, just keep the original ones.
+		 */
+		if (this instanceof Model) {
+			for (IModel orm : ((Model)this).models) {
+				((Model)ret).defModel(((DefaultAbstractModel)orm).createTrainedClone(trainingId, session), null);	
+			}
+		}
+		
+		/*
+		 * ...and add our mediated model if any	
+		 */
+		DefaultAbstractModel elMediated = (DefaultAbstractModel) this.mediated;
+		if (this.mediated != null)
+			((DefaultAbstractModel)ret).mediated = elMediated.createTrainedClone(trainingId, session);
+					
+		/*
+		 * Add as dependents the scenario-transformed versions of the original model.
+		 */
+		for (IModel d : dependents) {
+			((DefaultAbstractModel)ret).addDependentModel(((DefaultAbstractModel)d).createTrainedClone(trainingId, session));
+		}
+
+		/*
+		 * give the clone our ID so it will work in references, and store the
+		 * scenario to constrain queries as needed.
+		 */
+		if (ret != null) {
+			ret.id = id;
+			ret.namespace = namespace;
+			ret.scenario = scenario;
+			ret.localFormalName = localFormalName;
+		}
+
+		return ret;
+	}
+	
+	
+	protected IModel applyScenarioInternal(Scenario scenario, Session session)
+			throws ThinklabException {
 
 		/*
 		 * if I am in the scenario, clone the scenario's, not me, unless I am a
@@ -905,6 +966,10 @@ public abstract class DefaultAbstractModel implements IModel {
 		return localFormalName;
 	}
 
+	public IModel getMediated() {
+		return mediated;
+	}
+	
 	public Map<? extends String, ? extends Object> getMetadata() {
 		return metadata;
 	}

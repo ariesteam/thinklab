@@ -19,6 +19,7 @@ import org.integratedmodelling.modelling.model.Scenario;
 import org.integratedmodelling.modelling.storage.FileArchive;
 import org.integratedmodelling.modelling.storage.GISArchive;
 import org.integratedmodelling.modelling.storage.NetCDFArchive;
+import org.integratedmodelling.modelling.training.TrainingManager;
 import org.integratedmodelling.modelling.visualization.FileVisualization;
 import org.integratedmodelling.modelling.visualization.ObservationListing;
 import org.integratedmodelling.thinklab.command.Command;
@@ -42,11 +43,11 @@ import org.integratedmodelling.thinklab.kbox.KBoxManager;
 		optionalArgumentDefaultValues="_NONE_,_NONE_",
 		optionalArgumentDescriptions="spatial or temporal context,spatial or temporal context",
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text",
-		optionArgumentLabels="all kboxes,,,none,256, , , , , ",
-		optionLongNames="kbox,visualize,dump,outfile,resolution,clear,scenario,write,map,tiff",
-		optionNames="k,v,d,o,r,c,s,w,map,t",
-		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing,thinklab-core:Text,owl:Nothing,owl:Nothing,owl:Nothing",
-		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing,scenario to apply before computing,store results to standard workspace,show the model map (required dot installed),write geotiff coverages",
+		optionArgumentLabels="trained instance ID,all kboxes,,,none,256, , , , , ",
+		optionLongNames="train,kbox,visualize,dump,outfile,resolution,clear,scenario,write,map,tiff",
+		optionNames="train,k,v,d,o,r,c,s,w,map,t",
+		optionTypes="thinklab-core:Text,thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing,thinklab-core:Text,owl:Nothing,owl:Nothing,owl:Nothing",
+		optionDescriptions="ID of trained instance to use,kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing,scenario to apply before computing,store results to standard workspace,show the model map (required dot installed),write geotiff coverages",
 		returnType="observation:Observation")
 public class ModelCommand implements ICommandHandler {
 
@@ -93,6 +94,12 @@ public class ModelCommand implements ICommandHandler {
 			ModelMap.show();
 		}
 			
+		if (command.hasOption("train")) {
+			String tid = command.getOptionAsString("train");
+			model = (Model) TrainingManager.get().applyTraining(model, tid, session);
+			session.print("using trained instance " + tid);
+		}
+		
 		if (command.hasOption("scenario")) {
 
 			String sc = command.getOptionAsString("scenario");

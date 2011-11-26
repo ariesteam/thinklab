@@ -76,12 +76,30 @@ public class ProbabilisticMeasurement extends Measurement {
 		public Object getValue(int idx, Object[] registers) {
 			
 			Object o = super.getValue(idx, registers);
+			if (o instanceof Number && Double.isNaN(((Number)o).doubleValue()))
+				o = null;
 			
-			return o;
+			if (o == null && !hasNilClassifier)
+				return null;
+
+			for (Pair<GeneralClassifier, IConcept> p : classifiers) {
+				if (p.getFirst().classify(o)) {
+					/*
+					 * create distribution, set 100% evidence for classified concept.
+					 */
+					return p.getSecond();
+				}
+			}
+			// null means "no data"; it can be caught using with a nil classifier						
+			return null;
 		}
 	}
 	
-	
+	@Override
+	public IConcept getStateType() {
+		return cSpace;
+	}
+
 	@Override
 	public IStateAccessor getMediator(IndirectObservation observation, IObservationContext context)
 			throws ThinklabException {

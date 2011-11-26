@@ -249,7 +249,8 @@ public class ModelFactory {
 		@Override
 		public IValue getResult(int n, ISession session)
 				throws ThinklabException {
-			IInstance res = session.createObject(getResultAsList(n, null));
+			Polylist lst = getResultAsList(n, null);
+			IInstance res = session.createObject(lst);
 			IObservationContext result = 
 				ObservationFactory.contextualize(res, session, listeners, context);
 			return new ContextValue(result);

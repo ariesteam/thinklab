@@ -8,10 +8,8 @@ import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
-import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
-import org.integratedmodelling.modelling.model.Scenario;
 import org.integratedmodelling.modelling.training.TrainingManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
@@ -33,11 +31,11 @@ import org.integratedmodelling.thinklab.kbox.KBoxManager;
 		optionalArgumentDefaultValues="_NONE_,_NONE_",
 		optionalArgumentDescriptions="spatial or temporal context,spatial or temporal context",
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text",
-		optionArgumentLabels="all kboxes,,,none,256, , , , , ",
-		optionLongNames="kbox,visualize,dump,outfile,resolution,clear,scenario,write,map,tiff",
-		optionNames="k,v,d,o,r,c,s,w,map,t",
-		optionTypes="thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing,thinklab-core:Text,owl:Nothing,owl:Nothing,owl:Nothing",
-		optionDescriptions="kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing,scenario to apply before computing,store results to standard workspace,show the model map (required dot installed),write geotiff coverages",
+		optionArgumentLabels="all kboxes,generated id, ",
+		optionLongNames="kbox,id,clear",
+		optionNames="k,id,clear",
+		optionTypes="thinklab-core:Text,thinklab-core:Text,owl:Nothing",
+		optionDescriptions="kbox,ID of trained instance,clear cache before computing",
 		returnType="observation:Observation")
 public class TrainCommand implements ICommandHandler {
 
@@ -74,37 +72,31 @@ public class TrainCommand implements ICommandHandler {
 		Model model = ModelFactory.get().requireModel(concept);
 		
 		IContext context = ModelFactory.get().requireContext(ctxname);
-
-//	
-		if (command.hasOption("clear")) {
-			
-			// TODO clear all previous trainings for this model
 		
+		if (command.hasOption("clear")) {
+			// TODO clear all previous trainings for this model
 		}
-//		
-//		if (command.hasOption("map")) {
-//			ModelMap.show();
-//		}
 			
-		if (command.hasOption("scenario")) {
+		int inpMin = 1, outMin = 1;
+		String id = null;
+		
+		String algorithm = null;
 
-			String sc = command.getOptionAsString("scenario");
-			Scenario scenario = ModelFactory.get().requireScenario(sc);
-
-			// remove
-			scenario.dump(System.out);
-			
-			// remove
-			((DefaultAbstractModel)model).dump(System.out);
-			
-
-			model = (Model) model.applyScenario(scenario);
-			
-			// remove
-			((DefaultAbstractModel)model).dump(System.out);
+		if (command.hasOption("input-threshold")) {
+			inpMin = new Integer(command.getArgumentAsString("input-threshold"));
 		}
-				
-		String id = TrainingManager.get().doTraining(model, context, kbox, session);
+		if (command.hasOption("output-threshold")) {
+			outMin = new Integer(command.getArgumentAsString("output-threshold"));
+		}
+		if (command.hasOption("algorithm")) {
+			algorithm = command.getArgumentAsString("algorithm");
+		}
+		if (command.hasOption("id")) {
+			id = command.getArgumentAsString("id");
+		}
+		
+		
+		id = TrainingManager.get().doTraining(model, context, kbox, session, id, algorithm, inpMin, outMin);
 
 		if (id == null) {
 			session.print("no candidates for training found in " + model.getId());

@@ -190,7 +190,14 @@ public class Model extends DefaultAbstractModel {
 	
 	@Override
 	public String toString() {
-		return "model";
+		String s = "(";
+		for (IModel m : models) {
+			if (s.length() > 1)
+				s += ",";
+			s += m.toString();
+		} 
+		s += ")";
+		return s;
 	}
 
 	@Override

@@ -271,9 +271,27 @@ public class CategoricalDistributionDatasource extends
 			this.sortedIndexes[i] = n;
 			this.valueMappings[n] = valueMappings[i];
 		}
-		
 	}
 
+	/**
+	 * Return a distribution with the evidence set to the passed concept (1.0 probability for
+	 * it, 0 for all others).
+	 * 
+	 * @param c
+	 * @return
+	 */
+	public IndexedCategoricalDistribution setEvidence(IConcept c) {
+		
+		int i = 0;
+		for (IConcept cc : valueMappings) {
+			if (c.equals(cc))
+				shuttle[i] = 1.0;
+			else shuttle[i] = 0.0;
+			i++;
+		}
+		return new IndexedCategoricalDistribution(shuttle);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceInt#addValue(java.lang.Object)
 	 */
@@ -286,8 +304,11 @@ public class CategoricalDistributionDatasource extends
 			
 			super.setValue(idx, (IndexedCategoricalDistribution)o);
 			
-		} else {
+		} else if (o instanceof IConcept) {
+		
+			super.setValue(idx, setEvidence((IConcept)o));
 			
+		} else {
 			/*
 			 * reorder values according to sorted order before inserting the distribution
 			 */
@@ -298,11 +319,7 @@ public class CategoricalDistributionDatasource extends
 			super.setValue(idx, new IndexedCategoricalDistribution(shuttle));
 		}
 	}
-	
-	
-	public void setEvidence(int idx, IConcept rank) {
-		
-	}
+
 	
 	/**
 	 * If the distribution encoded in the states is the discretization of a continuous distribution,
@@ -363,7 +380,6 @@ public class CategoricalDistributionDatasource extends
 				0.0;
 	}
 	
-
 	public String toString() {
 		return  
 			"CDD[" +
@@ -374,7 +390,6 @@ public class CategoricalDistributionDatasource extends
 			Arrays.toString(data) + */ +
 			"]";
 	}
-
 
 	public void addAllMetadata(HashMap<String, Object> hashMap) {
 		if (hashMap != null)

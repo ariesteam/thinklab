@@ -9,14 +9,12 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.integratedmodelling.corescience.CoreScience;
-import org.integratedmodelling.modelling.ModelMap;
-import org.integratedmodelling.modelling.ModelMap.Entry;
-import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.corescience.implementations.datasources.MemObjectContextualizedDatasource;
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
 import org.integratedmodelling.corescience.metadata.Metadata;
+import org.integratedmodelling.modelling.ObservationFactory;
 import org.integratedmodelling.modelling.corescience.ClassificationModel;
 import org.integratedmodelling.modelling.corescience.ObservationModel;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
@@ -29,6 +27,7 @@ import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.modelling.model.DefaultStatefulAbstractModel;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.modelling.model.ModelFactory;
+import org.integratedmodelling.modelling.training.TrainingManager;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
@@ -43,8 +42,8 @@ import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
 import org.integratedmodelling.thinklab.riskwiz.bn.BayesianFactory;
 import org.integratedmodelling.thinklab.riskwiz.interfaces.IBayesianNetwork;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
-import org.integratedmodelling.utils.WildcardMatcher;
 
 public class BayesianModel extends DefaultStatefulAbstractModel implements IContextOptional, ITrainableModel {
 
@@ -57,7 +56,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 	ArrayList<IConcept> keepers = new ArrayList<IConcept>();
 	ArrayList<IConcept> required = new ArrayList<IConcept>();
 	IModel resultModel = null;
-	
+
 	@Override
 	protected void copy(DefaultAbstractModel model) {
 		super.copy(model);
@@ -70,7 +69,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 
 	@Override
 	public String toString() {
-		return ("bayesian");
+		return "bayesian";
 	}
 	
 	@Override
@@ -228,9 +227,9 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		return null;
 	}
 
-	IModel lookupModelFor(IConcept obs, ISession session) {
+	IModel lookupEvidenceModelFor(IConcept obs, ISession session) {
 		
-		IModel m = findDependencyFor(obs);
+		IModel m = findEvidenceDependencyFor(obs);
 		if (m == null) {
 			
 			if (resultModel != null && resultModel.getObservableClass().equals(obs))
@@ -247,20 +246,19 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			}
 		}
 		if (m == null) {
-			
-			
 			/*
 			 * find model for obs in same namespace. If >1 found, report ambiguity.
 			 */
 			ArrayList<IModel> models = new ArrayList<IModel>();
 			for (IModel o : ModelFactory.get().modelsById.values()) {
 				if (o.getNamespace().equals(getNamespace()) &&
-					o.getObservableClass().equals(obs)) {
+					o.getObservableClass().equals(obs) &&
+					TrainingManager.get().isEvidenceModel(o)) {
 					models.add(o);
 				}
 			}
 			if (models.size() > 1) {
-				session.print("found " + models.size() + " for " + obs + " in namespace; can't choose");
+				session.print("found " + models.size() + " suitable models for " + obs + " in namespace; can't choose");
 			} 
 			if (models.size() == 1) {
 				m = models.get(0);
@@ -280,6 +278,10 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		
 		IModel ret = null;
 		
+		// minimum number of nodes to accept an observation for input and output. Will
+		// change if there is a Pair<int,int> in the parameters.
+		int ithreshold = 1, othreshold = 1;
+		
 		session.print("-------------------------------------------------------------");
 		session.print("Bayesian network training summary for " + getObservableClass());
 		session.print("-------------------------------------------------------------");
@@ -296,6 +298,18 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 				context = (IContext)p;
 			} else if (p instanceof File) {
 				trainingDir = (File)p;
+			} else if (p instanceof Pair<?,?>) {
+				ithreshold = (Integer)((Pair<?,?>)p).getFirst();
+				othreshold = (Integer)((Pair<?,?>)p).getSecond();
+			} else if (p instanceof String) {
+				/*
+				 * parameters in the form <name>=<value>
+				 * No validation - be careful what you pass.
+				 */
+				String[] pp = ((String)p).split("=");
+				if (pp[0].equals("algorithm")) {
+					method = pp[1];
+				}
 			}
 		}
 		
@@ -309,12 +323,14 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		 HashSet<IConcept> outputs = new HashSet<IConcept>();
 		 HashSet<IConcept> inputs = new HashSet<IConcept>();
 		 
+		 int icount = 0, ocount = 0;
+		 
 		 for (String c : bn.getAllNodeIds()) {
 			 
 			 IConcept obs = 
 					KnowledgeManager.getConcept(getObservableClass().getConceptSpace() + ":" + c);
 
-			 IModel omod = lookupModelFor(obs, session);
+			 IModel omod = lookupEvidenceModelFor(obs, session);
 			 if (omod == null) {
 				 session.print(obs + (bn.isLeaf(obs.getLocalName()) ? " (INPUT)" : " (OUTPUT)") + ": no model available to observe");
 				 continue;
@@ -331,16 +347,14 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 				 session.print(obs + ": not observable in context");
 				 continue;
 			 }
-			 
-			 /*
-			  * FIXME use the BN directly (isLeaf(id))
-			  */
-			 if (bn.isLeaf(obs.getLocalName())) {
+			 			 if (bn.isLeaf(obs.getLocalName())) {
 				 session.print(obs + " (INPUT): " + qr.getResultCount() + " observations");
 				 inputs.add(obs);
+				 icount ++;
 			 } else {
 				 session.print(obs + " (OUTPUT): " + qr.getResultCount() + " observations");
 				 outputs.add(obs);
+				 ocount++;
 			 }
 			 observers.add(obs);
 		 }
@@ -358,15 +372,15 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		idnt.setObservable(KnowledgeManager.getConcept("representation:GenericObservable"));
 		
 		for (IConcept c : observers) {
-			IModel m = lookupModelFor(c, session);
+			IModel m = lookupEvidenceModelFor(c, session);
 			if (m != null) {
+				session.print("using model " + m + " for " + c);
 				idnt.addDependentModel(m);
 			}
 		}
 		
-		session.print("Found evidence for " + observers.size() + " nodes out of " + bn.getNodeCount());
-		
-		session.print("Computing available evidence.");
+		session.print("Found evidence for " + observers.size() + "/" + bn.getNodeCount() + " nodes (" + icount + " inputs, " + ocount + " outputs)");
+		session.print("Computing evidence...");
 		IQueryResult r = 
 				ModelFactory.get().run(new Model(idnt), kbox, session, null, context);
 			
@@ -374,7 +388,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			
 			IValue res = r.getResult(0, session);
 			IContext result = ((ContextValue)res).getObservationContext();
-			session.print("Creating training dataset.");
+			session.print("Creating training dataset...");
 			PrintWriter out = null;
 			
 			File trainData = new File(trainingDir + 
@@ -455,12 +469,11 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 					Object v = state.getValue(i);
 					if (v instanceof IConcept) {
 						val = (IConcept)v;
-					} else {
 						if (ss < outputs.size())
 							nouts++;
 						else 
 							ninps++;
-					}
+					} 
 					svals[ss++] = (val == null ? "*" : val.getLocalName());
 				}
 
@@ -468,7 +481,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 				 * don't write row unless there is at least one output and one input
 				 * TODO use user-specified (percent) thresholds as well
 				 */
-				enough = nouts > 0 && ninps > 0;
+				enough = nouts >= othreshold && ninps >= ithreshold;
 				
 				if (enough) {
 					first = true;
@@ -519,9 +532,12 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 	}
 
 	@Override
-	public void applyTraining(String trainedInstanceID) {
-		// TODO Auto-generated method stub
+	public void applyTraining(String trainedInstanceID) throws ThinklabException {
 		
+		File trainingDir = TrainingManager.get().getTrainingDir(trainedInstanceID, this);
+		File trainedModel = new File(trainingDir + File.separator + 
+				MiscUtilities.getFileName(MiscUtilities.resolveUrlToFile(source).toString()));
+		this.source = trainedModel.toString();
 	}
 
 	

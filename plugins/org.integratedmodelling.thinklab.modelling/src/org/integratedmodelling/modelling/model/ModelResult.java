@@ -131,7 +131,7 @@ public class ModelResult implements IQueryResult  {
 
 	@Override
 	public IValue getResult(int n, ISession session) throws ThinklabException {
-		Polylist lst = getResultAsList(n, null);
+		Polylist lst = getResultAsList(n, null);		
 		return new ObjectReferenceValue(session.createObject(lst));
 	}
 
@@ -289,7 +289,7 @@ public class ModelResult implements IQueryResult  {
 		for (Polylist ext : _extents) {
 			ret = ObservationFactory.addExtent(ret, ext);
 		}
-
+		
 		return ret;
 	}
 

@@ -28,6 +28,10 @@ public class RasterActivationLayer extends BitSet implements IGridMask {
 	private CoordinateReferenceSystem crs;
 	private GridExtent grid;
 	
+	public String toString() {
+		return "[raster-activation-layer (" + active + "/" + (grid.getXCells() * grid.getYCells())+ ")]";
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.geospace.coverage.IGridMask#intersect(org.integratedmodelling.geospace.coverage.RasterActivationLayer)
 	 */

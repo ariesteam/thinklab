@@ -224,13 +224,8 @@ public class ClassificationModel extends DefaultDynamicAbstractModel {
 	}
 
 	@Override
-	public IConcept getCompatibleObservationType(ISession session) {
-		
-		try {
-			return KnowledgeManager.get().requireConcept("modeltypes:ModeledClassification");
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
+	public IConcept getCompatibleObservationType(ISession session) {		
+			return KnowledgeManager.getConcept("modeltypes:ModeledClassification");
 	}
 
 	@Override

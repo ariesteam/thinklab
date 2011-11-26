@@ -24,6 +24,7 @@ public interface ITrainableModel {
 	 * convert the ID into usable information.
 	 * 
 	 * @param trainedInstanceID
+	 * @throws ThinklabException 
 	 */
-	void applyTraining(String trainedInstanceID);
+	void applyTraining(String trainedInstanceID) throws ThinklabException;
 }

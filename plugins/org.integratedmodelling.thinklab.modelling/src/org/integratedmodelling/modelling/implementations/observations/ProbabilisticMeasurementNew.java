@@ -14,8 +14,11 @@ import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplement
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+/*
+ * TODO remove
+ */
 
-@InstanceImplementation(concept="modeltypes:ProbabilisticMeasurement")
+//@InstanceImplementation(concept="modeltypes:ProbabilisticMeasurement")
 public class ProbabilisticMeasurementNew extends ModeledClassification {
 
 	String unitSpecs = null;

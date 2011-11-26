@@ -362,6 +362,10 @@ public class ModelMap {
 			}
 			return ontology;
 		}
+
+		public long getLastModificationTime() {
+			return lastModification;
+		}
 	}
 
 	static HashMap<String,Entry> namespaces = 
