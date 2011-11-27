@@ -230,10 +230,16 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 	IModel lookupEvidenceModelFor(IConcept obs, ISession session) {
 		
 		IModel m = findEvidenceDependencyFor(obs);
+		
 		if (m == null) {
 			
-			if (resultModel != null && resultModel.getObservableClass().equals(obs))
+			if (resultModel != null && resultModel.getObservableClass().equals(obs)) {
+				if (session != null) {
+					session.print("      | using " + resultModel + " " + resultModel.getName());
+					session.print("      | result model");
+				}
 				return resultModel;
+			}
 			
 			/*
 			 * look it up in the other observed
@@ -241,12 +247,20 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			for (IModel o : observed) {
 				if (o.getObservableClass().equals(obs)) {
 					m = o;
-					if (session != null) 
-						session.print("      | found model " + m.getName() + " in observers");
+					if (session != null) {
+						session.print("      | found "  + m + " " + m.getName());
+						session.print("      | in observers");
+					}
 					break;
 				}
 			}
+		} else {
+			if (session != null) {
+				session.print("      | found " + m + " " + m.getName());
+				session.print("      | in dependencies");
+			}
 		}
+		
 		if (m == null) {
 			/*
 			 * find model for obs in same namespace. If >1 found, report ambiguity.
@@ -265,10 +279,11 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			} 
 			if (models.size() == 1) {
 				m = models.get(0);
-				if (session != null) 
-					session.print("      | found model " + m.getName() + " in namespace");
+				if (session != null) {
+					session.print("      | found "  + m + " " +  m.getName());
+					session.print("      | in namespace " + m.getNamespace());
+				}
 			}
-
 		}
 		return m;
 	}
@@ -356,7 +371,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 				 continue;
 			 }
 			 
-			 session.print("      | using " + omod + " model in namespace to observe evidence.");
+//			 session.print("      | using " + omod + " model in namespace to observe evidence.");
 			 
 			 
 			 IQueryResult qr = null;
@@ -529,10 +544,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			
 			session.print("Training dataset contains " + arows + 
 					      " useful observations out of " + trows + " states");
-			
-			/*
-			 * TODO also use a user-specified threshold here
-			 */
+
 			if (arows < 1) {
 				session.print("Not enough useful observations to train. Exiting.");
 				return null;
