@@ -31,11 +31,11 @@ import org.integratedmodelling.thinklab.kbox.KBoxManager;
 		optionalArgumentDefaultValues="_NONE_,_NONE_",
 		optionalArgumentDescriptions="spatial or temporal context,spatial or temporal context",
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text",
-		optionArgumentLabels="kbox,id, , ",
-		optionLongNames="kbox,training-id,clear,algorithm",
-		optionNames="k,id,clr,alg",
-		optionTypes="thinklab-core:Text,thinklab-core:Text,owl:Nothing,thinklab-core:Text",
-		optionDescriptions="kbox,ID of trained instance,clear cache before computing,training algorithm (when applicable)",
+		optionArgumentLabels="n,n,kbox,id, , ",
+		optionLongNames="input-threshold,output-threshold,kbox,training-id,clear,algorithm",
+		optionNames="it,ot,k,id,clr,alg",
+		optionTypes="thinklab-core:Integer,thinklab-core:Integer,thinklab-core:Text,thinklab-core:Text,owl:Nothing,thinklab-core:Text",
+		optionDescriptions="min inputs,min outputs,kbox,ID of trained instance,clear cache before computing,training algorithm (when applicable)",
 		returnType="observation:Observation")
 public class TrainCommand implements ICommandHandler {
 
@@ -95,7 +95,6 @@ public class TrainCommand implements ICommandHandler {
 			id = command.getOptionAsString("training-id");
 		}
 		
-		
 		id = TrainingManager.get().doTraining(model, context, kbox, session, id, algorithm, inpMin, outMin);
 
 		if (id == null) {
@@ -104,65 +103,6 @@ public class TrainCommand implements ICommandHandler {
 			session.print("trained instance ID is " + id);
 		}
 		
-//		IQueryResult r = 
-//			ModelFactory.get().run(model, kbox, session, null, context);
-//		
-//		if (session.getOutputStream() != null) {
-//			session.getOutputStream().println(
-//					r.getTotalResultCount() + " possible observation(s) found");
-//		}
-//		
-//		IValue ret = null;
-//		
-//		if (r.getTotalResultCount() > 0) {
-//			
-//			IValue res = r.getResult(0, session);
-//			IContext result = ((ContextValue)res).getObservationContext();
-//
-//			if (command.hasOption("write")) {
-//				IDataset archive = new FileArchive(result);
-//				archive.persist();
-//			}
-//			
-//			if (command.hasOption("visualize")) {
-//				IVisualization visualization = new FileVisualization(result);
-//				visualization.visualize();
-//			}
-//			
-//			// check if a listener has set ctx, which means we're visualizing
-//			if (command.hasOption("outfile")) {
-//
-//				/*
-//				 * save to netcdf
-//				 */
-//				String outfile = command.getOptionAsString("outfile");
-//
-//				NetCDFArchive out = new NetCDFArchive();
-//				out.setContext(result);
-//				out.write(outfile);
-//				session.print(
-//					"result of " + concept + " model written to " + outfile);
-//			}
-//			
-//			if (command.hasOption("tiff")) {
-//
-//				/*
-//				 * save to netcdf
-//				 */
-//				GISArchive out = new GISArchive(result);
-//				String outdir = out.persist();
-//				session.print(
-//					"GeoTIFF files " + concept + " written to " + outdir);
-//			}
-//			
-			if (command.hasOption("dump")) {
-//				ObservationListing lister = new ObservationListing(result);
-//				lister.dump(session.getOutputStream());
-			}
-
-//			ret = res;
-//		}
-			
 		return null;
 	}
 
