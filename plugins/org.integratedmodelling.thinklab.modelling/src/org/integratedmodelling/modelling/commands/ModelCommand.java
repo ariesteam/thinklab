@@ -44,8 +44,8 @@ import org.integratedmodelling.thinklab.kbox.KBoxManager;
 		optionalArgumentDescriptions="spatial or temporal context,spatial or temporal context",
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text",
 		optionArgumentLabels="trained instance ID,all kboxes,,,none,256, , , , , ",
-		optionLongNames="train,kbox,visualize,dump,outfile,resolution,clear,scenario,write,map,tiff",
-		optionNames="train,k,v,d,o,r,c,s,w,map,t",
+		optionLongNames="trained-instance-id,kbox,visualize,dump,outfile,resolution,clear,scenario,write,map,tiff",
+		optionNames="tr,k,v,d,o,r,c,s,w,map,t",
 		optionTypes="thinklab-core:Text,thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing,thinklab-core:Text,owl:Nothing,owl:Nothing,owl:Nothing",
 		optionDescriptions="ID of trained instance to use,kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing,scenario to apply before computing,store results to standard workspace,show the model map (required dot installed),write geotiff coverages",
 		returnType="observation:Observation")
@@ -94,8 +94,8 @@ public class ModelCommand implements ICommandHandler {
 			ModelMap.show();
 		}
 			
-		if (command.hasOption("train")) {
-			String tid = command.getOptionAsString("train");
+		if (command.hasOption("trained-instance-id")) {
+			String tid = command.getOptionAsString("trained-instance-id");
 			model = (Model) TrainingManager.get().applyTraining(model, tid, session);
 			session.print("using trained instance " + tid);
 		}

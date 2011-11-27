@@ -2,6 +2,7 @@ package org.integratedmodelling.modelling.implementations.observations;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.CoreScience.PhysicalNature;
@@ -9,6 +10,7 @@ import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.observations.Measurement;
 import org.integratedmodelling.corescience.interfaces.IMergingObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IProbabilisticObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
@@ -28,7 +30,7 @@ import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 
 @InstanceImplementation(concept="modeltypes:ProbabilisticMeasurement")
-public class ProbabilisticMeasurement extends Measurement {
+public class ProbabilisticMeasurement extends Measurement implements IProbabilisticObservation {
 
 	String unitSpecs = null;
 	
@@ -256,6 +258,11 @@ public class ProbabilisticMeasurement extends Measurement {
 			}
 
 		}	
+	}
+
+	@Override
+	public List<Pair<GeneralClassifier, IConcept>> getClassifiers() {
+		return classifiers;
 	}
 
 }

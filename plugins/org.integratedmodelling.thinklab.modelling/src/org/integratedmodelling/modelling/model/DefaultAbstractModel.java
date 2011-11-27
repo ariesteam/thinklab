@@ -98,7 +98,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	protected String description = null;
 	protected IFn whenClause = null;
 	private LinkedList<Polylist> transformerQueue = new LinkedList<Polylist>();
-	protected boolean mediatesExternal;
+	private boolean mediatesExternal = false;
 	private boolean _validated = false;
 
 	/*
@@ -123,6 +123,7 @@ public abstract class DefaultAbstractModel implements IModel {
 	protected Boolean editable = null;
 	protected String namespace;
 	protected String localFormalName = null;
+	private String trainingID;
 
 	protected boolean isMediating() {
 		return mediated != null || mediatesExternal;
@@ -713,7 +714,7 @@ public abstract class DefaultAbstractModel implements IModel {
 		 * if I am trainable, apply the training, then proceed adding dependencies
 		 */
 		if (this instanceof ITrainableModel) {
-			((ITrainableModel)this).applyTraining(trainingId);
+			((ITrainableModel)ret).applyTraining(trainingId);
 		}
 
 		/*
@@ -741,13 +742,13 @@ public abstract class DefaultAbstractModel implements IModel {
 		}
 
 		/*
-		 * give the clone our ID so it will work in references, and store the
-		 * scenario to constrain queries as needed.
+		 * give the clone our ID so it will work in references; remember the training ID
 		 */
 		if (ret != null) {
 			ret.id = id;
 			ret.namespace = namespace;
 			ret.scenario = scenario;
+			ret.trainingID = trainingId;
 			ret.localFormalName = localFormalName;
 		}
 

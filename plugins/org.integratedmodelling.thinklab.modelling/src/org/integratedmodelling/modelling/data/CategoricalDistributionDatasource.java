@@ -3,6 +3,7 @@ package org.integratedmodelling.modelling.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.implementations.datasources.IndexedContextualizedDatasourceInt;
@@ -211,7 +212,7 @@ public class CategoricalDistributionDatasource extends
 	}
 
 	public CategoricalDistributionDatasource(
-			IConcept type, int size, IConcept[] valueMappings, ArrayList<Pair<GeneralClassifier, 
+			IConcept type, int size, IConcept[] valueMappings, List<Pair<GeneralClassifier, 
 			IConcept>> classifiers, ObservationContext context) throws ThinklabValidationException {
 		
 		super(type, size, context);

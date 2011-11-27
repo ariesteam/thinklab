@@ -468,7 +468,6 @@ public class CommandDeclaration {
 
 		OptionParser ret = new OptionParser();
 		
-		
 		// universally recognized
 		ret.acceptsAll(Arrays.asList(new String [] {"verbose", "verbose", "debug", "debug" }));
 		

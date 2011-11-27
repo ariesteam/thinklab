@@ -31,11 +31,11 @@ import org.integratedmodelling.thinklab.kbox.KBoxManager;
 		optionalArgumentDefaultValues="_NONE_,_NONE_",
 		optionalArgumentDescriptions="spatial or temporal context,spatial or temporal context",
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text",
-		optionArgumentLabels="all kboxes,generated id, ",
-		optionLongNames="kbox,id,clear",
-		optionNames="k,id,clear",
-		optionTypes="thinklab-core:Text,thinklab-core:Text,owl:Nothing",
-		optionDescriptions="kbox,ID of trained instance,clear cache before computing",
+		optionArgumentLabels="kbox,id, , ",
+		optionLongNames="kbox,training-id,clear,algorithm",
+		optionNames="k,id,clr,alg",
+		optionTypes="thinklab-core:Text,thinklab-core:Text,owl:Nothing,thinklab-core:Text",
+		optionDescriptions="kbox,ID of trained instance,clear cache before computing,training algorithm (when applicable)",
 		returnType="observation:Observation")
 public class TrainCommand implements ICommandHandler {
 
@@ -83,16 +83,16 @@ public class TrainCommand implements ICommandHandler {
 		String algorithm = null;
 
 		if (command.hasOption("input-threshold")) {
-			inpMin = new Integer(command.getArgumentAsString("input-threshold"));
+			inpMin = new Integer(command.getOptionAsString("input-threshold"));
 		}
 		if (command.hasOption("output-threshold")) {
-			outMin = new Integer(command.getArgumentAsString("output-threshold"));
+			outMin = new Integer(command.getOptionAsString("output-threshold"));
 		}
 		if (command.hasOption("algorithm")) {
-			algorithm = command.getArgumentAsString("algorithm");
+			algorithm = command.getOptionAsString("algorithm");
 		}
-		if (command.hasOption("id")) {
-			id = command.getArgumentAsString("id");
+		if (command.hasOption("training-id")) {
+			id = command.getOptionAsString("training-id");
 		}
 		
 		

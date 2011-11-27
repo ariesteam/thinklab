@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
@@ -15,6 +16,7 @@ import org.integratedmodelling.corescience.implementations.observations.Observat
 import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IProbabilisticObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.data.ICategoryData;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
@@ -495,8 +497,9 @@ public class BayesianTransformer
 			IConcept var = outputObservation.getObservableClass();
 			IConcept[] pcstates = getOrdering(var);
  			
- 			ArrayList<Pair<GeneralClassifier, IConcept>> classf = 
- 				((ModeledClassification)outputObservation).classifiers;
+			
+ 			List<Pair<GeneralClassifier, IConcept>> classf = 
+ 				((IProbabilisticObservation)outputObservation).getClassifiers();
  			
  			outputState = 
  				new CategoricalDistributionDatasource(var, context.getMultiplicity(), pcstates, classf, 

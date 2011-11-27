@@ -226,7 +226,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	IModel lookupEvidenceModelFor(IConcept obs, ISession session) {
 		
 		IModel m = findEvidenceDependencyFor(obs);
@@ -241,6 +241,8 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			for (IModel o : observed) {
 				if (o.getObservableClass().equals(obs)) {
 					m = o;
+					if (session != null) 
+						session.print("      | found model " + m.getName() + " in observers");
 					break;
 				}
 			}
@@ -258,11 +260,13 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 				}
 			}
 			if (models.size() > 1) {
-				session.print("found " + models.size() + " suitable models for " + obs + " in namespace; can't choose");
+				if (session != null) 
+					session.print("      | cannot choose model between " + models.size() + " in namespace");
 			} 
 			if (models.size() == 1) {
 				m = models.get(0);
-				session.print(obs + ": using model " + m.getName() + " in namespace");
+				if (session != null) 
+					session.print("      | found model " + m.getName() + " in namespace");
 			}
 
 		}
@@ -282,10 +286,9 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		// change if there is a Pair<int,int> in the parameters.
 		int ithreshold = 1, othreshold = 1;
 		
-		session.print("-------------------------------------------------------------");
-		session.print("Bayesian network training summary for " + getObservableClass());
-		session.print("-------------------------------------------------------------");
-		session.print("Observations:");
+		session.print("\n---------------------------------------------------------------------");
+		session.print("Bayesian network training of " + getObservableClass());
+		session.print("---------------------------------------------------------------------");
 		
 		/*
 		 * collect context and training directory from parameters; complain if
@@ -313,6 +316,8 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			}
 		}
 		
+		session.print("Min inputs = " + ithreshold + "; min outputs = " + othreshold + "; method = " + method);
+		
 		/*
 		 * open the model and build a list of all the observables. Count the 
 		 * leaves (from model dependencies) and the total. If total - leaves > 0, we can train.
@@ -324,17 +329,35 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		 HashSet<IConcept> inputs = new HashSet<IConcept>();
 		 
 		 int icount = 0, ocount = 0;
+		 int totinp = 0, totout = 0;
 		 
 		 for (String c : bn.getAllNodeIds()) {
 			 
+			 boolean isLeaf = bn.isLeaf(c);
+			 
+			 if (isLeaf) 
+				 totinp ++;
+			 else 
+				 totout ++;
+			 
 			 IConcept obs = 
-					KnowledgeManager.getConcept(getObservableClass().getConceptSpace() + ":" + c);
+					KnowledgeManager.get().retrieveConcept(getObservableClass().getConceptSpace() + ":" + c);
 
-			 IModel omod = lookupEvidenceModelFor(obs, session);
-			 if (omod == null) {
-				 session.print(obs + (bn.isLeaf(obs.getLocalName()) ? " (INPUT)" : " (OUTPUT)") + ": no model available to observe");
+			 session.print((isLeaf ? "INPUT " : "OUTPUT") + "| " + (obs == null ? c : obs.toString()));
+
+			 if (obs == null) {
+				 session.print("      | node " + c + " does not correspond to a known concept.");
 				 continue;
 			 }
+			 
+			 IModel omod = lookupEvidenceModelFor(obs, session);
+			 if (omod == null) {
+				 session.print("      | no suitable model in namespace to observe evidence.");
+				 continue;
+			 }
+			 
+			 session.print("      | using " + omod + " model in namespace to observe evidence.");
+			 
 			 
 			 IQueryResult qr = null;
 			 try {
@@ -344,21 +367,23 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			 }
 			 
 			 if (qr == null || qr.getResultCount() == 0) {
-				 session.print(obs + ": not observable in context");
+				 session.print("      | no observations possible in given context");
 				 continue;
 			 }
-			 			 if (bn.isLeaf(obs.getLocalName())) {
-				 session.print(obs + " (INPUT): " + qr.getResultCount() + " observations");
+			 
+			 if (bn.isLeaf(obs.getLocalName())) {
 				 inputs.add(obs);
 				 icount ++;
 			 } else {
-				 session.print(obs + " (OUTPUT): " + qr.getResultCount() + " observations");
 				 outputs.add(obs);
 				 ocount++;
 			 }
+			 session.print("      | " + qr.getResultCount() + " observations possible in given context");
 			 observers.add(obs);
 		 }
 		
+		 session.print("---------------------------------------------------------------------");
+		 
 		 if (outputs.size() == 0) {
 			 session.print("No output variables can be observed in context. Exiting.");
 			 return null;
@@ -372,15 +397,15 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		idnt.setObservable(KnowledgeManager.getConcept("representation:GenericObservable"));
 		
 		for (IConcept c : observers) {
-			IModel m = lookupEvidenceModelFor(c, session);
+			IModel m = lookupEvidenceModelFor(c, null);
 			if (m != null) {
-				session.print("using model " + m + " for " + c);
 				idnt.addDependentModel(m);
 			}
 		}
 		
-		session.print("Found evidence for " + observers.size() + "/" + bn.getNodeCount() + " nodes (" + icount + " inputs, " + ocount + " outputs)");
-		session.print("Computing evidence...");
+		session.print("Found evidence for " + observers.size() + "/" + bn.getNodeCount() + 
+					  " nodes (" + icount + "/" + totinp + " inputs, " + ocount + "/" + totout + " outputs)");
+		session.print("Building and computing evidence model...");
 		IQueryResult r = 
 				ModelFactory.get().run(new Model(idnt), kbox, session, null, context);
 			
@@ -395,6 +420,10 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 					File.separator +
 					"traindata.txt");
 
+			if (trainData.exists())	{
+				trainData.delete();
+			}
+			
 			File trainedModel = new File(trainingDir + File.separator + 
 					MiscUtilities.getFileName(MiscUtilities.resolveUrlToFile(source).toString()));
 			
@@ -427,13 +456,15 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			}
 			
 			if (outputs.isEmpty()) {
-				session.print("no usable evidence for any of the outputs. Exiting.");
+				session.print("No usable evidence for any of the outputs. Exiting.");
 				return null;
 			}
 			if (inputs.isEmpty()) {
-				session.print("no usable evidence for any of the inputs. Exiting.");
+				session.print("No usable evidence for any of the inputs. Exiting.");
 				return null;
 			}
+
+			session.print("Training dataset uses at least " + ithreshold + " non-null inputs and " + othreshold + " outputs.");
 			
 			/*
 			 * write out headers
@@ -503,11 +534,11 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			 * TODO also use a user-specified threshold here
 			 */
 			if (arows < 1) {
-				session.print("Not enough useful observations to train. Aborting.");
+				session.print("Not enough useful observations to train. Exiting.");
 				return null;
 			}
 			
-			session.print("Training. Please be patient. ");
+			session.print("Training bayesian network model with algorithm " + method + ". Please be patient. ");
 			
 			/*
 			 * create BN - for now only supported if imported
@@ -520,7 +551,7 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 			bn = BayesianFactory.get().createBayesianNetwork(source.toString());
 			IBayesianNetwork trainedBN = bn.train(trainData, method);
 			trainedBN.write(trainedModel);
-			session.print("Trained model written to " + trainingDir);
+			session.print("Training complete. Trained model written to " + trainingDir);
 			
 		} else {
 			session.print("No evidence can be computed. Exiting.");
@@ -537,7 +568,9 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 		File trainingDir = TrainingManager.get().getTrainingDir(trainedInstanceID, this);
 		File trainedModel = new File(trainingDir + File.separator + 
 				MiscUtilities.getFileName(MiscUtilities.resolveUrlToFile(source).toString()));
-		this.source = trainedModel.toString();
+		if (trainedModel.exists()) {
+			this.source = trainedModel.toString();
+		}
 	}
 
 	

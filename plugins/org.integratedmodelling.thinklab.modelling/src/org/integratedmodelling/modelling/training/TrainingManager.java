@@ -33,7 +33,7 @@ public class TrainingManager {
 	private static final String TRAINING_TIME_PROPERTY = "training.time";
 	private static final String TRAINING_DATE_PROPERTY = "training.date";
 	private static final String TRAINING_MODEL_PROPERTY = "training.model";
-	private static final String TRAINING_ID_PROPERTY = "training.namespace";
+	private static final String TRAINING_ID_PROPERTY = "training.id";
 	private static final String TRAINING_NAMESPACE_PROPERTY = "training.namespace";
 
 	public static TrainingManager _this = null;
@@ -174,8 +174,8 @@ public class TrainingManager {
 			properties.setProperty(TRAINING_TIME_PROPERTY, new Date().getTime()+"");
 			properties.setProperty(TRAINING_DATE_PROPERTY, new Date().toString());
 			properties.setProperty(TRAINING_MODEL_PROPERTY, model.getName());
-			properties.setProperty(TRAINING_NAMESPACE_PROPERTY, model.getName());
-			properties.setProperty(TRAINING_ID_PROPERTY, model.getName());
+			properties.setProperty(TRAINING_NAMESPACE_PROPERTY, model.getNamespace());
+			properties.setProperty(TRAINING_ID_PROPERTY, model.getId());
 			
 			/*
 			 * proceed
