@@ -169,6 +169,11 @@ public class VectorCoverageDataSource implements IDataSource<Object>, IInstanceI
 				ret = this.transformation.eval(parms);
 			}
 			
+			/*
+			 * TODO if there's any table linked, use the result as
+			 * a key into it.
+			 */
+			
 		} catch (ThinklabValidationException e) {
 			throw new ThinklabRuntimeException(e);
 		}
