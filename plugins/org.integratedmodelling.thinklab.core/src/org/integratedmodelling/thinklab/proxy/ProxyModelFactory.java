@@ -41,4 +41,9 @@ public class ProxyModelFactory implements IModelFactory {
 		return ModelManager.get().parseUnit(unit);
 	}
 
+	@Override
+	public IModelObject clone(IModelObject o, INamespace namespace) {
+		return ModelManager.get().clone(o, namespace);
+	}
+
 }

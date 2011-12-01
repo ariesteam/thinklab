@@ -13,6 +13,7 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.utils.FolderZiper;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -226,6 +227,24 @@ public class ThinklabProject implements IProject {
 
 	public static Collection<ThinklabProject> getProjects() {
 		return _projects.values();
+	}
+
+	@Override
+	public Collection<INamespace> getNamespaces() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<File> getSourceFolders() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getOntologyNamespacePrefix() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

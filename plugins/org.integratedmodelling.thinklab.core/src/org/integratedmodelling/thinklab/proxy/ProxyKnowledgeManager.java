@@ -7,6 +7,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 
 /**
  * Just a delegate knowledge manager that uses the singleton for 
@@ -52,6 +53,11 @@ public class ProxyKnowledgeManager implements IKnowledgeManager {
 	@Override
 	public IKBox getDefaultKbox() {
 		return Thinklab.get().getDefaultKbox();
+	}
+
+	@Override
+	public void loadKnowledge(IList list) {
+		Thinklab.get().loadKnowledge(list);
 	}
 
 }

@@ -77,13 +77,13 @@ public class KBoxCopier  {
 		return true;
 	}
 
-	private IKBox resolveURL(String sourceURL, ISession session) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return 
-			session == null ? 
-					KBoxManager.get().requireGlobalKBox(sourceURL) :
-					session.requireKBox(sourceURL);	
-	}
+//	private IKBox resolveURL(String sourceURL, ISession session) throws ThinklabException {
+//		// TODO Auto-generated method stub
+//		return 
+//			session == null ? 
+//					KBoxManager.get().requireGlobalKBox(sourceURL) :
+//					session.requireKBox(sourceURL);	
+//	}
 
 	/**
 	 * 
@@ -91,28 +91,28 @@ public class KBoxCopier  {
 	public void transferKnowledge(String sourceURL, String targetURL, ISession session)
 			throws ThinklabException {
 
-		sourceKB = resolveURL(sourceURL, session);
-		targetKB = resolveURL(targetURL, session);
-
-		IQueryResult res = sourceKB.query(null);
-		HashMap<String, String> refl = new HashMap<String, String>();
-		HashMap<String, String> refs = new HashMap<String, String>();
-
-		ISession s = new Session();
-
-		for (int i = 0; i < res.getTotalResultCount(); i++) {
-			
-			IList l = res.getResultAsList(i, refl);
-			InstanceList il = new InstanceList(l);
-			
-			System.out.println(PolyList.prettyPrint(l));
-
-			String id = il.getLocalName();
-			
-			if (!refs.containsKey(id) && filterObject(l)) {
-				targetKB.storeObject(l, null, null, s, refs);
-			}
-		}
+//		sourceKB = resolveURL(sourceURL, session);
+//		targetKB = resolveURL(targetURL, session);
+//
+//		IQueryResult res = sourceKB.query(null);
+//		HashMap<String, String> refl = new HashMap<String, String>();
+//		HashMap<String, String> refs = new HashMap<String, String>();
+//
+//		ISession s = new Session();
+//
+//		for (int i = 0; i < res.getTotalResultCount(); i++) {
+//			
+//			IList l = res.getResultAsList(i, refl);
+//			InstanceList il = new InstanceList(l);
+//			
+//			System.out.println(PolyList.prettyPrint(l));
+//
+//			String id = il.getLocalName();
+//			
+//			if (!refs.containsKey(id) && filterObject(l)) {
+//				targetKB.storeObject(l, null, null, s, refs);
+//			}
+//		}
 	}
 
 	/**
@@ -124,15 +124,15 @@ public class KBoxCopier  {
 		ArrayList<IList> ret = new ArrayList<IList>();
 		HashMap<String, String> refs = new HashMap<String, String>();
 
-		sourceKB = resolveURL(sourceURL, session);
-
-		IQueryResult res = sourceKB.query(null);
-
-		for (int i = 0; i < res.getTotalResultCount(); i++) {
-			IList l = res.getResultAsList(i, refs);
-			if (l != null && !l.isEmpty() && !refs.containsKey(new InstanceList(l).getLocalName()))
-				ret.add(l);
-		}
+//		sourceKB = resolveURL(sourceURL, session);
+//
+//		IQueryResult res = sourceKB.query(null);
+//
+//		for (int i = 0; i < res.getTotalResultCount(); i++) {
+//			IList l = res.getResultAsList(i, refs);
+//			if (l != null && !l.isEmpty() && !refs.containsKey(new InstanceList(l).getLocalName()))
+//				ret.add(l);
+//		}
 
 		return PolyList.fromArray(ret.toArray());
 	}
@@ -143,17 +143,17 @@ public class KBoxCopier  {
 	public void importKnowledge(String targetURL, IList knowledge)
 			throws ThinklabException {
 
-		HashMap<String, String> refs = new HashMap<String, String>();
-
-		targetKB = resolveURL(targetURL, null);
-
-		Object[] os = knowledge.array();
-
-		ISession session = new Session();
-		
-		for (int i = 0; i < os.length; i++) {
-			targetKB.storeObject((IList) os[i], null, null, session, refs);
-		}
+//		HashMap<String, String> refs = new HashMap<String, String>();
+//
+//		targetKB = resolveURL(targetURL, null);
+//
+//		Object[] os = knowledge.array();
+//
+//		ISession session = new Session();
+//		
+//		for (int i = 0; i < os.length; i++) {
+//			targetKB.storeObject((IList) os[i], null, null, session, refs);
+//		}
 
 	}
 

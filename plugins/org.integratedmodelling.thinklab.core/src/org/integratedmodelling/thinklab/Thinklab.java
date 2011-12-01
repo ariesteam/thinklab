@@ -19,6 +19,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
@@ -452,5 +453,11 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	@Override
 	public IKBox getDefaultKbox() {
 		return KBoxManager.get();
+	}
+
+	@Override
+	public void loadKnowledge(IList list) {
+		// TODO Auto-generated method stub
+		
 	}
 }
