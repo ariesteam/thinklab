@@ -22,7 +22,6 @@ import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
-import org.integratedmodelling.thinklab.api.modelling.IAnnotation;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
@@ -55,7 +54,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 	private Hashtable<String, IScenario> scenariosById = new Hashtable<String, IScenario>();
 	private Hashtable<String, IContext> contextsById = new Hashtable<String, IContext>();
 	private Hashtable<String, IAgentModel> agentsById = new Hashtable<String, IAgentModel>();
-	private Hashtable<String, IAnnotation> annotationsById = new Hashtable<String, IAnnotation>();
 	private Hashtable<String, INamespace> namespacesById = new Hashtable<String, INamespace>();
 
 	/*
@@ -84,13 +82,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 		_map = new ModelMap();
 	}
 	
-	public IAnnotation requireAnnotation(String s) throws ThinklabException {
-		IAnnotation ret = getAnnotation(s);
-		if (ret == null)
-			throw new ThinklabResourceNotFoundException("annotation " + s + " not found");
-		return ret;
-	}
-
 	public IModel retrieveModel(String s) {
 		return getModel(s);
 	}
@@ -198,11 +189,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 		}
 		
 		return ret;
-	}
-
-	@Override
-	public IAnnotation getAnnotation(String s) {
-		return annotationsById.get(s);
 	}
 
 	@Override
