@@ -860,4 +860,10 @@ public class Ontology implements IOntology {
 		return ret;
 	}
 
+	@Override
+	public IList asList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

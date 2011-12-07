@@ -1,21 +1,27 @@
 package org.integratedmodelling.thinklab.modelling.model;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.interpreter.ModelGenerator;
 import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.list.InstanceList;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
-import org.integratedmodelling.thinklab.api.modelling.IAnnotation;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
@@ -26,6 +32,7 @@ import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelManager;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
 import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
+import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.modelling.model.implementation.ClassificationModel;
 import org.integratedmodelling.thinklab.modelling.model.implementation.MeasurementModel;
@@ -33,6 +40,7 @@ import org.integratedmodelling.thinklab.modelling.model.implementation.Model;
 import org.integratedmodelling.thinklab.modelling.model.implementation.RankingModel;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
+import org.integratedmodelling.utils.MiscUtilities;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -46,7 +54,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 	private Hashtable<String, IScenario> scenariosById = new Hashtable<String, IScenario>();
 	private Hashtable<String, IContext> contextsById = new Hashtable<String, IContext>();
 	private Hashtable<String, IAgentModel> agentsById = new Hashtable<String, IAgentModel>();
-	private Hashtable<String, IAnnotation> annotationsById = new Hashtable<String, IAnnotation>();
 	private Hashtable<String, INamespace> namespacesById = new Hashtable<String, INamespace>();
 
 	/*
@@ -75,13 +82,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 		_map = new ModelMap();
 	}
 	
-	public IAnnotation requireAnnotation(String s) throws ThinklabException {
-		IAnnotation ret = getAnnotation(s);
-		if (ret == null)
-			throw new ThinklabResourceNotFoundException("annotation " + s + " not found");
-		return ret;
-	}
-
 	public IModel retrieveModel(String s) {
 		return getModel(s);
 	}
@@ -189,11 +189,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 		}
 		
 		return ret;
-	}
-
-	@Override
-	public IAnnotation getAnnotation(String s) {
-		return annotationsById.get(s);
 	}
 
 	@Override
@@ -309,6 +304,95 @@ public class ModelManager implements IModelManager, IModelFactory {
 
 	public IInstance createObservable(InstanceList inst) throws ThinklabException {
 		return _session.createObject(inst.asList());
+	}
+
+	@Override
+	public IModelObject clone(IModelObject o, INamespace namespace) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<INamespace> load(IProject project)
+			throws ThinklabException {
+	
+		ArrayList<INamespace> ret = new ArrayList<INamespace>();
+		HashSet<File> read = new HashSet<File>();
+		
+		for (File dir : project.getSourceFolders()) {
+		
+			if (!dir.isDirectory() || !dir.canRead()) {
+				throw new ThinklabIOException("source directory " + dir + " is unreadable");
+			}	 
+		
+			loadInternal(dir, read, ret, "", project);
+		}
+		
+		return ret;
+	}
+
+	private void loadInternal(File f, HashSet<File> read, ArrayList<INamespace> ret, String path,
+			IProject project) throws ThinklabException {
+
+		if (f. isDirectory()) {
+			
+			String pth = path + "." + MiscUtilities.getFileBaseName(f.toString());
+
+			for (File fl : f.listFiles()) {
+				loadInternal(fl, read, ret, pth, project);
+			}
+			
+		} else if (f.toString().endsWith(".owl")) {
+			try {
+				KnowledgeManager.get().getKnowledgeRepository().refreshOntology(
+						f.toURI().toURL(), 
+						MiscUtilities.getFileBaseName(f.toString()), false);
+			} catch (MalformedURLException e) {
+				throw new ThinklabValidationException(e);
+			}
+			
+			/*
+			 * TODO validate ontology URL vs. namespace path
+			 */
+			IOntology o = 
+					KnowledgeManager.get().getKnowledgeRepository().requireOntology(
+							MiscUtilities.getFileBaseName(f.toString()));
+			String uri = 
+					project.getOntologyNamespacePrefix() + "/" + path.replaceAll(".", "/") + 
+					MiscUtilities.getFileBaseName(f.toString());
+					
+			if (!o.getURI().equals(uri)) {
+				throw new ThinklabValidationException(
+						"illegal ontology namespace in " + f + 
+						": file path requires " + uri + ", " +
+						o.getURI() + " found");
+			}
+			
+			/*
+			 * TODO add namespace and project to ontology metadata
+			 */
+			
+			/*
+			 * TODO if auto sync is requested and configured, upload newer ontologies 
+			 * to location matching URI
+			 */
+			
+		} else if (f.toString().endsWith(".tcl") || f.toString().endsWith(".clj")) {
+
+			INamespace ns = loadFile(f.toString());
+
+			/*
+			 * validate namespace vs. file path
+			 */
+			if (!ns.getNamespace().equals(path))
+				throw new ThinklabValidationException(
+						"illegal namespace declaration in " + f + 
+						": file path requires " + path + ", " +
+						ns.getNamespace() + " found");
+					
+			ret.add(ns);
+		}
+		
 	}
 
 }

@@ -226,9 +226,9 @@ public class List implements ICommandHandler {
 						+ ":\t" + kb);
 			}
 
-			for (String kb : session.getLocalKBoxes()) {
-				session.getOutputStream().println(kb + " (local)");
-			}
+//			for (String kb : session.getLocalKBoxes()) {
+//				session.getOutputStream().println(kb + " (local)");
+//			}
 
 		} else {
 
@@ -271,15 +271,15 @@ public class List implements ICommandHandler {
 				if (o != null)
 					listOntology(o, session);
 				else {
-					/* see if it is a kbox URL or name */
-					IKBox kbox = session.retrieveKBox(subject);
-
-					if (kbox != null) {
-						listKBox(kbox, subject, session);
-					} else {
-						session.getOutputStream().println("nothing known about "
-								+ subject);
-					}
+//					/* see if it is a kbox URL or name */
+//					IKBox kbox = session.retrieveKBox(subject);
+//
+//					if (kbox != null) {
+//						listKBox(kbox, subject, session);
+//					} else {
+//						session.getOutputStream().println("nothing known about "
+//								+ subject);
+//					}
 				}
 			}
 		}

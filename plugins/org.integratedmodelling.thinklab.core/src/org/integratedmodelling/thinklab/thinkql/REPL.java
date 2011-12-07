@@ -21,7 +21,6 @@ import java.io.PrintWriter;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.interpreter.ModelGenerator;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.modelling.IAnnotation;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
@@ -74,11 +73,7 @@ public class REPL {
 				try {
 					IModelObject obj = mg.evaluate(statement);
 
-					if (obj instanceof IAnnotation) {
-						/*
-						 * add to current context
-						 */
-					} else if (obj instanceof IModel) {
+					if (obj instanceof IModel) {
 						
 						/*
 						 * model using the current context; 

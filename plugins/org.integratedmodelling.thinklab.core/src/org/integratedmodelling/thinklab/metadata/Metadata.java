@@ -43,5 +43,17 @@ public class Metadata implements IMetadata {
 		}
 		return PolyList.fromCollection(ret);
 	}
+
+	@Override
+	public void parse(String string) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String asText() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

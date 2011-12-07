@@ -19,6 +19,7 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
@@ -280,7 +281,6 @@ public abstract class DefaultAbstractModel extends NamespaceQualified implements
 			List<IExpression> whens = (List<IExpression>) def.get(IModelFactory.K_MCONDITIONALS);
 		}
 
-		
 		return this;
 	}
 
@@ -321,7 +321,12 @@ public abstract class DefaultAbstractModel extends NamespaceQualified implements
 	public abstract IObservation createObservation(HashMap<IInstance, IState> known);
 
 
-	
+	@Override
+	public Pair<IObserver, IExpression> getObservers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 }

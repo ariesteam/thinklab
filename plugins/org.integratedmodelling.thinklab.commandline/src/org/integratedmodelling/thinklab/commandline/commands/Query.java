@@ -53,17 +53,17 @@ public class Query implements ICommandHandler {
 		String kb = command.getOptionAsString("kbox");
 		String toEval = command.getArgumentAsString("query");
 
-		// twisted logics, but I like it.
-		for (String kbox : KBoxManager.get().getInstalledKboxes()) {
+//		// twisted logics, but I like it.
+//		for (String kbox : KBoxManager.get().getInstalledKboxes()) {
 
-			IKBox theBox = null;
+			IKBox theBox = KBoxManager.get();
 
-			if (kb != null) {
-				kbox = kb;
-				theBox = session.retrieveKBox(kb);
-			} else {
-				theBox = session.retrieveKBox(kbox);
-			}
+//			if (kb != null) {
+//				kbox = kb;
+//				theBox = session.retrieveKBox(kb);
+//			} else {
+//				theBox = session.retrieveKBox(kbox);
+//			}
 
 			IQuery query = theBox.parseQuery(toEval);
 
@@ -96,9 +96,9 @@ public class Query implements ICommandHandler {
 			session.getOutputStream().println("total: " + nres);
 
 			// just once if we had a kbox specified
-			if (kbox == null)
-				break;
-		}
+//			if (kbox == null)
+//				break;
+//		}
 
 		return null;
 	}

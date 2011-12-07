@@ -380,7 +380,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.xtext.util_2.0.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.xtext.xtend2_2.0.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.xtext.xtend2.lib_2.0.0.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/thinklab-api.jar" sourcepath="/thinklab-api"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.antlr.runtime_3.2.0.jar"/>
-	<classpathentry kind="output" path="null"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/thinklab-api"/>
 </classpath>

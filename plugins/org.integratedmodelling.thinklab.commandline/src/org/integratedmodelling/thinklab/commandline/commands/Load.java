@@ -63,14 +63,14 @@ public class Load implements ICommandHandler {
 
 		if (kbox != null && objs.size() > 0) {
 
-			IKBox kb = session.retrieveKBox(kbox);
-			kids = new ArrayList<String>();
-
-			HashMap<String, String> references = new HashMap<String, String>();
-
-			for (IInstance obj : objs) {
-				kids.add(kb.storeObject(obj, null, null, session, references));
-			}
+//			IKBox kb = session.retrieveKBox(kbox);
+//			kids = new ArrayList<String>();
+//
+//			HashMap<String, String> references = new HashMap<String, String>();
+//
+//			for (IInstance obj : objs) {
+//				kids.add(kb.storeObject(obj, null, null, session, references));
+//			}
 		}
 
 		session.getOutputStream().println((objs == null ? 0 : objs.size())

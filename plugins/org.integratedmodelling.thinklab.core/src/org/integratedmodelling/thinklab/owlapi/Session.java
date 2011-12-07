@@ -59,7 +59,6 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IConformance;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.listeners.IListener;
-import org.integratedmodelling.thinklab.api.listeners.IThinklabSessionListener;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.api.runtime.IUserModel;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
@@ -98,7 +97,7 @@ public class Session implements ISession {
 	
 	Properties properties = new Properties();
 	
-	ArrayList<IThinklabSessionListener> listeners = new ArrayList<IThinklabSessionListener>();
+	ArrayList<IListener> listeners = new ArrayList<IListener>();
 
 	private IUserModel userModel;
 
@@ -254,11 +253,11 @@ public class Session implements ISession {
 	public void deleteObject(String name) throws ThinklabException {
 		
 		IInstance i = null;
-		for (IThinklabSessionListener listener : listeners) {
-			if (i == null)
-				i = retrieveObject(name);
-			listener.objectDeleted(i);
-		}
+//		for (IThinklabSessionListener listener : listeners) {
+//			if (i == null)
+//				i = retrieveObject(name);
+//			listener.objectDeleted(i);
+//		}
 		
 		ontology.removeInstance(ontology.getURI()+name);
 	}
@@ -343,9 +342,9 @@ public class Session implements ISession {
 		/* TODO see if we want to use OWL validation, maybe connected to a parameter or preference */
 		ret.validate();
 
-		for (IThinklabSessionListener listener : listeners) {
-			listener.objectCreated(ret);
-		}
+//		for (IThinklabSessionListener listener : listeners) {
+//			listener.objectCreated(ret);
+//		}
 		
 		
 		return ret;
@@ -377,19 +376,19 @@ public class Session implements ISession {
 			 */
 			ret = kb.getObjectFromID(id, this, new HashMap<String, String>());
 
-			for (IThinklabSessionListener listener : listeners) {
-				listener.objectCreated(ret);
-			}
+//			for (IThinklabSessionListener listener : listeners) {
+//				listener.objectCreated(ret);
+//			}
 		}
 		
 		return ret;
 	}
 
-	public void addListener(IThinklabSessionListener listener) {
+	public void addListener(IListener listener) {
 		listeners.add(listener);
 	}
 
-	public Collection<IThinklabSessionListener> getListeners() {
+	public Collection<IListener> getListeners() {
 		return listeners;
 	}
 
@@ -513,9 +512,9 @@ public class Session implements ISession {
 	public void listen(IListener... listeners) {
 		// TODO Auto-generated method stub
 		for (IListener l : listeners) {
-			if (l instanceof IThinklabSessionListener) {
-				addListener((IThinklabSessionListener) l);
-			}
+//			if (l instanceof IThinklabSessionListener) {
+//				addListener((IThinklabSessionListener) l);
+//			}
 		}
 	}
 
