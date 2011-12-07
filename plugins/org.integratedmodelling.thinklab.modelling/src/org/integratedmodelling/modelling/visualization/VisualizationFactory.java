@@ -440,6 +440,13 @@ public class VisualizationFactory {
 		HashMap<IConcept, Integer> ranking = Metadata.getClassMappings(state.getMetadata());
 
 		int nlevels = cmap.getVisibleColorCount();
+		
+		/*
+		 * happens at times
+		 */
+		if (nlevels == 0) 
+			return null;
+		
 		int w = totalLength/nlevels;
 		
 		File[] imgs = cmap.getColorLegend(height, w, fileBaseName);

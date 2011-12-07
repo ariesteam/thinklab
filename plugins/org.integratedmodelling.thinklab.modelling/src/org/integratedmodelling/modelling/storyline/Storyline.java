@@ -312,6 +312,11 @@ public class Storyline extends DefaultMutableTreeNode {
 		return true;
 	}
 	
+	public boolean isEnabled() {
+		// TODO cross-check template privileges with user properties
+		return !template.getBoolean("disabled");
+	}
+	
 	public int getStatus() {
 		return status;
 	}
