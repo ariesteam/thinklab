@@ -309,6 +309,15 @@ public class XMLDocument {
 		return textVal;
 	}
 	
+	public static String getTextValue(Element ele, String tagName, String optionalPrefix) {
+		
+		String ret = getTextValue(ele, tagName);
+		if (ret == null) {
+			ret = getTextValue(ele, optionalPrefix + ":" + tagName);
+		}
+		return ret;
+	}
+	
 	public static String getNodeValue(Node node) {
 		StringBuffer buf = new StringBuffer();
 		NodeList children = node.getChildNodes();
@@ -392,6 +401,14 @@ public class XMLDocument {
 	
 	public Node findNode(String s) {
 		return findNode(root(), s);
+	}
+	
+	public Node findNode(String s, String optionalPrefix) {
+		Node ret = findNode(root(), s);
+		if (ret == null) {
+			ret = findNode(root(), optionalPrefix + ":" + s);
+		}
+		return ret;
 	}
 	
 	public Collection<ProcessingInstruction> getProcessingInstructions() {

@@ -184,13 +184,13 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		   * TBC: only honor the nodata specs from WCS if there are no nodata specs in the annotation.
 		   * FIXME: limited to one SingleValue spec 
 		   */
-		  n = desc.findNode("nullValues");
+		  n = desc.findNode("nullValues", "wcs");
 		  if (noData == null && n != null)  {
 			  
 			  next = (Node)n.getFirstChild();
 			  while ((child = next) != null) {
 				  next = child.getNextSibling(); 
-				  if (child.getNodeName().equals("singleValue")) {
+				  if (child.getNodeName().endsWith("singleValue")) {
 					  this.noData = new double[1];
 					  this.noData[0] = 
 						  Double.parseDouble(XMLDocument.getNodeValue(child).toString());
@@ -201,12 +201,12 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		  /*
 		   * keywords: recognize KVP and instantiate properties from them
 		   */
-		  n = desc.findNode("keywords");
+		  n = desc.findNode("keywords", "wcs");
 		  i = 0; next = (Node)n.getFirstChild();
 		  while ((child = next) != null) {
 				 
 			  next = child.getNextSibling(); 
-			  if (child.getNodeName().equals("keyword")) {
+			  if (child.getNodeName().endsWith("keyword")) {
 				String kw = XMLDocument.getNodeValue(child).trim();
 				String[] zoz = kw.split("\\ ");
 				for (String kz : zoz) {
@@ -407,9 +407,8 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		String obsClass =
 			properties.getProperty("observation.type", "measurement:Ranking");
 		String observable =  
-			properties.getProperty("observable.type", "observation:GenericQuantifiable");
+			properties.getProperty("observable.type", "representation:GenericQuantifiable");
 		
-
 		ReferencedEnvelope envelope = new ReferencedEnvelope(boundingBox);
 		
 		if (fenv != null) {

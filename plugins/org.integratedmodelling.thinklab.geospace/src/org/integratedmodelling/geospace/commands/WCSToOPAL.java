@@ -124,7 +124,7 @@ public class WCSToOPAL implements ICommandHandler {
 			throw new ThinklabValidationException(e);
 		}
 		
-		Node n = cap.findNode("ContentMetadata");
+		Node n = cap.findNode("ContentMetadata", "wcs");
 		nCovs = parseMetadata(n, out, server, match, forced);
 
 		if (output.equals("console"))
@@ -154,9 +154,9 @@ public class WCSToOPAL implements ICommandHandler {
 		  while ((child = next) != null) {
 				 
 			  next = child.getNextSibling(); 
-			  if (child.getNodeName().equals("CoverageOfferingBrief")) {
+			  if (child.getNodeName().endsWith("CoverageOfferingBrief")) {
 				  
-				  String covId = XMLDocument.getTextValue((Element) child, "name");
+				  String covId = XMLDocument.getTextValue((Element) child, "name", "wcs");
 				  if (match != null && !covId.startsWith(match))
 					  continue;
 				  
