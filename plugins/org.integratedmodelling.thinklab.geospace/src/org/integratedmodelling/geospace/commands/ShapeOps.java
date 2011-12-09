@@ -7,6 +7,7 @@ import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.collection.DelegateFeatureIterator;
+import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.literals.ShapeValue;
@@ -53,7 +54,7 @@ public class ShapeOps implements ICommandHandler {
 			this.crs = features.getSchema().getCoordinateReferenceSystem();
 			
 			session.print("CRS is " + Geospace.getCRSIdentifier(crs, true));
-			session.print("Bounding box: \n" + boundingBox);
+			session.print("Bounding box: \n" + JTS.toGeometry(boundingBox.toBounds(boundingBox.getCoordinateReferenceSystem())));
 			
 			String op = command.getOptionAsString("operation");
 			
