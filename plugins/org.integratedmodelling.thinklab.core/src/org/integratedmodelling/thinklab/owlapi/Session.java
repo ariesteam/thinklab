@@ -48,6 +48,7 @@ import java.util.UUID;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.SemanticType;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
 import org.integratedmodelling.thinklab.exception.ThinklabInappropriateOperationException;
@@ -371,11 +372,22 @@ public class Session implements ISession {
 
 	public Collection<IInstance> loadObjects(String source) throws ThinklabException {
 		
-		URL url = MiscUtilities.getURLForResource(source);
-		if (url != null)
-			return loadObjects(url);
+		URL url = null;
+
+		if (source != null && !source.isEmpty()) {
+			try {
+				url = MiscUtilities.getURLForResource(source);
+			} catch (ThinklabException e) {
+				// leave it null
+			}
+		}
 		
-		return null;
+		if (url == null) {
+			Thinklab.get().logger().warn("instance store " + source + " cannot be opened");
+			return null;
+		}
+		
+		return loadObjects(url);
 	}
 
 	public  IInstance createObject(Polylist polylist) throws ThinklabException {
