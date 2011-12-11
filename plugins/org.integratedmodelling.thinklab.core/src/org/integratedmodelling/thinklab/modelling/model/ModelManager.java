@@ -1,6 +1,9 @@
 package org.integratedmodelling.thinklab.modelling.model;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,7 +64,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 	 */
 	ISession _session = null;
 	ModelMap _map = null;
-	
 	
 	/**
 	 * Return the singleton model manager. Use injection to modularize the
@@ -171,15 +173,23 @@ public class ModelManager implements IModelManager, IModelFactory {
 	}
 
 	@Override
-	public INamespace loadFile(String resourceId) throws ThinklabException {
+	public synchronized INamespace loadFile(String resourceId) throws ThinklabException {
 
 		INamespace ret = null;
 		
 		if (resourceId.endsWith(".tql")) {
-		
-			Injector injector = Guice.createInjector(new ModellingModule());
-			ModelGenerator mg = injector.getInstance(ModelGenerator.class);
-			ret = new ModelAdapter().createNamespace(mg.load(resourceId));
+			
+			try {
+				Injector injector = Guice.createInjector(new ModellingModule());
+				ModelGenerator thinkqlParser = injector.getInstance(ModelGenerator.class);
+				FileInputStream input = new FileInputStream(resourceId);
+				ret = new ModelAdapter().createNamespace(thinkqlParser.parse(input));
+				input.close();
+			} catch (FileNotFoundException e) {
+				throw new ThinklabIOException(e);
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
 			
 		} else if (resourceId.endsWith(".clj")) {
 			
@@ -335,7 +345,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 	private void loadInternal(File f, HashSet<File> read, ArrayList<INamespace> ret, String path,
 			IProject project) throws ThinklabException {
 
-		if (f. isDirectory()) {
+		if (f.isDirectory()) {
 			
 			String pth = path + "." + MiscUtilities.getFileBaseName(f.toString());
 
@@ -353,7 +363,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 			}
 			
 			/*
-			 * TODO validate ontology URL vs. namespace path
+			 * validate ontology URL vs. namespace path
 			 */
 			IOntology o = 
 					KnowledgeManager.get().getKnowledgeRepository().requireOntology(

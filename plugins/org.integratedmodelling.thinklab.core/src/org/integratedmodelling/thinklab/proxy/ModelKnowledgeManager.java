@@ -17,7 +17,7 @@ import org.integratedmodelling.thinklab.api.lang.IList;
  * @author Ferd
  *
  */
-public class ProxyKnowledgeManager implements IKnowledgeManager {
+public class ModelKnowledgeManager implements IKnowledgeManager {
 
 	@Override
 	public IProperty getProperty(String prop) {
