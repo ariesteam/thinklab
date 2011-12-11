@@ -192,7 +192,7 @@
 		</library>
 		<library id="thinkql" path="lib/thinkql.jar" type="code">
 				<export prefix="*"/>
-		</library>
+		</library> 
 		<library id="clojure" path="lib/clojure-1.3.0-beta1.jar" type="code">
 				<export prefix="*"/>
 		</library>

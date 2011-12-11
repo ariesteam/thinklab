@@ -27,6 +27,7 @@ import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
 import org.integratedmodelling.thinklab.api.modelling.observation.IObservationList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.modelling.context.Context;
+import org.integratedmodelling.thinklab.modelling.model.ModelAdapter;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 
 import com.google.inject.Guice;
@@ -71,7 +72,8 @@ public class REPL {
 				 * Exec; behave according to what is defined
 				 */
 				try {
-					IModelObject obj = mg.evaluate(statement);
+
+					IModelObject obj = new ModelAdapter().createModelObject(mg.evaluate(statement));
 
 					if (obj instanceof IModel) {
 						

@@ -177,15 +177,16 @@ public class ModelManager implements IModelManager, IModelFactory {
 		
 		if (resourceId.endsWith(".tql")) {
 		
-			// TODO separate into expressions with form reader, read one by one,
-			// store everything in model map.
-			
 			Injector injector = Guice.createInjector(new ModellingModule());
 			ModelGenerator mg = injector.getInstance(ModelGenerator.class);
-			ret = mg.load(resourceId);
+			ret = new ModelAdapter().createNamespace(mg.load(resourceId));
 			
 		} else if (resourceId.endsWith(".clj")) {
 			
+			/*
+			 * TODO we need to rewrite the clojure modeling interface to produce
+			 * beans compatible with ModelAdapter.
+			 */
 		}
 		
 		return ret;

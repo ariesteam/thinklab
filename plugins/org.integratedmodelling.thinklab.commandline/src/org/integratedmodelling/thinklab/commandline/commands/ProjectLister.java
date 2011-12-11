@@ -37,9 +37,10 @@ import java.util.Collection;
 import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
-import org.integratedmodelling.thinklab.project.ThinklabProject;
+import org.integratedmodelling.thinklab.project.ProjectFactory;
 
 @ListingProvider(label="projects", itemlabel="project")
 public class ProjectLister implements IListingProvider {
@@ -48,7 +49,7 @@ public class ProjectLister implements IListingProvider {
 	public Collection<Object> getListing() throws ThinklabException {
 		
 		ArrayList<Object> ret = new ArrayList<Object>();
-		for (ThinklabProject proj : ThinklabProject.getProjects()) {
+		for (IProject proj : ProjectFactory.get().getProjects()) {
 			ret.add(proj.getId());
 		}
 		return ret;
@@ -58,7 +59,7 @@ public class ProjectLister implements IListingProvider {
 	public Collection<Object> getSpecificListing(String id) throws ThinklabException {
 
 		ArrayList<Object> ret = new ArrayList<Object>();
-		ThinklabProject proj = ThinklabProject.getProject(id);
+		IProject proj = ProjectFactory.get().getProject(id);
 		if (proj != null) {
 			Properties props = proj.getProperties();
 			ret.add("properties for project " + id + ":");

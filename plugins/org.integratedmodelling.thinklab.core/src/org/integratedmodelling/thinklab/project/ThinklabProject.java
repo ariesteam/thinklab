@@ -4,17 +4,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.project.IProject;
+import org.integratedmodelling.thinklab.modelling.model.ModelManager;
 import org.integratedmodelling.utils.FolderZiper;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.JpfException;
@@ -24,9 +28,6 @@ import org.java.plugin.registry.PluginDescriptor;
 
 public class ThinklabProject implements IProject {
 	
-	static HashMap<String, ThinklabProject> _projects = 
-		new HashMap<String, ThinklabProject>();
-	
 	/*
 	 * CAUTION: this may stay null if the plugin was found before activation.
 	 */
@@ -34,12 +35,14 @@ public class ThinklabProject implements IProject {
 	File   _location;
 	Properties _properties = null;
 	String _id;
+	private ArrayList<INamespace> _namespaces;
 	
 	public ThinklabProject(Plugin plugin) throws ThinklabException {
 		this._plugin = plugin;
 		this._location = Thinklab.getPluginLoadDirectory(plugin);
 		this._id = plugin.getDescriptor().getId();
 		_properties = getThinklabPluginProperties(_location);
+		load();
 	}
 
 	public ThinklabProject(File location) throws ThinklabException {
@@ -58,7 +61,7 @@ public class ThinklabProject implements IProject {
 			new File(
 				location + 
 				File.separator + 
-				"THINKLAB-INF" +
+				"META-INF" +
 				File.separator + 
 				"thinklab.properties");
 		
@@ -160,7 +163,7 @@ public class ThinklabProject implements IProject {
 			Thinklab.get().getManager().enablePlugin(pd, true);			
 
 			// create or refresh existing descriptor
-			ThinklabProject.addProject(Thinklab.get().getManager().getPlugin(pluginId));
+			ProjectFactory.get().registerProject(Thinklab.get().getManager().getPlugin(pluginId));
 			
 		} catch (JpfException e) {
 			throw new ThinklabInternalErrorException(e);
@@ -204,47 +207,118 @@ public class ThinklabProject implements IProject {
 	public File getPath() {		
 		return _location;
 	}
-	
-	public static ThinklabProject addProject(Plugin plugin) throws ThinklabException {
-		ThinklabProject ret = new ThinklabProject(plugin);
-		_projects.put(plugin.getDescriptor().getId(), ret);
-		return ret;
-	}
-	
-	public static ThinklabProject addProject(File plugin) throws ThinklabException {
-		ThinklabProject ret = new ThinklabProject(plugin);
-		_projects.put(MiscUtilities.getFileName(plugin.toString()), ret);
-		return ret;
-	}
-	
-	public static ThinklabProject getProject(String id) {
-		return _projects.get(id);
-	}
-	
-	public static void removeProject(String id) {
-		_projects.remove(id);
-	}
 
-	public static Collection<ThinklabProject> getProjects() {
-		return _projects.values();
-	}
 
 	@Override
 	public Collection<INamespace> getNamespaces() {
-		// TODO Auto-generated method stub
-		return null;
+		return _namespaces;
 	}
 
 	@Override
 	public Collection<File> getSourceFolders() {
-		// TODO Auto-generated method stub
-		return null;
+		String[] folders = getProperties().getProperty(IProject.SOURCE_FOLDER_PROPERTY, "src").split(",");
+		ArrayList<File> ret = new ArrayList<File>();
+		for (String f : folders) {
+			ret.add(new File(getPath() + File.separator + f));
+		} 
+		return ret;
+	}
+	
+	public Collection<String> getSourceFolderNames() {
+		String[] folders = getProperties().getProperty(IProject.SOURCE_FOLDER_PROPERTY, "src").split(",");
+		ArrayList<String> ret = new ArrayList<String>();
+		for (String f : folders) {
+			ret.add(f);
+		} 
+		return ret;
 	}
 
 	@Override
 	public String getOntologyNamespacePrefix() {
-		// TODO Auto-generated method stub
-		return null;
+		return getProperties().getProperty(
+				IProject.ONTOLOGY_NAMESPACE_PREFIX_PROPERTY, "http://www.integratedmodelling.org/ns");
 	}
 	
+
+	public void load() throws ThinklabException {
+	
+		_namespaces = new ArrayList<INamespace>();
+		HashSet<File> read = new HashSet<File>();
+		
+		for (File dir : this.getSourceFolders()) {
+		
+			if (!dir.isDirectory() || !dir.canRead()) {
+				throw new ThinklabIOException("source directory " + dir + " is unreadable");
+			}	 
+		
+			loadInternal(dir, read, _namespaces, "", this);
+		}
+		
+	}
+
+	private void loadInternal(File f, HashSet<File> read, ArrayList<INamespace> ret, String path,
+			IProject project) throws ThinklabException {
+
+		if (f. isDirectory()) {
+			
+			String pth = path + "." + MiscUtilities.getFileBaseName(f.toString());
+
+			for (File fl : f.listFiles()) {
+				loadInternal(fl, read, ret, pth, project);
+			}
+			
+		} else if (f.toString().endsWith(".owl")) {
+			try {
+				Thinklab.get().getKnowledgeRepository().refreshOntology(
+						f.toURI().toURL(), 
+						MiscUtilities.getFileBaseName(f.toString()), false);
+			} catch (MalformedURLException e) {
+				throw new ThinklabValidationException(e);
+			}
+			
+			/*
+			 * TODO validate ontology URL vs. namespace path
+			 */
+			IOntology o = 
+					Thinklab.get().getKnowledgeRepository().requireOntology(
+							MiscUtilities.getFileBaseName(f.toString()));
+			String uri = 
+					project.getOntologyNamespacePrefix() + "/" + path.replaceAll(".", "/") + 
+					MiscUtilities.getFileBaseName(f.toString());
+					
+			if (!o.getURI().equals(uri)) {
+				throw new ThinklabValidationException(
+						"illegal ontology namespace in " + f + 
+						": file path requires " + uri + ", " +
+						o.getURI() + " found");
+			}
+			
+			/*
+			 * TODO add namespace and project to ontology metadata
+			 */
+			
+			/*
+			 * TODO if auto sync is requested and configured, upload newer ontologies 
+			 * to location matching URI
+			 */
+			
+		} else if (f.toString().endsWith(".tql") || f.toString().endsWith(".clj")) {
+
+			INamespace ns = ModelManager.get().loadFile(f.toString());
+
+			/*
+			 * validate namespace vs. file path
+			 */
+			if (!ns.getNamespace().equals(path))
+				throw new ThinklabValidationException(
+						"illegal namespace declaration in " + f + 
+						": file path requires " + path + ", " +
+						ns.getNamespace() + " found");
+					
+			ret.add(ns);
+		}
+		
+	}
+	
+
 }

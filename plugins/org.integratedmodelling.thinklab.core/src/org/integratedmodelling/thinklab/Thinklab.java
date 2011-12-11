@@ -25,7 +25,7 @@ import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.integratedmodelling.thinklab.project.ThinklabProject;
+import org.integratedmodelling.thinklab.project.ProjectFactory;
 import org.integratedmodelling.thinklab.project.ThinklabProjectInstaller;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.template.MVELTemplate;
@@ -103,38 +103,38 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 		 */
 		getManager().registerListener(new ThinklabProjectInstaller());
 		
-		/*
-		 * scan all plugins and initialize thinklab projects from them if they
-		 * have the thinklab admin directories
-		 */
-		for (PluginDescriptor pd : getManager().getRegistry().getPluginDescriptors()) {
-			
-			String lf = 
-				Escape.fromURL(new File(pd.getLocation().getFile()).getAbsolutePath());
-			File ploc = MiscUtilities.getPath(lf);
-			
-			File loc = 
-				new File(
-						ploc +
-						File.separator +
-						"THINKLAB-INF" +
-						File.separator +
-						"thinklab.properties");
-		
-			if (loc.exists()) {
-			
-				/*
-				 * install project wrapper in global register
-				 */
-				try {
-					ThinklabProject.addProject(ploc);
-				} catch (ThinklabException e) {
-					throw new ThinklabRuntimeException(e);
-				}
-			
-				Thinklab.get().logger().info("thinklab project " + pd.getId() + " registered");
-			}
-		}
+//		/*
+//		 * scan all plugins and initialize thinklab projects from them if they
+//		 * have the thinklab admin directories
+//		 */
+//		for (PluginDescriptor pd : getManager().getRegistry().getPluginDescriptors()) {
+//			
+//			String lf = 
+//				Escape.fromURL(new File(pd.getLocation().getFile()).getAbsolutePath());
+//			File ploc = MiscUtilities.getPath(lf);
+//			
+//			File loc = 
+//				new File(
+//						ploc +
+//						File.separator +
+//						"META-INF" +
+//						File.separator +
+//						"thinklab.properties");
+//		
+//			if (loc.exists()) {
+//			
+//				/*
+//				 * install project wrapper in global register
+//				 */
+//				try {
+//					ProjectFactory.get().registerProject(ploc);
+//				} catch (ThinklabException e) {
+//					throw new ThinklabRuntimeException(e);
+//				}
+//			
+//				Thinklab.get().logger().info("thinklab project " + pd.getId() + " registered");
+//			}
+//		}
 
 	}
 

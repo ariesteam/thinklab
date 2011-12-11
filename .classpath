@@ -361,7 +361,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.xtext.ecore_2.0.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.xtext.xbase_2.0.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.xtext.xbase.lib_2.0.0.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/thinkql.jar" sourcepath="/org.integratedmodelling.thinkql"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/aopalliance.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/com.ibm.icu_4.4.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/javax.inject.jar"/>
@@ -382,4 +381,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.xtext.xtend2.lib_2.0.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.antlr.runtime_3.2.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/thinklab-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.integratedmodelling.thinkql"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
