@@ -17,6 +17,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 
 import clojure.lang.IFn;
+import clojure.lang.Keyword;
 import clojure.lang.Symbol;
 
 /**
@@ -97,7 +98,7 @@ public class FilteredTransformation implements IContextTransformation {
 		
 		for (Object filter : filters) {
 			
-			if (filter instanceof IFn) {
+			if (filter instanceof IFn && !(filter instanceof Keyword)) {
 				Object o = null;
 				try {
 					o = ((IFn)filter).invoke(original);
@@ -130,7 +131,14 @@ public class FilteredTransformation implements IContextTransformation {
 		 * check out all filters and build something we can used when transform() is called.
 		 */
 		ShapeValue shape = null;
+		boolean invert = false;
+		
 		for (Object f : filters) {
+
+			if (f instanceof Keyword && ((Keyword)f).toString().equals(":except")) {
+				invert = true;
+			}
+			
 			if (f instanceof ShapeValue && context.getSpace() instanceof GridExtent) {
 				
 				if (shape == null)
@@ -146,6 +154,10 @@ public class FilteredTransformation implements IContextTransformation {
 				this.activationLayer = 
 					ThinklabRasterizer.createMask(shape, 
 						(GridExtent)context.getSpace());
+			
+				if (invert) {
+					this.activationLayer.invert();
+				}
 			} catch (ThinklabException e) {
 				throw new ThinklabRuntimeException(e);
 			}			
@@ -167,6 +179,7 @@ public class FilteredTransformation implements IContextTransformation {
 	public void addFilter(Object o) throws ThinklabException {
 		
 		if (o instanceof ShapeValue || 
+	        o instanceof Keyword ||
 			o instanceof IFn ||
 			o instanceof Number ||
 			o instanceof Boolean ||

@@ -31,5 +31,7 @@ public interface IGridMask {
 	public abstract Pair<Integer, Integer> nextActiveCell(int fromOffset);
 
 	public abstract GridExtent getGrid();
+
+	public abstract void invert();
 	
 }

@@ -8,7 +8,6 @@ import java.util.Set;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.ascape.model.Agent;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.internal.Topology;
 import org.integratedmodelling.modelling.interfaces.IModel;

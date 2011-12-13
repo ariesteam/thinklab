@@ -30,6 +30,10 @@ import com.vividsolutions.jts.geom.Geometry;
 		argumentNames="source",
 		argumentTypes="thinklab-core:Text",
 		argumentDescriptions="source of shapes (file)",
+		optionalArgumentNames="arg1",
+		optionalArgumentDefaultValues="__NONE__",
+		optionalArgumentTypes="thinklab-core:Text",
+		optionalArgumentDescriptions="argument",
 		optionNames="op,s",
 		optionLongNames="operation,simplify",
 		optionTypes="thinklab-core:Text,owl:Nothing",
@@ -68,6 +72,14 @@ public class ShapeOps implements ICommandHandler {
 				
 				session.print("Union:\n" + union);
 				
+			} else if (op.equals("extract")) {
+
+				ShapeValue union = extract(features, command.getArgumentAsString("arg1"));
+				if (command.hasOption("simplify") && union != null)
+					union.simplify(0.1);
+				
+				session.print("Feature:\n" + (union != null ? union.toString() : "NOT FOUND"));
+				
 			}
 
 		} catch (Exception e) {
@@ -75,6 +87,24 @@ public class ShapeOps implements ICommandHandler {
 		}	
 		
 		return null;
+	}
+
+	private ShapeValue extract(
+			FeatureCollection<SimpleFeatureType, SimpleFeature> features, String id) {
+
+		FeatureIterator<SimpleFeature> it = 
+				new DelegateFeatureIterator<SimpleFeature>(features, features.iterator());		
+		
+        while (it.hasNext()) {
+        	
+            SimpleFeature shape = it.next();
+            
+            if (shape.getID().equals(id)) {
+            	return new ShapeValue((Geometry)(shape.getDefaultGeometry()), crs);
+            }
+        }
+        
+        return null;
 	}
 
 	private ShapeValue performUnion(

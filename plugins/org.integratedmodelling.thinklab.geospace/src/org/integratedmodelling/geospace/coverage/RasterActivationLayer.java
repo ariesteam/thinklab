@@ -164,4 +164,10 @@ public class RasterActivationLayer extends BitSet implements IGridMask {
 		int[] xy = grid.getXYCoordinates(linearIndex);
 		return isActive(xy[0], xy[1]);
 	}
+
+	@Override
+	public void invert() {
+		for (int i = 0; i < this.grid.getValueCount(); i++)
+			flip(i);
+	}
 }
