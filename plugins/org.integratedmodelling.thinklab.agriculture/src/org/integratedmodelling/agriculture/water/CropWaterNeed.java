@@ -42,6 +42,31 @@ public class CropWaterNeed {
 	static IntelligentMap<double[]> growthStageDurations = new IntelligentMap<double[]>();
 
 	private static boolean _initialized = false;
+
+	public static double getReferenceEvapotranspiration(IConcept cropType,  IConcept ...concepts) {
+		return 0.0;
+	}
+
+	public static double getCropFactor(IConcept cropType,  IConcept ...concepts) {
+		return 0.0;
+	}
+	
+	public static double getWaterNeedPerHarvest(IConcept cropType, IConcept ...concepts) {
+		return 0.0;
+	}
+
+	/**
+	 * Subtract rainfall to get irrigation need in mm
+	 * @param cropType
+	 * @param startMonth
+	 * @param endMonth
+	 * @param concepts
+	 * @return
+	 */
+	public static double getMonthlyWaterNeed(IConcept cropType, int startMonth, int endMonth, IConcept ...concepts) {
+		return 0.0;
+	}
+
 	
 	
 	public static void initialize() {
@@ -130,10 +155,64 @@ public class CropWaterNeed {
 					new double[]{15, 25, 50, 30, 15, 30, 65, 40});
 			growthStageDurations.put(KnowledgeManager.getConcept("crop:Wheat"), 
 					new double[]{15, 25, 50, 30, 15, 30, 65, 40});
-
-			/*
-			 * TODO eccetera
-			 */
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:GreenBean"), 
+					new double[]{15, 25, 25, 10, 20, 30, 30, 10});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Bean"), 
+					new double[]{15, 25, 35, 20, 20, 30, 40, 20});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Cabbage"), 
+					new double[]{20, 25, 60, 15, 25, 30, 65, 20 });
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Carrot"), 
+					new double[]{20, 30, 30, 20, 25, 35, 70, 20});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Cotton"), 
+					new double[]{30, 50, 55, 45, 30, 50, 65, 50});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Flax"), 
+					new double[]{30, 50, 55, 45, 30, 50, 65, 50});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Cucumber"), 
+					new double[]{20, 30, 40, 15, 25, 35, 50, 20});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Eggplant"), 
+					new double[]{30, 40, 40, 20, 30, 40, 45, 25});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:SmallGrain"), 
+					new double[]{20, 30, 60, 40, 25, 35, 65, 40});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Lentil"), 
+					new double[]{20, 30, 60, 40, 25, 35, 70, 40});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Lettuce"), 
+					new double[]{20, 30, 15, 10, 35, 50, 45, 10});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:SweetCorn"), 
+					new double[]{20, 25, 25, 10, 20, 30, 50, 10});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Maize"), 
+					new double[]{20, 35, 40, 30, 30, 50, 60, 40});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Melon"), 
+					new double[]{25, 35, 40, 20, 30, 45, 65, 20});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Millet"), 
+					new double[]{15, 25, 40, 25, 20, 30, 55, 35});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:GreenOnion"), 
+					new double[]{25, 30, 10, 5, 25, 40, 20, 10});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Onion"), 
+					new double[]{15, 25, 70, 40, 20, 35, 110, 45});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:GroundNut"), 
+					new double[]{25, 35, 45, 25, 30, 40, 45, 25});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Pea"), 
+					new double[]{15, 25, 35, 15, 20, 30, 35, 15});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Pepper"), 
+					new double[]{25, 35, 40, 20, 30, 40, 110, 30});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Potato"), 
+					new double[]{25, 30, 30, 20, 30, 35, 50, 30});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Radish"), 
+					new double[]{5, 10, 15, 5, 10, 10, 15, 5});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Sorghum"), 
+					new double[]{20, 30, 40, 30, 20, 35, 45, 30});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Soybean"), 
+					new double[]{20, 30, 60, 25, 20, 30, 70, 30});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Spinach"), 
+					new double[]{20, 20, 15, 5, 20, 30, 40, 10});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Squash"), 
+					new double[]{20, 30, 30, 15, 25, 35, 35, 25});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:SugarBeet"), 
+					new double[]{25, 35, 60, 40, 45, 65, 80, 40});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Sunflower"), 
+					new double[]{20, 35, 45, 25, 25, 35, 45, 25});
+			growthStageDurations.put(KnowledgeManager.getConcept("crop:Tomato"), 
+					new double[]{30, 40, 40, 25, 35, 45, 70, 30});
 			
 			_initialized = true;
 		}
@@ -151,22 +230,6 @@ public class CropWaterNeed {
 	private static void addCropFactor(IConcept concept, double d, double e,
 			double f, double g) {
 		cropFactors.put(concept, new double[]{d, e, f, g});
-	}
-
-	public static double getReferenceEvapotranspiration(IConcept cropType,  IConcept ...concepts) {
-		return 0.0;
-	}
-
-	public static double getCropFactor(IConcept cropType,  IConcept ...concepts) {
-		return 0.0;
-	}
-	
-	public static double getWaterNeedPerHarvest(IConcept cropType, IConcept ...concepts) {
-		return 0.0;
-	}
-
-	public static double getMonthlyWaterNeed(IConcept cropType, int startMonth, int endMonth, IConcept ...concepts) {
-		return 0.0;
 	}
 
 }
