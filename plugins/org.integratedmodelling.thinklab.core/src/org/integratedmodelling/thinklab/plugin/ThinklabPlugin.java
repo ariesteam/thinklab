@@ -66,6 +66,7 @@ import org.integratedmodelling.thinklab.extensions.Interpreter;
 import org.integratedmodelling.thinklab.extensions.KBoxHandler;
 import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.IResourceLoader;
+import org.integratedmodelling.thinklab.interfaces.annotations.Aggregator;
 import org.integratedmodelling.thinklab.interfaces.annotations.DataTransformation;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
@@ -265,6 +266,7 @@ public abstract class ThinklabPlugin extends Plugin
 		loadApplications();
 		loadLanguageBindings();
 		loadProjectLoaders();
+		loadAggregators();
 		
 		load(KnowledgeManager.get());
 
@@ -704,6 +706,42 @@ public abstract class ThinklabPlugin extends Plugin
 		extensions.add(ext);
 	}
 
+	protected void loadAggregators() throws ThinklabPluginException {
+		
+		String ipack = this.getClass().getPackage().getName() + ".aggregators";
+		
+		/*
+		 * the interface is in another plugin so we need to get them all
+		 */
+		for (Class<?> cls : MiscUtilities.findSubclasses(Object.class, ipack, getClassLoader())) {	
+			
+			String id = null;
+			String concept = null;
+
+			/*
+			 * lookup annotation, ensure we can use the class
+			 */
+			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+				continue;
+			
+			/*
+			 * lookup implemented concept
+			 */
+			for (Annotation annotation : cls.getAnnotations()) {
+				if (annotation instanceof Aggregator) {
+					id = ((Aggregator)annotation).id();
+					concept = ((Aggregator)annotation).concept();
+				}
+			}
+			
+			if (id != null) {
+				String[] cc = concept.split(",");
+				logger().info("registering aggregator " + id);				
+				KnowledgeManager.get().registerAggregator(id, cls, cc);
+			}
+		}
+	}
+	
 	protected void loadInstanceImplementationConstructors() throws ThinklabPluginException {
 		
 		String ipack = this.getClass().getPackage().getName() + ".implementations";

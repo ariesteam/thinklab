@@ -135,8 +135,12 @@ public class FileVisualization implements IVisualization {
 				
 				File dir = archive.getStateDirectory(state.getObservableClass());
 				File out = new File(dir + File.separator + plotType);
-				VisualizationFactory.get().
-					plot(state, context, plotType, xy.getFirst(), xy.getSecond(), out);
+				try {
+					VisualizationFactory.get().
+						plot(state, context, plotType, xy.getFirst(), xy.getSecond(), out);
+				} catch (Exception e) {
+					ModellingPlugin.get().logger().error("error plotting " + state.getObservableClass() + ": skipped");
+				}
 			}
 		}
 		

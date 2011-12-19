@@ -1,5 +1,6 @@
 package org.integratedmodelling.modelling.commands;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
 
 import org.integratedmodelling.corescience.context.ObservationContext;
@@ -10,6 +11,7 @@ import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.listeners.IContextualizationListener;
 import org.integratedmodelling.modelling.ModelMap;
 import org.integratedmodelling.modelling.interfaces.IDataset;
+import org.integratedmodelling.modelling.interfaces.IStateAggregator;
 import org.integratedmodelling.modelling.interfaces.IVisualization;
 import org.integratedmodelling.modelling.literals.ContextValue;
 import org.integratedmodelling.modelling.model.DefaultAbstractModel;
@@ -22,8 +24,10 @@ import org.integratedmodelling.modelling.storage.NetCDFArchive;
 import org.integratedmodelling.modelling.training.TrainingManager;
 import org.integratedmodelling.modelling.visualization.FileVisualization;
 import org.integratedmodelling.modelling.visualization.ObservationListing;
+import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
+import org.integratedmodelling.thinklab.exception.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
@@ -43,11 +47,11 @@ import org.integratedmodelling.thinklab.kbox.KBoxManager;
 		optionalArgumentDefaultValues="_NONE_,_NONE_",
 		optionalArgumentDescriptions="spatial or temporal context,spatial or temporal context",
 		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text",
-		optionArgumentLabels="trained instance ID,all kboxes,,,none,256, , , , , ",
-		optionLongNames="trained-instance-id,kbox,visualize,dump,outfile,resolution,clear,scenario,write,map,tiff",
-		optionNames="tr,k,v,d,o,r,c,s,w,map,t",
-		optionTypes="thinklab-core:Text,thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing,thinklab-core:Text,owl:Nothing,owl:Nothing,owl:Nothing",
-		optionDescriptions="ID of trained instance to use,kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing,scenario to apply before computing,store results to standard workspace,show the model map (required dot installed),write geotiff coverages",
+		optionArgumentLabels="aggregator,trained instance ID,all kboxes,,,none,256, , , , , ",
+		optionLongNames="aggregator,trained-instance-id,kbox,visualize,dump,outfile,resolution,clear,scenario,write,map,tiff",
+		optionNames="ag,tr,k,v,d,o,r,c,s,w,map,t",
+		optionTypes="thinklab-core:Text,thinklab-core:Text,thinklab-core:Text,owl:Nothing,owl:Nothing,thinklab-core:Text,thinklab-core:Integer,owl:Nothing,thinklab-core:Text,owl:Nothing,owl:Nothing,owl:Nothing",
+		optionDescriptions="aggregator to use,ID of trained instance to use,kbox,visualize after modeling,dump results to console,NetCDF file to export results to,max linear resolution for raster grid,clear cache before computing,scenario to apply before computing,store results to standard workspace,show the model map (required dot installed),write geotiff coverages",
 		returnType="observation:Observation")
 public class ModelCommand implements ICommandHandler {
 
@@ -172,6 +176,40 @@ public class ModelCommand implements ICommandHandler {
 			if (command.hasOption("dump")) {
 				ObservationListing lister = new ObservationListing(result);
 				lister.dump(session.getOutputStream());
+			}
+			
+			if (command.hasOption("aggregator")) {
+				
+				String agg = command.getOptionAsString("aggregator");
+				Class<?> cls = KnowledgeManager.get().getAggregatorClass(agg);
+				if (cls == null) {
+					session.print("ERROR: no aggregator registered for " + agg);
+				} else {
+				
+					try {
+						IStateAggregator aggr = (IStateAggregator) cls.newInstance();
+						IConcept[] target = KnowledgeManager.get().getAggregatorTargets(agg);
+						
+						for (IState s : result.getStates()) {
+							boolean ok = false;
+							for (IConcept c : target) {
+								if (s.getObservableClass().is(c)) {
+									ok = true;
+									break;
+								}
+							}
+							if (ok) {
+								double d = aggr.aggregate(s, result);
+								session.print(
+										agg + "(" + s.getObservableClass().getLocalName() + 
+										")\t" + NumberFormat.getInstance().format(d));
+							}
+						}
+						
+					} catch (Exception e) {
+						throw new ThinklabInternalErrorException(e);
+					}
+				}
 			}
 
 			ret = res;

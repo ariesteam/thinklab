@@ -45,6 +45,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
 
+import org.integratedmodelling.thinklab.KnowledgeManager.AggregatorDescriptor;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
@@ -209,6 +210,14 @@ public class KnowledgeManager implements IKnowledgeProvider {
 	private HashSet<String> propertyBlacklist = new HashSet<String>();
 	private HashSet<String> conceptBlacklist = new HashSet<String>();
 
+	// FIXME
+	// this aggregation stuff should really be somewhere else
+	public static class AggregatorDescriptor {
+		public Class<?> cls = null;
+		public String[] concepts = null;
+	}
+	
+	HashMap<String, AggregatorDescriptor> _aggregators = new HashMap<String, KnowledgeManager.AggregatorDescriptor>();
 	/*
 	 * maps XSD URIs to thinklab types for translation of literals.
 	 */
@@ -229,6 +238,25 @@ public class KnowledgeManager implements IKnowledgeProvider {
         this.knowledgeRepository = kr;
 		this.sessionManager  = ki;
 		
+	}
+	
+	public Class<?> getAggregatorClass(String id) {
+		Class<?> ret = null;
+		if (_aggregators.get(id) != null) {
+			ret = _aggregators.get(id).cls;
+		}
+		return ret;
+	}
+	
+	public IConcept[] getAggregatorTargets(String id) {
+		IConcept[] ret = null;
+		if (_aggregators.get(id) != null) {
+			AggregatorDescriptor ad = _aggregators.get(id);
+			ret = new IConcept[ad.concepts.length];
+			for (int i = 0; i < ad.concepts.length; i++)
+				ret[i] = getConcept(ad.concepts[i]);
+		}
+		return ret;
 	}
 	
 	/**
@@ -1462,5 +1490,20 @@ public class KnowledgeManager implements IKnowledgeProvider {
 		} catch (ThinklabException e) {
 			throw new ThinklabRuntimeException(e);
 		}
+	}
+
+	/**
+	 * FIXME move this one where it should be
+	 * 
+	 * @param id
+	 * @param cls
+	 * @param cc
+	 */
+	public void registerAggregator(String id, Class<?> cls, String[] cc) {
+
+		AggregatorDescriptor ad = new AggregatorDescriptor();
+		ad.cls = cls;
+		ad.concepts = cc;
+		this._aggregators.put(id, ad);
 	}
 }
