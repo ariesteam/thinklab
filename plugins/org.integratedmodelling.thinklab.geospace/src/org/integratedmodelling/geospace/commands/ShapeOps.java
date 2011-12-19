@@ -80,6 +80,9 @@ public class ShapeOps implements ICommandHandler {
 				
 				session.print("Feature:\n" + (union != null ? union.toString() : "NOT FOUND"));
 				
+			} else if (op.equals("stats")) {
+				
+				doStats(features, session);
 			}
 
 		} catch (Exception e) {
@@ -87,6 +90,22 @@ public class ShapeOps implements ICommandHandler {
 		}	
 		
 		return null;
+	}
+
+	private void doStats(
+			FeatureCollection<SimpleFeatureType, SimpleFeature> features,
+			ISession session) throws ThinklabException {
+
+		FeatureIterator<SimpleFeature> it = 
+				new DelegateFeatureIterator<SimpleFeature>(features, features.iterator());		
+		
+        while (it.hasNext()) {
+        	
+            SimpleFeature shape = it.next();            
+            ShapeValue v = new ShapeValue((Geometry)(shape.getDefaultGeometry()), crs);
+            session.print(shape.getID() + ": area= " + v.getArea() + " m2");
+        
+        }
 	}
 
 	private ShapeValue extract(
