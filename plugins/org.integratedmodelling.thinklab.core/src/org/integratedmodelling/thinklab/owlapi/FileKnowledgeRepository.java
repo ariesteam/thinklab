@@ -1,20 +1,21 @@
 /**
- * Created on Feb 29, 2008 
- * By Ioannis N. Athanasiadis
- *
- * Copyright 2007 Dalle Molle Institute for Artificial Intelligence
- * 
- * Licensed under the GNU General Public License.
- *
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.gnu.org/licenses/gpl.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
+ * Copyright 2011 The ARIES Consortium (http://www.ariesonline.org) and
+ * www.integratedmodelling.org. 
+
+   This file is part of Thinklab.
+
+   Thinklab is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published
+   by the Free Software Foundation, either version 3 of the License,
+   or (at your option) any later version.
+
+   Thinklab is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.integratedmodelling.thinklab.owlapi;
 
