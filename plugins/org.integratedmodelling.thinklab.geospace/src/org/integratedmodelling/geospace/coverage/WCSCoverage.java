@@ -106,6 +106,12 @@ public class WCSCoverage extends AbstractRasterCoverage {
 
 		  String[] dimSpecs = new String[2];
 
+		  Node exc = desc.findNode("ServiceException");
+		  if (exc != null) {
+			  String em = XMLDocument.getNodeValue(exc);
+			  throw new ThinklabValidationException("WCS server exception: " + em);
+		  }
+
 		  // desc.dump(System.out);
 
 		  Geospace.get().logger().info("parsing descriptor for " + layerName);
