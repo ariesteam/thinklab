@@ -43,7 +43,8 @@ public interface ITrainableModel {
 	 * convert the ID into usable information.
 	 * 
 	 * @param trainedInstanceID
+	 * @return true if training was indeed applied, false if model is unmodified
 	 * @throws ThinklabException 
 	 */
-	void applyTraining(String trainedInstanceID) throws ThinklabException;
+	boolean applyTraining(String trainedInstanceID) throws ThinklabException;
 }
