@@ -39,6 +39,7 @@ import java.io.PrintWriter;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.interpreter.ModelGenerator;
+import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
@@ -92,7 +93,13 @@ public class REPL {
 				 */
 				try {
 
-					IModelObject obj = new ModelAdapter().createModelObject(mg.evaluate(statement));
+					
+					Namespace bean = mg.evaluate(statement);
+			
+					// TODO remove
+					bean.dump(System.out);
+
+					IModelObject obj = new ModelAdapter().createModelObject(bean);
 
 					if (obj instanceof IModel) {
 						
