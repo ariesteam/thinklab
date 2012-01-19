@@ -576,7 +576,17 @@ public class ObservationContext implements IObservationContext, IContext {
 			
 	}
 
-	
+	/**
+	 * Quick list of extents
+	 */
+	public String list() {
+		
+		String ret = ""; int i = 0;
+		for (IExtent e: extents.values())
+			ret += (i++ + ": " + e + "\n");
+		return ret;
+	}
+
 	@Override
 	public IConcept getDimension(IConcept concept) throws ThinklabException {
 

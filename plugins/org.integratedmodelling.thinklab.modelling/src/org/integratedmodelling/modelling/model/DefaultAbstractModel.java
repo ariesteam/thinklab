@@ -733,7 +733,8 @@ public abstract class DefaultAbstractModel implements IModel {
 		 * if I am trainable, apply the training, then proceed adding dependencies
 		 */
 		if (this instanceof ITrainableModel) {
-			((ITrainableModel)ret).applyTraining(trainingId);
+			if (((ITrainableModel)ret).applyTraining(trainingId))
+				session.print("training " + trainingId + " applied to " + this.getName());
 		}
 
 		/*

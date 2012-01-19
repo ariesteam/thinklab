@@ -31,6 +31,7 @@ import org.integratedmodelling.corescience.interfaces.IContext;
 import org.integratedmodelling.modelling.ModelMap;
 import org.integratedmodelling.modelling.ModelMap.NamespaceEntry;
 import org.integratedmodelling.modelling.ModellingPlugin;
+import org.integratedmodelling.modelling.context.Context;
 import org.integratedmodelling.modelling.corescience.CategorizationModel;
 import org.integratedmodelling.modelling.corescience.ClassificationModel;
 import org.integratedmodelling.modelling.corescience.MeasurementModel;
@@ -41,6 +42,7 @@ import org.integratedmodelling.modelling.model.DefaultAbstractModel;
 import org.integratedmodelling.modelling.model.Model;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.exception.ThinklabIOException;
+import org.integratedmodelling.thinklab.exception.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.applications.ISession;
 import org.integratedmodelling.thinklab.interfaces.storage.IKBox;
@@ -54,9 +56,28 @@ public class TrainingManager {
 	private static final String TRAINING_MODEL_PROPERTY = "training.model";
 	private static final String TRAINING_ID_PROPERTY = "training.id";
 	private static final String TRAINING_NAMESPACE_PROPERTY = "training.namespace";
+	private static final String TRAINING_CONTEXT_PROPERTY = "training.context";
+	private static final String TRAINING_EXTENTS_PROPERTY = "training.extents";
 
 	public static TrainingManager _this = null;
 
+	public File getMainDirectory() {
+		File ret = null;
+		String fenv = System.getenv("THINKLAB_ARCHIVE_DIR");
+		if (fenv != null) {
+			ret = new File(fenv + File.separator + "training");
+		}
+
+		if (ret == null) {
+			try {
+				ret = new File(ModellingPlugin.get().getScratchPath()
+						+ File.separator + "training");
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+		return ret;
+	}
 	
 	public static TrainingManager get() {
 		if (_this == null)
@@ -90,13 +111,18 @@ public class TrainingManager {
 		
 	}
 	
-	public void listTrainedInstances(IModel model) {
+	/**
+	 * List trained instances in session; if model != null list all that apply, otherwise list them all.
+	 * 
+	 * @param model
+	 * @param session
+	 */
+	public void listTrainedInstances(IModel model, ISession session) {
 		
 	}
 	
 	public File getTrainingDir(String id, IModel model) throws ThinklabException {
-		return new File(ModellingPlugin.get().getScratchPath() + File.separator + 
-				"training" + File.separator + id + File.separator +  model.getId().replaceAll(":", "_"));
+		return new File(getMainDirectory() + File.separator + id + File.separator +  model.getId().replaceAll(":", "_"));
 	}
 	
 	public IModel applyTraining(IModel model, String id, ISession session) throws ThinklabException {
@@ -104,8 +130,7 @@ public class TrainingManager {
 		Properties properties = new Properties();
 		
 		File tprop = 
-				new File(ModellingPlugin.get().getScratchPath() + File.separator + 
-					"training" + File.separator + id + File.separator + "training.properties");
+				new File(getMainDirectory() + File.separator + id + File.separator + "training.properties");
 		if (!tprop.exists())
 			throw new ThinklabValidationException("training instance " + id + " does not exist. Exiting.");
 		
@@ -124,9 +149,9 @@ public class TrainingManager {
 		long traindate = Long.parseLong(properties.getProperty(TRAINING_TIME_PROPERTY));
 		Date origdate  = new Date(traindate);
 		
-		if (!modname.equals(model.getName())) {
-			throw new ThinklabValidationException("training instance " + id + " is for model " + modname);
-		}
+//		if (!modname.equals(model.getName())) {
+//			throw new ThinklabValidationException("training instance " + id + " is for model " + modname);
+//		}
 		
 		NamespaceEntry ns = (NamespaceEntry) ModelMap.getNamespace(namespa);
 		if (ns.getLastModificationTime() > traindate) {
@@ -177,24 +202,36 @@ public class TrainingManager {
 			 * setup dirs for serialization
 			 */
 			File tdir = 
-				new File(ModellingPlugin.get().getScratchPath() + File.separator + 
-					"training" + File.separator + id);
+				new File(getMainDirectory() + File.separator + id);
 			tdir.mkdirs();
 			
 			/*
 			 * TODO write property file with all info - date, model name, model last mod/version etc.
 			 */
 			File tprop = 
-					new File(ModellingPlugin.get().getScratchPath() + File.separator + 
-						"training" + File.separator + id + File.separator + "training.properties");
+					new File(getMainDirectory() + File.separator + id + File.separator + "training.properties");
 			
 			Properties properties = new Properties();
+			
+			if (tprop.exists()) {
+				try {
+					properties.load(new FileInputStream(tprop));
+				} catch (Exception e) {
+					throw new ThinklabIOException(e);
+				}
+			}
 			
 			properties.setProperty(TRAINING_TIME_PROPERTY, new Date().getTime()+"");
 			properties.setProperty(TRAINING_DATE_PROPERTY, new Date().toString());
 			properties.setProperty(TRAINING_MODEL_PROPERTY, model.getName());
 			properties.setProperty(TRAINING_NAMESPACE_PROPERTY, model.getNamespace());
 			properties.setProperty(TRAINING_ID_PROPERTY, model.getId());
+			properties.setProperty(TRAINING_CONTEXT_PROPERTY, ((Context)context).getName());
+			properties.setProperty(TRAINING_EXTENTS_PROPERTY, ((Context)context).list());
+
+			/*
+			 * TODO serialize extents and store in properties
+			 */
 			
 			/*
 			 * proceed
@@ -206,9 +243,15 @@ public class TrainingManager {
 								
 				IModel trained = ((ITrainableModel)m).train(kbox, session, context, mdir, new Pair<Integer,Integer>(minInputs, minOutputs));
 				if (trained != null) {
+					
 					/*
 					 * write out the model, but that should have been done already by train().
 					 */
+					
+					/*
+					 * TODO report number of trained models
+					 */
+					
 				} 
 			}
 			

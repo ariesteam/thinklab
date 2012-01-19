@@ -594,14 +594,17 @@ public class BayesianModel extends DefaultStatefulAbstractModel implements ICont
 	}
 
 	@Override
-	public void applyTraining(String trainedInstanceID) throws ThinklabException {
+	public boolean applyTraining(String trainedInstanceID) throws ThinklabException {
 		
 		File trainingDir = TrainingManager.get().getTrainingDir(trainedInstanceID, this);
 		File trainedModel = new File(trainingDir + File.separator + 
 				MiscUtilities.getFileName(MiscUtilities.resolveUrlToFile(source).toString()));
 		if (trainedModel.exists()) {
 			this.source = trainedModel.toString();
+			return true;
 		}
+		
+		return false;
 	}
 
 	

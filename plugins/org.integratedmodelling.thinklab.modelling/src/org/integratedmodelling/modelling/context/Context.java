@@ -19,6 +19,7 @@
  */
 package org.integratedmodelling.modelling.context;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
@@ -304,6 +305,17 @@ public class Context implements IContext, IModelForm {
 	public Set<IConcept> getObservables() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	/**
+	 * Quick list of extents
+	 */
+	public String list() {
+		
+		String ret = ""; int i = 0;
+		for (IExtent e: extents)
+			ret += (i++ + ": " + e + "\n");
+		return ret;
 	}
 	
 }
