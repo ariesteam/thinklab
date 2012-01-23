@@ -38,6 +38,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.interpreter.CompilationContext;
 import org.integratedmodelling.interpreter.ModelGenerator;
 import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -60,6 +61,22 @@ public class REPL {
 	private ISession session = null;
 
 	private IContext context = new Context();
+	
+	/**
+	 * Use this to control compilation
+	 * @author Ferd
+	 *
+	 */
+	class CContext extends CompilationContext {
+
+		@Override
+		public Namespace resolveNamespace(String namespace, String reference)
+				throws ThinklabException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+	}
 	
 	public void run(String[] args) throws Exception {
 
@@ -93,11 +110,12 @@ public class REPL {
 				 */
 				try {
 
+					CContext ctx = new CContext();
 					
-					Namespace bean = mg.evaluate(statement);
+					Namespace bean = mg.evaluate(statement, ctx);
 			
 					// TODO remove
-					bean.dump(System.out);
+					ctx.dump(System.out);
 
 					IModelObject obj = new ModelAdapter().createModelObject(bean);
 
