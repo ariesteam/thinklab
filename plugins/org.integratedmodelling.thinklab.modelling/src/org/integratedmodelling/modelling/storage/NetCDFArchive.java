@@ -165,7 +165,7 @@ public class NetCDFArchive {
 			
 			if (spdims.size() == 2) {
 				// we have space only
-				String varname = getVarname(obs);
+				String varname = getVarname(obs, false);
 				if (varnames.contains(varname))
 					continue;
 				
@@ -199,7 +199,7 @@ public class NetCDFArchive {
 				// add uncertainty if any
 				double[] uu = (double[]) state.getMetadata().get(Metadata.UNCERTAINTY);
 				if (uu != null) {
-					ncfile.addVariable(varname+"Uncertainty", DataType.FLOAT, new Dimension[]{latDim,lonDim});
+					ncfile.addVariable( getVarname(obs, true), DataType.FLOAT, new Dimension[]{latDim,lonDim});
 				}
 				
 				// TODO if var is a measurement, add units attribute - this is a stupid stub
@@ -286,7 +286,7 @@ public class NetCDFArchive {
 			if (spdims.size() == 2) {
 				
 				// we have space only
-				String varname = getVarname(obs);
+				String varname = getVarname(obs, false);
 				IState state = context.getState(obs);
 				
 				if (varnames.contains(varname))
@@ -335,7 +335,7 @@ public class NetCDFArchive {
 				try {
 					ncfile.write(varname, data);
 					if (uu != null){
-						ncfile.write(varname+"Uncertainty", unce);
+						ncfile.write( getVarname(obs, true), unce);
 					}
 				} catch (Exception e) {
 					throw new ThinklabIOException(e);
@@ -385,11 +385,16 @@ public class NetCDFArchive {
 	/*
 	 * just recognize some concepts that have special meaning for the netcdf CF convention
 	 */
-	private String getVarname(IConcept obs) {
+	private String getVarname(IConcept obs, boolean isUncertainty) {
 		
-		String ret =  obs.getLocalName() + "_" + obs.getConceptSpace();
-		if (obs.is("geophysics:Altitude")) {
-			ret = "Altitude";
+		String ret = obs.getAnnotation("metadata:hasOutputId");
+		if (ret == null) {
+			ret =  obs.getLocalName() + (isUncertainty ? "Uncertainty" : "") + "_" + obs.getConceptSpace();
+			if (obs.is("geophysics:Altitude")) {
+				ret = "Altitude";
+			}
+		} else if (isUncertainty) {
+			ret += "Uncertainty";
 		}
 		return ret;
 	}
