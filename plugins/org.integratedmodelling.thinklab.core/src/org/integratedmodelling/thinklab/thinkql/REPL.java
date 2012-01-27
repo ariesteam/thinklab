@@ -31,6 +31,7 @@ package org.integratedmodelling.thinklab.thinkql;
 
 /* rich Oct 18, 2007 */
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -38,10 +39,10 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.interpreter.CompilationContext;
 import org.integratedmodelling.interpreter.ModelGenerator;
 import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
@@ -56,24 +57,52 @@ import com.google.inject.Injector;
 
 public class REPL {
 
+	private static final String USER_DEFAULT_NAMESPACE = "user";
 	private InputStream input = System.in;
 	private OutputStream output = System.out;
 	private ISession session = null;
 
 	private IContext context = new Context();
 	
-	/**
-	 * Use this to control compilation
-	 * @author Ferd
-	 *
-	 */
-	class CContext extends CompilationContext {
+	class Resolver implements IResolver {
 
 		@Override
-		public Namespace resolveNamespace(String namespace, String reference)
+		public boolean onException(Throwable e, int lineNumber)
+				throws ThinklabException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean onWarning(String warning, int lineNumber) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean onInfo(String info, int lineNumber) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public InputStream resolveNamespace(String namespace, String reference)
 				throws ThinklabException {
 			// TODO Auto-generated method stub
 			return null;
+		}
+
+		@Override
+		public void onNamespaceDeclared(String namespaceId, String resourceId,
+				Namespace namespace) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onNamespaceDefined(Namespace namespace) {
+			// TODO Auto-generated method stub
+			
 		}
 		
 	}
@@ -110,12 +139,12 @@ public class REPL {
 				 */
 				try {
 
-					CContext ctx = new CContext();
+					InputStream is = new ByteArrayInputStream(statement.getBytes());
+					Namespace bean = mg.parseInNamespace(is, USER_DEFAULT_NAMESPACE, new Resolver());
+					is.close();
 					
-					Namespace bean = mg.evaluate(statement, ctx);
-			
 					// TODO remove
-					ctx.dump(System.out);
+					bean.dump(System.out);
 
 					IModelObject obj = new ModelAdapter().createModelObject(bean);
 

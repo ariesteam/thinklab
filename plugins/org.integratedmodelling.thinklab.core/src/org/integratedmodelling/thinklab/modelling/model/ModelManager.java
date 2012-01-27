@@ -20,9 +20,7 @@
 package org.integratedmodelling.thinklab.modelling.model;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +33,6 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.interpreter.CompilationContext;
 import org.integratedmodelling.interpreter.ModelGenerator;
 import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.list.InstanceList;
@@ -44,6 +41,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
@@ -78,30 +76,59 @@ public class ModelManager implements IModelManager, IModelFactory {
 	private Hashtable<String, IContext> contextsById = new Hashtable<String, IContext>();
 	private Hashtable<String, IAgentModel> agentsById = new Hashtable<String, IAgentModel>();
 	private Hashtable<String, INamespace> namespacesById = new Hashtable<String, INamespace>();
-	private TQLContext _ccontext = null;
 
-	/**
-	 * There's one context instance per model manager. This allows us to keep the language 
-	 * runtime aware of all plugins. 
-	 * 
-	 * @author Ferd
-	 *
-	 */
-	class TQLContext extends CompilationContext {
+
+	class Resolver implements IResolver {
 
 		@Override
-		public org.integratedmodelling.lang.model.Namespace resolveNamespace(String namespace, String reference)
+		public boolean onException(Throwable e, int lineNumber)
+				throws ThinklabException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean onWarning(String warning, int lineNumber) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean onInfo(String info, int lineNumber) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public InputStream resolveNamespace(String namespace, String reference)
 				throws ThinklabException {
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+		@Override
+		public void onNamespaceDeclared(String namespaceId, String resourceId,
+				org.integratedmodelling.lang.model.Namespace namespace) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onNamespaceDefined(
+				org.integratedmodelling.lang.model.Namespace namespace) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 
-	TQLContext getCompilationContext() {
-		if (_ccontext  == null) {
-			_ccontext = new TQLContext();
+	private Resolver _resolver = null;
+	
+	Resolver getResolver() {
+		if (_resolver  == null) {
+			_resolver = new Resolver();
 		}
-		return _ccontext;
+		return _resolver;
 	}
 	
 	/*
@@ -223,19 +250,9 @@ public class ModelManager implements IModelManager, IModelFactory {
 		INamespace ret = null;
 		
 		if (resourceId.endsWith(".tql")) {
-			
-			try {
 				Injector injector = Guice.createInjector(new ModellingModule());
 				ModelGenerator thinkqlParser = injector.getInstance(ModelGenerator.class);
-				FileInputStream input = new FileInputStream(resourceId);
-				ret = new ModelAdapter().createNamespace(thinkqlParser.parse(input, getCompilationContext()));
-				input.close();
-			} catch (FileNotFoundException e) {
-				throw new ThinklabIOException(e);
-			} catch (IOException e) {
-				throw new ThinklabIOException(e);
-			}
-			
+				ret = new ModelAdapter().createNamespace(thinkqlParser.parse(resourceId, getResolver()));			
 		} else if (resourceId.endsWith(".clj")) {
 			
 			/*
