@@ -74,6 +74,10 @@ public class ThinklabProject implements IProject {
 		return _id;
 	}
 	
+	public Plugin getPlugin() {
+		return _plugin;
+	}
+	
 	public static Properties getThinklabPluginProperties(File location) throws ThinklabException {
 		Properties ret = null;
 		File pfile = 
@@ -323,17 +327,7 @@ public class ThinklabProject implements IProject {
 			
 		} else if (f.toString().endsWith(".tql") || f.toString().endsWith(".clj")) {
 
-			INamespace ns = ModelManager.get().loadFile(f.toString());
-
-			/*
-			 * validate namespace vs. file path
-			 */
-			if (!ns.getNamespace().equals(path))
-				throw new ThinklabValidationException(
-						"illegal namespace declaration in " + f + 
-						": file path requires " + path + ", " +
-						ns.getNamespace() + " found");
-					
+			INamespace ns = ModelManager.get().loadFile(f.toString(), this);
 			ret.add(ns);
 		}
 		

@@ -23,14 +23,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
-import org.integratedmodelling.list.InstanceList;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
@@ -40,7 +37,6 @@ import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
-import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
 import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
@@ -51,7 +47,6 @@ import org.integratedmodelling.thinklab.metadata.Metadata;
 import org.integratedmodelling.thinklab.modelling.context.Context;
 import org.integratedmodelling.thinklab.modelling.context.ObservationList;
 import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
-import org.integratedmodelling.thinklab.modelling.model.ModelManager;
 import org.integratedmodelling.thinklab.modelling.observation.Observation;
 
 
@@ -277,32 +272,6 @@ public abstract class DefaultAbstractModel extends NamespaceQualified implements
 	}
 	
 	
-	@SuppressWarnings("unchecked")
-	public IModel define(Map<String, Object> def) throws ThinklabException {
-
-		Collection<IModel> deps = (Collection<IModel>) def.get(IModelFactory.K_DEPENDENCIES);
-		if (deps != null) {			
-			List<String> names = (List<String>) def.get(IModelFactory.K_DEPENDENCYNAMES);
-			List<Boolean> mands = (List<Boolean>) def.get(IModelFactory.K_MANDATORYDEPENDENCY);
-			
-		}
-		
-		/*
-		 * may be 
-		 */
-		InstanceList inst = (InstanceList) def.get(IModelFactory.K_OBSERVABLE);
-		if (inst != null) {
-			this._observable = ModelManager.get().createObservable(inst);
-		}
-
-		List<IModel> meds = (List<IModel>) def.get(IModelFactory.K_MEDIATED);
-		if (deps != null) {			
-			List<IExpression> whens = (List<IExpression>) def.get(IModelFactory.K_MCONDITIONALS);
-		}
-
-		return this;
-	}
-
 	protected int addDependencies(IObservation o, HashMap<IInstance, IState> known) {
 
 		for (Dependency d : _dependencies) {

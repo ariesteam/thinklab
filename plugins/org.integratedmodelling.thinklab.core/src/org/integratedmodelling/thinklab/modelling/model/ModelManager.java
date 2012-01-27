@@ -20,48 +20,48 @@
 package org.integratedmodelling.thinklab.modelling.model;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
-import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.interpreter.ModelGenerator;
-import org.integratedmodelling.lang.SemanticType;
+import org.integratedmodelling.lang.model.Expression;
+import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.list.InstanceList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
-import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
-import org.integratedmodelling.thinklab.api.modelling.ModelTypes;
-import org.integratedmodelling.thinklab.api.modelling.classification.IClassification;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelManager;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
 import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.modelling.model.implementation.ClassificationModel;
-import org.integratedmodelling.thinklab.modelling.model.implementation.MeasurementModel;
-import org.integratedmodelling.thinklab.modelling.model.implementation.Model;
-import org.integratedmodelling.thinklab.modelling.model.implementation.RankingModel;
 import org.integratedmodelling.thinklab.owlapi.Session;
+import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.java.plugin.Plugin;
+import org.java.plugin.registry.PluginPrerequisite;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -69,65 +69,222 @@ import com.google.inject.Injector;
 public class ModelManager implements IModelManager, IModelFactory {
 
 	private static ModelManager _this = null;
-	private static Namespace _defaultNS = null;
 	
 	private Hashtable<String, IModel> modelsById = new Hashtable<String, IModel>();
 	private Hashtable<String, IScenario> scenariosById = new Hashtable<String, IScenario>();
 	private Hashtable<String, IContext> contextsById = new Hashtable<String, IContext>();
 	private Hashtable<String, IAgentModel> agentsById = new Hashtable<String, IAgentModel>();
 	private Hashtable<String, INamespace> namespacesById = new Hashtable<String, INamespace>();
+	
+	// API source beans for all the model objects
+	private Hashtable<String, Namespace> namespaceBeans = new Hashtable<String, Namespace>();
 
-
+	/**
+	 * This one resolves namespace source files across imported plugins and handles errors.
+	 * @author Ferd
+	 *
+	 */
 	class Resolver implements IResolver {
+		
+		int nErrors = 0, nWarnings = 0, nInfo = 0;
+		IProject project;
 
 		@Override
 		public boolean onException(Throwable e, int lineNumber)
 				throws ThinklabException {
-			// TODO Auto-generated method stub
-			return false;
+			// TODO notify listeners, log
+			nErrors ++;
+			return true;
 		}
 
 		@Override
 		public boolean onWarning(String warning, int lineNumber) {
-			// TODO Auto-generated method stub
-			return false;
+			// TODO notify listeners, log
+			nWarnings ++;
+			return true;
 		}
 
 		@Override
 		public boolean onInfo(String info, int lineNumber) {
-			// TODO Auto-generated method stub
-			return false;
+			// TODO notify listeners, log
+			nInfo ++;
+			return true;
 		}
 
 		@Override
 		public InputStream resolveNamespace(String namespace, String reference)
 				throws ThinklabException {
-			// TODO Auto-generated method stub
-			return null;
+
+			Plugin plugin = null;
+			if (project instanceof ThinklabProject) {
+				plugin = ((ThinklabProject)project).getPlugin();
+			}
+			
+			/*
+			 * TODO
+			 * if we have both namespace and reference, push a non-void resolver context so that next import can use
+			 * the same location in a relative ref; pop the resolving context after the namespace has been read.
+			 * Otherwise, push a void resolver context
+			 */
+			
+			/*
+			 * reference trumps namespace; if both are specified, the name check is done later in validateNamespace
+			 */
+			if (reference != null) {
+			
+				try {
+					/*
+					 * plugin resource has precedence even over local file with same path
+					 */
+					if (plugin != null) {
+						URL url = plugin.getManager().
+								getPluginClassLoader(plugin.getDescriptor()).
+								getResource(reference);
+						if (url != null) {
+							return url.openStream();
+						}
+					}
+
+					File f = new File(reference);
+					
+					if (f.exists() && f.isFile() && f.canRead()) {
+						return new FileInputStream(f);
+					} else if (reference.contains("://")) {
+						URL url = new URL(reference);						
+						return url.openStream();
+					}
+				} catch (Exception e) {
+					throw new ThinklabIOException(e);
+				}
+				
+				/*
+				 * if we get here we haven't found it, look it up in all DIRECTLY imported projects (non-recursively)
+				 */
+				if (plugin != null) {
+					for (PluginPrerequisite pr : plugin.getDescriptor().getPrerequisites()) {
+						try {
+							Plugin dpp = plugin.getManager().getPlugin(pr.getPluginId());
+							URL url = dpp.getManager().
+									getPluginClassLoader(dpp.getDescriptor()).
+									getResource(reference);
+							if (url != null) {
+								return url.openStream();
+							}
+						} catch (Exception e) {
+							throw new ThinklabIOException(e);
+						}
+					}
+				}
+			} else if (namespace != null) {
+				
+				/*
+				 * find resource using path corresponding to namespace, either in plugin classpath or
+				 * relative filesystem.
+				 */
+				String fres = namespace.replace('.', '/');
+				if (plugin != null) {
+					URL url = plugin.getManager().
+							getPluginClassLoader(plugin.getDescriptor()).
+							getResource(reference);
+					if (url != null) {
+						try {
+							return url.openStream();
+						} catch (IOException e) {
+							throw new ThinklabIOException(e);
+						}
+					}
+				}
+				
+				/*
+				 * TODO try with the (non-existent yet) pushed resolver context first
+				 */
+				
+				/*
+				 * dumb (i.e., null resolver context)
+				 */
+				File f = new File(fres);
+				if (f.exists() && f.isFile() && f.canRead()) {
+					try {
+						return new FileInputStream(f);
+					} catch (FileNotFoundException e) {
+						throw new ThinklabIOException(e);
+					}
+				}
+			}
+			
+			/*
+			 * throw exception here - CHECK We don't get here if it was found, but I'm unsure if this should be
+			 * handled in the caller instead.
+			 */
+			String message = "";
+			if (namespace == null)
+				message = "cannot read model resource from " + reference;
+			else if (reference == null) 
+				message = "cannot find source for namespace " + namespace;
+			else 
+				message = "cannot read namespace " + namespace + " from resource " + reference;
+
+			throw new ThinklabResourceNotFoundException(message);
+			
 		}
 
 		@Override
 		public void onNamespaceDeclared(String namespaceId, String resourceId,
 				org.integratedmodelling.lang.model.Namespace namespace) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
 		public void onNamespaceDefined(
 				org.integratedmodelling.lang.model.Namespace namespace) {
-			// TODO Auto-generated method stub
+
+			if (!namespacesById.containsKey(namespace.getId())) {
+				INamespace ret = new ModelAdapter().createNamespace(namespace);		
+				namespacesById.put(namespace.getId(), ret);
+				namespaceBeans.put(namespace.getId(), namespace);
+			}
 			
+			/*
+			 * TODO pop resolver context
+			 */
+		}
+
+		@Override
+		public void validateNamespaceForResource(String resource,
+				String namespace) throws ThinklabException {
+			
+			Plugin plugin = null;
+			if (project instanceof ThinklabProject) {
+				plugin = ((ThinklabProject)project).getPlugin();
+			}
+
+			if (plugin != null) {
+				
+				/*
+				 * check that resource was read from same file path
+				 */
+			} else {
+				
+				/*
+				 * check that filename path is same in namespace
+				 */
+			}
+			
+			
+		}
+
+		public void setProject(IProject project) {
+			this.project = project;
 		}
 		
 	}
 
 	private Resolver _resolver = null;
 	
-	Resolver getResolver() {
+	Resolver getResolver(IProject project) {
 		if (_resolver  == null) {
 			_resolver = new Resolver();
 		}
+		_resolver.setProject(project);
 		return _resolver;
 	}
 	
@@ -245,14 +402,18 @@ public class ModelManager implements IModelManager, IModelFactory {
 	}
 
 	@Override
-	public synchronized INamespace loadFile(String resourceId) throws ThinklabException {
+	public synchronized INamespace loadFile(String resourceId, IProject project) throws ThinklabException {
 
 		INamespace ret = null;
 		
 		if (resourceId.endsWith(".tql")) {
-				Injector injector = Guice.createInjector(new ModellingModule());
-				ModelGenerator thinkqlParser = injector.getInstance(ModelGenerator.class);
-				ret = new ModelAdapter().createNamespace(thinkqlParser.parse(resourceId, getResolver()));			
+				
+			Injector injector = Guice.createInjector(new ModellingModule());
+			ModelGenerator thinkqlParser = injector.getInstance(ModelGenerator.class);
+			Namespace nbean = thinkqlParser.parse(resourceId, getResolver(project));
+
+			ret = namespacesById.get(nbean.getId());
+			
 		} else if (resourceId.endsWith(".clj")) {
 			
 			/*
@@ -291,80 +452,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 
 	@Override
 	public IModelObject getModelObject(String object) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	@Override
-	public INamespace createNamespace(String namespace, String ontologyId, IList ontology) {
-
-		Namespace ret = new Namespace(namespace, ontologyId);
-		
-		if (ontology != null) {
-			ret.defineOntology(ontology);
-		}
-		
-		try {
-			ret.initialize();
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
-
-		return ret;
-	}
-
-	@Override
-	public INamespace getDefaultNamespace() {
-		
-		// TODO/FIXME this should be linked to the current session; at this point no 
-		// concurrent runtime should use the default namespace, but there is
-		// no way to check.
-		if (_defaultNS == null) {
-			_defaultNS = new Namespace("user", "user.cspace");
-		}
-		return _defaultNS;
-	}
-
-	@Override
-	public void register(IModelObject arg, String arg1, INamespace arg2) {
-		// TODO Auto-generated method stub
-		if (arg instanceof IModel) {
-			modelsById.put(arg2.getNamespace() + "/" + arg1, (IModel) arg);
-		} else if (arg instanceof IAgentModel) {
-			agentsById.put(arg2.getNamespace() + "/" + arg1, (IAgentModel) arg);
-		} else if (arg instanceof IContext) {
-			contextsById.put(arg2.getNamespace() + "/" + arg1, (IContext) arg);
-		} else if (arg instanceof IScenario) {
-			scenariosById.put(arg2.getNamespace() + "/" + arg1, (IScenario) arg);			
-		}
-	}
-
-	@Override
-	public IModel createModel(INamespace ns, SemanticType modelType, Map<String, Object> def) 
-			throws ThinklabException {
-
-		IModel ret = null;
-
-//      TODO use class from the concept, instantiate and define
-//		Thinklab.get().getClassForConcept(modelType.getConcept(Thinklab.get()));
-//		
-//		if ()
-		
-		if (modelType.equals(ModelTypes.C_MODEL)) {
-			ret = new Model(ns).define(def);
-		} else if (modelType.equals(ModelTypes.C_MEASUREMENT)) {			
-			ret = new MeasurementModel(ns, (IUnit) def.get(K_UNIT)).define(def);
-		} else if (modelType.equals(ModelTypes.C_RANKING)) {			
-			ret = new RankingModel(ns).define(def);
-		} else if (modelType.equals(ModelTypes.C_CLASSIFICATION)) {			
-			ret = new ClassificationModel(ns, createClassification(def.get(K_CLASSIFICATION))).define(def);
-		}
-		
-		return ret;
-	}
-
-	private IClassification createClassification(Object object) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -451,21 +538,26 @@ public class ModelManager implements IModelManager, IModelFactory {
 			 */
 			
 		} else if (f.toString().endsWith(".tcl") || f.toString().endsWith(".clj")) {
-
-			INamespace ns = loadFile(f.toString());
-
-			/*
-			 * validate namespace vs. file path
-			 */
-			if (!ns.getNamespace().equals(path))
-				throw new ThinklabValidationException(
-						"illegal namespace declaration in " + f + 
-						": file path requires " + path + ", " +
-						ns.getNamespace() + " found");
-					
-			ret.add(ns);
+			INamespace ns = loadFile(f.toString(), project);
+			if (ns != null) {
+				ret.add(ns);
+			}
 		}
 		
+	}
+
+	@Override
+	public void processNamespace(
+			org.integratedmodelling.lang.model.Namespace namespace) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public IExpression parseExpression(Expression expression)
+			throws ThinklabValidationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

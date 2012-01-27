@@ -33,7 +33,7 @@ public class Test implements ICommandHandler {
 	@Override
 	public IValue execute(Command command, ISession session)
 			throws ThinklabException {
-		ModelManager.get().loadFile(command.getArgumentAsString("arg"));
+		ModelManager.get().loadFile(command.getArgumentAsString("arg"), null);
 		return null;
 	}
 

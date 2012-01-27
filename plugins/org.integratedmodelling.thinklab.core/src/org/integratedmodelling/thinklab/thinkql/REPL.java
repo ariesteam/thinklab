@@ -104,6 +104,13 @@ public class REPL {
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public void validateNamespaceForResource(String resource,
+				String namespace) throws ThinklabException {
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
 	
