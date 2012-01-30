@@ -332,6 +332,31 @@ public class ThinklabProject implements IProject {
 		}
 		
 	}
+
+	@Override
+	public void addDependency(String plugin, boolean reload)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Collection<IProject> getPrerequisiteProjects() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public File findResource(String resource) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public File findResourceForNamespace(String namespace, String extension) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }

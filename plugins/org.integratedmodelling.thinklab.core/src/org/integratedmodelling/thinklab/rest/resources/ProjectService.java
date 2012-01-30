@@ -65,7 +65,7 @@ public class ProjectService extends DefaultRESTHandler {
 				/*
 				 * make an archive from the project and return the handle
 				 */
-				IProject tp = ProjectFactory.get().getProject(pluginId);
+				IProject tp = ProjectFactory.get().getProject(pluginId, false);
 				if (tp == null)
 					throw new ThinklabResourceNotFoundException("project " + pluginId + " does not exist");
 

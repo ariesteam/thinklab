@@ -32,6 +32,10 @@ public class ProjectFactory implements IProjectFactory {
 	HashMap<String, IProject> _projects = new HashMap<String, IProject>();
 	private static ProjectFactory _this = null;
 	
+	protected ProjectFactory() {
+		
+	}
+	
 	public static ProjectFactory get() {
 
 		if (_this == null) {
@@ -46,8 +50,16 @@ public class ProjectFactory implements IProjectFactory {
 		return ret;
 	}
 		
-	public IProject getProject(String id) {
-		return _projects.get(id);
+	public IProject getProject(String id, boolean attemptLoading) {
+		if (_projects.containsKey(id))
+			return _projects.get(id);
+		
+		if (attemptLoading) {
+			
+		}
+		
+		return null;
+		
 	}
 	
 	public void removeProject(String id) {

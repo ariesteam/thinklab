@@ -46,7 +46,7 @@ public class ProjectLister implements IListingProvider {
 	public Collection<Object> getSpecificListing(String id) throws ThinklabException {
 
 		ArrayList<Object> ret = new ArrayList<Object>();
-		IProject proj = ProjectFactory.get().getProject(id);
+		IProject proj = ProjectFactory.get().getProject(id, false);
 		if (proj != null) {
 			Properties props = proj.getProperties();
 			ret.add("properties for project " + id + ":");
