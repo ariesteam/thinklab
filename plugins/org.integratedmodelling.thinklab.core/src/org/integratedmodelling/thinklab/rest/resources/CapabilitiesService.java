@@ -19,7 +19,13 @@
  */
 package org.integratedmodelling.thinklab.rest.resources;
 
+import java.util.Date;
+
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Version;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.CharacterSet;
 import org.restlet.ext.json.JsonRepresentation;
@@ -38,15 +44,53 @@ public class CapabilitiesService extends DefaultRESTHandler {
 	public Representation service() {
 		
 		JSONObject oret = new JSONObject();
-		
-		/*
-		 * TODO
-		 */
+		Runtime runtime = Runtime.getRuntime();
+		try {
+
+			boolean isAdmin = false;
+			try {
+				isAdmin = checkPrivileges("user:Administrator");
+			} catch (ThinklabException e) {
+			}
+			
+			/*
+			 * same stuff as Ping
+			 */
+			oret.put("thinklab.version", Version.VERSION);
+			oret.put("thinklab.branch", Version.BRANCH);
+			oret.put("thinklab.status", Version.STATUS);
+			oret.put("thinklab.inst", System.getenv("THINKLAB_INST"));
+			oret.put("thinklab.home", System.getenv("THINKLAB_HOME"));
+			oret.put("boot.time", KnowledgeManager.get().activeSince()
+					.getTime());
+			oret.put("current.time", new Date().getTime());
+			oret.put("memory.total", runtime.totalMemory());
+			oret.put("memory.max", runtime.maxMemory());
+			oret.put("memory.free", runtime.freeMemory());
+			oret.put("processors", runtime.availableProcessors());
+
+			/*
+			 * TODO - add:
+			 * whether user has admin privileges
+			 * list of projects
+			 * list of plugins with version and load status
+			 * list of known namespaces with project and error status
+			 * list of current tasks with status
+			 * public configuration info
+			 * running sessions, users, load and n. of commands executed (if admin)
+			 */
+			
+			oret.put("status", DefaultRESTHandler.DONE);
+
+
+		} catch (JSONException e) {
+			// come on, it's a map.
+		}
 		
 		JsonRepresentation ret = new JsonRepresentation(oret);
 	    ret.setCharacterSet(CharacterSet.UTF_8);
-
-		return ret;
+	    
+	    return ret;
 	}
 	
 }
