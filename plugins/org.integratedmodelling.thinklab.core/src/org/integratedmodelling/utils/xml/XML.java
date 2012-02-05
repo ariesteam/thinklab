@@ -204,7 +204,8 @@ public class XML {
 			return ret;
 		
 		for (Object o : objects) {
-			ret.contents.add(o);
+			if (o != null)
+				ret.contents.add(o);
 		}
 		
 		return ret;

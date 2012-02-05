@@ -43,7 +43,7 @@ public class ThinklabProjectInstaller implements PluginManager.EventListener {
 
 	@Override
 	public void pluginActivated(Plugin plugin) {
-		
+
 		try {
 			Properties prop = ThinklabProject.getThinklabPluginProperties(plugin);
 			if (prop != null) {

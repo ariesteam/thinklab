@@ -40,7 +40,9 @@ import java.io.PrintWriter;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.interpreter.ModelGenerator;
+import org.integratedmodelling.lang.model.ConceptObject;
 import org.integratedmodelling.lang.model.Namespace;
+import org.integratedmodelling.lang.model.PropertyObject;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
@@ -110,6 +112,20 @@ public class REPL {
 				String namespace) throws ThinklabException {
 			// TODO Auto-generated method stub
 			
+		}
+
+		@Override
+		public ConceptObject resolveExternalConcept(String id,
+				Namespace namespace, int line) throws ThinklabException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public PropertyObject resolveExternalProperty(String id,
+				Namespace namespace, int line) throws ThinklabException {
+			// TODO Auto-generated method stub
+			return null;
 		}
 		
 	}

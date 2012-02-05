@@ -241,6 +241,9 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 		return ret;
 	}
 	
+	/*
+	 * FIXME - buggy, no root node exception from writeToFile
+	 */
 	public void write() throws ThinklabException {
 	
 		// disable temporarily for debugging
@@ -264,11 +267,11 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 			}
 			
 			nodes.add(XML.node("user", pnodes).
-						attr("name", user).
-						attr("password", passwords.get(user)));
+							attr("name", user).
+							attr("password", passwords.get(user)));
 		}
 		
-		XML.document(nodes).writeToFile(userFile);
+		XML.document(XML.node("users", nodes.toArray())).writeToFile(userFile);
 	}
 	
 }

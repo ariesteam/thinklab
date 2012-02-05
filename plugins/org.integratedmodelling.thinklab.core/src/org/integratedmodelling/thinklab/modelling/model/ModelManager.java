@@ -31,15 +31,19 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.interpreter.ModelGenerator;
+import org.integratedmodelling.lang.model.ConceptObject;
 import org.integratedmodelling.lang.model.Expression;
 import org.integratedmodelling.lang.model.Namespace;
+import org.integratedmodelling.lang.model.PropertyObject;
 import org.integratedmodelling.list.InstanceList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
@@ -86,28 +90,35 @@ public class ModelManager implements IModelManager, IModelFactory {
 	 */
 	class Resolver implements IResolver {
 		
-		int nErrors = 0, nWarnings = 0, nInfo = 0;
+		ArrayList<Pair<String,Integer>> errors = new ArrayList<Pair<String,Integer>>();
+		ArrayList<Pair<String,Integer>> warnings = new ArrayList<Pair<String,Integer>>();
+		ArrayList<Pair<String,Integer>> infos = new ArrayList<Pair<String,Integer>>();
+		String resourceId = "(not set)";
 		IProject project;
 
+		public Resolver(Object resource) {
+			this.resourceId = resource.toString();
+		}
+		
 		@Override
 		public boolean onException(Throwable e, int lineNumber)
 				throws ThinklabException {
-			// TODO notify listeners, log
-			nErrors ++;
+			errors.add(new Pair<String, Integer>(e.getMessage(), lineNumber));
+			Thinklab.get().logger().error(resourceId + ": " + lineNumber + ": " + e.getMessage());
 			return true;
 		}
 
 		@Override
 		public boolean onWarning(String warning, int lineNumber) {
-			// TODO notify listeners, log
-			nWarnings ++;
+			warnings.add(new Pair<String, Integer>(warning, lineNumber));
+			Thinklab.get().logger().warn(resourceId + ": " + lineNumber + ": " + warning);
 			return true;
 		}
 
 		@Override
 		public boolean onInfo(String info, int lineNumber) {
-			// TODO notify listeners, log
-			nInfo ++;
+			infos.add(new Pair<String, Integer>(info, lineNumber));
+			Thinklab.get().logger().info(resourceId + ": " + lineNumber + ": " + info);
 			return true;
 		}
 
@@ -133,6 +144,15 @@ public class ModelManager implements IModelManager, IModelFactory {
 			if (reference != null) {
 			
 				try {
+					File f = new File(reference);
+					
+					if (f.exists() && f.isFile() && f.canRead()) {
+						return new FileInputStream(f);
+					} else if (reference.contains("://")) {
+						URL url = new URL(reference);						
+						return url.openStream();
+					}
+
 					/*
 					 * plugin resource has precedence even over local file with same path
 					 */
@@ -145,14 +165,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 						}
 					}
 
-					File f = new File(reference);
-					
-					if (f.exists() && f.isFile() && f.canRead()) {
-						return new FileInputStream(f);
-					} else if (reference.contains("://")) {
-						URL url = new URL(reference);						
-						return url.openStream();
-					}
 				} catch (Exception e) {
 					throw new ThinklabIOException(e);
 				}
@@ -275,14 +287,51 @@ public class ModelManager implements IModelManager, IModelFactory {
 		public void setProject(IProject project) {
 			this.project = project;
 		}
+
+		@Override
+		public ConceptObject resolveExternalConcept(String id,
+				Namespace namespace, int line) throws ThinklabException {
+
+			if (KnowledgeManager.get().retrieveConcept(id) == null) {
+				onException(new ThinklabValidationException("concept " + id + " unknown"), line);
+			}
+			
+			ConceptObject co = new ConceptObject();
+			co.setId(id);
+
+			/*
+			 * TODO decide how to handle the import with the namespace
+			 */
+			
+			return co;
+			
+		}
+
+		@Override
+		public PropertyObject resolveExternalProperty(String id,
+				Namespace namespace, int line) throws ThinklabException {
+
+			if (KnowledgeManager.get().retrieveProperty(id) == null) {
+				onException(new ThinklabValidationException("concept " + id + " unknown"), line);
+			}
+			
+			PropertyObject co = new PropertyObject();
+			co.setId(id);
+
+			/*
+			 * TODO decide how to handle the import with the namespace
+			 */
+			
+			return co;
+		}
 		
 	}
 
 	private Resolver _resolver = null;
 	
-	Resolver getResolver(IProject project) {
+	Resolver getResolver(IProject project, Object resource) {
 		if (_resolver  == null) {
-			_resolver = new Resolver();
+			_resolver = new Resolver(resource);
 		}
 		_resolver.setProject(project);
 		return _resolver;
@@ -410,7 +459,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 				
 			Injector injector = Guice.createInjector(new ModellingModule());
 			ModelGenerator thinkqlParser = injector.getInstance(ModelGenerator.class);
-			Namespace nbean = thinkqlParser.parse(resourceId, getResolver(project));
+			Namespace nbean = thinkqlParser.parse(resourceId, getResolver(project, resourceId));
 
 			ret = namespacesById.get(nbean.getId());
 			
