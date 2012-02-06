@@ -20,11 +20,18 @@
 package org.integratedmodelling.thinklab.rest.resources;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.Version;
+import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.project.IProject;
+import org.integratedmodelling.thinklab.project.ProjectFactory;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
+import org.integratedmodelling.thinklab.rest.RESTTaskScheduler;
+import org.java.plugin.registry.PluginDescriptor;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.CharacterSet;
@@ -68,6 +75,7 @@ public class CapabilitiesService extends DefaultRESTHandler {
 			oret.put("memory.max", runtime.maxMemory());
 			oret.put("memory.free", runtime.freeMemory());
 			oret.put("processors", runtime.availableProcessors());
+			oret.put("admin",  isAdmin? "true" : "false");
 
 			/*
 			 * TODO - add:
@@ -79,6 +87,62 @@ public class CapabilitiesService extends DefaultRESTHandler {
 			 * public configuration info
 			 * running sessions, users, load and n. of commands executed (if admin)
 			 */
+			
+			for (PluginDescriptor pd :
+				 Thinklab.get().getManager().getRegistry().getPluginDescriptors()) {
+				
+				HashMap<String, String> map = new HashMap<String, String>();
+
+				if (!ProjectFactory.get().isProject(pd)) {
+					map.put("id", pd.getId());
+					map.put("version",pd.getVersion().toString());
+					map.put("active", 
+						Thinklab.get().getManager().isPluginActivated(pd) ?
+								"true" :
+								"false");
+				}
+				
+				oret.append("plugins", map);
+			}
+
+			for (IProject p : ProjectFactory.get().getProjects()) {
+				
+				HashMap<String, String> map = new HashMap<String, String>();
+				
+				map.put("id", p.getId());
+				map.put("id", p.getId());
+				map.put("id", p.getId());
+				
+				oret.append("projects", map);
+			}
+			
+			for (IProject p : ProjectFactory.get().getProjects()) {				
+	
+				HashMap<String, String> map = new HashMap<String, String>();
+				
+				/*
+				 * TODO add stuff - version, deploy time
+				 */
+				map.put("id", p.getId());
+	
+				oret.append("projects", p.getId());
+			}
+
+			for (IProject p : ProjectFactory.get().getProjects()) {
+				
+				for (INamespace n : p.getNamespaces()) {
+					HashMap<String, String> map = new HashMap<String, String>();
+				
+					/*
+					 * TODO put in number of errors, project
+					 */
+					map.put("id", n.getNamespace());
+
+					oret.append("namespaces", p.getId());
+				}
+			}
+
+			// getScheduler().
 			
 			oret.put("status", DefaultRESTHandler.DONE);
 

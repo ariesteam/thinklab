@@ -19,9 +19,12 @@
  */
 package org.integratedmodelling.thinklab.rest;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.utils.exec.TaskScheduler;
 import org.restlet.representation.Representation;
 
@@ -80,6 +83,19 @@ public class RESTTaskScheduler extends TaskScheduler {
 		}
 	}
 
+	/**
+	 * Returns descriptors for each task in the current situation. The triple contains
+	 * the ID, the command/service that generated the task, and the status \
+	 * (0 = error, 1 = enqueued, 2 = started, 3 = finished, 4 = waiting)
+	 * @return
+	 */
+	public synchronized Collection<Triple<Long, String, Integer>> getTasksDescriptions() {
+		
+		ArrayList<Triple<Long,String,Integer>> ret = new ArrayList<Triple<Long,String,Integer>>();
+		
+		return ret;
+	}
+	
 	/**
 	 * Only call once after finished(id) returns true. Deletes every trace of the
 	 * result after it's called. 

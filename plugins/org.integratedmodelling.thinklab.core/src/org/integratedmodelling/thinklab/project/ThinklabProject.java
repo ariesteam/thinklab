@@ -105,13 +105,11 @@ public class ThinklabProject implements IProject {
 	public Properties getProperties() {
 		return _properties;
 	}
-	
+		
 	/**
 	 * Get the content of THINKLAB-INF/thinklab.properties if the plugin contains that
 	 * directory, or null if it doesn't. Can be used to check if a plugin is a 
 	 * thinklab plugin based on the null return value.
-	 * 
-	 * TODO move to client library and load the library in the server package
 	 * 
 	 * @param plugin
 	 * @return
