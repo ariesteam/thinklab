@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<installation version="1.0">
+    <info>
+        <appname>Thinklab</appname>
+        <appversion>1.0rc1</appversion>
+        <authors>
+            <author email="" name="Ferdinando Villa"/>
+            <author email="" name="Ioannis Athanasiadis"/>
+            <author email="" name="Gary W. Johnson"/>
+        </authors>
+        <url>http://www.integratedmodelling.org</url>
+        <uninstaller name="Uninstaller.jar" write="yes"/>
+        <requiresjdk>no</requiresjdk>
+        <writeinstallationinformation>no</writeinstallationinformation>
+        <pack200/>
+        <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
+    </info>
+    <guiprefs height="480" resizable="no" width="640">
+        <modifier key="useFlags" value="yes"/>
+        <modifier key="langDisplayType" value="default"/>
+    </guiprefs>
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+    <resources>
+        <res id="LicencePanel.licence" parse="yes" src="C:\Users\Ferd\git\thinklab\COPYING.txt"/>
+        <res id="shortcutSpec.xml" src="thinklab_shortcutSpec.xml"/>
+        <res id="Unix_shortcutSpec.xml" src="thinklab_Unix_shortcutSpec.xml"/>
+        <res id="installer.langsel.img" src="C:\Users\Ferd\git\thinklab\thinklab.png"/>
+    </resources>
+    <panels>
+        <panel classname="CheckedHelloPanel"/>
+        <panel classname="LicencePanel"/>
+        <panel classname="PacksPanel"/>
+        <panel classname="TargetPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="ShortcutPanel"/>
+        <panel classname="SimpleFinishPanel"/>
+    </panels>
+    <packs>
+        <pack name="Thinklab core" preselected="yes" required="yes">
+            <description/>
+            <file override="update" src="C:\Users\Ferd\git\thinklab\lib" targetdir="$INSTALL_PATH/"/>
+            <file override="update" src="C:\Users\Ferd\git\thinklab\bin" targetdir="$INSTALL_PATH/"/>
+            <file override="update"
+                src="C:\Users\Ferd\git\thinklab\plugins\org.integratedmodelling.thinklab.core" targetdir="$INSTALL_PATH/plugins/"/>
+            <file override="update"
+                src="C:\Users\Ferd\git\thinklab\boot.properties" targetdir="$INSTALL_PATH/"/>
+            <file override="update"
+                src="C:\Users\Ferd\git\thinklab\COPYING.txt" targetdir="$INSTALL_PATH/"/>
+        </pack>
+    </packs>
+    <native name="ShellLink.dll" type="izpack"/>
+    <native name="ShellLink_x64.dll" type="izpack"/>
+</installation>
