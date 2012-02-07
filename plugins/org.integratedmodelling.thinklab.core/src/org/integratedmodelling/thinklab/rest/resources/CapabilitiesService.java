@@ -26,11 +26,11 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.Version;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.project.ProjectFactory;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
-import org.integratedmodelling.thinklab.rest.RESTTaskScheduler;
 import org.java.plugin.registry.PluginDescriptor;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -114,6 +114,15 @@ public class CapabilitiesService extends DefaultRESTHandler {
 				map.put("id", p.getId());
 				
 				oret.append("projects", map);
+			}
+			
+			/*
+			 * list all ontologies (local namespaces)
+			 * 
+			 * return namespace, URI and last modification date as a long
+			 */
+			for (IOntology o : KnowledgeManager.get().getKnowledgeRepository().retrieveAllOntologies()) {
+				oret.append("ontologies", new String[] {o.getConceptSpace(), o.getURI(), Long.toString(o.getLastModificationDate())});
 			}
 			
 			for (IProject p : ProjectFactory.get().getProjects()) {				
