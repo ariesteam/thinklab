@@ -27,6 +27,7 @@ import org.integratedmodelling.thinklab.rest.resources.FileReceiveService;
 import org.integratedmodelling.thinklab.rest.resources.FileSendService;
 import org.integratedmodelling.thinklab.rest.resources.PingService;
 import org.integratedmodelling.thinklab.rest.resources.ProjectService;
+import org.integratedmodelling.thinklab.rest.resources.SendResourceService;
 import org.integratedmodelling.thinklab.rest.resources.ShutdownService;
 import org.restlet.Application;
 import org.restlet.Restlet;
@@ -72,6 +73,11 @@ public class RESTApplication extends Application {
 		 */
 		router.attach("/send", FileSendService.class);
 
+		/*
+		 * resource send
+		 */
+		router.attach("/resource", SendResourceService.class);
+		
 		/*
 		 * returns array of services if no further context, or 
 		 * service description etc if context is given. Use wiki/html if html requested.
