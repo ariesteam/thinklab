@@ -7,7 +7,7 @@ Get a JDK
 Thinklab is a Java application released as source code, so you will
 need a JDK in order to compile and run it. If you don't already have
 one installed, you can download one from Oracle's website here:
-http://www.oracle.com/us/technologies/java/index.html
+http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
 If you know what you are doing and would prefer to use a JDK by a
 different vendor, have at it. We have not tested the three native
@@ -23,7 +23,7 @@ quite a few maps and images in different formats, you'll need to
 install two platform native libraries (i.e. C code with Java wrappers)
 into your JVM in order to run it:
 
-- JAI         http://www.oracle.com/us/technologies/java/install-1-1-2-01-140526.html
+- JAI         http://www.oracle.com/technetwork/java/current-142188.html
 - JAI-ImageIO http://www.oracle.com/us/technologies/java/install-jai-imageio-1-0-01-139659.html
 
 
@@ -44,8 +44,6 @@ Set your Environment Variables
 | ANT_HOME          | directory where you installed Ant                                     |
 | PATH              | make sure to add JAVA_HOME/bin and ANT_HOME/bin to this               |
 | THINKLAB_JRE      | directory containing the JRE you want to run Thinklab with            |
-| THINKLAB_MEMORY   | megabytes of RAM to allocate to your running Thinklab instance        |
-| THINKLAB_PERMSIZE | megabytes of RAM to allocate to your JVM for Java class caching       |
 | THINKLAB_SRC      | directory containing this INSTALL file                                |
 | THINKLAB_HOME     | directory where you want to install the compiled version of Thinklab  |
 |-------------------+-----------------------------------------------------------------------|
