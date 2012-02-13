@@ -140,6 +140,7 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		this.setResolution(xy.getFirst(), xy.getSecond());
 		this.shape = shape;
 		activationLayer = ThinklabRasterizer.createMask(shape, this);
+		
 	}
 	
 	/**
@@ -157,6 +158,7 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		this.setResolution(xy.getFirst(), xy.getSecond());
 		this.shape = shape;
 		activationLayer = ThinklabRasterizer.createMask(shape, this);
+//		System.out.println(xy.getFirst() + "," + xy.getSecond() + ": SIZE IN METERS: " + getCellWidthMeters() + " by " + getCellHeightMeters());
 	}
 	
 	/**

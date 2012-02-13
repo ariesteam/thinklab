@@ -148,15 +148,17 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 	/**
 	 * Determine the width and height (in cells) of the bounding box for the passed
 	 * shape when we want the max linear resolution to be the passed one and the
-	 * cells square.
+	 * cells square. Using the envelope converted to meters to keep the cell 
+	 * roughly square. 
 	 * 
 	 * @param shape
 	 * @param maxLinearResolution
 	 * @return
+	 * @throws ThinklabException 
 	 */
-	public static Pair<Integer, Integer> getRasterBoxDimensions(ShapeValue shape, int maxLinearResolution) {
+	public static Pair<Integer, Integer> getRasterBoxDimensions(ShapeValue shape, int maxLinearResolution) throws ThinklabException {
 		
-		ReferencedEnvelope env = shape.getEnvelope();
+		ReferencedEnvelope env = shape.convertToMeters().getEnvelope();
 		
 		int x = 0, y = 0;
 		if (env.getWidth() > env.getHeight()) {
