@@ -47,6 +47,7 @@ import org.integratedmodelling.thinklab.exception.ThinklabValidationException;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.literals.IOperator;
 import org.integratedmodelling.thinklab.interfaces.literals.IValue;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 import org.opengis.coverage.grid.GridEnvelope;
@@ -112,6 +113,35 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		this.setResolution(gridExtent.getXCells(), gridExtent.getYCells());
 	}
 
+
+	/**
+	 * Create a grid from a shape in the CRS of the shape and using the given
+	 * resolution for the larger extent.
+	 * 
+	 * @param shape
+	 * @param linearResolution
+	 * @throws ThinklabException
+	 */
+	public GridExtent(ShapeValue shape, String resolutionInMeters) throws ThinklabException {
+		
+		super(shape);
+		ShapeValue bb = shape.getBoundingBox().convertToMeters();
+		Pair<Double, String> pd = MiscUtilities.splitNumberFromString(resolutionInMeters);
+		
+		if (pd.getFirst() == null || pd.getSecond() == null)
+			throw new ThinklabValidationException("wrong resolution specification: " + resolutionInMeters);
+		
+		Unit uu = new Unit(pd.getSecond());
+		Unit mm = new Unit("m");
+		double meters = mm.convert(pd.getFirst(), uu);
+		int linearResolution = (int) (bb.getEnvelope().getWidth() / meters);
+		
+		Pair<Integer, Integer> xy = RasterGrid.getRasterBoxDimensions(shape, linearResolution);
+		this.setResolution(xy.getFirst(), xy.getSecond());
+		this.shape = shape;
+		activationLayer = ThinklabRasterizer.createMask(shape, this);
+	}
+	
 	/**
 	 * Create a grid from a shape in the CRS of the shape and using the given
 	 * resolution for the larger extent.
