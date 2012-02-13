@@ -109,6 +109,9 @@ public class CapabilitiesService extends DefaultRESTHandler {
 				
 				HashMap<String, String> map = new HashMap<String, String>();
 				
+				/*
+				 * add version, deploy time, error status etc
+				 */
 				map.put("id", p.getId());
 				map.put("id", p.getId());
 				map.put("id", p.getId());
@@ -124,18 +127,18 @@ public class CapabilitiesService extends DefaultRESTHandler {
 			for (IOntology o : KnowledgeManager.get().getKnowledgeRepository().retrieveAllOntologies()) {
 				oret.append("ontologies", new String[] {o.getConceptSpace(), o.getURI(), Long.toString(o.getLastModificationDate())});
 			}
-			
-			for (IProject p : ProjectFactory.get().getProjects()) {				
-	
-				HashMap<String, String> map = new HashMap<String, String>();
-				
-				/*
-				 * TODO add stuff - version, deploy time
-				 */
-				map.put("id", p.getId());
-	
-				oret.append("projects", p.getId());
-			}
+//			
+//			for (IProject p : ProjectFactory.get().getProjects()) {				
+//	
+//				HashMap<String, String> map = new HashMap<String, String>();
+//				
+//				/*
+//				 * TODO add stuff - version, deploy time
+//				 */
+//				map.put("id", p.getId());
+//	
+//				oret.append("projects", p.getId());
+//			}
 
 			for (IProject p : ProjectFactory.get().getProjects()) {
 				
@@ -146,6 +149,8 @@ public class CapabilitiesService extends DefaultRESTHandler {
 					 * TODO put in number of errors, project
 					 */
 					map.put("id", n.getNamespace());
+					map.put("last-modified", Long.toString(n.getLastModification()));
+				
 
 					oret.append("namespaces", p.getId());
 				}

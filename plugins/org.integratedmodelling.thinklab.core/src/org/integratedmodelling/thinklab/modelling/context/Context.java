@@ -197,4 +197,16 @@ public class Context extends NamespaceQualified implements IContext {
 		return false;
 	}
 
+	@Override
+	public void merge(IObservation observation) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void merge(IContext context) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
