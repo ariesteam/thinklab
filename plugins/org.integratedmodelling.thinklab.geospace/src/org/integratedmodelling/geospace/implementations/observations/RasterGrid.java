@@ -145,6 +145,7 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 	public int getRows() {
 		return yRM - yRO;
 	}
+	
 	/**
 	 * Determine the width and height (in cells) of the bounding box for the passed
 	 * shape when we want the max linear resolution to be the passed one and the
