@@ -95,7 +95,7 @@ public class CapabilitiesService extends DefaultRESTHandler {
 
 				if (!ProjectFactory.get().isProject(pd)) {
 					map.put("id", pd.getId());
-					map.put("version",pd.getVersion().toString());
+					map.put("version", pd.getVersion().getMajor() + "." + pd.getVersion().getMinor());
 					map.put("active", 
 						Thinklab.get().getManager().isPluginActivated(pd) ?
 								"true" :

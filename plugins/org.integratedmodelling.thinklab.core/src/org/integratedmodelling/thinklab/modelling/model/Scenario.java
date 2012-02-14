@@ -21,6 +21,7 @@ package org.integratedmodelling.thinklab.modelling.model;
 
 import java.util.Set;
 
+import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
@@ -44,6 +45,12 @@ public class Scenario extends NamespaceQualified implements IScenario {
 	public void merge(IScenario scenario) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public LanguageElement getLanguageElement() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

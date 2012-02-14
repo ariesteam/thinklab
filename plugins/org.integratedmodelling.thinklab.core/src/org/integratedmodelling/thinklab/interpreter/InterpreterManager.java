@@ -24,8 +24,6 @@ import java.util.Hashtable;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.thinklab.ConceptVisitor;
-import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.runtime.IInterpreter;
 import org.integratedmodelling.thinklab.api.runtime.IInterpreterManager;
@@ -49,40 +47,14 @@ public class InterpreterManager implements IInterpreterManager {
 	@Override
 	public IInterpreter getInterpreter(IExpression algorithm) throws ThinklabResourceNotFoundException {
 		
-		class AlgMatcher implements ConceptVisitor.ConceptMatcher {
+		IInterpreter ret = interpreters.get(algorithm.getLanguage());
 
-			Hashtable<String, IInterpreter> hash;
-
-			public IInterpreter plugin = null;
-
-			public boolean match(IConcept c) {
-				plugin = hash.get(c.toString());
-				return plugin != null;
-			}
-
-			public AlgMatcher(Hashtable<String, IInterpreter> h) {
-				hash = h;
-			}
-		}
-		
-		IConcept c = algorithm.getConcept();
-
-		AlgMatcher matcher = new AlgMatcher(interpreterFactory);
-		IConcept cc = ConceptVisitor.findMatchUpwards(matcher, c);
-
-		if (cc == null) {
+		if (ret == null) {
 			throw new ThinklabResourceNotFoundException(
-					"no language interpreter can be identified for " + c);
-		}
-
-		IInterpreter plu = matcher.plugin;
-		
-		if (plu == null) {
-			throw new ThinklabResourceNotFoundException(
-					"no language interpreter plugin installed for " + c);
+					"no language interpreter can be identified for " + algorithm.getLanguage());
 		}
 		
-		return plu;
+		return ret;
 	}
 	
 	/* (non-Javadoc)
@@ -145,7 +117,7 @@ public class InterpreterManager implements IInterpreterManager {
 
 		if (ret == null)  {
 			throw new ThinklabResourceNotFoundException(
-					"interpreter creation for " + algorithm.getConcept() + " failed");
+					"interpreter creation for " + algorithm.getLanguage() + " failed");
 		}
 
 		interpreters.put(session.getSessionID(), ret);

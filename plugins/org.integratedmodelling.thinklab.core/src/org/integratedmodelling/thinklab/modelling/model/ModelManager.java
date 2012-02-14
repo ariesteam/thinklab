@@ -38,7 +38,6 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.interpreter.ModelGenerator;
 import org.integratedmodelling.lang.model.ConceptObject;
-import org.integratedmodelling.lang.model.Expression;
 import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.lang.model.PropertyObject;
 import org.integratedmodelling.list.InstanceList;
@@ -602,11 +601,5 @@ public class ModelManager implements IModelManager, IModelFactory {
 		
 	}
 
-	@Override
-	public IExpression parseExpression(Expression expression)
-			throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

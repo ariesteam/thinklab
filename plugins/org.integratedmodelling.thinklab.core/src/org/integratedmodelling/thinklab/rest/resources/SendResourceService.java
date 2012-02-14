@@ -22,9 +22,14 @@ package org.integratedmodelling.thinklab.rest.resources;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.URL;
 
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository;
+import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
@@ -57,7 +62,18 @@ public class SendResourceService extends DefaultRESTHandler {
 
 			if (this.getArgument("ontology") != null) {
 				
+				FileKnowledgeRepository rep = 
+						(FileKnowledgeRepository) KnowledgeManager.get().getKnowledgeRepository();
+				rfile = rep.getFileForOntology(this.getArgument("ontology"));
+				
 			} else if (this.getArgument("resource") != null && this.getArgument("plugin") != null) {
+				
+				ThinklabPlugin plu = 
+						(ThinklabPlugin) Thinklab.get().getManager().getPlugin(getArgument("plugin"));
+				URL f = plu.getResourceURL(getArgument("resource"));
+				if (f != null) {
+					rfile = new File(f.getFile());
+				}
 				
 			} else {
 				throw new ThinklabValidationException("wrong arguments to resource service");
@@ -71,7 +87,6 @@ public class SendResourceService extends DefaultRESTHandler {
 
 			ret = new InputRepresentation(input, MediaType.TEXT_PLAIN);
 			ret.setCharacterSet(CharacterSet.UTF_8);
-			input.close();
 			
 		} catch (Exception e) {
 			fail(e);

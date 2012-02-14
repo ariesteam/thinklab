@@ -20,9 +20,7 @@
 package org.integratedmodelling.thinklab.proxy;
 
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.model.Expression;
 import org.integratedmodelling.lang.model.Namespace;
-import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
@@ -45,11 +43,4 @@ public class ProxyModelFactory implements IModelFactory {
 	public void processNamespace(Namespace namespace) {
 		ModelManager.get().processNamespace(namespace);
 	}
-
-	@Override
-	public IExpression parseExpression(Expression expression)
-			throws ThinklabValidationException {
-		return ModelManager.get().parseExpression(expression);
-	}
-
 }

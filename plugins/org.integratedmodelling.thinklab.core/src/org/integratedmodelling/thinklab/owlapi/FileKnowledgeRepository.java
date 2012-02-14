@@ -546,4 +546,12 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		}
 		return ret;
 	}
+
+	public File getFileForOntology(String argument) {
+		String fname = ontologyfn.get(argument);
+		if (fname != null) {
+			return new File(fname);
+		}
+		return null;
+	}
 }

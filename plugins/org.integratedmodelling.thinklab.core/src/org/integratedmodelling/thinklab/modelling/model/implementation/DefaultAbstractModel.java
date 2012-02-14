@@ -28,6 +28,7 @@ import java.util.Set;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
@@ -311,6 +312,12 @@ public abstract class DefaultAbstractModel extends NamespaceQualified implements
 
 	@Override
 	public Pair<IObserver, IExpression> getObservers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LanguageElement getLanguageElement() {
 		// TODO Auto-generated method stub
 		return null;
 	}
