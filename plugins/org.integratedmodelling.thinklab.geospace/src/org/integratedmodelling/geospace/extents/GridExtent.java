@@ -23,9 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.geotools.coverage.grid.GeneralGridEnvelope;
-import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.CoreScience.PhysicalNature;
 import org.integratedmodelling.corescience.interfaces.IExtent;
@@ -35,7 +33,6 @@ import org.integratedmodelling.corescience.units.Unit;
 import org.integratedmodelling.geospace.Geospace;
 import org.integratedmodelling.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.geospace.gis.ThinklabRasterizer;
-import org.integratedmodelling.geospace.implementations.observations.RasterGrid;
 import org.integratedmodelling.geospace.interfaces.IGridMask;
 import org.integratedmodelling.geospace.literals.ShapeValue;
 import org.integratedmodelling.geospace.transformations.Resample;
@@ -52,9 +49,7 @@ import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -86,6 +81,7 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	private double cellHeightMeters;
 	private double cellWidthMeters;
 	private double cellAreaMeters = -1.0;
+	private CoordinateReferenceSystem metersCRS = null;
 	Geometry boundary = null;
 	public ShapeValue shape;
 	
@@ -113,7 +109,6 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		this.setResolution(gridExtent.getXCells(), gridExtent.getYCells());
 	}
 
-
 	/**
 	 * Create a grid from a shape in the CRS of the shape and using the given
 	 * resolution for the larger extent.
@@ -136,12 +131,77 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		double meters = mm.convert(pd.getFirst(), uu);
 		int linearResolution = (int) (bb.getEnvelope().getWidth() / meters);
 		
-		Pair<Integer, Integer> xy = RasterGrid.getRasterBoxDimensions(shape, linearResolution);
-		this.setResolution(xy.getFirst(), xy.getSecond());
-		this.shape = shape;
-		activationLayer = ThinklabRasterizer.createMask(shape, this);
-		
+		setAdjustedEnvelope(shape, linearResolution);
 	}
+	
+
+	/*
+	 * set envelope from shape's bounding box, adjusted to keep cells square when
+	 * measured in meters.
+	 */
+	private void setAdjustedEnvelope(ShapeValue shape, int majorAxisResolution) throws ThinklabException {
+		
+		int x, y; double dx = 0, dy = 0;
+		ReferencedEnvelope env = shape.getEnvelope();
+		
+		CoordinateReferenceSystem meters = Geospace.get().getMetersCRS();
+		if (Geospace.getCRSIdentifier(shape.getCRS(), false).equals("EPSG:4326")) {
+			meters = Geospace.get().getMetersCRS(
+					env.getMinX() + env.getWidth()/2, 
+					env.getMinY() + env.getHeight()/2); 
+		}
+		
+		try {
+			env = env.transform(meters, true);
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		}
+		
+		double width  = env.getWidth();
+		double height = env.getHeight();
+		
+		if (width > height) {
+			double minorAxisResolution = Math.ceil(majorAxisResolution * height / width);
+			height = width * minorAxisResolution / majorAxisResolution;
+			x = majorAxisResolution;
+			y = (int)minorAxisResolution;
+			dy = (height - env.getHeight())/2.0;
+		} else {
+			double minorAxisResolution = Math.ceil(majorAxisResolution * width / height);
+			width = height * minorAxisResolution / majorAxisResolution;
+			x = (int)minorAxisResolution;
+			y = majorAxisResolution;
+			dx = (width - env.getWidth())/2.0;
+		}
+		
+//		System.out.println("ORIG-U: " + shape.getEnvelope());
+//		System.out.println("ORIG-M: " + env);
+		
+		this.shape = shape;
+		env = new ReferencedEnvelope(
+				env.getMinX() - dx, 
+				env.getMaxX() + dx, 
+				env.getMinY() - dy,
+				env.getMaxY() + dy,
+				meters);
+		
+		try {
+			this.envelope = env.transform(shape.getCRS(), true);
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		}
+
+//		System.out.println("TRAN-M: " + env);
+//		System.out.println("TRAN-U: " + this.envelope);
+		
+		this.setResolution(x, y);
+		
+//		System.out.println("CELL SIZE: pre-transform " + width/x + "," + height/y + ", post " + getCellWidthMeters() + "," + getCellHeightMeters());
+		
+		activationLayer = ThinklabRasterizer.createMask(shape, this);
+
+	}
+
 	
 	/**
 	 * Create a grid from a shape in the CRS of the shape and using the given
@@ -154,11 +214,7 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 	public GridExtent(ShapeValue shape, int linearResolution) throws ThinklabException {
 		
 		super(shape);
-		Pair<Integer, Integer> xy = RasterGrid.getRasterBoxDimensions(shape, linearResolution);
-		this.setResolution(xy.getFirst(), xy.getSecond());
-		this.shape = shape;
-		activationLayer = ThinklabRasterizer.createMask(shape, this);
-//		System.out.println(xy.getFirst() + "," + xy.getSecond() + ": SIZE IN METERS: " + getCellWidthMeters() + " by " + getCellHeightMeters());
+		setAdjustedEnvelope(shape, linearResolution);
 	}
 	
 	/**
@@ -255,15 +311,18 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		if (cellAreaMeters < -0.1) {
 			
 			try {
-				MathTransform transf = CRS.findMathTransform(crs, Geospace.get().getMetersCRS());
-			
-				Coordinate p1 = JTS.transform(
-					new Coordinate(getWest(), getSouth()), null, transf);
-				Coordinate p2 = JTS.transform(
-						new Coordinate(getEast(), getNorth()), null, transf);
-
-				this.cellWidthMeters  = Math.abs((p2.x - p1.x) / getXCells());
-				this.cellHeightMeters = Math.abs((p2.y - p1.y) / getYCells());
+				
+				metersCRS = Geospace.get().getMetersCRS();
+				if (Geospace.getCRSIdentifier(getCRS(), false).equals("EPSG:4326")) {
+					metersCRS = Geospace.get().getMetersCRS(
+							envelope.getMinX() + envelope.getWidth()/2, 
+							envelope.getMinY() + envelope.getHeight()/2); 
+				}
+				
+				Envelope env = this.envelope.transform(metersCRS, true);
+				
+				this.cellWidthMeters  = env.getWidth() / getXCells();
+				this.cellHeightMeters = env.getHeight() / getYCells();
 				this.cellAreaMeters   = this.cellWidthMeters * this.cellHeightMeters;
 
 			} catch (Exception e) {

@@ -276,6 +276,29 @@ public class Geospace extends ThinklabPlugin  {
 		return metersCRS;
 	}
 
+	/**
+	 * Get the appropriate (sort of) UTM projection for the passed WGS84 point.
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 * @throws ThinklabValidationException
+	 */
+	public CoordinateReferenceSystem getMetersCRS(double x, double y) throws ThinklabValidationException {
+
+		int base_srid = y < 0 ? 32700 : 32600;
+		int out_srid = 
+				x == 180.0 ? 
+						base_srid + 60 :
+						base_srid + (int)Math.floor((x + 186.0)/6.0);
+		
+		CoordinateReferenceSystem ret = getCRSFromID("EPSG:" + out_srid);
+		
+		return ret == null ? metersCRS : ret;
+	}
+
+
+	
 	public IConcept Point() {
 		return pointType;
 	}

@@ -137,7 +137,6 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 		
 	}
 	
-		
 	public int getColumns() {
 		return xRM - xRO;
 	}
@@ -157,17 +156,17 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 	 * @return
 	 * @throws ThinklabException 
 	 */
-	public static Pair<Integer, Integer> getRasterBoxDimensions(ShapeValue shape, int maxLinearResolution) throws ThinklabException {
+	public static Pair<Integer, Integer> getRasterBoxDimensions(ShapeValue shape, int majorAxisResolution) throws ThinklabException {
 		
 		ReferencedEnvelope env = shape.convertToMeters().getEnvelope();
 		
 		int x = 0, y = 0;
 		if (env.getWidth() > env.getHeight()) {
-			x = maxLinearResolution;
-			y = (int)Math.ceil(maxLinearResolution * (env.getHeight()/env.getWidth()));
+			x = majorAxisResolution;
+			y = (int)Math.ceil(majorAxisResolution * (env.getHeight()/env.getWidth()));
 		} else {
-			y = maxLinearResolution;
-			x = (int)Math.ceil(maxLinearResolution * (env.getWidth()/env.getHeight()));			
+			y = majorAxisResolution;
+			x = (int)Math.ceil(majorAxisResolution * (env.getWidth()/env.getHeight()));			
 		}
 		
 		return new Pair<Integer, Integer>(x,y);
