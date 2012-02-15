@@ -27,7 +27,6 @@ import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.observation.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
-import org.integratedmodelling.thinklab.api.modelling.observation.IState;
 import org.integratedmodelling.thinklab.metadata.Metadata;
 
 /**
