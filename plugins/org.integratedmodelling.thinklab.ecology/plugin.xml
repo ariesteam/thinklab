@@ -73,4 +73,8 @@
 		<parameter id="url" value="tanzania-lulc.owl"/>
 		<parameter id="concept-space" value="tanzania-lulc"/>
 	</extension>	
+    <extension id="ontario-lulc" plugin-id="org.integratedmodelling.thinklab.core" point-id="ontology">
+		<parameter id="url" value="ontario-lulc.owl"/>
+		<parameter id="concept-space" value="ontario-lulc"/>
+	</extension>	
 </plugin>
