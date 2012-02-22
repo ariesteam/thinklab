@@ -57,6 +57,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IOntology;
 import org.integratedmodelling.thinklab.interfaces.query.IQueryResult;
 import org.integratedmodelling.thinklab.kbox.MultipleQueryResult;
+import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.PluginLifecycleException;
@@ -145,6 +146,7 @@ public class Geospace extends ThinklabPlugin  {
 	 */
 	HashMap<String, IGazetteer> gazetteers = new HashMap<String, IGazetteer>();
 	private CoordinateReferenceSystem defaultCRS = null;
+	private Boolean _useSquareCellsM;
 	
 	public static Geospace get() {
 		return (Geospace) getPlugin(PLUGIN_ID);
@@ -764,6 +766,14 @@ public class Geospace extends ThinklabPlugin  {
 			}
 		}
 		return null;
+	}
+
+	public boolean squareCellsM() {
+		if (_useSquareCellsM == null) {
+			_useSquareCellsM = 
+					BooleanValue.parseBoolean(getProperties().getProperty("square.cells.meters", "false"));
+		}
+		return _useSquareCellsM;
 	}
 	
 }

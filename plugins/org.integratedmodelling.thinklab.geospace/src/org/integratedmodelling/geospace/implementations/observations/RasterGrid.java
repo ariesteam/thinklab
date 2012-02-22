@@ -158,7 +158,10 @@ public class RasterGrid extends Observation implements Topology, IGeolocatedObje
 	 */
 	public static Pair<Integer, Integer> getRasterBoxDimensions(ShapeValue shape, int majorAxisResolution) throws ThinklabException {
 		
-		ReferencedEnvelope env = shape.convertToMeters().getEnvelope();
+		ReferencedEnvelope env = 
+				Geospace.get().squareCellsM() ? 
+						shape.convertToMeters().getEnvelope() :
+						shape.getEnvelope();
 		
 		int x = 0, y = 0;
 		if (env.getWidth() > env.getHeight()) {

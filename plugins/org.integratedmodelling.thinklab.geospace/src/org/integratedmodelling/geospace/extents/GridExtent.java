@@ -144,53 +144,83 @@ public class GridExtent extends ArealExtent implements ILineageTraceable {
 		int x, y; double dx = 0, dy = 0;
 		ReferencedEnvelope env = shape.getEnvelope();
 		
-		CoordinateReferenceSystem meters = Geospace.get().getMetersCRS();
-		if (Geospace.getCRSIdentifier(shape.getCRS(), false).equals("EPSG:4326")) {
-			meters = Geospace.get().getMetersCRS(
-					env.getMinX() + env.getWidth()/2, 
-					env.getMinY() + env.getHeight()/2); 
-		}
+		if (Geospace.get().squareCellsM()) {
+			
+			CoordinateReferenceSystem meters = Geospace.get().getMetersCRS();
+			if (Geospace.getCRSIdentifier(shape.getCRS(), false).equals("EPSG:4326")) {
+				meters = Geospace.get().getMetersCRS(
+						env.getMinX() + env.getWidth()/2, 
+						env.getMinY() + env.getHeight()/2); 
+			}
 		
-		try {
-			env = env.transform(meters, true);
-		} catch (Exception e) {
-			throw new ThinklabValidationException(e);
-		}
+			try {
+				env = env.transform(meters, true);
+			} catch (Exception e) {
+				throw new ThinklabValidationException(e);
+			}
 		
-		double width  = env.getWidth();
-		double height = env.getHeight();
+			double width  = env.getWidth();
+			double height = env.getHeight();
 		
-		if (width > height) {
-			double minorAxisResolution = Math.ceil(majorAxisResolution * height / width);
-			height = width * minorAxisResolution / majorAxisResolution;
-			x = majorAxisResolution;
-			y = (int)minorAxisResolution;
-			dy = (height - env.getHeight())/2.0;
-		} else {
-			double minorAxisResolution = Math.ceil(majorAxisResolution * width / height);
-			width = height * minorAxisResolution / majorAxisResolution;
-			x = (int)minorAxisResolution;
-			y = majorAxisResolution;
-			dx = (width - env.getWidth())/2.0;
-		}
+			if (width > height) {
+				double minorAxisResolution = Math.ceil(majorAxisResolution * height / width);
+				height = width * minorAxisResolution / majorAxisResolution;
+				x = majorAxisResolution;
+				y = (int)minorAxisResolution;
+				dy = (height - env.getHeight())/2.0;
+			} else {
+				double minorAxisResolution = Math.ceil(majorAxisResolution * width / height);
+				width = height * minorAxisResolution / majorAxisResolution;
+				x = (int)minorAxisResolution;
+				y = majorAxisResolution;
+				dx = (width - env.getWidth())/2.0;
+			}
 		
 //		System.out.println("ORIG-U: " + shape.getEnvelope());
 //		System.out.println("ORIG-M: " + env);
 		
-		this.shape = shape;
-		env = new ReferencedEnvelope(
-				env.getMinX() - dx, 
-				env.getMaxX() + dx, 
-				env.getMinY() - dy,
-				env.getMaxY() + dy,
-				meters);
+			this.shape = shape;
+			env = new ReferencedEnvelope(
+					env.getMinX() - dx, 
+					env.getMaxX() + dx, 
+					env.getMinY() - dy,
+					env.getMaxY() + dy,
+					meters);
 		
-		try {
-			this.envelope = env.transform(shape.getCRS(), true);
-		} catch (Exception e) {
-			throw new ThinklabValidationException(e);
-		}
+			try {
+				this.envelope = env.transform(shape.getCRS(), true);
+			} catch (Exception e) {
+				throw new ThinklabValidationException(e);
+			}
+			
+		} else {
 
+			double width  = env.getWidth();
+			double height = env.getHeight();
+
+			if (width > height) {
+				double minorAxisResolution = Math.ceil(majorAxisResolution * height / width);
+				height = width * minorAxisResolution / majorAxisResolution;
+				x = majorAxisResolution;
+				y = (int)minorAxisResolution;
+				dy = (height - env.getHeight())/2.0;
+			} else {
+				double minorAxisResolution = Math.ceil(majorAxisResolution * width / height);
+				width = height * minorAxisResolution / majorAxisResolution;
+				x = (int)minorAxisResolution;
+				y = majorAxisResolution;
+				dx = (width - env.getWidth())/2.0;
+			}
+				
+			this.shape = shape;
+			this.envelope = new ReferencedEnvelope(
+					env.getMinX() - dx, 
+					env.getMaxX() + dx, 
+					env.getMinY() - dy,
+					env.getMaxY() + dy,
+					shape.getCRS());
+		}
+		
 //		System.out.println("TRAN-M: " + env);
 //		System.out.println("TRAN-U: " + this.envelope);
 		
