@@ -474,7 +474,7 @@ public class ShapeValue extends ParsedLiteralValue implements ITopologicallyComp
 	}
 
 	public String getWKB() {
-		return new String(new WKBWriter().write(shape));
+		return new String(WKBWriter.bytesToHex(new WKBWriter().write(shape)));
 	}
 
 	public ShapeValue convertToMeters() throws ThinklabException {

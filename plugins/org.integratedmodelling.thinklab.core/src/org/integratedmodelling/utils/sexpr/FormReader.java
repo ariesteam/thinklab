@@ -43,6 +43,9 @@ public class FormReader {
 	private InputStream input = null;
 	private boolean isEof = false;
 	
+	StringBuffer ret = new StringBuffer(16000);
+
+	
 	public interface FormListener {
 		public void onFormRead(String s) throws ThinklabException;
 	}
@@ -85,8 +88,8 @@ public class FormReader {
 	 */
 	public String readForm() throws ThinklabException {
 
-		StringBuffer ret = new StringBuffer(2048);
 		int plevel = -2;
+		ret.setLength(0);
 		
 		for (;;) {
 			try {

@@ -65,11 +65,11 @@ import com.vividsolutions.jts.geom.Geometry;
 		optionalArgumentDefaultValues="__NONE__",
 		optionalArgumentTypes="thinklab-core:Text",
 		optionalArgumentDescriptions="argument",
-		optionNames="op,s,o",
-		optionLongNames="operation,simplify,output",
-		optionTypes="thinklab-core:Text,owl:Nothing,thinklab-core:Text",
-		optionArgumentLabels="operation,simplify flag,output",
-		optionDescriptions="operation to perform,simplify result,save result to shapefile")
+		optionNames="op,s,o,b",
+		optionLongNames="operation,simplify,output,wkb-output",
+		optionTypes="thinklab-core:Text,owl:Nothing,thinklab-core:Text,owl:Nothing",
+		optionArgumentLabels="operation,simplify flag,output,wkb output",
+		optionDescriptions="operation to perform,simplify result,save result to shapefile,outputs results in WKB instead of WKT")
 public class ShapeOps implements ICommandHandler {
 
 	CoordinateReferenceSystem crs = null;
@@ -93,6 +93,7 @@ public class ShapeOps implements ICommandHandler {
 			
 			String op = command.getOptionAsString("operation");
 			ShapeValue ret = null;
+			boolean wkb = command.hasOption("wkb-output");
 			
 			if (op == null) {
 				throw new ThinklabRuntimeException("no operation given: use -op switch");
@@ -102,7 +103,7 @@ public class ShapeOps implements ICommandHandler {
 				if (command.hasOption("simplify"))
 					ret.simplify(0.1);
 				
-				session.print("Union:\n" + ret);
+				session.print("Union:\n" + (wkb ? ret.getWKB() : ret.getWKT()));
 				
 			} else if (op.equals("extract")) {
 
@@ -110,7 +111,7 @@ public class ShapeOps implements ICommandHandler {
 				if (command.hasOption("simplify") && ret != null)
 					ret.simplify(0.1);
 				
-				session.print("Feature:\n" + (ret != null ? ret.toString() : "NOT FOUND"));
+				session.print("Feature:\n" + (ret != null ? (wkb ? ret.getWKB() : ret.getWKT()) : "NOT FOUND"));
 				
 			} else if (op.equals("stats")) {
 				
