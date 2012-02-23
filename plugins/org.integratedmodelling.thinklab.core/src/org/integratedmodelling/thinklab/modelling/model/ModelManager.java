@@ -460,6 +460,10 @@ public class ModelManager implements IModelManager, IModelFactory {
 			ModelGenerator thinkqlParser = injector.getInstance(ModelGenerator.class);
 			Namespace nbean = thinkqlParser.parse(resourceId, getResolver(project, resourceId));
 
+			/* TODO
+			 * build objects here
+			 */
+			
 			ret = namespacesById.get(nbean.getId());
 			
 		} else if (resourceId.endsWith(".clj")) {
@@ -467,6 +471,12 @@ public class ModelManager implements IModelManager, IModelFactory {
 			/*
 			 * TODO we need to rewrite the clojure modeling interface to produce
 			 * beans compatible with ModelAdapter.
+			 */
+			
+		} else if (resourceId.endsWith(".owl")) {
+
+			/*
+			 * TODO use OWL parser, then reconstruct ontology while storing namespace
 			 */
 		}
 		
