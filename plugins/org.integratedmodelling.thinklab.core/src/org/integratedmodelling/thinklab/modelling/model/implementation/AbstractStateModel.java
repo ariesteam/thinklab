@@ -22,21 +22,18 @@ package org.integratedmodelling.thinklab.modelling.model.implementation;
 import java.util.ArrayList;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.query.IConformance;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
-import org.integratedmodelling.thinklab.api.modelling.ModelTypes;
-import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
-import org.integratedmodelling.thinklab.api.modelling.observation.IExtent;
-import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
+import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.implementations.operators.Operator;
-import org.integratedmodelling.thinklab.modelling.internal.StateModel;
 
-public abstract class AbstractStateModel extends DefaultAbstractModel implements StateModel {
+public abstract class AbstractStateModel extends DefaultAbstractModel  {
 
 	public AbstractStateModel(INamespace ns) {
 		super(ns);
@@ -64,9 +61,9 @@ public abstract class AbstractStateModel extends DefaultAbstractModel implements
 			IContext context) throws ThinklabException {
 
 		Constraint c = new Constraint(this.getCompatibleObservationType());
-		c = c.restrict(new Restriction(
-							ModelTypes.P_HAS_OBSERVABLE.getProperty(Thinklab.get()), 
-							conformance.getQuery(_observable)));
+//		c = c.restrict(new Restriction(
+//							ModelTypes.P_HAS_OBSERVABLE.getProperty(Thinklab.get()), 
+//							conformance.getQuery(_observable)));
 
 		if (context.getExtents().size() > 0) {
 
@@ -87,6 +84,11 @@ public abstract class AbstractStateModel extends DefaultAbstractModel implements
 		return c;
 	}
 	
+
+	private String getCompatibleObservationType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	protected int addMediated(IObservation o) {
 

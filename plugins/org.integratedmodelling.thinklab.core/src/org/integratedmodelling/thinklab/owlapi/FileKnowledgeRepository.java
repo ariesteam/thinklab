@@ -554,4 +554,34 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		}
 		return null;
 	}
+
+	@Override
+	public IOntology createOntology(String name, String urlPrefix) throws ThinklabException {
+		
+		if (!registry.containsConceptSpace(name)) {
+			File f = new File(tempDirectory, name + ".owl");
+			URI physicalURI = f.toURI();
+			URI logicalURI = URI.create(urlPrefix + "/" + name + ".owl");
+			SimpleURIMapper mapper = new SimpleURIMapper(logicalURI,
+					physicalURI);
+			manager.addURIMapper(mapper);
+			try {
+				OWLOntology ontology = manager.createOntology(logicalURI);
+				name = registry.registerURI(name, logicalURI);
+				Ontology onto = new Ontology(ontology, this);
+				onto.isSystem = false;
+				tempontologies.put(name, onto);
+				// FIXME check -- 
+				// ontologies.put(name, onto);
+				// registry.updateRegistry(manager, ontology);
+				onto.initialize(name);
+				return onto;
+			} catch (OWLOntologyCreationException e) {
+				throw new ThinklabInternalErrorException(e);
+			}
+
+		}
+		return null;
+
+	}
 }

@@ -22,12 +22,7 @@ package org.integratedmodelling.thinklab.modelling.model.implementation;
 import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
-import org.integratedmodelling.thinklab.api.modelling.observation.IAccessor;
-import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
-import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
-import org.integratedmodelling.thinklab.api.modelling.observation.IState;
 
 /**
  * The reference implementation of the model object created by defmodel. It holds one
@@ -51,15 +46,14 @@ import org.integratedmodelling.thinklab.api.modelling.observation.IState;
  */
 public class Model extends DefaultAbstractModel {
 
-	IModel _contextModel = null;
-		
-	public Model(INamespace namespace) {
-		super(namespace);
+	public Model(INamespace ns) {
+		super(ns);
+		// TODO Auto-generated constructor stub
 	}
-	
 
 	@Override
-	public IObservation createObservation(HashMap<IInstance, IState> known) {
+	public org.integratedmodelling.thinklab.api.modelling.IObservation createObservation(
+			HashMap<IInstance, org.integratedmodelling.thinklab.api.modelling.IState> known) {
 		// TODO Auto-generated method stub
 		return null;
 	}

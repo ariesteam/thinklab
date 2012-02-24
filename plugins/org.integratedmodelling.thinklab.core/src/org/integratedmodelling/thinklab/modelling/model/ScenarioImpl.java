@@ -17,31 +17,38 @@
    You should have received a copy of the GNU General Public License
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.integratedmodelling.thinklab.modelling.model.implementation;
+package org.integratedmodelling.thinklab.modelling.model;
 
-import java.util.HashMap;
+import java.util.Set;
 
-import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.modelling.INamespace;
-import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
-import org.integratedmodelling.thinklab.api.modelling.observation.IState;
+import org.integratedmodelling.thinklab.api.modelling.IScenario;
+import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
+import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
-public class RankingModel extends AbstractStateModel {
-
-	public RankingModel(INamespace ns) {
-		super(ns);
-		// TODO Auto-generated constructor stub
-	}
+public class ScenarioImpl extends NamespaceQualified implements IScenario {
 
 	@Override
-	public IConcept getCompatibleObservationType() {
+	public Set<IInstance> getObservables() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public IObservation createObservation(HashMap<IInstance, IState> known) {
+	public IMetadata getMetadata() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void merge(IScenario scenario) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public LanguageElement getLanguageElement() {
 		// TODO Auto-generated method stub
 		return null;
 	}

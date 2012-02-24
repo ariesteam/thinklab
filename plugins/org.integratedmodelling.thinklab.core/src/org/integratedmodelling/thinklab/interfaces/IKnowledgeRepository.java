@@ -149,7 +149,16 @@ public interface IKnowledgeRepository {
      */
     public abstract String getURI();
 
-    /** 
+	/**
+	 * Create a new ontology with given ID, using defaults for the rest of the URI. Complain if
+	 * the ontology exists.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public abstract IOntology createOntology(String id, String ontologyPrefix) throws ThinklabException;
+
+	/** 
      * Create an ontology with the specified name and make sure it does not end up in the permanent repository.
      * Throws an exception if name is there already.
      * @param string
@@ -170,5 +179,6 @@ public interface IKnowledgeRepository {
 	 * 
 	 */
 	public abstract List<IConcept> getAllConcepts();
+
 
 }

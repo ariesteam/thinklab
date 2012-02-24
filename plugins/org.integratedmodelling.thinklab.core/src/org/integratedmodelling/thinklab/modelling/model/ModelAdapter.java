@@ -19,13 +19,25 @@
  */
 package org.integratedmodelling.thinklab.modelling.model;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.model.AgentModel;
+import org.integratedmodelling.lang.model.Context;
+import org.integratedmodelling.lang.model.Model;
+import org.integratedmodelling.lang.model.ModelObject;
 import org.integratedmodelling.lang.model.Namespace;
+import org.integratedmodelling.lang.model.Scenario;
+import org.integratedmodelling.lang.model.Storyline;
+import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.project.IProject;
+import org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository;
 
 /**
  * A class that translates the API beans output by the language parsers into
- * actual namespaces and model objects.
+ * actual namespaces and model objects. Contains all the translation logics for
+ * thinklab.
  * 
  * @author Ferd
  *
@@ -38,9 +50,49 @@ public class ModelAdapter {
 	 * 
 	 * @param namespace
 	 * @return
+	 * @throws ThinklabException 
 	 */
-	public INamespace createNamespace(Namespace namespace) {
-		return null;
+	public INamespace createNamespace(Namespace namespace) throws ThinklabException {
+		
+		NamespaceImpl ret = new NamespaceImpl(namespace);
+		
+		/*
+		 * ontology first - ask for one, complain if not there
+		 */
+		IProject proj = namespace.getProject();
+		String urlPrefix = 
+				proj == null ? 
+					FileKnowledgeRepository.DEFAULT_TEMP_URI : 
+					proj.getOntologyNamespacePrefix();
+		IOntology ont = 
+				KnowledgeManager.get().getKnowledgeRepository().createOntology(namespace.getId(), urlPrefix);
+		ont.define(namespace.getAxioms());
+
+		ret._ontology = ont;
+		
+		for (ModelObject o : namespace.getModelObjects()) {
+			ret._modelObjects.add(createModelObject(o));
+		}
+		
+		return ret;
+	}
+
+	private IModelObject createModelObject(ModelObject o) {
+		
+		IModelObject ret = null;
+		
+		if (o instanceof Model) {
+			
+		} else if (o instanceof Context) {
+			
+		} else if (o instanceof AgentModel) {
+			
+		} else if (o instanceof Scenario) {
+			
+		} else if (o instanceof Storyline) {
+			
+		}
+		return ret;
 	}
 
 	/**

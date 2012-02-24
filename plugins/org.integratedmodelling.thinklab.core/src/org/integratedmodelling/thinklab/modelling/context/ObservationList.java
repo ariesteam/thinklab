@@ -23,23 +23,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
-import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
-import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
-import org.integratedmodelling.thinklab.api.modelling.observation.IObservationList;
-import org.integratedmodelling.thinklab.api.modelling.observation.IState;
+import org.integratedmodelling.thinklab.api.modelling.IObservation;
+import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.modelling.model.implementation.DefaultAbstractModel;
 
-public class ObservationList implements IObservationList {
+public class ObservationList implements List<IObservation> {
 
 	IContext context;
 	IModel   model;
@@ -57,11 +57,7 @@ public class ObservationList implements IObservationList {
 
 		@Override
 		public IObservation next() {
-			try {
-				return get(n++);
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
-			}
+			return  get(n++);
 		}
 
 		@Override
@@ -98,11 +94,6 @@ public class ObservationList implements IObservationList {
 		return ticker.getMultiplicity();
 	}
 
-	@Override
-	public IObservation get(int index) throws ThinklabException {
-		return buildObservation(index, model);
-	}
-	
 	
 	
 	// --- non-API --------------------------------------------------
@@ -131,6 +122,132 @@ public class ObservationList implements IObservationList {
 		}
 		
 		return ((DefaultAbstractModel)model).createObservation(known);
+	}
+
+	@Override
+	public boolean add(IObservation arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends IObservation> arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean contains(Object arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean remove(Object arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Object[] toArray() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T[] toArray(T[] arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void add(int arg0, IObservation arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean addAll(int arg0, Collection<? extends IObservation> arg1) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public IObservation get(int arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int indexOf(Object arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int lastIndexOf(Object arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ListIterator<IObservation> listIterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ListIterator<IObservation> listIterator(int arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IObservation remove(int arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IObservation set(int arg0, IObservation arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<IObservation> subList(int arg0, int arg1) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

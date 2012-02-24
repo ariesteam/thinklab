@@ -38,6 +38,7 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.api.knowledge.IAxiom;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
@@ -851,6 +852,12 @@ public class Ontology implements IOntology {
 	public IList asList() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void define(Collection<IAxiom> axioms) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

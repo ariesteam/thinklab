@@ -28,8 +28,8 @@ import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor.StorageOrdering;
 import org.integratedmodelling.multidimensional.Ticker;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
-import org.integratedmodelling.thinklab.api.modelling.observation.IContextMapper;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IContextMapper;
 
 /**
  * A helper object that maps state indexes from a context to a compatible other. The "to" context

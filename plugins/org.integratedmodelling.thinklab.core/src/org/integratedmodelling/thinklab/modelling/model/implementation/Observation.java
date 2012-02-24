@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.integratedmodelling.thinklab.modelling.observation;
+package org.integratedmodelling.thinklab.modelling.model.implementation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,10 +25,10 @@ import java.util.Collection;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IExtent;
+import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
-import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
-import org.integratedmodelling.thinklab.api.modelling.observation.IExtent;
-import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
 import org.integratedmodelling.thinklab.metadata.Metadata;
 
 /**

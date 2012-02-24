@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.Collection;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.interpreter.ModelGenerator;
@@ -45,10 +46,10 @@ import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.lang.model.PropertyObject;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
-import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
-import org.integratedmodelling.thinklab.api.modelling.observation.IObservationList;
+import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.modelling.context.Context;
 import org.integratedmodelling.thinklab.modelling.model.ModelAdapter;
@@ -177,7 +178,7 @@ public class REPL {
 						 * model using the current context; 
 						 */
 						IModel model = (IModel)obj;
-						IObservationList res = ((IModel) obj).observe(context, Thinklab.get().getDefaultKbox(), session);
+						Collection<IObservation> res = ((IModel) obj).observe(context, Thinklab.get().getDefaultKbox(), session);
 						
 						if (res.size() > 0) {
 							w.println("Model can be observed in " + res.size() + " different ways");

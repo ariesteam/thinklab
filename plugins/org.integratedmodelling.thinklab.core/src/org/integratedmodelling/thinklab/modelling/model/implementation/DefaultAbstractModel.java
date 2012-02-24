@@ -34,22 +34,20 @@ import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.modelling.IAccessor;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
+import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
-import org.integratedmodelling.thinklab.api.modelling.observation.IAccessor;
-import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
-import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
-import org.integratedmodelling.thinklab.api.modelling.observation.IObservationList;
-import org.integratedmodelling.thinklab.api.modelling.observation.IState;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.metadata.Metadata;
 import org.integratedmodelling.thinklab.modelling.context.Context;
 import org.integratedmodelling.thinklab.modelling.context.ObservationList;
 import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
-import org.integratedmodelling.thinklab.modelling.observation.Observation;
 
 
 public abstract class DefaultAbstractModel extends NamespaceQualified implements IModel {
@@ -128,9 +126,9 @@ public abstract class DefaultAbstractModel extends NamespaceQualified implements
 		for (Dependency d : _mediated)
 			((DefaultAbstractModel)d.model).collectObservables(resolved, unresolved);
 		
-		if (this instanceof Model) {
-			((DefaultAbstractModel)((Model)this)._contextModel).collectObservables(resolved, unresolved);
-		}
+//		if (this instanceof Model) {
+//			((DefaultAbstractModel)((Model)this)._contextModel).collectObservables(resolved, unresolved);
+//		}
 
 		for (Dependency d : _dependencies) {
 			((DefaultAbstractModel)d.model).collectObservables(resolved, unresolved);
@@ -150,9 +148,9 @@ public abstract class DefaultAbstractModel extends NamespaceQualified implements
 		for (Dependency d : _mediated)
 			((DefaultAbstractModel)d.model).collectUnresolvedModels(unresolved);
 		
-		if (this instanceof Model) {
-			((DefaultAbstractModel)((Model)this)._contextModel).collectUnresolvedModels(unresolved);
-		}
+//		if (this instanceof Model) {
+//			((DefaultAbstractModel)((Model)this)._contextModel).collectUnresolvedModels(unresolved);
+//		}
 
 		for (Dependency d : _dependencies) {
 			((DefaultAbstractModel)d.model).collectUnresolvedModels(unresolved);
@@ -191,7 +189,7 @@ public abstract class DefaultAbstractModel extends NamespaceQualified implements
 
 
 	@Override
-	public IObservationList observe(IContext ctx, IKBox kbox, ISession session) 
+	public Collection<IObservation> observe(IContext ctx, IKBox kbox, ISession session) 
 			throws ThinklabException {
 
 		ArrayList<Pair<IModel, IQueryResult>> deps = new ArrayList<Pair<IModel, IQueryResult>>();

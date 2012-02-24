@@ -43,20 +43,18 @@ import org.integratedmodelling.lang.model.PropertyObject;
 import org.integratedmodelling.list.InstanceList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelManager;
-import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
-import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.owlapi.Session;
@@ -246,12 +244,17 @@ public class ModelManager implements IModelManager, IModelFactory {
 
 		@Override
 		public void onNamespaceDefined(
-				org.integratedmodelling.lang.model.Namespace namespace) {
+				org.integratedmodelling.lang.model.Namespace namespace) throws ThinklabException {
 
 			if (!namespacesById.containsKey(namespace.getId())) {
-				INamespace ret = new ModelAdapter().createNamespace(namespace);		
-				namespacesById.put(namespace.getId(), ret);
-				namespaceBeans.put(namespace.getId(), namespace);
+				INamespace ret;
+				try {
+					ret = new ModelAdapter().createNamespace(namespace);
+					namespacesById.put(namespace.getId(), ret);
+					namespaceBeans.put(namespace.getId(), namespace);
+				} catch (ThinklabException e) {
+					onException(e, 0);
+				}		
 			}
 			
 			/*
@@ -459,12 +462,10 @@ public class ModelManager implements IModelManager, IModelFactory {
 			Injector injector = Guice.createInjector(new ModellingModule());
 			ModelGenerator thinkqlParser = injector.getInstance(ModelGenerator.class);
 			Namespace nbean = thinkqlParser.parse(resourceId, getResolver(project, resourceId));
-
-			/* TODO
-			 * build objects here
+			/*
+			 * namespace has been put here by the resolver's callback.
 			 */
-			
-			ret = namespacesById.get(nbean.getId());
+			return namespacesById.get(nbean.getId());			
 			
 		} else if (resourceId.endsWith(".clj")) {
 			
@@ -514,20 +515,8 @@ public class ModelManager implements IModelManager, IModelFactory {
 		return null;
 	}
 
-	@Override
-	public IUnit parseUnit(String unit) throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public IInstance createObservable(InstanceList inst) throws ThinklabException {
 		return _session.createObject(inst.asList());
-	}
-
-	@Override
-	public IModelObject clone(IModelObject o, INamespace namespace) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -605,10 +594,8 @@ public class ModelManager implements IModelManager, IModelFactory {
 	}
 
 	@Override
-	public void processNamespace(
-			org.integratedmodelling.lang.model.Namespace namespace) {
-		// TODO Auto-generated method stub
-		
+	public INamespace processNamespace(Namespace namespace) throws ThinklabException {
+		return new ModelAdapter().createNamespace(namespace);
 	}
 
 

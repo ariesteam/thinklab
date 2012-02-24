@@ -19,28 +19,16 @@
  */
 package org.integratedmodelling.thinklab.proxy;
 
-import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.model.Namespace;
-import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
-import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 import org.integratedmodelling.thinklab.modelling.model.ModelManager;
 
 public class ProxyModelFactory implements IModelFactory {
 
 	@Override
-	public IUnit parseUnit(String unit) throws ThinklabValidationException {
-		return ModelManager.get().parseUnit(unit);
-	}
-
-	@Override
-	public IModelObject clone(IModelObject o, INamespace namespace) {
-		return ModelManager.get().clone(o, namespace);
-	}
-
-	@Override
-	public void processNamespace(Namespace namespace) {
-		ModelManager.get().processNamespace(namespace);
+	public INamespace processNamespace(Namespace namespace) throws ThinklabException {
+		return ModelManager.get().processNamespace(namespace);
 	}
 }

@@ -38,7 +38,7 @@ import org.integratedmodelling.thinklab.api.modelling.INamespace;
  * define a model namespace.
  * 
  * @author ferdinando.villa
- *
+ * @deprecated to be phased out for NamespaceImpl
  */
 public class Namespace implements INamespace {
 
