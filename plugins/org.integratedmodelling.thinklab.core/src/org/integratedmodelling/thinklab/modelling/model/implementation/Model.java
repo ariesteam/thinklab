@@ -24,6 +24,8 @@ import java.util.HashMap;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.modelling.observation.IAccessor;
+import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
 import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.observation.IState;
 
@@ -61,6 +63,5 @@ public class Model extends DefaultAbstractModel {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }

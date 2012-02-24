@@ -22,9 +22,11 @@ package org.integratedmodelling.thinklab.modelling.observation;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
+import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
 import org.integratedmodelling.thinklab.api.modelling.observation.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
 import org.integratedmodelling.thinklab.metadata.Metadata;
@@ -77,20 +79,8 @@ public class Observation implements IObservation {
 	}
 
 	@Override
-	public IConcept getObservableClass() {
-		if (_type == null)
-			_type = _observable.getDirectType();
-		return _type;
-	}
-
-	@Override
 	public Collection<IObservation> getDependencies() {
 		return _dependencies;
-	}
-
-	@Override
-	public Collection<IExtent> getExtents() {
-		return _extents;
 	}
 
 	// --- internal API -----------------------------------
@@ -101,6 +91,19 @@ public class Observation implements IObservation {
 
 	public void setFormalName(String localName) {
 		formalName = localName;
+	}
+
+	@Override
+	public IObservation contextualize(IContext context)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IContext getContext() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

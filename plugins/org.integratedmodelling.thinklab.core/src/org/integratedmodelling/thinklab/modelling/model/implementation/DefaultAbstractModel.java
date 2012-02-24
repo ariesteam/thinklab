@@ -39,6 +39,7 @@ import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
+import org.integratedmodelling.thinklab.api.modelling.observation.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.observation.IContext;
 import org.integratedmodelling.thinklab.api.modelling.observation.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.observation.IObservationList;
@@ -180,7 +181,15 @@ public abstract class DefaultAbstractModel extends NamespaceQualified implements
 	public IInstance getObservable() {
 		return _observable;
 	}
-	
+
+
+	@Override
+	public IAccessor getAccessor(IContext context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 	@Override
 	public IObservationList observe(IContext ctx, IKBox kbox, ISession session) 
 			throws ThinklabException {
