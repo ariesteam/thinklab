@@ -49,13 +49,11 @@ import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
-import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IParseableKnowledge;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.literals.NumberValue;
 import org.integratedmodelling.thinklab.literals.ObjectValue;
@@ -710,19 +708,19 @@ public class ThinklabOWLManager {
 		} else if ((o2 instanceof URL || o2 instanceof URI || (o2 instanceof String && ((String)o2).contains("://"))) && 
 						property.isObjectProperty()) {
 					
-			String uri = o2.toString();
-			String[] up = uri.split("#");
-			
-			if (up.length != 2) {
-				throw new ThinklabValidationException("parsing reference " + uri + ": invalid external object URI");
-			}
-			
-			IKBox kbox = KBoxManager.get().requireGlobalKBox(up[0]);
-			IList list = kbox.getObjectAsListFromID(up[1], null);
-			IInstance linked = ont.createInstance(list); 
-			// add a marker to notify where we come from, so we can serialize back to a URI
-			linked.addLiteralRelationship(KnowledgeManager.get().getImportedProperty(), uri);
-			inst.addObjectRelationship(property, linked);
+//			String uri = o2.toString();
+//			String[] up = uri.split("#");
+//			
+//			if (up.length != 2) {
+//				throw new ThinklabValidationException("parsing reference " + uri + ": invalid external object URI");
+//			}
+//			
+//			IKBox kbox = KBoxManager.get().requireGlobalKBox(up[0]);
+//			IList list = kbox.getObjectAsListFromID(up[1], null);
+//			IInstance linked = ont.createInstance(list); 
+//			// add a marker to notify where we come from, so we can serialize back to a URI
+//			linked.addLiteralRelationship(KnowledgeManager.get().getImportedProperty(), uri);
+//			inst.addObjectRelationship(property, linked);
 			
 		} else {
 			

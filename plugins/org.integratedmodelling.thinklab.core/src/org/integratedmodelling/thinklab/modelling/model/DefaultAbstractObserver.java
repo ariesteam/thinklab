@@ -17,7 +17,6 @@ import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.python.modules.newmodule;
 
 public abstract class DefaultAbstractObserver implements IObserver {
 
@@ -71,12 +70,6 @@ public abstract class DefaultAbstractObserver implements IObserver {
 
 	@Override
 	public IMetadata getMetadata() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IInstance getObservable() {
 		// TODO Auto-generated method stub
 		return null;
 	}

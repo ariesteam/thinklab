@@ -22,12 +22,15 @@ package org.integratedmodelling.thinklab.modelling.model.implementation;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
+import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.metadata.Metadata;
 
@@ -43,7 +46,7 @@ import org.integratedmodelling.thinklab.metadata.Metadata;
  * observation instances.
  * 
  * @author Ferd
- *
+ * @deprecated see modelling.model package for the actual things.
  */
 public class Observation implements IObservation {
 
@@ -74,11 +77,6 @@ public class Observation implements IObservation {
 	}
 
 	@Override
-	public IInstance getObservable() {
-		return _observable;
-	}
-
-	@Override
 	public Collection<IObservation> getDependencies() {
 		return _dependencies;
 	}
@@ -102,6 +100,18 @@ public class Observation implements IObservation {
 
 	@Override
 	public IContext getContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Pair<IObserver, IExpression> getObservers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IInstance getObservable() {
 		// TODO Auto-generated method stub
 		return null;
 	}

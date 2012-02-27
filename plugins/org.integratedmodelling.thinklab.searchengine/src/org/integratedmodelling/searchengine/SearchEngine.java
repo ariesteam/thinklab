@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -63,11 +64,9 @@ import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.literals.ObjectValue;
 import org.integratedmodelling.thinklab.owlapi.Session;
@@ -315,12 +314,12 @@ public final class SearchEngine implements IQueriable {
 
     		for (String kbox : kboxx) {
     			
-    			/* just retrieve it, initializing what needs to */
-    			IKBox kb = KBoxManager.get().retrieveGlobalKBox(kbox);
-    			if (kb == null) {
-    				throw new ThinklabIOException("searchengine: " + id + ": failed to open kbox " + kbox);
-    			} 
-    			kBoxes.add(kb);
+//    			/* just retrieve it, initializing what needs to */
+//    			IKBox kb = KBoxManager.get().retrieveGlobalKBox(kbox);
+//    			if (kb == null) {
+//    				throw new ThinklabIOException("searchengine: " + id + ": failed to open kbox " + kbox);
+//    			} 
+//    			kBoxes.add(kb);
     		}
     	}
     	
@@ -432,12 +431,12 @@ public final class SearchEngine implements IQueriable {
 
 	private void indexKBox(IKBox kb) throws ThinklabException {
     	
-		IQueryResult qr = kb.query(null);
+		List<Object> qr = kb.query(null);
 		ISession session = new Session();
 		
-		for (int i = 0; i < qr.getResultCount(); i++) {
+		for (int i = 0; i < qr.size(); i++) {
 			
-			IValue val = qr.getResult(i, session);
+			IValue val = (IValue) qr.get(i);
 			IInstance ii = null;
 			
 			if (val instanceof ObjectValue) {
@@ -798,12 +797,12 @@ public final class SearchEngine implements IQueriable {
     	return parser.parse(query);
     }
 
-	public IQueryResult query(IQuery q, int offset, int maxResults)
+	public List<Object> query(IQuery q, int offset, int maxResults)
 			throws ThinklabException {
 		return query(q, null, offset, maxResults);
 	}
 
-	public IQueryResult query(IQuery q, String[] metadata, int offset, int maxResults) 
+	public List<Object> query(IQuery q, String[] metadata, int offset, int maxResults) 
 		throws ThinklabException {
 
 		ResultContainer ret = new ResultContainer(this, q, offset, maxResults);
@@ -851,7 +850,7 @@ public final class SearchEngine implements IQueriable {
 
 	}
 
-	public IQueryResult query(IQuery q) throws ThinklabException {
+	public List<Object> query(IQuery q) throws ThinklabException {
 		return query(q, null, 0, -1);
 	}
 

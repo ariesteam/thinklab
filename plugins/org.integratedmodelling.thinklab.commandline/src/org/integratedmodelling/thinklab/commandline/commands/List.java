@@ -30,15 +30,12 @@ import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
-import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.utils.MiscUtilities;
 
 public class List implements ICommandHandler {
 
@@ -66,7 +63,6 @@ public class List implements ICommandHandler {
 			session.getOutputStream().println("\t" + i.toString()
 					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
 		}
-
 	}
 
 	void listIndividual(IInstance c, listmode mode,
@@ -76,7 +72,7 @@ public class List implements ICommandHandler {
 			session.getOutputStream().println("Instance URI is " + c.getURI());
 
 			session.getOutputStream().println("list representation:\n"
-					+ PolyList.prettyPrint(c.asList(null)));
+					+ PolyList.prettyPrint(c.conceptualize()));
 
 			session.getOutputStream().println(c.getDescription());
 
@@ -92,7 +88,7 @@ public class List implements ICommandHandler {
 			}
 
 		} else if (mode == listmode.LIST) {
-			session.getOutputStream().println(PolyList.prettyPrint(c.asList(null)));
+			session.getOutputStream().println(PolyList.prettyPrint(c.conceptualize()));
 		}
 	}
 
@@ -129,20 +125,20 @@ public class List implements ICommandHandler {
 
 		outputWriter.getOutputStream().println("Listing contents of kBox " + kbname);
 		
-		IQueryResult result = kbox.query(null, 0, -1);
+		java.util.List<Object> result = kbox.query(null);
 
-		if (result.getResultCount() > 0) {
+		if (result.size() > 0) {
 
-			for (int i = 0; i < result.getResultCount(); i++) {
+			for (int i = 0; i < result.size(); i++) {
 
 				outputWriter.getOutputStream().println(
 						i  +
 						". " + 
-						result.getResultAsList(i, null));
+						result.get(i));
 			}
 		}
 
-		outputWriter.getOutputStream().println("total: " + result.getResultCount());
+		outputWriter.getOutputStream().println("total: " + result.size());
 	}
 
 	public IValue execute(Command command, ISession session) throws ThinklabException {
@@ -207,10 +203,10 @@ public class List implements ICommandHandler {
 
 		} else if ("kboxes".equals(subject)) {
 
-			for (String kb : KBoxManager.get().getInstalledKboxes()) {
-				session.getOutputStream().println(MiscUtilities.getURLBaseName(kb)
-						+ ":\t" + kb);
-			}
+//			for (String kb : KBoxManager.get().getInstalledKboxes()) {
+//				session.getOutputStream().println(MiscUtilities.getURLBaseName(kb)
+//						+ ":\t" + kb);
+//			}
 
 //			for (String kb : session.getLocalKBoxes()) {
 //				session.getOutputStream().println(kb + " (local)");

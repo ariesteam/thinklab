@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.integratedmodelling.thinklab.api.listeners.IListener;
-import org.integratedmodelling.thinklab.modelling.model.implementation.AbstractStateModel;
+import org.integratedmodelling.thinklab.api.modelling.IObserver;
 
 /*
  * Utility class to dispatch messages to all different types of listeners without
@@ -38,17 +38,17 @@ public class ListenerSet {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void notifyDependencyFound(AbstractStateModel model) {
+	public void notifyDependencyFound(IObserver model, IObserver dependent) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void notifyOptionalDependencyNotFound(AbstractStateModel model) {
+	public void notifyOptionalDependencyNotFound(IObserver model) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void notifyAlreadyObservedState(AbstractStateModel model) {
+	public void notifyAlreadyObservedState(IObserver model) {
 		// TODO Auto-generated method stub
 		
 	}

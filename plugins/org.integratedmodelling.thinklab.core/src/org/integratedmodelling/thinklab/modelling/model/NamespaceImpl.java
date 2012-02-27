@@ -55,14 +55,16 @@ public class NamespaceImpl implements INamespace, IConceptualizable {
 
 	@Override
 	public IList conceptualize() throws ThinklabException {
-		return _bean.conceptualize();
+		return null;
 	}
 
 	@Override
 	public void define(IList conceptualization) throws ThinklabException {
-		// TODO Auto-generated method stub
+
 		Namespace bean = new Namespace();
-		bean.define(conceptualization);
+
+		
+		
 		initialize(bean);
 	}
 

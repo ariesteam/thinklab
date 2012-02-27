@@ -19,8 +19,9 @@
  */
 package org.integratedmodelling.utils;
 
+import java.util.Collection;
+
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 
 
 /** 
@@ -41,7 +42,7 @@ public class Pager {
 	int totalPages;
 	int itemsOnLastPage;
 	
-	private IQueryResult queryResult = null;
+	private Collection<?> queryResult = null;
 	
 	/*
 	 * recalculate all parameters based on the current item index
@@ -77,7 +78,7 @@ public class Pager {
 		 */
 		if (currentPage != formerPage && queryResult != null) {
 			
-			queryResult.moveTo(currentItem, itemsPerPage);
+//			queryResult.moveTo(currentItem, itemsPerPage);
 			
 		}
 		
@@ -111,11 +112,11 @@ public class Pager {
 	 * @param nPagesToShow
 	 * @throws ThinklabException 
 	 */
-	public Pager(IQueryResult queryResult, int itemsPerPage, int nPagesToShow) throws ThinklabException {
+	public Pager(Collection<?> queryResult, int itemsPerPage, int nPagesToShow) throws ThinklabException {
 		
 		this.currentItem = 0;
 		this.currentPage = 0;
-		this.totalItems =  queryResult.getTotalResultCount();
+		this.totalItems =  queryResult.size();
 		this.queryResult = queryResult;
 		this.itemsPerPage = itemsPerPage;
 		this.nPagesToShow = nPagesToShow;

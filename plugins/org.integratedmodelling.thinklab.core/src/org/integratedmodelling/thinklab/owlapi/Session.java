@@ -48,9 +48,6 @@ import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.api.runtime.IUserModel;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
-import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
-import org.integratedmodelling.thinklab.kbox.VirtualSessionKBox;
 import org.integratedmodelling.thinklab.session.TTYUserModel;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.NameGenerator;
@@ -182,52 +179,52 @@ public class Session implements ISession {
 	 */
 	public Collection<IInstance> loadObjects(URL url) throws ThinklabException {
 
-		boolean loaded = false;
+//		boolean loaded = false;
 		Collection<IInstance> ret = new ArrayList<IInstance>();
-
-		// see if we have a plugin to load this
-		String format = MiscUtilities.getFileExtension(url.toString());
-
-		// see if we have a kbox protocol for this thing
-		IKBox kbox = KBoxManager.get().retrieveGlobalKBox(url.toString());
-
-		if (kbox != null) {
-			String id = url.getRef();
-			if (id != null && !id.equals(""))
-				ret.add(kbox.getObjectFromID(id, this));
-		} else {
-
-			if (format != null) {
-
-				/* find the plugin that handles these */
-				KnowledgeLoader plu = KnowledgeManager.get().getKnowledgeLoader(format);
-
-				if (plu != null) {
-
-					String sname = MiscUtilities.getURLBaseName(url.toString());
-					IKBox kb = vKboxes.get(sname);
-					if (kb == null)
-						kb = new VirtualSessionKBox(this);
-					else if (kb instanceof VirtualSessionKBox) {
-						/*
-						 * TODO should erase all objects in kbox if it is virtual,
-						 * so we just substitute the sessions' contents?
-						 */
-					}
-
-					ret = plu.loadKnowledge(url, this, kb);
-				
-					vKboxes.put(sname, kb);
-
-					loaded = true;
-				}
-			}
-			
-			if (!loaded)
-				throw new ThinklabIOException("don't know how to handle format: "
-					+ format);
-		}
-		
+//
+//		// see if we have a plugin to load this
+//		String format = MiscUtilities.getFileExtension(url.toString());
+//
+//		// see if we have a kbox protocol for this thing
+//		IKBox kbox = null; //KBoxManager.get().retrieveGlobalKBox(url.toString());
+//
+//		if (kbox != null) {
+//			String id = url.getRef();
+//			if (id != null && !id.equals(""))
+//				ret.add(kbox.getObjectFromID(id, this));
+//		} else {
+//
+//			if (format != null) {
+//
+//				/* find the plugin that handles these */
+//				KnowledgeLoader plu = KnowledgeManager.get().getKnowledgeLoader(format);
+//
+//				if (plu != null) {
+//
+//					String sname = MiscUtilities.getURLBaseName(url.toString());
+//					IKBox kb = vKboxes.get(sname);
+//					if (kb == null)
+//						kb = new VirtualSessionKBox(this);
+//					else if (kb instanceof VirtualSessionKBox) {
+//						/*
+//						 * TODO should erase all objects in kbox if it is virtual,
+//						 * so we just substitute the sessions' contents?
+//						 */
+//					}
+//
+//					ret = plu.loadKnowledge(url, this, kb);
+//				
+//					vKboxes.put(sname, kb);
+//
+//					loaded = true;
+//				}
+//			}
+//			
+//			if (!loaded)
+//				throw new ThinklabIOException("don't know how to handle format: "
+//					+ format);
+//		}
+//		
 		return ret;
 	}
 
@@ -337,38 +334,38 @@ public class Session implements ISession {
 	}
 
     public  IInstance createObject(IInstance ii) throws ThinklabException {
-        return createObject(ii.asList(null));
+        return createObject(ii.conceptualize());
     }
 
-	public IInstance importObject(String kboxURI) throws ThinklabException {
-
-		IInstance ret = importedObjects.get(kboxURI);
-		
-		if (ret == null) {
-		
-			IKBox kb = KBoxManager.get().requireGlobalKBox(kboxURI);
-			String id = null;
-		
-			int dot = kboxURI.indexOf("#");
-			if (dot >= 0) {
-				id = kboxURI.substring(dot + 1);
-			}
-	
-			if (id == null)
-				throw new ThinklabResourceNotFoundException(kboxURI + " does not specify an object in a kbox");
-		
-			/*
-			 * use the same ref table every time, so we never have to duplicate stuff.
-			 */
-			ret = kb.getObjectFromID(id, this, new HashMap<String, String>());
-
-//			for (IThinklabSessionListener listener : listeners) {
-//				listener.objectCreated(ret);
+//	public IInstance importObject(String kboxURI) throws ThinklabException {
+//
+//		IInstance ret = importedObjects.get(kboxURI);
+//		
+//		if (ret == null) {
+//		
+//			IKBox kb = KBoxManager.get().requireGlobalKBox(kboxURI);
+//			String id = null;
+//		
+//			int dot = kboxURI.indexOf("#");
+//			if (dot >= 0) {
+//				id = kboxURI.substring(dot + 1);
 //			}
-		}
-		
-		return ret;
-	}
+//	
+//			if (id == null)
+//				throw new ThinklabResourceNotFoundException(kboxURI + " does not specify an object in a kbox");
+//		
+//			/*
+//			 * use the same ref table every time, so we never have to duplicate stuff.
+//			 */
+//			ret = kb.getObjectFromID(id, this, new HashMap<String, String>());
+//
+////			for (IThinklabSessionListener listener : listeners) {
+////				listener.objectCreated(ret);
+////			}
+//		}
+//		
+//		return ret;
+//	}
 
 	public void addListener(IListener listener) {
 		listeners.add(listener);
@@ -383,13 +380,13 @@ public class Session implements ISession {
 		return properties;
 	}
 
-	public IKBox retrieveKBox(String string) throws ThinklabException {
-
-		IKBox ret = vKboxes.get(string);
-		if (ret == null)
-			ret = KBoxManager.get().retrieveGlobalKBox(string);
-		return ret;
-	}
+//	public IKBox retrieveKBox(String string) throws ThinklabException {
+//
+//		IKBox ret = vKboxes.get(string);
+//		if (ret == null)
+//			ret = KBoxManager.get().retrieveGlobalKBox(string);
+//		return ret;
+//	}
 
 	public Collection<String> getLocalKBoxes() {
 		
@@ -402,12 +399,12 @@ public class Session implements ISession {
 		return ret;
 	}
 
-	public IKBox requireKBox(String string) throws ThinklabException {
-		IKBox ret = retrieveKBox(string);
-		if (ret == null)
-			throw new ThinklabResourceNotFoundException("kbox " + string + " not found");
-		return ret;
-	}
+//	public IKBox requireKBox(String string) throws ThinklabException {
+//		IKBox ret = retrieveKBox(string);
+//		if (ret == null)
+//			throw new ThinklabResourceNotFoundException("kbox " + string + " not found");
+//		return ret;
+//	}
 
 	public void clearUserData(String id) {
 		if (objects.containsKey(id))

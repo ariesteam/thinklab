@@ -21,6 +21,7 @@ package org.integratedmodelling.sql;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -32,7 +33,6 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
@@ -124,12 +124,12 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		return null;
 	}
 
-	public IQueryResult query(IQuery q, int offset, int maxResults)
+	public List<Object> query(IQuery q, int offset, int maxResults)
 			throws ThinklabException {
 		return query(q, null, offset, maxResults);
 	}
 
-	public IQueryResult query(IQuery q, String[] metadata, int offset,
+	public List<Object> query(IQuery q, String[] metadata, int offset,
 			int maxResults) throws ThinklabException {
 
 		if (q != null && !q.isEmpty() && !(q instanceof Constraint)) {
@@ -252,7 +252,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		return ret;
 	}
 
-	public IQueryResult query(IQuery q) throws ThinklabException {
+	public List<Object> query(IQuery q) throws ThinklabException {
 		return query(q, null, 0, -1);
 	}
 

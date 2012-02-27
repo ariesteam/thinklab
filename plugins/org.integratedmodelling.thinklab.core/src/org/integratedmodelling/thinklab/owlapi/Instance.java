@@ -512,6 +512,17 @@ public class Instance extends Knowledge implements IInstance {
 			throw new ThinklabRuntimeException("internal: requesting hashcode from uninitialized instance");
 		return _signature;
 	}
+
+	@Override
+	public IList conceptualize() throws ThinklabException {
+		return asList(null);
+	}
+
+	@Override
+	public void define(IList conceptualization) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 	

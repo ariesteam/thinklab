@@ -19,6 +19,8 @@
  */
 package org.integratedmodelling.searchengine.commands;
 
+import java.util.List;
+
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.searchengine.QueryString;
@@ -26,7 +28,6 @@ import org.integratedmodelling.searchengine.ResultContainer;
 import org.integratedmodelling.searchengine.SearchEngine;
 import org.integratedmodelling.searchengine.SearchEnginePlugin;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
-import org.integratedmodelling.thinklab.api.knowledge.query.IQueryResult;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
@@ -66,13 +67,13 @@ public class Search implements ICommandHandler {
 			return null;
 		}
 		
-		IQueryResult zio = engine.query(new QueryString(q));
+		List<Object> zio = engine.query(new QueryString(q));
 		
-		for (int i = 0; i < zio.getResultCount(); i++) {
+		for (int i = 0; i < zio.size(); i++) {
 			((ResultContainer)zio).printResult(i, session.getOutputStream());
 		}
 		
-		session.getOutputStream().println("\n" + zio.getResultCount() + " results");
+		session.getOutputStream().println("\n" + zio.size() + " results");
 		
 		return null;
 	}

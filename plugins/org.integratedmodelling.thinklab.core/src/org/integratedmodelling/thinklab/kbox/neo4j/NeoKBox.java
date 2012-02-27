@@ -43,8 +43,6 @@ public class NeoKBox implements IKbox {
 		IList instance = null;
 		if (o instanceof IList) {
 			instance = (IList)o;
-		} else if (o instanceof IInstance) {
-			instance = ((IInstance)o).asList(null);
 		} else if (o instanceof IConceptualizable) {
 			instance = ((IConceptualizable)o).conceptualize();
 		} else {

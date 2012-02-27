@@ -60,7 +60,6 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 import org.integratedmodelling.thinklab.interfaces.storage.IKnowledgeImporter;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
-import org.integratedmodelling.thinklab.kbox.KBoxManager;
 import org.integratedmodelling.thinklab.project.interfaces.IProjectLoader;
 import org.integratedmodelling.thinklab.rest.RESTManager;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
@@ -337,22 +336,22 @@ public abstract class ThinklabPlugin extends Plugin
 	}
 	
 	private void loadKboxes() throws ThinklabException {
-
-		/*
-		 * load .kbox files from data dir
-		 */
-		for (String s : this.getScratchPath().list()) {
-			
-			if (s.endsWith(".kbox")) {
-				// load from kbox properties 
-				File pfile = new File(this.getScratchPath() + File.separator + s);
-				try {
-					KBoxManager.get().requireGlobalKBox(pfile.toURI().toURL().toString());
-				} catch (Exception e) {
-					throw new ThinklabIOException(e);
-				}
-			}
-		}
+//
+//		/*
+//		 * load .kbox files from data dir
+//		 */
+//		for (String s : this.getScratchPath().list()) {
+//			
+//			if (s.endsWith(".kbox")) {
+//				// load from kbox properties 
+//				File pfile = new File(this.getScratchPath() + File.separator + s);
+//				try {
+//					KBoxManager.get().requireGlobalKBox(pfile.toURI().toURL().toString());
+//				} catch (Exception e) {
+//					throw new ThinklabIOException(e);
+//				}
+//			}
+//		}
 	}
 
 	/* (non-Javadoc)
@@ -894,27 +893,27 @@ public abstract class ThinklabPlugin extends Plugin
 
 	protected void loadKnowledgeImporters() {
 	
-		String ipack = this.getClass().getPackage().getName() + ".importers";
-		
-		for (Class<?> cls : MiscUtilities.findSubclasses(IKnowledgeImporter.class, ipack, getClassLoader())) {	
-			
-			/*
-			 * lookup annotation, ensure we can use the class
-			 */
-			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
-				continue;
-			
-			for (Annotation annotation : cls.getAnnotations()) {
-				if (annotation instanceof org.integratedmodelling.thinklab.interfaces.annotations.KnowledgeLoader) {
-					
-					String fmt = 
-						((org.integratedmodelling.thinklab.interfaces.annotations.KnowledgeLoader)annotation).format();
-						KBoxManager.get().registerImporterClass(fmt, cls);
-					
-					break;
-				}
-			}
-		}
+//		String ipack = this.getClass().getPackage().getName() + ".importers";
+//		
+//		for (Class<?> cls : MiscUtilities.findSubclasses(IKnowledgeImporter.class, ipack, getClassLoader())) {	
+//			
+//			/*
+//			 * lookup annotation, ensure we can use the class
+//			 */
+//			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+//				continue;
+//			
+//			for (Annotation annotation : cls.getAnnotations()) {
+//				if (annotation instanceof org.integratedmodelling.thinklab.interfaces.annotations.KnowledgeLoader) {
+//					
+//					String fmt = 
+//						((org.integratedmodelling.thinklab.interfaces.annotations.KnowledgeLoader)annotation).format();
+//						KBoxManager.get().registerImporterClass(fmt, cls);
+//					
+//					break;
+//				}
+//			}
+//		}
 
 	}
 	
