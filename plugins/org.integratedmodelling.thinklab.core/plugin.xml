@@ -49,6 +49,30 @@
 			<export prefix="*"/>
 		</library>
 		
+		<!-- neo4j support -->
+		<library id="geronimo-jta" path="lib/neo4j/geronimo-jta_1.1_spec.jar" type="code"/>
+		<library id="lucene-core" path="lib/neo4j/lucene-core-3.5.0.jar" type="code"/>
+		<library id="neo4j-backup" path="lib/neo4j/neo4j-backup-1.6.jar" type="code"/>
+		<library id="neo4j-com" path="lib/neo4j/neo4j-com-1.6.jar" type="code"/>
+		<library id="neo4j-cypher" path="lib/neo4j/neo4j-cypher-1.6.jar" type="code"/>
+		<library id="neo4j-enterprise" path="lib/neo4j/neo4j-enterprise-1.6.jar" type="code"/>
+		<library id="neo4j-graph-algo" path="lib/neo4j/neo4j-graph-algo-1.6.jar" type="code"/>
+		<library id="neo4j-graph-matching" path="lib/neo4j/neo4j-graph-matching-1.6.jar" type="code"/>
+		<library id="neo4j-ha" path="lib/neo4j/neo4j-ha-1.6.jar" type="code"/>
+		<library id="neo4j-jmx" path="lib/neo4j/neo4j-jmx-1.6.jar" type="code"/>
+		<library id="neo4j-kernel" path="lib/neo4j/neo4j-kernel-1.6.jar" type="code"/>
+		<library id="neo4j-lucene-index" path="lib/neo4j/neo4j-lucene-index-1.6.jar" type="code"/>
+		<library id="neo4j-management" path="lib/neo4j/neo4j-management-1.6.jar" type="code"/>
+		<library id="neo4j-shell" path="lib/neo4j/neo4j-shell-1.6.jar" type="code"/>
+		<library id="neo4j-udc" path="lib/neo4j/neo4j-udc-1.6.jar" type="code"/>
+		<library id="jline" path="lib/neo4j/org.apache.servicemix.bundles.jline-0.9.94_1" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="netty" path="lib/neo4j/org.apache.servicemix.bundles.netty-3.2.5.Final_1.jar" type="code"/>
+		<library id="server-api" path="lib/neo4j/server-api-1.6.jar" type="code"/>
+		<library id="slf4j-api" path="lib/neo4j/slf4j-api-1.6.jar" type="code"/>
+		<library id="zookeeper" path="lib/neo4j/zookeeper-3.3.2.jar" type="code"/>
+		
 		
 		<library id="concurrent" path="lib/concurrent-1.3.4.jar" type="code"/>
 		<library id="http" path="lib/http.jar" type="code"/>
@@ -57,9 +81,6 @@
 		<library id="jena" path="lib/jena.jar" type="code"/>
 		<library id="jep" path="lib/jep-2.4.1.jar" type="code"/>
 		<library id="jgrapht" path="lib/jgrapht.jar" type="code">
-			<export prefix="*"/>
-		</library>
-		<library id="jline" path="lib/jline-0.9.94.jar" type="code">
 			<export prefix="*"/>
 		</library>
 		<library id="jopt-simple" path="lib/jopt-simple-2.4-beta2.jar" type="code"/>

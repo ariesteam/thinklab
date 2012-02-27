@@ -177,19 +177,19 @@ public class REPL {
 						/*
 						 * model using the current context; 
 						 */
-						IModel model = (IModel)obj;
-						Collection<IObservation> res = ((IModel) obj).observe(context, Thinklab.get().getDefaultKbox(), session);
-						
-						if (res.size() > 0) {
-							w.println("Model can be observed in " + res.size() + " different ways");
-							
-							/*
-							 * TODO extract, run and visualize n-th observation
-							 */
-							
-						} else {
-							w.println("There is no way to observe this model in the current context.");
-						}
+//						IModel model = (IModel)obj;
+//						Collection<IObservation> res = ((IModel) obj).observe(context, Thinklab.get().getDefaultKbox(), session);
+//						
+//						if (res.size() > 0) {
+//							w.println("Model can be observed in " + res.size() + " different ways");
+//							
+//							/*
+//							 * TODO extract, run and visualize n-th observation
+//							 */
+//							
+//						} else {
+//							w.println("There is no way to observe this model in the current context.");
+//						}
 					}
 					
 					w.println(obj + " returned");

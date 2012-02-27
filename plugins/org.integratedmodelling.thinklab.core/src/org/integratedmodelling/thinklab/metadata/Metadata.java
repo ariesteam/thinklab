@@ -74,5 +74,11 @@ public class Metadata implements IMetadata {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void define(IList conceptualization) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

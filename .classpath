@@ -192,7 +192,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/TableLayout-bin-jdk1.5-2007-04-21.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/jline-0.9.94.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/gnuplot.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.modelling/lib/Ascape_5.5.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-swing-2.6.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-validation-2.6.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.geospace/lib/gt-wfs-2.6.2.jar"/>
@@ -361,7 +360,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.xtext.ecore_2.0.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.xtext.xbase_2.0.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.xtext.xbase.lib_2.0.0.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/aopalliance.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/com.ibm.icu_4.4.2.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/javax.inject.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.eclipse.emf.codegen_2.6.0.jar"/>
@@ -382,5 +380,25 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/org.antlr.runtime_3.2.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/thinklab-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.integratedmodelling.thinkql"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/geronimo-jta_1.1_spec-1.1.1.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/lucene-core-3.5.0.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/neo4j-backup-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/neo4j-com-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/neo4j-cypher-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/neo4j-enterprise-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/neo4j-graph-algo-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/neo4j-graph-matching-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/neo4j-ha-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/neo4j-jmx-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/neo4j-kernel-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/neo4j-lucene-index-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/neo4j-management-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/neo4j-shell-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/neo4j-udc-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/org.apache.servicemix.bundles.jline-0.9.94_1.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/org.apache.servicemix.bundles.netty-3.2.5.Final_1.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/server-api-1.6.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/zookeeper-3.3.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

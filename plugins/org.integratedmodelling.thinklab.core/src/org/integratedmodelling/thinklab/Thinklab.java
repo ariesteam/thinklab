@@ -37,12 +37,14 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
+import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.kbox.KBoxManager;
+import org.integratedmodelling.thinklab.kbox.neo4j.NeoKBox;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.project.ProjectFactory;
 import org.integratedmodelling.thinklab.project.ThinklabProjectInstaller;
@@ -69,6 +71,8 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	public static Thinklab get() {
 		return _this;
 	}
+	
+	private HashMap<String, IKbox> _kboxes = new HashMap<String, IKbox>();
 	
 	KnowledgeManager _km = null;
 	private HashMap<String, Class<?>> _projectLoaders = 
@@ -470,13 +474,33 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	}
 
 	@Override
-	public IKBox getDefaultKbox() {
-		return KBoxManager.get();
+	public IKbox createKbox(String uri) throws ThinklabException {
+
+		if (!uri.contains("://")) {
+			File kf = new File(getScratchPath() + File.separator + "kbox" + File.separator + uri);
+			kf.mkdirs();
+			return new NeoKBox(kf.toString());
+		}
+		
+		return null;
 	}
 
 	@Override
-	public void loadKnowledge(IList list) {
+	public void dropKbox(String uri) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public IKbox requireKbox(String uri) throws ThinklabException {
+		if (_kboxes.containsKey(uri))
+			return _kboxes.get(uri);
+		return createKbox(uri);
+	}
+	
+	/*
+	 * ---------------------------------------------------------------------------------------- 
+	 * ---------------------------------------------------------------------------------------- 
+	 */
+	
 }

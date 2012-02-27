@@ -531,5 +531,11 @@ public class Classification implements IClassification {
 		}
 	}
 
+	@Override
+	public void define(IList conceptualization) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

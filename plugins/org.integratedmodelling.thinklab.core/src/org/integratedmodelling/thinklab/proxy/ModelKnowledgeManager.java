@@ -25,6 +25,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
+import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 
@@ -70,13 +71,18 @@ public class ModelKnowledgeManager implements IKnowledgeManager {
 	}
 
 	@Override
-	public IKBox getDefaultKbox() {
-		return Thinklab.get().getDefaultKbox();
+	public IKbox createKbox(String uri) throws ThinklabException {
+		return Thinklab.get().createKbox(uri);
 	}
 
 	@Override
-	public void loadKnowledge(IList list) {
-		Thinklab.get().loadKnowledge(list);
+	public void dropKbox(String uri) throws ThinklabException {
+		Thinklab.get().dropKbox(uri);
+	}
+
+	@Override
+	public IKbox requireKbox(String uri) throws ThinklabException {
+		return Thinklab.get().requireKbox(uri);
 	}
 
 }
