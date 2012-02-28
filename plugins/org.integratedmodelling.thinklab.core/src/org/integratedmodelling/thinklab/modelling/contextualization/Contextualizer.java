@@ -1,6 +1,7 @@
 package org.integratedmodelling.thinklab.modelling.contextualization;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IContextMapper;
@@ -43,6 +44,16 @@ public class Contextualizer  {
 	 * be called to produce a harmonized context with all states.
 	 */
 	public Contextualizer(IObserver observer, IContext context) {
+		
+	}
+	
+	/**
+	 * Add any listener. What listeners do is dependent on their subclass.
+	 * TODO list supported listeners. 
+	 * 
+	 * @param listener
+	 */
+	public void addListener(IListener listener) {
 		
 	}
 	
