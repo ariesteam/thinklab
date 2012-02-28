@@ -1,4 +1,4 @@
-package org.integratedmodelling.thinklab.modelling.model;
+package org.integratedmodelling.thinklab.modelling;
 
 import java.util.Collection;
 

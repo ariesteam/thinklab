@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.integratedmodelling.thinklab.modelling.context;
+package org.integratedmodelling.thinklab.modelling;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,6 +41,12 @@ import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
 public class Context extends NamespaceQualified implements IContext {
 
+	/*
+	 * this one will be null unless the context comes from a language 
+	 * statement.
+	 */
+	org.integratedmodelling.lang.model.Context _bean;
+	
 	private ArrayList<IListener> _listeners = new ArrayList<IListener>();
 	private Metadata _metadata = new Metadata();	
 	private HashMap<IInstance, IState> _states = new HashMap<IInstance, IState>();
@@ -53,6 +59,13 @@ public class Context extends NamespaceQualified implements IContext {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Context(org.integratedmodelling.lang.model.Context bean) {
+		this._bean = bean;
+		/*
+		 * TODO define from bean content, which may be not entirely validated.
+		 */
+	}
+	
 	@Override
 	public Set<IInstance> getObservables() {
 		return _states.keySet();

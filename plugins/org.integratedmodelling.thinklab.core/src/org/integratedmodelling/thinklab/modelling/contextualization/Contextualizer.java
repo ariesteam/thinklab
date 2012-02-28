@@ -5,6 +5,7 @@ import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IContextMapper;
+import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -19,6 +20,8 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 public class Contextualizer  {
 
 	int _resultCount = 0;
+	private IObserver _observer;
+	private IContext _context;
 	
 	class Node {
 		IAccessor accessor;
@@ -45,6 +48,14 @@ public class Contextualizer  {
 	 */
 	public Contextualizer(IObserver observer, IContext context) {
 		
+		this._observer = observer;
+		this._context = context;
+		
+		/*
+		 * query all the unresolved observables that are not already in the
+		 * context.
+		 */
+		
 	}
 	
 	/**
@@ -68,10 +79,39 @@ public class Contextualizer  {
 	
 	/*
 	 * Contextualization driver for the n-th possible solution. Steps are:
-	 * 
-	 * 1. collect all observations
 	 */
-	public IContext contextualize(int resultIndex) throws ThinklabException {
+	public IObservation contextualize(int resultIndex) throws ThinklabException {
+		
+		/*
+		 * 1. create accessor for needed obs that were already in context.
+		 */
+		
+		/*
+		 * 2. query remaining requirements and run transformations on the observations to
+		 * harmonize to context.
+		 */
+		
+		/*
+		 * 3. Create remaining accessors and state storage for each needed output, plus
+		 * any additional states requested by the accessor. If accessor is not serial,
+		 * contextualize recursively; if accessor is a context transformer, redefine
+		 * context after it's done.
+		 */
+		
+		/*
+		 * 4. build contextualization graph - put a context mapper along each dependency
+		 * and establish register in memory for each accessor's state.
+		 */
+		
+		/*
+		 * 5. create contextualization topological ordering. Let listeners decide what to
+		 * do if there are cycles.
+		 */
+		
+		/*
+		 * 5. context loop - for each accessor call getValue (unless context mapper says not
+		 * to) and put result in accessor's memory.
+		 */
 		
 		return null;
 	}

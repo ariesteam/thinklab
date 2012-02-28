@@ -37,7 +37,7 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.project.IProject;
-import org.integratedmodelling.thinklab.modelling.model.ModelManager;
+import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.utils.FolderZiper;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.JpfException;

@@ -51,8 +51,8 @@ import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.modelling.context.Context;
-import org.integratedmodelling.thinklab.modelling.model.ModelAdapter;
+import org.integratedmodelling.thinklab.modelling.Context;
+import org.integratedmodelling.thinklab.modelling.ModelAdapter;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 
 import com.google.inject.Guice;

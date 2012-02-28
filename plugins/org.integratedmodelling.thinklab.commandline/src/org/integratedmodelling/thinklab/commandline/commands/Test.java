@@ -25,7 +25,7 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.modelling.model.ModelManager;
+import org.integratedmodelling.thinklab.modelling.ModelManager;
 
 @ThinklabCommand(name="test",argumentNames="arg",argumentTypes="thinklab-core:Text", argumentDescriptions="test argument")
 public class Test implements ICommandHandler {

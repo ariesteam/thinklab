@@ -1,9 +1,10 @@
-package org.integratedmodelling.thinklab.modelling.model;
+package org.integratedmodelling.thinklab.modelling;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.model.Model;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
@@ -13,7 +14,12 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.modelling.internal.MN;
 
-public class ModelImpl extends DefaultAbstractObserver implements IModel, IConceptualizable {
+public class ModelImpl extends ObserverImpl implements IModel, IConceptualizable {
+
+	public ModelImpl(Model bean) {
+		super(bean);
+		// TODO Auto-generated constructor stub
+	}
 
 	IInstance _observable;
 	

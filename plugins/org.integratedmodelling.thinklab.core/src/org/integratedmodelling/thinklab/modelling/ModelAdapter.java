@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.integratedmodelling.thinklab.modelling.model;
+package org.integratedmodelling.thinklab.modelling;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.model.AgentModel;
@@ -82,7 +82,7 @@ public class ModelAdapter {
 		IModelObject ret = null;
 		
 		if (o instanceof Model) {
-			
+			ret = new ModelImpl((Model)o);
 		} else if (o instanceof Context) {
 			
 		} else if (o instanceof AgentModel) {

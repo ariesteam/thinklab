@@ -1,4 +1,4 @@
-package org.integratedmodelling.thinklab.modelling.model;
+package org.integratedmodelling.thinklab.modelling;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,6 +7,8 @@ import java.util.Set;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.model.LanguageElement;
+import org.integratedmodelling.lang.model.Observer;
+import org.integratedmodelling.lang.model.ObservingObject;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
@@ -18,26 +20,36 @@ import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 
-public abstract class DefaultAbstractObserver implements IObserver {
+public abstract class ObserverImpl implements IObserver {
 
+	protected ObservingObject _bean;
+	
 	/**
 	 * Mediation chain can be conditional.
 	 */
-	ArrayList<Pair<DefaultAbstractObserver, IExpression>> _mediated =
-			new ArrayList<Pair<DefaultAbstractObserver,IExpression>>();
+	ArrayList<Pair<ObserverImpl, IExpression>> _mediated =
+			new ArrayList<Pair<ObserverImpl,IExpression>>();
 	
 	/*
 	 * dependencies can be observations or models and come with a statement of
 	 * optional/required and a formal name to use in expressions
 	 */
 	class Dependency {
-		DefaultAbstractObserver observer;
+		ObserverImpl observer;
 		boolean isRequired = true;
 		String formalName = null;
 	}
 	
 	ArrayList<Dependency> _dependencies = new ArrayList<Dependency>();
 	
+	public ObserverImpl(ObservingObject bean) {
+		define(bean);
+	}
+	
+	private void define(ObservingObject bean) {
+		this._bean = bean;		
+	}
+
 	@Override
 	public Set<IInstance> getObservables() {
 		// TODO Auto-generated method stub
@@ -84,8 +96,7 @@ public abstract class DefaultAbstractObserver implements IObserver {
 	@Override
 	public IObserver train(IContext context, IKBox kbox, ISession session)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override

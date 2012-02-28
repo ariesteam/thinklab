@@ -34,6 +34,7 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassification;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassifier;
@@ -48,7 +49,7 @@ import org.integratedmodelling.thinklab.literals.Value;
  * @author Ferd
  *
  */
-public class Classification implements IClassification {
+public class Classification implements IClassification, IConceptualizable {
 
 	private IConcept _cSpace = null;
 	ArrayList<Pair<IClassifier, IConcept>> _classifiers = 

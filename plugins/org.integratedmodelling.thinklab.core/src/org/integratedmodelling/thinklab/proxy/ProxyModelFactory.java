@@ -23,7 +23,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
-import org.integratedmodelling.thinklab.modelling.model.ModelManager;
+import org.integratedmodelling.thinklab.modelling.ModelManager;
 
 public class ProxyModelFactory implements IModelFactory {
 
