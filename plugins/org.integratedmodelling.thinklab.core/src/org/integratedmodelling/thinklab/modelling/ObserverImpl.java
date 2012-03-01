@@ -2,12 +2,12 @@ package org.integratedmodelling.thinklab.modelling;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.model.LanguageElement;
-import org.integratedmodelling.lang.model.Observer;
 import org.integratedmodelling.lang.model.ObservingObject;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
@@ -34,7 +34,7 @@ public abstract class ObserverImpl implements IObserver {
 	 * dependencies can be observations or models and come with a statement of
 	 * optional/required and a formal name to use in expressions
 	 */
-	class Dependency {
+	public class Dependency {
 		ObserverImpl observer;
 		boolean isRequired = true;
 		String formalName = null;
@@ -117,21 +117,43 @@ public abstract class ObserverImpl implements IObserver {
 	 * --------------------------------------------------------------------------------------
 	 */
 	
-	/**
-	 * Check resolved status non-recursively, i.e. if we use another model to observe, we consider
-	 * ourselves resolved even if that model is not.
-	 * 
-	 * @return true if there's another model, state or observation to take data from. If false, we
-	 * need to refer to external information to observe our observable.
+	/*
+	 * resolve all unresolved observers and return them along with their potential observations in
+	 * the passed context. Use the appropriate kbox for the project this observer comes from, or the 
+	 * default "thinklab" kbox if undefined. Throw a ThinklabUnresolvedDependencyException if a required 
+	 * unresolved dependency cannot be observed. 
 	 */
-	boolean isResolved() {
-		return false;
+	public Collection<Pair<IObserver, List<IObservation>>> resolve(IContext context) throws ThinklabException {
+
+		ArrayList<Pair<IObserver, List<IObservation>>> tret = new ArrayList<Pair<IObserver, List<IObservation>>>();
+		resolveInternal(tret, context);
+		
+		/*
+		 * TODO loop over result; if any of the lists is null throw exception (through listener), otherwise
+		 * call warning listeners in context and remove from result.
+		 */
+		ArrayList<Pair<IObserver, List<IObservation>>> ret = new ArrayList<Pair<IObserver, List<IObservation>>>();
+		for (Pair<IObserver, List<IObservation>> rr : tret) {
+			
+			if (rr.getSecond() == null) {
+				
+			} else if (rr.getSecond().size() == 0) {
+				
+			} else {
+				ret.add(rr);
+			}
+		}
+		
+		return ret;
 	}
 	
-	Collection<IInstance> collectUnresolvedObservables (Collection<IInstance> unresolved) {
-
-		if (unresolved == null)
-			unresolved = new ArrayList<IInstance>();
+	/*
+	 * put a null instead of throwing an exception if a required dependency isn't observable, so we can report
+	 * all unresolved ones in a shot. Insert an empty list if an optional dependency is not resolved, so we can
+	 * warn about it.
+	 */
+	private void resolveInternal(ArrayList<Pair<IObserver, List<IObservation>>> ret, IContext context) throws ThinklabException {
+		// TODO Auto-generated method stub
 		
 //		for (Dependency d : _mediated)
 //			((DefaultAbstractModel)d.model).collectUnresolvedModels(unresolved);
@@ -146,8 +168,19 @@ public abstract class ObserverImpl implements IObserver {
 //		
 //		if (this instanceof AbstractStateModel && !((AbstractStateModel)this).isResolved())
 //			unresolved.add((AbstractStateModel) this);
-
-		return unresolved;
+		
 	}
+
+	/**
+	 * Check resolved status non-recursively, i.e. if we use another model to observe, we consider
+	 * ourselves resolved even if that model is not.
+	 * 
+	 * @return true if there's another model, state or observation to take data from. If false, we
+	 * need to refer to external information to observe our observable.
+	 */
+	boolean isResolved() {
+		return false;
+	}
+	
 
 }

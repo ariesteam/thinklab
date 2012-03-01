@@ -42,14 +42,14 @@ import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.list.Escape;
+import org.integratedmodelling.list.InstanceList;
 import org.integratedmodelling.list.PolyList;
+import org.integratedmodelling.list.RelationshipList;
 import org.integratedmodelling.thinklab.ConceptVisitor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
@@ -495,7 +495,7 @@ public abstract class SQLThinklabServer {
 		return ts;
 	}
 
-	private Triple<String, Long, String> getClassID(IKnowledge c, String sql, String id) {
+	private Triple<String, Long, String> getClassID(InstanceList c, String sql, String id) {
 
 		long conceptID = 0;
 		String objectID = null;
@@ -1286,7 +1286,7 @@ public abstract class SQLThinklabServer {
 	 * @return the ID of the stored instance in the kbox.
 	 * @throws ThinklabStorageException 
 	 */
-	synchronized public String storeInstance(IInstance c, ISession session, String id, Map<String, IValue> metadata) throws ThinklabException {
+	synchronized public String storeInstance(InstanceList c, ISession session, String id, Map<String, IValue> metadata) throws ThinklabException {
 		
 		Pair<String, String> sql = storeInstanceSQL(c, session, id, metadata);
 		if (sql != null && !sql.getSecond().equals(""))
@@ -1308,7 +1308,7 @@ public abstract class SQLThinklabServer {
 	 * @return
 	 * @throws ThinklabStorageException 
 	 */
-	public Pair<String, String> storeInstanceSQL(IInstance c, ISession session,
+	public Pair<String, String> storeInstanceSQL(InstanceList c, ISession session,
 												 HashMap<String, String> referenceTable, String id, Map<String, IValue> metadata) 
 				throws ThinklabException {
 		
@@ -1331,7 +1331,7 @@ public abstract class SQLThinklabServer {
 	 * @return
 	 * @throws ThinklabStorageException 
 	 */
-	public Pair<String, String> storeInstanceSQL(IInstance c, ISession session, String id, Map<String, IValue> metadata)
+	public Pair<String, String> storeInstanceSQL(InstanceList c, ISession session, String id, Map<String, IValue> metadata)
 		throws ThinklabException {
 		
 		HashMap<String, String> references = new HashMap<String, String>();
@@ -1356,14 +1356,14 @@ public abstract class SQLThinklabServer {
 	 * that store it
 	 * @throws ThinklabStorageException 
 	 */
-	private Pair<String, String> storeInstanceSQLInternal(IInstance c,
+	private Pair<String, String> storeInstanceSQLInternal(InstanceList c,
 			String query, long relationshipID, String conceptID, int totalRels,
 			HashMap<String, String> references, ISession session, String id, Map<String, IValue> metadata)
 			throws ThinklabException {
 		
 		String sql = query;
 
-		IValue priorityV = c.get(PRIORITY_PROPERTY);
+		IValue priorityV = c.getValue(PRIORITY_PROPERTY);
 		int priority = 
 			priorityV == null ? 0 : priorityV.asInteger();
 		
@@ -1387,7 +1387,7 @@ public abstract class SQLThinklabServer {
 		 */
 		String extUri = "";
 		if (this.externalizeReferences ) {
-			IValue v = c.get(KnowledgeManager.get().getImportedProperty().toString());
+			IValue v = c.getValue(KnowledgeManager.get().getImportedProperty().toString());
 			if (v != null) {
 				extUri = v.toString();
 			}
@@ -1428,7 +1428,7 @@ public abstract class SQLThinklabServer {
 					
 				} else if (scriptLanguage.equals("MVEL")) {
 				
-					HashMap<String, IInstance> context = new HashMap<String, IInstance>();
+					HashMap<String, InstanceList> context = new HashMap<String, InstanceList>();
 					context.put("self", c);
 					IValue v = Value.getValueForObject(MVEL.eval(tab.fieldValues.get(i), context));
 					sql += ", " + translateLiteral(v, v.getConcept(), session);
@@ -1480,14 +1480,14 @@ public abstract class SQLThinklabServer {
 			int ccls = 0;
 
 			/* retrieve all relationships */
-			Collection<IRelationship> rels = null;
+			Collection<RelationshipList> rels = null;
 			try {
 				rels = c.getRelationships();
 			} catch (ThinklabException e) {
 				throw new ThinklabStorageException(e);
 			}
 
-			for (IRelationship rel : rels) {
+			for (RelationshipList rel : rels) {
 				
 				/*
 				 * retrieve relationship id. If new relationship, generate
