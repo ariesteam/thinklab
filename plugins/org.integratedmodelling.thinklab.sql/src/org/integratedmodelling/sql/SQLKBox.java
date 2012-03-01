@@ -32,8 +32,9 @@ import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox.Capabilities;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.constraint.Constraint;
@@ -48,7 +49,7 @@ import org.integratedmodelling.thinklab.owlapi.Session;
  * @author Ferdinando Villa
  * 
  */
-public class SQLKBox extends SQLThinklabServer implements IKBox {
+public class SQLKBox extends SQLThinklabServer implements IKbox {
 	
 	Hashtable<String, Integer> totalsCache = new Hashtable<String, Integer>();
 	String uri = null;
@@ -80,7 +81,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		return session.createObject(list);
 	}
 
-	@Override
+//	@Override
 	public String storeObject(IInstance object, String id, Map<String, IValue> metadata, ISession session)
 			throws ThinklabException {
 
@@ -104,7 +105,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 	 *      java.util.HashSet)
 	 * 
 	 */
-	@Override
+//	@Override
 	public String storeObject(IInstance object, String id, Map<String, IValue> metadata,
 			ISession session, HashMap<String, String> references) throws ThinklabException {
 		String ret = null;
@@ -201,7 +202,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 				(Constraint) q, metadata, metadataCatalog, this);
 	}
 
-	@Override
+//	@Override
 	public String storeObject(IList list, String id, Map<String, IValue> metadata, ISession session) throws ThinklabException {
 
 		String ret = null;
@@ -226,7 +227,7 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		return ret;
 	}
 	
-	@Override
+//	@Override
 	public String storeObject(IList list, String id, Map<String, IValue> metadata,
 			ISession session, HashMap<String, String> refTable) throws ThinklabException {
 
@@ -261,10 +262,10 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 		return retrieveObjectAsList(id, refTable);
 	}
 
-	@Override
-	public String getUri() {
-		return uri;
-	}
+//	@Override
+//	public String getUri() {
+//		return uri;
+//	}
 
 	@Override
 	public long getObjectCount() {
@@ -284,6 +285,24 @@ public class SQLKBox extends SQLThinklabServer implements IKBox {
 	@Override
 	public Map<String, IConcept> getMetadataSchema() {
 		return super.getMetadataSchema();
+	}
+
+	@Override
+	public int store(Object o) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void remove(int handle) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clear() throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -23,15 +23,11 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabStorageException;
-import org.integratedmodelling.sql.hsql.HSQLServerConstructor;
-import org.integratedmodelling.sql.mysql.MySQLServerConstructor;
-import org.integratedmodelling.sql.postgres.PostgresSQLServerConstructor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
@@ -44,8 +40,7 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 public class SQLPlugin extends ThinklabPlugin {
 
 	public File coreSchema = null;
-	private HashMap<String, SQLServerConstructor> serverConstructors =
-		new HashMap<String, SQLServerConstructor>();
+
 
 	static final public String PLUGIN_ID = "org.integratedmodelling.thinklab.sql";
 
@@ -73,14 +68,14 @@ public class SQLPlugin extends ThinklabPlugin {
 	public void load(KnowledgeManager km) throws ThinklabException {
 				
 		/* register server types to be returned by createSQLServer() */
-		registerServerConstructor("hsql", new HSQLServerConstructor());
-		registerServerConstructor("postgres", new PostgresSQLServerConstructor());
-		registerServerConstructor("mysql", new MySQLServerConstructor());				
+//		registerServerConstructor("hsql", new HSQLServerConstructor());
+//		registerServerConstructor("postgres", new PostgresSQLServerConstructor());
+//		registerServerConstructor("mysql", new MySQLServerConstructor());				
 	}
 
-	public void registerServerConstructor(String string, SQLServerConstructor serverConstructor) {
-		serverConstructors.put(string, serverConstructor);	
-	}
+//	public void registerServerConstructor(String string, SQLServerConstructor serverConstructor) {
+////		serverConstructors.put(string, serverConstructor);	
+//	}
 
 	@Override
 	public void unload() throws ThinklabException {
@@ -96,13 +91,13 @@ public class SQLPlugin extends ThinklabPlugin {
 		} catch (URISyntaxException e) {
 			throw new ThinklabStorageException(e);
 		}
-		
-		for (String s : serverConstructors.keySet()) {
-			if (uri.startsWith(s)) {
-				ret = serverConstructors.get(s).createServer(u, properties);
-				break;
-			}
-		}
+//		
+//		for (String s : serverConstructors.keySet()) {
+//			if (uri.startsWith(s)) {
+//				ret = serverConstructors.get(s).createServer(u, properties);
+//				break;
+//			}
+//		}
 		
 		if (ret == null)
 			throw new ThinklabStorageException("SQL plugin: cannot create SQL server for URI " +
