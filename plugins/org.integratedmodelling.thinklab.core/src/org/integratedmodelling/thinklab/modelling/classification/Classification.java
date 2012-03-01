@@ -32,10 +32,10 @@ import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
-import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassification;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassifier;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
@@ -94,7 +94,7 @@ public class Classification implements IClassification, IConceptualizable {
 	// --- public API below -----------------------------------------
 	
 	@Override
-	public IList conceptualize() throws ThinklabException {
+	public SemanticAnnotation conceptualize() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -533,7 +533,7 @@ public class Classification implements IClassification, IConceptualizable {
 	}
 
 	@Override
-	public void define(IList conceptualization) throws ThinklabException {
+	public void define(SemanticAnnotation conceptualization) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}

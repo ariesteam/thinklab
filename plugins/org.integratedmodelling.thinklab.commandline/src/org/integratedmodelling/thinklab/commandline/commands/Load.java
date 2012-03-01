@@ -25,7 +25,7 @@ import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
@@ -39,7 +39,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 
 public class Load implements ICommandHandler {
 	
-	public IValue execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticLiteral execute(Command command, ISession session) throws ThinklabException {
 
 		String toload = command.getArgumentAsString("resource");
 		String kbox = command.getOptionAsString("kbox");

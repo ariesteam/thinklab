@@ -40,7 +40,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
@@ -849,9 +849,9 @@ public class KnowledgeManager {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#validateLiteral(org.integratedmodelling.thinklab.interfaces.IConcept, java.lang.String, org.integratedmodelling.thinklab.interfaces.IOntology)
 	 */
-	public IValue validateLiteral(IConcept c, String literal) throws ThinklabException {
+	public ISemanticLiteral validateLiteral(IConcept c, String literal) throws ThinklabException {
 		
-		IValue ret = Thinklab.get().getRawLiteral(c);
+		ISemanticLiteral ret = Thinklab.get().getRawLiteral(c);
 		if (ret != null && ret instanceof IParseable)
 			((IParseable)ret).parse(literal);
 		else 

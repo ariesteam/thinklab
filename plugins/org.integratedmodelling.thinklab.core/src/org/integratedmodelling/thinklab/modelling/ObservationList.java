@@ -19,11 +19,9 @@ package org.integratedmodelling.thinklab.modelling;
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
+import org.integratedmodelling.collections.ReadOnlyList;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
@@ -34,7 +32,7 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.modelling.contextualization.Contextualizer;
 
 
-public class ObservationList implements List<IObservation> {
+public class ObservationList extends ReadOnlyList<IObservation> {
 
 	IContext context;
 	IModel   model;
@@ -121,75 +119,6 @@ public class ObservationList implements List<IObservation> {
 //		return null; //((DefaultAbstractModel)model).createObservation(known);
 //	}
 
-
-	@Override
-	public boolean isEmpty() {
-		return size() == 0;
-	}
-
-	@Override
-	public boolean add(IObservation arg0) {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
-	@Override
-	public boolean addAll(Collection<? extends IObservation> arg0) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
-	@Override
-	public void clear() {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
-	@Override
-	public boolean contains(Object arg0) {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
-	@Override
-	public boolean containsAll(Collection<?> arg0) {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
-	@Override
-	public boolean remove(Object arg0) {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
-	@Override
-	public boolean removeAll(Collection<?> arg0) {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> arg0) {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
-	@Override
-	public Object[] toArray() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T> T[] toArray(T[] arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void add(int arg0, IObservation arg1) {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
-	@Override
-	public boolean addAll(int arg0, Collection<? extends IObservation> arg1) {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
 	@Override
 	public IObservation get(int n) {
 		try {
@@ -202,37 +131,19 @@ public class ObservationList implements List<IObservation> {
 	}
 
 	@Override
-	public int indexOf(Object arg0) {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
+	public boolean contains(Object o) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
-	public int lastIndexOf(Object arg0) {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
+	public Object[] toArray() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public ListIterator<IObservation> listIterator() {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
-	@Override
-	public ListIterator<IObservation> listIterator(int arg0) {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
-	@Override
-	public IObservation remove(int arg0) {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
-	@Override
-	public IObservation set(int arg0, IObservation arg1) {
-		throw new UnsupportedOperationException("unsupported on contextualization results");
-	}
-
-	@Override
-	public List<IObservation> subList(int arg0, int arg1) {
+	public <T> T[] toArray(T[] a) {
 		// TODO Auto-generated method stub
 		return null;
 	}

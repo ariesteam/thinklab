@@ -22,7 +22,7 @@ package org.integratedmodelling.thinklab.commandline.commands;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
@@ -30,7 +30,7 @@ import org.integratedmodelling.thinklab.literals.BooleanValue;
 
 public class Is implements ICommandHandler {
 
-	public IValue execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticLiteral execute(Command command, ISession session) throws ThinklabException {
 
 		// TODO this should figure out what the semantic type is for, cross
 		// check properly, and

@@ -29,7 +29,7 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.lang.IList;
 
 import clojure.lang.IPersistentMap;
@@ -88,7 +88,7 @@ public class Clojure {
 	/**
 	 * Promote a clojure-returned object to its likely semantic counterpart 
 	 */
-	public static IValue promote(Object object) {
+	public static ISemanticLiteral promote(Object object) {
 		return null;
 	}
 	
@@ -100,7 +100,7 @@ public class Clojure {
 	 * @return
 	 */
 	public static Object demote(Object object) {
-		return (object instanceof IValue) ? ((IValue)object).demote() : object;
+		return (object instanceof ISemanticLiteral) ? ((ISemanticLiteral)object).demote() : object;
 	}
 
 	/**

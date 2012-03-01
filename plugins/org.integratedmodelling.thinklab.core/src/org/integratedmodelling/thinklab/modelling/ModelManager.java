@@ -37,10 +37,10 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.interpreter.ModelGenerator;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.lang.model.ConceptObject;
 import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.lang.model.PropertyObject;
-import org.integratedmodelling.list.InstanceList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
@@ -515,7 +515,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 		return null;
 	}
 
-	public IInstance createObservable(InstanceList inst) throws ThinklabException {
+	public IInstance createObservable(SemanticAnnotation inst) throws ThinklabException {
 		return _session.createObject(inst.asList());
 	}
 

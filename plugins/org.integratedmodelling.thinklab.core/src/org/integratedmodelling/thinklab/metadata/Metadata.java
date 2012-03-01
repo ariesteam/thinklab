@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 
 public class Metadata implements IMetadata {
@@ -40,7 +40,7 @@ public class Metadata implements IMetadata {
 	}
 
 	@Override
-	public IList conceptualize() throws ThinklabException {
+	public SemanticAnnotation conceptualize() throws ThinklabException {
 
 		// recognize strings that are known properties and conceptualize to them; if
 		// object is a conceptualizable use an object property, otherwise annotation.
@@ -60,7 +60,7 @@ public class Metadata implements IMetadata {
 				
 			}
 		}
-		return PolyList.fromCollection(ret);
+		return new SemanticAnnotation(PolyList.fromCollection(ret), Thinklab.get());
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class Metadata implements IMetadata {
 	}
 
 	@Override
-	public void define(IList conceptualization) throws ThinklabException {
+	public void define(SemanticAnnotation conceptualization) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}

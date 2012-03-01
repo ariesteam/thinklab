@@ -27,7 +27,7 @@ import org.integratedmodelling.searchengine.QueryString;
 import org.integratedmodelling.searchengine.ResultContainer;
 import org.integratedmodelling.searchengine.SearchEngine;
 import org.integratedmodelling.searchengine.SearchEnginePlugin;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
@@ -43,7 +43,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 public class Search implements ICommandHandler {
 
 	@Override
-	public IValue execute(Command command, ISession session)
+	public ISemanticLiteral execute(Command command, ISession session)
 			throws ThinklabException {
 		
 		if (session.getOutputStream() == null)

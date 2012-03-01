@@ -24,7 +24,7 @@ import org.integratedmodelling.searchengine.SearchEngine;
 import org.integratedmodelling.searchengine.SearchEnginePlugin;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
@@ -36,7 +36,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 public class Reindex implements ICommandHandler {
 
 	@Override
-	public IValue execute(Command command, ISession session)
+	public ISemanticLiteral execute(Command command, ISession session)
 			throws ThinklabException {
 		
 		SearchEngine engine = 

@@ -6,8 +6,9 @@ import java.util.List;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.SemanticAnnotation;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IList;
@@ -38,22 +39,14 @@ public class NeoKBox implements IKbox {
 	}
 	
 	@Override
-	public int store(Object o) throws ThinklabException {
+	public long store(Object o) throws ThinklabException {
 		
-		IList instance = null;
-		if (o instanceof IList) {
-			instance = (IList)o;
-		} else if (o instanceof IConceptualizable) {
-			instance = ((IConceptualizable)o).conceptualize();
-		} else {
-			throw new ThinklabValidationException("kbox: object cannot be stored as knowledge " + o + ": " + _url);
-		}
-		
+		SemanticAnnotation instance = Thinklab.get().conceptualizeObject(o);		
 		return storeInstanceList(instance, _db.getReferenceNode());
 	}
 
 	@Override
-	public void remove(int handle) throws ThinklabException {
+	public void remove(long handle) throws ThinklabException {
 		// TODO Auto-generated method stub
 
 	}
@@ -76,8 +69,13 @@ public class NeoKBox implements IKbox {
 	 * ----------------------------------------------------------------------------------
 	 */
 
-	int storeInstanceList(IList list, Node node) {
+	long storeInstanceList(SemanticAnnotation list, Node node) {
 		
 		return 0;
+	}
+
+	@Override
+	public String getUri() {
+		return _url;
 	}
 }

@@ -20,7 +20,7 @@
 package org.integratedmodelling.thinklab.command;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 /**
@@ -43,14 +43,14 @@ public abstract class InteractiveSubcommandHandler extends InteractiveCommandHan
 	 * @return
 	 * @throws ThinklabException
 	 */
-	protected abstract IValue cmd(String cmd, String[] arguments) throws ThinklabException;
+	protected abstract ISemanticLiteral cmd(String cmd, String[] arguments) throws ThinklabException;
 
 	@Override
-	public IValue doInteractive(Command command, ISession session)
+	public ISemanticLiteral doInteractive(Command command, ISession session)
 			throws ThinklabException {
 
 		String cm = null;
-		IValue ret = null;
+		ISemanticLiteral ret = null;
 		do {
 			cm = prompt();
 			if (cm == null)

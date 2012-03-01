@@ -292,7 +292,7 @@ public class Ontology implements IOntology {
 		IInstance inst = getInstance(i.getLocalName());
 		if (inst != null)
 			return inst;
-		return createInstance(i.conceptualize());
+		return createInstance(i.conceptualize().asList());
 	}
 
 

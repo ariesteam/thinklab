@@ -28,10 +28,12 @@ import java.util.Properties;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabStorageException;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.list.PolyList;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox.Capabilities;
@@ -82,12 +84,12 @@ public class SQLKBox extends SQLThinklabServer implements IKbox {
 	}
 
 //	@Override
-	public String storeObject(IInstance object, String id, Map<String, IValue> metadata, ISession session)
+	public String storeObject(IInstance object, String id, Map<String, ISemanticLiteral> metadata, ISession session)
 			throws ThinklabException {
 
 		String ret = null;
-
-		Pair<String, String> sql = storeInstanceSQL(object, session, id, metadata);
+		SemanticAnnotation list = object.conceptualize();
+		Pair<String, String> sql = storeInstanceSQL(list, session, id, metadata);
 
 		if (sql != null && sql.getSecond() != null && sql.getFirst() != "") {
 			server.execute(sql.getSecond());
@@ -106,7 +108,7 @@ public class SQLKBox extends SQLThinklabServer implements IKbox {
 	 * 
 	 */
 //	@Override
-	public String storeObject(IInstance object, String id, Map<String, IValue> metadata,
+	public String storeObject(SemanticAnnotation object, String id, Map<String, ISemanticLiteral> metadata,
 			ISession session, HashMap<String, String> references) throws ThinklabException {
 		String ret = null;
 
@@ -120,6 +122,20 @@ public class SQLKBox extends SQLThinklabServer implements IKbox {
 		return ret;
 	}
 
+	
+	public long storeObject(SemanticAnnotation object) throws ThinklabException {
+
+		long ret = 0l;
+
+//		Pair<String, String> sql = storeInstanceSQL(object);
+//
+//		if (sql != null && sql.getSecond() != null && sql.getFirst() != "") {
+//			server.execute(sql.getSecond());
+//			ret = sql.getFirst();
+//		}
+
+		return ret;
+	}
 	public Capabilities getCapabilities() {
 		// TODO Auto-generated method stub
 		return null;
@@ -198,12 +214,11 @@ public class SQLKBox extends SQLThinklabServer implements IKbox {
 		 */
 		QueryResult res = server.query(query);
 
-		return new SQLQueryResult(res, total, offset, maxResults,
-				(Constraint) q, metadata, metadataCatalog, this);
+		return new SQLQueryResult(res, (Constraint)q, this);
 	}
 
 //	@Override
-	public String storeObject(IList list, String id, Map<String, IValue> metadata, ISession session) throws ThinklabException {
+	public String storeObject(IList list, String id, Map<String, ISemanticLiteral> metadata, ISession session) throws ThinklabException {
 
 		String ret = null;
 		/*
@@ -215,8 +230,7 @@ public class SQLKBox extends SQLThinklabServer implements IKbox {
 		if (session == null)
 			session = new Session();
 		
-		IInstance object = session.createObject(list);
-
+		SemanticAnnotation object = new SemanticAnnotation(list, Thinklab.get());
 		Pair<String, String> sql = storeInstanceSQL(object, session, id, metadata);
 
 		if (sql != null && sql.getSecond() != null && sql.getFirst() != "") {
@@ -228,7 +242,7 @@ public class SQLKBox extends SQLThinklabServer implements IKbox {
 	}
 	
 //	@Override
-	public String storeObject(IList list, String id, Map<String, IValue> metadata,
+	public String storeObject(IList list, String id, Map<String, ISemanticLiteral> metadata,
 			ISession session, HashMap<String, String> refTable) throws ThinklabException {
 
 		String ret = null;
@@ -241,7 +255,7 @@ public class SQLKBox extends SQLThinklabServer implements IKbox {
 		if (session == null)
 			session = new Session();
 		
-		IInstance object = session.createObject(list);
+		SemanticAnnotation object = new SemanticAnnotation(list, Thinklab.get());
 
 		Pair<String, String> sql = storeInstanceSQL(object, session, refTable, id, metadata);
 
@@ -288,13 +302,13 @@ public class SQLKBox extends SQLThinklabServer implements IKbox {
 	}
 
 	@Override
-	public int store(Object o) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return 0;
+	public long store(Object o) throws ThinklabException {
+		SemanticAnnotation instance = Thinklab.get().conceptualizeObject(o);		
+		return storeObject(instance);
 	}
 
 	@Override
-	public void remove(int handle) throws ThinklabException {
+	public void remove(long handle) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}
@@ -303,6 +317,11 @@ public class SQLKBox extends SQLThinklabServer implements IKbox {
 	public void clear() throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public String getUri() {
+		return uri;
 	}
 
 }

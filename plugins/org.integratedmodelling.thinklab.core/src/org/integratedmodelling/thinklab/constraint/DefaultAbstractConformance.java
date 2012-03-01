@@ -20,11 +20,11 @@
 package org.integratedmodelling.thinklab.constraint;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.RelationshipAnnotation;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.query.IConformance;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
@@ -48,16 +48,16 @@ public abstract class DefaultAbstractConformance implements IConformance {
 	 * @param property
 	 * @param extent
 	 */
-	public abstract Restriction setConformance(IProperty property, IValue extent);
+	public abstract Restriction setConformance(IProperty property, ISemanticLiteral extent);
 
 
 	@Override
-	public IQuery getQuery(IInstance instance) throws ThinklabException {
+	public IQuery getQuery(SemanticAnnotation instance) throws ThinklabException {
 
 		Constraint constraint = new Constraint(getMatchingConcept(instance.getDirectType()));
 		IRestriction res = null;
 		
-		for (IRelationship r : instance.getRelationships()) {
+		for (RelationshipAnnotation r : instance.getRelationships()) {
 
 			Restriction rr = null;
 			

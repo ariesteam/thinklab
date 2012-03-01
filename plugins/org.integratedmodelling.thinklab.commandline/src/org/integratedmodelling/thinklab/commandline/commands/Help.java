@@ -21,7 +21,7 @@ package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
@@ -37,7 +37,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 	optionArgumentLabels="command")
 public class Help implements ICommandHandler {
 
-	public IValue execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticLiteral execute(Command command, ISession session) throws ThinklabException {
 
 		String topic = command.getArgumentAsString("topic");
 

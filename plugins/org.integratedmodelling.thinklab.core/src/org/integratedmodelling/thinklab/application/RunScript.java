@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.runtime.IInterpreter;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
@@ -40,7 +40,7 @@ public class RunScript implements ITask {
 	private String code = null;
 	private ArrayList<URL> codeUrl = new ArrayList<URL>();
 	private String language = null;
-	private IValue result = null;
+	private ISemanticLiteral result = null;
 	
 	public void setCode(Object code) {
 		if (code instanceof URL)
@@ -82,7 +82,7 @@ public class RunScript implements ITask {
 
 	}
 
-	public IValue getResult() {
+	public ISemanticLiteral getResult() {
 		return result;
 	}
 	

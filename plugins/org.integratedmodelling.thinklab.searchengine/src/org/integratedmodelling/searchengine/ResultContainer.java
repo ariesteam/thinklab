@@ -31,7 +31,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IList;
@@ -79,7 +79,7 @@ public class ResultContainer implements List<Object> {
 	/**
 	 * TODO ensure we use proper type info and validation if fields have property names
 	 */
-	public IValue getResultField(int n, String schemaField) {
+	public ISemanticLiteral getResultField(int n, String schemaField) {
 		
 		Field f = results.get(n).getField(schemaField);
 		return f == null ? null : new TextValue(f.stringValue());
@@ -140,7 +140,7 @@ public class ResultContainer implements List<Object> {
 		scores.add((float) Math.round(score * 100.0));
 	}
 	
-	public IValue getResult(int n, ISession session) throws ThinklabException {
+	public ISemanticLiteral getResult(int n, ISession session) throws ThinklabException {
 		
 		return new ObjectValue(getObjectFromDocument(results.get(n), session));
 	}

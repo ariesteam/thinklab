@@ -24,13 +24,14 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.literals.ObjectValue;
 
 /**
  * <p>A Relationship connects a "source" concept to another Concept, object (Instance), or Literal through a Property.
@@ -44,9 +45,9 @@ import org.integratedmodelling.thinklab.api.lang.IList;
 public class Relationship implements IRelationship {
 
 	public IProperty property = null;
-	public IValue     literal  = null;
+	public ISemanticLiteral     literal  = null;
 	
-	public Relationship(IProperty p, IValue v) {
+	public Relationship(IProperty p, ISemanticLiteral v) {
 		property = p;
 		literal = v;
 	}
@@ -105,7 +106,7 @@ public class Relationship implements IRelationship {
 		return property;
 	}
 
-	public IValue getValue() {
+	public ISemanticLiteral getValue() {
 		return literal;
 	}
 	
@@ -121,8 +122,8 @@ public class Relationship implements IRelationship {
 		
 		if (isObject()) {
 		
-			IInstance oo = literal.asObject();
-			alist.add(((Instance)oo).toListInternal(null, references));
+			SemanticAnnotation oo = literal.asObject();
+			alist.add(oo.asList());
 
 		} else if (isLiteral()) {
 			
@@ -153,7 +154,7 @@ public class Relationship implements IRelationship {
 		
 		if (isObject()) {
 			
-			ret += ((Instance)literal.asObject()).getSignature();
+			ret += ((Instance)((ObjectValue)literal).asInstance()).getSignature();
 			
 		} else if (isLiteral()) {
 			

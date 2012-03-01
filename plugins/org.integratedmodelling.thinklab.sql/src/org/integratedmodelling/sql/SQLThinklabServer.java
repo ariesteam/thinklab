@@ -41,16 +41,16 @@ import org.integratedmodelling.exceptions.ThinklabStorageException;
 import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.lang.Quantifier;
+import org.integratedmodelling.lang.RelationshipAnnotation;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.list.Escape;
-import org.integratedmodelling.list.InstanceList;
 import org.integratedmodelling.list.PolyList;
-import org.integratedmodelling.list.RelationshipList;
 import org.integratedmodelling.thinklab.ConceptVisitor;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IList;
@@ -330,7 +330,7 @@ public abstract class SQLThinklabServer {
 			return ret;
 		}
 
-		public String substituteVariables(String expr, IValue val, ISession session) throws ThinklabException {
+		public String substituteVariables(String expr, ISemanticLiteral val, ISession session) throws ThinklabException {
 			
 			String ret = expr;
 			
@@ -340,11 +340,11 @@ public abstract class SQLThinklabServer {
 			 */
 			for (Pair<String, String> exp : variables) {
 				
-				IValue vv = null;
+				ISemanticLiteral vv = null;
 				
 				if (scriptLanguage.equals("MVEL")) {
 				
-					HashMap<String, IValue> context = new HashMap<String, IValue>();
+					HashMap<String, ISemanticLiteral> context = new HashMap<String, ISemanticLiteral>();
 					context.put("self", val);
 					vv = Value.getValueForObject(MVEL.eval(exp.getSecond(), context));
 
@@ -421,7 +421,7 @@ public abstract class SQLThinklabServer {
 	/* if true, all instances that have been imported from external kboxes are stored as references only */
 	private boolean externalizeReferences = true;
         
-	private Pair<String, Long> getRelationshipId(String s, IConcept c, IValue val, ISession session,
+	private Pair<String, Long> getRelationshipId(String s, IConcept c, ISemanticLiteral val, ISession session,
 			String sql, boolean isLiteral) throws ThinklabException {
 
 		long ret = 0;
@@ -495,7 +495,7 @@ public abstract class SQLThinklabServer {
 		return ts;
 	}
 
-	private Triple<String, Long, String> getClassID(InstanceList c, String sql, String id) {
+	private Triple<String, Long, String> getClassID(SemanticAnnotation c, String sql, String id) {
 
 		long conceptID = 0;
 		String objectID = null;
@@ -636,7 +636,7 @@ public abstract class SQLThinklabServer {
 		return ret;
 	}
 
-	private String translateLiteral(IValue value, IConcept c, ISession session) throws ThinklabException {
+	private String translateLiteral(ISemanticLiteral value, IConcept c, ISession session) throws ThinklabException {
 
 		String ret = "";
 		
@@ -1286,7 +1286,7 @@ public abstract class SQLThinklabServer {
 	 * @return the ID of the stored instance in the kbox.
 	 * @throws ThinklabStorageException 
 	 */
-	synchronized public String storeInstance(InstanceList c, ISession session, String id, Map<String, IValue> metadata) throws ThinklabException {
+	synchronized public String storeInstance(SemanticAnnotation c, ISession session, String id, Map<String, ISemanticLiteral> metadata) throws ThinklabException {
 		
 		Pair<String, String> sql = storeInstanceSQL(c, session, id, metadata);
 		if (sql != null && !sql.getSecond().equals(""))
@@ -1308,8 +1308,8 @@ public abstract class SQLThinklabServer {
 	 * @return
 	 * @throws ThinklabStorageException 
 	 */
-	public Pair<String, String> storeInstanceSQL(InstanceList c, ISession session,
-												 HashMap<String, String> referenceTable, String id, Map<String, IValue> metadata) 
+	public Pair<String, String> storeInstanceSQL(SemanticAnnotation c, ISession session,
+												 HashMap<String, String> referenceTable, String id, Map<String, ISemanticLiteral> metadata) 
 				throws ThinklabException {
 		
 		if (referenceTable == null)
@@ -1331,7 +1331,7 @@ public abstract class SQLThinklabServer {
 	 * @return
 	 * @throws ThinklabStorageException 
 	 */
-	public Pair<String, String> storeInstanceSQL(InstanceList c, ISession session, String id, Map<String, IValue> metadata)
+	public Pair<String, String> storeInstanceSQL(SemanticAnnotation c, ISession session, String id, Map<String, ISemanticLiteral> metadata)
 		throws ThinklabException {
 		
 		HashMap<String, String> references = new HashMap<String, String>();
@@ -1356,14 +1356,14 @@ public abstract class SQLThinklabServer {
 	 * that store it
 	 * @throws ThinklabStorageException 
 	 */
-	private Pair<String, String> storeInstanceSQLInternal(InstanceList c,
+	private Pair<String, String> storeInstanceSQLInternal(SemanticAnnotation c,
 			String query, long relationshipID, String conceptID, int totalRels,
-			HashMap<String, String> references, ISession session, String id, Map<String, IValue> metadata)
+			HashMap<String, String> references, ISession session, String id, Map<String, ISemanticLiteral> metadata)
 			throws ThinklabException {
 		
 		String sql = query;
 
-		IValue priorityV = c.getValue(PRIORITY_PROPERTY);
+		ISemanticLiteral priorityV = c.getValue(PRIORITY_PROPERTY);
 		int priority = 
 			priorityV == null ? 0 : priorityV.asInteger();
 		
@@ -1387,7 +1387,7 @@ public abstract class SQLThinklabServer {
 		 */
 		String extUri = "";
 		if (this.externalizeReferences ) {
-			IValue v = c.getValue(KnowledgeManager.get().getImportedProperty().toString());
+			ISemanticLiteral v = c.getValue(KnowledgeManager.get().getImportedProperty().toString());
 			if (v != null) {
 				extUri = v.toString();
 			}
@@ -1428,9 +1428,9 @@ public abstract class SQLThinklabServer {
 					
 				} else if (scriptLanguage.equals("MVEL")) {
 				
-					HashMap<String, InstanceList> context = new HashMap<String, InstanceList>();
+					HashMap<String, SemanticAnnotation> context = new HashMap<String, SemanticAnnotation>();
 					context.put("self", c);
-					IValue v = Value.getValueForObject(MVEL.eval(tab.fieldValues.get(i), context));
+					ISemanticLiteral v = Value.getValueForObject(MVEL.eval(tab.fieldValues.get(i), context));
 					sql += ", " + translateLiteral(v, v.getConcept(), session);
 
 				} else {
@@ -1480,14 +1480,9 @@ public abstract class SQLThinklabServer {
 			int ccls = 0;
 
 			/* retrieve all relationships */
-			Collection<RelationshipList> rels = null;
-			try {
-				rels = c.getRelationships();
-			} catch (ThinklabException e) {
-				throw new ThinklabStorageException(e);
-			}
+			Collection<RelationshipAnnotation> rels = c.getRelationships();
 
-			for (RelationshipList rel : rels) {
+			for (RelationshipAnnotation rel : rels) {
 				
 				/*
 				 * retrieve relationship id. If new relationship, generate
@@ -1518,8 +1513,7 @@ public abstract class SQLThinklabServer {
 				 */
 				int tot = 0;
 				try {
-					tot = c.getRelationshipsCount(rel.getProperty()
-							.toString());
+					tot = c.getRelationshipsCount(rel.getProperty().toString());
 				} catch (ThinklabException e) {
 					throw new ThinklabStorageException(e);
 				}
@@ -1560,7 +1554,7 @@ public abstract class SQLThinklabServer {
 
 					/* it's a concept: retrieve its ID (store if necessary) */
 					Pair<String, String> iid = storeInstanceSQLInternal(
-							((ObjectValue) rel.getValue()).getObject(),
+							rel.getValue().asObject(),
 							sql, rid, cid.getFirst(), tot, references, session, id, metadata);
 
 					sql = iid.getSecond();

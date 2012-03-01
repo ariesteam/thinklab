@@ -21,9 +21,11 @@ package org.integratedmodelling.thinklab.modelling.model.implementation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
@@ -104,14 +106,45 @@ public class Observation implements IObservation {
 		return null;
 	}
 
+
 	@Override
-	public Pair<IObserver, IExpression> getObservers() {
+	public IInstance getObservable() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public IInstance getObservable() {
+	public IObserver getObserver() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<IInstance> getObservables() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LanguageElement getLanguageElement() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getNamespace() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getName() {
 		// TODO Auto-generated method stub
 		return null;
 	}

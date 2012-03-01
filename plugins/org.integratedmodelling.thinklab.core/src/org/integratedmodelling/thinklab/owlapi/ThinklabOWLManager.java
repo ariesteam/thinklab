@@ -48,7 +48,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
@@ -104,7 +104,7 @@ public class ThinklabOWLManager {
      * 
      * This one serves also to hold class literals.
 	 */
-	private Hashtable<String, IValue> reifiedLiterals = new Hashtable<String, IValue>();
+	private Hashtable<String, ISemanticLiteral> reifiedLiterals = new Hashtable<String, ISemanticLiteral>();
 	private Hashtable<String, IInstance> classLiterals = new Hashtable<String, IInstance>();
 
 	// we need a HashMap here because we need nulls in it, but we need to make sure we
@@ -161,10 +161,10 @@ public class ThinklabOWLManager {
 	 * @param property
 	 * @return
 	 */
-	Collection<IValue> translateRelationship(OWLOntology ontology,
+	Collection<ISemanticLiteral> translateRelationship(OWLOntology ontology,
 			OWLIndividual cl, OWLEntity property, Properties properties) throws ThinklabException {
 
-		ArrayList<IValue> ret = new ArrayList<IValue>();
+		ArrayList<ISemanticLiteral> ret = new ArrayList<ISemanticLiteral>();
 
 		if (!property.isOWLObjectProperty() && !property.isOWLDataProperty()) {
 			// just return anything else with no error
@@ -187,7 +187,7 @@ public class ThinklabOWLManager {
 
 				for (OWLConstant cn : dpropp.getValue()) {
 
-					IValue val = null;
+					ISemanticLiteral val = null;
 
 					if (cn.isTyped()) {
 
@@ -240,7 +240,7 @@ public class ThinklabOWLManager {
 				for (OWLIndividual ind : opropp.getValue()) {
 
 					/* if we have cached this, just return it */
-					IValue val = reifiedLiterals.get(ind.getURI().toString());
+					ISemanticLiteral val = reifiedLiterals.get(ind.getURI().toString());
 
 					if (val != null)
 						ret.add(val);
@@ -503,10 +503,10 @@ public class ThinklabOWLManager {
 	}
 	
 	/* FIXME there must be something wrong here, or maybe not. In that case, FIXME but don't FIXIT. */
-	public Instance getExtendedLiteralInstance(String id, IValue literal, IOntology ont) throws ThinklabException {
+	public Instance getExtendedLiteralInstance(String id, ISemanticLiteral literal, IOntology ont) throws ThinklabException {
 	
 		Instance ret = null;
-		IValue io    = null;
+		ISemanticLiteral io    = null;
 		
 		if (id == null)
 			id = ((Value)literal).getID();
@@ -666,7 +666,7 @@ public class ThinklabOWLManager {
 				 */
 				Object second = lvalue.nth(1);
 				
-				if (!(second instanceof String || second instanceof IValue)) {
+				if (!(second instanceof String || second instanceof ISemanticLiteral)) {
 					throw new ThinklabValidationException("invalid literal specification in list: " + second);
 				}
 				
@@ -684,14 +684,14 @@ public class ThinklabOWLManager {
 				 * must be a string value for the extended literal, and the first 
 				 * value must be its concept.
 				 */
-				IValue value = KnowledgeManager.get().validateLiteral(cid.getFirst(), svalue);
+				ISemanticLiteral value = KnowledgeManager.get().validateLiteral(cid.getFirst(), svalue);
 				
 				/*
 				 * If the validator creates an object, we set this as an object reference and the property must
 				 * be an object property.
 				 */
 				if (value.isObject()) {
-					inst.addObjectRelationship(property, value.asObject());
+					inst.addObjectRelationship(property, ((ObjectValue)value).asInstance());
 				} else {
 					inst.addLiteralRelationship(property, value);
 				}
@@ -736,7 +736,7 @@ public class ThinklabOWLManager {
 				 */
 				Object toAdd = null;
 
-				if (!(o2 instanceof IValue)) {
+				if (!(o2 instanceof ISemanticLiteral)) {
 				
 					Collection<IConcept> range = property.getRange();
 
@@ -844,7 +844,7 @@ public class ThinklabOWLManager {
 					/*
 					 * must be POD type; get POD type as object
 					 */
-					IValue ivalue = (IValue)o2;
+					ISemanticLiteral ivalue = (ISemanticLiteral)o2;
 					
 					if (!ivalue.isPODType()) {
 						throw new ThinklabValidationException("property list tries to assign extended literal " +
@@ -927,11 +927,11 @@ public class ThinklabOWLManager {
 				}
 				
 				IConcept r = range.iterator().next();
-				IValue val = KnowledgeManager.get().validateLiteral(r, o2.toString());
+				ISemanticLiteral val = KnowledgeManager.get().validateLiteral(r, o2.toString());
 				
 				if (val != null) {
 					if (val.isObject()) {
-						inst.addObjectRelationship(property, val.asObject());
+						inst.addObjectRelationship(property, ((ObjectValue)val).asInstance());
 					} else {
 						inst.addLiteralRelationship(property, val);
 					}
@@ -1026,7 +1026,7 @@ public class ThinklabOWLManager {
 	 * We are passed an IValue but we need to set an OWL dataproperty from it. Return the 
 	 * POD object that matches the type, or throw an exception if no POD type does.
 	 */
-	public OWLConstant translateIValueToDatatype(IValue value) throws ThinklabValidationException {
+	public OWLConstant translateIValueToDatatype(ISemanticLiteral value) throws ThinklabValidationException {
 
 		Object ret = null;
 		

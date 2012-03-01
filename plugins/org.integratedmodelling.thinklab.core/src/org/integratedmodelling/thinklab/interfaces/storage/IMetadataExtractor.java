@@ -22,7 +22,7 @@ package org.integratedmodelling.thinklab.interfaces.storage;
 import java.util.Map;
 
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 
 /**
  * Used only for proxying within the Clojure subsystem.
@@ -41,6 +41,6 @@ public interface IMetadataExtractor {
 	 * @param object
 	 * @return
 	 */
-	public abstract Map<String, IValue> extractMetadata(IInstance object);
+	public abstract Map<String, ISemanticLiteral> extractMetadata(IInstance object);
 
 }

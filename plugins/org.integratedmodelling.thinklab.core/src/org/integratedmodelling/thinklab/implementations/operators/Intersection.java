@@ -20,7 +20,7 @@
 package org.integratedmodelling.thinklab.implementations.operators;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 
 /**
  * TODO this is a topology operator (like contains) so it should end up in Corescience, not here
@@ -30,7 +30,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IValue;
 public class Intersection extends Operator {
 
 	@Override
-	public IValue eval(Object... arg) throws ThinklabException {
+	public ISemanticLiteral eval(Object... arg) throws ThinklabException {
 		return null;
 	}
 

@@ -20,7 +20,7 @@
 package org.integratedmodelling.thinklab.commandline.rest;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.application.Application;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
@@ -45,7 +45,7 @@ public class RunService extends DefaultRESTHandler {
 	class AppThread extends Thread implements RESTTask {
 
 		String app;
-		IValue result = null;
+		ISemanticLiteral result = null;
 		boolean _done = false;
 		
 		AppThread(String app) {

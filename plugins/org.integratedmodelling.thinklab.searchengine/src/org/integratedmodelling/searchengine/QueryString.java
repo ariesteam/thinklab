@@ -22,8 +22,8 @@ package org.integratedmodelling.searchengine;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.LogicalConnector;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.lang.SemanticAnnotation;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IList;
@@ -114,7 +114,7 @@ public class QueryString implements IQuery {
 
 	@Override
 	public void addLiteralRestriction(String propertyType, String operator,
-			IValue value) throws ThinklabException {
+			ISemanticLiteral value) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}
@@ -126,7 +126,7 @@ public class QueryString implements IQuery {
 	}
 
 	@Override
-	public boolean match(IInstance i) throws ThinklabException {
+	public boolean match(Object i) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -27,7 +27,7 @@ import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.utils.NameGenerator;
 
@@ -170,8 +170,8 @@ public class InstanceList {
 					
 					Object o = ((IList)array[i]).nth(1);
 					
-					if (o instanceof IValue) {
-						ret = ((IValue)o).getConcept();
+					if (o instanceof ISemanticLiteral) {
+						ret = ((ISemanticLiteral)o).getConcept();
 					} else if (o instanceof IList) {
 						/* instance specification */
 						ret = resolveToConcept(((IList)o).first());

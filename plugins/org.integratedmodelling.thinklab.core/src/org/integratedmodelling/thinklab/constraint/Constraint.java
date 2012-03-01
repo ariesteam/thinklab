@@ -25,11 +25,13 @@ import java.util.Collection;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.LogicalConnector;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IList;
@@ -366,7 +368,7 @@ public class Constraint implements IQuery {
 	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#addLiteralRestriction(java.lang.String, java.lang.String, org.integratedmodelling.thinklab.api.knowledge.IValue)
 	 */
 	@Override
-	public void addLiteralRestriction(String propertyType, String operator, IValue value) throws ThinklabException {
+	public void addLiteralRestriction(String propertyType, String operator, ISemanticLiteral value) throws ThinklabException {
 		restrict(new Restriction(propertyType, operator, value.toString()));
 	}
 
@@ -423,12 +425,14 @@ public class Constraint implements IQuery {
 	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#match(org.integratedmodelling.thinklab.api.knowledge.IInstance)
 	 */
     @Override
-	public boolean match(IInstance i) throws ThinklabException {
+	public boolean match(Object i) throws ThinklabException {
         
-    	boolean ok = concept.is(i.getDirectType());
+    	SemanticAnnotation ilist = Thinklab.get().conceptualizeObject(i);
+    	
+    	boolean ok = concept.is(ilist.getDirectType());
     	
     	if (ok && body != null) {
-    		ok = body.match(i);
+    		ok = body.match(ilist);
     	}
     	
     	return ok;

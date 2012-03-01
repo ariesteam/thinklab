@@ -24,7 +24,7 @@ import java.net.URL;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.clojure.ClojureInterpreter;
 import org.integratedmodelling.thinklab.clojure.REPL;
@@ -43,9 +43,9 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 @ThinklabCommand(name="clj", description="start a Clojure REPL")
 public class Clojure implements ICommandHandler {
 
-	public IValue execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticLiteral execute(Command command, ISession session) throws ThinklabException {
 
-		IValue ret = null;
+		ISemanticLiteral ret = null;
 		String arg = null;
 		ThinklabPlugin plugin = null;
 

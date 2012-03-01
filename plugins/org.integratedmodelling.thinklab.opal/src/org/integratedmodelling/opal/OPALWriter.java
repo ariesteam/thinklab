@@ -23,11 +23,12 @@ import java.io.File;
 import java.util.HashSet;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.RelationshipAnnotation;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.opal.profile.OPALProfile;
 import org.integratedmodelling.opal.profile.OPALProfileFactory;
-import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
@@ -39,7 +40,7 @@ import org.w3c.dom.Node;
 public class OPALWriter {
 	
 	
-	private static void writeInstance(IInstance i, XMLDocument document, OPALProfile profile, HashSet<String> refs) throws ThinklabException {
+	private static void writeInstance(SemanticAnnotation i, XMLDocument document, OPALProfile profile, HashSet<String> refs) throws ThinklabException {
 		
 		if (refs == null)
 			refs = new HashSet<String>();
@@ -49,7 +50,7 @@ public class OPALWriter {
 	}
 	
 	
-	private static Node writeInstanceInternal(IInstance instance, XMLDocument document, Node parent,
+	private static Node writeInstanceInternal(SemanticAnnotation instance, XMLDocument document, Node parent,
 			OPALProfile profile, HashSet<String> refs) throws ThinklabException {
 
 		
@@ -100,7 +101,7 @@ public class OPALWriter {
 			document.appendTextNode(profile.getDefaultDescriptionTag(), label, ret);
 		
 		/* scan properties */
-		for (IRelationship r : instance.getRelationships()) {
+		for (RelationshipAnnotation r : instance.getRelationships()) {
 
 			/* 
 			 * see the relationship id, and ignore the whole thing if it's one of those 
@@ -211,7 +212,7 @@ public class OPALWriter {
 		
 		/* write down the instances */
 		for (IInstance inst : instances) {
-			writeInstance(inst, doc, prof, refs);
+			writeInstance(inst.conceptualize(), doc, prof, refs);
 		}
 
 		if (!prof.isDefault()) {

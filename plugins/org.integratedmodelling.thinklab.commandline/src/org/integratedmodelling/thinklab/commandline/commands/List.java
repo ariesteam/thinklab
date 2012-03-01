@@ -29,7 +29,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
@@ -72,7 +72,7 @@ public class List implements ICommandHandler {
 			session.getOutputStream().println("Instance URI is " + c.getURI());
 
 			session.getOutputStream().println("list representation:\n"
-					+ PolyList.prettyPrint(c.conceptualize()));
+					+ PolyList.prettyPrint(c.conceptualize().asList()));
 
 			session.getOutputStream().println(c.getDescription());
 
@@ -88,7 +88,7 @@ public class List implements ICommandHandler {
 			}
 
 		} else if (mode == listmode.LIST) {
-			session.getOutputStream().println(PolyList.prettyPrint(c.conceptualize()));
+			session.getOutputStream().println(PolyList.prettyPrint(c.conceptualize().asList()));
 		}
 	}
 
@@ -141,7 +141,7 @@ public class List implements ICommandHandler {
 		outputWriter.getOutputStream().println("total: " + result.size());
 	}
 
-	public IValue execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticLiteral execute(Command command, ISession session) throws ThinklabException {
 
 		String subject = command.getArgumentAsString("subject");
 		String item = null;

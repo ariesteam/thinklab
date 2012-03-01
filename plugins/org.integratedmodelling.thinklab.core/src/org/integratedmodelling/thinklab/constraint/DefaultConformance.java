@@ -21,7 +21,7 @@ package org.integratedmodelling.thinklab.constraint;
 
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 
 /**
  * Default conformance policy will select same concepts for class types and classification properties, 
@@ -43,7 +43,7 @@ public class DefaultConformance extends DefaultAbstractConformance {
 	}
 
 	@Override
-	public Restriction setConformance(IProperty property, IValue extent) {
+	public Restriction setConformance(IProperty property, ISemanticLiteral extent) {
 		// by default, literals are not part of conformance checking.
 		return null;
 	}

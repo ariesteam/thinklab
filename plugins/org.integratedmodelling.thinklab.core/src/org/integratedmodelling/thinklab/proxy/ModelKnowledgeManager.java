@@ -20,10 +20,11 @@
 package org.integratedmodelling.thinklab.proxy;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 
@@ -63,7 +64,7 @@ public class ModelKnowledgeManager implements IKnowledgeManager {
 	}
 
 	@Override
-	public IValue validateLiteral(IConcept c, String literal)
+	public ISemanticLiteral validateLiteral(IConcept c, String literal)
 			throws ThinklabException {
 		return Thinklab.get().validateLiteral(c, literal);
 	}
@@ -81,6 +82,22 @@ public class ModelKnowledgeManager implements IKnowledgeManager {
 	@Override
 	public IKbox requireKbox(String uri) throws ThinklabException {
 		return Thinklab.get().requireKbox(uri);
+	}
+
+	@Override
+	public ISemanticLiteral annotateLiteral(Object object) throws ThinklabException {
+		return Thinklab.get().annotateLiteral(object);
+	}
+
+	@Override
+	public SemanticAnnotation conceptualizeObject(Object i) throws ThinklabException {
+		return Thinklab.get().conceptualizeObject(i);
+	}
+
+	@Override
+	public Object reifyAnnotation(SemanticAnnotation a)
+			throws ThinklabException {
+		return Thinklab.get().reifyAnnotation(a);
 	}
 
 }

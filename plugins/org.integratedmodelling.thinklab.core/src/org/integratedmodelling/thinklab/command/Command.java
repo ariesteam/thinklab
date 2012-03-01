@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.literals.Value;
 
 /**
@@ -38,8 +38,8 @@ public class Command {
 	CommandDeclaration declaration;
     HashMap<String, String> opts;
     HashMap<String, String> args;
-    HashMap<String, IValue> optValues;
-    HashMap<String, IValue> argValues;
+    HashMap<String, ISemanticLiteral> optValues;
+    HashMap<String, ISemanticLiteral> argValues;
     String stringValue = null;
 	private boolean verbose;
 	private boolean debug;
@@ -56,18 +56,18 @@ public class Command {
     	return args;
     }
     
-    public void setOptionValue(String s, IValue v) {
+    public void setOptionValue(String s, ISemanticLiteral v) {
     	
     	if (optValues == null)
-    		optValues = new HashMap<String, IValue>();
+    		optValues = new HashMap<String, ISemanticLiteral>();
     	
     	optValues.put(s, v);
     }
 
-    public void setArgumentValue(String s, IValue v) {
+    public void setArgumentValue(String s, ISemanticLiteral v) {
     	
     	if (argValues == null)
-    		argValues = new HashMap<String, IValue>();
+    		argValues = new HashMap<String, ISemanticLiteral>();
     	
     	argValues.put(s, v);
     }
@@ -111,7 +111,7 @@ public class Command {
      * @param PLUGIN_ID
      * @throws ThinklabException
      */
-    public Command(CommandDeclaration declaration, HashMap<String, IValue> args, HashMap<String, IValue> opts) throws ThinklabException {
+    public Command(CommandDeclaration declaration, HashMap<String, ISemanticLiteral> args, HashMap<String, ISemanticLiteral> opts) throws ThinklabException {
         this.declaration = declaration;   
         this.argValues = args;
         this.optValues = opts;        
@@ -136,14 +136,14 @@ public class Command {
         
         	Object o = allargs.get(arg);
         	
-        	IValue val = null;
+        	ISemanticLiteral val = null;
         	
         	if (o == null)
         		throw new ThinklabValidationException("command " + commandName + " requires argument " + arg);
-        	if ( !(o instanceof IValue)) {
+        	if ( !(o instanceof ISemanticLiteral)) {
         		val = Value.getValueForObject(o);
         	} else {
-        		val = (IValue) o;
+        		val = (ISemanticLiteral) o;
         	}
 
         	args.put(arg, val.toString().trim());
@@ -153,13 +153,13 @@ public class Command {
         for (String arg : declaration.getOptionalArgumentNames()) {
         	
         	Object o = allargs.get(arg);
-        	IValue val = null;
+        	ISemanticLiteral val = null;
         	
         	if (o != null) {
-				if (!(o instanceof IValue)) {
+				if (!(o instanceof ISemanticLiteral)) {
 					val = Value.getValueForObject(o);
 				} else {
-					val = (IValue) o;
+					val = (ISemanticLiteral) o;
 				}
 				
 	        	args.put(arg, val.toString().trim());
@@ -169,13 +169,13 @@ public class Command {
         for (String arg : declaration.getOptionNames()) {
         	
         	Object o = allargs.get(arg);
-        	IValue val = null;
+        	ISemanticLiteral val = null;
         	
         	if (o != null) {
-				if (!(o instanceof IValue)) {
+				if (!(o instanceof ISemanticLiteral)) {
 					val = Value.getValueForObject(o);
 				} else {
-					val = (IValue) o;
+					val = (ISemanticLiteral) o;
 				}
 	        	opts.put(arg, val.toString().trim());
 				setOptionValue(arg, val);
@@ -185,11 +185,11 @@ public class Command {
         validate();
     }
 
-    public IValue getOption(String option) {
+    public ISemanticLiteral getOption(String option) {
     	return opts == null ? null : optValues.get(option);
     }
     
-    public IValue getArgument(String argument) {
+    public ISemanticLiteral getArgument(String argument) {
     	return args == null ? null : argValues.get(argument);
     }
     

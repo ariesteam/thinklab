@@ -26,7 +26,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.ISessionManager;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
@@ -148,7 +148,7 @@ public class CommandManager {
 	 * @throws ThinklabException
 	 *             if anything happens in command execution
 	 */
-	public IValue submitCommand(Command cmd, ISession session)
+	public ISemanticLiteral submitCommand(Command cmd, ISession session)
 			throws ThinklabException {
 
 		/*

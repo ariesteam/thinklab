@@ -334,7 +334,7 @@ public class Session implements ISession {
 	}
 
     public  IInstance createObject(IInstance ii) throws ThinklabException {
-        return createObject(ii.conceptualize());
+        return createObject(ii.conceptualize().asList());
     }
 
 //	public IInstance importObject(String kboxURI) throws ThinklabException {

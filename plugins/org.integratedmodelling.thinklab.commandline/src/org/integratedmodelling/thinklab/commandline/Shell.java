@@ -26,7 +26,7 @@ import jline.Terminal;
 
 import org.apache.commons.logging.Log;
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
@@ -92,7 +92,7 @@ public class Shell {
 					if (cmd == null)
 						continue;
 					
-					IValue result = CommandManager.get().submitCommand(cmd, session);
+					ISemanticLiteral result = CommandManager.get().submitCommand(cmd, session);
                     if (result != null)
                     	console.printString(result.toString() + "\n");
 				} catch (ThinklabException e) {
@@ -123,7 +123,7 @@ public class Shell {
 					if (cmd == null)
 						continue;
 					
-					IValue result = CommandManager.get().submitCommand(cmd, session);
+					ISemanticLiteral result = CommandManager.get().submitCommand(cmd, session);
                     if (result != null)
                     	log.info(cmd + " -> " + result.toString());
 

@@ -53,18 +53,20 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.RelationshipAnnotation;
+import org.integratedmodelling.lang.SemanticAnnotation;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.searchengine.exceptions.ThinklabInvalidIndexException;
 import org.integratedmodelling.searchengine.exceptions.ThinklabInvalidQueryException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
-import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
@@ -113,7 +115,7 @@ public final class SearchEngine implements IQueriable {
     boolean indexUncommented = false;
     private String indexPath = null;
 
-	private ArrayList<IKBox> kBoxes;
+	private ArrayList<IKbox> kBoxes;
 	private ArrayList<IOntology> ontologies;
 	private String[] iTypes = null;
 	private String id;
@@ -296,11 +298,11 @@ public final class SearchEngine implements IQueriable {
     	return id;
     }
     
-    public Collection<IKBox> getKBoxes() throws ThinklabException {
+    public Collection<IKbox> getKBoxes() throws ThinklabException {
     	
     	if (this.kBoxes == null) {
     		
-    		this.kBoxes = new ArrayList<IKBox>();
+    		this.kBoxes = new ArrayList<IKbox>();
 
     		String kBoxList   = 
     			properties.getProperty(
@@ -381,7 +383,7 @@ public final class SearchEngine implements IQueriable {
     	/*
     	 * index all configured kboxes
     	 */
-    	for (IKBox kb : getKBoxes()) {
+    	for (IKbox kb : getKBoxes()) {
    			indexKBox(kb);
     	}
     	
@@ -429,20 +431,18 @@ public final class SearchEngine implements IQueriable {
     	return this.ontologies;
 	}
 
-	private void indexKBox(IKBox kb) throws ThinklabException {
+	private void indexKBox(IKbox kb) throws ThinklabException {
     	
 		List<Object> qr = kb.query(null);
 		ISession session = new Session();
 		
 		for (int i = 0; i < qr.size(); i++) {
 			
-			IValue val = (IValue) qr.get(i);
-			IInstance ii = null;
+			ISemanticLiteral val = (ISemanticLiteral) qr.get(i);
 			
 			if (val instanceof ObjectValue) {
-				ii = ((ObjectValue)val).getObject();
 				try {
-					index.addDocument(submitIndividual(kb, ii));
+					index.addDocument(submitIndividual(kb, val.asObject()));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					throw new ThinklabIOException(e);
@@ -479,7 +479,7 @@ public final class SearchEngine implements IQueriable {
     		for (IInstance i : o.getInstances()) {
     			// submit concept for indexing
     			SearchEnginePlugin.get().logger().info("searchengine: indexing individual " + i);
-    			submitIndividual(null, i);
+    			submitIndividual(null, i.conceptualize());
     		}
     	}
     }
@@ -553,7 +553,7 @@ public final class SearchEngine implements IQueriable {
     	
     }
     
-    private Document indexMetadata(IKnowledge object, IKBox kbox) {
+    private Document indexMetadata(SemanticAnnotation object, IKbox kbox) {
     	
     	Document d = null;
     	
@@ -567,7 +567,7 @@ public final class SearchEngine implements IQueriable {
 		
 		String id = object.toString();
 		if (kbox != null) {
-			id = kbox.getUri() + "#" + object.getLocalName();
+			id = kbox.getUri() +"#" + object.getLocalName();
 		}
 		
 		/*
@@ -614,7 +614,7 @@ public final class SearchEngine implements IQueriable {
 	 */
 	public Document submitConcept(IConcept cl) throws ThinklabIOException {
 
-		Document d = indexMetadata(cl, null);
+		Document d = indexMetadata(new SemanticAnnotation(PolyList.list(cl), Thinklab.get()), null);
 		
 		if (d != null) {
 		
@@ -681,7 +681,7 @@ public final class SearchEngine implements IQueriable {
 	/**
 	 * @param i
 	 */
-	public Document submitIndividual(IKBox kbox, IInstance i) throws ThinklabException {
+	public Document submitIndividual(IKbox kbox, SemanticAnnotation i) throws ThinklabException {
 
     	/* first check if we want to index this object at all - based on the class */
 		if (!checkObjectClass(i.getDirectType())) {
@@ -708,7 +708,7 @@ public final class SearchEngine implements IQueriable {
 			if (f.property.equals("rdfs:comment") || f.property.equals("rdfs:label"))
 				continue;
 			
-			for (IRelationship r : i.getRelationships(f.property)) {
+			for (RelationshipAnnotation r : i.getRelationships(f.property)) {
 
 				/* could be literal, object, classification, but we just use what the user has told us. */
 				if (f.indexType.equals("store")) {
@@ -747,7 +747,7 @@ public final class SearchEngine implements IQueriable {
 
 					/* create document for linked object and link it to main document, multiplying the
 					 * intrinsic weight of the fields by the weigth factor. */
-					IInstance inst = r.getValue().asObject();
+					SemanticAnnotation inst = r.getValue().asObject();
 					
 					if (inst != null) {
 						Document ld = submitIndividual(kbox, inst);
@@ -762,7 +762,7 @@ public final class SearchEngine implements IQueriable {
 			}
 		}
 		
-		for (IRelationship r : i.getRelationships()) {
+		for (RelationshipAnnotation r : i.getRelationships()) {
 		
 	
 		}

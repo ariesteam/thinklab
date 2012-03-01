@@ -20,7 +20,7 @@
 package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.application.Application;
 import org.integratedmodelling.thinklab.command.Command;
@@ -34,7 +34,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
  */
 public class Run implements ICommandHandler {
 
-	public IValue execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticLiteral execute(Command command, ISession session) throws ThinklabException {
 		// TODO we want arguments and warnings
 
 		String app = command.getArgumentAsString("application");

@@ -27,7 +27,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabStorageException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 
 /**
@@ -107,11 +107,11 @@ public class QueryResult extends ArrayList<ArrayList<String>> {
 		return BooleanValue.parseBoolean(get(row,column));
 	}
 	
-	public IValue getValue(int row, int column, IConcept concept) throws ThinklabException {
+	public ISemanticLiteral getValue(int row, int column, IConcept concept) throws ThinklabException {
 		return KnowledgeManager.get().validateLiteral(concept, get(row,column));
 	}
 
-	public IValue getValue(int row, int column, String concept) throws ThinklabException {
+	public ISemanticLiteral getValue(int row, int column, String concept) throws ThinklabException {
 		return KnowledgeManager.get().validateLiteral(
 				KnowledgeManager.get().requireConcept(concept), get(row,column));
 	}

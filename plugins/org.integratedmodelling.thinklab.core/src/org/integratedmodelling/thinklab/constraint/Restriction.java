@@ -27,14 +27,15 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.lang.Quantifier;
+import org.integratedmodelling.lang.RelationshipAnnotation;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IList;
@@ -600,7 +601,7 @@ public class Restriction implements IRestriction {
 		return PolyList.fromArray(ret.toArray());
 	}
 	
-	private boolean matchConnector(IInstance c) throws ThinklabException {
+	private boolean matchConnector(SemanticAnnotation c) throws ThinklabException {
 		
 		boolean ret = false;
 		
@@ -628,13 +629,13 @@ public class Restriction implements IRestriction {
     	return ret;
 	}
 	
-	private boolean matchRelationships(IInstance c) throws ThinklabException {
+	private boolean matchRelationships(SemanticAnnotation c) throws ThinklabException {
 		
 		boolean ret = false;
         int tot = 0;
         int match = 0;
         
-        for (IRelationship ipc : c.getRelationshipsTransitive(property.toString())) {
+        for (RelationshipAnnotation ipc : c.getRelationshipsTransitive(property.toString())) {
 
         	tot ++;
 
@@ -685,7 +686,7 @@ public class Restriction implements IRestriction {
         return ret;
 	}
 
-	private boolean matchOperator(IOperator operator, IValue value, Object[] opArgs) throws ThinklabException {
+	private boolean matchOperator(IOperator operator, ISemanticLiteral value, Object[] opArgs) throws ThinklabException {
 
 		/* FIXME TLC-31: Implement type declarations for arguments to op() in IValue
 				 http://ecoinformatics.uvm.edu:8080/jira/browse/TLC-31
@@ -699,7 +700,7 @@ public class Restriction implements IRestriction {
 	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#match(org.integratedmodelling.thinklab.api.knowledge.IInstance)
 	 */
 	@Override
-	public boolean match(IInstance c) throws ThinklabException {
+	public boolean match(SemanticAnnotation c) throws ThinklabException {
 
 		boolean ok = false;
 		if (isConnector()) {

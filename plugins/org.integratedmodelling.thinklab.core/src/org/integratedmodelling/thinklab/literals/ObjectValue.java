@@ -19,11 +19,16 @@
  */
 package org.integratedmodelling.thinklab.literals;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.lang.SemanticAnnotation;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 
 public class ObjectValue extends Value {
 
 	IInstance val;
+	SemanticAnnotation _list = null;
 	
     public ObjectValue() {
         super();
@@ -33,11 +38,30 @@ public class ObjectValue extends Value {
     	super(c.getDirectType());
     	val = c;
     }
-
-    public IInstance asObject() {
-        return val;
+    
+    public ObjectValue(SemanticAnnotation c) {
+    	super(c.getDirectType());
+    	_list = c;
     }
 
+    public SemanticAnnotation asObject() {
+		if (_list == null) {
+			try {
+				_list = val.conceptualize();
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+		return _list;
+    }
+
+    /**
+     * Return the instance value. May be null.
+     * @return
+     */
+    public IInstance asInstance() {
+    	return val;
+    }
     
     public boolean isClass() {
         return false;

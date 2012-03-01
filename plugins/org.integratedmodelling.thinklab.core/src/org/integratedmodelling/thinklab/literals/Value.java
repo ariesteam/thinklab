@@ -21,10 +21,10 @@ package org.integratedmodelling.thinklab.literals;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 
 /**
  * <p>A generalized container for a value that always has a concept associated. The value may be defined from a literal or a basic
@@ -58,7 +58,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IValue;
  * 
  * @author Ferdinando Villa
  */
-public class Value implements IValue {
+public class Value implements ISemanticLiteral {
 	
 	public IConcept concept;
 	public String ID = null;
@@ -142,12 +142,12 @@ public class Value implements IValue {
      * @throws ThinklabValidationException
      * @throws ThinklabNoKMException
      */
-    public static IValue getValueForObject(Object value) throws ThinklabException {
+    public static ISemanticLiteral getValueForObject(Object value) throws ThinklabException {
 
         Value ret = null;
         
-        if (value instanceof IValue)
-        	return (IValue) value;
+        if (value instanceof ISemanticLiteral)
+        	return (ISemanticLiteral) value;
         
         if (value instanceof Integer) {
             ret = new NumberValue((Integer)value);
@@ -183,10 +183,10 @@ public class Value implements IValue {
      * @throws ThinklabValidationException
      * @throws ThinklabNoKMException
      */
-    public static IValue getValidatedValueForObject(Object value, IConcept concept) 
+    public static ISemanticLiteral getValidatedValueForObject(Object value, IConcept concept) 
     throws ThinklabException {
 
-        IValue ret = null;
+        ISemanticLiteral ret = null;
         
         if (value.getClass() == Integer.TYPE) {
             ret = new NumberValue((Integer)value);
@@ -229,10 +229,10 @@ public class Value implements IValue {
      * @throws ThinklabValidationException
      * @throws ThinklabNoKMException
      */
-    public static IValue getNonValidatedValueForObject(Object value, IConcept concept) 
+    public static ISemanticLiteral getNonValidatedValueForObject(Object value, IConcept concept) 
     throws ThinklabException {
 
-        IValue ret = null;
+        ISemanticLiteral ret = null;
         
         if (value.getClass() == Integer.TYPE) {
             ret = new NumberValue((Integer)value);
@@ -309,7 +309,7 @@ public class Value implements IValue {
 	}
 
 	@Override
-	public IInstance asObject() {
+	public SemanticAnnotation asObject() {
 		// TODO Auto-generated method stub
 		return null;
 	}

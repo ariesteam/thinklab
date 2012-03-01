@@ -45,7 +45,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.api.runtime.IUserModel;
 import org.integratedmodelling.thinklab.command.Command;
@@ -281,7 +281,7 @@ public class GraphicalShell {
 			
 			session.pushVariable(ISession.COMMAND, cmd);
 			
-			IValue result = CommandManager.get().submitCommand(cmd, session);
+			ISemanticLiteral result = CommandManager.get().submitCommand(cmd, session);
 
 			session.popVariable(ISession.COMMAND);
 			

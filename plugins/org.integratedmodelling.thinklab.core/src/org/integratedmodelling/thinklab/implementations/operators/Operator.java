@@ -22,7 +22,7 @@ package org.integratedmodelling.thinklab.implementations.operators;
 import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.lang.IOperator;
 import org.integratedmodelling.thinklab.literals.NumberValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
@@ -80,8 +80,8 @@ public abstract class Operator implements IOperator {
 	
 	static double asDouble(Object arg) throws ThinklabValidationException {
 		
-		if (arg instanceof IValue)
-			return ((IValue)arg).asDouble();
+		if (arg instanceof ISemanticLiteral)
+			return ((ISemanticLiteral)arg).asDouble();
 		else if (arg instanceof Double)
 			return (Double)arg;
 		else if (arg instanceof Float)
@@ -97,8 +97,8 @@ public abstract class Operator implements IOperator {
 	
 	static int asInt(Object arg) throws ThinklabValidationException {
 		
-		if (arg instanceof IValue)
-			return ((IValue)arg).asInteger();
+		if (arg instanceof ISemanticLiteral)
+			return ((ISemanticLiteral)arg).asInteger();
 		else if (arg instanceof Integer)
 			return (Integer)arg;
 		
@@ -108,8 +108,8 @@ public abstract class Operator implements IOperator {
 	
 	static String asText(Object arg) throws ThinklabValidationException {
 		
-		if (arg instanceof IValue)
-			return ((IValue)arg).asText();
+		if (arg instanceof ISemanticLiteral)
+			return ((ISemanticLiteral)arg).asText();
 		else if (arg instanceof String)
 			return (String)arg;
 

@@ -32,16 +32,18 @@ import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.kbox.neo4j.NeoKBox;
+import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.project.ThinklabProjectInstaller;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -339,7 +341,7 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
      * 
      * TODO make it use the declared classes, abolish validators
      */
-    public IValue getRawLiteral(IConcept type) throws ThinklabValidationException {
+    public ISemanticLiteral getRawLiteral(IConcept type) throws ThinklabValidationException {
 
         class vmatch implements ConceptVisitor.ConceptMatcher {
 
@@ -362,11 +364,11 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
         IConcept cms = 
             ConceptVisitor.findMatchUpwards(matcher, type);
 
-        IValue ret = null;
+        ISemanticLiteral ret = null;
         
         if (cms != null) {
         	try {
-				ret = (IValue) matcher.ret.newInstance();
+				ret = (ISemanticLiteral) matcher.ret.newInstance();
 			} catch (Exception e) {
 				throw new ThinklabValidationException("cannot create literal: " + e.getMessage());
 			}
@@ -464,7 +466,7 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	}
 
 	@Override
-	public IValue validateLiteral(IConcept c, String literal)
+	public ISemanticLiteral validateLiteral(IConcept c, String literal)
 			throws ThinklabException {
 		return _km.validateLiteral(c, literal);
 	}
@@ -492,6 +494,24 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 		if (_kboxes.containsKey(uri))
 			return _kboxes.get(uri);
 		return createKbox(uri);
+	}
+
+	@Override
+	public ISemanticLiteral annotateLiteral(Object object) throws ThinklabException {
+		return Value.getValueForObject(object);
+	}
+
+	@Override
+	public SemanticAnnotation conceptualizeObject(Object i) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object reifyAnnotation(SemanticAnnotation a)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	/*

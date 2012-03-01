@@ -33,7 +33,7 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IValue;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 
 /**
@@ -134,7 +134,7 @@ public class CommandDeclaration {
 		for (Map.Entry<String, String> e :   command.args.entrySet()) {
             
             argDescriptor ad = findArgument(e.getKey());
-            IValue validator = null;
+            ISemanticLiteral validator = null;
             boolean ok = true;
             
             try {
@@ -175,7 +175,7 @@ public class CommandDeclaration {
             if (ad.type == null)
             	continue;
             
-            IValue validator = null;
+            ISemanticLiteral validator = null;
             boolean ok = true;
             
             try {
