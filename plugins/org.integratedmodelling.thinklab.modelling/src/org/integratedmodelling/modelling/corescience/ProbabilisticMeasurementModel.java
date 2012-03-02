@@ -143,6 +143,7 @@ public class ProbabilisticMeasurementModel extends ClassificationModel {
 		
 		Polylist ret = addImplicitExtents(Polylist.PolylistFromArrayList(arr), context);
 		ret = ObservationFactory.addReflectedField(ret, "classifiers", clsf);
+		ret = ObservationFactory.addReflectedField(ret, "modelObservable", observableSpecs);
 		
 		return ret;
 	}

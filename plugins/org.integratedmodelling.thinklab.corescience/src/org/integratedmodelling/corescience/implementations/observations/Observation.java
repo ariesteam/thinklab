@@ -72,6 +72,7 @@ public class Observation implements IObservation, IInstanceImplementation {
 	// public so that getField can find it
 	public Metadata metadata = new Metadata();
 	public Metadata additionalMetadata = null;
+	public Polylist modelObservable = null;
 	
 	// used to sort contingencies if this is in a merger obs
 	public Integer contingencyOrder = 0;
@@ -250,6 +251,14 @@ public class Observation implements IObservation, IInstanceImplementation {
 		while (observable == null && mobs != null) {
 			observable = mediatedObservation.getObservable();
 			mobs = mobs.getMediatedObservation();
+		}
+		
+		/*
+		 * if we don't have an observable but we know what is observed by the
+		 * model that created us, use that.
+		 */
+		if (observable == null && modelObservable != null) {
+			observable = i.getOntology().createInstance(modelObservable);
 		}
 
 		/*

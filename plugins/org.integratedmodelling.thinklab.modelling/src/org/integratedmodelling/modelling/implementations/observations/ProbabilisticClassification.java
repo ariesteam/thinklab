@@ -19,17 +19,22 @@
  */
 package org.integratedmodelling.modelling.implementations.observations;
 
+import java.util.List;
+
 import org.integratedmodelling.corescience.context.ObservationContext;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IProbabilisticObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
+import org.integratedmodelling.corescience.literals.GeneralClassifier;
 import org.integratedmodelling.modelling.data.CategoricalDistributionDatasource;
 import org.integratedmodelling.thinklab.exception.ThinklabException;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
+import org.integratedmodelling.utils.Pair;
 
 @InstanceImplementation(concept="modeltypes:ProbabilisticClassification")
-public class ProbabilisticClassification extends ModeledClassification {
+public class ProbabilisticClassification extends ModeledClassification implements IProbabilisticObservation {
 
 	String unitSpecs = null;
 
@@ -51,6 +56,11 @@ public class ProbabilisticClassification extends ModeledClassification {
 	@Override
 	public void initialize(IInstance i) throws ThinklabException {
 		super.initialize(i);
+	}
+
+	@Override
+	public List<Pair<GeneralClassifier, IConcept>> getClassifiers() {
+		return classifiers;
 	}
 
 }

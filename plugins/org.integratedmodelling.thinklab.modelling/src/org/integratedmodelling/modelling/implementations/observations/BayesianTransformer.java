@@ -277,8 +277,8 @@ public class BayesianTransformer
  						outputObservation :
  						modelPrototypes.get(var);
  			
- 			if (gmodel instanceof ModeledClassification) 
- 				classf = ((ModeledClassification)gmodel).classifiers;
+ 			if (gmodel instanceof IProbabilisticObservation) 
+ 				classf = (ArrayList<Pair<GeneralClassifier, IConcept>>) ((IProbabilisticObservation)gmodel).getClassifiers();
  			
  			st.data = new CategoricalDistributionDatasource(var, size, pcstates, classf, 
  						(ObservationContext) context);

@@ -21,6 +21,7 @@ package org.integratedmodelling.modelling.implementations.observations;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.integratedmodelling.corescience.CoreScience;
 import org.integratedmodelling.corescience.context.ObservationContext;
@@ -28,6 +29,7 @@ import org.integratedmodelling.corescience.implementations.datasources.ClassData
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IObservation;
 import org.integratedmodelling.corescience.interfaces.IObservationContext;
+import org.integratedmodelling.corescience.interfaces.IProbabilisticObservation;
 import org.integratedmodelling.corescience.interfaces.IState;
 import org.integratedmodelling.corescience.interfaces.internal.IStateAccessor;
 import org.integratedmodelling.corescience.interfaces.internal.IndirectObservation;
@@ -56,7 +58,7 @@ import org.integratedmodelling.utils.Polylist;
 @InstanceImplementation(concept="modeltypes:ModeledClassification")
 public class ModeledClassification 
 	extends Observation 
-	implements MediatingObservation {
+	implements MediatingObservation, IProbabilisticObservation {
 	
 	// set through reflection - must be public
 	public ArrayList<Pair<GeneralClassifier, IConcept>> classifiers = 
@@ -338,5 +340,10 @@ public class ModeledClassification
 	public IStateAccessor getMediator(IndirectObservation observation, IObservationContext context)
 			throws ThinklabException {
 		return new ClassificationMediator();
+	}
+
+	@Override
+	public List<Pair<GeneralClassifier, IConcept>> getClassifiers() {
+		return classifiers;
 	}
 }

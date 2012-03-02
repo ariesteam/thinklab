@@ -157,7 +157,8 @@ public abstract class DefaultAbstractModel implements IModel {
 		Metadata md = new Metadata(metadata);
 		md.put(Metadata.DEFINING_MODEL, this);
 		obs = ObservationFactory.addReflectedField(obs, "additionalMetadata", md);
-
+		obs = ObservationFactory.addReflectedField(obs, "modelObservable", this.observableSpecs);
+		
 		return obs;
 	}
 
