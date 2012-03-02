@@ -186,6 +186,9 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 		if (dat != null && !context.isCovered(i))
 			dat = null;
 		
+		if (prototype == null)
+			return Double.NaN;
+		
 		if (prototype instanceof Number) {
 			return (dat == null? Double.NaN : ((Number)dat).doubleValue());
 		} else if (prototype instanceof IConcept && Metadata.getClassMappings(metadata) != null) {

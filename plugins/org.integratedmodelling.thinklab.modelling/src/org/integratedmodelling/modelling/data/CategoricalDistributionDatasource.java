@@ -238,7 +238,7 @@ public class CategoricalDistributionDatasource extends
 		this.sortedIndexes = new int[valueMappings.length];
 		this.valueMappings = new IConcept[valueMappings.length];
 		this.shuttle = new double[valueMappings.length];
-		
+
 		/*
 		 * remap the values to ranks and determine how to rewire the input
 		 * if necessary, use classifiers instead of lexicographic order to infer the 
