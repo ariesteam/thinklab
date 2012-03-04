@@ -26,8 +26,8 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassifier;
-import org.integratedmodelling.thinklab.literals.Expression;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
 
 import clojure.lang.IFn;
@@ -43,7 +43,7 @@ public class Classifier implements IClassifier {
 	Double number = null;
 	IntervalValue interval = null;
 	IConcept concept = null;
-	Expression code = null;
+	IExpression code = null;
 	String string = null;
 	
 	/*
@@ -58,6 +58,9 @@ public class Classifier implements IClassifier {
 	 */
 	private boolean isNil = false;
 	
+	/**
+	 * @deprecated find a way to use an IExpression
+	 */
 	private IFn closure = null;
 	
 	public Classifier(String s) throws ThinklabException {

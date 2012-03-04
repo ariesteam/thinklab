@@ -22,8 +22,11 @@ package org.integratedmodelling.thinklab.interpreter.mvel;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.knowledge.IExpression;
+import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.mvel2.MVEL;
 
 /**
@@ -32,15 +35,20 @@ import org.mvel2.MVEL;
  * @author Ferdinando
  *
  */
-public class MVELExpression {
+public class MVELExpression implements IExpression, IParseable {
 
 	private Serializable bytecode;
+	String expr;
 
-	public MVELExpression(String s) {
-		this.bytecode = MVEL.compileExpression(s); 
+	public MVELExpression() {
 	}
 	
-	public Object eval(Map<?,?> parms) {
+	public MVELExpression(String s) {
+		this.bytecode = MVEL.compileExpression(s);
+		expr = s;
+	}
+	
+	public Object eval(Map<String, Object> parms) {
 		
 		Object ret = null;
 		ClassLoader clsl = null;
@@ -55,5 +63,20 @@ public class MVELExpression {
 		}
 		return ret;
 	}
-	
+
+	@Override
+	public void parse(String string) throws ThinklabException {
+		this.bytecode = MVEL.compileExpression(string); 
+	}
+
+	@Override
+	public String asText() {
+		return expr;
+	}
+
+	@Override
+	public String getLanguage() {
+		return "MVEL";
+	}
+
 }

@@ -1,6 +1,9 @@
 package org.integratedmodelling.thinklab.modelling.contextualization;
 
+import java.util.ArrayList;
+
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
@@ -19,10 +22,11 @@ import org.jgrapht.graph.DefaultDirectedGraph;
  */
 public class Contextualizer  {
 
-	int _resultCount = 0;
 	private IObserver _observer;
 	private IContext _context;
-	
+	private MultidimensionalCursor _ticker;
+	private IState[] _resolved;
+
 	class Node {
 		IAccessor accessor;
 		IState state;
@@ -53,9 +57,16 @@ public class Contextualizer  {
 		
 		/*
 		 * query all the unresolved observables that are not already in the
-		 * context.
+		 * context. 
+		 */
+		int nResolved = 0;
+		
+		/*
+		 * create ticker based on results and prepare storage for the 
+		 * observations we will use.
 		 */
 		
+		_resolved = new IState[nResolved];
 	}
 	
 	/**
@@ -74,7 +85,7 @@ public class Contextualizer  {
 	 * @return
 	 */
 	public int getResultCount() {
-		return _resultCount;
+		return _ticker.getMultiplicity();
 	}
 	
 	/*
@@ -85,6 +96,7 @@ public class Contextualizer  {
 		/*
 		 * 1. create accessor for needed obs that were already in context.
 		 */
+		_ticker.getElementIndexes(resultIndex);
 		
 		/*
 		 * 2. query remaining requirements and run transformations on the observations to

@@ -337,6 +337,13 @@ public class Value implements ISemanticLiteral {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+
+	@Override
+	public long asLong() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
    
     
 }

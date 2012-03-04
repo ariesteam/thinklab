@@ -11,14 +11,13 @@ import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.lang.model.ObservingObject;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
-import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 public abstract class ObserverImpl implements IObserver {
 
@@ -46,8 +45,35 @@ public abstract class ObserverImpl implements IObserver {
 		define(bean);
 	}
 	
+	/**
+	 * Derived classes will choose their default accessor; we chain any other
+	 * to it and return it in our final getAccessors()
+	 * 
+	 * @param context
+	 * @return
+	 */
+	protected abstract IAccessor getAccessor(IContext context);
+	
+	@Override
+	public final List<IAccessor> getAccessors(IContext context) {
+
+		ArrayList<IAccessor> ret = new ArrayList<IAccessor>();
+		
+		IAccessor defacc = getAccessor(context);
+		if (defacc != null)
+			ret.add(defacc);
+		
+		/*
+		 * if we have a specialized one, create it, initialize it properly and
+		 * add it after the default one 
+		 */
+
+		return ret;
+	}
+	
+	
 	private void define(ObservingObject bean) {
-		this._bean = bean;		
+		this._bean = bean;			
 	}
 
 	@Override
@@ -87,14 +113,13 @@ public abstract class ObserverImpl implements IObserver {
 	}
 
 	@Override
-	public Collection<IObservation> observe(IContext context, IKBox kbox,
-			ISession session) throws ThinklabException {
+	public List<IObservation> observe(IContext context) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public IObserver train(IContext context, IKBox kbox, ISession session)
+	public IObserver train(IContext context)
 			throws ThinklabException {
 		return this;
 	}

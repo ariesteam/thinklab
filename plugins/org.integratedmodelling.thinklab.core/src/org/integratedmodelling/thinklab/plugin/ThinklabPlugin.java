@@ -31,7 +31,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -42,36 +41,30 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
-import org.integratedmodelling.thinklab.api.runtime.IInterpreter;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IResourceLoader;
-import org.integratedmodelling.thinklab.interfaces.annotations.DataTransformation;
+import org.integratedmodelling.thinklab.interfaces.annotations.Function;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
-import org.integratedmodelling.thinklab.interfaces.annotations.ProjectLoader;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
-import org.integratedmodelling.thinklab.interfaces.storage.IKnowledgeImporter;
-import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
-import org.integratedmodelling.thinklab.project.interfaces.IProjectLoader;
+import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.rest.RESTManager;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
-import org.integratedmodelling.thinklab.transformations.ITransformation;
-import org.integratedmodelling.thinklab.transformations.TransformationFactory;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.Plugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
 import org.java.plugin.registry.Extension.Parameter;
-import org.java.plugin.registry.ExtensionPoint;
 import org.java.plugin.registry.Version;
 import org.restlet.resource.ServerResource;
 
@@ -83,8 +76,7 @@ import org.restlet.resource.ServerResource;
  *
  */
 public abstract class ThinklabPlugin extends Plugin 
-{
-	
+{	
 	/**
 	 * register one of those using registerAnnotatedClass for each class
 	 * that extends the plugin through custom annotations.
@@ -121,7 +113,7 @@ public abstract class ThinklabPlugin extends Plugin
 	private File confFolder;
 	private File plugFolder;
 	private File loadFolder;
-	private HashSet<String> _bindingsLoaded = new HashSet<String>();
+//	private HashSet<String> _bindingsLoaded = new HashSet<String>();
 	
 	/**
 	 * ALWAYS call this one to ensure that all the necessary plugins are loaded, even if
@@ -220,17 +212,13 @@ public abstract class ThinklabPlugin extends Plugin
 		
 		preStart();
 		
-		loadOntologies();
 		loadLiteralValidators();
 		loadKnowledgeImporters();
 		loadCommandHandlers();
 		loadListingProviders();
 		loadRESTHandlers();
-		loadTransformations();
 		loadInstanceImplementationConstructors();
-		loadKboxes();
-		loadLanguageBindings();
-		loadProjectLoaders();
+		loadFunctions();
 		
 		load(KnowledgeManager.get());
 
@@ -275,50 +263,6 @@ public abstract class ThinklabPlugin extends Plugin
 		
 		return ret;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#loadLanguageBindings()
-	 */
-	public synchronized void loadLanguageBindings() throws ThinklabException {
-		
-		for (Extension ext : getOwnThinklabExtensions("language-binding")) {
-
-			String language = getParameter(ext, "language");
-			loadLanguageBindings(language);
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#loadLanguageBindings(java.lang.String)
-	 */
-	public void loadLanguageBindings(String language) throws ThinklabException {
-		
-		// may happen more than once if bound to external language, so synchronize
-		if (this._bindingsLoaded.contains(language) ) {
-			return;
-		}
-
-		_bindingsLoaded.add(language);
-		
-		for (Extension ext : getOwnThinklabExtensions("language-binding")) {
-
-			String lang = getParameter(ext, "language");
-			String[] resource = getParameters(ext, "resource");
-			
-			if (!language.equals(lang))
-				continue;
-			
-			IInterpreter intp = InterpreterManager.get().newInterpreter(language);
-
-			for (String r : resource) {
-				
-				logger().info("loading " + language + " binding file: " + r);
-				intp.loadBindings(getResourceURL(r), getClassLoader());
-			}
-		}
-	}
-
-	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#swapClassloader()
 	 */
@@ -333,25 +277,6 @@ public abstract class ThinklabPlugin extends Plugin
 	 */
 	public void resetClassLoader(ClassLoader clsl) {
 		Thread.currentThread().setContextClassLoader(clsl);
-	}
-	
-	private void loadKboxes() throws ThinklabException {
-//
-//		/*
-//		 * load .kbox files from data dir
-//		 */
-//		for (String s : this.getScratchPath().list()) {
-//			
-//			if (s.endsWith(".kbox")) {
-//				// load from kbox properties 
-//				File pfile = new File(this.getScratchPath() + File.separator + s);
-//				try {
-//					KBoxManager.get().requireGlobalKBox(pfile.toURI().toURL().toString());
-//				} catch (Exception e) {
-//					throw new ThinklabIOException(e);
-//				}
-//			}
-//		}
 	}
 
 	/* (non-Javadoc)
@@ -457,84 +382,6 @@ public abstract class ThinklabPlugin extends Plugin
 	 * @param extensionPoint
 	 * @return
 	 */
-	protected Collection<Extension> getOwnThinklabExtensions(String extensionPoint) {
-		
-		return getOwnExtensions(Thinklab.PLUGIN_ID, extensionPoint);
-	}
-
-	/**
-	 * Return all the extension in this plugin that extend an extension point declared
-	 * in the passed plugin with the passed name.
-	 * 
-	 * @param extendedPlugin
-	 * @param extensionPoint
-	 * @return
-	 */
-	protected Collection<Extension> getOwnExtensions(String extendedPlugin, String extensionPoint) {
-		
-		ArrayList<Extension> ret = new ArrayList<Extension>();
-		
-		ExtensionPoint toolExtPoint = 
-			getManager().getRegistry().getExtensionPoint(extendedPlugin, extensionPoint);
-
-		for (Iterator<Extension> it =  toolExtPoint.getConnectedExtensions().iterator(); it.hasNext(); ) {
-			Extension ext = it.next();
-			if (ext.getDeclaringPluginDescriptor().getId().equals(getDescriptor().getId())) {
-				ret.add(ext);
-			}
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Return all the extension in any plugins that extend an extension point declared
-	 * in the passed plugin with the passed name.
-	 * 
-	 * @param extendedPlugin
-	 * @param extensionPoint
-	 * @return
-	 */
-	protected Collection<Extension> getAllExtensions(String extendedPlugin, String extensionPoint) {
-		
-		ArrayList<Extension> ret = new ArrayList<Extension>();
-		
-		ExtensionPoint toolExtPoint = 
-			getManager().getRegistry().getExtensionPoint(extendedPlugin, extensionPoint);
-
-		for (Iterator<Extension> it =  toolExtPoint.getConnectedExtensions().iterator(); it.hasNext(); ) {
-			Extension ext = it.next();
-				ret.add(ext);
-		}
-		
-		return ret;
-	}
-
-	/**
-	 * Return all the extension in a specified plugin that extend an extension point declared
-	 * in the passed plugin with the passed name.
-	 * 
-	 * @param pluginId the plugin that contains the extensions
-	 * @param extendedPlugin the plugin that contains the extension point
-	 * @param extensionPoint the extension point id
-	 * @return
-	 */
-	protected Collection<Extension> getPluginExtensions(String pluginId, String extendedPlugin, String extensionPoint) {
-		
-		ArrayList<Extension> ret = new ArrayList<Extension>();
-		
-		ExtensionPoint toolExtPoint = 
-			getManager().getRegistry().getExtensionPoint(extendedPlugin, extensionPoint);
-
-		for (Iterator<Extension> it =  toolExtPoint.getConnectedExtensions().iterator(); it.hasNext(); ) {
-			Extension ext = it.next();
-			if (ext.getDeclaringPluginDescriptor().getId().equals(pluginId)) {
-				ret.add(ext);
-			}
-		}
-		
-		return ret;
-	}
 
 	protected void loadAnnotatedClass(String subpackage, Class<?> objectClass, Class<?> annotationClass, AnnotatedClassHandler handler) throws ThinklabException {
 		
@@ -649,20 +496,6 @@ public abstract class ThinklabPlugin extends Plugin
 		return ret;
 	}
 	
-	protected void loadOntologies() throws ThinklabException {
-	
-		for (Extension ext : getOwnThinklabExtensions("ontology")) {
-
-			String url = ext.getParameter("url").valueAsString();
-			String csp = ext.getParameter("concept-space").valueAsString();
-
-			KnowledgeManager.get().getKnowledgeRepository().refreshOntology(getResourceURL(url), csp, false);
-			
-			ontologies.add(csp);
-		}
-		
-	}
-
 	protected void loadLiteralValidators() throws ThinklabException {
 		
 		String ipack = this.getClass().getPackage().getName() + ".literals";
@@ -779,6 +612,35 @@ public abstract class ThinklabPlugin extends Plugin
 	}
 
 
+	protected void loadFunctions() throws ThinklabException {
+		
+		String ipack = this.getClass().getPackage().getName() + ".functions";
+		
+		for (Class<?> cls : MiscUtilities.findSubclasses(IExpression.class, ipack, getClassLoader())) {	
+			
+			/*
+			 * lookup annotation, ensure we can use the class
+			 */
+			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+				continue;
+			
+			for (Annotation annotation : cls.getAnnotations()) {
+				if (annotation instanceof Function) {
+					
+					String   id = ((Function)annotation).id();
+					String[] parameterNames = ((Function)annotation).parameterNames();
+					try {
+						ModelManager.get().registerFunction(id, parameterNames, cls);
+					} catch (Exception e) {
+						throw new ThinklabValidationException(e);
+					}
+					
+					break;
+				}
+			}
+		}
+	}
+	
 	protected void loadListingProviders() throws ThinklabException {
 		
 		String ipack = this.getClass().getPackage().getName() + ".commands";
@@ -808,30 +670,30 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 
-	protected void loadProjectLoaders() throws ThinklabException {
-		
-		String ipack = this.getClass().getPackage().getName() + ".ploaders";
-		
-		for (Class<?> cls : MiscUtilities.findSubclasses(IProjectLoader.class, ipack, getClassLoader())) {	
-			
-			/*
-			 * lookup annotation, ensure we can use the class
-			 */
-			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
-				continue;
-			
-			for (Annotation annotation : cls.getAnnotations()) {
-				if (annotation instanceof ProjectLoader) {
-					
-					String folder = ((ProjectLoader)annotation).folder();
-					String description = ((ProjectLoader)annotation).description();
-					Thinklab.get().registerProjectLoader(folder, (Class<?>) cls);	
-					break;
-				}
-			}
-		}
-
-	}
+//	protected void loadProjectLoaders() throws ThinklabException {
+//		
+//		String ipack = this.getClass().getPackage().getName() + ".ploaders";
+//		
+//		for (Class<?> cls : MiscUtilities.findSubclasses(IProjectLoader.class, ipack, getClassLoader())) {	
+//			
+//			/*
+//			 * lookup annotation, ensure we can use the class
+//			 */
+//			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+//				continue;
+//			
+//			for (Annotation annotation : cls.getAnnotations()) {
+//				if (annotation instanceof ProjectLoader) {
+//					
+//					String folder = ((ProjectLoader)annotation).folder();
+//					String description = ((ProjectLoader)annotation).description();
+//					Thinklab.get().registerProjectLoader(folder, (Class<?>) cls);	
+//					break;
+//				}
+//			}
+//		}
+//
+//	}
 
 	
 	protected void loadRESTHandlers() throws ThinklabException {
@@ -859,37 +721,36 @@ public abstract class ThinklabPlugin extends Plugin
 				}
 			}
 		}
-
 	}
-
-	protected void loadTransformations() throws ThinklabException {
-		
-		String ipack = this.getClass().getPackage().getName() + ".transformations";
-		
-		for (Class<?> cls : MiscUtilities.findSubclasses(ITransformation.class, ipack, getClassLoader())) {	
-			
-			/*
-			 * lookup annotation, ensure we can use the class
-			 */
-			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
-				continue;
-			
-			for (Annotation annotation : cls.getAnnotations()) {
-				if (annotation instanceof DataTransformation) {
-					
-					String name = ((DataTransformation)annotation).id();
-					try {
-						TransformationFactory.get().registerTransformation(name, (ITransformation)cls.newInstance());
-					} catch (Exception e) {
-						throw new ThinklabValidationException(e);
-					}
-					
-					break;
-				}
-			}
-		}
-
-	}
+//
+//	protected void loadTransformations() throws ThinklabException {
+//		
+//		String ipack = this.getClass().getPackage().getName() + ".transformations";
+//		
+//		for (Class<?> cls : MiscUtilities.findSubclasses(ITransformation.class, ipack, getClassLoader())) {	
+//			
+//			/*
+//			 * lookup annotation, ensure we can use the class
+//			 */
+//			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+//				continue;
+//			
+//			for (Annotation annotation : cls.getAnnotations()) {
+//				if (annotation instanceof DataTransformation) {
+//					
+//					String name = ((DataTransformation)annotation).id();
+//					try {
+//						TransformationFactory.get().registerTransformation(name, (ITransformation)cls.newInstance());
+//					} catch (Exception e) {
+//						throw new ThinklabValidationException(e);
+//					}
+//					
+//					break;
+//				}
+//			}
+//		}
+//
+//	}
 
 	protected void loadKnowledgeImporters() {
 	
@@ -1010,8 +871,6 @@ public abstract class ThinklabPlugin extends Plugin
 			lis.prePluginUnloaded(this);
 		}
 		
-		unloadExtensions();
-		
 		unloadKboxes();
 		unloadInstanceImplementationConstructors();
 		unloadCommands();
@@ -1083,65 +942,6 @@ public abstract class ThinklabPlugin extends Plugin
 		ontologies.clear();
 	}
 
-	@Deprecated
-	protected void loadCommands() throws ThinklabException {
-
-		for (Extension ext : getOwnThinklabExtensions("command-handler")) {
-
-			ICommandHandler chandler = (ICommandHandler) getHandlerInstance(ext, "class");
-
-			if (chandler == null)
-				continue;
-			
-			String name = getParameter(ext, "command-name");
-			String description = getParameter(ext, "command-description");
-			
-			CommandDeclaration declaration = new CommandDeclaration(name, description);
-			
-			String retType = getParameter(ext, "return-type");
-			
-			if (retType != null)
-				declaration.setReturnType(KnowledgeManager.get().requireConcept(retType));
-			
-			String[] aNames = getParameter(ext, "argument-names","").split(",");
-			String[] aTypes = getParameter(ext, "argument-types","").split(",");
-			String[] aDesc =  getParameter(ext, "argument-descriptions","").split(",");
-
-			for (int i = 0; i < aNames.length; i++) {
-				if (!aNames[i].isEmpty())
-					declaration.addMandatoryArgument(aNames[i], aDesc[i], aTypes[i]);
-			}
-			
-			String[] oaNames = getParameter(ext, "optional-argument-names","").split(",");
-			String[] oaTypes = getParameter(ext, "optional-argument-types","").split(",");
-			String[] oaDesc =  getParameter(ext, "optional-argument-descriptions","").split(",");
-			String[] oaDefs =  getParameter(ext, "optional-argument-default-values","").split(",");
-
-			for (int i = 0; i < oaNames.length; i++) {
-				if (!oaNames[i].isEmpty())
-					declaration.addOptionalArgument(oaNames[i], oaDesc[i], oaTypes[i], oaDefs[i]);				
-			}
-
-			String[] oNames = getParameter(ext, "option-names","").split(",");
-			String[] olNames = getParameter(ext, "option-long-names","").split(",");
-			String[] oaLabel = getParameter(ext, "option-argument-labels","").split(",");
-			String[] oTypes = getParameter(ext, "option-types","").split(",");
-			String[] oDesc =  getParameter(ext, "option-descriptions","").split(",");
-
-			for (int i = 0; i < oNames.length; i++) {
-				if (!oNames[i].isEmpty())
-						declaration.addOption(
-								oNames[i],
-								olNames[i], 
-								(oaLabel[i].equals("") ? null : oaLabel[i]), 
-								oDesc[i], 
-								oTypes[i]);
-			}
-			
-			CommandManager.get().registerCommand(declaration, chandler);
-			
-		}
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#hasResource(java.lang.String)

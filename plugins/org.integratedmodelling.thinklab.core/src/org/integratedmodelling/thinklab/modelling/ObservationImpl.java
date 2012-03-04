@@ -1,13 +1,13 @@
 package org.integratedmodelling.thinklab.modelling;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
-import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.model.LanguageElement;
-import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
@@ -84,6 +84,18 @@ public class ObservationImpl implements IObservation {
 
 	@Override
 	public IContext getContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IProperty getContextProperty() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<IObservation> getContextObjects() {
 		// TODO Auto-generated method stub
 		return null;
 	}

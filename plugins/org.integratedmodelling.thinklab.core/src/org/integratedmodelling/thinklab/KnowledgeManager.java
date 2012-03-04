@@ -187,11 +187,6 @@ public class KnowledgeManager {
 	public KnowledgeManager() throws ThinklabException {
 		
 		KM = this;
-		
-		String smClass = 
-			Thinklab.get().getProperties().getProperty(
-				"thinklab.sessionmanager.class",
-				"org.integratedmodelling.thinklab.session.SingleSessionManager");
 
 		String krClass = 
 			Thinklab.get().getProperties().getProperty(
@@ -202,9 +197,6 @@ public class KnowledgeManager {
 		
 		Class<?> cls = null;
 		try {
-
-			cls = Thinklab.get().getClassLoader().loadClass(smClass);
-
 			cls = Thinklab.get().getClassLoader().loadClass(krClass);
 			kr =  (IKnowledgeRepository) cls.newInstance();
 

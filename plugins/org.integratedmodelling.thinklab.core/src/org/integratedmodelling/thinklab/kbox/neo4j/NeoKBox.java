@@ -78,4 +78,28 @@ public class NeoKBox implements IKbox {
 	public String getUri() {
 		return _url;
 	}
+
+	@Override
+	public Object retrieve(long id) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object retrieve(long id, int flags) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void removeAll(IQuery query) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Object> query(IQuery query, int flags) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

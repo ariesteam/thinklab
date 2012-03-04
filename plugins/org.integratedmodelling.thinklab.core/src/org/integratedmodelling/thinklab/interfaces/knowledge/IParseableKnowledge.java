@@ -28,7 +28,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IInstance;
  * literals in Thinklab lists (and derived formalisms such as OPAL) using the syntax (# literal).
  * 
  * @author Ferdinando
- *
+ * @deprecated - use conceptualization as necessary
  */
 public interface IParseableKnowledge {
 

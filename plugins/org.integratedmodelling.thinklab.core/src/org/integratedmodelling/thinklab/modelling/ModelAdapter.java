@@ -19,7 +19,10 @@
  */
 package org.integratedmodelling.thinklab.modelling;
 
+import java.util.List;
+
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.lang.model.AgentModel;
 import org.integratedmodelling.lang.model.Context;
 import org.integratedmodelling.lang.model.Model;
@@ -28,10 +31,18 @@ import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.lang.model.Scenario;
 import org.integratedmodelling.lang.model.Storyline;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.lang.IOperator;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.project.IProject;
+import org.integratedmodelling.thinklab.constraint.Constraint;
+import org.integratedmodelling.thinklab.modelling.internal.MN;
 import org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository;
 
 /**
@@ -64,6 +75,7 @@ public class ModelAdapter {
 				proj == null ? 
 					FileKnowledgeRepository.DEFAULT_TEMP_URI : 
 					proj.getOntologyNamespacePrefix();
+		
 		IOntology ont = 
 				KnowledgeManager.get().getKnowledgeRepository().createOntology(namespace.getId(), urlPrefix);
 		ont.define(namespace.getAxioms());
@@ -74,7 +86,60 @@ public class ModelAdapter {
 			ret._modelObjects.add(createModelObject(o));
 		}
 		
+		/*
+		 * TODO
+		 * sync with designated kbox
+		 */
+		syncNamespace(ret);
+		
 		return ret;
+	}
+
+	private void syncNamespace(INamespace ns) throws ThinklabException {
+
+		IKbox kbox = Thinklab.get().getStorageKboxForNamespace(ns);
+		
+		if (kbox == null) 
+			return;
+		
+		/*
+		 * see if namespace was there; if so, compare last modification
+		 * dates, only proceed if ns is newer
+		 */
+		IQuery query = new Constraint(MN.NAMESPACE).restrict(MN.HAS_ID, IOperator.EQUALS, ns.getNamespace());
+		List<Object> ret = 
+				kbox.query(
+						query,
+						IKbox.KBOX_LITERALS_ONLY | IKbox.KBOX_RETRIEVE_ANNOTATIONS);
+		
+		if (ret.size() > 0) {
+			
+			SemanticAnnotation ans = (SemanticAnnotation) ret.get(0);
+			ISemanticLiteral tst = ans.getValue(MN.HAS_TIMESTAMP);
+			if (tst != null && tst.asLong() >= ns.getLastModification())
+				return;
+			
+			kbox.removeAll(query);
+		}
+		
+		for (IModelObject o : ns.getModelObjects()) {
+
+			if (! (o instanceof IContext))
+				continue;
+
+			/*
+			 * TODO
+			 * determine if this context is wrapping an observation to
+			 * be stored; if so, save it for possible future storage in 
+			 * the designated kbox.
+			 * 
+			 * Criteria for storage: context wraps 
+			 * at least one observation that has an external datasource
+			 * that has no errors.
+			 */
+
+		
+		}
 	}
 
 	private IModelObject createModelObject(ModelObject o) {
@@ -84,6 +149,9 @@ public class ModelAdapter {
 		if (o instanceof Model) {
 			ret = new ModelImpl((Model)o);
 		} else if (o instanceof Context) {
+		
+			ret = new ContextImpl((Context)o);
+
 			
 		} else if (o instanceof AgentModel) {
 			

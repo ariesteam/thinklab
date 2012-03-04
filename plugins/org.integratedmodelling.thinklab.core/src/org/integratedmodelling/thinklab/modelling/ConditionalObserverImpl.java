@@ -1,0 +1,39 @@
+package org.integratedmodelling.thinklab.modelling;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.lang.model.ObservingObject;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IExpression;
+import org.integratedmodelling.thinklab.api.modelling.IAccessor;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IObserver;
+
+public class ConditionalObserverImpl extends ObserverImpl {
+
+	ArrayList<Pair<IObserver,IExpression>> _observers;
+	
+	public List<Pair<IObserver,IExpression>> getObservers() {
+		return _observers;
+	}
+	
+	public ConditionalObserverImpl(ObservingObject bean) {
+		super(bean);
+	}
+
+	@Override
+	protected IAccessor getAccessor(IContext context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getStateType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+}

@@ -51,7 +51,7 @@ import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.modelling.Context;
+import org.integratedmodelling.thinklab.modelling.ContextImpl;
 import org.integratedmodelling.thinklab.modelling.ModelAdapter;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 
@@ -65,7 +65,7 @@ public class REPL {
 	private OutputStream output = System.out;
 	private ISession session = null;
 
-	private IContext context = new Context();
+	private IContext context = new ContextImpl();
 	
 	class Resolver implements IResolver {
 

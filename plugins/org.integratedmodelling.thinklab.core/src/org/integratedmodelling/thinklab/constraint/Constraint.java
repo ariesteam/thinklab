@@ -30,11 +30,11 @@ import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.lang.IOperator;
 
 
 /**
@@ -230,6 +230,10 @@ public class Constraint implements IQuery {
 		return restrict(
 				restrictions.toArray(
 						new Restriction[restrictions.size()]));
+	}
+	
+	public Constraint restrict(String property, String operator, Object value) throws ThinklabException {
+		return restrict(LogicalConnector.INTERSECTION, new Restriction(property, operator, value));
 	}
 	
 	/* (non-Javadoc)

@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 
@@ -80,6 +81,21 @@ public class ModelManager implements IModelManager, IModelFactory {
 	// API source beans for all the model objects
 	private Hashtable<String, Namespace> namespaceBeans = new Hashtable<String, Namespace>();
 
+	class FunctionDescriptor {
+		public FunctionDescriptor(String id, String[] parameterNames,
+				Class<?> cls) {
+			this._id = id;
+			this._parameterNames = parameterNames;
+			this._class = cls;
+		}
+		String   _id;
+		String[] _parameterNames;
+		Class<?> _class;
+	}
+	
+	private HashMap<String, FunctionDescriptor> _functions =
+			new HashMap<String, ModelManager.FunctionDescriptor>();
+	
 	/**
 	 * This one resolves namespace source files across imported plugins and handles errors.
 	 * @author Ferd
@@ -596,6 +612,11 @@ public class ModelManager implements IModelManager, IModelFactory {
 	@Override
 	public INamespace processNamespace(Namespace namespace) throws ThinklabException {
 		return new ModelAdapter().createNamespace(namespace);
+	}
+
+	public void registerFunction(String id, String[] parameterNames,
+			Class<?> cls) {
+		_functions.put(id, new FunctionDescriptor(id, parameterNames, cls));
 	}
 
 

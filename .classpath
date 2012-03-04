@@ -7,8 +7,6 @@
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.shell/classes" path="plugins/org.integratedmodelling.thinklab.shell/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.searchengine/classes" path="plugins/org.integratedmodelling.thinklab.searchengine/src"/>
 	<classpathentry excluding="org/integratedmodelling/thinklab/impl/owlapi/" kind="src" output="plugins/org.integratedmodelling.thinklab.core/classes" path="plugins/org.integratedmodelling.thinklab.core/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.sql/classes" path="plugins/org.integratedmodelling.thinklab.sql/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.opal/classes" path="plugins/org.integratedmodelling.thinklab.opal/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/colt.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/ext-1.1.1.jar"/>
@@ -86,8 +84,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.searchengine/lib/jericho-html-2.5.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.searchengine/lib/lucene-core-2.2.0.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.searchengine/lib/PDFBox-0.7.3.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.sql/lib/hsqldb.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.sql/lib/postgresql-8.2dev-503.jdbc3.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.thinkscape/lib/growl.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.thinkscape/lib/prefuse.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.time/lib/joda-time-1.4.jar"/>

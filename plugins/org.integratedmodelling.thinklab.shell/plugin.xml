@@ -4,7 +4,6 @@
 	<requires>
 		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.core" reverse-lookup="false"/>
 		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.commandline" reverse-lookup="false"/>
-		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.opal" reverse-lookup="false"/>
 		<import exported="false" match="compatible" optional="false" plugin-id="org.integratedmodelling.thinklab.searchengine" reverse-lookup="false"/>
 	</requires>	
 	<runtime>

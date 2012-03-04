@@ -39,6 +39,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
+import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
@@ -172,11 +173,11 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 			ClassLoader cls = Thread.currentThread().getContextClassLoader();
 			Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader ()); 
 
-			logger().info("initializing Clojure runtime");
-			RT.loadResourceScript("thinklab.clj");			
-			RT.loadResourceScript("utils.clj");			
-			RT.loadResourceScript("knowledge.clj");			
-			logger().info("Clojure initialized successfully");
+//			logger().info("initializing Clojure runtime");
+//			RT.loadResourceScript("thinklab.clj");			
+//			RT.loadResourceScript("utils.clj");			
+//			RT.loadResourceScript("knowledge.clj");			
+//			logger().info("Clojure initialized successfully");
 			
 			Thread.currentThread().setContextClassLoader(cls); 
 
@@ -513,6 +514,26 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/**
+	 * Return the designated kbox to store data for this namespace.
+	 * In this implementation, the projects that contain the namespace
+	 * can designate a kbox; if not, this defaults to a public
+	 * overall kbox if one exists.
+	 *  
+	 * @param ns
+	 * @return
+	 */
+	public IKbox getStorageKboxForNamespace(INamespace ns) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IKbox getLookupKboxForNamespace(INamespace ns) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 	/*
 	 * ---------------------------------------------------------------------------------------- 

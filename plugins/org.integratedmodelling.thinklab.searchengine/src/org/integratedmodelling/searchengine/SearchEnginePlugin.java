@@ -186,33 +186,7 @@ public class SearchEnginePlugin extends ThinklabPlugin {
 		}
 		
 		return defaultSearchEngine;
-	}
-	
-	/**
-	 * Load the search engines specified in the passed plugin and set them in the
-	 * engine repository. Must be called explicitly by plugins declaring search engines;
-	 * otherwise it usually ends up being called too early, like when the kbox we want to
-	 * index hasn't been created yet.
-	 * 
-	 * @param pluginId
-	 * @throws ThinklabException
-	 */
-	public List<SearchEngine> loadSearchEngines(String pluginId) throws ThinklabException {
-
-		ArrayList<SearchEngine> ret = new ArrayList<SearchEngine>();
-	
-		
-		/*
-		 * find all search engines declared by plugins. At this point we should have
-		 * all kboxes and ontologies.
-		 */
-		for (Extension ext : getPluginExtensions(pluginId, PLUGIN_ID, "search-engine")) {
-			ret.add(createSearchEngine(ext, getProperties()));
-		}
-		
-		return ret;
-	}
-	
+	}	
 
 	@Override
 	protected void load(KnowledgeManager km) throws ThinklabException {

@@ -134,10 +134,12 @@ public class NumberValue extends Value implements IParseable {
         return concept.is(KnowledgeManager.Integer());
     }
     
+    @Override
     public double asDouble() {
         return (double)value;
     }
     
+    @Override
     public long asLong() {
         return (long)value;
     }
@@ -146,6 +148,7 @@ public class NumberValue extends Value implements IParseable {
         return (float)value;
     }
     
+    @Override
     public int asInteger() {
         return (int)value;
     }

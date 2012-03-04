@@ -29,7 +29,7 @@ import java.lang.annotation.RetentionPolicy;
  * used in the corescience and modelling plugins.
  * 
  * @author Ferdinando Villa
- *
+ * @deprecated throw away this bullshit.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

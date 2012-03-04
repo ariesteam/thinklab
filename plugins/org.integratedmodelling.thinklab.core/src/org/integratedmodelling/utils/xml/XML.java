@@ -130,18 +130,18 @@ public class XML {
 						Object no = it.next();
 						if (no instanceof XmlNode) {
 							self.appendChild(((XmlNode)no).create(self, doc));
-						} else if (no instanceof IList) {
-							self.appendChild(XMLDocument.createXmlNode((IList)no).create(self, doc));
-						} else {
+						} /* else if (no instanceof IList) {
+							self.appendChild(((IList)no).createXmlNode().create(self, doc));
+						} */ else {
 							throw new ThinklabValidationException(
 								"XML.node: collections must be of XmlNode or Polylist");	
 						}
 					}
 				} else if (o instanceof XmlNode) {
 					self.appendChild(((XmlNode)o).create(self, doc));
-				} else if (o instanceof IList) {
-					self.appendChild(XMLDocument.createXmlNode((IList)o).create(self, doc));					
-				}
+				} /* else if (o instanceof IList) {
+					self.appendChild(((IList)o).createXmlNode().create(self, doc));					
+				}  */
 			}			
 		}
 	}
@@ -204,8 +204,7 @@ public class XML {
 			return ret;
 		
 		for (Object o : objects) {
-			if (o != null)
-				ret.contents.add(o);
+			ret.contents.add(o);
 		}
 		
 		return ret;
