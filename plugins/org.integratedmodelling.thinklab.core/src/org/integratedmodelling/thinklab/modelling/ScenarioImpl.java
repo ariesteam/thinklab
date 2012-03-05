@@ -22,12 +22,17 @@ package org.integratedmodelling.thinklab.modelling;
 import java.util.Set;
 
 import org.integratedmodelling.lang.model.LanguageElement;
+import org.integratedmodelling.lang.model.Scenario;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
 public class ScenarioImpl extends NamespaceQualified implements IScenario {
+
+	public ScenarioImpl(Scenario o) {
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public Set<IInstance> getObservables() {

@@ -21,17 +21,21 @@ package org.integratedmodelling.thinklab.modelling;
 
 import java.util.List;
 
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.lang.model.AgentModel;
+import org.integratedmodelling.lang.model.ConditionalObserver;
 import org.integratedmodelling.lang.model.Context;
 import org.integratedmodelling.lang.model.Model;
 import org.integratedmodelling.lang.model.ModelObject;
 import org.integratedmodelling.lang.model.Namespace;
+import org.integratedmodelling.lang.model.Observer;
 import org.integratedmodelling.lang.model.Scenario;
 import org.integratedmodelling.lang.model.Storyline;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
@@ -40,6 +44,7 @@ import org.integratedmodelling.thinklab.api.lang.IOperator;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.modelling.internal.MN;
@@ -147,18 +152,40 @@ public class ModelAdapter {
 		IModelObject ret = null;
 		
 		if (o instanceof Model) {
+			
 			ret = new ModelImpl((Model)o);
+			((ModelImpl)ret)._observer = createObserver(((Model)o).getObserver());
+			((ModelImpl)ret)._observable = 
+					new SemanticAnnotation(((Model)o).getObservable(), Thinklab.get());
+			
+			/*
+			 * TODO submit other observables for the accessor and validate them against
+			 * existing models in namespace.
+			 */
+			
 		} else if (o instanceof Context) {
-		
 			ret = new ContextImpl((Context)o);
-
-			
 		} else if (o instanceof AgentModel) {
-			
+			ret = new AgentModelImpl((AgentModel)o);
 		} else if (o instanceof Scenario) {
-			
+			ret = new ScenarioImpl((Scenario)o);
 		} else if (o instanceof Storyline) {
+			ret = new StorylineImpl((Storyline)o);
+		}
+		return ret;
+	}
+
+	private IObserver createObserver(Observer observer) {
+
+		IObserver ret = null;
+		if (observer != null) {
 			
+			if (observer instanceof ConditionalObserver) {
+				ret = new ConditionalObserverImpl(observer);
+				for (Pair<Observer, IExpression>  o : ((ConditionalObserver)observer).getObservers()) {
+					((ConditionalObserverImpl)ret).addObserver(createObserver(o.getFirst()), o.getSecond());
+				}
+			}
 		}
 		return ret;
 	}

@@ -36,14 +36,17 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.interpreter.ModelGenerator;
 import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.lang.model.ConceptObject;
+import org.integratedmodelling.lang.model.ModelObject;
 import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.lang.model.PropertyObject;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
@@ -342,6 +345,18 @@ public class ModelManager implements IModelManager, IModelFactory {
 			
 			return co;
 		}
+
+		@Override
+		public IExpression resolveFunction(String functionId,
+				Collection<String> parameterNames) {
+			return ModelManager.get().resolveFunction(functionId, parameterNames);
+		}
+
+		@Override
+		public void onModelObjectDefined(Namespace namespace, ModelObject ret) {
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
 
@@ -355,6 +370,24 @@ public class ModelManager implements IModelManager, IModelFactory {
 		return _resolver;
 	}
 	
+	public IExpression resolveFunction(String functionId,
+			Collection<String> parameterNames) {
+		
+		/*
+		 * TODO see if we want to check or validate parameters
+		 */
+		IExpression exp = null;
+		FunctionDescriptor fd = _functions.get(functionId);
+		if (fd != null) {
+			try {
+				exp = (IExpression) fd._class.newInstance();
+			} catch (Exception e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+		return exp;
+	}
+
 	/*
 	 * we put all model observable instances here.
 	 */

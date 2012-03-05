@@ -14,7 +14,8 @@ import org.integratedmodelling.thinklab.api.modelling.IObserver;
 public class ConditionalObserverImpl extends ObserverImpl {
 
 	ArrayList<Pair<IObserver,IExpression>> _observers;
-	
+	IConcept _stateType = null;
+
 	public List<Pair<IObserver,IExpression>> getObservers() {
 		return _observers;
 	}
@@ -31,8 +32,19 @@ public class ConditionalObserverImpl extends ObserverImpl {
 
 	@Override
 	public IConcept getStateType() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		if (_stateType == null) {
+
+			/*
+			 * TODO ensure that all observers have a common state type but
+			 * promoting deterministic to probabilistic if necessary.
+			 */
+		}
+		return _stateType;
+	}
+
+	public void addObserver(IObserver observer, IExpression expression) {
+		_observers.add(new Pair<IObserver, IExpression>(observer, expression));
 	}
 
 

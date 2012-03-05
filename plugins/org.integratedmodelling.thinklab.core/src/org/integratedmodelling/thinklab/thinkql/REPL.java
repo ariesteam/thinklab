@@ -42,9 +42,11 @@ import java.util.Collection;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.interpreter.ModelGenerator;
 import org.integratedmodelling.lang.model.ConceptObject;
+import org.integratedmodelling.lang.model.ModelObject;
 import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.lang.model.PropertyObject;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
@@ -127,6 +129,19 @@ public class REPL {
 				Namespace namespace, int line) throws ThinklabException {
 			// TODO Auto-generated method stub
 			return null;
+		}
+
+		@Override
+		public IExpression resolveFunction(String functionId,
+				Collection<String> parameterNames) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void onModelObjectDefined(Namespace namespace, ModelObject ret) {
+			// TODO Auto-generated method stub
+			
 		}
 		
 	}

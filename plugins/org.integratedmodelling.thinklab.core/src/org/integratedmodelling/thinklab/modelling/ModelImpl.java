@@ -21,17 +21,18 @@ import org.integratedmodelling.thinklab.modelling.internal.MN;
 
 public class ModelImpl implements IModel, IConceptualizable {
 
-
-	IInstance _observable;
-	
+	Model _bean;
+	SemanticAnnotation _observable;
+	IMetadata _metadata;
+	IObserver _observer;
 
 	public ModelImpl(Model o) {
-		// TODO Auto-generated constructor stub
+		_bean = o;
 	}
 
 	@Override
 	public IInstance getObservable() {
-		return _observable;
+		return null; //_observable;
 	}
 
 	@Override
@@ -40,7 +41,7 @@ public class ModelImpl implements IModel, IConceptualizable {
 		ArrayList<Object> ret = new ArrayList<Object>();
 		
 		ret.add(MN.MODEL);
-		ret.add(PolyList.list(MN.HAS_OBSERVABLE, _observable.conceptualize().asList()));
+		ret.add(PolyList.list(MN.HAS_OBSERVABLE, _observable.asList()));
 		
 		return new SemanticAnnotation(PolyList.fromCollection(ret), Thinklab.get());
 	}
@@ -53,8 +54,7 @@ public class ModelImpl implements IModel, IConceptualizable {
 
 	@Override
 	public IObserver getObserver() {
-		// TODO Auto-generated method stub
-		return null;
+		return _observer;
 	}
 
 	@Override
@@ -73,31 +73,27 @@ public class ModelImpl implements IModel, IConceptualizable {
 	@Override
 	public LanguageElement getLanguageElement() {
 		// TODO Auto-generated method stub
-		return null;
+		return _bean;
 	}
 
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return _bean.getId();
 	}
 
 	@Override
 	public String getNamespace() {
-		// TODO Auto-generated method stub
-		return null;
+		return _bean.getNamespace().getId();
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return getNamespace() + "/" + getId();
 	}
 
 	@Override
 	public IMetadata getMetadata() {
-		// TODO Auto-generated method stub
-		return null;
+		return _metadata;
 	}
 
 	@Override
