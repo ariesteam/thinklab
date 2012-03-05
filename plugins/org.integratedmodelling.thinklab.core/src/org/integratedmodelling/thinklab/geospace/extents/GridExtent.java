@@ -29,7 +29,6 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.PhysicalNature;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
@@ -39,7 +38,6 @@ import org.integratedmodelling.thinklab.api.modelling.IDataSource.Transformation
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
-import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.thinklab.geospace.gis.ThinklabRasterizer;
@@ -284,8 +282,8 @@ public class GridExtent extends ArealExtent {
 
 		this.xDivs = xDivs;
 		this.yDivs = yDivs;
-		cellLength = getNormalizedEnvelope().getWidth() / xDivs;
-		cellHeight = getNormalizedEnvelope().getHeight() / yDivs;
+		cellLength = getEnvelope().getWidth() / xDivs;
+		cellHeight = getEnvelope().getHeight() / yDivs;
 	}
 
 	public int[] getXYCoordinates(int index) {
@@ -397,7 +395,7 @@ public class GridExtent extends ArealExtent {
 	 */
 	public java.awt.geom.Rectangle2D.Double getDefaultBox() {
 		
-		ReferencedEnvelope env = getDefaultEnvelope();
+		ReferencedEnvelope env = getEnvelope();
 		return new java.awt.geom.Rectangle2D.Double(
 				env.getMinX(),
 				env.getMinY(), 
@@ -411,7 +409,7 @@ public class GridExtent extends ArealExtent {
 	
 	public java.awt.geom.Rectangle2D.Double getNormalizedBox() {
 		
-		ReferencedEnvelope env = getNormalizedEnvelope();
+		ReferencedEnvelope env = getEnvelope();
 		return new java.awt.geom.Rectangle2D.Double(
 				env.getMinX(),
 				env.getMinY(), 
@@ -489,7 +487,7 @@ public class GridExtent extends ArealExtent {
 
 	public Geometry getBoundary() {
 		
-		ReferencedEnvelope env = getNormalizedEnvelope(); 
+		ReferencedEnvelope env = getEnvelope(); 
 		return ShapeValue.makeCell(env.getMinX(), env.getMinY(), env.getMaxX(), env.getMaxY());
 	}
 
@@ -647,11 +645,11 @@ public class GridExtent extends ArealExtent {
 		// System.out.println("cells are " + cor + " and " + cot + "; chosen " + cell + " because areas are " + aor + " and " + aot);
 		
 		/* recompute the number of cells in the new extent */
-		xc = (int)Math.round(nwext.getNormalizedEnvelope().getWidth()/cell.getWidth());
-		yc = (int)Math.round(nwext.getNormalizedEnvelope().getHeight()/cell.getHeight());
+		xc = (int)Math.round(nwext.getEnvelope().getWidth()/cell.getWidth());
+		yc = (int)Math.round(nwext.getEnvelope().getHeight()/cell.getHeight());
 		
-		errx = nwext.getNormalizedEnvelope().getWidth() - (cell.getWidth() * xc);
-		erry = nwext.getNormalizedEnvelope().getHeight() - (cell.getHeight() * yc);
+		errx = nwext.getEnvelope().getWidth() - (cell.getWidth() * xc);
+		erry = nwext.getEnvelope().getHeight() - (cell.getHeight() * yc);
 		
 		// System.out.println("new cell size is " + xc + "," + yc);
 		
@@ -859,10 +857,10 @@ public class GridExtent extends ArealExtent {
 		/*
 		 * compute intersection of envelopes in our CSR. Ignore axis swap finally.
 		 */
-		ReferencedEnvelope ourenv = this.getNormalizedEnvelope();
+		ReferencedEnvelope ourenv = this.getEnvelope();
 		ReferencedEnvelope itsenv = null;
 		try {
-			itsenv = ((ArealExtent)extent).getNormalizedEnvelope().transform(crs, true, 10);
+			itsenv = ((ArealExtent)extent).getEnvelope().transform(crs, true, 10);
 		} catch (Exception e) {
 			throw new ThinklabRuntimeException(e);
 		}

@@ -39,6 +39,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
@@ -49,7 +50,6 @@ import org.integratedmodelling.utils.NameGenerator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.referencing.cs.AxisDirection;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -333,7 +333,7 @@ public class FeatureRasterizer {
         close();
         
 		GridCoverage2D coverage = 
-			rasterFactory.create(NameGenerator.newName("mask"), raster, grid.getNormalizedEnvelope());
+			rasterFactory.create(NameGenerator.newName("mask"), raster, grid.getEnvelope());
 		
     	return coverage;
     }
@@ -353,9 +353,9 @@ public class FeatureRasterizer {
         }
 	}
 	
-	
+
 	public GridCoverage2D rasterize(String name, FeatureIterator<SimpleFeature> fc, String attributeName, IConcept valueType, 
-			String valueDefault, String valueExpression, ReferencedEnvelope env, ReferencedEnvelope normEnv,
+			String valueDefault, String valueExpression, ReferencedEnvelope env,
 			ReferencedEnvelope dataEnvelope) throws ThinklabException {
     	
     	if (raster == null) {
@@ -373,23 +373,17 @@ public class FeatureRasterizer {
     	if (env == null) {
     		throw new ThinklabValidationException("rasterizer: envelope must be passed");
     	} 
-    	
-    	/*
-    	 * if we have north-south on the X axis, swap the coordinates.
-    	 */
-    	if (env.getCoordinateReferenceSystem().getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH)) {
-    		// ZORK swapAxis = true;
-    	}
+
     	    	
     	/*
     	 * TODO check if we need to use a buffer like in Steve's code above
     	 */
     	java.awt.geom.Rectangle2D.Double box =
     		new java.awt.geom.Rectangle2D.Double(
-    				normEnv.getMinX(),
-    				normEnv.getMinY(), 
-    				normEnv.getWidth(), 
-    				normEnv.getHeight());
+    				env.getMinX(),
+    				env.getMinY(), 
+    				env.getWidth(), 
+    				env.getHeight());
 			     	
 		rasterize(fc, box, attributeName, valueType, valueDefault, dataEnvelope);
 
@@ -484,16 +478,16 @@ public class FeatureRasterizer {
         		n++;
         	} catch (Exception e) {
         		// timeouts are easy to get into here, we don't want them to kill the rasterization
-        		Geospace.get().logger().warn("problem reading feature #" + n + ": " + e.getMessage());
+        		Thinklab.get().logger().warn("problem reading feature #" + n + ": " + e.getMessage());
         	}
         	// log when we have to rasterize lots of features, so we know we should take action otherwise 
         	if (n > 0 && (n % 5000) == 0)
-        		Geospace.get().logger().info("rasterized " + n + "-th feature... that's a lot to rasterize");
+        		Thinklab.get().logger().info("rasterized " + n + "-th feature... that's a lot to rasterize");
         }
         
         close();
 
-        Geospace.get().logger().info("rasterized " + n + " features");
+        Thinklab.get().logger().info("rasterized " + n + " features");
        
     }
 
@@ -580,7 +574,7 @@ public class FeatureRasterizer {
         	}
         } catch (Exception e) {	        
             e.printStackTrace();	        
-            Geospace.get().logger().error(
+            Thinklab.get().logger().error(
             		"THE FEATURE COULD NOT BE RASTERIZED BASED ON THE '"+attributeName+
                     "' ATTRIBUTE VALUE OF '"+feature.getAttribute(attributeName).toString()+"'");	        
             return;	        

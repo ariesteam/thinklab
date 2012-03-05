@@ -22,20 +22,14 @@ package org.integratedmodelling.thinklab.geospace;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.apache.commons.io.FileUtils;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.metadata.iso.citation.Citations;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.ReferencingFactoryFinder;
@@ -46,8 +40,7 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.searchengine.QueryString;
-import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
@@ -55,7 +48,6 @@ import org.integratedmodelling.thinklab.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
 import org.opengis.referencing.FactoryException;
@@ -64,7 +56,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 import org.w3c.dom.Node;
 
-public class Geospace extends ThinklabPlugin  {
+public class Geospace  {
 	
 	private IConcept shapeType;
 	private IConcept pointType;
@@ -144,13 +136,22 @@ public class Geospace extends ThinklabPlugin  {
 	private CoordinateReferenceSystem defaultCRS = null;
 	private Boolean _useSquareCellsM;
 	
+	static private Geospace _this;
+	
 	public static Geospace get() {
-		return (Geospace) getPlugin(PLUGIN_ID);
+		if (_this == null) {
+			try {
+				_this = new Geospace();
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+		return _this;
 	}
 	
 	void registerAdditionalCRS() throws ThinklabException {
 		
-		URL epsg = getResourceURL("epsg.properties");
+		URL epsg = Thinklab.get().getResourceURL("proj/epsg.properties");
 		
 		if (epsg != null) {
 			Hints hints = 
@@ -170,30 +171,29 @@ public class Geospace extends ThinklabPlugin  {
 		}
 	}
 	
-	@Override
-	public void load(KnowledgeManager km) throws ThinklabException {
-		
-			
+	
+	private Geospace() throws ThinklabException {
+				
 			/*
 			 * TODO put all these class names into global strings
 			 */
-			pointType = km.requireConcept("geospace:Point");
-			lineStringType = km.requireConcept("geospace:LineString");
-			polygonType = km.requireConcept("geospace:Polygon");
-			multiPointType = km.requireConcept("geospace:MultiPoint");
-			multiLineStringType = km.requireConcept("geospace:MultiLineString");
-			multiPolygonType = km.requireConcept("geospace:MultiPolygon");
-			areaLocationInstance = km.requireInstance("geospace:ArealLocationInstance");
-			rasterGridInstance = km.requireInstance("geospace:RegularGridInstance");
-			spatialCoverageInstance = km.requireInstance("geospace:SpatialCoverageInstance");
-			arealLocationType = km.requireConcept("geospace:ArealLocation");
-			rasterSpaceType = km.requireConcept(RASTER_CONCEPTUAL_MODEL);
-			rasterGridObservable = km.requireConcept(RASTER_GRID_OBSERVABLE);
-			subdividedSpaceObservable = km.requireConcept("geospace:SubdividedSpace");
-			spaceObservable = km.requireConcept("geospace:SpaceObservable");
-			gridClassifierType = km.requireConcept(GRID_CLASSIFIER);
+			pointType = Thinklab.get().getConcept("geospace:Point");
+			lineStringType = Thinklab.get().getConcept("geospace:LineString");
+			polygonType = Thinklab.get().getConcept("geospace:Polygon");
+			multiPointType = Thinklab.get().getConcept("geospace:MultiPoint");
+			multiLineStringType = Thinklab.get().getConcept("geospace:MultiLineString");
+			multiPolygonType = Thinklab.get().getConcept("geospace:MultiPolygon");
+//			areaLocationInstance = Thinklab.get().getConcept("geospace:ArealLocationInstance");
+//			rasterGridInstance = Thinklab.get().getConcept("geospace:RegularGridInstance");
+//			spatialCoverageInstance = Thinklab.get().getConcept("geospace:SpatialCoverageInstance");
+			arealLocationType = Thinklab.get().getConcept("geospace:ArealLocation");
+			rasterSpaceType = Thinklab.get().getConcept(RASTER_CONCEPTUAL_MODEL);
+			rasterGridObservable = Thinklab.get().getConcept(RASTER_GRID_OBSERVABLE);
+			subdividedSpaceObservable = Thinklab.get().getConcept("geospace:SubdividedSpace");
+			spaceObservable = Thinklab.get().getConcept("geospace:SpaceObservable");
+			gridClassifierType = Thinklab.get().getConcept(GRID_CLASSIFIER);
 			
-			shapeType = km.requireConcept("geospace:SpatialRecord");
+			shapeType = Thinklab.get().getConcept("geospace:SpatialRecord");
 			
 			hasBoundingBoxPropertyID = "geospace:hasBoundingBox";
 			hasCentroidPropertyID = "geospace:hasCentroid";
@@ -218,8 +218,8 @@ public class Geospace extends ThinklabPlugin  {
 		 * create preferred CRS if one is specified. Highly advisable to set one if hybrid data
 		 * are used.
 		 */
-		if (getProperties().containsKey(PREFERRED_CRS_PROPERTY)) {	
-			preferredCRS = getCRSFromID(getProperties().getProperty(PREFERRED_CRS_PROPERTY));
+		if (Thinklab.get().getProperties().containsKey(PREFERRED_CRS_PROPERTY)) {	
+			preferredCRS = getCRSFromID(Thinklab.get().getProperties().getProperty(PREFERRED_CRS_PROPERTY));
 		}
 	}
 
@@ -259,7 +259,7 @@ public class Geospace extends ThinklabPlugin  {
 			}
 		}
 		
-		return useDefault ? get().getProperties().getProperty(PREFERRED_CRS_PROPERTY) : null;
+		return useDefault ? Thinklab.get().getProperties().getProperty(PREFERRED_CRS_PROPERTY) : null;
 
 	}
 	
@@ -396,37 +396,8 @@ public class Geospace extends ThinklabPlugin  {
 	}
 
 
-	@Override
-	protected void unload() throws ThinklabException {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public IConcept GridClassifier() {
 		return gridClassifierType;
-	}
-
-	/**
-	 * Ensure that the passed envelope is east-west on X axis, assuming it is representing
-	 * the axis order defined by the passed crs.
-	 * @param envelope
-	 * @param ccr
-	 * @return
-	 */
-	public static ReferencedEnvelope normalizeEnvelope(
-			ReferencedEnvelope envelope, CoordinateReferenceSystem ccr) {
-
-		ReferencedEnvelope ret = envelope;
-		if (ccr != null && ccr.getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH)) {
-			/*
-			 * swap x/y to obtain the right envelope according to the CRS
-			 */
-			ret = new ReferencedEnvelope(
-					envelope.getMinY(), envelope.getMaxY(),
-					envelope.getMinX(), envelope.getMaxX(), ccr);
-		} 
-		
-		return ret;
 	}
 
 	/**
@@ -496,59 +467,59 @@ public class Geospace extends ThinklabPlugin  {
 	 */
 	public void createGazetteer(Extension ext, Properties properties) throws ThinklabException {
 		
-		String id = getParameter(ext, "id");
-		
-		/*
-		 * find the declaring plugin so we can find data and files in its classpath
-		 */
-		ThinklabPlugin resourceFinder = null;
-		try {
-			resourceFinder =
-				(ThinklabPlugin)getManager().getPlugin(ext.getDeclaringPluginDescriptor().getId());
-		} catch (PluginLifecycleException e) {
-			throw new ThinklabValidationException("can't determine the plugin that created the gazetteer "+ id);
-		}
-		
-		Properties p = new Properties();
-		p.putAll(properties);
-		
-		/*
-		 * may point to a property file in the config dir
-		 */
-		String pfile = getParameter(ext, "property-file");
-		if (pfile != null) {
-			File f = new File(resourceFinder.getConfigPath() + "/" + pfile);
-			if (!f.exists()) {
-				
-				/*
-				 * exit silently, just print a warning
-				 */
-				logger().warn("gazetteer " + id + " cannot find the property file " +
-						pfile + "; initialization aborted");
-				return;
-			}
-			Properties pp = new Properties();
-			try {
-				pp.load(new FileInputStream(f));
-			} catch (Exception e) {
-				throw new ThinklabIOException(e);
-			}
-			p.putAll(pp);
-		}
-		
-		/*
-		 * can also specify properties inline
-		 */
-		for (Extension.Parameter aext : ext.getParameters("property")) {
-			String name = aext.getSubParameter("name").valueAsString();
-			String value = aext.getSubParameter("value").valueAsString();
-			p.setProperty(name, value);
-		}
-
-		log.info("creating gazetteer " + id);
-		IGazetteer ret = (IGazetteer) getHandlerInstance(ext, "class");
-		ret.initialize(p);
-		gazetteers.put(id, ret);
+//		String id = getParameter(ext, "id");
+//		
+//		/*
+//		 * find the declaring plugin so we can find data and files in its classpath
+//		 */
+//		ThinklabPlugin resourceFinder = null;
+//		try {
+//			resourceFinder =
+//				(ThinklabPlugin)getManager().getPlugin(ext.getDeclaringPluginDescriptor().getId());
+//		} catch (PluginLifecycleException e) {
+//			throw new ThinklabValidationException("can't determine the plugin that created the gazetteer "+ id);
+//		}
+//		
+//		Properties p = new Properties();
+//		p.putAll(properties);
+//		
+//		/*
+//		 * may point to a property file in the config dir
+//		 */
+//		String pfile = getParameter(ext, "property-file");
+//		if (pfile != null) {
+//			File f = new File(resourceFinder.getConfigPath() + "/" + pfile);
+//			if (!f.exists()) {
+//				
+//				/*
+//				 * exit silently, just print a warning
+//				 */
+//				logger().warn("gazetteer " + id + " cannot find the property file " +
+//						pfile + "; initialization aborted");
+//				return;
+//			}
+//			Properties pp = new Properties();
+//			try {
+//				pp.load(new FileInputStream(f));
+//			} catch (Exception e) {
+//				throw new ThinklabIOException(e);
+//			}
+//			p.putAll(pp);
+//		}
+//		
+//		/*
+//		 * can also specify properties inline
+//		 */
+//		for (Extension.Parameter aext : ext.getParameters("property")) {
+//			String name = aext.getSubParameter("name").valueAsString();
+//			String value = aext.getSubParameter("value").valueAsString();
+//			p.setProperty(name, value);
+//		}
+//
+//		log.info("creating gazetteer " + id);
+//		IGazetteer ret = (IGazetteer) getHandlerInstance(ext, "class");
+//		ret.initialize(p);
+//		gazetteers.put(id, ret);
 	}
 	
 	
@@ -760,7 +731,7 @@ public class Geospace extends ThinklabPlugin  {
 	public boolean squareCellsM() {
 		if (_useSquareCellsM == null) {
 			_useSquareCellsM = 
-					BooleanValue.parseBoolean(getProperties().getProperty("square.cells.meters", "false"));
+					BooleanValue.parseBoolean(Thinklab.get().getProperties().getProperty("square.cells.meters", "false"));
 		}
 		return _useSquareCellsM;
 	}

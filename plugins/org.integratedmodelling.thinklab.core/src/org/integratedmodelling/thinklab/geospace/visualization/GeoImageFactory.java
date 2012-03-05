@@ -45,7 +45,7 @@ import org.geotools.data.wms.response.GetMapResponse;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.geospace.Geospace;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.image.ColorMap;
@@ -111,7 +111,7 @@ public class GeoImageFactory {
 		for (int i = 0; ; i++) {
 			
 			String url = 
-				Geospace.get().getProperties().getProperty(WMS_IMAGERY_SERVER_PROPERTY + "." + i);
+					Thinklab.get().getProperties().getProperty(WMS_IMAGERY_SERVER_PROPERTY + "." + i);
 			
 			if (url == null)
 				break;
@@ -210,7 +210,7 @@ public class GeoImageFactory {
 		if (ret != null)
 			return ret;
 		
-		return Geospace.get().getResourceURL(worldImage);
+		return Thinklab.get().getResourceURL(worldImage);
 	}
 	
 	public URL getSatelliteImage(Envelope envelope, int width, int height) throws ThinklabException {
@@ -466,7 +466,7 @@ public class GeoImageFactory {
 				response = (GetMapResponse) _wms.issueRequest(request);
 				ret = ImageIO.read(response.getInputStream());
 			} catch (Exception e) {
-				Geospace.get().logger().warn("cannot get WFS imagery: " + e.getLocalizedMessage());
+				Thinklab.get().logger().warn("cannot get WFS imagery: " + e.getLocalizedMessage());
 				return null;
 			}
 			
@@ -482,7 +482,7 @@ public class GeoImageFactory {
 	
 	private Collection<Layer> getWMSLayers() {
 		
-		String zp = Geospace.get().getProperties().getProperty(WMS_LAYER_PROPERTY + "." + _wms_index);
+		String zp = Thinklab.get().getProperties().getProperty(WMS_LAYER_PROPERTY + "." + _wms_index);
 		ArrayList<Layer> layers = new ArrayList<Layer>();
 		for (Layer l : WMSUtils.getNamedLayers(_wms.getCapabilities())) {
 			if (zp == null || (zp != null && zp.contains(l.getName()))) {

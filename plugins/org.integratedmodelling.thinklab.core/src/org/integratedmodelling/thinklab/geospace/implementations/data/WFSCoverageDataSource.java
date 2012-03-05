@@ -25,6 +25,7 @@ import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.geospace.Geospace;
@@ -38,7 +39,7 @@ public class WFSCoverageDataSource extends VectorCoverageDataSource {
 	public void initialize(IInstance i) throws ThinklabException {
 
 		Properties p = new Properties();
-		p.putAll(Geospace.get().getProperties());
+		p.putAll(Thinklab.get().getProperties());
 		ISemanticLiteral server = i.get("geospace:hasServiceUrl");
 		String covId = i.get("geospace:hasCoverageId").toString();
 		if (server != null)

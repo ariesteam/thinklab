@@ -22,6 +22,7 @@ package org.integratedmodelling.thinklab.geospace.implementations.data;
 import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
@@ -40,7 +41,7 @@ public class WCSGridDataSource extends RegularRasterGridDataSource {
 	public void initialize(IInstance i) throws ThinklabException {
 		
 		Properties p = new Properties();
-		p.putAll(Geospace.get().getProperties());
+		p.putAll(Thinklab.get().getProperties());
 		ISemanticLiteral server = i.get("geospace:hasServiceUrl");
 		if (server != null)
 			p.put(WCSCoverage.WCS_SERVICE_PROPERTY, server.toString());
@@ -65,7 +66,7 @@ public class WCSGridDataSource extends RegularRasterGridDataSource {
 		}
 		String rid = i.get("geospace:hasCoverageId").toString();
 		
-		Geospace.get().logger().info("reading WCS source " + server + "#" + rid);
+		Thinklab.get().logger().info("reading WCS source " + server + "#" + rid);
 
 		this.coverage = 
 			new WCSCoverage(rid, p);

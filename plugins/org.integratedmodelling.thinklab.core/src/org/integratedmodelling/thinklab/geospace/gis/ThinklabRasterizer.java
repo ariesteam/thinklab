@@ -88,9 +88,9 @@ public class ThinklabRasterizer {
 
 				MathTransform transf = CRS.findMathTransform(
 						vCoverage.getCoordinateReferenceSystem(), 
-						extent.getDefaultEnvelope().getCoordinateReferenceSystem());
+						extent.getEnvelope().getCoordinateReferenceSystem());
 				
-				CoordinateReferenceSystem crs = extent.getDefaultEnvelope().getCoordinateReferenceSystem();
+				CoordinateReferenceSystem crs = extent.getEnvelope().getCoordinateReferenceSystem();
 				
 				p1 = JTS.transform(p1,null,transf); 
 				p2 = JTS.transform(p2,null,transf); 
@@ -106,7 +106,7 @@ public class ThinklabRasterizer {
 			}			
 			// OK, done
 			
-			iterator = vCoverage.getFeatureIterator(extent.getDefaultEnvelope(), valueId);
+			iterator = vCoverage.getFeatureIterator(extent.getEnvelope(), valueId);
 			
 			coverage = rasterizer.rasterize(
 					vCoverage.getLayerName() + 
@@ -118,8 +118,7 @@ public class ThinklabRasterizer {
 					valueType,
 					valueDefault,
 					valueExpression,
-					extent.getDefaultEnvelope(),
-					extent.getNormalizedEnvelope(),
+					extent.getEnvelope(),
 					dataEnvelope);
 			
 		} finally {

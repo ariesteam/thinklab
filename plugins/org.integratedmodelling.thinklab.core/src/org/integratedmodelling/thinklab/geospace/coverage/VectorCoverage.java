@@ -40,6 +40,7 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.geospace.Geospace;
@@ -227,7 +228,7 @@ public class VectorCoverage implements ICoverage {
 		try {
 
 			// SPI be damned
-			clsl = Geospace.get().swapClassloader();			
+			clsl = Thinklab.get().swapClassloader();			
 			
 			if (envelope == null) {
 				ret = new DelegateFeatureIterator<SimpleFeature>(getFeatures(), getFeatures().iterator());
@@ -302,7 +303,7 @@ public class VectorCoverage implements ICoverage {
 			}
 
 		} finally {
-			Geospace.get().resetClassLoader(clsl);
+			Thinklab.get().resetClassLoader(clsl);
 		}
 	
 		return ret;

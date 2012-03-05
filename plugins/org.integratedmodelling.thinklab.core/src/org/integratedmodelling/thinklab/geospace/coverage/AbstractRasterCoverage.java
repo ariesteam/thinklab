@@ -263,7 +263,7 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	public boolean matchesExtent(GridExtent extent) {
 		
 		return 
-			extent.getNormalizedEnvelope().equals(boundingBox) &&
+			extent.getEnvelope().equals(boundingBox) &&
 			getXCells() == extent.getXCells() &&
 			getYCells() == extent.getYCells() &&
 			crs.equals(extent.getCRS());

@@ -106,10 +106,9 @@ public class SpatialCoverage extends ObservationImpl implements IExtent {
 //	@Override
 	public ShapeValue getBoundingBox() {
 		try {
-			 ReferencedEnvelope e = Geospace.normalizeEnvelope(
-					extent.getDefaultEnvelope().transform(
-							Geospace.get().getDefaultCRS(), true, 10), 
-							Geospace.get().getDefaultCRS());
+			 ReferencedEnvelope e = 
+					extent.getEnvelope().transform(
+							Geospace.get().getDefaultCRS(), true, 10);
 
 			return new ShapeValue(e);
 		} catch (Exception e) {

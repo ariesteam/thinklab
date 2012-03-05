@@ -38,7 +38,6 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.InteractiveSubcommandHandler;
 import org.integratedmodelling.thinklab.geospace.Geospace;
-import org.integratedmodelling.thinklab.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -201,18 +200,11 @@ public class WFSToOPAL extends InteractiveSubcommandHandler {
 			int n = Integer.parseInt(ask("Attribute to use? "));
 			String aname = n == 0 ? null : anames.get(n-1);
 
-			
-			/*
-			 * normalize envelope for OPAL output
-			 */
-			envelope = Geospace.normalizeEnvelope(envelope, crs);
-
 			if (forced != null) {
 
 				ReferencedEnvelope fenv = this.forced.getEnvelope();
 				
 				try {
-					fenv = Geospace.normalizeEnvelope(fenv, crs);
 					say("forcing to include: " + fenv);					
 					fenv = fenv.transform(crs, true);
 					say("transformed to: " + fenv);					

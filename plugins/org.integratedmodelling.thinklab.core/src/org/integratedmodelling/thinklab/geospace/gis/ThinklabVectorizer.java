@@ -49,7 +49,7 @@ public class ThinklabVectorizer  {
 		nans.add(0.0);
 		
 		// cross fingers
-		Envelope2D bounds = new Envelope2D(extent.getNormalizedEnvelope());
+		Envelope2D bounds = new Envelope2D(extent.getEnvelope());
 		FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
 //		try {
 ////			 features = 

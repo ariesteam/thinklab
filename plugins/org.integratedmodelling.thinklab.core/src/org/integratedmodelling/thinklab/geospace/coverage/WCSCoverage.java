@@ -37,6 +37,7 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.list.PolyList;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.extents.ArealExtent;
@@ -113,7 +114,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 
 		  // desc.dump(System.out);
 
-		  Geospace.get().logger().info("parsing descriptor for " + layerName);
+		  Thinklab.get().logger().info("parsing descriptor for " + layerName);
 		  
 		  Node n = desc.findNode("gml:Envelope");
 		  
@@ -168,7 +169,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		  try {
 			  this.crs = Geospace.getCRSFromID(srs);
 			} catch (Exception e) {
-				Geospace.get().logger().error(layerName + ": " + e.getMessage());
+				Thinklab.get().logger().error(layerName + ": " + e.getMessage());
 			};
 
 
@@ -333,7 +334,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		
 		try {
 
-			clsl = Geospace.get().swapClassloader();
+			clsl = Thinklab.get().swapClassloader();
 
 			File f = File.createTempFile("geo", ".tiff");
 			CopyURL.copy(getCov, f);
@@ -365,7 +366,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		} catch (IOException e) {
 			throw new ThinklabIOException(layerName + ": " + e.getMessage() + ": url = " + savUrl);
 		} finally {
-			Geospace.get().resetClassLoader(clsl);
+			Thinklab.get().resetClassLoader(clsl);
 		}
 
 		setExtent((GridExtent) arealExtent);
@@ -378,7 +379,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		  this.xCellSize = e.getEWResolution();
 		  this.yCellSize = e.getNSResolution();
 			
-		  this.boundingBox = e.getNormalizedEnvelope();
+		  this.boundingBox = e.getEnvelope();
 		  
 		  this.gridGeometry = 
 				new GridGeometry2D(
@@ -405,7 +406,6 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		
 		if (fenv != null) {
 			try {
-				fenv = Geospace.normalizeEnvelope(fenv, crs);
 				fenv = fenv.transform(crs, true);
 			} catch (Exception e) {
 				throw new ThinklabException(e);

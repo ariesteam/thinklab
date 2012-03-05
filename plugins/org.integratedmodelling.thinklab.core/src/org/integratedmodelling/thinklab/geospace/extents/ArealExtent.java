@@ -85,38 +85,14 @@ public abstract class ArealExtent extends ObservationImpl implements IExtent {
 	 * Get an envelope where the X axis is always east-west.
 	 * @return
 	 */
-	public ReferencedEnvelope getNormalizedEnvelope() {
+	public ReferencedEnvelope getEnvelope() {
 		return envelope;
-	}
-	
-	/**
-	 * Get the envelope with the axis order decided by the CRS.
-	 * @return
-	 * @deprecated abandon the axis swap, lon/lat axes are now enforced via geotools.
-	 */
-	public ReferencedEnvelope getDefaultEnvelope() {
-		
-		ReferencedEnvelope ret = envelope;
-		
-		if (crs != null && crs.getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH)) {
-			/*
-			 * swap x/y to obtain the right envelope according to the CRS
-			 */
-			ret = new ReferencedEnvelope(
-					envelope.getMinY(), envelope.getMaxY(),
-					envelope.getMinX(), envelope.getMaxX(), crs);
-		} 
-		
-		return ret;
 	}
 	
 	public ShapeValue getBoundingBox() {
 		try {
-			 ReferencedEnvelope e = Geospace.normalizeEnvelope(
-					getDefaultEnvelope().transform(
-							Geospace.get().getDefaultCRS(), true, 10), 
-							Geospace.get().getDefaultCRS());
-
+			 ReferencedEnvelope e =
+					envelope.transform(Geospace.get().getDefaultCRS(), true, 10);
 			return new ShapeValue(e);
 		} catch (Exception e) {
 			throw new ThinklabRuntimeException(e);
@@ -137,7 +113,7 @@ public abstract class ArealExtent extends ObservationImpl implements IExtent {
 	 */
 	public ReferencedEnvelope getDefaultEnvelope(CoordinateReferenceSystem ocr) {
 		
-		ReferencedEnvelope ret = getDefaultEnvelope();
+		ReferencedEnvelope ret = envelope;
 		
 		AxisDirection myOrder = crs.getCoordinateSystem().getAxis(0).getDirection();
 		AxisDirection otOrder = ocr.getCoordinateSystem().getAxis(0).getDirection();
@@ -199,8 +175,8 @@ public abstract class ArealExtent extends ObservationImpl implements IExtent {
 		CoordinateReferenceSystem crs2 = otextent.getCRS();
 		
 		CoordinateReferenceSystem ccr = Geospace.chooseCRS(crs1, crs2);
-		ReferencedEnvelope env1 = orextent.getNormalizedEnvelope();
-		ReferencedEnvelope env2 = otextent.getNormalizedEnvelope();
+		ReferencedEnvelope env1 = orextent.getEnvelope();
+		ReferencedEnvelope env2 = otextent.getEnvelope();
 		
 		if (!(crs1.equals(crs2) && ccr.equals(crs1))) {
 		
@@ -208,16 +184,16 @@ public abstract class ArealExtent extends ObservationImpl implements IExtent {
 			 * transformations will swap axes as required so we want the
 			 * envelopes with the CRS's axis order
 			 */
-			env1 = orextent.getDefaultEnvelope();
-			env2 = otextent.getDefaultEnvelope();
+			env1 = orextent.getEnvelope();
+			env2 = otextent.getEnvelope();
 			
 			try {
 				/*
 				 * transformations will return axes swapped to what CRS defines, and we 
 				 * want them normalized back to east-west on x before we use them
 				 */
-				env1 = Geospace.normalizeEnvelope(env1.transform(ccr, true, 10), ccr);
-				env2 = Geospace.normalizeEnvelope(env2.transform(ccr, true, 10), ccr);
+				env1 = env1.transform(ccr, true, 10);
+				env2 = env2.transform(ccr, true, 10);
 				
 			} catch (Exception e) {
 				throw new ThinklabValidationException(e);
