@@ -168,14 +168,13 @@ public class VectorCoverageDataSource implements IDataSource {
 	}
 
 	@Override
-	public void preProcess(IContext context) throws ThinklabException {
+	public void notifyTargetContext(IContext context) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public IDataSource transform(Transformation transformation)
-			throws ThinklabException {
+	public IDataSource transform(IContext context) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -95,6 +94,8 @@ public abstract class ThinklabPlugin extends Plugin
 	}
 	
 	/*
+	 * TODO move all the load() things to this method, using visitPackage.
+	 * 
 	 * these are global so that all plugins can install and publish extensions
 	 */
 	static ArrayList<AnnotationExtension> extensions = 
@@ -113,7 +114,6 @@ public abstract class ThinklabPlugin extends Plugin
 	private File confFolder;
 	private File plugFolder;
 	private File loadFolder;
-//	private HashSet<String> _bindingsLoaded = new HashSet<String>();
 	
 	/**
 	 * ALWAYS call this one to ensure that all the necessary plugins are loaded, even if

@@ -31,8 +31,6 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IOperator;
-import org.integratedmodelling.thinklab.api.modelling.IDataSource;
-import org.integratedmodelling.thinklab.api.modelling.IDataSource.Transformation;
 import org.integratedmodelling.thinklab.api.modelling.IEntifiable;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
@@ -358,13 +356,6 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 	}
 
 	@Override
-	public Transformation getDatasourceTransformation(IConcept mainObservable,
-			IExtent extent) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean isDiscontinuous() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return false;
@@ -373,12 +364,6 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 	@Override
 	public AggregationParameters getAggregationParameters(IConcept concept,
 			IUnit unit) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IDataSource getDatasource() {
 		// TODO Auto-generated method stub
 		return null;
 	}

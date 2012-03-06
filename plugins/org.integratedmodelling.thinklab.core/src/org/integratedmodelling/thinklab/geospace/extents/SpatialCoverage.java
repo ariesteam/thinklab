@@ -27,12 +27,8 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IOperator;
-import org.integratedmodelling.thinklab.api.modelling.IDataSource;
-import org.integratedmodelling.thinklab.api.modelling.IDataSource.Transformation;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
@@ -139,12 +135,6 @@ public class SpatialCoverage extends ObservationImpl implements IExtent {
 //					unit + 
 //					" does not specify an areal density");
 		}
-	}
-
-	@Override
-	public IDataSource getDatasource() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -258,13 +248,6 @@ public class SpatialCoverage extends ObservationImpl implements IExtent {
 	@Override
 	public IRestriction getConstraint(IOperator operator)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Transformation getDatasourceTransformation(IConcept mainObservable,
-			IExtent extent) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

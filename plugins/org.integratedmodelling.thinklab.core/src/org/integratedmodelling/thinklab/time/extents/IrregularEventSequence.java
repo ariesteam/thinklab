@@ -40,20 +40,12 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IOperator;
-import org.integratedmodelling.thinklab.api.modelling.IDataSource;
-import org.integratedmodelling.thinklab.api.modelling.IDataSource.Transformation;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 import org.integratedmodelling.thinklab.modelling.ObservationImpl;
 
 public class IrregularEventSequence extends ObservationImpl implements IExtent {
-
-	@Override
-	public IDataSource getDatasource() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Object getValue(int offset) {
@@ -166,13 +158,6 @@ public class IrregularEventSequence extends ObservationImpl implements IExtent {
 	@Override
 	public IRestriction getConstraint(IOperator operator)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Transformation getDatasourceTransformation(IConcept mainObservable,
-			IExtent extent) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

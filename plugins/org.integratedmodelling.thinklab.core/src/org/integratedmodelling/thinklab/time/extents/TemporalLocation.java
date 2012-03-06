@@ -33,26 +33,15 @@
 package org.integratedmodelling.thinklab.time.extents;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IOperator;
-import org.integratedmodelling.thinklab.api.modelling.IContext;
-import org.integratedmodelling.thinklab.api.modelling.IDataSource;
-import org.integratedmodelling.thinklab.api.modelling.IDataSource.Transformation;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
-import org.integratedmodelling.thinklab.api.modelling.IObservation;
-import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 import org.integratedmodelling.thinklab.modelling.ObservationImpl;
 import org.integratedmodelling.thinklab.time.literals.TimeValue;
@@ -71,12 +60,6 @@ public class TemporalLocation extends ObservationImpl implements IExtent {
 
 	public TemporalLocation(TimeValue start) {
 		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public IDataSource getDatasource() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -190,13 +173,6 @@ public class TemporalLocation extends ObservationImpl implements IExtent {
 	@Override
 	public IRestriction getConstraint(IOperator operator)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Transformation getDatasourceTransformation(IConcept mainObservable,
-			IExtent extent) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

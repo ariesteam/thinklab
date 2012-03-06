@@ -36,8 +36,6 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IOperator;
-import org.integratedmodelling.thinklab.api.modelling.IDataSource;
-import org.integratedmodelling.thinklab.api.modelling.IDataSource.Transformation;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
@@ -404,13 +402,7 @@ public class RasterGrid extends ObservationImpl implements IExtent {
 	public IGridMask getMask() {
 		return this.mask;
 	}
-
-	@Override
-	public IDataSource getDatasource() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	public Object getValue(int offset) {
 		// TODO Auto-generated method stub
@@ -522,13 +514,6 @@ public class RasterGrid extends ObservationImpl implements IExtent {
 	@Override
 	public IRestriction getConstraint(IOperator operator)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Transformation getDatasourceTransformation(IConcept mainObservable,
-			IExtent extent) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

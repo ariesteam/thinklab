@@ -33,8 +33,6 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IOperator;
-import org.integratedmodelling.thinklab.api.modelling.IDataSource;
-import org.integratedmodelling.thinklab.api.modelling.IDataSource.Transformation;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
@@ -74,8 +72,6 @@ public class GridExtent extends ArealExtent {
 	double yOrigin = 0.0;
 	IGridMask activationLayer = null;
 	
-	ShapeExtent ancestor = null;
-	
 	private double cellHeightMeters;
 	private double cellWidthMeters;
 	private double cellAreaMeters = -1.0;
@@ -103,7 +99,6 @@ public class GridExtent extends ArealExtent {
 		super(gridExtent.getCRS(), gridExtent.getWest(), gridExtent.getSouth(), gridExtent.getEast(), gridExtent.getNorth());
 		this.xOrigin = gridExtent.getEast();
 		this.yOrigin = gridExtent.getSouth();
-		this.ancestor = gridExtent.ancestor;
 		this.setResolution(gridExtent.getXCells(), gridExtent.getYCells());
 	}
 
@@ -258,8 +253,6 @@ public class GridExtent extends ArealExtent {
 	public GridExtent(ShapeValue shape, int x, int y) throws ThinklabException {
 		super(shape);
 		this.setResolution(x, y);
-		this.ancestor = new ShapeExtent(shape);
-		this.ancestor.shape = shape;
 		activationLayer = ThinklabRasterizer.createMask(shape, this);
 	}
 	
@@ -273,8 +266,6 @@ public class GridExtent extends ArealExtent {
 	 */
 	public GridExtent(GridExtent extent, ShapeValue shape) throws ThinklabException {
 		this(extent);
-		this.ancestor = new ShapeExtent(extent.envelope, crs);
-		this.ancestor.shape = shape;
 		activationLayer = ThinklabRasterizer.createMask(shape, this);
 	}
 	
@@ -1070,13 +1061,6 @@ public class GridExtent extends ArealExtent {
 	}
 
 	@Override
-	public Transformation getDatasourceTransformation(IConcept mainObservable,
-			IExtent extent) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean isDiscontinuous() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return false;
@@ -1085,12 +1069,6 @@ public class GridExtent extends ArealExtent {
 	@Override
 	public AggregationParameters getAggregationParameters(IConcept concept,
 			IUnit unit) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IDataSource getDatasource() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1115,14 +1093,13 @@ public class GridExtent extends ArealExtent {
 
 	@Override
 	public IState aggregate(IConcept concept) throws ThinklabException {
-		// TODO Auto-generated method stub
+		// TODO create shapeExtent with the shape or envelope.
 		return null;
 	}
 
 	@Override
 	public int getMultiplicity() {
-		// TODO Auto-generated method stub
-		return 0;
+		return xDivs*yDivs;
 	}
 
 	@Override

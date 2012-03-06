@@ -189,7 +189,6 @@ public class MiscUtilities{
 		return ret;
 	}
 
-	
 	/**
 	 * Return all subclasses of given class in given package. Uses file structure in 
 	 * classpath as seen by passed classloader. Loads ALL classes in package in 
