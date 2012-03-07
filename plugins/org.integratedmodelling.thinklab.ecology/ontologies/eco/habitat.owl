@@ -1375,7 +1375,7 @@
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#SoilCarbonStorage">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HabitatQuality"/>
-        <rdfs:subClassOf rdf:resource="&representation;Weight"/>
+        <rdfs:subClassOf rdf:resource="&representation;Mass"/>
     </owl:Class>
     
 
@@ -1619,7 +1619,7 @@
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#VegetationCarbonStorage">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/ecology/eco/habitat.owl#HabitatQuality"/>
-        <rdfs:subClassOf rdf:resource="&representation;Weight"/>
+        <rdfs:subClassOf rdf:resource="&representation;Mass"/>
     </owl:Class>
     
 
