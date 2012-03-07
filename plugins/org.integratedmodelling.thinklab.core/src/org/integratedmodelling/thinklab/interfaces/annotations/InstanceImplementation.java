@@ -28,7 +28,7 @@ import java.lang.annotation.RetentionPolicy;
  * if any is found, the annotated class becomes the Java implementation for instances of the given concept.
  * 
  * @author Ferdinando Villa
- *
+ * @deprecated use @Concept and @Property
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
