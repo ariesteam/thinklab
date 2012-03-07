@@ -47,6 +47,10 @@ public class BooleanValue extends Value implements IParseable {
     public BooleanValue(String s) throws ThinklabException {
         parse(s);
     }
+
+    public void wrap(Object o) {
+    	value = (Boolean)o;
+    }
     
     @Override
     public Object clone() {

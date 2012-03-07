@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.literals.Value;
 
@@ -141,7 +142,7 @@ public class Command {
         	if (o == null)
         		throw new ThinklabValidationException("command " + commandName + " requires argument " + arg);
         	if ( !(o instanceof ISemanticLiteral)) {
-        		val = Value.getValueForObject(o);
+        		val = Thinklab.get().annotateLiteral(o);
         	} else {
         		val = (ISemanticLiteral) o;
         	}
@@ -157,7 +158,7 @@ public class Command {
         	
         	if (o != null) {
 				if (!(o instanceof ISemanticLiteral)) {
-					val = Value.getValueForObject(o);
+	        		val = Thinklab.get().annotateLiteral(o);
 				} else {
 					val = (ISemanticLiteral) o;
 				}
@@ -173,7 +174,7 @@ public class Command {
         	
         	if (o != null) {
 				if (!(o instanceof ISemanticLiteral)) {
-					val = Value.getValueForObject(o);
+	        		val = Thinklab.get().annotateLiteral(o);
 				} else {
 					val = (ISemanticLiteral) o;
 				}

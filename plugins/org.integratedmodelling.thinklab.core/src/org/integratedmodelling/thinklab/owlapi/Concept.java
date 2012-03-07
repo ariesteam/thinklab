@@ -159,8 +159,8 @@ public class Concept extends Knowledge implements IConcept {
 
 		// OWLAPI doesn't do this - only add owl:Thing if this is its direct subclass, i.e. has no 
 		// parents in OWLAPI.
-		if (concepts.isEmpty() && !FileKnowledgeRepository.KR.getRootConceptType().equals(this))
-			concepts.add(FileKnowledgeRepository.KR.getRootConceptType());
+		if (concepts.isEmpty() && !FileKnowledgeRepository.KR.getRootConcept().equals(this))
+			concepts.add(FileKnowledgeRepository.KR.getRootConcept());
 		
 		return concepts;
 	}
@@ -201,7 +201,7 @@ public class Concept extends Knowledge implements IConcept {
 		}
 
 		// OWLAPI doesn't do this
-		concepts.add(FileKnowledgeRepository.KR.getRootConceptType());
+		concepts.add(FileKnowledgeRepository.KR.getRootConcept());
 
 		return concepts;
 

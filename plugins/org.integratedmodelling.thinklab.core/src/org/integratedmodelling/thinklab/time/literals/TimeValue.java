@@ -85,6 +85,12 @@ public class TimeValue extends Value implements IParseable {
 		concept = TimePlugin.DateTime();
 	}
 	
+    public void wrap(Object o) {
+		concept = TimePlugin.DateTime();
+    	value = (DateTime)o;    	
+    }
+
+	
 	@Override
 	public void parse(String s) throws ThinklabValidationException {
 		try {

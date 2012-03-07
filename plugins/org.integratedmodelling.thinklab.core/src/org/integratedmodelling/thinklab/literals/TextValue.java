@@ -43,6 +43,11 @@ public class TextValue extends Value implements IParseable {
         super(KnowledgeManager.Text());
         value = s;
     }
+    
+    public void wrap(Object o) {
+    	value = (String)o;
+    }
+
 
     @Override
     public Object clone() {

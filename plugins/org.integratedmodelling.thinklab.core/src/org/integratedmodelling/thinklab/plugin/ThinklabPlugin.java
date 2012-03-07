@@ -40,6 +40,8 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
@@ -58,6 +60,8 @@ import org.integratedmodelling.thinklab.interfaces.commands.IListingProvider;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.rest.RESTManager;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
+import org.integratedmodelling.utils.ClassUtils;
+import org.integratedmodelling.utils.ClassUtils.Visitor;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.Plugin;
@@ -76,30 +80,30 @@ import org.restlet.resource.ServerResource;
  */
 public abstract class ThinklabPlugin extends Plugin 
 {	
-	/**
-	 * register one of those using registerAnnotatedClass for each class
-	 * that extends the plugin through custom annotations.
-	 * 
-	 * @author ferdinando.villa
-	 */
-	protected interface AnnotatedClassHandler {
-		public void process(Annotation annotation, Class<?> cls, ThinklabPlugin plugin) throws ThinklabException;
-	}
-	
-	class AnnotationExtension {
-		Class<?> objectClass;
-		Class<?> annotationClass;
-		String subpackage;
-		AnnotatedClassHandler handler;
-	}
+//	/**
+//	 * register one of those using registerAnnotatedClass for each class
+//	 * that extends the plugin through custom annotations.
+//	 * 
+//	 * @author ferdinando.villa
+//	 */
+//	protected interface AnnotatedClassHandler {
+//		public void process(Annotation annotation, Class<?> cls, ThinklabPlugin plugin) throws ThinklabException;
+//	}
+//	
+//	class AnnotationExtension {
+//		Class<?> objectClass;
+//		Class<?> annotationClass;
+//		String subpackage;
+//		AnnotatedClassHandler handler;
+//	}
 	
 	/*
 	 * TODO move all the load() things to this method, using visitPackage.
 	 * 
 	 * these are global so that all plugins can install and publish extensions
 	 */
-	static ArrayList<AnnotationExtension> extensions = 
-		new ArrayList<ThinklabPlugin.AnnotationExtension>();
+//	static ArrayList<AnnotationExtension> extensions = 
+//		new ArrayList<ThinklabPlugin.AnnotationExtension>();
 	
 	HashMap<String, URL> resources = new HashMap<String, URL>();
 	Properties properties = new Properties();
@@ -184,18 +188,18 @@ public abstract class ThinklabPlugin extends Plugin
 		resourceLoaders.add(l);
 	}
 	
-	/**
-	 * Any extensions other than the ones handled by default should be handled here.
-	 * @throws ThinklabException 
-	 */
-	protected void loadExtensions() throws Exception {
-		
-	}
-	
-	protected void unloadExtensions() throws Exception {
-		
-	}
-	
+//	/**
+//	 * Any extensions other than the ones handled by default should be handled here.
+//	 * @throws ThinklabException 
+//	 */
+//	protected void loadExtensions() throws Exception {
+//		
+//	}
+//	
+//	protected void unloadExtensions() throws Exception {
+//		
+//	}
+//	
 	protected String getPluginBaseName() {
 		String[] sp = getDescriptor().getId().split("\\.");
 		return sp[sp.length - 1];
@@ -212,17 +216,19 @@ public abstract class ThinklabPlugin extends Plugin
 		
 		preStart();
 		
-		loadLiteralValidators();
-		loadKnowledgeImporters();
-		loadCommandHandlers();
-		loadListingProviders();
-		loadRESTHandlers();
-		loadInstanceImplementationConstructors();
-		loadFunctions();
-		
-		load(KnowledgeManager.get());
+//		loadLiteralValidators();
+//		loadKnowledgeImporters();
+//		loadCommandHandlers();
+//		loadListingProviders();
+//		loadRESTHandlers();
+//		loadInstanceImplementationConstructors();
+//		loadFunctions();
 
-		loadExtensions();
+		visitAnnotations();
+
+		load(KnowledgeManager.get());
+//
+//		loadExtensions();
 		
 		for (IPluginLifecycleListener lis : KnowledgeManager.getPluginListeners()) {
 			lis.onPluginLoaded(this);
@@ -232,16 +238,146 @@ public abstract class ThinklabPlugin extends Plugin
 			loader.load(getThinklabPluginProperties(), getLoadDirectory());
 		}
 		
-		/*
-		 * load any extension defined through annotations
-		 */
-		for (AnnotationExtension ext : extensions) {
-			loadAnnotatedClass(
-					ext.subpackage, ext.objectClass, 
-					ext.annotationClass, ext.handler);
+//		/*
+//		 * load any extension defined through annotations
+//		 */
+//		for (AnnotationExtension ext : extensions) {
+//			loadAnnotatedClass(
+//					ext.subpackage, ext.objectClass, 
+//					ext.annotationClass, ext.handler);
+//		}
+	}
+	
+	private void visitAnnotations() throws ThinklabException {
+		
+		ClassUtils.visitPackage(this.getClass().getPackage().getName(), 
+				new Visitor() {
+					
+					@Override
+					public void visit(Class<?> clls) throws ThinklabException {
+
+						for (Annotation a : clls.getAnnotations()) {
+							if (a instanceof Literal) {
+								registerLiteral(clls, (Literal)a);
+							} else if (a instanceof Concept) {
+								registerAnnotation(clls, (Concept)a);								
+							} else if (a instanceof ThinklabCommand) {
+								registerCommand(clls, (ThinklabCommand)a);
+							} else if (a instanceof RESTResourceHandler) {
+								registerRESTResource(clls, (RESTResourceHandler)a);	
+							} else if (a instanceof ListingProvider) {
+								registerListingProvider(clls, (ListingProvider)a);
+							} else if (a instanceof Function) {
+								registerFunction(clls, (Function)a);
+							} 
+						}
+						
+					}
+				}, 
+				this.getClassLoader());
+		
+	}
+
+	
+	private void registerFunction(Class<?> cls, Function annotation) throws ThinklabException {
+
+		String   id = annotation.id();
+		String[] parameterNames = annotation.parameterNames();
+		try {
+			ModelManager.get().registerFunction(id, parameterNames, cls);
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
 		}
 	}
 
+	private void registerListingProvider(Class<?> cls, ListingProvider annotation) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+		String name = annotation.label();
+		String sname = annotation.itemlabel();
+		try {
+			CommandManager.get().registerListingProvider(name, sname, cls);
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void registerRESTResource(Class<?> cls, RESTResourceHandler annotation) throws ThinklabException {
+		
+		String path = annotation.id();
+		String description = annotation.description();
+		String argument = annotation.arguments();
+		String options = annotation.options();
+		RESTManager.get().registerService(path, (Class<? extends ServerResource>) cls,
+				description, argument, options);		
+	}
+
+	private void registerCommand(Class<?> cls, ThinklabCommand annotation) throws ThinklabException {
+
+		String name = annotation.name();
+		String description = annotation.description();
+		
+		CommandDeclaration declaration = new CommandDeclaration(name, description);
+		
+		String retType = annotation.returnType();
+		
+		if (!retType.equals(""))
+			declaration.setReturnType(KnowledgeManager.get().requireConcept(retType));
+		
+		String[] aNames = annotation.argumentNames().split(",");
+		String[] aTypes = annotation.argumentTypes().split(",");
+		String[] aDesc =  annotation.argumentDescriptions().split(",");
+
+		for (int i = 0; i < aNames.length; i++) {
+			if (!aNames[i].isEmpty())
+				declaration.addMandatoryArgument(aNames[i], aDesc[i], aTypes[i]);
+		}
+		
+		String[] oaNames = annotation.optionalArgumentNames().split(",");
+		String[] oaTypes = annotation.optionalArgumentTypes().split(",");
+		String[] oaDesc =  annotation.optionalArgumentDescriptions().split(",");
+		String[] oaDefs =  annotation.optionalArgumentDefaultValues().split(",");
+
+		for (int i = 0; i < oaNames.length; i++) {
+			if (!oaNames[i].isEmpty())
+				declaration.addOptionalArgument(oaNames[i], oaDesc[i], oaTypes[i], oaDefs[i]);				
+		}
+
+		String[] oNames = annotation.optionNames().split(",");
+		String[] olNames = annotation.optionLongNames().split(",");
+		String[] oaLabel = annotation.optionArgumentLabels().split(",");
+		String[] oTypes = annotation.optionTypes().split(",");
+		String[] oDesc = annotation.optionDescriptions().split(",");
+
+		for (int i = 0; i < oNames.length; i++) {
+			if (!oNames[i].isEmpty())
+					declaration.addOption(
+							oNames[i],
+							olNames[i], 
+							(oaLabel[i].equals("") ? null : oaLabel[i]), 
+							oDesc[i], 
+							oTypes[i]);
+		}
+		
+		try {
+			CommandManager.get().registerCommand(declaration, (ICommandHandler) cls.newInstance());
+		} catch (Exception e) {
+			throw new ThinklabValidationException(e);
+		}
+		
+	}
+
+	private void registerAnnotation(Class<?> clls, Concept a) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void registerLiteral(Class<?> clls, Literal a) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	private Properties getThinklabPluginProperties() throws ThinklabIOException {
 
 		Properties ret = new Properties();
@@ -375,56 +511,56 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 	
-	/**
-	 * Return all the extensions in this plugin that extend the given Thinklab extension 
-	 * point (declared in the core plugin).
-	 * 
-	 * @param extensionPoint
-	 * @return
-	 */
-
-	protected void loadAnnotatedClass(String subpackage, Class<?> objectClass, Class<?> annotationClass, AnnotatedClassHandler handler) throws ThinklabException {
-		
-		String ipack = this.getClass().getPackage().getName() + "." + subpackage;
-		
-		for (Class<?> cls : MiscUtilities.findSubclasses(objectClass, ipack, getClassLoader())) {	
-			
-			/*
-			 * lookup annotation, ensure we can use the class
-			 */
-			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
-				continue;
-			
-			/*
-			 * find class with annotation and send back to plugin to process it
-			 */
-			for (Annotation annotation : cls.getAnnotations()) {
-				if (annotation.annotationType().equals(annotationClass)) {
-					handler.process(annotation, cls, this);
-				}
-			}	
-		}
-	}
+//	/**
+//	 * Return all the extensions in this plugin that extend the given Thinklab extension 
+//	 * point (declared in the core plugin).
+//	 * 
+//	 * @param extensionPoint
+//	 * @return
+//	 */
+//
+//	protected void loadAnnotatedClass(String subpackage, Class<?> objectClass, Class<?> annotationClass, AnnotatedClassHandler handler) throws ThinklabException {
+//		
+//		String ipack = this.getClass().getPackage().getName() + "." + subpackage;
+//		
+//		for (Class<?> cls : MiscUtilities.findSubclasses(objectClass, ipack, getClassLoader())) {	
+//			
+//			/*
+//			 * lookup annotation, ensure we can use the class
+//			 */
+//			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+//				continue;
+//			
+//			/*
+//			 * find class with annotation and send back to plugin to process it
+//			 */
+//			for (Annotation annotation : cls.getAnnotations()) {
+//				if (annotation.annotationType().equals(annotationClass)) {
+//					handler.process(annotation, cls, this);
+//				}
+//			}	
+//		}
+//	}
 	
-	/**
-	 * Call it in the plugin's load() to register a subpackage where annotated classes
-	 * will be looked up and the handler that will process them at plugin startup.
-	 * 
-	 * @param objectClass
-	 * @param annotationClass
-	 * @param subpackage
-	 * @param handler
-	 */
-	protected void registerAnnotatedClass(Class<?> objectClass, Class<?> annotationClass, String subpackage, AnnotatedClassHandler handler) {
-
-		AnnotationExtension ext = new AnnotationExtension();
-		ext.annotationClass = annotationClass;
-		ext.objectClass = objectClass;
-		ext.handler = handler;
-		ext.subpackage = subpackage;
-		
-		extensions.add(ext);
-	}
+//	/**
+//	 * Call it in the plugin's load() to register a subpackage where annotated classes
+//	 * will be looked up and the handler that will process them at plugin startup.
+//	 * 
+//	 * @param objectClass
+//	 * @param annotationClass
+//	 * @param subpackage
+//	 * @param handler
+//	 */
+//	protected void registerAnnotatedClass(Class<?> objectClass, Class<?> annotationClass, String subpackage, AnnotatedClassHandler handler) {
+//
+//		AnnotationExtension ext = new AnnotationExtension();
+//		ext.annotationClass = annotationClass;
+//		ext.objectClass = objectClass;
+//		ext.handler = handler;
+//		ext.subpackage = subpackage;
+//		
+//		extensions.add(ext);
+//	}
 
 	protected void loadInstanceImplementationConstructors() throws ThinklabException {
 		
@@ -871,18 +1007,18 @@ public abstract class ThinklabPlugin extends Plugin
 			lis.prePluginUnloaded(this);
 		}
 		
-		unloadKboxes();
-		unloadInstanceImplementationConstructors();
-		unloadCommands();
-		unloadLanguageInterpreters();
-		unloadKnowledgeLoaders();
-		unloadKnowledgeImporters();
-		unloadKBoxHandlers();
-		unloadLiteralValidators();
-		unloadSessionListeners();
+//		unloadKboxes();
+//		unloadInstanceImplementationConstructors();
+//		unloadCommands();
+//		unloadLanguageInterpreters();
+//		unloadKnowledgeLoaders();
+//		unloadKnowledgeImporters();
+//		unloadKBoxHandlers();
+//		unloadLiteralValidators();
+//		unloadSessionListeners();
 		unloadOntologies();
 		
-		loadExtensions();
+//		loadExtensions();
 		unload();
 		
 		for (IPluginLifecycleListener lis : KnowledgeManager.getPluginListeners()) {
@@ -890,50 +1026,50 @@ public abstract class ThinklabPlugin extends Plugin
 		}
 	}
 	
-	private void unloadKboxes() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void unloadInstanceImplementationConstructors() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void unloadCommands() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void unloadLanguageInterpreters() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void unloadKnowledgeLoaders() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void unloadKnowledgeImporters() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void unloadKBoxHandlers() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void unloadLiteralValidators() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	private void unloadSessionListeners() {
-		// TODO Auto-generated method stub
-		
-	}
+//	private void unloadKboxes() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	private void unloadInstanceImplementationConstructors() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	private void unloadCommands() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	private void unloadLanguageInterpreters() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	private void unloadKnowledgeLoaders() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	private void unloadKnowledgeImporters() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	private void unloadKBoxHandlers() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	private void unloadLiteralValidators() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//	
+//	private void unloadSessionListeners() {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 	private void unloadOntologies() {
 

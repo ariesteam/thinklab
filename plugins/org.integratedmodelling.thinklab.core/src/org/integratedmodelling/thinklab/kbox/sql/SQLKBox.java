@@ -303,7 +303,7 @@ public class SQLKBox extends SQLThinklabServer implements IKbox {
 
 	@Override
 	public long store(Object o) throws ThinklabException {
-		SemanticAnnotation instance = Thinklab.get().conceptualizeObject(o);		
+		SemanticAnnotation instance = Thinklab.get().conceptualize(o);		
 		return storeObject(instance);
 	}
 

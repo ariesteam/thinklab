@@ -90,14 +90,14 @@ public class ModelKnowledgeManager implements IKnowledgeManager {
 	}
 
 	@Override
-	public SemanticAnnotation conceptualizeObject(Object i) throws ThinklabException {
-		return Thinklab.get().conceptualizeObject(i);
+	public SemanticAnnotation conceptualize(Object i) throws ThinklabException {
+		return Thinklab.get().conceptualize(i);
 	}
 
 	@Override
-	public Object reifyAnnotation(SemanticAnnotation a)
+	public Object instantiate(SemanticAnnotation a)
 			throws ThinklabException {
-		return Thinklab.get().reifyAnnotation(a);
+		return Thinklab.get().instantiate(a);
 	}
 
 }

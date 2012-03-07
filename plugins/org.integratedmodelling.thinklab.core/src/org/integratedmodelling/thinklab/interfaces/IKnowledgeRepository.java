@@ -49,6 +49,9 @@ import org.integratedmodelling.thinklab.api.knowledge.IOntology;
  */
 public interface IKnowledgeRepository {
 
+	/*
+	 * FIXME this shouldn't really be in the interface.
+	 */
 	public abstract void initialize() throws ThinklabException;
 
 	/**
@@ -62,7 +65,7 @@ public interface IKnowledgeRepository {
 	 * basename. Otherwise it's the same passed. Names may not be duplicated - if generated, a unique one is forced.
 	 * @exception ThinklabException if anything goes wrong
 	 */
-	public abstract String importOntology(URL url, String name, boolean saveToReposioty) throws ThinklabException;
+	public abstract String importOntology(URL url, String name, boolean saveToRepository) throws ThinklabException;
 	
 	/**
 	 * Supposed to check if the ontology we're trying to import is already in the repository, and
@@ -85,7 +88,7 @@ public interface IKnowledgeRepository {
      * return it on request.
      * @return the root concept, e.g. owl:Thing.
      */
-    public abstract IConcept getRootConceptType();
+    public abstract IConcept getRootConcept();
 	
 	/**
 	 * Write the ontology as OWL (or other language: not mandated) on the passed OutputStream 
@@ -133,7 +136,7 @@ public interface IKnowledgeRepository {
     /**
      * retrieve a Collection of all ontologies in repository
      */
-    public abstract Collection<IOntology> retrieveAllOntologies();
+    public abstract Collection<IOntology> getOntologies();
     
     /**
      * Get the last modification date of passed ontology.
@@ -141,7 +144,7 @@ public interface IKnowledgeRepository {
      * @return
      * @throws ThinklabResourceNotFoundException 
      */
-    public abstract long getOntologyLastModifiedDate(String ontName) throws ThinklabResourceNotFoundException;
+    public abstract long getOntologyTimestamp(String ontName) throws ThinklabResourceNotFoundException;
     
     /**
      * Return a base URI to identify models when they are in the KR (not their own URI, but the URI of their
@@ -166,19 +169,25 @@ public interface IKnowledgeRepository {
      */
 	public abstract IOntology createTemporaryOntology(String string) throws ThinklabException;
 
-	public abstract IConcept getNothingType();
-
 	/**
-	 * Return all concepts whose parent is the root concept (e.g. owl:Thing).
+	 * Return the concept used to express a conceptual zero. Using this concept is debatable, but
+	 * it's really good to map to a language, so welcome owl:Nothing.
 	 * 
 	 * @return
 	 */
-	public abstract List<IConcept> getAllRootConcepts();
+	public abstract IConcept getNothingType();
+
+	/**
+	 * Return all concepts whose direct and only parent is the root concept (e.g. owl:Thing).
+	 * 
+	 * @return
+	 */
+	public abstract List<IConcept> getRootConcepts();
 
 	/**
 	 * 
 	 */
-	public abstract List<IConcept> getAllConcepts();
+	public abstract List<IConcept> getConcepts();
 
 
 }

@@ -124,7 +124,7 @@ public class CapabilitiesService extends DefaultRESTHandler {
 			 * 
 			 * return namespace, URI and last modification date as a long
 			 */
-			for (IOntology o : KnowledgeManager.get().getKnowledgeRepository().retrieveAllOntologies()) {
+			for (IOntology o : KnowledgeManager.get().getKnowledgeRepository().getOntologies()) {
 				oret.append("ontologies", new String[] {o.getConceptSpace(), o.getURI(), Long.toString(o.getLastModificationDate())});
 			}
 //			

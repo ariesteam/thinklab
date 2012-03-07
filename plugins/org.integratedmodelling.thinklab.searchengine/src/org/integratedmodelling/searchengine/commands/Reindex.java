@@ -44,7 +44,7 @@ public class Reindex implements ICommandHandler {
 		
 		String ontprop = "";
 		for (IOntology o : 
-			   KnowledgeManager.get().getKnowledgeRepository().retrieveAllOntologies()) {
+			   KnowledgeManager.get().getKnowledgeRepository().getOntologies()) {
 			ontprop += 
 				(ontprop.length() == 0 ? "" : ",") +
 				o.getConceptSpace();

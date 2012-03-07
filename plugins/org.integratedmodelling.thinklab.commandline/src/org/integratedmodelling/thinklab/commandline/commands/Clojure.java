@@ -87,7 +87,7 @@ public class Clojure implements ICommandHandler {
 				ClojureInterpreter intp = new ClojureInterpreter();
 				intp.setInput(session.getInputStream());
 				intp.setOutput(session.getOutputStream());
-				ret = Value.getValueForObject(intp.eval(url));
+				ret = Thinklab.get().annotateLiteral(intp.eval(url));
 			}
 			
 		} catch (Exception e) {

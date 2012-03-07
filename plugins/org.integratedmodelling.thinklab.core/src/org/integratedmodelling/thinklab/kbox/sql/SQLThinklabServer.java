@@ -59,7 +59,6 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.Restriction;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
-import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.NameGenerator;
 import org.integratedmodelling.utils.xml.XMLDocument;
@@ -346,7 +345,7 @@ public abstract class SQLThinklabServer {
 				
 					HashMap<String, ISemanticLiteral> context = new HashMap<String, ISemanticLiteral>();
 					context.put("self", val);
-					vv = Value.getValueForObject(MVEL.eval(exp.getSecond(), context));
+					vv = Thinklab.get().annotateLiteral(MVEL.eval(exp.getSecond(), context));
 
 				} else {
 				
@@ -639,10 +638,7 @@ public abstract class SQLThinklabServer {
 	private String translateLiteral(ISemanticLiteral value, IConcept c, ISession session) throws ThinklabException {
 
 		String ret = "";
-		
-		if (value != null && !value.isLiteral())
-			throw new ThinklabStorageException(
-					"sql: translation of non-literal value of type " + c);
+
 
 		TypeTranslator tt = getTypeTranslator(c);
 		String template = tt.fLiteral;
@@ -1430,7 +1426,7 @@ public abstract class SQLThinklabServer {
 				
 					HashMap<String, SemanticAnnotation> context = new HashMap<String, SemanticAnnotation>();
 					context.put("self", c);
-					ISemanticLiteral v = Value.getValueForObject(MVEL.eval(tab.fieldValues.get(i), context));
+					ISemanticLiteral v = Thinklab.get().annotateLiteral(MVEL.eval(tab.fieldValues.get(i), context));
 					sql += ", " + translateLiteral(v, v.getConcept(), session);
 
 				} else {
@@ -1554,7 +1550,7 @@ public abstract class SQLThinklabServer {
 
 					/* it's a concept: retrieve its ID (store if necessary) */
 					Pair<String, String> iid = storeInstanceSQLInternal(
-							rel.getValue().asObject(),
+							rel.getObject(),
 							sql, rid, cid.getFirst(), tot, references, session, id, metadata);
 
 					sql = iid.getSecond();

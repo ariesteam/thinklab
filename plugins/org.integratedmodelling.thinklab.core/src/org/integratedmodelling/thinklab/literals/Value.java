@@ -58,23 +58,15 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
  * 
  * @author Ferdinando Villa
  */
-public class Value implements ISemanticLiteral {
+public abstract class Value implements ISemanticLiteral {
 	
 	public IConcept concept;
 	public String ID = null;
 	
     public Value()  {
-        /* the zero of knowledge, ladies and gentlemen, and it's not null */
         concept = KnowledgeManager.Thing();
     }
-    
-    /* (non-Javadoc)
-     * @see org.integratedmodelling.ima.core.value.IValue#clone()
-     */
-    public Object clone() {
-    	return new Value(concept);
-    }
-    
+
     public Value(IConcept c) {
         concept = c;
     }
@@ -134,127 +126,127 @@ public class Value implements ISemanticLiteral {
 		return concept.toString();
 	}
 
-    /** 
-     * Return a new Value of the appropriate type for the class of the passed object, which must be of a simple Java
-     * type.
-     * @param value the Object, which can only be Integer, Double, Float, Long, String or Boolean
-     * @return the correspondent Value, which can be a NumberValue, a TextValue, or a BooleanValue
-     * @throws ThinklabValidationException
-     * @throws ThinklabNoKMException
-     */
-    public static ISemanticLiteral getValueForObject(Object value) throws ThinklabException {
+//    /** 
+//     * Return a new Value of the appropriate type for the class of the passed object, which must be of a simple Java
+//     * type.
+//     * @param value the Object, which can only be Integer, Double, Float, Long, String or Boolean
+//     * @return the correspondent Value, which can be a NumberValue, a TextValue, or a BooleanValue
+//     * @throws ThinklabValidationException
+//     * @throws ThinklabNoKMException
+//     */
+//    public static ISemanticLiteral getValueForObject(Object value) throws ThinklabException {
+//
+//        Value ret = null;
+//        
+//        if (value instanceof ISemanticLiteral)
+//        	return (ISemanticLiteral) value;
+//        
+//        if (value instanceof Integer) {
+//            ret = new NumberValue((Integer)value);
+//        } else if (value instanceof Float) {
+//            ret = new NumberValue((Float)value);
+//        } else if (value instanceof Double) {
+//            ret = new NumberValue((Double)value);
+//        } else if (value instanceof Long) {
+//            ret = new NumberValue((Long)value);            
+//        } else if (value instanceof String) {
+//            ret = new TextValue((String)value);
+//        } else if (value instanceof Boolean) {
+//            ret = new BooleanValue((Boolean)value);
+//        } else 
+//
+//        	/*
+//        	 * FIXME we should make this translation more flexible, but this should be the best
+//        	 * catch-all case.
+//        	 */
+//        	ret = new TextValue(value.toString());
+//        	// throw new ThinklabValidationException("No automatic value generation for class " + value.getClass().toString());
+//
+//        return ret;
+//    }
 
-        Value ret = null;
-        
-        if (value instanceof ISemanticLiteral)
-        	return (ISemanticLiteral) value;
-        
-        if (value instanceof Integer) {
-            ret = new NumberValue((Integer)value);
-        } else if (value instanceof Float) {
-            ret = new NumberValue((Float)value);
-        } else if (value instanceof Double) {
-            ret = new NumberValue((Double)value);
-        } else if (value instanceof Long) {
-            ret = new NumberValue((Long)value);            
-        } else if (value instanceof String) {
-            ret = new TextValue((String)value);
-        } else if (value instanceof Boolean) {
-            ret = new BooleanValue((Boolean)value);
-        } else 
-
-        	/*
-        	 * FIXME we should make this translation more flexible, but this should be the best
-        	 * catch-all case.
-        	 */
-        	ret = new TextValue(value.toString());
-        	// throw new ThinklabValidationException("No automatic value generation for class " + value.getClass().toString());
-
-        return ret;
-    }
-
-    /** 
-     * Return a new Value of the appropriate type for the class of the passed object, which must be of a simple Java
-     * type, setting the correspondent concept to the passed one. Concept is validated to make sure that it subsumes the
-     * IMA type configured for the literal that represents it. 
-     * @param value the Object, which can only be Integer, Double, Float, Long, String or Boolean
-     * @param concept the concept expressed by the object, which must validate to a base IMA concept that fits it.
-     * @return the correspondent Value, which can be a NumberValue, a TextValue, or a BooleanValue
-     * @throws ThinklabValidationException
-     * @throws ThinklabNoKMException
-     */
-    public static ISemanticLiteral getValidatedValueForObject(Object value, IConcept concept) 
-    throws ThinklabException {
-
-        ISemanticLiteral ret = null;
-        
-        if (value.getClass() == Integer.TYPE) {
-            ret = new NumberValue((Integer)value);
-        } else if (value.getClass() == Float.TYPE) {
-            ret = new NumberValue((Float)value);
-        } else if (value.getClass() == Double.TYPE) {
-            ret = new NumberValue((Double)value);
-        } else if (value.getClass() == Long.TYPE) {
-            ret = new NumberValue((Long)value);            
-        } else if (value.getClass() == String.class) {
-            ret = new TextValue((String)value);
-        } else if (value.getClass() == Boolean.TYPE) {
-            ret = new BooleanValue((Boolean)value);
-        } else 
-
-        	/* 
-        	 * FIXME
-        	 * We should make this more flexible, but this is probably the best catch
-        	 * clause for now. Problem is, things like RDFSLiteral get passed, and who
-        	 * knows what they are here. But it's quite likely they're strings, until
-        	 * we pluginize the translation.
-        	 */
-        	ret = new TextValue(value.toString());
-        	// throw new ThinklabValidationException("No automatic value generation for class " + value.getClass().toString());
-
-        if (ret != null)
-            ((Value)ret).setConcept(concept);
-        
-        return ret;
-
-    }
-
-    /** 
-     * Return a new Value of the appropriate type for the class of the passed object, which must be of a simple Java
-     * type, setting the correspondent concept to the passed one. Concept is validated to make sure that it subsumes the
-     * IMA type configured for the literal that represents it. 
-     * @param value the Object, which can only be Integer, Double, Float, Long, String or Boolean
-     * @param concept the concept expressed by the object, which must validate to a base IMA concept that fits it.
-     * @return the correspondent Value, which can be a NumberValue, a TextValue, or a BooleanValue
-     * @throws ThinklabValidationException
-     * @throws ThinklabNoKMException
-     */
-    public static ISemanticLiteral getNonValidatedValueForObject(Object value, IConcept concept) 
-    throws ThinklabException {
-
-        ISemanticLiteral ret = null;
-        
-        if (value.getClass() == Integer.TYPE) {
-            ret = new NumberValue((Integer)value);
-        } else if (value.getClass() == Float.TYPE) {
-            ret = new NumberValue((Float)value);
-        } else if (value.getClass() == Double.TYPE) {
-            ret = new NumberValue((Double)value);
-        } else if (value.getClass() == Long.TYPE) {
-            ret = new NumberValue((Long)value);            
-        } else if (value.getClass() == String.class) {
-            ret = new TextValue((String)value);
-        } else if (value.getClass() == Boolean.TYPE) {
-            ret = new BooleanValue((Boolean)value);
-        } else 
-            throw new ThinklabValidationException("No automatic value generation for class " + value.getClass().toString());
-
-        if (ret != null)
-            ((Value)ret).setConcept(concept);
-        
-        return ret;
-
-    }
+//    /** 
+//     * Return a new Value of the appropriate type for the class of the passed object, which must be of a simple Java
+//     * type, setting the correspondent concept to the passed one. Concept is validated to make sure that it subsumes the
+//     * IMA type configured for the literal that represents it. 
+//     * @param value the Object, which can only be Integer, Double, Float, Long, String or Boolean
+//     * @param concept the concept expressed by the object, which must validate to a base IMA concept that fits it.
+//     * @return the correspondent Value, which can be a NumberValue, a TextValue, or a BooleanValue
+//     * @throws ThinklabValidationException
+//     * @throws ThinklabNoKMException
+//     */
+//    public static ISemanticLiteral getValidatedValueForObject(Object value, IConcept concept) 
+//    throws ThinklabException {
+//
+//        ISemanticLiteral ret = null;
+//        
+//        if (value.getClass() == Integer.TYPE) {
+//            ret = new NumberValue((Integer)value);
+//        } else if (value.getClass() == Float.TYPE) {
+//            ret = new NumberValue((Float)value);
+//        } else if (value.getClass() == Double.TYPE) {
+//            ret = new NumberValue((Double)value);
+//        } else if (value.getClass() == Long.TYPE) {
+//            ret = new NumberValue((Long)value);            
+//        } else if (value.getClass() == String.class) {
+//            ret = new TextValue((String)value);
+//        } else if (value.getClass() == Boolean.TYPE) {
+//            ret = new BooleanValue((Boolean)value);
+//        } else 
+//
+//        	/* 
+//        	 * FIXME
+//        	 * We should make this more flexible, but this is probably the best catch
+//        	 * clause for now. Problem is, things like RDFSLiteral get passed, and who
+//        	 * knows what they are here. But it's quite likely they're strings, until
+//        	 * we pluginize the translation.
+//        	 */
+//        	ret = new TextValue(value.toString());
+//        	// throw new ThinklabValidationException("No automatic value generation for class " + value.getClass().toString());
+//
+//        if (ret != null)
+//            ((Value)ret).setConcept(concept);
+//        
+//        return ret;
+//
+//    }
+//
+//    /** 
+//     * Return a new Value of the appropriate type for the class of the passed object, which must be of a simple Java
+//     * type, setting the correspondent concept to the passed one. Concept is validated to make sure that it subsumes the
+//     * IMA type configured for the literal that represents it. 
+//     * @param value the Object, which can only be Integer, Double, Float, Long, String or Boolean
+//     * @param concept the concept expressed by the object, which must validate to a base IMA concept that fits it.
+//     * @return the correspondent Value, which can be a NumberValue, a TextValue, or a BooleanValue
+//     * @throws ThinklabValidationException
+//     * @throws ThinklabNoKMException
+//     */
+//    public static ISemanticLiteral getNonValidatedValueForObject(Object value, IConcept concept) 
+//    throws ThinklabException {
+//
+//        ISemanticLiteral ret = null;
+//        
+//        if (value.getClass() == Integer.TYPE) {
+//            ret = new NumberValue((Integer)value);
+//        } else if (value.getClass() == Float.TYPE) {
+//            ret = new NumberValue((Float)value);
+//        } else if (value.getClass() == Double.TYPE) {
+//            ret = new NumberValue((Double)value);
+//        } else if (value.getClass() == Long.TYPE) {
+//            ret = new NumberValue((Long)value);            
+//        } else if (value.getClass() == String.class) {
+//            ret = new TextValue((String)value);
+//        } else if (value.getClass() == Boolean.TYPE) {
+//            ret = new BooleanValue((Boolean)value);
+//        } else 
+//            throw new ThinklabValidationException("No automatic value generation for class " + value.getClass().toString());
+//
+//        if (ret != null)
+//            ((Value)ret).setConcept(concept);
+//        
+//        return ret;
+//
+//    }
 
 
     /* (non-Javadoc)
@@ -308,11 +300,11 @@ public class Value implements ISemanticLiteral {
 		return concept;
 	}
 
-	@Override
-	public SemanticAnnotation asObject() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public SemanticAnnotation asObject() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	@Override
 	public boolean asBoolean() {

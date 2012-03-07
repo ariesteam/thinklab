@@ -649,7 +649,7 @@ public class Restriction implements IRestriction {
 
         	} else if (constraint != null && ipc.isObject()) {
 
-        		if (constraint.match(ipc.getValue().asObject()))
+        		if (constraint.match(ipc.getObject()))
         			match++;	
         
         	} else {

@@ -47,6 +47,11 @@ public class PeriodValue extends Value implements IParseable {
 
     Interval interval;
     
+    public void wrap(Object o) {
+    	interval = (Interval)o;
+    }
+
+    
     private static IConcept getBaseTimeConcept() throws ThinklabException {
         return 
             KnowledgeManager.get().

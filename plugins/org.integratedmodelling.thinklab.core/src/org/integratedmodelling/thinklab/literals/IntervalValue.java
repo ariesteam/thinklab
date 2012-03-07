@@ -45,6 +45,10 @@ public class IntervalValue extends Value implements IParseable {
 	boolean isLowerUndefined = true;
 	boolean isUpperUndefined = true;
 	
+    public void wrap(Object o) {
+//    	value = (Boolean)o;
+    }
+
 	public IntervalValue() {
 		try {
 			setConcept(KnowledgeManager.get().requireConcept("thinklab-core:NumericInterval"));

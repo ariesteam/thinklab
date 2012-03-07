@@ -227,7 +227,7 @@ public class KnowledgeManager {
 	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#getRootConcept()
 	 */
     public IConcept getRootConcept() {
-        return knowledgeRepository.getRootConceptType();
+        return knowledgeRepository.getRootConcept();
     }
     
 	public IProperty getAbstractProperty() throws ThinklabValidationException {
@@ -918,7 +918,7 @@ public class KnowledgeManager {
 	}
 	
 	public static IConcept ThingType() {
-		return KM.knowledgeRepository.getRootConceptType();
+		return KM.knowledgeRepository.getRootConcept();
 	}
 
 
@@ -1038,7 +1038,7 @@ public class KnowledgeManager {
 	}
 	
 	public static IConcept Thing() {
-		return KM.knowledgeRepository.getRootConceptType();
+		return KM.knowledgeRepository.getRootConcept();
 	}
 
 

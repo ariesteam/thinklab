@@ -34,6 +34,7 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.list.Escape;
+import org.integratedmodelling.thinklab.annotation.AnnotationFactory;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
@@ -54,8 +55,6 @@ import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.PluginDescriptor;
 import org.restlet.service.MetadataService;
 
-import clojure.lang.RT;
-
 /**
  * Activating this plugin means loading the knowledge manager, effectively booting the
  * Thinklab system.
@@ -70,6 +69,9 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	public static Thinklab get() {
 		return _this;
 	}
+	
+	AnnotationFactory _annotationFactory = 
+			new AnnotationFactory();
 	
 	private HashMap<String, IKbox> _kboxes = new HashMap<String, IKbox>();
 	
@@ -160,6 +162,9 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 
 	}
 
+	/*
+	 * FIXME we should use this class as support, but its 
+	 */
 	public IKnowledgeRepository getKnowledgeRepository() {
 		return _km.getKnowledgeRepository();
 	}
@@ -185,6 +190,7 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 			throw new ThinklabIOException(e);
 		}
 	}
+	
 
 	@Override
 	protected void unload() throws ThinklabException {
@@ -194,6 +200,7 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 			_km = null;
 		}
 	}
+	
 	
 	/**
 	 * Return a fully qualified plugin name given a partial or full name. If complain is true, throw an exception
@@ -487,7 +494,6 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	@Override
 	public void dropKbox(String uri) throws ThinklabException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -499,20 +505,18 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 
 	@Override
 	public ISemanticLiteral annotateLiteral(Object object) throws ThinklabException {
-		return Value.getValueForObject(object);
+		return _annotationFactory.conceptualizeLiteral(object);
 	}
 
 	@Override
-	public SemanticAnnotation conceptualizeObject(Object i) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+	public SemanticAnnotation conceptualize(Object o) throws ThinklabException {
+		return _annotationFactory.conceptualize(o);
 	}
 
 	@Override
-	public Object reifyAnnotation(SemanticAnnotation a)
+	public Object instantiate(SemanticAnnotation a)
 			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		return _annotationFactory.instantiate(a);
 	}
 
 	/**

@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.thinklab.Thinklab;
 
@@ -16,8 +17,9 @@ public class ClassUtils {
 		/**
 		 * Do whatever you want with the class, but do not throw an exception.
 		 * @param clls
+		 * @throws ThinklabException 
 		 */
-		public abstract void visit(Class<?> clls);
+		public abstract void visit(Class<?> clls) throws ThinklabException;
 		
 	}
 	
@@ -89,8 +91,9 @@ public class ClassUtils {
 	 * @param packageName
 	 * @param visitor
 	 * @param cloader
+	 * @throws ThinklabException 
 	 */
-	public static void visitPackage(String packageName, Visitor visitor, ClassLoader cloader) {
+	public static void visitPackage(String packageName, Visitor visitor, ClassLoader cloader) throws ThinklabException {
 
 		// Translate the package name into an absolute path
 		String name = new String(packageName).replace('.', '/');

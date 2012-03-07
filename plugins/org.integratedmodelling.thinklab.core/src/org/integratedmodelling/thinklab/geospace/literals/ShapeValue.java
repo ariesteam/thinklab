@@ -489,8 +489,7 @@ public class ShapeValue extends Value implements IParseable, ITopologicallyCompa
 		return shape.contains(((ShapeValue)o).transform(crs).shape);
 	}
 
-//	@Override
-	public boolean intersects(ITopologicallyComparable o)
+	public boolean intersects(ITopologicallyComparable<ShapeValue> o)
 			throws ThinklabException {
 
 		if (! (o instanceof ShapeValue))
@@ -499,8 +498,7 @@ public class ShapeValue extends Value implements IParseable, ITopologicallyCompa
 		return shape.intersects(((ShapeValue)o).transform(crs).shape);
 	}
 
-//	@Override
-	public boolean overlaps(ITopologicallyComparable o)
+	public boolean overlaps(ITopologicallyComparable<ShapeValue> o)
 			throws ThinklabException {
 
 		if (! (o instanceof ShapeValue))
@@ -526,5 +524,11 @@ public class ShapeValue extends Value implements IParseable, ITopologicallyCompa
 	public boolean intersects(Object o) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void wrap(Object o) {
+		shape = (Geometry)o;
+		setConceptWithoutValidation(null);
 	}
 }

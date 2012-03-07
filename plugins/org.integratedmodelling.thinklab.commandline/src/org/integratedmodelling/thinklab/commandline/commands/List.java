@@ -196,7 +196,7 @@ public class List implements ICommandHandler {
 		if ("ontologies".equals(subject)) {
 
 			for (IOntology o : KnowledgeManager.get().getKnowledgeRepository()
-					.retrieveAllOntologies()) {
+					.getOntologies()) {
 				session.getOutputStream().println(o.getConceptSpace() + ":\t"
 						+ o.getURI());
 			}

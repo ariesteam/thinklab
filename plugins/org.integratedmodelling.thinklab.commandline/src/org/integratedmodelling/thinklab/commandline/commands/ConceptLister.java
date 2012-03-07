@@ -63,8 +63,8 @@ public class ConceptLister implements IListingProvider {
 		
 		List<?> con = 
 			_tree ?
-				KnowledgeManager.get().getKnowledgeRepository().getAllRootConcepts() :
-				KnowledgeManager.get().getKnowledgeRepository().getAllConcepts();
+				KnowledgeManager.get().getKnowledgeRepository().getRootConcepts() :
+				KnowledgeManager.get().getKnowledgeRepository().getConcepts();
 				
 		List<?> ret = con;
 		

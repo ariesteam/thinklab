@@ -118,14 +118,14 @@ public class OPALWriter {
 				/* see if we can default the relationship */
 				if (profile.getDefaultRelationship(
 						instance.getDirectType(),
-						r.getValue().asObject().getDirectType())
+						r.getObject().getDirectType())
 						== null) {
 				
 					/* nope, write it up as is */
 					Node reln = document.createNode(cid, ret);
 				
 					writeInstanceInternal(
-						r.getValue().asObject(),
+						r.getObject(),
 						document,
 						reln,
 						profile,
@@ -138,7 +138,7 @@ public class OPALWriter {
 					 * within the main instance.
 					 */
 					writeInstanceInternal(
-							r.getValue().asObject(),
+							r.getObject(),
 							document,
 							ret,
 							profile,

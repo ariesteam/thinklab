@@ -27,11 +27,13 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.lang.IList;
-import org.integratedmodelling.thinklab.literals.ObjectValue;
+
+import edu.stanford.smi.protegex.owl.swrl.bridge.query.ObjectValue;
 
 /**
  * <p>A Relationship connects a "source" concept to another Concept, object (Instance), or Literal through a Property.
@@ -46,31 +48,37 @@ public class Relationship implements IRelationship {
 
 	public IProperty property = null;
 	public ISemanticLiteral     literal  = null;
+	public IInstance object;
 	
 	public Relationship(IProperty p, ISemanticLiteral v) {
 		property = p;
 		literal = v;
 	}
 	
+	public Relationship(IProperty p, IInstance instance) {
+		property = p;
+		object = instance;
+	}
+	
     /* (non-Javadoc)
      * @see org.integratedmodelling.ima.core.IRelationship#isLiteral()
      */
 	public boolean isLiteral() {
-		return literal != null && literal.isLiteral();
+		return literal != null;
 	}
     
     /* (non-Javadoc)
      * @see org.integratedmodelling.ima.core.IRelationship#isClassification()
      */
     public boolean isClassification() {
-        return literal != null && literal.isClass();
+        return property.isClassification();
     }
     
     /* (non-Javadoc)
      * @see org.integratedmodelling.ima.core.IRelationship#isObject()
      */
     public boolean isObject() {
-        return literal != null && literal.isObject();
+        return object != null;
     }
     
     /* (non-Javadoc)
@@ -122,7 +130,7 @@ public class Relationship implements IRelationship {
 		
 		if (isObject()) {
 		
-			SemanticAnnotation oo = literal.asObject();
+			SemanticAnnotation oo = object.conceptualize();
 			alist.add(oo.asList());
 
 		} else if (isLiteral()) {
@@ -154,7 +162,7 @@ public class Relationship implements IRelationship {
 		
 		if (isObject()) {
 			
-			ret += ((Instance)((ObjectValue)literal).asInstance()).getSignature();
+			ret += ((Instance)object).getSignature();
 			
 		} else if (isLiteral()) {
 			
@@ -174,5 +182,10 @@ public class Relationship implements IRelationship {
 		
 		return ret + "}";
 		
+	}
+
+	@Override
+	public IInstance getObject() {
+		return object;
 	}
 }

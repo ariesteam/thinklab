@@ -70,7 +70,6 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
-import org.integratedmodelling.thinklab.literals.ObjectValue;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.utils.CopyURL;
@@ -440,14 +439,14 @@ public final class SearchEngine implements IQueriable {
 			
 			ISemanticLiteral val = (ISemanticLiteral) qr.get(i);
 			
-			if (val instanceof ObjectValue) {
-				try {
-					index.addDocument(submitIndividual(kb, val.asObject()));
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					throw new ThinklabIOException(e);
-				}
-			}
+//			if (val instanceof ObjectValue) {
+//				try {
+//					index.addDocument(submitIndividual(kb, val.asObject()));
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					throw new ThinklabIOException(e);
+//				}
+//			}
 
 			// TODO may want to delete the object, although for very linked kboxes that could
 			// just decrease performance.
@@ -747,7 +746,7 @@ public final class SearchEngine implements IQueriable {
 
 					/* create document for linked object and link it to main document, multiplying the
 					 * intrinsic weight of the fields by the weigth factor. */
-					SemanticAnnotation inst = r.getValue().asObject();
+					SemanticAnnotation inst = r.getObject();
 					
 					if (inst != null) {
 						Document ld = submitIndividual(kbox, inst);

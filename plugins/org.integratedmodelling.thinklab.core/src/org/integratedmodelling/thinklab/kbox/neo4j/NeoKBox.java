@@ -41,7 +41,7 @@ public class NeoKBox implements IKbox {
 	@Override
 	public long store(Object o) throws ThinklabException {
 		
-		SemanticAnnotation instance = Thinklab.get().conceptualizeObject(o);		
+		SemanticAnnotation instance = Thinklab.get().conceptualize(o);		
 		return storeInstanceList(instance, _db.getReferenceNode());
 	}
 

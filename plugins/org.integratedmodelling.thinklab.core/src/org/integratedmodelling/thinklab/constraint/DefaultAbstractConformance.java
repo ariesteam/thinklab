@@ -65,7 +65,7 @@ public abstract class DefaultAbstractConformance implements IConformance {
 				rr = setConformance(r.getProperty(), r.getValue().getConcept());
 			} else if (r.isObject()) {
 				rr = new Restriction(r.getProperty(), 
-						getQuery(r.getValue().asObject()));
+						getQuery(r.getObject()));
 			} else {		
 				rr = setConformance(r.getProperty(), r.getValue());
 			}

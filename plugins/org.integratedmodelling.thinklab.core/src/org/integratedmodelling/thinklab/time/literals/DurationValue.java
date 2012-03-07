@@ -41,7 +41,6 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 import org.integratedmodelling.thinklab.literals.Value;
@@ -54,8 +53,8 @@ import org.jscience.physics.amount.Amount;
 /**
  * A parsed literal representing a time duration. Linked to the DurationValue OWL class to be used as an
  * extended literal for it. Maximum resolution is milliseconds. Can be initialized
- * by a string expressing number with units; unit must express time and the syntax is the one loaded in the 
- * JScience framework by the CoreScience plugin.
+ * by a string expressing number with units; unit must express time and the syntax is the one
+ * supported by the implementation of IUnit.
  *   
  * @author Ferdinando Villa
  *
@@ -119,6 +118,11 @@ public class DurationValue extends Value implements IParseable {
         super(c);
         value = 0l;
     }
+    
+    public void wrap(Object o) {
+    	value = ((Number)o).longValue();
+    }
+
     
     public DurationValue(String s) throws ThinklabValidationException {
         parse(s);

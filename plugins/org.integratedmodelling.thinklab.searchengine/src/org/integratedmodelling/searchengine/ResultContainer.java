@@ -36,7 +36,6 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.literals.ObjectValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 import org.integratedmodelling.utils.MiscUtilities;
 
@@ -142,7 +141,7 @@ public class ResultContainer implements List<Object> {
 	
 	public ISemanticLiteral getResult(int n, ISession session) throws ThinklabException {
 		
-		return new ObjectValue(getObjectFromDocument(results.get(n), session));
+		return null; //new ObjectValue(getObjectFromDocument(results.get(n), session));
 	}
 //
 //	@Override

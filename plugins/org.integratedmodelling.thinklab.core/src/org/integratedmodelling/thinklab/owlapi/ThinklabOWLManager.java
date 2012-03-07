@@ -56,7 +56,6 @@ import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IParseableKnowledge;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.literals.NumberValue;
-import org.integratedmodelling.thinklab.literals.ObjectValue;
 import org.integratedmodelling.thinklab.literals.TextValue;
 import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.thinklab.owlapi.Ontology.ReferenceRecord;
@@ -686,15 +685,15 @@ public class ThinklabOWLManager {
 				 */
 				ISemanticLiteral value = KnowledgeManager.get().validateLiteral(cid.getFirst(), svalue);
 				
-				/*
-				 * If the validator creates an object, we set this as an object reference and the property must
-				 * be an object property.
-				 */
-				if (value.isObject()) {
-					inst.addObjectRelationship(property, ((ObjectValue)value).asInstance());
-				} else {
+//				/*
+//				 * If the validator creates an object, we set this as an object reference and the property must
+//				 * be an object property.
+//				 */
+//				if (value.isObject()) {
+//					inst.addObjectRelationship(property, ((ObjectValue)value).asInstance());
+//				} else {
 					inst.addLiteralRelationship(property, value);
-				}
+//				}
 			}
 			
 			
@@ -930,11 +929,11 @@ public class ThinklabOWLManager {
 				ISemanticLiteral val = KnowledgeManager.get().validateLiteral(r, o2.toString());
 				
 				if (val != null) {
-					if (val.isObject()) {
-						inst.addObjectRelationship(property, ((ObjectValue)val).asInstance());
-					} else {
+//					if (val.isObject()) {
+//						inst.addObjectRelationship(property, ((ObjectValue)val).asInstance());
+//					} else {
 						inst.addLiteralRelationship(property, val);
-					}
+//					}
 				}
 			}
 		}

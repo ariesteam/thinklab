@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.runtime.IInterpreter;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
@@ -70,14 +71,14 @@ public class RunScript implements ITask {
 		 * run whatever
 		 */
 		for (URL url : codeUrl) {
-			result = Value.getValueForObject(intp.eval(url));
+			result = Thinklab.get().annotateLiteral(intp.eval(url));
 		}
 		
 		/*
 		 * if there's any inline code, run it last
 		 */
 		if (code != null) {
-			result = Value.getValueForObject(intp.eval(code));
+			result = Thinklab.get().annotateLiteral(intp.eval(code));
 		}
 
 	}

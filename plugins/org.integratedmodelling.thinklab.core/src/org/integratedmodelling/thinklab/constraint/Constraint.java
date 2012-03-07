@@ -431,7 +431,7 @@ public class Constraint implements IQuery {
     @Override
 	public boolean match(Object i) throws ThinklabException {
         
-    	SemanticAnnotation ilist = Thinklab.get().conceptualizeObject(i);
+    	SemanticAnnotation ilist = Thinklab.get().conceptualize(i);
     	
     	boolean ok = concept.is(ilist.getDirectType());
     	

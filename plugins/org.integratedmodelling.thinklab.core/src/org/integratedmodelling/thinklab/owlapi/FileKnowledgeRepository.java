@@ -143,7 +143,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 			registry = Registry.get();
 			registry.registerURI("owl", URI.create("http://www.w3.org/2002/07/owl"));
 			df = manager.getOWLDataFactory();
-			rootConcept = getRootConceptType();
+			rootConcept = getRootConcept();
 			
 			/*
 			 * register a plugin listener that will publish the physical location of
@@ -310,7 +310,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	 * 
 	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository#getOntologyLastModifiedDate(java.lang.String)
 	 */
-	public long getOntologyLastModifiedDate(String ontName)
+	public long getOntologyTimestamp(String ontName)
 			throws ThinklabResourceNotFoundException {
 		// TODO Auto-generated method stub
 		return 0;
@@ -321,7 +321,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	 * 
 	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository#getRootConceptType()
 	 */
-	public IConcept getRootConceptType() {
+	public IConcept getRootConcept() {
 		if (rootConcept == null) {
 			rootConcept = new Concept(manager.getOWLDataFactory().getOWLClass(URI.create(Namespaces.OWL + "Thing")));
 		}
@@ -384,7 +384,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	 * 
 	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository#retrieveAllOntologies()
 	 */
-	public Collection<IOntology> retrieveAllOntologies() {
+	public Collection<IOntology> getOntologies() {
 		return ontologies.values();
 	}
 	
@@ -522,7 +522,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	}
 
 	@Override
-	public List<IConcept> getAllRootConcepts() {
+	public List<IConcept> getRootConcepts() {
 		
 		ArrayList<IConcept> ret = new ArrayList<IConcept>();
 		for (IOntology onto : ontologies.values()) {
@@ -536,7 +536,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	}
 
 	@Override
-	public List<IConcept> getAllConcepts() {
+	public List<IConcept> getConcepts() {
 		
 		ArrayList<IConcept> ret = new ArrayList<IConcept>();
 		for (IOntology onto : ontologies.values()) {

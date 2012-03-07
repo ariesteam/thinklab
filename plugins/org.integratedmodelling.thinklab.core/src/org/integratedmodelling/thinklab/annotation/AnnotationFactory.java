@@ -2,7 +2,6 @@ package org.integratedmodelling.thinklab.annotation;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +11,7 @@ import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -19,6 +19,8 @@ import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 
 /**
@@ -30,13 +32,22 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.Inte
  */
 public class AnnotationFactory {
 
-	IntelligentMap<Class<?>> _concept2class = new IntelligentMap<Class<?>>();
+	IntelligentMap<Class<?>> _concept2class    = new IntelligentMap<Class<?>>();
+	HashMap<Class<?>, Class<?>> _class2literal    = new HashMap<Class<?>, Class<?>>();
+	HashMap<Class<?>, IConcept>_class2datatype   = new HashMap<Class<?>, IConcept>();
 	HashMap<Class<?>, IConcept> _class2concept = new HashMap<Class<?>, IConcept>();
-
+	
 	/*
-	 * fields are indexed as declaringclass$fieldname
+	 * -----------------------------------------------------------------------------
+	 * register knowledge with factory
+	 * -----------------------------------------------------------------------------
 	 */
-	HashMap<String, IProperty>  _field2property = new HashMap<String, IProperty>();
+	
+	/*
+	 * -----------------------------------------------------------------------------
+	 * the actually useful methods
+	 * -----------------------------------------------------------------------------
+	 */
 	
 	public SemanticAnnotation conceptualize(Object o) throws ThinklabException {
 
@@ -56,8 +67,9 @@ public class AnnotationFactory {
 		for (Field f : cls.getFields()) {
 			if (f.isAnnotationPresent(Property.class)) {
 
-				IProperty p = _field2property.get(f.getDeclaringClass()
-						.getCanonicalName() + "$" + f.getName());
+				Property pann = f.getAnnotation(Property.class);
+				
+				IProperty p = Thinklab.get().getProperty(pann.value());
 
 				if (p != null) {
 					try {
@@ -164,6 +176,33 @@ public class AnnotationFactory {
 				init.invoke(ret, (Object[])null);
 		} catch (Exception e) {
 			throw new ThinklabInternalErrorException(e);			
+		}
+		
+		return null;
+	}
+	
+	public ISemanticLiteral conceptualizeLiteral(Object o) throws ThinklabException {
+		
+		if (o instanceof ISemanticLiteral)
+			return (ISemanticLiteral)o;
+		
+		/*
+		 * find registered class; complain if not found
+		 */
+		Class<?> cls = _class2literal.get(o.getClass());
+		if (cls == null)
+			throw new ThinklabUnimplementedFeatureException("can't conceptualize a literal of class " + o.getClass());
+		
+		Object ret = null;
+		
+		try {
+			ret = cls.newInstance();
+		} catch (Exception e) {
+			throw new ThinklabInternalErrorException(e);
+		}
+		
+		if (ret instanceof ISemanticLiteral) {
+			
 		}
 		
 		return null;

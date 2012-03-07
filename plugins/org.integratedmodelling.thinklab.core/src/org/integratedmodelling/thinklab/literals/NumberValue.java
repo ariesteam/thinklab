@@ -62,6 +62,11 @@ public class NumberValue extends Value implements IParseable {
         value = f;
     }
         
+    public void wrap(Object o) {
+    	value = ((Number)o).doubleValue();
+    }
+
+    
     /**
      * The Number concept manager will validate units and numbers when numbers are read from a string.
      * @param s

@@ -49,11 +49,12 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IConformance;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.constraint.DefaultConformance;
-import org.integratedmodelling.thinklab.literals.ObjectValue;
 import org.integratedmodelling.utils.NameGenerator;
 import org.semanticweb.owl.model.OWLDescription;
 import org.semanticweb.owl.model.OWLIndividual;
 import org.semanticweb.owl.model.OWLOntology;
+
+import edu.stanford.smi.protegex.owl.swrl.bridge.query.ObjectValue;
 
 /**
  * @author Ioannis N. Athanasiadis
@@ -273,8 +274,7 @@ public class Instance extends Knowledge implements IInstance {
 			
 			if (p.isObject()) {
 				
-				Instance inst = (Instance)
-						((ObjectValue)(p.getValue())).asInstance();
+				Instance inst = (Instance) p.getObject();
 				if (!refs.contains(inst.getURI())) {
 					refs.add(inst.getURI());
 					inst.validateInternal(implementations, refs);
