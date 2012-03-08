@@ -40,12 +40,12 @@ import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
-import org.integratedmodelling.thinklab.knowledge.Value;
+import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
 import org.integratedmodelling.thinklab.time.TimePlugin;
 import org.joda.time.Interval;
 
 @Literal(concept="time:PeriodValue", javaClass=Interval.class, datatype="")
-public class PeriodValue extends Value implements IParseable {
+public class PeriodValue extends SemanticLiteral implements IParseable {
 
     Interval interval;
     

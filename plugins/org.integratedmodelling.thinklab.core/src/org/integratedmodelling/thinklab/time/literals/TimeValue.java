@@ -40,7 +40,7 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
-import org.integratedmodelling.thinklab.knowledge.Value;
+import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
 import org.integratedmodelling.thinklab.time.TimePlugin;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -62,7 +62,7 @@ import org.joda.time.format.DateTimeFormatter;
  * 
  */
 @LiteralImplementation(concept="time:DateTimeValue")
-public class TimeValue extends Value implements IParseable {
+public class TimeValue extends SemanticLiteral implements IParseable {
 
 	DateTime value;
 

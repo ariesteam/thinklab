@@ -26,7 +26,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
-import org.integratedmodelling.thinklab.knowledge.Value;
+import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
 
 /**
  * <p>A specialized Value that holds numbers and has all math operations with automatic unit conversion.</p>
@@ -36,7 +36,7 @@ import org.integratedmodelling.thinklab.knowledge.Value;
  * @author Ferdinando Villa
  */
 @LiteralImplementation(concept="thinklab-core:Number")
-public class NumberValue extends Value implements IParseable {	
+public class NumberValue extends SemanticLiteral implements IParseable {	
 	
     public double value;
     

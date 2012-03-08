@@ -34,15 +34,15 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
  * @author Ferd
  *
  */
-public abstract class Value implements ISemanticObject {
+public abstract class SemanticLiteral implements ISemanticObject {
 	
 	public IConcept concept;
 	
-    public Value()  {
+    public SemanticLiteral()  {
         concept = KnowledgeManager.Thing();
     }
 
-    public Value(IConcept c) {
+    public SemanticLiteral(IConcept c) {
         concept = c;
     }
 

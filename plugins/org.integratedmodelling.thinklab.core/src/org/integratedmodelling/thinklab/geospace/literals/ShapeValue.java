@@ -32,7 +32,7 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.geospace.Geospace;
-import org.integratedmodelling.thinklab.knowledge.Value;
+import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 
@@ -59,7 +59,7 @@ import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
  *
  */
 @Literal(concept="geospace:SpatialRecord", datatype="", javaClass=Geometry.class)
-public class ShapeValue extends Value implements IParseable, ITopologicallyComparable {
+public class ShapeValue extends SemanticLiteral implements IParseable, ITopologicallyComparable {
 
 	Geometry shape = null;
 	PrecisionModel precisionModel = null;

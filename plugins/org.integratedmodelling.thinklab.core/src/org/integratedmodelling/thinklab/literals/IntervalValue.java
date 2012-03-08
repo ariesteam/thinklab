@@ -31,7 +31,7 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
-import org.integratedmodelling.thinklab.knowledge.Value;
+import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
 
 /**
  * A numeric interval parsed from conventional syntax (e.g. "[12 34)" )
@@ -39,7 +39,7 @@ import org.integratedmodelling.thinklab.knowledge.Value;
  *
  */
 @Literal(concept="core:NumericInterval", datatype="", javaClass=IntervalValue.class)
-public class IntervalValue extends Value implements IParseable {
+public class IntervalValue extends SemanticLiteral implements IParseable {
 
 	double lowerBound = 0.0;
 	double upperBound = 0.0;

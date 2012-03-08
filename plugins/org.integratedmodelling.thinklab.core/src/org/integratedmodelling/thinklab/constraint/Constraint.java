@@ -34,7 +34,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IList;
-import org.integratedmodelling.thinklab.knowledge.Value;
+import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
 
 
 /**
@@ -367,7 +367,7 @@ public class Constraint implements IQuery {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#addLiteralRestriction(java.lang.String, java.lang.String, org.integratedmodelling.thinklab.api.knowledge.IValue)
 	 */
-	public void addLiteralRestriction(String propertyType, String operator, Value value) throws ThinklabException {
+	public void addLiteralRestriction(String propertyType, String operator, SemanticLiteral value) throws ThinklabException {
 		restrict(new Restriction(propertyType, operator, value.toString()));
 	}
 
