@@ -22,7 +22,7 @@ package org.integratedmodelling.thinklab.geospace.commands;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.geospace.Geospace;
@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 public class Project implements ICommandHandler {
 
 	@Override
-	public ISemanticLiteral execute(Command command, ISession session)
+	public ISemanticObject execute(Command command, ISession session)
 			throws ThinklabException {
 
 		String ssrid = command.getArgumentAsString("source-srid");

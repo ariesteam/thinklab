@@ -36,17 +36,12 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
-import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
-import org.integratedmodelling.thinklab.extensions.KnowledgeLoader;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.applications.ISessionManager;
 import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
@@ -166,10 +161,6 @@ public class KnowledgeManager {
      * true when thinklab extended types have been initialized.
      */
 	private boolean typesInitialized = false;
-
-	@Deprecated
-	private HashMap<String, KnowledgeLoader> knowledgeLoaders =
-		new HashMap<String, KnowledgeLoader>();
 
 	private HashMap<String, Class<?>> sessionListeners = 
 		new HashMap<String, Class<?>>();
@@ -564,18 +555,18 @@ public class KnowledgeManager {
     	SemanticType st = new SemanticType(id);
         return requireProperty(st);
     }
-    
-    /* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#requireInstance(java.lang.String)
-	 */
-    public IInstance requireInstance(String id) throws ThinklabException {
-        SemanticType st = new SemanticType(id);
-        IInstance ret = knowledgeRepository.requireOntology(st.getConceptSpace()).getInstance(st.getLocalName());
-        if (ret == null) {
-        	throw new ThinklabResourceNotFoundException("instance " + id + " is unknown");
-        }
-        return ret;
-    }
+//    
+//    /* (non-Javadoc)
+//	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#requireInstance(java.lang.String)
+//	 */
+//    public IInstance requireInstance(String id) throws ThinklabException {
+//        SemanticType st = new SemanticType(id);
+//        IInstance ret = knowledgeRepository.requireOntology(st.getConceptSpace()).getInstance(st.getLocalName());
+//        if (ret == null) {
+//        	throw new ThinklabResourceNotFoundException("instance " + id + " is unknown");
+//        }
+//        return ret;
+//    }
     
     /**
      * Return concept from semantic type. Concept must exist.
@@ -607,39 +598,6 @@ public class KnowledgeManager {
         	throw new ThinklabResourceNotFoundException("property " + id + " is unknown");
         }
         return ret;
-    }
-    
-    /**
-     * Return instance from semantic type. Concept must exist.
-     * @param id the semantic type
-     * @return the concept.
-     * @throws ThinklabResourceNotFoundException if concept not found.
-     */
-    public IInstance requireInstance(SemanticType id) throws ThinklabResourceNotFoundException {
-  
-    	IInstance ret = retrieveInstance(id);
-  
-    	if (ret == null) {
-        	throw new ThinklabResourceNotFoundException("property " + id + " is unknown");
-        }
-        return ret;
-    }
-    
-
-    public IInstanceImplementation newInstanceImplementation(IConcept type) throws ThinklabException{
-
-        Class<?> cms = 
-    	  Thinklab.get().getClassForConcept(type);
-        
-        if (cms != null) {
-        	try {
-				return (IInstanceImplementation) cms.newInstance();
-			} catch (Exception e) {
-				throw new ThinklabValidationException("cannot create implementation: " + e.getMessage());
-			}        	
-        }
-        
-        return null;
     }
     
     /* (non-Javadoc)
@@ -723,21 +681,6 @@ public class KnowledgeManager {
 		knowledgeRepository.releaseOntology(id);
 	}
 	
-	public IInstance retrieveInstance(SemanticType t) {
-		IInstance ret = null;
-	    IOntology o = knowledgeRepository.retrieveOntology(t.getConceptSpace());
-	    if (o != null)
-	    	ret = o.getInstance(t.getLocalName());
-	    return ret;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#retrieveInstance(java.lang.String)
-	 */
-	public IInstance retrieveInstance(String resultID) throws ThinklabValidationException {
-		return retrieveInstance(new SemanticType(resultID));
-	}
-
 	public IConcept retrieveConcept(SemanticType t) {
 
 		IConcept ret = null;
@@ -837,21 +780,21 @@ public class KnowledgeManager {
 		
 		return ret;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#validateLiteral(org.integratedmodelling.thinklab.interfaces.IConcept, java.lang.String, org.integratedmodelling.thinklab.interfaces.IOntology)
-	 */
-	public ISemanticLiteral validateLiteral(IConcept c, String literal) throws ThinklabException {
-		
-		ISemanticLiteral ret = Thinklab.get().getRawLiteral(c);
-		if (ret != null && ret instanceof IParseable)
-			((IParseable)ret).parse(literal);
-		else 
-			throw 
-				new ThinklabValidationException("don't know how to validate a literal of type " + c.toString());
-
-		return ret;
-	}
+//
+//	/* (non-Javadoc)
+//	 * @see org.integratedmodelling.thinklab.IKnowledgeBase#validateLiteral(org.integratedmodelling.thinklab.interfaces.IConcept, java.lang.String, org.integratedmodelling.thinklab.interfaces.IOntology)
+//	 */
+//	public ISemanticObject validateLiteral(IConcept c, String literal) throws ThinklabException {
+//		
+//		ISemanticObject ret = Thinklab.get().getRawLiteral(c);
+//		if (ret != null && ret instanceof IParseable)
+//			((IParseable)ret).parse(literal);
+//		else 
+//			throw 
+//				new ThinklabValidationException("don't know how to validate a literal of type " + c.toString());
+//
+//		return ret;
+//	}
 
 
 	/**
@@ -927,15 +870,15 @@ public class KnowledgeManager {
 		return additionalRestrictionsProperty;
 	}
 
-	/**
-	 * Return the IO plugin that declares to be capable of handling a particular format.
-	 * @param format
-	 * @return
-	 */
-	public KnowledgeLoader getKnowledgeLoader(String format) {
-
-		return knowledgeLoaders.get(format);
-	}
+//	/**
+//	 * Return the IO plugin that declares to be capable of handling a particular format.
+//	 * @param format
+//	 * @return
+//	 */
+//	public KnowledgeLoader getKnowledgeLoader(String format) {
+//
+//		return knowledgeLoaders.get(format);
+//	}
 
 	
 	public CommandManager getCommandManager() {

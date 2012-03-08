@@ -33,12 +33,9 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IList;
-import org.integratedmodelling.thinklab.api.lang.IOperator;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.thinklab.geospace.interfaces.IGridMask;
@@ -512,13 +509,6 @@ public class RasterGrid extends ObservationImpl implements IExtent {
 	}
 
 	@Override
-	public IRestriction getConstraint(IOperator operator)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Collection<Pair<String, Integer>> getStateLocators(int index) {
 		// TODO Auto-generated method stub
 		return null;
@@ -532,13 +522,6 @@ public class RasterGrid extends ObservationImpl implements IExtent {
 
 	@Override
 	public IExtent force(IExtent extent) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public AggregationParameters getAggregationParameters(IConcept concept,
-			IUnit unit) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

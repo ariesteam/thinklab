@@ -19,20 +19,11 @@
  */
 package org.integratedmodelling.thinklab.clojure;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Map;
-
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.list.PolyList;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.lang.IList;
 
-import clojure.lang.IPersistentMap;
 import clojure.lang.ISeq;
 import clojure.lang.RT;
 
@@ -85,71 +76,71 @@ public class Clojure {
 		}
 	}
 	
-	/**
-	 * Promote a clojure-returned object to its likely semantic counterpart 
-	 */
-	public static ISemanticLiteral promote(Object object) {
-		return null;
-	}
-	
-	/**
-	 * Strip semantics from an object if it has any, and return its likely counterpart for
-	 * use in Clojure.
-	 * 
-	 * @param object
-	 * @return
-	 */
-	public static Object demote(Object object) {
-		return (object instanceof ISemanticLiteral) ? ((ISemanticLiteral)object).demote() : object;
-	}
-
-	/**
-	 * Much simpler than using Clojure directly
-	 * 
-	 * @param instance
-	 * @param demote
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public static IPersistentMap getRelationships(IInstance instance, boolean demote) 
-		throws ThinklabException {
-		
-		Collection<IRelationship> c = instance.getRelationships();
-		Hashtable<String, ISeq> lists = new Hashtable<String, ISeq>();
-		
-		for (IRelationship r : c) {
-			
-			String k = r.getProperty().toString();
-			Object v = demote ? demote(r.getValue()) : r.getValue();
-			
-			if (lists.contains(k)) {
-				lists.put(k, lists.get(k).cons(v));
-			} else {
-				lists.put(k, RT.list(v));
-			}
-		}
-
-		Object[] o = new Object[lists.size() * 2];
-		int i = 0;
-		
-		for (Map.Entry<String, ISeq> entry : lists.entrySet()) {
-			o[i++] = entry.getKey();
-			o[i++] = entry.getValue();
-		}
-		
-		return RT.map(o);
-	}
-	
-	
-	public static Collection<Object> getPropertyValues(IInstance instance, String property) throws ThinklabException {
-		
-		ArrayList<Object> ret = new ArrayList<Object>();
-		
-		for (IRelationship r : instance.getRelationships(property)) {
-			ret.add(demote(r.getValue()));
-		}
-		
-		return ret;
-		
-	}
+//	/**
+//	 * Promote a clojure-returned object to its likely semantic counterpart 
+//	 */
+//	public static ISemanticLiteral promote(Object object) {
+//		return null;
+//	}
+//	
+//	/**
+//	 * Strip semantics from an object if it has any, and return its likely counterpart for
+//	 * use in Clojure.
+//	 * 
+//	 * @param object
+//	 * @return
+//	 */
+//	public static Object demote(Object object) {
+//		return (object instanceof ISemanticLiteral) ? ((ISemanticLiteral)object).demote() : object;
+//	}
+//
+//	/**
+//	 * Much simpler than using Clojure directly
+//	 * 
+//	 * @param instance
+//	 * @param demote
+//	 * @return
+//	 * @throws ThinklabException
+//	 */
+//	public static IPersistentMap getRelationships(ISemanticObject instance, boolean demote) 
+//		throws ThinklabException {
+//		
+//		Collection<IRelationship> c = instance.getRelationships();
+//		Hashtable<String, ISeq> lists = new Hashtable<String, ISeq>();
+//		
+//		for (IRelationship r : c) {
+//			
+//			String k = r.getProperty().toString();
+//			Object v = demote ? demote(r.getValue()) : r.getValue();
+//			
+//			if (lists.contains(k)) {
+//				lists.put(k, lists.get(k).cons(v));
+//			} else {
+//				lists.put(k, RT.list(v));
+//			}
+//		}
+//
+//		Object[] o = new Object[lists.size() * 2];
+//		int i = 0;
+//		
+//		for (Map.Entry<String, ISeq> entry : lists.entrySet()) {
+//			o[i++] = entry.getKey();
+//			o[i++] = entry.getValue();
+//		}
+//		
+//		return RT.map(o);
+//	}
+//	
+//	
+//	public static Collection<Object> getPropertyValues(IInstance instance, String property) throws ThinklabException {
+//		
+//		ArrayList<Object> ret = new ArrayList<Object>();
+//		
+//		for (IRelationship r : instance.getRelationships(property)) {
+//			ret.add(demote(r.getValue()));
+//		}
+//		
+//		return ret;
+//		
+//	}
 }

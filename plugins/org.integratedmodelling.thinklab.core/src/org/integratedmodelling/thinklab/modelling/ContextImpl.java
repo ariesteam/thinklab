@@ -28,7 +28,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.model.Context;
 import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IContextMapper;
@@ -50,7 +50,7 @@ public class ContextImpl extends NamespaceQualified implements IContext {
 	
 	private ArrayList<IListener> _listeners = new ArrayList<IListener>();
 	private Metadata _metadata = new Metadata();	
-	private HashMap<IInstance, IState> _states = new HashMap<IInstance, IState>();
+	private HashMap<ISemanticObject, IState> _states = new HashMap<ISemanticObject, IState>();
 	
 	public ContextImpl(IContext context) {
 		// TODO copy every state and extent from the passed one, then initialize
@@ -68,7 +68,7 @@ public class ContextImpl extends NamespaceQualified implements IContext {
 	}
 	
 	@Override
-	public Set<IInstance> getObservables() {
+	public Set<ISemanticObject> getObservables() {
 		return _states.keySet();
 	}
 
@@ -184,7 +184,7 @@ public class ContextImpl extends NamespaceQualified implements IContext {
 			_listeners.add(l);
 	}
 
-	public boolean containsState(IInstance observable) {
+	public boolean containsState(ISemanticObject observable) {
 		return _states.containsKey(observable);
 	}
 

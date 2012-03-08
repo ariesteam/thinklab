@@ -34,11 +34,13 @@ package org.integratedmodelling.thinklab.time.literals;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
-import org.integratedmodelling.thinklab.literals.Value;
+import org.integratedmodelling.thinklab.knowledge.Value;
 import org.integratedmodelling.thinklab.time.TimePlugin;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -128,54 +130,6 @@ public class TimeValue extends Value implements IParseable {
 	public TimeValue(long d) {
 		this(new DateTime(d));
 	}
-
-	public boolean isNumber() {
-		return false;
-	}
-
-	public boolean isText() {
-		return false;
-	}
-
-	public boolean isBoolean() {
-		return false;
-	}
-
-	public boolean isClass() {
-		return false;
-	}
-
-	public boolean isObject() {
-		return false;
-	}
-
-	public boolean isLiteral() {
-		return true;
-	}
-
-	public Object clone() {
-		TimeValue ret = null;
-		try {
-			ret = new TimeValue(concept);
-			ret.value = new DateTime(value);
-		} catch (ThinklabException e) {
-		}
-		return ret;
-	}
-
-	public int getDimensionsCount() {
-		return 0;
-	}
-
-	public int getGranularity(int dimensionIndex) {
-		return 0;
-	}
-
-	public ISemanticLiteral getValue(int idx, IConcept concept)
-			throws ThinklabValidationException {
-		return this;
-	}
-
 	public int getValuesCount() {
 		return 1;
 	}
@@ -264,11 +218,6 @@ public class TimeValue extends Value implements IParseable {
 	}
 	
 	@Override
-	public Object demote() {
-		return value;
-	}
-
-	@Override
 	public boolean equals(Object other) {
 		
 		boolean ret = (other instanceof TimeValue);
@@ -321,5 +270,29 @@ public class TimeValue extends Value implements IParseable {
 		return end;
 
 		
+	}
+
+	@Override
+	public Semantics getSemantics() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getObject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean is(ISemanticObject object) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String asText() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

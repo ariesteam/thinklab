@@ -24,14 +24,11 @@ import java.util.Collection;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
-import org.integratedmodelling.thinklab.api.lang.IOperator;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.modelling.ObservationImpl;
 
 /**
@@ -40,20 +37,13 @@ import org.integratedmodelling.thinklab.modelling.ObservationImpl;
  * @author UVM Affiliate
  *
  */
-@InstanceImplementation(concept="geospace:ArealLocation")
+@Concept("geospace:ArealLocation")
 public class ArealLocation extends ObservationImpl implements IExtent {
 
 	ShapeValue boundingBox = null;
 	ShapeValue shape = null;
 	ShapeValue centroid = null;
 	
-
-//	@Override
-//	public void parseSpecifications(IInstance inst, String literal) throws ThinklabValidationException {
-//		observation = inst;
-//		shape = new ShapeValue(literal);
-//	}
-
 //	@Override
 	public ShapeValue getBoundingBox() {
 		return boundingBox;
@@ -188,13 +178,6 @@ public class ArealLocation extends ObservationImpl implements IExtent {
 		return false;
 	}
 
-	@Override
-	public IRestriction getConstraint(IOperator operator)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	@Override
 	public Collection<Pair<String, Integer>> getStateLocators(int index) {
@@ -210,13 +193,6 @@ public class ArealLocation extends ObservationImpl implements IExtent {
 
 	@Override
 	public IExtent force(IExtent extent) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public AggregationParameters getAggregationParameters(IConcept concept,
-			IUnit unit) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

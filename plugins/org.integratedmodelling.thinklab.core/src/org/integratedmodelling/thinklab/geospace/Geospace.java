@@ -20,7 +20,6 @@
 package org.integratedmodelling.thinklab.geospace;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,12 +41,11 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.java.plugin.PluginLifecycleException;
 import org.java.plugin.registry.Extension;
 import org.opengis.referencing.FactoryException;
@@ -65,9 +63,9 @@ public class Geospace  {
 	private IConcept multiPointType;
 	private IConcept multiLineStringType;
 	private IConcept multiPolygonType;
-	private IInstance areaLocationInstance;
-	private IInstance rasterGridInstance;
-	private IInstance spatialCoverageInstance;
+	private ISemanticObject areaLocationInstance;
+	private ISemanticObject rasterGridInstance;
+	private ISemanticObject spatialCoverageInstance;
 	private IConcept arealLocationType;
 	private IConcept rasterGridObservable;
 	private IConcept subdividedSpaceObservable;
@@ -318,20 +316,12 @@ public class Geospace  {
 		return shapeType;
 	}
 
-	public IInstance absoluteArealLocationInstance(IOntology session) {
-		try {
-			return areaLocationInstance.clone(session);
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
+	public ISemanticObject absoluteArealLocationInstance(IOntology session) {
+		return areaLocationInstance;
 	}
 	
-	public IInstance absoluteRasterGridInstance(IOntology session) {
-		try {
-		return rasterGridInstance.clone(session);
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
+	public ISemanticObject absoluteRasterGridInstance(IOntology session) {
+		return rasterGridInstance;
 	}
 
 	public IConcept ArealLocation() {
@@ -387,12 +377,8 @@ public class Geospace  {
 		preferredCRS = crs;
 	}
 
-	public IInstance absoluteSpatialCoverageInstance(IOntology session) {
-		try {
-			return spatialCoverageInstance.clone(session);
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
+	public ISemanticObject absoluteSpatialCoverageInstance(IOntology session) {
+		return spatialCoverageInstance;
 	}
 
 

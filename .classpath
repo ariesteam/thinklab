@@ -5,7 +5,6 @@
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.commandline/classes" path="plugins/org.integratedmodelling.thinklab.commandline/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.dolce/classes" path="plugins/org.integratedmodelling.thinklab.dolce/src"/>
 	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.shell/classes" path="plugins/org.integratedmodelling.thinklab.shell/src"/>
-	<classpathentry kind="src" output="plugins/org.integratedmodelling.thinklab.searchengine/classes" path="plugins/org.integratedmodelling.thinklab.searchengine/src"/>
 	<classpathentry excluding="org/integratedmodelling/thinklab/impl/owlapi/" kind="src" output="plugins/org.integratedmodelling.thinklab.core/classes" path="plugins/org.integratedmodelling.thinklab.core/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.corescience/lib/colt.jar"/>

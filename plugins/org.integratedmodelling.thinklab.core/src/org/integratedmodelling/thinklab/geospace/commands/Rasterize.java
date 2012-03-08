@@ -23,7 +23,7 @@ import java.io.File;
 import java.net.URL;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.geospace.coverage.RasterCoverage;
@@ -40,7 +40,7 @@ import org.integratedmodelling.utils.MiscUtilities;
  */
 public class Rasterize implements ICommandHandler {
 
-	public ISemanticLiteral execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
 
 		String toload = command.getArgumentAsString("resource");
 		// String output = command.getArgumentAsString("output");

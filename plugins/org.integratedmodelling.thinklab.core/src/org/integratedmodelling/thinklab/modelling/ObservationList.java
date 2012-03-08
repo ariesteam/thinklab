@@ -24,7 +24,7 @@ import java.util.Iterator;
 import org.integratedmodelling.collections.ReadOnlyList;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
@@ -36,7 +36,7 @@ public class ObservationList extends ReadOnlyList<IObservation> {
 
 	IContext context;
 	IModel   model;
-	IKBox    kbox;
+	IKbox    kbox;
 	ISession session;
 	
 	class It implements Iterator<IObservation> {

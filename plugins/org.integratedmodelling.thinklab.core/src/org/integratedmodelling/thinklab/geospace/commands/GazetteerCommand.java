@@ -27,7 +27,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.InteractiveCommandHandler;
@@ -107,7 +107,7 @@ public class GazetteerCommand extends InteractiveCommandHandler {
 	}
 	
 	@Override
-	protected ISemanticLiteral doInteractive(Command command, ISession session)
+	protected ISemanticObject doInteractive(Command command, ISession session)
 			throws ThinklabException {
 
 		String action = command.getArgumentAsString("action");

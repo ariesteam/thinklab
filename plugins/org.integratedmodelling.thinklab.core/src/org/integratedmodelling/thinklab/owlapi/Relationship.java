@@ -24,16 +24,14 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.lang.SemanticAnnotation;
+import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.list.PolyList;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.lang.IList;
-
-import edu.stanford.smi.protegex.owl.swrl.bridge.query.ObjectValue;
+import org.semanticweb.owl.model.OWLIndividual;
 
 /**
  * <p>A Relationship connects a "source" concept to another Concept, object (Instance), or Literal through a Property.
@@ -44,18 +42,18 @@ import edu.stanford.smi.protegex.owl.swrl.bridge.query.ObjectValue;
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
  *
  */
-public class Relationship implements IRelationship {
+public class Relationship  {
 
 	public IProperty property = null;
 	public ISemanticLiteral     literal  = null;
-	public IInstance object;
+	public OWLIndividual object;
 	
 	public Relationship(IProperty p, ISemanticLiteral v) {
 		property = p;
 		literal = v;
 	}
 	
-	public Relationship(IProperty p, IInstance instance) {
+	public Relationship(IProperty p, OWLIndividual instance) {
 		property = p;
 		object = instance;
 	}
@@ -130,7 +128,7 @@ public class Relationship implements IRelationship {
 		
 		if (isObject()) {
 		
-			SemanticAnnotation oo = object.conceptualize();
+			Semantics oo = Thinklab.get().conceptualize(object);
 			alist.add(oo.asList());
 
 		} else if (isLiteral()) {
@@ -184,8 +182,7 @@ public class Relationship implements IRelationship {
 		
 	}
 
-	@Override
-	public IInstance getObject() {
+	public OWLIndividual getObject() {
 		return object;
 	}
 }

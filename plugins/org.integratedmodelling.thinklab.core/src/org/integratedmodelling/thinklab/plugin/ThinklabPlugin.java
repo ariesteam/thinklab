@@ -43,14 +43,12 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
-import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IResourceLoader;
 import org.integratedmodelling.thinklab.interfaces.annotations.Function;
-import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
@@ -562,41 +560,41 @@ public abstract class ThinklabPlugin extends Plugin
 //		extensions.add(ext);
 //	}
 
-	protected void loadInstanceImplementationConstructors() throws ThinklabException {
-		
-		String ipack = this.getClass().getPackage().getName() + ".implementations";
-		
-		for (Class<?> cls : MiscUtilities.findSubclasses(IInstanceImplementation.class, ipack, getClassLoader())) {	
-			
-			String concept = null;
-
-			/*
-			 * lookup annotation, ensure we can use the class
-			 */
-			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
-				continue;
-			
-			/*
-			 * lookup implemented concept
-			 */
-			for (Annotation annotation : cls.getAnnotations()) {
-				if (annotation instanceof InstanceImplementation) {
-					concept = ((InstanceImplementation)annotation).concept();
-				}
-			}
-			
-			if (concept != null) {
-
-				String[] cc = concept.split(",");
-				
-				for (String ccc : cc) {
-					logger().info("registering class " + cls + " as implementation for instances of type " + ccc);				
-					Thinklab.get().registerInstanceImplementationClass(ccc, cls);
-				}
-			}
-		}
-	}
-	
+//	protected void loadInstanceImplementationConstructors() throws ThinklabException {
+//		
+//		String ipack = this.getClass().getPackage().getName() + ".implementations";
+//		
+//		for (Class<?> cls : MiscUtilities.findSubclasses(IInstanceImplementation.class, ipack, getClassLoader())) {	
+//			
+//			String concept = null;
+//
+//			/*
+//			 * lookup annotation, ensure we can use the class
+//			 */
+//			if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()))
+//				continue;
+//			
+//			/*
+//			 * lookup implemented concept
+//			 */
+//			for (Annotation annotation : cls.getAnnotations()) {
+//				if (annotation instanceof InstanceImplementation) {
+//					concept = ((InstanceImplementation)annotation).concept();
+//				}
+//			}
+//			
+//			if (concept != null) {
+//
+//				String[] cc = concept.split(",");
+//				
+//				for (String ccc : cc) {
+//					logger().info("registering class " + cls + " as implementation for instances of type " + ccc);				
+//					Thinklab.get().registerInstanceImplementationClass(ccc, cls);
+//				}
+//			}
+//		}
+//	}
+//	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getResourceURL(java.lang.String)
 	 */

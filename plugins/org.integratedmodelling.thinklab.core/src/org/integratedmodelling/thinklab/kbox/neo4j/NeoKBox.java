@@ -5,14 +5,8 @@ import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
-import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.SemanticAnnotation;
-import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.thinklab.api.lang.IList;
-import org.neo4j.graphdb.Node;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 public class NeoKBox implements IKbox {
@@ -40,9 +34,10 @@ public class NeoKBox implements IKbox {
 	
 	@Override
 	public long store(Object o) throws ThinklabException {
-		
-		SemanticAnnotation instance = Thinklab.get().conceptualize(o);		
-		return storeInstanceList(instance, _db.getReferenceNode());
+
+		return -1l;
+//		SemanticAnnotation instance = Thinklab.get().conceptualize(o);		
+//		return storeInstanceList(instance, _db.getReferenceNode());
 	}
 
 	@Override
@@ -69,10 +64,10 @@ public class NeoKBox implements IKbox {
 	 * ----------------------------------------------------------------------------------
 	 */
 
-	long storeInstanceList(SemanticAnnotation list, Node node) {
-		
-		return 0;
-	}
+//	long storeInstanceList(SemanticAnnotation list, Node node) {
+//		
+//		return 0;
+//	}
 
 	@Override
 	public String getUri() {

@@ -34,6 +34,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.InteractiveSubcommandHandler;
@@ -70,7 +71,7 @@ public class WFSToOPAL extends InteractiveSubcommandHandler {
 	
 	private ShapeValue forced = null;
 	
-	public ISemanticLiteral execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
 
 		this.service = command.getArgumentAsString("server");
 		this.doc = new XMLDocument("kbox");
@@ -114,7 +115,7 @@ public class WFSToOPAL extends InteractiveSubcommandHandler {
 
 
 	@Override
-	protected ISemanticLiteral cmd(String cmd, String[] arguments)
+	protected ISemanticObject cmd(String cmd, String[] arguments)
 			throws ThinklabException {
 		
 		if (cmd.equals("list")) {

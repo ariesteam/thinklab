@@ -20,19 +20,18 @@
 package org.integratedmodelling.thinklab.literals;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
+import org.integratedmodelling.thinklab.knowledge.Value;
 
 @LiteralImplementation(concept="thinklab-core:Text")
 public class TextValue extends Value implements IParseable {
     
     public String value;
-    
-    private TextValue(IConcept c) {
-    	super(c);
-    }
     
     public TextValue() {
         super(KnowledgeManager.Text());
@@ -48,54 +47,33 @@ public class TextValue extends Value implements IParseable {
     	value = (String)o;
     }
 
-
-    @Override
-    public Object clone() {
-    	TextValue ret = new TextValue(concept);
-    	ret.value = value;
-    	return ret;
-    }
-    
-    public boolean isNumber() {
-        return false;
-    }
-
-    public boolean isText() {
-        return true;
-    }
-    
-    public boolean isLiteral() {
-        return true;
-    }
-
-    public boolean isBoolean() {
-        return false;
-    }
-    
-    public boolean isClass() {
-        return false;
-    }
- 
-    public boolean isObject() {
-        return false;
-    }
-    
-    public String asText()  {
-        return value;
-    }
-
-    public String toString() {
-        return value;
-    }
-
-    @Override
-	public Object demote() {
-		return value;
+	@Override
+	public Semantics getSemantics() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public void parse(String s) throws ThinklabException {
-		value = s;
+	public Object getObject() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
+	@Override
+	public boolean is(ISemanticObject object) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void parse(String string) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String asText() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

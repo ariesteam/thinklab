@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.integratedmodelling.thinklab.graph;
+package org.integratedmodelling.utils.graph;
 
 //GraphViz.java - a simple API to call dot from Java programs
 

@@ -33,8 +33,6 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
-import org.integratedmodelling.thinklab.api.lang.IParseable;
 
 /**
  * Defines the interface for a command. A CommandDeclaration passed to the KnowledgeManager declares a command that
@@ -134,27 +132,13 @@ public class CommandDeclaration {
 		for (Map.Entry<String, String> e :   command.args.entrySet()) {
             
             argDescriptor ad = findArgument(e.getKey());
-            ISemanticLiteral validator = null;
             boolean ok = true;
             
-            try {
-				validator = 
-						Thinklab.get().getRawLiteral(ad.type);
-			} catch (Exception e1) {
-				ok = false;
-			}
-
-			if (!ok || validator == null || !(validator instanceof IParseable))
-				throw new ThinklabValidationException(
-						"cannot find validator for " + 
-						ad.type + 
-						" to validate input '" +
-						e.getValue() +
-						"'");
-			
 			try {
-				((IParseable)validator).parse(e.getValue());
-				command.setArgumentValue(e.getKey(), validator);
+				command.setArgumentValue(
+						e.getKey(), 
+						Thinklab.get().parse(e.getValue(), ad.type));
+				
 			} catch (ThinklabValidationException e1) {
 				throw new ThinklabValidationException(
 						"cannot validate input '" + 
@@ -174,28 +158,11 @@ public class CommandDeclaration {
 
             if (ad.type == null)
             	continue;
-            
-            ISemanticLiteral validator = null;
-            boolean ok = true;
-            
-            try {
-				validator = 
-						Thinklab.get().getRawLiteral(ad.type);
-			} catch (Exception e1) {
-				ok = false;
-			}
-
-			if (!ok || validator == null)
-				throw new ThinklabValidationException(
-						"cannot find validator for " + 
-						ad.type + 
-						" to validate input '" +
-						e.getValue() +
-						"'");
 			
 			try {
-				((IParseable)validator).parse(e.getValue());
-				command.setOptionValue(e.getKey(), validator);
+				command.setArgumentValue(
+						e.getKey(), 
+						Thinklab.get().parse(e.getValue(), ad.type));
 			} catch (ThinklabValidationException e1) {
 				throw new ThinklabValidationException(
 						"cannot validate input '" + 

@@ -349,10 +349,10 @@ public abstract class Knowledge implements IKnowledge, IResource {
 			if (this instanceof Concept) {
 				Concept left = (Concept) this;
 				return left.is(right);
-			} else if (this instanceof Instance) {
+			} /* else if (this instanceof Instance) {
 				Instance left = (Instance) this;
 				return left.is(right);
-			} else
+			} */ else
 				return false;
 		} else if (k instanceof Property) {
 			Property right = (Property) k;
@@ -361,14 +361,14 @@ public abstract class Knowledge implements IKnowledge, IResource {
 				return left.is(right);
 			} else
 				return false;
-		} else if (k instanceof Instance) {
+		} /*else if (k instanceof Instance) {
 			Instance right = (Instance) k;
 			if (this instanceof Instance) {
 				Instance left = (Instance) this;
 				return left.is(right);
 			} else
 				return false;
-		} else
+		} */ else
 			return false;
 	}
 

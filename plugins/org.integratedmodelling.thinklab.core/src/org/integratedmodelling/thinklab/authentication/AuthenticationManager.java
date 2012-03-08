@@ -28,7 +28,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.interfaces.IThinklabAuthenticationProvider;
 
@@ -198,8 +198,8 @@ public class AuthenticationManager implements IThinklabAuthenticationProvider {
 	}
 
 	@Override
-	public IInstance getUserInstance(String user, ISession session) throws ThinklabException {
-		return authManager == null ? null : authManager.getUserInstance(user, session);
+	public ISemanticObject getUser(String user, ISession session) throws ThinklabException {
+		return authManager == null ? null : authManager.getUser(user, session);
 	}
 
 }

@@ -32,14 +32,11 @@ import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassification;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassifier;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
-import org.integratedmodelling.thinklab.literals.Value;
 
 /**
  * Reference implementation for IClassification. Also holds the global catalog of user-defined
@@ -49,7 +46,7 @@ import org.integratedmodelling.thinklab.literals.Value;
  * @author Ferd
  *
  */
-public class Classification implements IClassification, IConceptualizable {
+public class Classification implements IClassification {
 
 	private IConcept _cSpace = null;
 	ArrayList<Pair<IClassifier, IConcept>> _classifiers = 
@@ -93,11 +90,6 @@ public class Classification implements IClassification, IConceptualizable {
 	
 	// --- public API below -----------------------------------------
 	
-	@Override
-	public SemanticAnnotation conceptualize() throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void initialize(IConcept cSpace, Type typeHint)
@@ -373,8 +365,6 @@ public class Classification implements IClassification, IConceptualizable {
 
 		this._trueCategory = null;
 
-		if (Value.isPOD(type))
-			return null;
 
 		/*
 		 * check if we have any predefined ordering; if so, use that and return
@@ -530,12 +520,6 @@ public class Classification implements IClassification, IConceptualizable {
 				orderMap.put(kconc, properties.getProperty(k.toString()));
 			}
 		}
-	}
-
-	@Override
-	public void define(SemanticAnnotation conceptualization) throws ThinklabException {
-		// TODO Auto-generated method stub
-		
 	}
 
 

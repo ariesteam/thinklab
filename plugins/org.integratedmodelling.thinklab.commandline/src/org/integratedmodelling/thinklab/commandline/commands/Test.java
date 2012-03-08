@@ -20,7 +20,7 @@
 package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
@@ -31,7 +31,7 @@ import org.integratedmodelling.thinklab.modelling.ModelManager;
 public class Test implements ICommandHandler {
 
 	@Override
-	public ISemanticLiteral execute(Command command, ISession session)
+	public ISemanticObject execute(Command command, ISession session)
 			throws ThinklabException {
 		ModelManager.get().loadFile(command.getArgumentAsString("arg"), null);
 		return null;

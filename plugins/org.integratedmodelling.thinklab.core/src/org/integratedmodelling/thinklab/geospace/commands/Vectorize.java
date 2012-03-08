@@ -22,7 +22,7 @@ package org.integratedmodelling.thinklab.geospace.commands;
 import java.net.URL;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.geospace.coverage.CoverageFactory;
@@ -39,7 +39,7 @@ import org.integratedmodelling.utils.MiscUtilities;
  */
 public class Vectorize implements ICommandHandler {
 
-	public ISemanticLiteral execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
 
 		String toload = command.getArgumentAsString("resource");
 		// String output = command.getArgumentAsString("output");

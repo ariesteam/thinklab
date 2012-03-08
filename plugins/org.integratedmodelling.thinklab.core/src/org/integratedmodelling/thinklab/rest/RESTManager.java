@@ -178,7 +178,7 @@ public class RESTManager {
 		};
 		
 		synchronized (_sessions) {
-			_sessions.put(ret.getSessionID(), ret);
+			_sessions.put(ret.getID(), ret);
 		}
 		
 		return ret;

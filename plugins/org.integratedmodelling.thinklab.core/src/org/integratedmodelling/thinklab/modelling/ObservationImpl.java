@@ -7,8 +7,8 @@ import java.util.Set;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
@@ -24,7 +24,7 @@ import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 public class ObservationImpl implements IObservation {
 
 	@Override
-	public IInstance getObservable() {
+	public ISemanticObject getObservable() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -49,7 +49,7 @@ public class ObservationImpl implements IObservation {
 	}
 
 	@Override
-	public Set<IInstance> getObservables() {
+	public Set<ISemanticObject> getObservables() {
 		// TODO Auto-generated method stub
 		return null;
 	}

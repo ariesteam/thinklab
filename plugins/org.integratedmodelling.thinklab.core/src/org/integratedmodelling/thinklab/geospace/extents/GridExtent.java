@@ -30,12 +30,9 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
-import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
-import org.integratedmodelling.thinklab.api.lang.IOperator;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.thinklab.geospace.gis.ThinklabRasterizer;
@@ -436,7 +433,7 @@ public class GridExtent extends ArealExtent {
 	}
 	
 //	@Override
-	public ISemanticLiteral getFullExtentValue() {
+	public ISemanticObject getFullExtentValue() {
 		return new ShapeValue(getBoundary(), crs);
 	}
 
@@ -1054,24 +1051,11 @@ public class GridExtent extends ArealExtent {
 	}
 
 	@Override
-	public IRestriction getConstraint(IOperator operator)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean isDiscontinuous() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public AggregationParameters getAggregationParameters(IConcept concept,
-			IUnit unit) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Object getRawData() {

@@ -31,13 +31,12 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
-import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.SemanticAnnotation;
+import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.thinklab.annotation.AnnotationFactory;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
@@ -45,7 +44,6 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.kbox.neo4j.NeoKBox;
-import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.project.ThinklabProjectInstaller;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -66,9 +64,44 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 
 	public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.core";
 	
+	/**
+	 * Return the only instance of Thinklab, your favourite knowledge manager.
+	 * 
+	 * @return
+	 */
 	public static Thinklab get() {
 		return _this;
 	}
+	
+	/**
+	 * Quickest way to get a IConcept from a string. Throws an unchecked exception if not present.
+	 * 
+	 * @param conceptId
+	 * @return
+	 */
+	public static IConcept c(String conceptId) {
+		IConcept ret = get().getConcept(conceptId);
+		if (ret == null) {
+			throw new ThinklabRuntimeException("concept " + conceptId + " is unknown");
+		}
+		return ret;
+	}
+	
+	/**
+	 * Quickest way to get a IProeprty from a string. Throws an unchecked exception if not present.
+	 * 
+	 * @param propertyId
+	 * @return
+	 */
+	public static IProperty p(String propertyId) {
+		IProperty ret = get().getProperty(propertyId);
+		if (ret == null) {
+			throw new ThinklabRuntimeException("property " + propertyId + " is unknown");
+		}
+		return ret;
+	}
+
+	
 	
 	AnnotationFactory _annotationFactory = 
 			new AnnotationFactory();
@@ -100,6 +133,7 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	public Thinklab() {
 		_this = this;
 	}
+	
 	
 	@Override
 	protected void preStart() throws ThinklabException {
@@ -338,53 +372,53 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 		}.start();
 	}
 
-    /**
-     * Return a new (parseable) literal of the proper type to handle the passed concept.
-     * The returned literal will need to be initialized by making it parse a 
-     * string value. It will implement IParseable, but best to check just in case.
-     * 
-     * @param type the concept
-     * @return a raw literal or null if none is configured to handle the concept
-     * @throws ThinklabException if there is ambiguity
-     * 
-     * TODO make it use the declared classes, abolish validators
-     */
-    public ISemanticLiteral getRawLiteral(IConcept type) throws ThinklabValidationException {
-
-        class vmatch implements ConceptVisitor.ConceptMatcher {
-
-            private Hashtable<String, Class<?>> coll;
-
-            public Class<?> ret = null;
-            
-            public vmatch(Hashtable<String, Class<?>> c) {
-                coll = c;
-            }
-            
-            public boolean match(IConcept c) {
-                ret = coll.get(c.toString());
-                return(ret != null);	
-            }    
-        }
-        
-        vmatch matcher = new vmatch(literalImplementationClasses);
-        
-        IConcept cms = 
-            ConceptVisitor.findMatchUpwards(matcher, type);
-
-        ISemanticLiteral ret = null;
-        
-        if (cms != null) {
-        	try {
-				ret = (ISemanticLiteral) matcher.ret.newInstance();
-			} catch (Exception e) {
-				throw new ThinklabValidationException("cannot create literal: " + e.getMessage());
-			}
-        }
-        
-        return ret;
-    }
-
+//    /**
+//     * Return a new (parseable) literal of the proper type to handle the passed concept.
+//     * The returned literal will need to be initialized by making it parse a 
+//     * string value. It will implement IParseable, but best to check just in case.
+//     * 
+//     * @param type the concept
+//     * @return a raw literal or null if none is configured to handle the concept
+//     * @throws ThinklabException if there is ambiguity
+//     * 
+//     * TODO make it use the declared classes, abolish validators
+//     */
+//    public ISemanticLiteral getRawLiteral(IConcept type) throws ThinklabValidationException {
+//
+//        class vmatch implements ConceptVisitor.ConceptMatcher {
+//
+//            private Hashtable<String, Class<?>> coll;
+//
+//            public Class<?> ret = null;
+//            
+//            public vmatch(Hashtable<String, Class<?>> c) {
+//                coll = c;
+//            }
+//            
+//            public boolean match(IConcept c) {
+//                ret = coll.get(c.toString());
+//                return(ret != null);	
+//            }    
+//        }
+//        
+//        vmatch matcher = new vmatch(literalImplementationClasses);
+//        
+//        IConcept cms = 
+//            ConceptVisitor.findMatchUpwards(matcher, type);
+//
+//        ISemanticLiteral ret = null;
+//        
+//        if (cms != null) {
+//        	try {
+//				ret = (ISemanticLiteral) matcher.ret.newInstance();
+//			} catch (Exception e) {
+//				throw new ThinklabValidationException("cannot create literal: " + e.getMessage());
+//			}
+//        }
+//        
+//        return ret;
+//    }
+//
     
 	/**
 	 * If a mapping between the URI of an XSD type and a thinklab semantic type has been
@@ -433,13 +467,6 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 		return _km.retrieveConcept(prop);
 	}
 
-	@Override
-	public IConcept getConceptForClass(Class<?> cls) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Class<?> getClassForConcept(IConcept type) {
 		
         class vmatch implements ConceptVisitor.ConceptMatcher {
@@ -474,12 +501,6 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	}
 
 	@Override
-	public ISemanticLiteral validateLiteral(IConcept c, String literal)
-			throws ThinklabException {
-		return _km.validateLiteral(c, literal);
-	}
-
-	@Override
 	public IKbox createKbox(String uri) throws ThinklabException {
 
 		if (!uri.contains("://")) {
@@ -503,22 +524,6 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 		return createKbox(uri);
 	}
 
-	@Override
-	public ISemanticLiteral annotateLiteral(Object object) throws ThinklabException {
-		return _annotationFactory.conceptualizeLiteral(object);
-	}
-
-	@Override
-	public SemanticAnnotation conceptualize(Object o) throws ThinklabException {
-		return _annotationFactory.conceptualize(o);
-	}
-
-	@Override
-	public Object instantiate(SemanticAnnotation a)
-			throws ThinklabException {
-		return _annotationFactory.instantiate(a);
-	}
-
 	/**
 	 * Return the designated kbox to store data for this namespace.
 	 * In this implementation, the projects that contain the namespace
@@ -536,6 +541,28 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	public IKbox getLookupKboxForNamespace(INamespace ns) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public ISemanticObject parse(String literal, IConcept concept)
+			throws ThinklabException {
+		return _annotationFactory.parse(literal, concept);
+	}
+
+	@Override
+	public ISemanticObject annotate(Object object) throws ThinklabException {
+		return _annotationFactory.annotate(object);
+	}
+
+	@Override
+	public Object instantiate(Semantics semantics) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return _annotationFactory.instantiate(semantics);
+	}
+
+	@Override
+	public Semantics conceptualize(Object object) throws ThinklabException {
+		return _annotationFactory.conceptualize(object);
 	}
 
 	

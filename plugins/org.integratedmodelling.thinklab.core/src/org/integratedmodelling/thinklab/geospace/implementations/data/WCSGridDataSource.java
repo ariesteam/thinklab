@@ -23,53 +23,52 @@ import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.coverage.AbstractRasterCoverage;
 import org.integratedmodelling.thinklab.geospace.coverage.WCSCoverage;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
-import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 
-@InstanceImplementation(concept="geospace:WCSDataSource")
+@Concept("geospace:WCSDataSource")
 public class WCSGridDataSource extends RegularRasterGridDataSource {
 
 	private GridExtent finalExtent = null;
 	
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(ISemanticObject i) throws ThinklabException {
 		
-		Properties p = new Properties();
-		p.putAll(Thinklab.get().getProperties());
-		ISemanticLiteral server = i.get("geospace:hasServiceUrl");
-		if (server != null)
-			p.put(WCSCoverage.WCS_SERVICE_PROPERTY, server.toString());
-		ISemanticLiteral format = i.get("geospace:hasImageFormat");
-		if (format != null)
-			p.put(WCSCoverage.WCS_FORMAT_PROPERTY, format.toString());
-		
-		for (IRelationship r : i.getRelationships("geospace:hasNodataValue")) {
-			ISemanticLiteral nodata = r.getValue();
-			if (nodata != null) {
-				String s = p.getProperty(AbstractRasterCoverage.NODATA_PROPERTY, "");
-				if (s.length() > 0)
-					s += ",";
-				s += nodata.toString();
-				p.put(AbstractRasterCoverage.NODATA_PROPERTY, nodata.toString());
-			}
-		}
-			
-			ISemanticLiteral transf = i.get(Geospace.HAS_TRANSFORMATION_EXPRESSION);
-		if (transf != null) {
-			this.transformation = new MVELExpression(transf.toString());
-		}
-		String rid = i.get("geospace:hasCoverageId").toString();
-		
-		Thinklab.get().logger().info("reading WCS source " + server + "#" + rid);
-
-		this.coverage = 
-			new WCSCoverage(rid, p);
+//		Properties p = new Properties();
+//		p.putAll(Thinklab.get().getProperties());
+//		ISemanticObject server = i.get("geospace:hasServiceUrl");
+//		if (server != null)
+//			p.put(WCSCoverage.WCS_SERVICE_PROPERTY, server.toString());
+//		ISemanticObject format = i.get("geospace:hasImageFormat");
+//		if (format != null)
+//			p.put(WCSCoverage.WCS_FORMAT_PROPERTY, format.toString());
+//		
+//		for (IRelationship r : i.getRelationships("geospace:hasNodataValue")) {
+//			ISemanticLiteral nodata = r.getValue();
+//			if (nodata != null) {
+//				String s = p.getProperty(AbstractRasterCoverage.NODATA_PROPERTY, "");
+//				if (s.length() > 0)
+//					s += ",";
+//				s += nodata.toString();
+//				p.put(AbstractRasterCoverage.NODATA_PROPERTY, nodata.toString());
+//			}
+//		}
+//			
+//			ISemanticLiteral transf = i.get(Geospace.HAS_TRANSFORMATION_EXPRESSION);
+//		if (transf != null) {
+//			this.transformation = new MVELExpression(transf.toString());
+//		}
+//		String rid = i.get("geospace:hasCoverageId").toString();
+//		
+//		Thinklab.get().logger().info("reading WCS source " + server + "#" + rid);
+//
+//		this.coverage = 
+//			new WCSCoverage(rid, p);
 	}
 	
 //	@Override

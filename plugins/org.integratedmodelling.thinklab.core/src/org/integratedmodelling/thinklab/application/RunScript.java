@@ -24,12 +24,11 @@ import java.util.ArrayList;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.IInterpreter;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
 import org.integratedmodelling.thinklab.interpreter.InterpreterManager;
-import org.integratedmodelling.thinklab.literals.Value;
 
 /**
  * A task that runs a script, specified either as a 
@@ -41,7 +40,7 @@ public class RunScript implements ITask {
 	private String code = null;
 	private ArrayList<URL> codeUrl = new ArrayList<URL>();
 	private String language = null;
-	private ISemanticLiteral result = null;
+	private ISemanticObject result = null;
 	
 	public void setCode(Object code) {
 		if (code instanceof URL)
@@ -71,19 +70,19 @@ public class RunScript implements ITask {
 		 * run whatever
 		 */
 		for (URL url : codeUrl) {
-			result = Thinklab.get().annotateLiteral(intp.eval(url));
+			result = Thinklab.get().annotate(intp.eval(url));
 		}
 		
 		/*
 		 * if there's any inline code, run it last
 		 */
 		if (code != null) {
-			result = Thinklab.get().annotateLiteral(intp.eval(code));
+			result = Thinklab.get().annotate(intp.eval(code));
 		}
 
 	}
 
-	public ISemanticLiteral getResult() {
+	public ISemanticObject getResult() {
 		return result;
 	}
 	

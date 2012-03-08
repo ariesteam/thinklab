@@ -24,8 +24,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
@@ -40,13 +38,11 @@ import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IAxiom;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.utils.NameGenerator;
-import org.integratedmodelling.utils.Path;
 import org.semanticweb.owl.io.OWLXMLOntologyFormat;
 import org.semanticweb.owl.model.AddAxiom;
 import org.semanticweb.owl.model.OWLAxiom;
@@ -58,7 +54,6 @@ import org.semanticweb.owl.model.OWLObjectProperty;
 import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLOntologyChangeException;
 import org.semanticweb.owl.model.OWLOntologyManager;
-import org.semanticweb.owl.util.OWLEntityRemover;
 
 /**
  * @author Ioannis N. Athanasiadis, Dalle Molle Institute for Artificial Intelligence, USI/SUPSI
@@ -75,37 +70,36 @@ public class Ontology implements IOntology {
 	protected OWLOntology ont;
 	private Map<SemanticType,IConcept> concepts;
 	private Map<SemanticType,IProperty> properties;
-	private Map<SemanticType,IInstance> instances;
 	private String cs;
 	
 	// set to false if the ontology is a temporary knowledge RAM for the system - e.g. 
 	// sessions.
 	boolean isSystem = true;
 
-	class ReferenceRecord {
-		public IInstance target;
-		public String reference;
-		public IProperty property;
-		
-		public ReferenceRecord(IInstance t, IProperty prop, String ref) {
-			target = t;
-			reference = ref;
-			property = prop;
-		}
-	}
-	
-	private void resolveReferences (Collection<ReferenceRecord> refs) throws ThinklabException {
-
-		for (ReferenceRecord r : refs) {
-			
-			IInstance rr = this.getInstance(r.reference);
-			if (rr == null) {
-				throw new ThinklabResourceNotFoundException("internal error: can't resolve reference to object " + r.reference);
-			}
-			
-			r.target.addObjectRelationship(r.property, rr);
-		}
-	}
+//	class ReferenceRecord {
+//		public IInstance target;
+//		public String reference;
+//		public IProperty property;
+//		
+//		public ReferenceRecord(IInstance t, IProperty prop, String ref) {
+//			target = t;
+//			reference = ref;
+//			property = prop;
+//		}
+//	}
+//	
+//	private void resolveReferences (Collection<ReferenceRecord> refs) throws ThinklabException {
+//
+//		for (ReferenceRecord r : refs) {
+//			
+//			IInstance rr = this.getInstance(r.reference);
+//			if (rr == null) {
+//				throw new ThinklabResourceNotFoundException("internal error: can't resolve reference to object " + r.reference);
+//			}
+//			
+//			r.target.addObjectRelationship(r.property, rr);
+//		}
+//	}
 	
 	public Ontology(OWLOntology onto, FileKnowledgeRepository kr){
 		
@@ -113,7 +107,6 @@ public class Ontology implements IOntology {
 		this.kr = kr;
 		this.concepts = new Hashtable<SemanticType, IConcept>();
 		this.properties = new Hashtable<SemanticType, IProperty>();
-		this.instances = new Hashtable<SemanticType, IInstance>();
 	}
 	
 	protected void initialize(String cs){
@@ -138,11 +131,6 @@ public class Ontology implements IOntology {
 				properties.put(kr.registry.getSemanticType(p), new Property(p));
 		}
 		
-		Set<OWLIndividual> allIn = ont.getReferencedIndividuals();
-		for(OWLIndividual i:allIn){
-			if (i.getURI().toString().startsWith(ont.getURI().toString()))
-				instances.put(kr.registry.getSemanticType(i), new Instance(i));
-		}
 	}
 
 	
@@ -183,19 +171,6 @@ public class Ontology implements IOntology {
 		return properties.values();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#getInstance(java.lang.String)
-	 */
-	public IInstance getInstance(String ID) {
-		return instances.get(new SemanticType(cs, ID));
-	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#getInstances()
-	 */
-	public Collection<IInstance> getInstances() throws ThinklabException {
-		return instances.values();
-	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#allowDuplicateInstanceIDs()
@@ -204,34 +179,34 @@ public class Ontology implements IOntology {
 		acceptDuplicateIDs = true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#createEquivalence(org.integratedmodelling.thinklab.interfaces.IInstance, org.integratedmodelling.thinklab.interfaces.IInstance)
-	 */
-	public void createEquivalence(IInstance o1, IInstance o2) {
-
-		OWLIndividual ind1 = ((Instance)o1).entity.asOWLIndividual();
-		OWLIndividual ind2 = ((Instance)o2).entity.asOWLIndividual();
-		
-		Set<OWLIndividual> oi = new HashSet<OWLIndividual>();
-		
-		oi.add(ind1);
-		oi.add(ind2);
-		
-		OWLAxiom ax = FileKnowledgeRepository.df.getOWLSameIndividualsAxiom(oi);
-		AddAxiom add = new AddAxiom(ont,ax);
-		
-		try {
-			FileKnowledgeRepository.get().manager.applyChange(add);
-		} catch (OWLOntologyChangeException e) {
-			throw new ThinklabRuntimeException(e);
-		}
-	}
-
+//	/* (non-Javadoc)
+//	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#createEquivalence(org.integratedmodelling.thinklab.interfaces.IInstance, org.integratedmodelling.thinklab.interfaces.IInstance)
+//	 */
+//	public void createEquivalence(IInstance o1, IInstance o2) {
+//
+//		OWLIndividual ind1 = ((Instance)o1).entity.asOWLIndividual();
+//		OWLIndividual ind2 = ((Instance)o2).entity.asOWLIndividual();
+//		
+//		Set<OWLIndividual> oi = new HashSet<OWLIndividual>();
+//		
+//		oi.add(ind1);
+//		oi.add(ind2);
+//		
+//		OWLAxiom ax = FileKnowledgeRepository.df.getOWLSameIndividualsAxiom(oi);
+//		AddAxiom add = new AddAxiom(ont,ax);
+//		
+//		try {
+//			FileKnowledgeRepository.get().manager.applyChange(add);
+//		} catch (OWLOntologyChangeException e) {
+//			throw new ThinklabRuntimeException(e);
+//		}
+//	}
+//
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#createInstance(java.lang.String, org.integratedmodelling.thinklab.interfaces.IConcept)
 	 */
-	public IInstance createInstance(String ID, IConcept c) throws ThinklabException {
+	public OWLIndividual createInstance(IConcept c) throws ThinklabException {
 		
 		String label = null;
 		
@@ -239,29 +214,29 @@ public class Ontology implements IOntology {
 			throw new ThinklabIOException(" cannot create an instance of abstract concept " + c);
 		}
 
-		if (ID == null) {
-			ID = getUniqueObjectName("ins");
-		}
-		
-		if (getInstance(ID) != null) {
-			
-			if (!acceptDuplicateIDs) {
-				
-				throw new ThinklabValidationException("instance with name " + ID
-						+ " already exists in concept space " + conceptSpace);
-			}
-			
-			/* if we find a duplicated ID, we add progressive numbers to it, and
-			 * we set the desired instance as a label, which can later be overwritten
-			 * by any label the user has specified.
-			 */
-			int cnt = 1;
-			label = ID;
-			
-			do {
-				ID = Path.getLeading(ID, '_') + "_" + cnt++;
-			} while (getInstance(ID) != null);
-		}
+//		if (ID == null) {
+		String ID = getUniqueObjectName("ins");
+//		}
+//		
+//		if (getInstance(ID) != null) {
+//			
+//			if (!acceptDuplicateIDs) {
+//				
+//				throw new ThinklabValidationException("instance with name " + ID
+//						+ " already exists in concept space " + conceptSpace);
+//			}
+//			
+//			/* if we find a duplicated ID, we add progressive numbers to it, and
+//			 * we set the desired instance as a label, which can later be overwritten
+//			 * by any label the user has specified.
+//			 */
+//			int cnt = 1;
+//			label = ID;
+//			
+//			do {
+//				ID = Path.getLeading(ID, '_') + "_" + cnt++;
+//			} while (getInstance(ID) != null);
+//		}
 
 		OWLIndividual ind = 
 			FileKnowledgeRepository.df.getOWLIndividual(URI.create(ont.getURI() + "#" + ID));
@@ -278,71 +253,68 @@ public class Ontology implements IOntology {
 		Instance inst = null;
 		
 		inst = new Instance(ind);
-		instances.put(new SemanticType(cs, ID), inst); 
 		
-		return inst;
+		return ind;
 	}
 
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#createInstance(org.integratedmodelling.thinklab.interfaces.IInstance)
-	 */
-	public IInstance createInstance(IInstance i) throws ThinklabException {
-		
-		IInstance inst = getInstance(i.getLocalName());
-		if (inst != null)
-			return inst;
-		return createInstance(i.conceptualize().asList());
-	}
+//	/* (non-Javadoc)
+//	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#createInstance(org.integratedmodelling.thinklab.interfaces.IInstance)
+//	 */
+//	public IInstance createInstance(IInstance i) throws ThinklabException {
+//		
+//		IInstance inst = getInstance(i.getLocalName());
+//		if (inst != null)
+//			return inst;
+//		return createInstance(i.conceptualize().asList());
+//	}
+
+//
+//	/* (non-Javadoc)
+//	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#createInstance(java.lang.String, org.integratedmodelling.utils.IList)
+//	 */
+//	public IInstance createInstance(String ID, IList list)
+//			throws ThinklabException {
+//		
+//		ArrayList<ReferenceRecord> reftable = new ArrayList<ReferenceRecord>();	
+//		IInstance ret  = createInstanceInternal(ID, list, reftable);
+//		resolveReferences(reftable);
+//
+//		return ret;
+//	}
 
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#createInstance(java.lang.String, org.integratedmodelling.utils.IList)
-	 */
-	public IInstance createInstance(String ID, IList list)
-			throws ThinklabException {
-		
-		ArrayList<ReferenceRecord> reftable = new ArrayList<ReferenceRecord>();	
-		IInstance ret  = createInstanceInternal(ID, list, reftable);
-		resolveReferences(reftable);
-
-		return ret;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#createInstance(org.integratedmodelling.utils.IList)
-	 */
-	public IInstance createInstance(IList list) throws ThinklabException {
-		
-		ArrayList<ReferenceRecord> reftable = new ArrayList<ReferenceRecord>();	
-		IInstance ret  = createInstanceInternal(list, reftable);
-		resolveReferences(reftable);
-
-		return ret;
-	}
-	
-	IInstance createInstanceInternal(String ID, IList list,
-			Collection<ReferenceRecord> reftable) throws ThinklabException {
-
-		IInstance ret = null;
-		
-		for (Object o : list.array()) {
-
-			if (ret == null) {
-
-				Pair<IConcept, String> cc = ThinklabOWLManager
-						.getConceptFromListObject(o, this);
-				ret = createInstance(ID, cc.getFirst());
-
-			} else if (o instanceof IList) {
-				ThinklabOWLManager.get().interpretPropertyList((IList) o,
-						this, ret, reftable);
-			} 
-		}
-
-		return ret;
-	}
+//	/* (non-Javadoc)
+//	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#createInstance(org.integratedmodelling.utils.IList)
+//	 */
+//	public OWLIndividual createInstance(IList list) throws ThinklabException {
+//		
+//		OWLIndividual ret  = createInstanceInternal(list, null);
+//
+//		return ret;
+//	}
+//	
+//	OWLIndividual createInstanceInternal(String ID, IList list,
+//			Collection<ReferenceRecord> reftable) throws ThinklabException {
+//
+//		IInstance ret = null;
+//		
+//		for (Object o : list.array()) {
+//
+//			if (ret == null) {
+//
+//				Pair<IConcept, String> cc = ThinklabOWLManager
+//						.getConceptFromListObject(o, this);
+//				ret = createInstance(ID, cc.getFirst());
+//
+//			} else if (o instanceof IList) {
+//				ThinklabOWLManager.get().interpretPropertyList((IList) o,
+//						this, ret, reftable);
+//			} 
+//		}
+//
+//		return ret;
+//	}
 
 
 	/* (non-Javadoc)
@@ -383,7 +355,6 @@ public class Ontology implements IOntology {
 
 		SemanticType st = new SemanticType(cs, ret);
 		return 
-			instances.get(st) != null ||
 			concepts.get(st) != null ||
 			properties.get(st) != null;
 	}
@@ -400,25 +371,25 @@ public class Ontology implements IOntology {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.interfaces.IOntology#removeInstance(java.lang.String)
 	 */
-	public void removeInstance(String id) throws ThinklabException {
-
-        OWLEntityRemover remover = 
-        	new OWLEntityRemover(FileKnowledgeRepository.get().manager, Collections.singleton(ont));
-
-        Instance inst = (Instance) instances.get(new SemanticType(cs, id));
-
-        if (inst != null) {
-        	
-        	inst.entity.accept(remover);
-
-        	try {
-        		FileKnowledgeRepository.get().manager.applyChanges(remover.getChanges());
-        	} catch (OWLOntologyChangeException e) {
-        		throw new ThinklabRuntimeException(e);
-        	}
-        }
-
-	}
+//	public void removeInstance(String id) throws ThinklabException {
+//
+//        OWLEntityRemover remover = 
+//        	new OWLEntityRemover(FileKnowledgeRepository.get().manager, Collections.singleton(ont));
+//
+//        Instance inst = (Instance) instances.get(new SemanticType(cs, id));
+//
+//        if (inst != null) {
+//        	
+//        	inst.entity.accept(remover);
+//
+//        	try {
+//        		FileKnowledgeRepository.get().manager.applyChanges(remover.getChanges());
+//        	} catch (OWLOntologyChangeException e) {
+//        		throw new ThinklabRuntimeException(e);
+//        	}
+//        }
+//
+//	}
 
 	@Override
 	public boolean write(URI physicalURI) throws ThinklabException {
@@ -527,34 +498,32 @@ public class Ontology implements IOntology {
 		SemanticType st = Registry.get().getSemanticType(uri);
 		if (concepts.containsKey(st)) return concepts.get(st);
 		else if (properties.containsKey(st)) return properties.get(st);
-		else if(instances.containsKey(st)) return instances.get(st);
+//		else if(instances.containsKey(st)) return instances.get(st);
 		else return null;
 	}
 
-	public IInstance createInstanceInternal(IList list,
-			Collection<ReferenceRecord> reftable) throws ThinklabException {
+	public OWLIndividual createInstanceInternal(IList list) throws ThinklabException {
 		
-		IInstance ret = null;
+		OWLIndividual ret = null;
 		
 		for (Object o : list.array()) {
 			
 			/**
+			 * FIXME ensure it's not a semanticobject with an instance in it
 			 * We may simply add an instance as the only list element, meaning we just want to 
 			 * use it without creating anything.
 			 */
-			if (o instanceof IInstance) {
-				return (IInstance)o;
+			if (o instanceof OWLIndividual) {
+				return (OWLIndividual)o;
 			}
 			
 			if (ret == null) {
 
 				Pair<IConcept, String> cc = ThinklabOWLManager.getConceptFromListObject(o, this);
-				ret = createInstance(
-						cc.getSecond() == null ? getUniqueObjectName("ins") : cc.getSecond(),  
-						cc.getFirst());		
+				ret = createInstance(cc.getFirst());		
 				
 			} else if (o instanceof IList) {
-				ThinklabOWLManager.get().interpretPropertyList((IList)o, this, ret, reftable);
+				ThinklabOWLManager.get().interpretPropertyList((IList)o, this, ret);
 			}
 			
 		}

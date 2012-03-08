@@ -28,14 +28,11 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
-import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
-import org.integratedmodelling.thinklab.api.lang.IOperator;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IEntifiable;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
@@ -100,7 +97,7 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 	}
 
 //	@Override
-	public ISemanticLiteral getFullExtentValue() {
+	public ISemanticObject getFullExtentValue() {
 		return shape;
 	}
 
@@ -349,23 +346,9 @@ public class ShapeExtent extends ArealExtent implements IEntifiable {
 	}
 
 	@Override
-	public IRestriction getConstraint(IOperator operator)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean isDiscontinuous() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public AggregationParameters getAggregationParameters(IConcept concept,
-			IUnit unit) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

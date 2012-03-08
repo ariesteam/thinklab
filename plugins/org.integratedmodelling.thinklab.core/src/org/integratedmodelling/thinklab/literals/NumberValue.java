@@ -21,10 +21,12 @@ package org.integratedmodelling.thinklab.literals;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
+import org.integratedmodelling.thinklab.knowledge.Value;
 
 /**
  * <p>A specialized Value that holds numbers and has all math operations with automatic unit conversion.</p>
@@ -37,10 +39,6 @@ import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementa
 public class NumberValue extends Value implements IParseable {	
 	
     public double value;
-    
-    private NumberValue(IConcept c)  {
-    	super(c);
-    }
     
    public NumberValue() {
       super(KnowledgeManager.Number());
@@ -65,7 +63,6 @@ public class NumberValue extends Value implements IParseable {
     public void wrap(Object o) {
     	value = ((Number)o).doubleValue();
     }
-
     
     /**
      * The Number concept manager will validate units and numbers when numbers are read from a string.
@@ -80,91 +77,6 @@ public class NumberValue extends Value implements IParseable {
     public NumberValue (long l) {
         super(KnowledgeManager.Long());
         value = l;
-    }
-    
-    public boolean isNumber() {
-        return true;
-    }
-
-    public boolean isText() {
-        return false;
-    }
-
-    public boolean isBoolean() {
-        return false;
-    }
-    
-    public boolean isClass() {
-        return false;
-    }
- 
-    public boolean isObject() {
-        return false;
-    }
-    
-    public NumberValue asNumber() {
-        return this;
-    }
-
-    /**
-     * Return the POD object that matches the number type.
-     * @return
-     * @throws ThinklabException 
-     */
-    public Object getPODValue()  {
-    	
-    	if (concept.is(KnowledgeManager.IntegerType()))
-    		return asInteger();
-    	else if (concept.is(KnowledgeManager.LongType())) 
-    		return asLong();
-    	else if (concept.is(KnowledgeManager.FloatType()))
-    		return asFloat();
-    	
-    	return asDouble();
-    }
-    
-    public boolean isLong() {
-        return concept.is(KnowledgeManager.Long());
-    }
-    
-    public boolean isFloat() {
-        return concept.is(KnowledgeManager.Float());
-    }
-
-    public boolean isDouble() {
-        return concept.is(KnowledgeManager.Double());
-    }
-
-    public boolean isInteger() {
-        return concept.is(KnowledgeManager.Integer());
-    }
-    
-    @Override
-    public double asDouble() {
-        return (double)value;
-    }
-    
-    @Override
-    public long asLong() {
-        return (long)value;
-    }
-    
-    public float asFloat() {
-        return (float)value;
-    }
-    
-    @Override
-    public int asInteger() {
-        return (int)value;
-    }
- 
-    @Override
-    public Object clone() {
-    	NumberValue ret = null;
-    	ret = new NumberValue(concept);
-    	ret.value = value;
-
-    	return ret;
     }
     
     @Override
@@ -189,8 +101,27 @@ public class NumberValue extends Value implements IParseable {
 	}
 
 	@Override
-	public Object demote() {
-		return value;
+	public Semantics getSemantics() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getObject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean is(ISemanticObject object) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String asText() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

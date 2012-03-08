@@ -22,15 +22,12 @@ package org.integratedmodelling.thinklab.commandline.commands;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
-import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
@@ -58,39 +55,39 @@ public class List implements ICommandHandler {
 			session.getOutputStream().println("\t" + i.toString()
 					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
 		}
-		session.getOutputStream().println("\nInstances:");
-		for (IInstance i : ont.getInstances()) {
-			session.getOutputStream().println("\t" + i.toString()
-					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
-		}
+//		session.getOutputStream().println("\nInstances:");
+//		for (IInstance i : ont.getInstances()) {
+//			session.getOutputStream().println("\t" + i.toString()
+//					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
+//		}
 	}
-
-	void listIndividual(IInstance c, listmode mode,
-			ISession session) throws ThinklabException {
-
-		if (mode == listmode.DESCRIPTIVE) {
-			session.getOutputStream().println("Instance URI is " + c.getURI());
-
-			session.getOutputStream().println("list representation:\n"
-					+ PolyList.prettyPrint(c.conceptualize().asList()));
-
-			session.getOutputStream().println(c.getDescription());
-
-			if (c.getImplementation() == null) {
-				session.getOutputStream().println("has no implementation");
-			} else {
-				session.getOutputStream().println("has implementation of class "
-						+ c.getImplementation().getClass().toString());
-			}
-
-			for (IRelationship r : c.getRelationships()) {
-				session.getOutputStream().println("  " + r.toString());
-			}
-
-		} else if (mode == listmode.LIST) {
-			session.getOutputStream().println(PolyList.prettyPrint(c.conceptualize().asList()));
-		}
-	}
+//
+//	void listIndividual(IInstance c, listmode mode,
+//			ISession session) throws ThinklabException {
+//
+//		if (mode == listmode.DESCRIPTIVE) {
+//			session.getOutputStream().println("Instance URI is " + c.getURI());
+//
+//			session.getOutputStream().println("list representation:\n"
+//					+ PolyList.prettyPrint(c.conceptualize().asList()));
+//
+//			session.getOutputStream().println(c.getDescription());
+//
+//			if (c.getImplementation() == null) {
+//				session.getOutputStream().println("has no implementation");
+//			} else {
+//				session.getOutputStream().println("has implementation of class "
+//						+ c.getImplementation().getClass().toString());
+//			}
+//
+//			for (IRelationship r : c.getRelationships()) {
+//				session.getOutputStream().println("  " + r.toString());
+//			}
+//
+//		} else if (mode == listmode.LIST) {
+//			session.getOutputStream().println(PolyList.prettyPrint(c.conceptualize().asList()));
+//		}
+//	}
 
 	void listConcept(IConcept c, listmode l, ISession session)
 			throws ThinklabException {
@@ -120,7 +117,7 @@ public class List implements ICommandHandler {
 		}
 	}
 
-	void listKBox(IKBox kbox, String kbname, ISession outputWriter)
+	void listKBox(IKbox kbox, String kbname, ISession outputWriter)
 			throws ThinklabException {
 
 		outputWriter.getOutputStream().println("Listing contents of kBox " + kbname);
@@ -141,7 +138,7 @@ public class List implements ICommandHandler {
 		outputWriter.getOutputStream().println("total: " + result.size());
 	}
 
-	public ISemanticLiteral execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
 
 		String subject = command.getArgumentAsString("subject");
 		String item = null;
@@ -216,29 +213,29 @@ public class List implements ICommandHandler {
 
 			if (subject.startsWith("#")) {
 
-				/* looking for an instance in current session */
-				IInstance obj = session.retrieveObject(subject.substring(1));
-
-				if (obj == null) {
-					session
-							.getOutputStream().println("nothing known about " + subject);
-				} else {
-					listIndividual(obj, listmode.DESCRIPTIVE, session);
-				}
+//				/* looking for an instance in current session */
+//				ISemanticObject obj = null; // session.retrieveObject(subject.substring(1));
+//
+//				if (obj == null) {
+//					session
+//							.getOutputStream().println("nothing known about " + subject);
+//				} else {
+//					listIndividual(obj, listmode.DESCRIPTIVE, session);
+//				}
 
 			} else if (SemanticType.validate(subject)) {
 
 				SemanticType t = new SemanticType(subject);
-				IInstance inst = null;
+//				IInstance inst = null;
 				IConcept conc = null;
 				IProperty prop = null;
 
 				/* concept? */
 				if ((conc = KnowledgeManager.get().retrieveConcept(t)) != null)
 					listConcept(conc, mode, session);
-				/* individual? */
-				else if ((inst = KnowledgeManager.get().retrieveInstance(t)) != null)
-					listIndividual(inst, mode, session);
+//				/* individual? */
+//				else if ((inst = KnowledgeManager.get().retrieveInstance(t)) != null)
+//					listIndividual(inst, mode, session);
 				/* property? */
 				else if ((prop = KnowledgeManager.get().retrieveProperty(t)) != null)
 					listProperty(prop, mode, session);

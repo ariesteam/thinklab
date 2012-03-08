@@ -25,16 +25,16 @@ import java.util.Collection;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.LogicalConnector;
-import org.integratedmodelling.lang.SemanticAnnotation;
+import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IList;
-import org.integratedmodelling.thinklab.api.lang.IOperator;
+import org.integratedmodelling.thinklab.knowledge.Value;
 
 
 /**
@@ -219,14 +219,14 @@ public class Constraint implements IQuery {
 	 * @returns self, not a new constraint; it's done only to enable shorter idioms when creating
 	 * a constraint like new Constraint(..).restrict(...);
 	 */
-	public Constraint restrict(IRestriction ... restrictions) {
+	public Constraint restrict(Restriction ... restrictions) {
 		return restrict(LogicalConnector.INTERSECTION, restrictions);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#restrict(java.util.Collection)
 	 */
-	public Constraint restrict(Collection<IRestriction> restrictions) {
+	public Constraint restrict(Collection<Restriction> restrictions) {
 		return restrict(
 				restrictions.toArray(
 						new Restriction[restrictions.size()]));
@@ -239,21 +239,20 @@ public class Constraint implements IQuery {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#restrict(org.integratedmodelling.lang.LogicalConnector, org.integratedmodelling.thinklab.constraint.Restriction)
 	 */
-	@Override
-	public Constraint restrict(LogicalConnector connector, IRestriction ... restrictions) {
+	public Constraint restrict(LogicalConnector connector, Restriction ... restrictions) {
 		
 		/*
 		 * remove all NULLs from the restriction array. A bit messy but the convenience is 
 		 * priceless.
 		 */
 		int nulls = 0;
-		for (IRestriction r: restrictions) 
+		for (Restriction r: restrictions) 
 			if (r == null)
 				nulls++;
 		if (nulls > 0) {
 			Restriction[] repl = new Restriction[restrictions.length - nulls];
 			int i = 0;
-			for (IRestriction r : restrictions) {
+			for (Restriction r : restrictions) {
 				if (r != null)
 					repl[i++] = (Restriction)r;
 			}
@@ -269,7 +268,7 @@ public class Constraint implements IQuery {
 			}				
 		} else if (body.isConnector() && body.connector.equals(connector)) {
 			/* we're a compatible connector, merge our restrictions directly as siblings */
-			for (IRestriction restriction : restrictions)
+			for (Restriction restriction : restrictions)
 				body.siblings.add(restriction);
 		} else {
 			
@@ -284,7 +283,7 @@ public class Constraint implements IQuery {
 				body = (Restriction)Restriction.OR(bd);
 			} 
 			
-			for (IRestriction restriction : restrictions)
+			for (Restriction restriction : restrictions)
 				body.siblings.add(restriction);
 		}
 		
@@ -347,7 +346,6 @@ public class Constraint implements IQuery {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#addObjectRestriction(java.lang.String, org.integratedmodelling.thinklab.constraint.Constraint)
 	 */
-	@Override
 	public void addObjectRestriction(String propertyType, IQuery objectConstraint) throws ThinklabException {
 		restrict(new Restriction(propertyType, (Constraint)objectConstraint));
 	}
@@ -355,7 +353,6 @@ public class Constraint implements IQuery {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#addClassificationRestriction(java.lang.String, java.lang.String)
 	 */
-	@Override
 	public void addClassificationRestriction(String propertyType, String classID)  throws ThinklabException {
 		restrict(new Restriction(propertyType, classID));
 	}
@@ -363,7 +360,6 @@ public class Constraint implements IQuery {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#addLiteralRestriction(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	@Override
 	public void addLiteralRestriction(String propertyType, String operator, String value)  throws ThinklabException  {
 		restrict(new Restriction(propertyType, operator, value));
 	}
@@ -371,15 +367,13 @@ public class Constraint implements IQuery {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#addLiteralRestriction(java.lang.String, java.lang.String, org.integratedmodelling.thinklab.api.knowledge.IValue)
 	 */
-	@Override
-	public void addLiteralRestriction(String propertyType, String operator, ISemanticLiteral value) throws ThinklabException {
+	public void addLiteralRestriction(String propertyType, String operator, Value value) throws ThinklabException {
 		restrict(new Restriction(propertyType, operator, value.toString()));
 	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#getRestrictions()
 	 */
-	@Override
 	public Restriction getRestrictions() {
 		return body == null ? null : body.getRestrictions();
 	}
@@ -431,9 +425,9 @@ public class Constraint implements IQuery {
     @Override
 	public boolean match(Object i) throws ThinklabException {
         
-    	SemanticAnnotation ilist = Thinklab.get().conceptualize(i);
+    	Semantics ilist = Thinklab.get().conceptualize(i);
     	
-    	boolean ok = concept.is(ilist.getDirectType());
+    	boolean ok = concept.is(ilist.getConcept());
     	
     	if (ok && body != null) {
     		ok = body.match(ilist);
@@ -493,16 +487,29 @@ public class Constraint implements IQuery {
 	 * @param property
 	 * @return
 	 */
-	public IRestriction findRestriction(String property) {
+	public Restriction findRestriction(String property) {
 
 		if (getRestrictions().getProperty().toString().equals(property))
 			return getRestrictions();
 
-		for (IRestriction r : getRestrictions().getChildren()) {
+		for (Restriction r : getRestrictions().getChildren()) {
 			if (r.getProperty().toString().equals(property))
 				return r;
 		}
 		
+		return null;
+	}
+
+	@Override
+	public IQuery restrict(IProperty property, IOperator... operator) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IQuery restrict(LogicalConnector connector, IProperty property,
+			IOperator... restrictions) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

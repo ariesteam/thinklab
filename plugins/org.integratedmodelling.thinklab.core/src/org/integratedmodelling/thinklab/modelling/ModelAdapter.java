@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.lang.model.AgentModel;
 import org.integratedmodelling.lang.model.ConditionalObserver;
 import org.integratedmodelling.lang.model.Context;
@@ -34,20 +33,19 @@ import org.integratedmodelling.lang.model.Observer;
 import org.integratedmodelling.lang.model.Scenario;
 import org.integratedmodelling.lang.model.Storyline;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
+import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.thinklab.api.lang.IOperator;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.modelling.internal.MN;
 import org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository;
 
 /**
@@ -111,21 +109,21 @@ public class ModelAdapter {
 		 * see if namespace was there; if so, compare last modification
 		 * dates, only proceed if ns is newer
 		 */
-		IQuery query = new Constraint(MN.NAMESPACE).restrict(MN.HAS_ID, IOperator.EQUALS, ns.getNamespace());
-		List<Object> ret = 
-				kbox.query(
-						query,
-						IKbox.KBOX_LITERALS_ONLY | IKbox.KBOX_RETRIEVE_ANNOTATIONS);
-		
-		if (ret.size() > 0) {
+//		IQuery query = new Constraint(NS.NAMESPACE).restrict(MN.HAS_ID, IOperator.EQUALS, ns.getNamespace());
+//		List<Object> ret = 
+//				kbox.query(
+//						query,
+//						IKbox.KBOX_LITERALS_ONLY | IKbox.KBOX_RETRIEVE_ANNOTATIONS);
+//		
+//		if (ret.size() > 0) {
 			
-			SemanticAnnotation ans = (SemanticAnnotation) ret.get(0);
-			ISemanticLiteral tst = ans.getValue(MN.HAS_TIMESTAMP);
-			if (tst != null && tst.asLong() >= ns.getLastModification())
-				return;
-			
-			kbox.removeAll(query);
-		}
+//			SemanticAnnotation ans = (SemanticAnnotation) ret.get(0);
+//			ISemanticLiteral tst = ans.getValue(MN.HAS_TIMESTAMP);
+//			if (tst != null && tst.asLong() >= ns.getLastModification())
+//				return;
+//			
+//			kbox.removeAll(query);
+//		}
 		
 		for (IModelObject o : ns.getModelObjects()) {
 
@@ -155,8 +153,8 @@ public class ModelAdapter {
 			
 			ret = new ModelImpl((Model)o);
 			((ModelImpl)ret)._observer = createObserver(((Model)o).getObserver());
-			((ModelImpl)ret)._observable = 
-					new SemanticAnnotation(((Model)o).getObservable(), Thinklab.get());
+//			((ModelImpl)ret)._observable = 
+//					new SemanticAnnotation(((Model)o).getObservable(), Thinklab.get());
 			
 			/*
 			 * TODO submit other observables for the accessor and validate them against

@@ -35,7 +35,7 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
@@ -125,7 +125,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 			return false;
 		}
 		
-		IInstance user = getSession().getUserModel().getUserInstance();
+		ISemanticObject user = getSession().getUserModel().getUser();
 		if (user == null || !user.is(KnowledgeManager.getConcept(concept))) {
 			fail("not enough user privileges for command");
 			return false;
@@ -214,7 +214,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	protected Pair<File,String> getFileName(String fileName, ISession session) throws ThinklabException {
 
 		Pair<File,String> ret = null;
-		String workspace = session.getSessionWorkspace();		
+		String workspace = session.getWorkspace();		
 		File sdir = new File(Thinklab.get().getScratchPath() + File.separator + "rest/tmp" + 
 					File.separator + workspace);
 		sdir.mkdirs();

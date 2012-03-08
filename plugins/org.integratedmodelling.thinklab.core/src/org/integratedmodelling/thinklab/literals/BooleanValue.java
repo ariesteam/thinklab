@@ -20,15 +20,21 @@
 package org.integratedmodelling.thinklab.literals;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
-import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
+import org.integratedmodelling.thinklab.knowledge.Value;
 
-@LiteralImplementation(concept="thinklab-core:Boolean")
+@Literal(datatype="xsd:boolean", javaClass=java.lang.Boolean.class, concept="core:Boolean")
 public class BooleanValue extends Value implements IParseable {
 
-    public boolean value;
+    public Boolean value;
+    
+    public static ISemanticObject TRUE = new BooleanValue(true);
+    public static ISemanticObject FALSE = new BooleanValue(false);
     
     private BooleanValue(IConcept c)  {
     	super(c);
@@ -48,8 +54,8 @@ public class BooleanValue extends Value implements IParseable {
         parse(s);
     }
 
-    public void wrap(Object o) {
-    	value = (Boolean)o;
+    public static BooleanValue wrap(boolean o) {
+    	return new BooleanValue(o);
     }
     
     @Override
@@ -76,36 +82,6 @@ public class BooleanValue extends Value implements IParseable {
     }
     
     @Override
-    public boolean isNumber() {
-        return false;
-    }
-
-    @Override
-    public boolean isText() {
-        return false;
-    }
-
-    @Override
-    public boolean isBoolean() {
-        return true;
-    }
-    
-    @Override
-    public boolean isClass() {
-        return false;
-    }
- 
-    @Override
-    public boolean isObject() {
-        return false;
-    }
-    
-    @Override
-    public boolean isLiteral() {
-        return true;
-    }
-
-    @Override
     public boolean asBoolean() {
         return value;
     }
@@ -121,8 +97,27 @@ public class BooleanValue extends Value implements IParseable {
 	}
 
 	@Override
-	public Object demote() {
-		return new Boolean(value);
+	public Semantics getSemantics() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getObject() {
+		// TODO Auto-generated method stub
+		return value;
+	}
+
+	@Override
+	public boolean is(ISemanticObject object) {
+		// TODO Auto-generated method stub
+		return concept.is(object.getDirectType()) && value.equals(object.asBoolean());
+	}
+
+	@Override
+	public String asText() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

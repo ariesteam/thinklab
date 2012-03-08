@@ -35,7 +35,7 @@ package org.integratedmodelling.thinklab.time;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 public class TimePlugin extends ThinklabPlugin {
@@ -63,8 +63,8 @@ public class TimePlugin extends ThinklabPlugin {
     static private IConcept durationConcept;
     static private IConcept timeObservable;
     
-    private static IInstance absoluteTimeInstance; 
-    private static IInstance continuousTimeInstance; 
+    private static ISemanticObject absoluteTimeInstance; 
+    private static ISemanticObject continuousTimeInstance; 
     
 	public static TimePlugin get() {
 		return (TimePlugin) getPlugin(PLUGIN_ID);
@@ -96,8 +96,8 @@ public class TimePlugin extends ThinklabPlugin {
     	durationConcept = km.requireConcept(DURATION_TYPE_ID);
     	timeObservable = km.requireConcept(TIME_OBSERVABLE_ID);
     	
-    	absoluteTimeInstance = km.requireInstance(ABSOLUTE_TIME_OBSERVABLE_INSTANCE);
-    	continuousTimeInstance = km.requireInstance(CONTINUOUS_TIME_OBSERVABLE_INSTANCE);
+    	absoluteTimeInstance = null ;// km.requireInstance(ABSOLUTE_TIME_OBSERVABLE_INSTANCE);
+    	continuousTimeInstance = null; // km.requireInstance(CONTINUOUS_TIME_OBSERVABLE_INSTANCE);
 
     }
 
@@ -122,11 +122,11 @@ public class TimePlugin extends ThinklabPlugin {
 		return durationConcept;
 	}
 	
-	public static IInstance continuousTimeInstance() {
+	public static ISemanticObject continuousTimeInstance() {
 		return continuousTimeInstance;
 	}
 
-	public static IInstance absoluteTimeInstance() {
+	public static ISemanticObject absoluteTimeInstance() {
 		return absoluteTimeInstance;
 	}
 

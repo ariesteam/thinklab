@@ -27,11 +27,8 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
-import org.integratedmodelling.thinklab.api.lang.IOperator;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
@@ -245,12 +242,6 @@ public class SpatialCoverage extends ObservationImpl implements IExtent {
 		return false;
 	}
 
-	@Override
-	public IRestriction getConstraint(IOperator operator)
-			throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Collection<Pair<String, Integer>> getStateLocators(int index) {
@@ -270,10 +261,4 @@ public class SpatialCoverage extends ObservationImpl implements IExtent {
 		return null;
 	}
 
-	@Override
-	public AggregationParameters getAggregationParameters(IConcept concept,
-			IUnit unit) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

@@ -19,16 +19,10 @@
  */
 package org.integratedmodelling.thinklab.owlapi;
 
-import java.lang.reflect.Field;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -38,31 +32,17 @@ import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.LogicalConnector;
-import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.IInstanceImplementation;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.IRelationship;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.lang.IList;
-import org.integratedmodelling.thinklab.api.lang.IParseable;
-import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
-import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.interfaces.knowledge.IParseableKnowledge;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
-import org.integratedmodelling.thinklab.literals.NumberValue;
-import org.integratedmodelling.thinklab.literals.TextValue;
-import org.integratedmodelling.thinklab.literals.Value;
-import org.integratedmodelling.thinklab.owlapi.Ontology.ReferenceRecord;
 import org.semanticweb.owl.model.OWLAnnotation;
 import org.semanticweb.owl.model.OWLConstant;
 import org.semanticweb.owl.model.OWLDataAllRestriction;
-import org.semanticweb.owl.model.OWLDataProperty;
 import org.semanticweb.owl.model.OWLDataPropertyExpression;
 import org.semanticweb.owl.model.OWLDataRange;
 import org.semanticweb.owl.model.OWLDataSomeRestriction;
@@ -71,7 +51,6 @@ import org.semanticweb.owl.model.OWLDescription;
 import org.semanticweb.owl.model.OWLEntity;
 import org.semanticweb.owl.model.OWLIndividual;
 import org.semanticweb.owl.model.OWLObjectAllRestriction;
-import org.semanticweb.owl.model.OWLObjectProperty;
 import org.semanticweb.owl.model.OWLObjectPropertyExpression;
 import org.semanticweb.owl.model.OWLObjectSomeRestriction;
 import org.semanticweb.owl.model.OWLOntology;
@@ -103,19 +82,19 @@ public class ThinklabOWLManager {
      * 
      * This one serves also to hold class literals.
 	 */
-	private Hashtable<String, ISemanticLiteral> reifiedLiterals = new Hashtable<String, ISemanticLiteral>();
-	private Hashtable<String, IInstance> classLiterals = new Hashtable<String, IInstance>();
+//	private Hashtable<String, ISemanticLiteral> reifiedLiterals = new Hashtable<String, ISemanticLiteral>();
+//	private Hashtable<String, IInstance> classLiterals = new Hashtable<String, IInstance>();
 
 	// we need a HashMap here because we need nulls in it, but we need to make sure we
 	// synchronize.
-	private HashMap<String, IInstanceImplementation> instanceImplementations = 
-		new HashMap<String, IInstanceImplementation>();
+//	private HashMap<String, IInstanceImplementation> instanceImplementations = 
+//		new HashMap<String, IInstanceImplementation>();
 		
 	// same for cached thinklab constraints
-	private HashMap<String, Constraint> thinklabConstraints = 
-		new HashMap<String, Constraint>();
-	private HashMap<String, HashMap<String, Object>> reflectedFields =
-		new HashMap<String, HashMap<String,Object>>();
+//	private HashMap<String, Constraint> thinklabConstraints = 
+//		new HashMap<String, Constraint>();
+//	private HashMap<String, HashMap<String, Object>> reflectedFields =
+//		new HashMap<String, HashMap<String,Object>>();
 	
 	static ThinklabOWLManager owlManager;
 
@@ -165,220 +144,148 @@ public class ThinklabOWLManager {
 
 		ArrayList<ISemanticLiteral> ret = new ArrayList<ISemanticLiteral>();
 
-		if (!property.isOWLObjectProperty() && !property.isOWLDataProperty()) {
-			// just return anything else with no error
-			return ret;
-		}
-
-		/*
-		 * loop through data properties
-		 */
-		if (property.isOWLDataProperty()) {
-			Map<OWLDataPropertyExpression, Set<OWLConstant>> dprops = cl
-					.getDataPropertyValues(ontology);
-			for (Entry<OWLDataPropertyExpression, Set<OWLConstant>> dpropp : dprops
-					.entrySet()) {
-
-				OWLDataPropertyExpression dprop = dpropp.getKey();
-
-				if (!dprop.equals(property))
-					continue;
-
-				for (OWLConstant cn : dpropp.getValue()) {
-
-					ISemanticLiteral val = null;
-
-					if (cn.isTyped()) {
-
-						OWLDataType dtype = cn.asOWLTypedConstant().getDataType();
-						String tltype = Thinklab.get().getXSDMapping(dtype.getURI().toString());
-						
-						if (tltype != null) {
-							val = 
-								KnowledgeManager.get().validateLiteral(
-										KnowledgeManager.get().requireConcept(tltype),
-										cn.getLiteral());
-						}
-					} 
-					
-					/* if we didn't succeed above, just give it a string and hope for the best unless
-					 * we want strict validation (which is the default) */
-					if (val == null) {
-						
-						if (LocalConfiguration.strictValidation()) {
-							throw new ThinklabValidationException("cannot find translation for data type " + cn);
-						} else {
-							
-							val = 
-								KnowledgeManager.get().validateLiteral(
-										KnowledgeManager.Text(),
-										cn.getLiteral());
-						}
-					}
-
-					if (val != null)
-						ret.add(val);
-				}
-			}
-		} else {
-
-			/*
-			 * loop through object properties
-			 */
-			Map<OWLObjectPropertyExpression, Set<OWLIndividual>> oprops = cl
-					.getObjectPropertyValues(ontology);
-
-			for (Entry<OWLObjectPropertyExpression, Set<OWLIndividual>> opropp : oprops
-					.entrySet()) {
-
-				OWLObjectPropertyExpression oprop = opropp.getKey();
-
-				if (!oprop.equals(property))
-					continue;
-
-				for (OWLIndividual ind : opropp.getValue()) {
-
-					/* if we have cached this, just return it */
-					ISemanticLiteral val = reifiedLiterals.get(ind.getURI().toString());
-
-					if (val != null)
-						ret.add(val);
-					else {
-
-						/* get annotation for class literal, if any */
-						if (new Property((OWLObjectProperty) property)
-								.isClassification()) {
-
-							Instance cin = new Instance(ind);
-
-							/*
-							 * classAnnotation must be the semantic type or URL
-							 * of a concept known to the KM
-							 */
-							val = new Value(cin.getDirectType());
-
-							/* retain ID in value */
-							((Value)val).setID(ind.getURI().toString());
-
-							/* cache value */
-							reifiedLiterals.put(((Value)val).getID(), val);
-
-							/* remember instance created for this type */
-							classLiterals.put(val.getConcept().toString(), cin);
-
-							/* add to return collection */
-							ret.add(val);
-
-						} else {
-
-							String literAnnotation = getAnnotationAsString(ind,
-									extendedLiteralAnnotationProperty, null);
-
-							if (literAnnotation != null) {
-
-								/*
-								 * figure out how to construct literal using the
-								 * concept manager closest to the object's class
-								 */
-								IConcept cc = new Instance(ind).getDirectType();
-
-								val = KnowledgeManager.get().validateLiteral(
-										cc, literAnnotation);
-
-								/* retain ID */
-								((Value)val).setID(ind.getURI().toString());
-
-								/* cache value */
-								reifiedLiterals.put(((Value)val).getID(), val);
-
-								/* return */
-								ret.add(val);
-							} else {
-
-								/* it's just a stupid object property */
-								val = new ObjectValue(
-										new Instance(ind));
-								ret.add(val);
-
-							}
-						}
-					}
-				}
-			}
-		}
+//		if (!property.isOWLObjectProperty() && !property.isOWLDataProperty()) {
+//			// just return anything else with no error
+//			return ret;
+//		}
+//
+//		/*
+//		 * loop through data properties
+//		 */
+//		if (property.isOWLDataProperty()) {
+//			Map<OWLDataPropertyExpression, Set<OWLConstant>> dprops = cl
+//					.getDataPropertyValues(ontology);
+//			for (Entry<OWLDataPropertyExpression, Set<OWLConstant>> dpropp : dprops
+//					.entrySet()) {
+//
+//				OWLDataPropertyExpression dprop = dpropp.getKey();
+//
+//				if (!dprop.equals(property))
+//					continue;
+//
+//				for (OWLConstant cn : dpropp.getValue()) {
+//
+//					ISemanticLiteral val = null;
+//
+//					if (cn.isTyped()) {
+//
+//						OWLDataType dtype = cn.asOWLTypedConstant().getDataType();
+//						String tltype = Thinklab.get().getXSDMapping(dtype.getURI().toString());
+//						
+//						if (tltype != null) {
+//							val = 
+//								KnowledgeManager.get().validateLiteral(
+//										KnowledgeManager.get().requireConcept(tltype),
+//										cn.getLiteral());
+//						}
+//					} 
+//					
+//					/* if we didn't succeed above, just give it a string and hope for the best unless
+//					 * we want strict validation (which is the default) */
+//					if (val == null) {
+//						
+//						if (LocalConfiguration.strictValidation()) {
+//							throw new ThinklabValidationException("cannot find translation for data type " + cn);
+//						} else {
+//							
+//							val = 
+//								KnowledgeManager.get().validateLiteral(
+//										KnowledgeManager.Text(),
+//										cn.getLiteral());
+//						}
+//					}
+//
+//					if (val != null)
+//						ret.add(val);
+//				}
+//			}
+//		} else {
+//
+//			/*
+//			 * loop through object properties
+//			 */
+//			Map<OWLObjectPropertyExpression, Set<OWLIndividual>> oprops = cl
+//					.getObjectPropertyValues(ontology);
+//
+//			for (Entry<OWLObjectPropertyExpression, Set<OWLIndividual>> opropp : oprops
+//					.entrySet()) {
+//
+//				OWLObjectPropertyExpression oprop = opropp.getKey();
+//
+//				if (!oprop.equals(property))
+//					continue;
+//
+//				for (OWLIndividual ind : opropp.getValue()) {
+//
+//					/* if we have cached this, just return it */
+//					ISemanticLiteral val = reifiedLiterals.get(ind.getURI().toString());
+//
+//					if (val != null)
+//						ret.add(val);
+//					else {
+//
+//						/* get annotation for class literal, if any */
+//						if (new Property((OWLObjectProperty) property)
+//								.isClassification()) {
+//
+//							Instance cin = new Instance(ind);
+//
+//							/*
+//							 * classAnnotation must be the semantic type or URL
+//							 * of a concept known to the KM
+//							 */
+//							val = new Value(cin.getDirectType());
+//
+//							/* retain ID in value */
+//							((Value)val).setID(ind.getURI().toString());
+//
+//							/* cache value */
+//							reifiedLiterals.put(((Value)val).getID(), val);
+//
+//							/* remember instance created for this type */
+//							classLiterals.put(val.getConcept().toString(), cin);
+//
+//							/* add to return collection */
+//							ret.add(val);
+//
+//						} else {
+//
+//							String literAnnotation = getAnnotationAsString(ind,
+//									extendedLiteralAnnotationProperty, null);
+//
+//							if (literAnnotation != null) {
+//
+//								/*
+//								 * figure out how to construct literal using the
+//								 * concept manager closest to the object's class
+//								 */
+//								IConcept cc = new Instance(ind).getDirectType();
+//
+//								val = KnowledgeManager.get().validateLiteral(
+//										cc, literAnnotation);
+//
+//								/* retain ID */
+//								((Value)val).setID(ind.getURI().toString());
+//
+//								/* cache value */
+//								reifiedLiterals.put(((Value)val).getID(), val);
+//
+//								/* return */
+//								ret.add(val);
+//							} else {
+//
+//								/* it's just a stupid object property */
+//								val = new ObjectValue(
+//										new Instance(ind));
+//								ret.add(val);
+//
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
 		return ret;
-	}
-	
-	private synchronized void addImpl(String uri, IInstanceImplementation impl) {
-		instanceImplementations.put(uri, impl);
-	}
-
-	/**
-	 * Obtain the instance implementation for given instance, using cached one if present.
-	 * @param instance
-	 * @return
-	 * @throws ThinklabException
-	 */
-	public IInstanceImplementation getInstanceImplementation(Instance instance) throws ThinklabException {
-
-		IInstanceImplementation ret = null;
-		
-		boolean hasIt = instanceImplementations.containsKey(instance.getURI());
-		
-		// check if this uri passed here before
-		if (!hasIt) {
-
-			ret = KnowledgeManager.get().newInstanceImplementation(instance.getDirectType());
-
-			/*
-			 * use a synchronized function because this is a singleton and hashmap isn't
-			 * synchronized.
-			 */
-			addImpl(instance.getURI(), ret);
-
-			if (ret != null) {
-
-				/*
-				 * see if we have any fields to be set through reflection
-				 */
-				addReflectedFields(instance.getURI(), ret);
-				ret.initialize(instance);
-			}
-
-		} else {
-		
-			ret = instanceImplementations.get(instance.getURI()); 
-		}
-		
-		if (instance._signature == null)
-			instance._signature = instance.computeSignature();
-		
-		instance._initialized = true;
-
-		return ret;
-	}
-	
-	private void addReflectedFields(String uri, IInstanceImplementation ret) throws ThinklabException {
-
-		HashMap<String, Object> oo = this.reflectedFields.get(uri);
-		if (oo != null) {
-			Class<?> cls = ret.getClass();
-			for (String field : oo.keySet()) {
-				try {
-					Field f = cls.getField(field);
-            		f.setAccessible(true);
-					f.set(ret, oo.get(field));
-				} catch (Exception e) {
-					throw new ThinklabValidationException(e);
-				}
-			}
-			this.reflectedFields.remove(uri);
-		}
-	}
-
-
-	public void setInstanceImplementation(Instance instance, IInstanceImplementation impl) {
-			addImpl(instance.getURI(), impl);
 	}
 	
 
@@ -476,550 +383,507 @@ public class ThinklabOWLManager {
 		return new Pair<IConcept, String>(concept, ID);
 	}
 	
-	/* FIXME there must be something wrong here, or maybe not. In that case, don't FIXME. */
-	public Instance getClassLiteralInstance(IConcept concept) throws ThinklabException {
+//	/* FIXME there must be something wrong here, or maybe not. In that case, don't FIXME. */
+	public OWLIndividual getClassLiteralInstance(IConcept concept) throws ThinklabException {
 		
-		/*
-		 * TODO these should be volatile if anything
-		 */
-		IInstance ret = classLiterals.get(concept.toString());
 		
-		if (ret == null) {
-		
-			IOntology ont =
-				KnowledgeManager.get().getKnowledgeRepository().requireOntology(concept.getConceptSpace());
+			Ontology ont =
+				(Ontology) KnowledgeManager.get().getKnowledgeRepository().requireOntology(concept.getConceptSpace());
 			
-			ret = ont.createInstance(null, concept);
-			((Instance)ret).addAnnotation(classLiteralAnnotationProperty, concept.toString());
-			
-			/* remember instance created for this type */
-			classLiterals.put(concept.toString(), ret);
-
-		}
-		
-		return (Instance)ret;
-		
-	}
-	
-	/* FIXME there must be something wrong here, or maybe not. In that case, FIXME but don't FIXIT. */
-	public Instance getExtendedLiteralInstance(String id, ISemanticLiteral literal, IOntology ont) throws ThinklabException {
-	
-		Instance ret = null;
-		ISemanticLiteral io    = null;
-		
-		if (id == null)
-			id = ((Value)literal).getID();
-		
-		if (id != null)	
-			io = reifiedLiterals.get(id);
-	
-		if (io == null) {
-			
-			/* create instance */
-			IInstance rr = (Instance)ont.createInstance(id, literal.getConcept());
-			
-			ret = (Instance)rr;
-			ret.addAnnotation(extendedLiteralAnnotationProperty, literal.toString());
-
-			reifiedLiterals.put(rr.getURI(), literal);
-			
-		} else {
-			
-			if (!(literal.toString().equals(io.toString())))
-				throw new ThinklabValidationException("internal: incompatible literals being stored with same ID");
-		}
-		
-		/* 
-		 * 
-		 * 
-		 * - check ID in literal if passed ID is null; create if necessary.
-		 * - check if literal is there, if not create it. If it's there
-		 *   it must have that value.
-		 * - Set ID into literal
-		 */
-
-		
-		return ret;
-	}
-
-	
-	public void interpretPropertyList (IList l, Ontology ont, IInstance inst, Collection<ReferenceRecord> reftable) throws ThinklabException {
-		
-		/*
-		 * List must contain exactly two elements
-		 */
-		if (l.length() != 2)
-			throw new ThinklabValidationException("property list is invalid: " + l);
-		
-		/*
-		 * first element must be a property or a semantic type corresponding to
-		 * one
-		 */
-		IProperty property = null;
-		
-		IInstanceImplementation impl  = null;
-		String literalImpl = null;
-		
-		Object o1 = l.first();
-		if (o1 instanceof IProperty) 
-			property = (IProperty)o1;
-		else if (o1 instanceof String) {
-			try {
-				
-				/* filter out comment and label without looking for the annotation */
-				if (o1.toString().equals("rdfs:comment")) {
-					
-					inst.addDescription(l.nth(1).toString());
-					return;
-					
-				} else if (o1.toString().equals("rdfs:label")) {
-					
-					inst.addLabel(l.nth(1).toString());
-					return;
-				} else if (o1.toString().equals("@")) {
-					((Instance)inst).setImplementation((IInstanceImplementation) l.nth(1));
-					((Instance)inst)._initialized = true;
-					return;
-				} else if (o1.toString().equals("#")) {
-
-					/* define implementation from a literal: instance implementation class must 
-					 * exist and be a IParsable */
-					impl = 
-						KnowledgeManager.get().newInstanceImplementation(inst.getDirectType());
-					
-					if (! (impl instanceof IParseable)) {
-						throw new ThinklabValidationException(
-								"inline literal passed for " + 
-								inst.getDirectType() +
-								" which is not a parseable implementation");
-					}
-					
-					setInstanceImplementation((Instance) inst, impl);	
-					((IParseableKnowledge)impl).parseSpecifications(inst, l.nth(1).toString());
-					((Instance)inst)._initialized = true;
-					return;
-				} else if (o1.toString().startsWith(":")) {
-					
-					/*
-					 * set field from linked object into implementation using reflection.
-					 * This obviously can't be used unless we build the instance in the
-					 * same thread where we created the description.
-					 */
-					String fieldName = o1.toString().substring(1);
-					addReflectedField(inst.getURI(), fieldName, l.nth(1));
-					return;
-				}
-				
-				property = KnowledgeManager.get().requireProperty((String)o1);
-				
-			} catch (ThinklabException e) {
-				throw new ThinklabValidationException(e);
-			}
-		} else {
-			throw new ThinklabValidationException("invalid property " + o1 + " in property list");
-		}
-		
-		/*
-		 * second element can either be a list, or something that evaluates to a
-		 * valid string - a String, Concept, or IValue
-		 */
-		Object o2 = l.nth(1);
-		
-		if (o2 instanceof IList) {
-			
-			IList lvalue = (IList)o2;
-			
-			/* 
-			 * must have at least one element or we don't know what to do
-			 */
-			if (lvalue.length() < 1)
-				throw new ThinklabValidationException("list defining property value for " + property + " has no elements");
-			
-			if (lvalue.length() == 1 && lvalue.first().toString().startsWith("#")) {
-				/* reference - just add to table and return */
-				reftable.add(
-						ont.new ReferenceRecord(inst, 
-								property, 
-								lvalue.first().toString().substring(1)));
-				return;
-			}
-			
-			if (lvalue.length() < 2 || 
-				(lvalue.length() >= 2 && lvalue.nth(1) instanceof IList)) {
-
-				/* 
-				 * it's an object definition: create the object and set it as value. 
-				 */
-				IInstance instance = ont.createInstanceInternal(lvalue, reftable);
-				inst.addObjectRelationship(property, instance);
-
-			} else {
-				
-				/*
-				 * literal with no explicit type. First value must identify a concept, possibly with ID attached
-				 */
-				Pair<IConcept, String> cid = getConceptFromListObject(lvalue.first(), ont);
-				
-				/*
-				 * second element must be a string or an IValue
-				 */
-				Object second = lvalue.nth(1);
-				
-				if (!(second instanceof String || second instanceof ISemanticLiteral)) {
-					throw new ThinklabValidationException("invalid literal specification in list: " + second);
-				}
-				
-				String svalue = second.toString();
-				
-				/*
-				 * second element must be last one
-				 */
-				if (lvalue.length() != 2)
-					throw new ThinklabValidationException("literal list must have two elements");
-				
-				log.debug("validating \"" + svalue + "\" as a " + cid.getFirst() + " literal for " + property);
-				
-				/* 
-				 * must be a string value for the extended literal, and the first 
-				 * value must be its concept.
-				 */
-				ISemanticLiteral value = KnowledgeManager.get().validateLiteral(cid.getFirst(), svalue);
-				
-//				/*
-//				 * If the validator creates an object, we set this as an object reference and the property must
-//				 * be an object property.
-//				 */
-//				if (value.isObject()) {
-//					inst.addObjectRelationship(property, ((ObjectValue)value).asInstance());
-//				} else {
-					inst.addLiteralRelationship(property, value);
-//				}
-			}
-			
-			
-		} else if (o2 instanceof IInstance) {
-			
-			/*
-			 * a direct instance was stuck in the list - why not.
-			 */
-			inst.addObjectRelationship(property, (IInstance)o2);
-			
-		} else if ((o2 instanceof URL || o2 instanceof URI || (o2 instanceof String && ((String)o2).contains("://"))) && 
-						property.isObjectProperty()) {
-					
-//			String uri = o2.toString();
-//			String[] up = uri.split("#");
+			return ont.createInstance(concept);
+//			((Instance)ret).addAnnotation(classLiteralAnnotationProperty, concept.toString());
 //			
-//			if (up.length != 2) {
-//				throw new ThinklabValidationException("parsing reference " + uri + ": invalid external object URI");
+//			/* remember instance created for this type */
+//			classLiterals.put(concept.toString(), ret);
+//
+//		
+//		return (Instance)ret;
+		
+	}
+	
+////	/* FIXME there must be something wrong here, or maybe not. In that case, FIXME but don't FIXIT. */
+////	public Instance getExtendedLiteralInstance(String id, ISemanticLiteral literal, IOntology ont) throws ThinklabException {
+////	
+////		Instance ret = null;
+////		ISemanticLiteral io    = null;
+////		
+////		if (id == null)
+////			id = ((Value)literal).getID();
+////		
+////		if (id != null)	
+////			io = reifiedLiterals.get(id);
+////	
+////		if (io == null) {
+////			
+////			/* create instance */
+////			IInstance rr = (Instance)ont.createInstance(id, literal.getConcept());
+////			
+////			ret = (Instance)rr;
+////			ret.addAnnotation(extendedLiteralAnnotationProperty, literal.toString());
+////
+////			reifiedLiterals.put(rr.getURI(), literal);
+////			
+////		} else {
+////			
+////			if (!(literal.toString().equals(io.toString())))
+////				throw new ThinklabValidationException("internal: incompatible literals being stored with same ID");
+////		}
+//		
+//		/* 
+//		 * 
+//		 * 
+//		 * - check ID in literal if passed ID is null; create if necessary.
+//		 * - check if literal is there, if not create it. If it's there
+//		 *   it must have that value.
+//		 * - Set ID into literal
+//		 */
+//
+//		
+//		return ret;
+//	}
+
+	
+	public void interpretPropertyList (IList l, Ontology ont, OWLIndividual inst) throws ThinklabException {
+		
+//		/*
+//		 * List must contain exactly two elements
+//		 */
+//		if (l.length() != 2)
+//			throw new ThinklabValidationException("property list is invalid: " + l);
+//		
+//		/*
+//		 * first element must be a property or a semantic type corresponding to
+//		 * one
+//		 */
+//		IProperty property = null;
+//		
+//		String literalImpl = null;
+//		
+//		Object o1 = l.first();
+//		if (o1 instanceof IProperty) 
+//			property = (IProperty)o1;
+//		else if (o1 instanceof String) {
+//			try {
+//				
+//				/* filter out comment and label without looking for the annotation */
+//				if (o1.toString().equals("rdfs:comment")) {
+//					
+//					inst.addDescription(l.nth(1).toString());
+//					return;
+//					
+//				} else if (o1.toString().equals("rdfs:label")) {
+//					
+//					inst.addLabel(l.nth(1).toString());
+//					return;
+//				} else if (o1.toString().equals("@")) {
+//					((Instance)inst).setImplementation((IInstanceImplementation) l.nth(1));
+//					((Instance)inst)._initialized = true;
+//					return;
+//				} else if (o1.toString().equals("#")) {
+//
+//					/* define implementation from a literal: instance implementation class must 
+//					 * exist and be a IParsable */
+//					impl = 
+//						KnowledgeManager.get().newInstanceImplementation(inst.getDirectType());
+//					
+//					if (! (impl instanceof IParseable)) {
+//						throw new ThinklabValidationException(
+//								"inline literal passed for " + 
+//								inst.getDirectType() +
+//								" which is not a parseable implementation");
+//					}
+//					
+//					setInstanceImplementation((Instance) inst, impl);	
+//					((IParseableKnowledge)impl).parseSpecifications(inst, l.nth(1).toString());
+//					((Instance)inst)._initialized = true;
+//					return;
+//				} else if (o1.toString().startsWith(":")) {
+//					
+//					/*
+//					 * set field from linked object into implementation using reflection.
+//					 * This obviously can't be used unless we build the instance in the
+//					 * same thread where we created the description.
+//					 */
+//					String fieldName = o1.toString().substring(1);
+//					addReflectedField(inst.getURI(), fieldName, l.nth(1));
+//					return;
+//				}
+//				
+//				property = KnowledgeManager.get().requireProperty((String)o1);
+//				
+//			} catch (ThinklabException e) {
+//				throw new ThinklabValidationException(e);
+//			}
+//		} else {
+//			throw new ThinklabValidationException("invalid property " + o1 + " in property list");
+//		}
+//		
+//		/*
+//		 * second element can either be a list, or something that evaluates to a
+//		 * valid string - a String, Concept, or IValue
+//		 */
+//		Object o2 = l.nth(1);
+//		
+//		if (o2 instanceof IList) {
+//			
+//			IList lvalue = (IList)o2;
+//			
+//			/* 
+//			 * must have at least one element or we don't know what to do
+//			 */
+//			if (lvalue.length() < 1)
+//				throw new ThinklabValidationException("list defining property value for " + property + " has no elements");
+//			
+//			if (lvalue.length() == 1 && lvalue.first().toString().startsWith("#")) {
+//				/* reference - just add to table and return */
+//				reftable.add(
+//						ont.new ReferenceRecord(inst, 
+//								property, 
+//								lvalue.first().toString().substring(1)));
+//				return;
 //			}
 //			
-//			IKBox kbox = KBoxManager.get().requireGlobalKBox(up[0]);
-//			IList list = kbox.getObjectAsListFromID(up[1], null);
-//			IInstance linked = ont.createInstance(list); 
-//			// add a marker to notify where we come from, so we can serialize back to a URI
-//			linked.addLiteralRelationship(KnowledgeManager.get().getImportedProperty(), uri);
-//			inst.addObjectRelationship(property, linked);
-			
-		} else {
-			
-			/* second argument is not a list */
-			String svalue = o2.toString();
-			
-			boolean canTestRange = false;
-			
-			if (((Property)property).entity instanceof OWLDataProperty) {
-
-				/* 
-				 * Must be POD type: store as data property value according to range.
-				 */
-				Object toAdd = null;
-
-				if (!(o2 instanceof ISemanticLiteral)) {
-				
-					Collection<IConcept> range = property.getRange();
-
-					canTestRange = range.size() > 0;
-										
-					/* stop at the first concept in range that validates the object. */
-					for (IConcept c : range) {
-						
-						if (
-								(c.is(KnowledgeManager.TextType()) && o2 instanceof String) ||
-								(c.is(KnowledgeManager.DoubleType()) && 
-										(o2 instanceof Double || o2 instanceof Float)) ||
-								(c.is(KnowledgeManager.FloatType()) && 
-										(o2 instanceof Float || o2 instanceof Double)) ||
-								(c.is(KnowledgeManager.IntegerType()) && o2 instanceof Integer) ||
-								(c.is(KnowledgeManager.LongType()) && o2 instanceof Long) ||
-								(c.is(KnowledgeManager.BooleanType()) && o2 instanceof Boolean) 
-							) 
-						{
-							toAdd = o2;
-							break;
-						}
-					}
-					
-					if (toAdd == null) {
-
-						/* 
-						 * if nothing works directly, try converting string representation to the first type in range
-						 * that doesn't complain. 
-						 */
-						String so2 = o2.toString();
-						
-						for (IConcept c : range) {
-
-							/*
-							 * FIXME there's a lot more XSD types to support. Would be good to
-							 * use functions in protege' for this, or anywhere else, rather than
-							 * trying them all out. 
-							 */
-							if (c.is(KnowledgeManager.TextType())) {
-							
-								/* this should catch URIs etc for now */
-								toAdd = so2;
-								
-							} else 	if (c.is(KnowledgeManager.DoubleType())) {
-
-								Double d = null;
-								try {
-									d = new Double(Double.parseDouble(so2));
-								} catch (NumberFormatException e) {
-								}
-								if (d != null)
-									toAdd = d;
-								
-							} else 	if (c.is(KnowledgeManager.IntegerType())) {
-
-								Integer d = null;
-								try {
-									d = new Integer(Integer.parseInt(so2));
-								} catch (NumberFormatException e) {
-								}
-								if (d != null)
-									toAdd = d;
-								
-							} else 	if (c.is(KnowledgeManager.FloatType())) {
-
-								Float d = null;
-								try {
-									d = new Float(Float.parseFloat(so2));
-								} catch (NumberFormatException e) {
-								}
-								if (d != null)
-									toAdd = d;
-								
-							} else 	if (c.is(KnowledgeManager.LongType())) {
-
-								Long d = null;
-								try {
-									d = new Long(Long.parseLong(so2));
-								} catch (NumberFormatException e) {
-								}
-								if (d != null)
-									toAdd = d;
-								
-							} else 	if (c.is(KnowledgeManager.BooleanType())) {
-
-								Boolean d = null;
-								try {
-									d = new Boolean(Boolean.parseBoolean(so2));
-								} catch (NumberFormatException e) {
-								}
-								if (d != null)
-									toAdd = d;
-							}
-							
-							if (toAdd != null)
-								break;
-						}
-						
-					}
-					
-					
-				} else {
-					
-					/*
-					 * must be POD type; get POD type as object
-					 */
-					ISemanticLiteral ivalue = (ISemanticLiteral)o2;
-					
-					if (!ivalue.isPODType()) {
-						throw new ThinklabValidationException("property list tries to assign extended literal " +
-							o2 + 
-							" to plain data property");
-					}
-					
-					if (ivalue.isText()) {
-						toAdd = ivalue.toString();
-					} else if (ivalue.isBoolean()) {
-						toAdd = new Boolean(((BooleanValue)ivalue).value);
-					} else if (ivalue.isNumber()) {
-						
-						IConcept c = ivalue.getConcept();
-						
-						if (c.is(KnowledgeManager.DoubleType())) {
-							toAdd = new Double(((NumberValue)ivalue).asDouble());
-						} else if (c.is(KnowledgeManager.FloatType())) {
-							toAdd = new Float(((NumberValue)ivalue).asFloat());
-						} else if (c.is(KnowledgeManager.LongType())) {
-							toAdd = new Long(((NumberValue)ivalue).asLong());
-						} else if (c.is(KnowledgeManager.IntegerType())) {
-							toAdd = new Integer(((NumberValue)ivalue).asInteger());
-						}	
-					} else {
-						throw new ThinklabValidationException("internal: POD type not recognized for " + ivalue);
-					}
-				}
-				
-				/*
-				 * We only complain if the property has a range and we couldn't find a
-				 * match. If property has no range, we take whatever we get and cross
-				 * fingers.
-				 */
-				if (toAdd == null) {
-					if (canTestRange)
-						throw new ThinklabValidationException(
-								"plain data property " + property + 
-								" can't use value " + o2 + " for " + 
-								property.getRange());
-					else
-						toAdd = o2;
-				}
-				
-				inst.addLiteralRelationship(property, toAdd);
-				
-			} else if (svalue.startsWith("#")) {
-
-				/* 
-				 * reference: lookup referenced object and complain if it's not there. Use KM if it's a full
-				 * semantic type. It must be in the same ontology we're adding to, as it must reference something
-				 * that was just built.
-				 */
-				IInstance instance = ont.getInstance(svalue.substring(1));
-				
-				if (instance == null) {
-					throw new ThinklabValidationException("named reference " + svalue + " not found in knowledge base");
-				}
-
-				inst.addObjectRelationship(property, instance);
-				
-			} else if (SemanticType.validate(svalue)) {				
-				
-				/*
-				 * class literal
-				 */
-				IConcept concept = getConceptFromListObject(o2, ont).getFirst();
-				inst.addClassificationRelationship(property, concept);
-
-			} else {
-				
-				/* if we get here, we have a string value for an extended literal that validates to a 
-				 * non-POD type and is linked through an object property. In that case, the range must be
-				 * unambiguous, and we try to validate using that.
-				 */
-				Collection<IConcept> range = property.getRange();
-				if (range.size() != 1) {
-					throw new ThinklabValidationException("can't determine range of property " + property + 
-									" to validate literal \"" + o2 + "\"");
-				}
-				
-				IConcept r = range.iterator().next();
-				ISemanticLiteral val = KnowledgeManager.get().validateLiteral(r, o2.toString());
-				
-				if (val != null) {
-//					if (val.isObject()) {
-//						inst.addObjectRelationship(property, ((ObjectValue)val).asInstance());
-//					} else {
-						inst.addLiteralRelationship(property, val);
+//			if (lvalue.length() < 2 || 
+//				(lvalue.length() >= 2 && lvalue.nth(1) instanceof IList)) {
+//
+//				/* 
+//				 * it's an object definition: create the object and set it as value. 
+//				 */
+//				IInstance instance = ont.createInstanceInternal(lvalue, reftable);
+//				inst.addObjectRelationship(property, instance);
+//
+//			} else {
+//				
+//				/*
+//				 * literal with no explicit type. First value must identify a concept, possibly with ID attached
+//				 */
+//				Pair<IConcept, String> cid = getConceptFromListObject(lvalue.first(), ont);
+//				
+//				/*
+//				 * second element must be a string or an IValue
+//				 */
+//				Object second = lvalue.nth(1);
+//				
+//				if (!(second instanceof String || second instanceof ISemanticLiteral)) {
+//					throw new ThinklabValidationException("invalid literal specification in list: " + second);
+//				}
+//				
+//				String svalue = second.toString();
+//				
+//				/*
+//				 * second element must be last one
+//				 */
+//				if (lvalue.length() != 2)
+//					throw new ThinklabValidationException("literal list must have two elements");
+//				
+//				log.debug("validating \"" + svalue + "\" as a " + cid.getFirst() + " literal for " + property);
+//				
+//				/* 
+//				 * must be a string value for the extended literal, and the first 
+//				 * value must be its concept.
+//				 */
+//				ISemanticLiteral value = KnowledgeManager.get().validateLiteral(cid.getFirst(), svalue);
+//				
+////				/*
+////				 * If the validator creates an object, we set this as an object reference and the property must
+////				 * be an object property.
+////				 */
+////				if (value.isObject()) {
+////					inst.addObjectRelationship(property, ((ObjectValue)value).asInstance());
+////				} else {
+//					inst.addLiteralRelationship(property, value);
+////				}
+//			}
+//			
+//			
+//		} else if (o2 instanceof IInstance) {
+//			
+//			/*
+//			 * a direct instance was stuck in the list - why not.
+//			 */
+//			inst.addObjectRelationship(property, (IInstance)o2);
+//			
+//		} else if ((o2 instanceof URL || o2 instanceof URI || (o2 instanceof String && ((String)o2).contains("://"))) && 
+//						property.isObjectProperty()) {
+//					
+////			String uri = o2.toString();
+////			String[] up = uri.split("#");
+////			
+////			if (up.length != 2) {
+////				throw new ThinklabValidationException("parsing reference " + uri + ": invalid external object URI");
+////			}
+////			
+////			IKBox kbox = KBoxManager.get().requireGlobalKBox(up[0]);
+////			IList list = kbox.getObjectAsListFromID(up[1], null);
+////			IInstance linked = ont.createInstance(list); 
+////			// add a marker to notify where we come from, so we can serialize back to a URI
+////			linked.addLiteralRelationship(KnowledgeManager.get().getImportedProperty(), uri);
+////			inst.addObjectRelationship(property, linked);
+//			
+//		} else {
+//			
+//			/* second argument is not a list */
+//			String svalue = o2.toString();
+//			
+//			boolean canTestRange = false;
+//			
+//			if (((Property)property).entity instanceof OWLDataProperty) {
+//
+//				/* 
+//				 * Must be POD type: store as data property value according to range.
+//				 */
+//				Object toAdd = null;
+//
+//				if (!(o2 instanceof ISemanticLiteral)) {
+//				
+//					Collection<IConcept> range = property.getRange();
+//
+//					canTestRange = range.size() > 0;
+//										
+//					/* stop at the first concept in range that validates the object. */
+//					for (IConcept c : range) {
+//						
+//						if (
+//								(c.is(KnowledgeManager.TextType()) && o2 instanceof String) ||
+//								(c.is(KnowledgeManager.DoubleType()) && 
+//										(o2 instanceof Double || o2 instanceof Float)) ||
+//								(c.is(KnowledgeManager.FloatType()) && 
+//										(o2 instanceof Float || o2 instanceof Double)) ||
+//								(c.is(KnowledgeManager.IntegerType()) && o2 instanceof Integer) ||
+//								(c.is(KnowledgeManager.LongType()) && o2 instanceof Long) ||
+//								(c.is(KnowledgeManager.BooleanType()) && o2 instanceof Boolean) 
+//							) 
+//						{
+//							toAdd = o2;
+//							break;
+//						}
 //					}
-				}
-			}
-		}
+//					
+//					if (toAdd == null) {
+//
+//						/* 
+//						 * if nothing works directly, try converting string representation to the first type in range
+//						 * that doesn't complain. 
+//						 */
+//						String so2 = o2.toString();
+//						
+//						for (IConcept c : range) {
+//
+//							/*
+//							 * FIXME there's a lot more XSD types to support. Would be good to
+//							 * use functions in protege' for this, or anywhere else, rather than
+//							 * trying them all out. 
+//							 */
+//							if (c.is(KnowledgeManager.TextType())) {
+//							
+//								/* this should catch URIs etc for now */
+//								toAdd = so2;
+//								
+//							} else 	if (c.is(KnowledgeManager.DoubleType())) {
+//
+//								Double d = null;
+//								try {
+//									d = new Double(Double.parseDouble(so2));
+//								} catch (NumberFormatException e) {
+//								}
+//								if (d != null)
+//									toAdd = d;
+//								
+//							} else 	if (c.is(KnowledgeManager.IntegerType())) {
+//
+//								Integer d = null;
+//								try {
+//									d = new Integer(Integer.parseInt(so2));
+//								} catch (NumberFormatException e) {
+//								}
+//								if (d != null)
+//									toAdd = d;
+//								
+//							} else 	if (c.is(KnowledgeManager.FloatType())) {
+//
+//								Float d = null;
+//								try {
+//									d = new Float(Float.parseFloat(so2));
+//								} catch (NumberFormatException e) {
+//								}
+//								if (d != null)
+//									toAdd = d;
+//								
+//							} else 	if (c.is(KnowledgeManager.LongType())) {
+//
+//								Long d = null;
+//								try {
+//									d = new Long(Long.parseLong(so2));
+//								} catch (NumberFormatException e) {
+//								}
+//								if (d != null)
+//									toAdd = d;
+//								
+//							} else 	if (c.is(KnowledgeManager.BooleanType())) {
+//
+//								Boolean d = null;
+//								try {
+//									d = new Boolean(Boolean.parseBoolean(so2));
+//								} catch (NumberFormatException e) {
+//								}
+//								if (d != null)
+//									toAdd = d;
+//							}
+//							
+//							if (toAdd != null)
+//								break;
+//						}
+//						
+//					}
+//					
+//					
+//				} else {
+//					
+//					/*
+//					 * must be POD type; get POD type as object
+//					 */
+//					ISemanticLiteral ivalue = (ISemanticLiteral)o2;
+//					
+//					if (!ivalue.isPODType()) {
+//						throw new ThinklabValidationException("property list tries to assign extended literal " +
+//							o2 + 
+//							" to plain data property");
+//					}
+//					
+//					if (ivalue.isText()) {
+//						toAdd = ivalue.toString();
+//					} else if (ivalue.isBoolean()) {
+//						toAdd = new Boolean(((BooleanValue)ivalue).value);
+//					} else if (ivalue.isNumber()) {
+//						
+//						IConcept c = ivalue.getConcept();
+//						
+//						if (c.is(KnowledgeManager.DoubleType())) {
+//							toAdd = new Double(((NumberValue)ivalue).asDouble());
+//						} else if (c.is(KnowledgeManager.FloatType())) {
+//							toAdd = new Float(((NumberValue)ivalue).asFloat());
+//						} else if (c.is(KnowledgeManager.LongType())) {
+//							toAdd = new Long(((NumberValue)ivalue).asLong());
+//						} else if (c.is(KnowledgeManager.IntegerType())) {
+//							toAdd = new Integer(((NumberValue)ivalue).asInteger());
+//						}	
+//					} else {
+//						throw new ThinklabValidationException("internal: POD type not recognized for " + ivalue);
+//					}
+//				}
+//				
+//				/*
+//				 * We only complain if the property has a range and we couldn't find a
+//				 * match. If property has no range, we take whatever we get and cross
+//				 * fingers.
+//				 */
+//				if (toAdd == null) {
+//					if (canTestRange)
+//						throw new ThinklabValidationException(
+//								"plain data property " + property + 
+//								" can't use value " + o2 + " for " + 
+//								property.getRange());
+//					else
+//						toAdd = o2;
+//				}
+//				
+//				inst.addLiteralRelationship(property, toAdd);
+//				
+//			} else if (svalue.startsWith("#")) {
+//
+//				/* 
+//				 * reference: lookup referenced object and complain if it's not there. Use KM if it's a full
+//				 * semantic type. It must be in the same ontology we're adding to, as it must reference something
+//				 * that was just built.
+//				 */
+//				IInstance instance = ont.getInstance(svalue.substring(1));
+//				
+//				if (instance == null) {
+//					throw new ThinklabValidationException("named reference " + svalue + " not found in knowledge base");
+//				}
+//
+//				inst.addObjectRelationship(property, instance);
+//				
+//			} else if (SemanticType.validate(svalue)) {				
+//				
+//				/*
+//				 * class literal
+//				 */
+//				IConcept concept = getConceptFromListObject(o2, ont).getFirst();
+//				inst.addClassificationRelationship(property, concept);
+//
+//			} else {
+//				
+//				/* if we get here, we have a string value for an extended literal that validates to a 
+//				 * non-POD type and is linked through an object property. In that case, the range must be
+//				 * unambiguous, and we try to validate using that.
+//				 */
+//				Collection<IConcept> range = property.getRange();
+//				if (range.size() != 1) {
+//					throw new ThinklabValidationException("can't determine range of property " + property + 
+//									" to validate literal \"" + o2 + "\"");
+//				}
+//				
+//				IConcept r = range.iterator().next();
+//				ISemanticLiteral val = KnowledgeManager.get().validateLiteral(r, o2.toString());
+//				
+//				if (val != null) {
+////					if (val.isObject()) {
+////						inst.addObjectRelationship(property, ((ObjectValue)val).asInstance());
+////					} else {
+//						inst.addLiteralRelationship(property, val);
+////					}
+//				}
+//			}
+//		}
 	}
 	
+//
+//	
+//	
+//	/** 
+//	 * Return a list of all constraints embedded as additional restrictions in the
+//	 * given class. Cache the created constraints for efficiency.
+//	 * @param c
+//	 * @return
+//	 * @throws ThinklabException 
+//	 */
+//	public synchronized Constraint getAdditionalConstraints(IConcept c) throws ThinklabException {
+//		
+//		Constraint ret = null;
+//
+//		if (thinklabConstraints.containsKey(c.toString()))
+//			return thinklabConstraints.get(c.toString());
+//		
+//		ArrayList<Constraint> rlist = new ArrayList<Constraint>();
+//		
+//		getAdditionalConstraintsInternal(c, rlist);
+//
+//		if (rlist.size() == 1) {
+//			ret = rlist.get(0);
+//		} else if (rlist.size() > 1) {
+//			ret = rlist.get(0);
+//			for (int i = 1; i < rlist.size(); i++)
+//				ret.merge(rlist.get(i), LogicalConnector.INTERSECTION);
+//		}
+//		
+//		thinklabConstraints.put(c.toString(), ret);
+//		
+//		return ret;
+//		
+//	}
 
-	private void addReflectedField(String uri, String field, Object second) {
-		
-		HashMap<String,Object> oo = reflectedFields.get(uri);
-		if (oo == null) {
-			oo = new HashMap<String, Object>();
-		}
-		oo.put(field, second);
-		this.reflectedFields .put(uri, oo);
-	}
-
-
-	/**
-	 * TODO
-	 * Write changes back to ontology - need to be on an ontology scope, so probably have one
-	 * manager per ontology, or keep separate hashes.
-	 * @throws ThinklabException 
-	 */
-	public void writeLiterals(IOntology ontology) throws ThinklabException {
-			
-		for (IInstance inst : ontology.getInstances()) {
-			
-			for (IRelationship rel : inst.getRelationships()) {
-				
-				if (rel.isLiteral()) {
-										
-					if (((Property)rel.getProperty()).entity instanceof OWLDataProperty) {
-						
-					} else {
-						
-					}
-				}
-			}
-		}
-		
-	}
-
-	
-	/** 
-	 * Return a list of all constraints embedded as additional restrictions in the
-	 * given class. Cache the created constraints for efficiency.
-	 * @param c
-	 * @return
-	 * @throws ThinklabException 
-	 */
-	public synchronized Constraint getAdditionalConstraints(IConcept c) throws ThinklabException {
-		
-		Constraint ret = null;
-
-		if (thinklabConstraints.containsKey(c.toString()))
-			return thinklabConstraints.get(c.toString());
-		
-		ArrayList<Constraint> rlist = new ArrayList<Constraint>();
-		
-		getAdditionalConstraintsInternal(c, rlist);
-
-		if (rlist.size() == 1) {
-			ret = rlist.get(0);
-		} else if (rlist.size() > 1) {
-			ret = rlist.get(0);
-			for (int i = 1; i < rlist.size(); i++)
-				ret.merge(rlist.get(i), LogicalConnector.INTERSECTION);
-		}
-		
-		thinklabConstraints.put(c.toString(), ret);
-		
-		return ret;
-		
-	}
-
-	private static void getAdditionalConstraintsInternal(IConcept c, ArrayList<Constraint> ret) throws ThinklabException {
-
-		String cn = 
-			getAnnotationAsString(
-					((Concept)c).entity, 
-					((Property)KnowledgeManager.get().getAdditionalRestrictionProperty()).entity, 
-					null);
-		
-		if (cn != null)
-			ret.add(new Constraint(PolyList.parse(cn)));
-	}
+//	private static void getAdditionalConstraintsInternal(IConcept c, ArrayList<Constraint> ret) throws ThinklabException {
+//
+//		String cn = 
+//			getAnnotationAsString(
+//					((Concept)c).entity, 
+//					((Property)KnowledgeManager.get().getAdditionalRestrictionProperty()).entity, 
+//					null);
+//		
+//		if (cn != null)
+//			ret.add(new Constraint(PolyList.parse(cn)));
+//	}
 	
 	/*
 	 * We are passed an IValue but we need to set an OWL dataproperty from it. Return the 
@@ -1029,13 +893,13 @@ public class ThinklabOWLManager {
 
 		Object ret = null;
 		
-		if (value.isText()) {
-			ret = ((TextValue)value).value;
-		} else if (value.isNumber()) {
-			ret = ((NumberValue)value).getPODValue();
-		} else if (value.isBoolean()) {
-			ret = ((BooleanValue)value).truthValue();
-		}
+//		if (value.isText()) {
+//			ret = ((TextValue)value).value;
+//		} else if (value.isNumber()) {
+//			ret = ((NumberValue)value).getPODValue();
+//		} else if (value.isBoolean()) {
+//			ret = ((BooleanValue)value).truthValue();
+//		}
 		
 		if (ret == null)
 			throw new ThinklabValidationException("internal: non-POD value being assigned to data property: " + value);
@@ -1044,19 +908,6 @@ public class ThinklabOWLManager {
 		
 	}
 
-	public void removeInstanceData(String uri) {
-		
-		if (instanceImplementations.containsKey(uri))
-			instanceImplementations.remove(uri);
-		if (reifiedLiterals.containsKey(uri)) {
-			reifiedLiterals.remove(uri);
-		}
-		
-	}
-	
-	public boolean isReifiedLiteral(String uri) {
-		return reifiedLiterals.containsKey(uri);
-	}
 
 	public Collection<IProperty> getValuedProperties(OWLOntology ontology,
 			OWLIndividual ind) {

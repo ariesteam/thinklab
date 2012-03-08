@@ -25,42 +25,42 @@ import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.coverage.CoverageFactory;
-import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
 import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 
-@InstanceImplementation(concept="geospace:WFSDataSource")
+@Concept("geospace:WFSDataSource")
 public class WFSCoverageDataSource extends VectorCoverageDataSource {
 
-	public void initialize(IInstance i) throws ThinklabException {
+	public void initialize(ISemanticObject i) throws ThinklabException {
 
 		Properties p = new Properties();
 		p.putAll(Thinklab.get().getProperties());
-		ISemanticLiteral server = i.get("geospace:hasServiceUrl");
-		String covId = i.get("geospace:hasCoverageId").toString();
+		ISemanticObject server = i.get(Thinklab.p(NS.GEOSPACE_HAS_0));
+		String covId = i.get(Thinklab.p(NS.GEOSPACE_HAS_1)).toString();
 		if (server != null)
 			p.put(CoverageFactory.WFS_SERVICE_PROPERTY, server.toString());
 		p.put(CoverageFactory.COVERAGE_ID_PROPERTY, covId);
-		ISemanticLiteral attr = i.get("geospace:hasValueAttribute");
+		ISemanticObject attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_2));
 		if (attr != null)
 			p.put(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, attr.toString());
-		attr = i.get("geospace:hasValueType");
+		attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_3));
 		if (attr != null)
 			p.put(CoverageFactory.VALUE_TYPE_PROPERTY, attr.toString());
-		attr = i.get("geospace:hasValueExpression");
+		attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_4));
 		if (attr != null)
 			p.put(CoverageFactory.VALUE_EXPRESSION_PROPERTY, attr.toString());
-		attr = i.get("geospace:hasValueDefault");
+		attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_5));
 		if (attr != null)
 			p.put(CoverageFactory.VALUE_DEFAULT_PROPERTY, attr.toString());
-		attr = i.get(Geospace.HAS_FILTER_PROPERTY);
+		attr = i.get(Thinklab.p(Geospace.HAS_FILTER_PROPERTY));
 		if (attr != null)
 			p.put(CoverageFactory.CQL_FILTER_PROPERTY, attr.toString());
-		attr = i.get(Geospace.HAS_TRANSFORMATION_EXPRESSION);
+		attr = i.get(Thinklab.p(Geospace.HAS_TRANSFORMATION_EXPRESSION));
 		if (attr != null)
 			this.transformation = new MVELExpression(attr.toString());
 	
@@ -68,11 +68,11 @@ public class WFSCoverageDataSource extends VectorCoverageDataSource {
 		try {
 			url = new URL(
 					(server == null ?  
-							"http://127.0.0.1:8080/geoserver/wfs" : 
+							"http://127.0.0.1:8080/geoserver/wfs" :  //$NON-NLS-1$
 							server.toString()) + 
-					"?coverage="  + covId + 
-					"?VERSION=1.1.0" +
-					"?attribute=" + (attr == null ? "NONE" : attr.toString()));
+					"?coverage="  + covId +  //$NON-NLS-1$
+					"?VERSION=1.1.0" + //$NON-NLS-1$
+					"?attribute=" + (attr == null ? "NONE" : attr.toString())); //$NON-NLS-1$ //$NON-NLS-2$
 			
 		} catch (MalformedURLException e) {
 			throw new ThinklabIOException(e);

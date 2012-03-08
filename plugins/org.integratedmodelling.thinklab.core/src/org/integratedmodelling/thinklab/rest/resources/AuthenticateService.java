@@ -77,7 +77,7 @@ public class AuthenticateService extends DefaultRESTHandler {
 				RESTManager.get().createRESTSession(this.getArguments(), uprop);
 //			session.getUserModel().setProperties(uprop);
 		
-			put("session", session.getSessionID());
+			put("session", session.getID());
 		
 		} catch (Exception e) {
 			fail(e);

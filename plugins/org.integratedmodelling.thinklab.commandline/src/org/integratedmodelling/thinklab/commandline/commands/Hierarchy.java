@@ -20,7 +20,7 @@
 package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
@@ -28,7 +28,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 /** the help command for the command-line interface */
 public class Hierarchy implements ICommandHandler {
 
-	public ISemanticLiteral execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
 
 //		String c = command.getArgumentAsString("concept");
 //		if (c.equals("__none"))

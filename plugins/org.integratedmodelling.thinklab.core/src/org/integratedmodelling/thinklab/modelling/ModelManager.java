@@ -39,7 +39,6 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.interpreter.ModelGenerator;
-import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.lang.model.ConceptObject;
 import org.integratedmodelling.lang.model.ModelObject;
 import org.integratedmodelling.lang.model.Namespace;
@@ -47,9 +46,7 @@ import org.integratedmodelling.lang.model.PropertyObject;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
-import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
@@ -482,7 +479,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 	}
 
 	@Override
-	public IContext getCoverage(IModel model, IKBox kbox, ISession session) {
+	public IContext getCoverage(IModel model) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -490,13 +487,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 	@Override
 	public Collection<IScenario> getApplicableScenarios(IModel model,
 			IContext context, boolean isPublic) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IContext run(IModel model, IKBox kbox, ISession session, IContext context)
-			throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -562,10 +552,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 	public IModelObject getModelObject(String object) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public IInstance createObservable(SemanticAnnotation inst) throws ThinklabException {
-		return _session.createObject(inst.asList());
 	}
 
 	@Override

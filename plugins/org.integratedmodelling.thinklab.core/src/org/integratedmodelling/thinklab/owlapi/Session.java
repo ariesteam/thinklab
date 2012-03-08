@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,20 +35,12 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
-import org.integratedmodelling.thinklab.api.knowledge.query.IConformance;
-import org.integratedmodelling.thinklab.api.knowledge.storage.IKBox;
-import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.api.runtime.IUserModel;
-import org.integratedmodelling.thinklab.constraint.DefaultConformance;
 import org.integratedmodelling.thinklab.session.TTYUserModel;
-import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.NameGenerator;
 
 /**
@@ -64,18 +55,10 @@ public class Session implements ISession {
 	
 	String workspace = null;
 	
-	private IKBox withKbox = null;
-
-	HashMap<String, IInstance> importedObjects = new HashMap<String, IInstance>();
 	HashMap<String, String> refs = new HashMap<String, String>();
 	HashMap<String, Object> objects = new HashMap<String, Object>();
 	
-	/*
-	 * virtual kboxes for all loaded object sources, so we can always refer to the objects loaded from each
-	 * particular source. These are local to the session.
-	 */
-	HashMap<String, IKBox> vKboxes = new HashMap<String, IKBox>();
-	
+
 	HashMap<String, Stack<Object>> vars = new HashMap<String, Stack<Object>>();
 	
 	Properties properties = new Properties();
@@ -83,8 +66,6 @@ public class Session implements ISession {
 	ArrayList<IListener> listeners = new ArrayList<IListener>();
 
 	private IUserModel userModel;
-
-	private IConformance _conformance = new DefaultConformance();
 	
 	public Session()  {
 		
@@ -117,7 +98,7 @@ public class Session implements ISession {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.ima.core.ISession#getSessionID()
 	 */
-	public String getSessionID() {
+	public String getID() {
 		return ontology.getConceptSpace();
 	}
 
@@ -128,14 +109,14 @@ public class Session implements ISession {
 	public void makePermanent(String name) throws ThinklabException {
 
 		/* go over all individuals and delete those that have not been validated */
-		ArrayList<String> blacklist = new ArrayList<String>();
-		for (IInstance i : ontology.getInstances()) {
-			if (!i.isValidated())
-				blacklist.add(i.getURI());
-		}
-		for (String uri : blacklist) {
-			ontology.removeInstance(uri);
-		}
+//		ArrayList<String> blacklist = new ArrayList<String>();
+//		for (IInstance i : ontology.getInstances()) {
+//			if (!i.isValidated())
+//				blacklist.add(i.getURI());
+//		}
+//		for (String uri : blacklist) {
+//			ontology.removeInstance(uri);
+//		}
 		/* TBC fix namespaces and URIs? Imports? */
 		
 		/* serialize to OWL and import the temporary doc into the knowledge base */
@@ -157,19 +138,19 @@ public class Session implements ISession {
 		return newn;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.ima.core.ISession#createObject(java.lang.String, org.integratedmodelling.ima.core.IConcept)
-	 */
-	public  IInstance createObject(String name, IConcept parent) throws ThinklabException {
-		return ontology.createInstance(name, parent);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.ima.core.ISession#createObject(java.lang.String, org.integratedmodelling.utils.Polylist)
-	 */
-	public  IInstance createObject(String name, IList definition) throws ThinklabException {
-	    return ontology.createInstance(name, definition);
-    }
+//	/* (non-Javadoc)
+//	 * @see org.integratedmodelling.ima.core.ISession#createObject(java.lang.String, org.integratedmodelling.ima.core.IConcept)
+//	 */
+//	public  IInstance createObject(String name, IConcept parent) throws ThinklabException {
+//		return ontology.createInstance(name, parent);
+//	}
+//
+//	/* (non-Javadoc)
+//	 * @see org.integratedmodelling.ima.core.ISession#createObject(java.lang.String, org.integratedmodelling.utils.Polylist)
+//	 */
+//	public  IInstance createObject(String name, IList definition) throws ThinklabException {
+//	    return ontology.createInstance(name, definition);
+//    }
         
 	/*
 	 * (non-Javadoc)
@@ -177,10 +158,9 @@ public class Session implements ISession {
 	 * @see org.integratedmodelling.ima.core.ISession#loadObjects(java.net.URL)
 	 *      TODO fix for general IOntology
 	 */
-	public Collection<IInstance> loadObjects(URL url) throws ThinklabException {
-
+//	public Collection<IInstance> loadObjects(URL url) throws ThinklabException {
+//
 //		boolean loaded = false;
-		Collection<IInstance> ret = new ArrayList<IInstance>();
 //
 //		// see if we have a plugin to load this
 //		String format = MiscUtilities.getFileExtension(url.toString());
@@ -225,117 +205,117 @@ public class Session implements ISession {
 //					+ format);
 //		}
 //		
-		return ret;
-	}
+//		return ret;
+//	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.integratedmodelling.ima.core.ISession#deleteObject(java.lang.String)
-	 */
-	public void deleteObject(String name) throws ThinklabException {
-		
-		IInstance i = null;
-//		for (IThinklabSessionListener listener : listeners) {
-//			if (i == null)
-//				i = retrieveObject(name);
-//			listener.objectDeleted(i);
-//		}
-		
-		ontology.removeInstance(ontology.getURI()+name);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.ima.core.ISession#listObjects()
-	 */
-	public Collection<IInstance> listObjects() throws ThinklabException {
-		return ontology.getInstances();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.ima.core.ISession#retrieveObject(java.lang.String)
-	 */
-	public IInstance retrieveObject(String name) {
-		return ontology.getInstance(name);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.ima.core.ISession#requireObject(java.lang.String)
-	 */
-	public IInstance requireObject(String name)
-			throws ThinklabResourceNotFoundException {
-
-		IInstance ret = ontology.getInstance(name);
-		if (ret == null)
-			throw new ThinklabResourceNotFoundException("instance " + name + " does not match any in session");
-		return ret;
-	}
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see org.integratedmodelling.ima.core.ISession#deleteObject(java.lang.String)
+//	 */
+//	public void deleteObject(String name) throws ThinklabException {
+//		
+//		IInstance i = null;
+////		for (IThinklabSessionListener listener : listeners) {
+////			if (i == null)
+////				i = retrieveObject(name);
+////			listener.objectDeleted(i);
+////		}
+//		
+//		ontology.removeInstance(ontology.getURI()+name);
+//	}
+//
+//	/* (non-Javadoc)
+//	 * @see org.integratedmodelling.ima.core.ISession#listObjects()
+//	 */
+//	public Collection<IInstance> listObjects() throws ThinklabException {
+//		return ontology.getInstances();
+//	}
+//
+//	/* (non-Javadoc)
+//	 * @see org.integratedmodelling.ima.core.ISession#retrieveObject(java.lang.String)
+//	 */
+//	public IInstance retrieveObject(String name) {
+//		return ontology.getInstance(name);
+//	}
+//
+//	/* (non-Javadoc)
+//	 * @see org.integratedmodelling.ima.core.ISession#requireObject(java.lang.String)
+//	 */
+//	public IInstance requireObject(String name)
+//			throws ThinklabResourceNotFoundException {
+//
+//		IInstance ret = ontology.getInstance(name);
+//		if (ret == null)
+//			throw new ThinklabResourceNotFoundException("instance " + name + " does not match any in session");
+//		return ret;
+//	}
 
     public void write(String file) throws ThinklabException {
 
-    	/* go over all individuals and delete those that have not been validated */
-        ArrayList<String> blacklist = new ArrayList<String>();
-        for (IInstance i : ontology.getInstances()) {
-            if (!i.isValidated())
-                blacklist.add(i.getURI());
-        }
-        for (String uri : blacklist) {
-            ontology.removeInstance(uri);
-        }
-        /* TBC fix namespaces and URIs? Imports? */
-        
-        /* serialize to OWL and import the temporary doc into the knowledge base */
-        try {
-            File f = new File(file);
-            ontology.write(f.toURI());
-        } catch (Exception e) {
-            throw new ThinklabIOException("can't create ontology in " + file + ": " + e.getMessage());
-        }        
+//    	/* go over all individuals and delete those that have not been validated */
+//        ArrayList<String> blacklist = new ArrayList<String>();
+//        for (IInstance i : ontology.getInstances()) {
+//            if (!i.isValidated())
+//                blacklist.add(i.getURI());
+//        }
+//        for (String uri : blacklist) {
+//            ontology.removeInstance(uri);
+//        }
+//        /* TBC fix namespaces and URIs? Imports? */
+//        
+//        /* serialize to OWL and import the temporary doc into the knowledge base */
+//        try {
+//            File f = new File(file);
+//            ontology.write(f.toURI());
+//        } catch (Exception e) {
+//            throw new ThinklabIOException("can't create ontology in " + file + ": " + e.getMessage());
+//        }        
     }
-
-	public  IInstance createObject(String concept) throws ThinklabException {
-		return createObject(ontology.getUniqueObjectName("jis"), KnowledgeManager.getConcept(concept));
-	}
-
-	public  IInstance createObject(SemanticType concept) throws ThinklabException {
-		return createObject(ontology.getUniqueObjectName("jis"), KnowledgeManager.getConcept(concept.toString()));
-	}
-
-	public  IInstance createObject(String name, String concept) throws ThinklabException {
-		return createObject(name, KnowledgeManager.getConcept(concept));
-	}
-
-	public  IInstance createObject(String name, SemanticType concept) throws ThinklabException {
-		return createObject(name, KnowledgeManager.getConcept(concept.toString()));
-	}
-
-	public Collection<IInstance> loadObjects(String source) throws ThinklabException {
-		
-		URL url = MiscUtilities.getURLForResource(source);
-		if (url != null)
-			return loadObjects(url);
-		
-		return null;
-	}
-
-	public  IInstance createObject(IList polylist) throws ThinklabException {
-
-		IInstance ret = ontology.createInstance(polylist);
-
-		/* TODO see if we want to use OWL validation, maybe connected to a parameter or preference */
-		ret.validate();
-
-//		for (IThinklabSessionListener listener : listeners) {
-//			listener.objectCreated(ret);
-//		}
-		
-		
-		return ret;
-	}
-
-    public  IInstance createObject(IInstance ii) throws ThinklabException {
-        return createObject(ii.conceptualize().asList());
-    }
+//
+//	public  IInstance createObject(String concept) throws ThinklabException {
+//		return createObject(ontology.getUniqueObjectName("jis"), KnowledgeManager.getConcept(concept));
+//	}
+//
+//	public  IInstance createObject(SemanticType concept) throws ThinklabException {
+//		return createObject(ontology.getUniqueObjectName("jis"), KnowledgeManager.getConcept(concept.toString()));
+//	}
+//
+//	public  IInstance createObject(String name, String concept) throws ThinklabException {
+//		return createObject(name, KnowledgeManager.getConcept(concept));
+//	}
+//
+//	public  IInstance createObject(String name, SemanticType concept) throws ThinklabException {
+//		return createObject(name, KnowledgeManager.getConcept(concept.toString()));
+//	}
+//
+//	public Collection<IInstance> loadObjects(String source) throws ThinklabException {
+//		
+//		URL url = MiscUtilities.getURLForResource(source);
+//		if (url != null)
+//			return loadObjects(url);
+//		
+//		return null;
+//	}
+//
+//	public  IInstance createObject(IList polylist) throws ThinklabException {
+//
+//		IInstance ret = ontology.createInstance(polylist);
+//
+//		/* TODO see if we want to use OWL validation, maybe connected to a parameter or preference */
+//		ret.validate();
+//
+////		for (IThinklabSessionListener listener : listeners) {
+////			listener.objectCreated(ret);
+////		}
+//		
+//		
+//		return ret;
+//	}
+//
+//    public  IInstance createObject(IInstance ii) throws ThinklabException {
+//        return createObject(ii.conceptualize().asList());
+//    }
 
 //	public IInstance importObject(String kboxURI) throws ThinklabException {
 //
@@ -376,7 +356,7 @@ public class Session implements ISession {
 	}
 
 	@Override
-	public Properties getSessionProperties() {
+	public Properties getProperties() {
 		return properties;
 	}
 
@@ -388,16 +368,16 @@ public class Session implements ISession {
 //		return ret;
 //	}
 
-	public Collection<String> getLocalKBoxes() {
-		
-		ArrayList<String> ret = new ArrayList<String>();
-		
-		for (String kb : vKboxes.keySet()) {
-			ret.add(kb);
-		}
-		
-		return ret;
-	}
+//	public Collection<String> getLocalKBoxes() {
+//		
+//		ArrayList<String> ret = new ArrayList<String>();
+//		
+//		for (String kb : vKboxes.keySet()) {
+//			ret.add(kb);
+//		}
+//		
+//		return ret;
+//	}
 
 //	public IKBox requireKBox(String string) throws ThinklabException {
 //		IKBox ret = retrieveKBox(string);
@@ -446,11 +426,6 @@ public class Session implements ISession {
 	}
 
 	@Override
-	public  IConcept createConcept(IList list) throws ThinklabException {
-		return ontology.createConcept(list);
-	}
-
-	@Override
 	public Object getVariable(String varname) {
 		Stack<Object> s = vars.get(varname);
 		if (s != null && s.size() > 0)
@@ -477,7 +452,7 @@ public class Session implements ISession {
 	}
 
 	@Override
-	public String getSessionWorkspace() {
+	public String getWorkspace() {
 
 		if (workspace == null) {
 			workspace = UUID.randomUUID().toString();
@@ -499,11 +474,6 @@ public class Session implements ISession {
 //				addListener((IThinklabSessionListener) l);
 //			}
 		}
-	}
-
-	@Override
-	public IConformance getConformancePolicy() {
-		return _conformance;
 	}
 
 }

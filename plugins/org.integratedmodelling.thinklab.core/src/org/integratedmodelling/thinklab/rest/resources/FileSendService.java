@@ -59,7 +59,7 @@ public class FileSendService extends DefaultRESTHandler {
 
 	private File retrieveFile(String string, ISession session) throws ThinklabException {
 		
-		if (!string.startsWith(session.getSessionWorkspace()))
+		if (!string.startsWith(session.getWorkspace()))
 			throw new ThinklabAuthenticationException(
 					"send: trying to access another session's workspace");
 		

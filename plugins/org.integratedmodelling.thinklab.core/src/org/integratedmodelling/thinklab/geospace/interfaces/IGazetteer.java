@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.query.IQueriable;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 
 /**
@@ -38,9 +37,9 @@ import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
  * searched by unique ID, although the implementation does not enforce that.
  * 
  * @author Ferdinando
- *
+ * @deprecated this should simply be a kbox.
  */
-public interface IGazetteer extends IQueriable {
+public interface IGazetteer  {
 
 	public static final String SHAPE_FIELD = "shape";
 	public static final String PRIORITY_PROPERTY = "gazetteer.priority";

@@ -24,14 +24,13 @@ import java.net.URL;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.clojure.ClojureInterpreter;
 import org.integratedmodelling.thinklab.clojure.REPL;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.literals.Value;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 /**
@@ -43,9 +42,9 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 @ThinklabCommand(name="clj", description="start a Clojure REPL")
 public class Clojure implements ICommandHandler {
 
-	public ISemanticLiteral execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
 
-		ISemanticLiteral ret = null;
+		ISemanticObject ret = null;
 		String arg = null;
 		ThinklabPlugin plugin = null;
 
@@ -87,7 +86,7 @@ public class Clojure implements ICommandHandler {
 				ClojureInterpreter intp = new ClojureInterpreter();
 				intp.setInput(session.getInputStream());
 				intp.setOutput(session.getOutputStream());
-				ret = Thinklab.get().annotateLiteral(intp.eval(url));
+				ret = Thinklab.get().annotate(intp.eval(url));
 			}
 			
 		} catch (Exception e) {

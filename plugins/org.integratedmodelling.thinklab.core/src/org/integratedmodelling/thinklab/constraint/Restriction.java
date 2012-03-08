@@ -27,19 +27,16 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.lang.Quantifier;
-import org.integratedmodelling.lang.RelationshipAnnotation;
-import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.lang.SemanticType;
+import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.thinklab.api.knowledge.query.IRestriction;
 import org.integratedmodelling.thinklab.api.lang.IList;
-import org.integratedmodelling.thinklab.api.lang.IOperator;
 
 /**
  * Constraints are made up of restrictions. The Restriction class provides an API to easily build constraints
@@ -76,7 +73,7 @@ import org.integratedmodelling.thinklab.api.lang.IOperator;
  * @author Ferdinando Villa
  *
  */
-public class Restriction implements IRestriction {
+public class Restriction  {
 	
 	Quantifier quantifier = new Quantifier(Quantifier.ANY);
 	IProperty  property = null;
@@ -85,13 +82,12 @@ public class Restriction implements IRestriction {
 	IOperator operator = null;
 	IConcept classification = null;
 	LogicalConnector connector = LogicalConnector.INTERSECTION;
-	ArrayList<IRestriction> siblings = new ArrayList<IRestriction>();	
+	ArrayList<Restriction> siblings = new ArrayList<Restriction>();	
 	String metadataField = null;
 	
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#isConnector()
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#isConnector()
 	 */
-	@Override
 	public boolean isConnector() {
 		return siblings.size() > 0;
 	}
@@ -101,7 +97,7 @@ public class Restriction implements IRestriction {
 		boolean ret = metadataField != null;
 		if (siblings.size() != 0) {
 			ret = true;
-			for (IRestriction r : siblings) {
+			for (Restriction r : siblings) {
 				if (!((Restriction)r).isMetadataRestriction()) {
 					return false;
 				}
@@ -114,7 +110,7 @@ public class Restriction implements IRestriction {
 		
 		boolean ret = metadataField != null;
 		if (!ret && siblings.size() != 0) {
-			for (IRestriction r : siblings) {
+			for (Restriction r : siblings) {
 				if (((Restriction)r).isMetadataRestriction()) {
 					return true;
 				}
@@ -130,7 +126,7 @@ public class Restriction implements IRestriction {
 		}
 		
 		ArrayList<Restriction> mr = new ArrayList<Restriction>();
-		for (IRestriction r : siblings) {
+		for (Restriction r : siblings) {
 			if (!((Restriction)r).isMetadataRestriction())
 				mr.add((Restriction)r);
 		}
@@ -150,7 +146,7 @@ public class Restriction implements IRestriction {
 			return this;
 		}
 		ArrayList<Restriction> mr = new ArrayList<Restriction>();
-		for (IRestriction r : siblings) {
+		for (Restriction r : siblings) {
 			if (((Restriction)r).isMetadataRestriction())
 				mr.add((Restriction)r);
 		}
@@ -165,17 +161,15 @@ public class Restriction implements IRestriction {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#getProperty()
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#getProperty()
 	 */
-	@Override
 	public IProperty getProperty() {
 		return property;
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#getQuantifier()
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#getQuantifier()
 	 */
-	@Override
 	public Quantifier getQuantifier() {
 		return quantifier;
 	}
@@ -185,25 +179,22 @@ public class Restriction implements IRestriction {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#isLiteral()
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#isLiteral()
 	 */
-	@Override
 	public boolean isLiteral() {
 		return property != null && operator != null;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#isClassification()
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#isClassification()
 	 */
-	@Override
 	public boolean isClassification() {
 		return property != null && classification != null;
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#isObject()
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#isObject()
 	 */
-	@Override
 	public boolean isObject() {
 		return property != null && (constraint != null || property.isObjectProperty());
 	}
@@ -211,10 +202,10 @@ public class Restriction implements IRestriction {
 	/**
 	 * make a new restriction that ANDS together all the passed ones.
 	 */
-	public static IRestriction AND(IRestriction ... restrictions) {
+	public static Restriction AND(Restriction ... restrictions) {
 		Restriction ret = new Restriction();
 		ret.connector = LogicalConnector.INTERSECTION;
-		for (IRestriction restriction : restrictions)
+		for (Restriction restriction : restrictions)
 			ret.siblings.add(restriction);
 		return ret;
 	}
@@ -222,10 +213,10 @@ public class Restriction implements IRestriction {
 	/**
 	 * make a new restriction that ORs together all the passed ones.
 	 */
-	public static IRestriction OR(IRestriction ... restrictions) {
+	public static Restriction OR(Restriction ... restrictions) {
 		Restriction ret = new Restriction();
 		ret.connector = LogicalConnector.UNION;
-		for (IRestriction restriction : restrictions)
+		for (Restriction restriction : restrictions)
 			ret.siblings.add(restriction);
 		return ret;
 	}
@@ -233,10 +224,10 @@ public class Restriction implements IRestriction {
 	/**
 	 * make a new restriction that ORs together all the passed ones.
 	 */
-	public static IRestriction CONNECTOR(LogicalConnector connector, IRestriction ... restrictions) {
+	public static Restriction CONNECTOR(LogicalConnector connector, Restriction ... restrictions) {
 		Restriction ret = new Restriction();
 		ret.connector = connector;
-		for (IRestriction restriction : restrictions)
+		for (Restriction restriction : restrictions)
 			ret.siblings.add(restriction);
 		return ret;
 	}
@@ -384,15 +375,15 @@ public class Restriction implements IRestriction {
 		if (!SemanticType.validate(op))
 			op = "thinklab-core:" + op;
 		
-		IInstance o = KnowledgeManager.get().retrieveInstance(op);
-		
-		if (o != null && o.is(KnowledgeManager.OperatorType())) {
-			ret = (IOperator) o.getImplementation();
-		}
-		
-		if (ret == null) {
-			throw new ThinklabValidationException("operator " + op + " has not been declared");
-		}
+//		ISemanticObject o = KnowledgeManager.get().retrieveInstance(op);
+//		
+//		if (o != null && o.is(KnowledgeManager.OperatorType())) {
+//			ret = (IOperator) o.getImplementation();
+//		}
+//		
+//		if (ret == null) {
+//			throw new ThinklabValidationException("operator " + op + " has not been declared");
+//		}
 		
 		return ret;
 		
@@ -470,7 +461,7 @@ public class Restriction implements IRestriction {
 		ret.connector = connector;
 		ret.metadataField = metadataField;
 		
-		for (IRestriction r : siblings) {
+		for (Restriction r : siblings) {
 			ret.siblings.add(((Restriction)r).duplicate());
 		}
 		
@@ -545,8 +536,8 @@ public class Restriction implements IRestriction {
 					/*
 					 * should be an operator, possibly with arguments
 					 */
-					if (rest instanceof IInstance) {
-						ret.operator = (IOperator)((IInstance)rest).getImplementation();
+					if (rest instanceof ISemanticObject) {
+						ret.operator = (IOperator)((ISemanticObject)rest).getObject();
 					} else {
 						ret.operator = retrieveOperator(rest.toString());
 					}
@@ -566,16 +557,15 @@ public class Restriction implements IRestriction {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#asList()
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#asList()
 	 */
-	@Override
 	public IList asList() {
 
 		ArrayList<Object> ret = new ArrayList<Object>();
 		
 		if (siblings.size() > 0) {
 			ret.add(connector.toString());
-			for (IRestriction r : siblings)
+			for (Restriction r : siblings)
 				ret.add(r.asList());
 		} else {
 			
@@ -601,14 +591,14 @@ public class Restriction implements IRestriction {
 		return PolyList.fromArray(ret.toArray());
 	}
 	
-	private boolean matchConnector(SemanticAnnotation c) throws ThinklabException {
+	private boolean matchConnector(Semantics c) throws ThinklabException {
 		
 		boolean ret = false;
 		
         int tot = 0;
         int match = 0;
         
-        for (IRestriction restriction : siblings) {
+        for (Restriction restriction : siblings) {
             
             ret = restriction.match(c);
             
@@ -629,34 +619,34 @@ public class Restriction implements IRestriction {
     	return ret;
 	}
 	
-	private boolean matchRelationships(SemanticAnnotation c) throws ThinklabException {
+	private boolean matchRelationships(Semantics c) throws ThinklabException {
 		
 		boolean ret = false;
         int tot = 0;
         int match = 0;
         
-        for (RelationshipAnnotation ipc : c.getRelationshipsTransitive(property.toString())) {
+        for (Semantics ipc : c.getRelationships(property)) {
 
         	tot ++;
 
-        	if (classification != null && ipc.isClassification() && 
-        			ipc.getValue().getConcept().is(classification)) {
-        		match++;
-        	}  else if (operator != null && ipc.isLiteral()) {
-
-        		if (matchOperator(operator, ipc.getValue(), opArgs))
-        			match ++;
-
-        	} else if (constraint != null && ipc.isObject()) {
-
-        		if (constraint.match(ipc.getObject()))
-        			match++;	
-        
-        	} else {
-        		/* we have no operator and no constraints context, so all
-	               we're checking is the existence of the relationship */
-        		match++;
-        	}
+//        	if (classification != null && ipc.isClassification() && 
+//        			ipc.getValue().getConcept().is(classification)) {
+//        		match++;
+//        	}  else if (operator != null && ipc.isLiteral()) {
+//
+//        		if (matchOperator(operator, ipc.getValue(), opArgs))
+//        			match ++;
+//
+//        	} else if (constraint != null && ipc.isObject()) {
+//
+//        		if (constraint.match(ipc.getObject()))
+//        			match++;	
+//        
+//        	} else {
+//        		/* we have no operator and no constraints context, so all
+//	               we're checking is the existence of the relationship */
+//        		match++;
+//        	}
         }
 
 
@@ -686,75 +676,69 @@ public class Restriction implements IRestriction {
         return ret;
 	}
 
-	private boolean matchOperator(IOperator operator, ISemanticLiteral value, Object[] opArgs) throws ThinklabException {
+	private boolean matchOperator(IOperator operator, ISemanticObject value, Object[] opArgs) throws ThinklabException {
 
 		/* FIXME TLC-31: Implement type declarations for arguments to op() in IValue
 				 http://ecoinformatics.uvm.edu:8080/jira/browse/TLC-31
 			Once this is done, we should validate anything that's not an IValue to the
 			appropriate parameter type, and pass ALL parameters to op()
 		 */	
-		return operator.eval(opArgs).asBoolean();
+//		return operator.eval(opArgs).asBoolean();
+		return false;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#match(org.integratedmodelling.thinklab.api.knowledge.IInstance)
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#match(org.integratedmodelling.thinklab.api.knowledge.IInstance)
 	 */
-	@Override
-	public boolean match(SemanticAnnotation c) throws ThinklabException {
+	public boolean match(Semantics ilist) throws ThinklabException {
 
 		boolean ok = false;
 		if (isConnector()) {
-			ok = matchConnector(c);
+			ok = matchConnector(ilist);
 		} else {
-			ok = matchRelationships(c);
+			ok = matchRelationships(ilist);
 		}
 		return ok;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#getClassificationConcept()
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#getClassificationConcept()
 	 */
-	@Override
 	public IConcept getClassificationConcept() {
 		return classification;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#getChildren()
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#getChildren()
 	 */
-	@Override
-	public Collection<IRestriction> getChildren() {
+	public Collection<Restriction> getChildren() {
 		return siblings;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#getConnector()
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#getConnector()
 	 */
-	@Override
 	public LogicalConnector getConnector() {
 		return connector;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#getSubQuery()
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#getSubQuery()
 	 */
-	@Override
 	public Constraint getSubQuery() {
 		return constraint;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#getOperator()
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#getOperator()
 	 */
-	@Override
 	public IOperator getOperator() {
 		return operator;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.constraint.IRestriction#getOperatorArguments()
+	 * @see org.integratedmodelling.thinklab.constraint.Restriction#getOperatorArguments()
 	 */
-	@Override
 	public Object[] getOperatorArguments() {
 		return opArgs;
 	}

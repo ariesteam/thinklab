@@ -26,7 +26,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
-import org.integratedmodelling.thinklab.literals.Value;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 
 /**
  * Commands are passed back and forth between the Knowledge Interface and the Knowledge Manager. 
@@ -39,8 +39,8 @@ public class Command {
 	CommandDeclaration declaration;
     HashMap<String, String> opts;
     HashMap<String, String> args;
-    HashMap<String, ISemanticLiteral> optValues;
-    HashMap<String, ISemanticLiteral> argValues;
+    HashMap<String, ISemanticObject> optValues;
+    HashMap<String, ISemanticObject> argValues;
     String stringValue = null;
 	private boolean verbose;
 	private boolean debug;
@@ -57,18 +57,18 @@ public class Command {
     	return args;
     }
     
-    public void setOptionValue(String s, ISemanticLiteral v) {
+    public void setOptionValue(String s, ISemanticObject v) {
     	
     	if (optValues == null)
-    		optValues = new HashMap<String, ISemanticLiteral>();
+    		optValues = new HashMap<String, ISemanticObject>();
     	
     	optValues.put(s, v);
     }
 
-    public void setArgumentValue(String s, ISemanticLiteral v) {
+    public void setArgumentValue(String s, ISemanticObject v) {
     	
     	if (argValues == null)
-    		argValues = new HashMap<String, ISemanticLiteral>();
+    		argValues = new HashMap<String, ISemanticObject>();
     	
     	argValues.put(s, v);
     }
@@ -112,7 +112,7 @@ public class Command {
      * @param PLUGIN_ID
      * @throws ThinklabException
      */
-    public Command(CommandDeclaration declaration, HashMap<String, ISemanticLiteral> args, HashMap<String, ISemanticLiteral> opts) throws ThinklabException {
+    public Command(CommandDeclaration declaration, HashMap<String, ISemanticObject> args, HashMap<String, ISemanticObject> opts) throws ThinklabException {
         this.declaration = declaration;   
         this.argValues = args;
         this.optValues = opts;        
@@ -137,15 +137,11 @@ public class Command {
         
         	Object o = allargs.get(arg);
         	
-        	ISemanticLiteral val = null;
+        	ISemanticObject val = null;
         	
         	if (o == null)
         		throw new ThinklabValidationException("command " + commandName + " requires argument " + arg);
-        	if ( !(o instanceof ISemanticLiteral)) {
-        		val = Thinklab.get().annotateLiteral(o);
-        	} else {
-        		val = (ISemanticLiteral) o;
-        	}
+        	val = Thinklab.get().annotate(o);
 
         	args.put(arg, val.toString().trim());
         	setArgumentValue(arg, val);
@@ -154,15 +150,10 @@ public class Command {
         for (String arg : declaration.getOptionalArgumentNames()) {
         	
         	Object o = allargs.get(arg);
-        	ISemanticLiteral val = null;
+        	ISemanticObject val = null;
         	
         	if (o != null) {
-				if (!(o instanceof ISemanticLiteral)) {
-	        		val = Thinklab.get().annotateLiteral(o);
-				} else {
-					val = (ISemanticLiteral) o;
-				}
-				
+	        	val = Thinklab.get().annotate(o);
 	        	args.put(arg, val.toString().trim());
 				setArgumentValue(arg, val);
         	}
@@ -170,14 +161,10 @@ public class Command {
         for (String arg : declaration.getOptionNames()) {
         	
         	Object o = allargs.get(arg);
-        	ISemanticLiteral val = null;
+        	ISemanticObject val = null;
         	
         	if (o != null) {
-				if (!(o instanceof ISemanticLiteral)) {
-	        		val = Thinklab.get().annotateLiteral(o);
-				} else {
-					val = (ISemanticLiteral) o;
-				}
+	        		val = Thinklab.get().annotate(o);
 	        	opts.put(arg, val.toString().trim());
 				setOptionValue(arg, val);
         	}
@@ -186,11 +173,11 @@ public class Command {
         validate();
     }
 
-    public ISemanticLiteral getOption(String option) {
+    public ISemanticObject getOption(String option) {
     	return opts == null ? null : optValues.get(option);
     }
     
-    public ISemanticLiteral getArgument(String argument) {
+    public ISemanticObject getArgument(String argument) {
     	return args == null ? null : argValues.get(argument);
     }
     

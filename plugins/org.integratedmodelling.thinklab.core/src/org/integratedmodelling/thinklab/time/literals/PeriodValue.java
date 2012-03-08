@@ -34,15 +34,17 @@ package org.integratedmodelling.thinklab.time.literals;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
-import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
-import org.integratedmodelling.thinklab.literals.Value;
+import org.integratedmodelling.thinklab.knowledge.Value;
 import org.integratedmodelling.thinklab.time.TimePlugin;
 import org.joda.time.Interval;
 
-@LiteralImplementation(concept="time:PeriodValue")
+@Literal(concept="time:PeriodValue", javaClass=Interval.class, datatype="")
 public class PeriodValue extends Value implements IParseable {
 
     Interval interval;
@@ -50,7 +52,6 @@ public class PeriodValue extends Value implements IParseable {
     public void wrap(Object o) {
     	interval = (Interval)o;
     }
-
     
     private static IConcept getBaseTimeConcept() throws ThinklabException {
         return 
@@ -87,30 +88,6 @@ public class PeriodValue extends Value implements IParseable {
         interval = new Interval(x, x2);
     }
 
-	public boolean isNumber() {
-        return false;
-    }
-
-    public boolean isText() {
-        return false;
-    }
-
-    public boolean isBoolean() {
-        return false;
-    }
-    
-    public boolean isClass() {
-        return false;
-    }
- 
-    public boolean isObject() {
-        return false;
-    }
-    
-    public boolean isLiteral() {
-        return true;
-    } 
-
     public String toString() {
         return interval.toString();
     }
@@ -137,8 +114,27 @@ public class PeriodValue extends Value implements IParseable {
     }
 
 	@Override
-	public Object demote() {
-		return interval;
+	public Semantics getSemantics() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getObject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean is(ISemanticObject object) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String asText() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -9,9 +9,8 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.lang.model.ObservingObject;
-import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
@@ -78,7 +77,7 @@ public abstract class ObserverImpl implements IObserver {
 	}
 
 	@Override
-	public Set<IInstance> getObservables() {
+	public Set<ISemanticObject> getObservables() {
 		// TODO Auto-generated method stub
 		return null;
 	}

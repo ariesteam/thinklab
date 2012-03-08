@@ -20,7 +20,7 @@
 package org.integratedmodelling.thinklab.interfaces.commands;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 
@@ -33,6 +33,6 @@ public interface ICommandHandler {
 	 * @return a Value containing the result.
 	 * @see Command
 	 */ 
-	public ISemanticLiteral execute (Command command, ISession session) throws ThinklabException;
+	public ISemanticObject execute (Command command, ISession session) throws ThinklabException;
 
 }

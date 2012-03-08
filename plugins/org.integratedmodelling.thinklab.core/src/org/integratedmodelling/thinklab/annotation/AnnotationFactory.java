@@ -12,7 +12,7 @@ import java.util.HashMap;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
-import org.integratedmodelling.lang.SemanticAnnotation;
+import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Property;
@@ -20,7 +20,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
-import org.integratedmodelling.thinklab.api.lang.IParseable;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 
 /**
@@ -49,7 +49,7 @@ public class AnnotationFactory {
 	 * -----------------------------------------------------------------------------
 	 */
 	
-	public SemanticAnnotation conceptualize(Object o) throws ThinklabException {
+	public Semantics conceptualize(Object o) throws ThinklabException {
 
 		if (o instanceof IConceptualizable) {
 			return ((IConceptualizable) o).conceptualize();
@@ -97,7 +97,7 @@ public class AnnotationFactory {
 			}
 		}
 
-		return sa.size() == 0 ? null : new SemanticAnnotation(
+		return sa.size() == 0 ? null : new Semantics(
 				PolyList.fromCollection(sa), Thinklab.get());
 	}
 	
@@ -114,7 +114,7 @@ public class AnnotationFactory {
 		return ret;
 	}
 
-	public Object instantiate(SemanticAnnotation annotation) throws ThinklabException {
+	public Object instantiate(Semantics annotation) throws ThinklabException {
 	
 		Object ret = null;
 		
@@ -122,7 +122,7 @@ public class AnnotationFactory {
 		 * find class. If an IConceptualizable, create object, call instantiate() and
 		 * return it.
 		 */
-		Class<?> cls = _concept2class.get(annotation.getDirectType());
+		Class<?> cls = _concept2class.get(annotation.getConcept());
 		
 		if (cls == null)
 			return null;
@@ -134,7 +134,7 @@ public class AnnotationFactory {
 		boolean hasEmptyConstructor = false;
 		for (Constructor<?> cc : cls.getConstructors()) {
 			Class<?>[] pt = cc.getParameterTypes();
-			if (pt.length == 1 && SemanticAnnotation.class.isAssignableFrom(pt[0])) {
+			if (pt.length == 1 && Semantics.class.isAssignableFrom(pt[0])) {
 				try {
 					ret = cc.newInstance(annotation);
 					break;
@@ -181,30 +181,41 @@ public class AnnotationFactory {
 		return null;
 	}
 	
-	public ISemanticLiteral conceptualizeLiteral(Object o) throws ThinklabException {
-		
-		if (o instanceof ISemanticLiteral)
-			return (ISemanticLiteral)o;
-		
-		/*
-		 * find registered class; complain if not found
-		 */
-		Class<?> cls = _class2literal.get(o.getClass());
-		if (cls == null)
-			throw new ThinklabUnimplementedFeatureException("can't conceptualize a literal of class " + o.getClass());
-		
-		Object ret = null;
-		
-		try {
-			ret = cls.newInstance();
-		} catch (Exception e) {
-			throw new ThinklabInternalErrorException(e);
-		}
-		
-		if (ret instanceof ISemanticLiteral) {
-			
-		}
-		
+//	public ISemanticLiteral conceptualizeLiteral(Object o) throws ThinklabException {
+//		
+//		if (o instanceof ISemanticLiteral)
+//			return (ISemanticLiteral)o;
+//		
+//		/*
+//		 * find registered class; complain if not found
+//		 */
+//		Class<?> cls = _class2literal.get(o.getClass());
+//		if (cls == null)
+//			throw new ThinklabUnimplementedFeatureException("can't conceptualize a literal of class " + o.getClass());
+//		
+//		Object ret = null;
+//		
+//		try {
+//			ret = cls.newInstance();
+//		} catch (Exception e) {
+//			throw new ThinklabInternalErrorException(e);
+//		}
+//		
+//		if (ret instanceof ISemanticLiteral) {
+//			
+//		}
+//		
+//		return null;
+//	}
+
+	public ISemanticObject parse(String literal, IConcept concept) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ISemanticObject annotate(Object object) {
+		if (object instanceof ISemanticObject)
+			return (ISemanticObject)object;
 		return null;
 	}
 }

@@ -26,14 +26,11 @@ import java.util.Properties;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
-import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.coverage.WCSCoverage;
-import org.integratedmodelling.thinklab.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.utils.xml.XMLDocument;
@@ -47,7 +44,7 @@ import org.w3c.dom.Node;
  */
 public class WCSToOPAL implements ICommandHandler {
 
-	public ISemanticLiteral execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
 
 		String server = command.getArgumentAsString("server");
 		String output = command.getArgumentAsString("output");

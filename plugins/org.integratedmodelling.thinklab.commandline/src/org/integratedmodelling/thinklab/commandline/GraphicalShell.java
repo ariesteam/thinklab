@@ -43,9 +43,7 @@ import javax.swing.JPanel;
 import org.apache.commons.io.FileUtils;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
-import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.api.runtime.IUserModel;
 import org.integratedmodelling.thinklab.command.Command;
@@ -105,7 +103,7 @@ public class GraphicalShell {
 		}
 
 		@Override
-		public IInstance getUserInstance() {
+		public ISemanticObject getUser() {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -281,7 +279,7 @@ public class GraphicalShell {
 			
 			session.pushVariable(ISession.COMMAND, cmd);
 			
-			ISemanticLiteral result = CommandManager.get().submitCommand(cmd, session);
+			ISemanticObject result = CommandManager.get().submitCommand(cmd, session);
 
 			session.popVariable(ISession.COMMAND);
 			

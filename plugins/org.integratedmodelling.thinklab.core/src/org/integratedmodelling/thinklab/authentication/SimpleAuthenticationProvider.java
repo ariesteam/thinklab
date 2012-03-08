@@ -30,9 +30,8 @@ import java.util.Properties;
 import org.integratedmodelling.exceptions.ThinklabAuthenticationException;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IThinklabAuthenticationProvider;
@@ -229,13 +228,13 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 	}
 
 	@Override
-	public IInstance getUserInstance(String user, ISession session) throws ThinklabException {
+	public ISemanticObject getUser(String user, ISession session) throws ThinklabException {
 		
-		IInstance ret = session.retrieveObject("user");
+		ISemanticObject ret = null; //session.retrieveObject("user");
 		
 		if (ret == null) {
 			String role = getUserProperty(user, "role", "user:UnprivilegedUser");
-			ret = session.createObject("user", KnowledgeManager.getConcept(role));
+//			ret = session.createObject("user", KnowledgeManager.getConcept(role));
 		}
 		
 		return ret;

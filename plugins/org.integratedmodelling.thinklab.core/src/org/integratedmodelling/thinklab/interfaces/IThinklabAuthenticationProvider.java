@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 
 /**
@@ -59,7 +59,7 @@ public interface IThinklabAuthenticationProvider {
 	
 	public abstract Collection<String> listUsers() throws ThinklabException;
 
-	public abstract IInstance getUserInstance(String user, ISession session) throws ThinklabException;
+	public abstract ISemanticObject getUser(String user, ISession session) throws ThinklabException;
 }
 
 

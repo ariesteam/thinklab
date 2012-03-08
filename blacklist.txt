@@ -11,3 +11,4 @@ org.integratedmodelling.thinklab.ecology
 org.integratedmodelling.thinklab.dolce
 org.integratedmodelling.thinklab.mca
 org.integratedmodelling.thinklab.authentication
+org.integratedmodelling.thinklab.searchengine

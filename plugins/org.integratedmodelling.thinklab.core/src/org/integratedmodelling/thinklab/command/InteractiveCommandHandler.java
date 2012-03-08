@@ -28,7 +28,7 @@ import java.io.PrintStream;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 
@@ -99,7 +99,7 @@ public abstract class InteractiveCommandHandler implements ICommandHandler {
 	}
 	
 	@Override
-	public ISemanticLiteral execute(Command command, ISession session)
+	public ISemanticObject execute(Command command, ISession session)
 			throws ThinklabException {
 
 		this.inp = session.getInputStream();
@@ -120,7 +120,7 @@ public abstract class InteractiveCommandHandler implements ICommandHandler {
 	 * @return
 	 * @throws ThinklabException 
 	 */
-	protected abstract ISemanticLiteral doInteractive(Command command, ISession session) 
+	protected abstract ISemanticObject doInteractive(Command command, ISession session) 
 		throws ThinklabException;
 
 }

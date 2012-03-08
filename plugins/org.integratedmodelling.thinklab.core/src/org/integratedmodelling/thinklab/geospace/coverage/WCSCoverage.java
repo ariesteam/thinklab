@@ -36,13 +36,11 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.extents.ArealExtent;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
-import org.integratedmodelling.thinklab.modelling.internal.MN;
 import org.integratedmodelling.utils.CopyURL;
 import org.integratedmodelling.utils.xml.XMLDocument;
 import org.w3c.dom.Node;
@@ -450,24 +448,24 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		String otype = prop.getProperty("observation.type", "measurement:Ranking");
 		String btype = prop.getProperty("observable.type", "observation:GenericObservable");
 		
-		return 
-			PolyList.list(
-				otype,
-				PolyList.list(MN.HAS_OBSERVABLE,
-						PolyList.list(btype)),
-				PolyList.list(MN.HAS_DATASOURCE,
-						PolyList.list("geospace:WCSDataSource",
-								PolyList.list("geospace:hasServiceUrl", wcsService),
-								PolyList.list("geospace:hasCoverageId", layerName))),
-								PolyList.list("observation:hasObservationExtent",
-										PolyList.list("geospace:RasterGrid",
-												PolyList.list("geospace:hasXRangeMax", ""+gridGeometry.getGridRange2D().getHigh(0)),
-												PolyList.list("geospace:hasYRangeMax", ""+gridGeometry.getGridRange2D().getHigh(1)),
-												PolyList.list("geospace:hasLatLowerBound", ""+boundingBox.getMinimum(1)),
-												PolyList.list("geospace:hasLonLowerBound", ""+boundingBox.getMinimum(0)),
-												PolyList.list("geospace:hasLatUpperBound", ""+boundingBox.getMaximum(1)),
-												PolyList.list("geospace:hasLonUpperBound", ""+boundingBox.getMaximum(0)),
-												PolyList.list("geospace:hasCoordinateReferenceSystem", 
-								Geospace.getCRSIdentifier(crs, false)))));
+		return null;
+//			PolyList.list(
+//				otype,
+//				PolyList.list(MN.HAS_OBSERVABLE,
+//						PolyList.list(btype)),
+//				PolyList.list(MN.HAS_DATASOURCE,
+//						PolyList.list("geospace:WCSDataSource",
+//								PolyList.list("geospace:hasServiceUrl", wcsService),
+//								PolyList.list("geospace:hasCoverageId", layerName))),
+//								PolyList.list("observation:hasObservationExtent",
+//										PolyList.list("geospace:RasterGrid",
+//												PolyList.list("geospace:hasXRangeMax", ""+gridGeometry.getGridRange2D().getHigh(0)),
+//												PolyList.list("geospace:hasYRangeMax", ""+gridGeometry.getGridRange2D().getHigh(1)),
+//												PolyList.list("geospace:hasLatLowerBound", ""+boundingBox.getMinimum(1)),
+//												PolyList.list("geospace:hasLonLowerBound", ""+boundingBox.getMinimum(0)),
+//												PolyList.list("geospace:hasLatUpperBound", ""+boundingBox.getMaximum(1)),
+//												PolyList.list("geospace:hasLonUpperBound", ""+boundingBox.getMaximum(0)),
+//												PolyList.list("geospace:hasCoordinateReferenceSystem", 
+//								Geospace.getCRSIdentifier(crs, false)))));
 	}
 }

@@ -26,16 +26,19 @@ import java.io.StringReader;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.api.annotations.Literal;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
-import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
+import org.integratedmodelling.thinklab.knowledge.Value;
 
 /**
  * A numeric interval parsed from conventional syntax (e.g. "[12 34)" )
  * @author Ferdinando Villa
  *
  */
-@LiteralImplementation(concept="thinklab-core:NumericInterval")
+@Literal(concept="core:NumericInterval", datatype="", javaClass=IntervalValue.class)
 public class IntervalValue extends Value implements IParseable {
 
 	double lowerBound = 0.0;
@@ -226,6 +229,30 @@ public class IntervalValue extends Value implements IParseable {
 		}
 		
 		return ret;
+	}
+
+	@Override
+	public Semantics getSemantics() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getObject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean is(ISemanticObject object) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String asText() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

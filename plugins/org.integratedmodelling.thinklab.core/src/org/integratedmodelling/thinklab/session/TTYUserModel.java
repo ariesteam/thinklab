@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.api.runtime.IUserModel;
 
@@ -62,7 +62,7 @@ public class TTYUserModel implements IUserModel {
 	}
 
 	@Override
-	public IInstance getUserInstance() {
+	public ISemanticObject getUser() {
 		// TODO Auto-generated method stub
 		return null;
 	}

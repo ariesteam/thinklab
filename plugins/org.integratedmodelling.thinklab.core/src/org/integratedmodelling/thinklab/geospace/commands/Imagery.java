@@ -19,21 +19,14 @@
  */
 package org.integratedmodelling.thinklab.geospace.commands;
 
-import java.awt.image.BufferedImage;
-
-import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.geospace.Geospace;
-import org.integratedmodelling.thinklab.geospace.extents.RasterGrid;
 import org.integratedmodelling.thinklab.geospace.interfaces.IGazetteer;
-import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.geospace.visualization.GeoImageFactory;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.utils.image.Picture;
 
 @ThinklabCommand(
 		name="imagery",
@@ -51,7 +44,7 @@ import org.integratedmodelling.utils.image.Picture;
 public class Imagery implements ICommandHandler {
 
 	@Override
-	public ISemanticLiteral execute(Command command, ISession session)
+	public ISemanticObject execute(Command command, ISession session)
 			throws ThinklabException {
 
 		IGazetteer gaz = null;

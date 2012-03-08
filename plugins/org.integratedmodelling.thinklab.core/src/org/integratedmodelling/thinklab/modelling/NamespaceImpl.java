@@ -3,16 +3,13 @@ package org.integratedmodelling.thinklab.modelling;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.lang.SemanticAnnotation;
 import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.lang.model.Namespace;
-import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 
-public class NamespaceImpl implements INamespace, IConceptualizable {
+public class NamespaceImpl implements INamespace {
 
 	Namespace _bean;
 	ArrayList<IModelObject> _modelObjects;
@@ -52,20 +49,4 @@ public class NamespaceImpl implements INamespace, IConceptualizable {
 	public long getLastModification() {
 		return _bean.getTimeStamp();
 	}
-
-	@Override
-	public SemanticAnnotation conceptualize() throws ThinklabException {
-		return null;
-	}
-
-	@Override
-	public void define(SemanticAnnotation conceptualization) throws ThinklabException {
-
-		Namespace bean = new Namespace();
-
-		
-		
-		initialize(bean);
-	}
-
 }

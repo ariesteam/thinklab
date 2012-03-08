@@ -25,10 +25,9 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.api.knowledge.IInstance;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.api.runtime.IUserModel;
-import org.integratedmodelling.thinklab.authentication.AuthenticationManager;
 import org.integratedmodelling.thinklab.owlapi.Session;
 
 public class RESTUserModel implements IUserModel {
@@ -71,19 +70,21 @@ public class RESTUserModel implements IUserModel {
 	}
 
 	@Override
-	public IInstance getUserInstance() throws ThinklabException {
-		
-		IInstance ret = session.retrieveObject("user");
-		
-		if (ret == null && properties != null) {
+	public ISemanticObject getUser() throws ThinklabException {
 
-			String user = properties.getProperty("authenticated-user");
-			if (user == null)	
-				return null;
-			
-			ret = AuthenticationManager.get().getUserInstance(user, session);
-		}
-		return ret;
+		return null;
+		
+//		IInstance ret = session.retrieveObject("user");
+//		
+//		if (ret == null && properties != null) {
+//
+//			String user = properties.getProperty("authenticated-user");
+//			if (user == null)	
+//				return null;
+//			
+//			ret = AuthenticationManager.get().getUserInstance(user, session);
+//		}
+//		return ret;
 	}
 
 }

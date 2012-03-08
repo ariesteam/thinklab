@@ -65,7 +65,7 @@ public class ClojureInterpreter implements IInterpreter {
 	public Object eval(Object code, HashMap<String, Object> args)
 			throws ThinklabException {
 		
-		return evalRaw(code, session == null ? "user" : session.getSessionWorkspace(), args);
+		return evalRaw(code, session == null ? "user" : session.getWorkspace(), args);
 	}
 	
 	
@@ -140,7 +140,7 @@ public class ClojureInterpreter implements IInterpreter {
 	}
 	@Override
 	public Object eval(Object code) throws ThinklabException {   
-    	return evalInNamespace(code, session == null ? "user" : session.getSessionWorkspace());    	
+    	return evalInNamespace(code, session == null ? "user" : session.getWorkspace());    	
 	}
 
 	public Object evalRaw(Object code, String namespace, HashMap<String, Object> args) throws ThinklabException {

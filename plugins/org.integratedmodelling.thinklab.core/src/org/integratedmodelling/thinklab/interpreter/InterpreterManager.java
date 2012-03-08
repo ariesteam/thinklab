@@ -108,7 +108,7 @@ public class InterpreterManager implements IInterpreterManager {
 	@Override
 	public IInterpreter getInterpreter(IExpression algorithm, ISession session) throws ThinklabResourceNotFoundException {
 
-		IInterpreter ret = interpreters.get(session.getSessionID());
+		IInterpreter ret = interpreters.get(session.getID());
 		
 		if (ret != null)
 			return ret;
@@ -120,7 +120,7 @@ public class InterpreterManager implements IInterpreterManager {
 					"interpreter creation for " + algorithm.getLanguage() + " failed");
 		}
 
-		interpreters.put(session.getSessionID(), ret);
+		interpreters.put(session.getID(), ret);
 		
 		return ret;
 	}

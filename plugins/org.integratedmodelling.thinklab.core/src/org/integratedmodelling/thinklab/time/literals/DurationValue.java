@@ -40,10 +40,12 @@ import javax.measure.quantity.Duration;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.Semantics;
+import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
-import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
-import org.integratedmodelling.thinklab.literals.Value;
+import org.integratedmodelling.thinklab.knowledge.Value;
 import org.integratedmodelling.thinklab.time.TimePlugin;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.joda.time.DateTime;
@@ -57,9 +59,9 @@ import org.jscience.physics.amount.Amount;
  * supported by the implementation of IUnit.
  *   
  * @author Ferdinando Villa
- *
+ * FIXME make it wrap something real
  */
-@LiteralImplementation(concept="time:DurationValue")
+@Literal(concept="time:DurationValue", javaClass=DurationValue.class, datatype="")
 public class DurationValue extends Value implements IParseable {
 
     long value = 0l;
@@ -170,11 +172,6 @@ public class DurationValue extends Value implements IParseable {
     }
 
 	public long getMilliseconds() {
-		return value;
-	}
-    
-	@Override
-	public Object demote() {
 		return value;
 	}
 
@@ -292,5 +289,29 @@ public class DurationValue extends Value implements IParseable {
 	
 	public String getOriginalUnit() {
 		return origUnit;
+	}
+
+	@Override
+	public Semantics getSemantics() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getObject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean is(ISemanticObject object) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String asText() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

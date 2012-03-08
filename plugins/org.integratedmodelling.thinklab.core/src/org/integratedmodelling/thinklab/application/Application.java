@@ -24,7 +24,7 @@ import java.net.URL;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.interfaces.applications.ITask;
 
@@ -40,13 +40,13 @@ public class Application {
 		appdesc = ApplicationManager.get().requireApplicationDescriptor(id);
 	}
 	
-	public ISemanticLiteral run() throws ThinklabException {
+	public ISemanticObject run() throws ThinklabException {
 		return run((ISession)null);
 	}
 	
-	public ISemanticLiteral run(ISession session) throws ThinklabException {
+	public ISemanticObject run(ISession session) throws ThinklabException {
 		
-		ISemanticLiteral ret = null;
+		ISemanticObject ret = null;
 		ITask task = null;
 		
 		/*
@@ -122,7 +122,7 @@ public class Application {
 	 * @return
 	 * @throws ThinklabException 
 	 */
-	public static ISemanticLiteral run(String application) throws ThinklabException {
+	public static ISemanticObject run(String application) throws ThinklabException {
 		
 		return new Application(application).run();
 		
